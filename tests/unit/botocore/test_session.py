@@ -631,6 +631,46 @@ class TestCreateClient(BaseSessionTest):
             # configurations
             self.assertEqual(call_kwargs['verify'], 'verify-certs.pem')
 
+    @mock.patch('botocore.client.ClientCreator')
+    def test_create_client_with_credentials(self, client_creator):
+        self.session.create_client(
+            'sts',
+            'us-west-2',
+            aws_access_key_id='foo',
+            aws_secret_access_key='bar',
+            aws_session_token='baz',
+            aws_account_id='bin',
+        )
+        credentials = (
+            client_creator.return_value.create_client.call_args.kwargs[
+                'credentials'
+            ]
+        )
+        self.assertEqual(credentials.access_key, 'foo')
+        self.assertEqual(credentials.secret_key, 'bar')
+        self.assertEqual(credentials.token, 'baz')
+        self.assertEqual(credentials.account_id, 'bin')
+
+    @mock.patch('botocore.client.ClientCreator')
+    def test_create_client_with_ignored_credentials(self, client_creator):
+        with self.assertLogs('botocore.session', level='DEBUG') as log:
+            self.session.create_client(
+                'sts',
+                'us-west-2',
+                aws_account_id='foo',
+            )
+            credentials = (
+                client_creator.return_value.create_client.call_args.kwargs[
+                    'credentials'
+                ]
+            )
+            self.assertIn(
+                'Ignoring the following credential-related values',
+                log.output[0],
+            )
+            self.assertIn('aws_account_id', log.output[0])
+            self.assertEqual(credentials.account_id, None)
+
 
 class TestSessionComponent(BaseSessionTest):
     def test_internal_component(self):

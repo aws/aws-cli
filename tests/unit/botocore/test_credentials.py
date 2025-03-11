@@ -12,12 +12,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from datetime import datetime, timedelta
+import logging
 import subprocess
 import os
 import tempfile
 import shutil
 import json
 import copy
+import pytest
 
 from dateutil.tz import tzlocal, tzutc
 
@@ -29,7 +31,7 @@ from botocore.stub import Stubber
 from botocore.utils import datetime2timestamp
 from botocore.utils import FileWebIdentityTokenLoader, SSOTokenLoader
 from botocore.credentials import EnvProvider, create_assume_role_refresher
-from botocore.credentials import CredentialProvider, AssumeRoleProvider
+from botocore.credentials import CredentialProvider, AssumeRoleProvider, BaseAssumeRoleCredentialFetcher
 from botocore.credentials import ConfigProvider, SharedCredentialProvider
 from botocore.credentials import ProcessProvider
 from botocore.credentials import AssumeRoleWithWebIdentityProvider
@@ -239,7 +241,8 @@ class TestAssumeRoleCredentialFetcher(BaseEnvVar):
             'access_key': response['Credentials']['AccessKeyId'],
             'secret_key': response['Credentials']['SecretAccessKey'],
             'token': response['Credentials']['SessionToken'],
-            'expiry_time': expiration
+            'expiry_time': expiration,
+            'account_id': response.get('Credentials', {}).get('AccountId'),
         }
 
     def some_future_time(self):
@@ -649,6 +652,51 @@ class TestAssumeRoleCredentialFetcher(BaseEnvVar):
         ]
         self.assertEqual(calls, expected_calls)
 
+    def test_account_id_with_valid_arn(self):
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': self.some_future_time().isoformat(),
+                'AccountId': '123456789012',
+            },
+            'AssumedRoleUser': {
+                'AssumedRoleId': 'myroleid',
+                'Arn': 'arn:aws:iam::123456789012:role/RoleA',
+            },
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        refresher = credentials.AssumeRoleCredentialFetcher(
+            client_creator, self.source_creds, self.role_arn
+        )
+        expected_response = self.get_expected_creds_from_response(response)
+        response = refresher.fetch_credentials()
+        self.assertEqual(response, expected_response)
+        self.assertEqual(response['account_id'], '123456789012')
+
+    def test_account_id_with_invalid_arn(self):
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': self.some_future_time().isoformat(),
+            },
+            'AssumedRoleUser': {
+                'AssumedRoleId': 'myroleid',
+                'Arn': 'invalid-arn',
+            },
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        refresher = credentials.AssumeRoleCredentialFetcher(
+            client_creator, self.source_creds, self.role_arn
+        )
+        expected_response = self.get_expected_creds_from_response(response)
+        response = refresher.fetch_credentials()
+        self.assertEqual(response, expected_response)
+        self.assertEqual(response['account_id'], None)
+
 
 class TestAssumeRoleWithWebIdentityCredentialFetcher(BaseEnvVar):
     def setUp(self):
@@ -757,6 +805,53 @@ class TestAssumeRoleWithWebIdentityCredentialFetcher(BaseEnvVar):
         response = refresher.fetch_credentials()
 
         self.assertEqual(response, expected)
+
+        def test_account_id_with_valid_arn(self):
+            response = {
+                'Credentials': {
+                    'AccessKeyId': 'foo',
+                    'SecretAccessKey': 'bar',
+                    'SessionToken': 'baz',
+                    'Expiration': self.some_future_time().isoformat(),
+                    'AccountId': '123456789012',
+                },
+                'AssumedRoleUser': {
+                    'AssumedRoleId': 'myroleid',
+                    'Arn': 'arn:aws:iam::123456789012:role/RoleA',
+                },
+            }
+            client_creator = self.create_client_creator(with_response=response)
+            refresher = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+                client_creator, self.load_token, self.role_arn
+            )
+            expected_response = self.get_expected_creds_from_response(response)
+            response = refresher.fetch_credentials()
+            self.assertEqual(response, expected_response)
+            self.assertEqual(response['account_id'], '123456789012')
+
+        def test_account_id_with_invalid_arn(self):
+            response = {
+                'Credentials': {
+                    'AccessKeyId': 'foo',
+                    'SecretAccessKey': 'bar',
+                    'SessionToken': 'baz',
+                    'Expiration': self.some_future_time().isoformat(),
+                },
+                'AssumedRoleUser': {
+                    'AssumedRoleId': 'myroleid',
+                    'Arn': 'invalid-arn',
+                },
+            }
+            client_creator = self.create_client_creator(with_response=response)
+            refresher = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+                client_creator,
+                self.load_token,
+                self.role_arn,
+            )
+            expected_response = self.get_expected_creds_from_response(response)
+            response = refresher.fetch_credentials()
+            self.assertEqual(response, expected_response)
+            self.assertEqual(response['account_id'], None)
 
 
 class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
@@ -978,6 +1073,20 @@ class TestEnvVar(BaseEnvVar):
         self.assertEqual(creds.token, 'baz')
         self.assertEqual(creds.method, 'env')
 
+    def test_envvars_found_with_account_id(self):
+        environ = {
+            'AWS_ACCESS_KEY_ID': 'foo',
+            'AWS_SECRET_ACCESS_KEY': 'bar',
+            'AWS_ACCOUNT_ID': 'baz',
+        }
+        provider = credentials.EnvProvider(environ)
+        creds = provider.load()
+        self.assertIsNotNone(creds)
+        self.assertEqual(creds.access_key, 'foo')
+        self.assertEqual(creds.secret_key, 'bar')
+        self.assertEqual(creds.account_id, 'baz')
+        self.assertEqual(creds.method, 'env')
+
     def test_envvars_not_found(self):
         provider = credentials.EnvProvider(environ={})
         creds = provider.load()
@@ -1086,6 +1195,22 @@ class TestEnvVar(BaseEnvVar):
         )
         with self.assertRaisesRegex(RuntimeError, error_message):
             creds.get_frozen_credentials()
+
+    def test_can_override_account_id_env_var_mapping(self):
+        environ = {
+            'AWS_ACCESS_KEY_ID': 'foo',
+            'AWS_SECRET_ACCESS_KEY': 'bar',
+            'AWS_SESSION_TOKEN': 'baz',
+            'FOO_ACCOUNT_ID': 'bin',
+        }
+        provider = credentials.EnvProvider(
+            environ, {'account_id': 'FOO_ACCOUNT_ID'}
+        )
+        creds = provider.load()
+        self.assertEqual(creds.access_key, 'foo')
+        self.assertEqual(creds.secret_key, 'bar')
+        self.assertEqual(creds.token, 'baz')
+        self.assertEqual(creds.account_id, 'bin')
 
     def test_partial_creds_is_an_error(self):
         # If the user provides an access key, they must also
@@ -1341,6 +1466,28 @@ class TestSharedCredentialsProvider(BaseEnvVar):
         creds = provider.load()
         self.assertIsNone(creds)
 
+    def test_credentials_file_exists_with_account_id(self):
+        self.ini_parser.return_value = {
+            'default': {
+                'aws_access_key_id': 'foo',
+                'aws_secret_access_key': 'bar',
+                'aws_session_token': 'baz',
+                'aws_account_id': 'bin',
+            }
+        }
+        provider = credentials.SharedCredentialProvider(
+            creds_filename='~/.aws/creds',
+            profile_name='default',
+            ini_parser=self.ini_parser,
+        )
+        creds = provider.load()
+        self.assertIsNotNone(creds)
+        self.assertEqual(creds.access_key, 'foo')
+        self.assertEqual(creds.secret_key, 'bar')
+        self.assertEqual(creds.token, 'baz')
+        self.assertEqual(creds.method, 'shared-credentials-file')
+        self.assertEqual(creds.account_id, 'bin')
+
 
 class TestConfigFileProvider(BaseEnvVar):
 
@@ -1400,6 +1547,24 @@ class TestConfigFileProvider(BaseEnvVar):
         with self.assertRaises(botocore.exceptions.PartialCredentialsError):
             provider.load()
 
+    def test_config_file_with_account_id(self):
+        profile_config = {
+            'aws_access_key_id': 'foo',
+            'aws_secret_access_key': 'bar',
+            'aws_session_token': 'baz',
+            'aws_account_id': 'bin',
+        }
+        parsed = {'profiles': {'default': profile_config}}
+        parser = mock.Mock()
+        parser.return_value = parsed
+        provider = credentials.ConfigProvider('cli.cfg', 'default', parser)
+        creds = provider.load()
+        self.assertIsNotNone(creds)
+        self.assertEqual(creds.access_key, 'foo')
+        self.assertEqual(creds.secret_key, 'bar')
+        self.assertEqual(creds.token, 'baz')
+        self.assertEqual(creds.method, 'config-file')
+        self.assertEqual(creds.account_id, 'bin')
 
 class TestBotoProvider(BaseEnvVar):
     def setUp(self):
@@ -3021,6 +3186,32 @@ class TestContainerProvider(BaseEnvVar):
         with self.assertRaises(ValueError):
             provider.load()
 
+    def test_can_retrieve_account_id(self):
+        environ = {
+            'AWS_CONTAINER_CREDENTIALS_RELATIVE_URI': '/latest/credentials?id=foo'
+        }
+        fetcher = self.create_fetcher()
+        timeobj = datetime.now(tzlocal())
+        timestamp = (timeobj + timedelta(hours=24)).isoformat()
+        fetcher.retrieve_full_uri.return_value = {
+            "AccessKeyId": "access_key",
+            "SecretAccessKey": "secret_key",
+            "Token": "token",
+            "Expiration": timestamp,
+            "AccountId": "account_id",
+        }
+        provider = credentials.ContainerProvider(environ, fetcher)
+        creds = provider.load()
+
+        fetcher.retrieve_full_uri.assert_called_with(
+            self.full_url('/latest/credentials?id=foo'), headers=None
+        )
+        self.assertEqual(creds.access_key, 'access_key')
+        self.assertEqual(creds.secret_key, 'secret_key')
+        self.assertEqual(creds.token, 'token')
+        self.assertEqual(creds.method, 'container-role')
+        self.assertEqual(creds.account_id, 'account_id')
+
 
 class TestProcessProvider(BaseEnvVar):
     def setUp(self):
@@ -3276,6 +3467,55 @@ class TestProcessProvider(BaseEnvVar):
         self.assertIsNone(creds.token)
         self.assertEqual(creds.method, 'custom-process')
 
+    def test_can_retrieve_account_id(self):
+        self.loaded_config['profiles'] = {
+            'default': {'credential_process': 'my-process'}
+        }
+        self._set_process_return_value(
+            {
+                'Version': 1,
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': '2999-01-01T00:00:00Z',
+                'AccountId': '123456789012',
+            }
+        )
+
+        provider = self.create_process_provider()
+        creds = provider.load()
+        self.assertIsNotNone(creds)
+        self.assertEqual(creds.access_key, 'foo')
+        self.assertEqual(creds.secret_key, 'bar')
+        self.assertEqual(creds.token, 'baz')
+        self.assertEqual(creds.method, 'custom-process')
+        self.assertEqual(creds.account_id, '123456789012')
+
+    def test_can_retrieve_account_id_via_profile_config(self):
+        self.loaded_config['profiles'] = {
+            'default': {
+                'credential_process': 'my-process',
+                'aws_account_id': '123456789012',
+            }
+        }
+        self._set_process_return_value(
+            {
+                'Version': 1,
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': '2999-01-01T00:00:00Z',
+            }
+        )
+
+        provider = self.create_process_provider()
+        creds = provider.load()
+        self.assertIsNotNone(creds)
+        self.assertEqual(creds.access_key, 'foo')
+        self.assertEqual(creds.secret_key, 'bar')
+        self.assertEqual(creds.token, 'baz')
+        self.assertEqual(creds.method, 'custom-process')
+        self.assertEqual(creds.account_id, '123456789012')
 
 class TestProfileProviderBuilder(unittest.TestCase):
     def setUp(self):
@@ -3359,6 +3599,7 @@ class TestSSOCredentialFetcher(unittest.TestCase):
                 'SecretAccessKey': 'bar',
                 'SessionToken': 'baz',
                 'Expiration': '2008-09-23T12:43:20Z',
+                'AccountId': '1234567890',
             }
         }
         self.assertEqual(self.cache[cache_key], expected_cached_credentials)
@@ -3491,3 +3732,67 @@ class TestSSOProvider(unittest.TestCase):
         # If any required configuration is missing we should get an error
         with self.assertRaises(botocore.exceptions.InvalidConfigError):
             self.provider.load()
+
+    def test_load_sso_credentials_with_account_id(self):
+        self._add_get_role_credentials_response()
+        with self.stubber:
+            credentials = self.provider.load()
+            self.assertEqual(credentials.access_key, 'foo')
+            self.assertEqual(credentials.secret_key, 'bar')
+            self.assertEqual(credentials.token, 'baz')
+            self.assertEqual(credentials.account_id, '1234567890')
+
+@pytest.mark.parametrize(
+    "account_id, expected", [("123456789012", "123456789012"), (None, None)]
+)
+
+def test_get_deferred_property_account_id(account_id, expected):
+    creds = Credentials(
+        access_key='foo', secret_key='bar', token='baz', account_id=account_id
+    )
+    deferred_account_id = creds.get_deferred_property('account_id')
+    assert callable(deferred_account_id)
+    assert deferred_account_id() == expected
+
+
+@pytest.fixture
+def mock_base_assume_role_credential_fetcher():
+    return BaseAssumeRoleCredentialFetcher(
+        client_creator=mock.Mock(),
+        role_arn='arn:aws:iam::123456789012:role/RoleA',
+    )
+
+
+def test_add_account_id_to_response_with_valid_arn(
+    mock_base_assume_role_credential_fetcher,
+):
+    response = {
+        'Credentials': {},
+        'AssumedRoleUser': {
+            'AssumedRoleId': 'myroleid',
+            'Arn': 'arn:aws:iam::123456789012:role/RoleA',
+        },
+    }
+    mock_base_assume_role_credential_fetcher._add_account_id_to_response(
+        response
+    )
+    assert 'AccountId' in response['Credentials']
+    assert response['Credentials']['AccountId'] == '123456789012'
+
+
+def test_add_account_id_to_response_with_invalid_arn(
+    mock_base_assume_role_credential_fetcher, caplog
+):
+    response = {
+        'Credentials': {},
+        'AssumedRoleUser': {
+            'AssumedRoleId': 'myroleid',
+            'Arn': 'invalid-arn',
+        },
+    }
+    with caplog.at_level(logging.DEBUG):
+        mock_base_assume_role_credential_fetcher._add_account_id_to_response(
+            response
+        )
+    assert 'AccountId' not in response['Credentials']
+    assert 'Unable to extract account ID from Arn' in caplog.text

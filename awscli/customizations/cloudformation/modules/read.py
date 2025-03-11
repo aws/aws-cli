@@ -51,7 +51,7 @@ def read_source(source):
 
     content = ""
     dotzip = ".zip"
-    zipslash = dotzip + "/"
+    zipslash = dotzip + os.path.sep
     if zipslash in source:
         # This is a reference to a Package
         tokens = source.split(zipslash)

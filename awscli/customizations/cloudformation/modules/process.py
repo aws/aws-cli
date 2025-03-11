@@ -39,6 +39,7 @@ from awscli.customizations.cloudformation.modules.maps import (
 from awscli.customizations.cloudformation.modules.read import (
     is_url,
     read_source,
+    get_packaged_module_path,
 )
 from awscli.customizations.cloudformation.modules.conditions import (
     parse_conditions,
@@ -86,6 +87,7 @@ from awscli.customizations.cloudformation.modules.names import (
     NO_SOURCE_MAP,
     VALUE,
     INVOKE,
+    PACKAGES,
 )
 
 ORIGINAL_CONFIG = "original_config"
@@ -120,6 +122,9 @@ def make_module(
         raise exceptions.InvalidModulePathError(msg=msg)
 
     source_path = config[SOURCE]
+    if source_path.startswith("$"):
+        # This is a reference to a Package
+        source_path = get_packaged_module_path(template, source_path)
 
     if not is_url(source_path):
         relative_path = source_path
@@ -227,6 +232,10 @@ def process_module_section(
 
     # Remove the Modules section from the template
     del template[MODULES]
+
+    # Remove the Packages section from the template
+    if PACKAGES in template:
+        del template[PACKAGES]
 
     # Lift the created resources up to the parent
     for k, v in template[RESOURCES].items():

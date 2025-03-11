@@ -15,7 +15,10 @@ from awscli.customizations.cloudformation.modules.constants import (
     process_constants,
     replace_constants,
 )
-from awscli.customizations.cloudformation.modules.read import read_source
+from awscli.customizations.cloudformation.modules.read import (
+    read_source,
+    get_packaged_module_path,
+)
 from awscli.customizations.cloudformation.modules.merge import merge_props
 from awscli.customizations.cloudformation.modules.process import (
     process_module_section,
@@ -124,6 +127,7 @@ class TestPackageModules(unittest.TestCase):
             "outsublist",
             "outjoin",
             "invoke",
+            "zip",
         ]
         for test in tests:
             t, _ = read_source(f"{base}/{test}-template.yaml")
@@ -189,3 +193,9 @@ class TestPackageModules(unittest.TestCase):
         base = "unit/customizations/cloudformation/modules"
         _, lines = read_source(f"{base}/example-module.yaml")
         self.assertEqual(lines["Bucket"], 5)
+
+    def test_get_packaged_module_path(self):
+        "Test converting a package path"
+        template = {"Packages": {"abc": {"Source": "package.zip"}}}
+        p = get_packaged_module_path(template, "$abc/module.yaml")
+        self.assertEqual(p, "package.zip/module.yaml")

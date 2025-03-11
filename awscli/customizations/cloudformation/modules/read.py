@@ -17,9 +17,14 @@ Read CloudFormation Module source files.
 
 import os
 import urllib
+import zipfile
 
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation import yamlhelper
+from awscli.customizations.cloudformation.modules.names import (
+    SOURCE,
+    PACKAGES,
+)
 
 
 def is_url(p):
@@ -44,12 +49,20 @@ def read_source(source):
             print(e)
             raise exceptions.InvalidModulePathError(source=source)
 
-    if not os.path.isfile(source):
-        raise exceptions.InvalidModulePathError(source=source)
-
     content = ""
-    with open(source, "r", encoding="utf-8") as s:
-        content = s.read()
+    if ".zip/" in source:
+        # This is a reference to a Package
+        print("source", source)
+        tokens = source.split(".zip/")
+        zip_path = tokens[0] + ".zip"
+        with zipfile.ZipFile(zip_path) as zf:
+            content = zf.read(os.path.sep.join(tokens[1:]))
+    else:
+        if not os.path.isfile(source):
+            raise exceptions.InvalidModulePathError(source=source)
+
+        with open(source, "r", encoding="utf-8") as s:
+            content = s.read()
 
     node = yamlhelper.yaml_compose(content)
     lines = {}
@@ -69,3 +82,41 @@ def read_line_numbers(node, lines):
             for r in resource_map:
                 logical_id = r[0].value
                 lines[logical_id] = r[1].start_mark.line
+
+
+def get_packaged_module_path(template, p):
+    """
+    Get the path of the module including the package name
+
+    The read_source function knows how to interpret the
+    combined path that is returned.
+
+    For example:
+
+    p = $abc/module.yaml
+
+    Assuming the template has:
+
+    Packages:
+      abc: package.zip
+
+    Returns: package.zip/module.yaml
+
+    Raises an error if the Package can't be found in the template.
+    """
+    if PACKAGES not in template:
+        msg = f"Packages section not found for {p}"
+        raise exceptions.InvalidModuleError(msg=msg)
+    tokens = p.split(os.path.sep)
+    if len(tokens) < 2:
+        msg = f"Invalid Package/module name: {p}"
+        raise exceptions.InvalidModuleError(msg=msg)
+    package_name = tokens[0].replace("$", "")
+    if package_name not in template[PACKAGES]:
+        msg = f"Package name {package_name} not found: {p}"
+        raise exceptions.InvalidModuleError(msg=msg)
+    pkg = template[PACKAGES][package_name]
+    if SOURCE not in pkg:
+        msg = f"Package {pkg} doesn't have {SOURCE}: {p}"
+        raise exceptions.InvalidModuleError(msg=msg)
+    return pkg[SOURCE] + os.path.sep + os.path.sep.join(tokens[1:])

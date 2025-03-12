@@ -22,6 +22,7 @@ import time
 from collections import namedtuple
 from copy import deepcopy
 from hashlib import sha1
+import dateutil.parser
 
 import botocore.compat
 import botocore.configloader
@@ -2042,7 +2043,16 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
             initial_token_data = self._token_provider.load_token()
             token = initial_token_data.get_frozen_token().token
         else:
-            token = self._token_loader(self._start_url)['accessToken']
+            token_dict = self._token_loader(self._start_url)
+            token = token_dict['accessToken']
+
+            # raise an UnauthorizedSSOTokenError if the loaded legacy token
+            # is expired to save a call to GetRoleCredentials with an
+            # expired token.
+            expiration = dateutil.parser.parse(token_dict["expiresAt"])
+            remaining = total_seconds(expiration - _local_now())
+            if remaining <= 0:
+                raise UnauthorizedSSOTokenError()
 
         kwargs = {
             'roleName': self._role_name,

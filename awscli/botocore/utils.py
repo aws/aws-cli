@@ -308,10 +308,6 @@ def is_global_accesspoint(context):
     return is_global
 
 
-def _utc_now():
-    return datetime.datetime.now(tzutc())
-
-
 class _RetriesExceededError(Exception):
     """Internal exception used when the number of retries are exceeded."""
     pass

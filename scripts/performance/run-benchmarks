@@ -7,6 +7,7 @@ from scripts.performance.benchmark_utils import BenchmarkHarness
 
 _BENCHMARK_DEFINITIONS = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
+        'benchmarks',
         'benchmarks.json'
     )
 
@@ -34,5 +35,10 @@ if __name__ == "__main__":
         default=1,
         type=int,
         help='The number of iterations to repeat the benchmark for.',
+    )
+    parser.add_argument(
+        '--debug-dir',
+        default=None,
+        help='If supplied, writes the output of the child process for each benchmark to a file in this directory.',
     )
     harness.run_benchmarks(parser.parse_args())

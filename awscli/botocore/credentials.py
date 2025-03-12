@@ -1991,7 +1991,7 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
     def __init__(self, start_url, sso_region, role_name, account_id,
                  client_creator, token_loader=None, cache=None,
                  expiry_window_seconds=None, token_provider=None,
-                 sso_session_name=None):
+                 sso_session_name=None, time_fetcher=_local_now):
         self._client_creator = client_creator
         self._sso_region = sso_region
         self._role_name = role_name
@@ -2000,6 +2000,7 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
         self._token_loader = token_loader
         self._token_provider = token_provider
         self._sso_session_name = sso_session_name
+        self._time_fetcher = time_fetcher
         super(SSOCredentialFetcher, self).__init__(
             cache, expiry_window_seconds
         )
@@ -2049,8 +2050,8 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
             # raise an UnauthorizedSSOTokenError if the loaded legacy token
             # is expired to save a call to GetRoleCredentials with an
             # expired token.
-            expiration = dateutil.parser.parse(token_dict["expiresAt"])
-            remaining = total_seconds(expiration - _local_now())
+            expiration = dateutil.parser.parse(token_dict['expiresAt'])
+            remaining = total_seconds(expiration - self._time_fetcher())
             if remaining <= 0:
                 raise UnauthorizedSSOTokenError()
 

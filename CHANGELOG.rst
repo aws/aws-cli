@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.24.23
+=======
+
+* api-change:``s3control``: Updating GetDataAccess response for S3 Access Grants to include the matched Grantee for the requested prefix
+* api-change:``logs``: Updated CreateLogAnomalyDetector to accept only kms key arn
+* api-change:``amplify``: Introduced support for Skew Protection. Added enableSkewProtection field to createBranch and updateBranch API.
+* api-change:``acm-pca``: Private Certificate Authority service now supports P521 and RSA3072 key algorithms.
+* api-change:``ivs-realtime``: IVS Real-Time now offers customers the ability to adjust the participant & composition recording segment duration
+* enhancement:parsers: Minor Parser updates to support the new smithy-generated protocol tests.
+* api-change:``codebuild``: AWS CodeBuild now supports webhook filtering by organization name
+* api-change:``ec2``: This release changes the CreateLaunchTemplate, CreateLaunchTemplateVersion, ModifyLaunchTemplate CLI and SDKs such that if you do not specify a client token, a randomly generated token is used for the request to ensure idempotency.
+* enhancement:parsers: Adds support for parsing int/long types in rest-json response headers.
+* api-change:``mediapackagev2``: This release adds the ResetChannelState and ResetOriginEndpointState operation to reset MediaPackage V2 channel and origin endpoint. This release also adds a new field, UrlEncodeChildManifest, for HLS/LL-HLS to allow URL-encoding child manifest query string based on the requirements of AWS SigV4.
+* api-change:``dynamodb``: Generate account endpoints for DynamoDB requests using ARN-sourced account ID when available
+* api-change:``datazone``: This release adds support to update projects and environments
+
+
 2.24.22
 =======
 

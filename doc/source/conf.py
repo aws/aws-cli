@@ -42,12 +42,6 @@ notfound_pagename = '_404'
 # to set our path prefix
 notfound_urls_prefix = '/v2/documentation/api/latest/'
 
-# For local 404.html testing uncomment lines below and put in local path
-# to the build folder on your disk
-
-# notfound_default_language = '<local path to build folder>/build'
-# notfound_default_version = 'html'
-
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

@@ -47,7 +47,9 @@ class UnmetDependenciesException(Exception):
                 f"{package} (required: {required.constraints}) "
                 f"(version installed: {actual_version})\n"
             )
-            pip_install_command_args.append(f'{package}{required.string_constraints()}')
+            pip_install_command_args.append(
+                f'{package}{required.string_constraints()}'
+            )
 
         if reason:
             msg += f"\n{reason}\n"
@@ -100,7 +102,9 @@ class Requirement:
         if not match:
             raise RuntimeError(f"Unknown version specifier {constraint}")
         comparison, constraint_version = match.group('comparison', 'version')
-        version, constraint_version = self._normalize(version, constraint_version)
+        version, constraint_version = self._normalize(
+            version, constraint_version
+        )
 
         compare_fn = COMPARISONS.get(comparison)
         if not compare_fn:
@@ -120,7 +124,9 @@ class Requirement:
     def __eq__(self, other):
         if other is None:
             return False
-        return (self.name == other.name and self.constraints == other.constraints)
+        return (
+            self.name == other.name and self.constraints == other.constraints
+        )
 
     def string_constraints(self):
         return ','.join(self.constraints)
@@ -138,7 +144,7 @@ def parse_requirements(lines_list):
         if line.startswith('#'):
             continue
         if ' #' in line:
-            line = line[:line.find(' #')]
+            line = line[: line.find(' #')]
         if line.endswith('\\'):
             line = line[:-2].strip()
             try:
@@ -184,17 +190,14 @@ def get_install_requires():
 def get_flit_core_unmet_exception():
     in_venv = sys.prefix != sys.base_prefix
     with open(BOOTSTRAP_REQUIREMENTS, 'r') as f:
-        flit_core_req = [
-            l for l in f.read().split('\n')
-            if 'flit_core' in l
-        ]
+        flit_core_req = [l for l in f.read().split('\n') if 'flit_core' in l]
     return UnmetDependenciesException(
         [('flit_core', None, list(parse_requirements(flit_core_req))[0])],
         in_venv,
         reason=(
             'flit_core is needed ahead of time in order to parse the '
             'rest of the requirements.'
-        )
+        ),
     )
 
 
@@ -248,7 +251,9 @@ class Utils:
 
     def update_metadata(self, dirname, **kwargs):
         print("Update metadata values %s" % kwargs)
-        metadata_file = os.path.join(dirname, "awscli", "data", "metadata.json")
+        metadata_file = os.path.join(
+            dirname, "awscli", "data", "metadata.json"
+        )
         with open(metadata_file) as f:
             metadata = json.load(f)
         for key, value in kwargs.items():
@@ -261,5 +266,7 @@ class Utils:
 
     def get_script_header(self, python_exe_path: str) -> str:
         if IS_WINDOWS:
-            return f'@echo off & "{python_exe_path}" -x "%~f0" %* & goto :eof\n'
+            return (
+                f'@echo off & "{python_exe_path}" -x "%~f0" %* & goto :eof\n'
+            )
         return f"#!{python_exe_path}\n"

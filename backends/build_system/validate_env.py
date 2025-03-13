@@ -25,9 +25,7 @@ from utils import UnmetDependenciesException
 
 ROOT = Path(__file__).parents[2]
 PYPROJECT = ROOT / "pyproject.toml"
-BUILD_REQS_RE = re.compile(
-    r"requires = \[([\s\S]+?)\]\s", re.MULTILINE
-)
+BUILD_REQS_RE = re.compile(r"requires = \[([\s\S]+?)\]\s", re.MULTILINE)
 EXTRACT_DEPENDENCIES_RE = re.compile(r'"(.+)"')
 
 

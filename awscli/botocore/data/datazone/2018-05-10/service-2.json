@@ -5690,7 +5690,7 @@
         },
         "type":{
           "shape":"DataSourceType",
-          "documentation":"<p>The type of the data source.</p>"
+          "documentation":"<p>The type of the data source. In Amazon DataZone, you can use data sources to import technical metadata of assets (data) from the source databases or data warehouses into Amazon DataZone. In the current release of Amazon DataZone, you can create and run data sources for Amazon Web Services Glue and Amazon Redshift.</p>"
         }
       }
     },
@@ -6173,6 +6173,10 @@
         "environmentBlueprintId":{
           "shape":"EnvironmentBlueprintId",
           "documentation":"<p>The ID of the blueprint with which this Amazon DataZone environment was created.</p>"
+        },
+        "environmentConfigurationId":{
+          "shape":"EnvironmentConfigurationId",
+          "documentation":"<p>The configuration ID of the environment.</p>"
         },
         "environmentProfileId":{
           "shape":"EnvironmentProfileId",
@@ -9643,6 +9647,10 @@
           "shape":"EnvironmentConfigurationName",
           "documentation":"<p>The environment configuration name.</p>"
         },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment.</p>"
+        },
         "environmentParameters":{
           "shape":"EnvironmentParametersList",
           "documentation":"<p>The environment parameters.</p>"
@@ -9852,6 +9860,10 @@
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which the environment exists.</p>"
+        },
+        "environmentConfigurationId":{
+          "shape":"EnvironmentConfigurationId",
+          "documentation":"<p>The configuration ID with which the environment is created.</p>"
         },
         "environmentProfileId":{
           "shape":"EnvironmentProfileId",
@@ -11414,6 +11426,10 @@
         "environmentBlueprintId":{
           "shape":"EnvironmentBlueprintId",
           "documentation":"<p>The blueprint with which the environment is created.</p>"
+        },
+        "environmentConfigurationId":{
+          "shape":"EnvironmentConfigurationId",
+          "documentation":"<p>The configuration ID that is used to create the environment.</p>"
         },
         "environmentProfileId":{
           "shape":"EnvironmentProfileId",
@@ -13966,7 +13982,7 @@
         },
         "locationRegistrationRole":{
           "shape":"RoleArn",
-          "documentation":"<p>The role that is used to manage read/write access to the chosen Amazon S3 bucket(s) for Data Lake using AWS Lake Formation hybrid access mode.</p>"
+          "documentation":"<p>The role that is used to manage read/write access to the chosen Amazon S3 bucket(s) for Data Lake using Amazon Web Services Lake Formation hybrid access mode.</p>"
         }
       },
       "documentation":"<p>The Lake Formation configuration of the Data Lake blueprint.</p>"
@@ -17388,7 +17404,9 @@
       "enum":[
         "ACTIVE",
         "DELETING",
-        "DELETE_FAILED"
+        "DELETE_FAILED",
+        "UPDATING",
+        "UPDATE_FAILED"
       ]
     },
     "ProjectSummaries":{
@@ -21491,6 +21509,10 @@
         "identifier"
       ],
       "members":{
+        "blueprintVersion":{
+          "shape":"String",
+          "documentation":"<p>The blueprint version to which the environment should be updated. You can only specify the following string for this parameter: <code>latest</code>.</p>"
+        },
         "description":{
           "shape":"String",
           "documentation":"<p>The description to be updated as part of the <code>UpdateEnvironment</code> action.</p>"
@@ -21514,6 +21536,10 @@
         "name":{
           "shape":"String",
           "documentation":"<p>The name to be updated as part of the <code>UpdateEnvironment</code> action.</p>"
+        },
+        "userParameters":{
+          "shape":"EnvironmentParametersList",
+          "documentation":"<p>The user parameters of the environment.</p>"
         }
       }
     },
@@ -21562,6 +21588,10 @@
         "environmentBlueprintId":{
           "shape":"EnvironmentBlueprintId",
           "documentation":"<p>The blueprint identifier of the environment.</p>"
+        },
+        "environmentConfigurationId":{
+          "shape":"EnvironmentConfigurationId",
+          "documentation":"<p>The configuration ID of the environment.</p>"
         },
         "environmentProfileId":{
           "shape":"EnvironmentProfileId",
@@ -21957,6 +21987,14 @@
         "name":{
           "shape":"ProjectName",
           "documentation":"<p>The name to be updated as part of the <code>UpdateProject</code> action.</p>"
+        },
+        "projectProfileVersion":{
+          "shape":"String",
+          "documentation":"<p>The project profile version to which the project should be updated. You can only specify the following string for this parameter: <code>latest</code>.</p>"
+        },
+        "userParameters":{
+          "shape":"EnvironmentConfigurationUserParametersList",
+          "documentation":"<p>The user parameters of the project.</p>"
         }
       }
     },

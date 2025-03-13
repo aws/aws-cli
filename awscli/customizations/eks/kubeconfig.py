@@ -21,32 +21,34 @@ from awscli.compat import compat_open
 from awscli.customizations.eks.exceptions import EKSError
 from awscli.customizations.eks.ordered_yaml import (
     ordered_yaml_load,
-    ordered_yaml_dump
+    ordered_yaml_dump,
 )
 
 
 class KubeconfigError(EKSError):
-    """ Base class for all kubeconfig errors."""
+    """Base class for all kubeconfig errors."""
 
 
 class KubeconfigCorruptedError(KubeconfigError):
-    """ Raised when a kubeconfig cannot be parsed."""
+    """Raised when a kubeconfig cannot be parsed."""
 
 
 class KubeconfigInaccessableError(KubeconfigError):
-    """ Raised when a kubeconfig cannot be opened for read/writing."""
+    """Raised when a kubeconfig cannot be opened for read/writing."""
 
 
 def _get_new_kubeconfig_content():
-    return OrderedDict([
-        ("apiVersion", "v1"),
-        ("clusters", []),
-        ("contexts", []),
-        ("current-context", ""),
-        ("kind", "Config"),
-        ("preferences", OrderedDict()),
-        ("users", [])
-    ])
+    return OrderedDict(
+        [
+            ("apiVersion", "v1"),
+            ("clusters", []),
+            ("contexts", []),
+            ("current-context", ""),
+            ("kind", "Config"),
+            ("preferences", OrderedDict()),
+            ("users", []),
+        ]
+    )
 
 
 class Kubeconfig(object):
@@ -57,7 +59,7 @@ class Kubeconfig(object):
         self.content = content
 
     def dump_content(self):
-        """ Return the stored content in yaml format. """
+        """Return the stored content in yaml format."""
         return ordered_yaml_dump(self.content)
 
     def has_cluster(self, name):
@@ -67,14 +69,17 @@ class Kubeconfig(object):
         """
         if self.content.get('clusters') is None:
             return False
-        return name in [cluster['name']
-                        for cluster in self.content['clusters'] if 'name' in cluster]
+        return name in [
+            cluster['name']
+            for cluster in self.content['clusters']
+            if 'name' in cluster
+        ]
 
     def __eq__(self, other):
         return (
-                isinstance(other, Kubeconfig)
-                and self.path == other.path
-                and self.content == other.content
+            isinstance(other, Kubeconfig)
+            and self.path == other.path
+            and self.content == other.content
         )
 
 
@@ -92,8 +97,9 @@ class KubeconfigValidator(object):
         :type config: Kubeconfig
         """
         if not isinstance(config, Kubeconfig):
-            raise KubeconfigCorruptedError("Internal error: "
-                                           f"Not a {Kubeconfig}.")
+            raise KubeconfigCorruptedError(
+                f"Internal error: Not a {Kubeconfig}."
+            )
         self._validate_config_types(config)
         self._validate_list_entry_types(config)
 
@@ -108,9 +114,11 @@ class KubeconfigValidator(object):
         if not isinstance(config.content, dict):
             raise KubeconfigCorruptedError(f"Content not a {dict}.")
         for key, value in self._validation_content.items():
-            if (key in config.content and
-                    config.content[key] is not None and
-                    not isinstance(config.content[key], type(value))):
+            if (
+                key in config.content
+                and config.content[key] is not None
+                and not isinstance(config.content[key], type(value))
+            ):
                 raise KubeconfigCorruptedError(
                     f"{key} is wrong type: {type(config.content[key])} "
                     f"(Should be {type(value)})"
@@ -125,19 +133,19 @@ class KubeconfigValidator(object):
         :type config: Kubeconfig
         """
         for key, value in self._validation_content.items():
-            if (key in config.content and
-                    type(config.content[key]) == list):
+            if key in config.content and type(config.content[key]) == list:
                 for element in config.content[key]:
                     if not isinstance(element, OrderedDict):
                         raise KubeconfigCorruptedError(
-                            f"Entry in {key} not a {dict}. ")
+                            f"Entry in {key} not a {dict}. "
+                        )
 
 
 class KubeconfigLoader(object):
-    def __init__(self, validator = None):
+    def __init__(self, validator=None):
         if validator is None:
-            validator=KubeconfigValidator()
-        self._validator=validator
+            validator = KubeconfigValidator()
+        self._validator = validator
 
     def load_kubeconfig(self, path):
         """
@@ -161,15 +169,17 @@ class KubeconfigLoader(object):
                 loaded_content = ordered_yaml_load(stream)
         except IOError as e:
             if e.errno == errno.ENOENT:
-                loaded_content=None
+                loaded_content = None
             else:
                 raise KubeconfigInaccessableError(
-                    f"Can't open kubeconfig for reading: {e}")
+                    f"Can't open kubeconfig for reading: {e}"
+                )
         except yaml.YAMLError as e:
             raise KubeconfigCorruptedError(
-                f"YamlError while loading kubeconfig: {e}")
+                f"YamlError while loading kubeconfig: {e}"
+            )
 
-        loaded_config=Kubeconfig(path, loaded_content)
+        loaded_config = Kubeconfig(path, loaded_content)
         self._validator.validate_config(loaded_config)
 
         return loaded_config
@@ -187,21 +197,24 @@ class KubeconfigWriter(object):
         :raises KubeconfigInaccessableError: if the kubeconfig
         can't be opened for writing
         """
-        directory=os.path.dirname(config.path)
+        directory = os.path.dirname(config.path)
 
         try:
             os.makedirs(directory)
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise KubeconfigInaccessableError(
-                    f"Can't create directory for writing: {e}")
+                    f"Can't create directory for writing: {e}"
+                )
         try:
             with compat_open(
-                    config.path, "w+", access_permissions=0o600) as stream:
+                config.path, "w+", access_permissions=0o600
+            ) as stream:
                 ordered_yaml_dump(config.content, stream)
         except IOError as e:
             raise KubeconfigInaccessableError(
-                f"Can't open kubeconfig for writing: {e}")
+                f"Can't open kubeconfig for writing: {e}"
+            )
 
 
 class KubeconfigAppender(object):
@@ -213,42 +226,48 @@ class KubeconfigAppender(object):
         :param config: The kubeconfig to insert an entry into
         :type config: Kubeconfig
         """
-        entries=self._setdefault_existing_entries(config, key)
-        same_name_index=self._index_same_name(entries, new_entry)
+        entries = self._setdefault_existing_entries(config, key)
+        same_name_index = self._index_same_name(entries, new_entry)
         if same_name_index is None:
             entries.append(new_entry)
         else:
-            entries[same_name_index]=new_entry
+            entries[same_name_index] = new_entry
         return config
 
     def _setdefault_existing_entries(self, config, key):
-        config.content[key]=config.content.get(key) or []
-        entries=config.content[key]
+        config.content[key] = config.content.get(key) or []
+        entries = config.content[key]
         if not isinstance(entries, list):
-            raise KubeconfigError(f"Tried to insert into {key}, "
-                                  f"which is a {type(entries)} "
-                                  f"not a {list}")
+            raise KubeconfigError(
+                f"Tried to insert into {key}, "
+                f"which is a {type(entries)} "
+                f"not a {list}"
+            )
         return entries
 
     def _index_same_name(self, entries, new_entry):
         if "name" in new_entry:
-            name_to_search=new_entry["name"]
+            name_to_search = new_entry["name"]
             for i, entry in enumerate(entries):
                 if "name" in entry and entry["name"] == name_to_search:
                     return i
         return None
 
-    def _make_context(self, cluster, user, alias = None):
-        """ Generate a context to associate cluster and user with a given alias."""
-        return OrderedDict([
-            ("context", OrderedDict([
-                ("cluster", cluster["name"]),
-                ("user", user["name"])
-            ])),
-            ("name", alias or user["name"])
-        ])
+    def _make_context(self, cluster, user, alias=None):
+        """Generate a context to associate cluster and user with a given alias."""
+        return OrderedDict(
+            [
+                (
+                    "context",
+                    OrderedDict(
+                        [("cluster", cluster["name"]), ("user", user["name"])]
+                    ),
+                ),
+                ("name", alias or user["name"]),
+            ]
+        )
 
-    def insert_cluster_user_pair(self, config, cluster, user, alias = None):
+    def insert_cluster_user_pair(self, config, cluster, user, alias=None):
         """
         Insert the passed cluster entry and user entry,
         then make a context to associate them
@@ -270,11 +289,11 @@ class KubeconfigAppender(object):
         :return: The generated context
         :rtype: OrderedDict
         """
-        context=self._make_context(cluster, user, alias = alias)
+        context = self._make_context(cluster, user, alias=alias)
         self.insert_entry(config, "clusters", cluster)
         self.insert_entry(config, "users", user)
         self.insert_entry(config, "contexts", context)
 
-        config.content["current-context"]=context["name"]
+        config.content["current-context"] = context["name"]
 
         return context

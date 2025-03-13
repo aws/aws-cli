@@ -13,7 +13,8 @@
 
 
 class ECSError(Exception):
-    """ Base class for all ECSErrors."""
+    """Base class for all ECSErrors."""
+
     fmt = 'An unspecified error occurred'
 
     def __init__(self, **kwargs):
@@ -23,8 +24,7 @@ class ECSError(Exception):
 
 
 class MissingPropertyError(ECSError):
-    fmt = \
-        "Error: Resource '{resource}' must include property '{prop_name}'"
+    fmt = "Error: Resource '{resource}' must include property '{prop_name}'"
 
 
 class FileLoadError(ECSError):
@@ -36,8 +36,10 @@ class InvalidPlatformError(ECSError):
 
 
 class InvalidProperyError(ECSError):
-    fmt = ("Error: deployment group '{dg_name}' does not target "
-           "ECS {resource} '{resource_name}'")
+    fmt = (
+        "Error: deployment group '{dg_name}' does not target "
+        "ECS {resource} '{resource_name}'"
+    )
 
 
 class InvalidServiceError(ECSError):

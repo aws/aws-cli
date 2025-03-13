@@ -24,8 +24,13 @@ class EKS(object):
                 name=cluster_name
             )
 
-        oidc_issuer = self.cluster_info[cluster_name].get("cluster", {}).get(
-            "identity", {}).get("oidc", {}).get("issuer", "")
+        oidc_issuer = (
+            self.cluster_info[cluster_name]
+            .get("cluster", {})
+            .get("identity", {})
+            .get("oidc", {})
+            .get("issuer", "")
+        )
 
         return oidc_issuer.split('https://')[1]
 
@@ -36,28 +41,32 @@ class EKS(object):
                 name=cluster_name
             )
 
-        cluster_arn = self.cluster_info[cluster_name].get("cluster", {}).get(
-            "arn", "")
+        cluster_arn = (
+            self.cluster_info[cluster_name].get("cluster", {}).get("arn", "")
+        )
 
         return cluster_arn.split(':')[4]
-    
-    def create_pod_identity_association(self, cluster_name, namespace, role_arn, service_account):
-            return self.eks_client.create_pod_identity_association(
-                clusterName = cluster_name,
-                namespace = namespace,
-                roleArn = role_arn,
-                serviceAccount = service_account
-            )
-    
+
+    def create_pod_identity_association(
+        self, cluster_name, namespace, role_arn, service_account
+    ):
+        return self.eks_client.create_pod_identity_association(
+            clusterName=cluster_name,
+            namespace=namespace,
+            roleArn=role_arn,
+            serviceAccount=service_account,
+        )
+
     def delete_pod_identity_association(self, cluster_name, association_id):
-            return self.eks_client.delete_pod_identity_association(
-                 clusterName = cluster_name,
-                 associationId = association_id
-            )
-    
-    def list_pod_identity_associations(self, cluster_name, namespace, service_account):
-            return self.eks_client.list_pod_identity_associations(
-                 clusterName = cluster_name,
-                 namespace = namespace,
-                 serviceAccount = service_account
-            )
+        return self.eks_client.delete_pod_identity_association(
+            clusterName=cluster_name, associationId=association_id
+        )
+
+    def list_pod_identity_associations(
+        self, cluster_name, namespace, service_account
+    ):
+        return self.eks_client.list_pod_identity_associations(
+            clusterName=cluster_name,
+            namespace=namespace,
+            serviceAccount=service_account,
+        )

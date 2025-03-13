@@ -14,19 +14,17 @@ hiddenimports = [
     # NOTE: This can be removed once this hidden import issue related to
     # setuptools and PyInstaller is resolved:
     # https://github.com/pypa/setuptools/issues/1963
-    'pkg_resources.py2_warn'
+    'pkg_resources.py2_warn',
 ]
 
-imports_for_legacy_plugins = (
-    hooks.collect_submodules('http') +
-    hooks.collect_submodules('logging')
-)
+imports_for_legacy_plugins = hooks.collect_submodules(
+    'http'
+) + hooks.collect_submodules('logging')
 hiddenimports += imports_for_legacy_plugins
 
-alias_packages_plugins = (
-    hooks.collect_submodules('awscli.botocore') +
-    hooks.collect_submodules('awscli.s3transfer')
-)
+alias_packages_plugins = hooks.collect_submodules(
+    'awscli.botocore'
+) + hooks.collect_submodules('awscli.s3transfer')
 hiddenimports += alias_packages_plugins
 
 datas = hooks.collect_data_files('awscli')

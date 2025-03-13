@@ -38,11 +38,9 @@ notfound_context = {
 }
 notfound_pagename = '_404'
 # notfound.extension changes all the relative links to links like
-# "/en/latest/_static/**" and we use "notfound_default_language" key
-# to change “en” to our path prefix
-notfound_default_language = os.environ.get(
-    'DOCS_STATIC_PATH', 'v2/documentation/api'
-)
+# "/en/latest/_static/**" and we use "notfound_urls_prefix" key
+# to set our path prefix
+notfound_urls_prefix = '/v2/documentation/api/latest/'
 
 # For local 404.html testing uncomment lines below and put in local path
 # to the build folder on your disk

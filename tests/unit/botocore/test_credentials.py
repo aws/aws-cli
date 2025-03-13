@@ -728,7 +728,8 @@ class TestAssumeRoleWithWebIdentityCredentialFetcher(BaseEnvVar):
             'access_key': response['Credentials']['AccessKeyId'],
             'secret_key': response['Credentials']['SecretAccessKey'],
             'token': response['Credentials']['SessionToken'],
-            'expiry_time': expiration
+            'expiry_time': expiration,
+            'account_id': response.get('Credentials', {}).get('AccountId'),
         }
 
     def test_no_cache(self):

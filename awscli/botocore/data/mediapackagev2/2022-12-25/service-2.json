@@ -335,7 +335,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves all channel groups that are configured in AWS Elemental MediaPackage, including the channels and origin endpoints that are associated with it.</p>"
+      "documentation":"<p>Retrieves all channel groups that are configured in Elemental MediaPackage.</p>"
     },
     "ListChannels":{
       "name":"ListChannels",
@@ -443,6 +443,46 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Attaches an IAM policy to the specified origin endpoint. You can attach only one policy with each request.</p>",
+      "idempotent":true
+    },
+    "ResetChannelState":{
+      "name":"ResetChannelState",
+      "http":{
+        "method":"POST",
+        "requestUri":"/channelGroup/{ChannelGroupName}/channel/{ChannelName}/reset",
+        "responseCode":200
+      },
+      "input":{"shape":"ResetChannelStateRequest"},
+      "output":{"shape":"ResetChannelStateResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Resetting the channel can help to clear errors from misconfigurations in the encoder. A reset refreshes the ingest stream and removes previous content. </p> <p> Be sure to stop the encoder before you reset the channel, and wait at least 30 seconds before you restart the encoder. </p>",
+      "idempotent":true
+    },
+    "ResetOriginEndpointState":{
+      "name":"ResetOriginEndpointState",
+      "http":{
+        "method":"POST",
+        "requestUri":"/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/reset",
+        "responseCode":200
+      },
+      "input":{"shape":"ResetOriginEndpointStateRequest"},
+      "output":{"shape":"ResetOriginEndpointStateResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Resetting the origin endpoint can help to resolve unexpected behavior and other content packaging issues. It also helps to preserve special events when you don't want the previous content to be available for viewing. A reset clears out all previous content from the origin endpoint.</p> <p>MediaPackage might return old content from this endpoint in the first 30 seconds after the endpoint reset. For best results, when possible, wait 30 seconds from endpoint reset to send playback requests to this endpoint. </p>",
       "idempotent":true
     },
     "TagResource":{
@@ -1141,7 +1181,11 @@
           "shape":"CreateHlsManifestConfigurationProgramDateTimeIntervalSecondsInteger",
           "documentation":"<p>Inserts EXT-X-PROGRAM-DATE-TIME tags in the output manifest at the interval that you specify. If you don't enter an interval, EXT-X-PROGRAM-DATE-TIME tags aren't included in the manifest. The tags sync the stream to the wall clock so that viewers can seek to a specific time in the playback timeline on the player.</p> <p>Irrespective of this parameter, if any ID3Timed metadata is in the HLS input, it is passed through to the HLS output.</p>"
         },
-        "FilterConfiguration":{"shape":"FilterConfiguration"}
+        "FilterConfiguration":{"shape":"FilterConfiguration"},
+        "UrlEncodeChildManifest":{
+          "shape":"Boolean",
+          "documentation":"<p>When enabled, MediaPackage URL-encodes the query string for API requests for HLS child manifests to comply with Amazon Web Services Signature Version 4 (SigV4) signature signing protocol. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\">Amazon Web Services Signature Version 4 for API requests</a> in <i>Identity and Access Management User Guide</i>.</p>"
+        }
       },
       "documentation":"<p>Create an HTTP live streaming (HLS) manifest configuration.</p>"
     },
@@ -1182,7 +1226,11 @@
           "shape":"CreateLowLatencyHlsManifestConfigurationProgramDateTimeIntervalSecondsInteger",
           "documentation":"<p>Inserts EXT-X-PROGRAM-DATE-TIME tags in the output manifest at the interval that you specify. If you don't enter an interval, EXT-X-PROGRAM-DATE-TIME tags aren't included in the manifest. The tags sync the stream to the wall clock so that viewers can seek to a specific time in the playback timeline on the player.</p> <p>Irrespective of this parameter, if any ID3Timed metadata is in the HLS input, it is passed through to the HLS output.</p>"
         },
-        "FilterConfiguration":{"shape":"FilterConfiguration"}
+        "FilterConfiguration":{"shape":"FilterConfiguration"},
+        "UrlEncodeChildManifest":{
+          "shape":"Boolean",
+          "documentation":"<p>When enabled, MediaPackage URL-encodes the query string for API requests for LL-HLS child manifests to comply with Amazon Web Services Signature Version 4 (SigV4) signature signing protocol. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\">Amazon Web Services Signature Version 4 for API requests</a> in <i>Identity and Access Management User Guide</i>.</p>"
+        }
       },
       "documentation":"<p>Create a low-latency HTTP live streaming (HLS) manifest configuration.</p>"
     },
@@ -1858,6 +1906,10 @@
           "shape":"Timestamp",
           "documentation":"<p>The date and time the channel was modified.</p>"
         },
+        "ResetAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the channel was last reset.</p>"
+        },
         "Description":{
           "shape":"ResourceDescription",
           "documentation":"<p>The description for your channel.</p>"
@@ -2088,7 +2140,11 @@
         },
         "ScteHls":{"shape":"ScteHls"},
         "FilterConfiguration":{"shape":"FilterConfiguration"},
-        "StartTag":{"shape":"StartTag"}
+        "StartTag":{"shape":"StartTag"},
+        "UrlEncodeChildManifest":{
+          "shape":"Boolean",
+          "documentation":"<p>When enabled, MediaPackage URL-encodes the query string for API requests for HLS child manifests to comply with Amazon Web Services Signature Version 4 (SigV4) signature signing protocol. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\">Amazon Web Services Signature Version 4 for API requests</a> in <i>Identity and Access Management User Guide</i>.</p>"
+        }
       },
       "documentation":"<p>Retrieve the HTTP live streaming (HLS) manifest configuration.</p>"
     },
@@ -2125,7 +2181,11 @@
         },
         "ScteHls":{"shape":"ScteHls"},
         "FilterConfiguration":{"shape":"FilterConfiguration"},
-        "StartTag":{"shape":"StartTag"}
+        "StartTag":{"shape":"StartTag"},
+        "UrlEncodeChildManifest":{
+          "shape":"Boolean",
+          "documentation":"<p>When enabled, MediaPackage URL-encodes the query string for API requests for LL-HLS child manifests to comply with Amazon Web Services Signature Version 4 (SigV4) signature signing protocol. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\">Amazon Web Services Signature Version 4 for API requests</a> in <i>Identity and Access Management User Guide</i>.</p>"
+        }
       },
       "documentation":"<p>Retrieve the low-latency HTTP live streaming (HLS) manifest configuration.</p>"
     },
@@ -2257,6 +2317,10 @@
         "ModifiedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time the origin endpoint was modified.</p>"
+        },
+        "ResetAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the origin endpoint was last reset.</p>"
         },
         "Description":{
           "shape":"ResourceDescription",
@@ -2977,6 +3041,114 @@
     "PutOriginEndpointPolicyResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "ResetChannelStateRequest":{
+      "type":"structure",
+      "required":[
+        "ChannelGroupName",
+        "ChannelName"
+      ],
+      "members":{
+        "ChannelGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel group that contains the channel that you are resetting.</p>",
+          "location":"uri",
+          "locationName":"ChannelGroupName"
+        },
+        "ChannelName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel that you are resetting.</p>",
+          "location":"uri",
+          "locationName":"ChannelName"
+        }
+      }
+    },
+    "ResetChannelStateResponse":{
+      "type":"structure",
+      "required":[
+        "ChannelGroupName",
+        "ChannelName",
+        "Arn",
+        "ResetAt"
+      ],
+      "members":{
+        "ChannelGroupName":{
+          "shape":"String",
+          "documentation":"<p>The name of the channel group that contains the channel that you just reset.</p>"
+        },
+        "ChannelName":{
+          "shape":"String",
+          "documentation":"<p>The name of the channel that you just reset.</p>"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) associated with the channel that you just reset.</p>"
+        },
+        "ResetAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the channel was last reset.</p>"
+        }
+      }
+    },
+    "ResetOriginEndpointStateRequest":{
+      "type":"structure",
+      "required":[
+        "ChannelGroupName",
+        "ChannelName",
+        "OriginEndpointName"
+      ],
+      "members":{
+        "ChannelGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel group that contains the channel with the origin endpoint that you are resetting.</p>",
+          "location":"uri",
+          "locationName":"ChannelGroupName"
+        },
+        "ChannelName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel with the origin endpoint that you are resetting.</p>",
+          "location":"uri",
+          "locationName":"ChannelName"
+        },
+        "OriginEndpointName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the origin endpoint that you are resetting.</p>",
+          "location":"uri",
+          "locationName":"OriginEndpointName"
+        }
+      }
+    },
+    "ResetOriginEndpointStateResponse":{
+      "type":"structure",
+      "required":[
+        "ChannelGroupName",
+        "ChannelName",
+        "OriginEndpointName",
+        "Arn",
+        "ResetAt"
+      ],
+      "members":{
+        "ChannelGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel group that contains the channel with the origin endpoint that you just reset.</p>"
+        },
+        "ChannelName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel with the origin endpoint that you just reset.</p>"
+        },
+        "OriginEndpointName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the origin endpoint that you just reset.</p>"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) associated with the endpoint that you just reset.</p>"
+        },
+        "ResetAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the origin endpoint was last reset.</p>"
+        }
       }
     },
     "ResourceDescription":{

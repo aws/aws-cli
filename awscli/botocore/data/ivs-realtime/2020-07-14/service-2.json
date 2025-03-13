@@ -730,6 +730,10 @@
         "recordingReconnectWindowSeconds":{
           "shape":"ParticipantRecordingReconnectWindowSeconds",
           "documentation":"<p>If a stage publisher disconnects and then reconnects within the specified interval, the multiple recordings will be considered a single recording and merged together.</p> <p>The default value is 0, which disables merging.</p>"
+        },
+        "hlsConfiguration":{
+          "shape":"ParticipantRecordingHlsConfiguration",
+          "documentation":"<p>HLS configuration object for individual participant recording.</p>"
         }
       },
       "documentation":"<p>Object specifying a configuration for individual participant recording.</p>"
@@ -824,6 +828,22 @@
       "max":64,
       "min":1,
       "pattern":"[a-zA-Z0-9-_]*"
+    },
+    "CompositionRecordingHlsConfiguration":{
+      "type":"structure",
+      "members":{
+        "targetSegmentDurationSeconds":{
+          "shape":"CompositionRecordingTargetSegmentDurationSeconds",
+          "documentation":"<p>Defines the target duration for recorded segments generated when using composite recording. Segments may have durations shorter than the specified value when needed to ensure each segment begins with a keyframe. Default: 2.</p>"
+        }
+      },
+      "documentation":"<p>An object representing a configuration of HLS recordings for server-side composition.</p>"
+    },
+    "CompositionRecordingTargetSegmentDurationSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":2
     },
     "CompositionState":{
       "type":"string",
@@ -2384,7 +2404,7 @@
         },
         "recordingS3Prefix":{
           "shape":"ParticipantRecordingS3Prefix",
-          "documentation":"<p>S3 prefix of the S3 bucket where the participant is being recorded, if individual participant recording is enabled, or <code>\"\"</code> (empty string), if recording is not enabled. If individual participant recording merge is enabled, and if a stage publisher disconnects from a stage and then reconnects, IVS tries to record to the same S3 prefix as the previous session. See <a href=\"/ivs/latest/RealTimeUserGuide/rt-individual-participant-recording.html#ind-part-rec-merge-frag\"> Merge Fragmented Individual Participant Recordings</a>.</p>"
+          "documentation":"<p>S3 prefix of the S3 bucket where the participant is being recorded, if individual participant recording is enabled, or <code>\"\"</code> (empty string), if recording is not enabled.</p>"
         },
         "recordingState":{
           "shape":"ParticipantRecordingState",
@@ -2437,6 +2457,16 @@
         "FAILED"
       ]
     },
+    "ParticipantRecordingHlsConfiguration":{
+      "type":"structure",
+      "members":{
+        "targetSegmentDurationSeconds":{
+          "shape":"ParticipantRecordingTargetSegmentDurationSeconds",
+          "documentation":"<p>Defines the target duration for recorded segments generated when recording a stage participant. Segments may have durations longer than the specified value when needed to ensure each segment begins with a keyframe. Default: 6.</p>"
+        }
+      },
+      "documentation":"<p>An object representing a configuration of participant HLS recordings for individual participant recording.</p>"
+    },
     "ParticipantRecordingMediaType":{
       "type":"string",
       "enum":[
@@ -2478,6 +2508,12 @@
         "FAILED",
         "DISABLED"
       ]
+    },
+    "ParticipantRecordingTargetSegmentDurationSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":2
     },
     "ParticipantState":{
       "type":"string",
@@ -2846,6 +2882,10 @@
     "RecordingConfiguration":{
       "type":"structure",
       "members":{
+        "hlsConfiguration":{
+          "shape":"CompositionRecordingHlsConfiguration",
+          "documentation":"<p>An HLS configuration object to return information about how the recording will be configured.</p>"
+        },
         "format":{
           "shape":"RecordingConfigurationFormat",
           "documentation":"<p>The recording format for storing a recording in Amazon S3.</p>"

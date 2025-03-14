@@ -1003,12 +1003,11 @@ class RestJSONParser(BaseRestParser, BaseJSONParser):
             code = response['headers']['x-amzn-errortype']
         elif 'code' in body or 'Code' in body:
             code = body.get('code', body.get('Code', ''))
-        if code is not None:
-            if ':' in code:
-                code = code.split(':', 1)[0]
-            if '#' in code:
-                code = code.rsplit('#', 1)[1]
-            error['Error']['Code'] = code
+        if code is None:
+            return
+        if isinstance(code, str):
+            code = code.split(':', 1)[0].rsplit('#', 1)[-1]
+        error['Error']['Code'] = code
 
     def _handle_boolean(self, shape, value):
         return ensure_boolean(value)

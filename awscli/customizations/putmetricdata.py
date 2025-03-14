@@ -98,7 +98,7 @@ def _promote_args(argument_table, operation_model, **kwargs):
     )
     argument_table['statistic-values'] = PutMetricArgument(
         'statistic-values',
-        help_text='A set of statistical values describing ' 'the metric.',
+        help_text='A set of statistical values describing the metric.',
     )
 
     metric_data = operation_model.input_shape.members['MetricData'].member

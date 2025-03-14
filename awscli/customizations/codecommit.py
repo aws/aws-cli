@@ -44,7 +44,7 @@ def inject_commands(command_table, session, **kwargs):
 class CodeCommitNoOpStoreCommand(BasicCommand):
     NAME = 'store'
     DESCRIPTION = (
-        'This operation does nothing, credentials' ' are calculated each time'
+        'This operation does nothing, credentials are calculated each time'
     )
     SYNOPSIS = 'aws codecommit credential-helper store'
     EXAMPLES = ''

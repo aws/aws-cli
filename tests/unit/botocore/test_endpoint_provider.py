@@ -134,6 +134,7 @@ def endpoint_rule():
 
 def ruleset_testcases():
     filenames = [
+        "account-id",
         "array-index",
         "aws-region",
         "default-values",

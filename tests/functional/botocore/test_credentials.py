@@ -192,7 +192,10 @@ class BaseAssumeRoleTest(BaseEnvVar):
         return Credentials(
             'fake-%s' % random_chars(15),
             'fake-%s' % random_chars(35),
-            'fake-%s' % random_chars(45)
+            'fake-%s' % random_chars(45),
+            # The account_id gets resolved from the
+            # Arn in create_assume_role_response().
+            account_id='1234567890',
         )
 
     def assert_creds_equal(self, c1, c2):
@@ -754,6 +757,26 @@ class TestAssumeRole(BaseAssumeRoleTest):
         creds = provider.load()
         self.assert_creds_equal(creds, expected_creds)
         self.assertEqual(self.actual_client_region, 'cn-north-1')
+
+    def test_assume_role_resolves_account_id(self):
+        config = (
+            '[profile A]\n'
+            'role_arn = arn:aws:iam::1234567890:role/RoleA\n'
+            'source_profile = B\n\n'
+            '[profile B]\n'
+            'aws_access_key_id = foo\n'
+            'aws_secret_access_key = bar\n'
+        )
+        self.write_config(config)
+        expected_creds = self.create_random_credentials()
+        response = self.create_assume_role_response(expected_creds)
+
+        session, stubber = self.create_session(profile='A')
+        stubber.add_response('assume_role', response)
+
+        actual_creds = session.get_credentials()
+        self.assert_creds_equal(actual_creds, expected_creds)
+        self.assertEqual(actual_creds.account_id, '1234567890')
 
 
 class TestAssumeRoleWithWebIdentity(BaseAssumeRoleTest):

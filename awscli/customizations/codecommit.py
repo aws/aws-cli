@@ -57,7 +57,7 @@ class CodeCommitNoOpStoreCommand(BasicCommand):
 class CodeCommitNoOpEraseCommand(BasicCommand):
     NAME = 'erase'
     DESCRIPTION = (
-        'This operation does nothing, no credentials' ' are ever stored'
+        'This operation does nothing, no credentials are ever stored'
     )
     SYNOPSIS = 'aws codecommit credential-helper erase'
     EXAMPLES = ''

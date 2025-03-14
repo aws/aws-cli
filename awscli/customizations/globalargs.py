@@ -12,14 +12,12 @@
 # language governing permissions and limitations under the License.
 import sys
 import os
-
 from botocore.client import Config
+from botocore import UNSIGNED
 from botocore.endpoint import DEFAULT_TIMEOUT
-from botocore.handlers import disable_signing
 import jmespath
 
 from awscli.compat import urlparse
-
 
 def register_parse_global_args(cli):
     cli.register('top-level-args-parsed', resolve_types,
@@ -81,17 +79,12 @@ def resolve_verify_ssl(parsed_args, session, **kwargs):
             verify = getattr(parsed_args, 'ca_bundle', None)
         setattr(parsed_args, arg_name, verify)
 
-
 def no_sign_request(parsed_args, session, **kwargs):
     if not parsed_args.sign_request:
-        # In order to make signing disabled for all requests
-        # we need to use botocore's ``disable_signing()`` handler.
-        # Register this first to override other handlers.
-        emitter = session.get_component('event_emitter')
-        emitter.register_first(
-            'choose-signer', disable_signing, unique_id='disable-signing',
-        )
-
+        # Disable request signing by setting the signature version to UNSIGNED
+        # in the default client configuration. This ensures all new clients
+        # will be created with signing disabled.
+        _update_default_client_config(session, 'signature_version', UNSIGNED)
 
 def resolve_cli_connect_timeout(parsed_args, session, **kwargs):
     arg_name = 'connect_timeout'
@@ -101,7 +94,6 @@ def resolve_cli_connect_timeout(parsed_args, session, **kwargs):
 def resolve_cli_read_timeout(parsed_args, session, **kwargs):
     arg_name = 'read_timeout'
     _resolve_timeout(session, parsed_args, arg_name)
-
 
 def _resolve_timeout(session, parsed_args, arg_name):
     arg_value = getattr(parsed_args, arg_name, None)

@@ -12,12 +12,11 @@ from urllib.parse import urlsplit
 from datetime import datetime
 from dateutil.tz import tzutc
 from dateutil.relativedelta import relativedelta
-from botocore.utils import parse_timestamp
+from botocore.utils import parse_timestamp, original_ld_library_path
 
 from awscli.compat import is_windows, urlparse, get_stderr_encoding, is_macos
 from awscli.customizations import utils as cli_utils
 from awscli.customizations.commands import BasicCommand
-from awscli.utils import original_ld_library_path
 from awscli.customizations.utils import uni_print
 
 

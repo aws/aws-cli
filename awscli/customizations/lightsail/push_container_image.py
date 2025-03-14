@@ -24,10 +24,11 @@ logger = logging.getLogger(__name__)
 ERROR_MESSAGE = (
     'The Lightsail Control (lightsailctl) plugin was not found. ',
     'To download and install it, see ',
-    'https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-install-software'
+    'https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-install-software',
 )
 
 INPUT_VERSION = '1'
+
 
 class PushContainerImage(BasicCommand):
     NAME = 'push-container-image'
@@ -38,18 +39,11 @@ class PushContainerImage(BasicCommand):
         {
             'name': 'service-name',
             'help_text': helptext.SERVICENAME,
-            'required': True
+            'required': True,
         },
-        {
-            'name': 'image',
-            'help_text': helptext.IMAGE,
-            'required': True
-        },
-        {
-            'name': 'label',
-            'help_text': helptext.LABEL,
-            'required': True
-        }]
+        {'name': 'image', 'help_text': helptext.IMAGE, 'required': True},
+        {'name': 'label', 'help_text': helptext.LABEL, 'required': True},
+    ]
 
     def _run_main(self, parsed_args, parsed_globals):
         payload = self._get_input_request(parsed_args, parsed_globals)
@@ -65,24 +59,24 @@ class PushContainerImage(BasicCommand):
                 subprocess.run(
                     ['lightsailctl', '--plugin', '--input-stdin'],
                     input=json.dumps(payload).encode('utf-8'),
-                    check=True)
+                    check=True,
+                )
             return 0
         except OSError as ex:
             if ex.errno == errno.ENOENT:
-                logger.debug('lightsailctl not found',
-                             exc_info=True)
+                logger.debug('lightsailctl not found', exc_info=True)
                 raise ValueError(''.join(ERROR_MESSAGE))
 
     def _get_input_request(self, parsed_args, parsed_globals):
         input_request = {
-            'inputVersion' : INPUT_VERSION,
+            'inputVersion': INPUT_VERSION,
             'operation': 'PushContainerImage',
         }
 
         payload = dict(
             service=parsed_args.service_name,
             image=parsed_args.image,
-            label=parsed_args.label
+            label=parsed_args.label,
         )
 
         configuration = {}
@@ -105,22 +99,25 @@ class PushContainerImage(BasicCommand):
         if parsed_globals.profile:
             configuration['profile'] = parsed_globals.profile
         elif self._session.get_config_variable('profile'):
-            configuration['profile'] = \
-                self._session.get_config_variable('profile')
+            configuration['profile'] = self._session.get_config_variable(
+                'profile'
+            )
 
         if parsed_globals.region:
             configuration['region'] = parsed_globals.region
         elif self._session.get_config_variable('region'):
-            configuration['region'] = \
-                self._session.get_config_variable('region')
+            configuration['region'] = self._session.get_config_variable(
+                'region'
+            )
 
         configuration['doNotSignRequest'] = not parsed_globals.sign_request
 
         if parsed_globals.ca_bundle:
             configuration['caBundle'] = parsed_globals.ca_bundle
         elif self._session.get_config_variable('ca_bundle'):
-            configuration['caBundle'] = \
-                self._session.get_config_variable('ca_bundle')
+            configuration['caBundle'] = self._session.get_config_variable(
+                'ca_bundle'
+            )
 
         if parsed_globals.read_timeout is not None:
             configuration['readTimeout'] = parsed_globals.read_timeout

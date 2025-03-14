@@ -19,8 +19,12 @@ from dateutil.tz import tzlocal
 from botocore.exceptions import ClientError
 
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
-from awscli.customizations.s3.utils import BucketLister, create_warning, \
-    find_dest_path_comp_key, EPOCH_TIME
+from awscli.customizations.s3.utils import (
+    BucketLister,
+    create_warning,
+    find_dest_path_comp_key,
+    EPOCH_TIME,
+)
 from awscli.compat import queue
 
 _open = open
@@ -70,6 +74,7 @@ def is_readable(path):
 
 # This class is provided primarily to provide a detailed error message.
 
+
 class FileDecodingError(Exception):
     """Raised when there was an issue decoding the file."""
 
@@ -84,17 +89,25 @@ class FileDecodingError(Exception):
         self.file_name = filename
         self.error_message = (
             'There was an error trying to decode the the file %s in '
-            'directory "%s". \n%s' % (repr(self.file_name),
-                                      self.directory,
-                                      self.ADVICE)
+            'directory "%s". \n%s'
+            % (repr(self.file_name), self.directory, self.ADVICE)
         )
         super(FileDecodingError, self).__init__(self.error_message)
 
 
 class FileStat(object):
-    def __init__(self, src, dest=None, compare_key=None, size=None,
-                 last_update=None, src_type=None, dest_type=None,
-                 operation_name=None, response_data=None):
+    def __init__(
+        self,
+        src,
+        dest=None,
+        compare_key=None,
+        size=None,
+        last_update=None,
+        src_type=None,
+        dest_type=None,
+        operation_name=None,
+        response_data=None,
+    ):
         self.src = src
         self.dest = dest
         self.compare_key = compare_key
@@ -114,8 +127,16 @@ class FileGenerator(object):
     under the same common prefix.  The generator yields corresponding
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
-    def __init__(self, client, operation_name, follow_symlinks=True,
-                 page_size=None, result_queue=None, request_parameters=None):
+
+    def __init__(
+        self,
+        client,
+        operation_name,
+        follow_symlinks=True,
+        page_size=None,
+        result_queue=None,
+        request_parameters=None,
+    ):
         self._client = client
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
@@ -141,9 +162,12 @@ class FileGenerator(object):
         for src_path, extra_information in file_iterator:
             dest_path, compare_key = find_dest_path_comp_key(files, src_path)
             file_stat_kwargs = {
-                'src': src_path, 'dest': dest_path, 'compare_key': compare_key,
-                'src_type': src_type, 'dest_type': dest_type,
-                'operation_name': self.operation_name
+                'src': src_path,
+                'dest': dest_path,
+                'compare_key': compare_key,
+                'src_type': src_type,
+                'dest_type': dest_type,
+                'operation_name': self.operation_name,
             }
             self._inject_extra_information(file_stat_kwargs, extra_information)
             yield FileStat(**file_stat_kwargs)
@@ -188,7 +212,8 @@ class FileGenerator(object):
                 names = []
                 for name in listdir_names:
                     if not self.should_ignore_file_with_decoding_warnings(
-                            path, name):
+                        path, name
+                    ):
                         file_path = join(path, name)
                         if isdir(file_path):
                             name = name + os.path.sep
@@ -225,8 +250,9 @@ class FileGenerator(object):
             warning = create_warning(
                 path=path,
                 error_message="File has an invalid timestamp. Passing epoch "
-                              "time as timestamp.",
-                skip_file=False)
+                "time as timestamp.",
+                skip_file=False,
+            )
             self.result_queue.put(warning)
             return EPOCH_TIME
         return update_time
@@ -251,8 +277,9 @@ class FileGenerator(object):
         """
         if not isinstance(filename, str):
             decoding_error = FileDecodingError(dirname, filename)
-            warning = create_warning(repr(filename),
-                                     decoding_error.error_message)
+            warning = create_warning(
+                repr(filename), decoding_error.error_message
+            )
             self.result_queue.put(warning)
             return True
         path = os.path.join(dirname, filename)
@@ -290,10 +317,14 @@ class FileGenerator(object):
             self.result_queue.put(warning)
             return True
         if is_special_file(path):
-            warning = create_warning(path,
-                                     ("File is character special device, "
-                                      "block special device, FIFO, or "
-                                      "socket."))
+            warning = create_warning(
+                path,
+                (
+                    "File is character special device, "
+                    "block special device, FIFO, or "
+                    "socket."
+                ),
+            )
             self.result_queue.put(warning)
             return True
         if not is_readable(path):
@@ -318,9 +349,12 @@ class FileGenerator(object):
         else:
             lister = BucketLister(self._client)
             extra_args = self.request_parameters.get('ListObjectsV2', {})
-            for key in lister.list_objects(bucket=bucket, prefix=prefix,
-                                           page_size=self.page_size,
-                                           extra_args=extra_args):
+            for key in lister.list_objects(
+                bucket=bucket,
+                prefix=prefix,
+                page_size=self.page_size,
+                extra_args=extra_args,
+            ):
                 source_path, response_data = key
                 if response_data['Size'] == 0 and source_path.endswith('/'):
                     if self.operation_name == 'delete':

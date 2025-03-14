@@ -53,9 +53,12 @@ class FileFormat(object):
         #     will take on the name the user specified in the
         #     command line.
         dest_path, use_src_name = format_table[dest_type](dest_path, dir_op)
-        files = {'src': {'path': src_path, 'type': src_type},
-                 'dest': {'path': dest_path, 'type': dest_type},
-                 'dir_op': dir_op, 'use_src_name': use_src_name}
+        files = {
+            'src': {'path': src_path, 'type': src_type},
+            'dest': {'path': dest_path, 'type': dest_type},
+            'dir_op': dir_op,
+            'use_src_name': use_src_name,
+        }
         return files
 
     def local_format(self, path, dir_op):

@@ -35,21 +35,31 @@ def get_current_profile_var_name(session):
 
 def _get_profile_str(session, separator):
     profile_name = session.get_config_variable('profile')
-    return 'default' if profile_name is None \
+    return (
+        'default'
+        if profile_name is None
         else 'profile%c%s' % (separator, profile_name)
+    )
 
 
 def is_any_role_configured(session):
     parsed_configs = get_configs(session)
-    return True if ('instance_profile' in parsed_configs or
-                    'service_role' in parsed_configs) \
+    return (
+        True
+        if (
+            'instance_profile' in parsed_configs
+            or 'service_role' in parsed_configs
+        )
         else False
+    )
 
 
 def update_roles(session):
     if is_any_role_configured(session):
-        LOG.debug("At least one of the roles is already associated with "
-                  "your current profile ")
+        LOG.debug(
+            "At least one of the roles is already associated with "
+            "your current profile "
+        )
     else:
         config_writer = ConfigWriter(session)
         config_writer.update_config('service_role', EMR_ROLE_NAME)
@@ -58,15 +68,14 @@ def update_roles(session):
 
 
 class ConfigWriter(object):
-
     def __init__(self, session):
         self.session = session
         self.section = _get_profile_str(session, ' ')
         self.config_file_writer = ConfigFileWriter()
 
     def update_config(self, key, value):
-        config_filename = \
-            os.path.expanduser(self.session.get_config_variable('config_file'))
-        updated_config = {'__section__': self.section,
-                          'emr': {key: value}}
+        config_filename = os.path.expanduser(
+            self.session.get_config_variable('config_file')
+        )
+        updated_config = {'__section__': self.section, 'emr': {key: value}}
         self.config_file_writer.update_config(updated_config, config_filename)

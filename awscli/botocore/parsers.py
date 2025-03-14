@@ -24,30 +24,34 @@ showing the inheritance hierarchy of the response classes.
 ::
 
 
-
-                                 +--------------+
-                                 |ResponseParser|
-                                 +--------------+
-                                    ^    ^    ^
-               +--------------------+    |    +-------------------+
-               |                         |                        |
-    +----------+----------+       +------+-------+        +-------+------+
-    |BaseXMLResponseParser|       |BaseRestParser|        |BaseJSONParser|
-    +---------------------+       +--------------+        +--------------+
-              ^         ^          ^           ^           ^        ^
-              |         |          |           |           |        |
-              |         |          |           |           |        |
-              |        ++----------+-+       +-+-----------++       |
-              |        |RestXMLParser|       |RestJSONParser|       |
-        +-----+-----+  +-------------+       +--------------+  +----+-----+
-        |QueryParser|                                          |JSONParser|
-        +-----------+                                          +----------+
-
+                                +-------------------+
+                                |   ResponseParser  |
+                                +-------------------+
+                                ^    ^    ^   ^   ^
+                                |    |    |   |   |
+                                |    |    |   |   +--------------------------------------------+
+                                |    |    |   +-----------------------------+                  |
+                                |    |    |                                 |                  |
+           +--------------------+    |    +----------------+                |                  |
+           |                         |                     |                |                  |
++----------+----------+       +------+-------+     +-------+------+  +------+-------+   +------+--------+
+|BaseXMLResponseParser|       |BaseRestParser|     |BaseJSONParser|  |BaseCBORParser|   |BaseRpcV2Parser|
++---------------------+       +--------------+     +--------------+  +----------+---+   +-+-------------+
+          ^         ^          ^           ^        ^        ^                  ^         ^
+          |         |          |           |        |        |                  |         |
+          |         |          |           |        |        |                  |         |
+          |        ++----------+-+       +-+--------+---+    |              +---+---------+-+
+          |        |RestXMLParser|       |RestJSONParser|    |              |RpcV2CBORParser|
+    +-----+-----+  +-------------+       +--------------+    |              +---+---------+-+
+    |QueryParser|                                            |
+    +-----------+                                       +----+-----+
+                                                        |JSONParser|
+                                                        +----------+
 
 The diagram above shows that there is a base class, ``ResponseParser`` that
 contains logic that is similar amongst all the different protocols (``query``,
-``json``, ``rest-json``, ``rest-xml``).  Amongst the various services there
-is shared logic that can be grouped several ways:
+``json``, ``rest-json``, ``rest-xml``, ``smithy-rpc-v2-cbor``).  Amongst the various services
+there is shared logic that can be grouped several ways:
 
 * The ``query`` and ``rest-xml`` both have XML bodies that are parsed in the
   same way.
@@ -116,13 +120,18 @@ Each call to ``parse()`` returns a dict has this form::
 """
 import base64
 import http.client
+import io
 import json
 import logging
+import os
 import re
+import struct
+
 
 from botocore.compat import ETree, XMLParseError
 from botocore.eventstream import EventStream, NoInitialResponseError
 from botocore.utils import (
+    CachedProperty,
     ensure_boolean,
     is_json_value_header,
     lowercase_dict,
@@ -373,6 +382,21 @@ class ResponseParser(object):
 
     def _handle_unknown_tagged_union_member(self, tag):
         return {'SDK_UNKNOWN_MEMBER': {'name': tag}}
+
+    def _do_query_compatible_error_parse(self, code, headers, error):
+        """
+        Error response may contain an x-amzn-query-error header to translate
+        errors codes from former `query` services into other protocols. We use this
+        to do our lookup in the errorfactory for modeled errors.
+        """
+        query_error = headers['x-amzn-query-error']
+        query_error_components = query_error.split(';')
+
+        if len(query_error_components) == 2 and query_error_components[0]:
+            error['Error']['QueryErrorCode'] = code
+            error['Error']['Type'] = query_error_components[1]
+            return query_error_components[0]
+        return code
 
 
 class BaseXMLResponseParser(ResponseParser):
@@ -737,6 +761,199 @@ class BaseJSONParser(ResponseParser):
             return { 'message': body }
 
 
+class BaseCBORParser(ResponseParser):
+    INDEFINITE_ITEM_ADDITIONAL_INFO = 31
+    BREAK_CODE = 0xFF
+
+    @CachedProperty
+    def major_type_to_parsing_method_map(self):
+        return {
+            0: self._parse_unsigned_integer,
+            1: self._parse_negative_integer,
+            2: self._parse_byte_string,
+            3: self._parse_text_string,
+            4: self._parse_array,
+            5: self._parse_map,
+            6: self._parse_tag,
+            7: self._parse_simple_and_float,
+        }
+
+    def get_peekable_stream_from_bytes(self, bytes):
+        return io.BufferedReader(io.BytesIO(bytes))
+
+    def parse_data_item(self, stream):
+        # CBOR data is divided into "data items", and each data item starts
+        # with an initial byte that describes how the following bytes should be parsed
+        initial_byte = self._read_bytes_as_int(stream, 1)
+        # The highest order three bits of the initial byte describe the CBOR major type
+        major_type = initial_byte >> 5
+        # The lowest order 5 bits of the initial byte tells us more information about
+        # how the bytes should be parsed that will be used
+        additional_info = initial_byte & 0b00011111
+
+        if major_type in self.major_type_to_parsing_method_map:
+            method = self.major_type_to_parsing_method_map[major_type]
+            return method(stream, additional_info)
+        else:
+            raise ResponseParserError(
+                f"Unsupported inital byte found for data item- "
+                f"Major type:{major_type}, Additional info: "
+                f"{additional_info}"
+            )
+
+    # Major type 0 - unsigned integers
+    def _parse_unsigned_integer(self, stream, additional_info):
+        additional_info_to_num_bytes = {
+            24: 1,
+            25: 2,
+            26: 4,
+            27: 8,
+        }
+        # Values under 24 don't need a full byte to be stored; their values are
+        # instead stored as the "additional info" in the initial byte
+        if additional_info < 24:
+            return additional_info
+        elif additional_info in additional_info_to_num_bytes:
+            num_bytes = additional_info_to_num_bytes[additional_info]
+            return self._read_bytes_as_int(stream, num_bytes)
+        else:
+            raise ResponseParserError(
+                "Invalid CBOR integer returned from the service; unparsable "
+                f"additional info found for major type 0 or 1: {additional_info}"
+            )
+
+    # Major type 1 - negative integers
+    def _parse_negative_integer(self, stream, additional_info):
+        return -1 - self._parse_unsigned_integer(stream, additional_info)
+
+    # Major type 2 - byte string
+    def _parse_byte_string(self, stream, additional_info):
+        if additional_info != self.INDEFINITE_ITEM_ADDITIONAL_INFO:
+            length = self._parse_unsigned_integer(stream, additional_info)
+            return self._read_from_stream(stream, length)
+        else:
+            chunks = []
+            while True:
+                if self._handle_break_code(stream):
+                    break
+                initial_byte = self._read_bytes_as_int(stream, 1)
+                additional_info = initial_byte & 0b00011111
+                length = self._parse_unsigned_integer(stream, additional_info)
+                chunks.append(self._read_from_stream(stream, length))
+            return b''.join(chunks)
+
+    # Major type 3 - text string
+    def _parse_text_string(self, stream, additional_info):
+        return self._parse_byte_string(stream, additional_info).decode('utf-8')
+
+    # Major type 4 - lists
+    def _parse_array(self, stream, additional_info):
+        if additional_info != self.INDEFINITE_ITEM_ADDITIONAL_INFO:
+            length = self._parse_unsigned_integer(stream, additional_info)
+            return [self.parse_data_item(stream) for _ in range(length)]
+        else:
+            items = []
+            while not self._handle_break_code(stream):
+                items.append(self.parse_data_item(stream))
+            return items
+
+    # Major type 5 - maps
+    def _parse_map(self, stream, additional_info):
+        items = {}
+        if additional_info != self.INDEFINITE_ITEM_ADDITIONAL_INFO:
+            length = self._parse_unsigned_integer(stream, additional_info)
+            for _ in range(length):
+                self._parse_key_value_pair(stream, items)
+            return items
+
+        else:
+            while not self._handle_break_code(stream):
+                self._parse_key_value_pair(stream, items)
+            return items
+
+    def _parse_key_value_pair(self, stream, items):
+        key = self.parse_data_item(stream)
+        value = self.parse_data_item(stream)
+        if value is not None:
+            items[key] = value
+
+    # Major type 6 is tags.  The only tag we currently support is tag 1 for unix
+    # timestamps
+    def _parse_tag(self, stream, additional_info):
+        tag = self._parse_unsigned_integer(stream, additional_info)
+        value = self.parse_data_item(stream)
+        if tag == 1:  # Epoch-based date/time in milliseconds
+            return self._parse_datetime(value)
+        else:
+            raise ResponseParserError(
+                f"Found CBOR tag not supported by botocore:" f" {tag}"
+            )
+
+    def _parse_datetime(self, value):
+        if isinstance(value, (int, float)):
+            return self._timestamp_parser(value)
+        else:
+            raise ResponseParserError(
+                f"Unable to parse datetime value: {value}"
+            )
+
+    # Major type 7 includes floats and "simple" types.  Supported simple types are
+    # currently boolean values, CBOR's null, and CBOR's undefined type.  All other
+    # values are either floats or invalid.
+    def _parse_simple_and_float(self, stream, additional_info):
+        # For major type 7, values 20-23 correspond to CBOR "simple" values
+        additional_info_simple_values = {
+            20: False,  # CBOR false
+            21: True,  # CBOR true
+            22: None,  # CBOR null
+            23: None,  # CBOR undefined
+        }
+        # First we check if the additional info corresponds to a supported simple value
+        if additional_info in additional_info_simple_values:
+            return additional_info_simple_values[additional_info]
+
+        # If it's not a simple value, we need to parse it into the correct format and
+        # number fo bytes
+        float_formats = {
+            25: ('>e', 2),
+            26: ('>f', 4),
+            27: ('>d', 8),
+        }
+
+        if additional_info in float_formats:
+            float_format, num_bytes = float_formats[additional_info]
+            return struct.unpack(
+                float_format, self._read_from_stream(stream, num_bytes)
+            )[0]
+        raise ResponseParserError(
+            f"Invalid additional info found for major type 7: {additional_info}.  "
+            f"This indicates an unsupported simple type or an indefinite float value"
+        )
+
+    # This helper method is intended for use when parsing indefinite length items.
+    # It does nothing if the next byte is not the break code.  If the next byte is
+    # the break code, it advances past that byte and returns True so the calling
+    # method knows to stop parsing that data item.
+    def _handle_break_code(self, stream):
+        if int.from_bytes(stream.peek(1)[:1]) == self.BREAK_CODE:
+            stream.seek(1, os.SEEK_CUR)
+            return True
+
+    def _read_bytes_as_int(self, stream, num_bytes):
+        byte = self._read_from_stream(stream, num_bytes)
+        return int.from_bytes(byte, 'big')
+
+    def _read_from_stream(self, stream, num_bytes):
+        value = stream.read(num_bytes)
+        if len(value) != num_bytes:
+            raise ResponseParserError(
+                "End of stream reached; this indicates a "
+                "malformed CBOR response from the server or an "
+                "issue in botocore"
+            )
+        return value
+
+
 class BaseEventStreamParser(ResponseParser):
 
     def _do_parse(self, response, shape):
@@ -809,7 +1026,7 @@ class BaseEventStreamParser(ResponseParser):
 
     def _initial_body_parse(self, body_contents):
         # This method should do the initial xml/json parsing of the
-        # body.  We we still need to walk the parsed body in order
+        # body.  We still need to walk the parsed body in order
         # to convert types, but this method will do the first round
         # of parsing.
         raise NotImplementedError("_initial_body_parse")
@@ -827,6 +1044,15 @@ class EventStreamXMLParser(BaseEventStreamParser, BaseXMLResponseParser):
         if not xml_string:
             return ETree.Element('')
         return self._parse_xml_string_to_dom(xml_string)
+
+
+class EventStreamCBORParser(BaseEventStreamParser, BaseCBORParser):
+    def _initial_body_parse(self, body_contents):
+        if body_contents == b'':
+            return {}
+        return self.parse_data_item(
+            self.get_peekable_stream_from_bytes(body_contents)
+        )
 
 
 class JSONParser(BaseJSONParser):
@@ -962,7 +1188,7 @@ class BaseRestParser(ResponseParser):
 
     def _initial_body_parse(self, body_contents):
         # This method should do the initial xml/json parsing of the
-        # body.  We we still need to walk the parsed body in order
+        # body.  We still need to walk the parsed body in order
         # to convert types, but this method will do the first round
         # of parsing.
         raise NotImplementedError("_initial_body_parse")
@@ -980,6 +1206,77 @@ class BaseRestParser(ResponseParser):
             # List in headers may be a comma separated string as per RFC7230
             node = [e.strip() for e in node.split(',')]
         return super(BaseRestParser, self)._handle_list(shape, node)
+
+
+class BaseRpcV2Parser(ResponseParser):
+    def _do_parse(self, response, shape):
+        parsed = {}
+        if shape is not None:
+            event_stream_name = shape.event_stream_name
+            if event_stream_name:
+                parsed = self._handle_event_stream(
+                    response, shape, event_stream_name
+                )
+            else:
+                parsed = {}
+                self._parse_payload(response, shape, parsed)
+            parsed['ResponseMetadata'] = self._populate_response_metadata(
+                response
+            )
+        return parsed
+
+    def _add_modeled_parse(self, response, shape, final_parsed):
+        if shape is None:
+            return final_parsed
+        self._parse_payload(response, shape, final_parsed)
+
+    def _do_modeled_error_parse(self, response, shape):
+        final_parsed = {}
+        self._add_modeled_parse(response, shape, final_parsed)
+        return final_parsed
+
+    def _populate_response_metadata(self, response):
+        metadata = {}
+        headers = response['headers']
+        if 'x-amzn-requestid' in headers:
+            metadata['RequestId'] = headers['x-amzn-requestid']
+        return metadata
+
+    def _handle_structure(self, shape, node):
+        parsed = {}
+        members = shape.members
+        if shape.is_tagged_union:
+            cleaned_value = node.copy()
+            cleaned_value.pop("__type", None)
+            cleaned_value = {
+                k: v for k, v in cleaned_value.items() if v is not None
+            }
+            if len(cleaned_value) != 1:
+                error_msg = (
+                    "Invalid service response: %s must have one and only "
+                    "one member set."
+                )
+                raise ResponseParserError(error_msg % shape.name)
+        for member_name in members:
+            member_shape = members[member_name]
+            member_node = node.get(member_name)
+            if member_node is not None:
+                parsed[member_name] = self._parse_shape(
+                    member_shape, member_node
+                )
+        return parsed
+
+    def _parse_payload(self, response, shape, final_parsed):
+        original_parsed = self._initial_body_parse(response['body'])
+        body_parsed = self._parse_shape(shape, original_parsed)
+        final_parsed.update(body_parsed)
+
+    def _initial_body_parse(self, body_contents):
+        # This method should do the initial parsing of the
+        # body.  We still need to walk the parsed body in order
+        # to convert types, but this method will do the first round
+        # of parsing.
+        raise NotImplementedError("_initial_body_parse")
 
 
 class RestJSONParser(BaseRestParser, BaseJSONParser):
@@ -1021,6 +1318,62 @@ class RestJSONParser(BaseRestParser, BaseJSONParser):
 
     _handle_long = _handle_integer
     _handle_double = _handle_float
+
+
+class RpcV2CBORParser(BaseRpcV2Parser, BaseCBORParser):
+    EVENT_STREAM_PARSER_CLS = EventStreamCBORParser
+
+    def _initial_body_parse(self, body_contents):
+        if body_contents == b'':
+            return body_contents
+        body_contents_stream = self.get_peekable_stream_from_bytes(
+            body_contents
+        )
+        return self.parse_data_item(body_contents_stream)
+
+    def _do_error_parse(self, response, shape):
+        body = self._initial_body_parse(response['body'])
+        error = {
+            "Error": {
+                "Message": body.get('message', body.get('Message', '')),
+                "Code": '',
+            },
+            "ResponseMetadata": {},
+        }
+        headers = response['headers']
+
+        code = body.get('__type')
+        if code is None:
+            response_code = response.get('status_code')
+            if response_code is not None:
+                code = str(response_code)
+        if code is not None:
+            if ':' in code:
+                code = code.split(':', 1)[0]
+            if '#' in code:
+                code = code.rsplit('#', 1)[1]
+            if 'x-amzn-query-error' in headers:
+                code = self._do_query_compatible_error_parse(
+                    code, headers, error
+                )
+            error['Error']['Code'] = code
+        if 'x-amzn-requestid' in headers:
+            error.setdefault('ResponseMetadata', {})['RequestId'] = headers[
+                'x-amzn-requestid'
+            ]
+        return error
+
+    def _handle_event_stream(self, response, shape, event_name):
+        event_stream_shape = shape.members[event_name]
+        event_stream = self._create_event_stream(response, event_stream_shape)
+        try:
+            event = event_stream.get_initial_response()
+        except NoInitialResponseError:
+            error_msg = 'First event was not of type initial-response'
+            raise ResponseParserError(error_msg)
+        parsed = self._initial_body_parse(event.payload)
+        parsed[event_name] = event_stream
+        return parsed
 
 
 class RestXMLParser(BaseRestParser, BaseXMLResponseParser):
@@ -1106,4 +1459,5 @@ PROTOCOL_PARSERS = {
     'json': JSONParser,
     'rest-json': RestJSONParser,
     'rest-xml': RestXMLParser,
+    'smithy-rpc-v2-cbor': RpcV2CBORParser,
 }

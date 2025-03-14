@@ -10,9 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-"""Give better S3 error messages.
-"""
-
+"""Give better S3 error messages."""
 
 REGION_ERROR_MSG = (
     'You can fix this issue by explicitly providing the correct region '
@@ -54,8 +52,9 @@ def enhance_error_msg(parsed, **kwargs):
 
 
 def _is_sigv4_error_message(parsed):
-    return ('Please use AWS4-HMAC-SHA256' in
-            parsed.get('Error', {}).get('Message', ''))
+    return 'Please use AWS4-HMAC-SHA256' in parsed.get('Error', {}).get(
+        'Message', ''
+    )
 
 
 def _is_permanent_redirect_message(parsed):
@@ -63,5 +62,7 @@ def _is_permanent_redirect_message(parsed):
 
 
 def _is_kms_sigv4_error_message(parsed):
-    return ('AWS KMS managed keys require AWS Signature Version 4' in
-            parsed.get('Error', {}).get('Message', ''))
+    return (
+        'AWS KMS managed keys require AWS Signature Version 4'
+        in parsed.get('Error', {}).get('Message', '')
+    )

@@ -41,22 +41,24 @@ DOCUMENT_ERRORSTRING = (
 
 
 def register_translate_import_terminology(cli):
-    cli.register(
-        "building-argument-table.translate.import-terminology",
-        BinaryBlobArgumentHoister(
-            new_argument=ArgumentParameters(
-                name="data-file",
-                help_text=FILE_DOCSTRING,
-                required=True,
+    (
+        cli.register(
+            "building-argument-table.translate.import-terminology",
+            BinaryBlobArgumentHoister(
+                new_argument=ArgumentParameters(
+                    name="data-file",
+                    help_text=FILE_DOCSTRING,
+                    required=True,
+                ),
+                original_argument=ArgumentParameters(
+                    name="terminology-data",
+                    member="File",
+                    required=False,
+                ),
+                error_if_original_used=FILE_ERRORSTRING,
             ),
-            original_argument=ArgumentParameters(
-                name="terminology-data",
-                member="File",
-                required=False,
-            ),
-            error_if_original_used=FILE_ERRORSTRING,
         ),
-    ),
+    )
 
     cli.register(
         "building-argument-table.translate.translate-document",

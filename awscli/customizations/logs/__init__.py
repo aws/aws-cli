@@ -16,7 +16,9 @@ from awscli.customizations.logs.startlivetail import StartLiveTailCommand
 
 def register_logs_commands(event_emitter):
     event_emitter.register('building-command-table.logs', inject_tail_command)
-    event_emitter.register('building-command-table.logs', inject_start_live_tail_command)
+    event_emitter.register(
+        'building-command-table.logs', inject_start_live_tail_command
+    )
 
 
 def inject_tail_command(command_table, session, **kwargs):

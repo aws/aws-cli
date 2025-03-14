@@ -21,10 +21,13 @@ class Comparator(object):
     """
     This class performs all of the comparisons behind the sync operation
     """
-    def __init__(self, file_at_src_and_dest_sync_strategy,
-                 file_not_at_dest_sync_strategy,
-                 file_not_at_src_sync_strategy):
 
+    def __init__(
+        self,
+        file_at_src_and_dest_sync_strategy,
+        file_not_at_dest_sync_strategy,
+        file_not_at_src_sync_strategy,
+    ):
         self._sync_strategy = file_at_src_and_dest_sync_strategy
         self._not_at_dest_sync_strategy = file_not_at_dest_sync_strategy
         self._not_at_src_sync_strategy = file_not_at_src_sync_strategy
@@ -102,26 +105,42 @@ class Comparator(object):
                 elif compare_keys == 'less_than':
                     src_take = True
                     dest_take = False
-                    should_sync = self._not_at_dest_sync_strategy.determine_should_sync(src_file, None)
+                    should_sync = (
+                        self._not_at_dest_sync_strategy.determine_should_sync(
+                            src_file, None
+                        )
+                    )
                     if should_sync:
                         yield src_file
 
                 elif compare_keys == 'greater_than':
                     src_take = False
                     dest_take = True
-                    should_sync = self._not_at_src_sync_strategy.determine_should_sync(None, dest_file)
+                    should_sync = (
+                        self._not_at_src_sync_strategy.determine_should_sync(
+                            None, dest_file
+                        )
+                    )
                     if should_sync:
                         yield dest_file
 
             elif (not src_done) and dest_done:
                 src_take = True
-                should_sync = self._not_at_dest_sync_strategy.determine_should_sync(src_file, None)
+                should_sync = (
+                    self._not_at_dest_sync_strategy.determine_should_sync(
+                        src_file, None
+                    )
+                )
                 if should_sync:
                     yield src_file
 
             elif src_done and (not dest_done):
                 dest_take = True
-                should_sync = self._not_at_src_sync_strategy.determine_should_sync(None, dest_file)
+                should_sync = (
+                    self._not_at_src_sync_strategy.determine_should_sync(
+                        None, dest_file
+                    )
+                )
                 if should_sync:
                     yield dest_file
             else:
@@ -135,10 +154,10 @@ class Comparator(object):
 
         src_comp_key = src_file.compare_key
         dest_comp_key = dest_file.compare_key
-        if (src_comp_key == dest_comp_key):
+        if src_comp_key == dest_comp_key:
             return 'equal'
 
-        elif (src_comp_key < dest_comp_key):
+        elif src_comp_key < dest_comp_key:
             return 'less_than'
 
         else:

@@ -11,13 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.customizations.s3.syncstrategy.sizeonly import SizeOnlySync
-from awscli.customizations.s3.syncstrategy.exacttimestamps import \
-    ExactTimestampsSync
+from awscli.customizations.s3.syncstrategy.exacttimestamps import (
+    ExactTimestampsSync,
+)
 from awscli.customizations.s3.syncstrategy.delete import DeleteSync
 
 
-def register_sync_strategy(session, strategy_cls,
-                           sync_type='file_at_src_and_dest'):
+def register_sync_strategy(
+    session, strategy_cls, sync_type='file_at_src_and_dest'
+):
     """Registers a single sync strategy
 
     :param session: The session that the sync strategy is being registered to.

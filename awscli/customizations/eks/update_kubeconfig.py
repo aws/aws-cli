@@ -24,7 +24,7 @@ from awscli.customizations.eks.kubeconfig import (
     KubeconfigLoader,
     KubeconfigWriter,
     KubeconfigValidator,
-    KubeconfigAppender
+    KubeconfigAppender,
 )
 from awscli.customizations.eks.ordered_yaml import ordered_yaml_dump
 from awscli.customizations.utils import uni_print
@@ -37,75 +37,88 @@ DEFAULT_PATH = os.path.expanduser("~/.kube/config")
 # this can be safely changed to default to writing "v1"
 API_VERSION = "client.authentication.k8s.io/v1beta1"
 
+
 class UpdateKubeconfigCommand(BasicCommand):
     NAME = 'update-kubeconfig'
 
     DESCRIPTION = BasicCommand.FROM_FILE(
-        'eks',
-        'update-kubeconfig',
-        '_description.rst'
+        'eks', 'update-kubeconfig', '_description.rst'
     )
 
     ARG_TABLE = [
         {
             'name': 'name',
             'dest': 'cluster_name',
-            'help_text': ("The name of the cluster for which "
-                          "to create a kubeconfig entry. "
-                          "This cluster must exist in your account and in the "
-                          "specified or configured default Region "
-                          "for your AWS CLI installation."),
-            'required': True
+            'help_text': (
+                "The name of the cluster for which "
+                "to create a kubeconfig entry. "
+                "This cluster must exist in your account and in the "
+                "specified or configured default Region "
+                "for your AWS CLI installation."
+            ),
+            'required': True,
         },
         {
             'name': 'kubeconfig',
-            'help_text': ("Optionally specify a kubeconfig file to append "
-                          "with your configuration. "
-                          "By default, the configuration is written to the "
-                          "first file path in the KUBECONFIG "
-                          "environment variable (if it is set) "
-                          "or the default kubeconfig path (.kube/config) "
-                          "in your home directory."),
-            'required': False
+            'help_text': (
+                "Optionally specify a kubeconfig file to append "
+                "with your configuration. "
+                "By default, the configuration is written to the "
+                "first file path in the KUBECONFIG "
+                "environment variable (if it is set) "
+                "or the default kubeconfig path (.kube/config) "
+                "in your home directory."
+            ),
+            'required': False,
         },
         {
             'name': 'role-arn',
-            'help_text': ("To assume a role for cluster authentication, "
-                          "specify an IAM role ARN with this option. "
-                          "For example, if you created a cluster "
-                          "while assuming an IAM role, "
-                          "then you must also assume that role to "
-                          "connect to the cluster the first time."),
-            'required': False
+            'help_text': (
+                "To assume a role for cluster authentication, "
+                "specify an IAM role ARN with this option. "
+                "For example, if you created a cluster "
+                "while assuming an IAM role, "
+                "then you must also assume that role to "
+                "connect to the cluster the first time."
+            ),
+            'required': False,
         },
         {
             'name': 'dry-run',
             'action': 'store_true',
             'default': False,
-            'help_text': ("Print the merged kubeconfig to stdout instead of "
-                          "writing it to the specified file."),
-            'required': False
+            'help_text': (
+                "Print the merged kubeconfig to stdout instead of "
+                "writing it to the specified file."
+            ),
+            'required': False,
         },
         {
             'name': 'verbose',
             'action': 'store_true',
             'default': False,
-            'help_text': ("Print more detailed output "
-                          "when writing to the kubeconfig file, "
-                          "including the appended entries.")
+            'help_text': (
+                "Print more detailed output "
+                "when writing to the kubeconfig file, "
+                "including the appended entries."
+            ),
         },
         {
             'name': 'alias',
-            'help_text': ("Alias for the cluster context name. "
-                          "Defaults to match cluster ARN."),
-            'required': False
+            'help_text': (
+                "Alias for the cluster context name. "
+                "Defaults to match cluster ARN."
+            ),
+            'required': False,
         },
         {
             'name': 'user-alias',
-            'help_text': ("Alias for the generated user name. "
-                          "Defaults to match cluster ARN."),
-            'required': False
-        }
+            'help_text': (
+                "Alias for the generated user name. "
+                "Defaults to match cluster ARN."
+            ),
+            'required': False,
+        },
     ]
 
     def _display_entries(self, entries):
@@ -121,25 +134,25 @@ class UpdateKubeconfigCommand(BasicCommand):
             uni_print("\n")
 
     def _run_main(self, parsed_args, parsed_globals):
-        client = EKSClient(self._session,
-                           parsed_args=parsed_args,
-                           parsed_globals=parsed_globals)
+        client = EKSClient(
+            self._session,
+            parsed_args=parsed_args,
+            parsed_globals=parsed_globals,
+        )
         new_cluster_dict = client.get_cluster_entry()
-        new_user_dict = client.get_user_entry(user_alias=parsed_args.user_alias)
+        new_user_dict = client.get_user_entry(
+            user_alias=parsed_args.user_alias
+        )
 
         config_selector = KubeconfigSelector(
-            os.environ.get("KUBECONFIG", ""),
-            parsed_args.kubeconfig
+            os.environ.get("KUBECONFIG", ""), parsed_args.kubeconfig
         )
-        config = config_selector.choose_kubeconfig(
-            new_cluster_dict["name"]
-        )
+        config = config_selector.choose_kubeconfig(new_cluster_dict["name"])
         updating_existing = config.has_cluster(new_cluster_dict["name"])
         appender = KubeconfigAppender()
-        new_context_dict = appender.insert_cluster_user_pair(config,
-                                                             new_cluster_dict,
-                                                             new_user_dict,
-                                                             parsed_args.alias)
+        new_context_dict = appender.insert_cluster_user_pair(
+            config, new_cluster_dict, new_user_dict, parsed_args.alias
+        )
 
         if parsed_args.dry_run:
             uni_print(config.dump_content())
@@ -148,27 +161,27 @@ class UpdateKubeconfigCommand(BasicCommand):
             writer.write_kubeconfig(config)
 
             if updating_existing:
-                uni_print("Updated context {0} in {1}\n".format(
-                    new_context_dict["name"], config.path
-                ))
+                uni_print(
+                    "Updated context {0} in {1}\n".format(
+                        new_context_dict["name"], config.path
+                    )
+                )
             else:
-                uni_print("Added new context {0} to {1}\n".format(
-                    new_context_dict["name"], config.path
-                ))
+                uni_print(
+                    "Added new context {0} to {1}\n".format(
+                        new_context_dict["name"], config.path
+                    )
+                )
 
             if parsed_args.verbose:
-                self._display_entries([
-                    new_context_dict,
-                    new_user_dict,
-                    new_cluster_dict
-                ])
+                self._display_entries(
+                    [new_context_dict, new_user_dict, new_cluster_dict]
+                )
         return 0
 
 
 class KubeconfigSelector(object):
-
-    def __init__(self, env_variable, path_in, validator=None,
-                                              loader=None):
+    def __init__(self, env_variable, path_in, validator=None, loader=None):
         """
         Parse KUBECONFIG into a list of absolute paths.
         Also replace the empty list with DEFAULT_PATH
@@ -194,9 +207,11 @@ class KubeconfigSelector(object):
             # Get the list of paths from the environment variable
             if env_variable == "":
                 env_variable = DEFAULT_PATH
-            self._paths = [self._expand_path(element)
-                           for element in env_variable.split(os.pathsep)
-                           if len(element.strip()) > 0]
+            self._paths = [
+                self._expand_path(element)
+                for element in env_variable.split(os.pathsep)
+                if len(element.strip()) > 0
+            ]
             if len(self._paths) == 0:
                 self._paths = [DEFAULT_PATH]
 
@@ -219,9 +234,9 @@ class KubeconfigSelector(object):
                 loaded_config = self._loader.load_kubeconfig(candidate_path)
 
                 if loaded_config.has_cluster(cluster_name):
-                    LOG.debug("Found entry to update at {0}".format(
-                        candidate_path
-                    ))
+                    LOG.debug(
+                        "Found entry to update at {0}".format(candidate_path)
+                    )
                     return loaded_config
             except KubeconfigError as e:
                 LOG.warning("Passing {0}:{1}".format(candidate_path, e))
@@ -232,7 +247,7 @@ class KubeconfigSelector(object):
         return self._loader.load_kubeconfig(self._paths[0])
 
     def _expand_path(self, path):
-        """ A helper to expand a path to a full absolute path. """
+        """A helper to expand a path to a full absolute path."""
         return os.path.abspath(os.path.expanduser(path))
 
 
@@ -259,17 +274,22 @@ class EKSClient(object):
                     "eks",
                     region_name=self._parsed_globals.region,
                     endpoint_url=self._parsed_globals.endpoint_url,
-                    verify=self._parsed_globals.verify_ssl
+                    verify=self._parsed_globals.verify_ssl,
                 )
             full_description = client.describe_cluster(name=self._cluster_name)
             self._cluster_description = full_description["cluster"]
 
             if "status" not in self._cluster_description:
                 raise EKSClusterError("Cluster not found")
-            if self._cluster_description["status"] not in ["ACTIVE", "UPDATING"]:
-                raise EKSClusterError("Cluster status is {0}".format(
-                    self._cluster_description["status"]
-                ))
+            if self._cluster_description["status"] not in [
+                "ACTIVE",
+                "UPDATING",
+            ]:
+                raise EKSClusterError(
+                    "Cluster status is {0}".format(
+                        self._cluster_description["status"]
+                    )
+                )
 
         return self._cluster_description
 
@@ -279,17 +299,26 @@ class EKSClient(object):
         the previously obtained description.
         """
 
-        cert_data = self.cluster_description.get("certificateAuthority", {}).get("data", "")
+        cert_data = self.cluster_description.get(
+            "certificateAuthority", {}
+        ).get("data", "")
         endpoint = self.cluster_description.get("endpoint")
         arn = self.cluster_description.get("arn")
 
-        return OrderedDict([
-            ("cluster", OrderedDict([
-                ("certificate-authority-data", cert_data),
-                ("server", endpoint)
-            ])),
-            ("name", arn)
-        ])
+        return OrderedDict(
+            [
+                (
+                    "cluster",
+                    OrderedDict(
+                        [
+                            ("certificate-authority-data", cert_data),
+                            ("server", endpoint),
+                        ]
+                    ),
+                ),
+                ("name", arn),
+            ]
+        )
 
     def get_user_entry(self, user_alias=None):
         """
@@ -307,37 +336,54 @@ class EKSClient(object):
             cluster_identification_parameter = "--cluster-id"
             cluster_identification_value = self.cluster_description.get("id")
 
-        generated_user = OrderedDict([
-            ("name", user_alias or self.cluster_description.get("arn", "")),
-            ("user", OrderedDict([
-                ("exec", OrderedDict([
-                    ("apiVersion", API_VERSION),
-                    ("args",
+        generated_user = OrderedDict(
+            [
+                (
+                    "name",
+                    user_alias or self.cluster_description.get("arn", ""),
+                ),
+                (
+                    "user",
+                    OrderedDict(
                         [
-                            "--region",
-                            region,
-                            "eks",
-                            "get-token",
-                            cluster_identification_parameter,
-                            cluster_identification_value,
-                            "--output",
-                            "json",
-                        ]),
-                    ("command", "aws"),
-                ]))
-            ]))
-        ])
+                            (
+                                "exec",
+                                OrderedDict(
+                                    [
+                                        ("apiVersion", API_VERSION),
+                                        (
+                                            "args",
+                                            [
+                                                "--region",
+                                                region,
+                                                "eks",
+                                                "get-token",
+                                                cluster_identification_parameter,
+                                                cluster_identification_value,
+                                                "--output",
+                                                "json",
+                                            ],
+                                        ),
+                                        ("command", "aws"),
+                                    ]
+                                ),
+                            )
+                        ]
+                    ),
+                ),
+            ]
+        )
 
         if self._parsed_args.role_arn is not None:
-            generated_user["user"]["exec"]["args"].extend([
-                "--role",
-                self._parsed_args.role_arn
-            ])
+            generated_user["user"]["exec"]["args"].extend(
+                ["--role", self._parsed_args.role_arn]
+            )
 
         if self._session.profile:
-            generated_user["user"]["exec"]["env"] = [OrderedDict([
-                ("name", "AWS_PROFILE"),
-                ("value", self._session.profile)
-            ])]
+            generated_user["user"]["exec"]["env"] = [
+                OrderedDict(
+                    [("name", "AWS_PROFILE"), ("value", self._session.profile)]
+                )
+            ]
 
         return generated_user

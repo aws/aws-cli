@@ -153,10 +153,12 @@ class DeleteRoleAssociationsCommand(BasicCommand):
                     uni_print(
                         f"Skipping deletion as no pod identity association found for service account {service_account_name} "
                         f"and role {self._role_name} in namespace {namespace}\n",
-                        out_file=sys.stderr
+                        out_file=sys.stderr,
                     )
                     continue
-                association_id = association["associations"][0]["associationId"]
+                association_id = association["associations"][0][
+                    "associationId"
+                ]
                 LOG.debug(
                     f"Deleting pod identity association for service account {service_account_name} "
                     f"and role {self._role_name} in {namespace} with association id {association_id}"
@@ -165,7 +167,9 @@ class DeleteRoleAssociationsCommand(BasicCommand):
                     self._cluster_name, association_id
                 )
                 results.append(
-                    result["association"] if "association" in result else result
+                    result["association"]
+                    if "association" in result
+                    else result
                 )
             except botocore.exceptions.ClientError as error:
                 raise Exception(
@@ -215,7 +219,9 @@ class DeleteRoleAssociationsCommand(BasicCommand):
             for component in emr_spark_endpoint_components
         ]
 
-    def _get_spark_operator_mapping(self, account_id, base36_encoded_role_name):
+    def _get_spark_operator_mapping(
+        self, account_id, base36_encoded_role_name
+    ):
         emr_spark_operator_components = ["driver", "executor"]
         service_accounts = [
             (
@@ -244,7 +250,9 @@ class DeleteRoleAssociationsCommand(BasicCommand):
         )
         return service_accounts
 
-    def _get_flink_operator_mapping(self, account_id, base36_encoded_role_name):
+    def _get_flink_operator_mapping(
+        self, account_id, base36_encoded_role_name
+    ):
         emr_flink_operator_components = ["jobmanager", "taskmanager"]
         service_accounts = [
             (

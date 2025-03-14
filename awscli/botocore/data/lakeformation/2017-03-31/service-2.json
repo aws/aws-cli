@@ -201,7 +201,8 @@
         {"shape":"OperationTimeoutException"},
         {"shape":"EntityNotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ConcurrentModificationException"}
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ResourceNumberLimitExceededException"}
       ],
       "documentation":"<p>Enforce Lake Formation permissions for the given databases, tables, and principals.</p>"
     },
@@ -814,7 +815,7 @@
         {"shape":"ResourceNumberLimitExceededException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Registers the resource as managed by the Data Catalog.</p> <p>To add or update data, Lake Formation needs read/write access to the chosen Amazon S3 path. Choose a role that you know has permission to do this, or choose the AWSServiceRoleForLakeFormationDataAccess service-linked role. When you register the first Amazon S3 path, the service-linked role and a new inline policy are created on your behalf. Lake Formation adds the first path to the inline policy and attaches it to the service-linked role. When you register subsequent paths, Lake Formation adds the path to the existing policy.</p> <p>The following request registers a new location and gives Lake Formation permission to use the service-linked role to access that location.</p> <p> <code>ResourceArn = arn:aws:s3:::my-bucket/ UseServiceLinkedRole = true</code> </p> <p>If <code>UseServiceLinkedRole</code> is not set to true, you must provide or set the <code>RoleArn</code>:</p> <p> <code>arn:aws:iam::12345:role/my-data-access-role</code> </p>"
+      "documentation":"<p>Registers the resource as managed by the Data Catalog.</p> <p>To add or update data, Lake Formation needs read/write access to the chosen data location. Choose a role that you know has permission to do this, or choose the AWSServiceRoleForLakeFormationDataAccess service-linked role. When you register the first Amazon S3 path, the service-linked role and a new inline policy are created on your behalf. Lake Formation adds the first path to the inline policy and attaches it to the service-linked role. When you register subsequent paths, Lake Formation adds the path to the existing policy.</p> <p>The following request registers a new location and gives Lake Formation permission to use the service-linked role to access that location.</p> <p> <code>ResourceArn = arn:aws:s3:::my-bucket/ UseServiceLinkedRole = true</code> </p> <p>If <code>UseServiceLinkedRole</code> is not set to true, you must provide or set the <code>RoleArn</code>:</p> <p> <code>arn:aws:iam::12345:role/my-data-access-role</code> </p>"
     },
     "RemoveLFTagsFromResource":{
       "name":"RemoveLFTagsFromResource",
@@ -1276,6 +1277,7 @@
           "shape":"PermissionList",
           "documentation":"<p>The permissions to be granted.</p>"
         },
+        "Condition":{"shape":"Condition"},
         "PermissionsWithGrantOption":{
           "shape":"PermissionList",
           "documentation":"<p>Indicates if the option to pass permissions is granted.</p>"
@@ -1310,6 +1312,7 @@
         }
       }
     },
+    "Boolean":{"type":"boolean"},
     "BooleanNullable":{"type":"boolean"},
     "CancelTransactionRequest":{
       "type":"structure",
@@ -1549,7 +1552,8 @@
       ],
       "members":{
         "Principal":{"shape":"DataLakePrincipal"},
-        "Resource":{"shape":"Resource"}
+        "Resource":{"shape":"Resource"},
+        "Condition":{"shape":"Condition"}
       }
     },
     "CreateLakeFormationOptInResponse":{
@@ -1838,7 +1842,8 @@
       ],
       "members":{
         "Principal":{"shape":"DataLakePrincipal"},
-        "Resource":{"shape":"Resource"}
+        "Resource":{"shape":"Resource"},
+        "Condition":{"shape":"Condition"}
       }
     },
     "DeleteLakeFormationOptInResponse":{
@@ -2708,6 +2713,7 @@
           "shape":"PermissionList",
           "documentation":"<p>The permissions granted to the principal on the resource. Lake Formation defines privileges to grant and revoke access to metadata in the Data Catalog and data organized in underlying data storage such as Amazon S3. Lake Formation requires that each principal be authorized to perform a specific task on Lake Formation resources. </p>"
         },
+        "Condition":{"shape":"Condition"},
         "PermissionsWithGrantOption":{
           "shape":"PermissionList",
           "documentation":"<p>Indicates a list of the granted permissions that the principal may pass to other users. These permissions may only be a subset of the permissions granted in the <code>Privileges</code>.</p>"
@@ -3599,6 +3605,10 @@
         "HybridAccessEnabled":{
           "shape":"NullableBoolean",
           "documentation":"<p> Specifies whether the data access of tables pointing to the location can be managed by both Lake Formation permissions as well as Amazon S3 bucket policies. </p>"
+        },
+        "WithPrivilegedAccess":{
+          "shape":"Boolean",
+          "documentation":"<p>Grants the calling principal the permissions to perform all supported Lake Formation operations on the registered data location. </p>"
         }
       }
     },
@@ -3702,6 +3712,10 @@
         "HybridAccessEnabled":{
           "shape":"NullableBoolean",
           "documentation":"<p> Indicates whether the data access of tables pointing to the location can be managed by both Lake Formation permissions as well as Amazon S3 bucket policies. </p>"
+        },
+        "WithPrivilegedAccess":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Grants the calling principal the permissions to perform all supported Lake Formation operations on the registered data location. </p>"
         }
       },
       "documentation":"<p>A structure containing information about an Lake Formation resource.</p>"
@@ -3780,6 +3794,7 @@
           "shape":"PermissionList",
           "documentation":"<p>The permissions revoked to the principal on the resource. For information about permissions, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/security-data-access.html\">Security and Access Control to Metadata and Data</a>.</p>"
         },
+        "Condition":{"shape":"Condition"},
         "PermissionsWithGrantOption":{
           "shape":"PermissionList",
           "documentation":"<p>Indicates a list of permissions for which to revoke the grant option allowing the principal to pass permissions to other principals.</p>"

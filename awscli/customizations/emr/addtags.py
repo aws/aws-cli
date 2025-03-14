@@ -18,8 +18,9 @@ from awscli.customizations.emr import emrutils
 
 
 def modify_tags_argument(argument_table, **kwargs):
-    argument_table['tags'] = TagsArgument('tags', required=True,
-                                          help_text=helptext.TAGS, nargs='+')
+    argument_table['tags'] = TagsArgument(
+        'tags', required=True, help_text=helptext.TAGS, nargs='+'
+    )
 
 
 class TagsArgument(CustomArgument):

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.24.24
+=======
+
+* api-change:``lakeformation``: This release added "condition" to LakeFormation OptIn APIs, also added WithPrivilegedAccess flag to RegisterResource and DescribeResource.
+* api-change:``cognito-idp``: Minor description updates to API parameters
+* api-change:``glue``: This release added AllowFullTableExternalDataAccess to glue catalog resource.
+* api-change:``cognito-identity``: Updated API model build artifacts for identity pools
+* bugfix:parser: Fixes bug when trying to parse an integer in the `code` part of the response body.
+
+
 2.24.23
 =======
 

@@ -104,7 +104,6 @@ def no_sign_request(parsed_args, session, **kwargs):
         # will be created with signing disabled.
         _update_default_client_config(session, 'signature_version', UNSIGNED)
 
-
 def resolve_cli_connect_timeout(parsed_args, session, **kwargs):
     arg_name = 'connect_timeout'
     _resolve_timeout(session, parsed_args, arg_name)

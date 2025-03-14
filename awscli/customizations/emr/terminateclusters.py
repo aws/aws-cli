@@ -20,15 +20,19 @@ from awscli.customizations.emr.command import Command
 class TerminateClusters(Command):
     NAME = 'terminate-clusters'
     DESCRIPTION = helptext.TERMINATE_CLUSTERS
-    ARG_TABLE = [{
-        'name': 'cluster-ids', 'nargs': '+', 'required': True,
-        'help_text': '<p>A list of clusters to terminate.</p>',
-        'schema': {'type': 'array', 'items': {'type': 'string'}},
-    }]
+    ARG_TABLE = [
+        {
+            'name': 'cluster-ids',
+            'nargs': '+',
+            'required': True,
+            'help_text': '<p>A list of clusters to terminate.</p>',
+            'schema': {'type': 'array', 'items': {'type': 'string'}},
+        }
+    ]
 
     def _run_main_command(self, parsed_args, parsed_globals):
         parameters = {'JobFlowIds': parsed_args.cluster_ids}
-        emrutils.call_and_display_response(self._session,
-                                           'TerminateJobFlows', parameters,
-                                           parsed_globals)
+        emrutils.call_and_display_response(
+            self._session, 'TerminateJobFlows', parameters, parsed_globals
+        )
         return 0

@@ -23,30 +23,39 @@ from awscli.customizations.exceptions import ParamValidationError
 
 class InstallApplications(Command):
     NAME = 'install-applications'
-    DESCRIPTION = ('Installs applications on a running cluster. Currently only'
-                   ' Hive and Pig can be installed using this command, and'
-                   ' this command is only supported by AMI versions'
-                   ' (3.x and 2.x).')
+    DESCRIPTION = (
+        'Installs applications on a running cluster. Currently only'
+        ' Hive and Pig can be installed using this command, and'
+        ' this command is only supported by AMI versions'
+        ' (3.x and 2.x).'
+    )
     ARG_TABLE = [
-        {'name': 'cluster-id', 'required': True,
-         'help_text': helptext.CLUSTER_ID},
-        {'name': 'applications', 'required': True,
-         'help_text': helptext.INSTALL_APPLICATIONS,
-         'schema': argumentschema.APPLICATIONS_SCHEMA},
+        {
+            'name': 'cluster-id',
+            'required': True,
+            'help_text': helptext.CLUSTER_ID,
+        },
+        {
+            'name': 'applications',
+            'required': True,
+            'help_text': helptext.INSTALL_APPLICATIONS,
+            'schema': argumentschema.APPLICATIONS_SCHEMA,
+        },
     ]
     # Applications supported by the install-applications command.
     supported_apps = ['HIVE', 'PIG']
 
     def _run_main_command(self, parsed_args, parsed_globals):
-
         parameters = {'JobFlowId': parsed_args.cluster_id}
 
         self._check_for_supported_apps(parsed_args.applications)
         parameters['Steps'] = applicationutils.build_applications(
-            self.region, parsed_args.applications)[2]
+            self.region, parsed_args.applications
+        )[2]
 
-        emrutils.call_and_display_response(self._session, 'AddJobFlowSteps',
-                                           parameters, parsed_globals)
+        emrutils.call_and_display_response(
+            self._session, 'AddJobFlowSteps', parameters, parsed_globals
+        )
         return 0
 
     def _check_for_supported_apps(self, parsed_applications):
@@ -58,10 +67,12 @@ class InstallApplications(Command):
                     raise ParamValidationError(
                         "aws: error: " + app_config['Name'] + " cannot be"
                         " installed on a running cluster. 'Name' should be one"
-                        " of the following: " +
-                        ', '.join(self.supported_apps))
+                        " of the following: " + ', '.join(self.supported_apps)
+                    )
             else:
                 raise ParamValidationError(
-                    "aws: error: Unknown application: " + app_config['Name'] +
-                    ". 'Name' should be one of the following: " +
-                    ', '.join(constants.APPLICATIONS))
+                    "aws: error: Unknown application: "
+                    + app_config['Name']
+                    + ". 'Name' should be one of the following: "
+                    + ', '.join(constants.APPLICATIONS)
+                )

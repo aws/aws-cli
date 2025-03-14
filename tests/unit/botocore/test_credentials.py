@@ -3312,18 +3312,21 @@ class TestSSOCredentialFetcher(unittest.TestCase):
         self.account_id = '1234567890'
         self.access_token = {
             'accessToken': 'some.sso.token',
+            'expiresAt': '2018-10-18T22:26:40Z'
         }
         # This is just an arbitrary point in time we can pin to
         self.now = datetime(2008, 9, 23, 12, 26, 40, tzinfo=tzutc())
         # The SSO endpoint uses ms whereas the OIDC endpoint uses seconds
         self.now_timestamp = 1222172800000
 
+        self.mock_time_fetcher = mock.Mock(return_value=self.now)
+
         self.loader = mock.Mock(spec=SSOTokenLoader)
         self.loader.return_value = self.access_token
         self.fetcher = SSOCredentialFetcher(
             self.start_url, self.sso_region, self.role_name, self.account_id,
             self.mock_session.create_client, token_loader=self.loader,
-            cache=self.cache,
+            cache=self.cache, time_fetcher=self.mock_time_fetcher
         )
 
     def test_can_fetch_credentials(self):

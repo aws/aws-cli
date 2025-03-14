@@ -20,7 +20,7 @@ IMAGE_FILE_DOCSTRING = (
     'Example: fileb://image.png</p>'
 )
 IMAGE_DOCSTRING_ADDENDUM = (
-    '<p>To specify a local file use <code>--%s</code> ' 'instead.</p>'
+    '<p>To specify a local file use <code>--%s</code> instead.</p>'
 )
 
 

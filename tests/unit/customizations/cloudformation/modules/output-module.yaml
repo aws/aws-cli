@@ -1,0 +1,29 @@
+Parameters:
+  Name:
+    Type: String
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref Name
+  Bucket2:
+    Type: AWS::S3::Bucket
+Outputs:
+  BucketArn:
+    Value: !GetAtt Bucket.Arn
+  BucketArnSub:
+    Value: !Sub ${Bucket.Arn}
+  BucketRef:
+    Value: !Ref Bucket
+  ArnList:
+    Value:
+      - !Sub ${Bucket.Arn}
+      - !Sub ${Bucket2.Arn}
+      - !Sub abc-${Name}
+  JoinTest:
+    Value:
+      Fn::Join:
+        - "-"
+        - - !GetAtt Bucket.BucketName
+          - !GetAtt Bucket.Arn
+

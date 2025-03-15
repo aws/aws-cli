@@ -1,0 +1,32 @@
+Modules:
+  Content:
+    Source: ./output-module.yaml
+    Properties:
+      Name: foo
+  AnotherModule:
+    Source: ./output-module2.yaml
+    Properties:
+      Name: !GetAtt ContentBucket.Arn
+    Overrides:
+      Foo:
+        Properties:
+          TestOverrideList: !GetAtt Content.ArnList
+    
+Resources:
+  A:
+    Type: D::E::F
+    Properties:
+      Object:
+        Arn: !Sub ${Content.BucketArn}
+        ArnGetAtt: !GetAtt Content.BucketArn
+        GetAttToSubList: !GetAtt Content.ArnList 
+        Join: !GetAtt Content.JoinTest
+Outputs:
+  ExampleOutput:
+    Value: !GetAtt Content.BucketArn
+  ExampleSub:
+    Value: !Sub ${Content.BucketArn}
+  ExampleGetSub:
+    Value: !GetAtt Content.BucketArnSub
+  ExampleRef:
+    Value: !GetAtt Content.BucketRef

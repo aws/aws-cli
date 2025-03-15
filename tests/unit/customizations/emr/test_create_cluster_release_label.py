@@ -12,10 +12,9 @@
 # language governing permissions and limitations under the License.
 
 import copy
+import json
 import os
-
-from botocore.compat import json
-from botocore.compat import OrderedDict
+from collections import OrderedDict
 
 from tests.unit.customizations.emr import test_constants as \
     CONSTANTS

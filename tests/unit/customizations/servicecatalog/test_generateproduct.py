@@ -11,13 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import json
 from argparse import Namespace
 
 from awscli.customizations.servicecatalog import exceptions
 from awscli.customizations.servicecatalog.generateproduct \
     import GenerateProductCommand
 from awscli.testutils import unittest, mock, capture_output
-from botocore.compat import json
 
 
 class TestCreateProductCommand(unittest.TestCase):

@@ -12,10 +12,11 @@
 # language governing permissions and limitations under the License.
 """Module for processing CLI args."""
 
+import json
 import logging
 import os
+from collections import OrderedDict
 
-from botocore.compat import OrderedDict, json
 from botocore.utils import is_json_value_header
 
 from awscli import COMPLEX_TYPES, SCALAR_TYPES, shorthand

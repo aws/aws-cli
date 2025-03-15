@@ -11,12 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import json
 import sys
 
 from awscli.customizations.servicecatalog import helptext
 from awscli.customizations.servicecatalog.generatebase \
     import GenerateBaseCommand
-from botocore.compat import json
 
 
 class GenerateProvisioningArtifactCommand(GenerateBaseCommand):

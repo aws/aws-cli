@@ -12,11 +12,20 @@
 # language governing permissions and limitations under the License.
 from awscli.customizations import utils
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.s3.subcommands import ListCommand, WebsiteCommand, \
-    CpCommand, MvCommand, RmCommand, SyncCommand, MbCommand, RbCommand, \
-    PresignCommand
-from awscli.customizations.s3.syncstrategy.register import \
-    register_sync_strategies
+from awscli.customizations.s3.subcommands import (
+    ListCommand,
+    WebsiteCommand,
+    CpCommand,
+    MvCommand,
+    RmCommand,
+    SyncCommand,
+    MbCommand,
+    RbCommand,
+    PresignCommand,
+)
+from awscli.customizations.s3.syncstrategy.register import (
+    register_sync_strategies,
+)
 
 
 def awscli_initialize(cli):

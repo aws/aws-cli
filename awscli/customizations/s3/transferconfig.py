@@ -14,6 +14,7 @@ from s3transfer.manager import TransferConfig
 
 from awscli.customizations.s3 import constants
 from awscli.customizations.s3.utils import human_readable_to_int
+
 # If the user does not specify any overrides,
 # these are the default values we use for the s3 transfer
 # commands.
@@ -23,8 +24,8 @@ import logging
 LOGGER = logging.getLogger(__name__)
 
 DEFAULTS = {
-    'multipart_threshold': 8 * (1024 ** 2),
-    'multipart_chunksize': 8 * (1024 ** 2),
+    'multipart_threshold': 8 * (1024**2),
+    'multipart_chunksize': 8 * (1024**2),
     'max_concurrent_requests': 10,
     'max_queue_size': 1000,
     'max_bandwidth': None,
@@ -38,10 +39,14 @@ class InvalidConfigError(Exception):
 
 
 class RuntimeConfig(object):
-
-    POSITIVE_INTEGERS = ['multipart_chunksize', 'multipart_threshold',
-                         'max_concurrent_requests', 'max_queue_size',
-                         'max_bandwidth', 'target_bandwidth']
+    POSITIVE_INTEGERS = [
+        'multipart_chunksize',
+        'multipart_threshold',
+        'max_concurrent_requests',
+        'max_queue_size',
+        'max_bandwidth',
+        'target_bandwidth',
+    ]
     HUMAN_READABLE_SIZES = ['multipart_chunksize', 'multipart_threshold']
     HUMAN_READABLE_RATES = ['max_bandwidth', 'target_bandwidth']
     SUPPORTED_CHOICES = {
@@ -107,7 +112,8 @@ class RuntimeConfig(object):
                         'as an integer in terms of bytes per second '
                         '(e.g. 10485760) or a rate in terms of bytes '
                         'per second (e.g. 10MB/s or 800KB/s) or bits per '
-                        'second (e.g. 10Mb/s or 800Kb/s)' % value)
+                        'second (e.g. 10Mb/s or 800Kb/s)' % value
+                    )
 
     def _human_readable_rate_to_int(self, value):
         # The human_readable_to_int() utility only supports integers (e.g. 1024)
@@ -145,7 +151,9 @@ class RuntimeConfig(object):
                 resolved_value = self.CHOICE_ALIASES[attr][current_value]
                 LOGGER.debug(
                     'Resolved %s configuration alias value "%s" to "%s"',
-                    attr, current_value, resolved_value
+                    attr,
+                    current_value,
+                    resolved_value,
                 )
                 runtime_config[attr] = resolved_value
 
@@ -173,7 +181,8 @@ class RuntimeConfig(object):
 
     def _error_positive_value(self, name, value):
         raise InvalidConfigError(
-            "Value for %s must be a positive integer: %s" % (name, value))
+            "Value for %s must be a positive integer: %s" % (name, value)
+        )
 
     def _error_invalid_choice(self, name, value):
         raise InvalidConfigError(

@@ -38,11 +38,23 @@ class FileInfo(object):
         from the list of a ListObjects or the response from a HeadObject. It
         will only be filled if the task was generated from an S3 bucket.
     """
-    def __init__(self, src, dest=None, compare_key=None, size=None,
-                 last_update=None, src_type=None, dest_type=None,
-                 operation_name=None, client=None, parameters=None,
-                 source_client=None, is_stream=False,
-                 associated_response_data=None):
+
+    def __init__(
+        self,
+        src,
+        dest=None,
+        compare_key=None,
+        size=None,
+        last_update=None,
+        src_type=None,
+        dest_type=None,
+        operation_name=None,
+        client=None,
+        parameters=None,
+        source_client=None,
+        is_stream=False,
+        associated_response_data=None,
+    ):
         self.src = src
         self.src_type = src_type
         self.operation_name = operation_name
@@ -82,8 +94,11 @@ class FileInfo(object):
     def _is_glacier_object(self, response_data):
         glacier_storage_classes = ['GLACIER', 'DEEP_ARCHIVE']
         if response_data:
-            if response_data.get('StorageClass') in glacier_storage_classes \
-                    and not self._is_restored(response_data):
+            if response_data.get(
+                'StorageClass'
+            ) in glacier_storage_classes and not self._is_restored(
+                response_data
+            ):
                 return True
         return False
 

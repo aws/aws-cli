@@ -15,33 +15,39 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestGetHostedZone(BaseAWSCommandParamsTest):
-
     prefix = 'route53 list-resource-record-sets'
 
     def test_no_pagination_args(self):
         args = ' --hosted-zone-id /hostedzone/ZD3IYMVP1KDDM'
         cmdline = self.prefix + args
         self.assert_params_for_cmd(
-            cmdline, {'HostedZoneId': 'ZD3IYMVP1KDDM'}, expected_rc=0)
+            cmdline, {'HostedZoneId': 'ZD3IYMVP1KDDM'}, expected_rc=0
+        )
 
     def test_with_max_items_pagination(self):
         args = ' --hosted-zone-id /hostedzone/ZD3IYMVP1KDDM --max-items 1'
         cmdline = self.prefix + args
         # We don't map to the service's max-items
         self.assert_params_for_cmd(
-            cmdline, {'HostedZoneId': 'ZD3IYMVP1KDDM'}, expected_rc=0)
+            cmdline, {'HostedZoneId': 'ZD3IYMVP1KDDM'}, expected_rc=0
+        )
 
     def test_with_max_override_starting_args(self):
         args = (
             ' --hosted-zone-id /hostedzone/ZD3IYMVP1KDDM'
             ' --max-items 1'
-            ' --start-record-name foo')
+            ' --start-record-name foo'
+        )
         cmdline = self.prefix + args
         # Here we _should_ be mapping to the service's arguments
         # because --start-record-name triggered the disabling of
         # pagination.
         self.assert_params_for_cmd(
-            cmdline, {'HostedZoneId': 'ZD3IYMVP1KDDM',
-                      'StartRecordName': 'foo',
-                      'MaxItems': '1'},
-            expected_rc=0)
+            cmdline,
+            {
+                'HostedZoneId': 'ZD3IYMVP1KDDM',
+                'StartRecordName': 'foo',
+                'MaxItems': '1',
+            },
+            expected_rc=0,
+        )

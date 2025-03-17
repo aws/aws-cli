@@ -10,10 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests.functional.history import BaseHistoryCommandParamsTest
-
 from awscli.clidriver import AWSCLIEntryPoint
 from awscli.testutils import create_clidriver, mock
+from tests.functional.history import BaseHistoryCommandParamsTest
 
 
 class TestShowCommand(BaseHistoryCommandParamsTest):
@@ -23,7 +22,7 @@ class TestShowCommand(BaseHistoryCommandParamsTest):
                 "Regions": [
                     {
                         "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                        "RegionName": "ap-south-1"
+                        "RegionName": "ap-south-1",
                     },
                 ]
             }
@@ -48,7 +47,7 @@ class TestShowCommand(BaseHistoryCommandParamsTest):
                 "Regions": [
                     {
                         "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                        "RegionName": "ap-south-1"
+                        "RegionName": "ap-south-1",
                     },
                 ]
             }
@@ -65,14 +64,15 @@ class TestShowCommand(BaseHistoryCommandParamsTest):
                 "Regions": [
                     {
                         "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                        "RegionName": "ap-south-1"
+                        "RegionName": "ap-south-1",
                     },
                 ]
             }
         ]
         self.run_cmd('ec2 describe-regions', expected_rc=0)
         stdout, _, _ = self.run_cmd(
-            'history show --include CLI_ARGUMENTS', expected_rc=0)
+            'history show --include CLI_ARGUMENTS', expected_rc=0
+        )
         # Make sure the CLI version was not included because of the filter.
         #
         # The show command writes the history out as binary to the attached
@@ -87,14 +87,15 @@ class TestShowCommand(BaseHistoryCommandParamsTest):
                 "Regions": [
                     {
                         "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                        "RegionName": "ap-south-1"
+                        "RegionName": "ap-south-1",
                     },
                 ]
             }
         ]
         self.run_cmd('ec2 describe-regions', expected_rc=0)
         stdout, _, _ = self.run_cmd(
-            'history show --exclude CLI_ARGUMENTS', expected_rc=0)
+            'history show --exclude CLI_ARGUMENTS', expected_rc=0
+        )
         # Make sure the API call was not included because of the filter,
         # but all other events such as the version are included.
         #

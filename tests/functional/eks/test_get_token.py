@@ -11,13 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import base64
-from datetime import datetime
 import json
 import os
+from datetime import datetime
 
-from awscli.testutils import mock
-from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.compat import urlparse
+from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 
 class TestGetTokenCommand(BaseAWSCommandParamsTest):
@@ -35,7 +34,6 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
     def run_get_token(self, cmd):
         response, _, _ = self.run_cmd(cmd)
         return json.loads(response)
-
 
     def assert_url_correct(
         self,
@@ -115,7 +113,8 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         cmd += ' --query apiVersion'
         response = self.run_get_token(cmd)
         self.assertEqual(
-            response, "client.authentication.k8s.io/v1beta1",
+            response,
+            "client.authentication.k8s.io/v1beta1",
         )
 
     @mock.patch('awscli.customizations.eks.get_token.datetime')
@@ -150,7 +149,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         self.assert_url_correct(
             response,
             expected_endpoint='sts.us-west-2.amazonaws.com',
-            expected_signing_region='us-west-2'
+            expected_signing_region='us-west-2',
         )
 
     def test_url_with_arn(self):
@@ -247,7 +246,10 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
             "client.authentication.k8s.io/v1beta1",
         )
 
-        self.assertEqual(stderr, "",)
+        self.assertEqual(
+            stderr,
+            "",
+        )
 
     def test_api_version_discovery_v1(self):
         self.set_kubernetes_exec_info('v1')

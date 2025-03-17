@@ -14,7 +14,6 @@ import datetime
 
 from awscli.customizations.s3.filegenerator import FileStat
 from awscli.customizations.s3.syncstrategy.sizeonly import SizeOnlySync
-
 from awscli.testutils import unittest
 
 
@@ -29,18 +28,31 @@ class TestSizeOnlySync(unittest.TestCase):
         time_src = datetime.datetime.now()
         time_dst = time_src + datetime.timedelta(days=1)
 
-        src_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=11,
-                            last_update=time_src, src_type='local',
-                            dest_type='s3', operation_name='upload')
+        src_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=11,
+            last_update=time_src,
+            src_type='local',
+            dest_type='s3',
+            operation_name='upload',
+        )
 
-        dst_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=time_dst, src_type='s3',
-                            dest_type='local', operation_name='')
+        dst_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=time_dst,
+            src_type='s3',
+            dest_type='local',
+            operation_name='',
+        )
 
         should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dst_file)
+            src_file, dst_file
+        )
         self.assertTrue(should_sync)
 
     def test_compare_size_only_different_update_times(self):
@@ -51,18 +63,31 @@ class TestSizeOnlySync(unittest.TestCase):
         time_src = datetime.datetime.now()
         time_dst = time_src + datetime.timedelta(days=1)
 
-        src_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=time_src, src_type='local',
-                            dest_type='s3', operation_name='upload')
+        src_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=time_src,
+            src_type='local',
+            dest_type='s3',
+            operation_name='upload',
+        )
 
-        dst_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=time_dst, src_type='s3',
-                            dest_type='local', operation_name='')
+        dst_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=time_dst,
+            src_type='s3',
+            dest_type='local',
+            operation_name='',
+        )
 
         should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dst_file)
+            src_file, dst_file
+        )
         self.assertFalse(should_sync)
 
 

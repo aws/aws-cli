@@ -11,17 +11,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest
 import os
+
+from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestUpdateConfigurationTemplate(BaseAWSCommandParamsTest):
-
     prefix = 'elasticbeanstalk update-configuration-template'
 
     def test_file(self):
-        data_path = os.path.join(os.path.dirname(__file__),
-                                 'new_keypair_config.json')
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'new_keypair_config.json'
+        )
         cmdline = self.prefix
         cmdline += ' --application-name FooBar'
         cmdline += ' --template-name x86_64_m1_medium_config'
@@ -32,10 +33,16 @@ class TestUpdateConfigurationTemplate(BaseAWSCommandParamsTest):
             'TemplateName': 'x86_64_m1_medium_config',
             'Description': 'This_is_a_test',
             'OptionSettings': [
-                {'Namespace': 'aws:autoscaling:launchconfiguration',
-                 'OptionName': 'EC2KeyName',
-                 'Value': 'webapps'},
-                {'Namespace': 'aws:elasticbeanstalk:container:tomcat:jvmoptions',
-                 'OptionName': 'Xms',
-                 'Value': '1256m'}]}
+                {
+                    'Namespace': 'aws:autoscaling:launchconfiguration',
+                    'OptionName': 'EC2KeyName',
+                    'Value': 'webapps',
+                },
+                {
+                    'Namespace': 'aws:elasticbeanstalk:container:tomcat:jvmoptions',
+                    'OptionName': 'Xms',
+                    'Value': '1256m',
+                },
+            ],
+        }
         self.assert_params_for_cmd(cmdline, result)

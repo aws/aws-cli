@@ -21,19 +21,18 @@ at the man output, we look one step before at the generated rst output
 (it's easier to verify).
 
 """
+
 import os
 import re
 import shlex
+
 import docutils.nodes
 import docutils.parsers.rst
 import docutils.utils
-
 import pytest
 
-from awscli.argparser import MainArgParser
-from awscli.argparser import ServiceArgParser
+from awscli.argparser import MainArgParser, ServiceArgParser
 from awscli.testutils import BaseAWSHelpOutputTest, create_clidriver
-
 
 # Mapping of command names to subcommands that have examples in their help
 # output.  This isn't mean to be an exhaustive list, but should help catch
@@ -45,13 +44,20 @@ COMMAND_EXAMPLES = {
     'ec2': ['run-instances', 'start-instances', 'stop-instances'],
     'swf': ['deprecate-domain', 'describe-domain'],
     'sqs': ['create-queue', 'get-queue-attributes'],
-    'emr': ['add-steps', 'create-default-roles', 'describe-cluster', 'schedule-hbase-backup'],
+    'emr': [
+        'add-steps',
+        'create-default-roles',
+        'describe-cluster',
+        'schedule-hbase-backup',
+    ],
     'opsworks': ['register'],
 }
 _dname = os.path.dirname
 EXAMPLES_DIR = os.path.join(
     _dname(_dname(_dname(_dname(os.path.abspath(__file__))))),
-    'awscli', 'examples')
+    'awscli',
+    'examples',
+)
 
 ALLOWED_FILENAME_CHAR_REGEX = re.compile(r'([a-z0-9_\-\.]*$)')
 HTTP_LINK_REGEX = re.compile(r'`.+?<http://')
@@ -59,7 +65,7 @@ HTTP_LINK_REGEX = re.compile(r'`.+?<http://')
 
 # Used so that docutils doesn't write errors to stdout/stderr.
 # We're collecting and reporting these via AssertionErrors messages.
-class NoopWriter(object):
+class NoopWriter:
     def write(self, *args, **kwargs):
         pass
 
@@ -113,10 +119,7 @@ def command_validator():
     return CommandValidator(driver)
 
 
-@pytest.mark.parametrize(
-    "command, subcommand",
-    EXAMPLE_COMMAND_TESTS
-)
+@pytest.mark.parametrize("command, subcommand", EXAMPLE_COMMAND_TESTS)
 def test_examples(command, subcommand):
     t = _ExampleTests(methodName='noop_test')
     t.setUp()
@@ -128,10 +131,7 @@ def test_examples(command, subcommand):
 
 
 @pytest.mark.filterwarnings('ignore::DeprecationWarning')
-@pytest.mark.parametrize(
-    "example_file",
-    RST_DOC_EXAMPLES
-)
+@pytest.mark.parametrize("example_file", RST_DOC_EXAMPLES)
 def test_rst_doc_examples(command_validator, example_file):
     verify_has_only_ascii_chars(example_file)
     verify_is_valid_rst(example_file)
@@ -146,7 +146,8 @@ def verify_no_http_links(filename):
     if match:
         error_line_number = line_num(contents, match.span()[0])
         error_line = extract_error_line(
-            contents, match.span()[0], match.span()[1])
+            contents, match.span()[0], match.span()[1]
+        )
         marker_idx = error_line.find('http://') - 1
         marker_line = (" " * marker_idx) + '^'
         raise AssertionError(
@@ -165,13 +166,14 @@ def verify_has_only_ascii_chars(filename):
             # message.
             offset = e.start
             spread = 20
-            bad_text = bytes_content[offset-spread:e.start+spread]
+            bad_text = bytes_content[offset - spread : e.start + spread]
             underlined = ' ' * spread + '^'
             error_text = '\n'.join([bad_text, underlined])
             line_number = bytes_content[:offset].count(b'\n') + 1
             raise AssertionError(
                 "Non ascii characters found in the examples file %s, line %s:"
-                "\n\n%s\n" % (filename, line_number, error_text))
+                "\n\n%s\n" % (filename, line_number, error_text)
+            )
 
 
 def verify_is_valid_rst(filename):
@@ -186,7 +188,8 @@ def parse_rst(filename):
     parser = docutils.parsers.rst.Parser()
     components = (docutils.parsers.rst.Parser,)
     settings = docutils.frontend.OptionParser(
-        components=components).get_default_values()
+        components=components
+    ).get_default_values()
     document = docutils.utils.new_document('<cli-example>', settings=settings)
     errors = []
 
@@ -206,7 +209,7 @@ def parse_rst(filename):
 def _make_error_msg(filename, errors):
     with open(filename) as f:
         lines = f.readlines()
-    relative_name = filename[len(EXAMPLES_DIR) + 1:]
+    relative_name = filename[len(EXAMPLES_DIR) + 1 :]
     failure_message = [
         'The file "%s" contains invalid RST: ' % relative_name,
         '',
@@ -241,17 +244,18 @@ def find_all_cli_commands(filename):
     return visitor.cli_commands
 
 
-class CommandValidator(object):
+class CommandValidator:
     def __init__(self, driver):
         self.driver = driver
         help_command = self.driver.create_help_command()
         self._service_command_table = help_command.command_table
         self._global_arg_table = help_command.arg_table
         self._main_parser = MainArgParser(
-            self._service_command_table, driver.session.user_agent(),
+            self._service_command_table,
+            driver.session.user_agent(),
             'Some description',
             self._global_arg_table,
-            prog="aws"
+            prog="aws",
         )
 
     def validate_cli_command(self, command, filename):
@@ -272,19 +276,20 @@ class CommandValidator(object):
             )
         # Strip off the 'aws ' part and break it out into a list.
         parsed_args, remaining = self._parse_next_command(
-            filename, command, command_parts, self._main_parser)
+            filename, command, command_parts, self._main_parser
+        )
         # We know the service is good.  Parse the operation.
         cmd = self._service_command_table[parsed_args.command]
         cmd_table = cmd.create_help_command().command_table
-        service_parser = ServiceArgParser(operations_table=cmd_table,
-                                          service_name=parsed_args.command)
+        service_parser = ServiceArgParser(
+            operations_table=cmd_table, service_name=parsed_args.command
+        )
         self._parse_next_command(filename, command, remaining, service_parser)
 
     def _parse_next_command(self, filename, original_cmd, args_list, parser):
         # Strip off the 'aws ' part and break it out into a list.
         errors = []
-        parser._print_message = lambda message, file: errors.append(
-            message)
+        parser._print_message = lambda message, file: errors.append(message)
         try:
             parsed_args, remaining = parser.parse_known_args(args_list)
             return parsed_args, remaining
@@ -313,10 +318,7 @@ class CollectCLICommands(docutils.nodes.GenericNodeVisitor):
         pass
 
 
-@pytest.mark.parametrize(
-    "example_file",
-    RST_DOC_EXAMPLES + OTHER_DOC_EXAMPLES
-)
+@pytest.mark.parametrize("example_file", RST_DOC_EXAMPLES + OTHER_DOC_EXAMPLES)
 def test_example_file_name(example_file):
     filename = example_file.split(os.sep)[-1]
     _assert_file_is_rst_or_txt(example_file)

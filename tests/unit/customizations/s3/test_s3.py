@@ -10,8 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock, unittest, BaseAWSCommandParamsTest
-from awscli.customizations.s3.s3 import awscli_initialize, add_s3
+from awscli.customizations.s3.s3 import add_s3, awscli_initialize
+from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 
 
 class AWSInitializeTest(unittest.TestCase):
@@ -19,6 +19,7 @@ class AWSInitializeTest(unittest.TestCase):
     This test ensures that all events are correctly registered such that
     all of the commands can be run.
     """
+
     def setUp(self):
         self.cli = mock.Mock()
 
@@ -50,8 +51,9 @@ class CreateTablesTest(unittest.TestCase):
 class TestS3(BaseAWSCommandParamsTest):
     def test_too_few_args(self):
         stderr = self.run_cmd('s3', expected_rc=252)[1]
-        self.assertIn(("usage: aws [options] s3 "
-                       "<subcommand> [parameters]"), stderr)
+        self.assertIn(
+            ("usage: aws [options] s3 " "<subcommand> [parameters]"), stderr
+        )
         self.assertIn('too few arguments', stderr)
 
 

@@ -12,15 +12,15 @@
 # language governing permissions and limitations under the License.
 import io
 import os
-import pytest
 import sys
 from argparse import Namespace
 
+import pytest
 from botocore.paginate import PageIterator
 
-from awscli.testutils import unittest, mock
 from awscli.compat import StringIO, contextlib
-from awscli.formatter import YAMLDumper, StreamedYAMLFormatter, JSONFormatter
+from awscli.formatter import JSONFormatter, StreamedYAMLFormatter, YAMLDumper
+from awscli.testutils import mock, unittest
 
 
 class FakePageIterator(PageIterator):
@@ -63,37 +63,23 @@ class TestYAMLDumper(unittest.TestCase):
 
 
 class TestStreamedYAMLFormatter:
-
     def setup_method(self):
         self.args = Namespace(query=None)
         self.formatter = StreamedYAMLFormatter(self.args)
         self.output = StringIO()
 
     def test_format_single_response(self):
-        response = {
-            'TableNames': [
-                'MyTable'
-            ]
-        }
+        response = {'TableNames': ['MyTable']}
         self.formatter('list-tables', response, self.output)
-        assert self.output.getvalue() == (
-            '- TableNames:\n'
-            '  - MyTable\n'
-        )
+        assert self.output.getvalue() == ('- TableNames:\n' '  - MyTable\n')
 
     def test_format_paginated_response(self):
-        response = FakePageIterator([
-            {
-                'TableNames': [
-                    'MyTable'
-                ]
-            },
-            {
-                'TableNames': [
-                    'MyTable2'
-                ]
-            },
-        ])
+        response = FakePageIterator(
+            [
+                {'TableNames': ['MyTable']},
+                {'TableNames': ['MyTable2']},
+            ]
+        )
         self.formatter('list-tables', response, self.output)
         assert self.output.getvalue() == (
             '- TableNames:\n'
@@ -105,12 +91,8 @@ class TestStreamedYAMLFormatter:
     def test_flushes_after_io_error(self):
         io_error_dumper = mock.Mock(YAMLDumper)
         mock_output = mock.Mock()
-        io_error_dumper.dump.side_effect = IOError()
-        response = {
-            'TableNames': [
-                'MyTable'
-            ]
-        }
+        io_error_dumper.dump.side_effect = OSError()
+        response = {'TableNames': ['MyTable']}
         formatter = StreamedYAMLFormatter(self.args, io_error_dumper)
         formatter('list-tables', response, mock_output)
         assert mock_output.flush.called
@@ -118,19 +100,13 @@ class TestStreamedYAMLFormatter:
     def test_stops_paginating_after_io_error(self):
         io_error_dumper = mock.Mock(YAMLDumper)
         mock_output = mock.Mock()
-        io_error_dumper.dump.side_effect = IOError()
-        response = FakePageIterator([
-            {
-                'TableNames': [
-                    'MyTable'
-                ]
-            },
-            {
-                'TableNames': [
-                    'MyTable2'
-                ]
-            },
-        ])
+        io_error_dumper.dump.side_effect = OSError()
+        response = FakePageIterator(
+            [
+                {'TableNames': ['MyTable']},
+                {'TableNames': ['MyTable2']},
+            ]
+        )
         formatter = StreamedYAMLFormatter(self.args, io_error_dumper)
         formatter('list-tables', response, mock_output)
         # The dumper should have only been called once as the io error is
@@ -138,16 +114,15 @@ class TestStreamedYAMLFormatter:
         assert len(io_error_dumper.dump.call_args_list) == 1
         assert mock_output.flush.called
 
-    @pytest.mark.parametrize('env_vars', [
-        {'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'},
-        {'PYTHONUTF8': '1'},
-    ])
+    @pytest.mark.parametrize(
+        'env_vars',
+        [
+            {'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'},
+            {'PYTHONUTF8': '1'},
+        ],
+    )
     def test_encoding_override(self, env_vars):
-        response = {
-            'TableNames': [
-                '桌子'
-            ]
-        }
+        response = {'TableNames': ['桌子']}
         stdout_b = io.BytesIO()
         stdout = io.TextIOWrapper(stdout_b, encoding="cp1252", newline='\n')
 
@@ -161,10 +136,7 @@ class TestStreamedYAMLFormatter:
                 assert 'UTF-8' == sys.stdout.encoding
                 stdout.flush()
 
-        assert stdout_b.getvalue() == (
-            '- TableNames:\n'
-            '  - 桌子\n'
-        ).encode('UTF-8')
+        assert stdout_b.getvalue() == ('- TableNames:\n' '  - 桌子\n').encode()
 
 
 class TestJSONFormatter:
@@ -172,21 +144,20 @@ class TestJSONFormatter:
         self.args = Namespace(query=None)
         self.formatter = JSONFormatter(self.args)
 
-    @pytest.mark.parametrize('env_vars', [
-        {'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'},
-        {'PYTHONUTF8': '1'},
-    ])
+    @pytest.mark.parametrize(
+        'env_vars',
+        [
+            {'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'},
+            {'PYTHONUTF8': '1'},
+        ],
+    )
     def test_encoding_override(self, env_vars):
         """
         StreamedYAMLFormatter is tested above since it doesn't inherit from
         FullyBufferedFormatter, this is implicitly testing all other
         formatters that do.
         """
-        response = {
-            'TableNames': [
-                '桌子'
-            ]
-        }
+        response = {'TableNames': ['桌子']}
         stdout_b = io.BytesIO()
         stdout = io.TextIOWrapper(stdout_b, encoding="cp1252", newline='\n')
 
@@ -199,11 +170,13 @@ class TestJSONFormatter:
                 assert 'UTF-8' == sys.stdout.encoding
                 stdout.flush()
 
-        assert stdout_b.getvalue() == (
-            '{\n'
-            '    "TableNames": [\n'
-            '        "桌子"\n'
-            '    ]\n'
-            '}\n'
-        ).encode('UTF-8')
-
+        assert (
+            stdout_b.getvalue()
+            == (
+                '{\n'
+                '    "TableNames": [\n'
+                '        "桌子"\n'
+                '    ]\n'
+                '}\n'
+            ).encode()
+        )

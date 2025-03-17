@@ -10,20 +10,26 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock, unittest, skip_if_windows, FileCreator
-import signal
 import json
-import sys
 import os
+import signal
+import sys
 
-from awscli.help import PosixHelpRenderer, ExecutableNotFoundError
-from awscli.help import WindowsHelpRenderer, ProviderHelpCommand, HelpCommand
-from awscli.help import TopicListerCommand, TopicHelpCommand
 from awscli.argparser import HELP_BLURB, ArgParseException
 from awscli.compat import StringIO
+from awscli.help import (
+    ExecutableNotFoundError,
+    HelpCommand,
+    PosixHelpRenderer,
+    ProviderHelpCommand,
+    TopicHelpCommand,
+    TopicListerCommand,
+    WindowsHelpRenderer,
+)
+from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 
 
-class HelpSpyMixin(object):
+class HelpSpyMixin:
     def __init__(self):
         self.exists_on_path = {}
         self.popen_calls = []
@@ -50,7 +56,6 @@ class FakeWindowsHelpRenderer(HelpSpyMixin, WindowsHelpRenderer):
 
 
 class TestHelpPager(unittest.TestCase):
-
     def setUp(self):
         self.environ = {}
         self.environ_patch = mock.patch('os.environ', self.environ)
@@ -61,38 +66,34 @@ class TestHelpPager(unittest.TestCase):
         self.environ_patch.stop()
 
     def test_no_env_vars(self):
-        self.assertEqual(self.renderer.get_pager_cmdline(),
-                         self.renderer.PAGER.split())
+        self.assertEqual(
+            self.renderer.get_pager_cmdline(), self.renderer.PAGER.split()
+        )
 
     def test_manpager(self):
         pager_cmd = 'foobar'
         os.environ['MANPAGER'] = pager_cmd
-        self.assertEqual(self.renderer.get_pager_cmdline(),
-                         pager_cmd.split())
+        self.assertEqual(self.renderer.get_pager_cmdline(), pager_cmd.split())
 
     def test_pager(self):
         pager_cmd = 'fiebaz'
         os.environ['PAGER'] = pager_cmd
-        self.assertEqual(self.renderer.get_pager_cmdline(),
-                         pager_cmd.split())
+        self.assertEqual(self.renderer.get_pager_cmdline(), pager_cmd.split())
 
     def test_both(self):
         os.environ['MANPAGER'] = 'foobar'
         os.environ['PAGER'] = 'fiebaz'
-        self.assertEqual(self.renderer.get_pager_cmdline(),
-                         'foobar'.split())
+        self.assertEqual(self.renderer.get_pager_cmdline(), 'foobar'.split())
 
     def test_manpager_with_args(self):
         pager_cmd = 'less -X'
         os.environ['MANPAGER'] = pager_cmd
-        self.assertEqual(self.renderer.get_pager_cmdline(),
-                         pager_cmd.split())
+        self.assertEqual(self.renderer.get_pager_cmdline(), pager_cmd.split())
 
     def test_pager_with_args(self):
         pager_cmd = 'less -X --clearscreen'
         os.environ['PAGER'] = pager_cmd
-        self.assertEqual(self.renderer.get_pager_cmdline(),
-                         pager_cmd.split())
+        self.assertEqual(self.renderer.get_pager_cmdline(), pager_cmd.split())
 
     @skip_if_windows('Requires posix system.')
     def test_no_groff_or_mandoc_exists(self):
@@ -130,8 +131,10 @@ class TestHelpPager(unittest.TestCase):
     def test_shlex_split_for_pager_var(self):
         pager_cmd = '/bin/sh -c "col -bx | vim -c \'set ft=man\' -"'
         os.environ['PAGER'] = pager_cmd
-        self.assertEqual(self.renderer.get_pager_cmdline(),
-                         ['/bin/sh', '-c', "col -bx | vim -c 'set ft=man' -"])
+        self.assertEqual(
+            self.renderer.get_pager_cmdline(),
+            ['/bin/sh', '-c', "col -bx | vim -c 'set ft=man' -"],
+        )
 
     def test_can_render_contents(self):
         renderer = FakePosixHelpRenderer()
@@ -192,6 +195,7 @@ class TestHelpCommand(TestHelpCommandBase):
     We do this by subclassing from HelpCommand and ensure it is behaving
     as expected.
     """
+
     def setUp(self):
         super(TestHelpCommand, self).setUp()
         self.doc_handler_mock = mock.Mock()
@@ -237,20 +241,23 @@ class TestProviderHelpCommand(TestHelpCommandBase):
         self.usage = None
 
         # Create a temporary index file for ``aws help [command]`` to use.
-        self.tags_dict = {
-            'topic-name-1': {},
-            'topic-name-2': {}
-        }
+        self.tags_dict = {'topic-name-1': {}, 'topic-name-2': {}}
         json_index = self.file_creator.create_file('index.json', '')
         with open(json_index, 'w') as f:
             json.dump(self.tags_dict, f, indent=4, sort_keys=True)
         self.json_patch = mock.patch(
-            'awscli.topictags.TopicTagDB.index_file', json_index)
+            'awscli.topictags.TopicTagDB.index_file', json_index
+        )
         self.json_patch.start()
 
-        self.cmd = ProviderHelpCommand(self.session, self.command_table,
-                                       self.arg_table, self.description,
-                                       self.synopsis, self.usage)
+        self.cmd = ProviderHelpCommand(
+            self.session,
+            self.command_table,
+            self.arg_table,
+            self.description,
+            self.synopsis,
+            self.usage,
+        )
 
     def tearDown(self):
         self.json_patch.stop()
@@ -270,15 +277,16 @@ class TestProviderHelpCommand(TestHelpCommandBase):
 
         # Ensure the topics are there as well
         self.assertIn('topic-name-1', subcommand_table)
-        self.assertIsInstance(subcommand_table['topic-name-1'],
-                              TopicHelpCommand)
+        self.assertIsInstance(
+            subcommand_table['topic-name-1'], TopicHelpCommand
+        )
         self.assertEqual(subcommand_table['topic-name-1'].name, 'topic-name-1')
 
         self.assertIn('topic-name-2', subcommand_table)
-        self.assertIsInstance(subcommand_table['topic-name-2'],
-                              TopicHelpCommand)
-        self.assertEqual(subcommand_table['topic-name-2'].name,
-                         'topic-name-2')
+        self.assertIsInstance(
+            subcommand_table['topic-name-2'], TopicHelpCommand
+        )
+        self.assertEqual(subcommand_table['topic-name-2'].name, 'topic-name-2')
 
 
 class TestTopicListerCommand(TestHelpCommandBase):

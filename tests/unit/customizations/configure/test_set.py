@@ -14,142 +14,157 @@ import os
 
 from awscli.customizations.configure.set import ConfigureSetCommand
 from awscli.testutils import mock, unittest
+
 from . import FakeSession
 
 
 class TestConfigureSetCommand(unittest.TestCase):
-
     def setUp(self):
         self.session = FakeSession({'config_file': 'myconfigfile'})
         self.fake_credentials_filename = os.path.expanduser(
-            '~/fake_credentials_filename')
+            '~/fake_credentials_filename'
+        )
         self.session.profile = None
         self.config_writer = mock.Mock()
 
     def test_configure_set_command(self):
-        set_command = ConfigureSetCommand(
-            self.session, self.config_writer)
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
         set_command(args=['region', 'us-west-2'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
-            {'__section__': 'default', 'region': 'us-west-2'}, 'myconfigfile')
+            {'__section__': 'default', 'region': 'us-west-2'}, 'myconfigfile'
+        )
 
     def test_configure_set_command_dotted(self):
-        set_command = ConfigureSetCommand(
-            self.session, self.config_writer)
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
         set_command(args=['plugins.foo', 'true'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
-            {'__section__': 'plugins', 'foo': 'true'}, 'myconfigfile')
+            {'__section__': 'plugins', 'foo': 'true'}, 'myconfigfile'
+        )
 
     def test_configure_set_command_dotted_with_default_profile(self):
         self.session.variables['profile'] = 'default'
-        set_command = ConfigureSetCommand(
-            self.session, self.config_writer)
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
         set_command(
-            args=['emr.instance_profile', 'my_ip_emr'], parsed_globals=None)
+            args=['emr.instance_profile', 'my_ip_emr'], parsed_globals=None
+        )
         self.config_writer.update_config.assert_called_with(
-            {'__section__': 'default',
-             'emr': {'instance_profile': 'my_ip_emr'}}, 'myconfigfile')
+            {
+                '__section__': 'default',
+                'emr': {'instance_profile': 'my_ip_emr'},
+            },
+            'myconfigfile',
+        )
 
     def test_configure_set_handles_predefined_plugins_section(self):
         self.session.variables['profile'] = 'default'
-        set_command = ConfigureSetCommand(
-            self.session, self.config_writer)
-        set_command(
-            args=['plugins.foo', 'mypackage'], parsed_globals=None)
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['plugins.foo', 'mypackage'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
-            {'__section__': 'plugins',
-             'foo': 'mypackage'}, 'myconfigfile')
+            {'__section__': 'plugins', 'foo': 'mypackage'}, 'myconfigfile'
+        )
 
     def test_configure_set_command_dotted_with_profile(self):
         self.session.profile = 'emr-dev'
-        set_command = ConfigureSetCommand(
-            self.session, self.config_writer)
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
         set_command(
-            args=['emr.instance_profile', 'my_ip_emr'], parsed_globals=None)
+            args=['emr.instance_profile', 'my_ip_emr'], parsed_globals=None
+        )
         self.config_writer.update_config.assert_called_with(
-            {'__section__': 'profile emr-dev', 'emr':
-                {'instance_profile': 'my_ip_emr'}}, 'myconfigfile')
+            {
+                '__section__': 'profile emr-dev',
+                'emr': {'instance_profile': 'my_ip_emr'},
+            },
+            'myconfigfile',
+        )
 
     def test_configure_set_with_profile(self):
         self.session.profile = 'testing'
-        set_command = ConfigureSetCommand(
-            self.session, self.config_writer)
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
         set_command(args=['region', 'us-west-2'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
             {'__section__': 'profile testing', 'region': 'us-west-2'},
-            'myconfigfile')
+            'myconfigfile',
+        )
 
     def test_configure_set_triple_dotted(self):
         # aws configure set default.s3.signature_version s3v4
-        set_command = ConfigureSetCommand(
-            self.session, self.config_writer)
-        set_command(args=['default.s3.signature_version', 's3v4'],
-                    parsed_globals=None)
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(
+            args=['default.s3.signature_version', 's3v4'], parsed_globals=None
+        )
         self.config_writer.update_config.assert_called_with(
             {'__section__': 'default', 's3': {'signature_version': 's3v4'}},
-            'myconfigfile')
+            'myconfigfile',
+        )
 
     def test_configure_set_with_profile_nested(self):
         # aws configure set default.s3.signature_version s3v4
-        set_command = ConfigureSetCommand(
-            self.session, self.config_writer)
-        set_command(args=['profile.foo.s3.signature_version', 's3v4'],
-                    parsed_globals=None)
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(
+            args=['profile.foo.s3.signature_version', 's3v4'],
+            parsed_globals=None,
+        )
         self.config_writer.update_config.assert_called_with(
-            {'__section__': 'profile foo',
-             's3': {'signature_version': 's3v4'}}, 'myconfigfile')
+            {
+                '__section__': 'profile foo',
+                's3': {'signature_version': 's3v4'},
+            },
+            'myconfigfile',
+        )
 
     def test_access_key_written_to_shared_credentials_file(self):
-        set_command = ConfigureSetCommand(
-            self.session, self.config_writer)
-        set_command(args=['aws_access_key_id', 'foo'],
-                    parsed_globals=None)
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['aws_access_key_id', 'foo'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
-            {'__section__': 'default',
-             'aws_access_key_id': 'foo'}, self.fake_credentials_filename)
+            {'__section__': 'default', 'aws_access_key_id': 'foo'},
+            self.fake_credentials_filename,
+        )
 
     def test_secret_key_written_to_shared_credentials_file(self):
-        set_command = ConfigureSetCommand(
-            self.session, self.config_writer)
-        set_command(args=['aws_secret_access_key', 'foo'],
-                    parsed_globals=None)
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['aws_secret_access_key', 'foo'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
-            {'__section__': 'default',
-             'aws_secret_access_key': 'foo'}, self.fake_credentials_filename)
+            {'__section__': 'default', 'aws_secret_access_key': 'foo'},
+            self.fake_credentials_filename,
+        )
 
     def test_session_token_written_to_shared_credentials_file(self):
-        set_command = ConfigureSetCommand(
-            self.session, self.config_writer)
-        set_command(args=['aws_session_token', 'foo'],
-                    parsed_globals=None)
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['aws_session_token', 'foo'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
-            {'__section__': 'default',
-             'aws_session_token': 'foo'}, self.fake_credentials_filename)
+            {'__section__': 'default', 'aws_session_token': 'foo'},
+            self.fake_credentials_filename,
+        )
 
     def test_access_key_written_to_shared_credentials_file_profile(self):
-        set_command = ConfigureSetCommand(
-            self.session, self.config_writer)
-        set_command(args=['profile.foo.aws_access_key_id', 'bar'],
-                    parsed_globals=None)
+        set_command = ConfigureSetCommand(self.session, self.config_writer)
+        set_command(
+            args=['profile.foo.aws_access_key_id', 'bar'], parsed_globals=None
+        )
         self.config_writer.update_config.assert_called_with(
-            {'__section__': 'foo',
-             'aws_access_key_id': 'bar'}, self.fake_credentials_filename)
+            {'__section__': 'foo', 'aws_access_key_id': 'bar'},
+            self.fake_credentials_filename,
+        )
 
     def test_credential_set_profile_with_space(self):
         self.session.profile = 'some profile'
         set_command = ConfigureSetCommand(self.session, self.config_writer)
         set_command(args=['aws_session_token', 'foo'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
-            {'__section__': 'some profile',
-             'aws_session_token': 'foo'}, self.fake_credentials_filename)
+            {'__section__': 'some profile', 'aws_session_token': 'foo'},
+            self.fake_credentials_filename,
+        )
 
     def test_credential_set_profile_with_space_dotted(self):
         set_command = ConfigureSetCommand(self.session, self.config_writer)
-        set_command(args=['profile.some profile.aws_session_token', 'foo'],
-                    parsed_globals=None)
+        set_command(
+            args=['profile.some profile.aws_session_token', 'foo'],
+            parsed_globals=None,
+        )
         self.config_writer.update_config.assert_called_with(
-            {'__section__': 'some profile',
-             'aws_session_token': 'foo'}, self.fake_credentials_filename)
+            {'__section__': 'some profile', 'aws_session_token': 'foo'},
+            self.fake_credentials_filename,
+        )
 
     def test_configure_set_with_profile_with_space(self):
         self.session.profile = 'some profile'
@@ -157,28 +172,36 @@ class TestConfigureSetCommand(unittest.TestCase):
         set_command(args=['region', 'us-west-2'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
             {'__section__': "profile 'some profile'", 'region': 'us-west-2'},
-            'myconfigfile')
+            'myconfigfile',
+        )
 
     def test_configure_set_with_profile_with_space_dotted(self):
         set_command = ConfigureSetCommand(self.session, self.config_writer)
-        set_command(args=['profile.some profile.region', 'us-west-2'],
-                    parsed_globals=None)
+        set_command(
+            args=['profile.some profile.region', 'us-west-2'],
+            parsed_globals=None,
+        )
         self.config_writer.update_config.assert_called_with(
             {'__section__': "profile 'some profile'", 'region': 'us-west-2'},
-            'myconfigfile')
+            'myconfigfile',
+        )
 
     def test_credential_set_profile_with_tab(self):
         self.session.profile = 'some\tprofile'
         set_command = ConfigureSetCommand(self.session, self.config_writer)
         set_command(args=['aws_session_token', 'foo'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
-            {'__section__': 'some\tprofile',
-             'aws_session_token': 'foo'}, self.fake_credentials_filename)
+            {'__section__': 'some\tprofile', 'aws_session_token': 'foo'},
+            self.fake_credentials_filename,
+        )
 
     def test_configure_set_with_profile_with_tab_dotted(self):
         set_command = ConfigureSetCommand(self.session, self.config_writer)
-        set_command(args=['profile.some\tprofile.region', 'us-west-2'],
-                    parsed_globals=None)
+        set_command(
+            args=['profile.some\tprofile.region', 'us-west-2'],
+            parsed_globals=None,
+        )
         self.config_writer.update_config.assert_called_with(
             {'__section__': "profile 'some\tprofile'", 'region': 'us-west-2'},
-            'myconfigfile')
+            'myconfigfile',
+        )

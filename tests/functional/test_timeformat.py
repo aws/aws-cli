@@ -10,22 +10,28 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import json
 import datetime
+import json
+
 from dateutil.tz import tzlocal
-from awscli.testutils import FileCreator, BaseCLIWireResponseTest
-from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
+
+from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
+from awscli.testutils import BaseCLIWireResponseTest, FileCreator
 
 
 class TestCLITimestampParser(BaseCLIWireResponseTest):
     def setUp(self):
         super(TestCLITimestampParser, self).setUp()
         self.files = FileCreator()
-        self.wire_response = json.dumps({
-            'builds': [{
-                'startTime': 0,
-            }]
-        }).encode('utf-8')
+        self.wire_response = json.dumps(
+            {
+                'builds': [
+                    {
+                        'startTime': 0,
+                    }
+                ]
+            }
+        ).encode('utf-8')
         self.command = ['codebuild', 'batch-get-builds', '--ids', 'foo']
         self.patch_send(content=self.wire_response)
 
@@ -35,12 +41,15 @@ class TestCLITimestampParser(BaseCLIWireResponseTest):
 
     def test_iso(self):
         self.environ['AWS_CONFIG_FILE'] = self.files.create_file(
-            'iso',
-            '[default]\ncli_timestamp_format = iso8601\n')
+            'iso', '[default]\ncli_timestamp_format = iso8601\n'
+        )
         self.driver = create_clidriver()
         self.entry_point = AWSCLIEntryPoint(self.driver)
-        expected_time = datetime.datetime.fromtimestamp(0).replace(
-            tzinfo=tzlocal()).isoformat()
+        expected_time = (
+            datetime.datetime.fromtimestamp(0)
+            .replace(tzinfo=tzlocal())
+            .isoformat()
+        )
 
         stdout, _, _ = self.run_cmd(self.command)
         json_response = json.loads(stdout)
@@ -49,8 +58,8 @@ class TestCLITimestampParser(BaseCLIWireResponseTest):
 
     def test_none(self):
         self.environ['AWS_CONFIG_FILE'] = self.files.create_file(
-            'none',
-            '[default]\ncli_timestamp_format = wire\n')
+            'none', '[default]\ncli_timestamp_format = wire\n'
+        )
         self.driver = create_clidriver()
         self.entry_point = AWSCLIEntryPoint(self.driver)
         expected_time = 0
@@ -63,8 +72,11 @@ class TestCLITimestampParser(BaseCLIWireResponseTest):
     def test_default(self):
         self.driver = create_clidriver()
         self.entry_point = AWSCLIEntryPoint(self.driver)
-        expected_time = datetime.datetime.fromtimestamp(0).replace(
-            tzinfo=tzlocal()).isoformat()
+        expected_time = (
+            datetime.datetime.fromtimestamp(0)
+            .replace(tzinfo=tzlocal())
+            .isoformat()
+        )
 
         stdout, _, _ = self.run_cmd(self.command)
         json_response = json.loads(stdout)

@@ -10,9 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.compat import urlparse, parse_qs
+from botocore.compat import parse_qs, urlparse
 
-from awscli.testutils import mock, BaseAWSCommandParamsTest, FileCreator
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
 
 
 class TestSign(BaseAWSCommandParamsTest):
@@ -62,8 +62,11 @@ class TestSign(BaseAWSCommandParamsTest):
 
     def test_canned_policy(self):
         cmdline = (
-            self.prefix + '--private-key file://' + self.private_key_file +
-            ' --date-less-than 2016-1-1')
+            self.prefix
+            + '--private-key file://'
+            + self.private_key_file
+            + ' --date-less-than 2016-1-1'
+        )
         expected_signature = (
             "UiEmtMsInU-gXoa1O7-bTRJmZ~ocphB0ONMxyEHs2r8Y9dwzeB~DkbgzPMX3jbdb"
             "wIwVX3f4VcY4HBLdPSkbF~D6KbUlxPw1ju8mlXeu2C436XxZdrJrrJaiEDaTpKsl"
@@ -74,14 +77,20 @@ class TestSign(BaseAWSCommandParamsTest):
         )
         expected_params = {
             'Key-Pair-Id': ['my_id'],
-            'Expires': ['1451606400'], 'Signature': [expected_signature]}
+            'Expires': ['1451606400'],
+            'Signature': [expected_signature],
+        }
         self.assertDesiredUrl(
-            self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params)
+            self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params
+        )
 
     def test_custom_policy(self):
         cmdline = (
-            self.prefix + '--private-key file://' + self.private_key_file +
-            ' --date-less-than 2016-1-1 --ip-address 12.34.56.78')
+            self.prefix
+            + '--private-key file://'
+            + self.private_key_file
+            + ' --date-less-than 2016-1-1 --ip-address 12.34.56.78'
+        )
         expected_signature = (
             "Vw-WG18WJJXim7YSGWS-zW~XmFB9MjCDOvgC~2Gz-1wiMQzCrXzYYbSE7-aF6JGO"
             "Ob5ewArpMqmu2g5mohnqgieZX1NY6IOteDoXYgqaNj1DafHWQD6UJ3IKVfkxISU9"
@@ -92,6 +101,9 @@ class TestSign(BaseAWSCommandParamsTest):
         )
         expected_params = {
             'Key-Pair-Id': ['my_id'],
-            'Policy': [mock.ANY], 'Signature': [expected_signature]}
+            'Policy': [mock.ANY],
+            'Signature': [expected_signature],
+        }
         self.assertDesiredUrl(
-            self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params)
+            self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params
+        )

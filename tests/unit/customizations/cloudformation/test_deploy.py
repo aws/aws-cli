@@ -10,22 +10,20 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import json
-
-import tempfile
 import collections
+import json
+import tempfile
 
-from awscli.testutils import mock
-
+from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.deploy import DeployCommand
 from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.cloudformation.yamlhelper import yaml_parse
-from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.testutils import mock
 from tests.unit.customizations.cloudformation import BaseYAMLTest
 
 
-class FakeArgs(object):
+class FakeArgs:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
@@ -34,41 +32,39 @@ class FakeArgs(object):
 
 
 def get_example_template():
-    return {
-        "Parameters": {
-            "Key1": "Value1"
-        },
-        "Resources": {
-            "Resource1": {}
-        }
-    }
+    return {"Parameters": {"Key1": "Value1"}, "Resources": {"Resource1": {}}}
 
-ChangeSetResult = collections.namedtuple("ChangeSetResult", ["changeset_id", "changeset_type"])
+
+ChangeSetResult = collections.namedtuple(
+    "ChangeSetResult", ["changeset_id", "changeset_type"]
+)
+
 
 class TestDeployCommand(BaseYAMLTest):
-
     def setUp(self):
         super(TestDeployCommand, self).setUp()
         self.session = mock.Mock()
         self.session.get_scoped_config.return_value = {}
-        self.parsed_args = FakeArgs(template_file='./foo',
-                                    stack_name="some_stack_name",
-                                    parameter_overrides=["Key1=Value1",
-                                                         "Key2=Value2"],
-                                    no_execute_changeset=False,
-                                    execute_changeset=True,
-                                    disable_rollback=True,
-                                    capabilities=None,
-                                    role_arn=None,
-                                    notification_arns=[],
-                                    fail_on_empty_changeset=True,
-                                    s3_bucket=None,
-                                    s3_prefix="some prefix",
-                                    kms_key_id="some kms key id",
-                                    force_upload=True,
-                                    tags=["tagkey1=tagvalue1"])
-        self.parsed_globals = FakeArgs(region="us-east-1", endpoint_url=None,
-                                       verify_ssl=None)
+        self.parsed_args = FakeArgs(
+            template_file='./foo',
+            stack_name="some_stack_name",
+            parameter_overrides=["Key1=Value1", "Key2=Value2"],
+            no_execute_changeset=False,
+            execute_changeset=True,
+            disable_rollback=True,
+            capabilities=None,
+            role_arn=None,
+            notification_arns=[],
+            fail_on_empty_changeset=True,
+            s3_bucket=None,
+            s3_prefix="some prefix",
+            kms_key_id="some kms key id",
+            force_upload=True,
+            tags=["tagkey1=tagvalue1"],
+        )
+        self.parsed_globals = FakeArgs(
+            region="us-east-1", endpoint_url=None, verify_ssl=None
+        )
         self.deploy_command = DeployCommand(self.session)
 
         self.deployer = Deployer(mock.Mock())
@@ -93,9 +89,9 @@ class TestDeployCommand(BaseYAMLTest):
             open_mock = mock.mock_open()
             # Patch the file open method to return template string
             with mock.patch(
-                    "awscli.customizations.cloudformation.deploy.compat_open",
-                    open_mock(read_data=template_str)) as open_mock:
-
+                "awscli.customizations.cloudformation.deploy.compat_open",
+                open_mock(read_data=template_str),
+            ) as open_mock:
                 fake_template = get_example_template()
                 mock_yaml_parse.return_value = fake_template
 
@@ -103,13 +99,17 @@ class TestDeployCommand(BaseYAMLTest):
                 self.deploy_command.deploy.return_value = 0
                 self.deploy_command.parse_key_value_arg = mock.Mock()
                 self.deploy_command.parse_key_value_arg.side_effect = [
-                    fake_parameter_overrides, fake_tags_dict]
+                    fake_parameter_overrides,
+                    fake_tags_dict,
+                ]
                 self.deploy_command.merge_parameters = mock.MagicMock(
-                        return_value=fake_parameters)
+                    return_value=fake_parameters
+                )
 
                 self.parsed_args.template_file = file_path
-                result = self.deploy_command._run_main(self.parsed_args,
-                                              parsed_globals=self.parsed_globals)
+                result = self.deploy_command._run_main(
+                    self.parsed_args, parsed_globals=self.parsed_globals
+                )
                 self.assertEqual(0, result)
                 open_mock.assert_called_once_with(file_path, "r")
 
@@ -125,38 +125,37 @@ class TestDeployCommand(BaseYAMLTest):
                     None,
                     fake_tags,
                     True,
-                    True
+                    True,
                 )
 
-                self.deploy_command.parse_key_value_arg.assert_has_calls([
-                    mock.call(
-                        self.parsed_args.parameter_overrides,
-                         "parameter-overrides"
-                    ),
-                    mock.call(
-                        self.parsed_args.tags,
-                        "tags"
-                    )
-                ])
+                self.deploy_command.parse_key_value_arg.assert_has_calls(
+                    [
+                        mock.call(
+                            self.parsed_args.parameter_overrides,
+                            "parameter-overrides",
+                        ),
+                        mock.call(self.parsed_args.tags, "tags"),
+                    ]
+                )
 
                 self.deploy_command.merge_parameters.assert_called_once_with(
-                        fake_template, fake_parameter_overrides)
+                    fake_template, fake_parameter_overrides
+                )
 
                 self.assertEqual(1, mock_yaml_parse.call_count)
 
     def test_invalid_template_file(self):
         self.parsed_args.template_file = "sometemplate"
         with self.assertRaises(exceptions.InvalidTemplatePathError):
-            result = self.deploy_command._run_main(self.parsed_args,
-                                                  parsed_globals=self.parsed_globals)
+            result = self.deploy_command._run_main(
+                self.parsed_args, parsed_globals=self.parsed_globals
+            )
 
-    @mock.patch('awscli.customizations.cloudformation.deploy.os.path.expanduser')
+    @mock.patch(
+        'awscli.customizations.cloudformation.deploy.os.path.expanduser'
+    )
     def test_expands_user_for_template_file(self, expanduser):
-        contents = (
-            'Resource:\n'
-            '  Test:\n'
-            '    Type: AWS::Foo::Bar\n'
-        )
+        contents = 'Resource:\n' '  Test:\n' '    Type: AWS::Foo::Bar\n'
         with tempfile.NamedTemporaryFile('w') as f:
             f.write(contents)
             f.flush()
@@ -167,14 +166,20 @@ class TestDeployCommand(BaseYAMLTest):
         # in the code, this test would fail to load the file with an
         # InvalidTemplatePathError.
         expanduser.return_value = fake_expanduser_path
-        parsed, template_str, _ = self.deploy_command.load_template_file(f.name)
-        self.assertEqual(parsed, {'Resource': {'Test': {'Type': 'AWS::Foo::Bar'}}})
+        parsed, template_str, _ = self.deploy_command.load_template_file(
+            f.name
+        )
+        self.assertEqual(
+            parsed, {'Resource': {'Test': {'Type': 'AWS::Foo::Bar'}}}
+        )
         self.assertEqual(template_str, contents)
 
     @mock.patch('awscli.customizations.cloudformation.deploy.os.path.isfile')
     @mock.patch('awscli.customizations.cloudformation.deploy.yaml_parse')
     @mock.patch('awscli.customizations.cloudformation.deploy.os.path.getsize')
-    def test_s3_upload_required_but_missing_bucket(self, mock_getsize, mock_yaml_parse, mock_isfile):
+    def test_s3_upload_required_but_missing_bucket(
+        self, mock_getsize, mock_yaml_parse, mock_isfile
+    ):
         """
         Tests that large templates are detected prior to deployment
         """
@@ -186,19 +191,29 @@ class TestDeployCommand(BaseYAMLTest):
         open_mock = mock.mock_open()
 
         with mock.patch(
-                "awscli.customizations.cloudformation.deploy.compat_open",
-                open_mock(read_data=template_str)) as open_mock:
+            "awscli.customizations.cloudformation.deploy.compat_open",
+            open_mock(read_data=template_str),
+        ) as open_mock:
             with self.assertRaises(exceptions.DeployBucketRequiredError):
-                result = self.deploy_command._run_main(self.parsed_args,
-                                parsed_globals=self.parsed_globals)
+                result = self.deploy_command._run_main(
+                    self.parsed_args, parsed_globals=self.parsed_globals
+                )
 
     @mock.patch('awscli.customizations.cloudformation.deploy.os.path.isfile')
     @mock.patch('awscli.customizations.cloudformation.deploy.yaml_parse')
     @mock.patch('awscli.customizations.cloudformation.deploy.os.path.getsize')
-    @mock.patch('awscli.customizations.cloudformation.deploy.DeployCommand.deploy')
+    @mock.patch(
+        'awscli.customizations.cloudformation.deploy.DeployCommand.deploy'
+    )
     @mock.patch('awscli.customizations.cloudformation.deploy.S3Uploader')
-    def test_s3_uploader_is_configured_properly(self, s3UploaderMock,
-        deploy_method_mock, mock_getsize, mock_yaml_parse, mock_isfile):
+    def test_s3_uploader_is_configured_properly(
+        self,
+        s3UploaderMock,
+        deploy_method_mock,
+        mock_getsize,
+        mock_yaml_parse,
+        mock_isfile,
+    ):
         """
         Tests that large templates are detected prior to deployment
         """
@@ -211,15 +226,16 @@ class TestDeployCommand(BaseYAMLTest):
         open_mock = mock.mock_open()
 
         with mock.patch(
-                "awscli.customizations.cloudformation.deploy.compat_open",
-                open_mock(read_data=template_str)) as open_mock:
-
+            "awscli.customizations.cloudformation.deploy.compat_open",
+            open_mock(read_data=template_str),
+        ) as open_mock:
             self.parsed_args.s3_bucket = bucket_name
             s3UploaderObject = mock.Mock()
             s3UploaderMock.return_value = s3UploaderObject
 
-            result = self.deploy_command._run_main(self.parsed_args,
-                            parsed_globals=self.parsed_globals)
+            result = self.deploy_command._run_main(
+                self.parsed_args, parsed_globals=self.parsed_globals
+            )
 
             self.deploy_command.deploy.assert_called_once_with(
                 mock.ANY,
@@ -233,14 +249,16 @@ class TestDeployCommand(BaseYAMLTest):
                 s3UploaderObject,
                 [{"Key": "tagkey1", "Value": "tagvalue1"}],
                 True,
-                True
+                True,
             )
 
-            s3UploaderMock.assert_called_once_with(mock.ANY,
-                    bucket_name,
-                    self.parsed_args.s3_prefix,
-                    self.parsed_args.kms_key_id,
-                    self.parsed_args.force_upload)
+            s3UploaderMock.assert_called_once_with(
+                mock.ANY,
+                bucket_name,
+                self.parsed_args.s3_prefix,
+                self.parsed_args.kms_key_id,
+                self.parsed_args.force_upload,
+            )
 
     def test_deploy_success(self):
         """
@@ -257,37 +275,45 @@ class TestDeployCommand(BaseYAMLTest):
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
         s3_uploader = None
-        tags = [{"Key":"key1", "Value": "val1"}]
+        tags = [{"Key": "key1", "Value": "val1"}]
 
         # Set the mock to return this fake changeset_id
-        self.deployer.create_and_wait_for_changeset.return_value = ChangeSetResult(changeset_id, changeset_type)
+        self.deployer.create_and_wait_for_changeset.return_value = (
+            ChangeSetResult(changeset_id, changeset_type)
+        )
 
-        rc = self.deploy_command.deploy(self.deployer,
-                                   stack_name,
-                                   template,
-                                   parameters,
-                                   capabilities,
-                                   execute_changeset,
-                                   role_arn,
-                                   notification_arns,
-                                   s3_uploader,
-                                   tags)
+        rc = self.deploy_command.deploy(
+            self.deployer,
+            stack_name,
+            template,
+            parameters,
+            capabilities,
+            execute_changeset,
+            role_arn,
+            notification_arns,
+            s3_uploader,
+            tags,
+        )
         self.assertEqual(rc, 0)
 
-
-        self.deployer.create_and_wait_for_changeset.assert_called_once_with(stack_name=stack_name,
-                                                     cfn_template=template,
-                                                     parameter_values=parameters,
-                                                     capabilities=capabilities,
-                                                     role_arn=role_arn,
-                                                     notification_arns=notification_arns,
-                                                     s3_uploader=s3_uploader,
-                                                     tags=tags)
+        self.deployer.create_and_wait_for_changeset.assert_called_once_with(
+            stack_name=stack_name,
+            cfn_template=template,
+            parameter_values=parameters,
+            capabilities=capabilities,
+            role_arn=role_arn,
+            notification_arns=notification_arns,
+            s3_uploader=s3_uploader,
+            tags=tags,
+        )
 
         # since execute_changeset is set to True, deploy() will execute changeset
-        self.deployer.execute_changeset.assert_called_once_with(changeset_id, stack_name, False)
-        self.deployer.wait_for_execute.assert_called_once_with(stack_name, changeset_type)
-
+        self.deployer.execute_changeset.assert_called_once_with(
+            changeset_id, stack_name, False
+        )
+        self.deployer.wait_for_execute.assert_called_once_with(
+            stack_name, changeset_type
+        )
 
     def test_deploy_no_execute(self):
         stack_name = "stack_name"
@@ -299,30 +325,35 @@ class TestDeployCommand(BaseYAMLTest):
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
         s3_uploader = None
-        tags = [{"Key":"key1", "Value": "val1"}]
+        tags = [{"Key": "key1", "Value": "val1"}]
 
-
-        self.deployer.create_and_wait_for_changeset.return_value = ChangeSetResult(changeset_id, "CREATE")
-        rc = self.deploy_command.deploy(self.deployer,
-                                            stack_name,
-                                            template,
-                                            parameters,
-                                            capabilities,
-                                            execute_changeset,
-                                            role_arn,
-                                            notification_arns,
-                                            s3_uploader,
-                                            tags)
+        self.deployer.create_and_wait_for_changeset.return_value = (
+            ChangeSetResult(changeset_id, "CREATE")
+        )
+        rc = self.deploy_command.deploy(
+            self.deployer,
+            stack_name,
+            template,
+            parameters,
+            capabilities,
+            execute_changeset,
+            role_arn,
+            notification_arns,
+            s3_uploader,
+            tags,
+        )
         self.assertEqual(rc, 0)
 
-        self.deployer.create_and_wait_for_changeset.assert_called_once_with(stack_name=stack_name,
-                                                     cfn_template=template,
-                                                     parameter_values=parameters,
-                                                     capabilities=capabilities,
-                                                     role_arn=role_arn,
-                                                     notification_arns=notification_arns,
-                                                     s3_uploader=s3_uploader,
-                                                     tags=tags)
+        self.deployer.create_and_wait_for_changeset.assert_called_once_with(
+            stack_name=stack_name,
+            cfn_template=template,
+            parameter_values=parameters,
+            capabilities=capabilities,
+            role_arn=role_arn,
+            notification_arns=notification_arns,
+            s3_uploader=s3_uploader,
+            tags=tags,
+        )
 
         # since execute_changeset is set to True, deploy() will execute changeset
         self.deployer.execute_changeset.assert_not_called()
@@ -338,20 +369,22 @@ class TestDeployCommand(BaseYAMLTest):
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
         s3_uploader = None
-        tags = [{"Key":"key1", "Value": "val1"}]
+        tags = [{"Key": "key1", "Value": "val1"}]
 
         self.deployer.wait_for_execute.side_effect = RuntimeError("Some error")
         with self.assertRaises(RuntimeError):
-            self.deploy_command.deploy(self.deployer,
-                                       stack_name,
-                                       template,
-                                       parameters,
-                                       capabilities,
-                                       execute_changeset,
-                                       role_arn,
-                                       notification_arns,
-                                       s3_uploader,
-                                       tags)
+            self.deploy_command.deploy(
+                self.deployer,
+                stack_name,
+                template,
+                parameters,
+                capabilities,
+                execute_changeset,
+                role_arn,
+                notification_arns,
+                s3_uploader,
+                tags,
+            )
 
     def test_deploy_raises_exception_on_empty_changeset(self):
         stack_name = "stack_name"
@@ -368,9 +401,18 @@ class TestDeployCommand(BaseYAMLTest):
         changeset_func.side_effect = empty_changeset
         with self.assertRaises(exceptions.ChangeEmptyError):
             self.deploy_command.deploy(
-                self.deployer, stack_name, template, parameters, capabilities,
-                execute_changeset, role_arn, notification_arns,
-                None, tags, fail_on_empty_changeset=True)
+                self.deployer,
+                stack_name,
+                template,
+                parameters,
+                capabilities,
+                execute_changeset,
+                role_arn,
+                notification_arns,
+                None,
+                tags,
+                fail_on_empty_changeset=True,
+            )
 
     def test_deploy_does_not_raise_exception_on_empty_changeset(self):
         stack_name = "stack_name"
@@ -385,10 +427,17 @@ class TestDeployCommand(BaseYAMLTest):
         changeset_func = self.deployer.create_and_wait_for_changeset
         changeset_func.side_effect = empty_changeset
         self.deploy_command.deploy(
-            self.deployer, stack_name, template, parameters, capabilities,
-            execute_changeset, role_arn, notification_arns,
-            s3_uploader=None, tags=[],
-            fail_on_empty_changeset=False
+            self.deployer,
+            stack_name,
+            template,
+            parameters,
+            capabilities,
+            execute_changeset,
+            role_arn,
+            notification_arns,
+            s3_uploader=None,
+            tags=[],
+            fail_on_empty_changeset=False,
         )
 
     def test_deploy_empty_changeset_does_not_raise_exception_by_default(self):
@@ -404,9 +453,16 @@ class TestDeployCommand(BaseYAMLTest):
         changeset_func = self.deployer.create_and_wait_for_changeset
         changeset_func.side_effect = empty_changeset
         self.deploy_command.deploy(
-            self.deployer, stack_name, template, parameters, capabilities,
-            execute_changeset, role_arn, notification_arns,
-            s3_uploader=None, tags=[]
+            self.deployer,
+            stack_name,
+            template,
+            parameters,
+            capabilities,
+            execute_changeset,
+            role_arn,
+            notification_arns,
+            s3_uploader=None,
+            tags=[],
         )
 
     def test_parse_key_value_arg_success(self):
@@ -417,7 +473,11 @@ class TestDeployCommand(BaseYAMLTest):
         """
         argname = "parameter-overrides"
         data = ["Key1=Value1", 'Key2=[1,2,3]', 'Key3={"a":"val", "b": 2}']
-        output = {"Key1": "Value1", "Key2": '[1,2,3]', "Key3": '{"a":"val", "b": 2}'}
+        output = {
+            "Key1": "Value1",
+            "Key2": '[1,2,3]',
+            "Key3": '{"a":"val", "b": 2}',
+        }
 
         result = self.deploy_command.parse_key_value_arg(data, argname)
         self.assertEqual(result, output)
@@ -432,17 +492,21 @@ class TestDeployCommand(BaseYAMLTest):
         CloudFormation parameters file format
         :return:
         """
-        data = json.dumps([
-            {'ParameterKey': 'Key1',
-             'ParameterValue': 'Value1'},
-            {'ParameterKey': 'Key2',
-             'ParameterValue': '[1,2,3]'},
-            {'ParameterKey': 'Key3',
-             'ParameterValue': '{"a":"val", "b": 2}'}
-        ])
-        output = {"Key1": "Value1",
-                  "Key2": '[1,2,3]',
-                  "Key3": '{"a":"val", "b": 2}'}
+        data = json.dumps(
+            [
+                {'ParameterKey': 'Key1', 'ParameterValue': 'Value1'},
+                {'ParameterKey': 'Key2', 'ParameterValue': '[1,2,3]'},
+                {
+                    'ParameterKey': 'Key3',
+                    'ParameterValue': '{"a":"val", "b": 2}',
+                },
+            ]
+        )
+        output = {
+            "Key1": "Value1",
+            "Key2": '[1,2,3]',
+            "Key3": '{"a":"val", "b": 2}',
+        }
         result = self.deploy_command.parse_parameter_overrides(data)
         self.assertEqual(result, output)
 
@@ -452,11 +516,15 @@ class TestDeployCommand(BaseYAMLTest):
         CloudFormation parameters file format
         :return:
         """
-        data = json.dumps([
-            {'ParameterKey': 'Key1',
-             'ParameterValue': 'Value1',
-             'RedundantKey': 'foo'}
-        ])
+        data = json.dumps(
+            [
+                {
+                    'ParameterKey': 'Key1',
+                    'ParameterValue': 'Value1',
+                    'RedundantKey': 'foo',
+                }
+            ]
+        )
         with self.assertRaises(ParamValidationError):
             self.deploy_command.parse_parameter_overrides(data)
 
@@ -466,16 +534,20 @@ class TestDeployCommand(BaseYAMLTest):
         CodePipeline parameters file format
         :return:
         """
-        data = json.dumps({
-            'Parameters': {
-                "Key1": "Value1",
-                "Key2": '[1,2,3]',
-                "Key3": '{"a":"val", "b": 2}'
+        data = json.dumps(
+            {
+                'Parameters': {
+                    "Key1": "Value1",
+                    "Key2": '[1,2,3]',
+                    "Key3": '{"a":"val", "b": 2}',
+                }
             }
-        })
-        output = {"Key1": "Value1",
-                  "Key2": '[1,2,3]',
-                  "Key3": '{"a":"val", "b": 2}'}
+        )
+        output = {
+            "Key1": "Value1",
+            "Key2": '[1,2,3]',
+            "Key3": '{"a":"val", "b": 2}',
+        }
         result = self.deploy_command.parse_parameter_overrides(data)
         self.assertEqual(result, output)
 
@@ -485,26 +557,28 @@ class TestDeployCommand(BaseYAMLTest):
         deploy command parameters file format
         :return:
         """
-        data = json.dumps([
-            'Key1=Value1',
-            'Key2=[1,2,3]',
-            'Key3={"a":"val", "b": 2}'
-        ])
-        output = {"Key1": "Value1",
-                  "Key2": '[1,2,3]',
-                  "Key3": '{"a":"val", "b": 2}'}
+        data = json.dumps(
+            ['Key1=Value1', 'Key2=[1,2,3]', 'Key3={"a":"val", "b": 2}']
+        )
+        output = {
+            "Key1": "Value1",
+            "Key2": '[1,2,3]',
+            "Key3": '{"a":"val", "b": 2}',
+        }
         result = self.deploy_command.parse_parameter_overrides(data)
         self.assertEqual(result, output)
 
     def test_parse_parameter_override_with_inline_json(self):
-        data = [json.dumps([
-            'Key1=Value1',
-            'Key2=[1,2,3]',
-            'Key3={"a":"val", "b": 2}'
-        ])]
-        output = {"Key1": "Value1",
-                  "Key2": '[1,2,3]',
-                  "Key3": '{"a":"val", "b": 2}'}
+        data = [
+            json.dumps(
+                ['Key1=Value1', 'Key2=[1,2,3]', 'Key3={"a":"val", "b": 2}']
+            )
+        ]
+        output = {
+            "Key1": "Value1",
+            "Key2": '[1,2,3]',
+            "Key3": '{"a":"val", "b": 2}',
+        }
         result = self.deploy_command.parse_parameter_overrides(data)
         self.assertEqual(result, output)
 
@@ -514,14 +588,12 @@ class TestDeployCommand(BaseYAMLTest):
         deploy command parameters command line format
         :return:
         """
-        data = [
-            'Key1=Value1',
-            'Key2=[1,2,3]',
-            'Key3={"a":"val", "b": 2}'
-        ]
-        output = {"Key1": "Value1",
-                  "Key2": '[1,2,3]',
-                  "Key3": '{"a":"val", "b": 2}'}
+        data = ['Key1=Value1', 'Key2=[1,2,3]', 'Key3={"a":"val", "b": 2}']
+        output = {
+            "Key1": "Value1",
+            "Key2": '[1,2,3]',
+            "Key3": '{"a":"val", "b": 2}',
+        }
         result = self.deploy_command.parse_parameter_overrides(data)
         self.assertEqual(result, output)
 
@@ -546,28 +618,34 @@ class TestDeployCommand(BaseYAMLTest):
                 "Key2": {"Type": "String"},
                 "Key3": "Something",
                 "Key4": {"Type": "Number"},
-                "KeyWithDefaultValue": {"Type": "String", "Default": "something"},
-                "KeyWithDefaultValueButOverridden": {"Type": "String", "Default": "something"}
+                "KeyWithDefaultValue": {
+                    "Type": "String",
+                    "Default": "something",
+                },
+                "KeyWithDefaultValueButOverridden": {
+                    "Type": "String",
+                    "Default": "something",
+                },
             }
         }
         overrides = {
             "Key1": "Value1",
             "Key3": "Value3",
-            "KeyWithDefaultValueButOverridden": "Value4"
+            "KeyWithDefaultValueButOverridden": "Value4",
         }
 
         expected_result = [
             # Overriden values
             {"ParameterKey": "Key1", "ParameterValue": "Value1"},
             {"ParameterKey": "Key3", "ParameterValue": "Value3"},
-
             # Parameter contains default value, but overridden with new value
-            {"ParameterKey": "KeyWithDefaultValueButOverridden", "ParameterValue": "Value4"},
-
+            {
+                "ParameterKey": "KeyWithDefaultValueButOverridden",
+                "ParameterValue": "Value4",
+            },
             # non-overriden values
             {"ParameterKey": "Key2", "UsePreviousValue": True},
             {"ParameterKey": "Key4", "UsePreviousValue": True},
-
             # Parameter with default value but NOT overridden.
             # Use previous value, but this gets removed later when we are creating stack for first time
             {"ParameterKey": "KeyWithDefaultValue", "UsePreviousValue": True},
@@ -575,7 +653,7 @@ class TestDeployCommand(BaseYAMLTest):
 
         self.assertItemsEqual(
             self.deploy_command.merge_parameters(template, overrides),
-            expected_result
+            expected_result,
         )
 
     def test_merge_parameters_success_nothing_to_override(self):
@@ -585,8 +663,10 @@ class TestDeployCommand(BaseYAMLTest):
         """
         template = {
             "Parameters": {
-                "Key1": {"Type": "String"}, "Key2": {"Type": "String"},
-                "Key3": "Something", "Key4": {"Type": "Number"},
+                "Key1": {"Type": "String"},
+                "Key2": {"Type": "String"},
+                "Key3": "Something",
+                "Key4": {"Type": "Number"},
             }
         }
         overrides = {
@@ -603,21 +683,22 @@ class TestDeployCommand(BaseYAMLTest):
 
         self.assertItemsEqual(
             self.deploy_command.merge_parameters(template, overrides),
-            expected_result
+            expected_result,
         )
 
         # Parameters definition is empty. Nothing to override
-        result = self.deploy_command.merge_parameters({"Parameters": {}},
-                                                      overrides)
+        result = self.deploy_command.merge_parameters(
+            {"Parameters": {}}, overrides
+        )
         self.assertEqual(result, [])
 
     def test_merge_parameters_invalid_input(self):
-
         # Template does not contain "Parameters" definition
         result = self.deploy_command.merge_parameters({}, {"Key": "Value"})
         self.assertEqual(result, [])
 
         # Parameters definition is invalid
-        result = self.deploy_command.merge_parameters({"Parameters": "foo"},
-                                                      {"Key": "Value"})
+        result = self.deploy_command.merge_parameters(
+            {"Parameters": "foo"}, {"Key": "Value"}
+        )
         self.assertEqual(result, [])

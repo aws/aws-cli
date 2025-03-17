@@ -13,8 +13,8 @@
 
 from argparse import Namespace
 
-from awscli.customizations.servicecatalog import GenerateCommand
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.servicecatalog import GenerateCommand
 from awscli.testutils import unittest
 
 

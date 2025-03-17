@@ -13,14 +13,16 @@
 from decimal import Decimal
 
 from awscli.customizations.dynamodb.exceptions import (
-    UnexpectedTokenError, UnknownExpressionError, InvalidLiteralValueError,
     EmptyExpressionError,
+    InvalidLiteralValueError,
+    UnexpectedTokenError,
+    UnknownExpressionError,
 )
 from awscli.customizations.dynamodb.parser import Parser
 from awscli.testutils import unittest
 
 
-class FakeLexer(object):
+class FakeLexer:
     def __init__(self, tokens):
         self._tokens = tokens
 
@@ -66,7 +68,7 @@ class TestParser(unittest.TestCase):
             'children': [
                 {'type': 'identifier', 'value': 'foo', 'children': []},
                 {'type': 'identifier', 'value': 'bar', 'children': []},
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -93,20 +95,22 @@ class TestParser(unittest.TestCase):
             'type': 'and_expression',
             'children': [
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {'type': 'identifier', 'value': 'foo', 'children': []},
                         {'type': 'literal', 'value': 'bar', 'children': []},
                     ],
                 },
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {'type': 'identifier', 'value': 'baz', 'children': []},
                         {'type': 'literal', 'value': 'bam', 'children': []},
                     ],
                 },
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -129,36 +133,40 @@ class TestParser(unittest.TestCase):
             'type': 'and_expression',
             'children': [
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {'type': 'identifier', 'value': 'foo', 'children': []},
                         {'type': 'literal', 'value': 'bar', 'children': []},
                     ],
                 },
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {'type': 'identifier', 'value': 'baz', 'children': []},
                         {'type': 'literal', 'value': 'bam', 'children': []},
                     ],
                 },
-            ]
+            ],
         }
         expected = {
             'type': 'and_expression',
             'children': [
                 left_and_expression,
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {
                             'type': 'identifier',
-                            'value': 'spam', 'children': []
+                            'value': 'spam',
+                            'children': [],
                         },
                         {'type': 'literal', 'value': 'eggs', 'children': []},
                     ],
                 },
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -188,20 +196,22 @@ class TestParser(unittest.TestCase):
             'type': 'or_expression',
             'children': [
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {'type': 'identifier', 'value': 'foo', 'children': []},
                         {'type': 'literal', 'value': 'bar', 'children': []},
                     ],
                 },
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {'type': 'identifier', 'value': 'baz', 'children': []},
                         {'type': 'literal', 'value': 'bam', 'children': []},
                     ],
                 },
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -224,36 +234,40 @@ class TestParser(unittest.TestCase):
             'type': 'or_expression',
             'children': [
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {'type': 'identifier', 'value': 'foo', 'children': []},
                         {'type': 'literal', 'value': 'bar', 'children': []},
                     ],
                 },
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {'type': 'identifier', 'value': 'baz', 'children': []},
                         {'type': 'literal', 'value': 'bam', 'children': []},
                     ],
                 },
-            ]
+            ],
         }
         expected = {
             'type': 'or_expression',
             'children': [
                 left_or_expression,
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {
                             'type': 'identifier',
-                            'value': 'spam', 'children': []
+                            'value': 'spam',
+                            'children': [],
                         },
                         {'type': 'literal', 'value': 'eggs', 'children': []},
                     ],
                 },
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -287,36 +301,40 @@ class TestParser(unittest.TestCase):
             'type': 'and_expression',
             'children': [
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {'type': 'identifier', 'value': 'foo', 'children': []},
                         {'type': 'literal', 'value': 'bar', 'children': []},
                     ],
                 },
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {'type': 'identifier', 'value': 'baz', 'children': []},
                         {'type': 'literal', 'value': 'bam', 'children': []},
                     ],
                 },
-            ]
+            ],
         }
         expected = {
             'type': 'or_expression',
             'children': [
                 left_and_expression,
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {
                             'type': 'identifier',
-                            'value': 'spam', 'children': []
+                            'value': 'spam',
+                            'children': [],
                         },
                         {'type': 'literal', 'value': 'eggs', 'children': []},
                     ],
                 },
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -333,13 +351,14 @@ class TestParser(unittest.TestCase):
             'type': 'subexpression',
             'children': [
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {'type': 'identifier', 'value': 'foo', 'children': []},
                         {'type': 'literal', 'value': 'bar', 'children': []},
                     ],
                 },
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -360,25 +379,24 @@ class TestParser(unittest.TestCase):
             'type': 'and_expression',
             'children': [
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {'type': 'identifier', 'value': 'foo', 'children': []},
                         {'type': 'literal', 'value': 'bar', 'children': []},
                     ],
                 },
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {'type': 'identifier', 'value': 'baz', 'children': []},
                         {'type': 'literal', 'value': 'bam', 'children': []},
                     ],
                 },
-            ]
+            ],
         }
-        expected = {
-            'type': 'subexpression',
-            'children': [and_expression]
-        }
+        expected = {'type': 'subexpression', 'children': [and_expression]}
         self.assert_parse(tokens, expected)
 
     def test_parse_subexpression_unmatched_paren(self):
@@ -404,13 +422,14 @@ class TestParser(unittest.TestCase):
             'type': 'not_expression',
             'children': [
                 {
-                    'type': 'comparator', 'value': 'eq',
+                    'type': 'comparator',
+                    'value': 'eq',
                     'children': [
                         {'type': 'identifier', 'value': 'foo', 'children': []},
                         {'type': 'literal', 'value': 'bar', 'children': []},
                     ],
                 },
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -433,11 +452,12 @@ class TestParser(unittest.TestCase):
             {'type': 'eof', 'value': ''},
         ]
         expected = {
-            'type': 'function', 'value': 'foo',
+            'type': 'function',
+            'value': 'foo',
             'children': [
                 {'type': 'literal', 'value': 'bar', 'children': []},
                 {'type': 'literal', 'value': 'baz', 'children': []},
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -479,14 +499,14 @@ class TestParser(unittest.TestCase):
             'children': [
                 {'type': 'literal', 'value': 'bar', 'children': []},
                 {'type': 'literal', 'value': 'baz', 'children': []},
-            ]
+            ],
         }
         expected = {
             'type': 'in_expression',
             'children': [
                 {'type': 'identifier', 'value': 'foo', 'children': []},
                 sequence,
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -526,7 +546,7 @@ class TestParser(unittest.TestCase):
                 {'type': 'identifier', 'value': 'foo', 'children': []},
                 {'type': 'literal', 'value': 1, 'children': []},
                 {'type': 'literal', 'value': 3, 'children': []},
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -571,11 +591,12 @@ class TestParser(unittest.TestCase):
             {'type': 'eof', 'value': ''},
         ]
         expected = {
-            'type': 'comparator', 'value': 'lte',
+            'type': 'comparator',
+            'value': 'lte',
             'children': [
                 {'type': 'identifier', 'value': 'foo', 'children': []},
                 {'type': 'literal', 'value': 8, 'children': []},
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -600,11 +621,12 @@ class TestParser(unittest.TestCase):
             {'type': 'eof', 'value': ''},
         ]
         expected = {
-            'type': 'comparator', 'value': 'eq',
+            'type': 'comparator',
+            'value': 'eq',
             'children': [
                 {'type': 'identifier', 'value': 'foo', 'children': []},
                 {'type': 'literal', 'children': [], 'value': [8, 9]},
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -617,11 +639,12 @@ class TestParser(unittest.TestCase):
             {'type': 'eof', 'value': ''},
         ]
         expected = {
-            'type': 'comparator', 'value': 'eq',
+            'type': 'comparator',
+            'value': 'eq',
             'children': [
                 {'type': 'identifier', 'value': 'foo', 'children': []},
                 {'type': 'literal', 'children': [], 'value': []},
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -662,11 +685,12 @@ class TestParser(unittest.TestCase):
             {'type': 'eof', 'value': ''},
         ]
         expected = {
-            'type': 'comparator', 'value': 'eq',
+            'type': 'comparator',
+            'value': 'eq',
             'children': [
                 {'type': 'identifier', 'value': 'foo', 'children': []},
                 {'type': 'literal', 'children': [], 'value': {8, 9}},
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -749,13 +773,16 @@ class TestParser(unittest.TestCase):
             {'type': 'eof', 'value': ''},
         ]
         expected = {
-            'type': 'comparator', 'value': 'eq',
+            'type': 'comparator',
+            'value': 'eq',
             'children': [
                 {'type': 'identifier', 'value': 'foo', 'children': []},
-                {'type': 'literal', 'children': [], 'value': {
-                    "bar": 4, "baz": 3
-                }},
-            ]
+                {
+                    'type': 'literal',
+                    'children': [],
+                    'value': {"bar": 4, "baz": 3},
+                },
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -768,11 +795,12 @@ class TestParser(unittest.TestCase):
             {'type': 'eof', 'value': ''},
         ]
         expected = {
-            'type': 'comparator', 'value': 'eq',
+            'type': 'comparator',
+            'value': 'eq',
             'children': [
                 {'type': 'identifier', 'value': 'foo', 'children': []},
                 {'type': 'literal', 'children': [], 'value': {}},
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -854,7 +882,7 @@ class TestParser(unittest.TestCase):
             'children': [
                 {'type': 'identifier', 'value': 'foo', 'children': []},
                 {'type': 'identifier', 'value': 'bar', 'children': []},
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -867,10 +895,11 @@ class TestParser(unittest.TestCase):
             {'type': 'eof', 'value': ''},
         ]
         expected = {
-            'type': 'index_identifier', 'value': Decimal(0),
+            'type': 'index_identifier',
+            'value': Decimal(0),
             'children': [
                 {'type': 'identifier', 'value': 'foo', 'children': []},
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -898,11 +927,15 @@ class TestParser(unittest.TestCase):
         expected = {
             'type': 'path_identifier',
             'children': [
-                {'type': 'index_identifier', 'value': Decimal(0), 'children': [
-                    {'type': 'identifier', 'value': 'foo', 'children': []},
-                ]},
+                {
+                    'type': 'index_identifier',
+                    'value': Decimal(0),
+                    'children': [
+                        {'type': 'identifier', 'value': 'foo', 'children': []},
+                    ],
+                },
                 {'type': 'identifier', 'value': 'bar', 'children': []},
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -920,13 +953,16 @@ class TestParser(unittest.TestCase):
         expected = {
             'type': 'between_expression',
             'children': [
-                {'type': 'path_identifier', 'children': [
-                    {'type': 'identifier', 'value': 'foo', 'children': []},
-                    {'type': 'identifier', 'value': 'bar', 'children': []},
-                ]},
+                {
+                    'type': 'path_identifier',
+                    'children': [
+                        {'type': 'identifier', 'value': 'foo', 'children': []},
+                        {'type': 'identifier', 'value': 'bar', 'children': []},
+                    ],
+                },
                 {'type': 'literal', 'value': 1, 'children': []},
                 {'type': 'literal', 'value': 3, 'children': []},
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -949,16 +985,20 @@ class TestParser(unittest.TestCase):
             'children': [
                 {'type': 'literal', 'value': 'bar', 'children': []},
                 {'type': 'literal', 'value': 'baz', 'children': []},
-            ]
+            ],
         }
         expected = {
             'type': 'in_expression',
             'children': [
-                {'type': 'index_identifier', 'value': Decimal(0), 'children': [
-                    {'type': 'identifier', 'value': 'foo', 'children': []},
-                ]},
+                {
+                    'type': 'index_identifier',
+                    'value': Decimal(0),
+                    'children': [
+                        {'type': 'identifier', 'value': 'foo', 'children': []},
+                    ],
+                },
                 sequence,
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -972,14 +1012,18 @@ class TestParser(unittest.TestCase):
             {'type': 'eof', 'value': ''},
         ]
         expected = {
-            'type': 'comparator', 'value': 'gte',
+            'type': 'comparator',
+            'value': 'gte',
             'children': [
-                {'type': 'path_identifier', 'children': [
-                    {'type': 'identifier', 'value': 'foo', 'children': []},
-                    {'type': 'identifier', 'value': 'bar', 'children': []},
-                ]},
+                {
+                    'type': 'path_identifier',
+                    'children': [
+                        {'type': 'identifier', 'value': 'foo', 'children': []},
+                        {'type': 'identifier', 'value': 'bar', 'children': []},
+                    ],
+                },
                 {'type': 'literal', 'value': 8, 'children': []},
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)
 
@@ -997,12 +1041,13 @@ class TestParser(unittest.TestCase):
             'children': [
                 {'type': 'identifier', 'value': 'foo', 'children': []},
                 {'type': 'identifier', 'value': 'bar', 'children': []},
-            ]
+            ],
         }
         expected = {
-            'type': 'sequence', 'children': [
+            'type': 'sequence',
+            'children': [
                 first,
                 {'type': 'identifier', 'value': 'baz', 'children': []},
-            ]
+            ],
         }
         self.assert_parse(tokens, expected)

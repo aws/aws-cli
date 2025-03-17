@@ -13,11 +13,11 @@
 import json
 import os
 
-from botocore.session import get_session
 from botocore.loaders import Loader
+from botocore.session import get_session
 
 from awscli.customizations.configure.addmodel import get_model_location
-from awscli.testutils import unittest, FileCreator
+from awscli.testutils import FileCreator, unittest
 
 
 class TestGetModelLocation(unittest.TestCase):
@@ -36,7 +36,7 @@ class TestGetModelLocation(unittest.TestCase):
 
         self.data_loader = Loader(
             [self.customer_data_root, self.builtin_data_root],
-            include_default_search_paths=False
+            include_default_search_paths=False,
         )
         self.data_loader.CUSTOMER_DATA_PATH = self.customer_data_root
         self.session.register_component('data_loader', self.data_loader)
@@ -50,25 +50,37 @@ class TestGetModelLocation(unittest.TestCase):
         self.default_api_version = '2015-10-01'
 
         matching_service_path = os.path.join(
-            self.builtin_data_root, self.matching_service,
-            self.default_api_version, 'service-2.json'
+            self.builtin_data_root,
+            self.matching_service,
+            self.default_api_version,
+            'service-2.json',
         )
         os.makedirs(os.path.dirname(matching_service_path))
 
         non_matching_service_path = os.path.join(
-            self.builtin_data_root, self.non_matching_service,
-            self.default_api_version, 'service-2.json'
+            self.builtin_data_root,
+            self.non_matching_service,
+            self.default_api_version,
+            'service-2.json',
         )
         os.makedirs(os.path.dirname(non_matching_service_path))
 
         # Write the models to the builtin directory
         with open(matching_service_path, 'w') as f:
-            json.dump(self._create_service_definition(
-                self.matching_service, self.default_api_version), f)
+            json.dump(
+                self._create_service_definition(
+                    self.matching_service, self.default_api_version
+                ),
+                f,
+            )
 
         with open(non_matching_service_path, 'w') as f:
-            json.dump(self._create_service_definition(
-                self.non_matching_prefix, self.default_api_version), f)
+            json.dump(
+                self._create_service_definition(
+                    self.non_matching_prefix, self.default_api_version
+                ),
+                f,
+            )
 
     def tearDown(self):
         self.files.remove_all()
@@ -81,67 +93,106 @@ class TestGetModelLocation(unittest.TestCase):
                 "endpointPrefix": endpoint_prefix,
             },
             "operations": {},
-            "shapes": {}
+            "shapes": {},
         }
 
     def test_get_model_location_for_matching_prefix_and_name(self):
         model_location = get_model_location(
-            self.session, self._create_service_definition(
-                self.matching_service, self.default_api_version))
+            self.session,
+            self._create_service_definition(
+                self.matching_service, self.default_api_version
+            ),
+        )
         self.assertEqual(
             os.path.join(
                 self.data_loader.CUSTOMER_DATA_PATH,
-                self.matching_service, self.default_api_version,
-                'service-2.json'), model_location)
+                self.matching_service,
+                self.default_api_version,
+                'service-2.json',
+            ),
+            model_location,
+        )
 
     def test_get_model_location_with_nonmatching_prefix_and_name(self):
         model_location = get_model_location(
-            self.session, self._create_service_definition(
-                self.non_matching_prefix, self.default_api_version))
+            self.session,
+            self._create_service_definition(
+                self.non_matching_prefix, self.default_api_version
+            ),
+        )
         self.assertEqual(
             os.path.join(
                 self.data_loader.CUSTOMER_DATA_PATH,
-                self.non_matching_service, self.default_api_version,
-                'service-2.json'), model_location)
+                self.non_matching_service,
+                self.default_api_version,
+                'service-2.json',
+            ),
+            model_location,
+        )
 
     def test_get_model_location_of_nonexistent_service(self):
         model_location = get_model_location(
-            self.session, self._create_service_definition(
-                'nonexistent', self.default_api_version))
+            self.session,
+            self._create_service_definition(
+                'nonexistent', self.default_api_version
+            ),
+        )
         self.assertEqual(
             os.path.join(
                 self.data_loader.CUSTOMER_DATA_PATH,
-                'nonexistent', self.default_api_version,
-                'service-2.json'), model_location)
+                'nonexistent',
+                self.default_api_version,
+                'service-2.json',
+            ),
+            model_location,
+        )
 
     def test_get_model_location_when_service_name_provided(self):
         model_location = get_model_location(
-            self.session, self._create_service_definition(
-                'nonexistent', self.default_api_version), 'override')
+            self.session,
+            self._create_service_definition(
+                'nonexistent', self.default_api_version
+            ),
+            'override',
+        )
         self.assertEqual(
             os.path.join(
                 self.data_loader.CUSTOMER_DATA_PATH,
-                'override', self.default_api_version,
-                'service-2.json'), model_location)
+                'override',
+                self.default_api_version,
+                'service-2.json',
+            ),
+            model_location,
+        )
 
     def test_get_model_location_with_non_v2(self):
         service_definition = self._create_service_definition(
-            'existent', self.default_api_version)
+            'existent', self.default_api_version
+        )
         service_definition['version'] = '3.0'
         model_location = get_model_location(self.session, service_definition)
         self.assertEqual(
             os.path.join(
                 self.data_loader.CUSTOMER_DATA_PATH,
-                'existent', self.default_api_version,
-                'service-3.json'), model_location)
+                'existent',
+                self.default_api_version,
+                'service-3.json',
+            ),
+            model_location,
+        )
 
     def test_get_model_location_with_missing_version(self):
         service_definition = self._create_service_definition(
-            'existent', self.default_api_version)
+            'existent', self.default_api_version
+        )
         service_definition.pop('version')
         model_location = get_model_location(self.session, service_definition)
         self.assertEqual(
             os.path.join(
                 self.data_loader.CUSTOMER_DATA_PATH,
-                'existent', self.default_api_version,
-                'service-2.json'), model_location)
+                'existent',
+                self.default_api_version,
+                'service-2.json',
+            ),
+            model_location,
+        )

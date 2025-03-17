@@ -15,39 +15,46 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestConfigureHealthCheck(BaseAWSCommandParamsTest):
-
     prefix = 'elb configure-health-check'
 
     def test_shorthand_basic(self):
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
-        cmdline += (' --health-check Target=HTTP:80/weather/us/wa/seattle,'
-                    'Interval=300,Timeout=60,UnhealthyThreshold=5,'
-                    'HealthyThreshold=9')
+        cmdline += (
+            ' --health-check Target=HTTP:80/weather/us/wa/seattle,'
+            'Interval=300,Timeout=60,UnhealthyThreshold=5,'
+            'HealthyThreshold=9'
+        )
         result = {
             'HealthCheck': {
                 'HealthyThreshold': 9,
                 'Interval': 300,
                 'Target': 'HTTP:80/weather/us/wa/seattle',
                 'Timeout': 60,
-                'UnhealthyThreshold': 5},
-            'LoadBalancerName': 'my-lb'}
+                'UnhealthyThreshold': 5,
+            },
+            'LoadBalancerName': 'my-lb',
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_json(self):
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb '
-        cmdline += ('--health-check {"Target":"HTTP:80/weather/us/wa/seattle'
-                    '?a=b","Interval":300,"Timeout":60,'
-                    '"UnhealthyThreshold":5,"HealthyThreshold":9}')
+        cmdline += (
+            '--health-check {"Target":"HTTP:80/weather/us/wa/seattle'
+            '?a=b","Interval":300,"Timeout":60,'
+            '"UnhealthyThreshold":5,"HealthyThreshold":9}'
+        )
         result = {
             'HealthCheck': {
                 'HealthyThreshold': 9,
                 'Interval': 300,
                 'Target': 'HTTP:80/weather/us/wa/seattle?a=b',
                 'Timeout': 60,
-                'UnhealthyThreshold': 5},
-            'LoadBalancerName': 'my-lb'}
+                'UnhealthyThreshold': 5,
+            },
+            'LoadBalancerName': 'my-lb',
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_shorthand_with_multiple_equals_for_value(self):
@@ -64,6 +71,8 @@ class TestConfigureHealthCheck(BaseAWSCommandParamsTest):
                 'Interval': 300,
                 'Target': 'HTTP:80/weather/us/wa/seattle?a=b',
                 'Timeout': 60,
-                'UnhealthyThreshold': 5},
-            'LoadBalancerName': 'my-lb'}
+                'UnhealthyThreshold': 5,
+            },
+            'LoadBalancerName': 'my-lb',
+        }
         self.assert_params_for_cmd(cmdline, result)

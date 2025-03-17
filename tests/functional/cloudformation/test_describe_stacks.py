@@ -15,7 +15,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestDescribeStacks(BaseAWSCommandParamsTest):
-
     prefix = 'cloudformation describe-stacks '
 
     def test_can_single_argument(self):

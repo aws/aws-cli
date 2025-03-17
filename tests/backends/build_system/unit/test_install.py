@@ -1,14 +1,12 @@
 import os
 import platform
-from typing import List, Any
+from typing import Any, List
 
 import pytest
+from build_system.install import Installer, Uninstaller
 
-
-from build_system.install import Installer
-from build_system.install import Uninstaller
 from backends.build_system.utils import Utils
-from tests.backends.build_system.markers import skip_if_windows, if_windows
+from tests.backends.build_system.markers import if_windows, skip_if_windows
 
 
 class FakeUtils(Utils):
@@ -109,7 +107,11 @@ class TestInstaller:
                 os.path.join("build_dir", "exe", "aws", "dist"),
                 "lib_dir",
             ),
-            ("write_file", "bin_dir\\aws.cmd", "@echo off\nlib_dir\\aws.exe %*\n"),
+            (
+                "write_file",
+                "bin_dir\\aws.cmd",
+                "@echo off\nlib_dir\\aws.exe %*\n",
+            ),
         ]
 
     @skip_if_windows

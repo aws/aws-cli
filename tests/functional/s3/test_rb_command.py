@@ -14,7 +14,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestRb(BaseAWSCommandParamsTest):
-
     prefix = 's3 rb '
 
     def test_rb(self):
@@ -32,15 +31,19 @@ class TestRb(BaseAWSCommandParamsTest):
 
     def test_rb_force_non_empty_bucket(self):
         command = self.prefix + 's3://bucket --force'
-        self.parsed_responses = [{
-            'Contents': [
-                {
-                    'Key': 'foo',
-                    'Size': 100,
-                    'LastModified': '2016-03-01T23:50:13.000Z'
-                }
-            ]
-        }, {}, {}]
+        self.parsed_responses = [
+            {
+                'Contents': [
+                    {
+                        'Key': 'foo',
+                        'Size': 100,
+                        'LastModified': '2016-03-01T23:50:13.000Z',
+                    }
+                ]
+            },
+            {},
+            {},
+        ]
         self.run_cmd(command)
         self.assertEqual(len(self.operations_called), 3)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')

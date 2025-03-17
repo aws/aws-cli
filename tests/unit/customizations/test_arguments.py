@@ -12,14 +12,16 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.testutils import mock, unittest, FileCreator, skip_if_windows
-from awscli.customizations.arguments import NestedBlobArgumentHoister
-from awscli.customizations.arguments import OverrideRequiredArgsArgument
-from awscli.customizations.arguments import StatefulArgument
-from awscli.customizations.arguments import QueryOutFileArgument
-from awscli.customizations.arguments import resolve_given_outfile_path
-from awscli.customizations.arguments import is_parsed_result_successful
+from awscli.customizations.arguments import (
+    NestedBlobArgumentHoister,
+    OverrideRequiredArgsArgument,
+    QueryOutFileArgument,
+    StatefulArgument,
+    is_parsed_result_successful,
+    resolve_given_outfile_path,
+)
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 
 
 class TestOverrideRequiredArgsArgument(unittest.TestCase):
@@ -35,10 +37,12 @@ class TestOverrideRequiredArgsArgument(unittest.TestCase):
 
     def test_register_argument_action(self):
         register_args = self.session.register.call_args
-        self.assertEqual(register_args[0][0],
-                         'before-building-argument-table-parser')
-        self.assertEqual(register_args[0][1],
-                         self.argument.override_required_args)
+        self.assertEqual(
+            register_args[0][0], 'before-building-argument-table-parser'
+        )
+        self.assertEqual(
+            register_args[0][1], self.argument.override_required_args
+        )
 
     def test_override_required_args_if_in_cmdline(self):
         args = ['--no-required-args']
@@ -107,13 +111,19 @@ class TestQueryFileArgument(unittest.TestCase):
     def test_adds_default_help_text(self):
         session = mock.Mock()
         arg = QueryOutFileArgument(session, 'foo', 'bar.baz', 'event', 0o600)
-        self.assertEqual(('Saves the command output contents of bar.baz '
-                          'to the given filename'), arg.documentation)
+        self.assertEqual(
+            (
+                'Saves the command output contents of bar.baz '
+                'to the given filename'
+            ),
+            arg.documentation,
+        )
 
     def test_does_not_add_help_text_if_set(self):
         session = mock.Mock()
-        arg = QueryOutFileArgument(session, 'foo', 'bar.baz', 'event', 0o600,
-                                   help_text='abc')
+        arg = QueryOutFileArgument(
+            session, 'foo', 'bar.baz', 'event', 0o600, help_text='abc'
+        )
         self.assertEqual('abc', arg.documentation)
 
     def test_saves_query_to_file(self):
@@ -121,8 +131,9 @@ class TestQueryFileArgument(unittest.TestCase):
         session = mock.Mock()
         arg = QueryOutFileArgument(session, 'foo', 'baz', 'event', 0o600)
         arg.add_to_params({}, outfile)
-        arg.save_query({'ResponseMetadata': {'HTTPStatusCode': 200},
-                        'baz': 'abc123'})
+        arg.save_query(
+            {'ResponseMetadata': {'HTTPStatusCode': 200}, 'baz': 'abc123'}
+        )
         with open(outfile) as fp:
             self.assertEqual('abc123', fp.read())
         self.assertEqual(1, session.register.call_count)
@@ -148,8 +159,9 @@ class TestQueryFileArgument(unittest.TestCase):
         session = mock.Mock()
         arg = QueryOutFileArgument(session, 'foo', 'baz', 'event', 0o600)
         arg.add_to_params({}, outfile)
-        arg.save_query({'ResponseMetadata': {'HTTPStatusCode': 200},
-                        'baz': 'abc123'})
+        arg.save_query(
+            {'ResponseMetadata': {'HTTPStatusCode': 200}, 'baz': 'abc123'}
+        )
         with open(outfile) as fp:
             fp.read()
         self.assertEqual(os.stat(outfile).st_mode & 0xFFF, 0o600)
@@ -158,7 +170,8 @@ class TestQueryFileArgument(unittest.TestCase):
 class TestNestedBlobArgumentHoister(unittest.TestCase):
     def setUp(self):
         self.blob_hoister = NestedBlobArgumentHoister(
-            'complexArgX', 'valueY', 'argY', 'argYDoc', '.argYDocAddendum')
+            'complexArgX', 'valueY', 'argY', 'argYDoc', '.argYDocAddendum'
+        )
 
         self.arg_table = {
             'complexArgX': mock.Mock(
@@ -170,7 +183,7 @@ class TestNestedBlobArgumentHoister(unittest.TestCase):
                             type_name='blob',
                         )
                     }
-                )
+                ),
             )
         }
 
@@ -180,7 +193,8 @@ class TestNestedBlobArgumentHoister(unittest.TestCase):
         self.assertFalse(self.arg_table['complexArgX'].required)
         self.assertEqual(
             self.arg_table['complexArgX'].documentation,
-            'complexArgXDoc.argYDocAddendum')
+            'complexArgXDoc.argYDocAddendum',
+        )
 
         argY = self.arg_table['argY']
         self.assertFalse(argY.required)
@@ -210,7 +224,7 @@ class TestNestedBlobArgumentHoister(unittest.TestCase):
             'any': 'other',
             'ComplexArgX': {
                 'another': 'one',
-            }
+            },
         }
         argY.add_to_params(parameters, 'test-value')
         self.assertEqual('other', parameters['any'])
@@ -228,7 +242,7 @@ class TestNestedBlobArgumentHoister(unittest.TestCase):
             'ComplexArgX': {
                 'another': 'one',
                 'valueY': 'doomed',
-            }
+            },
         }
         argY.add_to_params(parameters, 'test-value')
         self.assertEqual('other', parameters['any'])
@@ -246,7 +260,7 @@ class TestNestedBlobArgumentHoister(unittest.TestCase):
                             type_name='string',
                         )
                     }
-                )
+                ),
             )
         }
 
@@ -254,5 +268,7 @@ class TestNestedBlobArgumentHoister(unittest.TestCase):
 
         self.assertTrue(nonmatching_arg_table['complexArgX'].required)
         self.assertEqual(
-            nonmatching_arg_table['complexArgX'].documentation, 'complexArgXDoc')
+            nonmatching_arg_table['complexArgX'].documentation,
+            'complexArgXDoc',
+        )
         self.assertFalse('argY' in self.arg_table)

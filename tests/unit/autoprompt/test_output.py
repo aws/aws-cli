@@ -12,56 +12,67 @@
 # language governing permissions and limitations under the License.
 import json
 
-from awscli.clidriver import create_clidriver
 from awscli.autocomplete import parser
 from awscli.autoprompt.output import OutputGetter
-
+from awscli.clidriver import create_clidriver
 from awscli.testutils import unittest
 from tests.unit.autocomplete import InMemoryIndex
 
 
 class TestOutputGetter(unittest.TestCase):
     def setUp(self):
-        index = InMemoryIndex({
-            'command_names': {
-                '': [('aws', None)],
-                'aws': [
-                    ('s3api', 'Amazon Simple Storage Service'),
-                    ('ec2', None)
-                ],
-                'aws.s3api': [('get-object', None)],
-                'aws.ec2': [('bundle-instance', None)],
-            },
-            'arg_names': {
-                '': {
-                    'aws': ['query', 'output'],
+        index = InMemoryIndex(
+            {
+                'command_names': {
+                    '': [('aws', None)],
+                    'aws': [
+                        ('s3api', 'Amazon Simple Storage Service'),
+                        ('ec2', None),
+                    ],
+                    'aws.s3api': [('get-object', None)],
+                    'aws.ec2': [('bundle-instance', None)],
                 },
-                'aws.s3api': {
-                    'get-object': [],
+                'arg_names': {
+                    '': {
+                        'aws': ['query', 'output'],
+                    },
+                    'aws.s3api': {
+                        'get-object': [],
+                    },
+                    'aws.ec2': {
+                        'bundle-instance': [],
+                    },
                 },
-                'aws.ec2': {
-                    'bundle-instance': [],
-                },
-            },
-            'arg_data': {
-                '': {
-                    'aws': {
-                        'query': (
-                            'query', 'string', 'aws', '', None, False,
-                            False),
-                        'output': (
-                            'output', 'string', 'aws', '', None, False,
-                            False),
-                    }
-                },
-                'aws.s3api': {
-                    'get-object': {}
-                },
-                'aws.ec2': {
-                    'bundle-instance': {},
+                'arg_data': {
+                    '': {
+                        'aws': {
+                            'query': (
+                                'query',
+                                'string',
+                                'aws',
+                                '',
+                                None,
+                                False,
+                                False,
+                            ),
+                            'output': (
+                                'output',
+                                'string',
+                                'aws',
+                                '',
+                                None,
+                                False,
+                                False,
+                            ),
+                        }
+                    },
+                    'aws.s3api': {'get-object': {}},
+                    'aws.ec2': {
+                        'bundle-instance': {},
+                    },
                 },
             }
-        })
+        )
         self.parser = parser.CLIParser(index)
         self.driver = create_clidriver()
         self.driver.session.set_config_variable('output', 'json')
@@ -123,7 +134,9 @@ class TestOutputGetter(unittest.TestCase):
         self.assertNotIn('omap', content)
 
     def test_yaml_output_can_parse_datetime(self):
-        parsed = self.parser.parse('aws ec2 bundle-instance --output yaml '
-                                   '--query BundleTask.StartTime')
+        parsed = self.parser.parse(
+            'aws ec2 bundle-instance --output yaml '
+            '--query BundleTask.StartTime'
+        )
         content = self.base_output_getter.get_output(parsed)
         self.assertEqual('"1970-01-01T00:00:00"\n', content)

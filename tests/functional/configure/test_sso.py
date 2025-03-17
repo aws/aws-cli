@@ -10,10 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from unittest.mock import patch
+
 from awscli.customizations.configure.sso import ConfigureSSOCommand
 from awscli.testutils import BaseAWSCommandParamsTest, mock
 from tests.functional.sso import BaseSSOTest
-from unittest.mock import patch
 
 
 class TestConfigureSSO(BaseAWSCommandParamsTest):
@@ -26,7 +27,6 @@ class TestConfigureSSO(BaseAWSCommandParamsTest):
 
 
 class TestConfigureSSOCommand(BaseSSOTest):
-
     def setUp(self):
         super().setUp()
 
@@ -59,7 +59,9 @@ class TestConfigureSSOCommand(BaseSSOTest):
         )
 
         self.profile_prompt = patch.object(
-            ConfigureSSOCommand, '_prompt_for_profile', return_value='my-profile',
+            ConfigureSSOCommand,
+            '_prompt_for_profile',
+            return_value='my-profile',
         )
 
         self.registration_args_prompt.start()
@@ -97,12 +99,15 @@ class TestConfigureSSOCommand(BaseSSOTest):
         )
 
         # The lack of a session_name should trigger the device flow
-        with patch.object(ConfigureSSOCommand,
-                          '_prompt_for_sso_registration_args',
-                          return_value={
-                              'session_name': None,
-                              'sso_region': 'us-east-1',
-                              'start_url': 'https://identitycenter.amazonaws.com/ssoins-1234'}):
+        with patch.object(
+            ConfigureSSOCommand,
+            '_prompt_for_sso_registration_args',
+            return_value={
+                'session_name': None,
+                'sso_region': 'us-east-1',
+                'start_url': 'https://identitycenter.amazonaws.com/ssoins-1234',
+            },
+        ):
             self.run_cmd('configure sso')
 
     @patch('botocore.session.Session.create_client')

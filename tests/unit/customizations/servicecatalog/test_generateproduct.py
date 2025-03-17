@@ -13,11 +13,13 @@
 
 from argparse import Namespace
 
-from awscli.customizations.servicecatalog import exceptions
-from awscli.customizations.servicecatalog.generateproduct \
-    import GenerateProductCommand
-from awscli.testutils import unittest, mock, capture_output
 from botocore.compat import json
+
+from awscli.customizations.servicecatalog import exceptions
+from awscli.customizations.servicecatalog.generateproduct import (
+    GenerateProductCommand,
+)
+from awscli.testutils import capture_output, mock, unittest
 
 
 class TestCreateProductCommand(unittest.TestCase):
@@ -25,19 +27,25 @@ class TestCreateProductCommand(unittest.TestCase):
         self.session = mock.Mock()
         self.servicecatalog_client = mock.Mock()
         self.s3_client = mock.Mock()
-        self.session.create_client.side_effect = [self.s3_client,
-                                                  self.servicecatalog_client]
-        self.session.get_available_regions.return_value = ['us-east-1',
-                                                           'eu-west-1']
+        self.session.create_client.side_effect = [
+            self.s3_client,
+            self.servicecatalog_client,
+        ]
+        self.session.get_available_regions.return_value = [
+            'us-east-1',
+            'eu-west-1',
+        ]
         self.cmd = GenerateProductCommand(self.session)
 
         self.args = Namespace()
         self.args.file_path = 'foo'
         self.args.bucket_name = 'bucket-name'
         self.args.product_name = 'created product name'
-        self.args.tags = ["Key=key1,Value=value1",
-                          "Key=key2,Value=value2",
-                          "Key=key3,Value=value3"]
+        self.args.tags = [
+            "Key=key1,Value=value1",
+            "Key=key2,Value=value2",
+            "Key=key3,Value=value3",
+        ]
         self.args.product_owner = 'me'
         self.args.product_type = 'CLOUD_FORMATION_TEMPLATE'
         self.args.product_distributor = 'prod_distributor'
@@ -62,12 +70,14 @@ class TestCreateProductCommand(unittest.TestCase):
     def test_happy_path(self, getsize_patch):
         # Arrange
         actual_product_view_detail = self.get_product_view_detail()
-        self.servicecatalog_client.create_product.return_value = \
+        self.servicecatalog_client.create_product.return_value = (
             actual_product_view_detail
+        )
         expected_product_view_detail = self.get_product_view_detail()
         del expected_product_view_detail["ResponseMetadata"]
-        expected_response_output = json.dumps(expected_product_view_detail,
-                                              indent=2)
+        expected_response_output = json.dumps(
+            expected_product_view_detail, indent=2
+        )
         expected_args = self.get_args_dict()
 
         # Act
@@ -76,51 +86,45 @@ class TestCreateProductCommand(unittest.TestCase):
 
         # Assert
         self.session.create_client.assert_called_with(
-                             'servicecatalog',
-                             region_name=self.global_args.region,
-                             endpoint_url=None,
-                             verify=None)
+            'servicecatalog',
+            region_name=self.global_args.region,
+            endpoint_url=None,
+            verify=None,
+        )
 
         self.servicecatalog_client.create_product.assert_called_once_with(
-                                    Name=expected_args['product-name'],
-                                    Owner=expected_args['product-owner'],
-                                    Description=expected_args
-                                    ['product-description'],
-                                    Distributor=expected_args
-                                    ['product-distributor'],
-                                    SupportDescription=expected_args
-                                    ['support-description'],
-                                    SupportEmail=expected_args
-                                    ['support-email'],
-                                    ProductType=expected_args['product-type'],
-                                    Tags=expected_args['tags'],
-                                    ProvisioningArtifactParameters=self.
-                                    get_provisioning_artifact_parameters(
-                                        self.args.provisioning_artifact_name,
-                                        self.
-                                        args.
-                                        provisioning_artifact_description,
-                                        self.args.provisioning_artifact_type
-                                    )
-                                )
-        self.assertEqual(expected_response_output,
-                         captured.stdout.getvalue()
-                         )
+            Name=expected_args['product-name'],
+            Owner=expected_args['product-owner'],
+            Description=expected_args['product-description'],
+            Distributor=expected_args['product-distributor'],
+            SupportDescription=expected_args['support-description'],
+            SupportEmail=expected_args['support-email'],
+            ProductType=expected_args['product-type'],
+            Tags=expected_args['tags'],
+            ProvisioningArtifactParameters=self.get_provisioning_artifact_parameters(
+                self.args.provisioning_artifact_name,
+                self.args.provisioning_artifact_description,
+                self.args.provisioning_artifact_type,
+            ),
+        )
+        self.assertEqual(expected_response_output, captured.stdout.getvalue())
         self.assertEqual(0, result)
 
     @mock.patch('os.path.getsize', return_value=1)
     def test_happy_path_unicode(self, getsize_patch):
         # Arrange
-        self.args.product_name = u'\u05d1\u05e8\u05d9\u05e6\u05e7\u05dc\u05d4'
-        self.args.support_description = u'\u00fd\u00a9\u0194\u0292'
+        self.args.product_name = '\u05d1\u05e8\u05d9\u05e6\u05e7\u05dc\u05d4'
+        self.args.support_description = '\u00fd\u00a9\u0194\u0292'
 
         actual_product_view_detail = self.get_product_view_detail()
-        self.servicecatalog_client.create_product.return_value = \
+        self.servicecatalog_client.create_product.return_value = (
             actual_product_view_detail
+        )
         expected_product_view_detail = self.get_product_view_detail()
         del expected_product_view_detail["ResponseMetadata"]
-        expected_response_output = json.dumps(expected_product_view_detail,
-                                              indent=2)
+        expected_response_output = json.dumps(
+            expected_product_view_detail, indent=2
+        )
         expected_args = self.get_args_dict()
 
         # Act
@@ -129,42 +133,35 @@ class TestCreateProductCommand(unittest.TestCase):
 
         # Assert
         self.session.create_client.assert_called_with(
-                             'servicecatalog',
-                             region_name=self.global_args.region,
-                             endpoint_url=None,
-                             verify=None)
+            'servicecatalog',
+            region_name=self.global_args.region,
+            endpoint_url=None,
+            verify=None,
+        )
 
         self.servicecatalog_client.create_product.assert_called_once_with(
-                                    Name=expected_args['product-name'],
-                                    Owner=expected_args['product-owner'],
-                                    Description=expected_args
-                                    ['product-description'],
-                                    Distributor=expected_args
-                                    ['product-distributor'],
-                                    SupportDescription=expected_args
-                                    ['support-description'],
-                                    SupportEmail=expected_args
-                                    ['support-email'],
-                                    ProductType=expected_args['product-type'],
-                                    Tags=expected_args['tags'],
-                                    ProvisioningArtifactParameters=self.
-                                    get_provisioning_artifact_parameters(
-                                        self.args.provisioning_artifact_name,
-                                        self.
-                                        args.
-                                        provisioning_artifact_description,
-                                        self.args.provisioning_artifact_type
-                                    )
-                                )
-        self.assertEqual(expected_response_output,
-                         captured.stdout.getvalue()
-                         )
+            Name=expected_args['product-name'],
+            Owner=expected_args['product-owner'],
+            Description=expected_args['product-description'],
+            Distributor=expected_args['product-distributor'],
+            SupportDescription=expected_args['support-description'],
+            SupportEmail=expected_args['support-email'],
+            ProductType=expected_args['product-type'],
+            Tags=expected_args['tags'],
+            ProvisioningArtifactParameters=self.get_provisioning_artifact_parameters(
+                self.args.provisioning_artifact_name,
+                self.args.provisioning_artifact_description,
+                self.args.provisioning_artifact_type,
+            ),
+        )
+        self.assertEqual(expected_response_output, captured.stdout.getvalue())
         self.assertEqual(0, result)
 
     def test_region_not_supported(self):
         self.global_args.region = 'not-supported-region'
-        with self.assertRaisesRegex(exceptions.InvalidParametersException,
-                                     "not supported"):
+        with self.assertRaisesRegex(
+            exceptions.InvalidParametersException, "not supported"
+        ):
             self.cmd._run_main(self.args, self.global_args)
 
     @mock.patch('os.path.getsize', return_value=1)
@@ -176,12 +173,14 @@ class TestCreateProductCommand(unittest.TestCase):
         self.args.product_distributor = None
 
         actual_product_view_detail = self.get_product_view_detail()
-        self.servicecatalog_client.create_product.\
-            return_value = actual_product_view_detail
+        self.servicecatalog_client.create_product.return_value = (
+            actual_product_view_detail
+        )
         expected_product_view_detail = self.get_product_view_detail()
         del expected_product_view_detail["ResponseMetadata"]
-        expected_response_output = json.dumps(expected_product_view_detail,
-                                              indent=2)
+        expected_response_output = json.dumps(
+            expected_product_view_detail, indent=2
+        )
         expected_args = self.get_args_dict()
 
         # Act
@@ -190,27 +189,24 @@ class TestCreateProductCommand(unittest.TestCase):
 
         # Assert
         self.session.create_client.assert_called_with(
-                                    'servicecatalog',
-                                    region_name=self.global_args.region,
-                                    endpoint_url=None,
-                                    verify=None)
+            'servicecatalog',
+            region_name=self.global_args.region,
+            endpoint_url=None,
+            verify=None,
+        )
         self.servicecatalog_client.create_product.assert_called_once_with(
-                                    Name=expected_args['product-name'],
-                                    Owner=expected_args['product-owner'],
-                                    ProductType=expected_args['product-type'],
-                                    Tags=expected_args['tags'],
-                                    ProvisioningArtifactParameters=self.
-                                    get_provisioning_artifact_parameters(
-                                        self.args.provisioning_artifact_name,
-                                        self.
-                                        args.
-                                        provisioning_artifact_description,
-                                        self.args.provisioning_artifact_type
-                                    )
-                                    )
+            Name=expected_args['product-name'],
+            Owner=expected_args['product-owner'],
+            ProductType=expected_args['product-type'],
+            Tags=expected_args['tags'],
+            ProvisioningArtifactParameters=self.get_provisioning_artifact_parameters(
+                self.args.provisioning_artifact_name,
+                self.args.provisioning_artifact_description,
+                self.args.provisioning_artifact_type,
+            ),
+        )
 
-        self.assertEqual(expected_response_output,
-                         captured.stdout.getvalue())
+        self.assertEqual(expected_response_output, captured.stdout.getvalue())
         self.assertEqual(0, result)
 
     def get_product_view_detail(self):
@@ -218,9 +214,9 @@ class TestCreateProductCommand(unittest.TestCase):
             'ProductViewDetail': {
                 'ProductViewSummary': {
                     'SupportDescription': 'Contact the CLI department '
-                                          'for issues '
-                                          'deploying or connecting '
-                                          'to this product.',
+                    'for issues '
+                    'deploying or connecting '
+                    'to this product.',
                     'HasDefaultPath': False,
                     'ShortDescription': self.args.product_description,
                     'SupportUrl': self.args.support_url,
@@ -228,62 +224,53 @@ class TestCreateProductCommand(unittest.TestCase):
                     'SupportEmail': self.args.support_email,
                     'Type': self.args.product_type,
                     'Id': 'prodview-ask5ma4y7gwiy',
-                    'ProductId': 'prod-inifmhpr47ft2'
+                    'ProductId': 'prod-inifmhpr47ft2',
                 },
                 'Status': 'CREATED',
                 'ProductARN': 'arn:aws:catalog:us-west-2:'
-                              '856570181934:product/prod-inifmhpr47ft2',
-                'CreatedTime': 1492728697.0
+                '856570181934:product/prod-inifmhpr47ft2',
+                'CreatedTime': 1492728697.0,
             },
             "ProvisioningArtifactDetail": {
                 "CreatedTime": 1502495200.0,
                 "Description": "pa_desc",
                 "Type": "CLOUD_FORMATION_TEMPLATE",
                 "Id": "pa-6hgqvd3pnwbgc",
-                "Name": "pa_name"
+                "Name": "pa_name",
             },
             "Tags": self.get_tags_dictionary(),
-            "ResponseMetadata": {}
+            "ResponseMetadata": {},
         }
 
     def get_args_dict(self):
-        return {'file-path': self.args.file_path,
-                'bucket-name': self.args.bucket_name,
-                'product-name': self.args.product_name,
-                'tags': self.get_tags_dictionary(),
-                'product-owner': self.args.product_owner,
-                'product-type': self.args.product_type,
-                'product-description': self.args.product_description,
-                'product-distributor': self.args.product_distributor,
-                'support-description': self.args.support_description,
-                'support-email': self.args.support_email
-                }
+        return {
+            'file-path': self.args.file_path,
+            'bucket-name': self.args.bucket_name,
+            'product-name': self.args.product_name,
+            'tags': self.get_tags_dictionary(),
+            'product-owner': self.args.product_owner,
+            'product-type': self.args.product_type,
+            'product-description': self.args.product_description,
+            'product-distributor': self.args.product_distributor,
+            'support-description': self.args.support_description,
+            'support-email': self.args.support_email,
+        }
 
     def get_tags_dictionary(self):
         return [
-            {
-                "Value": "value1",
-                "Key": "key1"
-            },
-            {
-                "Value": "value2",
-                "Key": "key2"
-            },
-            {
-                "Value": "value3",
-                "Key": "key3"
-            }
+            {"Value": "value1", "Key": "key1"},
+            {"Value": "value2", "Key": "key2"},
+            {"Value": "value3", "Key": "key3"},
         ]
 
-    def get_provisioning_artifact_parameters(self, pa_name,
-                                             pa_description, pa_type):
+    def get_provisioning_artifact_parameters(
+        self, pa_name, pa_description, pa_type
+    ):
         parameters = {
             'Name': pa_name,
             'Description': pa_description,
-            'Info': {
-                'LoadTemplateFromURL': self.s3_url
-            },
-            'Type': pa_type
+            'Info': {'LoadTemplateFromURL': self.s3_url},
+            'Type': pa_type,
         }
 
         return parameters

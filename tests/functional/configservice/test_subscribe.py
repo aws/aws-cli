@@ -10,8 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock, BaseAWSCommandParamsTest
 from awscli.customizations.configservice.subscribe import S3BucketHelper
+from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 
 class TestSubscribe(BaseAWSCommandParamsTest):
@@ -26,7 +26,7 @@ class TestSubscribe(BaseAWSCommandParamsTest):
             {},  # PutDeliveryChannel
             {},  # StartConfigurationRecorder
             {'ConfigurationRecorders': {}},  # DescribeConfigurationRecorders
-            {'DeliveryChannels': {}}  # DescribeDeliveryChannels
+            {'DeliveryChannels': {}},  # DescribeDeliveryChannels
         ]
 
     def test_subscribe_when_bucket_exists_and_new_sns_topic(self):
@@ -42,31 +42,40 @@ class TestSubscribe(BaseAWSCommandParamsTest):
             list_of_parameters_called.append(operation_called[1])
 
         self.assertEqual(
-            list_of_operation_names_called, [
+            list_of_operation_names_called,
+            [
                 'HeadBucket',
                 'CreateTopic',
                 'PutConfigurationRecorder',
                 'PutDeliveryChannel',
                 'StartConfigurationRecorder',
                 'DescribeConfigurationRecorders',
-                'DescribeDeliveryChannels'
-            ]
+                'DescribeDeliveryChannels',
+            ],
         )
         self.assertEqual(
-            list_of_parameters_called, [
+            list_of_parameters_called,
+            [
                 {'Bucket': 'mybucket'},  # S3 HeadBucket
                 {'Name': 'mytopic'},  # SNS CreateTopic
-                {'ConfigurationRecorder': {  # PutConfigurationRecorder
-                    'name': 'default', 'roleARN': 'myrole'}},
-                {'DeliveryChannel': {  # PutDeliveryChannel
-                    'name': 'default',
-                    's3BucketName': 'mybucket',
-                    'snsTopicARN': 'my-topic-arn'}},
+                {
+                    'ConfigurationRecorder': {  # PutConfigurationRecorder
+                        'name': 'default',
+                        'roleARN': 'myrole',
+                    }
+                },
+                {
+                    'DeliveryChannel': {  # PutDeliveryChannel
+                        'name': 'default',
+                        's3BucketName': 'mybucket',
+                        'snsTopicARN': 'my-topic-arn',
+                    }
+                },
                 # StartConfigurationRecorder
                 {'ConfigurationRecorderName': 'default'},
                 {},  # DescribeConfigurationRecorders
-                {}  # DescribeDeliveryChannels
-            ]
+                {},  # DescribeDeliveryChannels
+            ],
         )
 
     def test_subscribe_when_bucket_exists_and_sns_topic_arn_provided(self):
@@ -83,35 +92,45 @@ class TestSubscribe(BaseAWSCommandParamsTest):
             list_of_parameters_called.append(operation_called[1])
 
         self.assertEqual(
-            list_of_operation_names_called, [
+            list_of_operation_names_called,
+            [
                 'HeadBucket',
                 'PutConfigurationRecorder',
                 'PutDeliveryChannel',
                 'StartConfigurationRecorder',
                 'DescribeConfigurationRecorders',
-                'DescribeDeliveryChannels'
-            ]
+                'DescribeDeliveryChannels',
+            ],
         )
         self.assertEqual(
-            list_of_parameters_called, [
+            list_of_parameters_called,
+            [
                 {'Bucket': 'mybucket'},  # S3 HeadBucket
-                {'ConfigurationRecorder': {  # PutConfigurationRecorder
-                    'name': 'default', 'roleARN': 'myrole'}},
-                {'DeliveryChannel': {  # PutDeliveryChannel
-                    'name': 'default',
-                    's3BucketName': 'mybucket',
-                    'snsTopicARN': 'arn:mytopic'}},
+                {
+                    'ConfigurationRecorder': {  # PutConfigurationRecorder
+                        'name': 'default',
+                        'roleARN': 'myrole',
+                    }
+                },
+                {
+                    'DeliveryChannel': {  # PutDeliveryChannel
+                        'name': 'default',
+                        's3BucketName': 'mybucket',
+                        'snsTopicARN': 'arn:mytopic',
+                    }
+                },
                 # StartConfigurationRecorder
                 {'ConfigurationRecorderName': 'default'},
                 {},  # DescribeConfigurationRecorders
-                {}  # DescribeDeliveryChannels
-            ]
+                {},  # DescribeDeliveryChannels
+            ],
         )
 
     def test_subscribe_when_bucket_needs_to_be_created(self):
         # TODO: fix this patch when we have a better way to stub out responses
-        with mock.patch('botocore.endpoint.Endpoint._send') as \
-                http_session_send_patch:
+        with mock.patch(
+            'botocore.endpoint.Endpoint._send'
+        ) as http_session_send_patch:
             # Mock for HeadBucket request
             head_bucket_response = mock.Mock()
             head_bucket_response.status_code = 404
@@ -125,7 +144,8 @@ class TestSubscribe(BaseAWSCommandParamsTest):
             create_bucket_response.headers = {}
 
             http_session_send_patch.side_effect = [
-                head_bucket_response, create_bucket_response
+                head_bucket_response,
+                create_bucket_response,
             ]
 
             s3_client = self.driver.session.create_client('s3')

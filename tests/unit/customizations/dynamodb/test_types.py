@@ -11,11 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from decimal import Decimal
-from awscli.testutils import unittest
 
 from awscli.customizations.dynamodb.types import (
-    Binary, TypeSerializer, TypeDeserializer
+    Binary,
+    TypeDeserializer,
+    TypeSerializer,
 )
+from awscli.testutils import unittest
 
 
 class TestBinary(unittest.TestCase):
@@ -37,7 +39,7 @@ class TestBinary(unittest.TestCase):
 
     def test_unicode_throws_error(self):
         with self.assertRaises(TypeError):
-            Binary(u'\u00e9')
+            Binary('\u00e9')
 
     def test_integer_throws_error(self):
         with self.assertRaises(TypeError):
@@ -72,30 +74,34 @@ class TestSerializer(unittest.TestCase):
 
     def test_serialize_decimal(self):
         self.assertEqual(
-            self.serializer.serialize(Decimal('1.25')), {'N': '1.25'})
+            self.serializer.serialize(Decimal('1.25')), {'N': '1.25'}
+        )
 
     def test_serialize_float_error(self):
         with self.assertRaisesRegex(
-                TypeError,
-                'Float types are not supported. Use Decimal types instead'):
+            TypeError,
+            'Float types are not supported. Use Decimal types instead',
+        ):
             self.serializer.serialize(1.25)
 
     def test_serialize_NaN_error(self):
         with self.assertRaisesRegex(
-                TypeError,
-                'Infinity and NaN not supported'):
+            TypeError, 'Infinity and NaN not supported'
+        ):
             self.serializer.serialize(Decimal('NaN'))
 
     def test_serialize_string(self):
         self.assertEqual(self.serializer.serialize('foo'), {'S': 'foo'})
 
     def test_serialize_binary(self):
-        self.assertEqual(self.serializer.serialize(
-            Binary(b'\x01')), {'B': b'\x01'})
+        self.assertEqual(
+            self.serializer.serialize(Binary(b'\x01')), {'B': b'\x01'}
+        )
 
     def test_serialize_bytearray(self):
-        self.assertEqual(self.serializer.serialize(bytearray([1])),
-                         {'B': b'\x01'})
+        self.assertEqual(
+            self.serializer.serialize(bytearray([1])), {'B': b'\x01'}
+        )
 
     def test_serialize_bytes(self):
         self.assertEqual(self.serializer.serialize(b'\x01'), {'B': b'\x01'})
@@ -114,7 +120,8 @@ class TestSerializer(unittest.TestCase):
 
     def test_serialize_binary_set(self):
         serialized_value = self.serializer.serialize(
-            set([Binary(b'\x01'), Binary(b'\x02')]))
+            set([Binary(b'\x01'), Binary(b'\x02')])
+        )
         self.assertEqual(len(serialized_value), 1)
         self.assertIn('BS', serialized_value)
         self.assertCountEqual(serialized_value['BS'], [b'\x01', b'\x02'])
@@ -125,15 +132,17 @@ class TestSerializer(unittest.TestCase):
         self.assertIn('L', serialized_value)
         self.assertCountEqual(
             serialized_value['L'],
-            [{'S': 'foo'}, {'N': '1'}, {'L': [{'N': '1'}]}]
+            [{'S': 'foo'}, {'N': '1'}, {'L': [{'N': '1'}]}],
         )
 
     def test_serialize_map(self):
         serialized_value = self.serializer.serialize(
-            {'foo': 'bar', 'baz': {'biz': 1}})
+            {'foo': 'bar', 'baz': {'biz': 1}}
+        )
         self.assertEqual(
             serialized_value,
-            {'M': {'foo': {'S': 'bar'}, 'baz': {'M': {'biz': {'N': '1'}}}}})
+            {'M': {'foo': {'S': 'bar'}, 'baz': {'M': {'biz': {'N': '1'}}}}},
+        )
 
 
 class TestDeserializer(unittest.TestCase):
@@ -156,46 +165,57 @@ class TestDeserializer(unittest.TestCase):
 
     def test_deserialize_integer(self):
         self.assertEqual(
-            self.deserializer.deserialize({'N': '1'}), Decimal('1'))
+            self.deserializer.deserialize({'N': '1'}), Decimal('1')
+        )
 
     def test_deserialize_decimal(self):
         self.assertEqual(
-            self.deserializer.deserialize({'N': '1.25'}), Decimal('1.25'))
+            self.deserializer.deserialize({'N': '1.25'}), Decimal('1.25')
+        )
 
     def test_deserialize_string(self):
-        self.assertEqual(
-            self.deserializer.deserialize({'S': 'foo'}), 'foo')
+        self.assertEqual(self.deserializer.deserialize({'S': 'foo'}), 'foo')
 
     def test_deserialize_binary(self):
         self.assertEqual(
-            self.deserializer.deserialize({'B': b'\x00'}), Binary(b'\x00'))
+            self.deserializer.deserialize({'B': b'\x00'}), Binary(b'\x00')
+        )
 
     def test_deserialize_number_set(self):
         self.assertEqual(
-            self.deserializer.deserialize(
-                {'NS': ['1', '1.25']}), set([Decimal('1'), Decimal('1.25')]))
+            self.deserializer.deserialize({'NS': ['1', '1.25']}),
+            set([Decimal('1'), Decimal('1.25')]),
+        )
 
     def test_deserialize_string_set(self):
         self.assertEqual(
-            self.deserializer.deserialize(
-                {'SS': ['foo', 'bar']}), set(['foo', 'bar']))
+            self.deserializer.deserialize({'SS': ['foo', 'bar']}),
+            set(['foo', 'bar']),
+        )
 
     def test_deserialize_binary_set(self):
         self.assertEqual(
-            self.deserializer.deserialize(
-                {'BS': [b'\x00', b'\x01']}),
-            set([Binary(b'\x00'), Binary(b'\x01')]))
+            self.deserializer.deserialize({'BS': [b'\x00', b'\x01']}),
+            set([Binary(b'\x00'), Binary(b'\x01')]),
+        )
 
     def test_deserialize_list(self):
         self.assertEqual(
             self.deserializer.deserialize(
-                {'L': [{'N': '1'}, {'S': 'foo'}, {'L': [{'N': '1.25'}]}]}),
-            [Decimal('1'), 'foo', [Decimal('1.25')]])
+                {'L': [{'N': '1'}, {'S': 'foo'}, {'L': [{'N': '1.25'}]}]}
+            ),
+            [Decimal('1'), 'foo', [Decimal('1.25')]],
+        )
 
     def test_deserialize_map(self):
         self.assertEqual(
             self.deserializer.deserialize(
-                {'M': {'foo': {'S': 'mystring'},
-                       'bar': {'M': {'baz': {'N': '1'}}}}}),
-            {'foo': 'mystring', 'bar': {'baz': Decimal('1')}}
+                {
+                    'M': {
+                        'foo': {'S': 'mystring'},
+                        'bar': {'M': {'baz': {'N': '1'}}},
+                    }
+                }
+            ),
+            {'foo': 'mystring', 'bar': {'baz': Decimal('1')}},
         )

@@ -15,8 +15,8 @@
 
 import os
 
-
 EXAMPLE_NAME = "ExampleCluster"
+
 
 def get_testdata(file_name):
     """Get the path of a specific fixture"""
@@ -27,11 +27,7 @@ def get_testdata(file_name):
 
 def list_cluster_response():
     """Get an example list_cluster call (For mocking)"""
-    return {
-        "clusters": [
-            EXAMPLE_NAME
-        ]
-    }
+    return {"clusters": [EXAMPLE_NAME]}
 
 
 def describe_cluster_response():
@@ -49,18 +45,17 @@ def describe_cluster_response():
                 "subnetIds": [
                     "subnet-00000000000000000",
                     "subnet-00000000000000001",
-                    "subnet-00000000000000002"
+                    "subnet-00000000000000002",
                 ],
                 "vpcId": "vpc-00000000000000000",
-                "securityGroupIds": [
-                    "sg-00000000000000000"
-                ]
+                "securityGroupIds": ["sg-00000000000000000"],
             },
             "version": "1.10",
             "arn": "arn:aws:eks:region:111222333444:cluster/" + EXAMPLE_NAME,
-            "createdAt": 1500000000.000
+            "createdAt": 1500000000.000,
         }
     }
+
 
 def describe_cluster_response_outpost_cluster():
     """Get an example describe_cluster call (For mocking)"""
@@ -77,12 +72,10 @@ def describe_cluster_response_outpost_cluster():
                 "subnetIds": [
                     "subnet-00000000000000000",
                     "subnet-00000000000000001",
-                    "subnet-00000000000000002"
+                    "subnet-00000000000000002",
                 ],
                 "vpcId": "vpc-00000000000000000",
-                "securityGroupIds": [
-                    "sg-00000000000000000"
-                ]
+                "securityGroupIds": ["sg-00000000000000000"],
             },
             "version": "1.10",
             "arn": "arn:aws:eks:region:111222333444:cluster/" + EXAMPLE_NAME,
@@ -92,9 +85,10 @@ def describe_cluster_response_outpost_cluster():
                 "outpostArns": [
                     "arn:aws:outposts:us-west-2:111222333444:outpost/op-00000000000000000"
                 ],
-            }
+            },
         }
     }
+
 
 def describe_cluster_no_status_response():
     """Get an example describe_cluster call (For mocking)"""
@@ -110,18 +104,17 @@ def describe_cluster_no_status_response():
                 "subnetIds": [
                     "subnet-00000000000000000",
                     "subnet-00000000000000001",
-                    "subnet-00000000000000002"
+                    "subnet-00000000000000002",
                 ],
                 "vpcId": "vpc-00000000000000000",
-                "securityGroupIds": [
-                    "sg-00000000000000000"
-                ]
+                "securityGroupIds": ["sg-00000000000000000"],
             },
             "version": "1.10",
             "arn": "arn:aws:eks:region:111222333444:cluster/" + EXAMPLE_NAME,
-            "createdAt": 1500000000.000
+            "createdAt": 1500000000.000,
         }
     }
+
 
 def describe_cluster_creating_response():
     """Get an example describe_cluster call during creation"""
@@ -135,16 +128,14 @@ def describe_cluster_creating_response():
                 "subnetIds": [
                     "subnet-00000000000000000",
                     "subnet-00000000000000001",
-                    "subnet-00000000000000002"
+                    "subnet-00000000000000002",
                 ],
                 "vpcId": "vpc-00000000000000000",
-                "securityGroupIds": [
-                    "sg-00000000000000000"
-                ]
+                "securityGroupIds": ["sg-00000000000000000"],
             },
             "version": "1.10",
             "arn": "arn:aws:eks:region:111222333444:cluster/" + EXAMPLE_NAME,
-            "createdAt": 1500000000.000
+            "createdAt": 1500000000.000,
         }
     }
 
@@ -164,15 +155,13 @@ def describe_cluster_deleting_response():
                 "subnetIds": [
                     "subnet-00000000000000000",
                     "subnet-00000000000000001",
-                    "subnet-00000000000000002"
+                    "subnet-00000000000000002",
                 ],
                 "vpcId": "vpc-00000000000000000",
-                "securityGroupIds": [
-                    "sg-00000000000000000"
-                ]
+                "securityGroupIds": ["sg-00000000000000000"],
             },
             "version": "1.10",
             "arn": "arn:aws:eks:region:111222333444:cluster/" + EXAMPLE_NAME,
-            "createdAt": 1500000000.000
+            "createdAt": 1500000000.000,
         }
     }

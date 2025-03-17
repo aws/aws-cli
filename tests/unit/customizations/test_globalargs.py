@@ -10,16 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.session import get_session
-from botocore.handlers import disable_signing
 import os
 
-from awscli.testutils import mock, unittest
+from botocore.handlers import disable_signing
+from botocore.session import get_session
+
 from awscli.customizations import globalargs
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.testutils import mock, unittest
 
 
-class FakeParsedArgs(object):
+class FakeParsedArgs:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
@@ -27,8 +28,7 @@ class FakeParsedArgs(object):
         return None
 
 
-class FakeSession(object):
-
+class FakeSession:
     def __init__(self, session_vars=None, config_file_vars=None):
         if session_vars is None:
             session_vars = {}
@@ -37,8 +37,9 @@ class FakeSession(object):
             config_file_vars = {}
         self.config_file_vars = config_file_vars
 
-    def get_config_variable(self, name, methods=('env', 'config'),
-                            default=None):
+    def get_config_variable(
+        self, name, methods=('env', 'config'), default=None
+    ):
         value = None
         config_name, envvar_name = self.session_var_map[name]
         if methods is not None:
@@ -52,7 +53,6 @@ class FakeSession(object):
 
 
 class TestGlobalArgsCustomization(unittest.TestCase):
-
     def test_parse_query(self):
         parsed_args = FakeParsedArgs(query='foo.bar')
         globalargs.resolve_types(parsed_args)
@@ -88,13 +88,13 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         environ = {}
         with mock.patch('os.environ', environ):
             parsed_args = FakeParsedArgs(
-                verify_ssl=True,
-                ca_bundle='/path/to/cli_bundle.pem')
+                verify_ssl=True, ca_bundle='/path/to/cli_bundle.pem'
+            )
             config_file_vars = {}
             session_var_map = {'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE')}
             session = FakeSession(
-                session_vars=session_var_map,
-                config_file_vars=config_file_vars)
+                session_vars=session_var_map, config_file_vars=config_file_vars
+            )
             globalargs.resolve_verify_ssl(parsed_args, session)
             self.assertEqual(parsed_args.verify_ssl, '/path/to/cli_bundle.pem')
 
@@ -104,13 +104,13 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         }
         with mock.patch('os.environ', environ):
             parsed_args = FakeParsedArgs(
-                verify_ssl=True,
-                ca_bundle='/path/to/cli_bundle.pem')
+                verify_ssl=True, ca_bundle='/path/to/cli_bundle.pem'
+            )
             config_file_vars = {}
             session_var_map = {'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE')}
             session = FakeSession(
-                session_vars=session_var_map,
-                config_file_vars=config_file_vars)
+                session_vars=session_var_map, config_file_vars=config_file_vars
+            )
             globalargs.resolve_verify_ssl(parsed_args, session)
             self.assertEqual(parsed_args.verify_ssl, '/path/to/cli_bundle.pem')
 
@@ -120,13 +120,13 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         }
         with mock.patch('os.environ', environ):
             parsed_args = FakeParsedArgs(
-                verify_ssl=False,
-                ca_bundle='/path/to/cli_bundle.pem')
+                verify_ssl=False, ca_bundle='/path/to/cli_bundle.pem'
+            )
             config_file_vars = {}
             session_var_map = {'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE')}
             session = FakeSession(
-                session_vars=session_var_map,
-                config_file_vars=config_file_vars)
+                session_vars=session_var_map, config_file_vars=config_file_vars
+            )
             globalargs.resolve_verify_ssl(parsed_args, session)
             self.assertFalse(parsed_args.verify_ssl)
 
@@ -137,7 +137,8 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         globalargs.no_sign_request(args, session)
         emitter = session.get_component('event_emitter')
         emitter.register_first.assert_called_with(
-            'choose-signer', disable_signing, unique_id='disable-signing')
+            'choose-signer', disable_signing, unique_id='disable-signing'
+        )
 
     def test_request_signed_by_default(self):
         args = FakeParsedArgs(sign_request=True)
@@ -155,16 +156,16 @@ class TestGlobalArgsCustomization(unittest.TestCase):
     def test_valid_endpoint_url(self):
         parsed_args = FakeParsedArgs(endpoint_url='http://custom-endpoint.com')
         globalargs.resolve_types(parsed_args)
-        self.assertEqual(parsed_args.endpoint_url,
-                         'http://custom-endpoint.com')
+        self.assertEqual(
+            parsed_args.endpoint_url, 'http://custom-endpoint.com'
+        )
 
     def test_cli_read_timeout(self):
         parsed_args = FakeParsedArgs(read_timeout='60')
         session = get_session()
         globalargs.resolve_cli_read_timeout(parsed_args, session)
         self.assertEqual(parsed_args.read_timeout, 60)
-        self.assertEqual(
-            session.get_default_client_config().read_timeout, 60)
+        self.assertEqual(session.get_default_client_config().read_timeout, 60)
 
     def test_cli_connect_timeout(self):
         parsed_args = FakeParsedArgs(connect_timeout='60')
@@ -172,7 +173,8 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         globalargs.resolve_cli_connect_timeout(parsed_args, session)
         self.assertEqual(parsed_args.connect_timeout, 60)
         self.assertEqual(
-            session.get_default_client_config().connect_timeout, 60)
+            session.get_default_client_config().connect_timeout, 60
+        )
 
     def test_cli_read_timeout_for_blocking(self):
         parsed_args = FakeParsedArgs(read_timeout='0')
@@ -180,7 +182,8 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         globalargs.resolve_cli_read_timeout(parsed_args, session)
         self.assertEqual(parsed_args.read_timeout, None)
         self.assertEqual(
-            session.get_default_client_config().read_timeout, None)
+            session.get_default_client_config().read_timeout, None
+        )
 
     def test_cli_connect_timeout_for_blocking(self):
         parsed_args = FakeParsedArgs(connect_timeout='0')
@@ -188,4 +191,5 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         globalargs.resolve_cli_connect_timeout(parsed_args, session)
         self.assertEqual(parsed_args.connect_timeout, None)
         self.assertEqual(
-            session.get_default_client_config().connect_timeout, None)
+            session.get_default_client_config().connect_timeout, None
+        )

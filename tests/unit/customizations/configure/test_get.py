@@ -10,16 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
 from awscli.compat import StringIO
-
 from awscli.customizations.configure.get import ConfigureGetCommand
+from awscli.testutils import unittest
 
 from . import FakeSession
 
 
 class TestConfigureGetCommand(unittest.TestCase):
-
     def create_command(self, session):
         stdout = StringIO()
         stderr = StringIO()
@@ -55,8 +53,9 @@ class TestConfigureGetCommand(unittest.TestCase):
 
     def test_dotted_get_with_profile(self):
         session = FakeSession({})
-        session.full_config = {'profiles': {'emr-dev': {
-            'emr': {'instance_profile': 'my_ip'}}}}
+        session.full_config = {
+            'profiles': {'emr-dev': {'emr': {'instance_profile': 'my_ip'}}}
+        }
         session.config = {'emr': {'instance_profile': 'my_ip'}}
         stream, error_stream, config_get = self.create_command(session)
         config_get(args=['emr-dev.emr.instance_profile'], parsed_globals=None)
@@ -66,31 +65,35 @@ class TestConfigureGetCommand(unittest.TestCase):
     def test_get_from_profile(self):
         session = FakeSession({})
         session.full_config = {
-            'profiles': {'testing': {'aws_access_key_id': 'access_key'}}}
+            'profiles': {'testing': {'aws_access_key_id': 'access_key'}}
+        }
         stream, error_stream, config_get = self.create_command(session)
         config_get = ConfigureGetCommand(session, stream)
-        config_get(args=['profile.testing.aws_access_key_id'],
-                   parsed_globals=None)
+        config_get(
+            args=['profile.testing.aws_access_key_id'], parsed_globals=None
+        )
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 'access_key')
 
     def test_get_nested_attribute(self):
         session = FakeSession({})
         session.full_config = {
-            'profiles': {'testing': {'s3': {'signature_version': 's3v4'}}}}
+            'profiles': {'testing': {'s3': {'signature_version': 's3v4'}}}
+        }
         stream, error_stream, config_get = self.create_command(session)
-        config_get(args=['profile.testing.s3.signature_version'],
-                   parsed_globals=None)
+        config_get(
+            args=['profile.testing.s3.signature_version'], parsed_globals=None
+        )
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 's3v4')
 
     def test_get_nested_attribute_from_default(self):
         session = FakeSession({})
         session.full_config = {
-            'profiles': {'default': {'s3': {'signature_version': 's3v4'}}}}
+            'profiles': {'default': {'s3': {'signature_version': 's3v4'}}}
+        }
         stream, error_stream, config_get = self.create_command(session)
-        config_get(args=['default.s3.signature_version'],
-                   parsed_globals=None)
+        config_get(args=['default.s3.signature_version'], parsed_globals=None)
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 's3v4')
 
@@ -98,25 +101,25 @@ class TestConfigureGetCommand(unittest.TestCase):
         session = FakeSession({})
         session.full_config = {'profiles': {}}
         stream, error_stream, config_get = self.create_command(session)
-        config_get(args=['default.s3.signature_version'],
-                   parsed_globals=None)
+        config_get(args=['default.s3.signature_version'], parsed_globals=None)
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), '')
 
     def test_get_nested_attribute_from_implicit_default(self):
         session = FakeSession({})
         session.full_config = {
-            'profiles': {'default': {'s3': {'signature_version': 's3v4'}}}}
+            'profiles': {'default': {'s3': {'signature_version': 's3v4'}}}
+        }
         stream, error_stream, config_get = self.create_command(session)
-        config_get(args=['s3.signature_version'],
-                   parsed_globals=None)
+        config_get(args=['s3.signature_version'], parsed_globals=None)
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 's3v4')
 
     def test_get_section_returns_error(self):
         session = FakeSession({})
         session.full_config = {
-            'profiles': {'default': {'s3': {'signature_version': 's3v4'}}}}
+            'profiles': {'default': {'s3': {'signature_version': 's3v4'}}}
+        }
         session.config = {'s3': {'signature_version': 's3v4'}}
         stream, error_stream, config_get = self.create_command(session)
         rc = config_get(args=['s3'], parsed_globals=None)
@@ -125,7 +128,8 @@ class TestConfigureGetCommand(unittest.TestCase):
         error_message = error_stream.getvalue()
         expected_message = (
             'varname (s3) must reference a value, not a section or '
-            'sub-section.')
+            'sub-section.'
+        )
         self.assertEqual(error_message, expected_message)
         self.assertEqual(stream.getvalue(), '')
 
@@ -133,8 +137,7 @@ class TestConfigureGetCommand(unittest.TestCase):
         # This should never happen, but we handle this case so we should
         # test it.
         session = FakeSession({})
-        session.full_config = {
-            'profiles': {'default': {'foo': object()}}}
+        session.full_config = {'profiles': {'default': {'foo': object()}}}
         stream, error_stream, config_get = self.create_command(session)
         rc = config_get(args=['foo'], parsed_globals=None)
         self.assertEqual(rc, 1)

@@ -12,14 +12,13 @@
 # language governing permissions and limitations under the License.
 import datetime
 
+from botocore.compat import parse_qs, urlparse
 from dateutil.tz import tzutc
-from botocore.compat import urlparse, parse_qs
 
-from awscli.testutils import mock, BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 
 class TestGenerateDBAuthToken(BaseAWSCommandParamsTest):
-
     prefix = 'rds generate-db-auth-token'
 
     def _urlparse(self, url):
@@ -64,4 +63,5 @@ class TestGenerateDBAuthToken(BaseAWSCommandParamsTest):
         )
 
         self.assert_url_equal(
-            'https://' + stdout.strip('\n'), 'https://' + expected)
+            'https://' + stdout.strip('\n'), 'https://' + expected
+        )

@@ -15,7 +15,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestAssociateAddress(BaseAWSCommandParamsTest):
-
     prefix = 'ec2 associate-address'
 
     def test_basic(self):
@@ -31,10 +30,12 @@ class TestAssociateAddress(BaseAWSCommandParamsTest):
         cmdline += ' --public-ip 192.168.0.0'
         cmdline += ' --allocation-id eipalloc-12345678'
         cmdline += ' --allow-reassociation'
-        result = {'InstanceId': 'i-12345678',
-                  'PublicIp': '192.168.0.0',
-                  'AllowReassociation': True,
-                  'AllocationId': 'eipalloc-12345678'}
+        result = {
+            'InstanceId': 'i-12345678',
+            'PublicIp': '192.168.0.0',
+            'AllowReassociation': True,
+            'AllocationId': 'eipalloc-12345678',
+        }
         self.assert_params_for_cmd(cmdline, result)
 
 

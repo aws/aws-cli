@@ -10,25 +10,29 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, mock
-
+import pytest
 from botocore.session import Session
 from prompt_toolkit.application import Application
-from prompt_toolkit.completion import PathCompleter, Completion
+from prompt_toolkit.completion import Completion, PathCompleter
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout import walk
-import pytest
 
-from tests import PromptToolkitAppRunner
-from awscli.customizations.wizard.factory import create_wizard_app
 from awscli.customizations.wizard.app import (
-    WizardAppRunner, WizardTraverser, WizardValues, FileIO
-)
-from awscli.customizations.wizard.exceptions import (
-    InvalidChoiceException, UnableToRunWizardError, UnexpectedWizardException,
-    InvalidDataTypeConversionException
+    FileIO,
+    WizardAppRunner,
+    WizardTraverser,
+    WizardValues,
 )
 from awscli.customizations.wizard.core import BaseStep, Executor
+from awscli.customizations.wizard.exceptions import (
+    InvalidChoiceException,
+    InvalidDataTypeConversionException,
+    UnableToRunWizardError,
+    UnexpectedWizardException,
+)
+from awscli.customizations.wizard.factory import create_wizard_app
+from awscli.testutils import mock, unittest
+from tests import PromptToolkitAppRunner
 
 
 @pytest.fixture
@@ -42,14 +46,8 @@ def mock_iam_client(mock_botocore_session):
     mock_botocore_session.create_client.return_value = mock_client
     mock_client.list_policies.return_value = {
         'Policies': [
-            {
-                'PolicyName': 'policy1',
-                'Arn': 'policy1_arn'
-            },
-            {
-                'PolicyName': 'policy2',
-                'Arn': 'policy2_arn'
-            }
+            {'PolicyName': 'policy1', 'Arn': 'policy1_arn'},
+            {'PolicyName': 'policy2', 'Arn': 'policy2_arn'},
         ]
     }
     mock_client.get_policy.return_value = {
@@ -75,14 +73,16 @@ def make_stubbed_wizard_runner(ptk_app_session, mock_botocore_session):
         )
         ptk_app_session.app = app
         return PromptToolkitAppRunner(app=app)
+
     yield _make_stubbed_wizard_runner
 
 
 @pytest.fixture
 def patch_path_completer():
     with mock.patch(
-            'awscli.customizations.wizard.ui.prompt.PathCompleter',
-            FakePathCompleter) as completer:
+        'awscli.customizations.wizard.ui.prompt.PathCompleter',
+        FakePathCompleter,
+    ) as completer:
         yield completer
 
 
@@ -102,7 +102,7 @@ def empty_definition():
         'plan': {
             '__DONE__': {},
         },
-        'execute': {}
+        'execute': {},
     }
 
 
@@ -116,32 +116,32 @@ def basic_definition():
                 'values': {
                     'prompt1': {
                         'description': 'Description of first prompt',
-                        'type': 'prompt'
+                        'type': 'prompt',
                     },
                     'prompt2': {
                         'description': 'Description of second prompt',
                         'type': 'prompt',
-                        'default_value': 'foo'
+                        'default_value': 'foo',
                     },
-                }
+                },
             },
             'second_section': {
                 'shortname': 'Second',
                 'values': {
                     'second_section_prompt': {
                         'description': 'Description of prompt',
-                        'type': 'prompt'
+                        'type': 'prompt',
                     },
                     'template_section': {
                         'type': 'template',
                         'value': 'some text',
-                    }
-                }
+                    },
+                },
             },
             '__DONE__': {},
         },
         'execute': {},
-        '__OUTPUT__': {'value': 'output: {template_section}'}
+        '__OUTPUT__': {'value': 'output: {template_section}'},
     }
 
 
@@ -155,25 +155,25 @@ def conditional_definition():
                 'values': {
                     'before_conditional': {
                         'description': 'Description of first prompt',
-                        'type': 'prompt'
+                        'type': 'prompt',
                     },
                     'conditional': {
                         'description': 'Description of second prompt',
                         'type': 'prompt',
                         'condition': {
                             'variable': 'before_conditional',
-                            'equals': 'condition-met'
-                        }
+                            'equals': 'condition-met',
+                        },
                     },
                     'after_conditional': {
                         'description': 'Description of second prompt',
                         'type': 'prompt',
                     },
-                }
+                },
             },
             '__DONE__': {},
         },
-        'execute': {}
+        'execute': {},
     }
 
 
@@ -191,19 +191,19 @@ def choices_definition():
                         'choices': [
                             {
                                 'display': 'Option 1',
-                                'actual_value': 'actual_option_1'
+                                'actual_value': 'actual_option_1',
                             },
                             {
                                 'display': 'Option 2',
-                                'actual_value': 'actual_option_2'
-                            }
-                        ]
+                                'actual_value': 'actual_option_2',
+                            },
+                        ],
                     }
-                }
+                },
             },
             '__DONE__': {},
         },
-        'execute': {}
+        'execute': {},
     }
 
 
@@ -218,17 +218,17 @@ def corrupted_choice_definition():
                     'choices_prompt': {
                         'description': 'Description of first prompt',
                         'type': 'prompt',
-                        'choices': 'corrupted_choice'
+                        'choices': 'corrupted_choice',
                     },
                     'corrupted_choice': {
                         'description': 'Description of first prompt',
                         'type': 'apicall',
-                    }
-                }
+                    },
+                },
             },
             '__DONE__': {},
         },
-        'execute': {}
+        'execute': {},
     }
 
 
@@ -247,16 +247,13 @@ def mixed_prompt_definition():
                     'select_prompt': {
                         'description': 'Select answer',
                         'type': 'prompt',
-                        'choices': [
-                            'select_answer_1',
-                            'select_answer_2'
-                        ]
-                    }
-                }
+                        'choices': ['select_answer_1', 'select_answer_2'],
+                    },
+                },
             },
             '__DONE__': {},
         },
-        'execute': {}
+        'execute': {},
     }
 
 
@@ -271,18 +268,18 @@ def data_convert_definition():
                     'buffer_input_int': {
                         'description': 'Type answer',
                         'type': 'prompt',
-                        'datatype': 'int'
+                        'datatype': 'int',
                     },
                     'buffer_input_bool': {
                         'description': 'Type answer',
                         'type': 'prompt',
-                        'datatype': 'bool'
+                        'datatype': 'bool',
                     },
-                }
+                },
             },
             '__DONE__': {},
         },
-        'execute': {}
+        'execute': {},
     }
 
 
@@ -301,18 +298,18 @@ def api_call_definition():
                         'query': (
                             'sort_by(Policies[].{display: PolicyName, '
                             'actual_value: Arn}, &display)'
-                        )
+                        ),
                     },
                     'choose_policy': {
                         'description': 'Choose policy',
                         'type': 'prompt',
-                        'choices': 'existing_policies'
-                    }
-                }
+                        'choices': 'existing_policies',
+                    },
+                },
             },
             '__DONE__': {},
         },
-        'execute': {}
+        'execute': {},
     }
 
 
@@ -327,21 +324,19 @@ def details_definition():
                     'version_id': {
                         'type': 'apicall',
                         'operation': 'iam.GetPolicy',
-                        'params': {
-                            'PolicyArn': '{policy_arn}'
-                        },
+                        'params': {'PolicyArn': '{policy_arn}'},
                         'query': 'Policy.DefaultVersionId',
-                        'cache': True
+                        'cache': True,
                     },
                     'policy_document': {
                         'type': 'apicall',
                         'operation': 'iam.GetPolicyVersion',
                         'params': {
                             'PolicyArn': '{policy_arn}',
-                            'VersionId': '{version_id}'
+                            'VersionId': '{version_id}',
                         },
                         'query': 'PolicyVersion.Document',
-                        'cache': True
+                        'cache': True,
                     },
                     'existing_policies': {
                         'type': 'apicall',
@@ -350,7 +345,7 @@ def details_definition():
                         'query': (
                             'sort_by(Policies[].{display: PolicyName, '
                             'actual_value: Arn}, &display)'
-                        )
+                        ),
                     },
                     'policy_arn': {
                         'description': 'Choose policy',
@@ -359,19 +354,19 @@ def details_definition():
                         'details': {
                             'value': 'policy_document',
                             'description': 'Policy Document',
-                            'output': 'json'
+                            'output': 'json',
                         },
                     },
                     'some_prompt': {
                         'description': 'Choose something',
                         'type': 'prompt',
                         'choices': [1, 2, 3],
-                    }
-                }
+                    },
+                },
             },
             '__DONE__': {},
         },
-        'execute': {}
+        'execute': {},
     }
 
 
@@ -385,27 +380,23 @@ def preview_definition():
                 'values': {
                     'option1': {
                         'type': 'template',
-                        'value': "First option details"
+                        'value': "First option details",
                     },
                     'option2': {
                         'type': 'template',
-                        'value': "Second option details"
+                        'value': "Second option details",
                     },
                     'some_prompt': {
                         'description': 'Choose something',
                         'type': 'prompt',
-                        'choices': [{
-                            'display': '1', 'actual_value': '2'
-                        }],
+                        'choices': [{'display': '1', 'actual_value': '2'}],
                     },
                     'choose_option': {
                         'description': 'Choose option',
                         'type': 'prompt',
                         'choices': [
-                            {'display': 'Option 1',
-                             'actual_value': 'option1'},
-                            {'display': 'Option 2',
-                             'actual_value': 'option2'},
+                            {'display': 'Option 1', 'actual_value': 'option1'},
+                            {'display': 'Option 2', 'actual_value': 'option2'},
                         ],
                         'details': {
                             'visible': True,
@@ -413,10 +404,10 @@ def preview_definition():
                             'description': 'Option details',
                         },
                     },
-                }
+                },
             },
             '__DONE__': {},
-        }
+        },
     }
 
 
@@ -435,12 +426,12 @@ def shared_config_definition():
                     'choose_profile': {
                         'description': 'Choose profile',
                         'type': 'prompt',
-                        'choices': 'existing_profiles'
-                    }
-                }
+                        'choices': 'existing_profiles',
+                    },
+                },
             },
             '__DONE__': {},
-        }
+        },
     }
 
 
@@ -454,9 +445,9 @@ def run_wizard_definition():
                 'values': {
                     'role_name': {
                         'type': 'prompt',
-                        'description': 'Enter role name'
+                        'description': 'Enter role name',
                     }
-                }
+                },
             },
             '__DONE__': {},
         },
@@ -465,15 +456,12 @@ def run_wizard_definition():
                 {
                     'type': 'apicall',
                     'operation': 'iam.CreateRole',
-                    'params': {
-                        'RoleName': "{role_name}"
-                    },
+                    'params': {'RoleName': "{role_name}"},
                     'output_var': 'role_arn',
                     'query': 'Role.Arn',
                 }
-
             ]
-        }
+        },
     }
 
 
@@ -488,17 +476,17 @@ def file_prompt_definition():
                     'choose_file': {
                         'description': 'Choose file',
                         'type': 'prompt',
-                        'completer': 'file_completer'
+                        'completer': 'file_completer',
                     },
                     'second_prompt': {
                         'description': 'Second prompt',
                         'type': 'prompt',
-                    }
-                }
+                    },
+                },
             },
             '__DONE__': {},
         },
-        'execute': {}
+        'execute': {},
     }
 
 
@@ -538,7 +526,8 @@ class BaseWizardApplicationTest:
         assert app.layout.current_buffer.name, buffer_name
 
     def assert_expected_buffer_completions(
-            self, app, buffer_name, expected_completions):
+        self, app, buffer_name, expected_completions
+    ):
         buffer = app.layout.get_buffer_by_name(buffer_name)
         assert buffer.complete_state.completions == expected_completions
 
@@ -558,20 +547,28 @@ class BaseWizardApplicationTest:
 
     def assert_toolbar_has_text(self, app, text):
         assert any(
-            [text in tip[1]
-             for tip in list(filter(
-                lambda x: getattr(x, 'name', '') == 'toolbar_panel',
-                app.layout.find_all_controls())
-            )[0].text()()]
+            [
+                text in tip[1]
+                for tip in list(
+                    filter(
+                        lambda x: getattr(x, 'name', '') == 'toolbar_panel',
+                        app.layout.find_all_controls(),
+                    )
+                )[0].text()()
+            ]
         )
 
     def assert_toolbar_does_not_have_text(self, app, text):
         assert not any(
-            [text in tip[1]
-             for tip in list(filter(
-                lambda x: getattr(x, 'name', '') == 'toolbar_panel',
-                app.layout.find_all_controls())
-            )[0].text()()]
+            [
+                text in tip[1]
+                for tip in list(
+                    filter(
+                        lambda x: getattr(x, 'name', '') == 'toolbar_panel',
+                        app.layout.find_all_controls(),
+                    )
+                )[0].text()()
+            ]
         )
 
     def get_visible_buffers(self, app):
@@ -587,26 +584,31 @@ class BaseWizardApplicationTest:
 
 class TestBasicWizardApplication(BaseWizardApplicationTest):
     def test_can_answer_single_prompt(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('val1\n')
             self.assert_app_values(app_runner.app, prompt1='val1')
 
     def test_can_answer_multiple_prompts(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('val1\n')
             # This is to remove the default answer of foo for prompt 2
             app_runner.feed_input(
-                Keys.Backspace, Keys.Backspace, Keys.Backspace)
+                Keys.Backspace, Keys.Backspace, Keys.Backspace
+            )
             app_runner.feed_input('val2\n')
             self.assert_app_values(
-                app_runner.app, prompt1='val1', prompt2='val2')
+                app_runner.app, prompt1='val1', prompt2='val2'
+            )
 
     def test_can_use_tab_to_submit_answer(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('val1')
@@ -614,7 +616,8 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
             self.assert_app_values(app_runner.app, prompt1='val1')
 
     def test_can_use_prompt_default_value(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.Tab)
@@ -622,7 +625,8 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
             self.assert_app_values(app_runner.app, prompt1='', prompt2='foo')
 
     def test_can_use_shift_tab_to_toggle_backwards_and_change_answer(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('1\n')
@@ -630,22 +634,27 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
             app_runner.feed_input(Keys.Backspace)
             app_runner.feed_input('override1\n')
             self.assert_app_values(
-                app_runner.app, prompt1='override1', prompt2='foo')
+                app_runner.app, prompt1='override1', prompt2='foo'
+            )
 
     def test_can_answer_prompts_across_sections(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('val1\n')
             app_runner.feed_input('\n')
             app_runner.feed_input('second_section_val1\n')
             self.assert_app_values(
-                app_runner.app, prompt1='val1', prompt2='foo',
-                second_section_prompt='second_section_val1'
+                app_runner.app,
+                prompt1='val1',
+                prompt2='foo',
+                second_section_prompt='second_section_val1',
             )
 
     def test_can_move_back_to_a_prompt_in_previous_section(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('val1\n')
@@ -657,21 +666,26 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
             app_runner.feed_input(Keys.BackTab)
             # This is to remove the default answer of foo for prompt 2
             app_runner.feed_input(
-                Keys.Backspace, Keys.Backspace, Keys.Backspace)
+                Keys.Backspace, Keys.Backspace, Keys.Backspace
+            )
             app_runner.feed_input('override2\n')
             self.assert_app_values(
-                app_runner.app, prompt1='val1', prompt2='override2',
-                second_section_prompt='second_section_val1'
+                app_runner.app,
+                prompt1='val1',
+                prompt2='override2',
+                second_section_prompt='second_section_val1',
             )
 
     def test_prompts_are_not_visible_across_sections(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
         with app_runner.run_app_in_thread():
             self.assert_prompt_is_visible(app_runner.app, 'prompt1')
             self.assert_prompt_is_visible(app_runner.app, 'prompt2')
             self.assert_prompt_is_not_visible(
-                app_runner.app, 'second_section_prompt')
+                app_runner.app, 'second_section_prompt'
+            )
 
             app_runner.feed_input('val1\n')
             app_runner.feed_input('val2\n')
@@ -679,10 +693,12 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
             self.assert_prompt_is_not_visible(app_runner.app, 'prompt1')
             self.assert_prompt_is_not_visible(app_runner.app, 'prompt2')
             self.assert_prompt_is_visible(
-                app_runner.app, 'second_section_prompt')
+                app_runner.app, 'second_section_prompt'
+            )
 
     def test_run_wizard_dialog_appears_only_at_end_of_wizard(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
 
         with app_runner.run_app_in_thread():
@@ -695,7 +711,8 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
             self.assert_run_wizard_dialog_is_visible(app_runner.app)
 
     def test_enter_at_wizard_dialog_exits_app_with_zero_rc(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
         with app_runner.run_app_in_thread() as ctx:
             app_runner.feed_input('val1\n')
@@ -706,7 +723,8 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
         assert ctx.return_value == 0
 
     def test_can_go_back_from_run_wizard_dialog(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('val1\n')
@@ -716,24 +734,29 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
             app_runner.feed_input(Keys.Right, Keys.Enter)
             app_runner.feed_input('_override\n')
             self.assert_app_values(
-                app_runner.app, prompt1='val1', prompt2='foo',
-                second_section_prompt='second_section_val1_override'
+                app_runner.app,
+                prompt1='val1',
+                prompt2='foo',
+                second_section_prompt='second_section_val1_override',
             )
 
     def test_traverser_get_output(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
         assert app_runner.app.traverser.get_output() == 'output: some text'
 
     def test_can_exit_and_propagate_ctrl_c_from_wizard(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
         with app_runner.run_app_in_thread() as ctx:
             app_runner.feed_input(Keys.ControlC)
         assert isinstance(ctx.raised_exception, KeyboardInterrupt)
 
     def test_captures_unexpected_errors_when_processing_input(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
         unexpected_error = ValueError('Not expected')
 
@@ -747,17 +770,20 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
         assert ctx.raised_exception.original_exception is unexpected_error
 
     def test_cant_open_save_panel_if_no_details_available(
-            self, make_stubbed_wizard_runner, basic_definition):
+        self, make_stubbed_wizard_runner, basic_definition
+    ):
         app_runner = make_stubbed_wizard_runner(basic_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.ControlS)
             assert 'save_details_dialogue' not in self.get_visible_buffers(
-                app_runner.app)
+                app_runner.app
+            )
 
 
 class TestConditionalWizardApplication(BaseWizardApplicationTest):
     def test_conditional_prompt_is_skipped_when_condition_not_met(
-            self, make_stubbed_wizard_runner, conditional_definition):
+        self, make_stubbed_wizard_runner, conditional_definition
+    ):
         app_runner = make_stubbed_wizard_runner(conditional_definition)
         with app_runner.run_app_in_thread():
             self.assert_prompt_is_not_visible(app_runner.app, 'conditional')
@@ -765,12 +791,14 @@ class TestConditionalWizardApplication(BaseWizardApplicationTest):
             self.assert_prompt_is_not_visible(app_runner.app, 'conditional')
             app_runner.feed_input('after-conditional-val\n')
             self.assert_app_values(
-                app_runner.app, before_conditional='condition-not-met',
+                app_runner.app,
+                before_conditional='condition-not-met',
                 after_conditional='after-conditional-val',
             )
 
     def test_conditional_prompt_appears_when_condition_met(
-            self, make_stubbed_wizard_runner, conditional_definition):
+        self, make_stubbed_wizard_runner, conditional_definition
+    ):
         app_runner = make_stubbed_wizard_runner(conditional_definition)
         with app_runner.run_app_in_thread():
             self.assert_prompt_is_not_visible(app_runner.app, 'conditional')
@@ -778,50 +806,57 @@ class TestConditionalWizardApplication(BaseWizardApplicationTest):
             self.assert_prompt_is_visible(app_runner.app, 'conditional')
             app_runner.feed_input('val-at-conditional\n')
             self.assert_app_values(
-                app_runner.app, before_conditional='condition-met',
+                app_runner.app,
+                before_conditional='condition-met',
                 conditional='val-at-conditional',
             )
 
 
 class TestChoicesWizardApplication(BaseWizardApplicationTest):
     def test_immediately_pressing_enter_selects_first_choice(
-            self, make_stubbed_wizard_runner, choices_definition):
+        self, make_stubbed_wizard_runner, choices_definition
+    ):
         app_runner = make_stubbed_wizard_runner(choices_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.Enter)
             self.assert_app_values(
-                app_runner.app, choices_prompt='actual_option_1')
+                app_runner.app, choices_prompt='actual_option_1'
+            )
 
     def test_can_select_choice_in_prompt(
-            self, make_stubbed_wizard_runner, choices_definition):
+        self, make_stubbed_wizard_runner, choices_definition
+    ):
         app_runner = make_stubbed_wizard_runner(choices_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.Down, Keys.Enter)
             self.assert_app_values(
-                app_runner.app, choices_prompt='actual_option_2')
+                app_runner.app, choices_prompt='actual_option_2'
+            )
 
 
 class TestCorruptedChoicesWizardApplication(BaseWizardApplicationTest):
     def test_can_handle_corrupted_choices(
-            self, make_stubbed_wizard_runner, corrupted_choice_definition):
+        self, make_stubbed_wizard_runner, corrupted_choice_definition
+    ):
         app_runner = make_stubbed_wizard_runner(corrupted_choice_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.Down, Keys.Enter)
-            self.assert_app_values(
-                app_runner.app, choices_prompt=None)
+            self.assert_app_values(app_runner.app, choices_prompt=None)
 
     def test_show_error_message_on_get_value_exception(
-            self, make_stubbed_wizard_runner, corrupted_choice_definition):
+        self, make_stubbed_wizard_runner, corrupted_choice_definition
+    ):
         app_runner = make_stubbed_wizard_runner(corrupted_choice_definition)
         with app_runner.run_app_in_thread():
             self.assert_buffer_text(
                 app_runner.app,
                 'error_bar',
-                'Encountered following error in wizard:\n\n\'operation\''
+                'Encountered following error in wizard:\n\n\'operation\'',
             )
 
     def test_toolbar_text_on_get_value_exception(
-            self, make_stubbed_wizard_runner, corrupted_choice_definition):
+        self, make_stubbed_wizard_runner, corrupted_choice_definition
+    ):
         app_runner = make_stubbed_wizard_runner(corrupted_choice_definition)
         with app_runner.run_app_in_thread():
             self.assert_toolbar_has_text(app_runner.app, 'error message')
@@ -829,27 +864,31 @@ class TestCorruptedChoicesWizardApplication(BaseWizardApplicationTest):
 
 class TestMixedPromptTypeWizardApplication(BaseWizardApplicationTest):
     def test_can_answer_buffer_prompt_followed_by_select_prompt(
-            self, make_stubbed_wizard_runner, mixed_prompt_definition):
+        self, make_stubbed_wizard_runner, mixed_prompt_definition
+    ):
         app_runner = make_stubbed_wizard_runner(mixed_prompt_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('buffer_answer\n')
             app_runner.feed_input(Keys.Enter)
             self.assert_app_values(
-                app_runner.app, buffer_input_prompt='buffer_answer',
-                select_prompt='select_answer_1'
+                app_runner.app,
+                buffer_input_prompt='buffer_answer',
+                select_prompt='select_answer_1',
             )
 
 
 class TestPromptWithDataConvertWizardApplication(BaseWizardApplicationTest):
     def test_can_convert_integers(
-            self, make_stubbed_wizard_runner, data_convert_definition):
+        self, make_stubbed_wizard_runner, data_convert_definition
+    ):
         app_runner = make_stubbed_wizard_runner(data_convert_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('100\n')
             self.assert_app_values(app_runner.app, buffer_input_int=100)
 
     def test_can_convert_bool(
-            self, make_stubbed_wizard_runner, data_convert_definition):
+        self, make_stubbed_wizard_runner, data_convert_definition
+    ):
         app_runner = make_stubbed_wizard_runner(data_convert_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('0\n')
@@ -859,7 +898,8 @@ class TestPromptWithDataConvertWizardApplication(BaseWizardApplicationTest):
             )
 
     def test_show_error_and_stop_on_incorrect_input(
-            self, make_stubbed_wizard_runner, data_convert_definition):
+        self, make_stubbed_wizard_runner, data_convert_definition
+    ):
         app_runner = make_stubbed_wizard_runner(data_convert_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('foo\n')
@@ -867,12 +907,13 @@ class TestPromptWithDataConvertWizardApplication(BaseWizardApplicationTest):
                 app_runner.app,
                 'error_bar',
                 'Encountered following error in wizard:\n\n'
-                'Invalid value foo for datatype int'
+                'Invalid value foo for datatype int',
             )
             self.assert_current_buffer(app_runner.app, 'buffer_input_int')
 
     def test_clear_error_and_go_on_after_correction(
-            self, make_stubbed_wizard_runner, data_convert_definition):
+        self, make_stubbed_wizard_runner, data_convert_definition
+    ):
         app_runner = make_stubbed_wizard_runner(data_convert_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('foo\n')
@@ -880,22 +921,21 @@ class TestPromptWithDataConvertWizardApplication(BaseWizardApplicationTest):
                 app_runner.app,
                 'error_bar',
                 'Encountered following error in wizard:\n\n'
-                'Invalid value foo for datatype int'
+                'Invalid value foo for datatype int',
             )
             self.assert_current_buffer(app_runner.app, 'buffer_input_int')
             app_runner.feed_input(
-                Keys.Backspace, Keys.Backspace, Keys.Backspace)
-            app_runner.feed_input('100\n')
-            self.assert_buffer_text(
-                app_runner.app, 'error_bar', ''
+                Keys.Backspace, Keys.Backspace, Keys.Backspace
             )
+            app_runner.feed_input('100\n')
+            self.assert_buffer_text(app_runner.app, 'error_bar', '')
             self.assert_current_buffer(app_runner.app, 'buffer_input_bool')
 
 
 class TestApiCallWizardApplication(BaseWizardApplicationTest):
     def test_uses_choices_from_api_call(
-            self, make_stubbed_wizard_runner, api_call_definition,
-            mock_iam_client):
+        self, make_stubbed_wizard_runner, api_call_definition, mock_iam_client
+    ):
         app_runner = make_stubbed_wizard_runner(api_call_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.Enter)
@@ -904,31 +944,32 @@ class TestApiCallWizardApplication(BaseWizardApplicationTest):
 
 class TestDetailsWizardApplication(BaseWizardApplicationTest):
     def test_get_details_for_choice(
-            self, make_stubbed_wizard_runner, details_definition,
-            mock_iam_client):
+        self, make_stubbed_wizard_runner, details_definition, mock_iam_client
+    ):
         app_runner = make_stubbed_wizard_runner(details_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.F3)
             self.assert_buffer_text(
                 app_runner.app,
                 'details_buffer',
-                '{\n    "policy": "policy_document"\n}'
+                '{\n    "policy": "policy_document"\n}',
             )
 
     def test_details_disabled_for_choice_wo_details(
-            self, make_stubbed_wizard_runner, details_definition,
-            mock_iam_client):
+        self, make_stubbed_wizard_runner, details_definition, mock_iam_client
+    ):
         app_runner = make_stubbed_wizard_runner(details_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.Tab)
             self.assert_prompt_is_not_visible(
-                app_runner.app, 'toolbar_details')
+                app_runner.app, 'toolbar_details'
+            )
             app_runner.feed_input(Keys.F3)
             self.assert_prompt_is_not_visible(app_runner.app, 'details_buffer')
 
     def test_can_switch_focus_to_details_panel(
-            self, make_stubbed_wizard_runner, details_definition,
-            mock_iam_client):
+        self, make_stubbed_wizard_runner, details_definition, mock_iam_client
+    ):
         app_runner = make_stubbed_wizard_runner(details_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.F3)
@@ -938,28 +979,29 @@ class TestDetailsWizardApplication(BaseWizardApplicationTest):
             assert app_runner.app.layout.current_buffer is None
 
     def test_can_toggle_save_panel(
-            self, make_stubbed_wizard_runner, details_definition,
-            mock_iam_client):
+        self, make_stubbed_wizard_runner, details_definition, mock_iam_client
+    ):
         app_runner = make_stubbed_wizard_runner(details_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.ControlS)
             self.assert_current_buffer(app_runner.app, 'save_details_dialogue')
             self.assert_prompt_is_visible(
-                app_runner.app, 'save_details_dialogue')
+                app_runner.app, 'save_details_dialogue'
+            )
             assert app_runner.app.details_visible
             assert app_runner.app.save_details_visible
 
     def test_can_not_switch_focus_to_details_panel_if_it_not_visible(
-            self, make_stubbed_wizard_runner, details_definition,
-            mock_iam_client):
+        self, make_stubbed_wizard_runner, details_definition, mock_iam_client
+    ):
         app_runner = make_stubbed_wizard_runner(details_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.F2)
             assert app_runner.app.layout.current_buffer is None
 
     def test_can_set_details_panel_title(
-            self, make_stubbed_wizard_runner, details_definition,
-            mock_iam_client):
+        self, make_stubbed_wizard_runner, details_definition, mock_iam_client
+    ):
         app_runner = make_stubbed_wizard_runner(details_definition)
         with app_runner.run_app_in_thread():
             assert app_runner.app.details_title == 'Policy Document'
@@ -967,8 +1009,8 @@ class TestDetailsWizardApplication(BaseWizardApplicationTest):
             assert app_runner.app.details_title == 'Policy Document'
 
     def test_can_set_details_toolbar_text(
-            self, make_stubbed_wizard_runner, details_definition,
-            mock_iam_client):
+        self, make_stubbed_wizard_runner, details_definition, mock_iam_client
+    ):
         app_runner = make_stubbed_wizard_runner(details_definition)
         with app_runner.run_app_in_thread():
             self.assert_toolbar_has_text(app_runner.app, 'Policy Document')
@@ -976,40 +1018,42 @@ class TestDetailsWizardApplication(BaseWizardApplicationTest):
 
 class TestPreviewWizardApplication(BaseWizardApplicationTest):
     def test_details_panel_visible_by_default(
-            self, make_stubbed_wizard_runner, preview_definition):
+        self, make_stubbed_wizard_runner, preview_definition
+    ):
         app_runner = make_stubbed_wizard_runner(preview_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.Tab)
             self.assert_prompt_is_visible(app_runner.app, 'details_buffer')
 
     def test_get_details_for_choice(
-            self, make_stubbed_wizard_runner, preview_definition):
+        self, make_stubbed_wizard_runner, preview_definition
+    ):
         app_runner = make_stubbed_wizard_runner(preview_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.Tab)
             self.assert_buffer_text(
-                app_runner.app,
-                'details_buffer',
-                'First option details'
+                app_runner.app, 'details_buffer', 'First option details'
             )
 
     def test_get_details_for_second_choice(
-            self, make_stubbed_wizard_runner, preview_definition):
+        self, make_stubbed_wizard_runner, preview_definition
+    ):
         app_runner = make_stubbed_wizard_runner(preview_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.Tab)
             app_runner.feed_input(Keys.Down)
             self.assert_buffer_text(
-                app_runner.app,
-                'details_buffer',
-                'Second option details'
+                app_runner.app, 'details_buffer', 'Second option details'
             )
 
 
 class TestSharedConfigWizardApplication(BaseWizardApplicationTest):
     def test_uses_choices_from_api_call(
-            self, make_stubbed_wizard_runner, shared_config_definition,
-            mock_botocore_session):
+        self,
+        make_stubbed_wizard_runner,
+        shared_config_definition,
+        mock_botocore_session,
+    ):
         mock_botocore_session.available_profiles = ['profile1', 'profile2']
         app_runner = make_stubbed_wizard_runner(shared_config_definition)
         with app_runner.run_app_in_thread():
@@ -1025,8 +1069,11 @@ class TestRunWizardApplication(BaseWizardApplicationTest):
         assert 'error_bar' not in self.get_visible_buffers(app)
 
     def test_run_wizard_execute(
-            self, make_stubbed_wizard_runner, run_wizard_definition,
-            mock_iam_client):
+        self,
+        make_stubbed_wizard_runner,
+        run_wizard_definition,
+        mock_iam_client,
+    ):
         app_runner = make_stubbed_wizard_runner(run_wizard_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('role-name\n')
@@ -1035,23 +1082,30 @@ class TestRunWizardApplication(BaseWizardApplicationTest):
         assert app_runner.app.values['role_arn'] == 'returned-role-arn'
 
     def test_run_wizard_captures_and_displays_errors(
-            self, make_stubbed_wizard_runner, run_wizard_definition,
-            mock_iam_client):
+        self,
+        make_stubbed_wizard_runner,
+        run_wizard_definition,
+        mock_iam_client,
+    ):
         app_runner = make_stubbed_wizard_runner(run_wizard_definition)
         mock_iam_client.create_role.side_effect = Exception(
-            'Error creating role')
+            'Error creating role'
+        )
         with app_runner.run_app_in_thread():
             app_runner.feed_input('role-name\n')
             app_runner.feed_input(Keys.Enter)
             self.assert_buffer_text(
                 app_runner.app,
                 'error_bar',
-                'Encountered following error in wizard:\n\nError creating role'
+                'Encountered following error in wizard:\n\nError creating role',
             )
 
     def test_can_change_answers_on_run_wizard_failure(
-            self, make_stubbed_wizard_runner, run_wizard_definition,
-            mock_iam_client):
+        self,
+        make_stubbed_wizard_runner,
+        run_wizard_definition,
+        mock_iam_client,
+    ):
         app_runner = make_stubbed_wizard_runner(run_wizard_definition)
         mock_iam_client.create_role.side_effect = [
             Exception('Initial error'),
@@ -1065,7 +1119,7 @@ class TestRunWizardApplication(BaseWizardApplicationTest):
             self.assert_buffer_text(
                 app_runner.app,
                 'error_bar',
-                'Encountered following error in wizard:\n\nInitial error'
+                'Encountered following error in wizard:\n\nInitial error',
             )
 
             # Make sure dialog closed on error but error message is visible
@@ -1077,12 +1131,16 @@ class TestRunWizardApplication(BaseWizardApplicationTest):
             app_runner.feed_input(Keys.Enter)
 
         mock_iam_client.create_role.assert_called_with(
-            RoleName='role-name-new')
+            RoleName='role-name-new'
+        )
         assert app_runner.app.values['role_arn'] == 'returned-role-arn'
 
     def test_can_switch_exception_panel(
-            self, make_stubbed_wizard_runner, run_wizard_definition,
-            mock_iam_client):
+        self,
+        make_stubbed_wizard_runner,
+        run_wizard_definition,
+        mock_iam_client,
+    ):
         app_runner = make_stubbed_wizard_runner(run_wizard_definition)
         mock_iam_client.create_role.side_effect = [
             Exception('Initial error'),
@@ -1097,8 +1155,11 @@ class TestRunWizardApplication(BaseWizardApplicationTest):
             self.assert_error_bar_is_not_visible(app_runner.app)
 
     def test_toolbar_has_exception_panel_hot_key(
-            self, make_stubbed_wizard_runner, run_wizard_definition,
-            mock_iam_client):
+        self,
+        make_stubbed_wizard_runner,
+        run_wizard_definition,
+        mock_iam_client,
+    ):
         app_runner = make_stubbed_wizard_runner(run_wizard_definition)
         mock_iam_client.create_role.side_effect = [
             Exception('Initial error'),
@@ -1108,11 +1169,11 @@ class TestRunWizardApplication(BaseWizardApplicationTest):
             app_runner.feed_input('role-name\n')
             self.assert_error_bar_is_not_visible(app_runner.app)
             self.assert_toolbar_does_not_have_text(
-                app_runner.app, 'error message')
+                app_runner.app, 'error message'
+            )
             app_runner.feed_input(Keys.Enter)
             self.assert_error_bar_is_visible(app_runner.app)
-            self.assert_toolbar_has_text(
-                app_runner.app, 'error message')
+            self.assert_toolbar_has_text(app_runner.app, 'error message')
 
 
 class TestWizardTraverser(unittest.TestCase):
@@ -1135,12 +1196,12 @@ class TestWizardTraverser(unittest.TestCase):
                             choices=[
                                 {
                                     'display': 'Option 1',
-                                    'actual_value': 'actual_option_1'
+                                    'actual_value': 'actual_option_1',
                                 },
                                 {
                                     'display': 'Option 2',
-                                    'actual_value': 'actual_option_2'
-                                }
+                                    'actual_value': 'actual_option_2',
+                                },
                             ]
                         ),
                     }
@@ -1163,13 +1224,19 @@ class TestWizardTraverser(unittest.TestCase):
                 'only_section': {
                     'values': {
                         'only_prompt': self.create_prompt_definition(
-                                                            datatype='int'),
+                            datatype='int'
+                        ),
                     }
                 }
             }
         )
 
-    def create_traverser(self, definition, values=None, executor=None,):
+    def create_traverser(
+        self,
+        definition,
+        values=None,
+        executor=None,
+    ):
         if values is None:
             values = {}
         if executor is None:
@@ -1181,16 +1248,12 @@ class TestWizardTraverser(unittest.TestCase):
         sections['__DONE__'] = {}
         if execute is None:
             execute = {}
-        return {
-            'plan': sections,
-            'execute': execute
-        }
+        return {'plan': sections, 'execute': execute}
 
-    def create_prompt_definition(self, description=None, condition=None,
-                                 choices=None, datatype=None):
-        prompt = {
-            'type': 'prompt'
-        }
+    def create_prompt_definition(
+        self, description=None, condition=None, choices=None, datatype=None
+    ):
+        prompt = {'type': 'prompt'}
         if not description:
             description = 'A sample description'
         prompt['description'] = description
@@ -1223,8 +1286,7 @@ class TestWizardTraverser(unittest.TestCase):
     def test_get_current_prompt_choices(self):
         traverser = self.create_traverser(self.simple_choice_definition)
         self.assertEqual(
-            traverser.get_current_prompt_choices(),
-            ['Option 1', 'Option 2']
+            traverser.get_current_prompt_choices(), ['Option 1', 'Option 2']
         )
 
     def test_get_current_prompt_choices_as_list_of_strings(self):
@@ -1245,7 +1307,7 @@ class TestWizardTraverser(unittest.TestCase):
         traverser = self.create_traverser(choice_wizard)
         self.assertEqual(
             traverser.get_current_prompt_choices(),
-            ['from_list_1', 'from_list_2']
+            ['from_list_1', 'from_list_2'],
         )
 
     def test_get_current_prompt_choices_from_variable(self):
@@ -1264,7 +1326,7 @@ class TestWizardTraverser(unittest.TestCase):
         traverser = self.create_traverser(choice_wizard, values)
         self.assertEqual(
             traverser.get_current_prompt_choices(),
-            ['from_var_1', 'from_var_2']
+            ['from_var_1', 'from_var_2'],
         )
 
     def test_get_current_prompt_choices_returns_none_when_no_choices(self):
@@ -1296,12 +1358,14 @@ class TestWizardTraverser(unittest.TestCase):
     def test_submit_prompt_raise_correct_exception_on_datatype_convert(self):
         values = {}
         traverser = self.create_traverser(
-            self.single_prompt_definition_with_datatype, values,
+            self.single_prompt_definition_with_datatype,
+            values,
         )
         with self.assertRaises(InvalidDataTypeConversionException) as e:
             traverser.submit_prompt_answer('foo')
         self.assertEqual(
-            str(e.exception), 'Invalid value foo for datatype int')
+            str(e.exception), 'Invalid value foo for datatype int'
+        )
 
     def test_submit_prompt_answer_throw_error_for_invalid_option(self):
         traverser = self.create_traverser(self.simple_choice_definition)
@@ -1323,7 +1387,7 @@ class TestWizardTraverser(unittest.TestCase):
                         'conditional': self.create_prompt_definition(
                             condition={
                                 'variable': 'first_prompt',
-                                'equals': 'condition-met'
+                                'equals': 'condition-met',
                             }
                         ),
                         'after_conditional': self.create_prompt_definition(),
@@ -1333,9 +1397,7 @@ class TestWizardTraverser(unittest.TestCase):
         )
         traverser = self.create_traverser(
             definition_with_condition,
-            values={
-                'first_prompt': 'condition-not-met'
-            }
+            values={'first_prompt': 'condition-not-met'},
         )
         next_prompt = traverser.next_prompt()
         self.assertEqual(next_prompt, 'after_conditional')
@@ -1349,7 +1411,7 @@ class TestWizardTraverser(unittest.TestCase):
                         'conditional': self.create_prompt_definition(
                             condition={
                                 'variable': 'first_prompt',
-                                'equals': 'condition-met'
+                                'equals': 'condition-met',
                             }
                         ),
                         'after_conditional': self.create_prompt_definition(),
@@ -1358,10 +1420,7 @@ class TestWizardTraverser(unittest.TestCase):
             }
         )
         traverser = self.create_traverser(
-            definition_with_condition,
-            values={
-                'first_prompt': 'condition-met'
-            }
+            definition_with_condition, values={'first_prompt': 'condition-met'}
         )
         next_prompt = traverser.next_prompt()
         self.assertEqual(next_prompt, 'conditional')
@@ -1378,7 +1437,7 @@ class TestWizardTraverser(unittest.TestCase):
                     'values': {
                         'second_prompt': self.create_prompt_definition(),
                     }
-                }
+                },
             }
         )
         traverser = self.create_traverser(definition)
@@ -1413,7 +1472,7 @@ class TestWizardTraverser(unittest.TestCase):
                     'values': {
                         'second_prompt': self.create_prompt_definition(),
                     }
-                }
+                },
             }
         )
         traverser = self.create_traverser(definition)
@@ -1440,9 +1499,7 @@ class TestWizardTraverser(unittest.TestCase):
     def test_run_wizard_calls_executor(self):
         executor = mock.Mock(Executor)
         values = {}
-        execute_definition = {
-            'step': []
-        }
+        execute_definition = {'step': []}
         traverser = self.create_traverser(
             definition=self.create_definition(
                 sections={
@@ -1452,7 +1509,7 @@ class TestWizardTraverser(unittest.TestCase):
                         }
                     },
                 },
-                execute=execute_definition
+                execute=execute_definition,
             ),
             values=values,
             executor=executor,
@@ -1480,7 +1537,7 @@ class TestWizardTraverser(unittest.TestCase):
                         'conditional': self.create_prompt_definition(
                             condition={
                                 'variable': 'first_prompt',
-                                'equals': 'condition-met'
+                                'equals': 'condition-met',
                             }
                         ),
                     }
@@ -1489,9 +1546,7 @@ class TestWizardTraverser(unittest.TestCase):
         )
         traverser = self.create_traverser(
             definition_with_condition,
-            values={
-                'first_prompt': 'condition-not-met'
-            }
+            values={'first_prompt': 'condition-not-met'},
         )
         self.assertFalse(traverser.is_prompt_visible('conditional'))
 
@@ -1504,7 +1559,7 @@ class TestWizardTraverser(unittest.TestCase):
                         'conditional': self.create_prompt_definition(
                             condition={
                                 'variable': 'first_prompt',
-                                'equals': 'condition-met'
+                                'equals': 'condition-met',
                             }
                         ),
                     }
@@ -1512,10 +1567,7 @@ class TestWizardTraverser(unittest.TestCase):
             }
         )
         traverser = self.create_traverser(
-            definition_with_condition,
-            values={
-                'first_prompt': 'condition-met'
-            }
+            definition_with_condition, values={'first_prompt': 'condition-met'}
         )
         self.assertTrue(traverser.is_prompt_visible('conditional'))
 
@@ -1531,7 +1583,7 @@ class TestWizardTraverser(unittest.TestCase):
                     'values': {
                         'second_prompt': self.create_prompt_definition(),
                     }
-                }
+                },
             }
         )
         traverser = self.create_traverser(definition)
@@ -1591,15 +1643,11 @@ class TestWizardValues(unittest.TestCase):
                 'section': {
                     'shortname': 'Section',
                     'values': {
-                        'no_handler_value': {
-                            'type': 'prompt'
-                        },
-                        'handler_value': {
-                            'type': 'use_handler'
-                        }
-                    }
+                        'no_handler_value': {'type': 'prompt'},
+                        'handler_value': {'type': 'use_handler'},
+                    },
                 }
-            }
+            },
         }
         self.handler = mock.Mock(BaseStep)
         self.exception_handler = mock.Mock()
@@ -1666,8 +1714,11 @@ class TestWizardValues(unittest.TestCase):
 
 class TestPromptCompletionWizardApplication(BaseWizardApplicationTest):
     def test_show_completions_for_buffer_text(
-            self, make_stubbed_wizard_runner, file_prompt_definition,
-            patch_path_completer):
+        self,
+        make_stubbed_wizard_runner,
+        file_prompt_definition,
+        patch_path_completer,
+    ):
         app_runner = make_stubbed_wizard_runner(file_prompt_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('fi')
@@ -1677,12 +1728,15 @@ class TestPromptCompletionWizardApplication(BaseWizardApplicationTest):
                 [
                     Completion('le1', 0, display='file1'),
                     Completion('le2', 0, display='file2'),
-                ]
+                ],
             )
 
     def test_choose_completion_on_Enter_and_stays_on_the_same_prompt(
-            self, make_stubbed_wizard_runner, file_prompt_definition,
-            patch_path_completer):
+        self,
+        make_stubbed_wizard_runner,
+        file_prompt_definition,
+        patch_path_completer,
+    ):
         app_runner = make_stubbed_wizard_runner(file_prompt_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('fi')
@@ -1691,8 +1745,11 @@ class TestPromptCompletionWizardApplication(BaseWizardApplicationTest):
             self.assert_current_buffer(app_runner.app, 'choose_file')
 
     def test_choose_completion_on_Enter_and_move_on_second_Enter(
-            self, make_stubbed_wizard_runner, file_prompt_definition,
-            patch_path_completer):
+        self,
+        make_stubbed_wizard_runner,
+        file_prompt_definition,
+        patch_path_completer,
+    ):
         app_runner = make_stubbed_wizard_runner(file_prompt_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('fi')
@@ -1701,8 +1758,11 @@ class TestPromptCompletionWizardApplication(BaseWizardApplicationTest):
             self.assert_current_buffer(app_runner.app, 'second_prompt')
 
     def test_switch_completions_on_tab(
-            self, make_stubbed_wizard_runner, file_prompt_definition,
-            patch_path_completer):
+        self,
+        make_stubbed_wizard_runner,
+        file_prompt_definition,
+        patch_path_completer,
+    ):
         app_runner = make_stubbed_wizard_runner(file_prompt_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('fi')
@@ -1711,8 +1771,11 @@ class TestPromptCompletionWizardApplication(BaseWizardApplicationTest):
             self.assert_current_buffer(app_runner.app, 'choose_file')
 
     def test_switch_completions_on_back_tab(
-            self, make_stubbed_wizard_runner, file_prompt_definition,
-            patch_path_completer):
+        self,
+        make_stubbed_wizard_runner,
+        file_prompt_definition,
+        patch_path_completer,
+    ):
         app_runner = make_stubbed_wizard_runner(file_prompt_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('fi')
@@ -1721,8 +1784,11 @@ class TestPromptCompletionWizardApplication(BaseWizardApplicationTest):
             self.assert_current_buffer(app_runner.app, 'choose_file')
 
     def test_switch_prompt_on_tab_if_it_is_not_completing(
-            self, make_stubbed_wizard_runner, file_prompt_definition,
-            patch_path_completer):
+        self,
+        make_stubbed_wizard_runner,
+        file_prompt_definition,
+        patch_path_completer,
+    ):
         app_runner = make_stubbed_wizard_runner(file_prompt_definition)
         with app_runner.run_app_in_thread():
             app_runner.feed_input('rrrr')
@@ -1745,14 +1811,14 @@ class TestSaveDetailsWizard(BaseWizardApplicationTest):
                             'details': {
                                 'value': 'test_value',
                                 'description': 'Policy Document',
-                                'output': 'json'
+                                'output': 'json',
                             },
                         },
-                    }
+                    },
                 },
                 '__DONE__': {},
             },
-            'execute': {}
+            'execute': {},
         }
         app_runner = make_stubbed_wizard_runner(definition)
         mock_file_io = mock.Mock(spec=FileIO)
@@ -1762,11 +1828,10 @@ class TestSaveDetailsWizard(BaseWizardApplicationTest):
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.F3)
             self.assert_buffer_text(
-                app_runner.app,
-                'details_buffer',
-                details_content
+                app_runner.app, 'details_buffer', details_content
             )
             app_runner.feed_input(Keys.ControlS)
             app_runner.feed_input('/tmp/myfile.json\n')
             mock_file_io.write_file_contents.assert_called_with(
-                '/tmp/myfile.json', details_content)
+                '/tmp/myfile.json', details_content
+            )

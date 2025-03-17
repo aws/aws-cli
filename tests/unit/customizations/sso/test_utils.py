@@ -13,22 +13,23 @@
 import os
 import threading
 import webbrowser
+
 import pytest
 import urllib3
-
 from botocore.exceptions import PendingAuthorizationExpiredError
 from botocore.session import Session
 
 from awscli.compat import BytesIO, StringIO
-from awscli.customizations.sso.utils import OpenBrowserHandler
-from awscli.customizations.sso.utils import PrintOnlyHandler
-from awscli.customizations.sso.utils import do_sso_login
-from awscli.customizations.sso.utils import open_browser_with_original_ld_path
 from awscli.customizations.sso.utils import (
-    parse_sso_registration_scopes, AuthCodeFetcher, OAuthCallbackHandler
+    AuthCodeFetcher,
+    OAuthCallbackHandler,
+    OpenBrowserHandler,
+    PrintOnlyHandler,
+    do_sso_login,
+    open_browser_with_original_ld_path,
+    parse_sso_registration_scopes,
 )
-from awscli.testutils import mock
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 
 
 @pytest.mark.parametrize(
@@ -41,8 +42,8 @@ from awscli.testutils import unittest
         ('scope-1,scope-2', ['scope-1', 'scope-2']),
         ('scope-1, scope-2', ['scope-1', 'scope-2']),
         (' scope-1, scope-2 ', ['scope-1', 'scope-2']),
-        ('scope-1,scope-2,scope-3', ['scope-1', 'scope-2', 'scope-3'])
-    ]
+        ('scope-1,scope-2,scope-3', ['scope-1', 'scope-2', 'scope-3']),
+    ],
 )
 def test_parse_registration_scopes(raw_scopes, parsed_scopes):
     assert parse_sso_registration_scopes(raw_scopes) == parsed_scopes
@@ -60,7 +61,8 @@ class TestDoSSOLogin(unittest.TestCase):
 
     def get_mock_sso_oidc_client(self):
         real_client = Session().create_client(
-            'sso-oidc', region_name=self.region)
+            'sso-oidc', region_name=self.region
+        )
         client = mock.Mock()
         client.exceptions = real_client.exceptions
         client.register_client.return_value = {
@@ -82,7 +84,7 @@ class TestDoSSOLogin(unittest.TestCase):
                 'expiresIn': 28800,
                 'tokenType': 'Bearer',
                 'accessToken': 'access.token',
-            }
+            },
         ]
         return client
 
@@ -99,7 +101,8 @@ class TestDoSSOLogin(unittest.TestCase):
 
     def assert_on_pending_authorization_called(self):
         self.assertEqual(
-            len(self.on_pending_authorization_mock.call_args_list), 1)
+            len(self.on_pending_authorization_mock.call_args_list), 1
+        )
 
     def test_do_sso_login(self):
         do_sso_login(
@@ -200,7 +203,6 @@ class TestOpenBrowserHandler(BaseHandlerTest):
 
 
 class TestOpenBrowserWithPatchedEnv(unittest.TestCase):
-
     def test_can_patch_env(self):
         # The various edge case are tested in original_ld_library_path,
         # we're just checking that we're integrating everything together
@@ -210,12 +212,13 @@ class TestOpenBrowserWithPatchedEnv(unittest.TestCase):
             with mock.patch('webbrowser.open_new_tab') as open_new_tab:
                 captured_env = {}
                 open_new_tab.side_effect = lambda x: captured_env.update(
-                    os.environ)
+                    os.environ
+                )
                 open_browser_with_original_ld_path('http://example.com')
         self.assertIsNone(captured_env.get('LD_LIBRARY_PATH'))
 
 
-class MockRequest(object):
+class MockRequest:
     def __init__(self, request):
         self._request = request
 
@@ -230,6 +233,7 @@ class TestOAuthCallbackHandler:
     """Tests for OAuthCallbackHandler, which handles
     individual requests that we receive at the callback uri
     """
+
     def test_expected_query_params(self):
         fetcher = mock.Mock(AuthCodeFetcher)
 
@@ -275,7 +279,9 @@ class TestAuthCodeFetcher:
 
     def setup_method(self):
         self.fetcher = AuthCodeFetcher()
-        self.url = f'http://127.0.0.1:{self.fetcher.http_server.server_address[1]}/'
+        self.url = (
+            f'http://127.0.0.1:{self.fetcher.http_server.server_address[1]}/'
+        )
 
         # Start the server on a background thread so that
         # the test thread can make the request
@@ -312,12 +318,10 @@ class TestAuthCodeFetcher:
 
 
 @mock.patch(
-    'awscli.customizations.sso.utils.AuthCodeFetcher._REQUEST_TIMEOUT',
-    0.1
+    'awscli.customizations.sso.utils.AuthCodeFetcher._REQUEST_TIMEOUT', 0.1
 )
 @mock.patch(
-    'awscli.customizations.sso.utils.AuthCodeFetcher._OVERALL_TIMEOUT',
-    0.1
+    'awscli.customizations.sso.utils.AuthCodeFetcher._OVERALL_TIMEOUT', 0.1
 )
 def test_get_auth_code_and_state_timeout():
     """Tests the timeout case separately of TestAuthCodeFetcher,

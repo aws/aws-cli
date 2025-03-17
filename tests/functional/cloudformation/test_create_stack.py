@@ -15,7 +15,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestCreateStack(BaseAWSCommandParamsTest):
-
     prefix = 'cloudformation create-stack'
 
     def test_basic_create_stack(self):
@@ -29,11 +28,14 @@ class TestCreateStack(BaseAWSCommandParamsTest):
         cmdline += ' --stack-name test-stack --template-url http://foo'
         cmdline += ' --parameters ParameterKey=foo,ParameterValue=bar'
         cmdline += ' ParameterKey=foo2,ParameterValue=bar2'
-        result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo',
-                  'Parameters': [
-                      {'ParameterKey': 'foo', 'ParameterValue': 'bar'},
-                      {'ParameterKey': 'foo2', 'ParameterValue': 'bar2'},
-                  ]}
+        result = {
+            'StackName': 'test-stack',
+            'TemplateURL': 'http://foo',
+            'Parameters': [
+                {'ParameterKey': 'foo', 'ParameterValue': 'bar'},
+                {'ParameterKey': 'foo2', 'ParameterValue': 'bar2'},
+            ],
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_create_stack_for_csv_params_escaping(self):
@@ -42,9 +44,13 @@ class TestCreateStack(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --stack-name test-stack --template-url http://foo'
         cmdline += r' --parameters ParameterKey=foo,ParameterValue=one\,two'
-        result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo',
-                  'Parameters': [{'ParameterKey': 'foo',
-                                  'ParameterValue': 'one,two'}]}
+        result = {
+            'StackName': 'test-stack',
+            'TemplateURL': 'http://foo',
+            'Parameters': [
+                {'ParameterKey': 'foo', 'ParameterValue': 'one,two'}
+            ],
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_create_stack_for_csv_with_quoting(self):
@@ -52,14 +58,21 @@ class TestCreateStack(BaseAWSCommandParamsTest):
         cmdline += ' --stack-name test-stack --template-url http://foo'
         # Note how we're quoting the value of parameter_value.
         cmdline += ' --parameters ParameterKey=foo,ParameterValue="one,two"'
-        result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo',
-                  'Parameters': [{'ParameterKey': 'foo',
-                                  'ParameterValue': 'one,two'}]}
+        result = {
+            'StackName': 'test-stack',
+            'TemplateURL': 'http://foo',
+            'Parameters': [
+                {'ParameterKey': 'foo', 'ParameterValue': 'one,two'}
+            ],
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_can_handle_empty_parameters(self):
         cmdline = self.prefix
         cmdline += ' --stack-name test --parameters --template-url http://foo'
-        result = {'StackName': 'test', 'TemplateURL': 'http://foo',
-                  'Parameters': []}
+        result = {
+            'StackName': 'test',
+            'TemplateURL': 'http://foo',
+            'Parameters': [],
+        }
         self.assert_params_for_cmd(cmdline, result)

@@ -10,12 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
-from awscli.testutils import mock
-from awscli.customizations.gamelift import register_gamelift_commands
-from awscli.customizations.gamelift import inject_commands
-from awscli.customizations.gamelift.uploadbuild import UploadBuildCommand
+from awscli.customizations.gamelift import (
+    inject_commands,
+    register_gamelift_commands,
+)
 from awscli.customizations.gamelift.getlog import GetGameSessionLogCommand
+from awscli.customizations.gamelift.uploadbuild import UploadBuildCommand
+from awscli.testutils import mock, unittest
 
 
 class TestRegisterGameLiftCommands(unittest.TestCase):
@@ -23,7 +24,8 @@ class TestRegisterGameLiftCommands(unittest.TestCase):
         event_emitter = mock.Mock()
         register_gamelift_commands(event_emitter)
         event_emitter.register.assert_called_once_with(
-            'building-command-table.gamelift', inject_commands)
+            'building-command-table.gamelift', inject_commands
+        )
 
 
 class TestInjectCommands(unittest.TestCase):
@@ -33,7 +35,9 @@ class TestInjectCommands(unittest.TestCase):
         inject_commands(command_table, session)
         self.assertIn('upload-build', command_table)
         self.assertIsInstance(
-            command_table['upload-build'], UploadBuildCommand)
+            command_table['upload-build'], UploadBuildCommand
+        )
         self.assertIn('get-game-session-log', command_table)
         self.assertIsInstance(
-            command_table['get-game-session-log'], GetGameSessionLogCommand)
+            command_table['get-game-session-log'], GetGameSessionLogCommand
+        )

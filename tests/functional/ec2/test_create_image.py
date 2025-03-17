@@ -15,7 +15,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestDescribeInstances(BaseAWSCommandParamsTest):
-
     prefix = 'ec2 create-image'
 
     def test_renamed_reboot_arg(self):
@@ -24,6 +23,10 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         # --reboot is a customized renamed arg.  Verifying it still
         # gets mapped as 'NoReboot': 'false'.
         cmdline += ' --reboot'
-        result = {'InstanceId': 'i-12345678', 'Description': 'foo',
-                  'Name': 'bar', 'NoReboot': False}
+        result = {
+            'InstanceId': 'i-12345678',
+            'Description': 'foo',
+            'Name': 'bar',
+            'NoReboot': False,
+        }
         self.assert_params_for_cmd(cmdline, result)

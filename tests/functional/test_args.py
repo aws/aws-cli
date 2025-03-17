@@ -11,21 +11,21 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.clidriver import AWSCLIEntryPoint
-from awscli.testutils import create_clidriver
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    create_clidriver,
+)
 
 
 class TestArgsResolution(BaseAWSCommandParamsTest):
-
     def setUp(self):
         super(TestArgsResolution, self).setUp()
         self.files = FileCreator()
-        config_contents = (
-            '[profile bar]\n'
-            'region = us-west-2\n'
-        )
+        config_contents = '[profile bar]\n' 'region = us-west-2\n'
         self.environ['AWS_CONFIG_FILE'] = self.files.create_file(
-            'myconfig', config_contents)
+            'myconfig', config_contents
+        )
         self.driver = create_clidriver()
         self.entry_point = AWSCLIEntryPoint(self.driver)
 

@@ -14,22 +14,17 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestColor(BaseAWSCommandParamsTest):
-
     def test_pipe_color(self):
         command = "s3api list-buckets --output table --color on"
         self.parsed_response = {
-            "Owner": {
-                "DisplayName": "foo",
-                "ID": "bar"
-            },
+            "Owner": {"DisplayName": "foo", "ID": "bar"},
             "Buckets": [
                 {
                     "CreationDate": "2016-06-15T16:49:44.000Z",
-                    "Name": "foo-bucket"
+                    "Name": "foo-bucket",
                 }
-            ]
+            ],
         }
         stdout, stderr, rc = self.run_cmd(command, 0)
         # `\x1b` is the ANSI color prefix character.
         self.assertIn('\x1b', stdout)
-

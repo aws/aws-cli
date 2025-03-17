@@ -25,8 +25,12 @@ def strip_html_tags_and_newlines(text):
 
 
 class ProfileCompleter(BaseCompleter):
-    def __init__(self, session=None, response_filter=startswith_filter,
-                 session_creator=None):
+    def __init__(
+        self,
+        session=None,
+        response_filter=startswith_filter,
+        session_creator=None,
+    ):
         self._session = session
         self._filter = response_filter
         self._session_creator = session_creator
@@ -34,15 +38,17 @@ class ProfileCompleter(BaseCompleter):
             self._session_creator = LazyClientCreator()
 
     def complete(self, parsed):
-        if parsed.current_param == 'profile' \
-                and parsed.current_fragment is not None:
+        if (
+            parsed.current_param == 'profile'
+            and parsed.current_fragment is not None
+        ):
             return self._filter(parsed.current_fragment, self._get_profiles())
 
     def _get_profiles(self):
         return map(
             lambda x: CompletionResult(name=x),
-            self._get_session().available_profiles
-         )
+            self._get_session().available_profiles,
+        )
 
     def _get_session(self):
         if self._session is None:
@@ -51,8 +57,12 @@ class ProfileCompleter(BaseCompleter):
 
 
 class RegionCompleter(BaseCompleter):
-    def __init__(self, session=None, response_filter=startswith_filter,
-                 session_creator=None):
+    def __init__(
+        self,
+        session=None,
+        response_filter=startswith_filter,
+        session_creator=None,
+    ):
         self._session = session
         self._filter = response_filter
         self._session_creator = session_creator
@@ -60,27 +70,28 @@ class RegionCompleter(BaseCompleter):
             self._session_creator = LazyClientCreator()
 
     def complete(self, parsed):
-        if parsed.current_param == 'region' \
-                and parsed.current_fragment is not None:
+        if (
+            parsed.current_param == 'region'
+            and parsed.current_fragment is not None
+        ):
             if len(parsed.lineage) > 1:
                 service_name = parsed.lineage[1]
             else:
                 service_name = 'ec2'
-            return self._filter(parsed.current_fragment,
-                                self._get_region_completions(service_name))
+            return self._filter(
+                parsed.current_fragment,
+                self._get_region_completions(service_name),
+            )
 
     def _get_region_completions(self, service_name):
         return map(
-            lambda x: CompletionResult(name=x),
-            self._get_regions(service_name)
+            lambda x: CompletionResult(name=x), self._get_regions(service_name)
         )
 
     def _get_regions(self, service_name):
         if self._session is None:
             self._session = self._session_creator.create_session()
-        return self._session.get_available_regions(
-                service_name=service_name
-            )
+        return self._session.get_available_regions(service_name=service_name)
 
 
 class FilePathCompleter(BaseCompleter):
@@ -92,16 +103,19 @@ class FilePathCompleter(BaseCompleter):
     def path_completer(self):
         if self._path_completer is None:
             from prompt_toolkit.completion import PathCompleter
+
             self._path_completer = PathCompleter(expanduser=True)
         return self._path_completer
 
     def complete(self, parsed):
-        if parsed.current_fragment and \
-                parsed.current_fragment.startswith(('file://', 'fileb://')):
+        if parsed.current_fragment and parsed.current_fragment.startswith(
+            ('file://', 'fileb://')
+        ):
             from prompt_toolkit.document import Document
+
             for prefix in ['file://', 'fileb://']:
                 if parsed.current_fragment.startswith(prefix):
-                    filename_part = parsed.current_fragment[len(prefix):]
+                    filename_part = parsed.current_fragment[len(prefix) :]
                     break
             # PathCompleter makes really strange suggestions for lonely ~
             # "username/", so in this case we handle it by ourselves
@@ -110,29 +124,32 @@ class FilePathCompleter(BaseCompleter):
             dirname = os.path.dirname(filename_part)
             if dirname and dirname != os.sep:
                 dirname = f'{dirname}{os.sep}'
-            document = Document(
-                text=dirname,
-                cursor_position=len(dirname))
+            document = Document(text=dirname, cursor_position=len(dirname))
             completions = self.path_completer.get_completions(document, None)
             results = [
                 CompletionResult(
                     f'{prefix}'
                     f'{os.path.join(dirname, completion.display[0][1])}',
-                    display_text=completion.display[0][1])
-                for completion in completions]
+                    display_text=completion.display[0][1],
+                )
+                for completion in completions
+            ]
             return self._filter(os.path.basename(filename_part), results)
 
 
 class ModelIndexCompleter(BaseCompleter):
-    def __init__(self, index, cli_driver_fetcher=None,
-                 response_filter=startswith_filter):
+    def __init__(
+        self, index, cli_driver_fetcher=None, response_filter=startswith_filter
+    ):
         self._index = index
         self._cli_driver_fetcher = cli_driver_fetcher
         self._filter = response_filter
 
     def complete(self, parsed):
-        are_unparsed_items_paths = [bool(re.search('[./\\\\:]|(--)', item))
-                                    for item in parsed.unparsed_items]
+        are_unparsed_items_paths = [
+            bool(re.search('[./\\\\:]|(--)', item))
+            for item in parsed.unparsed_items
+        ]
         if parsed.unparsed_items and all(are_unparsed_items_paths):
             # If all the unparsed items are file paths, then we auto-complete
             # options for the current fragment. This is to provide
@@ -146,11 +163,15 @@ class ModelIndexCompleter(BaseCompleter):
             # instead.
             if not parsed.current_fragment:
                 parsed.current_fragment = parsed.current_command
-            return self._filter(parsed.current_fragment,
-                                self._complete_options(parsed))
+            return self._filter(
+                parsed.current_fragment, self._complete_options(parsed)
+            )
 
-        elif parsed.unparsed_items or parsed.current_fragment is None or \
-                parsed.current_param:
+        elif (
+            parsed.unparsed_items
+            or parsed.current_fragment is None
+            or parsed.current_param
+        ):
             # If there's ever any unparsed items, then the parser
             # encountered something it didn't understand.  We won't
             # attempt to auto-complete anything here.
@@ -171,17 +192,18 @@ class ModelIndexCompleter(BaseCompleter):
             # more commands to complete.
             commands = self._complete_command(parsed)
             if not commands:
-                return self._filter(parsed.current_fragment,
-                                    self._complete_options(parsed))
+                return self._filter(
+                    parsed.current_fragment, self._complete_options(parsed)
+                )
             return self._filter(parsed.current_fragment, commands)
 
     def _complete_command(self, parsed):
         lineage = parsed.lineage + [parsed.current_command]
         offset = -len(parsed.current_fragment)
-        result = [CompletionResult(name,
-                                   help_text=full_name,
-                                   starting_index=offset)
-                  for name, full_name in self._index.commands_with_full_name(lineage)]
+        result = [
+            CompletionResult(name, help_text=full_name, starting_index=offset)
+            for name, full_name in self._index.commands_with_full_name(lineage)
+        ]
         return result
 
     def _outfile_filter(self, completion):
@@ -194,17 +216,19 @@ class ModelIndexCompleter(BaseCompleter):
         # '--endpoint' -> 'endpoint'
         offset = -len(parsed.current_fragment)
         is_in_global_scope = (
-                parsed.lineage == [] and
-                parsed.current_command == 'aws'
+            parsed.lineage == [] and parsed.current_command == 'aws'
         )
         arg_names = self._index.arg_names(
-            lineage=parsed.lineage, command_name=parsed.current_command)
+            lineage=parsed.lineage, command_name=parsed.current_command
+        )
         results = []
         if not is_in_global_scope:
             for arg_name in arg_names:
                 arg_data = self._index.get_argument_data(
                     lineage=parsed.lineage,
-                    command_name=parsed.current_command, arg_name=arg_name)
+                    command_name=parsed.current_command,
+                    arg_name=arg_name,
+                )
                 help_text = None
                 if self._cli_driver_fetcher:
                     help_text = strip_html_tags_and_newlines(
@@ -212,20 +236,25 @@ class ModelIndexCompleter(BaseCompleter):
                             parsed.lineage, parsed.current_command, arg_name
                         )
                     )
-                results.append(self._outfile_filter(
-                                    CompletionResult(
-                                        '--%s' % arg_name,
-                                        starting_index=offset,
-                                        required=arg_data.required,
-                                        cli_type_name=arg_data.type_name,
-                                        help_text=help_text)
-                                    )
+                results.append(
+                    self._outfile_filter(
+                        CompletionResult(
+                            '--%s' % arg_name,
+                            starting_index=offset,
+                            required=arg_data.required,
+                            cli_type_name=arg_data.type_name,
+                            help_text=help_text,
+                        )
+                    )
                 )
         # Global params apply to any scope
         self._inject_global_params(parsed, results)
-        return [result for result in results
-                if result.name.strip('--') not in (list(parsed.parsed_params) +
-                                                   list(parsed.global_params))]
+        return [
+            result
+            for result in results
+            if result.name.strip('--')
+            not in (list(parsed.parsed_params) + list(parsed.global_params))
+        ]
 
     def _inject_global_params(self, parsed, results):
         offset = -len(parsed.current_fragment)
@@ -240,31 +269,27 @@ class ModelIndexCompleter(BaseCompleter):
                     )
                 )
             global_param_completions.append(
-                CompletionResult('--%s' % arg_name,
-                                 starting_index=offset,
-                                 required=False,
-                                 cli_type_name=type_name,
-                                 help_text=help_text)
+                CompletionResult(
+                    '--%s' % arg_name,
+                    starting_index=offset,
+                    required=False,
+                    cli_type_name=type_name,
+                    help_text=help_text,
+                )
             )
         results.extend(global_param_completions)
 
 
 class ShorthandCompleter(BaseCompleter):
-    _PARENS = {
-        "[": "]",
-        "{": "}"
-    }
+    _PARENS = {"[": "]", "{": "}"}
     _DUMMY_KEY_VALUE = 'cli_placeholder_for_key_value_replacement'
     _DUMMY_VALUE = 'cli_placeholder_for_value_replacement'
     _DUMMY_EQ_VALUE = 'cli_placeholder_for_key_eq_replacement'
-    _VALUE_PREFIXES = {
-        'structure': '{',
-        'list': '[',
-        'map': '{'
-    }
+    _VALUE_PREFIXES = {'structure': '{', 'list': '[', 'map': '{'}
 
-    def __init__(self, cli_driver_fetcher=None,
-                 response_filter=startswith_filter):
+    def __init__(
+        self, cli_driver_fetcher=None, response_filter=startswith_filter
+    ):
         self._filter = response_filter
         self._cli_driver_fetcher = cli_driver_fetcher
         self._shorthand_parser = None
@@ -273,6 +298,7 @@ class ShorthandCompleter(BaseCompleter):
     def shorthand_parser(self):
         if self._shorthand_parser is None:
             from awscli.shorthand import ShorthandParser
+
             self._shorthand_parser = ShorthandParser()
         return self._shorthand_parser
 
@@ -284,7 +310,8 @@ class ShorthandCompleter(BaseCompleter):
             )
             if arg_model is None:
                 results = self._get_prompt_for_global_arg(
-                    parsed.current_param, parsed.current_fragment)
+                    parsed.current_param, parsed.current_fragment
+                )
                 return results
             parsed_input = self._parse_fragment(parsed.current_fragment)
             if parsed_input is not None:
@@ -306,8 +333,10 @@ class ShorthandCompleter(BaseCompleter):
         if choices and prefix is not None:
             results = self._filter(
                 prefix,
-                [CompletionResult(prefix, display_text=choice)
-                 for choice in choices]
+                [
+                    CompletionResult(prefix, display_text=choice)
+                    for choice in choices
+                ],
             )
             return self._set_results_name(results, prefix)
 
@@ -316,7 +345,7 @@ class ShorthandCompleter(BaseCompleter):
             name_part_len = len(fragment) - len(result.name)
             result.name = "%s%s" % (
                 fragment[:name_part_len],
-                result.display_text
+                result.display_text,
             )
         return results
 
@@ -352,6 +381,7 @@ class ShorthandCompleter(BaseCompleter):
         # and make one more attempt
         # --option foo={bar -> foo={bar=DUMMY_EQ_VALUE
         from awscli.shorthand import ShorthandParseError
+
         if fragment is None:
             return None
         if fragment == '':
@@ -369,7 +399,8 @@ class ShorthandCompleter(BaseCompleter):
         except ShorthandParseError:
             if attempt == 1:
                 return self._parse_fragment(
-                    f'{fragment}={self._DUMMY_EQ_VALUE}', attempt + 1)
+                    f'{fragment}={self._DUMMY_EQ_VALUE}', attempt + 1
+                )
         # if we get here it means that we can't make it parsable and can't
         # suggest anything so the only solution is to wait till user enter more
 
@@ -423,7 +454,7 @@ class ShorthandCompleter(BaseCompleter):
         if close_brackets:
             return CompletionResult(
                 f'{fragment}{close_brackets}',
-                display_text='Autoclose brackets'
+                display_text='Autoclose brackets',
             )
 
     def _get_prompt_for_string(self, arg_model, parsed_input):
@@ -437,18 +468,26 @@ class ShorthandCompleter(BaseCompleter):
                 prefix = list(prefix.keys())[0]
             if prefix == self._DUMMY_VALUE:
                 prefix = ''
-            return self._filter(prefix,
-                                [CompletionResult(prefix, display_text=enum)
-                                 for enum in arg_model.enum])
+            return self._filter(
+                prefix,
+                [
+                    CompletionResult(prefix, display_text=enum)
+                    for enum in arg_model.enum
+                ],
+            )
 
     def _get_prompt_for_boolean(self, arg_model, parsed_input):
         all_results = ['true', 'false']
         prefix = parsed_input
         if prefix == self._DUMMY_VALUE:
             prefix = ''
-        return self._filter(prefix,
-                            [CompletionResult(prefix, display_text=result)
-                             for result in all_results])
+        return self._filter(
+            prefix,
+            [
+                CompletionResult(prefix, display_text=result)
+                for result in all_results
+            ],
+        )
 
     def _get_prompt_for_list(self, arg_model, parsed_input):
         # we have two way we can enter lists:
@@ -481,13 +520,14 @@ class ShorthandCompleter(BaseCompleter):
                 # key exists but we don't have such key in model
                 return None
             return self._get_completion(
-                arg_model.members[last_key], last_value)
+                arg_model.members[last_key], last_value
+            )
         entered_keys = set(parsed_input) - set([last_key])
         return self._get_struct_keys_completions(
-            arg_model, entered_keys, last_key)
+            arg_model, entered_keys, last_key
+        )
 
-    def _get_struct_keys_completions(self, arg_model, entered_keys,
-                                     last_key):
+    def _get_struct_keys_completions(self, arg_model, entered_keys, last_key):
         # get suggestions for the structure keys, as CompletionResult.name
         # we return only part of the suggestion that has not been entered yet
         results = []
@@ -495,22 +535,25 @@ class ShorthandCompleter(BaseCompleter):
             if member_name not in entered_keys:
                 display_text = '%s=%s' % (
                     member_name,
-                    self._VALUE_PREFIXES.get(member.type_name, '')
+                    self._VALUE_PREFIXES.get(member.type_name, ''),
                 )
-                results.append(CompletionResult(
-                    last_key,
-                    help_text=strip_html_tags_and_newlines(member.documentation),
-                    cli_type_name=member.type_name,
-                    display_text=display_text
+                results.append(
+                    CompletionResult(
+                        last_key,
+                        help_text=strip_html_tags_and_newlines(
+                            member.documentation
+                        ),
+                        cli_type_name=member.type_name,
+                        display_text=display_text,
                     )
                 )
         return self._filter(last_key, results)
 
 
 class QueryCompleter(BaseCompleter):
-
-    def __init__(self, cli_driver_fetcher=None,
-                 response_filter=startswith_filter):
+    def __init__(
+        self, cli_driver_fetcher=None, response_filter=startswith_filter
+    ):
         self._filter = response_filter
         self._cli_driver_fetcher = cli_driver_fetcher
         self._argument_generator = None
@@ -520,6 +563,7 @@ class QueryCompleter(BaseCompleter):
     def jmespath(self):
         if self._jmespath is None:
             import jmespath
+
             self._jmespath = jmespath
         return self._jmespath
 
@@ -527,19 +571,24 @@ class QueryCompleter(BaseCompleter):
     def argument_generator(self):
         if self._argument_generator is None:
             from botocore.utils import ArgumentGenerator
+
             self._argument_generator = ArgumentGenerator
         return self._argument_generator
 
     def complete(self, parsed):
         if self._cli_driver_fetcher is None:
             return
-        if parsed.current_param == 'query' and \
-                parsed.current_fragment is not None:
+        if (
+            parsed.current_param == 'query'
+            and parsed.current_fragment is not None
+        ):
             operation_model = self._cli_driver_fetcher.get_operation_model(
-                parsed.lineage, parsed.current_command)
+                parsed.lineage, parsed.current_command
+            )
             if operation_model:
-                return self._get_completions(parsed.current_fragment,
-                                             operation_model)
+                return self._get_completions(
+                    parsed.current_fragment, operation_model
+                )
 
     def _get_query_and_last_key(self, query):
         # Because output example has only 1 element in any list if
@@ -552,14 +601,16 @@ class QueryCompleter(BaseCompleter):
     def _create_completions(self, results, last_key, fragment):
         completions = self._filter(
             last_key,
-            [CompletionResult(last_key, display_text=result)
-             for result in results]
+            [
+                CompletionResult(last_key, display_text=result)
+                for result in results
+            ],
         )
         for completion in completions:
             name_part_len = len(fragment) - len(completion.name)
             completion.name = "%s%s" % (
                 fragment[:name_part_len],
-                completion.display_text
+                completion.display_text,
             )
         return completions
 
@@ -567,18 +618,19 @@ class QueryCompleter(BaseCompleter):
         is_last_child_field = False
         is_field = expression.parsed['type'] == 'field'
         if expression.parsed['children']:
-            is_last_child_field = \
+            is_last_child_field = (
                 expression.parsed['children'][-1]['type'] == 'field'
+            )
         return is_field or is_last_child_field
 
     def _get_completions(self, fragment, operation_model):
         results = []
         last_key = fragment
         if operation_model.output_shape:
-            argument_generator = self.argument_generator(
-                use_member_names=True)
+            argument_generator = self.argument_generator(use_member_names=True)
             response = argument_generator.generate_skeleton(
-                operation_model.output_shape)
+                operation_model.output_shape
+            )
             if '.' not in fragment:
                 if isinstance(response, dict):
                     results = response.keys()
@@ -587,8 +639,11 @@ class QueryCompleter(BaseCompleter):
                     query, last_key = self._get_query_and_last_key(fragment)
                     expression = self.jmespath.compile(query)
                     parsed_response = expression.search(response)
-                    if parsed_response and isinstance(parsed_response, list) \
-                            and not self._is_field_expression(expression):
+                    if (
+                        parsed_response
+                        and isinstance(parsed_response, list)
+                        and not self._is_field_expression(expression)
+                    ):
                         parsed_response = parsed_response[0]
                     if isinstance(parsed_response, dict):
                         results = parsed_response.keys()

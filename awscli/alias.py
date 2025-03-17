@@ -304,7 +304,8 @@ class BaseInternalAliasCommand(BaseAliasCommand):
                     raise InvalidAliasException(
                         'Global parameter "--%s" detected in alias "%s" '
                         'which is not supported in subcommand aliases.'
-                        % (parsed_param, self._alias_name))
+                        % (parsed_param, self._alias_name)
+                    )
                 else:
                     global_params_to_update.append(parsed_param)
         return global_params_to_update

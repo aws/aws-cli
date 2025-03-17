@@ -143,9 +143,11 @@ def validate_preferred_output_encoding():
         try:
             ''.encode(os.environ[OUTPUT_ENCODING_ENV_VAR])
         except LookupError:
-            raise ValueError(f'Unknown codec `'
-                             f'{os.environ[OUTPUT_ENCODING_ENV_VAR]}` '
-                             f'specified for {OUTPUT_ENCODING_ENV_VAR}.')
+            raise ValueError(
+                f'Unknown codec `'
+                f'{os.environ[OUTPUT_ENCODING_ENV_VAR]}` '
+                f'specified for {OUTPUT_ENCODING_ENV_VAR}.'
+            )
 
 
 def set_preferred_output_encoding(stream):
@@ -162,14 +164,16 @@ def set_preferred_output_encoding(stream):
             # At this point we don't want to raise the exception, since we
             # could be writing out another error. Callers should call
             # validate_preferred_output_encoding first.
-            LOG.debug(f'Ignoring invalid codec '
-                      f'{os.environ[OUTPUT_ENCODING_ENV_VAR]} '
-                      f'specified for {OUTPUT_ENCODING_ENV_VAR}.')
+            LOG.debug(
+                f'Ignoring invalid codec '
+                f'{os.environ[OUTPUT_ENCODING_ENV_VAR]} '
+                f'specified for {OUTPUT_ENCODING_ENV_VAR}.'
+            )
     # Fall back to PYTHONUTF8, for users who were setting it
     # before the PyInstaller 6 upgrade which stopped supporting it
     elif (
-        PYTHONUTF8_ENV_VAR in os.environ and
-        os.environ[PYTHONUTF8_ENV_VAR] == '1'
+        PYTHONUTF8_ENV_VAR in os.environ
+        and os.environ[PYTHONUTF8_ENV_VAR] == '1'
     ):
         stream.reconfigure(encoding='UTF-8')
 

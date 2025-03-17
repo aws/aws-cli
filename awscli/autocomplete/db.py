@@ -14,7 +14,8 @@ INDEX_DIR = os.path.expanduser(os.path.join('~', '.aws', 'cli', 'cache'))
 INDEX_FILE = os.path.join(INDEX_DIR, '%s.index' % cli_version)
 BUILTIN_INDEX_FILE = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    'data', 'ac.index'
+    'data',
+    'ac.index',
 )
 
 
@@ -34,10 +35,7 @@ class DatabaseConnection(object):
     @property
     def _connection(self):
         if self._db_conn is None:
-            kwargs = {
-                'check_same_thread': False,
-                'isolation_level': None
-            }
+            kwargs = {'check_same_thread': False, 'isolation_level': None}
             if self._db_filename.startswith('file::memory:'):
                 # This statement was added because old versions of sqlite
                 # don't support 'uri' but we use it for tests and because

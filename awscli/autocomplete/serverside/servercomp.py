@@ -20,8 +20,9 @@ LOG = logging.getLogger(__name__)
 
 
 class ServerSideCompleter(BaseCompleter):
-    def __init__(self, completion_lookup, client_creator,
-                 response_filter=None):
+    def __init__(
+        self, completion_lookup, client_creator, response_filter=None
+    ):
         self._completion_lookup = completion_lookup
         self._client_creator = client_creator
         self._jmespath = None
@@ -33,6 +34,7 @@ class ServerSideCompleter(BaseCompleter):
     def jmespath(self):
         if self._jmespath is None:
             import jmespath
+
             self._jmespath = jmespath
         return self._jmespath
 
@@ -52,7 +54,9 @@ class ServerSideCompleter(BaseCompleter):
         if not self._on_cli_option_value_fragment(parsed):
             return
         completion_data = self._completion_lookup.get_server_completion_data(
-            parsed.lineage, parsed.current_command, parsed.current_param,
+            parsed.lineage,
+            parsed.current_command,
+            parsed.current_param,
         )
         if completion_data is None:
             return
@@ -62,10 +66,11 @@ class ServerSideCompleter(BaseCompleter):
         # list element.  We'll need to update this once we support completions
         # with a 'parameters' key.
         raw_results = self._retrieve_remote_completion_data(
-            parsed, completion_data['completions'][0])
+            parsed, completion_data['completions'][0]
+        )
         return self._filter(
             parsed.current_fragment,
-            self._convert_to_completion_data(raw_results, parsed)
+            self._convert_to_completion_data(raw_results, parsed),
         )
 
     def _convert_to_completion_data(self, raw_results, parsed):
@@ -81,7 +86,7 @@ class ServerSideCompleter(BaseCompleter):
         return self._client_creator.create_client(
             service_name,
             parsed_region=parsed.global_params.get('region'),
-            parsed_profile=parsed.global_params.get('profile')
+            parsed_profile=parsed.global_params.get('profile'),
         )
 
     def _retrieve_remote_completion_data(self, parsed, completion_data):
@@ -104,8 +109,12 @@ class ServerSideCompleter(BaseCompleter):
         except Exception:
             # We don't want tracebacks to propagate back out to the user
             # so the best we can do is log the exception.
-            LOG.debug("Exception raised when calling %s on client %s",
-                      client, py_name, exc_info=True)
+            LOG.debug(
+                "Exception raised when calling %s on client %s",
+                client,
+                py_name,
+                exc_info=True,
+            )
             return {}
 
     def _map_command_to_api_params(self, parsed, completion_data):
@@ -134,15 +143,16 @@ class BaseCustomServerSideCompleter(ServerSideCompleter):
             if remote_result.startswith(parsed.current_fragment):
                 completion_results.append(
                     CompletionResult(
-                        remote_result, -len(parsed.current_fragment))
+                        remote_result, -len(parsed.current_fragment)
+                    )
                 )
         return completion_results
 
     def _is_value_for_param(self, parsed):
         return (
-            parsed.lineage == self._LINEAGE and
-            parsed.current_command in self._COMMAND_NAMES and
-            parsed.current_param == self._PARAM_NAME
+            parsed.lineage == self._LINEAGE
+            and parsed.current_command in self._COMMAND_NAMES
+            and parsed.current_param == self._PARAM_NAME
         )
 
     def _get_remote_results(self, parsed):

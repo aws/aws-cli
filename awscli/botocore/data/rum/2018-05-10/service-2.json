@@ -436,9 +436,17 @@
           "shape":"DataStorage",
           "documentation":"<p>A structure that contains information about whether this app monitor stores a copy of the telemetry data that RUM collects using CloudWatch Logs.</p>"
         },
+        "DeobfuscationConfiguration":{
+          "shape":"DeobfuscationConfiguration",
+          "documentation":"<p> A structure that contains the configuration for how an app monitor can deobfuscate stack traces. </p>"
+        },
         "Domain":{
           "shape":"AppMonitorDomain",
           "documentation":"<p>The top-level internet domain name for which your application has administrative authority.</p>"
+        },
+        "DomainList":{
+          "shape":"AppMonitorDomainList",
+          "documentation":"<p> List the domain names for which your application has administrative authority. </p>"
         },
         "Id":{
           "shape":"AppMonitorId",
@@ -527,7 +535,13 @@
       "type":"string",
       "max":253,
       "min":1,
-      "pattern":"^(localhost)$|^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|(?=^[a-zA-Z0-9\\.\\*-]{4,253}$)(?!.*\\.-)(?!.*-\\.)(?!.*\\.\\.)(?!.*[^\\.]{64,})^(\\*\\.)?(?![-\\.\\*])[^\\*]{1,}\\.(?!.*--)(?=.*[a-zA-Z])[^\\*]{1,}[^\\*-]$"
+      "pattern":"^(localhost)$|^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|(?=^[a-zA-Z0-9\\.\\*-]{4,253}$)(?!.*\\.-)(?!.*-\\.)(?!.*\\.\\.)(?!.*[^\\.]{64,})^(\\*\\.)?(?![-\\.\\*])[^\\*]{1,}\\.(\\*|(?!.*--)(?=.*[a-zA-Z])[^\\*]{1,}[^\\*-])$"
+    },
+    "AppMonitorDomainList":{
+      "type":"list",
+      "member":{"shape":"AppMonitorDomain"},
+      "max":5,
+      "min":1
     },
     "AppMonitorId":{
       "type":"string",
@@ -801,10 +815,7 @@
     },
     "CreateAppMonitorRequest":{
       "type":"structure",
-      "required":[
-        "Domain",
-        "Name"
-      ],
+      "required":["Name"],
       "members":{
         "AppMonitorConfiguration":{
           "shape":"AppMonitorConfiguration",
@@ -818,9 +829,17 @@
           "shape":"Boolean",
           "documentation":"<p>Data collected by RUM is kept by RUM for 30 days and then deleted. This parameter specifies whether RUM sends a copy of this telemetry data to Amazon CloudWatch Logs in your account. This enables you to keep the telemetry data for more than 30 days, but it does incur Amazon CloudWatch Logs charges.</p> <p>If you omit this parameter, the default is <code>false</code>.</p>"
         },
+        "DeobfuscationConfiguration":{
+          "shape":"DeobfuscationConfiguration",
+          "documentation":"<p> A structure that contains the configuration for how an app monitor can deobfuscate stack traces. </p>"
+        },
         "Domain":{
           "shape":"AppMonitorDomain",
           "documentation":"<p>The top-level internet domain name for which your application has administrative authority.</p>"
+        },
+        "DomainList":{
+          "shape":"AppMonitorDomainList",
+          "documentation":"<p> List the domain names for which your application has administrative authority. The <code>CreateAppMonitor</code> requires either the domain or the domain list. </p>"
         },
         "Name":{
           "shape":"AppMonitorName",
@@ -957,6 +976,29 @@
       "type":"structure",
       "members":{
       }
+    },
+    "DeobfuscationConfiguration":{
+      "type":"structure",
+      "members":{
+        "JavaScriptSourceMaps":{
+          "shape":"JavaScriptSourceMaps",
+          "documentation":"<p> A structure that contains the configuration for how an app monitor can unminify JavaScript error stack traces using source maps. </p>"
+        }
+      },
+      "documentation":"<p> A structure that contains the configuration for how an app monitor can deobfuscate stack traces. </p>"
+    },
+    "DeobfuscationS3Uri":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^s3://[a-z0-9][-.a-z0-9]{1,61}(?:/[-!_*'().a-z0-9A-Z]+(?:/[-!_*'().a-z0-9A-Z]+)*)?/?$"
+    },
+    "DeobfuscationStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "DestinationArn":{
       "type":"string",
@@ -1137,6 +1179,21 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "JavaScriptSourceMaps":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "S3Uri":{
+          "shape":"DeobfuscationS3Uri",
+          "documentation":"<p> The S3Uri of the bucket or folder that stores the source map files. It is required if status is ENABLED. </p>"
+        },
+        "Status":{
+          "shape":"DeobfuscationStatus",
+          "documentation":"<p> Specifies whether JavaScript error stack traces should be unminified for this app monitor. The default is for JavaScript error stack trace unminification to be <code>DISABLED</code>. </p>"
+        }
+      },
+      "documentation":"<p> A structure that contains the configuration for how an app monitor can unminify JavaScript error stack traces using source maps. </p>"
     },
     "JsonValue":{"type":"string"},
     "ListAppMonitorsRequest":{
@@ -1815,9 +1872,17 @@
           "shape":"Boolean",
           "documentation":"<p>Data collected by RUM is kept by RUM for 30 days and then deleted. This parameter specifies whether RUM sends a copy of this telemetry data to Amazon CloudWatch Logs in your account. This enables you to keep the telemetry data for more than 30 days, but it does incur Amazon CloudWatch Logs charges.</p>"
         },
+        "DeobfuscationConfiguration":{
+          "shape":"DeobfuscationConfiguration",
+          "documentation":"<p> A structure that contains the configuration for how an app monitor can deobfuscate stack traces. </p>"
+        },
         "Domain":{
           "shape":"AppMonitorDomain",
           "documentation":"<p>The top-level internet domain name for which your application has administrative authority.</p>"
+        },
+        "DomainList":{
+          "shape":"AppMonitorDomainList",
+          "documentation":"<p> List the domain names for which your application has administrative authority. The <code>UpdateAppMonitor</code> allows either the domain or the domain list. </p>"
         },
         "Name":{
           "shape":"AppMonitorName",

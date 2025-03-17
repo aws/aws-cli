@@ -16,26 +16,25 @@ from prompt_toolkit.utils import is_windows
 
 def get_default_style():
     basic_styles = [
-            # Wizard-specific classes
-            ('wizard', ''),
-            ('wizard.title', 'underline bold'),
-            ('wizard.prompt.description', 'bold'),
-            ('wizard.prompt.description.current', 'white'),
-            ('wizard.prompt.answer', 'bg:#aaaaaa black'),
-            ('wizard.prompt.answer.current', 'white'),
-            ('wizard.section.tab.current', 'white'),
-            ('wizard.section.tab.unvisited', '#777777'),
-            ('wizard.section.tab.visited', ''),
-            ('wizard.dialog', ''),
-            ('wizard.dialog frame.label', 'white bold'),
-            ('wizard.dialog.save frame.label', 'black bold'),
-            ('wizard.dialog.body', 'bg:#aaaaaa black'),
-            ('wizard.error', 'bg:#550000 #ffffff'),
-
-            # Prompt-toolkit built-in classes
-            ('button.focused', 'bg:#777777 white'),
-            ('completion-menu.completion', 'underline'),
-        ]
+        # Wizard-specific classes
+        ('wizard', ''),
+        ('wizard.title', 'underline bold'),
+        ('wizard.prompt.description', 'bold'),
+        ('wizard.prompt.description.current', 'white'),
+        ('wizard.prompt.answer', 'bg:#aaaaaa black'),
+        ('wizard.prompt.answer.current', 'white'),
+        ('wizard.section.tab.current', 'white'),
+        ('wizard.section.tab.unvisited', '#777777'),
+        ('wizard.section.tab.visited', ''),
+        ('wizard.dialog', ''),
+        ('wizard.dialog frame.label', 'white bold'),
+        ('wizard.dialog.save frame.label', 'black bold'),
+        ('wizard.dialog.body', 'bg:#aaaaaa black'),
+        ('wizard.error', 'bg:#550000 #ffffff'),
+        # Prompt-toolkit built-in classes
+        ('button.focused', 'bg:#777777 white'),
+        ('completion-menu.completion', 'underline'),
+    ]
     if is_windows():
         os_related_styles = [
             ('wizard.section.tab', 'bold black'),

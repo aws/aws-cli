@@ -28,7 +28,8 @@ def get_ui_control_by_buffer_name(layout, buffer_name):
         if hasattr(control, 'buffer') and control.buffer.name == buffer_name:
             return control
     raise ValueError(
-        f"Couldn't find buffer in the current layout: {buffer_name}")
+        f"Couldn't find buffer in the current layout: {buffer_name}"
+    )
 
 
 def move_to_previous_prompt(app):
@@ -37,13 +38,15 @@ def move_to_previous_prompt(app):
     show_details_if_visible_by_default(app, previous_prompt)
     refresh_details_view(app, previous_prompt)
     previous_control = get_ui_control_by_buffer_name(
-        app.layout, previous_prompt)
+        app.layout, previous_prompt
+    )
     app.layout.focus(previous_control)
 
 
 def show_details_if_visible_by_default(app, prompt):
-    app.details_visible = \
-        app.traverser.is_prompt_details_visible_by_default(prompt)
+    app.details_visible = app.traverser.is_prompt_details_visible_by_default(
+        prompt
+    )
 
 
 def refresh_details_view(app, prompt):
@@ -59,19 +62,13 @@ class Spacer:
     element such as expanding tab column in the wizard app with the
     color gray.
     """
+
     def __init__(self):
         self.container = self._get_container()
 
     def _get_container(self):
-        buffer = Buffer(
-            document=Document(''),
-            read_only=True
-        )
-        return Window(
-            content=BufferControl(
-                buffer=buffer, focusable=False
-            )
-        )
+        buffer = Buffer(document=Document(''), read_only=True)
+        return Window(content=BufferControl(buffer=buffer, focusable=False))
 
     def __pt_container__(self):
         return self.container
@@ -79,5 +76,6 @@ class Spacer:
 
 class FullyExtendedWidthWindow(Window):
     """Window that fully extends its available width"""
+
     def preferred_width(self, max_available_width):
         return Dimension(preferred=max_available_width)

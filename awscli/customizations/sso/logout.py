@@ -35,7 +35,9 @@ class LogoutCommand(BasicCommand):
     ARG_TABLE = []
 
     def _run_main(self, parsed_args, parsed_globals):
-        SSOTokenSweeper(self._session, parsed_globals).delete_credentials(SSO_TOKEN_DIR)
+        SSOTokenSweeper(self._session, parsed_globals).delete_credentials(
+            SSO_TOKEN_DIR
+        )
         SSOCredentialSweeper().delete_credentials(AWS_CREDS_CACHE_DIR)
         return 0
 

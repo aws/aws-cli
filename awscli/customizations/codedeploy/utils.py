@@ -16,7 +16,12 @@ import re
 
 import awscli.compat
 from awscli.compat import urlopen, URLError
-from awscli.customizations.codedeploy.systems import System, Ubuntu, Windows, RHEL
+from awscli.customizations.codedeploy.systems import (
+    System,
+    Ubuntu,
+    Windows,
+    RHEL,
+)
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.exceptions import ConfigurationError
 from socket import timeout
@@ -34,9 +39,7 @@ INSTANCE_NAME_ARG = {
     'name': 'instance-name',
     'synopsis': '--instance-name <instance-name>',
     'required': True,
-    'help_text': (
-        'Required. The name of the on-premises instance.'
-    )
+    'help_text': ('Required. The name of the on-premises instance.'),
 }
 
 IAM_USER_ARN_ARG = {
@@ -45,7 +48,7 @@ IAM_USER_ARN_ARG = {
     'required': False,
     'help_text': (
         'Optional. The IAM user associated with the on-premises instance.'
-    )
+    ),
 }
 
 
@@ -100,8 +103,9 @@ def validate_tags(params):
 
 
 def validate_iam_user_arn(params):
-    if params.iam_user_arn and \
-            not re.match(IAM_USER_ARN_PATTERN, params.iam_user_arn):
+    if params.iam_user_arn and not re.match(
+        IAM_USER_ARN_PATTERN, params.iam_user_arn
+    ):
         raise ParamValidationError('Invalid IAM user ARN.')
 
 
@@ -115,9 +119,7 @@ def validate_instance(params):
     elif platform.system() == 'Windows':
         params.system = Windows(params)
     if 'system' not in params:
-        raise RuntimeError(
-            System.UNSUPPORTED_SYSTEM_MSG
-        )
+        raise RuntimeError(System.UNSUPPORTED_SYSTEM_MSG)
     try:
         urlopen('http://169.254.169.254/latest/meta-data/', timeout=1)
         raise RuntimeError('Amazon EC2 instances are not supported.')
@@ -137,7 +139,5 @@ def validate_s3_location(params, arg_name):
             else:
                 raise ParamValidationError(
                     '--{0} must specify the Amazon S3 URL format as '
-                    's3://<bucket>/<key>.'.format(
-                        arg_name.replace('_', '-')
-                    )
+                    's3://<bucket>/<key>.'.format(arg_name.replace('_', '-'))
                 )

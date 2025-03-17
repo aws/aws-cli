@@ -17,7 +17,12 @@ from prompt_toolkit.filters import Condition
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout.containers import (
-    Window, VSplit, Dimension, ConditionalContainer, FloatContainer, Float
+    Window,
+    VSplit,
+    Dimension,
+    ConditionalContainer,
+    FloatContainer,
+    Float,
 )
 from prompt_toolkit.layout.controls import BufferControl
 from prompt_toolkit.layout.margins import ScrollbarMargin
@@ -26,7 +31,7 @@ from prompt_toolkit.layout.menus import CompletionsMenu
 from prompt_toolkit.completion import PathCompleter
 
 from awscli.customizations.wizard.ui.selectmenu import (
-    CollapsableSelectionMenuControl
+    CollapsableSelectionMenuControl,
 )
 from awscli.customizations.wizard.ui.utils import FullyExtendedWidthWindow
 
@@ -46,7 +51,7 @@ class WizardPrompt:
             answer = WizardPromptCompletionAnswer(
                 self._value_name,
                 default_value=self._value_definition.get('default_value'),
-                completer=self._value_definition['completer']
+                completer=self._value_definition['completer'],
             )
         else:
             answer = WizardPromptAnswer(
@@ -57,13 +62,12 @@ class WizardPrompt:
             VSplit(
                 [
                     WizardPromptDescription(
-                        self._value_name,
-                        self._value_definition['description']
+                        self._value_name, self._value_definition['description']
                     ),
-                    answer
+                    answer,
                 ],
             ),
-            Condition(self._is_visible)
+            Condition(self._is_visible),
         )
 
     def _is_visible(self):
@@ -81,14 +85,9 @@ class WizardPromptDescription:
 
     def _get_container(self):
         content = f'{self._value_description}:'
-        buffer = Buffer(
-            document=Document(content),
-            read_only=True
-        )
+        buffer = Buffer(document=Document(content), read_only=True)
         return Window(
-            content=BufferControl(
-                buffer=buffer, focusable=False
-            ),
+            content=BufferControl(buffer=buffer, focusable=False),
             style=self._get_style,
             width=Dimension.exact(len(content) + 1),
             dont_extend_height=True,
@@ -114,14 +113,13 @@ class WizardPromptAnswer:
         self.container = self._get_answer_container()
 
     def _get_answer_buffer(self):
-        return Buffer(name=self._value_name,
-                      document=Document(text=self._default_value))
+        return Buffer(
+            name=self._value_name, document=Document(text=self._default_value)
+        )
 
     def _get_answer_container(self):
         return FullyExtendedWidthWindow(
-            content=BufferControl(
-                buffer=self._buffer
-            ),
+            content=BufferControl(buffer=self._buffer),
             style=self._get_style,
             dont_extend_height=True,
         )
@@ -144,20 +142,22 @@ class WizardPromptCompletionAnswer(WizardPromptAnswer):
         super().__init__(value_name, default_value)
 
     def _get_completer(self, completer):
-        return {
-            'file_completer': PathCompleter(expanduser=True)
-        }[completer]
+        return {'file_completer': PathCompleter(expanduser=True)}[completer]
 
     def _get_answer_buffer(self):
-        return Buffer(name=self._value_name,
-                      completer=self._completer,
-                      complete_while_typing=True,
-                      document=Document(text=self._default_value))
+        return Buffer(
+            name=self._value_name,
+            completer=self._completer,
+            complete_while_typing=True,
+            document=Document(text=self._default_value),
+        )
 
     def _get_menu_height(self):
         if self._buffer.complete_state:
-            return min(len(self._buffer.complete_state.completions),
-                       self.COMPLETION_MENU_MAX_HEIGHT)
+            return min(
+                len(self._buffer.complete_state.completions),
+                self.COMPLETION_MENU_MAX_HEIGHT,
+            )
         return 0
 
     def _get_answer_container(self):
@@ -165,16 +165,18 @@ class WizardPromptCompletionAnswer(WizardPromptAnswer):
             FullyExtendedWidthWindow(
                 content=BufferControl(buffer=self._buffer),
                 style=self._get_style,
-                wrap_lines=True
+                wrap_lines=True,
             ),
             floats=[
                 Float(
-                    xcursor=True, ycursor=True, top=1,
+                    xcursor=True,
+                    ycursor=True,
+                    top=1,
                     height=self._get_menu_height,
                     content=CompletionsMenu(),
                 )
             ],
-            key_bindings=self._get_key_bindings()
+            key_bindings=self._get_key_bindings(),
         )
 
     def _get_key_bindings(self):
@@ -205,7 +207,7 @@ class WizardPromptSelectionAnswer(WizardPromptAnswer):
             content=CollapsableSelectionMenuControl(
                 items=self._get_choices,
                 selection_capture_buffer=self._buffer,
-                on_toggle=self._show_details
+                on_toggle=self._show_details,
             ),
             style=self._get_style,
             always_hide_cursor=True,
@@ -218,8 +220,7 @@ class WizardPromptSelectionAnswer(WizardPromptAnswer):
 
     def _show_details(self, choice):
         app = get_app()
-        details_buffer = app.layout.get_buffer_by_name(
-            'details_buffer')
+        details_buffer = app.layout.get_buffer_by_name('details_buffer')
         details, title = self._get_details(choice)
         app.details_title = title
         details_buffer.reset()

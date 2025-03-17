@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.38.14
+=======
+
+* api-change:``application-signals``: This release adds support for adding, removing, and listing SLO time exclusion windows with the BatchUpdateExclusionWindows and ListServiceLevelObjectiveExclusionWindows APIs.
+* api-change:``geo-maps``: Provide support for vector map styles in the GetStaticMap operation.
+* api-change:``rum``: CloudWatch RUM now supports unminification of JS error stack traces.
+* api-change:``taxsettings``: Adjust Vietnam PaymentVoucherNumber regex and minor API change.
+* api-change:``wafv2``: AWS WAF now lets you inspect fragments of request URIs. You can specify the scope of the URI to inspect and narrow the set of URI fragments.
+
+
 1.38.13
 =======
 

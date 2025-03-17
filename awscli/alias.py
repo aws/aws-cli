@@ -17,10 +17,9 @@ import subprocess
 
 from botocore.configloader import raw_config_parse
 
-from awscli.compat import compat_shell_quote
 from awscli.commands import CLICommand
+from awscli.compat import compat_shell_quote
 from awscli.utils import emit_top_level_args_parsed_event
-
 
 LOG = logging.getLogger(__name__)
 
@@ -41,7 +40,7 @@ class InvalidAliasException(Exception):
     pass
 
 
-class AliasLoader(object):
+class AliasLoader:
     def __init__(
         self,
         alias_filename=os.path.expanduser(
@@ -96,7 +95,7 @@ class AliasLoader(object):
         return self._aliases.get(key, {})
 
 
-class BaseAliasCommandInjector(object):
+class BaseAliasCommandInjector:
     def __init__(self, alias_loader):
         self._alias_loader = alias_loader
 

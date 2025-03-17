@@ -15,12 +15,12 @@ import sys
 
 from botocore.exceptions import ClientError
 
-from awscli.customizations.commands import BasicCommand
 from awscli.customizations.codedeploy.utils import (
-    validate_region,
-    validate_instance_name,
     INSTANCE_NAME_ARG,
+    validate_instance_name,
+    validate_region,
 )
+from awscli.customizations.commands import BasicCommand
 
 
 class Deregister(BasicCommand):
@@ -79,11 +79,11 @@ class Deregister(BasicCommand):
             sys.stdout.flush()
             sys.stderr.write(
                 'ERROR\n'
-                '{0}\n'
+                f'{e}\n'
                 'Deregister the on-premises instance by following the '
                 'instructions in "Configure Existing On-Premises Instances by '
                 'Using AWS CodeDeploy" in the AWS CodeDeploy User '
-                'Guide.\n'.format(e)
+                'Guide.\n'
             )
             return 255
         return 0
@@ -97,7 +97,7 @@ class Deregister(BasicCommand):
         start = params.iam_user_arn.rfind('/') + 1
         params.user_name = params.iam_user_arn[start:]
         params.tags = response['instanceInfo']['tags']
-        sys.stdout.write('DONE\nIamUserArn: {0}\n'.format(params.iam_user_arn))
+        sys.stdout.write(f'DONE\nIamUserArn: {params.iam_user_arn}\n')
         if params.tags:
             sys.stdout.write('Tags:')
             for tag in params.tags:
@@ -154,9 +154,7 @@ class Deregister(BasicCommand):
         sys.stdout.write('DONE\n')
 
     def _delete_iam_user(self, params):
-        sys.stdout.write(
-            'Deleting the IAM user ({0})... '.format(params.user_name)
-        )
+        sys.stdout.write(f'Deleting the IAM user ({params.user_name})... ')
         try:
             self.iam.delete_user(UserName=params.user_name)
         except ClientError as e:

@@ -20,11 +20,11 @@ from awscli.customizations.commands import BasicCommand
 from awscli.customizations.eks.exceptions import EKSClusterError
 from awscli.customizations.eks.kubeconfig import (
     Kubeconfig,
+    KubeconfigAppender,
     KubeconfigError,
     KubeconfigLoader,
-    KubeconfigWriter,
     KubeconfigValidator,
-    KubeconfigAppender,
+    KubeconfigWriter,
 )
 from awscli.customizations.eks.ordered_yaml import ordered_yaml_dump
 from awscli.customizations.utils import uni_print
@@ -180,7 +180,7 @@ class UpdateKubeconfigCommand(BasicCommand):
         return 0
 
 
-class KubeconfigSelector(object):
+class KubeconfigSelector:
     def __init__(self, env_variable, path_in, validator=None, loader=None):
         """
         Parse KUBECONFIG into a list of absolute paths.
@@ -234,12 +234,10 @@ class KubeconfigSelector(object):
                 loaded_config = self._loader.load_kubeconfig(candidate_path)
 
                 if loaded_config.has_cluster(cluster_name):
-                    LOG.debug(
-                        "Found entry to update at {0}".format(candidate_path)
-                    )
+                    LOG.debug(f"Found entry to update at {candidate_path}")
                     return loaded_config
             except KubeconfigError as e:
-                LOG.warning("Passing {0}:{1}".format(candidate_path, e))
+                LOG.warning(f"Passing {candidate_path}:{e}")
 
         # No entry was found, use the first file in KUBECONFIG
         #
@@ -251,7 +249,7 @@ class KubeconfigSelector(object):
         return os.path.abspath(os.path.expanduser(path))
 
 
-class EKSClient(object):
+class EKSClient:
     def __init__(self, session, parsed_args, parsed_globals=None):
         self._session = session
         self._cluster_name = parsed_args.cluster_name

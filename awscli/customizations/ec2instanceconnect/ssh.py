@@ -10,29 +10,30 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import logging
+import os
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
 
-from awscli.customizations.commands import BasicCommand
-from awscli.customizations.exceptions import (
-    ParamValidationError,
-    ConfigurationError,
-)
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives.serialization import (
-    PublicFormat,
     Encoding,
-    PrivateFormat,
     NoEncryption,
+    PrivateFormat,
+    PublicFormat,
 )
+
 from awscli.compat import compat_shell_quote
+from awscli.customizations.commands import BasicCommand
 from awscli.customizations.ec2instanceconnect.eicefetcher import (
     InstanceConnectEndpointRequestFetcher,
+)
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
 )
 
 logger = logging.getLogger(__name__)

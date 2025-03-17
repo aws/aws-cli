@@ -158,7 +158,7 @@ class StubbedCLIOperationCaller(CLIOperationCaller):
             return getattr(client, method_name)(**parameters)
 
 
-class _Bytes(object):
+class _Bytes:
     @classmethod
     def represent(cls, dumper, data):
         return dumper.represent_scalar('tag:yaml.org,2002:binary', '')

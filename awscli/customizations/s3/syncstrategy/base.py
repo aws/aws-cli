@@ -14,7 +14,6 @@ import logging
 
 from awscli.customizations.exceptions import ParamValidationError
 
-
 LOG = logging.getLogger(__name__)
 
 VALID_SYNC_TYPES = [
@@ -24,7 +23,7 @@ VALID_SYNC_TYPES = [
 ]
 
 
-class BaseSync(object):
+class BaseSync:
     """Base sync strategy
 
     To create a new sync strategy, subclass from this class.

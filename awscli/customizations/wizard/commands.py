@@ -10,10 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.customizations.wizard import devcommands, factory
-from awscli.customizations.wizard.loader import WizardLoader
 from awscli.customizations.commands import BasicCommand, BasicHelp
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.wizard import devcommands, factory
+from awscli.customizations.wizard.loader import WizardLoader
 
 
 def register_wizard_commands(event_handlers):

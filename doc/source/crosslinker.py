@@ -18,10 +18,10 @@ will redirect to the relative path
 Usage
 =====
 
-Make sure you're in a venv with the correct versions of the AWS CLI v2 installed. 
+Make sure you're in a venv with the correct versions of the AWS CLI v2 installed.
 It will be imported directly to generate the crosslinks.
 
-This is a Sphinx extension that gets run after all document updates have been 
+This is a Sphinx extension that gets run after all document updates have been
 executed and before the cleanup phase.
 """
 

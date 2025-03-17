@@ -13,9 +13,9 @@
 
 import hashlib
 import logging
-import threading
 import os
 import sys
+import threading
 
 import botocore
 import botocore.exceptions
@@ -41,7 +41,7 @@ class NoSuchBucketError(Exception):
     )
 
 
-class S3Uploader(object):
+class S3Uploader:
     """
     Class to upload objects to S3 bucket that use versioning. If bucket
     does not already use versioning, this class will turn on versioning.
@@ -90,13 +90,13 @@ class S3Uploader(object):
         """
 
         if self.prefix and len(self.prefix) > 0:
-            remote_path = "{0}/{1}".format(self.prefix, remote_path)
+            remote_path = f"{self.prefix}/{remote_path}"
 
         # Check if a file with same data exists
         if not self.force_upload and self.file_exists(remote_path):
             LOG.debug(
-                "File with same data already exists at {0}. "
-                "Skipping upload".format(remote_path)
+                f"File with same data already exists at {remote_path}. "
+                "Skipping upload"
             )
             return self.make_url(remote_path)
 
@@ -171,7 +171,7 @@ class S3Uploader(object):
             return False
 
     def make_url(self, obj_path):
-        return "s3://{0}/{1}".format(self.bucket_name, obj_path)
+        return f"s3://{self.bucket_name}/{obj_path}"
 
     def file_checksum(self, file_name):
         with open(file_name, "rb") as file_handle:
@@ -199,9 +199,9 @@ class S3Uploader(object):
         http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html#access-bucket-intro
         """
         base = self.s3.meta.endpoint_url
-        result = "{0}/{1}/{2}".format(base, self.bucket_name, key)
+        result = f"{base}/{self.bucket_name}/{key}"
         if version:
-            result = "{0}?versionId={1}".format(result, version)
+            result = f"{result}?versionId={version}"
 
         return result
 

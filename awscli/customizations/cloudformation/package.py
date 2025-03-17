@@ -11,17 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import os
-import logging
-import sys
-
 import json
+import logging
+import os
+import sys
 
 from botocore.client import Config
 
+from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.artifact_exporter import Template
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump
-from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3uploader import S3Uploader
 

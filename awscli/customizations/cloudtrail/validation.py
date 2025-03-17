@@ -12,27 +12,26 @@
 # language governing permissions and limitations under the License.
 import base64
 import binascii
-import json
 import hashlib
+import json
 import logging
 import re
 import sys
 import zlib
-from zlib import error as ZLibError
 from datetime import datetime, timedelta
-from dateutil import tz, parser
+from zlib import error as ZLibError
 
 from awscrt.crypto import RSA, RSASignatureAlgorithm
+from botocore.exceptions import ClientError
+from dateutil import parser, tz
 
 from awscli.customizations.cloudtrail.utils import (
-    get_trail_by_arn,
-    get_account_id_from_arn,
     PublicKeyProvider,
+    get_account_id_from_arn,
+    get_trail_by_arn,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
-from botocore.exceptions import ClientError
-
 
 LOG = logging.getLogger(__name__)
 DATE_FORMAT = '%Y%m%dT%H%M%SZ'
@@ -178,7 +177,7 @@ def create_digest_traverser(
     )
 
 
-class S3ClientProvider(object):
+class S3ClientProvider:
     """Creates Amazon S3 clients and determines the region name of a client.
 
     This class will cache the location constraints of previously requested
@@ -242,7 +241,7 @@ class InvalidDigestFormat(DigestError):
         super(InvalidDigestFormat, self).__init__(message)
 
 
-class DigestProvider(object):
+class DigestProvider:
     """
     Retrieves digest keys and digests from Amazon S3.
 
@@ -387,7 +386,7 @@ class DigestProvider(object):
         return '^' + key + '$'
 
 
-class DigestTraverser(object):
+class DigestTraverser:
     """Retrieves and validates digests within a date range."""
 
     # These keys are required to be present before validating the contents
@@ -637,7 +636,7 @@ class DigestTraverser(object):
         return public_keys
 
 
-class Sha256RSADigestValidator(object):
+class Sha256RSADigestValidator:
     """
     Validates SHA256withRSA signed digests.
 
@@ -949,10 +948,8 @@ class CloudTrailValidateLogs(BasicCommand):
             else:
                 self._valid_logs += 1
                 self._write_status(
-                    (
-                        'Log file\ts3://%s/%s\tvalid'
-                        % (log['s3Bucket'], log['s3Object'])
-                    )
+                    'Log file\ts3://%s/%s\tvalid'
+                    % (log['s3Bucket'], log['s3Object'])
                 )
         except ClientError as e:
             if e.response['Error']['Code'] != 'NoSuchKey':

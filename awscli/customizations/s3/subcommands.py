@@ -10,48 +10,47 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import logging
+import os
 import sys
 
 from botocore.client import Config
 from botocore.useragent import register_feature_id
-from botocore.utils import is_s3express_bucket, ensure_boolean
+from botocore.utils import ensure_boolean, is_s3express_bucket
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from awscli.compat import queue
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.s3 import transferconfig
 from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.factory import (
     ClientFactory,
     TransferManagerFactory,
 )
-from awscli.customizations.s3.fileinfobuilder import FileInfoBuilder
 from awscli.customizations.s3.fileformat import FileFormat
 from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import FileInfo
+from awscli.customizations.s3.fileinfobuilder import FileInfoBuilder
 from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
-from awscli.customizations.s3.utils import (
-    find_bucket_key,
-    AppendFilter,
-    find_dest_path_comp_key,
-    human_readable_size,
-    RequestParamsMapper,
-    split_s3_bucket_key,
-    block_unsupported_resources,
-    S3PathResolver,
-)
-from awscli.customizations.utils import uni_print
 from awscli.customizations.s3.syncstrategy.base import (
     MissingFileSync,
-    SizeAndLastModifiedSync,
     NeverSync,
+    SizeAndLastModifiedSync,
 )
-from awscli.customizations.s3 import transferconfig
-from awscli.customizations.exceptions import ParamValidationError
-
+from awscli.customizations.s3.utils import (
+    AppendFilter,
+    RequestParamsMapper,
+    S3PathResolver,
+    block_unsupported_resources,
+    find_bucket_key,
+    find_dest_path_comp_key,
+    human_readable_size,
+    split_s3_bucket_key,
+)
+from awscli.customizations.utils import uni_print
 
 LOGGER = logging.getLogger(__name__)
 
@@ -1224,7 +1223,7 @@ class RbCommand(S3Command):
             )
 
 
-class CommandArchitecture(object):
+class CommandArchitecture:
     """
     This class drives the actual command.  A command is performed in two
     steps.  First a list of instructions is generated.  This list of
@@ -1505,7 +1504,7 @@ class CommandArchitecture(object):
 #    the various valid parameters. The difficult part right now is the
 #    parameters property right now is a dictionary that holds arbitrary
 #    key/value pairs making it difficult to know what is supported.
-class CommandParameters(object):
+class CommandParameters:
     """
     This class is used to do some initial error based on the
     parameters and arguments passed to the command line.

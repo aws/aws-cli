@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 import logging
 
-from prompt_toolkit.document import Document
 from prompt_toolkit.application import get_app
+from prompt_toolkit.document import Document
 
 
 class PromptToolkitHandler(logging.StreamHandler):

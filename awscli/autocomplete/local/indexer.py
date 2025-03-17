@@ -22,7 +22,7 @@ class ModelIndexer(object):
     # TODO add full names to custom commands to get rid of this map
     _HIGH_LEVEL_SERVICE_FULL_NAMES = {
         's3': 'High level S3 commands',
-        'ddb': 'High level DynamoDB commands'
+        'ddb': 'High level DynamoDB commands',
     }
 
     _NON_SERVICE_COMMANDS = ['configure', 'history', 'cli-dev']
@@ -74,10 +74,12 @@ class ModelIndexer(object):
         )
         help_command_table = clidriver.create_help_command().command_table
         command_table = clidriver.subcommand_table
-        self._generate_arg_index(command=parent, parent='',
-                                 arg_table=clidriver.arg_table)
-        self._generate_command_index(command_table, parent=parent,
-                                     help_command_table=help_command_table)
+        self._generate_arg_index(
+            command=parent, parent='', arg_table=clidriver.arg_table
+        )
+        self._generate_command_index(
+            command_table, parent=parent, help_command_table=help_command_table
+        )
 
         self._generate_table_indexes()
 
@@ -95,10 +97,13 @@ class ModelIndexer(object):
                 'required)'
                 ' VALUES (:argname, :type_name, :command, :parent, :nargs, '
                 '         :positional_arg, :required)',
-                argname=name, type_name=value.cli_type_name,
-                command=command, parent=parent,
-                nargs=value.nargs, positional_arg=value.positional_arg,
-                required=required
+                argname=name,
+                type_name=value.cli_type_name,
+                command=command,
+                parent=parent,
+                nargs=value.nargs,
+                positional_arg=value.positional_arg,
+                required=required,
             )
 
     def _get_service_full_name(self, name, help_command_table):
@@ -109,19 +114,24 @@ class ModelIndexer(object):
             if service:
                 return service.service_model.metadata['serviceFullName']
 
-    def _generate_command_index(self, command_table,
-                                parent, help_command_table=None):
+    def _generate_command_index(
+        self, command_table, parent, help_command_table=None
+    ):
         for name, command in command_table.items():
             full_name = self._get_service_full_name(name, help_command_table)
             self._db_connection.execute(
                 'INSERT INTO command_table (command, parent, full_name) '
                 'VALUES (:command, :parent, :full_name)',
-                command=name, parent=parent, full_name=full_name
+                command=name,
+                parent=parent,
+                full_name=full_name,
             )
-            self._generate_arg_index(command=name, parent=parent,
-                                     arg_table=command.arg_table)
-            self._generate_command_index(command.subcommand_table,
-                                         parent='%s.%s' % (parent, name))
+            self._generate_arg_index(
+                command=name, parent=parent, arg_table=command.arg_table
+            )
+            self._generate_command_index(
+                command.subcommand_table, parent='%s.%s' % (parent, name)
+            )
 
     def _generate_table_indexes(self):
         self._db_connection.execute(self._CREATE_COMMAND_TABLE_INDEX)

@@ -29,8 +29,9 @@ class HistorySubcommand(BasicCommand):
         self._db_reader = db_reader
         self._output_stream_factory = output_stream_factory
         if output_stream_factory is None:
-            self._output_stream_factory = \
+            self._output_stream_factory = (
                 self._get_default_output_stream_factory()
+            )
 
     def _get_default_output_stream_factory(self):
         return OutputStreamFactory(self._session)
@@ -45,7 +46,8 @@ class HistorySubcommand(BasicCommand):
 
     def _get_history_db_filename(self):
         filename = os.environ.get(
-            HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME)
+            HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME
+        )
         if not os.path.exists(filename):
             raise RuntimeError(
                 'Could not locate history. Make sure cli_history is set to '

@@ -33,10 +33,14 @@ from awscli.customizations.utils import uni_print
 
 def register_rds_modify_split(cli):
     cli.register('building-command-table.rds', _building_command_table)
-    cli.register('building-argument-table.rds.add-option-to-option-group',
-                 _rename_add_option)
-    cli.register('building-argument-table.rds.remove-option-from-option-group',
-                 _rename_remove_option)
+    cli.register(
+        'building-argument-table.rds.add-option-to-option-group',
+        _rename_add_option,
+    )
+    cli.register(
+        'building-argument-table.rds.remove-option-from-option-group',
+        _rename_remove_option,
+    )
 
 
 def register_add_generate_db_auth_token(cli):
@@ -49,14 +53,16 @@ def _add_generate_db_auth_token(command_table, session, **kwargs):
 
 
 def _rename_add_option(argument_table, **kwargs):
-    utils.rename_argument(argument_table, 'options-to-include',
-                          new_name='options')
+    utils.rename_argument(
+        argument_table, 'options-to-include', new_name='options'
+    )
     del argument_table['options-to-remove']
 
 
 def _rename_remove_option(argument_table, **kwargs):
-    utils.rename_argument(argument_table, 'options-to-remove',
-                          new_name='options')
+    utils.rename_argument(
+        argument_table, 'options-to-remove', new_name='options'
+    )
     del argument_table['options-to-include']
 
 
@@ -69,15 +75,19 @@ def _building_command_table(command_table, session, **kwargs):
     rds_model = session.get_service_model('rds')
     modify_operation_model = rds_model.operation_model('ModifyOptionGroup')
     command_table['add-option-to-option-group'] = ServiceOperation(
-        parent_name='rds', name='add-option-to-option-group',
+        parent_name='rds',
+        name='add-option-to-option-group',
         operation_caller=CLIOperationCaller(session),
         session=session,
-        operation_model=modify_operation_model)
+        operation_model=modify_operation_model,
+    )
     command_table['remove-option-from-option-group'] = ServiceOperation(
-        parent_name='rds', name='remove-option-from-option-group',
+        parent_name='rds',
+        name='remove-option-from-option-group',
         session=session,
         operation_model=modify_operation_model,
-        operation_caller=CLIOperationCaller(session))
+        operation_caller=CLIOperationCaller(session),
+    )
 
 
 class GenerateDBAuthTokenCommand(BasicCommand):
@@ -86,23 +96,35 @@ class GenerateDBAuthTokenCommand(BasicCommand):
         'Generates an auth token used to connect to a db with IAM credentials.'
     )
     ARG_TABLE = [
-        {'name': 'hostname', 'required': True,
-         'help_text': 'The hostname of the database to connect to.'},
-        {'name': 'port', 'cli_type_name': 'integer', 'required': True,
-         'help_text': 'The port number the database is listening on.'},
-        {'name': 'username', 'required': True,
-         'help_text': 'The username to log in as.'}
+        {
+            'name': 'hostname',
+            'required': True,
+            'help_text': 'The hostname of the database to connect to.',
+        },
+        {
+            'name': 'port',
+            'cli_type_name': 'integer',
+            'required': True,
+            'help_text': 'The port number the database is listening on.',
+        },
+        {
+            'name': 'username',
+            'required': True,
+            'help_text': 'The username to log in as.',
+        },
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
         rds = self._session.create_client(
-            'rds', parsed_globals.region, parsed_globals.endpoint_url,
-            parsed_globals.verify_ssl
+            'rds',
+            parsed_globals.region,
+            parsed_globals.endpoint_url,
+            parsed_globals.verify_ssl,
         )
         token = rds.generate_db_auth_token(
             DBHostname=parsed_args.hostname,
             Port=parsed_args.port,
-            DBUsername=parsed_args.username
+            DBUsername=parsed_args.username,
         )
         uni_print(token)
         uni_print('\n')

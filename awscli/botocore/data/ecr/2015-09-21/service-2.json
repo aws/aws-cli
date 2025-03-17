@@ -1131,11 +1131,11 @@
       "members":{
         "ecrRepositoryPrefix":{
           "shape":"PullThroughCacheRuleRepositoryPrefix",
-          "documentation":"<p>The repository name prefix to use when caching images from the source registry.</p>"
+          "documentation":"<p>The repository name prefix to use when caching images from the source registry.</p> <important> <p>There is always an assumed <code>/</code> applied to the end of the prefix. If you specify <code>ecr-public</code> as the prefix, Amazon ECR treats that as <code>ecr-public/</code>.</p> </important>"
         },
         "upstreamRegistryUrl":{
           "shape":"Url",
-          "documentation":"<p>The registry URL of the upstream public registry to use as the source for the pull through cache rule. The following is the syntax to use for each supported upstream registry.</p> <ul> <li> <p>Amazon ECR Public (<code>ecr-public</code>) - <code>public.ecr.aws</code> </p> </li> <li> <p>Docker Hub (<code>docker-hub</code>) - <code>registry-1.docker.io</code> </p> </li> <li> <p>Quay (<code>quay</code>) - <code>quay.io</code> </p> </li> <li> <p>Kubernetes (<code>k8s</code>) - <code>registry.k8s.io</code> </p> </li> <li> <p>GitHub Container Registry (<code>github-container-registry</code>) - <code>ghcr.io</code> </p> </li> <li> <p>Microsoft Azure Container Registry (<code>azure-container-registry</code>) - <code>&lt;custom&gt;.azurecr.io</code> </p> </li> </ul>"
+          "documentation":"<p>The registry URL of the upstream public registry to use as the source for the pull through cache rule. The following is the syntax to use for each supported upstream registry.</p> <ul> <li> <p>Amazon ECR (<code>ecr</code>) – <code>dkr.ecr.&lt;region&gt;.amazonaws.com</code> </p> </li> <li> <p>Amazon ECR Public (<code>ecr-public</code>) – <code>public.ecr.aws</code> </p> </li> <li> <p>Docker Hub (<code>docker-hub</code>) – <code>registry-1.docker.io</code> </p> </li> <li> <p>GitHub Container Registry (<code>github-container-registry</code>) – <code>ghcr.io</code> </p> </li> <li> <p>GitLab Container Registry (<code>gitlab-container-registry</code>) – <code>registry.gitlab.com</code> </p> </li> <li> <p>Kubernetes (<code>k8s</code>) – <code>registry.k8s.io</code> </p> </li> <li> <p>Microsoft Azure Container Registry (<code>azure-container-registry</code>) – <code>&lt;custom&gt;.azurecr.io</code> </p> </li> <li> <p>Quay (<code>quay</code>) – <code>quay.io</code> </p> </li> </ul>"
         },
         "registryId":{
           "shape":"RegistryId",
@@ -1148,6 +1148,14 @@
         "credentialArn":{
           "shape":"CredentialArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret that identifies the credentials to authenticate to the upstream registry.</p>"
+        },
+        "customRoleArn":{
+          "shape":"CustomRoleArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the IAM role to be assumed by Amazon ECR to authenticate to the ECR upstream registry. This role must be in the same account as the registry that you are configuring.</p>"
+        },
+        "upstreamRepositoryPrefix":{
+          "shape":"PullThroughCacheRuleRepositoryPrefix",
+          "documentation":"<p>The repository name prefix of the upstream registry to match with the upstream repository name. When this field isn't specified, Amazon ECR will use the <code>ROOT</code>.</p>"
         }
       }
     },
@@ -1177,6 +1185,14 @@
         "credentialArn":{
           "shape":"CredentialArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret associated with the pull through cache rule.</p>"
+        },
+        "customRoleArn":{
+          "shape":"CustomRoleArn",
+          "documentation":"<p>The ARN of the IAM role associated with the pull through cache rule.</p>"
+        },
+        "upstreamRepositoryPrefix":{
+          "shape":"PullThroughCacheRuleRepositoryPrefix",
+          "documentation":"<p>The upstream repository prefix associated with the pull through cache rule.</p>"
         }
       }
     },
@@ -1430,6 +1446,14 @@
         "credentialArn":{
           "shape":"CredentialArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret associated with the pull through cache rule.</p>"
+        },
+        "customRoleArn":{
+          "shape":"CustomRoleArn",
+          "documentation":"<p>The ARN of the IAM role associated with the pull through cache rule.</p>"
+        },
+        "upstreamRepositoryPrefix":{
+          "shape":"PullThroughCacheRuleRepositoryPrefix",
+          "documentation":"<p>The upstream repository prefix associated with the pull through cache rule.</p>"
         }
       }
     },
@@ -2258,7 +2282,7 @@
         },
         "imageSizeInBytes":{
           "shape":"ImageSizeInBytes",
-          "documentation":"<p>The size, in bytes, of the image in the repository.</p> <p>If the image is a manifest list, this will be the max size of all manifests in the list.</p> <note> <p>Beginning with Docker version 1.9, the Docker client compresses image layers before pushing them to a V2 Docker registry. The output of the <code>docker images</code> command shows the uncompressed image size, so it may return a larger image size than the image sizes returned by <a>DescribeImages</a>.</p> </note>"
+          "documentation":"<p>The size, in bytes, of the image in the repository.</p> <p>If the image is a manifest list, this will be the max size of all manifests in the list.</p> <note> <p>Starting with Docker version 1.9, the Docker client compresses image layers before pushing them to a V2 Docker registry. The output of the <code>docker images</code> command shows the uncompressed image size. Therefore, Docker might return a larger image than the image sizes returned by <a>DescribeImages</a>.</p> </note>"
         },
         "imagePushedAt":{
           "shape":"PushTimestamp",
@@ -3052,6 +3076,14 @@
           "shape":"CredentialArn",
           "documentation":"<p>The ARN of the Secrets Manager secret associated with the pull through cache rule.</p>"
         },
+        "customRoleArn":{
+          "shape":"CustomRoleArn",
+          "documentation":"<p>The ARN of the IAM role associated with the pull through cache rule.</p>"
+        },
+        "upstreamRepositoryPrefix":{
+          "shape":"PullThroughCacheRuleRepositoryPrefix",
+          "documentation":"<p>The upstream repository prefix associated with the pull through cache rule.</p>"
+        },
         "upstreamRegistry":{
           "shape":"UpstreamRegistry",
           "documentation":"<p>The name of the upstream source registry associated with the pull through cache rule.</p>"
@@ -3087,7 +3119,7 @@
       "type":"string",
       "max":30,
       "min":2,
-      "pattern":"(?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*"
+      "pattern":"^((?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*/?|ROOT)$"
     },
     "PullThroughCacheRuleRepositoryPrefixList":{
       "type":"list",
@@ -3599,7 +3631,7 @@
         },
         "repositoryPolicy":{
           "shape":"RepositoryPolicyText",
-          "documentation":"<p>he repository policy to apply to repositories created using the template. A repository policy is a permissions policy associated with a repository to control access permissions. </p>"
+          "documentation":"<p>The repository policy to apply to repositories created using the template. A repository policy is a permissions policy associated with a repository to control access permissions. </p>"
         },
         "lifecyclePolicy":{
           "shape":"LifecyclePolicyTextForRepositoryCreationTemplate",
@@ -4212,10 +4244,7 @@
     },
     "UpdatePullThroughCacheRuleRequest":{
       "type":"structure",
-      "required":[
-        "ecrRepositoryPrefix",
-        "credentialArn"
-      ],
+      "required":["ecrRepositoryPrefix"],
       "members":{
         "registryId":{
           "shape":"RegistryId",
@@ -4228,6 +4257,10 @@
         "credentialArn":{
           "shape":"CredentialArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret that identifies the credentials to authenticate to the upstream registry.</p>"
+        },
+        "customRoleArn":{
+          "shape":"CustomRoleArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the IAM role to be assumed by Amazon ECR to authenticate to the ECR upstream registry. This role must be in the same account as the registry that you are configuring.</p>"
         }
       }
     },
@@ -4249,6 +4282,14 @@
         "credentialArn":{
           "shape":"CredentialArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret associated with the pull through cache rule.</p>"
+        },
+        "customRoleArn":{
+          "shape":"CustomRoleArn",
+          "documentation":"<p>The ARN of the IAM role associated with the pull through cache rule.</p>"
+        },
+        "upstreamRepositoryPrefix":{
+          "shape":"PullThroughCacheRuleRepositoryPrefix",
+          "documentation":"<p>The upstream repository prefix associated with the pull through cache rule.</p>"
         }
       }
     },
@@ -4380,6 +4421,7 @@
     "UpstreamRegistry":{
       "type":"string",
       "enum":[
+        "ecr",
         "ecr-public",
         "quay",
         "k8s",
@@ -4422,6 +4464,14 @@
         "credentialArn":{
           "shape":"CredentialArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret associated with the pull through cache rule.</p>"
+        },
+        "customRoleArn":{
+          "shape":"CustomRoleArn",
+          "documentation":"<p>The ARN of the IAM role associated with the pull through cache rule.</p>"
+        },
+        "upstreamRepositoryPrefix":{
+          "shape":"PullThroughCacheRuleRepositoryPrefix",
+          "documentation":"<p>The upstream repository prefix associated with the pull through cache rule.</p>"
         },
         "isValid":{
           "shape":"IsPTCRuleValid",

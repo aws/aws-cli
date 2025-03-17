@@ -2327,7 +2327,7 @@
       },
       "input":{"shape":"DescribeAvailabilityZonesRequest"},
       "output":{"shape":"DescribeAvailabilityZonesResult"},
-      "documentation":"<p>Describes the Availability Zones, Local Zones, and Wavelength Zones that are available to you. If there is an event impacting a zone, you can use this request to view the state and any provided messages for that zone.</p> <p>For more information about Availability Zones, Local Zones, and Wavelength Zones, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html\">Regions and zones</a> in the <i>Amazon EC2 User Guide</i>.</p> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
+      "documentation":"<p>Describes the Availability Zones, Local Zones, and Wavelength Zones that are available to you.</p> <p>For more information about Availability Zones, Local Zones, and Wavelength Zones, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html\">Regions and zones</a> in the <i>Amazon EC2 User Guide</i>.</p> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
     },
     "DescribeAwsNetworkPerformanceMetricSubscriptions":{
       "name":"DescribeAwsNetworkPerformanceMetricSubscriptions",
@@ -9751,7 +9751,7 @@
       "members":{
         "OptInStatus":{
           "shape":"AvailabilityZoneOptInStatus",
-          "documentation":"<p>For Availability Zones, this parameter always has the value of <code>opt-in-not-required</code>.</p> <p>For Local Zones and Wavelength Zones, this parameter is the opt-in status. The possible values are <code>opted-in</code>, and <code>not-opted-in</code>.</p>",
+          "documentation":"<p>For Availability Zones, this parameter always has the value of <code>opt-in-not-required</code>.</p> <p>For Local Zones and Wavelength Zones, this parameter is the opt-in status. The possible values are <code>opted-in</code> and <code>not-opted-in</code>.</p>",
           "locationName":"optInStatus"
         },
         "Messages":{
@@ -9786,7 +9786,7 @@
         },
         "ZoneType":{
           "shape":"String",
-          "documentation":"<p>The type of zone. The valid values are <code>availability-zone</code>, <code>local-zone</code>, and <code>wavelength-zone</code>.</p>",
+          "documentation":"<p>The type of zone.</p> <p>Valid values: <code>availability-zone</code> | <code>local-zone</code> | <code>wavelength-zone</code> </p>",
           "locationName":"zoneType"
         },
         "ParentZoneName":{
@@ -9799,9 +9799,14 @@
           "documentation":"<p>The ID of the zone that handles some of the Local Zone or Wavelength Zone control plane operations, such as API calls.</p>",
           "locationName":"parentZoneId"
         },
+        "GroupLongName":{
+          "shape":"String",
+          "documentation":"<p>The long name of the Availability Zone group, Local Zone group, or Wavelength Zone group.</p>",
+          "locationName":"groupLongName"
+        },
         "State":{
           "shape":"AvailabilityZoneState",
-          "documentation":"<p>The state of the Availability Zone, Local Zone, or Wavelength Zone. This value is always <code>available</code>.</p>",
+          "documentation":"<p>The state of the Availability Zone, Local Zone, or Wavelength Zone. The possible values are <code>available</code>, <code>unavailable</code>, and <code>constrained</code>.</p>",
           "locationName":"zoneState"
         }
       },
@@ -14550,7 +14555,8 @@
         },
         "ClientToken":{
           "shape":"String",
-          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p> <p>Constraint: Maximum 128 ASCII characters.</p>"
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure the idempotency of the request. If a client token isn't specified, a randomly generated token is used in the request to ensure idempotency.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p> <p>Constraint: Maximum 128 ASCII characters.</p>",
+          "idempotencyToken":true
         },
         "LaunchTemplateName":{
           "shape":"LaunchTemplateName",
@@ -14600,7 +14606,8 @@
         },
         "ClientToken":{
           "shape":"String",
-          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p> <p>Constraint: Maximum 128 ASCII characters.</p>"
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure the idempotency of the request. If a client token isn't specified, a randomly generated token is used in the request to ensure idempotency.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p> <p>Constraint: Maximum 128 ASCII characters.</p>",
+          "idempotencyToken":true
         },
         "LaunchTemplateId":{
           "shape":"LaunchTemplateId",
@@ -20444,7 +20451,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>group-name</code> - The name of the zone group for the Availability Zone (for example, <code>us-east-1-zg-1</code>), the Local Zone (for example, <code>us-west-2-lax-1</code>), or the Wavelength Zone (for example, <code>us-east-1-wl1</code>).</p> </li> <li> <p> <code>message</code> - The Zone message.</p> </li> <li> <p> <code>opt-in-status</code> - The opt-in status (<code>opted-in</code> | <code>not-opted-in</code> | <code>opt-in-not-required</code>).</p> </li> <li> <p> <code>parent-zone-id</code> - The ID of the zone that handles some of the Local Zone and Wavelength Zone control plane operations, such as API calls.</p> </li> <li> <p> <code>parent-zone-name</code> - The ID of the zone that handles some of the Local Zone and Wavelength Zone control plane operations, such as API calls.</p> </li> <li> <p> <code>region-name</code> - The name of the Region for the Zone (for example, <code>us-east-1</code>).</p> </li> <li> <p> <code>state</code> - The state of the Availability Zone, the Local Zone, or the Wavelength Zone (<code>available</code>).</p> </li> <li> <p> <code>zone-id</code> - The ID of the Availability Zone (for example, <code>use1-az1</code>), the Local Zone (for example, <code>usw2-lax1-az1</code>), or the Wavelength Zone (for example, <code>us-east-1-wl1-bos-wlz-1</code>).</p> </li> <li> <p> <code>zone-name</code> - The name of the Availability Zone (for example, <code>us-east-1a</code>), the Local Zone (for example, <code>us-west-2-lax-1a</code>), or the Wavelength Zone (for example, <code>us-east-1-wl1-bos-wlz-1</code>).</p> </li> <li> <p> <code>zone-type</code> - The type of zone (<code>availability-zone</code> | <code>local-zone</code> | <code>wavelength-zone</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>group-long-name</code> - The long name of the zone group for the Availability Zone (for example, <code>US West (Oregon) 1</code>), the Local Zone (for example, for Zone group <code>us-west-2-lax-1</code>, it is <code>US West (Los Angeles)</code>, or the Wavelength Zone (for example, for Zone group <code>us-east-1-wl1</code>, it is <code>US East (Verizon)</code>.</p> </li> <li> <p> <code>group-name</code> - The name of the zone group for the Availability Zone (for example, <code>us-east-1-zg-1</code>), the Local Zone (for example, <code>us-west-2-lax-1</code>), or the Wavelength Zone (for example, <code>us-east-1-wl1</code>).</p> </li> <li> <p> <code>message</code> - The Zone message.</p> </li> <li> <p> <code>opt-in-status</code> - The opt-in status (<code>opted-in</code> | <code>not-opted-in</code> | <code>opt-in-not-required</code>).</p> </li> <li> <p> <code>parent-zone-id</code> - The ID of the zone that handles some of the Local Zone and Wavelength Zone control plane operations, such as API calls.</p> </li> <li> <p> <code>parent-zone-name</code> - The ID of the zone that handles some of the Local Zone and Wavelength Zone control plane operations, such as API calls.</p> </li> <li> <p> <code>region-name</code> - The name of the Region for the Zone (for example, <code>us-east-1</code>).</p> </li> <li> <p> <code>state</code> - The state of the Availability Zone, the Local Zone, or the Wavelength Zone (<code>available</code>).</p> </li> <li> <p> <code>zone-id</code> - The ID of the Availability Zone (for example, <code>use1-az1</code>), the Local Zone (for example, <code>usw2-lax1-az1</code>), or the Wavelength Zone (for example, <code>us-east-1-wl1-bos-wlz-1</code>).</p> </li> <li> <p> <code>zone-name</code> - The name of the Availability Zone (for example, <code>us-east-1a</code>), the Local Zone (for example, <code>us-west-2-lax-1a</code>), or the Wavelength Zone (for example, <code>us-east-1-wl1-bos-wlz-1</code>).</p> </li> <li> <p> <code>zone-type</code> - The type of zone (<code>availability-zone</code> | <code>local-zone</code> | <code>wavelength-zone</code>).</p> </li> </ul>",
           "locationName":"Filter"
         }
       }
@@ -32109,7 +32116,7 @@
           "documentation":"<p>The attributes for the instance types. When you specify instance attributes, Amazon EC2 will identify instance types with those attributes.</p> <note> <p>If you specify <code>InstanceRequirements</code>, you can't specify <code>InstanceType</code>.</p> </note>"
         },
         "ImageId":{
-          "shape":"ImageId",
+          "shape":"String",
           "documentation":"<p>The ID of the AMI in the format <code>ami-17characters00000</code>.</p> <p>Alternatively, you can specify a Systems Manager parameter, using one of the following formats. The Systems Manager parameter will resolve to an AMI ID on launch.</p> <p>To reference a public parameter:</p> <ul> <li> <p> <code>resolve:ssm:<i>public-parameter</i> </code> </p> </li> </ul> <p>To reference a parameter stored in the same account:</p> <ul> <li> <p> <code>resolve:ssm:<i>parameter-name</i> </code> </p> </li> <li> <p> <code>resolve:ssm:<i>parameter-name:version-number</i> </code> </p> </li> <li> <p> <code>resolve:ssm:<i>parameter-name:label</i> </code> </p> </li> </ul> <p>To reference a parameter shared from another Amazon Web Services account:</p> <ul> <li> <p> <code>resolve:ssm:<i>parameter-ARN</i> </code> </p> </li> <li> <p> <code>resolve:ssm:<i>parameter-ARN:version-number</i> </code> </p> </li> <li> <p> <code>resolve:ssm:<i>parameter-ARN:label</i> </code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-launch-template.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon EC2 User Guide</i>.</p> <note> <p>This parameter is only available for fleets of type <code>instant</code>. For fleets of type <code>maintain</code> and <code>request</code>, you must specify the AMI ID in the launch template.</p> </note>"
         }
       },
@@ -46106,7 +46113,8 @@
         },
         "ClientToken":{
           "shape":"String",
-          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency in Amazon EC2 API requests</a>.</p> <p>Constraint: Maximum 128 ASCII characters.</p>"
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure the idempotency of the request. If a client token isn't specified, a randomly generated token is used in the request to ensure idempotency.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p> <p>Constraint: Maximum 128 ASCII characters.</p>",
+          "idempotencyToken":true
         },
         "LaunchTemplateId":{
           "shape":"LaunchTemplateId",

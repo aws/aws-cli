@@ -25,6 +25,7 @@ This is a Sphinx extension that gets run after all document updates have been
 executed and before the cleanup phase.
 """
 
+
 class AWSCLICrossLinkGenerator:
     # The name of the tool, this is what's
     # used in the goto links: /goto/{toolname}/{operation}
@@ -33,15 +34,11 @@ class AWSCLICrossLinkGenerator:
     # The base url for your SDK service reference. This page
     # is used as a fallback for goto links for unknown service
     # uids and for the "catch-all" regex for the tool.
-    FALLBACK_BASE = (
-        '/cli/latest/reference/index.html'
-    )
+    FALLBACK_BASE = '/cli/latest/reference/index.html'
     # The url used for a specific service. This value
     # must have one string placeholder value where the
     # service_name can be placed.
-    SERVICE_BASE = (
-        '/cli/latest/reference/%s/index.html'
-    )
+    SERVICE_BASE = '/cli/latest/reference/%s/index.html'
 
     def __init__(self):
         self._driver = awscli.clidriver.create_clidriver()
@@ -77,8 +74,9 @@ class AWSCLICrossLinkGenerator:
         if operation_name not in self._service_operations[service_name]:
             return self.SERVICE_BASE % service_name
         return '%s/%s/%s.html' % (
-            self.BASE_URL, service_name,
-            self._service_operations[service_name][operation_name]
+            self.BASE_URL,
+            service_name,
+            self._service_operations[service_name][operation_name],
         )
 
     def _is_catchall_regex(self, parts):
@@ -162,7 +160,7 @@ def generate_conf_for_crosslinks(linker, crosslinks):
         # The S=12345 means skip the next 12345 lines.  This
         # rule is only triggered if the RewriteCond above
         # evaluates to true.  Think of this as a fancy GOTO.
-        f'RewriteRule ".*" "-" [S={len(crosslinks)}]\n'
+        f'RewriteRule ".*" "-" [S={len(crosslinks)}]\n',
     ]
     for goto_link, redirect in crosslinks:
         lines.append(create_rewrite_rule(goto_link, redirect))
@@ -181,7 +179,9 @@ def generate_tool_cross_links(session, linker):
 
 def generate_crosslinks(app: Sphinx):
     session = awscli.botocore.session.get_session()
-    out_path = os.path.join(os.path.abspath(app.outdir), 'package.redirects.conf')
+    out_path = os.path.join(
+        os.path.abspath(app.outdir), 'package.redirects.conf'
+    )
     with open(out_path, 'w') as out_file:
         generate_all_cross_links(session, out_file)
 

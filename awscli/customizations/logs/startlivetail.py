@@ -824,7 +824,9 @@ class InteractiveUI(BaseLiveTailUI):
         self._application.exit()
 
     async def _run_ui(self):
-        self._application.create_background_task(self._log_events_printer.run())
+        self._application.create_background_task(
+            self._log_events_printer.run()
+        )
         self._application.create_background_task(self._render_metadata())
         self._application.create_background_task(self._trim_buffers())
 

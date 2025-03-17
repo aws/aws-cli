@@ -14,8 +14,9 @@ from awscli.customizations.commands import BasicCommand
 
 
 def register_dev_commands(event_handlers):
-    event_handlers.register('building-command-table.main',
-                            CLIDevCommand.add_command)
+    event_handlers.register(
+        'building-command-table.main', CLIDevCommand.add_command
+    )
 
 
 # This is adding a top level placeholder command to add dev commands.

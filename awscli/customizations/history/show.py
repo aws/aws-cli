@@ -46,7 +46,8 @@ class Formatter(object):
             self._output = sys.stdout
         if include and exclude:
             raise ParamValidationError(
-                'Either input or exclude can be provided but not both')
+                'Either input or exclude can be provided but not both'
+            )
         self._include = include
         self._exclude = exclude
 
@@ -80,97 +81,73 @@ class DetailedFormatter(Formatter):
     _SECTIONS = {
         'CLI_VERSION': {
             'title': 'AWS CLI command entered',
-            'values': [
-                {'description': 'with AWS CLI version'}
-            ]
+            'values': [{'description': 'with AWS CLI version'}],
         },
-        'CLI_ARGUMENTS': {
-            'values': [
-                {'description': 'with arguments'}
-            ]
-        },
+        'CLI_ARGUMENTS': {'values': [{'description': 'with arguments'}]},
         'API_CALL': {
             'title': 'API call made',
             'values': [
-                {
-                    'description': 'to service',
-                    'payload_key': 'service'
-                },
-                {
-                    'description': 'using operation',
-                    'payload_key': 'operation'
-                },
+                {'description': 'to service', 'payload_key': 'service'},
+                {'description': 'using operation', 'payload_key': 'operation'},
                 {
                     'description': 'with parameters',
                     'payload_key': 'params',
-                    'value_format': 'dictionary'
-                }
-            ]
+                    'value_format': 'dictionary',
+                },
+            ],
         },
         'HTTP_REQUEST': {
             'title': 'HTTP request sent',
             'values': [
-                {
-                    'description': 'to URL',
-                    'payload_key': 'url'
-                },
-                {
-                    'description': 'with method',
-                    'payload_key': 'method'
-                },
+                {'description': 'to URL', 'payload_key': 'url'},
+                {'description': 'with method', 'payload_key': 'method'},
                 {
                     'description': 'with headers',
                     'payload_key': 'headers',
                     'value_format': 'dictionary',
-                    'filters': [_SIG_FILTER]
+                    'filters': [_SIG_FILTER],
                 },
                 {
                     'description': 'with body',
                     'payload_key': 'body',
-                    'value_format': 'http_body'
-                }
-
-            ]
+                    'value_format': 'http_body',
+                },
+            ],
         },
         'HTTP_RESPONSE': {
             'title': 'HTTP response received',
             'values': [
                 {
                     'description': 'with status code',
-                    'payload_key': 'status_code'
+                    'payload_key': 'status_code',
                 },
                 {
                     'description': 'with headers',
                     'payload_key': 'headers',
-                    'value_format': 'dictionary'
+                    'value_format': 'dictionary',
                 },
                 {
                     'description': 'with body',
                     'payload_key': 'body',
-                    'value_format': 'http_body'
-                }
-            ]
+                    'value_format': 'http_body',
+                },
+            ],
         },
         'PARSED_RESPONSE': {
             'title': 'HTTP response parsed',
             'values': [
-                {
-                    'description': 'parsed to',
-                    'value_format': 'dictionary'
-                }
-            ]
+                {'description': 'parsed to', 'value_format': 'dictionary'}
+            ],
         },
         'CLI_RC': {
             'title': 'AWS CLI command exited',
-            'values': [
-                {'description': 'with return code'}
-            ]
+            'values': [{'description': 'with return code'}],
         },
     }
 
     _COMPONENT_COLORS = {
         'title': colorama.Style.BRIGHT,
-        'description': colorama.Fore.CYAN
+        'description': colorama.Fore.CYAN,
     }
 
     def __init__(self, output=None, include=None, exclude=None, colorize=True):
@@ -225,7 +202,8 @@ class DetailedFormatter(Formatter):
 
         formatted_timestamp = self._format_description('at time')
         formatted_timestamp += self._format_value(
-            event_record['timestamp'], event_record, value_format='timestamp')
+            event_record['timestamp'], event_record, value_format='timestamp'
+        )
 
         return '\n' + formatted_title + formatted_timestamp
 
@@ -233,19 +211,20 @@ class DetailedFormatter(Formatter):
         request_id = event_record['request_id']
         if request_id:
             if request_id not in self._request_id_to_api_num:
-                self._request_id_to_api_num[
-                    request_id] = self._num_api_calls
+                self._request_id_to_api_num[request_id] = self._num_api_calls
                 self._num_api_calls += 1
             return self._request_id_to_api_num[request_id]
 
     def _format_description(self, value_description):
         return self._color_if_configured(
-            value_description + ': ', 'description')
+            value_description + ': ', 'description'
+        )
 
     def _format_value(self, value, event_record, value_format=None):
         if value_format:
             formatted_value = self._value_pformatter.pformat(
-                value, value_format, event_record)
+                value, value_format, event_record
+            )
         else:
             formatted_value = str(value)
         return formatted_value + '\n'
@@ -263,7 +242,8 @@ class SectionValuePrettyFormatter(object):
 
     def _pformat_timestamp(self, event_timestamp, event_record=None):
         return datetime.datetime.fromtimestamp(
-            event_timestamp/1000.0).strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+            event_timestamp / 1000.0
+        ).strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
 
     def _pformat_dictionary(self, obj, event_record=None):
         return json.dumps(obj=obj, sort_keys=True, indent=4)
@@ -295,7 +275,7 @@ class SectionValuePrettyFormatter(object):
         # is called.
         stripped_body = self._strip_whitespace(body)
         xml_dom = xml.dom.minidom.parseString(stripped_body)
-        return xml_dom.toprettyxml(indent=' '*4, newl='\n')
+        return xml_dom.toprettyxml(indent=' ' * 4, newl='\n')
 
     def _get_pretty_json(self, body):
         # The json body is loaded so it can be dumped in a format that
@@ -312,9 +292,7 @@ class SectionValuePrettyFormatter(object):
 
     def _strip_whitespace(self, xml_string):
         xml_dom = xml.dom.minidom.parseString(xml_string)
-        return ''.join(
-            [line.strip() for line in xml_dom.toxml().splitlines()]
-        )
+        return ''.join([line.strip() for line in xml_dom.toxml().splitlines()])
 
     def _is_json_structure(self, body):
         if body.startswith('{'):
@@ -333,43 +311,57 @@ class ShowCommand(HistorySubcommand):
         'If this command is ran without any positional arguments, it will '
         'display the events for the last CLI command ran.'
     )
-    FORMATTERS = {
-        'detailed': DetailedFormatter
-    }
+    FORMATTERS = {'detailed': DetailedFormatter}
     ARG_TABLE = [
-        {'name': 'command_id', 'nargs': '?', 'default': 'latest',
-         'positional_arg': True,
-         'help_text': (
-             'The ID of the CLI command to show. If this positional argument '
-             'is omitted, it will show the last the CLI command ran.')},
-        {'name': 'include', 'nargs': '+',
-         'help_text': (
-             'Specifies which events to **only** include when showing the '
-             'CLI command. This argument is mutually exclusive with '
-             '``--exclude``.')},
-        {'name': 'exclude', 'nargs': '+',
-         'help_text': (
-             'Specifies which events to exclude when showing the '
-             'CLI command. This argument is mutually exclusive with '
-             '``--include``.')},
-        {'name': 'format', 'choices': FORMATTERS.keys(),
-         'default': 'detailed', 'help_text': (
-            'Specifies which format to use in showing the events for '
-            'the specified CLI command. The following formats are '
-            'supported:\n\n'
-            '<ul>'
-            '<li> detailed - This the default format. It prints out a '
-            'detailed overview of the CLI command ran. It displays all '
-            'of the key events in the command lifecycle where each '
-            'important event has a title and its important values '
-            'underneath. The events are ordered by timestamp and events of '
-            'the same API call are associated together with the '
-            '[``api_id``] notation where events that share the same '
-            '``api_id`` belong to the lifecycle of the same API call.'
-            '</li>'
-            '</ul>'
-            )
-         }
+        {
+            'name': 'command_id',
+            'nargs': '?',
+            'default': 'latest',
+            'positional_arg': True,
+            'help_text': (
+                'The ID of the CLI command to show. If this positional argument '
+                'is omitted, it will show the last the CLI command ran.'
+            ),
+        },
+        {
+            'name': 'include',
+            'nargs': '+',
+            'help_text': (
+                'Specifies which events to **only** include when showing the '
+                'CLI command. This argument is mutually exclusive with '
+                '``--exclude``.'
+            ),
+        },
+        {
+            'name': 'exclude',
+            'nargs': '+',
+            'help_text': (
+                'Specifies which events to exclude when showing the '
+                'CLI command. This argument is mutually exclusive with '
+                '``--include``.'
+            ),
+        },
+        {
+            'name': 'format',
+            'choices': FORMATTERS.keys(),
+            'default': 'detailed',
+            'help_text': (
+                'Specifies which format to use in showing the events for '
+                'the specified CLI command. The following formats are '
+                'supported:\n\n'
+                '<ul>'
+                '<li> detailed - This the default format. It prints out a '
+                'detailed overview of the CLI command ran. It displays all '
+                'of the key events in the command lifecycle where each '
+                'important event has a title and its important values '
+                'underneath. The events are ordered by timestamp and events of '
+                'the same API call are associated together with the '
+                '[``api_id``] notation where events that share the same '
+                '``api_id`` belong to the lifecycle of the same API call.'
+                '</li>'
+                '</ul>'
+            ),
+        },
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
@@ -378,7 +370,8 @@ class ShowCommand(HistorySubcommand):
             self._validate_args(parsed_args)
             with self._output_stream_factory.get_output_stream() as stream:
                 formatter = self._get_formatter(
-                    parsed_args, parsed_globals, stream)
+                    parsed_args, parsed_globals, stream
+                )
                 for record in self._get_record_iterator(parsed_args):
                     formatter.display(record)
         finally:
@@ -388,18 +381,20 @@ class ShowCommand(HistorySubcommand):
     def _validate_args(self, parsed_args):
         if parsed_args.exclude and parsed_args.include:
             raise ParamValidationError(
-                'Either --exclude or --include can be provided but not both')
+                'Either --exclude or --include can be provided but not both'
+            )
 
     def _get_formatter(self, parsed_args, parsed_globals, output_stream):
         format_type = parsed_args.format
         formatter_kwargs = {
             'include': parsed_args.include,
             'exclude': parsed_args.exclude,
-            'output': output_stream
+            'output': output_stream,
         }
         if format_type == 'detailed':
             formatter_kwargs['colorize'] = self._should_use_color(
-                parsed_globals)
+                parsed_globals
+            )
         return self.FORMATTERS[format_type](**formatter_kwargs)
 
     def _get_record_iterator(self, parsed_args):

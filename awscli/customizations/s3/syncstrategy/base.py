@@ -17,8 +17,11 @@ from awscli.customizations.exceptions import ParamValidationError
 
 LOG = logging.getLogger(__name__)
 
-VALID_SYNC_TYPES = ['file_at_src_and_dest', 'file_not_at_dest',
-                    'file_not_at_src']
+VALID_SYNC_TYPES = [
+    'file_at_src_and_dest',
+    'file_not_at_dest',
+    'file_not_at_src',
+]
 
 
 class BaseSync(object):
@@ -69,8 +72,7 @@ class BaseSync(object):
         if sync_type not in VALID_SYNC_TYPES:
             raise ParamValidationError(
                 "Unknown sync_type: %s.\n"
-                "Valid options are %s." %
-                (sync_type, VALID_SYNC_TYPES)
+                "Valid options are %s." % (sync_type, VALID_SYNC_TYPES)
             )
 
     @property
@@ -80,8 +82,7 @@ class BaseSync(object):
     def register_strategy(self, session):
         """Registers the sync strategy class to the given session."""
 
-        session.register('building-arg-table.s3_sync',
-                         self.add_sync_argument)
+        session.register('building-arg-table.s3_sync', self.add_sync_argument)
         session.register('choosing-s3-sync-strategy', self.use_sync_strategy)
 
     def determine_should_sync(self, src_file, dest_file):
@@ -118,7 +119,7 @@ class BaseSync(object):
             'file_not_at_dest': refers to ``src_file``
 
             'file_not_at_src': refers to ``dest_file``
-         """
+        """
 
         raise NotImplementedError("determine_should_sync")
 
@@ -187,8 +188,9 @@ class BaseSync(object):
 
         :param td: The difference between two datetime objects.
         """
-        return (td.microseconds + (td.seconds + td.days * 24 *
-                                   3600) * 10**6) / 10**6
+        return (
+            td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6
+        ) / 10**6
 
     def compare_size(self, src_file, dest_file):
         """
@@ -218,7 +220,6 @@ class BaseSync(object):
                 # at the source location.
                 return False
         elif cmd == "download":
-
             if self.total_seconds(delta) <= 0:
                 return True
             else:
@@ -228,7 +229,6 @@ class BaseSync(object):
 
 
 class SizeAndLastModifiedSync(BaseSync):
-
     def determine_should_sync(self, src_file, dest_file):
         same_size = self.compare_size(src_file, dest_file)
         same_last_modified_time = self.compare_time(src_file, dest_file)
@@ -236,9 +236,13 @@ class SizeAndLastModifiedSync(BaseSync):
         if should_sync:
             LOG.debug(
                 "syncing: %s -> %s, size: %s -> %s, modified time: %s -> %s",
-                src_file.src, src_file.dest,
-                src_file.size, dest_file.size,
-                src_file.last_update, dest_file.last_update)
+                src_file.src,
+                src_file.dest,
+                src_file.size,
+                dest_file.size,
+                src_file.last_update,
+                dest_file.last_update,
+            )
         return should_sync
 
 
@@ -255,6 +259,9 @@ class MissingFileSync(BaseSync):
         super(MissingFileSync, self).__init__(sync_type)
 
     def determine_should_sync(self, src_file, dest_file):
-        LOG.debug("syncing: %s -> %s, file does not exist at destination",
-                  src_file.src, src_file.dest)
+        LOG.debug(
+            "syncing: %s -> %s, file does not exist at destination",
+            src_file.src,
+            src_file.dest,
+        )
         return True

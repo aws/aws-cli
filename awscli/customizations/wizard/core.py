@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 """Core planner and executor for wizards."""
+
 import re
 import json
 import os
@@ -21,7 +22,7 @@ import jmespath
 
 from awscli.utils import json_encoder
 from awscli.customizations.wizard.exceptions import (
-    InvalidDataTypeConversionException
+    InvalidDataTypeConversionException,
 )
 
 
@@ -118,7 +119,6 @@ class BaseStep(object):
 
 
 class StaticStep(BaseStep):
-
     NAME = 'static'
 
     def run_step(self, step_definition, parameters):
@@ -126,7 +126,6 @@ class StaticStep(BaseStep):
 
 
 class PromptStep(BaseStep):
-
     NAME = 'prompt'
 
     def __init__(self, prompter):
@@ -135,13 +134,14 @@ class PromptStep(BaseStep):
             'int': int,
             'float': float,
             'str': str,
-            'bool': lambda x: True if x.lower() == 'true' else False
+            'bool': lambda x: True if x.lower() == 'true' else False,
         }
 
     def run_step(self, step_definition, parameters):
         choices = self._get_choices(step_definition, parameters)
-        response = self._prompter.prompt(step_definition['description'],
-                                         choices=choices)
+        response = self._prompter.prompt(
+            step_definition['description'], choices=choices
+        )
         return self._convert_data_type_if_needed(response, step_definition)
 
     def _get_choices(self, step_definition, parameters):
@@ -180,13 +180,13 @@ class YesNoPrompt(PromptStep):
             # They want the "No" choice to be the starting value so we
             # need to reverse the choices.
             choices[:] = choices[::-1]
-        response = self._prompter.prompt(step_definition['question'],
-                                         choices=choices)
+        response = self._prompter.prompt(
+            step_definition['question'], choices=choices
+        )
         return response
 
 
 class FilePromptStep(BaseStep):
-
     NAME = 'fileprompt'
 
     def __init__(self, prompter):
@@ -198,13 +198,12 @@ class FilePromptStep(BaseStep):
 
 
 class TemplateStep(BaseStep):
-
     NAME = 'template'
 
     CONDITION_PATTERN = re.compile(
         r'(?:^[ \t]*)?{%\s*if\s+(?P<condition>.+?)\s+%}(?:\s*[$|\n])?'
         r'(?P<body>.+?)[ \t]*{%\s*endif\s*%}[$|\n]?',
-        re.DOTALL | re.MULTILINE | re.IGNORECASE
+        re.DOTALL | re.MULTILINE | re.IGNORECASE,
     )
     _SUPPORTED_CONDITION_OPERATORS = [
         '==',
@@ -247,7 +246,6 @@ class TemplateStep(BaseStep):
 
 
 class APICallStep(BaseStep):
-
     NAME = 'apicall'
 
     def __init__(self, api_invoker):
@@ -256,18 +254,18 @@ class APICallStep(BaseStep):
     def run_step(self, step_definition, parameters):
         service, op_name = step_definition['operation'].split('.', 1)
         return self._api_invoker.invoke(
-            service=service, operation=op_name,
+            service=service,
+            operation=op_name,
             api_params=step_definition['params'],
             plan_variables=parameters,
             optional_api_params=step_definition.get('optional_params'),
             query=step_definition.get('query'),
             cache=step_definition.get('cache', False),
-            paginate=step_definition.get('paginate', False)
+            paginate=step_definition.get('paginate', False),
         )
 
 
 class SharedConfigStep(BaseStep):
-
     NAME = 'sharedconfig'
 
     def __init__(self, config_api):
@@ -289,7 +287,8 @@ class LoadDataStep(BaseStep):
     def run_step(self, step_definition, parameters):
         var_resolver = VariableResolver()
         value = var_resolver.resolve_variables(
-            parameters, step_definition['value'],
+            parameters,
+            step_definition['value'],
         )
         load_type = step_definition['load_type']
         if load_type == 'json':
@@ -304,7 +303,8 @@ class DumpDataStep(BaseStep):
     def run_step(self, step_definition, parameters):
         var_resolver = VariableResolver()
         value = var_resolver.resolve_variables(
-            parameters, step_definition['value'],
+            parameters,
+            step_definition['value'],
         )
         dump_type = step_definition['dump_type']
         if dump_type == 'json':
@@ -314,7 +314,6 @@ class DumpDataStep(BaseStep):
 
 
 class VariableResolver(object):
-
     _VAR_MATCH = re.compile(r'^{(.*?)}$')
 
     def resolve_variables(self, variables, params):
@@ -372,37 +371,49 @@ class APIInvoker(object):
     between the two steps.
 
     """
+
     def __init__(self, session):
         self._session = session
         self._response_cache = {}
 
-    def invoke(self, service, operation, api_params, plan_variables,
-               optional_api_params=None, query=None, cache=False,
-               paginate=False):
+    def invoke(
+        self,
+        service,
+        operation,
+        api_params,
+        plan_variables,
+        optional_api_params=None,
+        query=None,
+        cache=False,
+        paginate=False,
+    ):
         # TODO: All of the params that come from prompting the user
         # are strings.  We need a way to convert values to their
         # appropriate types.  We can either add typing into the wizard
         # spec or we possibly auto-convert based on the service
         # model (or both).
         resolved_params = self._resolve_params(
-            api_params, optional_api_params, plan_variables)
+            api_params, optional_api_params, plan_variables
+        )
         if cache:
             response = self._get_cached_api_call(
-                service, operation, resolved_params, paginate)
+                service, operation, resolved_params, paginate
+            )
         else:
             response = self._make_api_call(
-                service, operation, resolved_params, paginate)
+                service, operation, resolved_params, paginate
+            )
         if query is not None:
             response = jmespath.search(query, response)
         return response
 
     def _resolve_params(self, api_params, optional_params, plan_vars):
         resolver = VariableResolver()
-        api_params_resolved = resolver.resolve_variables(
-            plan_vars, api_params)
+        api_params_resolved = resolver.resolve_variables(plan_vars, api_params)
         if optional_params is not None:
             optional_params_resolved = resolver.resolve_variables(
-                plan_vars, optional_params)
+                plan_vars, optional_params
+            )
             for key, value in optional_params_resolved.items():
                 if key not in api_params_resolved and value is not None:
                     api_params_resolved[key] = value
@@ -417,14 +428,14 @@ class APIInvoker(object):
         else:
             return getattr(client, client_method_name)(**resolved_params)
 
-    def _get_cached_api_call(self, service, operation, resolved_params,
-                             paginate):
-        cache_key = self._get_cache_key(
-            service, operation, resolved_params
-        )
+    def _get_cached_api_call(
+        self, service, operation, resolved_params, paginate
+    ):
+        cache_key = self._get_cache_key(service, operation, resolved_params)
         if cache_key not in self._response_cache:
             response = self._make_api_call(
-                service, operation, resolved_params, paginate)
+                service, operation, resolved_params, paginate
+            )
             self._response_cache[cache_key] = response
         return self._response_cache[cache_key]
 
@@ -432,12 +443,11 @@ class APIInvoker(object):
         return (
             service_name,
             operation,
-            json.dumps(resolved_params, default=json_encoder)
+            json.dumps(resolved_params, default=json_encoder),
         )
 
 
 class Executor(object):
-
     def __init__(self, step_handlers):
         self._step_handlers = step_handlers
 
@@ -466,8 +476,7 @@ class ConditionEvaluator:
         if not isinstance(condition, list):
             condition = [condition]
         for single in condition:
-            statuses.append(self._check_single_condition(
-                single, parameters))
+            statuses.append(self._check_single_condition(single, parameters))
         return all(statuses)
 
     def _check_single_condition(self, single, parameters):
@@ -483,7 +492,7 @@ class DataTypeConverter:
         'int': int,
         'float': float,
         'str': str,
-        'bool': lambda x: x.lower() == 'true'
+        'bool': lambda x: x.lower() == 'true',
     }
 
     @classmethod
@@ -495,7 +504,6 @@ class DataTypeConverter:
 
 
 class ExecutorStep(object):
-
     # Subclasses must implement this to specify what name to use
     # for the `type` in a wizard definition.
     NAME = ''
@@ -505,7 +513,6 @@ class ExecutorStep(object):
 
 
 class APICallExecutorStep(ExecutorStep):
-
     NAME = 'apicall'
 
     def __init__(self, api_invoker):
@@ -514,7 +521,8 @@ class APICallExecutorStep(ExecutorStep):
     def run_step(self, step_definition, parameters):
         service, op_name = step_definition['operation'].split('.', 1)
         response = self._api_invoker.invoke(
-            service=service, operation=op_name,
+            service=service,
+            operation=op_name,
             api_params=step_definition['params'],
             plan_variables=parameters,
             optional_api_params=step_definition.get('optional_params'),
@@ -525,7 +533,6 @@ class APICallExecutorStep(ExecutorStep):
 
 
 class SharedConfigExecutorStep(ExecutorStep):
-
     NAME = 'sharedconfig'
 
     def __init__(self, config_api):
@@ -535,8 +542,9 @@ class SharedConfigExecutorStep(ExecutorStep):
         config_params = {}
         profile = None
         if 'profile' in step_definition:
-            profile = self._resolve_params(step_definition['profile'],
-                                           parameters)
+            profile = self._resolve_params(
+                step_definition['profile'], parameters
+            )
         config_params = self._resolve_params(
             step_definition['params'], parameters
         )
@@ -555,6 +563,7 @@ class SharedConfigAPI(object):
     This allows similar logic to be shared by the planner and executor.
 
     """
+
     def __init__(self, session, config_writer):
         self._session = session
         self._config_writer = config_writer
@@ -575,24 +584,24 @@ class SharedConfigAPI(object):
             config_params['__section__'] = section
         config_params.update(values)
         config_filename = os.path.expanduser(
-            self._session.get_config_variable('config_file'))
+            self._session.get_config_variable('config_file')
+        )
         self._config_writer.update_config(config_params, config_filename)
 
 
 class DefineVariableStep(ExecutorStep):
-
     NAME = 'define-variable'
 
     def run_step(self, step_definition, parameters):
         value = step_definition['value']
         resolved_value = VariableResolver().resolve_variables(
-            parameters, value)
+            parameters, value
+        )
         key = step_definition['varname']
         parameters[key] = resolved_value
 
 
 class MergeDictStep(ExecutorStep):
-
     NAME = 'merge-dict'
 
     def run_step(self, step_definition, parameters):
@@ -600,7 +609,8 @@ class MergeDictStep(ExecutorStep):
         result = {}
         for overlay in step_definition['overlays']:
             resolved_overlay = var_resolver.resolve_variables(
-                parameters, overlay,
+                parameters,
+                overlay,
             )
             result = self._deep_merge(result, resolved_overlay)
         parameters[step_definition['output_var']] = result

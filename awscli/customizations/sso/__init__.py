@@ -21,11 +21,13 @@ from awscli.customizations.sso.utils import AWS_CREDS_CACHE_DIR
 
 def register_sso_commands(event_emitter):
     event_emitter.register(
-        'building-command-table.sso', add_sso_commands,
+        'building-command-table.sso',
+        add_sso_commands,
     )
     event_emitter.register(
-        'session-initialized', inject_json_file_cache,
-        unique_id='inject_sso_json_file_cache'
+        'session-initialized',
+        inject_json_file_cache,
+        unique_id='inject_sso_json_file_cache',
     )
 
 

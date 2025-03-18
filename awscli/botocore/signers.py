@@ -25,7 +25,11 @@ from botocore.exceptions import (
     UnknownSignatureVersionError,
     UnsupportedSignatureVersionError,
 )
-from botocore.utils import ArnParser, datetime2timestamp, fix_s3_host
+from botocore.utils import (
+    ArnParser,
+    datetime2timestamp,
+    fix_s3_host,  # noqa
+)
 
 
 class RequestSigner:

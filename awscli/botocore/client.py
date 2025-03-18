@@ -13,7 +13,11 @@
 import functools
 import logging
 
-from botocore import UNSIGNED, waiter, xform_name
+from botocore import (
+    UNSIGNED,  # noqa
+    waiter,
+    xform_name,
+)
 from botocore.args import ClientArgsCreator
 from botocore.auth import AUTH_TYPE_MAPS, resolve_auth_type
 from botocore.awsrequest import prepare_request_dict
@@ -31,7 +35,7 @@ from botocore.discovery import (
 )
 from botocore.docs.docstring import ClientMethodDocstring, PaginatorDocstring
 from botocore.exceptions import (
-    ClientError,
+    ClientError,  # noqa
     DataNotFoundError,
     InvalidEndpointDiscoveryConfigurationError,
     OperationNotPageableError,

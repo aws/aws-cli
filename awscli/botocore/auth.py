@@ -22,7 +22,7 @@ from email.utils import formatdate
 from hashlib import sha256
 
 from botocore.compat import (
-    MD5_AVAILABLE,
+    MD5_AVAILABLE,  # noqa
     HTTPHeaders,
     encodebytes,
     ensure_unicode,

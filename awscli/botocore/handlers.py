@@ -28,7 +28,7 @@ import botocore
 import botocore.auth
 from botocore import UNSIGNED, utils
 from botocore.compat import (
-    MD5_AVAILABLE,
+    MD5_AVAILABLE,  # noqa
     ETree,
     OrderedDict,
     XMLParseError,
@@ -47,7 +47,7 @@ from botocore.docs.utils import (
 )
 from botocore.exceptions import (
     AliasConflictParameterError,
-    MissingServiceIdError,
+    MissingServiceIdError,  # noqa
     ParamValidationError,
     UnsupportedTLSVersionWarning,
 )
@@ -62,8 +62,8 @@ from botocore.utils import (
     SAFE_CHARS,
     SERVICE_NAME_ALIASES,
     ArnParser,
-    hyphenize_service_id,
-    is_global_accesspoint,
+    hyphenize_service_id,  # noqa
+    is_global_accesspoint,  # noqa
     percent_encode,
     switch_host_with_param,
 )

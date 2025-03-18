@@ -157,6 +157,7 @@
       "output":{"shape":"CreateConfiguredTableAnalysisRuleOutput"},
       "errors":[
         {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
@@ -787,6 +788,24 @@
       ],
       "documentation":"<p>Returns details for a specified privacy budget template.</p>"
     },
+    "GetProtectedJob":{
+      "name":"GetProtectedJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/protectedJobs/{protectedJobIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetProtectedJobInput"},
+      "output":{"shape":"GetProtectedJobOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns job processing metadata.</p>"
+    },
     "GetProtectedQuery":{
       "name":"GetProtectedQuery",
       "http":{
@@ -1126,6 +1145,24 @@
       ],
       "documentation":"<p>Returns detailed information about the privacy budgets in a specified membership.</p>"
     },
+    "ListProtectedJobs":{
+      "name":"ListProtectedJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/protectedJobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListProtectedJobsInput"},
+      "output":{"shape":"ListProtectedJobsOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists protected jobs, sorted by most recent job.</p>"
+    },
     "ListProtectedQueries":{
       "name":"ListProtectedQueries",
       "http":{
@@ -1214,6 +1251,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>An estimate of the number of aggregation functions that the member who can query can run given epsilon and noise parameters.</p>"
+    },
+    "StartProtectedJob":{
+      "name":"StartProtectedJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/protectedJobs",
+        "responseCode":200
+      },
+      "input":{"shape":"StartProtectedJobInput"},
+      "output":{"shape":"StartProtectedJobOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a protected job that is started by Clean Rooms.</p>"
     },
     "StartProtectedQuery":{
       "name":"StartProtectedQuery",
@@ -1467,6 +1523,26 @@
       ],
       "documentation":"<p>Updates the privacy budget template for the specified membership.</p>"
     },
+    "UpdateProtectedJob":{
+      "name":"UpdateProtectedJob",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/memberships/{membershipIdentifier}/protectedJobs/{protectedJobIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateProtectedJobInput"},
+      "output":{"shape":"UpdateProtectedJobOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the processing of a currently running job.</p>",
+      "idempotent":true
+    },
     "UpdateProtectedQuery":{
       "name":"UpdateProtectedQuery",
       "http":{
@@ -1618,11 +1694,18 @@
     },
     "AnalysisFormat":{
       "type":"string",
-      "enum":["SQL"]
+      "enum":[
+        "SQL",
+        "PYSPARK_1_0"
+      ]
     },
     "AnalysisMethod":{
       "type":"string",
-      "enum":["DIRECT_QUERY"]
+      "enum":[
+        "DIRECT_QUERY",
+        "DIRECT_JOB",
+        "MULTIPLE"
+      ]
     },
     "AnalysisParameter":{
       "type":"structure",
@@ -1687,6 +1770,11 @@
         "policy":{
           "shape":"AnalysisRulePolicy",
           "documentation":"<p>A policy that describes the associated data usage limitations.</p>"
+        },
+        "collaborationPolicy":{"shape":"ConfiguredTableAssociationAnalysisRulePolicy"},
+        "consolidatedPolicy":{
+          "shape":"ConsolidatedPolicy",
+          "documentation":"<p> The consolidated policy for the analysis rule.</p>"
         }
       },
       "documentation":"<p>A specification about how data from the configured table can be used in a query.</p>"
@@ -1910,10 +1998,24 @@
         "text":{
           "shape":"AnalysisTemplateText",
           "documentation":"<p>The query text.</p>"
+        },
+        "artifacts":{
+          "shape":"AnalysisTemplateArtifacts",
+          "documentation":"<p> The artifacts of the analysis source.</p>"
         }
       },
       "documentation":"<p>The structure that defines the body of the analysis template.</p>",
-      "sensitive":true,
+      "union":true
+    },
+    "AnalysisSourceMetadata":{
+      "type":"structure",
+      "members":{
+        "artifacts":{
+          "shape":"AnalysisTemplateArtifactMetadata",
+          "documentation":"<p> The artifacts of the analysis source metadata.</p>"
+        }
+      },
+      "documentation":"<p>The analysis source metadata.</p>",
       "union":true
     },
     "AnalysisTemplate":{
@@ -1985,6 +2087,10 @@
           "shape":"AnalysisSource",
           "documentation":"<p>The source of the analysis template.</p>"
         },
+        "sourceMetadata":{
+          "shape":"AnalysisSourceMetadata",
+          "documentation":"<p> The source metadata for the analysis template.</p>"
+        },
         "analysisParameters":{
           "shape":"AnalysisParameterList",
           "documentation":"<p>The parameters of the analysis template.</p>"
@@ -2013,6 +2119,60 @@
       "max":200,
       "min":0,
       "pattern":"(ANY_QUERY|ANY_JOB|arn:aws:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/analysistemplate/[\\d\\w-]+)"
+    },
+    "AnalysisTemplateArtifact":{
+      "type":"structure",
+      "required":["location"],
+      "members":{
+        "location":{
+          "shape":"S3Location",
+          "documentation":"<p> The artifact location.</p>"
+        }
+      },
+      "documentation":"<p>The analysis template artifact.</p>"
+    },
+    "AnalysisTemplateArtifactList":{
+      "type":"list",
+      "member":{"shape":"AnalysisTemplateArtifact"},
+      "max":1,
+      "min":1
+    },
+    "AnalysisTemplateArtifactMetadata":{
+      "type":"structure",
+      "required":["entryPointHash"],
+      "members":{
+        "entryPointHash":{
+          "shape":"Hash",
+          "documentation":"<p> The hash of the entry point for the analysis template artifact metadata.</p>"
+        },
+        "additionalArtifactHashes":{
+          "shape":"HashList",
+          "documentation":"<p> Additional artifact hashes for the analysis template.</p>"
+        }
+      },
+      "documentation":"<p>The analysis template artifact metadata.</p>"
+    },
+    "AnalysisTemplateArtifacts":{
+      "type":"structure",
+      "required":[
+        "entryPoint",
+        "roleArn"
+      ],
+      "members":{
+        "entryPoint":{
+          "shape":"AnalysisTemplateArtifact",
+          "documentation":"<p> The entry point for the analysis template artifacts.</p>"
+        },
+        "additionalArtifacts":{
+          "shape":"AnalysisTemplateArtifactList",
+          "documentation":"<p> Additional artifacts for the analysis template.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p> The role ARN for the analysis template artifacts.</p>"
+        }
+      },
+      "documentation":"<p>The analysis template artifacts.</p>"
     },
     "AnalysisTemplateIdentifier":{
       "type":"string",
@@ -2084,7 +2244,8 @@
     "AnalysisTemplateText":{
       "type":"string",
       "max":90000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "AnalysisTemplateValidationStatus":{
       "type":"string",
@@ -2169,7 +2330,7 @@
       "type":"string",
       "max":128,
       "min":0,
-      "pattern":"[a-zA-Z0-9_](([a-zA-Z0-9_ ]+-)*([a-zA-Z0-9_ ]+))?"
+      "pattern":"[a-zA-Z0-9_](([a-zA-Z0-9_]+)*([a-zA-Z0-9_]+))?"
     },
     "AthenaTableReference":{
       "type":"structure",
@@ -2404,6 +2565,17 @@
         }
       }
     },
+    "BilledJobResourceUtilization":{
+      "type":"structure",
+      "required":["units"],
+      "members":{
+        "units":{
+          "shape":"Double",
+          "documentation":"<p> The number of Clean Rooms Processing Unit (CRPU) hours that have been billed.</p>"
+        }
+      },
+      "documentation":"<p> Information related to the utilization of resources that have been billed or charged for in a given context, such as a protected job.</p>"
+    },
     "BilledResourceUtilization":{
       "type":"structure",
       "required":["units"],
@@ -2489,7 +2661,11 @@
         },
         "queryLogStatus":{
           "shape":"CollaborationQueryLogStatus",
-          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the collaboration.</p>"
+          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the collaboration.</p> <p>When <code>ENABLED</code>, Clean Rooms logs details about queries run within this collaboration and those logs can be viewed in Amazon CloudWatch Logs. The default value is <code>DISABLED</code>.</p>"
+        },
+        "jobLogStatus":{
+          "shape":"CollaborationJobLogStatus",
+          "documentation":"<p>An indicator as to whether job logging has been enabled or disabled for the collaboration. </p> <p>When <code>ENABLED</code>, Clean Rooms logs details about jobs run within this collaboration and those logs can be viewed in Amazon CloudWatch Logs. The default value is <code>DISABLED</code>.</p>"
         },
         "analyticsEngine":{
           "shape":"AnalyticsEngine",
@@ -2510,8 +2686,7 @@
         "createTime",
         "updateTime",
         "schema",
-        "format",
-        "source"
+        "format"
       ],
       "members":{
         "id":{
@@ -2561,6 +2736,10 @@
         "source":{
           "shape":"AnalysisSource",
           "documentation":"<p>The source of the analysis template within a collaboration.</p>"
+        },
+        "sourceMetadata":{
+          "shape":"AnalysisSourceMetadata",
+          "documentation":"<p> The source metadata for the collaboration analysis template.</p>"
         },
         "analysisParameters":{
           "shape":"AnalysisParameterList",
@@ -2894,6 +3073,13 @@
       "max":36,
       "min":36,
       "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "CollaborationJobLogStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "CollaborationName":{
       "type":"string",
@@ -3405,11 +3591,15 @@
         },
         "analysisMethod":{
           "shape":"AnalysisMethod",
-          "documentation":"<p>The analysis method for the configured table. The only valid value is currently `DIRECT_QUERY`.</p>"
+          "documentation":"<p>The analysis method for the configured table.</p> <p> <code>DIRECT_QUERY</code> allows SQL queries to be run directly on this table.</p> <p> <code>DIRECT_JOB</code> allows PySpark jobs to be run directly on this table.</p> <p> <code>MULTIPLE</code> allows both SQL queries and PySpark jobs to be run directly on this table.</p>"
         },
         "allowedColumns":{
           "shape":"AllowedColumnList",
           "documentation":"<p>The columns within the underlying Glue table that can be utilized within collaborations.</p>"
+        },
+        "selectedAnalysisMethods":{
+          "shape":"SelectedAnalysisMethods",
+          "documentation":"<p> The selected analysis methods for the configured table.</p>"
         }
       },
       "documentation":"<p>A table that has been configured for use in a collaboration.</p>"
@@ -3746,6 +3936,10 @@
         "arn":{
           "shape":"ConfiguredTableAssociationArn",
           "documentation":"<p>The unique ARN for the configured table association.</p>"
+        },
+        "analysisRuleTypes":{
+          "shape":"ConfiguredTableAssociationAnalysisRuleTypeList",
+          "documentation":"<p>The analysis rule types that are associated with the configured table associations in this summary. </p>"
         }
       },
       "documentation":"<p>The configured table association summary for the objects listed by the request.</p>"
@@ -3798,7 +3992,11 @@
         },
         "analysisMethod":{
           "shape":"AnalysisMethod",
-          "documentation":"<p>The analysis method for the configured tables. The only valid value is currently `DIRECT_QUERY`.</p>"
+          "documentation":"<p>The analysis method for the configured tables. </p> <p> <code>DIRECT_QUERY</code> allows SQL queries to be run directly on this table.</p> <p> <code>DIRECT_JOB</code> allows PySpark jobs to be run directly on this table.</p> <p> <code>MULTIPLE</code> allows both SQL queries and PySpark jobs to be run directly on this table.</p>"
+        },
+        "selectedAnalysisMethods":{
+          "shape":"SelectedAnalysisMethods",
+          "documentation":"<p> The selected analysis methods for the configured table summary.</p>"
         }
       },
       "documentation":"<p>The configured table summary for the objects listed by the request.</p>"
@@ -3842,6 +4040,175 @@
         "INVALID_STATE"
       ]
     },
+    "ConsolidatedPolicy":{
+      "type":"structure",
+      "members":{
+        "v1":{
+          "shape":"ConsolidatedPolicyV1",
+          "documentation":"<p> The consolidated policy version 1.</p>"
+        }
+      },
+      "documentation":"<p>Controls on the analysis specifications that can be run on a configured table.</p>",
+      "union":true
+    },
+    "ConsolidatedPolicyAggregation":{
+      "type":"structure",
+      "required":[
+        "aggregateColumns",
+        "joinColumns",
+        "dimensionColumns",
+        "scalarFunctions",
+        "outputConstraints"
+      ],
+      "members":{
+        "aggregateColumns":{
+          "shape":"ConsolidatedPolicyAggregationAggregateColumnsList",
+          "documentation":"<p> Aggregate columns in consolidated policy aggregation.</p>"
+        },
+        "joinColumns":{
+          "shape":"AnalysisRuleColumnList",
+          "documentation":"<p> The columns to join on.</p>"
+        },
+        "joinRequired":{
+          "shape":"JoinRequiredOption",
+          "documentation":"<p> Join required</p>"
+        },
+        "allowedJoinOperators":{
+          "shape":"JoinOperatorsList",
+          "documentation":"<p> The allowed join operators.</p>"
+        },
+        "dimensionColumns":{
+          "shape":"AnalysisRuleColumnList",
+          "documentation":"<p> The dimension columns of the consolidated policy aggregation.</p>"
+        },
+        "scalarFunctions":{
+          "shape":"ScalarFunctionsList",
+          "documentation":"<p> The scalar functions.</p>"
+        },
+        "outputConstraints":{
+          "shape":"AggregationConstraints",
+          "documentation":"<p> The output constraints of the consolidated policy aggregation.</p>"
+        },
+        "additionalAnalyses":{
+          "shape":"AdditionalAnalyses",
+          "documentation":"<p> Additional analyses for the consolidated policy aggregation.</p>"
+        },
+        "allowedResultReceivers":{
+          "shape":"AllowedResultReceivers",
+          "documentation":"<p> The allowed result receivers.</p>"
+        },
+        "allowedAdditionalAnalyses":{
+          "shape":"AllowedAdditionalAnalyses",
+          "documentation":"<p> The additional analyses allowed by the consolidated policy aggregation.</p>"
+        }
+      },
+      "documentation":"<p> Controls on the analysis specifications that can be run on a configured table.</p>"
+    },
+    "ConsolidatedPolicyAggregationAggregateColumnsList":{
+      "type":"list",
+      "member":{"shape":"AggregateColumn"},
+      "min":1
+    },
+    "ConsolidatedPolicyCustom":{
+      "type":"structure",
+      "required":["allowedAnalyses"],
+      "members":{
+        "allowedAnalyses":{
+          "shape":"ConsolidatedPolicyCustomAllowedAnalysesList",
+          "documentation":"<p> The allowed analyses.</p>"
+        },
+        "allowedAnalysisProviders":{
+          "shape":"ConsolidatedPolicyCustomAllowedAnalysisProvidersList",
+          "documentation":"<p> The allowed analysis providers.</p>"
+        },
+        "additionalAnalyses":{
+          "shape":"AdditionalAnalyses",
+          "documentation":"<p> Additional analyses for the consolidated policy.</p>"
+        },
+        "disallowedOutputColumns":{
+          "shape":"AnalysisRuleColumnList",
+          "documentation":"<p> Disallowed output columns</p>"
+        },
+        "differentialPrivacy":{"shape":"DifferentialPrivacyConfiguration"},
+        "allowedResultReceivers":{
+          "shape":"AllowedResultReceivers",
+          "documentation":"<p> The allowed result receivers.</p>"
+        },
+        "allowedAdditionalAnalyses":{
+          "shape":"AllowedAdditionalAnalyses",
+          "documentation":"<p> The additional analyses allowed by the consolidated policy.</p>"
+        }
+      },
+      "documentation":"<p>Controls on the analysis specifications that can be run on a configured table.</p>"
+    },
+    "ConsolidatedPolicyCustomAllowedAnalysesList":{
+      "type":"list",
+      "member":{"shape":"AnalysisTemplateArnOrQueryWildcard"},
+      "min":0
+    },
+    "ConsolidatedPolicyCustomAllowedAnalysisProvidersList":{
+      "type":"list",
+      "member":{"shape":"AccountId"},
+      "min":0
+    },
+    "ConsolidatedPolicyList":{
+      "type":"structure",
+      "required":[
+        "joinColumns",
+        "listColumns"
+      ],
+      "members":{
+        "joinColumns":{
+          "shape":"ConsolidatedPolicyListJoinColumnsList",
+          "documentation":"<p> The columns to join on.</p>"
+        },
+        "allowedJoinOperators":{
+          "shape":"JoinOperatorsList",
+          "documentation":"<p> The allowed join operators in the consolidated policy list.</p>"
+        },
+        "listColumns":{
+          "shape":"AnalysisRuleColumnList",
+          "documentation":"<p> The columns in the consolidated policy list.</p>"
+        },
+        "additionalAnalyses":{
+          "shape":"AdditionalAnalyses",
+          "documentation":"<p> Additional analyses for the consolidated policy list.</p>"
+        },
+        "allowedResultReceivers":{
+          "shape":"AllowedResultReceivers",
+          "documentation":"<p> The allowed result receivers.</p>"
+        },
+        "allowedAdditionalAnalyses":{
+          "shape":"AllowedAdditionalAnalyses",
+          "documentation":"<p> The additional analyses allowed by the consolidated policy list.</p>"
+        }
+      },
+      "documentation":"<p>Controls on the analysis specifications that can be run on a configured table.</p>"
+    },
+    "ConsolidatedPolicyListJoinColumnsList":{
+      "type":"list",
+      "member":{"shape":"AnalysisRuleColumnName"},
+      "min":1
+    },
+    "ConsolidatedPolicyV1":{
+      "type":"structure",
+      "members":{
+        "list":{
+          "shape":"ConsolidatedPolicyList",
+          "documentation":"<p> The list of consolidated policies.</p>"
+        },
+        "aggregation":{
+          "shape":"ConsolidatedPolicyAggregation",
+          "documentation":"<p> The aggregation setting for the consolidated policy.</p>"
+        },
+        "custom":{
+          "shape":"ConsolidatedPolicyCustom",
+          "documentation":"<p> Custom policy</p>"
+        }
+      },
+      "documentation":"<p>Controls on the analysis specifications that can be run on a configured table.</p>",
+      "union":true
+    },
     "CreateAnalysisTemplateInput":{
       "type":"structure",
       "required":[
@@ -3880,7 +4247,8 @@
         "analysisParameters":{
           "shape":"AnalysisParameterList",
           "documentation":"<p>The parameters of the analysis template.</p>"
-        }
+        },
+        "schema":{"shape":"AnalysisSchema"}
       }
     },
     "CreateAnalysisTemplateOutput":{
@@ -3922,7 +4290,7 @@
         },
         "creatorMLMemberAbilities":{
           "shape":"MLMemberAbilities",
-          "documentation":"<p>The ML abilities granted to the collaboration creator.</p> <p>Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see <i>Betas and Previews</i> in the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a>.</p>"
+          "documentation":"<p>The ML abilities granted to the collaboration creator.</p>"
         },
         "creatorDisplayName":{
           "shape":"DisplayName",
@@ -3934,7 +4302,11 @@
         },
         "queryLogStatus":{
           "shape":"CollaborationQueryLogStatus",
-          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the collaboration.</p>"
+          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the collaboration.</p> <p>When <code>ENABLED</code>, Clean Rooms logs details about queries run within this collaboration and those logs can be viewed in Amazon CloudWatch Logs. The default value is <code>DISABLED</code>.</p>"
+        },
+        "jobLogStatus":{
+          "shape":"CollaborationJobLogStatus",
+          "documentation":"<p>Specifies whether job logs are enabled for this collaboration. </p> <p>When <code>ENABLED</code>, Clean Rooms logs details about jobs run within this collaboration; those logs can be viewed in Amazon CloudWatch Logs. The default value is <code>DISABLED</code>.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -4156,7 +4528,11 @@
         },
         "analysisMethod":{
           "shape":"AnalysisMethod",
-          "documentation":"<p>The analysis method for the configured tables. The only valid value is currently `DIRECT_QUERY`.</p>"
+          "documentation":"<p>The analysis method allowed for the configured tables.</p> <p> <code>DIRECT_QUERY</code> allows SQL queries to be run directly on this table.</p> <p> <code>DIRECT_JOB</code> allows PySpark jobs to be run directly on this table.</p> <p> <code>MULTIPLE</code> allows both SQL queries and PySpark jobs to be run directly on this table.</p>"
+        },
+        "selectedAnalysisMethods":{
+          "shape":"SelectedAnalysisMethods",
+          "documentation":"<p> The analysis methods to enable for the configured table. When configured, you must specify at least two analysis methods.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -4279,7 +4655,11 @@
         },
         "queryLogStatus":{
           "shape":"MembershipQueryLogStatus",
-          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the membership.</p>"
+          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the membership.</p> <p>When <code>ENABLED</code>, Clean Rooms logs details about queries run within this collaboration and those logs can be viewed in Amazon CloudWatch Logs. The default value is <code>DISABLED</code>.</p>"
+        },
+        "jobLogStatus":{
+          "shape":"MembershipJobLogStatus",
+          "documentation":"<p>An indicator as to whether job logging has been enabled or disabled for the collaboration. </p> <p>When <code>ENABLED</code>, Clean Rooms logs details about jobs run within this collaboration and those logs can be viewed in Amazon CloudWatch Logs. The default value is <code>DISABLED</code>.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -4288,6 +4668,10 @@
         "defaultResultConfiguration":{
           "shape":"MembershipProtectedQueryResultConfiguration",
           "documentation":"<p>The default protected query result configuration as specified by the member who can receive results.</p>"
+        },
+        "defaultJobResultConfiguration":{
+          "shape":"MembershipProtectedJobResultConfiguration",
+          "documentation":"<p>The default job result configuration that determines how job results are protected and managed within this membership. This configuration applies to all jobs.</p>"
         },
         "paymentConfiguration":{
           "shape":"MembershipPaymentConfiguration",
@@ -5430,6 +5814,37 @@
         }
       }
     },
+    "GetProtectedJobInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "protectedJobIdentifier"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p> The identifier for a membership in a protected job instance.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "protectedJobIdentifier":{
+          "shape":"ProtectedJobIdentifier",
+          "documentation":"<p> The identifier for the protected job instance.</p>",
+          "location":"uri",
+          "locationName":"protectedJobIdentifier"
+        }
+      }
+    },
+    "GetProtectedJobOutput":{
+      "type":"structure",
+      "required":["protectedJob"],
+      "members":{
+        "protectedJob":{
+          "shape":"ProtectedJob",
+          "documentation":"<p> The protected job metadata.</p>"
+        }
+      }
+    },
     "GetProtectedQueryInput":{
       "type":"structure",
       "required":[
@@ -5559,6 +5974,20 @@
         }
       },
       "documentation":"<p>A reference to a table within an Glue data catalog.</p>"
+    },
+    "Hash":{
+      "type":"structure",
+      "members":{
+        "sha256":{
+          "shape":"String",
+          "documentation":"<p> The SHA-256 hash value.</p>"
+        }
+      },
+      "documentation":"<p> Hash</p>"
+    },
+    "HashList":{
+      "type":"list",
+      "member":{"shape":"Hash"}
     },
     "IdMappingConfig":{
       "type":"structure",
@@ -6011,6 +6440,17 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "JobComputePaymentConfig":{
+      "type":"structure",
+      "required":["isResponsible"],
+      "members":{
+        "isResponsible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the collaboration creator has configured the collaboration member to pay for query and job compute costs (<code>TRUE</code>) or has not configured the collaboration member to pay for query and job compute costs (<code>FALSE</code>).</p> <p>Exactly one member can be configured to pay for query and job compute costs. An error is returned if the collaboration creator sets a <code>TRUE</code> value for more than one member in the collaboration. </p> <p>An error is returned if the collaboration creator sets a <code>FALSE</code> value for the member who can run queries and jobs.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the collaboration member's payment responsibilities set by the collaboration creator for query and job compute costs.</p>"
     },
     "JoinOperator":{
       "type":"string",
@@ -6658,6 +7098,50 @@
         }
       }
     },
+    "ListProtectedJobsInput":{
+      "type":"structure",
+      "required":["membershipIdentifier"],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The identifier for the membership in the collaboration.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "status":{
+          "shape":"ProtectedJobStatus",
+          "documentation":"<p>A filter on the status of the protected job.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met. </p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListProtectedJobsOutput":{
+      "type":"structure",
+      "required":["protectedJobs"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+        },
+        "protectedJobs":{
+          "shape":"ProtectedJobSummaryList",
+          "documentation":"<p>A list of protected job summaries.</p>"
+        }
+      }
+    },
     "ListProtectedQueriesInput":{
       "type":"structure",
       "required":["membershipIdentifier"],
@@ -6778,10 +7262,10 @@
       "members":{
         "customMLMemberAbilities":{
           "shape":"CustomMLMemberAbilities",
-          "documentation":"<p>The custom ML member abilities for a collaboration member. The inference feature is not available in the custom ML modeling beta.</p> <p>Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see <i>Betas and Previews</i> in the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a>.</p>"
+          "documentation":"<p>The custom ML member abilities for a collaboration member. </p>"
         }
       },
-      "documentation":"<p>The ML member abilities for a collaboration member.</p> <p>Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see <i>Betas and Previews</i> in the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a>.</p>"
+      "documentation":"<p>The ML member abilities for a collaboration member.</p>"
     },
     "MLPaymentConfig":{
       "type":"structure",
@@ -6811,7 +7295,8 @@
       "type":"string",
       "enum":[
         "CAN_QUERY",
-        "CAN_RECEIVE_RESULTS"
+        "CAN_RECEIVE_RESULTS",
+        "CAN_RUN_JOB"
       ]
     },
     "MemberList":{
@@ -6838,7 +7323,7 @@
         },
         "mlMemberAbilities":{
           "shape":"MLMemberAbilities",
-          "documentation":"<p>The ML abilities granted to the collaboration member.</p> <p>Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see <i>Betas and Previews</i> in the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a>.</p>"
+          "documentation":"<p>The ML abilities granted to the collaboration member.</p>"
         },
         "displayName":{
           "shape":"DisplayName",
@@ -6890,7 +7375,7 @@
         },
         "mlAbilities":{
           "shape":"MLMemberAbilities",
-          "documentation":"<p>Provides a summary of the ML abilities for the collaboration member.</p> <p>Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see <i>Betas and Previews</i> in the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a>.</p>"
+          "documentation":"<p>Provides a summary of the ML abilities for the collaboration member.</p>"
         },
         "createTime":{
           "shape":"Timestamp",
@@ -6983,15 +7468,23 @@
         },
         "mlMemberAbilities":{
           "shape":"MLMemberAbilities",
-          "documentation":"<p>Specifies the ML member abilities that are granted to a collaboration member.</p> <p>Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see <i>Betas and Previews</i> in the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a>.</p>"
+          "documentation":"<p>Specifies the ML member abilities that are granted to a collaboration member.</p>"
         },
         "queryLogStatus":{
           "shape":"MembershipQueryLogStatus",
-          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the membership.</p>"
+          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the membership.</p> <p>When <code>ENABLED</code>, Clean Rooms logs details about queries run within this collaboration and those logs can be viewed in Amazon CloudWatch Logs. The default value is <code>DISABLED</code>.</p>"
+        },
+        "jobLogStatus":{
+          "shape":"MembershipJobLogStatus",
+          "documentation":"<p>An indicator as to whether job logging has been enabled or disabled for the collaboration. </p> <p>When <code>ENABLED</code>, Clean Rooms logs details about jobs run within this collaboration and those logs can be viewed in Amazon CloudWatch Logs. The default value is <code>DISABLED</code>.</p>"
         },
         "defaultResultConfiguration":{
           "shape":"MembershipProtectedQueryResultConfiguration",
           "documentation":"<p>The default protected query result configuration as specified by the member who can receive results.</p>"
+        },
+        "defaultJobResultConfiguration":{
+          "shape":"MembershipProtectedJobResultConfiguration",
+          "documentation":"<p> The default job result configuration for the membership.</p>"
         },
         "paymentConfiguration":{
           "shape":"MembershipPaymentConfiguration",
@@ -7011,6 +7504,24 @@
       "max":36,
       "min":36,
       "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "MembershipJobComputePaymentConfig":{
+      "type":"structure",
+      "required":["isResponsible"],
+      "members":{
+        "isResponsible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the collaboration member has accepted to pay for job compute costs (<code>TRUE</code>) or has not accepted to pay for query and job compute costs (<code>FALSE</code>).</p> <p>There is only one member who pays for queries and jobs. </p> <p>An error message is returned for the following reasons: </p> <ul> <li> <p>If you set the value to <code>FALSE</code> but you are responsible to pay for query and job compute costs. </p> </li> <li> <p>If you set the value to <code>TRUE</code> but you are not responsible to pay for query and job compute costs. </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object representing the payment responsibilities accepted by the collaboration member for query and job compute costs.</p>"
+    },
+    "MembershipJobLogStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "MembershipMLPaymentConfig":{
       "type":"structure",
@@ -7059,9 +7570,42 @@
         "machineLearning":{
           "shape":"MembershipMLPaymentConfig",
           "documentation":"<p>The payment responsibilities accepted by the collaboration member for machine learning costs.</p>"
+        },
+        "jobCompute":{
+          "shape":"MembershipJobComputePaymentConfig",
+          "documentation":"<p>The payment responsibilities accepted by the collaboration member for job compute costs.</p>"
         }
       },
       "documentation":"<p>An object representing the payment responsibilities accepted by the collaboration member.</p>"
+    },
+    "MembershipProtectedJobOutputConfiguration":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"ProtectedJobS3OutputConfigurationInput",
+          "documentation":"<p>Contains the configuration to write the job results to S3.</p>"
+        }
+      },
+      "documentation":"<p>Contains configurations for protected job results.</p>",
+      "union":true
+    },
+    "MembershipProtectedJobResultConfiguration":{
+      "type":"structure",
+      "required":[
+        "outputConfiguration",
+        "roleArn"
+      ],
+      "members":{
+        "outputConfiguration":{
+          "shape":"MembershipProtectedJobOutputConfiguration",
+          "documentation":"<p> The output configuration for a protected job result.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The unique ARN for an IAM role that is used by Clean Rooms to write protected job results to the result location, given by the member who can receive results.</p>"
+        }
+      },
+      "documentation":"<p>Contains configurations for protected job results.</p>"
     },
     "MembershipProtectedQueryOutputConfiguration":{
       "type":"structure",
@@ -7175,7 +7719,7 @@
         },
         "mlMemberAbilities":{
           "shape":"MLMemberAbilities",
-          "documentation":"<p>Provides a summary of the ML abilities for the collaboration member.</p> <p>Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see <i>Betas and Previews</i> in the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a>.</p>"
+          "documentation":"<p>Provides a summary of the ML abilities for the collaboration member.</p>"
         },
         "paymentConfiguration":{
           "shape":"MembershipPaymentConfiguration",
@@ -7275,6 +7819,10 @@
         "machineLearning":{
           "shape":"MLPaymentConfig",
           "documentation":"<p>An object representing the collaboration member's machine learning payment responsibilities set by the collaboration creator.</p>"
+        },
+        "jobCompute":{
+          "shape":"JobComputePaymentConfig",
+          "documentation":"<p> The compute configuration for the job.</p>"
         }
       },
       "documentation":"<p>An object representing the collaboration member's payment responsibilities set by the collaboration creator.</p>"
@@ -7615,6 +8163,376 @@
       "documentation":"<p>Provides an estimate of the number of aggregation functions that the member who can query can run given the epsilon and noise parameters.</p>",
       "union":true
     },
+    "ProtectedJob":{
+      "type":"structure",
+      "required":[
+        "id",
+        "membershipId",
+        "membershipArn",
+        "createTime",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ProtectedJobIdentifier",
+          "documentation":"<p>The identifier for a protected job instance.</p>"
+        },
+        "membershipId":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>he identifier for the membership.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The ARN of the membership.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The creation time of the protected job.</p>"
+        },
+        "jobParameters":{
+          "shape":"ProtectedJobParameters",
+          "documentation":"<p> The job parameters for the protected job.</p>"
+        },
+        "status":{
+          "shape":"ProtectedJobStatus",
+          "documentation":"<p> The status of the protected job.</p>"
+        },
+        "resultConfiguration":{
+          "shape":"ProtectedJobResultConfigurationOutput",
+          "documentation":"<p>Contains any details needed to write the job results.</p>"
+        },
+        "statistics":{
+          "shape":"ProtectedJobStatistics",
+          "documentation":"<p> The statistics of the protected job.</p>"
+        },
+        "result":{
+          "shape":"ProtectedJobResult",
+          "documentation":"<p> The result of the protected job.</p>"
+        },
+        "error":{
+          "shape":"ProtectedJobError",
+          "documentation":"<p> The error from the protected job.</p>"
+        }
+      },
+      "documentation":"<p>The parameters for an Clean Rooms protected job.</p>"
+    },
+    "ProtectedJobAnalysisType":{
+      "type":"string",
+      "enum":["DIRECT_ANALYSIS"]
+    },
+    "ProtectedJobConfigurationDetails":{
+      "type":"structure",
+      "members":{
+        "directAnalysisConfigurationDetails":{
+          "shape":"ProtectedJobDirectAnalysisConfigurationDetails",
+          "documentation":"<p>The details needed to configure the direct analysis.</p>"
+        }
+      },
+      "documentation":"<p>The protected job configuration details.</p>",
+      "union":true
+    },
+    "ProtectedJobDirectAnalysisConfigurationDetails":{
+      "type":"structure",
+      "members":{
+        "receiverAccountIds":{
+          "shape":"ProtectedJobReceiverAccountIds",
+          "documentation":"<p> The receiver account IDs.</p>"
+        }
+      },
+      "documentation":"<p>The protected job direct analysis configuration details.</p>"
+    },
+    "ProtectedJobError":{
+      "type":"structure",
+      "required":[
+        "message",
+        "code"
+      ],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> The message for the protected job error.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p> The error code for the protected job.</p>"
+        }
+      },
+      "documentation":"<p>The protected job error.</p>"
+    },
+    "ProtectedJobIdentifier":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "ProtectedJobMemberOutputConfigurationInput":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The account ID.</p>"
+        }
+      },
+      "documentation":"<p> The protected job member output configuration input.</p>"
+    },
+    "ProtectedJobMemberOutputConfigurationOutput":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The account ID.</p>"
+        }
+      },
+      "documentation":"<p> The protected job member output configuration output.</p>"
+    },
+    "ProtectedJobMemberOutputList":{
+      "type":"list",
+      "member":{"shape":"ProtectedJobSingleMemberOutput"}
+    },
+    "ProtectedJobOutput":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"ProtectedJobS3Output",
+          "documentation":"<p>If present, the output for a protected job with an `S3` output type.</p>"
+        },
+        "memberList":{
+          "shape":"ProtectedJobMemberOutputList",
+          "documentation":"<p>The list of member Amazon Web Services account(s) that received the results of the job. </p>"
+        }
+      },
+      "documentation":"<p>Contains details about the protected job output.</p>",
+      "union":true
+    },
+    "ProtectedJobOutputConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "member":{
+          "shape":"ProtectedJobMemberOutputConfigurationInput",
+          "documentation":"<p> The member of the protected job output configuration input.</p>"
+        }
+      },
+      "documentation":"<p> The protected job output configuration input.</p>",
+      "union":true
+    },
+    "ProtectedJobOutputConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"ProtectedJobS3OutputConfigurationOutput",
+          "documentation":"<p>If present, the output for a protected job with an `S3` output type.</p>"
+        },
+        "member":{
+          "shape":"ProtectedJobMemberOutputConfigurationOutput",
+          "documentation":"<p> The member output configuration for a protected job.</p>"
+        }
+      },
+      "documentation":"<p> The protected job output configuration output.</p>",
+      "union":true
+    },
+    "ProtectedJobParameters":{
+      "type":"structure",
+      "members":{
+        "analysisTemplateArn":{
+          "shape":"AnalysisTemplateArn",
+          "documentation":"<p> The ARN of the analysis template.</p>"
+        }
+      },
+      "documentation":"<p>The parameters for the protected job.</p>"
+    },
+    "ProtectedJobReceiverAccountIds":{
+      "type":"list",
+      "member":{"shape":"AccountId"}
+    },
+    "ProtectedJobReceiverConfiguration":{
+      "type":"structure",
+      "required":["analysisType"],
+      "members":{
+        "analysisType":{
+          "shape":"ProtectedJobAnalysisType",
+          "documentation":"<p> The analysis type for the protected job receiver configuration.</p>"
+        },
+        "configurationDetails":{
+          "shape":"ProtectedJobConfigurationDetails",
+          "documentation":"<p> The configuration details for the protected job receiver.</p>"
+        }
+      },
+      "documentation":"<p>The protected job receiver configuration.</p>"
+    },
+    "ProtectedJobReceiverConfigurations":{
+      "type":"list",
+      "member":{"shape":"ProtectedJobReceiverConfiguration"}
+    },
+    "ProtectedJobResult":{
+      "type":"structure",
+      "required":["output"],
+      "members":{
+        "output":{
+          "shape":"ProtectedJobOutput",
+          "documentation":"<p> The output of the protected job.</p>"
+        }
+      },
+      "documentation":"<p>Details about the job results.</p>"
+    },
+    "ProtectedJobResultConfigurationInput":{
+      "type":"structure",
+      "required":["outputConfiguration"],
+      "members":{
+        "outputConfiguration":{
+          "shape":"ProtectedJobOutputConfigurationInput",
+          "documentation":"<p> The output configuration for a protected job result.</p>"
+        }
+      },
+      "documentation":"<p>The protected job result configuration input.</p>"
+    },
+    "ProtectedJobResultConfigurationOutput":{
+      "type":"structure",
+      "required":["outputConfiguration"],
+      "members":{
+        "outputConfiguration":{
+          "shape":"ProtectedJobOutputConfigurationOutput",
+          "documentation":"<p>The output configuration.</p>"
+        }
+      },
+      "documentation":"<p>The output configuration for a protected job result.</p>"
+    },
+    "ProtectedJobS3Output":{
+      "type":"structure",
+      "required":["location"],
+      "members":{
+        "location":{
+          "shape":"String",
+          "documentation":"<p> The S3 location for the protected job output.</p>"
+        }
+      },
+      "documentation":"<p>Contains output information for protected jobs with an S3 output type.</p>"
+    },
+    "ProtectedJobS3OutputConfigurationInput":{
+      "type":"structure",
+      "required":["bucket"],
+      "members":{
+        "bucket":{
+          "shape":"ProtectedJobS3OutputConfigurationInputBucketString",
+          "documentation":"<p> The S3 bucket for job output.</p>"
+        },
+        "keyPrefix":{
+          "shape":"KeyPrefix",
+          "documentation":"<p>The S3 prefix to unload the protected job results.</p>"
+        }
+      },
+      "documentation":"<p>Contains input information for protected jobs with an S3 output type.</p>"
+    },
+    "ProtectedJobS3OutputConfigurationInputBucketString":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":".*(?!^(\\d+\\.)+\\d+$)(^(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])$).*"
+    },
+    "ProtectedJobS3OutputConfigurationOutput":{
+      "type":"structure",
+      "required":["bucket"],
+      "members":{
+        "bucket":{
+          "shape":"ProtectedJobS3OutputConfigurationOutputBucketString",
+          "documentation":"<p> The S3 bucket for job output.</p>"
+        },
+        "keyPrefix":{
+          "shape":"KeyPrefix",
+          "documentation":"<p>The S3 prefix to unload the protected job results.</p>"
+        }
+      },
+      "documentation":"<p> The output configuration for a protected job's S3 output.</p>"
+    },
+    "ProtectedJobS3OutputConfigurationOutputBucketString":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":".*(?!^(\\d+\\.)+\\d+$)(^(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])$).*"
+    },
+    "ProtectedJobSingleMemberOutput":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the member in the collaboration who can receive results from analyses.</p>"
+        }
+      },
+      "documentation":"<p>Details about the member who received the job result.</p>"
+    },
+    "ProtectedJobStatistics":{
+      "type":"structure",
+      "members":{
+        "totalDurationInMillis":{
+          "shape":"Long",
+          "documentation":"<p>The duration of the protected job, from creation until job completion, in milliseconds.</p>"
+        },
+        "billedResourceUtilization":{
+          "shape":"BilledJobResourceUtilization",
+          "documentation":"<p> The billed resource utilization for the protected job.</p>"
+        }
+      },
+      "documentation":"<p>Contains statistics about the execution of the protected job.</p>"
+    },
+    "ProtectedJobStatus":{
+      "type":"string",
+      "enum":[
+        "SUBMITTED",
+        "STARTED",
+        "CANCELLED",
+        "CANCELLING",
+        "FAILED",
+        "SUCCESS"
+      ]
+    },
+    "ProtectedJobSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "membershipId",
+        "membershipArn",
+        "createTime",
+        "status",
+        "receiverConfigurations"
+      ],
+      "members":{
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p> The ID of the protected job.</p>"
+        },
+        "membershipId":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique ID for the membership that initiated the protected job.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The unique ARN for the membership that initiated the protected job.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the protected job was created.</p>"
+        },
+        "status":{
+          "shape":"ProtectedJobStatus",
+          "documentation":"<p>The status of the protected job.</p>"
+        },
+        "receiverConfigurations":{
+          "shape":"ProtectedJobReceiverConfigurations",
+          "documentation":"<p> The receiver configurations for the protected job.</p>"
+        }
+      },
+      "documentation":"<p>The protected job summary for the objects listed by the request.</p>"
+    },
+    "ProtectedJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"ProtectedJobSummary"}
+    },
+    "ProtectedJobType":{
+      "type":"string",
+      "enum":["PYSPARK"]
+    },
     "ProtectedQuery":{
       "type":"structure",
       "required":[
@@ -7850,7 +8768,7 @@
       "members":{
         "totalDurationInMillis":{
           "shape":"Long",
-          "documentation":"<p>The duration of the protected query, from creation until query completion.</p>"
+          "documentation":"<p>The duration of the protected query, from creation until query completion, in milliseconds.</p>"
         },
         "billedResourceUtilization":{
           "shape":"BilledResourceUtilization",
@@ -8041,6 +8959,34 @@
       "min":32,
       "pattern":"arn:aws:iam::[\\w]+:role/[\\w+=./@-]+"
     },
+    "S3Location":{
+      "type":"structure",
+      "required":[
+        "bucket",
+        "key"
+      ],
+      "members":{
+        "bucket":{
+          "shape":"S3LocationBucketString",
+          "documentation":"<p> The bucket name.</p>"
+        },
+        "key":{
+          "shape":"S3LocationKeyString",
+          "documentation":"<p> The object key.</p>"
+        }
+      },
+      "documentation":"<p>The S3 location.</p>"
+    },
+    "S3LocationBucketString":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":".*(?!^(\\d+\\.)+\\d+$)(^(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])$).*"
+    },
+    "S3LocationKeyString":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9!_.*'()-/]+"
+    },
     "ScalarFunctions":{
       "type":"string",
       "enum":[
@@ -8105,7 +9051,11 @@
         },
         "analysisMethod":{
           "shape":"AnalysisMethod",
-          "documentation":"<p>The analysis method for the schema. The only valid value is currently <code>DIRECT_QUERY</code>.</p>"
+          "documentation":"<p>The analysis method for the schema. </p> <p> <code>DIRECT_QUERY</code> allows SQL queries to be run directly on this table.</p> <p> <code>DIRECT_JOB</code> allows PySpark jobs to be run directly on this table.</p> <p> <code>MULTIPLE</code> allows both SQL queries and PySpark jobs to be run directly on this table.</p>"
+        },
+        "selectedAnalysisMethods":{
+          "shape":"SelectedAnalysisMethods",
+          "documentation":"<p> The selected analysis methods for the schema.</p>"
         },
         "creatorAccountId":{
           "shape":"AccountId",
@@ -8320,7 +9270,11 @@
         },
         "analysisMethod":{
           "shape":"AnalysisMethod",
-          "documentation":"<p>The analysis method for the associated schema. The only valid value is currently `DIRECT_QUERY`.</p>"
+          "documentation":"<p>The analysis method for the associated schema.</p> <p> <code>DIRECT_QUERY</code> allows SQL queries to be run directly on this table.</p> <p> <code>DIRECT_JOB</code> allows PySpark jobs to be run directly on this table.</p> <p> <code>MULTIPLE</code> allows both SQL queries and PySpark jobs to be run directly on this table.</p>"
+        },
+        "selectedAnalysisMethods":{
+          "shape":"SelectedAnalysisMethods",
+          "documentation":"<p> The selected analysis methods for the schema.</p>"
         }
       },
       "documentation":"<p>The schema summary for the objects listed by the request.</p>"
@@ -8352,6 +9306,17 @@
       "max":256,
       "min":0,
       "pattern":"arn:aws:secretsmanager:[a-z]{2}-[a-z]+-[0-9]:\\d{12}:secret:.*"
+    },
+    "SelectedAnalysisMethod":{
+      "type":"string",
+      "enum":[
+        "DIRECT_QUERY",
+        "DIRECT_JOB"
+      ]
+    },
+    "SelectedAnalysisMethods":{
+      "type":"list",
+      "member":{"shape":"SelectedAnalysisMethod"}
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -8474,6 +9439,44 @@
         }
       },
       "documentation":"<p> The Snowflake table schema.</p>"
+    },
+    "StartProtectedJobInput":{
+      "type":"structure",
+      "required":[
+        "type",
+        "membershipIdentifier",
+        "jobParameters"
+      ],
+      "members":{
+        "type":{
+          "shape":"ProtectedJobType",
+          "documentation":"<p> The type of protected job to start.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier for the membership to run this job against. Currently accepts a membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "jobParameters":{
+          "shape":"ProtectedJobParameters",
+          "documentation":"<p> The job parameters.</p>"
+        },
+        "resultConfiguration":{
+          "shape":"ProtectedJobResultConfigurationInput",
+          "documentation":"<p>The details needed to write the job results.</p>"
+        }
+      }
+    },
+    "StartProtectedJobOutput":{
+      "type":"structure",
+      "required":["protectedJob"],
+      "members":{
+        "protectedJob":{
+          "shape":"ProtectedJob",
+          "documentation":"<p> The protected job.</p>"
+        }
+      }
     },
     "StartProtectedQueryInput":{
       "type":"structure",
@@ -8600,6 +9603,10 @@
       "type":"string",
       "max":256,
       "min":0
+    },
+    "TargetProtectedJobStatus":{
+      "type":"string",
+      "enum":["CANCELLED"]
     },
     "TargetProtectedQueryStatus":{
       "type":"string",
@@ -8889,6 +9896,14 @@
         "description":{
           "shape":"TableDescription",
           "documentation":"<p>A new description for the configured table.</p>"
+        },
+        "analysisMethod":{
+          "shape":"AnalysisMethod",
+          "documentation":"<p> The analysis method for the configured table.</p> <p> <code>DIRECT_QUERY</code> allows SQL queries to be run directly on this table.</p> <p> <code>DIRECT_JOB</code> allows PySpark jobs to be run directly on this table.</p> <p> <code>MULTIPLE</code> allows both SQL queries and PySpark jobs to be run directly on this table.</p>"
+        },
+        "selectedAnalysisMethods":{
+          "shape":"SelectedAnalysisMethods",
+          "documentation":"<p> The selected analysis methods for the table configuration update.</p>"
         }
       }
     },
@@ -8996,11 +10011,19 @@
         },
         "queryLogStatus":{
           "shape":"MembershipQueryLogStatus",
-          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the membership.</p>"
+          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the membership.</p> <p>When <code>ENABLED</code>, Clean Rooms logs details about queries run within this collaboration and those logs can be viewed in Amazon CloudWatch Logs. The default value is <code>DISABLED</code>.</p>"
+        },
+        "jobLogStatus":{
+          "shape":"MembershipJobLogStatus",
+          "documentation":"<p>An indicator as to whether job logging has been enabled or disabled for the collaboration. </p> <p>When <code>ENABLED</code>, Clean Rooms logs details about jobs run within this collaboration and those logs can be viewed in Amazon CloudWatch Logs. The default value is <code>DISABLED</code>.</p>"
         },
         "defaultResultConfiguration":{
           "shape":"MembershipProtectedQueryResultConfiguration",
           "documentation":"<p>The default protected query result configuration as specified by the member who can receive results.</p>"
+        },
+        "defaultJobResultConfiguration":{
+          "shape":"MembershipProtectedJobResultConfiguration",
+          "documentation":"<p> The default job result configuration.</p>"
         }
       }
     },
@@ -9048,6 +10071,42 @@
         "privacyBudgetTemplate":{
           "shape":"PrivacyBudgetTemplate",
           "documentation":"<p>Summary of the privacy budget template.</p>"
+        }
+      }
+    },
+    "UpdateProtectedJobInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "protectedJobIdentifier",
+        "targetStatus"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The identifier for a member of a protected job instance.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "protectedJobIdentifier":{
+          "shape":"ProtectedJobIdentifier",
+          "documentation":"<p> The identifier of the protected job to update.</p>",
+          "location":"uri",
+          "locationName":"protectedJobIdentifier"
+        },
+        "targetStatus":{
+          "shape":"TargetProtectedJobStatus",
+          "documentation":"<p>The target status of a protected job. Used to update the execution status of a currently running job.</p>"
+        }
+      }
+    },
+    "UpdateProtectedJobOutput":{
+      "type":"structure",
+      "required":["protectedJob"],
+      "members":{
+        "protectedJob":{
+          "shape":"ProtectedJob",
+          "documentation":"<p>The protected job output.</p>"
         }
       }
     },
@@ -9172,5 +10231,5 @@
       ]
     }
   },
-  "documentation":"<p>Welcome to the <i>Clean Rooms API Reference</i>.</p> <p>Clean Rooms is an Amazon Web Services service that helps multiple parties to join their data together in a secure collaboration workspace. In the collaboration, members who can query and receive results can get insights into the collective datasets without either party getting access to the other party's raw data.</p> <p>To learn more about Clean Rooms concepts, procedures, and best practices, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/what-is.html\">Clean Rooms User Guide</a>.</p> <p>To learn more about SQL commands, functions, and conditions supported in Clean Rooms, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/sql-reference/sql-reference.html\">Clean Rooms SQL Reference</a>.</p>"
+  "documentation":"<p>Welcome to the <i>Clean Rooms API Reference</i>.</p> <p>Clean Rooms is an Amazon Web Services service that helps multiple parties to join their data together in a secure collaboration workspace. In the collaboration, members who can run queries and jobs and receive results can get insights into the collective datasets without either party getting access to the other party's raw data.</p> <p>To learn more about Clean Rooms concepts, procedures, and best practices, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/what-is.html\">Clean Rooms User Guide</a>.</p> <p>To learn more about SQL commands, functions, and conditions supported in Clean Rooms, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/sql-reference/sql-reference.html\">Clean Rooms SQL Reference</a>.</p>"
 }

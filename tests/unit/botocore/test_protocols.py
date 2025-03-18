@@ -50,6 +50,7 @@ can set the BOTOCORE_TEST_ID env var with the ``suite_id:test_id`` syntax.
     BOTOCORE_TEST_ID=5:1 pytest tests/unit/test_protocols.py
 
 """
+import base64
 import os
 import copy
 from enum import Enum
@@ -63,10 +64,22 @@ from botocore.awsrequest import HeadersDict
 from botocore.compat import json, OrderedDict, urlsplit
 from botocore.eventstream import EventStream
 from botocore.model import ServiceModel, OperationModel
-from botocore.serialize import EC2Serializer, QuerySerializer, \
-        JSONSerializer, RestJSONSerializer, RestXMLSerializer
-from botocore.parsers import QueryParser, JSONParser, \
-        RestJSONParser, RestXMLParser, EC2QueryParser
+from botocore.serialize import (
+    EC2Serializer,
+    QuerySerializer,
+    JSONSerializer,
+    RestJSONSerializer,
+    RestXMLSerializer,
+    RpcV2CBORSerializer,
+)
+from botocore.parsers import (
+    QueryParser,
+    JSONParser,
+    RestJSONParser,
+    RestXMLParser,
+    EC2QueryParser,
+    RpcV2CBORParser,
+)
 from botocore.utils import parse_timestamp, percent_encode_sequence
 from botocore.awsrequest import prepare_request_dict
 from botocore.model import NoShapeFoundError
@@ -81,6 +94,7 @@ PROTOCOL_SERIALIZERS = {
     'json': JSONSerializer,
     'rest-json': RestJSONSerializer,
     'rest-xml': RestXMLSerializer,
+    'smithy-rpc-v2-cbor': RpcV2CBORSerializer,
 }
 PROTOCOL_PARSERS = {
     'ec2': EC2QueryParser,
@@ -88,6 +102,7 @@ PROTOCOL_PARSERS = {
     'json': JSONParser,
     'rest-json': RestJSONParser,
     'rest-xml': RestXMLParser,
+    'smithy-rpc-v2-cbor': RpcV2CBORParser,
 }
 PROTOCOL_TEST_BLACKLIST = [
     'Idempotency token auto fill'
@@ -150,12 +165,13 @@ def test_input_compliance(json_description, case, basename):
     serializer = protocol_serializer()
     serializer.MAP_TYPE = OrderedDict
     operation_model = OperationModel(case['given'], model)
+    case['params'] = _convert_strings_to_special_float(case['params'])
     request = serializer.serialize_to_request(case['params'], operation_model)
     _serialize_request_description(request)
     client_endpoint = service_description.get('clientEndpoint')
     try:
         _assert_request_body_is_bytes(request['body'])
-        _assert_requests_equal(request, case['serialized'])
+        _assert_requests_equal(request, case['serialized'], protocol_type)
         _assert_endpoints_equal(request, case['serialized'], client_endpoint)
     except AssertionError as e:
         _input_failure_message(protocol_type, case, request, e)
@@ -219,6 +235,10 @@ def test_output_compliance(json_description, case, basename):
             case['response']['body'] = MockRawResponse(body_bytes)
         if 'error' in case:
             output_shape = operation_model.output_shape
+            if protocol == 'smithy-rpc-v2-cbor':
+                case['response']['body'] = base64.b64decode(
+                    case['response']['body']
+                )
             parsed = parser.parse(case['response'], output_shape)
             try:
                 error_code = parsed.get("Error", {}).get("Code")
@@ -233,6 +253,10 @@ def test_output_compliance(json_description, case, basename):
             if protocol == 'query' and output_shape and output_shape.members:
                 output_shape.serialization['resultWrapper'] = (
                     f'{operation_name}Result'
+                )
+            elif protocol == 'smithy-rpc-v2-cbor':
+                case['response']['body'] = base64.b64decode(
+                    case['response']['body']
                 )
             parsed = parser.parse(case['response'], output_shape)
         parsed = _fixup_parsed_result(parsed)
@@ -316,6 +340,17 @@ def _convert_bytes_to_str(parsed):
         return new_list
     else:
         return parsed
+
+
+def _convert_strings_to_special_float(parsed):
+    for key, value in parsed.items():
+        if value == 'Infinity':
+            parsed[key] = float('Infinity')
+        elif value == '-Infinity':
+            parsed[key] = float('-Infinity')
+        elif value == 'NaN':
+            parsed[key] = float('NaN')
+    return parsed
 
 
 def _convert_special_floats_to_string(parsed):
@@ -415,9 +450,30 @@ def _serialize_request_description(request_dict):
                 request_dict['url_path'] += '&%s' % encoded
 
 
-def _assert_requests_equal(actual, expected):
-    assert_equal(actual['body'], expected.get('body', '').encode('utf-8'),
-                 'Body value')
+def _assert_requests_equal(actual, expected, protocol):
+    # For CBOR, we need to assert that the bodies are equal based on their parsed
+    # values to ensure we are properly testing things like
+    if protocol == 'smithy-rpc-v2-cbor' and actual['body']:
+        parser = RpcV2CBORParser()
+        actual_body_stream = parser.get_peekable_stream_from_bytes(
+            actual['body']
+        )
+        expected_body_stream = parser.get_peekable_stream_from_bytes(
+            base64.b64decode(expected['body'])
+        )
+        actual_body = _convert_special_floats_to_string(
+            parser.parse_data_item(actual_body_stream)
+        )
+        expected_body = _convert_special_floats_to_string(
+            parser.parse_data_item(expected_body_stream)
+        )
+        assert_equal(actual_body, expected_body, 'Body value')
+    else:
+        assert_equal(
+            actual['body'],
+            expected.get('body', '').encode('utf-8'),
+            'Body value',
+        )
     actual_headers = HeadersDict(actual['headers'])
     expected_headers = HeadersDict(expected.get('headers', {}))
     excluded_headers = expected.get('forbidHeaders', [])

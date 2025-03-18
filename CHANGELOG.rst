@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.24.26
+=======
+
+* api-change:``mediaconvert``: This release adds support for AVC passthrough, the ability to specify PTS offset without padding, and an A/V segment matching feature.
+* api-change:``route53``: Amazon Route 53 now supports the iso-f regions for private DNS Amazon VPCs and cloudwatch healthchecks.
+* api-change:``appsync``: Providing Tagging support for DomainName in AppSync
+* api-change:``cleanrooms``: This release adds support for PySpark jobs. Customers can now analyze data by running jobs using approved PySpark analysis templates.
+
+
 2.24.25
 =======
 

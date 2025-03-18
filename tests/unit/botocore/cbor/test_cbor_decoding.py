@@ -26,9 +26,7 @@ IGNORE_CASES = [
     'map - {null}',
 ]
 
-TEST_DIR = os.path.join(
-    os.path.dirname(os.path.abspath(__file__))
-)
+TEST_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 
 
 @pytest.fixture(scope="module")
@@ -37,7 +35,9 @@ def parser():
 
 
 def _get_cbor_decoding_success_tests():
-    success_test_file_name = os.path.join(TEST_DIR, 'decode-success-tests.json')
+    success_test_file_name = os.path.join(
+        TEST_DIR, 'decode-success-tests.json'
+    )
     success_test_data = json.load(open(success_test_file_name))
     for case in success_test_data:
         if case['description'] in IGNORE_CASES:

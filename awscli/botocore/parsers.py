@@ -886,7 +886,7 @@ class BaseCBORParser(ResponseParser):
             return self._parse_datetime(value)
         else:
             raise ResponseParserError(
-                f"Found CBOR tag not supported by botocore:" f" {tag}"
+                f"Found CBOR tag not supported by botocore: {tag}"
             )
 
     def _parse_datetime(self, value):
@@ -935,7 +935,7 @@ class BaseCBORParser(ResponseParser):
     # the break code, it advances past that byte and returns True so the calling
     # method knows to stop parsing that data item.
     def _handle_break_code(self, stream):
-        if int.from_bytes(stream.peek(1)[:1]) == self.BREAK_CODE:
+        if int.from_bytes(stream.peek(1)[:1], 'big') == self.BREAK_CODE:
             stream.seek(1, os.SEEK_CUR)
             return True
 

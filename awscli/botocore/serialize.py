@@ -470,7 +470,9 @@ class CBORSerializer(Serializer):
         additional_info, num_bytes = self._get_additional_info_and_num_bytes(
             length
         )
-        initial_byte = self._get_initial_byte(self.STRING_MAJOR_TYPE, length)
+        initial_byte = self._get_initial_byte(
+            self.STRING_MAJOR_TYPE, additional_info
+        )
         if num_bytes == 0:
             serialized.extend(initial_byte + encoded)
         else:

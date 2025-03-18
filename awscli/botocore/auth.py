@@ -48,7 +48,8 @@ logger = logging.getLogger(__name__)
 
 
 EMPTY_SHA256_HASH = (
-    'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
+    'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+)
 # This is the buffer size used when calculating sha256 checksums.
 # Experimenting with various buffer sizes showed that this value generally
 # gave the best result (in terms of performance).
@@ -77,10 +78,7 @@ def _host_from_url(url):
         # brackets as per RFC 3986 3.2.2.
         host = f'[{host}]'
 
-    default_ports = {
-        'http': 80,
-        'https': 443
-    }
+    default_ports = {'http': 80, 'https': 443}
     if url_parts.port is not None:
         if url_parts.port != default_ports.get(url_parts.scheme):
             host = '%s:%d' % (host, url_parts.port)
@@ -100,7 +98,7 @@ def _get_body_as_dict(request):
     return data
 
 
-class BaseSigner(object):
+class BaseSigner:
     REQUIRES_REGION = False
     REQUIRES_TOKEN = False
 
@@ -132,11 +130,10 @@ class SigV2Auth(BaseSigner):
         path = split.path
         if len(path) == 0:
             path = '/'
-        string_to_sign = '%s\n%s\n%s\n' % (request.method,
-                                           split.netloc,
-                                           path)
-        lhmac = hmac.new(self.credentials.secret_key.encode('utf-8'),
-                         digestmod=sha256)
+        string_to_sign = '%s\n%s\n%s\n' % (request.method, split.netloc, path)
+        lhmac = hmac.new(
+            self.credentials.secret_key.encode('utf-8'), digestmod=sha256
+        )
         pairs = []
         for key in sorted(params):
             # Any previous signature should not be a part of this
@@ -145,8 +142,11 @@ class SigV2Auth(BaseSigner):
             if key == 'Signature':
                 continue
             value = str(params[key])
-            pairs.append(quote(key.encode('utf-8'), safe='') + '=' +
-                         quote(value.encode('utf-8'), safe='-_~'))
+            pairs.append(
+                quote(key.encode('utf-8'), safe='')
+                + '='
+                + quote(value.encode('utf-8'), safe='-_~')
+            )
         qs = '&'.join(pairs)
         string_to_sign += qs
         logger.debug('String to sign: %s', string_to_sign)
@@ -193,13 +193,19 @@ class SigV3Auth(BaseSigner):
             if 'X-Amz-Security-Token' in request.headers:
                 del request.headers['X-Amz-Security-Token']
             request.headers['X-Amz-Security-Token'] = self.credentials.token
-        new_hmac = hmac.new(self.credentials.secret_key.encode('utf-8'),
-                            digestmod=sha256)
+        new_hmac = hmac.new(
+            self.credentials.secret_key.encode('utf-8'), digestmod=sha256
+        )
         new_hmac.update(request.headers['Date'].encode('utf-8'))
         encoded_signature = encodebytes(new_hmac.digest()).strip()
-        signature = ('AWS3-HTTPS AWSAccessKeyId=%s,Algorithm=%s,Signature=%s' %
-                     (self.credentials.access_key, 'HmacSHA256',
-                      encoded_signature.decode('utf-8')))
+        signature = (
+            'AWS3-HTTPS AWSAccessKeyId=%s,Algorithm=%s,Signature=%s'
+            % (
+                self.credentials.access_key,
+                'HmacSHA256',
+                encoded_signature.decode('utf-8'),
+            )
+        )
         if 'X-Amzn-Authorization' in request.headers:
             del request.headers['X-Amzn-Authorization']
         request.headers['X-Amzn-Authorization'] = signature
@@ -209,6 +215,7 @@ class SigV4Auth(BaseSigner):
     """
     Sign a request with Signature V4.
     """
+
     REQUIRES_REGION = True
 
     def __init__(self, credentials, service_name, region_name):
@@ -257,8 +264,9 @@ class SigV4Auth(BaseSigner):
         key_val_pairs = []
         for key in params:
             value = str(params[key])
-            key_val_pairs.append((quote(key, safe='-_.~'),
-                                  quote(value, safe='-_.~')))
+            key_val_pairs.append(
+                (quote(key, safe='-_.~'), quote(value, safe='-_.~'))
+            )
         sorted_key_vals = []
         # Sort by the URI-encoded key names, and in the case of
         # repeated keys, then sort by the value.
@@ -293,8 +301,9 @@ class SigV4Auth(BaseSigner):
         headers = []
         sorted_header_names = sorted(set(headers_to_sign))
         for key in sorted_header_names:
-            value = ','.join(self._header_value(v) for v in
-                             headers_to_sign.get_all(key))
+            value = ','.join(
+                self._header_value(v) for v in headers_to_sign.get_all(key)
+            )
             headers.append('%s:%s' % (key, ensure_unicode(value)))
         return '\n'.join(headers)
 
@@ -326,8 +335,9 @@ class SigV4Auth(BaseSigner):
         request_body = request.body
         if request_body and hasattr(request_body, 'seek'):
             position = request_body.tell()
-            read_chunksize = functools.partial(request_body.read,
-                                               PAYLOAD_BUFFER)
+            read_chunksize = functools.partial(
+                request_body.read, PAYLOAD_BUFFER
+            )
             checksum = sha256()
             for chunk in iter(read_chunksize, b''):
                 checksum.update(chunk)
@@ -400,8 +410,9 @@ class SigV4Auth(BaseSigner):
 
     def signature(self, string_to_sign, request):
         key = self.credentials.secret_key
-        k_date = self._sign(('AWS4' + key).encode('utf-8'),
-                            request.context['timestamp'][0:8])
+        k_date = self._sign(
+            ('AWS4' + key).encode('utf-8'), request.context['timestamp'][0:8]
+        )
         k_region = self._sign(k_date, self._region_name)
         k_service = self._sign(k_region, self._service_name)
         k_signing = self._sign(k_service, 'aws4_request')
@@ -454,9 +465,11 @@ class SigV4Auth(BaseSigner):
         if 'Date' in request.headers:
             del request.headers['Date']
             datetime_timestamp = datetime.datetime.strptime(
-                request.context['timestamp'], SIGV4_TIMESTAMP)
+                request.context['timestamp'], SIGV4_TIMESTAMP
+            )
             request.headers['Date'] = formatdate(
-                int(calendar.timegm(datetime_timestamp.timetuple())))
+                int(calendar.timegm(datetime_timestamp.timetuple()))
+            )
             if 'X-Amz-Date' in request.headers:
                 del request.headers['X-Amz-Date']
         else:
@@ -500,8 +513,10 @@ class S3SigV4Auth(SigV4Auth):
         algorithm = checksum_context.get('request_algorithm')
         if isinstance(algorithm, dict) and algorithm.get('in') == 'header':
             checksum_header = algorithm['name']
-        if not request.url.startswith('https') or \
-                checksum_header not in request.headers:
+        if (
+            not request.url.startswith('https')
+            or checksum_header not in request.headers
+        ):
             return True
 
         # If the input is streaming we disable body signing by default.
@@ -690,10 +705,12 @@ class S3ExpressQueryAuth(S3ExpressAuth):
 class SigV4QueryAuth(SigV4Auth):
     DEFAULT_EXPIRES = 3600
 
-    def __init__(self, credentials, service_name, region_name,
-                 expires=DEFAULT_EXPIRES):
-        super(SigV4QueryAuth, self).__init__(credentials, service_name,
-                                             region_name)
+    def __init__(
+        self, credentials, service_name, region_name, expires=DEFAULT_EXPIRES
+    ):
+        super(SigV4QueryAuth, self).__init__(
+            credentials, service_name, region_name
+        )
         self._expires = expires
 
     def _modify_request_before_signing(self, request):
@@ -727,8 +744,13 @@ class SigV4QueryAuth(SigV4Auth):
         # have repeated keys so we know we have single element lists which we
         # can convert back to scalar values.
         query_dict = dict(
-            [(k, v[0]) for k, v in
-             parse_qs(url_parts.query, keep_blank_values=True).items()])
+            [
+                (k, v[0])
+                for k, v in parse_qs(
+                    url_parts.query, keep_blank_values=True
+                ).items()
+            ]
+        )
         # The spec is particular about this.  It *has* to be:
         # https://<endpoint>?<operation params>&<auth params>
         # You can't mix the two types of params together, i.e just keep doing
@@ -743,8 +765,9 @@ class SigV4QueryAuth(SigV4Auth):
             request.data = ''
         if query_dict:
             operation_params = percent_encode_sequence(query_dict) + '&'
-        new_query_string = (operation_params +
-                            percent_encode_sequence(auth_params))
+        new_query_string = operation_params + percent_encode_sequence(
+            auth_params
+        )
         # url_parts is a tuple (and therefore immutable) so we need to create
         # a new url_parts with the new query string.
         # <part>   - <index>
@@ -775,6 +798,7 @@ class S3SigV4QueryAuth(SigV4QueryAuth):
     http://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-query-string-auth.html
 
     """
+
     def _normalize_url_path(self, path):
         # For S3, we do not normalize the path.
         return path
@@ -794,6 +818,7 @@ class S3SigV4PostAuth(SigV4Auth):
     Implementation doc here:
     http://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-UsingHTTPPOST.html
     """
+
     def add_auth(self, request):
         datetime_now = datetime.datetime.utcnow()
         request.context['timestamp'] = datetime_now.strftime(SIGV4_TIMESTAMP)
@@ -825,7 +850,8 @@ class S3SigV4PostAuth(SigV4Auth):
 
         # Dump the base64 encoded policy into the fields dictionary.
         fields['policy'] = base64.b64encode(
-            json.dumps(policy).encode('utf-8')).decode('utf-8')
+            json.dumps(policy).encode('utf-8')
+        ).decode('utf-8')
 
         fields['x-amz-signature'] = self.signature(fields['policy'], request)
 
@@ -856,6 +882,7 @@ class BearerAuth(TokenSigner):
 # this module. In the future, we should isolate those functions/classes into
 # a separate utility module to avoid any potential circular import.
 import botocore.crt.auth
+
 
 def resolve_auth_type(auth_trait):
     for auth_type in auth_trait:

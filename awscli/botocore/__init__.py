@@ -23,6 +23,7 @@ class NullHandler(logging.Handler):
     def emit(self, record):
         pass
 
+
 # Configure default logger to do nothing
 log = logging.getLogger('botocore')
 log.addHandler(NullHandler())
@@ -62,20 +63,50 @@ _xform_cache = {
     ): 'associate-whatsapp-business-account',
     ('DeleteWhatsAppMessageMedia', '_'): 'delete_whatsapp_media_message',
     ('DeleteWhatsAppMessageMedia', '-'): 'delete-whatsapp-media-message',
-    ('DisassociateWhatsAppBusinessAccount', '_'): 'disassociate_whatsapp_business_account',
-    ('DisassociateWhatsAppBusinessAccount', '-'):'disassociate-whatsapp-business-account',
-    ('GetLinkedWhatsAppBusinessAccount', '_'): 'get_linked_whatsapp_business_account',
-    ('GetLinkedWhatsAppBusinessAccount', '-'): 'get-linked-whatsapp-business-account',
-    ('GetLinkedWhatsAppBusinessAccountPhoneNumber', '_'): 'get_linked_whatsapp_business_account_phone_number',
-    ('GetLinkedWhatsAppBusinessAccountPhoneNumber', '-'): 'get-linked-whatsapp-business-account-phone-number',
+    (
+        'DisassociateWhatsAppBusinessAccount',
+        '_',
+    ): 'disassociate_whatsapp_business_account',
+    (
+        'DisassociateWhatsAppBusinessAccount',
+        '-',
+    ): 'disassociate-whatsapp-business-account',
+    (
+        'GetLinkedWhatsAppBusinessAccount',
+        '_',
+    ): 'get_linked_whatsapp_business_account',
+    (
+        'GetLinkedWhatsAppBusinessAccount',
+        '-',
+    ): 'get-linked-whatsapp-business-account',
+    (
+        'GetLinkedWhatsAppBusinessAccountPhoneNumber',
+        '_',
+    ): 'get_linked_whatsapp_business_account_phone_number',
+    (
+        'GetLinkedWhatsAppBusinessAccountPhoneNumber',
+        '-',
+    ): 'get-linked-whatsapp-business-account-phone-number',
     ('GetWhatsAppMessageMedia', '_'): 'get_whatsapp_message_media',
     ('GetWhatsAppMessageMedia', '-'): 'get-whatsapp-message-media',
-    ('ListLinkedWhatsAppBusinessAccounts', '_'): 'list_linked_whatsapp_business_accounts',
-    ('ListLinkedWhatsAppBusinessAccounts', '-'): 'list-linked-whatsapp-business-accounts',
+    (
+        'ListLinkedWhatsAppBusinessAccounts',
+        '_',
+    ): 'list_linked_whatsapp_business_accounts',
+    (
+        'ListLinkedWhatsAppBusinessAccounts',
+        '-',
+    ): 'list-linked-whatsapp-business-accounts',
     ('PostWhatsAppMessageMedia', '_'): 'post_whatsapp_message_media',
     ('PostWhatsAppMessageMedia', '-'): 'post-whatsapp-message-media',
-    ('PutWhatsAppBusinessAccountEventDestinations', '_'): 'put_whatsapp_business_account_event_destinations',
-    ('PutWhatsAppBusinessAccountEventDestinations', '-'): 'put-whatsapp-business-account-event-destinations',
+    (
+        'PutWhatsAppBusinessAccountEventDestinations',
+        '_',
+    ): 'put_whatsapp_business_account_event_destinations',
+    (
+        'PutWhatsAppBusinessAccountEventDestinations',
+        '-',
+    ): 'put-whatsapp-business-account-event-destinations',
     ('SendWhatsAppMessage', '_'): 'send_whatsapp_message',
     ('SendWhatsAppMessage', '-'): 'send-whatsapp-message',
 }
@@ -85,7 +116,7 @@ BOTOCORE_ROOT = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Used to specify anonymous (unsigned) request signature
-class UNSIGNED(object):
+class UNSIGNED:
     def __copy__(self):
         return self
 
@@ -113,7 +144,7 @@ def xform_name(name, sep='_', _xform_cache=_xform_cache):
             is_special = _special_case_transform.search(name)
             matched = is_special.group()
             # Replace something like ARNs, ACLs with _arns, _acls.
-            name = name[:-len(matched)] + sep + matched.lower()
+            name = name[: -len(matched)] + sep + matched.lower()
         s1 = _first_cap_regex.sub(r'\1' + sep + r'\2', name)
         transformed = _end_cap_regex.sub(r'\1' + sep + r'\2', s1).lower()
         _xform_cache[key] = transformed

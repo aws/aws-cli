@@ -16,7 +16,6 @@ import re
 import threading
 
 from botocore.useragent import register_feature_id
-
 from s3transfer.bandwidth import BandwidthLimiter, LeakyBucket
 from s3transfer.constants import (
     ALLOWED_DOWNLOAD_ARGS,
@@ -192,12 +191,12 @@ class TransferManager:
     ]
 
     ALLOWED_UPLOAD_ARGS = (
-            _ALLOWED_SHARED_ARGS
-            + [
-                'ChecksumType',
-                'MpuObjectSize',
-            ]
-            + FULL_OBJECT_CHECKSUM_ARGS
+        _ALLOWED_SHARED_ARGS
+        + [
+            'ChecksumType',
+            'MpuObjectSize',
+        ]
+        + FULL_OBJECT_CHECKSUM_ARGS
     )
 
     ALLOWED_COPY_ARGS = _ALLOWED_SHARED_ARGS + [

@@ -16,15 +16,14 @@ import pytest
 from botocore.credentials import Credentials, ReadOnlyCredentials
 from botocore.exceptions import ClientError, NoCredentialsError
 from botocore.session import Session
-
 from s3transfer.exceptions import TransferNotDoneError
 from s3transfer.utils import CallArgs
+
 from tests import HAS_CRT, FileCreator, mock, requires_crt, unittest
 
 if HAS_CRT:
     import awscrt.auth
     import awscrt.s3
-
     import s3transfer.crt
 
 
@@ -165,7 +164,7 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
         self.assertIsNone(crt_request.headers.get("Authorization"))
 
     def _create_crt_response_error(
-            self, status_code, body, operation_name=None
+        self, status_code, body, operation_name=None
     ):
         return awscrt.s3.S3ResponseError(
             code=14343,

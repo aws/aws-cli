@@ -229,8 +229,8 @@ class Config(object):
 
         Defaults to None.
 
-        :type account_id_endpoint_mode: str
-        :param account_id_endpoint_mode: The value used to determine the client's
+    :type account_id_endpoint_mode: str
+    :param account_id_endpoint_mode: The value used to determine the client's
         behavior for account ID based endpoint routing. Valid values are:
 
         * ``preferred`` - The endpoint should include account ID if available.

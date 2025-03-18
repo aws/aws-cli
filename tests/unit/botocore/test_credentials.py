@@ -1567,6 +1567,7 @@ class TestConfigFileProvider(BaseEnvVar):
         self.assertEqual(creds.method, 'config-file')
         self.assertEqual(creds.account_id, 'bin')
 
+
 class TestBotoProvider(BaseEnvVar):
     def setUp(self):
         super(TestBotoProvider, self).setUp()
@@ -3518,6 +3519,7 @@ class TestProcessProvider(BaseEnvVar):
         self.assertEqual(creds.method, 'custom-process')
         self.assertEqual(creds.account_id, '123456789012')
 
+
 class TestProfileProviderBuilder(unittest.TestCase):
     def setUp(self):
         super(TestProfileProviderBuilder, self).setUp()
@@ -3746,7 +3748,6 @@ class TestSSOProvider(unittest.TestCase):
 @pytest.mark.parametrize(
     "account_id, expected", [("123456789012", "123456789012"), (None, None)]
 )
-
 def test_get_deferred_property_account_id(account_id, expected):
     creds = Credentials(
         access_key='foo', secret_key='bar', token='baz', account_id=account_id

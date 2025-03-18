@@ -72,7 +72,11 @@ class TestCredentialPrecedence(BaseEnvVar):
                                  aws_secret_access_key='code-secret')
 
         credentials_cls.assert_called_with(
-            access_key='code', secret_key='code-secret', token=mock.ANY)
+            access_key='code',
+            secret_key='code-secret',
+            token=mock.ANY,
+            account_id=mock.ANY,
+        )
 
     def test_profile_env_vs_code(self):
         # If the profile is set both by the env var and by code,
@@ -97,7 +101,11 @@ class TestCredentialPrecedence(BaseEnvVar):
                                  aws_secret_access_key='code-secret')
 
         credentials_cls.assert_called_with(
-            access_key='code', secret_key='code-secret', token=mock.ANY)
+            access_key='code',
+            secret_key='code-secret',
+            token=mock.ANY,
+            account_id=mock.ANY,
+        )
 
     def test_access_secret_env_vs_profile_code(self):
         # If access/secret keys are set in the environment, but then a

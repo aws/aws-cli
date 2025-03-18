@@ -1282,8 +1282,13 @@ class SharedCredentialProvider(CredentialProvider):
                     config, self.ACCESS_KEY, self.SECRET_KEY)
                 token = self._get_session_token(config)
                 account_id = self._get_account_id(config)
-                return Credentials(access_key, secret_key, token,
-                                   method=self.METHOD, account_id=account_id,)
+                return Credentials(
+                    access_key,
+                    secret_key,
+                    token,
+                    method=self.METHOD,
+                    account_id=account_id,
+                )
 
     def _get_session_token(self, config):
         for token_envvar in self.TOKENS:
@@ -1339,8 +1344,13 @@ class ConfigProvider(CredentialProvider):
                     profile_config, self.ACCESS_KEY, self.SECRET_KEY)
                 token = self._get_session_token(profile_config)
                 account_id = self._get_account_id(profile_config)
-                return Credentials(access_key, secret_key, token,
-                                   method=self.METHOD, account_id=account_id,)
+                return Credentials(
+                    access_key,
+                    secret_key,
+                    token,
+                    method=self.METHOD,
+                    account_id=account_id,
+                )
         else:
             return None
 
@@ -1390,9 +1400,7 @@ class BotoProvider(CredentialProvider):
                                 filename)
                     access_key, secret_key = self._extract_creds_from_mapping(
                         credentials, self.ACCESS_KEY, self.SECRET_KEY)
-                    return Credentials(access_key, secret_key,
-                                       method=self.METHOD)
-
+                    return Credentials(access_key, secret_key, method=self.METHOD)
 
 class AssumeRoleProvider(CredentialProvider):
     METHOD = 'assume-role'

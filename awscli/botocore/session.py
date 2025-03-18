@@ -438,6 +438,7 @@ class Session(object):
         :type token: str
         :param token: An option session token used by STS session
             credentials.
+
         :type account_id: str
         :param account_id: An optional account ID part of the credentials.
         """

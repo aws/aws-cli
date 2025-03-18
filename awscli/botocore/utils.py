@@ -3694,10 +3694,21 @@ def original_ld_library_path(env=None):
     # See: https://pyinstaller.readthedocs.io/en/stable/runtime-information.html
     # When running under pyinstaller, it will set an
     # LD_LIBRARY_PATH to ensure it prefers its bundled version of libs.
-    # There are times where we don't want this behavior, for example when
+    # There are times when we don't want this behavior, for example when
     # running a separate subprocess.
     if env is None:
         env = os.environ
+
+    # Unless the user provided an explicit value, set this so
+    # PyInstaller resets the environment variables used by its
+    # bootloader causing a subprocess to be treated as new.
+    # This avoids interfering with starting another PyInstaller
+    # process, such as the CLI using another instance of itself
+    # as a credentials process.
+    should_clear_pyinstaller_reset_environment = False
+    if 'PYINSTALLER_RESET_ENVIRONMENT' not in env:
+        env['PYINSTALLER_RESET_ENVIRONMENT'] = '1'
+        should_clear_pyinstaller_reset_environment = True
 
     value_to_put_back = env.get('LD_LIBRARY_PATH')
     # The first case is where a user has exported an LD_LIBRARY_PATH
@@ -3713,6 +3724,8 @@ def original_ld_library_path(env=None):
     finally:
         if value_to_put_back is not None:
             env['LD_LIBRARY_PATH'] = value_to_put_back
+        if should_clear_pyinstaller_reset_environment:
+            env.pop('PYINSTALLER_RESET_ENVIRONMENT', None)
 
 
 class EventbridgeSignerSetter:

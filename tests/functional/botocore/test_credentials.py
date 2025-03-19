@@ -22,7 +22,7 @@ from datetime import datetime, timedelta
 import sys
 
 import pytest
-from dateutil.tz import tzlocal
+from dateutil.tz import tzlocal, tzutc
 from botocore.exceptions import CredentialRetrievalError
 
 from tests import (
@@ -165,8 +165,8 @@ class BaseAssumeRoleTest(BaseEnvVar):
         shutil.rmtree(self.tempdir)
         super(BaseAssumeRoleTest, self).tearDown()
 
-    def some_future_time(self):
-        timeobj = datetime.now(tzlocal())
+    def some_future_time(self, tzinfo=tzlocal):
+        timeobj = datetime.now(tzinfo())
         return timeobj + timedelta(hours=24)
 
     def create_assume_role_response(self, credentials, expiration=None):
@@ -559,7 +559,7 @@ class TestAssumeRole(BaseAssumeRoleTest):
         token_cache_key = 'f395038c92f1828cbb3991d2d6152d326b895606'
         cached_token = {
             'accessToken': 'a.token',
-            'expiresAt': self.some_future_time(),
+            'expiresAt': self.some_future_time(tzutc),
         }
         print(f'cached expires: {cached_token["expiresAt"]}')
         print(f'cached expires: {cached_token["expiresAt"].isoformat()}')

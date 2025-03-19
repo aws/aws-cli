@@ -340,6 +340,7 @@ class Credentials(object):
 
         return get_property
 
+
 class RefreshableCredentials(Credentials):
     """
     Holds the credentials needed to authenticate requests. In addition, it
@@ -1054,6 +1055,7 @@ class ProcessProvider(CredentialProvider):
     def _get_account_id(self, parsed):
         account_id = parsed.get('AccountId')
         return account_id or self.profile_config.get('aws_account_id')
+
 
 class InstanceMetadataProvider(CredentialProvider):
     METHOD = 'iam-role'

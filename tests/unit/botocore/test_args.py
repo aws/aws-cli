@@ -858,6 +858,7 @@ class TestEndpointResolverBuiltins(unittest.TestCase):
         )
         self.assertEqual(bins['AWS::Auth::AccountIdEndpointMode'], 'disabled')
 
+
 class TestProtocolPriorityList:
     def test_all_parsers_accounted_for(self):
         assert set(PRIORITY_ORDERED_SUPPORTED_PROTOCOLS) == set(

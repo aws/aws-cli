@@ -992,6 +992,7 @@ class Session(object):
             credential_inputs.append('aws_account_id')
         return ', '.join(credential_inputs) if credential_inputs else None
 
+
 class ComponentLocator(object):
     """Service locator for session components."""
     def __init__(self):

@@ -244,7 +244,9 @@ class Resource:
 
         if isinstance(property_value, dict):
             LOG.debug(
-                f"Property {self.PROPERTY_NAME} of {resource_id} resource is not a URL"
+                "Property %s of %s resource is not a URL",
+                self.PROPERTY_NAME,
+                resource_id,
             )
             return
 

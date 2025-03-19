@@ -237,7 +237,7 @@ class KubeconfigSelector:
                     LOG.debug("Found entry to update at %s", candidate_path)
                     return loaded_config
             except KubeconfigError as e:
-                LOG.warning(f"Passing {candidate_path}:{e}")
+                LOG.warning("Passing %s:%s", candidate_path, e)
 
         # No entry was found, use the first file in KUBECONFIG
         #

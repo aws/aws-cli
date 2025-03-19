@@ -67,7 +67,7 @@ class FlattenedArgument(CustomArgument):
         cli_type = self._container.cli_type_name
         key = self._property
 
-        LOG.debug(f'Hydrating {container}[{key}]')
+        LOG.debug('Hydrating %s[%s]', container, key)
 
         if value is not None:
             # Convert type if possible

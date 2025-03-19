@@ -563,6 +563,7 @@ class TestAssumeRole(BaseAssumeRoleTest):
         }
         print(f'cached expires: {cached_token["expiresAt"]}')
         print(f'cached expires: {cached_token["expiresAt"].isoformat()}')
+        print(f'cached token: {cached_token}')
         temp_cache = JSONFileCache(self.tempdir)
         temp_cache[token_cache_key] = cached_token
 

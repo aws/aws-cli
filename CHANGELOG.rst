@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.24.27
+=======
+
+* api-change:``mediaconnect``: This release adds support for NDI flow outputs in AWS Elemental MediaConnect. You can now send content from your MediaConnect transport streams directly to your NDI environment using the new NDI output type.
+* api-change:``neptune-graph``: Update IAM Role ARN Validation to Support Role Paths
+* api-change:``lambda``: Add Ruby 3.4 (ruby3.4) support to AWS Lambda.
+* api-change:``bedrock``: Support custom prompt routers for evaluation jobs
+* api-change:``ec2``: Doc-only updates for EC2 for March 2025.
+* api-change:``sagemaker``: Added support for g6, g6e, m6i, c6i instance types in SageMaker Processing Jobs.
+
+
 2.24.26
 =======
 

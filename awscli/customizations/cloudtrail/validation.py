@@ -948,8 +948,7 @@ class CloudTrailValidateLogs(BasicCommand):
             else:
                 self._valid_logs += 1
                 self._write_status(
-                    'Log file\ts3://%s/%s\tvalid'
-                    % (log['s3Bucket'], log['s3Object'])
+                    f'Log file\ts3://{log['s3Bucket']}/{log['s3Object']}\tvalid'
                 )
         except ClientError as e:
             if e.response['Error']['Code'] != 'NoSuchKey':

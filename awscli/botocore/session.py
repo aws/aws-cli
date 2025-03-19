@@ -422,7 +422,9 @@ class Session(object):
         """
         self._client_config = client_config
 
-    def set_credentials(self, access_key, secret_key, token=None, account_id=None):
+    def set_credentials(
+            self, access_key, secret_key, token=None, account_id=None
+    ):
         """
         Manually create credentials for this session.  If you would
         prefer to use botocore without a config file, environment variables,

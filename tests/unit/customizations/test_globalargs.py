@@ -133,7 +133,6 @@ class TestGlobalArgsCustomization(unittest.TestCase):
     def test_no_sign_request_if_option_specified(self):
         args = FakeParsedArgs(sign_request=False)
         session = mock.Mock()
-
         with mock.patch('awscli.customizations.globalargs._update_default_client_config') as mock_update:
             globalargs.no_sign_request(args, session)
             mock_update.assert_called_once_with(session, 'signature_version', UNSIGNED

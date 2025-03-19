@@ -707,6 +707,7 @@ class CachedCredentialFetcher(object):
             'expiry_time': expiration,
             'account_id': creds.get('AccountId'),
         }
+
         return credentials
 
     def _load_from_cache(self):
@@ -1298,6 +1299,7 @@ class SharedCredentialProvider(CredentialProvider):
     def _get_account_id(self, config):
         return config.get(self.ACCOUNT_ID)
 
+
 class ConfigProvider(CredentialProvider):
     """INI based config provider with profile sections."""
     METHOD = 'config-file'
@@ -1400,7 +1402,10 @@ class BotoProvider(CredentialProvider):
                                 filename)
                     access_key, secret_key = self._extract_creds_from_mapping(
                         credentials, self.ACCESS_KEY, self.SECRET_KEY)
-                    return Credentials(access_key, secret_key, method=self.METHOD)
+                    return Credentials(
+                        access_key, secret_key, method=self.METHOD
+                    )
+
 
 class AssumeRoleProvider(CredentialProvider):
     METHOD = 'assume-role'

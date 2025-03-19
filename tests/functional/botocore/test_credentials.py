@@ -596,10 +596,12 @@ class TestAssumeRole(BaseAssumeRoleTest):
                 'expiration': int(expiration),
             }
         }
+        print(f"roleCredentials mocked response: {sso_role_response}")
         sso_stubber.add_response('get_role_credentials', sso_role_response)
 
         expected_creds = self.create_random_credentials()
         assume_role_response = self.create_assume_role_response(expected_creds)
+        print(f"assume_role response created: {assume_role_response}")
         sts_stubber.add_response('assume_role', assume_role_response)
 
         actual_creds = session.get_credentials()

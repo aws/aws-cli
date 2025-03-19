@@ -234,7 +234,7 @@ class KubeconfigSelector:
                 loaded_config = self._loader.load_kubeconfig(candidate_path)
 
                 if loaded_config.has_cluster(cluster_name):
-                    LOG.debug(f"Found entry to update at {candidate_path}")
+                    LOG.debug("Found entry to update at %s", candidate_path)
                     return loaded_config
             except KubeconfigError as e:
                 LOG.warning(f"Passing {candidate_path}:{e}")

@@ -234,6 +234,10 @@ def _local_now():
     return datetime.datetime.now(tzlocal())
 
 
+def _utc_now():
+    return datetime.datetime.now(tzutc())
+
+
 def _parse_if_needed(value):
     if isinstance(value, datetime.datetime):
         return value

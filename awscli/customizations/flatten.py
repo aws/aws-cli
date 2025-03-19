@@ -231,7 +231,7 @@ class FlattenArguments:
         """
         if SEP in name:
             # Find the actual nested argument to pull out
-            LOG.debug(f'Finding nested argument in {name}')
+            LOG.debug('Finding nested argument in %s', name)
             for piece in name.split(SEP)[:-1]:
                 for member_name, member in argument.members.items():
                     if member_name == piece:

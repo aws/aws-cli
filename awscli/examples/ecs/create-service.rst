@@ -9,7 +9,7 @@ The following ``create-service`` example shows how to create a service using a F
         --desired-count 2 \
         --launch-type FARGATE \
         --platform-version LATEST \
-        --network-configuration "awsvpcConfiguration={subnets=[subnet-12344321],securityGroups=[sg-12344321],assignPublicIp=ENABLED}" \
+        --network-configuration 'awsvpcConfiguration={subnets=[subnet-12344321],securityGroups=[sg-12344321],assignPublicIp=ENABLED}' \
         --tags key=key1,value=value1 key=key2,value=value2 key=key3,value=value3
 
 Output::
@@ -93,6 +93,8 @@ Output::
         }
     }
 
+For more information, see `Creating a Service <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-service-console-v2.html>`__ in the *Amazon ECS Developer Guide*.
+
 **Example 2: To create a service using the EC2 launch type**
 
 The following ``create-service`` example shows how to create a service called ``ecs-simple-service`` with a task that uses the EC2 launch type. The service uses the ``sleep360`` task definition and it maintains 1 instantiation of the task. ::
@@ -145,6 +147,8 @@ Output::
         }
     }
 
+For more information, see `Creating a Service <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-service-console-v2.html>`__ in the *Amazon ECS Developer Guide*.
+
 **Example 3: To create a service that uses an external deployment controller**
 
 The following ``create-service`` example creates a service that uses an external deployment controller. ::
@@ -189,11 +193,20 @@ Output::
         }
     }
 
+For more information, see `Creating a Service <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-service-console-v2.html>`__ in the *Amazon ECS Developer Guide*.
+
 **Example 4: To create a new service behind a load balancer**
 
-The following ``create-service`` example shows how to create a service that is behind a load balancer. You must have a load balancer configured in the same Region as your container instance. This example uses the ``--cli-input-json`` option and a JSON input file called ``ecs-simple-service-elb.json`` with the following content::
+The following ``create-service`` example shows how to create a service that is behind a load balancer. You must have a load balancer configured in the same Region as your container instance. This example uses the ``--cli-input-json`` option and a JSON input file called ``ecs-simple-service-elb.json`` with the following content. ::
 
-    {
+    aws ecs create-service \
+        --cluster MyCluster \
+        --service-name ecs-simple-service-elb \
+        --cli-input-json file://ecs-simple-service-elb.json
+
+Contents of ``ecs-simple-service-elb.json``::
+
+     {
         "serviceName": "ecs-simple-service-elb",
         "taskDefinition": "ecs-demo",
         "loadBalancers": [
@@ -206,13 +219,6 @@ The following ``create-service`` example shows how to create a service that is b
         "desiredCount": 10,
         "role": "ecsServiceRole"
     }
-
-Command::
-
-    aws ecs create-service \
-        --cluster MyCluster \
-        --service-name ecs-simple-service-elb \
-        --cli-input-json file://ecs-simple-service-elb.json
 
 Output::
 
@@ -231,7 +237,7 @@ Output::
             "roleArn": "arn:aws:iam::123456789012:role/ecsServiceRole",
             "desiredCount": 10,
             "serviceName": "ecs-simple-service-elb",
-            "clusterArn": "arn:aws:ecs:<us-west-2:123456789012:cluster/MyCluster",
+            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
             "serviceArn": "arn:aws:ecs:us-west-2:123456789012:service/ecs-simple-service-elb",
             "deployments": [
                 {
@@ -250,4 +256,135 @@ Output::
         }
     }
 
-For more information, see `Creating a Service <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-service.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Use load balancing to distribute Amazon ECS service traffic <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-load-balancing.html>`__ in the *Amazon ECS Developer Guide*.
+
+**Example 5: To configure Amazon EBS volumes at service creation**
+
+The following ``create-service`` example shows how to configure Amazon EBS volumes for each task managed by the service. You must have an Amazon ECS infrastructure role configured with the ``AmazonECSInfrastructureRolePolicyForVolumes`` managed policy attached. You must specify a task definition with the same volume name as in the ``create-service`` request. This example uses the ``--cli-input-json`` option and a JSON input file called ``ecs-simple-service-ebs.json`` with the following content. ::
+
+    aws ecs create-service \
+        --cli-input-json file://ecs-simple-service-ebs.json
+
+Contents of ``ecs-simple-service-ebs.json``::
+
+    {
+        "cluster": "mycluster",
+        "taskDefinition": "mytaskdef",
+        "serviceName": "ecs-simple-service-ebs",
+        "desiredCount": 2,
+        "launchType": "FARGATE",
+        "networkConfiguration":{
+            "awsvpcConfiguration":{
+                "assignPublicIp": "ENABLED",
+                "securityGroups": ["sg-12344321"],
+                "subnets":["subnet-12344321"]
+            }
+        },
+        "volumeConfigurations": [
+            {
+                "name": "myEbsVolume",
+                "managedEBSVolume": {
+                    "roleArn":"arn:aws:iam::123456789012:role/ecsInfrastructureRole",
+                    "volumeType": "gp3",
+                    "sizeInGiB": 100,
+                    "iops": 3000, 
+                    "throughput": 125, 
+                    "filesystemType": "ext4"
+                }
+            }
+       ]
+    }
+
+Output::
+
+    {
+        "service": {
+            "serviceArn": "arn:aws:ecs:us-west-2:123456789012:service/mycluster/ecs-simple-service-ebs",
+            "serviceName": "ecs-simple-service-ebs",
+            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/mycluster",
+            "loadBalancers": [],
+            "serviceRegistries": [],
+            "status": "ACTIVE",
+            "desiredCount": 2,
+            "runningCount": 0,
+            "pendingCount": 0,
+            "launchType": "EC2",
+            "taskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/mytaskdef:3",
+            "deploymentConfiguration": {
+                "deploymentCircuitBreaker": {
+                    "enable": false,
+                    "rollback": false
+                },
+                "maximumPercent": 200,
+                "minimumHealthyPercent": 100
+            },
+            "deployments": [
+                {
+                    "id": "ecs-svc/7851020056849183687",
+                    "status": "PRIMARY",
+                    "taskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/mytaskdef:3",
+                    "desiredCount": 0,
+                    "pendingCount": 0,
+                    "runningCount": 0,
+                    "failedTasks": 0,
+                    "createdAt": "2025-01-21T11:32:38.034000-06:00",
+                    "updatedAt": "2025-01-21T11:32:38.034000-06:00",
+                    "launchType": "EC2",
+                    "networkConfiguration": {
+                        "awsvpcConfiguration": {
+                            "subnets": [
+                                "subnet-12344321"
+                            ],
+                            "securityGroups": [
+                                "sg-12344321"
+                            ],
+                            "assignPublicIp": "DISABLED"
+                        }
+                    },
+                    "rolloutState": "IN_PROGRESS",
+                    "rolloutStateReason": "ECS deployment ecs-svc/7851020056849183687 in progress.",
+                    "volumeConfigurations": [
+                        {
+                            "name": "myEBSVolume",
+                            "managedEBSVolume": {
+                                "volumeType": "gp3",
+                                "sizeInGiB": 100,
+                                "iops": 3000,
+                                "throughput": 125,
+                                "roleArn": "arn:aws:iam::123456789012:role/ecsInfrastructureRole",
+                                "filesystemType": "ext4"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "roleArn": "arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS",
+            "events": [],
+            "createdAt": "2025-01-21T11:32:38.034000-06:00",
+            "placementConstraints": [],
+            "placementStrategy": [],
+            "networkConfiguration": {
+                "awsvpcConfiguration": {
+                    "subnets": [
+                        "subnet-12344321"
+                    ],
+                    "securityGroups": [
+                        "sg-12344321"
+                    ],
+                    "assignPublicIp": "DISABLED"
+                }
+            },
+            "healthCheckGracePeriodSeconds": 0,
+            "schedulingStrategy": "REPLICA",
+            "deploymentController": {
+                "type": "ECS"
+            },
+            "createdBy": "arn:aws:iam::123456789012:user/AIDACKCEVSQ6C2EXAMPLE",
+            "enableECSManagedTags": false,
+            "propagateTags": "NONE",
+            "enableExecuteCommand": false,
+            "availabilityZoneRebalancing": "DISABLED"
+        }
+    }
+
+For more information, see `Use Amazon EBS volumes with Amazon ECS <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html>`__ in the *Amazon ECS Developer Guide*.

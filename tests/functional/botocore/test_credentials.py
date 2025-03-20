@@ -22,7 +22,7 @@ from datetime import datetime, timedelta
 import sys
 
 import pytest
-from dateutil.tz import tzlocal, tzutc
+from dateutil.tz import tzlocal
 from botocore.exceptions import CredentialRetrievalError
 
 from tests import (

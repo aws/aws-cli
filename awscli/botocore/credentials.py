@@ -2050,11 +2050,8 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
             # raise an UnauthorizedSSOTokenError if the loaded legacy token
             # is expired to save a call to GetRoleCredentials with an
             # expired token.
-            print(f'expiresAt field to be passed to parse function: {token_dict["expiresAt"]}')
-            print(f'entire cached token: {token_dict}')
             expiration = dateutil.parser.parse(token_dict['expiresAt'])
             remaining = total_seconds(expiration - self._time_fetcher())
-            print(f'remaining: {remaining}')
             if remaining <= 0:
                 raise UnauthorizedSSOTokenError()
 

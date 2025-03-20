@@ -3508,8 +3508,21 @@ class TestOriginalLDLibraryPath(unittest.TestCase):
         env = {'OTHER_VALUE': 'foo'}
         with original_ld_library_path(env):
             self.assertIsNone(env.get('LD_LIBRARY_PATH'))
-            self.assertEqual(env, {'OTHER_VALUE': 'foo'})
+            self.assertEqual(env['OTHER_VALUE'], 'foo')
         self.assertEqual(env, {'OTHER_VALUE': 'foo'})
+
+    def test_no_pyinstaller_reset(self):
+        env = {'OTHER_VALUE': 'foo'}
+        with original_ld_library_path(env):
+            self.assertEqual(env.get('PYINSTALLER_RESET_ENVIRONMENT'), '1')
+        self.assertEqual(env, {'OTHER_VALUE': 'foo'})
+        self.assertIsNone(env.get('PYINSTALLER_RESET_ENVIRONMENT'))
+
+    def test_existing_pyinstaller_reset(self):
+        env = {'PYINSTALLER_RESET_ENVIRONMENT': '0'}
+        with original_ld_library_path(env):
+            self.assertEqual(env.get('PYINSTALLER_RESET_ENVIRONMENT'), '0')
+        self.assertEqual(env.get('PYINSTALLER_RESET_ENVIRONMENT'), '0')
 
 
 @pytest.mark.parametrize(

@@ -15,7 +15,7 @@ import glob
 import os
 import tempfile
 import shutil
-from botocore.compat import OrderedDict
+from collections import OrderedDict
 
 from awscli.testutils import mock, unittest, skip_if_windows
 from awscli.customizations.utils import uni_print

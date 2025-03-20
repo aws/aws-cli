@@ -9,7 +9,7 @@ from datetime import datetime
 from io import StringIO
 from urllib.parse import urlsplit
 
-from botocore.utils import parse_timestamp
+from botocore.utils import original_ld_library_path, parse_timestamp
 from dateutil.relativedelta import relativedelta
 from dateutil.tz import tzutc
 

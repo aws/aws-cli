@@ -384,10 +384,10 @@ class EndpointResolverBuiltins(str, Enum):
     # Whether the UseDualStackEndpoint configuration option has been enabled
     # for the SDK client (bool)
     AWS_USE_DUALSTACK = "AWS::UseDualStack"
-    # Whether the global endpoint should be used with STS, rather the the
+    # Whether the global endpoint should be used with STS, rather than the
     # regional endpoint for us-east-1 (bool)
     AWS_STS_USE_GLOBAL_ENDPOINT = "AWS::STS::UseGlobalEndpoint"
-    # Whether the global endpoint should be used with S3, rather then the
+    # Whether the global endpoint should be used with S3, rather than the
     # regional endpoint for us-east-1 (bool)
     AWS_S3_USE_GLOBAL_ENDPOINT = "AWS::S3::UseGlobalEndpoint"
     # Whether S3 Transfer Acceleration has been requested (bool)
@@ -404,8 +404,9 @@ class EndpointResolverBuiltins(str, Enum):
     AWS_S3_DISABLE_MRAP = "AWS::S3::DisableMultiRegionAccessPoints"
     # Whether a custom endpoint has been configured (str)
     SDK_ENDPOINT = "SDK::Endpoint"
-    # Currently not implemented:
+    # An AWS account ID that can be optionally configured for the SDK client (str)
     ACCOUNT_ID = "AWS::Auth::AccountId"
+    # Whether an endpoint should include an account ID (str)
     ACCOUNT_ID_ENDPOINT_MODE = "AWS::Auth::AccountIdEndpointMode"
 
 class EndpointRulesetResolver:
@@ -572,7 +573,10 @@ class EndpointRulesetResolver:
     def _resolve_param_as_builtin(self, builtin_name, builtins):
         if builtin_name not in EndpointResolverBuiltins.__members__.values():
             raise UnknownEndpointResolutionBuiltInName(name=builtin_name)
-        return builtins.get(builtin_name)
+        builtin = builtins.get(builtin_name)
+        if callable(builtin):
+            return builtin()
+        return builtin
 
     @instance_cache
     def _get_static_context_params(self, operation_model):

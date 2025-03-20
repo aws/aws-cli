@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.38.17
+=======
+
+* api-change:``amplify``: Added appId field to Webhook responses
+* api-change:``bedrock``: With this release, Bedrock Evaluation will now support bring your own inference responses.
+* api-change:``controlcatalog``: Add ExemptAssumeRoot parameter to adapt for new AWS AssumeRoot capability.
+* api-change:``mailmanager``: Amazon SES Mail Manager. Extended rule string and boolean expressions to support analysis in condition evaluation. Extended ingress point string expression to support analysis in condition evaluation
+* api-change:``network-firewall``: You can now use flow operations to either flush or capture traffic monitored in your firewall's flow table.
+
+
 1.38.16
 =======
 

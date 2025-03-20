@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.25.0
+======
+
+* feature:Endpoints: Generate and use AWS-account-based endpoints for compatible services when the account ID is available. At launch, DynamoDB is the first and only compatible service. The new endpoint URL pattern will be ``https://<account-id>.ddb.<region>.amazonaws.com``. Additional services may be added in the future. See the documentation for details: https://docs.aws.amazon.com/sdkref/latest/guide/feature-account-endpoints.html
+* enhancement:dependency: Upgrade pyinstaller from 5.13.2 to 6.11.1.
+* api-change:``controlcatalog``: Add ExemptAssumeRoot parameter to adapt for new AWS AssumeRoot capability.
+* api-change:``network-firewall``: You can now use flow operations to either flush or capture traffic monitored in your firewall's flow table.
+* api-change:``bedrock``: With this release, Bedrock Evaluation will now support bring your own inference responses.
+* enhancement:dependency: Set ``PYINSTALLER_RESET_ENVIRONMENT`` if not already set when starting child processes. This supports using the CLI as a credential process for itself.
+* api-change:``mailmanager``: Amazon SES Mail Manager. Extended rule string and boolean expressions to support analysis in condition evaluation. Extended ingress point string expression to support analysis in condition evaluation
+* api-change:``amplify``: Added appId field to Webhook responses
+
+
 2.24.27
 =======
 

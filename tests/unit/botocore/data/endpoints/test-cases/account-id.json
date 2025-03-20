@@ -1,0 +1,47 @@
+{
+  "version": "1.0",
+  "testCases": [
+    {
+      "documentation": "Test case for basic AccountID templating",
+      "params": {
+        "AccountId": "123456789001",
+        "AccountIdEndpointMode": "preferred"
+      },
+      "expect": {
+        "endpoint": {
+          "url": "https://123456789001.amazonaws.com"
+        }
+      }
+    },
+    {
+      "documentation": "Test case where AccountID is set but AccountIdEndpointMode is set to disabled",
+      "params": {
+        "AccountId": "123456789001",
+        "AccountIdEndpointMode": "disabled"
+      },
+      "expect": {
+        "endpoint": {
+          "url": "https://amazonaws.com"
+        }
+      }
+    },
+    {
+      "documentation": "Test case where AccountID is unset but AccountIdEndpointMode is set to required",
+      "params": {
+        "AccountIdEndpointMode": "required"
+      },
+      "expect": {
+        "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded"
+      }
+    },
+    {
+      "documentation": "Test case where AccountID and AccountIdEndpointMode are unset",
+      "params": {},
+      "expect": {
+        "endpoint": {
+          "url": "https://amazonaws.com"
+        }
+      }
+    }
+  ]
+}

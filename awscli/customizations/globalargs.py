@@ -13,10 +13,10 @@
 import sys
 import os
 
+import jmespath
+from botocore import UNSIGNED
 from botocore.client import Config
 from botocore.endpoint import DEFAULT_TIMEOUT
-from botocore.handlers import disable_signing
-import jmespath
 
 from awscli.compat import urlparse
 from awscli.customizations.exceptions import ParamValidationError
@@ -98,15 +98,10 @@ def resolve_verify_ssl(parsed_args, session, **kwargs):
 
 def no_sign_request(parsed_args, session, **kwargs):
     if not parsed_args.sign_request:
-        # In order to make signing disabled for all requests
-        # we need to use botocore's ``disable_signing()`` handler.
-        # Register this first to override other handlers.
-        emitter = session.get_component('event_emitter')
-        emitter.register_first(
-            'choose-signer',
-            disable_signing,
-            unique_id='disable-signing',
-        )
+        # Disable request signing by setting the signature version to UNSIGNED
+        # in the default client configuration. This ensures all new clients
+        # will be created with signing disabled.
+        _update_default_client_config(session, 'signature_version', UNSIGNED)
 
 
 def resolve_cli_connect_timeout(parsed_args, session, **kwargs):

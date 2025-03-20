@@ -2259,12 +2259,18 @@
       "max":20,
       "min":0
     },
+    "EvaluationBedrockKnowledgeBaseIdentifiers":{
+      "type":"list",
+      "member":{"shape":"KnowledgeBaseId"},
+      "max":1,
+      "min":0
+    },
     "EvaluationBedrockModel":{
       "type":"structure",
       "required":["modelIdentifier"],
       "members":{
         "modelIdentifier":{
-          "shape":"EvaluationModelIdentifier",
+          "shape":"EvaluationBedrockModelIdentifier",
           "documentation":"<p>The ARN of the Amazon Bedrock model or inference profile specified.</p>"
         },
         "inferenceParams":{
@@ -2277,6 +2283,18 @@
         }
       },
       "documentation":"<p>Contains the ARN of the Amazon Bedrock model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a> specified in your evaluation job. Each Amazon Bedrock model supports different <code>inferenceParams</code>. To learn more about supported inference parameters for Amazon Bedrock models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p> <p>The <code>inferenceParams</code> are specified using JSON. To successfully insert JSON as string make sure that all quotations are properly escaped. For example, <code>\"temperature\":\"0.25\"</code> key value pair would need to be formatted as <code>\\\"temperature\\\":\\\"0.25\\\"</code> to successfully accepted in the request.</p>"
+    },
+    "EvaluationBedrockModelIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:((:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:provisioned-model/[a-z0-9]{12})|([0-9]{12}:imported-model/[a-z0-9]{12})|([0-9]{12}:application-inference-profile/[a-z0-9]{12})|([0-9]{12}:inference-profile/(([a-z-]{2,8}.)[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))|([0-9]{12}:(default-prompt-router|prompt-router)/[a-zA-Z0-9-:.]+)))|(([a-z]{2}[.]{1})([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|arn:aws(-[^:]+)?:sagemaker:[a-z0-9-]{1,20}:[0-9]{12}:endpoint/[a-z0-9-]{1,63}"
+    },
+    "EvaluationBedrockModelIdentifiers":{
+      "type":"list",
+      "member":{"shape":"EvaluationBedrockModelIdentifier"},
+      "max":2,
+      "min":0
     },
     "EvaluationConfig":{
       "type":"structure",
@@ -2370,6 +2388,20 @@
       "documentation":"<p>The configuration details of the inference model for an evaluation job.</p> <p>For automated model evaluation jobs, only a single model is supported.</p> <p>For human-based model evaluation jobs, your annotator can compare the responses for up to two different models.</p>",
       "union":true
     },
+    "EvaluationInferenceConfigSummary":{
+      "type":"structure",
+      "members":{
+        "modelConfigSummary":{
+          "shape":"EvaluationModelConfigSummary",
+          "documentation":"<p>A summary of the models used in an Amazon Bedrock model evaluation job. These resources can be models in Amazon Bedrock or models outside of Amazon Bedrock that you use to generate your own inference response data.</p>"
+        },
+        "ragConfigSummary":{
+          "shape":"EvaluationRagConfigSummary",
+          "documentation":"<p>A summary of the RAG resources used in an Amazon Bedrock Knowledge Base evaluation job. These resources can be Knowledge Bases in Amazon Bedrock or RAG sources outside of Amazon Bedrock that you use to generate your own inference response data.</p>"
+        }
+      },
+      "documentation":"<p>Identifies the models, Knowledge Bases, or other RAG sources evaluated in a model or Knowledge Base evaluation job.</p>"
+    },
     "EvaluationJobArn":{
       "type":"string",
       "max":1011,
@@ -2446,28 +2478,34 @@
         "bedrockModel":{
           "shape":"EvaluationBedrockModel",
           "documentation":"<p>Defines the Amazon Bedrock model or inference profile and inference parameters you want used.</p>"
+        },
+        "precomputedInferenceSource":{
+          "shape":"EvaluationPrecomputedInferenceSource",
+          "documentation":"<p>Defines the model used to generate inference response data for a model evaluation job where you provide your own inference response data.</p>"
         }
       },
       "documentation":"<p>Defines the models used in the model evaluation job.</p>",
       "union":true
+    },
+    "EvaluationModelConfigSummary":{
+      "type":"structure",
+      "members":{
+        "bedrockModelIdentifiers":{
+          "shape":"EvaluationBedrockModelIdentifiers",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the models used for the evaluation job.</p>"
+        },
+        "precomputedInferenceSourceIdentifiers":{
+          "shape":"EvaluationPrecomputedInferenceSourceIdentifiers",
+          "documentation":"<p>A label that identifies the models used for a model evaluation job where you provide your own inference response data.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the models used in an Amazon Bedrock model evaluation job. These resources can be models in Amazon Bedrock or models outside of Amazon Bedrock that you use to generate your own inference response data.</p>"
     },
     "EvaluationModelConfigs":{
       "type":"list",
       "member":{"shape":"EvaluationModelConfig"},
       "max":2,
       "min":1
-    },
-    "EvaluationModelIdentifier":{
-      "type":"string",
-      "max":2048,
-      "min":1,
-      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:((:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:provisioned-model/[a-z0-9]{12})|([0-9]{12}:imported-model/[a-z0-9]{12})|([0-9]{12}:application-inference-profile/[a-z0-9]{12})|([0-9]{12}:inference-profile/(([a-z-]{2,8}.)[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))|([0-9]{12}:(default-prompt-router|prompt-router)/[a-zA-Z0-9-:.]+)))|(([a-z]{2}[.]{1})([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|arn:aws(-[^:]+)?:sagemaker:[a-z0-9-]{1,20}:[0-9]{12}:endpoint/[a-z0-9-]{1,63}"
-    },
-    "EvaluationModelIdentifiers":{
-      "type":"list",
-      "member":{"shape":"EvaluationModelIdentifier"},
-      "max":2,
-      "min":0
     },
     "EvaluationModelInferenceParams":{
       "type":"string",
@@ -2485,6 +2523,92 @@
         }
       },
       "documentation":"<p>The Amazon S3 location where the results of your evaluation job are saved.</p>"
+    },
+    "EvaluationPrecomputedInferenceSource":{
+      "type":"structure",
+      "required":["inferenceSourceIdentifier"],
+      "members":{
+        "inferenceSourceIdentifier":{
+          "shape":"EvaluationPrecomputedInferenceSourceIdentifier",
+          "documentation":"<p>A label that identifies a model used in a model evaluation job where you provide your own inference response data.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a model used for a model evaluation job where you provide your own inference response data.</p>"
+    },
+    "EvaluationPrecomputedInferenceSourceIdentifier":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]([a-zA-Z0-9._-]){0,255}"
+    },
+    "EvaluationPrecomputedInferenceSourceIdentifiers":{
+      "type":"list",
+      "member":{"shape":"EvaluationPrecomputedInferenceSourceIdentifier"},
+      "max":2,
+      "min":0
+    },
+    "EvaluationPrecomputedRagSourceConfig":{
+      "type":"structure",
+      "members":{
+        "retrieveSourceConfig":{
+          "shape":"EvaluationPrecomputedRetrieveSourceConfig",
+          "documentation":"<p>A summary of a RAG source used for a retrieve-only Knowledge Base evaluation job where you provide your own inference response data.</p>"
+        },
+        "retrieveAndGenerateSourceConfig":{
+          "shape":"EvaluationPrecomputedRetrieveAndGenerateSourceConfig",
+          "documentation":"<p>A summary of a RAG source used for a retrieve-and-generate Knowledge Base evaluation job where you provide your own inference response data.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a RAG source used for a Knowledge Base evaluation job where you provide your own inference response data.</p>",
+      "union":true
+    },
+    "EvaluationPrecomputedRagSourceIdentifier":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]([a-zA-Z0-9._-]){0,255}"
+    },
+    "EvaluationPrecomputedRagSourceIdentifiers":{
+      "type":"list",
+      "member":{"shape":"EvaluationPrecomputedRagSourceIdentifier"},
+      "max":1,
+      "min":0
+    },
+    "EvaluationPrecomputedRetrieveAndGenerateSourceConfig":{
+      "type":"structure",
+      "required":["ragSourceIdentifier"],
+      "members":{
+        "ragSourceIdentifier":{
+          "shape":"EvaluationPrecomputedRagSourceIdentifier",
+          "documentation":"<p>A label that identifies the RAG source used for a retrieve-and-generate Knowledge Base evaluation job where you provide your own inference response data.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a RAG source used for a retrieve-and-generate Knowledge Base evaluation job where you provide your own inference response data.</p>"
+    },
+    "EvaluationPrecomputedRetrieveSourceConfig":{
+      "type":"structure",
+      "required":["ragSourceIdentifier"],
+      "members":{
+        "ragSourceIdentifier":{
+          "shape":"EvaluationPrecomputedRagSourceIdentifier",
+          "documentation":"<p>A label that identifies the RAG source used for a retrieve-only Knowledge Base evaluation job where you provide your own inference response data.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a RAG source used for a retrieve-only Knowledge Base evaluation job where you provide your own inference response data.</p>"
+    },
+    "EvaluationRagConfigSummary":{
+      "type":"structure",
+      "members":{
+        "bedrockKnowledgeBaseIdentifiers":{
+          "shape":"EvaluationBedrockKnowledgeBaseIdentifiers",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the Knowledge Base resources used for a Knowledge Base evaluation job where Amazon Bedrock invokes the Knowledge Base for you.</p>"
+        },
+        "precomputedRagSourceIdentifiers":{
+          "shape":"EvaluationPrecomputedRagSourceIdentifiers",
+          "documentation":"<p>A label that identifies the RAG sources used for a Knowledge Base evaluation job where you provide your own inference response data.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the RAG resources used in an Amazon Bedrock Knowledge Base evaluation job. These resources can be Knowledge Bases in Amazon Bedrock or RAG sources outside of Amazon Bedrock that you use to generate your own inference response data.</p>"
     },
     "EvaluationRatingMethod":{
       "type":"string",
@@ -2534,16 +2658,24 @@
           "documentation":"<p>The type of task for model evaluation.</p>"
         },
         "modelIdentifiers":{
-          "shape":"EvaluationModelIdentifiers",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the model(s) used for the evaluation job.</p>"
+          "shape":"EvaluationBedrockModelIdentifiers",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the model(s) used for the evaluation job.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Inference identifiers should be retrieved from the inferenceConfigSummary"
         },
         "ragIdentifiers":{
-          "shape":"RAGIdentifiers",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the knowledge base resources used for a knowledge base evaluation job.</p>"
+          "shape":"EvaluationBedrockKnowledgeBaseIdentifiers",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the knowledge base resources used for a knowledge base evaluation job.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Inference identifiers should be retrieved from the inferenceConfigSummary"
         },
         "evaluatorModelIdentifiers":{
           "shape":"EvaluatorModelIdentifiers",
           "documentation":"<p>The Amazon Resource Names (ARNs) of the models used to compute the metrics for a knowledge base evaluation job.</p>"
+        },
+        "inferenceConfigSummary":{
+          "shape":"EvaluationInferenceConfigSummary",
+          "documentation":"<p>Identifies the models, Knowledge Bases, or other RAG sources evaluated in a model or Knowledge Base evaluation job.</p>"
         },
         "applicationType":{
           "shape":"ApplicationType",
@@ -2586,7 +2718,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}$|(^[a-z0-9-]+[.][a-z0-9-]+([.][a-z0-9-]+)*(:[a-z0-9-]+)?$)|^[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12}|)"
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:((:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:inference-profile/(([a-z-]{2,8}.)[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))))$|(^[a-z0-9-]+[.][a-z0-9-]+([.][a-z0-9-]+)*(:[a-z0-9-]+)?$)|^[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12}|)"
     },
     "EvaluatorModelIdentifiers":{
       "type":"list",
@@ -6159,7 +6291,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-:]{1,63}/[a-z0-9]{12}$)|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}$)))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})|(([0-9a-zA-Z][_-]?)+)"
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-:]{1,63}/[a-z0-9]{12}$)|(:foundation-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})|(([0-9a-zA-Z][_-]?)+)$)|([0-9]{12}:(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+$)))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})|(([0-9a-zA-Z][_-]?)+)"
     },
     "ModelIdentifier":{
       "type":"string",
@@ -6750,16 +6882,14 @@
         "knowledgeBaseConfig":{
           "shape":"KnowledgeBaseConfig",
           "documentation":"<p>Contains configuration details for knowledge base retrieval and response generation.</p>"
+        },
+        "precomputedRagSourceConfig":{
+          "shape":"EvaluationPrecomputedRagSourceConfig",
+          "documentation":"<p>Contains configuration details about the RAG source used to generate inference response data for a Knowledge Base evaluation job.</p>"
         }
       },
       "documentation":"<p>Contains configuration details for retrieval of information and response generation.</p>",
       "union":true
-    },
-    "RAGIdentifiers":{
-      "type":"list",
-      "member":{"shape":"KnowledgeBaseId"},
-      "max":1,
-      "min":0
     },
     "RAGStopSequences":{
       "type":"list",

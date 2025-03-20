@@ -40,7 +40,7 @@ and ``aws s3api``:
   on your bucket before attempting to use the endpoint. This is mutually
   exclusive with the ``use_dualstack_endpoint`` option.
 * ``use_dualstack_endpoint`` - Use the Amazon S3 dual IPv4 / IPv6 endpoint for
-  all ``s3 `` and ``s3api`` commands.  This is mutually exclusive with the
+  all ``s3`` and ``s3api`` commands.  This is mutually exclusive with the
   ``use_accelerate_endpoint`` option.
 * ``addressing_style`` - Specifies which addressing style to use. This controls
   if the bucket name is in the hostname or part of the URL. Value values are:

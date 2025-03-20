@@ -3396,7 +3396,6 @@ class TestSSOCredentialFetcher(unittest.TestCase):
         self.assertFalse(mock_client.get_role_credentials.called)
 
 
-
 class TestSSOProvider(unittest.TestCase):
     def setUp(self):
         self.sso = Session().create_client('sso', region_name='us-east-1')

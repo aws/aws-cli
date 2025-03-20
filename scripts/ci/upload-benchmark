@@ -18,9 +18,7 @@ def main(args):
     source = get_latest_results_directory(args.directory)
     run_id = source.split(os.sep)[-1]
     destination = '%s/%s' % (args.bucket, run_id)
-    check_call(
-        f'aws s3 cp --recursive {source} {destination}', shell=True
-    )
+    check_call(f'aws s3 cp --recursive {source} {destination}', shell=True)
 
 
 def s3_uri(value):

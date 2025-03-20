@@ -17,7 +17,6 @@ from awscli.compat import get_stderr_encoding, is_macos, is_windows, urlparse
 from awscli.customizations import utils as cli_utils
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print
-from awscli.utils import original_ld_library_path
 
 
 def get_relative_expiration_time(remaining):

@@ -3380,6 +3380,22 @@ class TestSSOCredentialFetcher(unittest.TestCase):
             with self.stubber:
                 credentials = self.fetcher.fetch_credentials()
 
+    def test_expired_legacy_token_has_expected_behavior(self):
+        # Mock the current time to be in the future after the access token has expired
+        now = datetime(2018, 10, 19, 12, 26, 40, tzinfo=tzutc())
+        mock_client = mock.Mock()
+        create_mock_client = mock.Mock(return_value=mock_client)
+        fetcher = SSOCredentialFetcher(
+            self.start_url, self.sso_region, self.role_name, self.account_id,
+            create_mock_client, token_loader=self.loader,
+            cache=self.cache, time_fetcher=mock.Mock(return_value=now)
+        )
+        with self.assertRaises(botocore.exceptions.UnauthorizedSSOTokenError):
+            fetcher.fetch_credentials()
+
+        self.assertFalse(mock_client.get_role_credentials.called)
+
+
 
 class TestSSOProvider(unittest.TestCase):
     def setUp(self):

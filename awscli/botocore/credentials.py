@@ -234,10 +234,6 @@ def _local_now():
     return datetime.datetime.now(tzlocal())
 
 
-def _utc_now():
-    return datetime.datetime.now(tzutc())
-
-
 def _parse_if_needed(value):
     if isinstance(value, datetime.datetime):
         return value
@@ -1995,7 +1991,7 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
     def __init__(self, start_url, sso_region, role_name, account_id,
                  client_creator, token_loader=None, cache=None,
                  expiry_window_seconds=None, token_provider=None,
-                 sso_session_name=None, time_fetcher=_utc_now):
+                 sso_session_name=None, time_fetcher=_local_now):
         self._client_creator = client_creator
         self._sso_region = sso_region
         self._role_name = role_name

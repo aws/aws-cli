@@ -165,8 +165,8 @@ class BaseAssumeRoleTest(BaseEnvVar):
         shutil.rmtree(self.tempdir)
         super(BaseAssumeRoleTest, self).tearDown()
 
-    def some_future_time(self, tzinfo=tzlocal):
-        timeobj = datetime.now(tzinfo())
+    def some_future_time(self):
+        timeobj = datetime.now(tzlocal())
         return timeobj + timedelta(hours=24)
 
     def create_assume_role_response(self, credentials, expiration=None):
@@ -559,11 +559,8 @@ class TestAssumeRole(BaseAssumeRoleTest):
         token_cache_key = 'f395038c92f1828cbb3991d2d6152d326b895606'
         cached_token = {
             'accessToken': 'a.token',
-            'expiresAt': self.some_future_time(tzutc),
+            'expiresAt': self.some_future_time().strftime("%Y-%m-%dT%H:%M:%SZ"),
         }
-        print(f'cached expires: {cached_token["expiresAt"]}')
-        print(f'cached expires: {cached_token["expiresAt"].isoformat()}')
-        print(f'cached token: {cached_token}')
         temp_cache = JSONFileCache(self.tempdir)
         temp_cache[token_cache_key] = cached_token
 
@@ -597,12 +594,10 @@ class TestAssumeRole(BaseAssumeRoleTest):
                 'expiration': int(expiration),
             }
         }
-        print(f"roleCredentials mocked response: {sso_role_response}")
         sso_stubber.add_response('get_role_credentials', sso_role_response)
 
         expected_creds = self.create_random_credentials()
         assume_role_response = self.create_assume_role_response(expected_creds)
-        print(f"assume_role response created: {assume_role_response}")
         sts_stubber.add_response('assume_role', assume_role_response)
 
         actual_creds = session.get_credentials()

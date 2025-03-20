@@ -3318,7 +3318,6 @@ class TestSSOCredentialFetcher(unittest.TestCase):
         self.now = datetime(2008, 9, 23, 12, 26, 40, tzinfo=tzutc())
         # The SSO endpoint uses ms whereas the OIDC endpoint uses seconds
         self.now_timestamp = 1222172800000
-
         self.mock_time_fetcher = mock.Mock(return_value=self.now)
 
         self.loader = mock.Mock(spec=SSOTokenLoader)

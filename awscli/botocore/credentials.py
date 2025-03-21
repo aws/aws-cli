@@ -56,7 +56,9 @@ from dateutil.tz import tzlocal, tzutc
 
 logger = logging.getLogger(__name__)
 ReadOnlyCredentials = namedtuple(
-    'ReadOnlyCredentials', ['access_key', 'secret_key', 'token', 'account_id'], defaults=(None,),
+    'ReadOnlyCredentials',
+    ['access_key', 'secret_key', 'token', 'account_id'],
+    defaults=(None,),
 )
 
 _DEFAULT_MANDATORY_REFRESH_TIMEOUT = 10 * 60  # 10 min
@@ -314,7 +316,9 @@ class Credentials:
     :param str account_id: (optional) An account ID associated with the credentials.
     """
 
-    def __init__(self, access_key, secret_key, token=None, method=None, account_id=None):
+    def __init__(
+        self, access_key, secret_key, token=None, method=None, account_id=None
+    ):
         self.access_key = access_key
         self.secret_key = secret_key
         self.token = token
@@ -392,7 +396,8 @@ class RefreshableCredentials(Credentials):
         self._refresh_lock = threading.Lock()
         self.method = method
         self._frozen_credentials = ReadOnlyCredentials(
-            access_key, secret_key, token, account_id)
+            access_key, secret_key, token, account_id
+        )
         self._normalize()
         if advisory_timeout is not None:
             self._advisory_refresh_timeout = advisory_timeout
@@ -578,7 +583,8 @@ class RefreshableCredentials(Credentials):
             return
         self._set_from_data(metadata)
         self._frozen_credentials = ReadOnlyCredentials(
-            self._access_key, self._secret_key, self._token, self._account_id)
+            self._access_key, self._secret_key, self._token, self._account_id
+        )
         if self._is_expired():
             # We successfully refreshed credentials but for whatever
             # reason, our refreshing function returned credentials
@@ -1054,7 +1060,7 @@ class ProcessProvider(CredentialProvider):
             secret_key=creds_dict['secret_key'],
             token=creds_dict.get('token'),
             method=self.METHOD,
-            account_id = creds_dict.get('account_id'),
+            account_id=creds_dict.get('account_id'),
         )
 
     def _retrieve_credentials_using(self, credential_process):
@@ -1440,6 +1446,7 @@ class ConfigProvider(CredentialProvider):
 
     def _get_account_id(self, config):
         return config.get(self.ACCOUNT_ID)
+
 
 class BotoProvider(CredentialProvider):
     METHOD = 'boto-config'
@@ -2263,7 +2270,7 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
                 'SessionToken': credentials['sessionToken'],
                 'Expiration': self._parse_timestamp(credentials['expiration']),
                 'AccountId': self._account_id,
-            }
+            },
         }
         return credentials
 

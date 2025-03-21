@@ -437,7 +437,7 @@ class Session:
         self._client_config = client_config
 
     def set_credentials(
-            self, access_key, secret_key, token=None, account_id=None
+        self, access_key, secret_key, token=None, account_id=None
     ):
         """
         Manually create credentials for this session.  If you would
@@ -905,7 +905,7 @@ class Session:
             )
         else:
             if ignored_credentials := self._get_ignored_credentials(
-                    aws_session_token, aws_account_id
+                aws_session_token, aws_account_id
             ):
                 logger.debug(
                     f"Ignoring the following credential-related values which were set without "

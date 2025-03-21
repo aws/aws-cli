@@ -128,7 +128,6 @@ import os
 import re
 import struct
 
-
 from botocore.compat import ETree, XMLParseError
 from botocore.eventstream import EventStream, NoInitialResponseError
 from botocore.utils import (

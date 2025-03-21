@@ -50,8 +50,8 @@ can set the BOTOCORE_TEST_ID env var with the ``suite_id:test_id`` syntax.
     BOTOCORE_TEST_ID=5:1 pytest tests/unit/test_protocols.py
 
 """
+
 import base64
-import os
 import copy
 import os
 from base64 import b64decode
@@ -77,7 +77,6 @@ from botocore.serialize import (
     RestJSONSerializer,
     RestXMLSerializer,
     RpcV2CBORSerializer,
-
 )
 from botocore.utils import parse_timestamp, percent_encode_sequence
 from dateutil.tz import tzutc

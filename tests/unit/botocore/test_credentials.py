@@ -3782,7 +3782,7 @@ class TestSSOCredentialFetcher(unittest.TestCase):
                 'SessionToken': 'baz',
                 'Expiration': '2008-09-23T12:43:20Z',
                 'AccountId': '1234567890',
-            }
+            },
         }
         self.assertEqual(self.cache[cache_key], expected_cached_credentials)
 
@@ -3923,6 +3923,7 @@ class TestSSOProvider(unittest.TestCase):
             self.assertEqual(credentials.secret_key, 'bar')
             self.assertEqual(credentials.token, 'baz')
             self.assertEqual(credentials.account_id, '1234567890')
+
 
 @pytest.mark.parametrize(
     "account_id, expected", [("123456789012", "123456789012"), (None, None)]

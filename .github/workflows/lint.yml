@@ -1,0 +1,22 @@
+name: Lint code
+
+on:
+  push:
+  pull_request:
+    branches-ignore: [ master ]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - name: Set up Python 3.9
+      uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
+      with:
+        python-version: 3.9
+    - name: Run pre-commit
+      uses: pre-commit/action@646c83fcd040023954eafda54b4db0192ce70507

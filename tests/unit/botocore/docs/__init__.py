@@ -10,35 +10,39 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import json
-import tempfile
+import os
 import shutil
+import tempfile
 
+from botocore.client import ClientCreator
+from botocore.compat import OrderedDict
+from botocore.configprovider import ConfigValueStore
 from botocore.docs.bcdoc.restdoc import DocumentStructure
+from botocore.hooks import HierarchicalEmitter
+from botocore.loaders import Loader
+from botocore.model import OperationModel, ServiceModel
 
 from tests import get_botocore_default_config_mapping, mock, unittest
-from botocore.compat import OrderedDict
-from botocore.hooks import HierarchicalEmitter
-from botocore.model import ServiceModel, OperationModel
-from botocore.client import ClientCreator
-from botocore.configprovider import ConfigValueStore
-from botocore.loaders import Loader
 
 
 class BaseDocsTest(unittest.TestCase):
     def setUp(self):
         self.root_dir = tempfile.mkdtemp()
         self.version_dirs = os.path.join(
-            self.root_dir, 'myservice', '2014-01-01')
+            self.root_dir, 'myservice', '2014-01-01'
+        )
         os.makedirs(self.version_dirs)
         self.model_file = os.path.join(self.version_dirs, 'service-2.json')
         self.waiter_model_file = os.path.join(
-            self.version_dirs, 'waiters-2.json')
+            self.version_dirs, 'waiters-2.json'
+        )
         self.paginator_model_file = os.path.join(
-            self.version_dirs, 'paginators-1.json')
+            self.version_dirs, 'paginators-1.json'
+        )
         self.example_model_file = os.path.join(
-            self.version_dirs, 'examples-1.json')
+            self.version_dirs, 'examples-1.json'
+        )
 
         self.json_model = {}
         self.nested_json_model = {}
@@ -98,15 +102,17 @@ class BaseDocsTest(unittest.TestCase):
             'hostname': 'foo.us-east-1',
             'partition': 'aws',
             'endpointName': 'us-east-1',
-            'signatureVersions': ['v4']
+            'signatureVersions': ['v4'],
         }
 
         default_config_mapping = get_botocore_default_config_mapping()
         self.creator = ClientCreator(
-            loader=self.loader, endpoint_resolver=endpoint_resolver,
-            user_agent='user-agent', event_emitter=self.events,
+            loader=self.loader,
+            endpoint_resolver=endpoint_resolver,
+            user_agent='user-agent',
+            event_emitter=self.events,
             exceptions_factory=mock.Mock(),
-            config_store=ConfigValueStore(mapping=default_config_mapping)
+            config_store=ConfigValueStore(mapping=default_config_mapping),
         )
 
         self.client = self.creator.create_client('myservice', 'us-east-1')
@@ -126,19 +132,17 @@ class BaseDocsTest(unittest.TestCase):
                 'SampleOperation': {
                     'name': 'SampleOperation',
                     'input': {'shape': 'SampleOperationInputOutput'},
-                    'output': {'shape': 'SampleOperationInputOutput'}
+                    'output': {'shape': 'SampleOperationInputOutput'},
                 }
             },
             'shapes': {
                 'SampleOperationInputOutput': {
                     'type': 'structure',
-                    'members': OrderedDict()
+                    'members': OrderedDict(),
                 },
-                'String': {
-                    'type': 'string'
-                }
+                'String': {'type': 'string'},
             },
-            'documentation':'AWS MyService Description'
+            'documentation': 'AWS MyService Description',
         }
 
         self.waiter_json_model = {
@@ -149,17 +153,21 @@ class BaseDocsTest(unittest.TestCase):
                     "operation": "SampleOperation",
                     "maxAttempts": 40,
                     "acceptors": [
-                        {"expected": "complete",
-                         "matcher": "pathAll",
-                         "state": "success",
-                         "argument": "Biz"},
-                        {"expected": "failed",
-                         "matcher": "pathAny",
-                         "state": "failure",
-                         "argument": "Biz"}
-                    ]
+                        {
+                            "expected": "complete",
+                            "matcher": "pathAll",
+                            "state": "success",
+                            "argument": "Biz",
+                        },
+                        {
+                            "expected": "failed",
+                            "matcher": "pathAny",
+                            "state": "failure",
+                            "argument": "Biz",
+                        },
+                    ],
                 }
-            }
+            },
         }
 
         self.paginator_json_model = {
@@ -168,7 +176,7 @@ class BaseDocsTest(unittest.TestCase):
                     "input_token": "NextResult",
                     "output_token": "NextResult",
                     "limit_key": "MaxResults",
-                    "result_key": "Biz"
+                    "result_key": "Biz",
                 }
             }
         }
@@ -176,35 +184,38 @@ class BaseDocsTest(unittest.TestCase):
         self.example_json_model = {
             "version": 1,
             "examples": {
-                "SampleOperation": [{
-                    "id": "sample-id",
-                    "title": "sample-title",
-                    "description": "Sample Description.",
-                    "input": OrderedDict([
-                        ("Biz", "foo"),
-                    ]),
-                    "comments": {
-                        "input": {
-                            "Biz": "bar"
+                "SampleOperation": [
+                    {
+                        "id": "sample-id",
+                        "title": "sample-title",
+                        "description": "Sample Description.",
+                        "input": OrderedDict(
+                            [
+                                ("Biz", "foo"),
+                            ]
+                        ),
+                        "comments": {
+                            "input": {"Biz": "bar"},
                         },
                     }
-                }]
-            }
+                ]
+            },
         }
 
     def build_models(self):
         self.service_model = ServiceModel(self.json_model)
         self.operation_model = OperationModel(
             self.json_model['operations']['SampleOperation'],
-            self.service_model
+            self.service_model,
         )
 
     def add_shape(self, shape):
         shape_name = list(shape.keys())[0]
         self.json_model['shapes'][shape_name] = shape[shape_name]
 
-    def add_shape_to_params(self, param_name, shape_name, documentation=None,
-                            is_required=False):
+    def add_shape_to_params(
+        self, param_name, shape_name, documentation=None, is_required=False
+    ):
         params_shape = self.json_model['shapes']['SampleOperationInputOutput']
         member = {'shape': shape_name}
         if documentation is not None:
@@ -231,7 +242,7 @@ class BaseDocsTest(unittest.TestCase):
         for line in lines:
             self.assertIn(line, contents)
             beginning = contents.find(line)
-            contents = contents[(beginning + len(line)):]
+            contents = contents[(beginning + len(line)) :]
 
     def assert_not_contains_line(self, line):
         contents = self.doc_structure.flush_structure().decode('utf-8')

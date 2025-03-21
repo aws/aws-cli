@@ -10,10 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import pytest
-
 import botocore.session
-
+import pytest
 
 REGION = 'us-east-1'
 
@@ -65,8 +63,9 @@ SERVICE_TO_CLASS_NAME = {
     'sts': 'STS',
     'support': 'Support',
     'swf': 'SWF',
-    'workspaces': 'WorkSpaces'
+    'workspaces': 'WorkSpaces',
 }
+
 
 @pytest.mark.parametrize("service_name", SERVICE_TO_CLASS_NAME)
 def test_client_has_correct_class_name(service_name):

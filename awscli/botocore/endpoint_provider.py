@@ -20,7 +20,6 @@ go to any `endpoint-rule-set.json` file in /awscli/botocore/data/<service>/<api 
 or you can look at the test files in /tests/unit/data/endpoints/valid-rules/
 """
 
-
 import logging
 import re
 from enum import Enum
@@ -550,7 +549,6 @@ class TreeRule(BaseRule):
 
 
 class RuleCreator:
-
     endpoint = EndpointRule
     error = ErrorRule
     tree = TreeRule

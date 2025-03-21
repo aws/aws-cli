@@ -16,12 +16,12 @@ HISTORY_RECORDER = None
 logger = logging.getLogger(__name__)
 
 
-class BaseHistoryHandler(object):
+class BaseHistoryHandler:
     def emit(self, event_type, payload, source):
         raise NotImplementedError('emit()')
 
 
-class HistoryRecorder(object):
+class HistoryRecorder:
     def __init__(self):
         self._enabled = False
         self._handlers = []
@@ -43,8 +43,9 @@ class HistoryRecorder(object):
                 except Exception:
                     # Never let the process die because we had a failure in
                     # a record collection handler.
-                    logger.debug("Exception raised in %s.", handler,
-                                 exc_info=True)
+                    logger.debug(
+                        "Exception raised in %s.", handler, exc_info=True
+                    )
 
 
 def get_global_history_recorder():

@@ -1,20 +1,19 @@
-from tests import mock, unittest
-
 import pytest
-
-from botocore.retries import standard
-from botocore.retries import quota
 from botocore import model
 from botocore.awsrequest import AWSResponse
-from botocore.exceptions import HTTPClientError, ConnectionError
-from botocore.exceptions import ReadTimeoutError
+from botocore.exceptions import (
+    ConnectionError,
+    HTTPClientError,
+    ReadTimeoutError,
+)
+from botocore.retries import quota, standard
 
+from tests import mock, unittest
 
 RETRYABLE_THROTTLED_RESPONSES = [
     # From the spec under "Throttling Errors"
     # The status codes technically don't matter here, but we're adding
     # them for completeness.
-
     # StatusCode, ErrorCode, Retryable?
     (400, 'Throttling', True),
     (400, 'ThrottlingException', True),
@@ -30,7 +29,6 @@ RETRYABLE_THROTTLED_RESPONSES = [
     (503, 'SlowDown', True),
     (400, 'PriorRequestNotComplete', True),
     (502, 'EC2ThrottledException', True),
-
     # These are some negative test cases, not in the spec but we'll use
     # to verify we can detect throttled errors correctly.
     (400, 'NotAThrottlingError', False),
@@ -47,7 +45,6 @@ RETRYABLE_TRANSIENT_ERRORS = [
     (400, 'RequestTimeout', True),
     (400, 'RequestTimeoutException', True),
     (400, 'PriorRequestNotComplete', True),
-
     # "Any HTTP response with an HTTP status code of 500, 502, 503, or 504".
     (500, None, True),
     (502, None, True),
@@ -62,7 +59,6 @@ RETRYABLE_TRANSIENT_ERRORS = [
     # response.
     (None, ConnectionError(error='unknown'), True),
     (None, HTTPClientError(error='unknown'), True),
-
     # Negative cases
     (200, None, False),
     # This is a throttling error not a transient error
@@ -96,7 +92,7 @@ SERVICE_DESCRIPTION_WITH_RETRIES = {
                 {'shape': 'ModeledRetryableError'},
                 {'shape': 'ModeledRetryableErrorWithCode'},
                 {'shape': 'NonRetryableError'},
-            ]
+            ],
         }
     },
     'shapes': {
@@ -112,7 +108,7 @@ SERVICE_DESCRIPTION_WITH_RETRIES = {
                 }
             },
             'exception': True,
-            'retryable': {'throttling': True}
+            'retryable': {'throttling': True},
         },
         'ModeledRetryableError': {
             'type': 'structure',
@@ -122,7 +118,7 @@ SERVICE_DESCRIPTION_WITH_RETRIES = {
                 }
             },
             'exception': True,
-            'retryable': {}
+            'retryable': {},
         },
         'ModeledRetryableErrorWithCode': {
             'type': 'structure',
@@ -135,7 +131,7 @@ SERVICE_DESCRIPTION_WITH_RETRIES = {
                 'code': 'ErrorCodeRetryable',
             },
             'exception': True,
-            'retryable': {'throttling': True}
+            'retryable': {'throttling': True},
         },
         'NonRetryableError': {
             'type': 'structure',
@@ -148,6 +144,7 @@ SERVICE_DESCRIPTION_WITH_RETRIES = {
         },
     },
 }
+
 
 @pytest.mark.parametrize('case', RETRYABLE_TRANSIENT_ERRORS)
 def test_can_detect_retryable_transient_errors(case):
@@ -169,14 +166,15 @@ def test_can_detect_modeled_retryable_errors(case):
     )
 
 
-@pytest.mark.parametrize('case',
+@pytest.mark.parametrize(
+    'case',
     [
-        case for case in
-        RETRYABLE_TRANSIENT_ERRORS +
-        RETRYABLE_THROTTLED_RESPONSES +
-        RETRYABLE_MODELED_ERRORS
+        case
+        for case in RETRYABLE_TRANSIENT_ERRORS
+        + RETRYABLE_THROTTLED_RESPONSES
+        + RETRYABLE_MODELED_ERRORS
         if case[2]
-    ]
+    ],
 )
 def test_standard_retry_conditions(case):
     """This is verifying that the high level object used for checking
@@ -192,22 +190,25 @@ def test_standard_retry_conditions(case):
 
 
 def get_operation_model_with_retries():
-    service = model.ServiceModel(SERVICE_DESCRIPTION_WITH_RETRIES,
-                                 service_name='my-service')
+    service = model.ServiceModel(
+        SERVICE_DESCRIPTION_WITH_RETRIES, service_name='my-service'
+    )
     return service.operation_model('TestOperation')
 
 
-def _verify_retryable(checker, operation_model,
-                      status_code, error, is_retryable):
-    http_response = AWSResponse(status_code=status_code,
-                                raw=None, headers={}, url='https://foo/')
+def _verify_retryable(
+    checker, operation_model, status_code, error, is_retryable
+):
+    http_response = AWSResponse(
+        status_code=status_code, raw=None, headers={}, url='https://foo/'
+    )
     parsed_response = None
     caught_exception = None
     if error is not None:
         if isinstance(error, Exception):
             caught_exception = error
         else:
-            parsed_response = {'Error':  {'Code': error, 'Message': 'Error'}}
+            parsed_response = {'Error': {'Code': error, 'Message': 'Error'}}
     context = standard.RetryContext(
         attempt_number=1,
         operation_model=operation_model,
@@ -225,8 +226,9 @@ def arbitrary_retry_context():
         attempt_number=1,
         operation_model=None,
         parsed_response={'Error': {'Code': 'ErrorCode', 'Message': 'message'}},
-        http_response=AWSResponse(status_code=500,
-                                  raw=None, headers={}, url='https://foo'),
+        http_response=AWSResponse(
+            status_code=500, raw=None, headers={}, url='https://foo'
+        ),
         caught_exception=None,
     )
 
@@ -256,8 +258,7 @@ def test_can_create_default_retry_handler():
     mock_client = mock.Mock()
     mock_client.meta.service_model.service_id = model.ServiceId('my-service')
     assert isinstance(
-        standard.register_retry_handler(mock_client),
-        standard.RetryHandler
+        standard.register_retry_handler(mock_client), standard.RetryHandler
     )
     call_args_list = mock_client.meta.events.register.call_args_list
     # We should have registered the retry quota to after-calls
@@ -277,30 +278,35 @@ class TestRetryHandler(unittest.TestCase):
         self.retry_handler = standard.RetryHandler(
             retry_policy=self.retry_policy,
             retry_event_adapter=self.retry_event_adapter,
-            retry_quota=self.retry_quota
+            retry_quota=self.retry_quota,
         )
 
     def test_does_need_retry(self):
-        self.retry_event_adapter.create_retry_context.return_value = \
+        self.retry_event_adapter.create_retry_context.return_value = (
             mock.sentinel.retry_context
+        )
         self.retry_policy.should_retry.return_value = True
         self.retry_quota.acquire_retry_quota.return_value = True
         self.retry_policy.compute_retry_delay.return_value = 1
 
-        self.assertEqual(
-            self.retry_handler.needs_retry(fake_kwargs='foo'), 1)
+        self.assertEqual(self.retry_handler.needs_retry(fake_kwargs='foo'), 1)
         self.retry_event_adapter.create_retry_context.assert_called_with(
-            fake_kwargs='foo')
+            fake_kwargs='foo'
+        )
         self.retry_policy.should_retry.assert_called_with(
-            mock.sentinel.retry_context)
+            mock.sentinel.retry_context
+        )
         self.retry_quota.acquire_retry_quota.assert_called_with(
-            mock.sentinel.retry_context)
+            mock.sentinel.retry_context
+        )
         self.retry_policy.compute_retry_delay.assert_called_with(
-            mock.sentinel.retry_context)
+            mock.sentinel.retry_context
+        )
 
     def test_does_not_need_retry(self):
-        self.retry_event_adapter.create_retry_context.return_value = \
+        self.retry_event_adapter.create_retry_context.return_value = (
             mock.sentinel.retry_context
+        )
         self.retry_policy.should_retry.return_value = False
 
         self.assertIsNone(self.retry_handler.needs_retry(fake_kwargs='foo'))
@@ -308,21 +314,24 @@ class TestRetryHandler(unittest.TestCase):
         self.assertFalse(self.retry_quota.acquire_retry_quota.called)
 
     def test_needs_retry_but_not_enough_quota(self):
-        self.retry_event_adapter.create_retry_context.return_value = \
+        self.retry_event_adapter.create_retry_context.return_value = (
             mock.sentinel.retry_context
+        )
         self.retry_policy.should_retry.return_value = True
         self.retry_quota.acquire_retry_quota.return_value = False
 
         self.assertIsNone(self.retry_handler.needs_retry(fake_kwargs='foo'))
 
     def test_retry_handler_adds_retry_metadata_to_response(self):
-        self.retry_event_adapter.create_retry_context.return_value = \
+        self.retry_event_adapter.create_retry_context.return_value = (
             mock.sentinel.retry_context
+        )
         self.retry_policy.should_retry.return_value = False
         self.assertIsNone(self.retry_handler.needs_retry(fake_kwargs='foo'))
         adapter = self.retry_event_adapter
         adapter.adapt_retry_response_from_context.assert_called_with(
-            mock.sentinel.retry_context)
+            mock.sentinel.retry_context
+        )
 
 
 class TestRetryEventAdapter(unittest.TestCase):
@@ -330,9 +339,11 @@ class TestRetryEventAdapter(unittest.TestCase):
         self.success_response = {'ResponseMetadata': {}, 'Foo': {}}
         self.failed_response = {'ResponseMetadata': {}, 'Error': {}}
         self.http_success = AWSResponse(
-            status_code=200, raw=None, headers={}, url='https://foo/')
+            status_code=200, raw=None, headers={}, url='https://foo/'
+        )
         self.http_failed = AWSResponse(
-            status_code=500, raw=None, headers={}, url='https://foo/')
+            status_code=500, raw=None, headers={}, url='https://foo/'
+        )
         self.caught_exception = ConnectionError(error='unknown')
 
     def test_create_context_from_success_response(self):
@@ -345,8 +356,9 @@ class TestRetryEventAdapter(unittest.TestCase):
         )
 
         self.assertEqual(context.attempt_number, 1)
-        self.assertEqual(context.operation_model,
-                         mock.sentinel.operation_model)
+        self.assertEqual(
+            context.operation_model, mock.sentinel.operation_model
+        )
         self.assertEqual(context.parsed_response, self.success_response)
         self.assertEqual(context.http_response, self.http_success)
         self.assertEqual(context.caught_exception, None)
@@ -385,13 +397,13 @@ class TestRetryEventAdapter(unittest.TestCase):
             operation=None,
             caught_exception=None,
             request_dict={'context': {}},
-            response=(self.http_failed, self.failed_response)
+            response=(self.http_failed, self.failed_response),
         )
         context.add_retry_metadata(MaxAttemptsReached=True)
         adapter.adapt_retry_response_from_context(context)
         self.assertEqual(
             self.failed_response['ResponseMetadata']['MaxAttemptsReached'],
-            True
+            True,
         )
 
 
@@ -400,28 +412,32 @@ class TestRetryPolicy(unittest.TestCase):
         self.retry_checker = mock.Mock(spec=standard.StandardRetryConditions)
         self.retry_backoff = mock.Mock(spec=standard.ExponentialBackoff)
         self.retry_policy = standard.RetryPolicy(
-            retry_checker=self.retry_checker,
-            retry_backoff=self.retry_backoff)
+            retry_checker=self.retry_checker, retry_backoff=self.retry_backoff
+        )
 
     def test_delegates_to_retry_checker(self):
         self.retry_checker.is_retryable.return_value = True
         self.assertTrue(self.retry_policy.should_retry(mock.sentinel.context))
         self.retry_checker.is_retryable.assert_called_with(
-            mock.sentinel.context)
+            mock.sentinel.context
+        )
 
     def test_delegates_to_retry_backoff(self):
         self.retry_backoff.delay_amount.return_value = 1
         self.assertEqual(
-            self.retry_policy.compute_retry_delay(mock.sentinel.context), 1)
+            self.retry_policy.compute_retry_delay(mock.sentinel.context), 1
+        )
         self.retry_backoff.delay_amount.assert_called_with(
-            mock.sentinel.context)
+            mock.sentinel.context
+        )
 
 
 class TestExponentialBackoff(unittest.TestCase):
     def setUp(self):
         self.random = lambda: 1
-        self.backoff = standard.ExponentialBackoff(max_backoff=20,
-                                                   random=self.random)
+        self.backoff = standard.ExponentialBackoff(
+            max_backoff=20, random=self.random
+        )
 
     def test_range_of_exponential_backoff(self):
         backoffs = [
@@ -429,8 +445,7 @@ class TestExponentialBackoff(unittest.TestCase):
             for i in range(1, 10)
         ]
         # Note that we're capped at 20 which is our max backoff.
-        self.assertEqual(backoffs,
-                         [1, 2, 4, 8, 16, 20, 20, 20, 20])
+        self.assertEqual(backoffs, [1, 2, 4, 8, 16, 20, 20, 20, 20])
 
     def test_exponential_backoff_with_jitter(self):
         backoff = standard.ExponentialBackoff()
@@ -454,8 +469,9 @@ class TestRetryQuotaChecker(unittest.TestCase):
         caught_exception = None
         if is_timeout_error:
             caught_exception = ReadTimeoutError(endpoint_url='https://foo')
-        http_response = AWSResponse(status_code=status_code, raw=None,
-                                    headers={}, url='https://foo/')
+        http_response = AWSResponse(
+            status_code=status_code, raw=None, headers={}, url='https://foo/'
+        )
         context = standard.RetryContext(
             attempt_number=1,
             request_context=self.request_context,
@@ -473,7 +489,8 @@ class TestRetryQuotaChecker(unittest.TestCase):
     def test_can_acquire_quota_for_timeout_error(self):
         self.assertTrue(
             self.quota_checker.acquire_retry_quota(
-                self.create_context(is_timeout_error=True))
+                self.create_context(is_timeout_error=True)
+            )
         )
         self.assertEqual(self.request_context['retry_quota_capacity'], 10)
 
@@ -482,12 +499,11 @@ class TestRetryQuotaChecker(unittest.TestCase):
         # This is where we had to retry the request but eventually
         # succeeded.
         http_response = self.create_context(status_code=200).http_response
-        self.assertTrue(
-            self.quota_checker.acquire_retry_quota(context)
-        )
+        self.assertTrue(self.quota_checker.acquire_retry_quota(context))
         self.assertEqual(self.quota.available_capacity, 495)
-        self.quota_checker.release_retry_quota(context.request_context,
-                                               http_response=http_response)
+        self.quota_checker.release_retry_quota(
+            context.request_context, http_response=http_response
+        )
         self.assertEqual(self.quota.available_capacity, 500)
 
     def test_dont_release_quota_if_all_retries_failed(self):
@@ -496,31 +512,30 @@ class TestRetryQuotaChecker(unittest.TestCase):
         # our retry attempts and still failed.  In this case we shouldn't
         # give any retry quota back.
         http_response = self.create_context(status_code=500).http_response
-        self.assertTrue(
-            self.quota_checker.acquire_retry_quota(context)
-        )
+        self.assertTrue(self.quota_checker.acquire_retry_quota(context))
         self.assertEqual(self.quota.available_capacity, 495)
-        self.quota_checker.release_retry_quota(context.request_context,
-                                               http_response=http_response)
+        self.quota_checker.release_retry_quota(
+            context.request_context, http_response=http_response
+        )
         self.assertEqual(self.quota.available_capacity, 495)
 
     def test_can_release_default_quota_if_not_in_context(self):
         context = self.create_context()
-        self.assertTrue(
-            self.quota_checker.acquire_retry_quota(context)
-        )
+        self.assertTrue(self.quota_checker.acquire_retry_quota(context))
         self.assertEqual(self.quota.available_capacity, 495)
         # We're going to remove the quota amount from the request context.
         # This represents a successful request with no retries.
         self.request_context.pop('retry_quota_capacity')
-        self.quota_checker.release_retry_quota(context.request_context,
-                                               context.http_response)
+        self.quota_checker.release_retry_quota(
+            context.request_context, context.http_response
+        )
         # We expect only 1 unit was released.
         self.assertEqual(self.quota.available_capacity, 496)
 
     def test_acquire_quota_fails(self):
         quota_checker = standard.RetryQuotaChecker(
-            quota.RetryQuota(initial_capacity=5))
+            quota.RetryQuota(initial_capacity=5)
+        )
         # The first one succeeds.
         self.assertTrue(
             quota_checker.acquire_retry_quota(self.create_context())
@@ -534,12 +549,12 @@ class TestRetryQuotaChecker(unittest.TestCase):
 
     def test_quota_reached_adds_retry_metadata(self):
         quota_checker = standard.RetryQuotaChecker(
-            quota.RetryQuota(initial_capacity=0))
+            quota.RetryQuota(initial_capacity=0)
+        )
         context = self.create_context()
         self.assertFalse(quota_checker.acquire_retry_quota(context))
         self.assertEqual(
-            context.get_retry_metadata(),
-            {'RetryQuotaReached': True}
+            context.get_retry_metadata(), {'RetryQuotaReached': True}
         )
 
     def test_single_failed_request_does_not_give_back_quota(self):
@@ -549,8 +564,9 @@ class TestRetryQuotaChecker(unittest.TestCase):
         # the upper bound.
         self.quota.acquire(50)
         self.assertEqual(self.quota.available_capacity, 450)
-        self.quota_checker.release_retry_quota(context.request_context,
-                                               http_response=http_response)
+        self.quota_checker.release_retry_quota(
+            context.request_context, http_response=http_response
+        )
         self.assertEqual(self.quota.available_capacity, 450)
 
 
@@ -573,8 +589,9 @@ class TestRetryContext(unittest.TestCase):
     def test_can_add_retry_reason(self):
         context = arbitrary_retry_context()
         context.add_retry_metadata(MaxAttemptsReached=True)
-        self.assertEqual(context.get_retry_metadata(),
-                         {'MaxAttemptsReached': True})
+        self.assertEqual(
+            context.get_retry_metadata(), {'MaxAttemptsReached': True}
+        )
 
     def test_handles_non_error_top_level_error_key_get_error_code(self):
         response = AWSResponse(
@@ -598,7 +615,8 @@ class TestRetryContext(unittest.TestCase):
 class TestThrottlingErrorDetector(unittest.TestCase):
     def setUp(self):
         self.throttling_detector = standard.ThrottlingErrorDetector(
-            standard.RetryEventAdapter())
+            standard.RetryEventAdapter()
+        )
 
     def create_needs_retry_kwargs(self, **kwargs):
         retry_kwargs = {
@@ -614,9 +632,7 @@ class TestThrottlingErrorDetector(unittest.TestCase):
     def test_can_check_error_from_code(self):
         kwargs = self.create_needs_retry_kwargs()
         kwargs['response'] = (None, {'Error': {'Code': 'ThrottledException'}})
-        self.assertTrue(
-            self.throttling_detector.is_throttling_error(**kwargs)
-        )
+        self.assertTrue(self.throttling_detector.is_throttling_error(**kwargs))
 
     def test_no_throttling_error(self):
         kwargs = self.create_needs_retry_kwargs()
@@ -628,12 +644,11 @@ class TestThrottlingErrorDetector(unittest.TestCase):
     def test_detects_modeled_errors(self):
         kwargs = self.create_needs_retry_kwargs()
         kwargs['response'] = (
-            None, {'Error': {'Code': 'ModeledThrottlingError'}}
+            None,
+            {'Error': {'Code': 'ModeledThrottlingError'}},
         )
         kwargs['operation'] = get_operation_model_with_retries()
-        self.assertTrue(
-            self.throttling_detector.is_throttling_error(**kwargs)
-        )
+        self.assertTrue(self.throttling_detector.is_throttling_error(**kwargs))
 
 
 class TestModeledRetryErrorDetector(unittest.TestCase):
@@ -650,7 +665,7 @@ class TestModeledRetryErrorDetector(unittest.TestCase):
         context.operation_model = get_operation_model_with_retries()
         self.assertEqual(
             self.modeled_error.detect_error_type(context),
-            self.modeled_error.TRANSIENT_ERROR
+            self.modeled_error.TRANSIENT_ERROR,
         )
 
     def test_throttling_error(self):
@@ -659,7 +674,7 @@ class TestModeledRetryErrorDetector(unittest.TestCase):
         context.operation_model = get_operation_model_with_retries()
         self.assertEqual(
             self.modeled_error.detect_error_type(context),
-            self.modeled_error.THROTTLING_ERROR
+            self.modeled_error.THROTTLING_ERROR,
         )
 
 
@@ -675,25 +690,9 @@ class No(standard.BaseRetryableChecker):
 
 class TestOrRetryChecker(unittest.TestCase):
     def test_can_match_any_checker(self):
-        self.assertTrue(
-            standard.OrRetryChecker(
-                [Yes(), No()]
-            )
-        )
-        self.assertTrue(
-            standard.OrRetryChecker(
-                [No(), Yes()]
-            )
-        )
-        self.assertTrue(
-            standard.OrRetryChecker(
-                [Yes(), Yes()]
-            )
-        )
+        self.assertTrue(standard.OrRetryChecker([Yes(), No()]))
+        self.assertTrue(standard.OrRetryChecker([No(), Yes()]))
+        self.assertTrue(standard.OrRetryChecker([Yes(), Yes()]))
 
     def test_false_if_no_checkers_match(self):
-        self.assertTrue(
-            standard.OrRetryChecker(
-                [No(), No(), No()]
-            )
-        )
+        self.assertTrue(standard.OrRetryChecker([No(), No(), No()]))

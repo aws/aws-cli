@@ -10,15 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import jmespath
-from jsonschema import Draft4Validator
-
-import pytest
-
 import botocore.session
+import jmespath
+import pytest
 from botocore.exceptions import UnknownServiceError
 from botocore.utils import ArgumentGenerator
-
+from jsonschema import Draft4Validator
 
 WAITER_SCHEMA = {
     "type": "object",
@@ -29,20 +26,14 @@ WAITER_SCHEMA = {
             "additionalProperties": {
                 "type": "object",
                 "properties": {
-                    "type": {
-                        "type": "string",
-                        "enum": ["api"]
-                    },
+                    "type": {"type": "string", "enum": ["api"]},
                     "operation": {"type": "string"},
                     "description": {"type": "string"},
                     "delay": {
                         "type": "number",
                         "minimum": 0,
                     },
-                    "maxAttempts": {
-                        "type": "integer",
-                        "minimum": 1
-                    },
+                    "maxAttempts": {"type": "integer", "minimum": 1},
                     "acceptors": {
                         "type": "array",
                         "items": {
@@ -50,37 +41,38 @@ WAITER_SCHEMA = {
                             "properties": {
                                 "state": {
                                     "type": "string",
-                                    "enum": ["success", "retry", "failure"]
+                                    "enum": ["success", "retry", "failure"],
                                 },
                                 "matcher": {
                                     "type": "string",
                                     "enum": [
-                                        "path", "pathAll", "pathAny",
-                                        "status", "error"
-                                    ]
+                                        "path",
+                                        "pathAll",
+                                        "pathAny",
+                                        "status",
+                                        "error",
+                                    ],
                                 },
                                 "argument": {"type": "string"},
                                 "expected": {
                                     "oneOf": [
                                         {"type": "string"},
                                         {"type": "number"},
-                                        {"type": "boolean"}
+                                        {"type": "boolean"},
                                     ]
-                                }
+                                },
                             },
-                            "required": [
-                                "state", "matcher", "expected"
-                            ],
-                            "additionalProperties": False
-                        }
-                    }
+                            "required": ["state", "matcher", "expected"],
+                            "additionalProperties": False,
+                        },
+                    },
                 },
                 "required": ["operation", "delay", "maxAttempts", "acceptors"],
-                "additionalProperties": False
-            }
-        }
+                "additionalProperties": False,
+            },
+        },
     },
-    "additionalProperties": False
+    "additionalProperties": False,
 }
 
 
@@ -95,8 +87,7 @@ def _waiter_configs():
             # json document, not just the portions exposed (either
             # internally or externally) by the WaiterModel class.
             loader = session.get_component('data_loader')
-            waiter_model = loader.load_service_model(
-                service_name, 'waiters-2')
+            waiter_model = loader.load_service_model(service_name, 'waiters-2')
         except UnknownServiceError:
             # The service doesn't have waiters
             continue
@@ -122,17 +113,22 @@ def _lint_single_waiter(client, waiter_name, service_model):
         # * matcher has a known value
         acceptors = waiter.config.acceptors
     except Exception as e:
-        raise AssertionError("Could not create waiter '%s': %s"
-                             % (waiter_name, e))
+        raise AssertionError(
+            "Could not create waiter '%s': %s" % (waiter_name, e)
+        )
     operation_name = waiter.config.operation
     # Needs to reference an existing operation name.
     if operation_name not in service_model.operation_names:
-        raise AssertionError("Waiter config references unknown "
-                             "operation: %s" % operation_name)
+        raise AssertionError(
+            "Waiter config references unknown "
+            "operation: %s" % operation_name
+        )
     # Needs to have at least one acceptor.
     if not waiter.config.acceptors:
-        raise AssertionError("Waiter config must have at least "
-                             "one acceptor state: %s" % waiter.name)
+        raise AssertionError(
+            "Waiter config must have at least "
+            "one acceptor state: %s" % waiter.name
+        )
     op_model = service_model.operation_model(operation_name)
     for acceptor in acceptors:
         _validate_acceptor(acceptor, op_model, waiter.name)
@@ -157,21 +153,24 @@ def _validate_acceptor(acceptor, op_model, waiter_name):
         output_shape = op_model.output_shape
         assert output_shape is not None, (
             "Waiter '%s' has JMESPath expression with no output shape: %s"
-            % (waiter_name, op_model))
+            % (waiter_name, op_model)
+        )
         # We want to check if the JMESPath expression makes sense.
         # To do this, we'll generate sample output and evaluate the
         # JMESPath expression against the output.  We'll then
         # check a few things about this returned search result.
         search_result = _search_jmespath_expression(expression, op_model)
         if search_result is None:
-            raise AssertionError("JMESPath expression did not match "
-                                 "anything for waiter '%s': %s"
-                                 % (waiter_name, expression))
+            raise AssertionError(
+                "JMESPath expression did not match "
+                "anything for waiter '%s': %s" % (waiter_name, expression)
+            )
         if acceptor.matcher in ['pathAll', 'pathAny']:
-            assert isinstance(search_result, list), \
-                    ("Attempted to use '%s' matcher in waiter '%s' "
-                     "with non list result in JMESPath expression: %s"
-                     % (acceptor.matcher, waiter_name, expression))
+            assert isinstance(search_result, list), (
+                "Attempted to use '%s' matcher in waiter '%s' "
+                "with non list result in JMESPath expression: %s"
+                % (acceptor.matcher, waiter_name, expression)
+            )
 
 
 def _search_jmespath_expression(expression, op_model):

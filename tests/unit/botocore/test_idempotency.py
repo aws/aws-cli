@@ -11,9 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from tests import mock, unittest
 import re
+
 from botocore.handlers import generate_idempotent_uuid
+
+from tests import mock, unittest
 
 
 class TestIdempotencyInjection(unittest.TestCase):
@@ -21,8 +23,8 @@ class TestIdempotencyInjection(unittest.TestCase):
         self.mock_model = mock.MagicMock()
         self.mock_model.idempotent_members = ['RequiredKey']
         self.uuid_pattern = re.compile(
-            '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$',
-            re.I)
+            '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$', re.I
+        )
 
     def test_injection(self):
         # No parameters are provided, RequiredKey should be autofilled

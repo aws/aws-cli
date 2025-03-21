@@ -31,9 +31,9 @@ def _assert_not_shadowed(key, shape):
     if not shape:
         return
 
-    assert key not in shape.members, (
-        f'Found shape "{shape.name}" that shadows the botocore response key "{key}"'
-    )
+    assert (
+        key not in shape.members
+    ), f'Found shape "{shape.name}" that shadows the botocore response key "{key}"'
 
 
 @pytest.mark.parametrize("operation_output_shape", _all_operations())

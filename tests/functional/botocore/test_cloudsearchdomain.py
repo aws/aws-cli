@@ -18,7 +18,8 @@ class TestCloudsearchdomain(BaseSessionTest):
         super(TestCloudsearchdomain, self).setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client(
-            'cloudsearchdomain', self.region)
+            'cloudsearchdomain', self.region
+        )
         self.http_stubber = ClientHTTPStubber(self.client)
 
     def test_search(self):

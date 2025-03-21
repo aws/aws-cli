@@ -16,7 +16,6 @@ from awscli.customizations.paginate import (
     STARTING_TOKEN_HELP,
 )
 
-
 TABLE_NAME = {
     'name': 'table_name',
     'positional_arg': True,

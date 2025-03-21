@@ -13,19 +13,20 @@
 
 import platform
 import re
+from socket import timeout
 
 import awscli.compat
-from awscli.compat import urlopen, URLError
+from awscli.compat import URLError, urlopen
 from awscli.customizations.codedeploy.systems import (
+    RHEL,
     System,
     Ubuntu,
     Windows,
-    RHEL,
 )
-from awscli.customizations.exceptions import ParamValidationError
-from awscli.customizations.exceptions import ConfigurationError
-from socket import timeout
-
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 
 MAX_INSTANCE_NAME_LENGTH = 100
 MAX_TAGS_PER_INSTANCE = 10
@@ -73,9 +74,7 @@ def validate_instance_name(params):
             )
         if len(params.instance_name) > MAX_INSTANCE_NAME_LENGTH:
             raise ParamValidationError(
-                'Instance name cannot be longer than {0} characters.'.format(
-                    MAX_INSTANCE_NAME_LENGTH
-                )
+                f'Instance name cannot be longer than {MAX_INSTANCE_NAME_LENGTH} characters.'
             )
 
 
@@ -83,22 +82,16 @@ def validate_tags(params):
     if params.tags:
         if len(params.tags) > MAX_TAGS_PER_INSTANCE:
             raise ParamValidationError(
-                'Instances can only have a maximum of {0} tags.'.format(
-                    MAX_TAGS_PER_INSTANCE
-                )
+                f'Instances can only have a maximum of {MAX_TAGS_PER_INSTANCE} tags.'
             )
         for tag in params.tags:
             if len(tag['Key']) > MAX_TAG_KEY_LENGTH:
                 raise ParamValidationError(
-                    'Tag Key cannot be longer than {0} characters.'.format(
-                        MAX_TAG_KEY_LENGTH
-                    )
+                    f'Tag Key cannot be longer than {MAX_TAG_KEY_LENGTH} characters.'
                 )
             if len(tag['Value']) > MAX_TAG_VALUE_LENGTH:
                 raise ParamValidationError(
-                    'Tag Value cannot be longer than {0} characters.'.format(
-                        MAX_TAG_VALUE_LENGTH
-                    )
+                    f'Tag Value cannot be longer than {MAX_TAG_VALUE_LENGTH} characters.'
                 )
 
 

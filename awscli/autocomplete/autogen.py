@@ -7,9 +7,8 @@ It can also be used to regen completion data as new heuristics are added.
 """
 
 import logging
+from collections import defaultdict, namedtuple
 from difflib import SequenceMatcher
-from collections import namedtuple, defaultdict
-
 
 LOG = logging.getLogger(__name__)
 Resource = namedtuple(
@@ -24,7 +23,7 @@ Resource = namedtuple(
 )
 
 
-class ServerCompletionHeuristic(object):
+class ServerCompletionHeuristic:
     # Prefix that typically indicates listing resources,
     # e.g ListResources, DescribeResources, etc.
     _RESOURCE_VERB_PREFIX = ('list', 'describe')
@@ -231,10 +230,7 @@ class ServerCompletionHeuristic(object):
         singular_name = self._singularize.make_singular(op_with_prefix_removed)
         resources = []
         for member_name in list_member.members:
-            jp_expr = ('{resource_member_name}[].{member_name}').format(
-                resource_member_name=resource_member_name,
-                member_name=member_name,
-            )
+            jp_expr = f'{resource_member_name}[].{member_name}'
             r = Resource(
                 singular_name, member_name, required_members, op_name, jp_expr
             )
@@ -254,9 +250,7 @@ class ServerCompletionHeuristic(object):
             singular_member_name,
             required_members,
             op_name,
-            '{resource_member_name}[]'.format(
-                resource_member_name=resource_member_name
-            ),
+            f'{resource_member_name}[]',
         )
         return r
 
@@ -298,7 +292,7 @@ class ServerCompletionHeuristic(object):
                     yield completion
 
 
-class BasicSingularize(object):
+class BasicSingularize:
     """Simple implementation of making a word singular.
 
     Where possible, you should use nltk.stem.WordNetLemmatizer.

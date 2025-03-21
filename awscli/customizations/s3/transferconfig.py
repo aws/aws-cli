@@ -10,16 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from s3transfer.manager import TransferConfig
-
-from awscli.customizations.s3 import constants
-from awscli.customizations.s3.utils import human_readable_to_int
-
 # If the user does not specify any overrides,
 # these are the default values we use for the s3 transfer
 # commands.
 import logging
 
+from s3transfer.manager import TransferConfig
+
+from awscli.customizations.s3 import constants
+from awscli.customizations.s3.utils import human_readable_to_int
 
 LOGGER = logging.getLogger(__name__)
 
@@ -38,7 +37,7 @@ class InvalidConfigError(Exception):
     pass
 
 
-class RuntimeConfig(object):
+class RuntimeConfig:
     POSITIVE_INTEGERS = [
         'multipart_chunksize',
         'multipart_threshold',

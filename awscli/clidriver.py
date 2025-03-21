@@ -10,72 +10,78 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import copy
 import json
+import logging
 import os
 import platform
-import sys
-import copy
-import logging
 import re
+import sys
 
-import distro
 import botocore.session
+import distro
 from botocore import xform_name
-from botocore.compat import copy_kwargs, OrderedDict
+from botocore.compat import OrderedDict, copy_kwargs
+from botocore.configprovider import (
+    ChainProvider,
+    ConstantProvider,
+    EnvironmentProvider,
+    InstanceVarProvider,
+    ScopedConfigProvider,
+)
 from botocore.context import start_as_current_context
 from botocore.history import get_global_history_recorder
-from botocore.configprovider import InstanceVarProvider
-from botocore.configprovider import EnvironmentProvider
-from botocore.configprovider import ScopedConfigProvider
-from botocore.configprovider import ConstantProvider
-from botocore.configprovider import ChainProvider
 
 from awscli import __version__
+from awscli.alias import AliasCommandInjector, AliasLoader
+from awscli.argparser import (
+    ArgTableArgParser,
+    FirstPassGlobalArgParser,
+    MainArgParser,
+    ServiceArgParser,
+    SubCommandArgParser,
+)
+from awscli.argprocess import unpack_argument
+from awscli.arguments import (
+    BooleanArgument,
+    CLIArgument,
+    CustomArgument,
+    ListArgument,
+    UnknownArgumentError,
+)
+from awscli.autoprompt.core import AutoPromptDriver
+from awscli.commands import CLICommand
 from awscli.compat import (
     default_pager,
     get_stderr_text_writer,
     get_stdout_text_writer,
     validate_preferred_output_encoding,
 )
-from awscli.formatter import get_formatter
-from awscli.plugin import load_plugins
-from awscli.commands import CLICommand
-from awscli.argparser import MainArgParser
-from awscli.argparser import FirstPassGlobalArgParser
-from awscli.argparser import ServiceArgParser
-from awscli.argparser import ArgTableArgParser
-from awscli.argparser import SubCommandArgParser
-from awscli.help import ProviderHelpCommand
-from awscli.help import ServiceHelpCommand
-from awscli.help import OperationHelpCommand
-from awscli.arguments import CustomArgument
-from awscli.arguments import ListArgument
-from awscli.arguments import BooleanArgument
-from awscli.arguments import CLIArgument
-from awscli.arguments import UnknownArgumentError
-from awscli.argprocess import unpack_argument
-from awscli.alias import AliasLoader
-from awscli.alias import AliasCommandInjector
-from awscli.logger import (
-    set_stream_logger,
-    remove_stream_logger,
-    enable_crt_logging,
-    disable_crt_logging,
-)
-from awscli.utils import (
-    add_metadata_component_to_user_agent_extra,
-    add_command_lineage_to_user_agent_extra,
-)
-from awscli.utils import emit_top_level_args_parsed_event
-from awscli.utils import OutputStreamFactory
-from awscli.utils import IMDSRegionProvider
 from awscli.constants import PARAM_VALIDATION_ERROR_RC
-from awscli.autoprompt.core import AutoPromptDriver
 from awscli.errorhandler import (
     construct_cli_error_handlers_chain,
     construct_entry_point_handlers_chain,
 )
-
+from awscli.formatter import get_formatter
+from awscli.help import (
+    OperationHelpCommand,
+    ProviderHelpCommand,
+    ServiceHelpCommand,
+)
+from awscli.logger import (
+    disable_crt_logging,
+    enable_crt_logging,
+    remove_stream_logger,
+    set_stream_logger,
+)
+from awscli.plugin import load_plugins
+from awscli.utils import (
+    IMDSRegionProvider,
+    OutputStreamFactory,
+    add_command_lineage_to_user_agent_extra,
+    add_metadata_component_to_user_agent_extra,
+    emit_top_level_args_parsed_event,
+)
 
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
@@ -229,7 +235,7 @@ class AWSCLIEntryPoint:
         return rc
 
 
-class CLIDriver(object):
+class CLIDriver:
     def __init__(self, session=None, error_handler=None, debug=False):
         if session is None:
             self.session = botocore.session.get_session()
@@ -692,7 +698,7 @@ class ServiceCommand(CLICommand):
         )
 
 
-class ServiceOperation(object):
+class ServiceOperation:
     """A single operation of a service.
 
     This class represents a single operation for a service, for
@@ -959,7 +965,7 @@ class ServiceOperation(object):
         )
 
 
-class CLIOperationCaller(object):
+class CLIOperationCaller:
     """Call an AWS operation and format the response."""
 
     def __init__(self, session):

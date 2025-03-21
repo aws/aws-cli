@@ -15,34 +15,34 @@ import os
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
 from prompt_toolkit.key_binding import KeyBindings
+from prompt_toolkit.key_binding.bindings.focus import focus_next
 from prompt_toolkit.keys import Keys
-from prompt_toolkit.layout import Float, FloatContainer, HSplit, Window, VSplit
+from prompt_toolkit.layout import Float, FloatContainer, HSplit, VSplit, Window
 from prompt_toolkit.layout.controls import BufferControl
 from prompt_toolkit.layout.dimension import Dimension
-from prompt_toolkit.layout.layout import Layout, ConditionalContainer
+from prompt_toolkit.layout.layout import ConditionalContainer, Layout
 from prompt_toolkit.layout.menus import (
     CompletionsMenu,
     MultiColumnCompletionsMenu,
 )
 from prompt_toolkit.layout.processors import BeforeInput
 from prompt_toolkit.widgets import SearchToolbar, VerticalLine
-from prompt_toolkit.key_binding.bindings.focus import focus_next
 
-from awscli.autoprompt.history import HistoryDriver, HistoryCompleter
-from awscli.autoprompt.widgets import (
-    HelpPanelWidget,
-    ToolbarWidget,
-    DebugPanelWidget,
-    TitleLine,
-)
 from awscli.autoprompt.filters import (
-    is_one_column,
-    is_multi_column,
     doc_section_visible,
-    output_section_visible,
-    input_buffer_has_focus,
     doc_window_has_focus,
+    input_buffer_has_focus,
     is_history_mode,
+    is_multi_column,
+    is_one_column,
+    output_section_visible,
+)
+from awscli.autoprompt.history import HistoryCompleter, HistoryDriver
+from awscli.autoprompt.widgets import (
+    DebugPanelWidget,
+    HelpPanelWidget,
+    TitleLine,
+    ToolbarWidget,
 )
 
 

@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from ruamel.yaml import YAML
+
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.wizard.factory import create_wizard_app
 
@@ -28,14 +29,14 @@ def create_default_wizard_dev_runner(session):
     )
 
 
-class WizardLoader(object):
+class WizardLoader:
     def load(self, contents):
         yaml = YAML(typ="rt")
         data = yaml.load(contents)
         return data
 
 
-class WizardDevRunner(object):
+class WizardDevRunner:
     def __init__(self, wizard_loader, session):
         self._wizard_loader = wizard_loader
         self._session = session

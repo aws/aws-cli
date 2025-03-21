@@ -11,19 +11,18 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import argparse
-import logging
-from datetime import datetime
-import mimetypes
 import errno
+import logging
+import mimetypes
 import os
 import re
-from collections import namedtuple, deque
+from collections import deque, namedtuple
+from datetime import datetime
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal, tzutc
 
-from awscli.compat import bytes_print
-from awscli.compat import queue
+from awscli.compat import bytes_print, queue
 from awscli.customizations.exceptions import ParamValidationError
 
 LOGGER = logging.getLogger(__name__)
@@ -254,7 +253,7 @@ def get_file_stat(path):
     """
     try:
         stats = os.stat(path)
-    except IOError as e:
+    except OSError as e:
         raise ValueError(
             'Could not retrieve file stat of "%s": %s' % (path, e)
         )
@@ -316,7 +315,7 @@ def create_warning(path, error_message, skip_file=True):
     return warning_message
 
 
-class StdoutBytesWriter(object):
+class StdoutBytesWriter:
     """
     This class acts as a file-like object that performs the bytes_print
     function on write.
@@ -389,10 +388,8 @@ def set_file_utime(filename, desired_time):
         if e.errno != errno.EPERM:
             raise e
         raise SetFileUtimeError(
-            (
-                "The file was downloaded, but attempting to modify the "
-                "utime of the file failed. Is the file owned by another user?"
-            )
+            "The file was downloaded, but attempting to modify the "
+            "utime of the file failed. Is the file owned by another user?"
         )
 
 
@@ -404,7 +401,7 @@ def _date_parser(date_string):
     return parse(date_string).astimezone(tzlocal())
 
 
-class BucketLister(object):
+class BucketLister:
     """List keys in a bucket."""
 
     def __init__(self, client, date_parser=_date_parser):
@@ -454,7 +451,7 @@ class PrintTask(
 WarningResult = PrintTask
 
 
-class RequestParamsMapper(object):
+class RequestParamsMapper:
     """A utility class that maps CLI params to request params
 
     Each method in the class maps to a particular operation and will set
@@ -676,7 +673,7 @@ class RequestParamsMapper(object):
         cls._set_sse_c_copy_source_request_params(request_params, cli_params)
 
 
-class NonSeekableStream(object):
+class NonSeekableStream:
     """Wrap a file like object as a non seekable stream.
 
     This class is used to wrap an existing file like object

@@ -10,15 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import logging
-import json
 import errno
+import json
+import logging
 import os
 import re
-
 from subprocess import check_call, check_output
+
+from awscli.clidriver import CLIOperationCaller, ServiceOperation
 from awscli.compat import ignore_user_entered_signals
-from awscli.clidriver import ServiceOperation, CLIOperationCaller
 
 logger = logging.getLogger(__name__)
 

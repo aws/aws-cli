@@ -10,10 +10,10 @@ perf testing.
 * Install dependencies
 
 """
+
 import os
 import shutil
 from subprocess import check_call
-
 
 GIT_OWNER = os.environ.get('GIT_OWNER', 'boto')
 # Using PERF_BRANCH instead of GIT_BRANCH because that value
@@ -21,22 +21,26 @@ GIT_OWNER = os.environ.get('GIT_OWNER', 'boto')
 # git.
 PERF_BRANCH = os.environ.get('PERF_BRANCH', 'develop')
 REPO_ROOT = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)
 WORKDIR = os.environ.get('PERF_WORKDIR', os.path.join(REPO_ROOT, 'workdir'))
 
 
 def clone_s3_transfer_repo():
     if os.path.isdir('s3transfer'):
         shutil.rmtree('s3transfer')
-    check_call('git clone https://github.com/%s/s3transfer.git' % GIT_OWNER,
-               shell=True)
+    check_call(
+        'git clone https://github.com/%s/s3transfer.git' % GIT_OWNER,
+        shell=True,
+    )
     check_call('cd s3transfer && git checkout %s' % PERF_BRANCH, shell=True)
 
 
 def pip_install_s3transfer_and_deps():
     check_call('cd s3transfer && pip install -e .', shell=True)
-    check_call('cd s3transfer && pip install -r requirements-dev.txt',
-               shell=True)
+    check_call(
+        'cd s3transfer && pip install -r requirements-dev.txt', shell=True
+    )
     check_call('pip install "caf>=0.1.0,<1.0.0"', shell=True)
     check_call('cd %s && pip install -e .' % REPO_ROOT, shell=True)
 

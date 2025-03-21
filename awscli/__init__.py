@@ -16,8 +16,8 @@ AWSCLI
 A Universal Command Line Environment for Amazon Web Services.
 """
 
-import os
 import importlib.abc
+import os
 import sys
 
 __version__ = '2.25.1'

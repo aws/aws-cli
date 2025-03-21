@@ -12,27 +12,28 @@
 # language governing permissions and limitations under the License.
 import logging
 import os
-import sys
 import platform
 import shlex
-from subprocess import Popen, PIPE
+import sys
+from subprocess import PIPE, Popen
 
 from docutils.core import publish_string
 from docutils.writers import manpage
 
-from awscli.clidocs import ProviderDocumentEventHandler
-from awscli.clidocs import ServiceDocumentEventHandler
-from awscli.clidocs import OperationDocumentEventHandler
-from awscli.clidocs import TopicListerDocumentEventHandler
-from awscli.clidocs import TopicDocumentEventHandler
+from awscli.argparser import ArgTableArgParser
+from awscli.argprocess import ParamShorthandParser
 from awscli.bcdoc import docevents
 from awscli.bcdoc.restdoc import ReSTDocument
 from awscli.bcdoc.textwriter import TextWriter
-from awscli.argprocess import ParamShorthandParser
-from awscli.argparser import ArgTableArgParser
+from awscli.clidocs import (
+    OperationDocumentEventHandler,
+    ProviderDocumentEventHandler,
+    ServiceDocumentEventHandler,
+    TopicDocumentEventHandler,
+    TopicListerDocumentEventHandler,
+)
 from awscli.topictags import TopicTagDB
 from awscli.utils import ignore_ctrl_c
-
 
 LOG = logging.getLogger('awscli.help')
 
@@ -55,7 +56,7 @@ def get_renderer():
         return PosixHelpRenderer()
 
 
-class PagingHelpRenderer(object):
+class PagingHelpRenderer:
     """
     Interface for a help renderer.
 
@@ -191,7 +192,7 @@ class WindowsHelpRenderer(PagingHelpRenderer):
         return Popen(*args, **kwargs)
 
 
-class HelpCommand(object):
+class HelpCommand:
     """
     HelpCommand Interface
     ---------------------

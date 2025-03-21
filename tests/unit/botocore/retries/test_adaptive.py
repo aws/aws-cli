@@ -1,9 +1,6 @@
-from tests import mock, unittest
+from botocore.retries import adaptive, bucket, standard, throttling
 
-from botocore.retries import adaptive
-from botocore.retries import standard
-from botocore.retries import bucket
-from botocore.retries import throttling
+from tests import mock, unittest
 
 
 class FakeClock(bucket.Clock):
@@ -24,8 +21,10 @@ class TestCanCreateRetryHandler(unittest.TestCase):
         limiter = adaptive.register_retry_handler(client)
         self.assertEqual(
             client.meta.events.register.call_args_list,
-            [mock.call('before-send', limiter.on_sending_request),
-             mock.call('needs-retry', limiter.on_receiving_response)]
+            [
+                mock.call('before-send', limiter.on_sending_request),
+                mock.call('needs-retry', limiter.on_receiving_response),
+            ],
         )
 
 
@@ -37,7 +36,8 @@ class TestClientRateLimiter(unittest.TestCase):
         self.rate_adjustor = mock.Mock(spec=throttling.CubicCalculator)
         self.rate_clocker = mock.Mock(spec=adaptive.RateClocker)
         self.throttling_detector = mock.Mock(
-            spec=standard.ThrottlingErrorDetector)
+            spec=standard.ThrottlingErrorDetector
+        )
 
     def create_client_limiter(self):
         rate_limiter = adaptive.ClientRateLimiter(
@@ -86,8 +86,8 @@ class TestClientRateLimiter(unittest.TestCase):
         rate_limiter.on_receiving_response()
         self.assertEqual(self.token_bucket.max_rate, 2.0 * 20)
 
-class TestRateClocker(unittest.TestCase):
 
+class TestRateClocker(unittest.TestCase):
     def setUp(self):
         self.timestamp_sequences = [0]
         self.clock = FakeClock(self.timestamp_sequences)
@@ -110,18 +110,20 @@ class TestRateClocker(unittest.TestCase):
         self.assertAlmostEqual(self.rate_measure.measured_rate, 1)
 
     def test_uses_smoothing_to_favor_recent_weights(self):
-        self.timestamp_sequences.extend([
-            1,
-            1.5,
-            2,
-            2.5,
-            3,
-            3.5,
-            4,
-            # If we now wait 10 seconds (.1 TPS),
-            # our rate is somewhere between 2 TPS and .1 TPS.
-            14,
-        ])
+        self.timestamp_sequences.extend(
+            [
+                1,
+                1.5,
+                2,
+                2.5,
+                3,
+                3.5,
+                4,
+                # If we now wait 10 seconds (.1 TPS),
+                # our rate is somewhere between 2 TPS and .1 TPS.
+                14,
+            ]
+        )
         for _ in range(7):
             self.rate_measure.record()
         # We should almost be at 2.0 but not quite.
@@ -134,26 +136,22 @@ class TestRateClocker(unittest.TestCase):
         self.assertLessEqual(self.rate_measure.measured_rate, 2.0)
 
     def test_noop_when_delta_t_is_0(self):
-        self.timestamp_sequences.extend([
-            1,
-            1,
-            1,
-            2,
-            3
-        ])
+        self.timestamp_sequences.extend([1, 1, 1, 2, 3])
         for _ in range(5):
             self.rate_measure.record()
         self.assertGreaterEqual(self.rate_measure.measured_rate, 1.0)
 
     def test_times_are_grouped_per_time_bucket(self):
         # Using our default of 0.5 time buckets, we have:
-        self.timestamp_sequences.extend([
-            0.1,
-            0.2,
-            0.3,
-            0.4,
-            0.49,
-        ])
+        self.timestamp_sequences.extend(
+            [
+                0.1,
+                0.2,
+                0.3,
+                0.4,
+                0.49,
+            ]
+        )
         for _ in range(len(self.timestamp_sequences)):
             self.rate_measure.record()
         # This is showing the tradeoff we're making with measuring rates.

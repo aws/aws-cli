@@ -10,9 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import pytest
-
 import botocore.session
+import pytest
 from botocore.utils import ArgumentGenerator
 
 
@@ -32,8 +31,12 @@ def _all_inputs():
                 yield input_shape, service_name, operation_name
 
 
-@pytest.mark.parametrize("input_shape, service_name, operation_name", _all_inputs())
-def test_can_generate_all_inputs(generator, input_shape, service_name, operation_name):
+@pytest.mark.parametrize(
+    "input_shape, service_name, operation_name", _all_inputs()
+)
+def test_can_generate_all_inputs(
+    generator, input_shape, service_name, operation_name
+):
     generated = generator.generate_skeleton(input_shape)
     # Do some basic sanity checks to make sure the generated shape
     # looks right.  We're mostly just ensuring that the generate_skeleton

@@ -148,7 +148,8 @@ def raw_config_parse(config_filename, parse_subsections=True):
             cp.read([path])
         except (configparser.Error, UnicodeDecodeError):
             raise botocore.exceptions.ConfigParseError(
-                path=_unicode_path(path))
+                path=_unicode_path(path)
+            )
         else:
             for section in cp.sections():
                 config[section] = {}
@@ -162,7 +163,8 @@ def raw_config_parse(config_filename, parse_subsections=True):
                             config_value = _parse_nested(config_value)
                         except ValueError:
                             raise botocore.exceptions.ConfigParseError(
-                                path=_unicode_path(path))
+                                path=_unicode_path(path)
+                            )
                     config[section][option] = config_value
     return config
 

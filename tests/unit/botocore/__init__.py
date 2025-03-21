@@ -12,12 +12,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import copy
+
 from tests import unittest
 
 
 class BaseResponseTest(unittest.TestCase):
-    def assert_response_with_subset_metadata(self, actual_response,
-                                             expected_response):
+    def assert_response_with_subset_metadata(
+        self, actual_response, expected_response
+    ):
         """
         Compares two parsed service responses. For ResponseMetadata, it will
         only assert that the expected is a proper subset of the actual. This
@@ -37,5 +39,8 @@ class BaseResponseTest(unittest.TestCase):
         """
         Asserts that a dictionary is a proper subset of another.
         """
-        self.assertTrue(all((k in superset and superset[k] == v)
-                            for k, v in subset.items()))
+        self.assertTrue(
+            all(
+                (k in superset and superset[k] == v) for k, v in subset.items()
+            )
+        )

@@ -11,13 +11,18 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import datetime
-import pytest
 
-from botocore.exceptions import MD5UnavailableError
+import pytest
 from botocore.compat import (
-    total_seconds, unquote_str, ensure_bytes, get_md5,
-    compat_shell_split, get_tzinfo_options
+    compat_shell_split,
+    ensure_bytes,
+    get_md5,
+    get_tzinfo_options,
+    total_seconds,
+    unquote_str,
 )
+from botocore.exceptions import MD5UnavailableError
+
 from tests import BaseEnvVar, mock, unittest
 
 
@@ -34,19 +39,19 @@ class TotalSecondsTest(BaseEnvVar):
 
 class TestUnquoteStr(unittest.TestCase):
     def test_unquote_str(self):
-        value = u'%E2%9C%93'
+        value = '%E2%9C%93'
         # Note: decoded to unicode and utf-8 decoded as well.
         # This would work in python2 and python3.
-        self.assertEqual(unquote_str(value), u'\u2713')
+        self.assertEqual(unquote_str(value), '\u2713')
 
     def test_unquote_normal(self):
-        value = u'foo'
+        value = 'foo'
         # Note: decoded to unicode and utf-8 decoded as well.
         # This would work in python2 and python3.
-        self.assertEqual(unquote_str(value), u'foo')
+        self.assertEqual(unquote_str(value), 'foo')
 
     def test_unquote_with_spaces(self):
-        value = u'foo+bar'
+        value = 'foo+bar'
         # Note: decoded to unicode and utf-8 decoded as well.
         # This would work in python2 and python3.
         self.assertEqual(unquote_str(value), 'foo bar')
@@ -66,13 +71,13 @@ class TestEnsureBytes(unittest.TestCase):
         self.assertEqual(response, b'bar')
 
     def test_unicode(self):
-        value = u'baz'
+        value = 'baz'
         response = ensure_bytes(value)
         self.assertIsInstance(response, bytes)
         self.assertEqual(response, b'baz')
 
     def test_non_ascii(self):
-        value = u'\u2713'
+        value = '\u2713'
         response = ensure_bytes(value)
         self.assertIsInstance(response, bytes)
         self.assertEqual(response, b'\xe2\x9c\x93')
@@ -123,12 +128,14 @@ def get_windows_test_cases():
         r'"abc" d e': [r'abc', r'd', r'e'],
         r'a\\b d"e f"g h': [r'a\\b', r'de fg', r'h'],
         r'a\\\"b c d': [r'a\"b', r'c', r'd'],
-        r'a\\\\"b c" d e': [r'a\\b c', r'd', r'e']
+        r'a\\\\"b c" d e': [r'a\\b c', r'd', r'e'],
     }
     return windows_cases.items()
 
 
-@pytest.mark.parametrize("input_string, expected_output", get_windows_test_cases())
+@pytest.mark.parametrize(
+    "input_string, expected_output", get_windows_test_cases()
+)
 def test_compat_shell_split_windows(
     shell_split_runner, input_string, expected_output
 ):
@@ -160,19 +167,23 @@ def get_unix_test_cases():
         r'"abc" d e': [r'abc', r'd', r'e'],
         r'a\\b d"e f"g h': [r'a\b', r'de fg', r'h'],
         r'a\\\"b c d': [r'a\"b', r'c', r'd'],
-        r'a\\\\"b c" d e': [r'a\\b c', r'd', r'e']
+        r'a\\\\"b c" d e': [r'a\\b c', r'd', r'e'],
     }
     return unix_cases.items()
 
 
-@pytest.mark.parametrize("input_string, expected_output", get_unix_test_cases())
+@pytest.mark.parametrize(
+    "input_string, expected_output", get_unix_test_cases()
+)
 def test_compat_shell_split_unix_linux2(
     shell_split_runner, input_string, expected_output
 ):
     shell_split_runner.assert_equal(input_string, expected_output, "linux2")
 
 
-@pytest.mark.parametrize("input_string, expected_output", get_unix_test_cases())
+@pytest.mark.parametrize(
+    "input_string, expected_output", get_unix_test_cases()
+)
 def test_compat_shell_split_unix_darwin(
     shell_split_runner, input_string, expected_output
 ):
@@ -187,7 +198,7 @@ def test_compat_shell_split_unix_darwin_raises_error(shell_split_runner):
     shell_split_runner.assert_raises(r'"', ValueError, "darwin")
 
 
-class ShellSplitTestRunner(object):
+class ShellSplitTestRunner:
     def assert_equal(self, s, expected, platform):
         assert compat_shell_split(s, platform) == expected
 

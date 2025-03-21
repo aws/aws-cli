@@ -16,6 +16,7 @@ from botocore.exceptions import (
     UnknownSignatureVersionError,
     UnsupportedSignatureVersionError,
 )
+
 from tests import mock, unittest
 
 

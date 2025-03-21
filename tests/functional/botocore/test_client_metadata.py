@@ -10,9 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import botocore.session
+
 from tests import unittest
 
-import botocore.session
 
 class TestClientMeta(unittest.TestCase):
     def setUp(self):
@@ -23,8 +24,9 @@ class TestClientMeta(unittest.TestCase):
         self.assertEqual(client.meta.region_name, 'us-west-2')
 
     def test_endpoint_url_on_meta(self):
-        client = self.session.create_client('s3', 'us-west-2',
-                                            endpoint_url='https://foo')
+        client = self.session.create_client(
+            's3', 'us-west-2', endpoint_url='https://foo'
+        )
         self.assertEqual(client.meta.endpoint_url, 'https://foo')
 
     def test_client_has_standard_partition_on_meta(self):

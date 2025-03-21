@@ -12,14 +12,14 @@
 # language governing permissions and limitations under the License.
 import datetime
 
-import pytest
-from dateutil.tz import tzutc
-
 import botocore.session
+import pytest
 from botocore.auth import S3ExpressAuth
 from botocore.awsrequest import AWSRequest
 from botocore.credentials import Credentials, RefreshableCredentials
 from botocore.utils import S3ExpressIdentityCache
+from dateutil.tz import tzutc
+
 from tests import ClientHTTPStubber, mock
 
 ACCESS_KEY = "AKIDEXAMPLE"

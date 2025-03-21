@@ -11,9 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-from tests import mock, unittest
 
 import botocore.session
+
+from tests import mock, unittest
 
 
 # Basic sanity checks for loader functionality.
@@ -40,26 +41,33 @@ class TestLoaderBasicFunctionality(unittest.TestCase):
         # We don't want an exact check, as this list changes over time.
         # We just need a basic sanity check.
         available_services = self.loader.list_available_services(
-            type_name='service-2')
+            type_name='service-2'
+        )
         self.assertIn('ec2', available_services)
         self.assertIn('s3', available_services)
 
     def test_can_determine_latest_version(self):
         api_versions = self.loader.list_api_versions(
-            service_name='ec2', type_name='service-2')
+            service_name='ec2', type_name='service-2'
+        )
         self.assertEqual(
             self.loader.determine_latest_version(
-                service_name='ec2', type_name='service-2'),
-            max(api_versions))
+                service_name='ec2', type_name='service-2'
+            ),
+            max(api_versions),
+        )
 
     def test_can_load_service_model(self):
         waiters = self.loader.load_service_model(
-            service_name='ec2', type_name='waiters-2')
+            service_name='ec2', type_name='waiters-2'
+        )
         self.assertIn('waiters', waiters)
 
     def test_can_load_data(self):
         api_version = self.loader.determine_latest_version(
-            service_name='ec2', type_name='service-2')
+            service_name='ec2', type_name='service-2'
+        )
         data = self.loader.load_data(
-            os.path.join('ec2', api_version, 'service-2'))
+            os.path.join('ec2', api_version, 'service-2')
+        )
         self.assertIn('metadata', data)

@@ -10,10 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import unittest, BaseSessionTest, ClientHTTPStubber
-
 import botocore.session
 from botocore.stub import Stubber
+
+from tests import BaseSessionTest, ClientHTTPStubber, unittest
+
 
 class TestRoute53Pagination(unittest.TestCase):
     def setUp(self):
@@ -25,7 +26,7 @@ class TestRoute53Pagination(unittest.TestCase):
             'HostedZones': [],
             'Marker': '',
             'IsTruncated': True,
-            'MaxItems': '1'
+            'MaxItems': '1',
         }
         self.operation_name = 'list_hosted_zones'
         self.final_params = {}
@@ -38,7 +39,8 @@ class TestRoute53Pagination(unittest.TestCase):
         # because the stubber asserts on the same event first, we don't see
         # the modified value meaning we need to use a custom handler
         self.client.meta.events.register_last(
-            'before-parameter-build', self._store_final_params,
+            'before-parameter-build',
+            self._store_final_params,
         )
 
         self.stubber.add_response(self.operation_name, self.response)
@@ -53,7 +55,7 @@ class TestRoute53Pagination(unittest.TestCase):
         self.stubber.add_response(self.operation_name, self.response)
         paginator = self.client.get_paginator('list_hosted_zones')
         with self.stubber:
-            config={'PageSize': 1}
+            config = {'PageSize': 1}
             results = list(paginator.paginate(PaginationConfig=config))
             self.assertTrue(len(results) >= 0)
 
@@ -63,14 +65,16 @@ class TestRoute53Pagination(unittest.TestCase):
         self.stubber.add_response(self.operation_name, self.response)
         paginator = self.client.get_paginator('list_hosted_zones')
         with self.stubber:
-            config={'PageSize': '1'}
+            config = {'PageSize': '1'}
             results = list(paginator.paginate(PaginationConfig=config))
             self.assertTrue(len(results) >= 0)
 
-class TestRoute53EndpointResolution(BaseSessionTest):
 
+class TestRoute53EndpointResolution(BaseSessionTest):
     def create_stubbed_client(self, service_name, region_name, **kwargs):
-        client = self.session.create_client(service_name, region_name, **kwargs)
+        client = self.session.create_client(
+            service_name, region_name, **kwargs
+        )
         http_stubber = ClientHTTPStubber(client)
         http_stubber.start()
         http_stubber.add_response()

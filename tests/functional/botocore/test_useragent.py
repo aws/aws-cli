@@ -16,9 +16,9 @@ from concurrent import futures
 from itertools import product
 
 import pytest
-
 from botocore import __version__ as botocore_version
 from botocore.config import Config
+
 from tests import ClientHTTPStubber
 
 
@@ -299,9 +299,7 @@ def test_awscli_v2_user_agent(patched_session):
         client_s3.list_buckets()
     # The user agent string should start with "aws-cli/1.1.1" from the setting
     # above, followed by Botocore's version info as metadata ("md/...").
-    assert stub_client.captured_ua_string.startswith(
-        f'aws-cli/2.2.2 '
-    )
+    assert stub_client.captured_ua_string.startswith('aws-cli/2.2.2 ')
     assert stub_client.captured_ua_string.endswith(
         ' md/installer#source md/prompt#off md/command#service-name.op-name'
     )

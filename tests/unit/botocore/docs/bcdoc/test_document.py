@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
+from botocore.docs.bcdoc.restdoc import DocumentStructure, ReSTDocument
+
 from tests import unittest
-from botocore.docs.bcdoc.restdoc import ReSTDocument, DocumentStructure
 
 
 class TestReSTDocument(unittest.TestCase):
-
     def test_write(self):
         doc = ReSTDocument()
         doc.write('foo')
@@ -52,7 +52,8 @@ class TestReSTDocument(unittest.TestCase):
         doc = ReSTDocument()
         doc.hrefs['foo'] = 'https://example.com/'
         self.assertEqual(
-            doc.getvalue(), b'\n\n.. _foo: https://example.com/\n')
+            doc.getvalue(), b'\n\n.. _foo: https://example.com/\n'
+        )
 
 
 class TestDocumentStructure(unittest.TestCase):
@@ -75,25 +76,24 @@ class TestDocumentStructure(unittest.TestCase):
         self.assertEqual(section.name, 'mysection')
 
         # Ensure we can get the section.
-        self.assertEqual(
-            self.doc_structure.get_section('mysection'), section)
+        self.assertEqual(self.doc_structure.get_section('mysection'), section)
 
         # Ensure the path is correct
         self.assertEqual(section.path, ['mydoc', 'mysection'])
 
         # Ensure some of the necessary attributes are passed to the
         # the section.
-        self.assertEqual(section.style.indentation,
-                         self.doc_structure.style.indentation)
-        self.assertEqual(section.translation_map,
-                         self.doc_structure.translation_map)
-        self.assertEqual(section.hrefs,
-                         self.doc_structure.hrefs)
+        self.assertEqual(
+            section.style.indentation, self.doc_structure.style.indentation
+        )
+        self.assertEqual(
+            section.translation_map, self.doc_structure.translation_map
+        )
+        self.assertEqual(section.hrefs, self.doc_structure.hrefs)
 
     def test_delete_section(self):
         section = self.doc_structure.add_new_section('mysection')
-        self.assertEqual(
-            self.doc_structure.get_section('mysection'), section)
+        self.assertEqual(self.doc_structure.get_section('mysection'), section)
         self.doc_structure.delete_section('mysection')
         with self.assertRaises(KeyError):
             section.get_section('mysection')
@@ -101,7 +101,8 @@ class TestDocumentStructure(unittest.TestCase):
     def test_create_sections_at_instantiation(self):
         sections = ['intro', 'middle', 'end']
         self.doc_structure = DocumentStructure(
-            self.name, section_names=sections)
+            self.name, section_names=sections
+        )
         # Ensure the sections are attached to the new document structure.
         for section_name in sections:
             section = self.doc_structure.get_section(section_name)
@@ -133,14 +134,14 @@ class TestDocumentStructure(unittest.TestCase):
         self.doc_structure.add_new_section('mysection')
         self.doc_structure.add_new_section('mysection2')
         self.assertEqual(
-            self.doc_structure.available_sections,
-            ['mysection', 'mysection2']
+            self.doc_structure.available_sections, ['mysection', 'mysection2']
         )
 
     def test_context(self):
         context = {'Foo': 'Bar'}
         section = self.doc_structure.add_new_section(
-            'mysection', context=context)
+            'mysection', context=context
+        )
         self.assertEqual(section.context, context)
 
         # Make sure if context is not specified it is empty.

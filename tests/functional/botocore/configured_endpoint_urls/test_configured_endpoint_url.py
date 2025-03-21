@@ -15,12 +15,12 @@ import json
 from pathlib import Path
 from unittest import mock
 
-import pytest
-
 import botocore.configprovider
 import botocore.utils
+import pytest
 from botocore.compat import urlsplit
 from botocore.config import Config
+
 from tests import ClientHTTPStubber
 
 ENDPOINT_TESTDATA_FILE = Path(__file__).parent / "profile-tests.json"

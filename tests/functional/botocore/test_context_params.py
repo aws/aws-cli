@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 
 import pytest
-
 from botocore.config import Config
+
 from tests import ClientHTTPStubber, mock, patch_load_service_model
 
 # fake rulesets compatible with all fake service models below
@@ -476,6 +476,7 @@ def test_dynamic_context_param_sent_to_endpoint_resolver(
     else:
         mock_resolve_endpoint.assert_called_once_with(Region='us-east-1')
 
+
 def test_dynamic_context_param_from_event_handler_sent_to_endpoint_resolver(
     monkeypatch,
     patched_session,
@@ -487,10 +488,12 @@ def test_dynamic_context_param_from_event_handler_sent_to_endpoint_resolver(
         FAKE_MODEL_WITH_DYNAMIC_CONTEXT_PARAM,
         FAKE_RULESET_WITH_DYNAMIC_CONTEXT_PARAM,
     )
+
     # event handler for provide-client-params that modifies the value of the
     # MockOpParam parameter
     def change_param(params, **kwargs):
         params['MockOpParam'] = 'mock-op-param-value-2'
+
     client = patched_session.create_client(
         'otherservice', region_name='us-east-1'
     )

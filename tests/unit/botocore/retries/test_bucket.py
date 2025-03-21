@@ -1,7 +1,7 @@
-from tests import unittest
-
-from botocore.retries import bucket
 from botocore.exceptions import CapacityNotAvailableError
+from botocore.retries import bucket
+
+from tests import unittest
 
 
 class FakeClock(bucket.Clock):
@@ -22,19 +22,22 @@ class TestTokenBucket(unittest.TestCase):
         self.clock = FakeClock(self.timestamp_sequences)
 
     def create_token_bucket(self, max_rate=10, min_rate=0.1):
-        return bucket.TokenBucket(max_rate=max_rate, clock=self.clock,
-                                  min_rate=min_rate)
+        return bucket.TokenBucket(
+            max_rate=max_rate, clock=self.clock, min_rate=min_rate
+        )
 
     def test_can_acquire_amount(self):
-        self.timestamp_sequences.extend([
-            # Requests tokens every second, which is well below our
-            # 10 TPS fill rate.
-            1,
-            2,
-            3,
-            4,
-            5,
-        ])
+        self.timestamp_sequences.extend(
+            [
+                # Requests tokens every second, which is well below our
+                # 10 TPS fill rate.
+                1,
+                2,
+                3,
+                4,
+                5,
+            ]
+        )
         token_bucket = self.create_token_bucket(max_rate=10)
         for _ in range(5):
             self.assertTrue(token_bucket.acquire(1, block=False))
@@ -62,21 +65,26 @@ class TestTokenBucket(unittest.TestCase):
         self.assertEqual(token_bucket.max_capacity, 1)
 
     def test_acquire_fails_on_non_block_mode_returns_false(self):
-        self.timestamp_sequences.extend([
-            # Initial creation time.
-            0,
-            # Requests a token 1 second later.
-            1
-        ])
+        self.timestamp_sequences.extend(
+            [
+                # Initial creation time.
+                0,
+                # Requests a token 1 second later.
+                1,
+            ]
+        )
         token_bucket = self.create_token_bucket(max_rate=10)
         with self.assertRaises(CapacityNotAvailableError):
             token_bucket.acquire(100, block=False)
 
     def test_can_retrieve_at_max_send_rate(self):
-        self.timestamp_sequences.extend([
-            # Request a new token every 100ms (10 TPS) for 2 seconds.
-            1 + 0.1 * i for i in range(20)
-        ])
+        self.timestamp_sequences.extend(
+            [
+                # Request a new token every 100ms (10 TPS) for 2 seconds.
+                1 + 0.1 * i
+                for i in range(20)
+            ]
+        )
         token_bucket = self.create_token_bucket(max_rate=10)
         for _ in range(20):
             self.assertTrue(token_bucket.acquire(1, block=False))
@@ -84,20 +92,22 @@ class TestTokenBucket(unittest.TestCase):
     def test_acquiring_blocks_when_capacity_reached(self):
         # This is 1 token every 0.1 seconds.
         token_bucket = self.create_token_bucket(max_rate=10)
-        self.timestamp_sequences.extend([
-            # The first acquire() happens after .1 seconds.
-            0.1,
-            # The second acquire() will fail because we get tokens at
-            # 1 per 0.1 seconds.  We will then sleep for 0.05 seconds until we
-            # get a new token.
-            0.15,
-            # And at 0.2 seconds we get our token.
-            0.2,
-            # And at 0.3 seconds we have no issues getting a token.
-            # Because we're using such small units (to avoid bloating the
-            # test run time), we have to go slightly over 0.3 seconds here.
-            0.300001,
-        ])
+        self.timestamp_sequences.extend(
+            [
+                # The first acquire() happens after .1 seconds.
+                0.1,
+                # The second acquire() will fail because we get tokens at
+                # 1 per 0.1 seconds.  We will then sleep for 0.05 seconds until we
+                # get a new token.
+                0.15,
+                # And at 0.2 seconds we get our token.
+                0.2,
+                # And at 0.3 seconds we have no issues getting a token.
+                # Because we're using such small units (to avoid bloating the
+                # test run time), we have to go slightly over 0.3 seconds here.
+                0.300001,
+            ]
+        )
         self.assertTrue(token_bucket.acquire(1, block=False))
         self.assertEqual(token_bucket.available_capacity, 0)
         self.assertTrue(token_bucket.acquire(1, block=True))

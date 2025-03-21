@@ -2,6 +2,7 @@ import unittest
 
 import botocore
 
+
 class TestCreateClients(unittest.TestCase):
     def setUp(self):
         self.session = botocore.session.get_session()
@@ -16,4 +17,5 @@ class TestCreateClients(unittest.TestCase):
     def test_client_raises_exception_invalid_region(self):
         with self.assertRaisesRegex(ValueError, ('invalid region name')):
             self.session.create_client(
-                'cloudformation', region_name='invalid region name')
+                'cloudformation', region_name='invalid region name'
+            )

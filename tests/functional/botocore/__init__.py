@@ -14,6 +14,7 @@ import os
 import uuid
 
 import botocore
+
 from tests import BaseEnvVar
 
 _ORIGINAL = os.environ.copy()
@@ -31,7 +32,8 @@ _CREDENTIAL_ENV_VARS = [
 ]
 
 TEST_MODELS_DIR = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), 'models',
+    os.path.dirname(os.path.abspath(__file__)),
+    'models',
 )
 
 

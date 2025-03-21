@@ -18,10 +18,10 @@
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
-from tests import mock, unittest
-
 import botocore.docs.bcdoc.docstringparser as parser
 from botocore.docs.bcdoc.restdoc import ReSTDocument
+
+from tests import mock, unittest
 
 
 class TestDocStringParser(unittest.TestCase):
@@ -44,18 +44,16 @@ class TestDocStringParser(unittest.TestCase):
     def test_nested_lists(self):
         html = "<ul><li>Wello</li><ul><li>Horld</li></ul></ul>"
         result = self.parse(html)
-        self.assert_contains_exact_lines_in_order(result, [
-            b'* Wello',
-            b'  * Horld'
-        ])
+        self.assert_contains_exact_lines_in_order(
+            result, [b'* Wello', b'  * Horld']
+        )
 
     def test_nested_lists_with_extra_white_space(self):
         html = "<ul> <li> Wello</li><ul> <li> Horld</li></ul></ul>"
         result = self.parse(html)
-        self.assert_contains_exact_lines_in_order(result, [
-            b'* Wello',
-            b'  * Horld'
-        ])
+        self.assert_contains_exact_lines_in_order(
+            result, [b'* Wello', b'  * Horld']
+        )
 
 
 class TestHTMLTree(unittest.TestCase):

@@ -12,10 +12,10 @@
 # language governing permissions and limitations under the License.
 import time
 
-from tests import unittest
-
 import botocore.session
 from botocore import exceptions
+
+from tests import unittest
 
 
 class TestApigateway(unittest.TestCase):
@@ -33,7 +33,8 @@ class TestApigateway(unittest.TestCase):
         except exceptions.ClientError as e:
             if e.response['Error']['Code'] == 'TooManyRequestsException':
                 raise unittest.SkipTest(
-                    "Hit API gateway throttle limit, skipping test.")
+                    "Hit API gateway throttle limit, skipping test."
+                )
             raise
         return api_id
 
@@ -55,15 +56,16 @@ class TestApigateway(unittest.TestCase):
 
     def test_put_integration(self):
         # The only resource on a brand new api is the path. So use that ID.
-        path_resource_id = self.client.get_resources(
-            restApiId=self.api_id)['items'][0]['id']
+        path_resource_id = self.client.get_resources(restApiId=self.api_id)[
+            'items'
+        ][0]['id']
 
         # Create a method for the resource.
         self.client.put_method(
             restApiId=self.api_id,
             resourceId=path_resource_id,
             httpMethod='GET',
-            authorizationType='None'
+            authorizationType='None',
         )
 
         # Put an integration on the method.
@@ -73,7 +75,7 @@ class TestApigateway(unittest.TestCase):
             httpMethod='GET',
             type='HTTP',
             integrationHttpMethod='GET',
-            uri='https://api.endpoint.com'
+            uri='https://api.endpoint.com',
         )
         # Assert the response was successful by checking the integration type
         self.assertEqual(response['type'], 'HTTP')

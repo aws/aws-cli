@@ -12,54 +12,42 @@
 # language governing permissions and limitations under the License.
 import pytest
 
-from tests import create_session, mock, ClientHTTPStubber
-
+from tests import ClientHTTPStubber, create_session, mock
 
 OPERATION_PARAMS = {
     'change_password': {
         'PreviousPassword': 'myoldbadpassword',
         'ProposedPassword': 'mynewgoodpassword',
-        'AccessToken': 'foobar'
+        'AccessToken': 'foobar',
     },
     'confirm_forgot_password': {
         'ClientId': 'foo',
         'Username': 'myusername',
         'ConfirmationCode': 'thisismeforreal',
-        'Password': 'whydowesendpasswordsviaemail'
+        'Password': 'whydowesendpasswordsviaemail',
     },
     'confirm_sign_up': {
         'ClientId': 'foo',
         'Username': 'myusername',
-        'ConfirmationCode': 'ireallydowanttosignup'
+        'ConfirmationCode': 'ireallydowanttosignup',
     },
-    'delete_user': {
-        'AccessToken': 'foobar'
-    },
+    'delete_user': {'AccessToken': 'foobar'},
     'delete_user_attributes': {
         'UserAttributeNames': ['myattribute'],
-        'AccessToken': 'foobar'
+        'AccessToken': 'foobar',
     },
-    'forgot_password': {
-        'ClientId': 'foo',
-        'Username': 'myusername'
-    },
-    'get_user': {
-        'AccessToken': 'foobar'
-    },
+    'forgot_password': {'ClientId': 'foo', 'Username': 'myusername'},
+    'get_user': {'AccessToken': 'foobar'},
     'get_user_attribute_verification_code': {
         'AttributeName': 'myattribute',
-        'AccessToken': 'foobar'
+        'AccessToken': 'foobar',
     },
-    'resend_confirmation_code': {
-        'ClientId': 'foo',
-        'Username': 'myusername'
-    },
+    'resend_confirmation_code': {'ClientId': 'foo', 'Username': 'myusername'},
     'set_user_settings': {
         'AccessToken': 'randomtoken',
-        'MFAOptions': [{
-            'DeliveryMedium': 'SMS',
-            'AttributeName': 'someattributename'
-        }]
+        'MFAOptions': [
+            {'DeliveryMedium': 'SMS', 'AttributeName': 'someattributename'}
+        ],
     },
     'sign_up': {
         'ClientId': 'foo',
@@ -67,20 +55,20 @@ OPERATION_PARAMS = {
         'Password': 'mysupersecurepassword',
     },
     'update_user_attributes': {
-        'UserAttributes': [{
-            'Name': 'someattributename',
-            'Value': 'newvalue'
-        }],
-        'AccessToken': 'foobar'
+        'UserAttributes': [{'Name': 'someattributename', 'Value': 'newvalue'}],
+        'AccessToken': 'foobar',
     },
     'verify_user_attribute': {
         'AttributeName': 'someattributename',
         'Code': 'someverificationcode',
-        'AccessToken': 'foobar'
+        'AccessToken': 'foobar',
     },
 }
 
-@pytest.mark.parametrize("operation_name, parameters", OPERATION_PARAMS.items())
+
+@pytest.mark.parametrize(
+    "operation_name, parameters", OPERATION_PARAMS.items()
+)
 def test_unsigned_operations(operation_name, parameters):
     environ = {
         'AWS_ACCESS_KEY_ID': 'access_key',
@@ -101,6 +89,6 @@ def test_unsigned_operations(operation_name, parameters):
             operation(**parameters)
             request = http_stubber.requests[0]
 
-        assert 'authorization' not in request.headers, (
-            'authorization header found in unsigned operation'
-        )
+        assert (
+            'authorization' not in request.headers
+        ), 'authorization header found in unsigned operation'

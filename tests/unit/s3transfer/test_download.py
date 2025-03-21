@@ -37,6 +37,7 @@ from s3transfer.download import (
 from s3transfer.exceptions import RetriesExceededError
 from s3transfer.futures import IN_MEMORY_DOWNLOAD_TAG, BoundedExecutor
 from s3transfer.utils import CallArgs, OSUtils
+
 from tests import (
     BaseSubmissionTaskTest,
     BaseTaskTest,
@@ -576,7 +577,7 @@ class TestGetObjectTask(BaseTaskTest):
         self.stream = BytesIO(self.content)
         self.fileobj = WriteCollector()
         self.osutil = OSUtils()
-        self.io_chunksize = 64 * (1024 ** 2)
+        self.io_chunksize = 64 * (1024**2)
         self.task_cls = GetObjectTask
         self.download_output_manager = DownloadSeekableOutputManager(
             self.osutil, self.transfer_coordinator, self.io_executor
@@ -978,12 +979,12 @@ class TestDeferQueue(unittest.TestCase):
             [{'offset': 3, 'data': 'd'}],
         )
 
-    def test_writes_below_min_offset_with_last_byte_above_min_offset_are_queued(self):
+    def test_writes_below_min_offset_with_last_byte_above_min_offset_are_queued(
+        self,
+    ):
         self.assertEqual(
             self.q.request_writes(offset=0, data='foo'),
-            [
-                {'offset': 0, 'data': 'foo'}
-            ]
+            [{'offset': 0, 'data': 'foo'}],
         )
 
         # Even though a partial write of 'foo' was completed at offset 0,

@@ -1,14 +1,14 @@
 import json
 import math
-import sys
-import time
-import psutil
-
 import os
 import shutil
-from awscli.botocore.awsrequest import AWSResponse
-
+import sys
+import time
 from unittest import mock
+
+import psutil
+
+from awscli.botocore.awsrequest import AWSResponse
 from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
 from awscli.compat import BytesIO
 
@@ -105,7 +105,7 @@ class RawResponse(BytesIO):
             contents = self.read()
 
 
-class StubbedHTTPClient(object):
+class StubbedHTTPClient:
     """
     A generic stubbed HTTP client.
     """
@@ -136,7 +136,7 @@ class StubbedHTTPClient(object):
         self._responses.append(response)
 
 
-class ProcessBenchmarker(object):
+class ProcessBenchmarker:
     """
     Periodically samples CPU and memory usage of a process given its pid.
     """
@@ -192,7 +192,7 @@ class ProcessBenchmarker(object):
         return samples
 
 
-class BenchmarkHarness(object):
+class BenchmarkHarness:
     _DEFAULT_FILE_CONFIG_CONTENTS = "[default]"
 
     """
@@ -270,7 +270,9 @@ class BenchmarkHarness(object):
         # setup and stub HTTP client
         client.setup()
         self._stub_responses(
-            benchmark.get('responses', [{"headers": {}, "body": ""}]), client, result_dir
+            benchmark.get('responses', [{"headers": {}, "body": ""}]),
+            client,
+            result_dir,
         )
 
     def _stub_responses(self, responses, client, result_dir):
@@ -283,7 +285,7 @@ class BenchmarkHarness(object):
             # if body is a dict, load the contents from a file
             if isinstance(body, dict):
                 contents_path = os.path.join(result_dir, body['file'])
-                with open(contents_path, 'r') as contents_f:
+                with open(contents_path) as contents_f:
                     body = contents_f.read()
             headers = response.get("headers", {})
             status_code = response.get("status_code", 200)
@@ -331,7 +333,13 @@ class BenchmarkHarness(object):
         metrics_f.close()
 
     def _run_isolated_benchmark(
-        self, result_dir, benchmark, client, process_benchmarker, iteration, args
+        self,
+        result_dir,
+        benchmark,
+        client,
+        process_benchmarker,
+        iteration,
+        args,
     ):
         """
         Runs a single iteration of one benchmark execution. Includes setting up
@@ -365,8 +373,24 @@ class BenchmarkHarness(object):
                         os.dup2(out.fileno(), sys.stdout.fileno())
                         os.dup2(err.fileno(), sys.stderr.fileno())
                     else:
-                        with open(os.path.abspath(os.path.join(args.debug_dir, f'{benchmark["name"]}-{iteration}.txt')), 'w') as f:
-                            with open(os.path.abspath(os.path.join(args.debug_dir, f'{benchmark["name"]}-{iteration}-err.txt')), 'w') as f_err:
+                        with open(
+                            os.path.abspath(
+                                os.path.join(
+                                    args.debug_dir,
+                                    f'{benchmark["name"]}-{iteration}.txt',
+                                )
+                            ),
+                            'w',
+                        ) as f:
+                            with open(
+                                os.path.abspath(
+                                    os.path.join(
+                                        args.debug_dir,
+                                        f'{benchmark["name"]}-{iteration}-err.txt',
+                                    )
+                                ),
+                                'w',
+                            ) as f_err:
                                 os.dup2(f.fileno(), sys.stdout.fileno())
                                 os.dup2(f_err.fileno(), sys.stderr.fileno())
                     # execute command on child process
@@ -384,10 +408,10 @@ class BenchmarkHarness(object):
                 raise RuntimeError(
                     'Child process execution failed: output file not found.'
                 )
-            metrics_f = json.load(open(metrics_path, 'r'))
+            metrics_f = json.load(open(metrics_path))
             # raise error if child process failed
             if (rc := metrics_f['return_code']) != 0:
-                with open(child_err_path, 'r') as err:
+                with open(child_err_path) as err:
                     raise RuntimeError(
                         f'Child process execution failed: return code {rc}.\n'
                         f'Error: {err.read()}'
@@ -418,7 +442,7 @@ class BenchmarkHarness(object):
         result_dir = args.result_dir
         client = StubbedHTTPClient()
         process_benchmarker = ProcessBenchmarker()
-        definitions = json.load(open(args.benchmark_definitions, 'r'))
+        definitions = json.load(open(args.benchmark_definitions))
         if os.path.exists(result_dir):
             shutil.rmtree(result_dir)
         os.makedirs(result_dir, 0o777)

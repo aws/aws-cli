@@ -4,25 +4,25 @@ import os
 
 from scripts.performance.benchmark_utils import BenchmarkHarness
 
-
 _BENCHMARK_DEFINITIONS = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        'benchmarks',
-        'benchmarks.json'
-    )
+    os.path.dirname(os.path.abspath(__file__)), 'benchmarks', 'benchmarks.json'
+)
 
 
 if __name__ == "__main__":
     harness = BenchmarkHarness()
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--benchmark-definitions', default=_BENCHMARK_DEFINITIONS,
-        help=('The JSON file defining the commands to benchmark.')
+        '--benchmark-definitions',
+        default=_BENCHMARK_DEFINITIONS,
+        help=('The JSON file defining the commands to benchmark.'),
     )
     parser.add_argument(
-        '-o', '--result-dir', default=f'{os.getcwd()}/results',
+        '-o',
+        '--result-dir',
+        default=f'{os.getcwd()}/results',
         help='The directory to output performance results to. Existing '
-             'results will be deleted.'
+        'results will be deleted.',
     )
     parser.add_argument(
         '--data-interval',

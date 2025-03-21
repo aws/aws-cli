@@ -2257,8 +2257,7 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
 
         credentials = {
             'ProviderType': 'sso',
-            'Credentials': {
-                'AccessKeyId': credentials['accessKeyId'],
+            'Credentials': {'AccessKeyId': credentials['accessKeyId'],
                 'SecretAccessKey': credentials['secretAccessKey'],
                 'SessionToken': credentials['sessionToken'],
                 'Expiration': self._parse_timestamp(credentials['expiration']),

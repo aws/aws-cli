@@ -16,6 +16,7 @@ This provides autocompletion based on information found
 in the `service-2.json` files.
 
 """
+
 from collections import namedtuple
 from awscli.autocomplete import db
 
@@ -26,9 +27,18 @@ from awscli.autocomplete import db
 # the sqlite3 cache file.
 
 
-CLIArgument = namedtuple('CLIArgument', ['argname', 'type_name',
-                                         'command', 'parent', 'nargs',
-                                         'positional_arg', 'required'])
+CLIArgument = namedtuple(
+    'CLIArgument',
+    [
+        'argname',
+        'type_name',
+        'command',
+        'parent',
+        'nargs',
+        'positional_arg',
+        'required',
+    ],
+)
 
 
 class ModelIndex(object):
@@ -39,6 +49,7 @@ class ModelIndex(object):
     the model based autocompleter.
 
     """
+
     _COMMAND_NAME_QUERY = """
         SELECT command, full_name FROM command_table
         WHERE parent = :parent
@@ -74,8 +85,7 @@ class ModelIndex(object):
 
     def _get_db_connection(self):
         if self._db_connection is None:
-            self._db_connection = db.DatabaseConnection(
-                self._db_filename)
+            self._db_connection = db.DatabaseConnection(self._db_filename)
         return self._db_connection
 
     def command_names(self, lineage):
@@ -118,9 +128,12 @@ class ModelIndex(object):
         """
         db = self._get_db_connection()
         parent = '.'.join(lineage)
-        results = db.execute(self._ARG_NAME_QUERY,
-                             parent=parent, command=command_name,
-                             positional_arg=positional_arg)
+        results = db.execute(
+            self._ARG_NAME_QUERY,
+            parent=parent,
+            command=command_name,
+            positional_arg=positional_arg,
+        )
         return [row[0] for row in results]
 
     def get_argument_data(self, lineage, command_name, arg_name):
@@ -141,8 +154,12 @@ class ModelIndex(object):
         """
         db = self._get_db_connection()
         parent = '.'.join(lineage)
-        results = db.execute(self._ARG_DATA_QUERY, parent=parent,
-                             command=command_name, argname=arg_name)
+        results = db.execute(
+            self._ARG_DATA_QUERY,
+            parent=parent,
+            command=command_name,
+            argname=arg_name,
+        )
         match = results.fetchone()
         if match is not None:
             return CLIArgument(*match)

@@ -14,11 +14,13 @@ import time
 import uuid
 
 from awscli.clidriver import AWSCLIEntryPoint
-from awscli.customizations.sso.utils import OpenBrowserHandler, AuthCodeFetcher
-from awscli.testutils import create_clidriver
-from awscli.testutils import FileCreator
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import mock
+from awscli.customizations.sso.utils import AuthCodeFetcher, OpenBrowserHandler
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    create_clidriver,
+    mock,
+)
 
 
 class BaseSSOTest(BaseAWSCommandParamsTest):
@@ -37,7 +39,7 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         self.token_cache_dir = self.files.full_path('token-cache')
         self.token_cache_dir_patch = mock.patch(
             'awscli.customizations.sso.utils.SSO_TOKEN_DIR',
-            self.token_cache_dir
+            self.token_cache_dir,
         )
         self.token_cache_dir_patch.start()
         self.open_browser_mock = mock.Mock(spec=OpenBrowserHandler)
@@ -48,14 +50,13 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         self.open_browser_patch.start()
 
         self.fetcher_mock = mock.Mock(spec=AuthCodeFetcher)
-        self.fetcher_mock.return_value.redirect_uri_without_port.return_value = (
-            'http://127.0.0.1/oauth/callback'
-        )
+        self.fetcher_mock.return_value.redirect_uri_without_port.return_value = 'http://127.0.0.1/oauth/callback'
         self.fetcher_mock.return_value.redirect_uri_with_port.return_value = (
             'http://127.0.0.1:55555/oauth/callback'
         )
         self.fetcher_mock.return_value.get_auth_code_and_state.return_value = (
-            "abc", "00000000-0000-0000-0000-000000000000"
+            "abc",
+            "00000000-0000-0000-0000-000000000000",
         )
         self.auth_code_fetcher_patch = mock.patch(
             'awscli.customizations.sso.utils.AuthCodeFetcher',
@@ -80,8 +81,9 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         self.uuid_patch.stop()
         self.token_cache_dir_patch.stop()
 
-    def add_oidc_device_responses(self, access_token,
-                                  include_register_response=True):
+    def add_oidc_device_responses(
+        self, access_token, include_register_response=True
+    ):
         responses = [
             # StartDeviceAuthorization response
             {
@@ -103,7 +105,7 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
                 'expiresIn': self.expires_in,
                 'tokenType': 'Bearer',
                 'accessToken': access_token,
-            }
+            },
         ]
         if include_register_response:
             responses.insert(
@@ -112,12 +114,13 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
                     'clientSecretExpiresAt': self.expiration_time,
                     'clientId': 'device-client-id',
                     'clientSecret': 'device-client-secret',
-                }
+                },
             )
         self.parsed_responses = responses
 
-    def add_oidc_auth_code_responses(self, access_token,
-                                     include_register_response=True):
+    def add_oidc_auth_code_responses(
+        self, access_token, include_register_response=True
+    ):
         responses = [
             # CreateToken responses
             {
@@ -133,7 +136,7 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
                     'clientSecretExpiresAt': self.expiration_time,
                     'clientId': 'auth-client-id',
                     'clientSecret': 'auth-client-secret',
-                }
+                },
             )
         self.parsed_responses = responses
 
@@ -141,10 +144,10 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         self.assertIn(expected_region, self.last_request_dict['url'])
 
     def assert_device_browser_handler_called_with(
-            self,
-            userCode,
-            verificationUri,
-            verificationUriComplete,
+        self,
+        userCode,
+        verificationUri,
+        verificationUriComplete,
     ):
         # assert_called_with is matching the __init__ parameters instead of
         # __call__, so verify the arguments we're interested in this way
@@ -152,7 +155,9 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         _, kwargs = self.open_browser_mock.return_value.call_args
         self.assertEqual(userCode, kwargs['userCode'])
         self.assertEqual(verificationUri, kwargs['verificationUri'])
-        self.assertEqual(verificationUriComplete, kwargs['verificationUriComplete'])
+        self.assertEqual(
+            verificationUriComplete, kwargs['verificationUriComplete']
+        )
 
     def assert_auth_browser_handler_called_with(self, expected_scopes):
         # The endpoint is subject to the endpoint rules, and the

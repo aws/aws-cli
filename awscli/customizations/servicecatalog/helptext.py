@@ -14,8 +14,10 @@
 
 TAGS = "Tags to associate with the new product."
 
-BUCKET_NAME = ("Name of the S3 bucket name where the CloudFormation "
-               "template will be uploaded to")
+BUCKET_NAME = (
+    "Name of the S3 bucket name where the CloudFormation "
+    "template will be uploaded to"
+)
 
 SUPPORT_DESCRIPTION = "Support information about the product"
 
@@ -39,15 +41,21 @@ PRODUCT_TYPE = "The type of the product to create"
 
 PRODUCT_DESCRIPTION = "The text description of the product"
 
-PRODUCT_COMMAND_DESCRIPTION = ("Create a new product using a CloudFormation "
-                               "template specified as a local file path")
+PRODUCT_COMMAND_DESCRIPTION = (
+    "Create a new product using a CloudFormation "
+    "template specified as a local file path"
+)
 
-PA_COMMAND_DESCRIPTION = ("Create a new provisioning artifact for the "
-                          "specified product using a CloudFormation template "
-                          "specified as a local file path")
+PA_COMMAND_DESCRIPTION = (
+    "Create a new provisioning artifact for the "
+    "specified product using a CloudFormation template "
+    "specified as a local file path"
+)
 
-GENERATE_COMMAND = ("Generate a Service Catalog product or provisioning "
-                    "artifact using a CloudFormation template specified "
-                    "as a local file path")
+GENERATE_COMMAND = (
+    "Generate a Service Catalog product or provisioning "
+    "artifact using a CloudFormation template specified "
+    "as a local file path"
+)
 
 FILE_PATH = "A local file path that references the CloudFormation template"

@@ -20,31 +20,50 @@ from prompt_toolkit.filters import has_focus, Condition
 from prompt_toolkit.formatted_text import HTML, to_formatted_text
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.key_binding.bindings.focus import (
-    focus_next, focus_previous
+    focus_next,
+    focus_previous,
 )
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout import Layout
 from prompt_toolkit.layout.containers import (
-    Window, HSplit, Dimension, ConditionalContainer, WindowAlign, VSplit,
-    to_container, to_filter
+    Window,
+    HSplit,
+    Dimension,
+    ConditionalContainer,
+    WindowAlign,
+    VSplit,
+    to_container,
+    to_filter,
 )
 from prompt_toolkit.widgets import (
-    HorizontalLine, Box, Button, Label, Shadow, Frame, VerticalLine,
-    Dialog, TextArea
+    HorizontalLine,
+    Box,
+    Button,
+    Label,
+    Shadow,
+    Frame,
+    VerticalLine,
+    Dialog,
+    TextArea,
 )
 from prompt_toolkit.utils import is_windows
 
 from awscli.autoprompt.widgets import BaseToolbarView, TitleLine
 from awscli.customizations.wizard import core
 from awscli.customizations.wizard.ui.section import (
-    WizardSectionTab, WizardSectionBody
+    WizardSectionTab,
+    WizardSectionBody,
 )
 from awscli.customizations.wizard.ui.keybindings import (
-    details_visible, prompt_has_details, error_bar_enabled,
-    save_details_visible
+    details_visible,
+    prompt_has_details,
+    error_bar_enabled,
+    save_details_visible,
 )
 from awscli.customizations.wizard.ui.utils import (
-    move_to_previous_prompt, Spacer, get_ui_control_by_buffer_name
+    move_to_previous_prompt,
+    Spacer,
+    get_ui_control_by_buffer_name,
 )
 
 
@@ -56,13 +75,15 @@ class WizardLayoutFactory:
             [
                 self._create_title(definition),
                 self._create_sections(
-                    definition, run_wizard_dialog, error_bar),
-                HorizontalLine()
+                    definition, run_wizard_dialog, error_bar
+                ),
+                HorizontalLine(),
             ]
         )
         return WizardLayout(
-            container=container, run_wizard_dialog=run_wizard_dialog,
-            error_bar=error_bar
+            container=container,
+            run_wizard_dialog=run_wizard_dialog,
+            error_bar=error_bar,
         )
 
     def _create_title(self, definition):
@@ -90,17 +111,19 @@ class WizardLayoutFactory:
         return VSplit(
             [
                 HSplit(
-                    section_tabs,
-                    padding=1,
-                    style='class:wizard.section.tab'
+                    section_tabs, padding=1, style='class:wizard.section.tab'
                 ),
                 ConditionalContainer(
                     VerticalLine(), filter=Condition(is_windows)
                 ),
-                HSplit([*section_bodies,
+                HSplit(
+                    [
+                        *section_bodies,
                         WizardDetailsPanel(),
                         error_bar,
-                        ToolbarView()])
+                        ToolbarView(),
+                    ]
+                ),
             ]
         )
 
@@ -144,25 +167,33 @@ class WizardDetailsPanel:
 
     def _get_container(self):
         return ConditionalContainer(
-            HSplit([
-                TitleLine(self._get_title),
-                VSplit([
-                    Window(
-                        content=BufferControl(
-                            buffer=Buffer(
-                                name='details_buffer', read_only=True),
-                        ),
-                        height=Dimension(
-                            max=self.DIMENSIONS['details_window_height_max'],
-                            preferred=self.DIMENSIONS[
-                                'details_window_height_pref']
-                        ),
-                        wrap_lines=True
+            HSplit(
+                [
+                    TitleLine(self._get_title),
+                    VSplit(
+                        [
+                            Window(
+                                content=BufferControl(
+                                    buffer=Buffer(
+                                        name='details_buffer', read_only=True
+                                    ),
+                                ),
+                                height=Dimension(
+                                    max=self.DIMENSIONS[
+                                        'details_window_height_max'
+                                    ],
+                                    preferred=self.DIMENSIONS[
+                                        'details_window_height_pref'
+                                    ],
+                                ),
+                                wrap_lines=True,
+                            ),
+                            SaveFileDialogue(),
+                        ]
                     ),
-                    SaveFileDialogue(),
-                ])
-            ]),
-            details_visible
+                ]
+            ),
+            details_visible,
         )
 
     def __pt_container__(self):
@@ -175,8 +206,7 @@ class SaveFileDialogue:
 
     def _get_container(self):
         return ConditionalContainer(
-             self._create_dialog(),
-            save_details_visible
+            self._create_dialog(), save_details_visible
         )
 
     def __pt_container__(self):
@@ -188,17 +218,21 @@ class SaveFileDialogue:
         cancel_button = self._create_cancel_button(textfield)
         dialog = Dialog(
             title='Save to file',
-            body=HSplit([
-                Label(text='Filename', dont_extend_height=True),
-                textfield,
-            ], padding=Dimension(preferred=1, max=1)),
+            body=HSplit(
+                [
+                    Label(text='Filename', dont_extend_height=True),
+                    textfield,
+                ],
+                padding=Dimension(preferred=1, max=1),
+            ),
             buttons=[save_button, cancel_button],
-            with_background=True)
+            with_background=True,
+        )
         dialog.container.container.style = 'class:wizard.dialog.save'
         dialog.container.body.container.style = 'class:wizard.dialog.body'
         dialog.container.body.container.content.key_bindings.add(
-            Keys.Enter, filter=has_focus('save_details_dialogue'))(
-                save_button.handler)
+            Keys.Enter, filter=has_focus('save_details_dialogue')
+        )(save_button.handler)
         return dialog
 
     def _create_textfield(self):
@@ -214,11 +248,13 @@ class SaveFileDialogue:
         def save_handler(*args, **kwargs):
             app = get_app()
             contents = app.layout.get_buffer_by_name(
-                'details_buffer').document.text
+                'details_buffer'
+            ).document.text
             app.file_io.write_file_contents(textfield.text, contents)
             app.save_details_visible = False
             current_control = get_ui_control_by_buffer_name(
-                app.layout, app.traverser.get_current_prompt())
+                app.layout, app.traverser.get_current_prompt()
+            )
             app.layout.focus(current_control)
 
         return Button(text='Save', handler=save_handler)
@@ -228,6 +264,7 @@ class SaveFileDialogue:
             app = get_app()
             app.save_details_visible = False
             app.layout.focus('details_buffer')
+
         return Button(text='Cancel', handler=cancel_handler)
 
     def _create_key_bindings(self, save_button, cancel_button):
@@ -252,29 +289,29 @@ class ToolbarView(BaseToolbarView):
     def create_window(self, help_text):
         text_control = FormattedTextControl(text=lambda: help_text)
         text_control.name = 'toolbar_panel'
-        return HSplit([
-            HorizontalLine(),
-            Window(
-                content=text_control,
-                wrap_lines=True,
-                **self.DIMENSIONS
-            )
-        ])
+        return HSplit(
+            [
+                HorizontalLine(),
+                Window(
+                    content=text_control, wrap_lines=True, **self.DIMENSIONS
+                ),
+            ]
+        )
 
     def help_text(self):
         app = get_app()
         output = []
         if prompt_has_details():
             title = getattr(app, 'details_title', 'Details panel')
-            output.extend([
-                f'{self.STYLE}[F2]</style> Switch to {title}',
-                f'{self.STYLE}[F3]</style> Show/Hide {title}',
-                f'{self.STYLE}[CTRL+S]</style> Save {title}',
-            ])
-        if error_bar_enabled():
-            output.append(
-                f'{self.STYLE}[F4]</style> Show/Hide error message'
+            output.extend(
+                [
+                    f'{self.STYLE}[F2]</style> Switch to {title}',
+                    f'{self.STYLE}[F3]</style> Show/Hide {title}',
+                    f'{self.STYLE}[CTRL+S]</style> Save {title}',
+                ]
             )
+        if error_bar_enabled():
+            output.append(f'{self.STYLE}[F4]</style> Show/Hide error message')
         return to_formatted_text(HTML(f'{self.SPACING}'.join(output)))
 
 
@@ -367,7 +404,7 @@ class RunWizardDialog:
     def _create_dialog_frame(self):
         frame_body = Box(
             body=self._create_buttons_container(),
-            height=Dimension(min=1, max=3, preferred=3)
+            height=Dimension(min=1, max=3, preferred=3),
         )
         return Shadow(
             body=Frame(
@@ -405,8 +442,7 @@ class WizardErrorBar:
     def display_error(self, exception):
         self.current_error = exception
         self._error_bar_buffer.text = (
-            'Encountered following error in wizard:\n\n'
-            f'{exception}'
+            f'Encountered following error in wizard:\n\n{exception}'
         )
         get_app().error_bar_visible = True
 
@@ -420,19 +456,20 @@ class WizardErrorBar:
 
     def _get_container(self):
         return ConditionalContainer(
-            HSplit([
-                TitleLine('Wizard exception'),
-                Window(
-                    content=BufferControl(
-                        buffer=self._error_bar_buffer,
-                        focusable=False
+            HSplit(
+                [
+                    TitleLine('Wizard exception'),
+                    Window(
+                        content=BufferControl(
+                            buffer=self._error_bar_buffer, focusable=False
+                        ),
+                        style='class:wizard.error',
+                        dont_extend_height=True,
+                        wrap_lines=True,
                     ),
-                    style='class:wizard.error',
-                    dont_extend_height=True,
-                    wrap_lines=True,
-                ),
-            ]),
-            Condition(self._is_visible)
+                ]
+            ),
+            Condition(self._is_visible),
         )
 
     def _is_visible(self):

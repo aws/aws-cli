@@ -12,12 +12,11 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
 from awscli.compat import BytesIO
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
 
 
 class TestGetGameSessionLog(BaseAWSCommandParamsTest):
-
     prefix = 'gamelift get-game-session-log'
 
     def setUp(self):
@@ -25,7 +24,8 @@ class TestGetGameSessionLog(BaseAWSCommandParamsTest):
         self.files = FileCreator()
         self.filename = os.path.join(self.files.rootdir, 'myfile')
         self.urlopen_patch = mock.patch(
-            'awscli.customizations.gamelift.getlog.urlopen')
+            'awscli.customizations.gamelift.getlog.urlopen'
+        )
         self.contents = b'My Contents'
         self.urlopen_mock = self.urlopen_patch.start()
         self.urlopen_mock.return_value = BytesIO(self.contents)
@@ -44,10 +44,10 @@ class TestGetGameSessionLog(BaseAWSCommandParamsTest):
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(
-            self.operations_called[0][0].name, 'GetGameSessionLogUrl')
+            self.operations_called[0][0].name, 'GetGameSessionLogUrl'
+        )
         self.assertEqual(
-            self.operations_called[0][1],
-            {'GameSessionId': 'mysession'}
+            self.operations_called[0][1], {'GameSessionId': 'mysession'}
         )
 
         # Ensure the contents were saved to the file
@@ -59,5 +59,5 @@ class TestGetGameSessionLog(BaseAWSCommandParamsTest):
         self.assertIn(
             'Successfully downloaded log archive for game session '
             'mysession to %s' % self.filename,
-            stdout
+            stdout,
         )

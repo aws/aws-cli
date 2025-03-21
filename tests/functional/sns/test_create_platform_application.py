@@ -15,7 +15,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestCreatePlatformApplication(BaseAWSCommandParamsTest):
-
     prefix = 'sns create-platform-application'
 
     def test_gcm_shorthand(self):
@@ -25,10 +24,14 @@ class TestCreatePlatformApplication(BaseAWSCommandParamsTest):
         cmdline += ' --attributes '
         cmdline += 'PlatformCredential=foo,'
         cmdline += 'PlatformPrincipal=bar'
-        result = {'Name': 'gcmpushapp',
-                  'Platform': 'GCM',
-                  'Attributes': {'PlatformCredential': 'foo',
-                                 'PlatformPrincipal': 'bar'}}
+        result = {
+            'Name': 'gcmpushapp',
+            'Platform': 'GCM',
+            'Attributes': {
+                'PlatformCredential': 'foo',
+                'PlatformPrincipal': 'bar',
+            },
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_gcm_json(self):
@@ -36,14 +39,17 @@ class TestCreatePlatformApplication(BaseAWSCommandParamsTest):
         cmdline += ' --name gcmpushapp'
         cmdline += ' --platform GCM'
         cmdline += ' --attributes '
-        cmdline += ('{"PlatformCredential":"AIzaSyClE2lcV2zEKTLYYo645zfk2jhQPFeyxDo",'
-                    '"PlatformPrincipal":"There+is+no+principal+for+GCM"}')
+        cmdline += (
+            '{"PlatformCredential":"AIzaSyClE2lcV2zEKTLYYo645zfk2jhQPFeyxDo",'
+            '"PlatformPrincipal":"There+is+no+principal+for+GCM"}'
+        )
         result = {
             'Name': 'gcmpushapp',
             'Platform': 'GCM',
             'Attributes': {
-              'PlatformCredential': 'AIzaSyClE2lcV2zEKTLYYo645zfk2jhQPFeyxDo',
-              'PlatformPrincipal': 'There+is+no+principal+for+GCM'}
+                'PlatformCredential': 'AIzaSyClE2lcV2zEKTLYYo645zfk2jhQPFeyxDo',
+                'PlatformPrincipal': 'There+is+no+principal+for+GCM',
+            },
         }
         self.assert_params_for_cmd(cmdline, result)
 

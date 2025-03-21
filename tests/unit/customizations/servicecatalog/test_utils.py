@@ -16,7 +16,6 @@ from awscli.testutils import unittest
 
 
 class TestUtils(unittest.TestCase):
-
     def test_make_url_no_version(self):
         url = utils.make_url('us-east-1', 'foo-bucket-name', 'a/b/c', None)
         self.assertEqual("https://s3.amazonaws.com/foo-bucket-name/a/b/c", url)
@@ -24,11 +23,11 @@ class TestUtils(unittest.TestCase):
     def test_make_url_no_version_other_region(self):
         url = utils.make_url('us-west-2', 'foo-bucket-name', 'a/b/c', None)
         self.assertEqual(
-            "https://s3-us-west-2.amazonaws.com/foo-bucket-name/a/b/c",
-            url)
+            "https://s3-us-west-2.amazonaws.com/foo-bucket-name/a/b/c", url
+        )
 
     def test_make_url_with_version(self):
         url = utils.make_url('us-east-1', 'foo-bucket-name', 'a/b/c', 5)
         self.assertEqual(
-            "https://s3.amazonaws.com/foo-bucket-name/a/b/c?versionId=5",
-            url)
+            "https://s3.amazonaws.com/foo-bucket-name/a/b/c?versionId=5", url
+        )

@@ -28,24 +28,26 @@ def create_filter(parameters):
         cli_filters = parameters['filters']
         real_filters = []
         for filter_type, filter_pattern in cli_filters:
-            real_filters.append((filter_type.lstrip('-'),
-                                 filter_pattern))
+            real_filters.append((filter_type.lstrip('-'), filter_pattern))
         source_location = parameters['src']
         if source_location.startswith('s3://'):
             # This gives us (bucket, keyname) and we want
             # the bucket to be the root dir.
-            src_rootdir = _get_s3_root(source_location,
-                                       parameters['dir_op'])
+            src_rootdir = _get_s3_root(source_location, parameters['dir_op'])
         else:
-            src_rootdir = _get_local_root(parameters['src'], parameters['dir_op'])
+            src_rootdir = _get_local_root(
+                parameters['src'], parameters['dir_op']
+            )
 
         destination_location = parameters['dest']
         if destination_location.startswith('s3://'):
-            dst_rootdir = _get_s3_root(parameters['dest'],
-                                       parameters['dir_op'])
+            dst_rootdir = _get_s3_root(
+                parameters['dest'], parameters['dir_op']
+            )
         else:
-            dst_rootdir = _get_local_root(parameters['dest'],
-                                          parameters['dir_op'])
+            dst_rootdir = _get_local_root(
+                parameters['dest'], parameters['dir_op']
+            )
 
         return Filter(real_filters, src_rootdir, dst_rootdir)
     else:
@@ -77,6 +79,7 @@ class Filter(object):
     """
     This is a universal exclude/include filter.
     """
+
     def __init__(self, patterns, rootdir, dst_rootdir):
         """
         :var patterns: A list of patterns. A pattern consists of a list
@@ -100,7 +103,8 @@ class Filter(object):
         full_patterns = []
         for pattern in original_patterns:
             full_patterns.append(
-                (pattern[0], os.path.join(rootdir, pattern[1])))
+                (pattern[0], os.path.join(rootdir, pattern[1]))
+            )
         return full_patterns
 
     def call(self, file_infos):
@@ -122,11 +126,16 @@ class Filter(object):
                 current_file_status = self._match_pattern(pattern, file_info)
                 if current_file_status is not None:
                     file_status = current_file_status
-                dst_current_file_status = self._match_pattern(dst_pattern, file_info)
+                dst_current_file_status = self._match_pattern(
+                    dst_pattern, file_info
+                )
                 if dst_current_file_status is not None:
                     file_status = dst_current_file_status
-            LOG.debug("=%s final filtered status, should_include: %s",
-                      file_path, file_status[1])
+            LOG.debug(
+                "=%s final filtered status, should_include: %s",
+                file_path,
+                file_status[1],
+            )
             if file_status[1]:
                 yield file_info
 
@@ -141,13 +150,15 @@ class Filter(object):
         is_match = fnmatch.fnmatch(file_path, path_pattern)
         if is_match and pattern_type == 'include':
             file_status = (file_info, True)
-            LOG.debug("%s matched include filter: %s",
-                        file_path, path_pattern)
+            LOG.debug("%s matched include filter: %s", file_path, path_pattern)
         elif is_match and pattern_type == 'exclude':
             file_status = (file_info, False)
-            LOG.debug("%s matched exclude filter: %s",
-                        file_path, path_pattern)
+            LOG.debug("%s matched exclude filter: %s", file_path, path_pattern)
         else:
-            LOG.debug("%s did not match %s filter: %s",
-                        file_path, pattern_type, path_pattern)
+            LOG.debug(
+                "%s did not match %s filter: %s",
+                file_path,
+                pattern_type,
+                path_pattern,
+            )
         return file_status

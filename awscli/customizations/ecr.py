@@ -27,16 +27,17 @@ def _inject_commands(command_table, session, **kwargs):
 
 class ECRGetLoginPassword(BasicCommand):
     """Get a password to be used with container clients such as Docker"""
+
     NAME = 'get-login-password'
 
     DESCRIPTION = BasicCommand.FROM_FILE(
-            'ecr/get-login-password_description.rst')
+        'ecr/get-login-password_description.rst'
+    )
 
     def _run_main(self, parsed_args, parsed_globals):
         ecr_client = create_client_from_parsed_globals(
-                self._session,
-                'ecr',
-                parsed_globals)
+            self._session, 'ecr', parsed_globals
+        )
         result = ecr_client.get_authorization_token()
         auth = result['authorizationData'][0]
         auth_token = b64decode(auth['authorizationToken']).decode()

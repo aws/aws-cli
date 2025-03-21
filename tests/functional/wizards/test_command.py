@@ -11,11 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import tempfile
 import shutil
+import tempfile
 
-from awscli.testutils import BaseAWSCommandParamsTest, mock, cd
-from awscli.testutils import BaseAWSHelpOutputTest
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    BaseAWSHelpOutputTest,
+    cd,
+    mock,
+)
 
 
 class TestRunWizard(BaseAWSCommandParamsTest):
@@ -26,8 +30,7 @@ class TestRunWizard(BaseAWSCommandParamsTest):
             os.mkdir('iam')
         self.parsed_responses = [{"Roles": []}]
         self.root_dir_patch = mock.patch(
-            'awscli.customizations.wizard.loader.WIZARD_SPEC_DIR',
-            self.tempdir
+            'awscli.customizations.wizard.loader.WIZARD_SPEC_DIR', self.tempdir
         )
         self.root_dir_patch.start()
 
@@ -55,8 +58,7 @@ class TestRunWizard(BaseAWSCommandParamsTest):
                 '        PathPrefix: "{myprefix}"\n'
             )
         stdout, _, _ = self.assert_params_for_cmd(
-            'iam wizard test-wizard',
-            params={'PathPrefix': '/foo/'}
+            'iam wizard test-wizard', params={'PathPrefix': '/foo/'}
         )
         self.assertEqual(self.operations_called[0][0].name, 'ListRoles')
 

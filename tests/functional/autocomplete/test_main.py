@@ -26,8 +26,10 @@ def test_smoke_test_completer():
 
     completions = _autocomplete('aws dynamodb describe-tab')
     completion_strings = [c.name for c in completions]
-    assert all(completion.startswith('describe-table')
-               for completion in completion_strings)
+    assert all(
+        completion.startswith('describe-table')
+        for completion in completion_strings
+    )
 
 
 def _autocomplete(command_line):

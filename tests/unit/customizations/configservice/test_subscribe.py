@@ -13,10 +13,13 @@
 import botocore.session
 from botocore.exceptions import ClientError
 
-from awscli.testutils import mock, unittest
 from awscli.compat import StringIO
-from awscli.customizations.configservice.subscribe import SubscribeCommand, \
-    S3BucketHelper, SNSTopicHelper
+from awscli.customizations.configservice.subscribe import (
+    S3BucketHelper,
+    SNSTopicHelper,
+    SubscribeCommand,
+)
+from awscli.testutils import mock, unittest
 
 
 class TestS3BucketHelper(unittest.TestCase):
@@ -25,14 +28,10 @@ class TestS3BucketHelper(unittest.TestCase):
         self.s3_client = mock.Mock(self.session.create_client('s3'))
         self.helper = S3BucketHelper(self.s3_client)
         self.error_response = {
-            'Error': {
-                'Code': '404',
-                'Message': 'Not Found'
-            }
+            'Error': {'Code': '404', 'Message': 'Not Found'}
         }
         self.bucket_no_exists_error = ClientError(
-            self.error_response,
-            'HeadBucket'
+            self.error_response, 'HeadBucket'
         )
 
     def test_correct_prefix_returned(self):
@@ -57,9 +56,7 @@ class TestS3BucketHelper(unittest.TestCase):
         self.s3_client.meta.region_name = 'us-east-1'
         bucket, prefix = self.helper.prepare_bucket(name)
         # Ensure that the create bucket was called with the proper args.
-        self.s3_client.create_bucket.assert_called_with(
-            Bucket='MyBucket'
-        )
+        self.s3_client.create_bucket.assert_called_with(Bucket='MyBucket')
         # Ensure the returned bucket and key are as expected
         self.assertEqual(bucket, 'MyBucket')
         self.assertEqual(prefix, 'MyPrefix')
@@ -72,7 +69,7 @@ class TestS3BucketHelper(unittest.TestCase):
         # Ensure that the create bucket was called with the proper args.
         self.s3_client.create_bucket.assert_called_with(
             Bucket='MyBucket',
-            CreateBucketConfiguration={'LocationConstraint': 'us-west-2'}
+            CreateBucketConfiguration={'LocationConstraint': 'us-west-2'},
         )
         # Ensure the returned bucket and key are as expected
         self.assertEqual(bucket, 'MyBucket')
@@ -98,8 +95,8 @@ class TestS3BucketHelper(unittest.TestCase):
         with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.helper.prepare_bucket(name)
             self.assertIn(
-                'Using existing S3 bucket: MyBucket',
-                mock_stdout.getvalue())
+                'Using existing S3 bucket: MyBucket', mock_stdout.getvalue()
+            )
 
     def test_output_create_bucket(self):
         name = 'MyBucket/MyPrefix'
@@ -108,15 +105,16 @@ class TestS3BucketHelper(unittest.TestCase):
         with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.helper.prepare_bucket(name)
             self.assertIn(
-                'Using new S3 bucket: MyBucket',
-                mock_stdout.getvalue())
+                'Using new S3 bucket: MyBucket', mock_stdout.getvalue()
+            )
 
 
 class TestSNSTopicHelper(unittest.TestCase):
     def setUp(self):
         self.session = botocore.session.get_session()
-        self.sns_client = mock.Mock(self.session.create_client(
-            'sns', 'us-east-1'))
+        self.sns_client = mock.Mock(
+            self.session.create_client('sns', 'us-east-1')
+        )
         self.helper = SNSTopicHelper(self.sns_client)
 
     def test_sns_topic_by_name(self):
@@ -139,17 +137,15 @@ class TestSNSTopicHelper(unittest.TestCase):
         self.sns_client.create_topic.return_value = {'TopicArn': 'myARN'}
         with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.helper.prepare_topic(name)
-            self.assertIn(
-                'Using new SNS topic: myARN',
-                mock_stdout.getvalue())
+            self.assertIn('Using new SNS topic: myARN', mock_stdout.getvalue())
 
     def test_output_new_topic(self):
         name = 'arn:aws:sns:us-east-1:934212987125:config'
         with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.helper.prepare_topic(name)
             self.assertIn(
-                'Using existing SNS topic: %s' % name,
-                mock_stdout.getvalue())
+                'Using existing SNS topic: %s' % name, mock_stdout.getvalue()
+            )
 
 
 class TestSubscribeCommand(unittest.TestCase):
@@ -158,26 +154,31 @@ class TestSubscribeCommand(unittest.TestCase):
 
         # Set up the client mocks.
         self.s3_client = mock.Mock(self.session.create_client('s3'))
-        self.sns_client = mock.Mock(self.session.create_client(
-            'sns', 'us-east-1'))
-        self.config_client = mock.Mock(self.session.create_client(
-            'config', 'us-east-1'))
-        self.config_client.describe_configuration_recorders.return_value = \
-            {'ConfigurationRecorders': []}
-        self.config_client.describe_delivery_channels.return_value = \
-            {'DeliveryChannels': []}
+        self.sns_client = mock.Mock(
+            self.session.create_client('sns', 'us-east-1')
+        )
+        self.config_client = mock.Mock(
+            self.session.create_client('config', 'us-east-1')
+        )
+        self.config_client.describe_configuration_recorders.return_value = {
+            'ConfigurationRecorders': []
+        }
+        self.config_client.describe_delivery_channels.return_value = {
+            'DeliveryChannels': []
+        }
 
         self.session = mock.Mock(self.session)
         self.session.create_client.side_effect = [
             self.s3_client,
             self.sns_client,
-            self.config_client
+            self.config_client,
         ]
 
         self.parsed_args = mock.Mock()
         self.parsed_args.s3_bucket = 'MyBucket/MyPrefix'
-        self.parsed_args.sns_topic = \
+        self.parsed_args.sns_topic = (
             'arn:aws:sns:us-east-1:934212987125:config'
+        )
         self.parsed_args.iam_role = 'arn:aws:iam::1234556789:role/config'
 
         self.parsed_globals = mock.Mock()
@@ -206,7 +207,7 @@ class TestSubscribeCommand(unittest.TestCase):
             'config',
             verify=self.parsed_globals.verify_ssl,
             region_name=self.parsed_globals.region,
-            endpoint_url=self.parsed_globals.endpoint_url
+            endpoint_url=self.parsed_globals.endpoint_url,
         )
 
     def test_subscribe(self):
@@ -216,7 +217,7 @@ class TestSubscribeCommand(unittest.TestCase):
         self.config_client.put_configuration_recorder.assert_called_with(
             ConfigurationRecorder={
                 'name': 'default',
-                'roleARN': self.parsed_args.iam_role
+                'roleARN': self.parsed_args.iam_role,
             }
         )
 
@@ -226,7 +227,7 @@ class TestSubscribeCommand(unittest.TestCase):
                 'name': 'default',
                 's3BucketName': 'MyBucket',
                 'snsTopicARN': self.parsed_args.sns_topic,
-                's3KeyPrefix': 'MyPrefix'
+                's3KeyPrefix': 'MyPrefix',
             }
         )
 

@@ -1379,7 +1379,7 @@
         },
         "isSigned":{
           "shape":"PrimitiveBoolean",
-          "documentation":"<p>Whether the message data is specified as a signed value.</p>"
+          "documentation":"<p>Determines whether the message is signed (<code>true</code>) or not (<code>false</code>). If it's signed, the message can represent both positive and negative numbers. The <code>isSigned</code> parameter only applies to the <code>INTEGER</code> raw signal type, and it doesn't affect the <code>FLOATING_POINT</code> raw signal type.</p>"
         },
         "startBit":{
           "shape":"nonNegativeInteger",
@@ -1400,6 +1400,10 @@
         "name":{
           "shape":"CanSignalName",
           "documentation":"<p>The name of the signal.</p>"
+        },
+        "signalValueType":{
+          "shape":"SignalValueType",
+          "documentation":"<p>The value type of the signal. The default value is <code>INTEGER</code>.</p>"
         }
       },
       "documentation":"<p>Information about a single controller area network (CAN) signal and the messages it receives and transmits.</p>"
@@ -4154,6 +4158,15 @@
         "bitMaskLength":{
           "shape":"ObdBitmaskLength",
           "documentation":"<p>The number of bits to mask in a message.</p>"
+        },
+        "isSigned":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>Determines whether the message is signed (<code>true</code>) or not (<code>false</code>). If it's signed, the message can represent both positive and negative numbers. The <code>isSigned</code> parameter only applies to the <code>INTEGER</code> raw signal type, and it doesn't affect the <code>FLOATING_POINT</code> raw signal type. The default value is <code>false</code>.</p>",
+          "box":true
+        },
+        "signalValueType":{
+          "shape":"SignalValueType",
+          "documentation":"<p>The value type of the signal. The default value is <code>INTEGER</code>.</p>"
         }
       },
       "documentation":"<p>Information about signal messages using the on-board diagnostics (OBD) II protocol in a vehicle.</p>"
@@ -4659,6 +4672,13 @@
         "BRANCH",
         "CUSTOM_STRUCT",
         "CUSTOM_PROPERTY"
+      ]
+    },
+    "SignalValueType":{
+      "type":"string",
+      "enum":[
+        "INTEGER",
+        "FLOATING_POINT"
       ]
     },
     "SpoolingMode":{

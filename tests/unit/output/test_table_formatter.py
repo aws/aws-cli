@@ -12,19 +12,18 @@
 # language governing permissions and limitations under the License.
 import unittest
 
+from awscli.compat import StringIO
 from awscli.formatter import TableFormatter
 from awscli.table import MultiTable, Styler
-from awscli.compat import StringIO
 
 SIMPLE_LIST = {
     "QueueUrls": [
         "https://us-west-2.queue.amazonaws.com/1/queue1",
         "https://us-west-2.queue.amazonaws.com/1/queue2",
         "https://us-west-2.queue.amazonaws.com/1/queue3",
-        "https://us-west-2.queue.amazonaws.com/1/queue4"
+        "https://us-west-2.queue.amazonaws.com/1/queue4",
     ]
 }
-
 
 
 SIMPLE_LIST_TABLE = """\
@@ -40,13 +39,15 @@ SIMPLE_LIST_TABLE = """\
 |+--------------------------------------------------+|
 """
 
-SIMPLE_DICT = {"Attributes":
-  {"a": "0",
-   "b": "345600",
-   "c": "0",
-   "d": "65536",
-   "e": "1351044153",
-   "f": "0"}
+SIMPLE_DICT = {
+    "Attributes": {
+        "a": "0",
+        "b": "345600",
+        "c": "0",
+        "d": "65536",
+        "e": "1351044153",
+        "f": "0",
+    }
 }
 
 
@@ -67,14 +68,8 @@ LIST_OF_DICTS = {
     "OrderableDBInstanceOptions": [
         {
             "AvailabilityZones": [
-                {
-                    "Name": "us-east-1a",
-                    "ProvisionedIopsCapable": False
-                },
-                {
-                    "Name": "us-east-1d",
-                    "ProvisionedIopsCapable": True
-                }
+                {"Name": "us-east-1a", "ProvisionedIopsCapable": False},
+                {"Name": "us-east-1d", "ProvisionedIopsCapable": True},
             ],
             "DBInstanceClass": "db.m1.large",
             "Engine": "mysql",
@@ -82,18 +77,12 @@ LIST_OF_DICTS = {
             "LicenseModel": "general-public-license",
             "MultiAZCapable": True,
             "ReadReplicaCapable": True,
-            "Vpc": False
+            "Vpc": False,
         },
         {
             "AvailabilityZones": [
-                {
-                    "Name": "us-west-2a",
-                    "ProvisionedIopsCapable": True
-                },
-                {
-                    "Name": "us-west-2b",
-                    "ProvisionedIopsCapable": True
-                }
+                {"Name": "us-west-2a", "ProvisionedIopsCapable": True},
+                {"Name": "us-west-2b", "ProvisionedIopsCapable": True},
             ],
             "DBInstanceClass": "db.m1.xlarge",
             "Engine": "mysql",
@@ -101,14 +90,11 @@ LIST_OF_DICTS = {
             "LicenseModel": "general-public-license",
             "MultiAZCapable": True,
             "ReadReplicaCapable": True,
-            "Vpc": False
+            "Vpc": False,
         },
         {
             "AvailabilityZones": [
-                {
-                    "Name": "us-west-2a",
-                    "ProvisionedIopsCapable": True
-                },
+                {"Name": "us-west-2a", "ProvisionedIopsCapable": True},
             ],
             "DBInstanceClass": "db.m1.xlarge",
             "Engine": "mysql",
@@ -116,8 +102,8 @@ LIST_OF_DICTS = {
             "LicenseModel": "general-public-license",
             "MultiAZCapable": True,
             "ReadReplicaCapable": True,
-            "Vpc": True
-        }
+            "Vpc": True,
+        },
     ]
 }
 
@@ -178,7 +164,7 @@ INNER_LIST = {
             "Progress": "100%",
             "StartTime": "2012-05-23T21:46:41.000Z",
             "SnapshotId": "snap-1234567",
-            "OwnerId": "12345"
+            "OwnerId": "12345",
         },
         {
             "Description": "Created by CreateImage(i-1234) for ami-1234 from vol-1234",
@@ -188,8 +174,8 @@ INNER_LIST = {
             "Progress": "100%",
             "StartTime": "2012-05-25T00:07:20.000Z",
             "SnapshotId": "snap-23456",
-            "OwnerId": "12345"
-        }
+            "OwnerId": "12345",
+        },
     ]
 }
 
@@ -228,7 +214,7 @@ LIST_WITH_MISSING_KEYS = {
             "Progress": "100%",
             "StartTime": "2012-05-23T21:46:41.000Z",
             "SnapshotId": "snap-1234567",
-            "OwnerId": "12345"
+            "OwnerId": "12345",
         },
         {
             "Description": "description",
@@ -238,8 +224,8 @@ LIST_WITH_MISSING_KEYS = {
             "Progress": "100%",
             "StartTime": "2012-05-25T00:07:20.000Z",
             "SnapshotId": "snap-23456",
-            "OwnerId": "12345"
-        }
+            "OwnerId": "12345",
+        },
     ]
 }
 
@@ -268,7 +254,7 @@ KEYS_NOT_FROM_FIRST_ROW = {
             "StartTime": "start_time",
             # Missing EndTime.
             "SnapshotId": "snap-1234567",
-            "OwnerId": "12345"
+            "OwnerId": "12345",
         },
         {
             "Description": "description",
@@ -278,8 +264,8 @@ KEYS_NOT_FROM_FIRST_ROW = {
             # Missing StartTime
             "EndTime": "end_time",
             "SnapshotId": "snap-23456",
-            "OwnerId": "12345"
-        }
+            "OwnerId": "12345",
+        },
     ]
 }
 
@@ -305,7 +291,7 @@ JMESPATH_FILTERED_RESPONSE = [
             "t1.micro",
             "running",
             "disabled",
-            "util"
+            "util",
         ]
     ],
     [
@@ -316,7 +302,7 @@ JMESPATH_FILTERED_RESPONSE = [
             "c1.medium",
             "running",
             "disabled",
-            "myname"
+            "myname",
         ]
     ],
 ]
@@ -336,7 +322,7 @@ JMESPATH_FILTERED_RESPONSE_DICT = [
             "InstanceId": "i-12345",
             "RootDeviceType": "ebs",
             "InstanceType": "t1.micro",
-            "ImageId": "ami-12345"
+            "ImageId": "ami-12345",
         }
     ],
     [
@@ -344,7 +330,7 @@ JMESPATH_FILTERED_RESPONSE_DICT = [
             "InstanceId": "i-56789",
             "RootDeviceType": "ebs",
             "InstanceType": "c1.medium",
-            "ImageId": "ami-56789"
+            "ImageId": "ami-56789",
         }
     ],
 ]
@@ -362,7 +348,7 @@ JMESPATH_FILTERED_RESPONSE_DICT_TABLE = """\
 """
 
 
-class Object(object):
+class Object:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
         self.query = None
@@ -373,9 +359,12 @@ class TestTableFormatter(unittest.TestCase):
 
     def setUp(self):
         styler = Styler()
-        self.table = MultiTable(initial_section=False,
-                                column_separator='|', styler=styler,
-                                auto_reformat=False)
+        self.table = MultiTable(
+            initial_section=False,
+            column_separator='|',
+            styler=styler,
+            auto_reformat=False,
+        )
         self.formatter = TableFormatter(Object(color='off'))
         self.formatter.table = self.table
         self.stream = StringIO()
@@ -384,8 +373,10 @@ class TestTableFormatter(unittest.TestCase):
         self.formatter('OperationName', data, stream=self.stream)
         rendered = self.stream.getvalue()
         if rendered != table:
-            error_message = ['Expected table rendering does not match '
-                             'the actual table rendering:']
+            error_message = [
+                'Expected table rendering does not match '
+                'the actual table rendering:'
+            ]
             error_message.append('Expected:')
             error_message.append(table)
             error_message.append('Actual:')
@@ -399,29 +390,34 @@ class TestTableFormatter(unittest.TestCase):
         self.assert_data_renders_to(data=SIMPLE_DICT, table=SIMPLE_DICT_TABLE)
 
     def test_list_of_dicts(self):
-        self.assert_data_renders_to(data=LIST_OF_DICTS,
-                                    table=LIST_OF_DICTS_TABLE)
+        self.assert_data_renders_to(
+            data=LIST_OF_DICTS, table=LIST_OF_DICTS_TABLE
+        )
 
     def test_inner_table(self):
-        self.assert_data_renders_to(data=INNER_LIST,
-                                    table=INNER_LIST_TABLE)
+        self.assert_data_renders_to(data=INNER_LIST, table=INNER_LIST_TABLE)
 
     def test_empty_table(self):
-        self.assert_data_renders_to(data={},
-                                    table='')
+        self.assert_data_renders_to(data={}, table='')
 
     def test_missing_keys(self):
-        self.assert_data_renders_to(data=LIST_WITH_MISSING_KEYS,
-                                    table=LIST_WITH_MISSING_KEYS_TABLE)
+        self.assert_data_renders_to(
+            data=LIST_WITH_MISSING_KEYS, table=LIST_WITH_MISSING_KEYS_TABLE
+        )
 
     def test_new_keys_after_first_row(self):
-        self.assert_data_renders_to(data=KEYS_NOT_FROM_FIRST_ROW,
-                                    table=KEYS_NOT_FROM_FIRST_ROW_TABLE)
+        self.assert_data_renders_to(
+            data=KEYS_NOT_FROM_FIRST_ROW, table=KEYS_NOT_FROM_FIRST_ROW_TABLE
+        )
 
     def test_jmespath_filtered_response(self):
-        self.assert_data_renders_to(data=JMESPATH_FILTERED_RESPONSE,
-                                    table=JMESPATH_FILTERED_RESPONSE_TABLE)
+        self.assert_data_renders_to(
+            data=JMESPATH_FILTERED_RESPONSE,
+            table=JMESPATH_FILTERED_RESPONSE_TABLE,
+        )
 
     def test_jmespath_filtered_dict_response(self):
-        self.assert_data_renders_to(data=JMESPATH_FILTERED_RESPONSE_DICT,
-                                    table=JMESPATH_FILTERED_RESPONSE_DICT_TABLE)
+        self.assert_data_renders_to(
+            data=JMESPATH_FILTERED_RESPONSE_DICT,
+            table=JMESPATH_FILTERED_RESPONSE_DICT_TABLE,
+        )

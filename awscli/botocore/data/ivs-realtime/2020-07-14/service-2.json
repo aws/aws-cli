@@ -645,6 +645,54 @@
     "AccessDeniedException":{
       "type":"structure",
       "members":{
+        "accessControlAllowOrigin":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Allow-Origin"
+        },
+        "accessControlExposeHeaders":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Expose-Headers"
+        },
+        "cacheControl":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
+        "contentSecurityPolicy":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Content-Security-Policy"
+        },
+        "strictTransportSecurity":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Strict-Transport-Security"
+        },
+        "xContentTypeOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Content-Type-Options"
+        },
+        "xFrameOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Frame-Options"
+        },
+        "xAmznErrorType":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        },
         "exceptionMessage":{
           "shape":"errorMessage",
           "documentation":"<p>User does not have sufficient access to perform this action.</p>"
@@ -669,7 +717,7 @@
       "members":{
         "storageConfigurationArn":{
           "shape":"AutoParticipantRecordingStorageConfigurationArn",
-          "documentation":"<p>ARN of the <a>StorageConfiguration</a> resource to use for individual participant recording. Default: <code>\"\"</code> (empty string, no storage configuration is specified). Individual participant recording cannot be started unless a storage configuration is specified, when a <a>Stage</a> is created or updated.</p>"
+          "documentation":"<p>ARN of the <a>StorageConfiguration</a> resource to use for individual participant recording. Default: <code>\"\"</code> (empty string, no storage configuration is specified). Individual participant recording cannot be started unless a storage configuration is specified, when a <a>Stage</a> is created or updated. To disable individual participant recording, set this to <code>\"\"</code>; other fields in this object will get reset to their defaults when sending <code>\"\"</code>. </p>"
         },
         "mediaTypes":{
           "shape":"ParticipantRecordingMediaTypeList",
@@ -678,6 +726,14 @@
         "thumbnailConfiguration":{
           "shape":"ParticipantThumbnailConfiguration",
           "documentation":"<p>A complex type that allows you to enable/disable the recording of thumbnails for individual participant recording and modify the interval at which thumbnails are generated for the live session.</p>"
+        },
+        "recordingReconnectWindowSeconds":{
+          "shape":"ParticipantRecordingReconnectWindowSeconds",
+          "documentation":"<p>If a stage publisher disconnects and then reconnects within the specified interval, the multiple recordings will be considered a single recording and merged together.</p> <p>The default value is 0, which disables merging.</p>"
+        },
+        "hlsConfiguration":{
+          "shape":"ParticipantRecordingHlsConfiguration",
+          "documentation":"<p>HLS configuration object for individual participant recording.</p>"
         }
       },
       "documentation":"<p>Object specifying a configuration for individual participant recording.</p>"
@@ -773,6 +829,22 @@
       "min":1,
       "pattern":"[a-zA-Z0-9-_]*"
     },
+    "CompositionRecordingHlsConfiguration":{
+      "type":"structure",
+      "members":{
+        "targetSegmentDurationSeconds":{
+          "shape":"CompositionRecordingTargetSegmentDurationSeconds",
+          "documentation":"<p>Defines the target duration for recorded segments generated when using composite recording. Segments may have durations shorter than the specified value when needed to ensure each segment begins with a keyframe. Default: 2.</p>"
+        }
+      },
+      "documentation":"<p>An object representing a configuration of HLS recordings for server-side composition.</p>"
+    },
+    "CompositionRecordingTargetSegmentDurationSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":2
+    },
     "CompositionState":{
       "type":"string",
       "enum":[
@@ -850,6 +922,54 @@
     "ConflictException":{
       "type":"structure",
       "members":{
+        "accessControlAllowOrigin":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Allow-Origin"
+        },
+        "accessControlExposeHeaders":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Expose-Headers"
+        },
+        "cacheControl":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
+        "contentSecurityPolicy":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Content-Security-Policy"
+        },
+        "strictTransportSecurity":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Strict-Transport-Security"
+        },
+        "xContentTypeOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Content-Type-Options"
+        },
+        "xFrameOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Frame-Options"
+        },
+        "xAmznErrorType":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        },
         "exceptionMessage":{
           "shape":"errorMessage",
           "documentation":"<p>Updating or deleting a resource can cause an inconsistent state.</p>"
@@ -1763,6 +1883,54 @@
     "InternalServerException":{
       "type":"structure",
       "members":{
+        "accessControlAllowOrigin":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Allow-Origin"
+        },
+        "accessControlExposeHeaders":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Expose-Headers"
+        },
+        "cacheControl":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
+        "contentSecurityPolicy":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Content-Security-Policy"
+        },
+        "strictTransportSecurity":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Strict-Transport-Security"
+        },
+        "xContentTypeOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Content-Type-Options"
+        },
+        "xFrameOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Frame-Options"
+        },
+        "xAmznErrorType":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        },
         "exceptionMessage":{
           "shape":"errorMessage",
           "documentation":"<p>Unexpected error during processing of request.</p>"
@@ -2289,6 +2457,16 @@
         "FAILED"
       ]
     },
+    "ParticipantRecordingHlsConfiguration":{
+      "type":"structure",
+      "members":{
+        "targetSegmentDurationSeconds":{
+          "shape":"ParticipantRecordingTargetSegmentDurationSeconds",
+          "documentation":"<p>Defines the target duration for recorded segments generated when recording a stage participant. Segments may have durations longer than the specified value when needed to ensure each segment begins with a keyframe. Default: 6.</p>"
+        }
+      },
+      "documentation":"<p>An object representing a configuration of participant HLS recordings for individual participant recording.</p>"
+    },
     "ParticipantRecordingMediaType":{
       "type":"string",
       "enum":[
@@ -2301,6 +2479,11 @@
       "type":"list",
       "member":{"shape":"ParticipantRecordingMediaType"},
       "max":1,
+      "min":0
+    },
+    "ParticipantRecordingReconnectWindowSeconds":{
+      "type":"integer",
+      "max":300,
       "min":0
     },
     "ParticipantRecordingS3BucketName":{
@@ -2325,6 +2508,12 @@
         "FAILED",
         "DISABLED"
       ]
+    },
+    "ParticipantRecordingTargetSegmentDurationSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":2
     },
     "ParticipantState":{
       "type":"string",
@@ -2488,6 +2677,54 @@
     "PendingVerification":{
       "type":"structure",
       "members":{
+        "accessControlAllowOrigin":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Allow-Origin"
+        },
+        "accessControlExposeHeaders":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Expose-Headers"
+        },
+        "cacheControl":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
+        "contentSecurityPolicy":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Content-Security-Policy"
+        },
+        "strictTransportSecurity":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Strict-Transport-Security"
+        },
+        "xContentTypeOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Content-Type-Options"
+        },
+        "xFrameOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Frame-Options"
+        },
+        "xAmznErrorType":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        },
         "exceptionMessage":{
           "shape":"errorMessage",
           "documentation":"<p> Your account is pending verification. </p>"
@@ -2645,6 +2882,10 @@
     "RecordingConfiguration":{
       "type":"structure",
       "members":{
+        "hlsConfiguration":{
+          "shape":"CompositionRecordingHlsConfiguration",
+          "documentation":"<p>An HLS configuration object to return information about how the recording will be configured.</p>"
+        },
         "format":{
           "shape":"RecordingConfigurationFormat",
           "documentation":"<p>The recording format for storing a recording in Amazon S3.</p>"
@@ -2665,6 +2906,54 @@
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
+        "accessControlAllowOrigin":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Allow-Origin"
+        },
+        "accessControlExposeHeaders":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Expose-Headers"
+        },
+        "cacheControl":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
+        "contentSecurityPolicy":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Content-Security-Policy"
+        },
+        "strictTransportSecurity":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Strict-Transport-Security"
+        },
+        "xContentTypeOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Content-Type-Options"
+        },
+        "xFrameOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Frame-Options"
+        },
+        "xAmznErrorType":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        },
         "exceptionMessage":{
           "shape":"errorMessage",
           "documentation":"<p>Request references a resource which does not exist.</p>"
@@ -2734,6 +3023,54 @@
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
+        "accessControlAllowOrigin":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Allow-Origin"
+        },
+        "accessControlExposeHeaders":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Expose-Headers"
+        },
+        "cacheControl":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
+        "contentSecurityPolicy":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Content-Security-Policy"
+        },
+        "strictTransportSecurity":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Strict-Transport-Security"
+        },
+        "xContentTypeOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Content-Type-Options"
+        },
+        "xFrameOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Frame-Options"
+        },
+        "xAmznErrorType":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        },
         "exceptionMessage":{
           "shape":"errorMessage",
           "documentation":"<p>Request would cause a service quota to be exceeded.</p>"
@@ -3103,7 +3440,7 @@
         },
         "tagKeys":{
           "shape":"TagKeyList",
-          "documentation":"<p>Array of tags to be removed. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>",
+          "documentation":"<p>Array of tag keys (strings) for the tags to be removed. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>",
           "location":"querystring",
           "locationName":"tagKeys"
         }
@@ -3172,6 +3509,54 @@
     "ValidationException":{
       "type":"structure",
       "members":{
+        "accessControlAllowOrigin":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Allow-Origin"
+        },
+        "accessControlExposeHeaders":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Expose-Headers"
+        },
+        "cacheControl":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
+        "contentSecurityPolicy":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Content-Security-Policy"
+        },
+        "strictTransportSecurity":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Strict-Transport-Security"
+        },
+        "xContentTypeOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Content-Type-Options"
+        },
+        "xFrameOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Frame-Options"
+        },
+        "xAmznErrorType":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        },
         "exceptionMessage":{
           "shape":"errorMessage",
           "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>"

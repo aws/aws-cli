@@ -10,17 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.hooks import HierarchicalEmitter
-from botocore.exceptions import ProfileNotFound
-from botocore.session import Session
 from botocore.credentials import (
     AssumeRoleProvider,
+    AssumeRoleWithWebIdentityProvider,
     CredentialResolver,
-    AssumeRoleWithWebIdentityProvider
 )
+from botocore.exceptions import ProfileNotFound
+from botocore.hooks import HierarchicalEmitter
+from botocore.session import Session
 
-from awscli.testutils import mock, unittest
 from awscli.customizations import assumerole
+from awscli.testutils import mock, unittest
 
 
 class TestAssumeRolePlugin(unittest.TestCase):
@@ -37,7 +37,8 @@ class TestAssumeRolePlugin(unittest.TestCase):
         session.get_component.return_value = mock_resolver
 
         assumerole.inject_assume_role_provider_cache(
-            session, event_name='building-command-table.foo')
+            session, event_name='building-command-table.foo'
+        )
         session.get_component.assert_called_with('credential_provider')
         self.assertIsInstance(mock_assume_role.cache, assumerole.JSONFileCache)
         self.assertIsInstance(
@@ -57,11 +58,11 @@ class TestAssumeRolePlugin(unittest.TestCase):
 
     def test_no_registration_if_profile_does_not_exist(self):
         session = mock.Mock(spec=Session)
-        session.get_component.side_effect = ProfileNotFound(
-            profile='unknown')
+        session.get_component.side_effect = ProfileNotFound(profile='unknown')
 
         assumerole.inject_assume_role_provider_cache(
-            session, event_name='building-command-table.foo')
+            session, event_name='building-command-table.foo'
+        )
 
         credential_provider = session.get_component.return_value
         self.assertFalse(credential_provider.get_provider.called)

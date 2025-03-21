@@ -14,7 +14,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestListAccessKeys(BaseAWSCommandParamsTest):
-
     prefix = 'iam list-access-keys'
 
     def test_list_access_keys_with_no_paginate(self):

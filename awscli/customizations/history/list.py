@@ -26,12 +26,7 @@ class ListCommand(HistorySubcommand):
         '``history show`` with the command_id to see more details about '
         'a particular entry.'
     )
-    _COL_WIDTHS = {
-        'id_a': 38,
-        'timestamp': 24,
-        'args': 50,
-        'rc': 0
-    }
+    _COL_WIDTHS = {'id_a': 38, 'timestamp': 24, 'args': 50, 'rc': 0}
 
     def _get_default_output_stream_factory(self):
         return OutputStreamFactory(self._session, default_less_flags='SR')
@@ -45,7 +40,8 @@ class ListCommand(HistorySubcommand):
                 raise RuntimeError(
                     'No commands were found in your history. Make sure you have '
                     'enabled history mode by adding "cli_history = enabled" '
-                    'to the config file.')
+                    'to the config file.'
+                )
 
             with self._output_stream_factory.get_output_stream() as stream:
                 formatter = TextFormatter(self._COL_WIDTHS, stream)
@@ -60,6 +56,7 @@ class RecordAdapter(object):
 
     If there are no records we can just exit early.
     """
+
     def __init__(self, records):
         self._records = records
         self._next = None
@@ -88,27 +85,28 @@ class TextFormatter(object):
     def _format_time(self, timestamp):
         command_time = datetime.datetime.fromtimestamp(timestamp / 1000)
         formatted = datetime.datetime.strftime(
-            command_time, '%Y-%m-%d %I:%M:%S %p')
+            command_time, '%Y-%m-%d %I:%M:%S %p'
+        )
         return formatted
 
     def _format_args(self, args, arg_width):
         json_value = json.loads(args)
         formatted = ' '.join(json_value[:2])
         if len(formatted) >= arg_width:
-            formatted = '%s...' % formatted[:arg_width-4]
+            formatted = '%s...' % formatted[: arg_width - 4]
         return formatted
 
     def _format_record(self, record):
         fmt_string = "{0:<%s}{1:<%s}{2:<%s}{3}\n" % (
             self._col_widths['id_a'],
             self._col_widths['timestamp'],
-            self._col_widths['args']
+            self._col_widths['args'],
         )
         record_line = fmt_string.format(
             record['id_a'],
             self._format_time(record['timestamp']),
             self._format_args(record['args'], self._col_widths['args']),
-            record['rc']
+            record['rc'],
         )
         return record_line
 

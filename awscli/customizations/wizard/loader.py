@@ -38,12 +38,14 @@ exists, then a usage error will be printed.
 
 
 """
+
 import os
 from ruamel.yaml import YAML
 
 
 WIZARD_SPEC_DIR = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), 'wizards',
+    os.path.dirname(os.path.abspath(__file__)),
+    'wizards',
 )
 
 
@@ -60,8 +62,7 @@ class WizardLoader(object):
         self._yaml = YAML(typ='rt')
 
     def list_commands_with_wizards(self):
-        """Returns a list of commands with at least one wizard.
-        """
+        """Returns a list of commands with at least one wizard."""
         return os.listdir(self._spec_dir)
 
     def list_available_wizards(self, command_name):
@@ -81,21 +82,24 @@ class WizardLoader(object):
         of the file.
 
         """
-        filename = os.path.join(self._spec_dir, command_name,
-                                wizard_name + '.yml')
+        filename = os.path.join(
+            self._spec_dir, command_name, wizard_name + '.yml'
+        )
         try:
             with open(filename) as f:
                 return self._load_yaml(f.read())
         except (OSError, IOError):
-            raise WizardNotExistError("Wizard does not exist for command "
-                                      "'%s', name: '%s'" % (command_name,
-                                                            wizard_name))
+            raise WizardNotExistError(
+                "Wizard does not exist for command "
+                "'%s', name: '%s'" % (command_name, wizard_name)
+            )
 
     def _load_yaml(self, contents):
         data = self._yaml.load(contents)
         return data
 
     def wizard_exists(self, command_name, wizard_name):
-        filename = os.path.join(self._spec_dir, command_name,
-                                wizard_name + '.yml')
+        filename = os.path.join(
+            self._spec_dir, command_name, wizard_name + '.yml'
+        )
         return os.path.isfile(filename)

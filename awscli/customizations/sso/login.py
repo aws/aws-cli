@@ -11,7 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.customizations.sso.utils import (
-    do_sso_login, PrintOnlyHandler, LOGIN_ARGS, BaseSSOCommand,
+    do_sso_login,
+    PrintOnlyHandler,
+    LOGIN_ARGS,
+    BaseSSOCommand,
 )
 from awscli.customizations.utils import uni_print
 
@@ -31,11 +34,11 @@ class LoginCommand(BaseSSOCommand):
         {
             'name': 'sso-session',
             'help_text': (
-               'An explicit SSO session to use to login. By default, this '
-               'command will login using the SSO session configured as part '
-               'of the requested profile and generally does not require this '
-               'argument to be set.'
-            )
+                'An explicit SSO session to use to login. By default, this '
+                'command will login using the SSO session configured as part '
+                'of the requested profile and generally does not require this '
+                'argument to be set.'
+            ),
         }
     ]
 

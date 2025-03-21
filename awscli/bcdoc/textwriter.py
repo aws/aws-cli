@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 
-    Custom docutils writer for plain text.
-    Based heavily on the Sphinx text writer.  See copyright below.
+Custom docutils writer for plain text.
+Based heavily on the Sphinx text writer.  See copyright below.
 
-    :copyright: Copyright 2007-2011 by the Sphinx team, see AUTHORS.
-    :license: BSD, see LICENSE for details.
+:copyright: Copyright 2007-2011 by the Sphinx team, see AUTHORS.
+:license: BSD, see LICENSE for details.
 
 """
+
 import os
 import re
 import textwrap
@@ -19,10 +20,11 @@ class TextWrapper(textwrap.TextWrapper):
     """Custom subclass that uses a different word separator regex."""
 
     wordsep_re = re.compile(
-        r'(\s+|'                                  # any whitespace
-        r'(?<=\s)(?::[a-z-]+:)?`\S+|'             # interpreted text start
-        r'[^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|'   # hyphenated words
-        r'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))')   # em-dash
+        r'(\s+|'  # any whitespace
+        r'(?<=\s)(?::[a-z-]+:)?`\S+|'  # interpreted text start
+        r'[^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|'  # hyphenated words
+        r'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))'
+    )  # em-dash
 
 
 MAXWIDTH = 70
@@ -81,12 +83,13 @@ class TextTranslator(nodes.NodeVisitor):
             if not toformat:
                 return
             if wrap:
-                res = my_wrap(''.join(toformat), width=MAXWIDTH-maxindent)
+                res = my_wrap(''.join(toformat), width=MAXWIDTH - maxindent)
             else:
                 res = ''.join(toformat).splitlines()
             if end:
                 res += end
             result.append((indent, res))
+
         for itemindent, item in content:
             if itemindent == -1:
                 toformat.append(item)
@@ -107,9 +110,11 @@ class TextTranslator(nodes.NodeVisitor):
 
     def depart_document(self, node):
         self.end_state()
-        self.body = self.nl.join(line and (' '*indent + line)
-                                 for indent, lines in self.states[0]
-                                 for line in lines)
+        self.body = self.nl.join(
+            line and (' ' * indent + line)
+            for indent, lines in self.states[0]
+            for line in lines
+        )
         # XXX header/footer?
 
     def visit_highlightlang(self, node):
@@ -153,7 +158,7 @@ class TextTranslator(nodes.NodeVisitor):
 
     def visit_title(self, node):
         if isinstance(node.parent, nodes.Admonition):
-            self.add_text(node.astext()+': ')
+            self.add_text(node.astext() + ': ')
             raise nodes.SkipNode
         self.new_state(0)
 
@@ -280,7 +285,7 @@ class TextTranslator(nodes.NodeVisitor):
                 self.add_text(production['tokenname'].ljust(maxlen) + ' ::=')
                 lastname = production['tokenname']
             else:
-                self.add_text('%s    ' % (' '*len(lastname)))
+                self.add_text('%s    ' % (' ' * len(lastname)))
             self.add_text(production.astext() + self.nl)
         self.end_state(wrap=False)
         raise nodes.SkipNode
@@ -391,8 +396,9 @@ class TextTranslator(nodes.NodeVisitor):
 
     def visit_entry(self, node):
         if 'morerows' in node or 'morecols' in node:
-            raise NotImplementedError('Column or row spanning cells are '
-                                      'not implemented.')
+            raise NotImplementedError(
+                'Column or row spanning cells are not implemented.'
+            )
         self.new_state(0)
 
     def depart_entry(self, node):
@@ -431,7 +437,7 @@ class TextTranslator(nodes.NodeVisitor):
         def writesep(char='-'):
             out = ['+']
             for width in realwidths:
-                out.append(char * (width+2))
+                out.append(char * (width + 2))
                 out.append('+')
             self.add_text(''.join(out) + self.nl)
 
@@ -441,7 +447,7 @@ class TextTranslator(nodes.NodeVisitor):
                 out = ['|']
                 for i, cell in enumerate(line):
                     if cell:
-                        out.append(' ' + cell.ljust(realwidths[i]+1))
+                        out.append(' ' + cell.ljust(realwidths[i] + 1))
                     else:
                         out.append(' ' * (realwidths[i] + 2))
                     out.append('|')
@@ -460,7 +466,8 @@ class TextTranslator(nodes.NodeVisitor):
     def visit_acks(self, node):
         self.new_state(0)
         self.add_text(
-            ', '.join(n.astext() for n in node.children[0].children) + '.')
+            ', '.join(n.astext() for n in node.children[0].children) + '.'
+        )
         self.end_state()
         raise nodes.SkipNode
 
@@ -516,8 +523,9 @@ class TextTranslator(nodes.NodeVisitor):
             self.end_state(first='%s. ' % self.list_counter[-1], end=None)
 
     def visit_definition_list_item(self, node):
-        self._li_has_classifier = len(node) >= 2 and \
-                                  isinstance(node[1], nodes.classifier)
+        self._li_has_classifier = len(node) >= 2 and isinstance(
+            node[1], nodes.classifier
+        )
 
     def depart_definition_list_item(self, node):
         pass
@@ -774,6 +782,7 @@ class TextTranslator(nodes.NodeVisitor):
     def _make_depart_admonition(name):
         def depart_admonition(self, node):
             self.end_state(first=name.capitalize() + ': ')
+
         return depart_admonition
 
     visit_attention = _visit_admonition

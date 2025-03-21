@@ -21,16 +21,17 @@ DGP_PREFIX = 'DgpECS-'
 
 
 def find_required_key(resource_name, obj, key):
-
     if obj is None:
         raise exceptions.MissingPropertyError(
-            resource=resource_name, prop_name=key)
+            resource=resource_name, prop_name=key
+        )
 
     result = _get_case_insensitive_key(obj, key)
 
     if result is None:
         raise exceptions.MissingPropertyError(
-            resource=resource_name, prop_name=key)
+            resource=resource_name, prop_name=key
+        )
     else:
         return result
 

@@ -31,16 +31,16 @@ HUMANIZE_SUFFIXES = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
 EPOCH_TIME = datetime(1970, 1, 1, tzinfo=tzutc())
 # Maximum object size allowed in S3.
 # See: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
-MAX_UPLOAD_SIZE = 5 * (1024 ** 4)
+MAX_UPLOAD_SIZE = 5 * (1024**4)
 SIZE_SUFFIX = {
     'kb': 1024,
-    'mb': 1024 ** 2,
-    'gb': 1024 ** 3,
-    'tb': 1024 ** 4,
+    'mb': 1024**2,
+    'gb': 1024**3,
+    'tb': 1024**4,
     'kib': 1024,
-    'mib': 1024 ** 2,
-    'gib': 1024 ** 3,
-    'tib': 1024 ** 4,
+    'mib': 1024**2,
+    'gib': 1024**3,
+    'tib': 1024**4,
 }
 _S3_ACCESSPOINT_TO_BUCKET_KEY_REGEX = re.compile(
     r'^(?P<bucket>arn:(aws).*:s3:[a-z\-0-9]*:[0-9]{12}:accesspoint[:/][^/]+)/?'
@@ -90,7 +90,7 @@ def human_readable_size(value):
         return '%d Bytes' % bytes_int
 
     for i, suffix in enumerate(HUMANIZE_SUFFIXES):
-        unit = base ** (i+2)
+        unit = base ** (i + 2)
         if round((bytes_int / unit) * base) < base:
             return '%.1f %s' % ((base * bytes_int / unit), suffix)
 
@@ -110,8 +110,7 @@ def human_readable_to_int(value):
         suffix = value[-3:].lower()
     else:
         suffix = value[-2:].lower()
-    has_size_identifier = (
-        len(value) >= 2 and suffix in SIZE_SUFFIX)
+    has_size_identifier = len(value) >= 2 and suffix in SIZE_SUFFIX
     if not has_size_identifier:
         try:
             return int(value)
@@ -119,7 +118,7 @@ def human_readable_to_int(value):
             raise ValueError("Invalid size value: %s" % value)
     else:
         multiplier = SIZE_SUFFIX[suffix]
-        return int(value[:-len(suffix)]) * multiplier
+        return int(value[: -len(suffix)]) * multiplier
 
 
 class AppendFilter(argparse.Action):
@@ -136,6 +135,7 @@ class AppendFilter(argparse.Action):
     appear later in the command line take preference over rulers that
     appear earlier.
     """
+
     def __call__(self, parser, namespace, values, option_string=None):
         filter_list = getattr(namespace, self.dest)
         if filter_list:
@@ -170,6 +170,7 @@ class StablePriorityQueue(queue.Queue):
     (least important) priority available.
 
     """
+
     def __init__(self, maxsize=0, max_priority=20):
         queue.Queue.__init__(self, maxsize=maxsize)
         self.priorities = [deque([]) for i in range(max_priority + 1)]
@@ -182,8 +183,10 @@ class StablePriorityQueue(queue.Queue):
         return size
 
     def _put(self, item):
-        priority = min(getattr(item, 'PRIORITY', self.default_priority),
-                        self.default_priority)
+        priority = min(
+            getattr(item, 'PRIORITY', self.default_priority),
+            self.default_priority,
+        )
         self.priorities[priority].append(item)
 
     def _get(self):
@@ -252,8 +255,9 @@ def get_file_stat(path):
     try:
         stats = os.stat(path)
     except IOError as e:
-        raise ValueError('Could not retrieve file stat of "%s": %s' % (
-            path, e))
+        raise ValueError(
+            'Could not retrieve file stat of "%s": %s' % (path, e)
+        )
 
     try:
         update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())
@@ -284,14 +288,15 @@ def find_dest_path_comp_key(files, src_path=None):
     sep_table = {'s3': '/', 'local': os.sep}
 
     if files['dir_op']:
-        rel_path = src_path[len(src['path']):]
+        rel_path = src_path[len(src['path']) :]
     else:
         rel_path = src_path.split(sep_table[src_type])[-1]
     compare_key = rel_path.replace(sep_table[src_type], '/')
     if files['use_src_name']:
         dest_path = dest['path']
-        dest_path += rel_path.replace(sep_table[src_type],
-                                      sep_table[dest_type])
+        dest_path += rel_path.replace(
+            sep_table[src_type], sep_table[dest_type]
+        )
     else:
         dest_path = dest['path']
     return dest_path, compare_key
@@ -305,8 +310,9 @@ def create_warning(path, error_message, skip_file=True):
     if skip_file:
         print_string = print_string + "Skipping file " + path + ". "
     print_string = print_string + error_message
-    warning_message = WarningResult(message=print_string, error=False,
-                                    warning=True)
+    warning_message = WarningResult(
+        message=print_string, error=False, warning=True
+    )
     return warning_message
 
 
@@ -315,6 +321,7 @@ class StdoutBytesWriter(object):
     This class acts as a file-like object that performs the bytes_print
     function on write.
     """
+
     def __init__(self, stdout=None):
         self._stdout = stdout
 
@@ -344,8 +351,9 @@ def guess_content_type(filename):
     # default guessed content type of None.
     except UnicodeDecodeError:
         LOGGER.debug(
-            'Unable to guess content type for %s due to '
-            'UnicodeDecodeError: ', filename, exc_info=True
+            'Unable to guess content type for %s due to UnicodeDecodeError: ',
+            filename,
+            exc_info=True,
         )
 
 
@@ -381,8 +389,11 @@ def set_file_utime(filename, desired_time):
         if e.errno != errno.EPERM:
             raise e
         raise SetFileUtimeError(
-            ("The file was downloaded, but attempting to modify the "
-             "utime of the file failed. Is the file owned by another user?"))
+            (
+                "The file was downloaded, but attempting to modify the "
+                "utime of the file failed. Is the file owned by another user?"
+            )
+        )
 
 
 class SetFileUtimeError(Exception):
@@ -395,13 +406,18 @@ def _date_parser(date_string):
 
 class BucketLister(object):
     """List keys in a bucket."""
+
     def __init__(self, client, date_parser=_date_parser):
         self._client = client
         self._date_parser = date_parser
 
-    def list_objects(self, bucket, prefix=None, page_size=None,
-                     extra_args=None):
-        kwargs = {'Bucket': bucket, 'PaginationConfig': {'PageSize': page_size}}
+    def list_objects(
+        self, bucket, prefix=None, page_size=None, extra_args=None
+    ):
+        kwargs = {
+            'Bucket': bucket,
+            'PaginationConfig': {'PageSize': page_size},
+        }
         if prefix is not None:
             kwargs['Prefix'] = prefix
         if extra_args is not None:
@@ -414,12 +430,14 @@ class BucketLister(object):
             for content in contents:
                 source_path = bucket + '/' + content['Key']
                 content['LastModified'] = self._date_parser(
-                    content['LastModified'])
+                    content['LastModified']
+                )
                 yield source_path, content
 
 
-class PrintTask(namedtuple('PrintTask',
-                          ['message', 'error', 'total_parts', 'warning'])):
+class PrintTask(
+    namedtuple('PrintTask', ['message', 'error', 'total_parts', 'warning'])
+):
     def __new__(cls, message, error=False, total_parts=None, warning=None):
         """
         :param message: An arbitrary string associated with the entry.   This
@@ -428,8 +446,10 @@ class PrintTask(namedtuple('PrintTask',
         :param total_parts: The total number of parts for multipart transfers.
         :param warning: Boolean indicating a warning
         """
-        return super(PrintTask, cls).__new__(cls, message, error, total_parts,
-                                             warning)
+        return super(PrintTask, cls).__new__(
+            cls, message, error, total_parts, warning
+        )
+
 
 WarningResult = PrintTask
 
@@ -462,6 +482,7 @@ class RequestParamsMapper(object):
     Note that existing parameters in ``request_params`` will be overriden if
     a parameter in ``cli_params`` maps to the existing parameter.
     """
+
     @classmethod
     def map_put_object_params(cls, request_params, cli_params):
         """Map CLI params to PutObject request params"""
@@ -498,7 +519,8 @@ class RequestParamsMapper(object):
         cls._auto_populate_metadata_directive(request_params)
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_and_copy_source_request_params(
-            request_params, cli_params)
+            request_params, cli_params
+        )
         cls._set_request_payer_param(request_params, cli_params)
         cls._set_checksum_algorithm_param(request_params, cli_params)
 
@@ -527,7 +549,8 @@ class RequestParamsMapper(object):
     def map_upload_part_copy_params(cls, request_params, cli_params):
         """Map CLI params to UploadPartCopy request params"""
         cls._set_sse_c_and_copy_source_request_params(
-            request_params, cli_params)
+            request_params, cli_params
+        )
         cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
@@ -551,7 +574,9 @@ class RequestParamsMapper(object):
     @classmethod
     def _set_checksum_algorithm_param(cls, request_params, cli_params):
         if cli_params.get('checksum_algorithm'):
-            request_params['ChecksumAlgorithm'] = cli_params['checksum_algorithm']
+            request_params['ChecksumAlgorithm'] = cli_params[
+                'checksum_algorithm'
+            ]
 
     @classmethod
     def _set_general_object_params(cls, request_params, cli_params):
@@ -567,7 +592,7 @@ class RequestParamsMapper(object):
             'content_disposition': 'ContentDisposition',
             'content_encoding': 'ContentEncoding',
             'content_language': 'ContentLanguage',
-            'expires': 'Expires'
+            'expires': 'Expires',
         }
         for cli_param_name in general_param_translation:
             if cli_params.get(cli_param_name):
@@ -608,21 +633,23 @@ class RequestParamsMapper(object):
 
     @classmethod
     def _auto_populate_metadata_directive(cls, request_params):
-        if request_params.get('Metadata') and \
-                not request_params.get('MetadataDirective'):
+        if request_params.get('Metadata') and not request_params.get(
+            'MetadataDirective'
+        ):
             request_params['MetadataDirective'] = 'REPLACE'
 
     @classmethod
     def _set_metadata_directive_param(cls, request_params, cli_params):
         if cli_params.get('metadata_directive'):
             request_params['MetadataDirective'] = cli_params[
-                'metadata_directive']
+                'metadata_directive'
+            ]
 
     @classmethod
     def _set_sse_request_params(cls, request_params, cli_params):
         if cli_params.get('sse'):
             request_params['ServerSideEncryption'] = cli_params['sse']
-        if  cli_params.get('sse_kms_key_id'):
+        if cli_params.get('sse_kms_key_id'):
             request_params['SSEKMSKeyId'] = cli_params['sse_kms_key_id']
 
     @classmethod
@@ -635,13 +662,16 @@ class RequestParamsMapper(object):
     def _set_sse_c_copy_source_request_params(cls, request_params, cli_params):
         if cli_params.get('sse_c_copy_source'):
             request_params['CopySourceSSECustomerAlgorithm'] = cli_params[
-                'sse_c_copy_source']
+                'sse_c_copy_source'
+            ]
             request_params['CopySourceSSECustomerKey'] = cli_params[
-                'sse_c_copy_source_key']
+                'sse_c_copy_source_key'
+            ]
 
     @classmethod
-    def _set_sse_c_and_copy_source_request_params(cls, request_params,
-                                                  cli_params):
+    def _set_sse_c_and_copy_source_request_params(
+        cls, request_params, cli_params
+    ):
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_sse_c_copy_source_request_params(request_params, cli_params)
 
@@ -664,6 +694,7 @@ class NonSeekableStream(object):
     for certain that a fileobj is non seekable.
 
     """
+
     def __init__(self, fileobj):
         self._fileobj = fileobj
 
@@ -696,10 +727,12 @@ class S3PathResolver:
     def has_underlying_s3_path(self, path):
         bucket, _ = split_s3_bucket_key(path)
         return bool(
-            self._S3_ACCESSPOINT_ARN_TO_ACCOUNT_NAME_REGEX.match(bucket) or
-            self._S3_OUTPOST_ACCESSPOINT_ARN_TO_ACCOUNT_REGEX.match(bucket) or
-            self._S3_MRAP_ARN_TO_ACCOUNT_ALIAS_REGEX.match(bucket) or
-            bucket.endswith('-s3alias') or bucket.endswith('--op-s3'))
+            self._S3_ACCESSPOINT_ARN_TO_ACCOUNT_NAME_REGEX.match(bucket)
+            or self._S3_OUTPOST_ACCESSPOINT_ARN_TO_ACCOUNT_REGEX.match(bucket)
+            or self._S3_MRAP_ARN_TO_ACCOUNT_ALIAS_REGEX.match(bucket)
+            or bucket.endswith('-s3alias')
+            or bucket.endswith('--op-s3')
+        )
 
     @classmethod
     def from_session(cls, session, region, verify_ssl):
@@ -756,8 +789,7 @@ class S3PathResolver:
 
     def _get_access_point_bucket(self, account, name):
         return self._s3control_client.get_access_point(
-            AccountId=account,
-            Name=name
+            AccountId=account, Name=name
         )['Bucket']
 
     def _get_account_id(self):

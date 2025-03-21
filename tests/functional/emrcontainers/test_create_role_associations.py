@@ -45,7 +45,6 @@ class TestCreateRoleAssociationsCommand:
         create_pod_identity_association_response,
         start_job_run_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         cli_runner.add_response(
             HTTPResponse(body=create_pod_identity_association_response)
@@ -71,7 +70,9 @@ class TestCreateRoleAssociationsCommand:
 
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
-        assert len(result.aws_requests) == len(start_job_run_service_accounts) + 1
+        assert (
+            len(result.aws_requests) == len(start_job_run_service_accounts) + 1
+        )
         for i in range(len(start_job_run_service_accounts)):
             self.assert_call_matches(
                 result.aws_requests[i + 1],
@@ -95,7 +96,6 @@ class TestCreateRoleAssociationsCommand:
         create_pod_identity_association_response,
         interactive_endpoint_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         cli_runner.add_response(
             HTTPResponse(body=create_pod_identity_association_response)
@@ -123,7 +123,10 @@ class TestCreateRoleAssociationsCommand:
 
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
-        assert len(result.aws_requests) == len(interactive_endpoint_service_accounts) + 1
+        assert (
+            len(result.aws_requests)
+            == len(interactive_endpoint_service_accounts) + 1
+        )
         for i in range(len(interactive_endpoint_service_accounts)):
             self.assert_call_matches(
                 result.aws_requests[i + 1],
@@ -147,7 +150,6 @@ class TestCreateRoleAssociationsCommand:
         create_pod_identity_association_response,
         spark_operator_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         cli_runner.add_response(
             HTTPResponse(body=create_pod_identity_association_response)
@@ -175,7 +177,10 @@ class TestCreateRoleAssociationsCommand:
 
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
-        assert len(result.aws_requests) == len(spark_operator_service_accounts) + 1
+        assert (
+            len(result.aws_requests)
+            == len(spark_operator_service_accounts) + 1
+        )
         for i in range(len(spark_operator_service_accounts)):
             self.assert_call_matches(
                 result.aws_requests[i + 1],
@@ -199,7 +204,6 @@ class TestCreateRoleAssociationsCommand:
         create_pod_identity_association_response,
         spark_operator_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         cli_runner.add_response(
             HTTPResponse(body=create_pod_identity_association_response)
@@ -228,7 +232,10 @@ class TestCreateRoleAssociationsCommand:
         )
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
-        assert len(result.aws_requests) == len(spark_operator_service_accounts) + 1
+        assert (
+            len(result.aws_requests)
+            == len(spark_operator_service_accounts) + 1
+        )
         for i in range(len(spark_operator_service_accounts)):
             ns = "spark-operator" if i == 0 else namespace
             self.assert_call_matches(
@@ -253,7 +260,6 @@ class TestCreateRoleAssociationsCommand:
         create_pod_identity_association_response,
         flink_operator_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         cli_runner.add_response(
             HTTPResponse(body=create_pod_identity_association_response)
@@ -281,7 +287,10 @@ class TestCreateRoleAssociationsCommand:
 
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
-        assert len(result.aws_requests) == len(flink_operator_service_accounts) + 1
+        assert (
+            len(result.aws_requests)
+            == len(flink_operator_service_accounts) + 1
+        )
         for i in range(len(flink_operator_service_accounts)):
             self.assert_call_matches(
                 result.aws_requests[i + 1],
@@ -305,7 +314,6 @@ class TestCreateRoleAssociationsCommand:
         create_pod_identity_association_response,
         flink_operator_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         cli_runner.add_response(
             HTTPResponse(body=create_pod_identity_association_response)
@@ -335,7 +343,10 @@ class TestCreateRoleAssociationsCommand:
 
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
-        assert len(result.aws_requests) == len(flink_operator_service_accounts) + 1
+        assert (
+            len(result.aws_requests)
+            == len(flink_operator_service_accounts) + 1
+        )
         for i in range(len(flink_operator_service_accounts)):
             ns = "flink-operator" if i == 0 else namespace
             self.assert_call_matches(
@@ -360,7 +371,6 @@ class TestCreateRoleAssociationsCommand:
         create_pod_identity_association_response,
         livy_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         cli_runner.add_response(
             HTTPResponse(body=create_pod_identity_association_response)
@@ -409,7 +419,6 @@ class TestCreateRoleAssociationsCommand:
         create_pod_identity_association_response,
         livy_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         cli_runner.add_response(
             HTTPResponse(body=create_pod_identity_association_response)
@@ -461,7 +470,6 @@ class TestCreateRoleAssociationsCommand:
         create_pod_identity_association_response,
         spark_operator_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         cli_runner.add_response(
             HTTPResponse(body=create_pod_identity_association_response)
@@ -485,7 +493,11 @@ class TestCreateRoleAssociationsCommand:
         assert result.aws_requests[0].operation_name == "DescribeCluster"
         assert len(result.aws_requests) == 2
         self.assert_call_matches(
-            result.aws_requests[1], "test_sa", cluster_name, namespace, role_arn
+            result.aws_requests[1],
+            "test_sa",
+            cluster_name,
+            namespace,
+            role_arn,
         )
 
     # Use case: Expect to return ResourceInUse exception and do nothing on already existed associations
@@ -499,7 +511,6 @@ class TestCreateRoleAssociationsCommand:
         describe_cluster_response,
         create_pod_identity_association_already_exists_error_response,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         cli_runner.add_response(
             HTTPResponse(
@@ -535,10 +546,10 @@ class TestCreateRoleAssociationsCommand:
         expected_out = ""
         for component in components:
             expected_out += (
-                f"Skipping pod identity association creation because pod identity association already exists for service "
+                "Skipping pod identity association creation because pod identity association already exists for service "
                 + f"account emr-containers-sa-spark-{component}-123456789012-16o0gwny3p and role myrole in namespace test: "
-                + f"An error occurred (ResourceInUseException) when calling the "
-                + f"CreatePodIdentityAssociation operation: Association already exists: a-1\n"
+                + "An error occurred (ResourceInUseException) when calling the "
+                + "CreatePodIdentityAssociation operation: Association already exists: a-1\n"
             )
         assert result.stderr == expected_out
 
@@ -557,7 +568,6 @@ class TestCreateRoleAssociationsCommand:
         create_pod_identity_association_other_error_response,
         delete_pod_identity_association_response,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         cli_runner.add_response(
             HTTPResponse(body=create_pod_identity_association_response)

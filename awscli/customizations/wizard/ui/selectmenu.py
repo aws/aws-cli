@@ -25,7 +25,7 @@ from prompt_toolkit.layout.containers import ScrollOffsets, Window
 
 
 def select_menu(items, display_format=None, max_height=10):
-    """ Presents a list of options and allows the user to select one.
+    """Presents a list of options and allows the user to select one.
 
     This presents a static list of options and prompts the user to select one.
     This is similar to a completion menu but is different in that it does not
@@ -64,7 +64,8 @@ def select_menu(items, display_format=None, max_height=10):
     # limit the height and width of the window.
     content = FloatContainer(
         Window(height=Dimension(min=min_height, max=min_height)),
-        [Float(menu_window, top=0, left=0)])
+        [Float(menu_window, top=0, left=0)],
+    )
     app = Application(
         layout=Layout(content),
         key_bindings=app_bindings,
@@ -84,7 +85,7 @@ def _trim_text(text, max_width):
     if width > max_width:
         # When there are no double width characters, just use slice operation.
         if len(text) == width:
-            trimmed_text = (text[:max(1, max_width - 3)] + '...')[:max_width]
+            trimmed_text = (text[: max(1, max_width - 3)] + '...')[:max_width]
             return trimmed_text, len(trimmed_text)
 
         # Otherwise, loop until we have the desired width. (Rather
@@ -151,13 +152,13 @@ class SelectionMenuControl(UIControl):
     def create_content(self, width, height):
         def get_line(i):
             item = self._get_items()[i]
-            is_selected = (i == self._selection)
+            is_selected = i == self._selection
             return self._menu_item_fragment(item, is_selected, width)
 
         return UIContent(
             get_line=get_line,
             cursor_position=Point(x=0, y=self._selection or 0),
-            line_count=len(self._get_items())
+            line_count=len(self._get_items()),
         )
 
     def _move_cursor(self, delta):
@@ -190,8 +191,15 @@ class SelectionMenuControl(UIControl):
 
 class CollapsableSelectionMenuControl(SelectionMenuControl):
     """Menu that collapses to text with selection when loses focus"""
-    def __init__(self, items, display_format=None, cursor='>',
-                 selection_capture_buffer=None, on_toggle=None):
+
+    def __init__(
+        self,
+        items,
+        display_format=None,
+        cursor='>',
+        selection_capture_buffer=None,
+        on_toggle=None,
+    ):
         super().__init__(items, display_format=display_format, cursor=cursor)
         if not selection_capture_buffer:
             selection_capture_buffer = Buffer()
@@ -204,6 +212,7 @@ class CollapsableSelectionMenuControl(SelectionMenuControl):
             self._has_ever_entered_select_menu = True
             return super().create_content(width, height)
         else:
+
             def get_line(i):
                 content = ''
                 if self._has_ever_entered_select_menu:
@@ -212,11 +221,11 @@ class CollapsableSelectionMenuControl(SelectionMenuControl):
 
             return UIContent(get_line=get_line, line_count=1)
 
-    def preferred_height(self, width, max_height, wrap_lines,
-                         get_line_prefix):
+    def preferred_height(self, width, max_height, wrap_lines, get_line_prefix):
         if get_app().layout.has_focus(self):
             return super().preferred_height(
-                width, max_height, wrap_lines, get_line_prefix)
+                width, max_height, wrap_lines, get_line_prefix
+            )
         else:
             return 1
 

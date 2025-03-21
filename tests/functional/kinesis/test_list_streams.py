@@ -16,7 +16,6 @@ from awscli.testutils import BaseAWSCommandParamsTest, BaseAWSHelpOutputTest
 
 
 class TestListStreams(BaseAWSCommandParamsTest):
-
     prefix = ['kinesis', 'list-streams']
 
     def test_exclusive_start_stream_name_disables_auto_pagination(self):

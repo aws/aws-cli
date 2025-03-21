@@ -12,12 +12,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.compat import BytesIO
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import FileCreator
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 
 class TestStreamingOutput(BaseAWSCommandParamsTest):
-
     def setUp(self):
         super(TestStreamingOutput, self).setUp()
         self.files = FileCreator()
@@ -33,12 +31,12 @@ class TestStreamingOutput(BaseAWSCommandParamsTest):
         )
         self.parsed_response = {
             'ContentType': 'video/webm',
-            'Payload': BytesIO(b'testbody')
+            'Payload': BytesIO(b'testbody'),
         }
         outpath = self.files.full_path('outfile')
         params = {
             'StartSelector': {'StartSelectorType': 'EARLIEST'},
-            'StreamName': 'test-stream'
+            'StreamName': 'test-stream',
         }
         self.assert_params_for_cmd(cmdline % outpath, params)
         with open(outpath, 'rb') as outfile:

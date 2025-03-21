@@ -11,7 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.customizations.paginate import (
-    MAX_ITEMS_HELP, PAGE_SIZE_HELP, STARTING_TOKEN_HELP
+    MAX_ITEMS_HELP,
+    PAGE_SIZE_HELP,
+    STARTING_TOKEN_HELP,
 )
 
 
@@ -27,7 +29,7 @@ INDEX_NAME = {
     'help_text': (
         '<p>The name of a secondary index to scan. This index can be any '
         'local secondary index or global secondary index.</p>'
-    )
+    ),
 }
 
 SELECT = {
@@ -52,11 +54,12 @@ SELECT = {
         '<li> ``COUNT`` - Returns the number of matching items, rather than '
         'the matching items themselves.</li>'
         '</ul>'
-    )
+    ),
 }
 
 PROJECTION_EXPRESSION = {
-    'name': 'projection', 'nargs': '+',
+    'name': 'projection',
+    'nargs': '+',
     'help_text': (
         '<p>A string that identifies one or more attributes to retrieve from '
         'the specified table or index. These attributes can include scalars, '
@@ -71,11 +74,12 @@ PROJECTION_EXPRESSION = {
         '<p>For CLI specific syntax see '
         '<a href="https://docs.aws.amazon.com/cli/latest/topic/'
         'ddb-expressions.html">aws help ddb-expressions</a></p>'
-    )
+    ),
 }
 
 FILTER_EXPRESSION = {
-    'name': 'filter', 'nargs': '+',
+    'name': 'filter',
+    'nargs': '+',
     'help_text': (
         '<p>A string that contains conditions that DynamoDB applies after the '
         'operation, but before the data is returned to you. Items that do '
@@ -90,11 +94,12 @@ FILTER_EXPRESSION = {
         '<p>For CLI specific syntax see '
         '<a href="https://docs.aws.amazon.com/cli/latest/topic/'
         'ddb-expressions.html">aws help ddb-expressions</a></p>'
-    )
+    ),
 }
 
 CONDITION_EXPRESSION = {
-    'name': 'condition', 'nargs': '+',
+    'name': 'condition',
+    'nargs': '+',
     'help_text': (
         '<p>A condition that must be satisfied in order for a conditional '
         '<code>put</code> operation to succeed.</p>'
@@ -106,11 +111,12 @@ CONDITION_EXPRESSION = {
         '<p>For CLI specific syntax see '
         '<a href="https://docs.aws.amazon.com/cli/latest/topic/'
         'ddb-expressions.html">aws help ddb-expressions</a></p>'
-    )
+    ),
 }
 
 KEY_CONDITION_EXPRESSION = {
-    'name': 'key-condition', 'nargs': '+',
+    'name': 'key-condition',
+    'nargs': '+',
     'help_text': (
         '<p>The condition that specifies the key value(s) for items to be '
         'retrieved. Must perform an equality test on a single partition key '
@@ -152,7 +158,7 @@ KEY_CONDITION_EXPRESSION = {
         '<p>For CLI specific syntax see '
         '<a href="https://docs.aws.amazon.com/cli/latest/topic/'
         'ddb-expressions.html">aws help ddb-expressions</a></p>'
-    )
+    ),
 }
 
 ITEMS = {
@@ -161,12 +167,15 @@ ITEMS = {
     'synopsis': '<items>',
     'help_text': (
         '<p>One or more items to put into the table, in YAML format.</p>'
-    )
+    ),
 }
 
 CONSISTENT_READ = {
-    'name': 'consistent-read', 'action': 'store_true', 'default': True,
-    'group_name': 'consistent_read', 'dest': 'consistent_read',
+    'name': 'consistent-read',
+    'action': 'store_true',
+    'default': True,
+    'group_name': 'consistent_read',
+    'dest': 'consistent_read',
     'help_text': (
         '<p>Determines the read consistency model: If set to '
         '<code>--consistent-read</code>, then the operation uses strongly '
@@ -175,29 +184,36 @@ CONSISTENT_READ = {
         'global secondary indexes. If you query a global secondary index '
         'with <code>--consistent-read</code>, you will receive a '
         '<code>ValidationException</code>.</p>'
-    )
+    ),
 }
 
 NO_CONSISTENT_READ = {
-    'name': 'no-consistent-read', 'action': 'store_false', 'default': True,
-    'group_name': 'consistent_read', 'dest': 'consistent_read',
+    'name': 'no-consistent-read',
+    'action': 'store_false',
+    'default': True,
+    'group_name': 'consistent_read',
+    'dest': 'consistent_read',
 }
 
 RETURN_CONSUMED_CAPACITY = {
-    'name': 'return-consumed-capacity', 'action': 'store_true',
-    'default': False, 'group_name': 'return_consumed_capacity',
+    'name': 'return-consumed-capacity',
+    'action': 'store_true',
+    'default': False,
+    'group_name': 'return_consumed_capacity',
     'dest': 'return_consumed_capacity',
     'help_text': (
         '<p>Will include the aggregate <code>ConsumedCapacity</code> for the '
         'operation. If <code>--index-name</code> is also specified, '
         'then the <code>ConsumedCapacity</code> for each table and secondary '
         'index that was accessed will be returned.</p>'
-    )
+    ),
 }
 
 NO_RETURN_CONSUMED_CAPACITY = {
-    'name': 'no-return-consumed-capacity', 'action': 'store_false',
-    'default': False, 'group_name': 'return_consumed_capacity',
+    'name': 'no-return-consumed-capacity',
+    'action': 'store_false',
+    'default': False,
+    'group_name': 'return_consumed_capacity',
     'dest': 'return_consumed_capacity',
 }
 

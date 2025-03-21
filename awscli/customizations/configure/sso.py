@@ -34,12 +34,16 @@ from prompt_toolkit.validation import ValidationError
 
 from awscli.customizations.utils import uni_print
 from awscli.customizations.configure import (
-    profile_to_section, get_section_header,
+    profile_to_section,
+    get_section_header,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.wizard.ui.selectmenu import select_menu
 from awscli.customizations.sso.utils import (
-    do_sso_login, parse_sso_registration_scopes, PrintOnlyHandler, LOGIN_ARGS,
+    do_sso_login,
+    parse_sso_registration_scopes,
+    PrintOnlyHandler,
+    LOGIN_ARGS,
     BaseSSOCommand,
 )
 from awscli.formatter import CLI_OUTPUT_FORMATS
@@ -95,7 +99,8 @@ class ScopesValidator(ValidatorWithDefault):
             return
         if not self._is_comma_separated_list(document.text):
             self._raise_validation_error(
-                document, 'Scope values must be separated by commas')
+                document, 'Scope values must be separated by commas'
+            )
 
     def _is_comma_separated_list(self, value):
         scopes = value.split(',')
@@ -118,21 +123,26 @@ class PTKPrompt(object):
             completions = []
         completer_kwargs = {
             'words': completions,
-            'pattern': re.compile(r'\S+')
+            'pattern': re.compile(r'\S+'),
         }
         if isinstance(completions, dict):
             completer_kwargs['meta_dict'] = completions
             completer_kwargs['words'] = list(completions.keys())
         return WordCompleter(**completer_kwargs)
 
-    def get_value(self, current_value, prompt_text='',
-                  completions=None, validator=None, toolbar=None,
-                  prompt_fmt=None):
+    def get_value(
+        self,
+        current_value,
+        prompt_text='',
+        completions=None,
+        validator=None,
+        toolbar=None,
+        prompt_fmt=None,
+    ):
         if prompt_fmt is None:
             prompt_fmt = self._DEFAULT_PROMPT_FORMAT
         prompt_string = prompt_fmt.format(
-            prompt_text=prompt_text,
-            current_value=current_value
+            prompt_text=prompt_text, current_value=current_value
         )
         prompter_kwargs = {
             'validator': validator,
@@ -192,7 +202,8 @@ class SSOSessionConfigurationPrompter:
         self._botocore_session = botocore_session
         self._prompter = prompter
         self._sso_sessions = self._botocore_session.full_config.get(
-            'sso_sessions', {})
+            'sso_sessions', {}
+        )
         self._sso_session = None
         self.sso_session_config = {}
 
@@ -204,7 +215,8 @@ class SSOSessionConfigurationPrompter:
     def sso_session(self, value):
         self._sso_session = value
         self.sso_session_config = self._sso_sessions.get(
-            self._sso_session, {}).copy()
+            self._sso_session, {}
+        ).copy()
 
     def prompt_for_sso_session(self, required=True):
         prompt_text = 'SSO session name'
@@ -217,7 +229,8 @@ class SSOSessionConfigurationPrompter:
             if not required:
                 prompt_fmt = f'{prompt_text} (Recommended): '
         sso_session = self._prompt_for(
-            'sso_session', prompt_text,
+            'sso_session',
+            prompt_text,
             completions=sorted(self._sso_sessions),
             toolbar=self._get_sso_session_toolbar,
             validator_cls=validator_cls,
@@ -229,43 +242,55 @@ class SSOSessionConfigurationPrompter:
 
     def prompt_for_sso_start_url(self):
         return self._prompt_for(
-            'sso_start_url', 'SSO start URL',
+            'sso_start_url',
+            'SSO start URL',
             completions=self._get_potential_start_urls(),
             validator_cls=StartUrlValidator,
         )
 
     def prompt_for_sso_region(self):
         return self._prompt_for(
-            'sso_region', 'SSO region',
+            'sso_region',
+            'SSO region',
             completions=self._get_potential_sso_regions(),
             validator_cls=RequiredInputValidator,
         )
 
     def prompt_for_sso_registration_scopes(self):
         if 'sso_registration_scopes' not in self.sso_session_config:
-            self.sso_session_config['sso_registration_scopes'] = \
+            self.sso_session_config['sso_registration_scopes'] = (
                 self._DEFAULT_SSO_SCOPE
+            )
         raw_scopes = self._prompt_for(
-            'sso_registration_scopes', 'SSO registration scopes',
+            'sso_registration_scopes',
+            'SSO registration scopes',
             completions=self._get_potential_sso_registrations_scopes(),
             validator_cls=ScopesValidator,
         )
         return parse_sso_registration_scopes(raw_scopes)
 
-    def _prompt_for(self, config_name, text,
-                    completions=None, validator_cls=None,
-                    toolbar=None, prompt_fmt=None, current_value=None):
+    def _prompt_for(
+        self,
+        config_name,
+        text,
+        completions=None,
+        validator_cls=None,
+        toolbar=None,
+        prompt_fmt=None,
+        current_value=None,
+    ):
         if current_value is None:
             current_value = self.sso_session_config.get(config_name)
         validator = None
         if validator_cls:
             validator = validator_cls(current_value)
         value = self._prompter.get_value(
-            current_value, text,
+            current_value,
+            text,
             completions=completions,
             validator=validator,
             toolbar=toolbar,
-            prompt_fmt=prompt_fmt
+            prompt_fmt=prompt_fmt,
         )
         if value:
             self.sso_session_config[config_name] = value
@@ -275,12 +300,17 @@ class SSOSessionConfigurationPrompter:
         current_input = get_app().current_buffer.document.text
         if current_input in self._sso_sessions:
             selected_sso_config = self._sso_sessions[current_input]
-            return FormattedText([
-                ('',  self._get_toolbar_border()),
-                ('', '\n'),
-                ('bold', f'Configuration for SSO session: {current_input}\n\n'),
-                ('', json.dumps(selected_sso_config, indent=2)),
-            ])
+            return FormattedText(
+                [
+                    ('', self._get_toolbar_border()),
+                    ('', '\n'),
+                    (
+                        'bold',
+                        f'Configuration for SSO session: {current_input}\n\n',
+                    ),
+                    ('', json.dumps(selected_sso_config, indent=2)),
+                ]
+            )
 
     def _get_toolbar_border(self):
         horizontal_line_char = '\u2500'
@@ -289,8 +319,7 @@ class SSOSessionConfigurationPrompter:
     def _get_potential_start_urls(self):
         profiles = self._botocore_session.full_config.get('profiles', {})
         configs_to_search = itertools.chain(
-            profiles.values(),
-            self._sso_sessions.values()
+            profiles.values(), self._sso_sessions.values()
         )
         potential_start_urls = set()
         for config_to_search in configs_to_search:
@@ -335,14 +364,16 @@ class BaseSSOConfigurationCommand(BaseSSOCommand):
         self._config_writer = config_writer
         self._sso_sessions = self._session.full_config.get('sso_sessions', {})
         self._sso_session_prompter = SSOSessionConfigurationPrompter(
-            botocore_session=session, prompter=self._prompter,
+            botocore_session=session,
+            prompter=self._prompter,
         )
 
     def _write_sso_configuration(self):
         self._update_section(
             section_header=get_section_header(
-                'sso-session', self._sso_session_prompter.sso_session),
-            new_values=self._sso_session_prompter.sso_session_config
+                'sso-session', self._sso_session_prompter.sso_session
+            ),
+            new_values=self._sso_session_prompter.sso_session_config,
         )
 
     def _update_section(self, section_header, new_values):
@@ -354,7 +385,7 @@ class BaseSSOConfigurationCommand(BaseSSOCommand):
 
 class ConfigureSSOCommand(BaseSSOConfigurationCommand):
     NAME = 'sso'
-    SYNOPSIS = ('aws configure sso [--profile profile-name]')
+    SYNOPSIS = 'aws configure sso [--profile profile-name]'
     DESCRIPTION = (
         'The ``aws configure sso`` command interactively prompts for the '
         'configuration values required to create a profile that sources '
@@ -368,10 +399,18 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
     # TODO: Add CLI parameters to skip prompted values, --start-url, etc.
     ARG_TABLE = LOGIN_ARGS
 
-    def __init__(self, session, prompter=None, selector=None,
-                 config_writer=None, sso_token_cache=None, sso_login=None):
+    def __init__(
+        self,
+        session,
+        prompter=None,
+        selector=None,
+        config_writer=None,
+        sso_token_cache=None,
+        sso_login=None,
+    ):
         super(ConfigureSSOCommand, self).__init__(
-            session, prompter=prompter, config_writer=config_writer)
+            session, prompter=prompter, config_writer=config_writer
+        )
         if selector is None:
             selector = select_menu
         self._selector = selector
@@ -390,14 +429,13 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
 
     def _set_sso_session_if_configured_in_profile(self):
         if 'sso_session' in self._profile_config:
-            self._sso_session_prompter.sso_session = \
-                self._profile_config['sso_session']
+            self._sso_session_prompter.sso_session = self._profile_config[
+                'sso_session'
+            ]
 
     def _handle_single_account(self, accounts):
         sso_account_id = accounts[0]['accountId']
-        single_account_msg = (
-            'The only AWS account available to you is: {}\n'
-        )
+        single_account_msg = 'The only AWS account available to you is: {}\n'
         uni_print(single_account_msg.format(sso_account_id))
         return sso_account_id
 
@@ -407,7 +445,8 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         )
         uni_print(available_accounts_msg.format(len(accounts)))
         selected_account = self._selector(
-            accounts, display_format=display_account)
+            accounts, display_format=display_account
+        )
         sso_account_id = selected_account['accountId']
         return sso_account_id
 
@@ -444,8 +483,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
     def _get_all_roles(self, sso, sso_token, sso_account_id):
         paginator = sso.get_paginator('list_account_roles')
         results = paginator.paginate(
-            accountId=sso_account_id,
-            accessToken=sso_token['accessToken']
+            accountId=sso_account_id, accessToken=sso_token['accessToken']
         )
         return results.build_full_result()
 
@@ -472,17 +510,20 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
                 default_profile = f'{sso_role_name}-{sso_account_id}'
             validator = RequiredInputValidator(default_profile)
             profile_name = self._prompter.get_value(
-                default_profile, text, validator=validator)
+                default_profile, text, validator=validator
+            )
         return profile_name
 
     def _prompt_for_cli_default_region(self):
         # TODO: figure out a way to get a list of reasonable client regions
         return self._prompt_for_profile_config(
-            'region', 'Default client Region')
+            'region', 'Default client Region'
+        )
 
     def _prompt_for_cli_output_format(self):
         return self._prompt_for_profile_config(
-            'output', 'CLI default output format (json if not specified)',
+            'output',
+            'CLI default output format (json if not specified)',
             completions=list(CLI_OUTPUT_FORMATS.keys()),
         )
 
@@ -490,7 +531,8 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         current_value = self._profile_config.get(config_name)
 
         new_value = self._prompter.get_value(
-            current_value, text,
+            current_value,
+            text,
             completions=completions,
         )
         if new_value:
@@ -520,7 +562,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             token_cache=self._sso_token_cache,
             on_pending_authorization=on_pending_authorization,
             use_device_code=parsed_args.use_device_code,
-            **sso_registration_args
+            **sso_registration_args,
         )
 
         # Construct an SSO client to explore the accounts / roles
@@ -547,7 +589,8 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
 
     def _prompt_for_sso_registration_args(self):
         sso_session = self._sso_session_prompter.prompt_for_sso_session(
-            required=False)
+            required=False
+        )
         if sso_session is None:
             self._warn_configuring_using_legacy_format()
             return self._prompt_for_registration_args_with_legacy_format()
@@ -555,7 +598,8 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             self._set_sso_session_in_profile_config(sso_session)
             if sso_session in self._sso_sessions:
                 return self._get_sso_registration_args_from_sso_config(
-                    sso_session)
+                    sso_session
+                )
             else:
                 return self._prompt_for_registration_args_for_new_sso_session(
                     sso_session=sso_session
@@ -565,10 +609,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         self._store_sso_session_prompter_answers_to_profile_config()
         self._set_sso_session_defaults_from_profile_config()
         start_url, sso_region = self._prompt_for_sso_start_url_and_sso_region()
-        return {
-            'start_url': start_url,
-            'sso_region': sso_region
-        }
+        return {'start_url': start_url, 'sso_region': sso_region}
 
     def _get_sso_registration_args_from_sso_config(self, sso_session):
         sso_config = self._get_sso_session_config(sso_session)
@@ -576,13 +617,15 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             'session_name': sso_session,
             'start_url': sso_config['sso_start_url'],
             'sso_region': sso_config['sso_region'],
-            'registration_scopes': sso_config.get('registration_scopes')
+            'registration_scopes': sso_config.get('registration_scopes'),
         }
 
     def _prompt_for_registration_args_for_new_sso_session(self, sso_session):
         self._set_sso_session_defaults_from_profile_config()
         start_url, sso_region = self._prompt_for_sso_start_url_and_sso_region()
-        scopes = self._sso_session_prompter.prompt_for_sso_registration_scopes()
+        scopes = (
+            self._sso_session_prompter.prompt_for_sso_registration_scopes()
+        )
         return {
             'session_name': sso_session,
             'start_url': start_url,
@@ -592,14 +635,15 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             # using any cached tokens from any previous of attempts to
             # create/authenticate a new SSO session as part of the configure
             # sso flow.
-            'force_refresh': True
+            'force_refresh': True,
         }
 
     def _store_sso_session_prompter_answers_to_profile_config(self):
         # Wire the SSO session prompter to set config values to the
         # dictionary used for writing to the profile section
-        self._sso_session_prompter.sso_session_config = \
+        self._sso_session_prompter.sso_session_config = (
             self._new_profile_config_values
+        )
 
     def _set_sso_session_in_profile_config(self, sso_session):
         self._new_profile_config_values['sso_session'] = sso_session
@@ -609,11 +653,13 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         # SSO configuration as part of the prompt if a profile was explicitly
         # provided that already had SSO configuration
         if 'sso_start_url' in self._profile_config:
-            self._sso_session_prompter.sso_session_config['sso_start_url'] = \
+            self._sso_session_prompter.sso_session_config['sso_start_url'] = (
                 self._profile_config['sso_start_url']
+            )
         if 'sso_region' in self._profile_config:
-            self._sso_session_prompter.sso_session_config['sso_region'] = \
+            self._sso_session_prompter.sso_session_config['sso_region'] = (
                 self._profile_config['sso_region']
+            )
 
     def _prompt_for_sso_start_url_and_sso_region(self):
         start_url = self._sso_session_prompter.prompt_for_sso_start_url()
@@ -634,7 +680,8 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         try:
             sso_account_id = self._prompt_for_account(sso, sso_token)
             sso_role_name = self._prompt_for_role(
-                sso, sso_token, sso_account_id)
+                sso, sso_token, sso_account_id
+            )
         except sso.exceptions.UnauthorizedException as e:
             uni_print(
                 'Unable to list AWS accounts and/or roles. '
@@ -646,7 +693,8 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         if self._new_profile_config_values:
             profile_section = profile_to_section(profile)
             self._update_section(
-                profile_section, self._new_profile_config_values)
+                profile_section, self._new_profile_config_values
+            )
         if self._sso_session_prompter.sso_session:
             self._write_sso_configuration()
 
@@ -668,9 +716,10 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             msg = 'Successfully configured SSO for profile: {}\n'
         uni_print(msg.format(profile_name))
 
+
 class ConfigureSSOSessionCommand(BaseSSOConfigurationCommand):
     NAME = 'sso-session'
-    SYNOPSIS = ('aws configure sso-session')
+    SYNOPSIS = 'aws configure sso-session'
     DESCRIPTION = (
         'The ``aws configure sso-session`` command interactively prompts for '
         'the configuration values required to create a SSO session. '

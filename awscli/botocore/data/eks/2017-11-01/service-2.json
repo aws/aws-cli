@@ -174,7 +174,7 @@
         {"shape":"ServerException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Creates a managed node group for an Amazon EKS cluster.</p> <p>You can only create a node group for your cluster that is equal to the current Kubernetes version for the cluster. All node groups are created with the latest AMI release version for the respective minor Kubernetes version of the cluster, unless you deploy a custom AMI using a launch template. For more information about using launch templates, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html\">Customizing managed nodes with launch templates</a>.</p> <p>An Amazon EKS managed node group is an Amazon EC2 Auto Scaling group and associated Amazon EC2 instances that are managed by Amazon Web Services for an Amazon EKS cluster. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html\">Managed node groups</a> in the <i>Amazon EKS User Guide</i>.</p> <note> <p>Windows AMI types are only supported for commercial Amazon Web Services Regions that support Windows on Amazon EKS.</p> </note>"
+      "documentation":"<p>Creates a managed node group for an Amazon EKS cluster.</p> <p>You can only create a node group for your cluster that is equal to the current Kubernetes version for the cluster. All node groups are created with the latest AMI release version for the respective minor Kubernetes version of the cluster, unless you deploy a custom AMI using a launch template.</p> <p>For later updates, you will only be able to update a node group using a launch template only if it was originally deployed with a launch template. Additionally, the launch template ID or name must match what was used when the node group was created. You can update the launch template version with necessary changes. For more information about using launch templates, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html\">Customizing managed nodes with launch templates</a>.</p> <p>An Amazon EKS managed node group is an Amazon EC2 Auto Scaling group and associated Amazon EC2 instances that are managed by Amazon Web Services for an Amazon EKS cluster. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html\">Managed node groups</a> in the <i>Amazon EKS User Guide</i>.</p> <note> <p>Windows AMI types are only supported for commercial Amazon Web Services Regions that support Windows on Amazon EKS.</p> </note>"
     },
     "CreatePodIdentityAssociation":{
       "name":"CreatePodIdentityAssociation",
@@ -941,7 +941,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Updates the Kubernetes version or AMI version of an Amazon EKS managed node group.</p> <p>You can update a node group using a launch template only if the node group was originally deployed with a launch template. If you need to update a custom AMI in a node group that was deployed with a launch template, then update your custom AMI, specify the new ID in a new version of the launch template, and then update the node group to the new version of the launch template.</p> <p>If you update without a launch template, then you can update to the latest available AMI version of a node group's current Kubernetes version by not specifying a Kubernetes version in the request. You can update to the latest AMI version of your cluster's current Kubernetes version by specifying your cluster's Kubernetes version in the request. For information about Linux versions, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-linux-ami-versions.html\">Amazon EKS optimized Amazon Linux AMI versions</a> in the <i>Amazon EKS User Guide</i>. For information about Windows versions, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-ami-versions-windows.html\">Amazon EKS optimized Windows AMI versions</a> in the <i>Amazon EKS User Guide</i>. </p> <p>You cannot roll back a node group to an earlier Kubernetes version or AMI version.</p> <p>When a node in a managed node group is terminated due to a scaling action or update, every <code>Pod</code> on that node is drained first. Amazon EKS attempts to drain the nodes gracefully and will fail if it is unable to do so. You can <code>force</code> the update if Amazon EKS is unable to drain the nodes as a result of a <code>Pod</code> disruption budget issue.</p>"
+      "documentation":"<p>Updates the Kubernetes version or AMI version of an Amazon EKS managed node group.</p> <p>You can update a node group using a launch template only if the node group was originally deployed with a launch template. Additionally, the launch template ID or name must match what was used when the node group was created. You can update the launch template version with necessary changes.</p> <p>If you need to update a custom AMI in a node group that was deployed with a launch template, then update your custom AMI, specify the new ID in a new version of the launch template, and then update the node group to the new version of the launch template.</p> <p>If you update without a launch template, then you can update to the latest available AMI version of a node group's current Kubernetes version by not specifying a Kubernetes version in the request. You can update to the latest AMI version of your cluster's current Kubernetes version by specifying your cluster's Kubernetes version in the request. For information about Linux versions, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-linux-ami-versions.html\">Amazon EKS optimized Amazon Linux AMI versions</a> in the <i>Amazon EKS User Guide</i>. For information about Windows versions, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-ami-versions-windows.html\">Amazon EKS optimized Windows AMI versions</a> in the <i>Amazon EKS User Guide</i>. </p> <p>You cannot roll back a node group to an earlier Kubernetes version or AMI version.</p> <p>When a node in a managed node group is terminated due to a scaling action or update, every <code>Pod</code> on that node is drained first. Amazon EKS attempts to drain the nodes gracefully and will fail if it is unable to do so. You can <code>force</code> the update if Amazon EKS is unable to drain the nodes as a result of a <code>Pod</code> disruption budget issue.</p>"
     },
     "UpdatePodIdentityAssociation":{
       "name":"UpdatePodIdentityAssociation",
@@ -2364,7 +2364,7 @@
         },
         "launchTemplate":{
           "shape":"LaunchTemplateSpecification",
-          "documentation":"<p>An object representing a node group's launch template specification. When using this object, don't directly specify <code>instanceTypes</code>, <code>diskSize</code>, or <code>remoteAccess</code>. Make sure that the launch template meets the requirements in <code>launchTemplateSpecification</code>. Also refer to <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html\">Customizing managed nodes with launch templates</a> in the <i>Amazon EKS User Guide</i>.</p>"
+          "documentation":"<p>An object representing a node group's launch template specification. When using this object, don't directly specify <code>instanceTypes</code>, <code>diskSize</code>, or <code>remoteAccess</code>. You cannot later specify a different launch template ID or name than what was used to create the node group.</p> <p>Make sure that the launch template meets the requirements in <code>launchTemplateSpecification</code>. Also refer to <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html\">Customizing managed nodes with launch templates</a> in the <i>Amazon EKS User Guide</i>.</p>"
         },
         "updateConfig":{
           "shape":"NodegroupUpdateConfig",
@@ -3266,6 +3266,10 @@
           "shape":"StringList",
           "documentation":"<p>Amazon Web Services License Manager ARN associated with the subscription.</p>"
         },
+        "licenses":{
+          "shape":"LicenseList",
+          "documentation":"<p>Includes all of the claims in the license token necessary to validate the license for extended support.</p>"
+        },
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The metadata for a subscription to assist with categorization and organization. Each tag consists of a key and an optional value. Subscription tags do not propagate to any other resources associated with the subscription.</p>"
@@ -3877,18 +3881,36 @@
       "members":{
         "name":{
           "shape":"String",
-          "documentation":"<p>The name of the launch template.</p> <p>You must specify either the launch template name or the launch template ID in the request, but not both.</p>"
+          "documentation":"<p>The name of the launch template.</p> <p>You must specify either the launch template name or the launch template ID in the request, but not both. After node group creation, you cannot use a different name.</p>"
         },
         "version":{
           "shape":"String",
-          "documentation":"<p>The version number of the launch template to use. If no version is specified, then the template's default version is used.</p>"
+          "documentation":"<p>The version number of the launch template to use. If no version is specified, then the template's default version is used. You can use a different version for node group updates.</p>"
         },
         "id":{
           "shape":"String",
-          "documentation":"<p>The ID of the launch template.</p> <p>You must specify either the launch template ID or the launch template name in the request, but not both.</p>"
+          "documentation":"<p>The ID of the launch template.</p> <p>You must specify either the launch template ID or the launch template name in the request, but not both. After node group creation, you cannot use a different ID.</p>"
         }
       },
       "documentation":"<p>An object representing a node group launch template specification. The launch template can't include <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateNetworkInterface.html\"> <code>SubnetId</code> </a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_IamInstanceProfile.html\"> <code>IamInstanceProfile</code> </a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotInstances.html\"> <code>RequestSpotInstances</code> </a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_HibernationOptionsRequest.html\"> <code>HibernationOptions</code> </a>, or <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_TerminateInstances.html\"> <code>TerminateInstances</code> </a>, or the node group deployment or update will fail. For more information about launch templates, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateLaunchTemplate.html\"> <code>CreateLaunchTemplate</code> </a> in the Amazon EC2 API Reference. For more information about using launch templates with Amazon EKS, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html\">Customizing managed nodes with launch templates</a> in the <i>Amazon EKS User Guide</i>.</p> <p>You must specify either the launch template ID or the launch template name in the request, but not both.</p>"
+    },
+    "License":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>An id associated with an EKS Anywhere subscription license.</p>"
+        },
+        "token":{
+          "shape":"String",
+          "documentation":"<p>An optional license token that can be used for extended support verification.</p>"
+        }
+      },
+      "documentation":"<p>An EKS Anywhere license associated with a subscription.</p>"
+    },
+    "LicenseList":{
+      "type":"list",
+      "member":{"shape":"License"}
     },
     "ListAccessEntriesRequest":{
       "type":"structure",
@@ -5765,7 +5787,7 @@
         },
         "launchTemplate":{
           "shape":"LaunchTemplateSpecification",
-          "documentation":"<p>An object representing a node group's launch template specification. You can only update a node group using a launch template if the node group was originally deployed with a launch template.</p>"
+          "documentation":"<p>An object representing a node group's launch template specification. You can only update a node group using a launch template if the node group was originally deployed with a launch template. When updating, you must specify the same launch template ID or name that was used to create the node group.</p>"
         },
         "force":{
           "shape":"Boolean",

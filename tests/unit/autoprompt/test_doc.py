@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 import textwrap
 
-from awscli.clidriver import create_clidriver
 from awscli.autoprompt.doc import DocsGetter
+from awscli.clidriver import create_clidriver
 from awscli.testutils import mock, unittest
 
 

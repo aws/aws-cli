@@ -2876,7 +2876,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Provides a list of analysis segments for a real-time analysis session. </p>"
+      "documentation":"<p>Provides a list of analysis segments for a real-time chat analysis session. This API supports CHAT channels only. </p> <important> <p>This API does not support VOICE. If you attempt to use it for VOICE, an <code>InvalidRequestException</code> occurs.</p> </important>"
     },
     "ListRoutingProfileQueues":{
       "name":"ListRoutingProfileQueues",
@@ -3985,7 +3985,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Transfers contacts from one agent or queue to another agent or queue at any point after a contact is created. You can transfer a contact to another queue by providing the flow which orchestrates the contact to the destination queue. This gives you more control over contact handling and helps you adhere to the service level agreement (SLA) guaranteed to your customers.</p> <p>Note the following requirements:</p> <ul> <li> <p>Transfer is supported for only <code>TASK</code> contacts.</p> </li> <li> <p>Do not use both <code>QueueId</code> and <code>UserId</code> in the same call.</p> </li> <li> <p>The following flow types are supported: Inbound flow, Transfer to agent flow, and Transfer to queue flow.</p> </li> <li> <p>The <code>TransferContact</code> API can be called only on active contacts.</p> </li> <li> <p>A contact cannot be transferred more than 11 times.</p> </li> </ul>"
+      "documentation":"<p>Transfers <code>TASK</code> or <code>EMAIL</code> contacts from one agent or queue to another agent or queue at any point after a contact is created. You can transfer a contact to another queue by providing the flow which orchestrates the contact to the destination queue. This gives you more control over contact handling and helps you adhere to the service level agreement (SLA) guaranteed to your customers.</p> <p>Note the following requirements:</p> <ul> <li> <p>Transfer is supported for only <code>TASK</code> and <code>EMAIL</code> contacts.</p> </li> <li> <p>Do not use both <code>QueueId</code> and <code>UserId</code> in the same call.</p> </li> <li> <p>The following flow types are supported: Inbound flow, Transfer to agent flow, and Transfer to queue flow.</p> </li> <li> <p>The <code>TransferContact</code> API can be called only on active contacts.</p> </li> <li> <p>A contact cannot be transferred more than 11 times.</p> </li> </ul>"
     },
     "UntagContact":{
       "name":"UntagContact",
@@ -6975,7 +6975,7 @@
         },
         "DisconnectTimestamp":{
           "shape":"timestamp",
-          "documentation":"<p>The timestamp when the customer endpoint disconnected from Amazon Connect.</p>"
+          "documentation":"<p>The date and time that the customer endpoint disconnected from the current contact, in UTC time. In transfer scenarios, the DisconnectTimestamp of the previous contact indicates the date and time when that contact ended.</p>"
         },
         "LastUpdateTimestamp":{
           "shape":"timestamp",
@@ -7997,7 +7997,7 @@
         },
         "RelatedContactId":{
           "shape":"ContactId",
-          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect. </p>"
+          "documentation":"<p>The unique identifier for an Amazon Connect contact. This identifier is related to the contact starting.</p>"
         },
         "Attributes":{
           "shape":"Attributes",
@@ -8038,6 +8038,10 @@
         "SegmentAttributes":{
           "shape":"SegmentAttributes",
           "documentation":"<p>A set of system defined key-value pairs stored on individual contact segments (unique contact ID) using an attribute map. The attributes are standard Amazon Connect attributes. They can be accessed in flows.</p> <p>Attribute keys can include only alphanumeric, -, and _.</p> <p>This field can be used to set Segment Contact Expiry as a duration in minutes.</p> <note> <p>To set contact expiry, a ValueMap must be specified containing the integer number of minutes the contact will be active for before expiring, with <code>SegmentAttributes</code> like { <code> \"connect:ContactExpiry\": {\"ValueMap\" : { \"ExpiryDuration\": { \"ValueInteger\": 135}}}}</code>. </p> </note>"
+        },
+        "PreviousContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The ID of the previous contact when creating a transfer contact. This value can be provided only for external audio contacts. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-integration.html\">Integrate Amazon Connect Contact Lens with external voice systems</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
         }
       }
     },
@@ -16626,7 +16630,7 @@
       "members":{
         "Channel":{
           "shape":"RealTimeContactAnalysisSupportedChannel",
-          "documentation":"<p>The channel of the contact. <code>Voice</code> will not be returned. </p>"
+          "documentation":"<p>The channel of the contact. </p> <important> <p>Only <code>CHAT</code> is supported. This API does not support <code>VOICE</code>. If you attempt to use it for the VOICE channel, an <code>InvalidRequestException</code> error occurs.</p> </important>"
         },
         "Status":{
           "shape":"RealTimeContactAnalysisStatus",

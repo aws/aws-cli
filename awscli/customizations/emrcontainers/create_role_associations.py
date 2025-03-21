@@ -158,10 +158,11 @@ class CreateRoleAssociationsCommand(BasicCommand):
                     service_account_name,
                 )
                 results.append(
-                    result["association"] if "association" in result else result
+                    result["association"]
+                    if "association" in result
+                    else result
                 )
             except botocore.exceptions.ClientError as error:
-
                 # Raise the error if EKS throws exceptions other than ResourceInUseException
                 if error.response["Error"]["Code"] != "ResourceInUseException":
                     for result in results:
@@ -227,7 +228,9 @@ class CreateRoleAssociationsCommand(BasicCommand):
             for component in emr_spark_endpoint_components
         ]
 
-    def _get_spark_operator_mapping(self, account_id, base36_encoded_role_name):
+    def _get_spark_operator_mapping(
+        self, account_id, base36_encoded_role_name
+    ):
         emr_spark_operator_components = ["driver", "executor"]
         service_accounts = [
             (
@@ -256,7 +259,9 @@ class CreateRoleAssociationsCommand(BasicCommand):
         )
         return service_accounts
 
-    def _get_flink_operator_mapping(self, account_id, base36_encoded_role_name):
+    def _get_flink_operator_mapping(
+        self, account_id, base36_encoded_role_name
+    ):
         emr_flink_operator_components = ["jobmanager", "taskmanager"]
         service_accounts = [
             (

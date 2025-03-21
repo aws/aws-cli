@@ -28,6 +28,22 @@
       ],
       "documentation":"<p>Use this operation to retrieve one or more <i>service level objective (SLO) budget reports</i>.</p> <p>An <i>error budget</i> is the amount of time or requests in an unhealthy state that your service can accumulate during an interval before your overall SLO budget health is breached and the SLO is considered to be unmet. For example, an SLO with a threshold of 99.95% and a monthly interval translates to an error budget of 21.9 minutes of downtime in a 30-day month.</p> <p>Budget reports include a health indicator, the attainment value, and remaining budget.</p> <p>For more information about SLO error budgets, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-ServiceLevelObjectives.html#CloudWatch-ServiceLevelObjectives-concepts\"> SLO concepts</a>.</p>"
     },
+    "BatchUpdateExclusionWindows":{
+      "name":"BatchUpdateExclusionWindows",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/exclusion-windows",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchUpdateExclusionWindowsInput"},
+      "output":{"shape":"BatchUpdateExclusionWindowsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Add or remove time window exclusions for one or more Service Level Objectives (SLOs).</p>"
+    },
     "CreateServiceLevelObjective":{
       "name":"CreateServiceLevelObjective",
       "http":{
@@ -123,6 +139,22 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns the list of dependents that invoked the specified service during the provided time range. Dependents include other services, CloudWatch Synthetics canaries, and clients that are instrumented with CloudWatch RUM app monitors.</p>"
+    },
+    "ListServiceLevelObjectiveExclusionWindows":{
+      "name":"ListServiceLevelObjectiveExclusionWindows",
+      "http":{
+        "method":"GET",
+        "requestUri":"/slo/{Id}/exclusion-windows",
+        "responseCode":200
+      },
+      "input":{"shape":"ListServiceLevelObjectiveExclusionWindowsInput"},
+      "output":{"shape":"ListServiceLevelObjectiveExclusionWindowsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves all exclusion windows configured for a specific SLO.</p>"
     },
     "ListServiceLevelObjectives":{
       "name":"ListServiceLevelObjectives",
@@ -338,6 +370,70 @@
         }
       }
     },
+    "BatchUpdateExclusionWindowsError":{
+      "type":"structure",
+      "required":[
+        "SloId",
+        "ErrorCode",
+        "ErrorMessage"
+      ],
+      "members":{
+        "SloId":{
+          "shape":"ServiceLevelObjectiveId",
+          "documentation":"<p>The SLO ID in the error.</p>"
+        },
+        "ErrorCode":{
+          "shape":"ExclusionWindowErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ExclusionWindowErrorMessage",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>An array of structures, where each structure includes an error indicating that one of the requests in the array was not valid.</p>"
+    },
+    "BatchUpdateExclusionWindowsErrors":{
+      "type":"list",
+      "member":{"shape":"BatchUpdateExclusionWindowsError"},
+      "max":10,
+      "min":0
+    },
+    "BatchUpdateExclusionWindowsInput":{
+      "type":"structure",
+      "required":["SloIds"],
+      "members":{
+        "SloIds":{
+          "shape":"ServiceLevelObjectiveIds",
+          "documentation":"<p>The list of SLO IDs to add or remove exclusion windows from.</p>"
+        },
+        "AddExclusionWindows":{
+          "shape":"ExclusionWindows",
+          "documentation":"<p>A list of exclusion windows to add to the specified SLOs. You can add up to 10 exclusion windows per SLO.</p>"
+        },
+        "RemoveExclusionWindows":{
+          "shape":"ExclusionWindows",
+          "documentation":"<p>A list of exclusion windows to remove from the specified SLOs. The window configuration must match an existing exclusion window.</p>"
+        }
+      }
+    },
+    "BatchUpdateExclusionWindowsOutput":{
+      "type":"structure",
+      "required":[
+        "SloIds",
+        "Errors"
+      ],
+      "members":{
+        "SloIds":{
+          "shape":"ServiceLevelObjectiveIds",
+          "documentation":"<p>The list of SLO IDs that were successfully processed.</p>"
+        },
+        "Errors":{
+          "shape":"BatchUpdateExclusionWindowsErrors",
+          "documentation":"<p>A list of errors that occurred while processing the request.</p>"
+        }
+      }
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -524,6 +620,52 @@
         "PeriodBased",
         "RequestBased"
       ]
+    },
+    "ExclusionDuration":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "ExclusionReason":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "ExclusionWindow":{
+      "type":"structure",
+      "required":["Window"],
+      "members":{
+        "Window":{
+          "shape":"Window",
+          "documentation":"<p>The SLO time window exclusion .</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start of the SLO time window exclusion. Defaults to current time if not specified.</p>"
+        },
+        "RecurrenceRule":{
+          "shape":"RecurrenceRule",
+          "documentation":"<p>The recurrence rule for the SLO time window exclusion. Supports both cron and rate expressions.</p>"
+        },
+        "Reason":{
+          "shape":"ExclusionReason",
+          "documentation":"<p>A description explaining why this time period should be excluded from SLO calculations.</p>"
+        }
+      },
+      "documentation":"<p>The core SLO time window exclusion object that includes Window, StartTime, RecurrenceRule, and Reason.</p>"
+    },
+    "ExclusionWindowErrorCode":{"type":"string"},
+    "ExclusionWindowErrorMessage":{"type":"string"},
+    "ExclusionWindows":{
+      "type":"list",
+      "member":{"shape":"ExclusionWindow"},
+      "max":10,
+      "min":0
+    },
+    "Expression":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "FaultDescription":{"type":"string"},
     "GetServiceInput":{
@@ -780,6 +922,50 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>Include this value in your next use of this API to get next set of service dependents.</p>"
+        }
+      }
+    },
+    "ListServiceLevelObjectiveExclusionWindowsInput":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"ServiceLevelObjectiveId",
+          "documentation":"<p>The ID of the SLO to list exclusion windows for.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "MaxResults":{
+          "shape":"ListServiceLevelObjectiveExclusionWindowsMaxResults",
+          "documentation":"<p>The maximum number of results to return in one operation. If you omit this parameter, the default of 50 is used. <pre><code> &lt;/p&gt; </code></pre>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Include this value, if it was returned by the previous operation, to get the next set of service level objectives. <pre><code> &lt;/p&gt; </code></pre>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListServiceLevelObjectiveExclusionWindowsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "ListServiceLevelObjectiveExclusionWindowsOutput":{
+      "type":"structure",
+      "required":["ExclusionWindows"],
+      "members":{
+        "ExclusionWindows":{
+          "shape":"ExclusionWindows",
+          "documentation":"<p>A list of exclusion windows configured for the SLO.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Include this value, if it was returned by the previous operation, to get the next set of service level objectives. <pre><code> &lt;/p&gt; </code></pre>"
         }
       }
     },
@@ -1183,6 +1369,17 @@
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "RecurrenceRule":{
+      "type":"structure",
+      "required":["Expression"],
+      "members":{
+        "Expression":{
+          "shape":"Expression",
+          "documentation":"<p>A cron or rate expression that specifies the schedule for the exclusion window.</p>"
+        }
+      },
+      "documentation":"<p>The recurrence rule for the SLO time window exclusion .</p>"
     },
     "RequestBasedServiceLevelIndicator":{
       "type":"structure",
@@ -2040,6 +2237,24 @@
     "WarningThreshold":{
       "type":"double",
       "box":true
+    },
+    "Window":{
+      "type":"structure",
+      "required":[
+        "DurationUnit",
+        "Duration"
+      ],
+      "members":{
+        "DurationUnit":{
+          "shape":"DurationUnit",
+          "documentation":"<p>The unit of time for the exclusion window duration. Valid values: MINUTE, HOUR, DAY, MONTH.</p>"
+        },
+        "Duration":{
+          "shape":"ExclusionDuration",
+          "documentation":"<p>The number of time units for the exclusion window length.</p>"
+        }
+      },
+      "documentation":"<p>The object that defines the time length of an exclusion window.</p>"
     }
   },
   "documentation":"<p>Use CloudWatch Application Signals for comprehensive observability of your cloud-based applications. It enables real-time service health dashboards and helps you track long-term performance trends against your business goals. The application-centric view provides you with unified visibility across your applications, services, and dependencies, so you can proactively monitor and efficiently triage any issues that may arise, ensuring optimal customer experience.</p> <p>Application Signals provides the following benefits:</p> <ul> <li> <p>Automatically collect metrics and traces from your applications, and display key metrics such as call volume, availability, latency, faults, and errors. </p> </li> <li> <p>Create and monitor service level objectives (SLOs). </p> </li> <li> <p>See a map of your application topology that Application Signals automatically discovers, that gives you a visual representation of your applications, dependencies, and their connectivity.</p> </li> </ul> <p>Application Signals works with CloudWatch RUM, CloudWatch Synthetics canaries, and Amazon Web Services Service Catalog AppRegistry, to display your client pages, Synthetics canaries, and application names within dashboards and maps.</p>"

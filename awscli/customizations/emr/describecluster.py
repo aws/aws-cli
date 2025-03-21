@@ -23,8 +23,11 @@ class DescribeCluster(Command):
     NAME = 'describe-cluster'
     DESCRIPTION = helptext.DESCRIBE_CLUSTER_DESCRIPTION
     ARG_TABLE = [
-        {'name': 'cluster-id', 'required': True,
-         'help_text': helptext.CLUSTER_ID}
+        {
+            'name': 'cluster-id',
+            'required': True,
+            'help_text': helptext.CLUSTER_ID,
+        }
     ]
 
     def _run_main_command(self, parsed_args, parsed_globals):
@@ -34,44 +37,61 @@ class DescribeCluster(Command):
         is_fleet_based_cluster = False
 
         describe_cluster_result = self._call(
-            self._session, 'describe_cluster', parameters, parsed_globals)
-
+            self._session, 'describe_cluster', parameters, parsed_globals
+        )
 
         if 'Cluster' in describe_cluster_result:
             describe_cluster = describe_cluster_result['Cluster']
-            if describe_cluster.get('InstanceCollectionType') == constants.INSTANCE_FLEET_TYPE:
+            if (
+                describe_cluster.get('InstanceCollectionType')
+                == constants.INSTANCE_FLEET_TYPE
+            ):
                 is_fleet_based_cluster = True
 
         if is_fleet_based_cluster:
             list_instance_fleets_result = self._call(
-                self._session, 'list_instance_fleets', parameters,
-                parsed_globals)
+                self._session,
+                'list_instance_fleets',
+                parameters,
+                parsed_globals,
+            )
         else:
             list_instance_groups_result = self._call(
-                self._session, 'list_instance_groups', parameters,
-                parsed_globals)
+                self._session,
+                'list_instance_groups',
+                parameters,
+                parsed_globals,
+            )
 
         list_bootstrap_actions_result = self._call(
-            self._session, 'list_bootstrap_actions',
-            parameters, parsed_globals)
+            self._session, 'list_bootstrap_actions', parameters, parsed_globals
+        )
 
         constructed_result = self._construct_result(
             describe_cluster_result,
             list_instance_fleets_result,
             list_instance_groups_result,
-            list_bootstrap_actions_result)
+            list_bootstrap_actions_result,
+        )
 
-        emrutils.display_response(self._session, 'describe_cluster',
-                                  constructed_result, parsed_globals)
+        emrutils.display_response(
+            self._session,
+            'describe_cluster',
+            constructed_result,
+            parsed_globals,
+        )
 
         return 0
 
     def _call(self, session, operation_name, parameters, parsed_globals):
         return emrutils.call(
-            session, operation_name, parameters,
+            session,
+            operation_name,
+            parameters,
             region_name=self.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl)
+            verify=parsed_globals.verify_ssl,
+        )
 
     def _get_key_of_result(self, keys):
         # Return the first key that is not "Marker"
@@ -80,23 +100,36 @@ class DescribeCluster(Command):
                 return key
 
     def _construct_result(
-            self, describe_cluster_result, list_instance_fleets_result,
-            list_instance_groups_result, list_bootstrap_actions_result):
+        self,
+        describe_cluster_result,
+        list_instance_fleets_result,
+        list_instance_groups_result,
+        list_bootstrap_actions_result,
+    ):
         result = describe_cluster_result
         result['Cluster']['BootstrapActions'] = []
 
-        if (list_instance_fleets_result is not None and
-                list_instance_fleets_result.get('InstanceFleets') is not None):
-            result['Cluster']['InstanceFleets'] = \
+        if (
+            list_instance_fleets_result is not None
+            and list_instance_fleets_result.get('InstanceFleets') is not None
+        ):
+            result['Cluster']['InstanceFleets'] = (
                 list_instance_fleets_result.get('InstanceFleets')
-        if (list_instance_groups_result is not None and
-                list_instance_groups_result.get('InstanceGroups') is not None):
-            result['Cluster']['InstanceGroups'] = \
+            )
+        if (
+            list_instance_groups_result is not None
+            and list_instance_groups_result.get('InstanceGroups') is not None
+        ):
+            result['Cluster']['InstanceGroups'] = (
                 list_instance_groups_result.get('InstanceGroups')
-        if (list_bootstrap_actions_result is not None and
-                list_bootstrap_actions_result.get('BootstrapActions')
-                is not None):
-            result['Cluster']['BootstrapActions'] = \
+            )
+        if (
+            list_bootstrap_actions_result is not None
+            and list_bootstrap_actions_result.get('BootstrapActions')
+            is not None
+        ):
+            result['Cluster']['BootstrapActions'] = (
                 list_bootstrap_actions_result['BootstrapActions']
+            )
 
         return result

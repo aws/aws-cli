@@ -154,7 +154,7 @@
           "documentation":"<p>The code for the service whose information you want to retrieve, such as <code>AmazonEC2</code>. You can use the <code>ServiceCode</code> to filter the results in a <code>GetProducts</code> call. To retrieve a list of all services, leave this blank.</p>"
         },
         "FormatVersion":{
-          "shape":"String",
+          "shape":"FormatVersion",
           "documentation":"<p>The format version that you want the response to be in.</p> <p>Valid values are: <code>aws_v1</code> </p>"
         },
         "NextToken":{
@@ -175,7 +175,7 @@
           "documentation":"<p>The service metadata for the service or services in the response.</p>"
         },
         "FormatVersion":{
-          "shape":"String",
+          "shape":"FormatVersion",
           "documentation":"<p>The format version of the response. For example, <code>aws_v1</code>.</p>"
         },
         "NextToken":{
@@ -192,6 +192,11 @@
       },
       "documentation":"<p>The pagination token expired. Try again without a pagination token.</p>",
       "exception":true
+    },
+    "Field":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "FileFormat":{
       "type":"string",
@@ -215,11 +220,11 @@
           "documentation":"<p>The type of filter that you want to use.</p> <p>Valid values are: <code>TERM_MATCH</code>. <code>TERM_MATCH</code> returns only products that match both the given filter field and the given value.</p>"
         },
         "Field":{
-          "shape":"String",
+          "shape":"Field",
           "documentation":"<p>The product metadata field that you want to filter on. You can filter by just the service code to see all products for a specific service, filter by just the attribute name to see a specific attribute for multiple services, or use both a service code and an attribute name to retrieve only products that match both fields.</p> <p>Valid values include: <code>ServiceCode</code>, and all attribute names</p> <p>For example, you can filter by the <code>AmazonEC2</code> service code and the <code>volumeType</code> attribute name to get the prices for only Amazon EC2 volumes.</p>"
         },
         "Value":{
-          "shape":"String",
+          "shape":"Value",
           "documentation":"<p>The service code or attribute value that you want to filter by. If you're filtering by service code this is the actual service code, such as <code>AmazonEC2</code>. If you're filtering by attribute name, this is the attribute value that you want the returned products to match, such as a <code>Provisioned IOPS</code> volume.</p>"
         }
       },
@@ -231,7 +236,14 @@
     },
     "Filters":{
       "type":"list",
-      "member":{"shape":"Filter"}
+      "member":{"shape":"Filter"},
+      "max":50,
+      "min":0
+    },
+    "FormatVersion":{
+      "type":"string",
+      "max":32,
+      "min":1
     },
     "GetAttributeValuesRequest":{
       "type":"structure",
@@ -310,7 +322,7 @@
           "documentation":"<p>The list of filters that limit the returned products. only products that match all filters are returned.</p>"
         },
         "FormatVersion":{
-          "shape":"String",
+          "shape":"FormatVersion",
           "documentation":"<p>The format version that you want the response to be in.</p> <p>Valid values are: <code>aws_v1</code> </p>"
         },
         "NextToken":{
@@ -327,7 +339,7 @@
       "type":"structure",
       "members":{
         "FormatVersion":{
-          "shape":"String",
+          "shape":"FormatVersion",
           "documentation":"<p>The format version of the response. For example, aws_v1.</p>"
         },
         "PriceList":{
@@ -513,6 +525,11 @@
       "documentation":"<p>You've made too many requests exceeding service quotas. </p>",
       "exception":true,
       "retryable":{"throttling":true}
+    },
+    "Value":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "errorMessage":{"type":"string"}
   },

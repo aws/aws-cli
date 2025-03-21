@@ -20,25 +20,35 @@ from . import PREDEFINED_SECTION_NAMES, profile_to_section
 
 class ConfigureSetCommand(BasicCommand):
     NAME = 'set'
-    DESCRIPTION = BasicCommand.FROM_FILE('configure', 'set',
-                                         '_description.rst')
+    DESCRIPTION = BasicCommand.FROM_FILE(
+        'configure', 'set', '_description.rst'
+    )
     SYNOPSIS = 'aws configure set varname value [--profile profile-name]'
     EXAMPLES = BasicCommand.FROM_FILE('configure', 'set', '_examples.rst')
     ARG_TABLE = [
-        {'name': 'varname',
-         'help_text': 'The name of the config value to set.',
-         'action': 'store',
-         'cli_type_name': 'string', 'positional_arg': True},
-        {'name': 'value',
-         'help_text': 'The value to set.',
-         'action': 'store',
-         'no_paramfile': True,  # To disable the default paramfile behavior
-         'cli_type_name': 'string', 'positional_arg': True},
+        {
+            'name': 'varname',
+            'help_text': 'The name of the config value to set.',
+            'action': 'store',
+            'cli_type_name': 'string',
+            'positional_arg': True,
+        },
+        {
+            'name': 'value',
+            'help_text': 'The value to set.',
+            'action': 'store',
+            'no_paramfile': True,  # To disable the default paramfile behavior
+            'cli_type_name': 'string',
+            'positional_arg': True,
+        },
     ]
     # Any variables specified in this list will be written to
     # the ~/.aws/credentials file instead of ~/.aws/config.
-    _WRITE_TO_CREDS_FILE = ['aws_access_key_id', 'aws_secret_access_key',
-                            'aws_session_token']
+    _WRITE_TO_CREDS_FILE = [
+        'aws_access_key_id',
+        'aws_secret_access_key',
+        'aws_session_token',
+    ]
 
     def __init__(self, session, config_writer=None):
         super(ConfigureSetCommand, self).__init__(session)

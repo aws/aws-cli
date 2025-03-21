@@ -37,10 +37,10 @@ class OnDoneFilteredSubscriber(BaseSubscriber):
     It is really a convenience class so developers do not have to have
     to constantly remember to have a general try/except around future.result()
     """
+
     def on_done(self, future, **kwargs):
         future_exception = None
         try:
-
             future.result()
         except Exception as e:
             future_exception = e
@@ -62,6 +62,7 @@ class ProvideSizeSubscriber(BaseSubscriber):
     """
     A subscriber which provides the transfer size before it's queued.
     """
+
     def __init__(self, size):
         self.size = size
 
@@ -73,12 +74,14 @@ class ProvideSizeSubscriber(BaseSubscriber):
         else:
             LOGGER.debug(
                 'Not providing transfer size. Future: %s does not offer'
-                'the capability to notify the size of a transfer', future
+                'the capability to notify the size of a transfer',
+                future,
             )
 
 
 class DeleteSourceSubscriber(OnDoneFilteredSubscriber):
     """A subscriber which deletes the source of the transfer."""
+
     def _on_success(self, future):
         try:
             self._delete_source(future)
@@ -91,6 +94,7 @@ class DeleteSourceSubscriber(OnDoneFilteredSubscriber):
 
 class DeleteSourceObjectSubscriber(DeleteSourceSubscriber):
     """A subscriber which deletes an object."""
+
     def __init__(self, client):
         self._client = client
 
@@ -104,16 +108,18 @@ class DeleteSourceObjectSubscriber(DeleteSourceSubscriber):
         call_args = future.meta.call_args
         delete_object_kwargs = {
             'Bucket': self._get_bucket(call_args),
-            'Key': self._get_key(call_args)
+            'Key': self._get_key(call_args),
         }
         if call_args.extra_args.get('RequestPayer'):
             delete_object_kwargs['RequestPayer'] = call_args.extra_args[
-                'RequestPayer']
+                'RequestPayer'
+            ]
         self._client.delete_object(**delete_object_kwargs)
 
 
 class DeleteCopySourceObjectSubscriber(DeleteSourceObjectSubscriber):
     """A subscriber which deletes the copy source."""
+
     def _get_bucket(self, call_args):
         return call_args.copy_source['Bucket']
 
@@ -123,6 +129,7 @@ class DeleteCopySourceObjectSubscriber(DeleteSourceObjectSubscriber):
 
 class DeleteSourceFileSubscriber(DeleteSourceSubscriber):
     """A subscriber which deletes a file."""
+
     def _delete_source(self, future):
         os.remove(future.meta.call_args.fileobj)
 
@@ -146,6 +153,7 @@ class ProvideUploadContentTypeSubscriber(BaseProvideContentTypeSubscriber):
 
 class ProvideLastModifiedTimeSubscriber(OnDoneFilteredSubscriber):
     """Sets utime for a downloaded file"""
+
     def __init__(self, last_modified_time, result_queue):
         self._last_modified_time = last_modified_time
         self._result_queue = result_queue
@@ -159,13 +167,16 @@ class ProvideLastModifiedTimeSubscriber(OnDoneFilteredSubscriber):
         except Exception as e:
             warning_message = (
                 'Successfully Downloaded %s but was unable to update the '
-                'last modified time. %s' % (filename, e))
+                'last modified time. %s' % (filename, e)
+            )
             self._result_queue.put(
-                utils.create_warning(filename, warning_message))
+                utils.create_warning(filename, warning_message)
+            )
 
 
 class DirectoryCreatorSubscriber(BaseSubscriber):
     """Creates a directory to download if it does not exist"""
+
     def on_queued(self, future, **kwargs):
         d = os.path.dirname(future.meta.call_args.fileobj)
         try:
@@ -174,7 +185,8 @@ class DirectoryCreatorSubscriber(BaseSubscriber):
         except OSError as e:
             if not e.errno == errno.EEXIST:
                 raise CreateDirectoryError(
-                    "Could not create directory %s: %s" % (d, e))
+                    "Could not create directory %s: %s" % (d, e)
+                )
 
 
 class CopyPropsSubscriberFactory(object):
@@ -184,8 +196,9 @@ class CopyPropsSubscriberFactory(object):
         self._cli_params = cli_params
 
     def get_subscribers(self, fileinfo):
-        copy_props = self._cli_params.get(
-            'copy_props', 'default').replace('-', '_')
+        copy_props = self._cli_params.get('copy_props', 'default').replace(
+            '-', '_'
+        )
         return getattr(self, '_get_%s_subscribers' % copy_props)(fileinfo)
 
     def _get_none_subscribers(self, fileinfo):
@@ -197,16 +210,18 @@ class CopyPropsSubscriberFactory(object):
     def _get_metadata_directive_subscribers(self, fileinfo):
         return [
             self._create_metadata_directive_props_subscriber(fileinfo),
-            ReplaceTaggingDirectiveSubscriber()
+            ReplaceTaggingDirectiveSubscriber(),
         ]
 
     def _get_default_subscribers(self, fileinfo):
         return [
             self._create_metadata_directive_props_subscriber(fileinfo),
             SetTagsSubscriber(
-                self._client, self._transfer_config, self._cli_params,
+                self._client,
+                self._transfer_config,
+                self._cli_params,
                 source_client=fileinfo.source_client,
-            )
+            ),
         ]
 
     def _create_metadata_directive_props_subscriber(self, fileinfo):
@@ -216,8 +231,9 @@ class CopyPropsSubscriberFactory(object):
             'cli_params': self._cli_params,
         }
         if not self._cli_params.get('dir_op'):
-            subscriber_kwargs[
-                'head_object_response'] = fileinfo.associated_response_data
+            subscriber_kwargs['head_object_response'] = (
+                fileinfo.associated_response_data
+            )
         return SetMetadataDirectivePropsSubscriber(**subscriber_kwargs)
 
 
@@ -247,8 +263,9 @@ class SetMetadataDirectivePropsSubscriber(BaseSubscriber):
         'Metadata',
     ]
 
-    def __init__(self, client, transfer_config, cli_params,
-                 head_object_response=None):
+    def __init__(
+        self, client, transfer_config, cli_params, head_object_response=None
+    ):
         self._client = client
         self._transfer_config = transfer_config
         self._cli_params = cli_params
@@ -280,7 +297,8 @@ class SetMetadataDirectivePropsSubscriber(BaseSubscriber):
             'Key': copy_source['Key'],
         }
         utils.RequestParamsMapper.map_head_object_params(
-            head_object_params, self._cli_params)
+            head_object_params, self._cli_params
+        )
         return self._client.head_object(**head_object_params)
 
     def _inject_metadata_props(self, future, head_object_response):
@@ -333,19 +351,14 @@ class SetTagsSubscriber(OnDoneFilteredSubscriber):
             extra_args, self._cli_params
         )
         self._client.put_object_tagging(
-            Bucket=bucket,
-            Key=key,
-            Tagging={'TagSet': tag_set},
-            **extra_args
+            Bucket=bucket, Key=key, Tagging={'TagSet': tag_set}, **extra_args
         )
 
     def _delete_object(self, bucket, key):
-        params = {
-            'Bucket': bucket,
-            'Key': key
-        }
+        params = {'Bucket': bucket, 'Key': key}
         utils.RequestParamsMapper.map_delete_object_params(
-            params, self._cli_params)
+            params, self._cli_params
+        )
         self._client.delete_object(**params)
 
     def _get_bucket_key_from_copy_source(self, future):
@@ -358,16 +371,20 @@ class SetTagsSubscriber(OnDoneFilteredSubscriber):
             extra_args, self._cli_params
         )
         get_tags_response = self._source_client.get_object_tagging(
-            Bucket=bucket, Key=key, **extra_args)
+            Bucket=bucket, Key=key, **extra_args
+        )
         return get_tags_response['TagSet']
 
     def _fits_in_tagging_header(self, tagging_header):
-        return len(
-            tagging_header.encode('utf-8')) <= self._MAX_TAGGING_HEADER_SIZE
+        return (
+            len(tagging_header.encode('utf-8'))
+            <= self._MAX_TAGGING_HEADER_SIZE
+        )
 
     def _serialize_to_header_value(self, tags):
         return percent_encode_sequence(
-            [(tag['Key'], tag['Value']) for tag in tags])
+            [(tag['Key'], tag['Value']) for tag in tags]
+        )
 
     def _is_multipart_copy(self, future):
         return future.meta.size >= self._transfer_config.multipart_threshold

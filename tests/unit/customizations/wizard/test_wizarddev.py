@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 from botocore.session import Session
 
-from awscli.customizations.wizard.devcommands import WizardDev
-from awscli.customizations.wizard.devcommands import WizardDevRunner
+from awscli.customizations.wizard.devcommands import WizardDev, WizardDevRunner
 from awscli.testutils import mock, unittest
 
 

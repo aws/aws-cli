@@ -13,12 +13,10 @@
 # language governing permissions and limitations under the License.
 import sys
 
-from awscli.testutils import unittest
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest, unittest
 
 
 class TestCreateTags(BaseAWSCommandParamsTest):
-
     prefix = 'ec2 create-tags'
 
     def test_create_tag_normal(self):
@@ -26,5 +24,6 @@ class TestCreateTags(BaseAWSCommandParamsTest):
         cmdline += ' --resources i-12345678 --tags Key=Name,Value=bar'
         result = {
             'Resources': ['i-12345678'],
-            'Tags': [{'Key': 'Name', 'Value': 'bar'}]}
+            'Tags': [{'Key': 'Name', 'Value': 'bar'}],
+        }
         self.assert_params_for_cmd(cmdline, result)

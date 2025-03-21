@@ -15,7 +15,10 @@ from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
 from prompt_toolkit.filters import Condition
 from prompt_toolkit.layout.containers import (
-    Window, HSplit, Dimension, ConditionalContainer
+    Window,
+    HSplit,
+    Dimension,
+    ConditionalContainer,
 )
 from prompt_toolkit.layout.controls import BufferControl
 from prompt_toolkit.widgets import Box
@@ -31,14 +34,9 @@ class WizardSectionTab:
 
     def _get_container(self):
         content = f" {self._definition['shortname']}"
-        buffer = Buffer(
-            document=Document(content),
-            read_only=True
-        )
+        buffer = Buffer(document=Document(content), read_only=True)
         return Window(
-            content=BufferControl(
-                buffer=buffer, focusable=False
-            ),
+            content=BufferControl(buffer=buffer, focusable=False),
             style=self._get_style,
             width=Dimension.exact(len(content) + 1),
             dont_extend_height=True,
@@ -66,12 +64,12 @@ class WizardSectionBody:
         return ConditionalContainer(
             Box(
                 HSplit(
-                    self._create_prompts_from_section_definition(),
-                    padding=1
+                    self._create_prompts_from_section_definition(), padding=1
                 ),
-                padding_left=2, padding_top=1
+                padding_left=2,
+                padding_top=1,
             ),
-            Condition(self._is_current_section)
+            Condition(self._is_current_section),
         )
 
     def _is_current_section(self):

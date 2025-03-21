@@ -116,15 +116,19 @@ class GetTokenCommand(BasicCommand):
         sts_client = client_factory.get_sts_client(
             region_name=parsed_globals.region, role_arn=parsed_args.role_arn
         )
-        
-        validate_mutually_exclusive(parsed_args, ['cluster_name'], ['cluster_id'])
+
+        validate_mutually_exclusive(
+            parsed_args, ['cluster_name'], ['cluster_id']
+        )
 
         if parsed_args.cluster_id:
             identifier = parsed_args.cluster_id
         elif parsed_args.cluster_name:
             identifier = parsed_args.cluster_name
         else:
-            return ValueError("Either parameter --cluster-name or --cluster-id must be specified.")
+            return ValueError(
+                "Either parameter --cluster-name or --cluster-id must be specified."
+            )
 
         token = TokenGenerator(sts_client).get_token(identifier)
 
@@ -273,4 +277,6 @@ class STSClientFactory(object):
 
     def _inject_k8s_aws_id_header(self, request, **kwargs):
         if K8S_AWS_ID_HEADER in request.context:
-            request.headers[K8S_AWS_ID_HEADER] = request.context[K8S_AWS_ID_HEADER]
+            request.headers[K8S_AWS_ID_HEADER] = request.context[
+                K8S_AWS_ID_HEADER
+            ]

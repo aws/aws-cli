@@ -11,16 +11,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest, unittest
 import sys
+
+from awscli.testutils import BaseAWSCommandParamsTest, unittest
 
 
 class TestUpdateConfigurationTemplate(BaseAWSCommandParamsTest):
-
     prefix = 'elasticbeanstalk create-application'
 
     def test_ascii(self):
         cmdline = self.prefix
         cmdline += ' --application-name FooBar'
-        result = {'ApplicationName': 'FooBar',}
+        result = {
+            'ApplicationName': 'FooBar',
+        }
         self.assert_params_for_cmd(cmdline, result)

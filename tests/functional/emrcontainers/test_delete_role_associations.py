@@ -45,7 +45,6 @@ class TestDeleteRoleAssociationsCommand:
         delete_pod_identity_association_response,
         start_job_run_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         for i in range(3):
             cli_runner.add_response(
@@ -71,9 +70,13 @@ class TestDeleteRoleAssociationsCommand:
         request_idx = 0
         assert result.aws_requests[request_idx].service_name == "eks"
         assert (
-            result.aws_requests[request_idx].operation_name == "DescribeCluster"
+            result.aws_requests[request_idx].operation_name
+            == "DescribeCluster"
         )
-        assert len(result.aws_requests) == (len(start_job_run_service_accounts) * 2) + 1
+        assert (
+            len(result.aws_requests)
+            == (len(start_job_run_service_accounts) * 2) + 1
+        )
         for i in range(len(start_job_run_service_accounts)):
             request_idx += 1
             self.assert_list_call_matches(
@@ -101,7 +104,6 @@ class TestDeleteRoleAssociationsCommand:
         delete_pod_identity_association_response,
         interactive_endpoint_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         for i in range(3):
             cli_runner.add_response(
@@ -129,9 +131,13 @@ class TestDeleteRoleAssociationsCommand:
         request_idx = 0
         assert result.aws_requests[request_idx].service_name == "eks"
         assert (
-            result.aws_requests[request_idx].operation_name == "DescribeCluster"
+            result.aws_requests[request_idx].operation_name
+            == "DescribeCluster"
         )
-        assert len(result.aws_requests) == (len(interactive_endpoint_service_accounts) * 2) + 1
+        assert (
+            len(result.aws_requests)
+            == (len(interactive_endpoint_service_accounts) * 2) + 1
+        )
         for i in range(len(interactive_endpoint_service_accounts)):
             request_idx += 1
             self.assert_list_call_matches(
@@ -159,7 +165,6 @@ class TestDeleteRoleAssociationsCommand:
         delete_pod_identity_association_response,
         spark_operator_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         for i in range(3):
             cli_runner.add_response(
@@ -187,9 +192,13 @@ class TestDeleteRoleAssociationsCommand:
         request_idx = 0
         assert result.aws_requests[request_idx].service_name == "eks"
         assert (
-            result.aws_requests[request_idx].operation_name == "DescribeCluster"
+            result.aws_requests[request_idx].operation_name
+            == "DescribeCluster"
         )
-        assert len(result.aws_requests) == (len(spark_operator_service_accounts) * 2) + 1
+        assert (
+            len(result.aws_requests)
+            == (len(spark_operator_service_accounts) * 2) + 1
+        )
         for i in range(len(spark_operator_service_accounts)):
             request_idx += 1
             self.assert_list_call_matches(
@@ -217,7 +226,6 @@ class TestDeleteRoleAssociationsCommand:
         delete_pod_identity_association_response,
         spark_operator_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         for i in range(3):
             cli_runner.add_response(
@@ -247,9 +255,13 @@ class TestDeleteRoleAssociationsCommand:
         request_idx = 0
         assert result.aws_requests[request_idx].service_name == "eks"
         assert (
-            result.aws_requests[request_idx].operation_name == "DescribeCluster"
+            result.aws_requests[request_idx].operation_name
+            == "DescribeCluster"
         )
-        assert len(result.aws_requests) == (len(spark_operator_service_accounts) * 2) + 1
+        assert (
+            len(result.aws_requests)
+            == (len(spark_operator_service_accounts) * 2) + 1
+        )
         for i in range(len(spark_operator_service_accounts)):
             request_idx += 1
             ns = "spark-operator" if i == 0 else namespace
@@ -278,7 +290,6 @@ class TestDeleteRoleAssociationsCommand:
         delete_pod_identity_association_response,
         flink_operator_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         for i in range(3):
             cli_runner.add_response(
@@ -306,9 +317,13 @@ class TestDeleteRoleAssociationsCommand:
         request_idx = 0
         assert result.aws_requests[request_idx].service_name == "eks"
         assert (
-            result.aws_requests[request_idx].operation_name == "DescribeCluster"
+            result.aws_requests[request_idx].operation_name
+            == "DescribeCluster"
         )
-        assert len(result.aws_requests) == (len(flink_operator_service_accounts) * 2) + 1
+        assert (
+            len(result.aws_requests)
+            == (len(flink_operator_service_accounts) * 2) + 1
+        )
         for i in range(len(flink_operator_service_accounts)):
             request_idx += 1
             self.assert_list_call_matches(
@@ -336,7 +351,6 @@ class TestDeleteRoleAssociationsCommand:
         delete_pod_identity_association_response,
         flink_operator_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         for i in range(3):
             cli_runner.add_response(
@@ -366,9 +380,13 @@ class TestDeleteRoleAssociationsCommand:
         request_idx = 0
         assert result.aws_requests[request_idx].service_name == "eks"
         assert (
-            result.aws_requests[request_idx].operation_name == "DescribeCluster"
+            result.aws_requests[request_idx].operation_name
+            == "DescribeCluster"
         )
-        assert len(result.aws_requests) == (len(flink_operator_service_accounts) * 2) + 1
+        assert (
+            len(result.aws_requests)
+            == (len(flink_operator_service_accounts) * 2) + 1
+        )
         for i in range(len(flink_operator_service_accounts)):
             request_idx += 1
             ns = "flink-operator" if i == 0 else namespace
@@ -397,7 +415,6 @@ class TestDeleteRoleAssociationsCommand:
         delete_pod_identity_association_response,
         livy_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         for i in range(2):
             cli_runner.add_response(
@@ -425,7 +442,8 @@ class TestDeleteRoleAssociationsCommand:
         request_idx = 0
         assert result.aws_requests[request_idx].service_name == "eks"
         assert (
-            result.aws_requests[request_idx].operation_name == "DescribeCluster"
+            result.aws_requests[request_idx].operation_name
+            == "DescribeCluster"
         )
         assert len(result.aws_requests) == (len(livy_service_accounts) * 2) + 1
         for i in range(len(livy_service_accounts)):
@@ -455,7 +473,6 @@ class TestDeleteRoleAssociationsCommand:
         delete_pod_identity_association_response,
         livy_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         for i in range(2):
             cli_runner.add_response(
@@ -485,7 +502,8 @@ class TestDeleteRoleAssociationsCommand:
         request_idx = 0
         assert result.aws_requests[request_idx].service_name == "eks"
         assert (
-            result.aws_requests[request_idx].operation_name == "DescribeCluster"
+            result.aws_requests[request_idx].operation_name
+            == "DescribeCluster"
         )
         assert len(result.aws_requests) == (len(livy_service_accounts) * 2) + 1
         for i in range(len(livy_service_accounts)):
@@ -515,7 +533,6 @@ class TestDeleteRoleAssociationsCommand:
         list_pod_identity_association_response,
         delete_pod_identity_association_response,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         cli_runner.add_response(
             HTTPResponse(body=list_pod_identity_association_response[0])
@@ -560,7 +577,6 @@ class TestDeleteRoleAssociationsCommand:
         describe_cluster_response,
         start_job_run_service_accounts,
     ):
-
         cli_runner.add_response(HTTPResponse(body=describe_cluster_response))
         cli_runner.add_response(HTTPResponse(body=[]))
         cli_runner.add_response(HTTPResponse(body=[]))

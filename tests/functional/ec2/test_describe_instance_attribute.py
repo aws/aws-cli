@@ -11,20 +11,22 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest
 import unittest
+
+from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestDescribeInstanceAttribute(BaseAWSCommandParamsTest):
-
     prefix = 'ec2 describe-instance-attribute'
 
     def test_both_params(self):
         cmdline = self.prefix
         cmdline += ' --instance-id i-12345678'
         cmdline += ' --attribute blockDeviceMapping'
-        result = {'InstanceId': 'i-12345678',
-                  'Attribute': 'blockDeviceMapping'}
+        result = {
+            'InstanceId': 'i-12345678',
+            'Attribute': 'blockDeviceMapping',
+        }
         self.assert_params_for_cmd(cmdline, result)
 
 

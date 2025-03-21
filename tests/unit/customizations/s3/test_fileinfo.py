@@ -10,8 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
 from awscli.customizations.s3.fileinfo import FileInfo
+from awscli.testutils import unittest
 
 
 class TestIsGlacierCompatible(unittest.TestCase):
@@ -58,7 +58,7 @@ class TestIsGlacierCompatible(unittest.TestCase):
         self.file_info.operation_name = 'download'
         self.file_info.associated_response_data = {
             'StorageClass': 'GLACIER',
-            'Restore': 'ongoing-request="false", expiry-date="..."'
+            'Restore': 'ongoing-request="false", expiry-date="..."',
         }
         self.assertTrue(self.file_info.is_glacier_compatible())
 
@@ -66,6 +66,6 @@ class TestIsGlacierCompatible(unittest.TestCase):
         self.file_info.operation_name = 'download'
         self.file_info.associated_response_data = {
             'StorageClass': 'GLACIER',
-            'Restore': 'ongoing-request="true", expiry-date="..."'
+            'Restore': 'ongoing-request="true", expiry-date="..."',
         }
         self.assertFalse(self.file_info.is_glacier_compatible())

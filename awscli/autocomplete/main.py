@@ -22,8 +22,12 @@ from awscli.autocomplete import serverside
 from awscli.autocomplete import custom
 
 
-def create_autocompleter(index_filename=None, custom_completers=None,
-                         driver=None, response_filter=None):
+def create_autocompleter(
+    index_filename=None,
+    custom_completers=None,
+    driver=None,
+    response_filter=None,
+):
     if response_filter is None:
         response_filter = filters.startswith_filter
     if custom_completers is None:
@@ -36,15 +40,19 @@ def create_autocompleter(index_filename=None, custom_completers=None,
     completers = [
         basic.RegionCompleter(response_filter=response_filter),
         basic.ProfileCompleter(response_filter=response_filter),
-        basic.ModelIndexCompleter(index, cli_driver_fetcher,
-                                  response_filter=response_filter),
+        basic.ModelIndexCompleter(
+            index, cli_driver_fetcher, response_filter=response_filter
+        ),
         basic.FilePathCompleter(response_filter=response_filter),
         serverside.create_server_side_completer(
-            index_filename, response_filter=response_filter),
-        basic.ShorthandCompleter(cli_driver_fetcher,
-                                 response_filter=response_filter),
-        basic.QueryCompleter(cli_driver_fetcher,
-                             response_filter=response_filter),
+            index_filename, response_filter=response_filter
+        ),
+        basic.ShorthandCompleter(
+            cli_driver_fetcher, response_filter=response_filter
+        ),
+        basic.QueryCompleter(
+            cli_driver_fetcher, response_filter=response_filter
+        ),
     ] + custom_completers
     cli_completer = completer.AutoCompleter(cli_parser, completers)
     return cli_completer

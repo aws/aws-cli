@@ -1,8 +1,9 @@
-from awscli.testutils import unittest
-from awscli.testutils import mock
-from awscli.customizations.codeartifact import register_codeartifact_commands
-from awscli.customizations.codeartifact import inject_commands
+from awscli.customizations.codeartifact import (
+    inject_commands,
+    register_codeartifact_commands,
+)
 from awscli.customizations.codeartifact.login import CodeArtifactLogin
+from awscli.testutils import mock, unittest
 
 
 class TestRegisterCodeArtifactCommands(unittest.TestCase):
@@ -20,6 +21,4 @@ class TestInjectCommands(unittest.TestCase):
         session = mock.Mock()
         inject_commands(command_table, session)
         self.assertIn('login', command_table)
-        self.assertIsInstance(
-            command_table['login'], CodeArtifactLogin
-        )
+        self.assertIsInstance(command_table['login'], CodeArtifactLogin)

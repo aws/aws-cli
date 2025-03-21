@@ -3864,6 +3864,14 @@
       "min":36,
       "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
+    "CoreDeviceOperatingSystem":{
+      "type":"string",
+      "enum":[
+        "LINUX_AARCH64",
+        "LINUX_AMD64",
+        "WINDOWS_AMD64"
+      ]
+    },
     "CoreDeviceThingName":{
       "type":"string",
       "max":128,
@@ -4321,6 +4329,10 @@
         "gatewayPlatform":{
           "shape":"GatewayPlatform",
           "documentation":"<p>The gateway's platform. You can only specify one platform in a gateway.</p>"
+        },
+        "gatewayVersion":{
+          "shape":"GatewayVersion",
+          "documentation":"<p>The version of the gateway to create. Specify <code>3</code> to create an MQTT-enabled, V3 gateway and <code>2</code> To create a Classic streams, V2 gateway. If the version isn't specified, a Classic streams, V2 gateway is created by default.</p> <p> We recommend creating an MQTT-enabled, V3 gateway for self-hosted gateways. SiteWise Edge gateways on Siemens Industrial Edge should use gateway version <code>2</code>. For more information on gateway versions, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/gw-self-host-gg2.html\"> Self-host a SiteWise Edge gateway with IoT Greengrass V2</a>.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -5810,6 +5822,10 @@
           "shape":"GatewayPlatform",
           "documentation":"<p>The gateway's platform.</p>"
         },
+        "gatewayVersion":{
+          "shape":"GatewayVersion",
+          "documentation":"<p>The version of the gateway. A value of <code>3</code> indicates an MQTT-enabled, V3 gateway, while <code>2</code> indicates a Classic streams, V2 gateway.</p>"
+        },
         "gatewayCapabilitySummaries":{
           "shape":"GatewayCapabilitySummaries",
           "documentation":"<p>A list of gateway capability summaries that each contain a namespace and status. Each gateway capability defines data sources for the gateway. To retrieve a capability configuration's definition, use <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeGatewayCapabilityConfiguration.html\">DescribeGatewayCapabilityConfiguration</a>.</p>"
@@ -6530,6 +6546,10 @@
           "documentation":"<p>The name of the gateway.</p>"
         },
         "gatewayPlatform":{"shape":"GatewayPlatform"},
+        "gatewayVersion":{
+          "shape":"GatewayVersion",
+          "documentation":"<p>The version of the gateway. A value of <code>3</code> indicates an MQTT-enabled, V3 gateway, while <code>2</code> indicates a Classic streams, V2 gateway.</p>"
+        },
         "gatewayCapabilitySummaries":{
           "shape":"GatewayCapabilitySummaries",
           "documentation":"<p>A list of gateway capability summaries that each contain a namespace and status. Each gateway capability defines data sources for the gateway. To retrieve a capability configuration's definition, use <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeGatewayCapabilityConfiguration.html\">DescribeGatewayCapabilityConfiguration</a>.</p>"
@@ -6544,6 +6564,12 @@
         }
       },
       "documentation":"<p>Contains a summary of a gateway.</p>"
+    },
+    "GatewayVersion":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^[0-9]+$"
     },
     "GetAssetPropertyAggregatesRequest":{
       "type":"structure",
@@ -6871,6 +6897,10 @@
         "coreDeviceThingName":{
           "shape":"CoreDeviceThingName",
           "documentation":"<p>The name of the IoT thing for your IoT Greengrass V2 core device.</p>"
+        },
+        "coreDeviceOperatingSystem":{
+          "shape":"CoreDeviceOperatingSystem",
+          "documentation":"<p>The operating system of the core device in IoT Greengrass V2.</p>"
         }
       },
       "documentation":"<p>Contains details for a gateway that runs on IoT Greengrass V2. To create a gateway that runs on IoT Greengrass V2, you must deploy the IoT SiteWise Edge component to your gateway device. Your <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/device-service-role.html\">Greengrass device role</a> must use the <code>AWSIoTSiteWiseEdgeAccess</code> policy. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/sw-gateways.html\">Using IoT SiteWise at the edge</a> in the <i>IoT SiteWise User Guide</i>.</p>"

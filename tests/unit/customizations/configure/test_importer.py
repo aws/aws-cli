@@ -13,16 +13,17 @@
 
 import os
 
-from . import FakeSession
-from awscli.testutils import mock, unittest
 from awscli.compat import StringIO
 from awscli.customizations.configure.importer import (
-    CredentialImporter,
     ConfigureImportCommand,
-    CSVCredentialParser,
+    CredentialImporter,
     CredentialParserError,
+    CSVCredentialParser,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.testutils import mock, unittest
+
+from . import FakeSession
 
 CSV_HEADERS = (
     'User name,Password,Access key ID,Secret access key,Console login link\n'
@@ -33,7 +34,8 @@ class TestConfigureImportCommand(unittest.TestCase):
     def setUp(self):
         self.session = FakeSession({'config_file': 'myconfigfile'})
         self.fake_credentials_filename = os.path.expanduser(
-            '~/fake_credentials_filename')
+            '~/fake_credentials_filename'
+        )
         self.session.profile = None
         self.mock_writer = mock.Mock(spec=ConfigFileWriter)
         self.importer = CredentialImporter(self.mock_writer)
@@ -49,7 +51,9 @@ class TestConfigureImportCommand(unittest.TestCase):
         update_args, _ = self.mock_writer.update_config.call_args
         self.assertEqual(update_args[0], profile)
         self.assertIn('/fake_credentials_filename', update_args[1])
-        self.assertIn('Successfully imported 1 profile', self.stdout.getvalue())
+        self.assertIn(
+            'Successfully imported 1 profile', self.stdout.getvalue()
+        )
 
     def test_import_downloaded_csv(self):
         row = 'PROFILENAME,PW,AKID,SAK,https://console.link\n'
@@ -80,7 +84,9 @@ class TestConfigureImportCommand(unittest.TestCase):
         )
         self.import_command(args=['--csv', content], parsed_globals=None)
         self.assertEqual(self.mock_writer.update_config.call_count, 2)
-        self.assertIn('Successfully imported 2 profile', self.stdout.getvalue())
+        self.assertIn(
+            'Successfully imported 2 profile', self.stdout.getvalue()
+        )
 
     def test_import_downloaded_bad_headers(self):
         content = 'User name,Secret access key\n'
@@ -110,7 +116,7 @@ class TestCSVCredentialParser(unittest.TestCase):
 
     def test_csv_parser_with_bom(self):
         contents = (
-            u'\ufeffUser name,Access key ID,Secret access key\n'
+            '\ufeffUser name,Access key ID,Secret access key\n'
             'PROFILENAME,AKID,SAK\n'
         )
         self.assert_parse_matches_expected(contents)
@@ -129,7 +135,7 @@ class TestCSVCredentialParser(unittest.TestCase):
 
     def test_csv_parser_multiple_entries_bom(self):
         contents = (
-            u'\ufeffUser name,Access key ID,Secret access key\n'
+            '\ufeffUser name,Access key ID,Secret access key\n'
             'PROFILENAME1,AKID1,SAK1\n'
             'PROFILENAME2,AKID2,SAK2\n'
         )

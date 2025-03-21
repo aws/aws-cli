@@ -42,6 +42,7 @@ from botocore import UNSIGNED
 from botocore.compat import urlsplit
 from botocore.config import Config
 from botocore.exceptions import NoCredentialsError
+from botocore.useragent import register_feature_id
 from botocore.utils import ArnParser, InvalidArnException, is_s3express_bucket
 
 from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS, MB
@@ -310,6 +311,7 @@ class CRTTransferManager:
         self._semaphore.release()
 
     def _submit_transfer(self, request_type, call_args):
+        register_feature_id('S3_TRANSFER')
         on_done_after_calls = [self._release_semaphore]
         coordinator = CRTTransferCoordinator(
             transfer_id=self._id_counter,
@@ -861,14 +863,22 @@ class S3ClientArgsCreator:
         ):
             # Configure our region to `*` to propogate in `x-amz-region-set`
             # for multi-region support in MRAP accesspoints.
+            # use_double_uri_encode and should_normalize_uri_path are defaulted to be True
+            # But SDK already encoded the URI, and it's for S3, so set both to False
             make_request_args['signing_config'] = AwsSigningConfig(
                 algorithm=AwsSigningAlgorithm.V4_ASYMMETRIC,
                 region="*",
+                use_double_uri_encode=False,
+                should_normalize_uri_path=False,
             )
             call_args.bucket = accesspoint_arn_details['resource_name']
         elif is_s3express_bucket(call_args.bucket):
+            # use_double_uri_encode and should_normalize_uri_path are defaulted to be True
+            # But SDK already encoded the URI, and it's for S3, so set both to False
             make_request_args['signing_config'] = AwsSigningConfig(
-                algorithm=AwsSigningAlgorithm.V4_S3EXPRESS
+                algorithm=AwsSigningAlgorithm.V4_S3EXPRESS,
+                use_double_uri_encode=False,
+                should_normalize_uri_path=False,
             )
         return make_request_args
 

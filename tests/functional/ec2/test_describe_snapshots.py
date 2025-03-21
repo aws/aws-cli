@@ -14,7 +14,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestDescribeSnapshots(BaseAWSCommandParamsTest):
-
     prefix = 'ec2 describe-snapshots'
 
     def test_max_results_set_by_default(self):
@@ -29,9 +28,9 @@ class TestDescribeSnapshots(BaseAWSCommandParamsTest):
 
     def test_max_results_not_set_with_filter(self):
         command = self.prefix + ' --filters Name=snapshot-id,Values=snap-snap'
-        params = {'Filters': [{
-            'Name': 'snapshot-id', 'Values': ['snap-snap']
-        }]}
+        params = {
+            'Filters': [{'Name': 'snapshot-id', 'Values': ['snap-snap']}]
+        }
         self.assert_params_for_cmd(command, params)
 
     def test_max_results_not_overwritten(self):

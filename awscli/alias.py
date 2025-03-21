@@ -42,9 +42,12 @@ class InvalidAliasException(Exception):
 
 
 class AliasLoader(object):
-    def __init__(self,
-                 alias_filename=os.path.expanduser(
-                     os.path.join('~', '.aws', 'cli', 'alias'))):
+    def __init__(
+        self,
+        alias_filename=os.path.expanduser(
+            os.path.join('~', '.aws', 'cli', 'alias')
+        ),
+    ):
         """Interface for loading and interacting with alias file
 
         :param alias_filename: The name of the file to load aliases from.
@@ -60,8 +63,7 @@ class AliasLoader(object):
     def _load_aliases(self):
         parsed = {}
         if os.path.exists(self._filename):
-            parsed = raw_config_parse(
-                self._filename, parse_subsections=False)
+            parsed = raw_config_parse(self._filename, parse_subsections=False)
         self._normalize_key_names(parsed)
         return parsed
 
@@ -106,7 +108,8 @@ class BaseAliasCommandInjector(object):
 
     def _inject_external_alias(self, alias_name, alias_value, command_table):
         command_table[alias_name] = ExternalAliasCommand(
-            alias_name, alias_value)
+            alias_name, alias_value
+        )
 
 
 class AliasCommandInjector(BaseAliasCommandInjector):
@@ -125,20 +128,23 @@ class AliasCommandInjector(BaseAliasCommandInjector):
     def inject_aliases(self, command_table, parser):
         for alias_name, alias_value in self._get_alias_items():
             if self._is_external_alias(alias_value):
-                self._inject_external_alias(alias_name, alias_value,
-                                            command_table)
+                self._inject_external_alias(
+                    alias_name, alias_value, command_table
+                )
             else:
                 service_alias_cmd_args = [
-                    alias_name, alias_value, self._session, command_table,
-                    parser
+                    alias_name,
+                    alias_value,
+                    self._session,
+                    command_table,
+                    parser,
                 ]
                 # If the alias name matches something already in the
                 # command table provide the command it is about
                 # to clobber as a possible reference that it will
                 # need to proxy to.
                 if alias_name in command_table:
-                    service_alias_cmd_args.append(
-                        command_table[alias_name])
+                    service_alias_cmd_args.append(command_table[alias_name])
                 alias_cmd = ServiceAliasCommand(*service_alias_cmd_args)
                 command_table[alias_name] = alias_cmd
 
@@ -153,14 +159,18 @@ class AliasSubCommandInjector(BaseAliasCommandInjector):
         if self._global_args_parser is None:
             if self._global_cmd_driver is not None:
                 command_table = self._global_cmd_driver.subcommand_table
-                self._global_args_parser = \
+                self._global_args_parser = (
                     self._global_cmd_driver.create_parser(command_table)
+                )
         return self._global_args_parser
 
-    def on_building_command_table(self, command_table, event_name,
-                                  command_object, session, **kwargs):
-        if not isinstance(command_object, CLICommand) and \
-                event_name == 'building-command-table.main':
+    def on_building_command_table(
+        self, command_table, event_name, command_object, session, **kwargs
+    ):
+        if (
+            not isinstance(command_object, CLICommand)
+            and event_name == 'building-command-table.main'
+        ):
             self._global_cmd_driver = command_object
             return
         # We have to transform the event name to figure out what the
@@ -185,14 +195,18 @@ class AliasSubCommandInjector(BaseAliasCommandInjector):
         for alias_name, alias_value in aliases_for_cmd.items():
             if self._is_external_alias(alias_value):
                 self._inject_external_alias(
-                    alias_name, alias_value, command_table)
+                    alias_name, alias_value, command_table
+                )
             else:
                 proxied_sub_command = command_table.get(alias_name)
                 command_table[alias_name] = InternalAliasSubCommand(
-                    alias_name, alias_value, command_object,
+                    alias_name,
+                    alias_value,
+                    command_object,
                     self._retrieve_global_args_parser(),
                     session=session,
-                    proxied_sub_command=proxied_sub_command)
+                    proxied_sub_command=proxied_sub_command,
+                )
 
 
 class BaseAliasCommand(CLICommand):
@@ -233,10 +247,7 @@ class BaseAliasCommand(CLICommand):
 
 
 class BaseInternalAliasCommand(BaseAliasCommand):
-    UNSUPPORTED_GLOBAL_PARAMETERS = [
-        'debug',
-        'profile'
-    ]
+    UNSUPPORTED_GLOBAL_PARAMETERS = ['debug', 'profile']
 
     def __init__(self, alias_name, alias_value, session):
         super(BaseInternalAliasCommand, self).__init__(alias_name, alias_value)
@@ -248,21 +259,25 @@ class BaseInternalAliasCommand(BaseAliasCommand):
         except ValueError as e:
             raise InvalidAliasException(
                 'Value of alias "%s" could not be parsed. '
-                'Received error: %s when parsing:\n%s' % (
-                    self._alias_name, e, self._alias_value)
+                'Received error: %s when parsing:\n%s'
+                % (self._alias_name, e, self._alias_value)
             )
 
         alias_args = [arg.strip(os.linesep) for arg in alias_args]
         LOG.debug(
             'Expanded subcommand alias %r with value: %r to: %r',
-            self._alias_name, self._alias_value, alias_args
+            self._alias_name,
+            self._alias_value,
+            alias_args,
         )
         return alias_args
 
-    def _update_parsed_globals(self, arg_parser, parsed_alias_args,
-                               parsed_globals):
+    def _update_parsed_globals(
+        self, arg_parser, parsed_alias_args, parsed_globals
+    ):
         global_params_to_update = self._get_global_parameters_to_update(
-            arg_parser, parsed_alias_args)
+            arg_parser, parsed_alias_args
+        )
         # Emit the top level args parsed event to ensure all possible
         # customizations that typically get applied are applied to the
         # global parameters provided in the alias before updating
@@ -288,16 +303,24 @@ class BaseInternalAliasCommand(BaseAliasCommand):
                 if parsed_param in self.UNSUPPORTED_GLOBAL_PARAMETERS:
                     raise InvalidAliasException(
                         'Global parameter "--%s" detected in alias "%s" '
-                        'which is not supported in subcommand aliases.' % (
-                            parsed_param, self._alias_name))
+                        'which is not supported in subcommand aliases.'
+                        % (parsed_param, self._alias_name)
+                    )
                 else:
                     global_params_to_update.append(parsed_param)
         return global_params_to_update
 
 
 class ServiceAliasCommand(BaseInternalAliasCommand):
-    def __init__(self, alias_name, alias_value, session, command_table,
-                 parser, shadow_proxy_command=None):
+    def __init__(
+        self,
+        alias_name,
+        alias_value,
+        session,
+        command_table,
+        parser,
+        shadow_proxy_command=None,
+    ):
         """Command for a `toplevel` subcommand alias
 
         :type alias_name: string
@@ -329,7 +352,8 @@ class ServiceAliasCommand(BaseInternalAliasCommand):
             table
         """
         super(ServiceAliasCommand, self).__init__(
-            alias_name, alias_value, session)
+            alias_name, alias_value, session
+        )
         self._command_table = command_table
         self._parser = parser
         self._shadow_proxy_command = shadow_proxy_command
@@ -337,15 +361,20 @@ class ServiceAliasCommand(BaseInternalAliasCommand):
     def __call__(self, args, parsed_globals):
         alias_args = self._get_alias_args()
         parsed_alias_args, remaining = self._parser.parse_known_args(
-            alias_args)
-        self._update_parsed_globals(self._parser, parsed_alias_args,
-                                    parsed_globals)
+            alias_args
+        )
+        self._update_parsed_globals(
+            self._parser, parsed_alias_args, parsed_globals
+        )
         # Take any of the remaining arguments that were not parsed out and
         # prepend them to the remaining args provided to the alias.
         remaining.extend(args)
         LOG.debug(
             'Alias %r passing on arguments: %r to %r command',
-            self._alias_name, remaining, parsed_alias_args.command)
+            self._alias_name,
+            remaining,
+            parsed_alias_args.command,
+        )
         # Pass the update remaining args and global args to the service command
         # the alias proxied to.
         command = self._command_table[parsed_alias_args.command]
@@ -356,9 +385,9 @@ class ServiceAliasCommand(BaseInternalAliasCommand):
             # a built-in command.
             if shadow_name == parsed_alias_args.command:
                 LOG.debug(
-                    'Using shadowed command object: %s '
-                    'for alias: %s', self._shadow_proxy_command,
-                    self._alias_name
+                    'Using shadowed command object: %s for alias: %s',
+                    self._shadow_proxy_command,
+                    self._alias_name,
                 )
                 command = self._shadow_proxy_command
         return command(remaining, parsed_globals)
@@ -386,32 +415,40 @@ class ExternalAliasCommand(BaseAliasCommand):
         self._invoker = invoker
 
     def __call__(self, args, parsed_globals):
-        command_components = [
-            self._alias_value[1:]
-        ]
+        command_components = [self._alias_value[1:]]
         command_components.extend(compat_shell_quote(a) for a in args)
         command = ' '.join(command_components)
         LOG.debug(
             'Using external alias %r with value: %r to run: %r',
-            self._alias_name, self._alias_value, command)
+            self._alias_name,
+            self._alias_value,
+            command,
+        )
         return self._invoker(command, shell=True)
 
 
 class InternalAliasSubCommand(BaseInternalAliasCommand):
-
-    def __init__(self, alias_name, alias_value, command_object,
-                 global_args_parser, session,
-                 proxied_sub_command=None):
+    def __init__(
+        self,
+        alias_name,
+        alias_value,
+        command_object,
+        global_args_parser,
+        session,
+        proxied_sub_command=None,
+    ):
         super(InternalAliasSubCommand, self).__init__(
-            alias_name, alias_value, session)
+            alias_name, alias_value, session
+        )
         self._command_object = command_object
         self._global_args_parser = global_args_parser
         self._proxied_sub_command = proxied_sub_command
 
     def _process_global_args(self, arg_parser, alias_args, parsed_globals):
         globally_parseable_args = [parsed_globals.command] + alias_args
-        alias_globals, remaining = arg_parser\
-            .parse_known_args(globally_parseable_args)
+        alias_globals, remaining = arg_parser.parse_known_args(
+            globally_parseable_args
+        )
         self._update_parsed_globals(arg_parser, alias_globals, parsed_globals)
         return remaining
 
@@ -429,7 +466,8 @@ class InternalAliasSubCommand(BaseInternalAliasCommand):
         #  embedded as part of the alias value (i.e defined in the alias file)
         alias_args = self._get_alias_args()
         cmd_specific_args = self._process_global_args(
-            self._global_args_parser, alias_args, parsed_globals)
+            self._global_args_parser, alias_args, parsed_globals
+        )
         cmd_specific_args.extend(args)
         if self._proxied_sub_command is not None:
             # If we overwrote an existing command, we just delegate to that
@@ -438,8 +476,10 @@ class InternalAliasSubCommand(BaseInternalAliasCommand):
             # command so we remove that value before delegating to the
             # proxied command.
             cmd_specific_args = cmd_specific_args[1:]
-            LOG.debug("Delegating to proxy sub-command with new alias "
-                      "args: %s", alias_args)
+            LOG.debug(
+                "Delegating to proxy sub-command with new alias args: %s",
+                alias_args,
+            )
             return self._proxied_sub_command(cmd_specific_args, parsed_globals)
         else:
             return self._command_object(cmd_specific_args, parsed_globals)

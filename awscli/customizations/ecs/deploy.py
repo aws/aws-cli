@@ -45,96 +45,111 @@ class ECSDeploy(BasicCommand):
     ARG_TABLE = [
         {
             'name': 'service',
-            'help_text': ("The short name or full Amazon Resource Name "
-                          "(ARN) of the service to update"),
-            'required': True
+            'help_text': (
+                "The short name or full Amazon Resource Name "
+                "(ARN) of the service to update"
+            ),
+            'required': True,
         },
         {
             'name': 'task-definition',
-            'help_text': ("The file path where your task definition file is "
-                          "located. The format of the file must be the same "
-                          "as the JSON output of: <codeblock>aws ecs "
-                          "register-task-definition "
-                          "--generate-cli-skeleton</codeblock>"),
-            'required': True
+            'help_text': (
+                "The file path where your task definition file is "
+                "located. The format of the file must be the same "
+                "as the JSON output of: <codeblock>aws ecs "
+                "register-task-definition "
+                "--generate-cli-skeleton</codeblock>"
+            ),
+            'required': True,
         },
         {
             'name': 'codedeploy-appspec',
-            'help_text': ("The file path where your AWS CodeDeploy appspec "
-                          "file is located. The appspec file may be in JSON "
-                          "or YAML format. The <code>TaskDefinition</code> "
-                          "property will be updated within the appspec with "
-                          "the newly registered task definition ARN, "
-                          "overwriting any placeholder values in the file."),
-            'required': True
+            'help_text': (
+                "The file path where your AWS CodeDeploy appspec "
+                "file is located. The appspec file may be in JSON "
+                "or YAML format. The <code>TaskDefinition</code> "
+                "property will be updated within the appspec with "
+                "the newly registered task definition ARN, "
+                "overwriting any placeholder values in the file."
+            ),
+            'required': True,
         },
         {
             'name': 'cluster',
-            'help_text': ("The short name or full Amazon Resource Name "
-                          "(ARN) of the cluster that your service is "
-                          "running within. If you do not specify a "
-                          "cluster, the \"default\" cluster is assumed."),
-            'required': False
+            'help_text': (
+                "The short name or full Amazon Resource Name "
+                "(ARN) of the cluster that your service is "
+                "running within. If you do not specify a "
+                "cluster, the \"default\" cluster is assumed."
+            ),
+            'required': False,
         },
         {
             'name': 'codedeploy-application',
-            'help_text': ("The name of the AWS CodeDeploy application "
-                          "to use for the deployment. The specified "
-                          "application must use the 'ECS' compute "
-                          "platform. If you do not specify an "
-                          "application, the application name "
-                          "<code>AppECS-[CLUSTER_NAME]-[SERVICE_NAME]</code> "
-                          "is assumed."),
-            'required': False
+            'help_text': (
+                "The name of the AWS CodeDeploy application "
+                "to use for the deployment. The specified "
+                "application must use the 'ECS' compute "
+                "platform. If you do not specify an "
+                "application, the application name "
+                "<code>AppECS-[CLUSTER_NAME]-[SERVICE_NAME]</code> "
+                "is assumed."
+            ),
+            'required': False,
         },
         {
             'name': 'codedeploy-deployment-group',
-            'help_text': ("The name of the AWS CodeDeploy deployment "
-                          "group to use for the deployment. The "
-                          "specified deployment group must be associated "
-                          "with the specified ECS service and cluster. "
-                          "If you do not specify a deployment group, "
-                          "the deployment group name "
-                          "<code>DgpECS-[CLUSTER_NAME]-[SERVICE_NAME]</code> "
-                          "is assumed."),
-            'required': False
-        }
+            'help_text': (
+                "The name of the AWS CodeDeploy deployment "
+                "group to use for the deployment. The "
+                "specified deployment group must be associated "
+                "with the specified ECS service and cluster. "
+                "If you do not specify a deployment group, "
+                "the deployment group name "
+                "<code>DgpECS-[CLUSTER_NAME]-[SERVICE_NAME]</code> "
+                "is assumed."
+            ),
+            'required': False,
+        },
     ]
 
-    MSG_TASK_DEF_REGISTERED = \
+    MSG_TASK_DEF_REGISTERED = (
         "Successfully registered new ECS task definition {arn}\n"
+    )
 
     MSG_CREATED_DEPLOYMENT = "Successfully created deployment {id}\n"
 
-    MSG_SUCCESS = ("Successfully deployed {task_def} to "
-                   "service '{service}'\n")
+    MSG_SUCCESS = "Successfully deployed {task_def} to service '{service}'\n"
 
     USER_AGENT_EXTRA = 'md/customization#ecs-deploy'
 
     def _run_main(self, parsed_args, parsed_globals):
-
-        register_task_def_kwargs, appspec_obj = \
-            self._load_file_args(parsed_args.task_definition,
-                                 parsed_args.codedeploy_appspec)
+        register_task_def_kwargs, appspec_obj = self._load_file_args(
+            parsed_args.task_definition, parsed_args.codedeploy_appspec
+        )
 
         ecs_client_wrapper = ECSClient(
-            self._session, parsed_args, parsed_globals, self.USER_AGENT_EXTRA)
+            self._session, parsed_args, parsed_globals, self.USER_AGENT_EXTRA
+        )
 
         self.resources = self._get_resource_names(
-            parsed_args, ecs_client_wrapper)
+            parsed_args, ecs_client_wrapper
+        )
 
         codedeploy_client = self._session.create_client(
             'codedeploy',
             region_name=parsed_globals.region,
             verify=parsed_globals.verify_ssl,
-            config=config.Config(user_agent_extra=self.USER_AGENT_EXTRA))
+            config=config.Config(user_agent_extra=self.USER_AGENT_EXTRA),
+        )
 
         self._validate_code_deploy_resources(codedeploy_client)
 
         self.wait_time = self._cd_validator.get_deployment_wait_time()
 
         self.task_def_arn = self._register_task_def(
-            register_task_def_kwargs, ecs_client_wrapper)
+            register_task_def_kwargs, ecs_client_wrapper
+        )
 
         self._create_and_wait_for_deployment(codedeploy_client, appspec_obj)
         return 0
@@ -143,18 +158,19 @@ class ECSDeploy(BasicCommand):
         deployer = CodeDeployer(client, appspec)
         deployer.update_task_def_arn(self.task_def_arn)
         deployment_id = deployer.create_deployment(
-            self.resources['app_name'],
-            self.resources['deployment_group_name'])
+            self.resources['app_name'], self.resources['deployment_group_name']
+        )
 
-        sys.stdout.write(self.MSG_CREATED_DEPLOYMENT.format(
-            id=deployment_id))
+        sys.stdout.write(self.MSG_CREATED_DEPLOYMENT.format(id=deployment_id))
 
         deployer.wait_for_deploy_success(deployment_id, self.wait_time)
         service_name = self.resources['service']
 
         sys.stdout.write(
             self.MSG_SUCCESS.format(
-                task_def=self.task_def_arn, service=service_name))
+                task_def=self.task_def_arn, service=service_name
+            )
+        )
         sys.stdout.flush()
 
     def _get_file_contents(self, file_path):
@@ -163,8 +179,7 @@ class ECSDeploy(BasicCommand):
             with compat_open(full_path) as f:
                 return f.read()
         except (OSError, IOError, UnicodeDecodeError) as e:
-            raise exceptions.FileLoadError(
-                file_path=file_path, error=e)
+            raise exceptions.FileLoadError(file_path=file_path, error=e)
 
     def _get_resource_names(self, args, ecs_client):
         service_details = ecs_client.get_service_details()
@@ -172,9 +187,11 @@ class ECSDeploy(BasicCommand):
         cluster_name = service_details['cluster_name']
 
         application_name = filehelpers.get_app_name(
-            service_name, cluster_name, args.codedeploy_application)
+            service_name, cluster_name, args.codedeploy_application
+        )
         deployment_group_name = filehelpers.get_deploy_group_name(
-            service_name, cluster_name, args.codedeploy_deployment_group)
+            service_name, cluster_name, args.codedeploy_deployment_group
+        )
 
         return {
             'service': service_name,
@@ -182,7 +199,7 @@ class ECSDeploy(BasicCommand):
             'cluster': cluster_name,
             'cluster_arn': service_details['cluster_arn'],
             'app_name': application_name,
-            'deployment_group_name': deployment_group_name
+            'deployment_group_name': deployment_group_name,
         }
 
     def _load_file_args(self, task_def_arg, appspec_arg):
@@ -199,8 +216,7 @@ class ECSDeploy(BasicCommand):
 
         task_def_arn = response['taskDefinition']['taskDefinitionArn']
 
-        sys.stdout.write(self.MSG_TASK_DEF_REGISTERED.format(
-            arn=task_def_arn))
+        sys.stdout.write(self.MSG_TASK_DEF_REGISTERED.format(arn=task_def_arn))
         sys.stdout.flush()
 
         return task_def_arn
@@ -212,10 +228,11 @@ class ECSDeploy(BasicCommand):
         self._cd_validator = validator
 
 
-class CodeDeployer():
-
-    MSG_WAITING = ("Waiting for {deployment_id} to succeed "
-                   "(will wait up to {wait} minutes)...\n")
+class CodeDeployer:
+    MSG_WAITING = (
+        "Waiting for {deployment_id} to succeed "
+        "(will wait up to {wait} minutes)...\n"
+    )
 
     def __init__(self, cd_client, appspec_dict):
         self._client = cd_client
@@ -223,13 +240,15 @@ class CodeDeployer():
 
     def create_deployment(self, app_name, deploy_grp_name):
         request_obj = self._get_create_deploy_request(
-            app_name, deploy_grp_name)
+            app_name, deploy_grp_name
+        )
 
         try:
             response = self._client.create_deployment(**request_obj)
         except ClientError as e:
             raise exceptions.ServiceClientError(
-                action='create deployment', error=e)
+                action='create deployment', error=e
+            )
 
         return response['deploymentId']
 
@@ -246,9 +265,9 @@ class CodeDeployer():
                 "revisionType": "AppSpecContent",
                 "appSpecContent": {
                     "content": json.dumps(self._appspec_dict),
-                    "sha256": self._get_appspec_hash()
-                }
-            }
+                    "sha256": self._get_appspec_hash(),
+                },
+            },
         }
 
     def update_task_def_arn(self, new_arn):
@@ -270,7 +289,8 @@ class CodeDeployer():
         appspec_obj = self._appspec_dict
 
         resources_key = filehelpers.find_required_key(
-            'codedeploy-appspec', appspec_obj, 'resources')
+            'codedeploy-appspec', appspec_obj, 'resources'
+        )
         updated_resources = []
 
         # 'resources' is a list of string:obj dictionaries
@@ -280,11 +300,13 @@ class CodeDeployer():
                 resource_content = resource[name]
                 # get resource properties
                 properties_key = filehelpers.find_required_key(
-                    name, resource_content, 'properties')
+                    name, resource_content, 'properties'
+                )
                 properties_content = resource_content[properties_key]
                 # find task definition property
                 task_def_key = filehelpers.find_required_key(
-                    properties_key, properties_content, 'taskDefinition')
+                    properties_key, properties_content, 'taskDefinition'
+                )
 
                 # insert new task def ARN into resource
                 properties_content[task_def_key] = new_arn
@@ -305,22 +327,19 @@ class CodeDeployer():
 
         delay_sec = DEFAULT_DELAY_SEC
         max_attempts = (wait_min * 60) / delay_sec
-        config = {
-            'Delay': delay_sec,
-            'MaxAttempts': max_attempts
-        }
+        config = {'Delay': delay_sec, 'MaxAttempts': max_attempts}
 
         self._show_deploy_wait_msg(id, wait_min)
         waiter.wait(deploymentId=id, WaiterConfig=config)
 
     def _show_deploy_wait_msg(self, id, wait_min):
         sys.stdout.write(
-            self.MSG_WAITING.format(deployment_id=id,
-                                    wait=wait_min))
+            self.MSG_WAITING.format(deployment_id=id, wait=wait_min)
+        )
         sys.stdout.flush()
 
 
-class CodeDeployValidator():
+class CodeDeployValidator:
     def __init__(self, cd_client, resources):
         self._client = cd_client
         self._resource_names = resources
@@ -328,35 +347,42 @@ class CodeDeployValidator():
     def describe_cd_resources(self):
         try:
             self.app_details = self._client.get_application(
-                applicationName=self._resource_names['app_name'])
+                applicationName=self._resource_names['app_name']
+            )
         except ClientError as e:
             raise exceptions.ServiceClientError(
-                action='describe Code Deploy application', error=e)
+                action='describe Code Deploy application', error=e
+            )
 
         try:
             dgp = self._resource_names['deployment_group_name']
             app = self._resource_names['app_name']
             self.deployment_group_details = self._client.get_deployment_group(
-                applicationName=app, deploymentGroupName=dgp)
+                applicationName=app, deploymentGroupName=dgp
+            )
         except ClientError as e:
             raise exceptions.ServiceClientError(
-                action='describe Code Deploy deployment group', error=e)
+                action='describe Code Deploy deployment group', error=e
+            )
 
     def get_deployment_wait_time(self):
-
-        if (not hasattr(self, 'deployment_group_details') or
-                self.deployment_group_details is None):
+        if (
+            not hasattr(self, 'deployment_group_details')
+            or self.deployment_group_details is None
+        ):
             return None
         else:
             dgp_info = self.deployment_group_details['deploymentGroupInfo']
             blue_green_info = dgp_info['blueGreenDeploymentConfiguration']
 
-            deploy_ready_wait_min = \
-                blue_green_info['deploymentReadyOption']['waitTimeInMinutes']
+            deploy_ready_wait_min = blue_green_info['deploymentReadyOption'][
+                'waitTimeInMinutes'
+            ]
 
             terminate_key = 'terminateBlueInstancesOnDeploymentSuccess'
-            termination_wait_min = \
-                blue_green_info[terminate_key]['terminationWaitTimeInMinutes']
+            termination_wait_min = blue_green_info[terminate_key][
+                'terminationWaitTimeInMinutes'
+            ]
 
             configured_wait = deploy_ready_wait_min + termination_wait_min
 
@@ -370,7 +396,8 @@ class CodeDeployValidator():
         app_name = self._resource_names['app_name']
         if self.app_details['application']['computePlatform'] != 'ECS':
             raise exceptions.InvalidPlatformError(
-                resource='Application', name=app_name)
+                resource='Application', name=app_name
+            )
 
     def validate_deployment_group(self):
         dgp = self._resource_names['deployment_group_name']
@@ -384,26 +411,29 @@ class CodeDeployValidator():
 
         if compute_platform != 'ECS':
             raise exceptions.InvalidPlatformError(
-                resource='Deployment Group', name=dgp)
+                resource='Deployment Group', name=dgp
+            )
 
-        target_services = \
-            self.deployment_group_details['deploymentGroupInfo']['ecsServices']
+        target_services = self.deployment_group_details['deploymentGroupInfo'][
+            'ecsServices'
+        ]
 
         # either ECS resource names or ARNs can be stored, so check both
         for target in target_services:
             target_serv = target['serviceName']
             if target_serv != service and target_serv != service_arn:
                 raise exceptions.InvalidProperyError(
-                    dg_name=dgp, resource='service', resource_name=service)
+                    dg_name=dgp, resource='service', resource_name=service
+                )
 
             target_cluster = target['clusterName']
             if target_cluster != cluster and target_cluster != cluster_arn:
                 raise exceptions.InvalidProperyError(
-                    dg_name=dgp, resource='cluster', resource_name=cluster)
+                    dg_name=dgp, resource='cluster', resource_name=cluster
+                )
 
 
-class ECSClient():
-
+class ECSClient:
     def __init__(self, session, parsed_args, parsed_globals, user_agent_extra):
         self._args = parsed_args
         self._custom_config = config.Config(user_agent_extra=user_agent_extra)
@@ -412,7 +442,8 @@ class ECSClient():
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl,
-            config=self._custom_config)
+            config=self._custom_config,
+        )
 
     def get_service_details(self):
         cluster = self._args.cluster
@@ -422,33 +453,36 @@ class ECSClient():
 
         try:
             service_response = self._client.describe_services(
-                cluster=cluster, services=[self._args.service])
+                cluster=cluster, services=[self._args.service]
+            )
         except ClientError as e:
             raise exceptions.ServiceClientError(
-                action='describe ECS service', error=e)
+                action='describe ECS service', error=e
+            )
 
         if len(service_response['services']) == 0:
             raise exceptions.InvalidServiceError(
-                service=self._args.service, cluster=cluster)
+                service=self._args.service, cluster=cluster
+            )
 
         service_details = service_response['services'][0]
-        cluster_name = \
-            filehelpers.get_cluster_name_from_arn(
-                service_details['clusterArn'])
+        cluster_name = filehelpers.get_cluster_name_from_arn(
+            service_details['clusterArn']
+        )
 
         return {
             'service_arn': service_details['serviceArn'],
             'service_name': service_details['serviceName'],
             'cluster_arn': service_details['clusterArn'],
-            'cluster_name': cluster_name
+            'cluster_name': cluster_name,
         }
 
     def register_task_definition(self, kwargs):
         try:
-            response = \
-                self._client.register_task_definition(**kwargs)
+            response = self._client.register_task_definition(**kwargs)
         except ClientError as e:
             raise exceptions.ServiceClientError(
-                action='register ECS task definition', error=e)
+                action='register ECS task definition', error=e
+            )
 
         return response

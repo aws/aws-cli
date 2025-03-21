@@ -5,14 +5,23 @@ server side autocompletions based on updated service models.
 It can also be used to regen completion data as new heuristics are added.
 
 """
+
 import logging
 from difflib import SequenceMatcher
 from collections import namedtuple, defaultdict
 
 
 LOG = logging.getLogger(__name__)
-Resource = namedtuple('Resource', ['resource_name', 'ident_name',
-                                   'input_parameters', 'operation', 'jp_expr'])
+Resource = namedtuple(
+    'Resource',
+    [
+        'resource_name',
+        'ident_name',
+        'input_parameters',
+        'operation',
+        'jp_expr',
+    ],
+)
 
 
 class ServerCompletionHeuristic(object):
@@ -26,8 +35,9 @@ class ServerCompletionHeuristic(object):
             singularize = BasicSingularize()
         self._singularize = singularize
 
-    def generate_completion_descriptions(self, service_model,
-                                         prune_completions=True):
+    def generate_completion_descriptions(
+        self, service_model, prune_completions=True
+    ):
         """
 
         :param service_model: A botocore.model.ServiceModel.
@@ -48,10 +58,13 @@ class ServerCompletionHeuristic(object):
             if op_name.lower().startswith(self._RESOURCE_VERB_PREFIX):
                 candidates.append(op_name)
         all_resources = self._generate_resource_descriptions(
-            candidates, service_model)
+            candidates, service_model
+        )
         all_operations = self._generate_operations(
             self._filter_operation_names(service_model.operation_names),
-            all_resources, service_model)
+            all_resources,
+            service_model,
+        )
         if prune_completions:
             self._prune_resource_identifiers(all_resources, all_operations)
         return {
@@ -61,14 +74,18 @@ class ServerCompletionHeuristic(object):
         }
 
     def _filter_operation_names(self, op_names):
-        return [name for name in op_names
-                if not name.lower().startswith(self._OPERATION_EXCLUDES)]
+        return [
+            name
+            for name in op_names
+            if not name.lower().startswith(self._OPERATION_EXCLUDES)
+        ]
 
     def _generate_resource_descriptions(self, candidates, service_model):
         all_resources = {}
         for op_name in candidates:
             resources = self._resource_for_single_operation(
-                op_name, service_model)
+                op_name, service_model
+            )
             if resources is not None:
                 for resource in resources:
                     self._inject_resource(all_resources, resource)
@@ -97,15 +114,17 @@ class ServerCompletionHeuristic(object):
             )
         return op_map
 
-    def _add_completion_data_for_operation(self, op_map, op_name,
-                                           service_model, reverse_mapping):
+    def _add_completion_data_for_operation(
+        self, op_map, op_name, service_model, reverse_mapping
+    ):
         op_model = service_model.operation_model(op_name)
         input_shape = op_model.input_shape
         if not input_shape:
             return
         for member in input_shape.members:
             member_name = self._find_matching_member_name(
-                member, reverse_mapping)
+                member, reverse_mapping
+            )
             if member_name is None:
                 continue
             resource_name = self._find_matching_op_name(
@@ -114,9 +133,11 @@ class ServerCompletionHeuristic(object):
             op = op_map.setdefault(op_name, {})
             param = op.setdefault(member, {})
             param['completions'] = [
-                {'parameters': {},
-                 'resourceName': resource_name,
-                 'resourceIdentifier': member_name}
+                {
+                    'parameters': {},
+                    'resourceName': resource_name,
+                    'resourceIdentifier': member_name,
+                }
             ]
 
     def _find_matching_op_name(self, op_name, candidates):
@@ -139,9 +160,7 @@ class ServerCompletionHeuristic(object):
             matcher.set_seq1(candidate)
             match_ratio = matcher.ratio()
             matching_score.append((match_ratio, candidate))
-        return sorted(
-            matching_score, key=lambda x: x[0], reverse=True
-        )[0][1]
+        return sorted(matching_score, key=lambda x: x[0], reverse=True)[0][1]
 
     def _find_matching_member_name(self, member, reverse_mapping):
         # Try to find something in the reverse mapping that's close
@@ -174,11 +193,18 @@ class ServerCompletionHeuristic(object):
         # conventions.
         op_model = service_model.operation_model(op_name)
         output = op_model.output_shape
-        list_members = [member for member, shape in output.members.items()
-                        if shape.type_name == 'list']
+        list_members = [
+            member
+            for member, shape in output.members.items()
+            if shape.type_name == 'list'
+        ]
         if len(list_members) != 1:
-            LOG.debug("Operation does not have exactly one list member, "
-                      "skipping: %s (%s)", op_name, list_members)
+            LOG.debug(
+                "Operation does not have exactly one list member, "
+                "skipping: %s (%s)",
+                op_name,
+                list_members,
+            )
             return
         resource_member_name = list_members[0]
         list_member = output.members[resource_member_name].member
@@ -187,52 +213,64 @@ class ServerCompletionHeuristic(object):
             required_members = op_model.input_shape.required_members
         if list_member.type_name == 'structure':
             return self._resource_from_structure(
-                op_name, resource_member_name, list_member, required_members)
+                op_name, resource_member_name, list_member, required_members
+            )
         elif list_member.type_name == 'string':
-            return [self._resource_from_string(
-                op_name, resource_member_name, required_members,
-            )]
+            return [
+                self._resource_from_string(
+                    op_name,
+                    resource_member_name,
+                    required_members,
+                )
+            ]
 
-    def _resource_from_structure(self, op_name,
-                                 resource_member_name, list_member,
-                                 required_members):
+    def _resource_from_structure(
+        self, op_name, resource_member_name, list_member, required_members
+    ):
         op_with_prefix_removed = self._remove_verb_prefix(op_name)
-        singular_name = self._singularize.make_singular(
-            op_with_prefix_removed)
+        singular_name = self._singularize.make_singular(op_with_prefix_removed)
         resources = []
         for member_name in list_member.members:
-            jp_expr = (
-                '{resource_member_name}[].{member_name}').format(
-                    resource_member_name=resource_member_name,
-                    member_name=member_name)
-            r = Resource(singular_name, member_name, required_members,
-                         op_name, jp_expr)
+            jp_expr = ('{resource_member_name}[].{member_name}').format(
+                resource_member_name=resource_member_name,
+                member_name=member_name,
+            )
+            r = Resource(
+                singular_name, member_name, required_members, op_name, jp_expr
+            )
             resources.append(r)
         return resources
 
-    def _resource_from_string(self, op_name, resource_member_name,
-                              required_members):
+    def _resource_from_string(
+        self, op_name, resource_member_name, required_members
+    ):
         op_with_prefix_removed = self._remove_verb_prefix(op_name)
-        singular_name = self._singularize.make_singular(
-            op_with_prefix_removed)
+        singular_name = self._singularize.make_singular(op_with_prefix_removed)
         singular_member_name = self._singularize.make_singular(
-            resource_member_name)
-        r = Resource(singular_name, singular_member_name, required_members,
-                     op_name,
-                     '{resource_member_name}[]'.format(
-                         resource_member_name=resource_member_name))
+            resource_member_name
+        )
+        r = Resource(
+            singular_name,
+            singular_member_name,
+            required_members,
+            op_name,
+            '{resource_member_name}[]'.format(
+                resource_member_name=resource_member_name
+            ),
+        )
         return r
 
     def _remove_verb_prefix(self, op_name):
         for prefix in self._RESOURCE_VERB_PREFIX:
             # 'ListResources' -> 'Resources'
             if op_name.lower().startswith(prefix):
-                op_with_prefix_removed = op_name[len(prefix):]
+                op_with_prefix_removed = op_name[len(prefix) :]
                 return op_with_prefix_removed
 
     def _prune_resource_identifiers(self, all_resources, all_operations):
         used_identifiers = self._get_identifiers_referenced_by_operations(
-            all_operations)
+            all_operations
+        )
         for resource, resource_data in list(all_resources.items()):
             identifiers = resource_data['resourceIdentifier']
             known_ids_for_resource = used_identifiers.get(resource, set())
@@ -249,7 +287,8 @@ class ServerCompletionHeuristic(object):
         used_identifiers = {}
         for completion in self._all_completions(operations):
             used_identifiers.setdefault(completion['resourceName'], set()).add(
-                completion['resourceIdentifier'])
+                completion['resourceIdentifier']
+            )
         return used_identifiers
 
     def _all_completions(self, operations):

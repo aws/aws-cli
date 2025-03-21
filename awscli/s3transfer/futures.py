@@ -17,6 +17,8 @@ import threading
 from collections import namedtuple
 from concurrent import futures
 
+from botocore.context import get_context
+
 from s3transfer.compat import MAXINT
 from s3transfer.exceptions import CancelledError, TransferNotDoneError
 from s3transfer.utils import FunctionContainer, TaskSemaphore
@@ -471,7 +473,9 @@ class BoundedExecutor:
             semaphore.release, task.transfer_id, acquire_token
         )
         # Submit the task to the underlying executor.
-        future = ExecutorFuture(self._executor.submit(task))
+        # Pass the current context to ensure child threads persist the
+        # parent thread's context.
+        future = ExecutorFuture(self._executor.submit(task, get_context()))
         # Add the Semaphore.release() callback to the future such that
         # it is invoked once the future completes.
         future.add_done_callback(release_callback)

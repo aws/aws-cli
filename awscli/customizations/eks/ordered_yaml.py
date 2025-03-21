@@ -15,21 +15,25 @@ from botocore.compat import OrderedDict
 
 from awscli.utils import dump_yaml_to_str
 
+
 def _ordered_constructor(loader, node):
     loader.flatten_mapping(node)
     return OrderedDict(loader.construct_pairs(node))
 
+
 def _ordered_representer(dumper, data):
     return dumper.represent_mapping(
-        ruamel.yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-        data.items())
+        ruamel.yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items()
+    )
+
 
 def ordered_yaml_load(stream):
-    """ Load an OrderedDict object from a yaml stream."""
+    """Load an OrderedDict object from a yaml stream."""
     yaml = ruamel.yaml.YAML(typ="safe", pure=True)
     yaml.Constructor.add_constructor(
         ruamel.yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-        _ordered_constructor)
+        _ordered_constructor,
+    )
 
     return yaml.load(stream)
 

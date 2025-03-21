@@ -5,11 +5,13 @@
     "endpointPrefix":"pca-connector-ad",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"PcaConnectorAd",
     "serviceId":"Pca Connector Ad",
     "signatureVersion":"v4",
     "signingName":"pca-connector-ad",
-    "uid":"pca-connector-ad-2018-05-10"
+    "uid":"pca-connector-ad-2018-05-10",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateConnector":{
@@ -830,8 +832,11 @@
     "ConnectorStatusReason":{
       "type":"string",
       "enum":[
+        "CA_CERTIFICATE_REGISTRATION_FAILED",
         "DIRECTORY_ACCESS_DENIED",
         "INTERNAL_FAILURE",
+        "INSUFFICIENT_FREE_ADDRESSES",
+        "INVALID_SUBNET_IP_PROTOCOL",
         "PRIVATECA_ACCESS_DENIED",
         "PRIVATECA_RESOURCE_NOT_FOUND",
         "SECURITY_GROUP_NOT_IN_VPC",
@@ -909,7 +914,7 @@
         },
         "VpcInformation":{
           "shape":"VpcInformation",
-          "documentation":"<p>Security group IDs that describe the inbound and outbound rules.</p>"
+          "documentation":"<p>Information about your VPC and security groups used with the connector.</p>"
         }
       }
     },
@@ -1563,6 +1568,13 @@
       "fault":true,
       "retryable":{"throttling":false}
     },
+    "IpAddressType":{
+      "type":"string",
+      "enum":[
+        "IPV4",
+        "DUALSTACK"
+      ]
+    },
     "KeySpec":{
       "type":"string",
       "enum":[
@@ -2120,6 +2132,7 @@
         "DIRECTORY_NOT_REACHABLE",
         "DIRECTORY_RESOURCE_NOT_FOUND",
         "SPN_EXISTS_ON_DIFFERENT_AD_OBJECT",
+        "SPN_LIMIT_EXCEEDED",
         "INTERNAL_FAILURE"
       ]
     },
@@ -2777,6 +2790,7 @@
       "type":"string",
       "enum":[
         "FIELD_VALIDATION_FAILED",
+        "INVALID_CA_SUBJECT",
         "INVALID_PERMISSION",
         "INVALID_STATE",
         "MISMATCHED_CONNECTOR",
@@ -2824,6 +2838,10 @@
       "type":"structure",
       "required":["SecurityGroupIds"],
       "members":{
+        "IpAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The VPC IP address type.</p>"
+        },
         "SecurityGroupIds":{
           "shape":"SecurityGroupIdList",
           "documentation":"<p>The security groups used with the connector. You can use a maximum of 4 security groups with a connector.</p>"

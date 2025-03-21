@@ -34,7 +34,8 @@ class UIPrompter(Prompter):
                 return selectmenu.select_menu(choices)
             else:
                 response = selectmenu.select_menu(
-                    choices, display_format=self._display_text)
+                    choices, display_format=self._display_text
+                )
                 result = response['actual_value']
                 return result
 
@@ -52,8 +53,7 @@ class FileCompleter(Completer):
             for child in sorted(children):
                 if child.startswith(partial):
                     result = os.path.join(dirname, child)
-                    yield Completion(result,
-                                     start_position=-len(result))
+                    yield Completion(result, start_position=-len(result))
         except OSError:
             return
 
@@ -64,4 +64,5 @@ class UIFilePrompter(object):
 
     def prompt(self, display_text):
         return prompt_toolkit.prompt(
-            '%s: ' % display_text, completer=self._completer)
+            '%s: ' % display_text, completer=self._completer
+        )

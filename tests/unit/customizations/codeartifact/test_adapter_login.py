@@ -4,20 +4,26 @@ import re
 import signal
 import stat
 import subprocess
-
-from datetime import datetime
-from dateutil.tz import tzlocal, tzutc
-from dateutil.relativedelta import relativedelta
-
 from configparser import RawConfigParser
+from datetime import datetime
 from urllib.parse import urlsplit
 
-from awscli.testutils import unittest, mock, FileCreator, skip_if_windows
+from dateutil.relativedelta import relativedelta
+from dateutil.tz import tzlocal, tzutc
+
 from awscli.compat import urlparse
 from awscli.customizations.codeartifact.login import (
-    BaseLogin, SwiftLogin, NuGetLogin, DotNetLogin, NpmLogin, PipLogin,
-    TwineLogin, get_relative_expiration_time, CommandFailedError
+    BaseLogin,
+    CommandFailedError,
+    DotNetLogin,
+    NpmLogin,
+    NuGetLogin,
+    PipLogin,
+    SwiftLogin,
+    TwineLogin,
+    get_relative_expiration_time,
 )
+from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 
 
 class TestBaseLogin(unittest.TestCase):
@@ -27,21 +33,25 @@ class TestBaseLogin(unittest.TestCase):
         self.package_format = 'npm'
         self.repository = 'repository'
         self.auth_token = 'auth-token'
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
-                           + relativedelta(minutes=9)).replace(microsecond=0)
-        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
-            'a2z.com/{format}/{repository}/'.format(
-                domain=self.domain,
-                domainOwner=self.domain_owner,
-                format=self.package_format,
-                repository=self.repository
-            )
+        self.expiration = (
+            datetime.now(tzlocal())
+            + relativedelta(hours=10)
+            + relativedelta(minutes=9)
+        ).replace(microsecond=0)
+        self.endpoint = (
+            f'https://{self.domain}-{self.domain_owner}.codeartifact.aws.'
+            f'a2z.com/{self.package_format}/{self.repository}/'
+        )
 
         self.subprocess_utils = mock.Mock()
 
         self.test_subject = BaseLogin(
-            self.auth_token, self.expiration, self.endpoint,
-            self.domain, self.repository, self.subprocess_utils
+            self.auth_token,
+            self.expiration,
+            self.endpoint,
+            self.domain,
+            self.repository,
+            self.subprocess_utils,
         )
 
     def test_login(self):
@@ -50,22 +60,20 @@ class TestBaseLogin(unittest.TestCase):
 
     def test_get_commands(self):
         with self.assertRaises(NotImplementedError):
-            self.test_subject.get_commands(
-                self.endpoint, self.auth_token
-            )
+            self.test_subject.get_commands(self.endpoint, self.auth_token)
 
     def test_run_commands_command_failed(self):
         error_to_be_caught = subprocess.CalledProcessError(
             returncode=1,
             cmd=['cmd'],
             output=None,
-            stderr=b'Command error message.'
+            stderr=b'Command error message.',
         )
         self.subprocess_utils.run.side_effect = error_to_be_caught
         with self.assertRaisesRegex(
             CommandFailedError,
             rf"{re.escape(str(error_to_be_caught))}"
-            rf" Stderr from command:\nCommand error message."
+            rf" Stderr from command:\nCommand error message.",
         ):
             self.test_subject._run_commands('tool', ['cmd'])
 
@@ -74,13 +82,15 @@ class TestBaseLogin(unittest.TestCase):
             returncode=1,
             cmd=['cmd', 'with', 'auth-token', 'present'],
             output=None,
-            stderr=b'Command error message.'
+            stderr=b'Command error message.',
         )
         self.subprocess_utils.run.side_effect = error_to_be_caught
         with self.assertRaisesRegex(
-                CommandFailedError,
-                (rf"(?=.*cmd)(?=.*with)(?!.*auth-token)(?=.*present)"
-                 rf"(?=.*Stderr from command:\nCommand error message.)")
+            CommandFailedError,
+            (
+                r"(?=.*cmd)(?=.*with)(?!.*auth-token)(?=.*present)"
+                r"(?=.*Stderr from command:\nCommand error message.)"
+            ),
         ):
             self.test_subject._run_commands('tool', ['cmd'])
 
@@ -106,7 +116,6 @@ def handle_timeout(signum, frame, test_name):
 
 
 class TestSwiftLogin(unittest.TestCase):
-
     def setUp(self):
         self.domain = 'domain'
         self.domain_owner = 'domain-owner'
@@ -114,14 +123,18 @@ class TestSwiftLogin(unittest.TestCase):
         self.repository = 'repository'
         self.auth_token = 'auth-token'
         self.namespace = 'namespace'
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
-                           + relativedelta(minutes=9)).replace(microsecond=0)
-        self.endpoint = f'https://{self.domain}-{self.domain_owner}.codeartifact' \
-                        f'.aws.a2z.com/{self.package_format}/{self.repository}/'
+        self.expiration = (
+            datetime.now(tzlocal())
+            + relativedelta(hours=10)
+            + relativedelta(minutes=9)
+        ).replace(microsecond=0)
+        self.endpoint = (
+            f'https://{self.domain}-{self.domain_owner}.codeartifact'
+            f'.aws.a2z.com/{self.package_format}/{self.repository}/'
+        )
         self.hostname = urlparse.urlparse(self.endpoint).hostname
         self.new_entry = SwiftLogin.DEFAULT_NETRC_FMT.format(
-            hostname=self.hostname,
-            auth_token=self.auth_token
+            hostname=self.hostname, auth_token=self.auth_token
         )
 
         self.file_creator = FileCreator()
@@ -136,19 +149,29 @@ class TestSwiftLogin(unittest.TestCase):
         self.base_command = ['swift', 'package-registry', 'set', self.endpoint]
         self.macos_commands = [
             self.base_command[:],
-            ['swift', 'package-registry', 'login', self.endpoint + 'login',
-             '--token', self.auth_token]
+            [
+                'swift',
+                'package-registry',
+                'login',
+                self.endpoint + 'login',
+                '--token',
+                self.auth_token,
+            ],
         ]
         self.non_macos_commands = [
             self.base_command[:],
-            ['swift', 'package-registry', 'login', self.endpoint + 'login']
+            ['swift', 'package-registry', 'login', self.endpoint + 'login'],
         ]
 
         self.subprocess_utils = mock.Mock()
 
         self.test_subject = SwiftLogin(
-            self.auth_token, self.expiration, self.endpoint,
-            self.domain, self.repository, self.subprocess_utils
+            self.auth_token,
+            self.expiration,
+            self.endpoint,
+            self.domain,
+            self.repository,
+            self.subprocess_utils,
         )
 
     def tearDown(self):
@@ -156,7 +179,7 @@ class TestSwiftLogin(unittest.TestCase):
         self.file_creator.remove_all()
 
     def _assert_netrc_has_expected_content(self, expected_contents):
-        with open(self.test_netrc_path, 'r') as file:
+        with open(self.test_netrc_path) as file:
             actual_contents = file.read()
             self.assertEqual(expected_contents, actual_contents)
 
@@ -167,24 +190,22 @@ class TestSwiftLogin(unittest.TestCase):
         self.assertTrue(stat.S_IWUSR & file_mode)
 
     def test_get_netrc_path(self):
-        self.assertEqual(
-            SwiftLogin.get_netrc_path(),
-            self.test_netrc_path
-        )
+        self.assertEqual(SwiftLogin.get_netrc_path(), self.test_netrc_path)
 
     def test_regex_only_match_escaped_hostname(self):
         pattern = re.compile(
             SwiftLogin.NETRC_REGEX_FMT.format(
                 escaped_hostname=re.escape(self.hostname)
             ),
-            re.M
+            re.M,
         )
-        bad_endpoint = f'https://{self.domain}-{self.domain_owner}-codeartifact' \
-                          f'-aws-a2z-com/{self.package_format}/{self.repository}/'
+        bad_endpoint = (
+            f'https://{self.domain}-{self.domain_owner}-codeartifact'
+            f'-aws-a2z-com/{self.package_format}/{self.repository}/'
+        )
         bad_hostname = urlparse.urlparse(bad_endpoint).hostname
         bad_entry = SwiftLogin.DEFAULT_NETRC_FMT.format(
-            hostname=bad_hostname,
-            auth_token=self.auth_token
+            hostname=bad_hostname, auth_token=self.auth_token
         )
         self.assertTrue(pattern.match(self.new_entry))
         self.assertFalse(pattern.match(bad_entry))
@@ -192,26 +213,20 @@ class TestSwiftLogin(unittest.TestCase):
     def test_create_netrc_if_not_exist(self):
         self.assertFalse(os.path.exists(self.test_netrc_path))
         self.test_subject._update_netrc_entry(
-            self.hostname,
-            'a new entry',
-            self.test_netrc_path
+            self.hostname, 'a new entry', self.test_netrc_path
         )
         self.assertTrue(os.path.exists(self.test_netrc_path))
         self._assert_netrc_has_expected_permissions()
         self._assert_netrc_has_expected_content('a new entry\n')
 
     def test_replacement_token_has_backslash(self):
-        existing_content = (
-            f'machine {self.hostname} login token password expired-auth-token\n'
-        )
+        existing_content = f'machine {self.hostname} login token password expired-auth-token\n'
         with open(self.test_netrc_path, 'w+') as f:
             f.write(existing_content)
         self.test_subject.auth_token = r'new-token_.\1\g<entry_start>\n\w'
         # make sure it uses re.sub() to replace the token
         self.test_subject._update_netrc_entry(
-            self.hostname,
-            '',
-            self.test_netrc_path
+            self.hostname, '', self.test_netrc_path
         )
         self.assertTrue(os.path.exists(self.test_netrc_path))
         self._assert_netrc_has_expected_content(
@@ -219,17 +234,14 @@ class TestSwiftLogin(unittest.TestCase):
         )
 
     def test_update_netrc_with_existing_entry(self):
-        existing_content = \
-            f'machine {self.hostname} login token password expired-auth-token\n'
+        existing_content = f'machine {self.hostname} login token password expired-auth-token\n'
 
         expected_content = f'{self.new_entry}\n'
         with open(self.test_netrc_path, 'w+') as f:
             f.write(existing_content)
 
         self.test_subject._update_netrc_entry(
-            self.hostname,
-            self.new_entry,
-            self.test_netrc_path
+            self.hostname, self.new_entry, self.test_netrc_path
         )
         self._assert_netrc_has_expected_content(expected_content)
 
@@ -249,9 +261,7 @@ class TestSwiftLogin(unittest.TestCase):
             f.write(existing_content)
 
         self.test_subject._update_netrc_entry(
-            self.hostname,
-            self.new_entry,
-            self.test_netrc_path
+            self.hostname, self.new_entry, self.test_netrc_path
         )
         self._assert_netrc_has_expected_content(expected_content)
 
@@ -259,16 +269,13 @@ class TestSwiftLogin(unittest.TestCase):
         existing_content = 'machine host login user password 1234'
 
         expected_content = (
-            f'machine host login user password 1234\n'
-            f'{self.new_entry}\n'
+            f'machine host login user password 1234\n' f'{self.new_entry}\n'
         )
         with open(self.test_netrc_path, 'w+') as f:
             f.write(existing_content)
 
         self.test_subject._update_netrc_entry(
-            self.hostname,
-            self.new_entry,
-            self.test_netrc_path
+            self.hostname, self.new_entry, self.test_netrc_path
         )
         self._assert_netrc_has_expected_content(expected_content)
 
@@ -276,22 +283,19 @@ class TestSwiftLogin(unittest.TestCase):
         existing_content = 'machine host login user password 1234\n'
 
         expected_content = (
-            f'machine host login user password 1234\n'
-            f'{self.new_entry}\n'
+            f'machine host login user password 1234\n' f'{self.new_entry}\n'
         )
         with open(self.test_netrc_path, 'w+') as f:
             f.write(existing_content)
 
         self.test_subject._update_netrc_entry(
-            self.hostname,
-            self.new_entry,
-            self.test_netrc_path
+            self.hostname, self.new_entry, self.test_netrc_path
         )
         self._assert_netrc_has_expected_content(expected_content)
 
     def test_update_netrc_with_multiple_spaces_and_newlines(self):
         existing_content = (
-            f' machine   {self.hostname}\n' 
+            f' machine   {self.hostname}\n'
             f'   login token \n'
             f'password expired-auth-token  \n'
             f'\n'
@@ -312,9 +316,7 @@ class TestSwiftLogin(unittest.TestCase):
             f.write(existing_content)
 
         self.test_subject._update_netrc_entry(
-            self.hostname,
-            self.new_entry,
-            self.test_netrc_path
+            self.hostname, self.new_entry, self.test_netrc_path
         )
         self._assert_netrc_has_expected_content(expected_content)
 
@@ -323,17 +325,12 @@ class TestSwiftLogin(unittest.TestCase):
             f'machine {self.hostname} login token password expired-auth-token-1\n'
             f'machine {self.hostname} login token password expired-auth-token-2\n'
         )
-        expected_content = (
-            f'{self.new_entry}\n'
-            f'{self.new_entry}\n'
-        )
+        expected_content = f'{self.new_entry}\n' f'{self.new_entry}\n'
         with open(self.test_netrc_path, 'w+') as f:
             f.write(existing_content)
 
         self.test_subject._update_netrc_entry(
-            self.hostname,
-            self.new_entry,
-            self.test_netrc_path
+            self.hostname, self.new_entry, self.test_netrc_path
         )
         self._assert_netrc_has_expected_content(expected_content)
 
@@ -341,11 +338,8 @@ class TestSwiftLogin(unittest.TestCase):
     def test_login_macos(self):
         self.test_subject.login()
         expected_calls = [
-            mock.call(
-                command,
-                capture_output=True,
-                check=True
-            ) for command in self.macos_commands
+            mock.call(command, capture_output=True, check=True)
+            for command in self.macos_commands
         ]
         self.subprocess_utils.run.assert_has_calls(
             expected_calls, any_order=True
@@ -355,21 +349,17 @@ class TestSwiftLogin(unittest.TestCase):
     def test_login_non_macos(self):
         self.test_subject.login()
         expected_calls = [
-            mock.call(
-                command,
-                capture_output=True,
-                check=True
-            ) for command in self.non_macos_commands
+            mock.call(command, capture_output=True, check=True)
+            for command in self.non_macos_commands
         ]
         self.subprocess_utils.run.assert_has_calls(
             expected_calls, any_order=True
         )
 
     def test_login_swift_tooling_error(self):
-        self.subprocess_utils.run.side_effect = \
-            subprocess.CalledProcessError(
-                returncode=1, cmd='swift command', stderr=b''
-            )
+        self.subprocess_utils.run.side_effect = subprocess.CalledProcessError(
+            returncode=1, cmd='swift command', stderr=b''
+        )
         with self.assertRaises(CommandFailedError):
             self.test_subject.login()
 
@@ -378,8 +368,8 @@ class TestSwiftLogin(unittest.TestCase):
             errno.ENOENT, 'not found error'
         )
         with self.assertRaisesRegex(
-                ValueError,
-                'swift was not found. Please verify installation.'):
+            ValueError, 'swift was not found. Please verify installation.'
+        ):
             self.test_subject.login()
 
     def test_get_scope(self):
@@ -398,7 +388,7 @@ class TestSwiftLogin(unittest.TestCase):
 
     def test_get_scope_invalid_length(self):
         with self.assertRaises(ValueError):
-            self.test_subject.get_scope("a"*40)
+            self.test_subject.get_scope("a" * 40)
 
     @mock.patch('awscli.customizations.codeartifact.login.is_macos', True)
     def test_get_commands_macos(self):
@@ -461,144 +451,180 @@ Registered Sources:
         self.package_format = 'nuget'
         self.repository = 'repository'
         self.auth_token = 'auth-token'
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
-                           + relativedelta(minutes=9)).replace(microsecond=0)
-        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
-            'a2z.com/{format}/{repository}/'.format(
-                domain=self.domain,
-                domainOwner=self.domain_owner,
-                format=self.package_format,
-                repository=self.repository
-            )
+        self.expiration = (
+            datetime.now(tzlocal())
+            + relativedelta(hours=10)
+            + relativedelta(minutes=9)
+        ).replace(microsecond=0)
+        self.endpoint = (
+            f'https://{self.domain}-{self.domain_owner}.codeartifact.aws.'
+            f'a2z.com/{self.package_format}/{self.repository}/'
+        )
 
         self.nuget_index_url = self._NUGET_INDEX_URL_FMT.format(
             endpoint=self.endpoint,
         )
         self.source_name = self.domain + '/' + self.repository
         self.list_operation_command = [
-            'nuget', 'sources', 'list',
-            '-format', 'detailed',
+            'nuget',
+            'sources',
+            'list',
+            '-format',
+            'detailed',
         ]
         self.add_operation_command = [
-            'nuget', 'sources', 'add',
-            '-name', self.source_name,
-            '-source', self.nuget_index_url,
-            '-username', 'aws',
-            '-password', self.auth_token
+            'nuget',
+            'sources',
+            'add',
+            '-name',
+            self.source_name,
+            '-source',
+            self.nuget_index_url,
+            '-username',
+            'aws',
+            '-password',
+            self.auth_token,
         ]
         self.update_operation_command = [
-            'nuget', 'sources', 'update',
-            '-name', self.source_name,
-            '-source', self.nuget_index_url,
-            '-username', 'aws',
-            '-password', self.auth_token
+            'nuget',
+            'sources',
+            'update',
+            '-name',
+            self.source_name,
+            '-source',
+            self.nuget_index_url,
+            '-username',
+            'aws',
+            '-password',
+            self.auth_token,
         ]
 
         self.subprocess_utils = mock.Mock()
 
         self.test_subject = NuGetLogin(
-            self.auth_token, self.expiration, self.endpoint,
-            self.domain, self.repository, self.subprocess_utils
+            self.auth_token,
+            self.expiration,
+            self.endpoint,
+            self.domain,
+            self.repository,
+            self.subprocess_utils,
         )
 
     def test_login(self):
-        self.subprocess_utils.check_output.return_value = \
+        self.subprocess_utils.check_output.return_value = (
             self._NUGET_SOURCES_LIST_RESPONSE
+        )
         self.test_subject.login()
         self.subprocess_utils.check_output.assert_any_call(
-            self.list_operation_command,
-            stderr=self.subprocess_utils.PIPE
+            self.list_operation_command, stderr=self.subprocess_utils.PIPE
         )
         self.subprocess_utils.run.assert_called_with(
-            self.add_operation_command,
-            capture_output=True,
-            check=True
+            self.add_operation_command, capture_output=True, check=True
         )
 
     def test_login_dry_run(self):
-        self.subprocess_utils.check_output.return_value = \
+        self.subprocess_utils.check_output.return_value = (
             self._NUGET_SOURCES_LIST_RESPONSE
+        )
         self.test_subject.login(dry_run=True)
         self.subprocess_utils.check_output.assert_called_once_with(
             ['nuget', 'sources', 'list', '-format', 'detailed'],
-            stderr=self.subprocess_utils.PIPE
+            stderr=self.subprocess_utils.PIPE,
         )
 
     def test_login_old_nuget(self):
-        self.subprocess_utils.check_output.return_value = \
+        self.subprocess_utils.check_output.return_value = (
             self._NUGET_SOURCES_LIST_RESPONSE_WITH_SPACE
+        )
         self.test_subject.login()
         self.subprocess_utils.check_output.assert_any_call(
-            self.list_operation_command,
-            stderr=self.subprocess_utils.PIPE
+            self.list_operation_command, stderr=self.subprocess_utils.PIPE
         )
         self.subprocess_utils.run.assert_called_with(
-            self.add_operation_command,
-            capture_output=True,
-            check=True
+            self.add_operation_command, capture_output=True, check=True
         )
 
     def test_login_dry_run_old_nuget(self):
-        self.subprocess_utils.check_output.return_value = \
+        self.subprocess_utils.check_output.return_value = (
             self._NUGET_SOURCES_LIST_RESPONSE_WITH_SPACE
+        )
         self.test_subject.login(dry_run=True)
         self.subprocess_utils.check_output.assert_called_once_with(
             ['nuget', 'sources', 'list', '-format', 'detailed'],
-            stderr=self.subprocess_utils.PIPE
+            stderr=self.subprocess_utils.PIPE,
         )
 
     def test_login_source_name_already_exists(self):
-        list_response = 'Registered Sources:\n' \
-                        '  1.  ' + self.source_name + ' [ENABLED]\n' \
-                        '      https://source.com/index.json'
-        self.subprocess_utils.check_output.return_value = \
-            list_response.encode('utf-8')
+        list_response = (
+            'Registered Sources:\n'
+            '  1.  ' + self.source_name + ' [ENABLED]\n'
+            '      https://source.com/index.json'
+        )
+        self.subprocess_utils.check_output.return_value = list_response.encode(
+            'utf-8'
+        )
         self.test_subject.login()
         self.subprocess_utils.run.assert_called_with(
-            self.update_operation_command,
-            capture_output=True,
-            check=True
+            self.update_operation_command, capture_output=True, check=True
         )
 
     def test_login_source_url_already_exists_old_nuget(self):
         non_default_source_name = 'Source Name'
-        list_response = 'Registered Sources:\n' \
-                        '\n' \
-                        '  1. ' + non_default_source_name + ' [ENABLED]\n' \
-                                                            '      ' + self.nuget_index_url
-        self.subprocess_utils.check_output.return_value = \
-            list_response.encode('utf-8')
+        list_response = (
+            'Registered Sources:\n'
+            '\n'
+            '  1. ' + non_default_source_name + ' [ENABLED]\n'
+            '      ' + self.nuget_index_url
+        )
+        self.subprocess_utils.check_output.return_value = list_response.encode(
+            'utf-8'
+        )
         self.test_subject.login()
         self.subprocess_utils.run.assert_called_with(
             [
-                'nuget', 'sources', 'update',
-                '-name', non_default_source_name,
-                '-source', self.nuget_index_url,
-                '-username', 'aws',
-                '-password', self.auth_token
+                'nuget',
+                'sources',
+                'update',
+                '-name',
+                non_default_source_name,
+                '-source',
+                self.nuget_index_url,
+                '-username',
+                'aws',
+                '-password',
+                self.auth_token,
             ],
             capture_output=True,
-            check=True
+            check=True,
         )
 
     def test_login_source_url_already_exists(self):
         non_default_source_name = 'Source Name'
-        list_response = 'Registered Sources:\n' \
-                        '  1. ' + non_default_source_name + ' [ENABLED]\n' \
-                        '      ' + self.nuget_index_url
-        self.subprocess_utils.check_output.return_value = \
-            list_response.encode('utf-8')
+        list_response = (
+            'Registered Sources:\n'
+            '  1. ' + non_default_source_name + ' [ENABLED]\n'
+            '      ' + self.nuget_index_url
+        )
+        self.subprocess_utils.check_output.return_value = list_response.encode(
+            'utf-8'
+        )
         self.test_subject.login()
         self.subprocess_utils.run.assert_called_with(
             [
-                'nuget', 'sources', 'update',
-                '-name', non_default_source_name,
-                '-source', self.nuget_index_url,
-                '-username', 'aws',
-                '-password', self.auth_token
+                'nuget',
+                'sources',
+                'update',
+                '-name',
+                non_default_source_name,
+                '-source',
+                self.nuget_index_url,
+                '-username',
+                'aws',
+                '-password',
+                self.auth_token,
             ],
             capture_output=True,
-            check=True
+            check=True,
         )
 
     def test_login_nuget_not_installed(self):
@@ -606,23 +632,24 @@ Registered Sources:
             errno.ENOENT, 'not found error'
         )
         with self.assertRaisesRegex(
-                ValueError,
-                'nuget was not found. Please verify installation.'):
+            ValueError, 'nuget was not found. Please verify installation.'
+        ):
             self.test_subject.login()
 
     @skip_if_windows("Windows does not support signal.SIGALRM.")
     def test_login_nuget_sources_listed_with_backtracking(self):
-        self.subprocess_utils.check_output.return_value = \
+        self.subprocess_utils.check_output.return_value = (
             self._NUGET_SOURCES_LIST_RESPONSE_BACKTRACKING
+        )
         signal.signal(
             signal.SIGALRM,
-            lambda signum, frame: handle_timeout(signum, frame, self.id()))
+            lambda signum, frame: handle_timeout(signum, frame, self.id()),
+        )
         signal.alarm(10)
         self.test_subject.login()
         signal.alarm(0)
         self.subprocess_utils.check_output.assert_any_call(
-            self.list_operation_command,
-            stderr=self.subprocess_utils.PIPE
+            self.list_operation_command, stderr=self.subprocess_utils.PIPE
         )
 
 
@@ -656,144 +683,178 @@ to an 'HTTPS' source."""
         self.package_format = 'nuget'
         self.repository = 'repository'
         self.auth_token = 'auth-token'
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
-                           + relativedelta(minutes=9)).replace(microsecond=0)
-        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
-            'a2z.com/{format}/{repository}/'.format(
-                domain=self.domain,
-                domainOwner=self.domain_owner,
-                format=self.package_format,
-                repository=self.repository
-            )
+        self.expiration = (
+            datetime.now(tzlocal())
+            + relativedelta(hours=10)
+            + relativedelta(minutes=9)
+        ).replace(microsecond=0)
+        self.endpoint = (
+            f'https://{self.domain}-{self.domain_owner}.codeartifact.aws.'
+            f'a2z.com/{self.package_format}/{self.repository}/'
+        )
 
         self.nuget_index_url = self._NUGET_INDEX_URL_FMT.format(
             endpoint=self.endpoint,
         )
         self.source_name = self.domain + '/' + self.repository
         self.list_operation_command = [
-            'dotnet', 'nuget', 'list', 'source', '--format', 'detailed'
+            'dotnet',
+            'nuget',
+            'list',
+            'source',
+            '--format',
+            'detailed',
         ]
         self.add_operation_command_windows = [
-            'dotnet', 'nuget', 'add', 'source', self.nuget_index_url,
-            '--name', self.source_name,
-            '--username', 'aws',
-            '--password', self.auth_token
+            'dotnet',
+            'nuget',
+            'add',
+            'source',
+            self.nuget_index_url,
+            '--name',
+            self.source_name,
+            '--username',
+            'aws',
+            '--password',
+            self.auth_token,
         ]
         self.add_operation_command_non_windows = [
-            'dotnet', 'nuget', 'add', 'source', self.nuget_index_url,
-            '--name', self.source_name,
-            '--username', 'aws',
-            '--password', self.auth_token,
-            '--store-password-in-clear-text'
+            'dotnet',
+            'nuget',
+            'add',
+            'source',
+            self.nuget_index_url,
+            '--name',
+            self.source_name,
+            '--username',
+            'aws',
+            '--password',
+            self.auth_token,
+            '--store-password-in-clear-text',
         ]
         self.update_operation_command_windows = [
-            'dotnet', 'nuget', 'update', 'source', self.source_name,
-            '--source', self.nuget_index_url,
-            '--username', 'aws',
-            '--password', self.auth_token
+            'dotnet',
+            'nuget',
+            'update',
+            'source',
+            self.source_name,
+            '--source',
+            self.nuget_index_url,
+            '--username',
+            'aws',
+            '--password',
+            self.auth_token,
         ]
         self.update_operation_command_non_windows = [
-            'dotnet', 'nuget', 'update', 'source', self.source_name,
-            '--source', self.nuget_index_url,
-            '--username', 'aws',
-            '--password', self.auth_token,
-            '--store-password-in-clear-text'
+            'dotnet',
+            'nuget',
+            'update',
+            'source',
+            self.source_name,
+            '--source',
+            self.nuget_index_url,
+            '--username',
+            'aws',
+            '--password',
+            self.auth_token,
+            '--store-password-in-clear-text',
         ]
 
         self.subprocess_utils = mock.Mock()
 
         self.test_subject = DotNetLogin(
-            self.auth_token, self.expiration, self.endpoint,
-            self.domain, self.repository, self.subprocess_utils
+            self.auth_token,
+            self.expiration,
+            self.endpoint,
+            self.domain,
+            self.repository,
+            self.subprocess_utils,
         )
 
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', False)
     def test_login(self):
-        self.subprocess_utils.check_output.return_value = \
+        self.subprocess_utils.check_output.return_value = (
             self._NUGET_SOURCES_LIST_RESPONSE
+        )
         self.test_subject.login()
         self.subprocess_utils.check_output.assert_any_call(
-            self.list_operation_command,
-            stderr=self.subprocess_utils.PIPE
+            self.list_operation_command, stderr=self.subprocess_utils.PIPE
         )
         self.subprocess_utils.run.assert_called_with(
             self.add_operation_command_non_windows,
             capture_output=True,
-            check=True
+            check=True,
         )
 
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
     def test_login_on_windows(self):
-        self.subprocess_utils.check_output.return_value = \
+        self.subprocess_utils.check_output.return_value = (
             self._NUGET_SOURCES_LIST_RESPONSE
+        )
         self.test_subject.login()
         self.subprocess_utils.check_output.assert_any_call(
-            self.list_operation_command,
-            stderr=self.subprocess_utils.PIPE
+            self.list_operation_command, stderr=self.subprocess_utils.PIPE
         )
         self.subprocess_utils.run.assert_called_with(
-            self.add_operation_command_windows,
-            capture_output=True,
-            check=True
+            self.add_operation_command_windows, capture_output=True, check=True
         )
 
     def test_login_dry_run(self):
-        self.subprocess_utils.check_output.return_value = \
+        self.subprocess_utils.check_output.return_value = (
             self._NUGET_SOURCES_LIST_RESPONSE
+        )
         self.test_subject.login(dry_run=True)
         self.subprocess_utils.check_output.assert_called_once_with(
-            self.list_operation_command,
-            stderr=self.subprocess_utils.PIPE
+            self.list_operation_command, stderr=self.subprocess_utils.PIPE
         )
 
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', False)
     def test_login_sources_listed_with_extra_non_list_text(self):
-        self.subprocess_utils.check_output.return_value = \
+        self.subprocess_utils.check_output.return_value = (
             self._NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT
+        )
         self.test_subject.login()
         self.subprocess_utils.check_output.assert_any_call(
-            self.list_operation_command,
-            stderr=self.subprocess_utils.PIPE
+            self.list_operation_command, stderr=self.subprocess_utils.PIPE
         )
         self.subprocess_utils.run.assert_called_with(
             self.add_operation_command_non_windows,
             capture_output=True,
-            check=True
+            check=True,
         )
 
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
     def test_login_sources_listed_with_extra_non_list_text_on_windows(self):
-        self.subprocess_utils.check_output.return_value = \
+        self.subprocess_utils.check_output.return_value = (
             self._NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT
+        )
         self.test_subject.login()
         self.subprocess_utils.check_output.assert_any_call(
-            self.list_operation_command,
-            stderr=self.subprocess_utils.PIPE
+            self.list_operation_command, stderr=self.subprocess_utils.PIPE
         )
         self.subprocess_utils.run.assert_called_with(
-            self.add_operation_command_windows,
-            capture_output=True,
-            check=True
+            self.add_operation_command_windows, capture_output=True, check=True
         )
 
     def test_login_sources_listed_with_extra_non_list_text_dry_run(self):
-        self.subprocess_utils.check_output.return_value = \
-                self._NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT
+        self.subprocess_utils.check_output.return_value = (
+            self._NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT
+        )
         self.test_subject.login(dry_run=True)
         self.subprocess_utils.check_output.assert_called_once_with(
-            self.list_operation_command,
-            stderr=self.subprocess_utils.PIPE
+            self.list_operation_command, stderr=self.subprocess_utils.PIPE
         )
-
 
     @skip_if_windows("Windows does not support signal.SIGALRM.")
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', False)
     def test_login_dotnet_sources_listed_with_backtracking(self):
-        self.subprocess_utils.check_output.return_value = \
+        self.subprocess_utils.check_output.return_value = (
             self._NUGET_SOURCES_LIST_RESPONSE_BACKTRACKING
+        )
         signal.signal(
             signal.SIGALRM,
-            lambda signum, frame: handle_timeout(signum, frame, self.id()))
+            lambda signum, frame: handle_timeout(signum, frame, self.id()),
+        )
         signal.alarm(10)
         self.test_subject.login()
         signal.alarm(0)
@@ -801,61 +862,79 @@ to an 'HTTPS' source."""
     @skip_if_windows("Windows does not support signal.SIGALRM.")
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
     def test_login_dotnet_sources_listed_with_backtracking_windows(self):
-        self.subprocess_utils.check_output.return_value = \
+        self.subprocess_utils.check_output.return_value = (
             self._NUGET_SOURCES_LIST_RESPONSE_BACKTRACKING
+        )
         signal.signal(
             signal.SIGALRM,
-            lambda signum, frame: handle_timeout(signum, frame, self.id()))
+            lambda signum, frame: handle_timeout(signum, frame, self.id()),
+        )
         signal.alarm(10)
         self.test_subject.login()
         signal.alarm(0)
 
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', False)
     def test_login_source_name_already_exists(self):
-        list_response = 'Registered Sources:\n' \
-                        '  1.  ' + self.source_name + ' [ENABLED]\n' \
-                        '      https://source.com/index.json'
-        self.subprocess_utils.check_output.return_value = \
-            list_response.encode('utf-8')
+        list_response = (
+            'Registered Sources:\n'
+            '  1.  ' + self.source_name + ' [ENABLED]\n'
+            '      https://source.com/index.json'
+        )
+        self.subprocess_utils.check_output.return_value = list_response.encode(
+            'utf-8'
+        )
         self.test_subject.login()
         self.subprocess_utils.run.assert_called_with(
             self.update_operation_command_non_windows,
             capture_output=True,
-            check=True
+            check=True,
         )
 
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
     def test_login_source_name_already_exists_on_windows(self):
-        list_response = 'Registered Sources:\n' \
-                        '  1.  ' + self.source_name + ' [ENABLED]\n' \
-                        '      https://source.com/index.json'
-        self.subprocess_utils.check_output.return_value = \
-            list_response.encode('utf-8')
+        list_response = (
+            'Registered Sources:\n'
+            '  1.  ' + self.source_name + ' [ENABLED]\n'
+            '      https://source.com/index.json'
+        )
+        self.subprocess_utils.check_output.return_value = list_response.encode(
+            'utf-8'
+        )
         self.test_subject.login()
         self.subprocess_utils.run.assert_called_with(
             self.update_operation_command_windows,
             capture_output=True,
-            check=True
+            check=True,
         )
 
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
     def test_login_source_url_already_exists(self):
         non_default_source_name = 'Source Name'
-        list_response = 'Registered Sources:\n' \
-                        '  1. ' + non_default_source_name + ' [ENABLED]\n' \
-                        '      ' + self.nuget_index_url
-        self.subprocess_utils.check_output.return_value = \
-            list_response.encode('utf-8')
+        list_response = (
+            'Registered Sources:\n'
+            '  1. ' + non_default_source_name + ' [ENABLED]\n'
+            '      ' + self.nuget_index_url
+        )
+        self.subprocess_utils.check_output.return_value = list_response.encode(
+            'utf-8'
+        )
         self.test_subject.login()
         self.subprocess_utils.run.assert_called_with(
             [
-                'dotnet', 'nuget', 'update', 'source', non_default_source_name,
-                '--source', self.nuget_index_url,
-                '--username', 'aws',
-                '--password', self.auth_token
+                'dotnet',
+                'nuget',
+                'update',
+                'source',
+                non_default_source_name,
+                '--source',
+                self.nuget_index_url,
+                '--username',
+                'aws',
+                '--password',
+                self.auth_token,
             ],
             capture_output=True,
-            check=True
+            check=True,
         )
 
     def test_login_dotnet_not_installed(self):
@@ -863,13 +942,12 @@ to an 'HTTPS' source."""
             errno.ENOENT, 'not found error'
         )
         with self.assertRaisesRegex(
-                ValueError,
-                'dotnet was not found. Please verify installation.'):
+            ValueError, 'dotnet was not found. Please verify installation.'
+        ):
             self.test_subject.login()
 
 
 class TestNpmLogin(unittest.TestCase):
-
     NPM_CMD = NpmLogin.NPM_CMD
 
     def setUp(self):
@@ -879,27 +957,23 @@ class TestNpmLogin(unittest.TestCase):
         self.repository = 'repository'
         self.auth_token = 'auth-token'
         self.namespace = 'namespace'
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
-                           + relativedelta(minutes=9)).replace(microsecond=0)
-        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
-            'a2z.com/{format}/{repository}/'.format(
-                domain=self.domain,
-                domainOwner=self.domain_owner,
-                format=self.package_format,
-                repository=self.repository
-            )
+        self.expiration = (
+            datetime.now(tzlocal())
+            + relativedelta(hours=10)
+            + relativedelta(minutes=9)
+        ).replace(microsecond=0)
+        self.endpoint = (
+            f'https://{self.domain}-{self.domain_owner}.codeartifact.aws.'
+            f'a2z.com/{self.package_format}/{self.repository}/'
+        )
 
         repo_uri = urlsplit(self.endpoint)
-        always_auth_config = '//{}{}:always-auth'.format(
-            repo_uri.netloc, repo_uri.path
-        )
-        auth_token_config = '//{}{}:_authToken'.format(
-            repo_uri.netloc, repo_uri.path
-        )
+        always_auth_config = f'//{repo_uri.netloc}{repo_uri.path}:always-auth'
+        auth_token_config = f'//{repo_uri.netloc}{repo_uri.path}:_authToken'
         self.commands = []
-        self.commands.append([
-            self.NPM_CMD, 'config', 'set', 'registry', self.endpoint
-        ])
+        self.commands.append(
+            [self.NPM_CMD, 'config', 'set', 'registry', self.endpoint]
+        )
         self.commands.append(
             [self.NPM_CMD, 'config', 'set', always_auth_config, 'true']
         )
@@ -910,18 +984,19 @@ class TestNpmLogin(unittest.TestCase):
         self.subprocess_utils = mock.Mock()
 
         self.test_subject = NpmLogin(
-            self.auth_token, self.expiration, self.endpoint,
-            self.domain, self.repository, self.subprocess_utils
+            self.auth_token,
+            self.expiration,
+            self.endpoint,
+            self.domain,
+            self.repository,
+            self.subprocess_utils,
         )
 
     def test_login(self):
         self.test_subject.login()
         expected_calls = [
-            mock.call(
-                command,
-                capture_output=True,
-                check=True
-            ) for command in self.commands
+            mock.call(command, capture_output=True, check=True)
+            for command in self.commands
         ]
         self.subprocess_utils.run.assert_has_calls(
             expected_calls, any_order=True
@@ -935,13 +1010,11 @@ class TestNpmLogin(unittest.TestCase):
         exit code. This is to make sure that login ignores that error and all
         other commands executes successfully.
         """
+
         def side_effect(command, capture_output, check):
             """Set side_effect for always-auth config setting command"""
             if any('always-auth' in arg for arg in command):
-                raise subprocess.CalledProcessError(
-                    returncode=1,
-                    cmd=command
-                )
+                raise subprocess.CalledProcessError(returncode=1, cmd=command)
 
             return mock.DEFAULT
 
@@ -949,11 +1022,9 @@ class TestNpmLogin(unittest.TestCase):
         expected_calls = []
 
         for command in self.commands:
-            expected_calls.append(mock.call(
-                command,
-                capture_output=True,
-                check=True
-            ))
+            expected_calls.append(
+                mock.call(command, capture_output=True, check=True)
+            )
         self.test_subject.login()
 
         self.subprocess_utils.run.assert_has_calls(
@@ -961,7 +1032,7 @@ class TestNpmLogin(unittest.TestCase):
         )
 
     def test_get_scope(self):
-        expected_value = '@{}'.format(self.namespace)
+        expected_value = f'@{self.namespace}'
         scope = self.test_subject.get_scope(self.namespace)
         self.assertEqual(scope, expected_value)
 
@@ -972,11 +1043,11 @@ class TestNpmLogin(unittest.TestCase):
 
     def test_get_scope_invalid_name(self):
         with self.assertRaises(ValueError):
-            self.test_subject.get_scope('.{}'.format(self.namespace))
+            self.test_subject.get_scope(f'.{self.namespace}')
 
     def test_get_scope_without_prefix(self):
-        expected_value = '@{}'.format(self.namespace)
-        scope = self.test_subject.get_scope('@{}'.format(self.namespace))
+        expected_value = f'@{self.namespace}'
+        scope = self.test_subject.get_scope(f'@{self.namespace}')
         self.assertEqual(scope, expected_value)
 
     def test_get_commands(self):
@@ -989,7 +1060,7 @@ class TestNpmLogin(unittest.TestCase):
         commands = self.test_subject.get_commands(
             self.endpoint, self.auth_token, scope=self.namespace
         )
-        self.commands[0][3] = '{}:registry'.format(self.namespace)
+        self.commands[0][3] = f'{self.namespace}:registry'
         self.assertCountEqual(commands, self.commands)
 
     def test_login_dry_run(self):
@@ -998,7 +1069,6 @@ class TestNpmLogin(unittest.TestCase):
 
 
 class TestPipLogin(unittest.TestCase):
-
     PIP_INDEX_URL_FMT = PipLogin.PIP_INDEX_URL_FMT
 
     def setUp(self):
@@ -1007,29 +1077,33 @@ class TestPipLogin(unittest.TestCase):
         self.package_format = 'pip'
         self.repository = 'repository'
         self.auth_token = 'auth-token'
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(years=1)
-                           + relativedelta(months=9)).replace(microsecond=0)
-        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
-            'a2z.com/{format}/{repository}/'.format(
-                domain=self.domain,
-                domainOwner=self.domain_owner,
-                format=self.package_format,
-                repository=self.repository
-            )
+        self.expiration = (
+            datetime.now(tzlocal())
+            + relativedelta(years=1)
+            + relativedelta(months=9)
+        ).replace(microsecond=0)
+        self.endpoint = (
+            f'https://{self.domain}-{self.domain_owner}.codeartifact.aws.'
+            f'a2z.com/{self.package_format}/{self.repository}/'
+        )
 
         repo_uri = urlsplit(self.endpoint)
         self.pip_index_url = self.PIP_INDEX_URL_FMT.format(
             scheme=repo_uri.scheme,
             auth_token=self.auth_token,
             netloc=repo_uri.netloc,
-            path=repo_uri.path
+            path=repo_uri.path,
         )
 
         self.subprocess_utils = mock.Mock()
 
         self.test_subject = PipLogin(
-            self.auth_token, self.expiration, self.endpoint,
-            self.domain, self.repository, self.subprocess_utils
+            self.auth_token,
+            self.expiration,
+            self.endpoint,
+            self.domain,
+            self.repository,
+            self.subprocess_utils,
         )
 
     def test_get_commands(self):
@@ -1046,7 +1120,7 @@ class TestPipLogin(unittest.TestCase):
         self.subprocess_utils.run.assert_called_once_with(
             ['pip', 'config', 'set', 'global.index-url', self.pip_index_url],
             capture_output=True,
-            check=True
+            check=True,
         )
 
     def test_login_dry_run(self):
@@ -1055,7 +1129,6 @@ class TestPipLogin(unittest.TestCase):
 
 
 class TestTwineLogin(unittest.TestCase):
-
     DEFAULT_PYPI_RC_FMT = TwineLogin.DEFAULT_PYPI_RC_FMT
 
     def setUp(self):
@@ -1065,18 +1138,17 @@ class TestTwineLogin(unittest.TestCase):
         self.package_format = 'pip'
         self.repository = 'repository'
         self.auth_token = 'auth-token'
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(years=1)
-                           + relativedelta(months=9)).replace(microsecond=0)
-        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
-            'a2z.com/{format}/{repository}/'.format(
-                domain=self.domain,
-                domainOwner=self.domain_owner,
-                format=self.package_format,
-                repository=self.repository
-            )
+        self.expiration = (
+            datetime.now(tzlocal())
+            + relativedelta(years=1)
+            + relativedelta(months=9)
+        ).replace(microsecond=0)
+        self.endpoint = (
+            f'https://{self.domain}-{self.domain_owner}.codeartifact.aws.'
+            f'a2z.com/{self.package_format}/{self.repository}/'
+        )
         self.default_pypi_rc = self.DEFAULT_PYPI_RC_FMT.format(
-            repository_endpoint=self.endpoint,
-            auth_token=self.auth_token
+            repository_endpoint=self.endpoint, auth_token=self.auth_token
         )
         self.subprocess_utils = mock.Mock()
         self.test_pypi_rc_path = self.file_creator.full_path('pypirc')
@@ -1090,7 +1162,7 @@ class TestTwineLogin(unittest.TestCase):
             self.domain,
             self.repository,
             self.subprocess_utils,
-            self.test_pypi_rc_path
+            self.test_pypi_rc_path,
         )
 
     def tearDown(self):
@@ -1107,8 +1179,7 @@ class TestTwineLogin(unittest.TestCase):
         index_servers = pypi_rc.get('distutils', 'index-servers')
         index_servers = [
             index_server.strip()
-            for index_server
-            in index_servers.split('\n')
+            for index_server in index_servers.split('\n')
             if index_server.strip() != ''
         ]
         self.assertIn(server, index_servers)
@@ -1131,7 +1202,7 @@ class TestTwineLogin(unittest.TestCase):
     def test_get_pypi_rc_path(self):
         self.assertEqual(
             TwineLogin.get_pypi_rc_path(),
-            os.path.join(os.path.expanduser("~"), ".pypirc")
+            os.path.join(os.path.expanduser("~"), ".pypirc"),
         )
 
     def test_login_pypi_rc_not_found_defaults_set(self):
@@ -1145,7 +1216,7 @@ class TestTwineLogin(unittest.TestCase):
             server='codeartifact',
             repo_url=self.endpoint,
             username='aws',
-            password=self.auth_token
+            password=self.auth_token,
         )
 
     def test_login_dry_run(self):
@@ -1184,7 +1255,7 @@ password: testpassword
             server='codeartifact',
             repo_url=self.endpoint,
             username='aws',
-            password=self.auth_token
+            password=self.auth_token,
         )
 
         self._assert_pypi_rc_has_expected_content(
@@ -1192,7 +1263,7 @@ password: testpassword
             server='pypi',
             repo_url='http://www.python.org/pypi/',
             username='monty',
-            password='JgCXIr5xGG'
+            password='JgCXIr5xGG',
         )
 
         self._assert_pypi_rc_has_expected_content(
@@ -1200,7 +1271,7 @@ password: testpassword
             server='test',
             repo_url='http://example.com/test/',
             username='testusername',
-            password='testpassword'
+            password='testpassword',
         )
 
     def test_login_existing_pypi_rc_with_codeartifact_not_clobbered(self):
@@ -1234,7 +1305,7 @@ password: expired_token
             server='codeartifact',
             repo_url=self.endpoint,
             username='aws',
-            password=self.auth_token
+            password=self.auth_token,
         )
 
         self._assert_pypi_rc_has_expected_content(
@@ -1242,7 +1313,7 @@ password: expired_token
             server='pypi',
             repo_url='http://www.python.org/pypi/',
             username='monty',
-            password='JgCXIr5xGG'
+            password='JgCXIr5xGG',
         )
 
     def test_login_existing_invalid_pypi_rc_error(self):
@@ -1274,21 +1345,22 @@ password: JgCXIr5xGG
 
 
 class TestRelativeExpirationTime(unittest.TestCase):
-
     def test_with_years_months_days(self):
         remaining = relativedelta(years=1, months=9)
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '1 year and 9 months')
 
     def test_with_years_months(self):
-        remaining = relativedelta(years=1, months=8, days=30, hours=23,
-                                  minutes=59, seconds=30)
+        remaining = relativedelta(
+            years=1, months=8, days=30, hours=23, minutes=59, seconds=30
+        )
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '1 year and 8 months')
 
     def test_with_years_month(self):
-        remaining = relativedelta(years=3, days=30, hours=23,
-                                  minutes=59, seconds=30)
+        remaining = relativedelta(
+            years=3, days=30, hours=23, minutes=59, seconds=30
+        )
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '3 years')
 
@@ -1323,10 +1395,12 @@ class TestRelativeExpirationTime(unittest.TestCase):
         self.assertEqual(message, '1 day')
 
     def test_with_hour(self):
-        self.expiration = (datetime.now(tzlocal())
-                           + relativedelta(hours=1)).replace(microsecond=0)
+        self.expiration = (
+            datetime.now(tzlocal()) + relativedelta(hours=1)
+        ).replace(microsecond=0)
         remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
+            self.expiration, datetime.now(tzutc())
+        ) + relativedelta(seconds=30)
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '1 hour')
 
@@ -1337,6 +1411,7 @@ class TestRelativeExpirationTime(unittest.TestCase):
 
     def test_with_full_time(self):
         remaining = relativedelta(
-            years=2, months=3, days=7, hours=11, minutes=44)
+            years=2, months=3, days=7, hours=11, minutes=44
+        )
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '2 years and 3 months')

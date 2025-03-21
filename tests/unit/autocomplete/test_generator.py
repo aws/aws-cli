@@ -10,14 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, mock
 from awscli.autocomplete import generator
 from awscli.autocomplete.local import indexer
 from awscli.clidriver import CLIDriver
+from awscli.testutils import mock, unittest
 
 
 class TestGenerateCompletionIndex(unittest.TestCase):
-
     def test_use_high_level_generator_for_index_creation(self):
         model_index = mock.Mock(spec=indexer.ModelIndexer)
         clidriver = mock.Mock(spec=CLIDriver)

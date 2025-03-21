@@ -10,16 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import FileCreator
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 
 class BaseQuickSightAssetBundleTest(BaseAWSCommandParamsTest):
     def setUp(self):
         super(BaseQuickSightAssetBundleTest, self).setUp()
         self.files = FileCreator()
-        self.temp_file = self.files.create_file(
-            'foo', 'mycontents')
+        self.temp_file = self.files.create_file('foo', 'mycontents')
         with open(self.temp_file, 'rb') as f:
             self.temp_file_bytes = f.read()
 
@@ -29,13 +27,17 @@ class BaseQuickSightAssetBundleTest(BaseAWSCommandParamsTest):
 
 
 class TestStartAssetBundleImportJob(BaseQuickSightAssetBundleTest):
-    prefix = 'quicksight start-asset-bundle-import-job ' \
-             '--aws-account-id 123456789012 ' \
-             '--asset-bundle-import-job-id import-job-1 '
+    prefix = (
+        'quicksight start-asset-bundle-import-job '
+        '--aws-account-id 123456789012 '
+        '--asset-bundle-import-job-id import-job-1 '
+    )
 
     def test_can_provide_source_body_as_top_level_param(self):
         cmdline = self.prefix
-        cmdline += f' --asset-bundle-import-source-bytes fileb://{self.temp_file}'
+        cmdline += (
+            f' --asset-bundle-import-source-bytes fileb://{self.temp_file}'
+        )
         result = {
             'AwsAccountId': '123456789012',
             'AssetBundleImportJobId': 'import-job-1',

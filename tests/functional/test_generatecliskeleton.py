@@ -105,23 +105,24 @@ class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):
         skeleton_output = json.loads(stdout)
         self.assertIn('Regions', skeleton_output)
         self.assertEqual(
-            skeleton_output['Regions'][0]['RegionName'], 'RegionName')
-        self.assertEqual(
-            skeleton_output['Regions'][0]['Endpoint'], 'Endpoint')
+            skeleton_output['Regions'][0]['RegionName'], 'RegionName'
+        )
+        self.assertEqual(skeleton_output['Regions'][0]['Endpoint'], 'Endpoint')
 
     def test_can_pass_in_input_parameters(self):
         cmdline = 'ec2 describe-regions --generate-cli-skeleton output '
         cmdline += ' --region-names us-east-1'
         stdout, _, _ = self.assert_params_for_cmd(
-            cmdline, {'RegionNames': ['us-east-1']})
+            cmdline, {'RegionNames': ['us-east-1']}
+        )
 
         # Make sure the output has the proper mocked response as well.
         skeleton_output = json.loads(stdout)
         self.assertIn('Regions', skeleton_output)
         self.assertEqual(
-            skeleton_output['Regions'][0]['RegionName'], 'RegionName')
-        self.assertEqual(
-            skeleton_output['Regions'][0]['Endpoint'], 'Endpoint')
+            skeleton_output['Regions'][0]['RegionName'], 'RegionName'
+        )
+        self.assertEqual(skeleton_output['Regions'][0]['Endpoint'], 'Endpoint')
 
     def test_when_no_output_shape(self):
         cmdline = 'ec2 attach-internet-gateway '
@@ -129,7 +130,8 @@ class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):
         cmdline += '--generate-cli-skeleton output'
         stdout, _, _ = self.assert_params_for_cmd(
             cmdline,
-            {'InternetGatewayId': 'igw-c0a643a9', 'VpcId': 'vpc-a01106'})
+            {'InternetGatewayId': 'igw-c0a643a9', 'VpcId': 'vpc-a01106'},
+        )
         # There should be no output as the command has no output shape
         self.assertEqual('', stdout)
 
@@ -140,7 +142,7 @@ class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):
         # The CreationDate has the type of timestamp
         self.assertEqual(
             skeleton_output['Buckets'][0]['CreationDate'],
-            '1970-01-01T00:00:00'
+            '1970-01-01T00:00:00',
         )
 
     def test_can_handle_lists_with_strings_that_have_a_min_length(self):

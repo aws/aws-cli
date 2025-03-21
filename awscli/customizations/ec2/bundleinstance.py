@@ -26,15 +26,18 @@ logger = logging.getLogger('ec2bundleinstance')
 # bundle-instance operation:
 
 # --bucket:
-BUCKET_DOCS = ('The bucket in which to store the AMI.  '
-               'You can specify a bucket that you already own or '
-               'a new bucket that Amazon EC2 creates on your behalf.  '
-               'If you specify a bucket that belongs to someone else, '
-               'Amazon EC2 returns an error.')
+BUCKET_DOCS = (
+    'The bucket in which to store the AMI.  '
+    'You can specify a bucket that you already own or '
+    'a new bucket that Amazon EC2 creates on your behalf.  '
+    'If you specify a bucket that belongs to someone else, '
+    'Amazon EC2 returns an error.'
+)
 
 # --prefix:
-PREFIX_DOCS = ('The prefix for the image component names being stored '
-               'in Amazon S3.')
+PREFIX_DOCS = (
+    'The prefix for the image component names being stored in Amazon S3.'
+)
 
 # --owner-akid
 OWNER_AKID_DOCS = 'The access key ID of the owner of the Amazon S3 bucket.'
@@ -53,13 +56,16 @@ POLICY_DOCS = (
     "sections about policy construction and signatures in the "
     '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev'
     '/HTTPPOSTForms.html">'
-    'Amazon Simple Storage Service Developer Guide</a>.')
+    'Amazon Simple Storage Service Developer Guide</a>.'
+)
 
 # --owner-sak
-OWNER_SAK_DOCS = ('The AWS secret access key for the owner of the '
-                  'Amazon S3 bucket specified in the --bucket '
-                  'parameter. This parameter is required so that a '
-                  'signature can be computed for the policy.')
+OWNER_SAK_DOCS = (
+    'The AWS secret access key for the owner of the '
+    'Amazon S3 bucket specified in the --bucket '
+    'parameter. This parameter is required so that a '
+    'signature can be computed for the policy.'
+)
 
 
 def _add_params(argument_table, **kwargs):
@@ -68,25 +74,27 @@ def _add_params(argument_table, **kwargs):
     # argparse if they only supply scalar params.
     storage_arg = argument_table['storage']
     storage_arg.required = False
-    arg = BundleArgument(storage_param='Bucket',
-                         name='bucket',
-                         help_text=BUCKET_DOCS)
+    arg = BundleArgument(
+        storage_param='Bucket', name='bucket', help_text=BUCKET_DOCS
+    )
     argument_table['bucket'] = arg
-    arg = BundleArgument(storage_param='Prefix',
-                         name='prefix',
-                         help_text=PREFIX_DOCS)
+    arg = BundleArgument(
+        storage_param='Prefix', name='prefix', help_text=PREFIX_DOCS
+    )
     argument_table['prefix'] = arg
-    arg = BundleArgument(storage_param='AWSAccessKeyId',
-                         name='owner-akid',
-                         help_text=OWNER_AKID_DOCS)
+    arg = BundleArgument(
+        storage_param='AWSAccessKeyId',
+        name='owner-akid',
+        help_text=OWNER_AKID_DOCS,
+    )
     argument_table['owner-akid'] = arg
-    arg = BundleArgument(storage_param='_SAK',
-                         name='owner-sak',
-                         help_text=OWNER_SAK_DOCS)
+    arg = BundleArgument(
+        storage_param='_SAK', name='owner-sak', help_text=OWNER_SAK_DOCS
+    )
     argument_table['owner-sak'] = arg
-    arg = BundleArgument(storage_param='UploadPolicy',
-                         name='policy',
-                         help_text=POLICY_DOCS)
+    arg = BundleArgument(
+        storage_param='UploadPolicy', name='policy', help_text=POLICY_DOCS
+    )
     argument_table['policy'] = arg
 
 
@@ -97,21 +105,24 @@ def _check_args(parsed_args, **kwargs):
     logger.debug(parsed_args)
     arg_dict = vars(parsed_args)
     if arg_dict['storage']:
-        for key in ('bucket', 'prefix', 'owner_akid',
-                    'owner_sak', 'policy'):
+        for key in ('bucket', 'prefix', 'owner_akid', 'owner_sak', 'policy'):
             if arg_dict[key]:
-                msg = ('Mixing the --storage option '
-                       'with the simple, scalar options is '
-                       'not recommended.')
+                msg = (
+                    'Mixing the --storage option '
+                    'with the simple, scalar options is '
+                    'not recommended.'
+                )
                 raise ParamValidationError(msg)
 
-POLICY = ('{{"expiration": "{expires}",'
-          '"conditions": ['
-          '{{"bucket": "{bucket}"}},'
-          '{{"acl": "ec2-bundle-read"}},'
-          '["starts-with", "$key", "{prefix}"]'
-          ']}}'
-          )
+
+POLICY = (
+    '{{"expiration": "{expires}",'
+    '"conditions": ['
+    '{{"bucket": "{bucket}"}},'
+    '{{"acl": "ec2-bundle-read"}},'
+    '["starts-with", "$key", "{prefix}"]'
+    ']}}'
+)
 
 
 def _generate_policy(params):
@@ -120,9 +131,9 @@ def _generate_policy(params):
     delta = datetime.timedelta(hours=24)
     expires = datetime.datetime.utcnow() + delta
     expires_iso = expires.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-    policy = POLICY.format(expires=expires_iso,
-                           bucket=params['Bucket'],
-                           prefix=params['Prefix'])
+    policy = POLICY.format(
+        expires=expires_iso, bucket=params['Bucket'], prefix=params['Prefix']
+    )
     params['UploadPolicy'] = policy.encode('utf-8')
 
 
@@ -163,7 +174,6 @@ def register_bundleinstance(event_handler):
 
 
 class BundleArgument(CustomArgument):
-
     def __init__(self, storage_param, *args, **kwargs):
         super(BundleArgument, self).__init__(*args, **kwargs)
         self._storage_param = storage_param

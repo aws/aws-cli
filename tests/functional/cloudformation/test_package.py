@@ -12,22 +12,23 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import os
 import shutil
 import tempfile
-import os
 import zipfile
+from unittest import TestCase
 
 import pytest
 
-from unittest import TestCase
-from awscli.customizations.cloudformation.artifact_exporter import make_zip
+from awscli.customizations.cloudformation.artifact_exporter import (
+    Template,
+    make_zip,
+)
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump
-from awscli.customizations.cloudformation.artifact_exporter import Template
 from awscli.testutils import skip_if_windows
 
 
 class TestPackageZipFiles(TestCase):
-
     def setUp(self):
         self.rootdir = tempfile.mkdtemp()
         self.ziproot = os.path.join(self.rootdir, "zipcontents")
@@ -53,7 +54,9 @@ class TestPackageZipFiles(TestCase):
         os.symlink(data_file, link_name)
 
         # Zip up the contents of folder `ziproot` which contains the symlink
-        zipfile_path = make_zip(os.path.join(self.rootdir, "archive"), self.ziproot)
+        zipfile_path = make_zip(
+            os.path.join(self.rootdir, "archive"), self.ziproot
+        )
 
         # Now verify that the zipfile includes contents of the data file we created
         myzip = zipfile.ZipFile(zipfile_path)
@@ -67,8 +70,7 @@ class TestPackageZipFiles(TestCase):
 
 def _generate_template_cases():
     test_case_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        'deploy_templates'
+        os.path.dirname(os.path.abspath(__file__)), 'deploy_templates'
     )
     cases = []
     for case in os.listdir(test_case_path):
@@ -76,25 +78,24 @@ def _generate_template_cases():
         cases.append(
             (
                 os.path.join(case_path, 'input.yml'),
-                os.path.join(case_path, 'output.yml')
-             )
+                os.path.join(case_path, 'output.yml'),
+            )
         )
     return cases
 
 
 @pytest.mark.parametrize(
-    'input_template,output_template', _generate_template_cases())
+    'input_template,output_template', _generate_template_cases()
+)
 def test_known_templates(input_template, output_template):
     template = Template(input_template, os.getcwd(), None)
     exported = template.export()
     result = yaml_dump(exported)
-    expected = open(output_template, 'r').read()
+    expected = open(output_template).read()
 
     assert result == expected, (
         '\nAcutal template:\n'
         '%s'
         '\nDiffers from expected template:\n'
-        '%s' % (
-            result, expected
-        )
+        '%s' % (result, expected)
     )

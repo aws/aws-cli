@@ -21,7 +21,7 @@
 #
 import unittest
 
-from awscli.table import Section, MultiTable, convert_to_vertical_table
+from awscli.table import MultiTable, Section, convert_to_vertical_table
 
 
 class TestSection(unittest.TestCase):
@@ -49,8 +49,9 @@ class TestSection(unittest.TestCase):
         self.assertEqual(self.section.total_width(), 21)
         self.section.add_row(['aaa', '123456789', 'aaa'])
         self.assertEqual(self.section.calculate_column_widths(), [9, 9, 7])
-        self.assertEqual(self.section.total_width(padding=3, with_border=True),
-                         36)
+        self.assertEqual(
+            self.section.total_width(padding=3, with_border=True), 36
+        )
 
     def test_max_width_with_scaling_perfect_scaling(self):
         self.section.add_row(['one', 'two', 'three'])
@@ -66,7 +67,7 @@ class TestSection(unittest.TestCase):
         self.assertEqual(widths, [13, 14, 14])
 
     def test_width_with_full_width_characters(self):
-        self.section.add_row([u'\u4e00', u'one'])
+        self.section.add_row(['\u4e00', 'one'])
         self.assertEqual(self.section.calculate_column_widths(), [2, 3])
 
     def test_max_width_scaling_is_negative(self):
@@ -79,21 +80,21 @@ class TestSection(unittest.TestCase):
         self.section.add_row(['1234567', '1234567', '1234567'])
         self.assertEqual(self.section.total_width(padding=2), 27)
         self.assertEqual(
-            self.section.total_width(padding=2, outer_padding=1), 29)
+            self.section.total_width(padding=2, outer_padding=1), 29
+        )
 
     def test_title_accounts_for_outer_padding(self):
         self.section.add_row(['a', 'b', 'c'])
         self.section.add_title('123456789')
         self.assertEqual(
-            self.section.total_width(padding=2, outer_padding=3), 17)
+            self.section.total_width(padding=2, outer_padding=3), 17
+        )
 
     def test_unicode_text_row(self):
         self.section.add_row([1])
         self.section.add_row(['check'])
-        self.section.add_row([u'\u2713'])
-        self.assertEqual(
-            self.section.rows,
-            [[u'1'], [u'check'], [u'\u2713']])
+        self.section.add_row(['\u2713'])
+        self.assertEqual(self.section.rows, [['1'], ['check'], ['\u2713']])
 
 
 class TestMultiTable(unittest.TestCase):
@@ -124,7 +125,8 @@ class TestVerticalTableConversion(unittest.TestCase):
         # Then we should create a two column row with key val pairs.
         self.assertEqual(
             section.rows,
-            [['key1', 'val1'], ['key2', 'val2'], ['key3', 'val3']])
+            [['key1', 'val1'], ['key2', 'val2'], ['key3', 'val3']],
+        )
 
 
 if __name__ == '__main__':

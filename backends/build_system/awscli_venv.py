@@ -10,24 +10,24 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import json
-import subprocess
-import site
-import sys
+import os
 import pathlib
+import site
+import subprocess
+import sys
 
 from constants import (
-    ArtifactType,
-    DOWNLOAD_DEPS_BOOTSTRAP_LOCK,
-    PORTABLE_EXE_REQUIREMENTS_LOCK,
-    SYSTEM_SANDBOX_REQUIREMENTS_LOCK,
-    ROOT_DIR,
-    IS_WINDOWS,
     BIN_DIRNAME,
-    PYTHON_EXE_NAME,
     CLI_SCRIPTS,
     DISTRIBUTION_SOURCE_SANDBOX,
+    DOWNLOAD_DEPS_BOOTSTRAP_LOCK,
+    IS_WINDOWS,
+    PORTABLE_EXE_REQUIREMENTS_LOCK,
+    PYTHON_EXE_NAME,
+    ROOT_DIR,
+    SYSTEM_SANDBOX_REQUIREMENTS_LOCK,
+    ArtifactType,
 )
 from utils import Utils
 

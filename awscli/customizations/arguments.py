@@ -13,10 +13,11 @@
 import os
 import re
 
+import jmespath
+
 from awscli.arguments import CustomArgument
 from awscli.compat import compat_open
 from awscli.customizations.exceptions import ParamValidationError
-import jmespath
 
 
 def resolve_given_outfile_path(path):
@@ -151,7 +152,7 @@ class QueryOutFileArgument(StatefulArgument):
                 os.chmod(self.value, self.perm)
 
 
-class NestedBlobArgumentHoister(object):
+class NestedBlobArgumentHoister:
     """Can be registered to update a single argument / model value combination
     mapping that to a new top-level argument.
     Currently limited to blob argument types as these are the only ones

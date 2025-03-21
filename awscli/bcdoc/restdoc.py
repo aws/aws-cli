@@ -13,13 +13,14 @@
 import logging
 
 from botocore.compat import OrderedDict
+
 from awscli.bcdoc.docstringparser import DocStringParser
 from awscli.bcdoc.style import ReSTStyle
 
 LOG = logging.getLogger('bcdocs')
 
 
-class ReSTDocument(object):
+class ReSTDocument:
     def __init__(self, target='man'):
         self.style = ReSTStyle(self)
         self.target = target
@@ -119,7 +120,7 @@ class ReSTDocument(object):
             del self._writes[start:end]
 
     def write_from_file(self, filename):
-        with open(filename, 'r') as f:
+        with open(filename) as f:
             for line in f.readlines():
                 self.writeln(line.strip())
 

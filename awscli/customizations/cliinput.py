@@ -15,9 +15,9 @@ import json
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
-from awscli.paramfile import get_paramfile, LOCAL_PREFIX_MAP
 from awscli.argprocess import ParamError, ParamSyntaxError
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
+from awscli.paramfile import LOCAL_PREFIX_MAP, get_paramfile
 
 
 def register_cli_input_args(cli):

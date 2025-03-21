@@ -20,8 +20,8 @@ from botocore.compat import OrderedDict
 from awscli.compat import compat_open
 from awscli.customizations.eks.exceptions import EKSError
 from awscli.customizations.eks.ordered_yaml import (
-    ordered_yaml_load,
     ordered_yaml_dump,
+    ordered_yaml_load,
 )
 
 
@@ -51,7 +51,7 @@ def _get_new_kubeconfig_content():
     )
 
 
-class Kubeconfig(object):
+class Kubeconfig:
     def __init__(self, path, content=None):
         self.path = path
         if content is None:
@@ -83,7 +83,7 @@ class Kubeconfig(object):
         )
 
 
-class KubeconfigValidator(object):
+class KubeconfigValidator:
     def __init__(self):
         # Validation_content is an empty Kubeconfig
         # It is used as a way to know what types different entries should be
@@ -141,7 +141,7 @@ class KubeconfigValidator(object):
                         )
 
 
-class KubeconfigLoader(object):
+class KubeconfigLoader:
     def __init__(self, validator=None):
         if validator is None:
             validator = KubeconfigValidator()
@@ -167,7 +167,7 @@ class KubeconfigLoader(object):
         try:
             with compat_open(path, "r") as stream:
                 loaded_content = ordered_yaml_load(stream)
-        except IOError as e:
+        except OSError as e:
             if e.errno == errno.ENOENT:
                 loaded_content = None
             else:
@@ -185,7 +185,7 @@ class KubeconfigLoader(object):
         return loaded_config
 
 
-class KubeconfigWriter(object):
+class KubeconfigWriter:
     def write_kubeconfig(self, config):
         """
         Write config to disk.
@@ -211,13 +211,13 @@ class KubeconfigWriter(object):
                 config.path, "w+", access_permissions=0o600
             ) as stream:
                 ordered_yaml_dump(config.content, stream)
-        except IOError as e:
+        except OSError as e:
             raise KubeconfigInaccessableError(
                 f"Can't open kubeconfig for writing: {e}"
             )
 
 
-class KubeconfigAppender(object):
+class KubeconfigAppender:
     def insert_entry(self, config, key, new_entry):
         """
         Insert entry into the entries list at content[key]

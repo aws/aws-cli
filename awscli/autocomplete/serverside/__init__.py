@@ -14,9 +14,8 @@
 # NOTE: This file is imported whenever a user hits TAB.  There should not
 # be any expensive imports in this file.  If necessary, use lazy imports
 # to ensure we only import heavyweight modules when we know we need them.
-from awscli.autocomplete.serverside import servercomp
-from awscli.autocomplete.serverside import model
 from awscli.autocomplete import db
+from awscli.autocomplete.serverside import model, servercomp
 
 
 def create_server_side_completer(index_filename, response_filter=None):

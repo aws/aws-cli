@@ -14,28 +14,29 @@ import logging
 import signal
 
 from botocore.exceptions import (
-    NoRegionError,
-    NoCredentialsError,
     ClientError,
+    NoCredentialsError,
+    NoRegionError,
+)
+from botocore.exceptions import (
     ParamValidationError as BotocoreParamValidationError,
 )
 
+from awscli.argparser import USAGE, ArgParseException
 from awscli.argprocess import ParamError, ParamSyntaxError
 from awscli.arguments import UnknownArgumentError
-from awscli.argparser import ArgParseException, USAGE
+from awscli.autoprompt.factory import PrompterKeyboardInterrupt
 from awscli.constants import (
-    PARAM_VALIDATION_ERROR_RC,
-    CONFIGURATION_ERROR_RC,
     CLIENT_ERROR_RC,
+    CONFIGURATION_ERROR_RC,
     GENERAL_ERROR_RC,
+    PARAM_VALIDATION_ERROR_RC,
+)
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
 )
 from awscli.utils import PagerInitializationException
-from awscli.autoprompt.factory import PrompterKeyboardInterrupt
-from awscli.customizations.exceptions import (
-    ParamValidationError,
-    ConfigurationError,
-)
-
 
 LOG = logging.getLogger(__name__)
 

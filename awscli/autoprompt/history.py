@@ -10,16 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import logging
 import json
+import logging
 import os
 
-from prompt_toolkit.completion import Completion, Completer
+from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.history import FileHistory
 
 from awscli.autocomplete.completer import CompletionResult
 from awscli.autocomplete.filters import fuzzy_filter
-
 
 LOG = logging.getLogger(__name__)
 
@@ -33,7 +32,7 @@ class HistoryDriver(FileHistory):
 
     def load_history_strings(self):
         try:
-            with open(self.filename, 'r') as f:
+            with open(self.filename) as f:
                 commands = json.load(f).get('commands', [])
             return reversed(commands)
         except Exception as e:
@@ -46,7 +45,7 @@ class HistoryDriver(FileHistory):
         history = {'version': self.HISTORY_VERSION, 'commands': []}
         try:
             if os.path.exists(self.filename):
-                with open(self.filename, 'r') as f:
+                with open(self.filename) as f:
                     history = json.load(f)
             elif not os.path.exists(os.path.dirname(self.filename)):
                 os.makedirs(os.path.dirname(self.filename))

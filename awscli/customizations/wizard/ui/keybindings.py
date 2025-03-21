@@ -11,17 +11,17 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from prompt_toolkit.application import get_app
-from prompt_toolkit.filters import has_focus, Condition
+from prompt_toolkit.filters import Condition, has_focus
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.keys import Keys
 
+from awscli.customizations.wizard.exceptions import BaseWizardException
 from awscli.customizations.wizard.ui.utils import (
     get_ui_control_by_buffer_name,
     move_to_previous_prompt,
-    show_details_if_visible_by_default,
     refresh_details_view,
+    show_details_if_visible_by_default,
 )
-from awscli.customizations.wizard.exceptions import BaseWizardException
 
 
 @Condition

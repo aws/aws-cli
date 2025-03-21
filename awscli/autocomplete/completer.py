@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 
-class AutoCompleter(object):
+class AutoCompleter:
     """Main auto-completer object for the AWS CLI.
 
     This object delegates to concrete completers that can perform
@@ -48,7 +48,7 @@ class AutoCompleter(object):
         return []
 
 
-class CompletionResult(object):
+class CompletionResult:
     """A data object for a single completion result.
 
     In addition to storing the completion string, this object also
@@ -92,7 +92,7 @@ class CompletionResult(object):
         )
 
 
-class BaseCompleter(object):
+class BaseCompleter:
     def complete(self, parsed):
         """Attempt to autocomplete parsed on parsed result.
 

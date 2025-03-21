@@ -13,11 +13,12 @@
 
 import sys
 
+from botocore.compat import json
+
 from awscli.customizations.servicecatalog import helptext
 from awscli.customizations.servicecatalog.generatebase import (
     GenerateBaseCommand,
 )
-from botocore.compat import json
 
 
 class GenerateProvisioningArtifactCommand(GenerateBaseCommand):

@@ -13,34 +13,30 @@
 
 import logging
 import re
+
 import botocore.exceptions
 import botocore.session
 from botocore import xform_name
 
-from awscli.customizations.utils import get_policy_arn_suffix
-from awscli.customizations.emr import configutils
-from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import exceptions
+from awscli.customizations.emr import configutils, emrutils, exceptions
 from awscli.customizations.emr.command import Command
-from awscli.customizations.emr.constants import EC2
-from awscli.customizations.emr.constants import EC2_ROLE_NAME
-from awscli.customizations.emr.constants import EC2_SERVICE_PRINCIPAL
-from awscli.customizations.emr.constants import ROLE_ARN_PATTERN
-from awscli.customizations.emr.constants import EMR
-from awscli.customizations.emr.constants import EMR_ROLE_NAME
-from awscli.customizations.emr.constants import EMR_AUTOSCALING_ROLE_NAME
-from awscli.customizations.emr.constants import APPLICATION_AUTOSCALING
-from awscli.customizations.emr.constants import EC2_ROLE_POLICY_NAME
-from awscli.customizations.emr.constants import EMR_ROLE_POLICY_NAME
 from awscli.customizations.emr.constants import (
+    APPLICATION_AUTOSCALING,
+    EC2,
+    EC2_ROLE_NAME,
+    EC2_ROLE_POLICY_NAME,
+    EC2_SERVICE_PRINCIPAL,
+    EMR,
+    EMR_AUTOSCALING_ROLE_NAME,
     EMR_AUTOSCALING_ROLE_POLICY_NAME,
-)
-from awscli.customizations.emr.constants import EMR_AUTOSCALING_SERVICE_NAME
-from awscli.customizations.emr.constants import (
+    EMR_AUTOSCALING_SERVICE_NAME,
     EMR_AUTOSCALING_SERVICE_PRINCIPAL,
+    EMR_ROLE_NAME,
+    EMR_ROLE_POLICY_NAME,
+    ROLE_ARN_PATTERN,
 )
 from awscli.customizations.emr.exceptions import ResolveServicePrincipalError
-
+from awscli.customizations.utils import get_policy_arn_suffix
 
 LOG = logging.getLogger(__name__)
 

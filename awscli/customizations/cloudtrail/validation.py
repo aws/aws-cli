@@ -12,27 +12,26 @@
 # language governing permissions and limitations under the License.
 import base64
 import binascii
-import json
 import hashlib
+import json
 import logging
 import re
 import sys
 import zlib
-from zlib import error as ZLibError
 from datetime import datetime, timedelta
-from dateutil import tz, parser
+from zlib import error as ZLibError
 
 from awscrt.crypto import RSA, RSASignatureAlgorithm
+from botocore.exceptions import ClientError
+from dateutil import parser, tz
 
 from awscli.customizations.cloudtrail.utils import (
-    get_trail_by_arn,
-    get_account_id_from_arn,
     PublicKeyProvider,
+    get_account_id_from_arn,
+    get_trail_by_arn,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
-from botocore.exceptions import ClientError
-
 
 LOG = logging.getLogger(__name__)
 DATE_FORMAT = '%Y%m%dT%H%M%SZ'
@@ -69,7 +68,7 @@ def parse_date(date_string):
         return parser.parse(date_string)
     except ValueError:
         raise ParamValidationError(
-            'Unable to parse date value: %s' % date_string
+            f'Unable to parse date value: {date_string}'
         )
 
 
@@ -79,9 +78,7 @@ def assert_cloudtrail_arn_is_valid(trail_arn):
     ARNs look like: arn:aws:cloudtrail:us-east-1:123456789012:trail/foo"""
     pattern = re.compile(r'arn:.+:cloudtrail:.+:\d{12}:trail/.+')
     if not pattern.match(trail_arn):
-        raise ParamValidationError(
-            'Invalid trail ARN provided: %s' % trail_arn
-        )
+        raise ParamValidationError(f'Invalid trail ARN provided: {trail_arn}')
 
 
 def create_digest_traverser(
@@ -178,7 +175,7 @@ def create_digest_traverser(
     )
 
 
-class S3ClientProvider(object):
+class S3ClientProvider:
     """Creates Amazon S3 clients and determines the region name of a client.
 
     This class will cache the location constraints of previously requested
@@ -225,9 +222,9 @@ class DigestSignatureError(DigestError):
 
     def __init__(self, bucket, key):
         message = (
-            'Digest file\ts3://%s/%s\tINVALID: signature verification '
+            f'Digest file\ts3://{bucket}/{key}\tINVALID: signature verification '
             'failed'
-        ) % (bucket, key)
+        )
         super(DigestSignatureError, self).__init__(message)
 
 
@@ -235,14 +232,11 @@ class InvalidDigestFormat(DigestError):
     """Exception raised when a digest has an invalid format"""
 
     def __init__(self, bucket, key):
-        message = 'Digest file\ts3://%s/%s\tINVALID: invalid format' % (
-            bucket,
-            key,
-        )
+        message = f'Digest file\ts3://{bucket}/{key}\tINVALID: invalid format'
         super(InvalidDigestFormat, self).__init__(message)
 
 
-class DigestProvider(object):
+class DigestProvider:
     """
     Retrieves digest keys and digests from Amazon S3.
 
@@ -387,7 +381,7 @@ class DigestProvider(object):
         return '^' + key + '$'
 
 
-class DigestTraverser(object):
+class DigestTraverser:
     """Retrieves and validates digests within a date range."""
 
     # These keys are required to be present before validating the contents
@@ -515,8 +509,7 @@ class DigestTraverser(object):
                     last_key=key,
                     last_start_date=last_start_date,
                     cb=self._on_invalid,
-                    message='Digest file\ts3://%s/%s\tINVALID: %s'
-                    % (bucket, key, str(e)),
+                    message=f'Digest file\ts3://{bucket}/{key}\tINVALID: {str(e)}',
                 )
 
     def _load_digests(self, bucket, prefix, start_date, end_date):
@@ -594,26 +587,15 @@ class DigestTraverser(object):
             or digest_data['digestS3Object'] != key
         ):
             raise DigestError(
-                (
-                    'Digest file\ts3://%s/%s\tINVALID: has been moved from its '
-                    'original location'
-                )
-                % (bucket, key)
+                f'Digest file\ts3://{bucket}/{key}\tINVALID: has been moved from its '
+                'original location'
             )
         # Get the public keys in the given time range.
         fingerprint = digest_data['digestPublicKeyFingerprint']
         if fingerprint not in public_keys:
             raise DigestError(
-                (
-                    'Digest file\ts3://%s/%s\tINVALID: public key not found in '
-                    'region %s for fingerprint %s'
-                )
-                % (
-                    bucket,
-                    key,
-                    self.digest_provider.trail_home_region,
-                    fingerprint,
-                )
+                f'Digest file\ts3://{bucket}/{key}\tINVALID: public key not found in '
+                f'region {self.digest_provider.trail_home_region} for fingerprint {fingerprint}'
             )
         public_key_hex = public_keys[fingerprint]['Value']
         self._digest_validator.validate(
@@ -628,16 +610,12 @@ class DigestTraverser(object):
         )
         if not public_keys:
             raise RuntimeError(
-                'No public keys found between %s and %s'
-                % (
-                    format_display_date(start_date),
-                    format_display_date(end_date),
-                )
+                f'No public keys found between {format_display_date(start_date)} and {format_display_date(end_date)}'
             )
         return public_keys
 
 
-class Sha256RSADigestValidator(object):
+class Sha256RSADigestValidator:
     """
     Validates SHA256withRSA signed digests.
 
@@ -663,10 +641,11 @@ class Sha256RSADigestValidator(object):
         except RuntimeError:
             raise DigestError(
                 (
-                    'Digest file\ts3://%s/%s\tINVALID: Unable to load PKCS #1 key'
-                    ' with fingerprint %s'
+                    'Digest file\ts3://{}/{}\tINVALID: Unable to load PKCS #1 key'
+                    ' with fingerprint {}'
+                ).format(
+                    bucket, key, digest_data['digestPublicKeyFingerprint']
                 )
-                % (bucket, key, digest_data['digestPublicKeyFingerprint'])
             )
 
         to_sign = self._create_string_to_sign(digest_data, inflated_digest)
@@ -688,7 +667,7 @@ class Sha256RSADigestValidator(object):
         if previous_signature is None:
             # The value must be 'null' to match the Java implementation.
             previous_signature = 'null'
-        string_to_sign = "%s\n%s/%s\n%s\n%s" % (
+        string_to_sign = "{}\n{}/{}\n{}\n{}".format(
             digest_data['digestEndTime'],
             digest_data['digestS3Bucket'],
             digest_data['digestS3Object'],
@@ -906,8 +885,9 @@ class CloudTrailValidateLogs(BasicCommand):
             self._track_found_times(digest)
             self._valid_digests += 1
             self._write_status(
-                'Digest file\ts3://%s/%s\tvalid'
-                % (digest['digestS3Bucket'], digest['digestS3Object'])
+                'Digest file\ts3://{}/{}\tvalid'.format(
+                    digest['digestS3Bucket'], digest['digestS3Object']
+                )
             )
             if not digest['logFiles']:
                 continue
@@ -949,10 +929,7 @@ class CloudTrailValidateLogs(BasicCommand):
             else:
                 self._valid_logs += 1
                 self._write_status(
-                    (
-                        'Log file\ts3://%s/%s\tvalid'
-                        % (log['s3Bucket'], log['s3Object'])
-                    )
+                    f"Log file\ts3://{log['s3Bucket']}/{log['s3Object']}\tvalid"
                 )
         except ClientError as e:
             if e.response['Error']['Code'] != 'NoSuchKey':
@@ -964,33 +941,24 @@ class CloudTrailValidateLogs(BasicCommand):
     def _write_status(self, message, is_error=False):
         if is_error:
             if self._is_last_status_double_space:
-                sys.stderr.write("%s\n\n" % message)
+                sys.stderr.write(f"{message}\n\n")
             else:
-                sys.stderr.write("\n%s\n\n" % message)
+                sys.stderr.write(f"\n{message}\n\n")
             self._is_last_status_double_space = True
         elif self.is_verbose:
             self._is_last_status_double_space = False
-            sys.stdout.write("%s\n" % message)
+            sys.stdout.write(f"{message}\n")
 
     def _write_startup_text(self):
         sys.stdout.write(
-            'Validating log files for trail %s between %s and %s\n\n'
-            % (
-                self.trail_arn,
-                format_display_date(self.start_time),
-                format_display_date(self.end_time),
-            )
+            f'Validating log files for trail {self.trail_arn} between {format_display_date(self.start_time)} and {format_display_date(self.end_time)}\n\n'
         )
 
     def _write_summary_text(self):
         if not self._is_last_status_double_space:
             sys.stdout.write('\n')
         sys.stdout.write(
-            'Results requested for %s to %s\n'
-            % (
-                format_display_date(self.start_time),
-                format_display_date(self.end_time),
-            )
+            f'Results requested for {format_display_date(self.start_time)} to {format_display_date(self.end_time)}\n'
         )
         if not self._valid_digests and not self._invalid_digests:
             sys.stdout.write('No digests found\n')
@@ -999,11 +967,7 @@ class CloudTrailValidateLogs(BasicCommand):
             sys.stdout.write('No valid digests found in range\n')
         else:
             sys.stdout.write(
-                'Results found for %s to %s:\n'
-                % (
-                    format_display_date(self._found_start_time),
-                    format_display_date(self._found_end_time),
-                )
+                f'Results found for {format_display_date(self._found_start_time)} to {format_display_date(self._found_end_time)}:\n'
             )
         self._write_ratio(self._valid_digests, self._invalid_digests, 'digest')
         self._write_ratio(self._valid_logs, self._invalid_logs, 'log')
@@ -1021,14 +985,13 @@ class CloudTrailValidateLogs(BasicCommand):
     def _on_missing_digest(self, bucket, last_key, **kwargs):
         self._invalid_digests += 1
         self._write_status(
-            'Digest file\ts3://%s/%s\tINVALID: not found' % (bucket, last_key),
+            f'Digest file\ts3://{bucket}/{last_key}\tINVALID: not found',
             True,
         )
 
     def _on_digest_gap(self, **kwargs):
         self._write_status(
-            'No log files were delivered by CloudTrail between %s and %s'
-            % (
+            'No log files were delivered by CloudTrail between {} and {}'.format(
                 format_display_date(kwargs['next_end_date']),
                 format_display_date(kwargs['last_start_date']),
             ),
@@ -1043,8 +1006,9 @@ class CloudTrailValidateLogs(BasicCommand):
         self._invalid_logs += 1
         self._write_status(
             (
-                'Log file\ts3://%s/%s\tINVALID: invalid format'
-                % (log_data['s3Bucket'], log_data['s3Object'])
+                'Log file\ts3://{}/{}\tINVALID: invalid format'.format(
+                    log_data['s3Bucket'], log_data['s3Object']
+                )
             ),
             True,
         )
@@ -1052,15 +1016,17 @@ class CloudTrailValidateLogs(BasicCommand):
     def _on_log_invalid(self, log_data):
         self._invalid_logs += 1
         self._write_status(
-            "Log file\ts3://%s/%s\tINVALID: hash value doesn't match"
-            % (log_data['s3Bucket'], log_data['s3Object']),
+            "Log file\ts3://{}/{}\tINVALID: hash value doesn't match".format(
+                log_data['s3Bucket'], log_data['s3Object']
+            ),
             True,
         )
 
     def _on_missing_log(self, log_data):
         self._invalid_logs += 1
         self._write_status(
-            'Log file\ts3://%s/%s\tINVALID: not found'
-            % (log_data['s3Bucket'], log_data['s3Object']),
+            'Log file\ts3://{}/{}\tINVALID: not found'.format(
+                log_data['s3Bucket'], log_data['s3Object']
+            ),
             True,
         )

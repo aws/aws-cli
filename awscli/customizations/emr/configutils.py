@@ -14,8 +14,7 @@ import logging
 import os
 
 from awscli.customizations.configure.writer import ConfigFileWriter
-from awscli.customizations.emr.constants import EC2_ROLE_NAME
-from awscli.customizations.emr.constants import EMR_ROLE_NAME
+from awscli.customizations.emr.constants import EC2_ROLE_NAME, EMR_ROLE_NAME
 
 LOG = logging.getLogger(__name__)
 
@@ -67,7 +66,7 @@ def update_roles(session):
         LOG.debug("Associated default roles with your current profile")
 
 
-class ConfigWriter(object):
+class ConfigWriter:
     def __init__(self, session):
         self.session = session
         self.section = _get_profile_str(session, ' ')

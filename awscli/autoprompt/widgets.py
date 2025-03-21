@@ -14,41 +14,41 @@ import os
 from functools import partial
 
 from prompt_toolkit.application import get_app
+from prompt_toolkit.buffer import Buffer
+from prompt_toolkit.document import Document
 from prompt_toolkit.filters import has_focus
 from prompt_toolkit.formatted_text import HTML, to_formatted_text
 from prompt_toolkit.formatted_text.utils import fragment_list_to_text
-from prompt_toolkit.buffer import Buffer
-from prompt_toolkit.document import Document
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.keys import Keys
+from prompt_toolkit.layout import (
+    ConditionalContainer,
+    Float,
+    FloatContainer,
+    HSplit,
+    VSplit,
+    Window,
+)
 from prompt_toolkit.layout.controls import BufferControl
 from prompt_toolkit.layout.dimension import Dimension
 from prompt_toolkit.layout.processors import Processor, Transformation
-from prompt_toolkit.layout import (
-    HSplit,
-    Window,
-    VSplit,
-    FloatContainer,
-    Float,
-    ConditionalContainer,
-)
 from prompt_toolkit.widgets import (
+    Button,
+    Dialog,
     Frame,
     HorizontalLine,
-    Dialog,
-    Button,
-    TextArea,
     Label,
+    TextArea,
 )
 from prompt_toolkit.widgets.base import Border
 
 from awscli.autoprompt.filters import (
-    help_section_visible,
     doc_window_has_focus,
-    search_input_has_focus,
+    help_section_visible,
     input_buffer_has_focus,
-    is_history_mode,
     is_debug_mode,
+    is_history_mode,
+    search_input_has_focus,
 )
 
 

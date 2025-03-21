@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.dynamodb.subcommands import (
-    SelectCommand,
     PutCommand,
+    SelectCommand,
 )
 
 

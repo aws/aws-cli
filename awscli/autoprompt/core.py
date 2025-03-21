@@ -12,10 +12,10 @@
 # language governing permissions and limitations under the License.
 from botocore.exceptions import ProfileNotFound
 
-from awscli.customizations.exceptions import ParamValidationError
-from awscli.autoprompt.prompttoolkit import PromptToolkitPrompter
-from awscli.autocomplete.main import create_autocompleter
 from awscli.autocomplete.filters import fuzzy_filter
+from awscli.autocomplete.main import create_autocompleter
+from awscli.autoprompt.prompttoolkit import PromptToolkitPrompter
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.errorhandler import SilenceParamValidationMsgErrorHandler
 
 

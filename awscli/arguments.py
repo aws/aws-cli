@@ -39,13 +39,11 @@ Arguments generally fall into one of several categories:
 
 import logging
 
-from botocore import xform_name
+from botocore import model, xform_name
 from botocore.hooks import first_non_none_response
 
 from awscli.argprocess import unpack_cli_arg
 from awscli.schema import SchemaTransformer
-from botocore import model
-
 
 LOG = logging.getLogger('awscli.arguments')
 
@@ -67,7 +65,7 @@ def create_argument_model_from_schema(schema):
     return arg_shape
 
 
-class BaseCLIArgument(object):
+class BaseCLIArgument:
     """Interface for CLI argument.
 
     This class represents the interface used for representing CLI

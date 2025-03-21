@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 
 import logging
-from awscli.customizations.emr import configutils
-from awscli.customizations.emr import exceptions
+
+from awscli.customizations.emr import configutils, exceptions
 
 LOG = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ def _create_supported_configurations():
     ]
 
 
-class Configuration(object):
+class Configuration:
     def __init__(self, name, arg_name):
         self.name = name
         self.arg_name = arg_name

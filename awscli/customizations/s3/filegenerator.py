@@ -11,21 +11,22 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import sys
 import stat
+import sys
 
+from botocore.exceptions import ClientError
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
-from botocore.exceptions import ClientError
 
-from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
+from awscli.compat import queue
 from awscli.customizations.s3.utils import (
+    EPOCH_TIME,
     BucketLister,
     create_warning,
+    find_bucket_key,
     find_dest_path_comp_key,
-    EPOCH_TIME,
+    get_file_stat,
 )
-from awscli.compat import queue
 
 _open = open
 
@@ -61,13 +62,13 @@ def is_readable(path):
     if os.path.isdir(path):
         try:
             os.listdir(path)
-        except (OSError, IOError):
+        except OSError:
             return False
     else:
         try:
             with _open(path, 'r') as fd:
                 pass
-        except (OSError, IOError):
+        except OSError:
             return False
     return True
 
@@ -95,7 +96,7 @@ class FileDecodingError(Exception):
         super(FileDecodingError, self).__init__(self.error_message)
 
 
-class FileStat(object):
+class FileStat:
     def __init__(
         self,
         src,
@@ -119,7 +120,7 @@ class FileStat(object):
         self.response_data = response_data
 
 
-class FileGenerator(object):
+class FileGenerator:
     """
     This is a class the creates a generator to yield files based on information
     returned from the ``FileFormat`` class.  It is universal in the sense that

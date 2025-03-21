@@ -16,7 +16,7 @@ import logging
 logger = logging.getLogger('bcdocs')
 
 
-class BaseStyle(object):
+class BaseStyle:
     def __init__(self, doc, indent_width=2):
         self.doc = doc
         self.indent_width = indent_width

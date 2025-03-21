@@ -10,28 +10,29 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import logging
+import os
 
 from botocore.exceptions import ProfileNotFound
 
 from awscli.compat import compat_input
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.addmodel import AddModelCommand
-from awscli.customizations.configure.set import ConfigureSetCommand
-from awscli.customizations.configure.get import ConfigureGetCommand
-from awscli.customizations.configure.list import ConfigureListCommand
-from awscli.customizations.configure.writer import ConfigFileWriter
-from awscli.customizations.configure.importer import ConfigureImportCommand
-from awscli.customizations.configure.listprofiles import ListProfilesCommand
-from awscli.customizations.configure.sso import ConfigureSSOCommand
-from awscli.customizations.configure.sso import ConfigureSSOSessionCommand
 from awscli.customizations.configure.exportcreds import (
     ConfigureExportCredentialsCommand,
 )
+from awscli.customizations.configure.get import ConfigureGetCommand
+from awscli.customizations.configure.importer import ConfigureImportCommand
+from awscli.customizations.configure.list import ConfigureListCommand
+from awscli.customizations.configure.listprofiles import ListProfilesCommand
+from awscli.customizations.configure.set import ConfigureSetCommand
+from awscli.customizations.configure.sso import (
+    ConfigureSSOCommand,
+    ConfigureSSOSessionCommand,
+)
+from awscli.customizations.configure.writer import ConfigFileWriter
 
 from . import mask_value, profile_to_section
-
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ def register_configure_cmd(cli):
     cli.register('building-command-table.main', ConfigureCommand.add_command)
 
 
-class InteractivePrompter(object):
+class InteractivePrompter:
     def get_value(self, current_value, config_name, prompt_text=''):
         if config_name in ('aws_access_key_id', 'aws_secret_access_key'):
             current_value = mask_value(current_value)

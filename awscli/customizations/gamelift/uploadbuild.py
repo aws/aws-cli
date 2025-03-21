@@ -10,11 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import threading
 import contextlib
 import os
-import tempfile
 import sys
+import tempfile
+import threading
 import zipfile
 
 from s3transfer import S3Transfer
@@ -156,7 +156,7 @@ def validate_directory(source_root):
 
 # TODO: Remove this class once available to CLI from s3transfer
 # docstring.
-class ProgressPercentage(object):
+class ProgressPercentage:
     def __init__(self, filename, label=None):
         self._filename = filename
         self._label = label

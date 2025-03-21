@@ -24,15 +24,15 @@ is that it builds the auto-complete index and injects it into the wheel
 built by flit prior to returning.
 """
 
-import re
-import contextlib
-import hashlib
 import base64
-import os
+import contextlib
 import glob
-import tarfile
+import hashlib
+import os
+import re
 import shutil
 import sys
+import tarfile
 import zipfile
 from pathlib import Path
 
@@ -107,7 +107,7 @@ def get_requires_for_build_wheel(config_settings=None):
         r"dependencies = \[([\s\S]+?)\]\s", re.MULTILINE
     )
     extract_dependencies_re = re.compile(r'"(.+)"')
-    with open(ROOT_DIR / "pyproject.toml", "r") as f:
+    with open(ROOT_DIR / "pyproject.toml") as f:
         data = f.read()
     raw_dependencies = dependency_block_re.findall(data)[0]
     dependencies = extract_dependencies_re.findall(raw_dependencies)
@@ -153,7 +153,7 @@ def _should_copy(path):
 
 
 def read_sdist_extras():
-    with open(ROOT_DIR / "pyproject.toml", "r") as f:
+    with open(ROOT_DIR / "pyproject.toml") as f:
         data = f.read()
     # This regex searches for the list content of sdist_extra_files
     # in the tool.awscli table within pyproject.toml.
@@ -177,7 +177,7 @@ def read_sdist_extras():
 
 
 def _rewrite_shebang(path):
-    with open(path, "r") as f:
+    with open(path) as f:
         lines = f.read().split("\n")
     # Rewrite shebang lines to be #!python to conform with PEP 427.
     if lines[0] == "#!/usr/bin/env python":

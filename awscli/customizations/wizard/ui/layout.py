@@ -15,8 +15,7 @@ import os
 from prompt_toolkit.application import get_app
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.completion import PathCompleter
-from prompt_toolkit.layout.controls import BufferControl, FormattedTextControl
-from prompt_toolkit.filters import has_focus, Condition
+from prompt_toolkit.filters import Condition, has_focus
 from prompt_toolkit.formatted_text import HTML, to_formatted_text
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.key_binding.bindings.focus import (
@@ -26,44 +25,45 @@ from prompt_toolkit.key_binding.bindings.focus import (
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout import Layout
 from prompt_toolkit.layout.containers import (
-    Window,
-    HSplit,
-    Dimension,
     ConditionalContainer,
-    WindowAlign,
+    Dimension,
+    HSplit,
     VSplit,
+    Window,
+    WindowAlign,
     to_container,
     to_filter,
 )
+from prompt_toolkit.layout.controls import BufferControl, FormattedTextControl
+from prompt_toolkit.utils import is_windows
 from prompt_toolkit.widgets import (
-    HorizontalLine,
     Box,
     Button,
+    Dialog,
+    Frame,
+    HorizontalLine,
     Label,
     Shadow,
-    Frame,
-    VerticalLine,
-    Dialog,
     TextArea,
+    VerticalLine,
 )
-from prompt_toolkit.utils import is_windows
 
 from awscli.autoprompt.widgets import BaseToolbarView, TitleLine
 from awscli.customizations.wizard import core
-from awscli.customizations.wizard.ui.section import (
-    WizardSectionTab,
-    WizardSectionBody,
-)
 from awscli.customizations.wizard.ui.keybindings import (
     details_visible,
-    prompt_has_details,
     error_bar_enabled,
+    prompt_has_details,
     save_details_visible,
 )
+from awscli.customizations.wizard.ui.section import (
+    WizardSectionBody,
+    WizardSectionTab,
+)
 from awscli.customizations.wizard.ui.utils import (
-    move_to_previous_prompt,
     Spacer,
     get_ui_control_by_buffer_name,
+    move_to_previous_prompt,
 )
 
 

@@ -14,7 +14,6 @@ import logging
 
 from awscli.customizations.s3.syncstrategy.base import BaseSync
 
-
 LOG = logging.getLogger(__name__)
 
 

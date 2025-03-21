@@ -13,18 +13,19 @@
 
 # Class to create default roles for lifecycle
 import logging
+
 from awscli.clidriver import CLIOperationCaller
-from awscli.customizations.utils import get_policy_arn_suffix
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.dlm.iam import IAM
 from awscli.customizations.dlm.constants import (
-    RESOURCES,
     LIFECYCLE_DEFAULT_ROLE_ASSUME_POLICY,
     POLICY_ARN_PATTERN,
-    RESOURCE_TYPE_SNAPSHOT,
     RESOURCE_TYPE_IMAGE,
+    RESOURCE_TYPE_SNAPSHOT,
+    RESOURCES,
 )
+from awscli.customizations.dlm.iam import IAM
 from awscli.customizations.exceptions import ConfigurationError
+from awscli.customizations.utils import get_policy_arn_suffix
 
 LOG = logging.getLogger(__name__)
 

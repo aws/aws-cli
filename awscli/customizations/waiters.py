@@ -16,8 +16,8 @@ from botocore.exceptions import DataNotFoundError
 from awscli.clidriver import ServiceOperation
 from awscli.customizations.commands import (
     BasicCommand,
-    BasicHelp,
     BasicDocHandler,
+    BasicHelp,
 )
 
 
@@ -92,7 +92,7 @@ class WaitCommand(BasicCommand):
         )
 
 
-class WaiterStateCommandBuilder(object):
+class WaiterStateCommandBuilder:
     def __init__(self, session, model, service_model):
         self._session = session
         self._model = model
@@ -143,7 +143,7 @@ class WaiterStateCommandBuilder(object):
         return waiter_state_command
 
 
-class WaiterStateDocBuilder(object):
+class WaiterStateDocBuilder:
     SUCCESS_DESCRIPTIONS = {
         'error': '%s is thrown ',
         'path': '%s ',
@@ -208,7 +208,7 @@ class WaiterStateDocBuilder(object):
         return description
 
 
-class WaiterCaller(object):
+class WaiterCaller:
     def __init__(self, session, waiter_name):
         self._session = session
         self._waiter_name = waiter_name

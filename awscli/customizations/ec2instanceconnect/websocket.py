@@ -28,11 +28,11 @@ from awscrt.http import HttpProxyAuthenticationType, HttpProxyOptions
 from awscrt.io import ClientTlsContext, TlsContextOptions
 from awscrt.websocket import (
     OnConnectionSetupData,
+    OnConnectionShutdownData,
+    OnIncomingFrameCompleteData,
     OnIncomingFramePayloadData,
     OnSendFrameCompleteData,
     Opcode,
-    OnConnectionShutdownData,
-    OnIncomingFrameCompleteData,
 )
 
 from awscli.compat import is_windows
@@ -238,7 +238,7 @@ class Websocket:
 
             try:
                 data = self.websocketio.read(self._MAX_BYTES_PER_FRAME)
-            except InputClosedError as e:
+            except InputClosedError:
                 logger.debug('Input closed. Shutting down websocket.')
                 self.close()
 

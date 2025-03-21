@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # aws-cli documentation build configuration file, created by
 # sphinx-quickstart on Fri Feb  1 12:57:38 2013.
@@ -11,7 +10,9 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os, datetime
+import datetime
+import os
+import sys
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the

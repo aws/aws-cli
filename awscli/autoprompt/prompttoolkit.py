@@ -13,21 +13,19 @@
 import logging
 import shlex
 import sys
-from contextlib import nullcontext, contextmanager
+from contextlib import contextmanager, nullcontext
 
 from prompt_toolkit.application import Application
-from prompt_toolkit.completion import Completer, ThreadedCompleter
-from prompt_toolkit.completion import Completion
+from prompt_toolkit.completion import Completer, Completion, ThreadedCompleter
 from prompt_toolkit.document import Document
 
-from awscli.logger import LOG_FORMAT, disable_crt_logging
 from awscli.autocomplete import parser
 from awscli.autocomplete.local import model
 from awscli.autoprompt.doc import DocsGetter
-from awscli.autoprompt.output import OutputGetter
 from awscli.autoprompt.factory import PromptToolkitFactory
 from awscli.autoprompt.logger import PromptToolkitHandler
-
+from awscli.autoprompt.output import OutputGetter
+from awscli.logger import LOG_FORMAT, disable_crt_logging
 
 LOG = logging.getLogger(__name__)
 

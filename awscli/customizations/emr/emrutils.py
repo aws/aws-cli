@@ -15,13 +15,12 @@ import json
 import logging
 import os
 
+from botocore import xform_name
+from botocore.exceptions import NoCredentialsError, WaiterError
 
 from awscli.clidriver import CLIOperationCaller
+from awscli.customizations.emr import constants, exceptions
 from awscli.customizations.exceptions import ParamValidationError
-from awscli.customizations.emr import constants
-from awscli.customizations.emr import exceptions
-from botocore.exceptions import WaiterError, NoCredentialsError
-from botocore import xform_name
 
 LOG = logging.getLogger(__name__)
 
@@ -137,7 +136,7 @@ def build_bootstrap_action(path, name='Bootstrap Action', args=None):
 def build_s3_link(relative_path='', region='us-east-1'):
     if region is None:
         region = 'us-east-1'
-    return 's3://{0}.elasticmapreduce{1}'.format(region, relative_path)
+    return f's3://{region}.elasticmapreduce{relative_path}'
 
 
 def get_script_runner(region='us-east-1'):

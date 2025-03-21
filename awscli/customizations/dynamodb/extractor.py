@@ -13,7 +13,7 @@
 from .parser import Parser
 
 
-class AttributeExtractor(object):
+class AttributeExtractor:
     COMPARATORS = {
         'eq': '=',
         'ne': '<>',

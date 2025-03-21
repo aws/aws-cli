@@ -18,16 +18,19 @@ import socket
 import time
 import webbrowser
 from functools import partial
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from botocore.compat import urlparse, parse_qs
+from botocore.compat import parse_qs, urlparse
 from botocore.credentials import JSONFileCache
 from botocore.exceptions import (
     AuthCodeFetcherError,
     PendingAuthorizationExpiredError,
 )
-from botocore.utils import SSOTokenFetcher, SSOTokenFetcherAuth
-from botocore.utils import original_ld_library_path
+from botocore.utils import (
+    SSOTokenFetcher,
+    SSOTokenFetcherAuth,
+    original_ld_library_path,
+)
 
 from awscli import __version__ as awscli_version
 from awscli.customizations.assumerole import CACHE_DIR as AWS_CREDS_CACHE_DIR
@@ -217,7 +220,7 @@ class AuthCodeFetcher:
             handler = partial(OAuthCallbackHandler, self)
             self.http_server = HTTPServer(('', 0), handler)
             self.http_server.timeout = self._REQUEST_TIMEOUT
-        except socket.error as e:
+        except OSError as e:
             raise AuthCodeFetcherError(error_msg=e)
 
     def redirect_uri_without_port(self):

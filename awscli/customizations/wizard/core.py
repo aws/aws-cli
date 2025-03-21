@@ -12,25 +12,24 @@
 # language governing permissions and limitations under the License.
 """Core planner and executor for wizards."""
 
-import re
 import json
 import os
+import re
 from functools import partial
 
-from botocore import xform_name
 import jmespath
+from botocore import xform_name
 
-from awscli.utils import json_encoder
 from awscli.customizations.wizard.exceptions import (
     InvalidDataTypeConversionException,
 )
-
+from awscli.utils import json_encoder
 
 DONE_SECTION_NAME = '__DONE__'
 OUTPUT_SECTION_NAME = '__OUTPUT__'
 
 
-class Runner(object):
+class Runner:
     def __init__(self, planner, executor):
         self._planner = planner
         self._executor = executor
@@ -40,7 +39,7 @@ class Runner(object):
         self._executor.execute(wizard_spec['execute'], params)
 
 
-class Planner(object):
+class Planner:
     _DONE_STEP = 'DONE'
     _STOP_RUNNING = object()
 
@@ -109,7 +108,7 @@ class Planner(object):
             return next_step[value]
 
 
-class BaseStep(object):
+class BaseStep:
     # Subclasses must implement this.  This defines the name you'd
     # use for the `type` in a wizard definition.
     NAME = ''
@@ -313,7 +312,7 @@ class DumpDataStep(BaseStep):
             raise ValueError(f'Unsupported load_type: {dump_type}')
 
 
-class VariableResolver(object):
+class VariableResolver:
     _VAR_MATCH = re.compile(r'^{(.*?)}$')
 
     def resolve_variables(self, variables, params):
@@ -363,7 +362,7 @@ class VariableResolver(object):
         return value
 
 
-class APIInvoker(object):
+class APIInvoker:
     """This class contains shared logic for the apicall step.
 
     The ``apicall`` in the planner and executor are slightly different
@@ -447,7 +446,7 @@ class APIInvoker(object):
         )
 
 
-class Executor(object):
+class Executor:
     def __init__(self, step_handlers):
         self._step_handlers = step_handlers
 
@@ -503,7 +502,7 @@ class DataTypeConverter:
             raise InvalidDataTypeConversionException(value, datatype)
 
 
-class ExecutorStep(object):
+class ExecutorStep:
     # Subclasses must implement this to specify what name to use
     # for the `type` in a wizard definition.
     NAME = ''
@@ -554,7 +553,7 @@ class SharedConfigExecutorStep(ExecutorStep):
         return VariableResolver().resolve_variables(params, value)
 
 
-class SharedConfigAPI(object):
+class SharedConfigAPI:
     """Simplified interface to reading/writing the ~/.aws/config file.
 
     This provides a simplified interface over the config file writer

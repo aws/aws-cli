@@ -15,7 +15,6 @@ import copy
 import sys
 from difflib import get_close_matches
 
-
 HELP_BLURB = (
     "To see help text, you can run:\n"
     "\n"

@@ -10,21 +10,20 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import random
 import sys
 import time
-import random
 
+from botocore.signers import CloudFrontSigner
+from botocore.utils import parse_to_aware_datetime
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 
-from botocore.utils import parse_to_aware_datetime
-from botocore.signers import CloudFrontSigner
-
 from awscli.arguments import CustomArgument
-from awscli.customizations.utils import validate_mutually_exclusive_handler
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.utils import validate_mutually_exclusive_handler
 
 
 def register(event_handler):
@@ -302,7 +301,7 @@ class SignCommand(BasicCommand):
         return 0
 
 
-class RSASigner(object):
+class RSASigner:
     def __init__(self, private_key):
         backend = default_backend()
         key_bytes = private_key.encode('utf8')

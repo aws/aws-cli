@@ -13,7 +13,7 @@
 from awscli.customizations.s3.fileinfo import FileInfo
 
 
-class FileInfoBuilder(object):
+class FileInfoBuilder:
     """
     This class takes a ``FileBase`` object's attributes and generates
     a ``FileInfo`` object so that the operation can be performed.

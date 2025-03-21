@@ -13,12 +13,12 @@
 from collections.abc import Mapping, MutableSequence
 
 from awscli.customizations.dynamodb.types import (
-    TypeSerializer,
     TypeDeserializer,
+    TypeSerializer,
 )
 
 
-class ParameterTransformer(object):
+class ParameterTransformer:
     """Transforms the input to and output from botocore based on shape"""
 
     def transform(self, params, model, transformation, target_shape):

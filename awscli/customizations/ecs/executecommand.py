@@ -10,13 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import logging
-import json
 import errno
-
+import json
+import logging
 from subprocess import check_call
+
+from awscli.clidriver import CLIOperationCaller, ServiceOperation
 from awscli.compat import ignore_user_entered_signals
-from awscli.clidriver import ServiceOperation, CLIOperationCaller
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +60,7 @@ def build_ssm_request_paramaters(response, client):
     container_runtime_id = get_container_runtime_id(
         client, container_name, task_id, cluster_name
     )
-    target = "ecs:{}_{}_{}".format(cluster_name, task_id, container_runtime_id)
+    target = f"ecs:{cluster_name}_{task_id}_{container_runtime_id}"
     ssm_request_params = {"Target": target}
     return ssm_request_params
 

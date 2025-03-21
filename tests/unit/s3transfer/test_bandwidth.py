@@ -25,6 +25,7 @@ from s3transfer.bandwidth import (
     TimeUtils,
 )
 from s3transfer.futures import TransferCoordinator
+
 from tests import mock, unittest
 
 

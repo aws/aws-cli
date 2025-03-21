@@ -18,9 +18,9 @@ import string
 import tempfile
 import threading
 
+import s3transfer
 from botocore.client import Config
 
-import s3transfer
 from tests.integration.s3transfer import BaseTransferManagerIntegTest
 
 
@@ -31,9 +31,7 @@ def assert_files_equal(first, second):
     second_md5 = md5_checksum(second)
     if first_md5 != second_md5:
         raise AssertionError(
-            "Files are not equal: {}(md5={}) != {}(md5={})".format(
-                first, first_md5, second, second_md5
-            )
+            f"Files are not equal: {first}(md5={first_md5}) != {second}(md5={second_md5})"
         )
 
 

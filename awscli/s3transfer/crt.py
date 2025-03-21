@@ -44,7 +44,6 @@ from botocore.config import Config
 from botocore.exceptions import NoCredentialsError
 from botocore.useragent import register_feature_id
 from botocore.utils import ArnParser, InvalidArnException, is_s3express_bucket
-
 from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS, MB
 from s3transfer.exceptions import TransferNotDoneError
 from s3transfer.futures import BaseTransferFuture, BaseTransferMeta
@@ -628,7 +627,7 @@ class CRTTransferCoordinator:
     """A helper class for managing CRTTransferFuture"""
 
     def __init__(
-            self, transfer_id=None, s3_request=None, exception_translator=None
+        self, transfer_id=None, s3_request=None, exception_translator=None
     ):
         self.transfer_id = transfer_id
         self._exception_translator = exception_translator
@@ -858,9 +857,8 @@ class S3ClientArgsCreator:
 
         arn_handler = _S3ArnParamHandler()
         if (
-            (accesspoint_arn_details := arn_handler.handle_arn(call_args.bucket))
-            and accesspoint_arn_details['region'] == ""
-        ):
+            accesspoint_arn_details := arn_handler.handle_arn(call_args.bucket)
+        ) and accesspoint_arn_details['region'] == "":
             # Configure our region to `*` to propogate in `x-amz-region-set`
             # for multi-region support in MRAP accesspoints.
             # use_double_uri_encode and should_normalize_uri_path are defaulted to be True
@@ -928,6 +926,7 @@ class _S3ArnParamHandler:
     purposes. This should be safe to remove once we properly integrate auth
     resolution from Botocore into the CRT transfer integration.
     """
+
     _RESOURCE_REGEX = re.compile(
         r'^(?P<resource_type>accesspoint|outpost)[/:](?P<resource_name>.+)$'
     )
@@ -948,9 +947,9 @@ class _S3ArnParamHandler:
             self._add_resource_type_and_name(arn_details)
             return arn_details
         except InvalidArnException:
-                pass
+            pass
         return None
-    
+
     def _add_resource_type_and_name(self, arn_details):
         match = self._RESOURCE_REGEX.match(arn_details['resource'])
         if match:

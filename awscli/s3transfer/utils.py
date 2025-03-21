@@ -24,7 +24,6 @@ from collections import defaultdict
 from botocore.exceptions import IncompleteReadError, ReadTimeoutError
 from botocore.httpchecksum import DEFAULT_CHECKSUM_ALGORITHM, AwsChunkedWrapper
 from botocore.utils import is_s3express_bucket
-
 from s3transfer.compat import SOCKET_ERROR, fallocate, rename_file
 from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS
 
@@ -32,8 +31,8 @@ MAX_PARTS = 10000
 # The maximum file size you can upload via S3 per request.
 # See: http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html
 # and: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
-MAX_SINGLE_UPLOAD_SIZE = 5 * (1024 ** 3)
-MIN_UPLOAD_CHUNKSIZE = 5 * (1024 ** 2)
+MAX_SINGLE_UPLOAD_SIZE = 5 * (1024**3)
+MIN_UPLOAD_CHUNKSIZE = 5 * (1024**2)
 logger = logging.getLogger(__name__)
 
 
@@ -194,9 +193,7 @@ class FunctionContainer:
         self._kwargs = kwargs
 
     def __repr__(self):
-        return 'Function: {} with args {} and kwargs {}'.format(
-            self._func, self._args, self._kwargs
-        )
+        return f'Function: {self._func} with args {self._args} and kwargs {self._kwargs}'
 
     def __call__(self):
         return self._func(*self._args, **self._kwargs)
@@ -825,7 +822,7 @@ def add_s3express_defaults(bucket, extra_args):
 
 
 def set_default_checksum_algorithm(extra_args):
-     """Set the default algorithm if not specified by the user."""
-     if any(checksum in extra_args for checksum in FULL_OBJECT_CHECKSUM_ARGS):
-         return
-     extra_args.setdefault("ChecksumAlgorithm", DEFAULT_CHECKSUM_ALGORITHM)
+    """Set the default algorithm if not specified by the user."""
+    if any(checksum in extra_args for checksum in FULL_OBJECT_CHECKSUM_ARGS):
+        return
+    extra_args.setdefault("ChecksumAlgorithm", DEFAULT_CHECKSUM_ALGORITHM)

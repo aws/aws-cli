@@ -18,7 +18,6 @@ from collections import namedtuple
 from concurrent import futures
 
 from botocore.context import get_context
-
 from s3transfer.compat import MAXINT
 from s3transfer.exceptions import CancelledError, TransferNotDoneError
 from s3transfer.utils import FunctionContainer, TaskSemaphore
@@ -177,9 +176,7 @@ class TransferCoordinator:
         self._failure_cleanups_lock = threading.Lock()
 
     def __repr__(self):
-        return '{}(transfer_id={})'.format(
-            self.__class__.__name__, self.transfer_id
-        )
+        return f'{self.__class__.__name__}(transfer_id={self.transfer_id})'
 
     @property
     def exception(self):
@@ -318,9 +315,7 @@ class TransferCoordinator:
         :returns: A future representing the submitted task
         """
         logger.debug(
-            "Submitting task {} to executor {} for transfer request: {}.".format(
-                task, executor, self.transfer_id
-            )
+            f"Submitting task {task} to executor {executor} for transfer request: {self.transfer_id}."
         )
         future = executor.submit(task, tag=tag)
         # Add this created future to the list of associated future just
@@ -509,6 +504,7 @@ class ExecutorFuture:
             than concurrent.futures.Future.add_done_callback that requires
             a single argument for the future.
         """
+
         # The done callback for concurrent.futures.Future will always pass a
         # the future in as the only argument. So we need to create the
         # proper signature wrapper that will invoke the callback provided.

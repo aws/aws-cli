@@ -33,6 +33,7 @@ from s3transfer import (
     random_file_extension,
 )
 from s3transfer.exceptions import RetriesExceededError, S3UploadFailedError
+
 from tests import mock, unittest
 
 
@@ -377,7 +378,6 @@ class TestMultipartUploader(unittest.TestCase):
 
 
 class TestMultipartDownloader(unittest.TestCase):
-
     maxDiff = None
 
     def test_multipart_download_uses_correct_client_calls(self):
@@ -435,7 +435,7 @@ class TestMultipartDownloader(unittest.TestCase):
         response_body = b'foobarbaz'
         stream_with_errors = mock.Mock()
         stream_with_errors.read.side_effect = [
-            socket.error("fake error"),
+            OSError("fake error"),
             response_body,
         ]
         client.get_object.return_value = {'Body': stream_with_errors}
@@ -470,7 +470,7 @@ class TestMultipartDownloader(unittest.TestCase):
         client = mock.Mock()
         response_body = b'foobarbaz'
         stream_with_errors = mock.Mock()
-        stream_with_errors.read.side_effect = socket.error("fake error")
+        stream_with_errors.read.side_effect = OSError("fake error")
         client.get_object.return_value = {'Body': stream_with_errors}
         config = TransferConfig(multipart_threshold=4, multipart_chunksize=4)
 
@@ -679,7 +679,7 @@ class TestS3Transfer(unittest.TestCase):
         }
         self.client.get_object.side_effect = [
             # First request fails.
-            socket.error("fake error"),
+            OSError("fake error"),
             # Second succeeds.
             {'Body': BytesIO(b'foobar')},
         ]
@@ -697,7 +697,7 @@ class TestS3Transfer(unittest.TestCase):
         # Here we're raising an exception every single time, which
         # will exhaust our retry count and propagate a
         # RetriesExceededError.
-        self.client.get_object.side_effect = socket.error("fake error")
+        self.client.get_object.side_effect = OSError("fake error")
         with self.assertRaises(RetriesExceededError):
             transfer.download_file('bucket', 'key', 'smallfile')
 

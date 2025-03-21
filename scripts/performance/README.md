@@ -1,24 +1,24 @@
 # AWS CLI Performance Benchmarks
 
-This document outlines details of the AWS CLI performance benchmarks, 
+This document outlines details of the AWS CLI performance benchmarks,
 including how to run benchmarks and how to add your own.
 
 ## Running the Benchmarks
 
-Our benchmark executor works by running all benchmarks defined in 
-`benchmarks.json`. For each benchmark defined in this JSON file, it 
-runs the command for a configurable number of iterations (default: 1) 
-and benchmarks metrics such as memory usage, CPU utilization, and 
+Our benchmark executor works by running all benchmarks defined in
+`benchmarks.json`. For each benchmark defined in this JSON file, it
+runs the command for a configurable number of iterations (default: 1)
+and benchmarks metrics such as memory usage, CPU utilization, and
 timings.
 
-The benchmark executor also stubs an HTTP client with mock responses 
-defined in `benchmarks.json`. This ensures the timings produced in 
-the results reflect only the AWS CLI and **not** external factors 
+The benchmark executor also stubs an HTTP client with mock responses
+defined in `benchmarks.json`. This ensures the timings produced in
+the results reflect only the AWS CLI and **not** external factors
 such as service latency or network throughput.
 
 ### Example
 
-The following example command runs the benchmarks defined in `benchmarks.json`, 
+The following example command runs the benchmarks defined in `benchmarks.json`,
 and executes each command 2 times.
 
 `./run-benchmarks --num-iterations 2`
@@ -235,60 +235,64 @@ An example output for this command is shown below.
 
 ## Defining Your own Benchmarks for Local Performance Testing
 
-To create your own benchmark definitions, create a file on your machine containing 
-a JSON-formatted list of benchmark definitions. Each benchmark definition supports 
+To create your own benchmark definitions, create a file on your machine containing
+a JSON-formatted list of benchmark definitions. Each benchmark definition supports
 the keys below. Each key is required unless specified otherwise.
 
 - `name` (string): The name of the benchmark.
-- `command` (list): The AWS CLI command to benchmark, including arguments. 
+- `command` (list): The AWS CLI command to benchmark, including arguments.
     - Each element of the list is a string component of the command.
     - Example value: `["s3", "cp", "test_file", "s3://bucket/test_file", "--quiet"]`.
-- `dimensions` (list) **(optional)**: Used to specify additional dimensions for 
+- `dimensions` (list) **(optional)**: Used to specify additional dimensions for
 interpreting this metric.
-  - Each element in the list is an object with a single key-value pair. 
-The key is the name of the dimension (e.g. `FileSize`), and the value 
+  - Each element in the list is an object with a single key-value pair.
+The key is the name of the dimension (e.g. `FileSize`), and the value
 is the value of the dimension (e.g. `32MB`).
-- `environment` (object) **(optional)**: Specifies settings for the environment to run 
-the command in. 
+- `environment` (object) **(optional)**: Specifies settings for the environment to run
+the command in.
   - The environment object supports the following keys:
-    - `file_literals` (list) **(optional)**: Specifies files that must be 
-created before executing the benchmark. The files created will contain 
+    - `file_literals` (list) **(optional)**: Specifies files that must be
+created before executing the benchmark. The files created will contain
 the specified contents.
       - Each element is an object with the following keys:
         - `name` (string): Name of the file to create
         - `content` (string): The contents of the file.
-    - `files` (list) **(optional)**: Specifies the files that must be 
-created before executing the benchmark. The files created will be filled with 
+    - `files` (list) **(optional)**: Specifies the files that must be
+created before executing the benchmark. The files created will be filled with
 null bytes to achieve the specified size.
       - Each element is an object with the following keys:
         - `name` (string): Name of the file to create
         - `size` (int): The size of the file to create in bytes.
-    - `file_dirs` (list) **(optional)**: Specifies the directories that must 
-be created before executing the benchmark. The directories will be created 
-and filled with the specified number of files, each of which will be filled 
+    - `file_dirs` (list) **(optional)**: Specifies the directories that must
+be created before executing the benchmark. The directories will be created
+and filled with the specified number of files, each of which will be filled
 with null bytes to achieve the specified file size.
       - Each element is an object with the following keys:
         - `name` (string): Name of the directory
         - `file_count` (int): The number of files to create in the directory.
         - `file_size` (int): The size of each file in the directory, in bytes.
-    - `config` (string) **(optional)**: The contents of the AWS config 
+    - `config` (string) **(optional)**: The contents of the AWS config
 file to use for the benchmark execution.
       - Default: `"[default]"`.
       - Example value: `"[default]\ns3 =\n preferred_transfer_client = crt"`
-- `responses` (list) **(optional)**: A list of HTTP responses to stub from 
+- `responses` (list) **(optional)**: A list of HTTP responses to stub from
 the service for each request made during command execution.
   - Default: `[{{"headers": {}, "body": ""}]`
   - Each element of the list is an object with the following keys:
     - `status_code` (int) **(optional)**: The status code of the response.
       - Default: `200`
-    - `headers` (object) **(optional)**: Used to specify the HTTP headers of 
-the response. Each key-value pair corresponds to a single header name (key) 
+    - `headers` (object) **(optional)**: Used to specify the HTTP headers of
+the response. Each key-value pair corresponds to a single header name (key)
 and its value.
       - Default: `{}`
-    - `body` (string) **(optional)**: The raw HTTP response.
+    - `body` (string | object) **(optional)**: The raw HTTP response body.
       - Default: `""`
-    - `instances` (int) **(optional)**: The total number of times to stub 
-this response; this prevents the need to repeat the same response many times.  
+      - If body is an object, it supports the following keys:
+        - `file` (string): The name of a file whose contents will be used as
+the response body. This can refer to files created under the `environment`
+definition.
+    - `instances` (int) **(optional)**: The total number of times to stub
+this response; this prevents the need to repeat the same response many times.
       - Default: 1
-      - This is useful for commands such as `aws s3 sync`, that may execute many 
+      - This is useful for commands such as `aws s3 sync`, that may execute many
       HTTP requests with similar responses.

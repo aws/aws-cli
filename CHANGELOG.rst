@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.25.2
+======
+
+* api-change:``pcs``: ClusterName/ClusterIdentifier, ComputeNodeGroupName/ComputeNodeGroupIdentifier, and QueueName/QueueIdentifier can now have 10 characters, and a minimum of 3 characters. The TagResource API action can now return ServiceQuotaExceededException.
+* api-change:``iotwireless``: Mark EutranCid under LteNmr optional.
+* bugfix:dependency: Relax symlink verification when building MacOS executables
+* api-change:``ssm``: This release adds the AvailableSecurityUpdatesComplianceStatus field to patch baseline operations, as well as the AvailableSecurityUpdateCount and InstancesWithAvailableSecurityUpdates to patch state operations. Applies to Windows Server managed nodes only.
+* api-change:``qconnect``: Provides the correct value for supported model ID.
+
+
 2.25.1
 ======
 

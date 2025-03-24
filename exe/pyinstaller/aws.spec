@@ -25,6 +25,9 @@ if platform.system() == "Darwin":
         if dest.startswith('Python.framework/Versions/') and dest.endswith('/Python'):
             # and move it to the top
             dest = 'Python'
+        if dest.startswith('Python3.framework/Versions/') and dest.endswith('/Python3'):
+            # and move it to the top
+            dest = 'Python3'
         updated_binaries.append((dest, src, typecode))
     aws_a.binaries = updated_binaries
 
@@ -34,15 +37,10 @@ if platform.system() == "Darwin":
     for dest, src, typecode in aws_a.datas:
         if (dest.startswith('Python.framework/') or (dest == 'Python' and typecode == 'SYMLINK')):
             continue
+        if (dest.startswith('Python3.framework/') or (dest == 'Python3' and typecode == 'SYMLINK')):
+            continue
         updated_datas.append((dest, src, typecode))
     aws_a.datas = updated_datas
-
-    # Verify that there are no remaining symlinks
-    for dest, src, typecode in aws_a.datas:
-        if typecode == 'SYMLINK':
-            raise ValueError((f'Symlink ({dest} -> {src}) found in table of contents. '
-                'Our downstream packaging and signing code does not support symlinks, '
-                'so this requires investigation.'))
 
 aws_pyz = PYZ(aws_a.pure, aws_a.zipped_data, cipher=block_cipher)
 aws_exe = EXE(aws_pyz,

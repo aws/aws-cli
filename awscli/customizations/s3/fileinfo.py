@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 
-class FileInfo(object):
+class FileInfo:
     """This class contains important details related to performing a task.
 
     It can perform operations such as ``upload``, ``download``, ``copy``,

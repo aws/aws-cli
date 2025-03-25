@@ -21,11 +21,11 @@ def make_url(region, bucket_name, obj_path, version=None):
     """
     base = "https://s3.amazonaws.com"
     if region and region != "us-east-1":
-        base = "https://s3-{0}.amazonaws.com".format(region)
+        base = f"https://s3-{region}.amazonaws.com"
 
-    result = "{0}/{1}/{2}".format(base, bucket_name, obj_path)
+    result = f"{base}/{bucket_name}/{obj_path}"
     if version:
-        result = "{0}?versionId={1}".format(result, version)
+        result = f"{result}?versionId={version}"
 
     return result
 

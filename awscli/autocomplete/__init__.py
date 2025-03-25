@@ -28,7 +28,7 @@ def lazy_call(import_name, **kwargs):
     return getattr(module, callable_name)(**kwargs)
 
 
-class LazyClientCreator(object):
+class LazyClientCreator:
     """Lazy create a botocore client.
 
     This class will defer creating a client until the create_client method

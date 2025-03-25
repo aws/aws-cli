@@ -15,21 +15,23 @@
 
 import logging
 import warnings
+
+from botocore.exceptions import ClientError
+
+from awscli.customizations.commands import BasicCommand
 from awscli.customizations.datapipeline.constants import (
-    DATAPIPELINE_DEFAULT_SERVICE_ROLE_NAME,
+    DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ARN,
+    DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ASSUME_POLICY,
     DATAPIPELINE_DEFAULT_RESOURCE_ROLE_NAME,
     DATAPIPELINE_DEFAULT_SERVICE_ROLE_ARN,
-    DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ARN,
     DATAPIPELINE_DEFAULT_SERVICE_ROLE_ASSUME_POLICY,
-    DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ASSUME_POLICY,
+    DATAPIPELINE_DEFAULT_SERVICE_ROLE_NAME,
 )
-from awscli.customizations.commands import BasicCommand
 from awscli.customizations.datapipeline.translator import (
-    display_response,
     dict_to_string,
+    display_response,
     get_region,
 )
-from botocore.exceptions import ClientError
 
 LOG = logging.getLogger(__name__)
 

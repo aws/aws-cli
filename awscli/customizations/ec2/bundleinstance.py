@@ -11,11 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import logging
-from hashlib import sha1
-import hmac
 import base64
 import datetime
+import hmac
+import logging
+from hashlib import sha1
 
 from awscli.arguments import CustomArgument
 from awscli.customizations.exceptions import ParamValidationError

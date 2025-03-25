@@ -1,23 +1,26 @@
 #!/usr/bin/env python
-"""Generate the index used for the new auto-completion.
+"""Generate the index used for the new auto-completion."""
 
-"""
-import os
 import argparse
+import os
 
-from awscli.autocomplete import db
-from awscli.autocomplete import generator
+from awscli.autocomplete import db, generator
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--include-builtin-index', action='store_true',
-                        help=("Also generate builtin index as well as the "
-                              "INDEX_LOCATION."))
-    parser.add_argument('--index-location', default=db.INDEX_FILE,
-                        help=(
-                            'Location to write the index file. '
-                            'Defaults to ' + db.INDEX_FILE))
+    parser.add_argument(
+        '--include-builtin-index',
+        action='store_true',
+        help=("Also generate builtin index as well as the INDEX_LOCATION."),
+    )
+    parser.add_argument(
+        '--index-location',
+        default=db.INDEX_FILE,
+        help=(
+            f'Location to write the index file. Defaults to {db.INDEX_FILE}'
+        ),
+    )
     args = parser.parse_args()
     index_dir = os.path.dirname(os.path.abspath(args.index_location))
     if not os.path.isdir(index_dir):

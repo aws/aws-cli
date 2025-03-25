@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from s3transfer.exceptions import InvalidSubscriberMethodError
 from s3transfer.subscribers import BaseSubscriber
+
 from tests import unittest
 
 

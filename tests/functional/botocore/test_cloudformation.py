@@ -15,12 +15,12 @@ from tests.functional.botocore.docs import BaseDocsFunctionalTest
 
 class TestCloudFormationDocs(BaseDocsFunctionalTest):
     def test_get_template_response_documented_as_dict(self):
-        content = self.get_docstring_for_method('cloudformation', 'get_template')
+        content = self.get_docstring_for_method(
+            'cloudformation', 'get_template'
+        )
         # String return type should be gone
-        self.assert_not_contains_line(
-            "(*string*) --", content)
+        self.assert_not_contains_line("(*string*) --", content)
         # Check for template body returning a dict
-        self.assert_contains_line(
-            "(*dict*) --", content)
+        self.assert_contains_line("(*dict*) --", content)
         # Check the specifics of the returned dict
         self.assert_contains_line('{}', content)

@@ -11,9 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from tests import unittest, random_chars
-
 import botocore.session
+
+from tests import random_chars, unittest
 
 DEFAULT_ROLE_POLICY = """\
 {"Statement": [
@@ -28,11 +28,13 @@ DEFAULT_ROLE_POLICY = """\
 ]}
 """
 
+
 class TestElasticTranscoder(unittest.TestCase):
     def setUp(self):
         self.session = botocore.session.get_session()
         self.client = self.session.create_client(
-            'elastictranscoder', 'us-east-1')
+            'elastictranscoder', 'us-east-1'
+        )
         self.s3_client = self.session.create_client('s3', 'us-east-1')
         self.iam_client = self.session.create_client('iam', 'us-east-1')
 
@@ -41,18 +43,16 @@ class TestElasticTranscoder(unittest.TestCase):
         self.s3_client.create_bucket(Bucket=bucket_name)
         waiter = self.s3_client.get_waiter('bucket_exists')
         waiter.wait(Bucket=bucket_name)
-        self.addCleanup(
-            self.s3_client.delete_bucket, Bucket=bucket_name)
+        self.addCleanup(self.s3_client.delete_bucket, Bucket=bucket_name)
         return bucket_name
 
     def create_iam_role(self):
         role_name = 'ets-role-name-1-%s' % random_chars(10)
         parsed = self.iam_client.create_role(
-            RoleName=role_name,
-            AssumeRolePolicyDocument=DEFAULT_ROLE_POLICY)
+            RoleName=role_name, AssumeRolePolicyDocument=DEFAULT_ROLE_POLICY
+        )
         arn = parsed['Role']['Arn']
-        self.addCleanup(
-            self.iam_client.delete_role, RoleName=role_name)
+        self.addCleanup(self.iam_client.delete_role, RoleName=role_name)
         return arn
 
     def test_list_streams(self):
@@ -72,10 +72,17 @@ class TestElasticTranscoder(unittest.TestCase):
         pipeline_name = 'botocore-test-create-%s' % random_chars(10)
 
         parsed = self.client.create_pipeline(
-            InputBucket=input_bucket, OutputBucket=output_bucket,
-            Role=role, Name=pipeline_name,
-            Notifications={'Progressing': '', 'Completed': '',
-                           'Warning': '', 'Error': ''})
+            InputBucket=input_bucket,
+            OutputBucket=output_bucket,
+            Role=role,
+            Name=pipeline_name,
+            Notifications={
+                'Progressing': '',
+                'Completed': '',
+                'Warning': '',
+                'Error': '',
+            },
+        )
         pipeline_id = parsed['Pipeline']['Id']
         self.addCleanup(self.client.delete_pipeline, Id=pipeline_id)
         self.assertIn('Pipeline', parsed)

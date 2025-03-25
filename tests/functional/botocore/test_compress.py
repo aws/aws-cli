@@ -14,9 +14,9 @@
 import gzip
 
 import pytest
-
 from botocore.compress import COMPRESSION_MAPPING
 from botocore.config import Config
+
 from tests import ALL_SERVICES, ClientHTTPStubber, patch_load_service_model
 
 FAKE_MODEL = {

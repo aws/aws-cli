@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-
 from botocore.args import PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
 from botocore.session import get_session
 
@@ -52,7 +51,7 @@ def _single_protocol_test_cases():
     _multi_protocol_test_cases(),
 )
 def test_services_with_protocols_trait_have_supported_protocol(
-        service_name, supported_protocols
+    service_name, supported_protocols
 ):
     message = f"No protocols supported for service {service_name}"
     assert any(
@@ -67,10 +66,7 @@ def test_services_with_protocols_trait_have_supported_protocol(
     _single_protocol_test_cases(),
 )
 def test_services_without_protocols_trait_have_supported_protocol(
-        service_name, supported_protocol
+    service_name, supported_protocol
 ):
     message = f"Service protocol not supported for {service_name}"
-    assert (
-        supported_protocol
-        in PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
-    ), message
+    assert supported_protocol in PRIORITY_ORDERED_SUPPORTED_PROTOCOLS, message

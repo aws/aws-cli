@@ -10,35 +10,41 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import mock, unittest
 import copy
-import pytest
 
 import botocore
 import botocore.session as session
-from botocore.configprovider import ConfigValueStore
-from botocore.configprovider import BaseProvider
-from botocore.configprovider import InstanceVarProvider
-from botocore.configprovider import EnvironmentProvider
-from botocore.configprovider import ScopedConfigProvider
-from botocore.configprovider import SectionConfigProvider
-from botocore.configprovider import ConstantProvider
-from botocore.configprovider import ChainProvider
-from botocore.configprovider import ConfigChainFactory
-from botocore.configprovider import ConfiguredEndpointProvider
+import pytest
+from botocore.configprovider import (
+    BaseProvider,
+    ChainProvider,
+    ConfigChainFactory,
+    ConfiguredEndpointProvider,
+    ConfigValueStore,
+    ConstantProvider,
+    EnvironmentProvider,
+    InstanceVarProvider,
+    ScopedConfigProvider,
+    SectionConfigProvider,
+)
+
+from tests import mock, unittest
 
 
 class TestConfigChainFactory(unittest.TestCase):
-    def assert_chain_does_provide(self, instance_map, environ_map,
-                                  scoped_config_map, create_config_chain_args,
-                                  expected_value):
+    def assert_chain_does_provide(
+        self,
+        instance_map,
+        environ_map,
+        scoped_config_map,
+        create_config_chain_args,
+        expected_value,
+    ):
         fake_session = mock.Mock(spec=session.Session)
         fake_session.get_scoped_config.return_value = scoped_config_map
         fake_session.instance_variables.return_value = instance_map
         builder = ConfigChainFactory(fake_session, environ=environ_map)
-        chain = builder.create_config_chain(
-            **create_config_chain_args
-        )
+        chain = builder.create_config_chain(**create_config_chain_args)
         value = chain.provide()
         self.assertEqual(value, expected_value)
 
@@ -190,10 +196,7 @@ class TestConfigChainFactory(unittest.TestCase):
         self.assert_chain_does_provide(
             instance_map={},
             environ_map={},
-            scoped_config_map={
-                'first': 'first_val',
-                'second': 'second_val'
-            },
+            scoped_config_map={'first': 'first_val', 'second': 'second_val'},
             create_config_chain_args={
                 'config_property_names': ['first', 'second'],
             },
@@ -227,9 +230,7 @@ class TestConfigChainFactory(unittest.TestCase):
             instance_map={},
             environ_map={},
             scoped_config_map={},
-            create_config_chain_args={
-                'default': 'from-default'
-            },
+            create_config_chain_args={'default': 'from-default'},
             expected_value='from-default',
         )
 
@@ -299,9 +300,11 @@ class TestConfigValueStore(unittest.TestCase):
     def test_does_provide_value_if_variable_exists(self):
         mock_value_provider = mock.Mock(spec=BaseProvider)
         mock_value_provider.provide.return_value = 'foo'
-        provider = ConfigValueStore(mapping={
-            'fake_variable': mock_value_provider,
-        })
+        provider = ConfigValueStore(
+            mapping={
+                'fake_variable': mock_value_provider,
+            }
+        )
         value = provider.get_config_variable('fake_variable')
         self.assertEqual(value, 'foo')
 
@@ -314,9 +317,11 @@ class TestConfigValueStore(unittest.TestCase):
     def test_can_set_config_provider(self):
         foo_value_provider = mock.Mock(spec=BaseProvider)
         foo_value_provider.provide.return_value = 'foo'
-        provider = ConfigValueStore(mapping={
-            'fake_variable': foo_value_provider,
-        })
+        provider = ConfigValueStore(
+            mapping={
+                'fake_variable': foo_value_provider,
+            }
+        )
 
         value = provider.get_config_variable('fake_variable')
         self.assertEqual(value, 'foo')
@@ -450,8 +455,9 @@ class TestEnvironmentProvider(unittest.TestCase):
 
 
 class TestScopedConfigProvider(unittest.TestCase):
-    def assert_provides_value(self, config_file_values, config_var_name,
-                              expected_value):
+    def assert_provides_value(
+        self, config_file_values, config_var_name, expected_value
+    ):
         fake_session = mock.Mock(spec=session.Session)
         fake_session.get_scoped_config.return_value = config_file_values
         property_provider = ScopedConfigProvider(
@@ -463,38 +469,28 @@ class TestScopedConfigProvider(unittest.TestCase):
 
     def test_can_provide_value(self):
         self.assert_provides_value(
-            config_file_values={
-                'foo': 'bar'
-            },
+            config_file_values={'foo': 'bar'},
             config_var_name='foo',
             expected_value='bar',
         )
 
     def test_does_provide_none_if_var_not_in_config(self):
         self.assert_provides_value(
-            config_file_values={
-                'foo': 'bar'
-            },
+            config_file_values={'foo': 'bar'},
             config_var_name='no_such_var',
             expected_value=None,
         )
 
     def test_provide_nested_value(self):
         self.assert_provides_value(
-            config_file_values={
-                'section': {
-                    'nested_var': 'nested_val'
-                }
-            },
+            config_file_values={'section': {'nested_var': 'nested_val'}},
             config_var_name=('section', 'nested_var'),
             expected_value='nested_val',
         )
 
     def test_provide_nested_value_but_not_section(self):
         self.assert_provides_value(
-            config_file_values={
-                'section': 'not-nested'
-            },
+            config_file_values={'section': 'not-nested'},
             config_var_name=('section', 'nested_var'),
             expected_value=None,
         )
@@ -534,16 +530,13 @@ def assert_chain_does_provide(providers, expected_value):
         ('bar', [None, 'bar', None]),
         ('foo', ['foo', 'bar', None]),
         ('foo', ['foo', 'bar', 'baz']),
-    )
+    ),
 )
 def test_chain_provider(case):
     # Each case is a tuple with the first element being the expected return
     # value from the ChainProvider. The second value being a list of return
     # values from the individual providers that are in the chain.
-    assert_chain_does_provide(
-        _make_providers_that_return(case[1]),
-        case[0]
-    )
+    assert_chain_does_provide(_make_providers_that_return(case[1]), case[0])
 
 
 class TestChainProvider(unittest.TestCase):
@@ -565,25 +558,26 @@ class TestConstantProvider(unittest.TestCase):
 
 
 class TestSectionConfigProvider(unittest.TestCase):
-    def assert_provides_value(self, config_file_values, section_name,
-                              expected_value, override_providers=None):
+    def assert_provides_value(
+        self,
+        config_file_values,
+        section_name,
+        expected_value,
+        override_providers=None,
+    ):
         fake_session = mock.Mock(spec=session.Session)
         fake_session.get_scoped_config.return_value = config_file_values
         provider = SectionConfigProvider(
             section_name=section_name,
             session=fake_session,
-            override_providers=override_providers
+            override_providers=override_providers,
         )
         value = provider.provide()
         self.assertEqual(value, expected_value)
 
     def test_provide_section_config(self):
         self.assert_provides_value(
-            config_file_values={
-                'mysection': {
-                    'section_var': 'section_val'
-                }
-            },
+            config_file_values={'mysection': {'section_var': 'section_val'}},
             section_name='mysection',
             expected_value={'section_var': 'section_val'},
         )
@@ -607,15 +601,15 @@ class TestSectionConfigProvider(unittest.TestCase):
             config_file_values={
                 'mysection': {
                     'override_var': 'from_config_file',
-                    'no_override_var': 'from_config_file'
+                    'no_override_var': 'from_config_file',
                 }
             },
             section_name='mysection',
             override_providers={'override_var': ConstantProvider('override')},
             expected_value={
                 'override_var': 'override',
-                'no_override_var': 'from_config_file'
-            }
+                'no_override_var': 'from_config_file',
+            },
         )
 
     def test_provide_section_config_with_only_overrides(self):
@@ -625,7 +619,7 @@ class TestSectionConfigProvider(unittest.TestCase):
             override_providers={'override_var': ConstantProvider('override')},
             expected_value={
                 'override_var': 'override',
-            }
+            },
         )
 
 

@@ -1,18 +1,23 @@
+import contextlib
 import select
 import socket
-import contextlib
-import threading
 import socketserver
-from http.server import BaseHTTPRequestHandler
-from tests import mock, unittest
+import threading
 from contextlib import contextmanager
+from http.server import BaseHTTPRequestHandler
 
 import botocore.session
 from botocore.config import Config
 from botocore.exceptions import (
-    ConnectTimeoutError, ReadTimeoutError, EndpointConnectionError,
-    ConnectionClosedError, ClientError, ProxyConnectionError
+    ClientError,
+    ConnectionClosedError,
+    ConnectTimeoutError,
+    EndpointConnectionError,
+    ProxyConnectionError,
+    ReadTimeoutError,
 )
+
+from tests import mock, unittest
 
 
 class TestClientHTTPBehavior(unittest.TestCase):
@@ -50,7 +55,7 @@ class TestClientHTTPBehavior(unittest.TestCase):
         config = Config(
             proxies={'https': proxy_url},
             proxies_config={'proxy_use_forwarding_for_https': True},
-            region_name='us-west-1'
+            region_name='us-west-1',
         )
         environ = {'BOTO_EXPERIMENTAL__ADD_PROXY_HOST_HEADER': "True"}
         self.environ_patch = mock.patch('os.environ', environ)
@@ -73,7 +78,9 @@ class TestClientHTTPBehavior(unittest.TestCase):
                 self.end_headers()
 
                 remote_host, remote_port = self.path.split(':')
-                remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                remote_socket = socket.socket(
+                    socket.AF_INET, socket.SOCK_STREAM
+                )
                 remote_socket.connect((remote_host, int(remote_port)))
 
                 self._tunnel(self.request, remote_socket)
@@ -94,15 +101,15 @@ class TestClientHTTPBehavior(unittest.TestCase):
         finally:
             self.environ_patch.stop()
 
-
     def _read_timeout_server(self):
         config = Config(
             read_timeout=0.1,
             retries={'max_attempts': 1},
             region_name='us-weast-2',
         )
-        client = self.session.create_client('ec2', endpoint_url=self.localhost,
-                                            config=config)
+        client = self.session.create_client(
+            'ec2', endpoint_url=self.localhost, config=config
+        )
         client_call_ended_event = threading.Event()
 
         class FakeEC2(SimpleHandler):
@@ -137,8 +144,9 @@ class TestClientHTTPBehavior(unittest.TestCase):
             retries={'max_attempts': 1},
             region_name='us-weast-2',
         )
-        client = self.session.create_client('ec2', endpoint_url=self.localhost,
-                                            config=config)
+        client = self.session.create_client(
+            'ec2', endpoint_url=self.localhost, config=config
+        )
         server_bound_event = threading.Event()
         client_call_ended_event = threading.Event()
 
@@ -159,15 +167,17 @@ class TestClientHTTPBehavior(unittest.TestCase):
     def test_invalid_host_gaierror(self):
         config = Config(retries={'max_attempts': 1}, region_name='us-weast-1')
         endpoint = 'https://ec2.us-weast-1.amazonaws.com/'
-        client = self.session.create_client('ec2', endpoint_url=endpoint,
-                                            config=config)
+        client = self.session.create_client(
+            'ec2', endpoint_url=endpoint, config=config
+        )
         with self.assertRaises(EndpointConnectionError):
             client.describe_regions()
 
     def test_bad_status_line(self):
         config = Config(retries={'max_attempts': 1}, region_name='us-weast-2')
-        client = self.session.create_client('ec2', endpoint_url=self.localhost,
-                                            config=config)
+        client = self.session.create_client(
+            'ec2', endpoint_url=self.localhost, config=config
+        )
 
         class BadStatusHandler(BaseHTTPRequestHandler):
             event = threading.Event()

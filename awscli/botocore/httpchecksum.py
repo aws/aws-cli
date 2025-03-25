@@ -11,13 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-""" The interfaces in this module are not intended for public use.
+"""The interfaces in this module are not intended for public use.
 
 This module defines interfaces for applying checksums to HTTP requests within
 the context of botocore. This involves both resolving the checksum to be used
 based on client configuration and environment, as well as application of the
 checksum to the request.
 """
+
 import base64
 import io
 import logging
@@ -234,7 +235,10 @@ class StreamingChecksumBody(StreamingBody):
         if self._checksum.digest() != base64.b64decode(self._expected):
             error_msg = (
                 "Expected checksum %s did not match calculated checksum: %s"
-                % (self._expected, self._checksum.b64digest(),)
+                % (
+                    self._expected,
+                    self._checksum.b64digest(),
+                )
             )
             raise FlexibleChecksumError(error_msg=error_msg)
 
@@ -245,7 +249,10 @@ def resolve_checksum_context(request, operation_model, params):
 
 
 def resolve_request_checksum_algorithm(
-    request, operation_model, params, supported_algorithms=None,
+    request,
+    operation_model,
+    params,
+    supported_algorithms=None,
 ):
     # If the header is already set by the customer, skip calculation
     if has_checksum_header(request):
@@ -388,18 +395,20 @@ def _apply_request_trailer_checksum(request):
         # Send the decoded content length if we can determine it. Some
         # services such as S3 may require the decoded content length
         headers["X-Amz-Decoded-Content-Length"] = str(content_length)
-        
+
         if "Content-Length" in headers:
             del headers["Content-Length"]
             logger.debug(
                 "Removing the Content-Length header since 'chunked' is specified for Transfer-Encoding."
             )
-    
+
     if isinstance(body, (bytes, bytearray)):
         body = io.BytesIO(body)
 
     request["body"] = AwsChunkedWrapper(
-        body, checksum_cls=checksum_cls, checksum_name=location_name,
+        body,
+        checksum_cls=checksum_cls,
+        checksum_name=location_name,
     )
 
 
@@ -489,7 +498,10 @@ def _handle_bytes_response(http_response, response, algorithm):
     if checksum.digest() != base64.b64decode(expected):
         error_msg = (
             "Expected checksum %s did not match calculated checksum: %s"
-            % (expected, checksum.b64digest(),)
+            % (
+                expected,
+                checksum.b64digest(),
+            )
         )
         raise FlexibleChecksumError(error_msg=error_msg)
     return body

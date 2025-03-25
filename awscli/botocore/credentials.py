@@ -22,6 +22,7 @@ import time
 from collections import namedtuple
 from copy import deepcopy
 from hashlib import sha1
+import dateutil.parser
 
 import botocore.compat
 import botocore.configloader
@@ -2197,6 +2198,7 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
         expiry_window_seconds=None,
         token_provider=None,
         sso_session_name=None,
+        time_fetcher=_local_now,
     ):
         self._client_creator = client_creator
         self._sso_region = sso_region
@@ -2206,6 +2208,7 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
         self._token_loader = token_loader
         self._token_provider = token_provider
         self._sso_session_name = sso_session_name
+        self._time_fetcher = time_fetcher
         super(SSOCredentialFetcher, self).__init__(
             cache, expiry_window_seconds
         )
@@ -2249,7 +2252,16 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
             initial_token_data = self._token_provider.load_token()
             token = initial_token_data.get_frozen_token().token
         else:
-            token = self._token_loader(self._start_url)['accessToken']
+            token_dict = self._token_loader(self._start_url)
+            token = token_dict['accessToken']
+
+            # raise an UnauthorizedSSOTokenError if the loaded legacy token
+            # is expired to save a call to GetRoleCredentials with an
+            # expired token.
+            expiration = dateutil.parser.parse(token_dict['expiresAt'])
+            remaining = total_seconds(expiration - self._time_fetcher())
+            if remaining <= 0:
+                raise UnauthorizedSSOTokenError()
 
         kwargs = {
             'roleName': self._role_name,

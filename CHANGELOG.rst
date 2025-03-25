@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+2.25.2
+======
+
+* api-change:``pcs``: ClusterName/ClusterIdentifier, ComputeNodeGroupName/ComputeNodeGroupIdentifier, and QueueName/QueueIdentifier can now have 10 characters, and a minimum of 3 characters. The TagResource API action can now return ServiceQuotaExceededException.
+* api-change:``iotwireless``: Mark EutranCid under LteNmr optional.
+* bugfix:dependency: Relax symlink verification when building MacOS executables
+* api-change:``ssm``: This release adds the AvailableSecurityUpdatesComplianceStatus field to patch baseline operations, as well as the AvailableSecurityUpdateCount and InstancesWithAvailableSecurityUpdates to patch state operations. Applies to Windows Server managed nodes only.
+* api-change:``qconnect``: Provides the correct value for supported model ID.
+
+
+2.25.1
+======
+
+* api-change:``datazone``: Add support for overriding selection of default AWS IAM Identity Center instance as part of Amazon DataZone domain APIs.
+* api-change:``sagemaker``: This release does the following: 1.) Adds DurationHours as a required field to the SearchTrainingPlanOfferings action in the SageMaker AI API; 2.) Adds support for G6e instance types for SageMaker AI inference optimization jobs.
+* enhancement:Protocol: Adds support for the smithy-rpc-v2-cbor protocol.  If a service supports smithy-rpc-v2-cbor, this protocol will automatically be used.  For more information, see https://smithy.io/2.0/additional-specs/protocols/smithy-rpc-v2.html
+* api-change:``route53-recovery-control-config``: Adds dual-stack (IPv4 and IPv6) endpoint support for route53-recovery-control-config operations, opt-in dual-stack addresses for cluster endpoints, and UpdateCluster API to update the network-type of clusters between IPv4 and dual-stack.
+* api-change:``bedrock``: A CustomModelUnit(CMU) is an abstract view of the hardware utilization that Bedrock needs to host a a single copy of your custom imported model. Bedrock determines the number of CMUs that a model copy needs when you import the custom model. You can use CMUs to estimate the cost of Inference's.
+
+
 2.25.0
 ======
 

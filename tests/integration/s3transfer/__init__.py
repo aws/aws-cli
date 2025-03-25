@@ -13,9 +13,9 @@
 import botocore
 import botocore.session
 from botocore.exceptions import WaiterError
-
 from s3transfer.manager import TransferManager
 from s3transfer.subscribers import BaseSubscriber
+
 from tests import FileCreator, S3Utils, random_bucket_name, unittest
 
 

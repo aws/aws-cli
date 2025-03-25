@@ -14,7 +14,6 @@ import copy
 import logging
 
 from botocore.context import start_as_current_context
-
 from s3transfer.utils import get_callbacks
 
 logger = logging.getLogger(__name__)
@@ -98,11 +97,7 @@ class Task:
         main_kwargs_to_display = self._get_kwargs_with_params_to_include(
             self._main_kwargs, params_to_display
         )
-        return '{}(transfer_id={}, {})'.format(
-            self.__class__.__name__,
-            self._transfer_coordinator.transfer_id,
-            main_kwargs_to_display,
-        )
+        return f'{self.__class__.__name__}(transfer_id={self._transfer_coordinator.transfer_id}, {main_kwargs_to_display})'
 
     @property
     def transfer_id(self):

@@ -51,7 +51,7 @@ class DocStringParser(HTMLParser):
         self.tree.add_data(data)
 
 
-class HTMLTree(object):
+class HTMLTree:
     """
     A tree which handles HTML nodes. Designed to work with a python HTML parser,
     meaning that the current_node will be the most recently opened tag. When
@@ -94,7 +94,7 @@ class HTMLTree(object):
         self.head.write(self.doc)
 
 
-class Node(object):
+class Node:
     def __init__(self, parent=None):
         self.parent = parent
 

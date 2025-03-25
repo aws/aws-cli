@@ -13,16 +13,19 @@ if you want to see the generated completion data without modifying existing
 files.
 
 """
+
 import argparse
 import json
-import sys
 import os
 import re
+import sys
 
 import botocore.session
 
-from awscli.autocomplete.autogen import ServerCompletionHeuristic
-from awscli.autocomplete.autogen import BasicSingularize
+from awscli.autocomplete.autogen import (
+    BasicSingularize,
+    ServerCompletionHeuristic,
+)
 
 # The awscli/__init__.py file sets the AWS_DATA_PATH env var, so as long
 # as we import from awscli we're ensured this env var exists.
@@ -37,8 +40,10 @@ def generate_completion_data(args):
         model = session.get_service_model(service_name)
         completion_data = gen.generate_completion_descriptions(model)
         out_filename = os.path.join(
-            BOTOCORE_DATA_PATH, service_name,
-            model.api_version, 'completions-1.json'
+            BOTOCORE_DATA_PATH,
+            service_name,
+            model.api_version,
+            'completions-1.json',
         )
         to_json = _pretty_json_dump(completion_data)
         if args.only_print:

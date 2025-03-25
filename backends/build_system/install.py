@@ -10,16 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import functools
+import os
 
-from constants import CLI_SCRIPTS
-from constants import IS_WINDOWS
-from constants import BIN_DIRNAME
-from constants import PYTHON_EXE_NAME
-from constants import ArtifactType
+from constants import (
+    BIN_DIRNAME,
+    CLI_SCRIPTS,
+    IS_WINDOWS,
+    PYTHON_EXE_NAME,
+    ArtifactType,
+)
 from utils import Utils
-
 
 WINDOWS_CMD_TEMPLATE = """@echo off
 {path} %*

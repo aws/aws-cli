@@ -14,7 +14,6 @@ import sys
 from enum import Enum
 from pathlib import Path
 
-
 ROOT_DIR = Path(__file__).parents[2]
 BUILD_DIR = ROOT_DIR / "build"
 

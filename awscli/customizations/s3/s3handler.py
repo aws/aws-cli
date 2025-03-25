@@ -15,49 +15,50 @@ import os
 
 from s3transfer.manager import TransferManager
 
-from awscli.customizations.s3.utils import (
-    human_readable_size,
-    MAX_UPLOAD_SIZE,
-    find_bucket_key,
-    relative_path,
-    create_warning,
-    NonSeekableStream,
+from awscli.compat import get_binary_stdin
+from awscli.customizations.s3.results import (
+    CommandResultRecorder,
+    DoneResultSubscriber,
+    DryRunResult,
+    FailureResult,
+    NoProgressResultPrinter,
+    OnlyShowErrorsResultPrinter,
+    ProgressResultSubscriber,
+    QueuedResult,
+    QueuedResultSubscriber,
+    ResultPrinter,
+    ResultProcessor,
+    ResultRecorder,
+    SuccessResult,
+)
+from awscli.customizations.s3.subscribers import (
+    CopyPropsSubscriberFactory,
+    DeleteCopySourceObjectSubscriber,
+    DeleteSourceFileSubscriber,
+    DeleteSourceObjectSubscriber,
+    DirectoryCreatorSubscriber,
+    ProvideLastModifiedTimeSubscriber,
+    ProvideSizeSubscriber,
+    ProvideUploadContentTypeSubscriber,
 )
 from awscli.customizations.s3.transferconfig import (
     create_transfer_config_from_runtime_config,
 )
-from awscli.customizations.s3.results import QueuedResultSubscriber
-from awscli.customizations.s3.results import ProgressResultSubscriber
-from awscli.customizations.s3.results import DoneResultSubscriber
-from awscli.customizations.s3.results import QueuedResult
-from awscli.customizations.s3.results import SuccessResult
-from awscli.customizations.s3.results import FailureResult
-from awscli.customizations.s3.results import DryRunResult
-from awscli.customizations.s3.results import ResultRecorder
-from awscli.customizations.s3.results import ResultPrinter
-from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
-from awscli.customizations.s3.results import NoProgressResultPrinter
-from awscli.customizations.s3.results import ResultProcessor
-from awscli.customizations.s3.results import CommandResultRecorder
-from awscli.customizations.s3.utils import RequestParamsMapper
-from awscli.customizations.s3.utils import StdoutBytesWriter
-from awscli.customizations.s3.subscribers import (
-    ProvideSizeSubscriber,
-    ProvideUploadContentTypeSubscriber,
-    ProvideLastModifiedTimeSubscriber,
-    CopyPropsSubscriberFactory,
-    DirectoryCreatorSubscriber,
-    DeleteSourceFileSubscriber,
-    DeleteSourceObjectSubscriber,
-    DeleteCopySourceObjectSubscriber,
+from awscli.customizations.s3.utils import (
+    MAX_UPLOAD_SIZE,
+    NonSeekableStream,
+    RequestParamsMapper,
+    StdoutBytesWriter,
+    create_warning,
+    find_bucket_key,
+    human_readable_size,
+    relative_path,
 )
-from awscli.compat import get_binary_stdin
-
 
 LOGGER = logging.getLogger(__name__)
 
 
-class S3TransferHandlerFactory(object):
+class S3TransferHandlerFactory:
     def __init__(self, cli_params):
         """Factory for S3TransferHandlers
 
@@ -106,7 +107,7 @@ class S3TransferHandlerFactory(object):
         result_processor_handlers.append(result_printer)
 
 
-class S3TransferHandler(object):
+class S3TransferHandler:
     def __init__(self, transfer_manager, cli_params, result_command_recorder):
         """Backend for performing S3 transfers
 
@@ -171,7 +172,7 @@ class S3TransferHandler(object):
         return self._result_command_recorder.get_command_result()
 
 
-class BaseTransferRequestSubmitter(object):
+class BaseTransferRequestSubmitter:
     REQUEST_MAPPER_METHOD = None
 
     def __init__(self, transfer_manager, result_queue, cli_params):

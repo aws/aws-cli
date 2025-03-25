@@ -3,7 +3,7 @@
 import json
 
 
-class DBCompletionLookup(object):
+class DBCompletionLookup:
     _QUERY = """\
         SELECT apicall_data from apicall_table
         INNER JOIN param_table

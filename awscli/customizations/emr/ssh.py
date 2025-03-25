@@ -15,9 +15,7 @@ import os
 import subprocess
 import tempfile
 
-from awscli.customizations.emr import constants
-from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import sshutils
+from awscli.customizations.emr import constants, emrutils, sshutils
 from awscli.customizations.emr.command import Command
 
 KEY_PAIR_FILE_HELP_TEXT = (

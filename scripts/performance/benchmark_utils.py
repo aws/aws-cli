@@ -1,14 +1,14 @@
 import json
 import math
-import sys
-import time
-import psutil
-
 import os
 import shutil
-from awscli.botocore.awsrequest import AWSResponse
-
+import sys
+import time
 from unittest import mock
+
+import psutil
+
+from awscli.botocore.awsrequest import AWSResponse
 from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
 from awscli.compat import BytesIO
 
@@ -105,7 +105,7 @@ class RawResponse(BytesIO):
             contents = self.read()
 
 
-class StubbedHTTPClient(object):
+class StubbedHTTPClient:
     """
     A generic stubbed HTTP client.
     """
@@ -136,7 +136,7 @@ class StubbedHTTPClient(object):
         self._responses.append(response)
 
 
-class ProcessBenchmarker(object):
+class ProcessBenchmarker:
     """
     Periodically samples CPU and memory usage of a process given its pid.
     """
@@ -192,7 +192,7 @@ class ProcessBenchmarker(object):
         return samples
 
 
-class BenchmarkHarness(object):
+class BenchmarkHarness:
     _DEFAULT_FILE_CONFIG_CONTENTS = "[default]"
 
     """
@@ -373,10 +373,10 @@ class BenchmarkHarness(object):
                 raise RuntimeError(
                     'Child process execution failed: output file not found.'
                 )
-            metrics_f = json.load(open(metrics_path, 'r'))
+            metrics_f = json.load(open(metrics_path))
             # raise error if child process failed
             if (rc := metrics_f['return_code']) != 0:
-                with open(child_err_path, 'r') as err:
+                with open(child_err_path) as err:
                     raise RuntimeError(
                         f'Child process execution failed: return code {rc}.\n'
                         f'Error: {err.read()}'
@@ -407,7 +407,7 @@ class BenchmarkHarness(object):
         result_dir = args.result_dir
         client = StubbedHTTPClient()
         process_benchmarker = ProcessBenchmarker()
-        definitions = json.load(open(args.benchmark_definitions, 'r'))
+        definitions = json.load(open(args.benchmark_definitions))
         if os.path.exists(result_dir):
             shutil.rmtree(result_dir)
         os.makedirs(result_dir, 0o777)

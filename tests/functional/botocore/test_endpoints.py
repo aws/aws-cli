@@ -11,10 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-
 from botocore.session import get_session
 from botocore.utils import CLIENT_NAME_TO_HYPHENIZED_SERVICE_ID_OVERRIDES
-
 
 ENDPOINT_PREFIX_OVERRIDE = {
     # entry in endpoints.json -> actual endpoint prefix.
@@ -82,8 +80,9 @@ def _computed_endpoint_prefixes():
         # Check for an override where we know that an entry
         # in the endpoints.json actually maps to a different endpoint
         # prefix.
-        endpoint_prefix = ENDPOINT_PREFIX_OVERRIDE.get(endpoint_prefix,
-                                                       endpoint_prefix)
+        endpoint_prefix = ENDPOINT_PREFIX_OVERRIDE.get(
+            endpoint_prefix, endpoint_prefix
+        )
         yield endpoint_prefix
 
 

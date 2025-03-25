@@ -13,13 +13,12 @@
 from contextlib import contextmanager
 
 import botocore.session
-from tests import BaseSessionTest, ClientHTTPStubber
 from botocore.stub import Stubber
-from tests import unittest
+
+from tests import BaseSessionTest, ClientHTTPStubber, unittest
 
 
 class TestDocDBPresignUrlInjection(BaseSessionTest):
-
     def setUp(self):
         super(TestDocDBPresignUrlInjection, self).setUp()
         self.client = self.session.create_client('docdb', 'us-west-2')
@@ -35,7 +34,7 @@ class TestDocDBPresignUrlInjection(BaseSessionTest):
             'Engine': 'docdb',
             'SourceRegion': 'us-east-1',
             'MasterUsername': 'master',
-            'MasterUserPassword': 'mypassword'
+            'MasterUserPassword': 'mypassword',
         }
         response_body = (
             b'<CreateDBClusterResponse>'
@@ -53,7 +52,7 @@ class TestDocDBPresignUrlInjection(BaseSessionTest):
         params = {
             'SourceDBClusterSnapshotIdentifier': 'source-db',
             'TargetDBClusterSnapshotIdentifier': 'target-db',
-            'SourceRegion': 'us-east-1'
+            'SourceRegion': 'us-east-1',
         }
         response_body = (
             b'<CopyDBClusterSnapshotResponse>'

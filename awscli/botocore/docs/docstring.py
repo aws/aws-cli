@@ -24,6 +24,7 @@ class LazyLoadedDocstring(str):
     help(). Note that all docstring classes **must** subclass from
     this class. It cannot be used directly as a docstring.
     """
+
     def __init__(self, *args, **kwargs):
         """
         The args and kwargs are the same as the underlying document
@@ -76,8 +77,8 @@ class LazyLoadedDocstring(str):
         # Call the document method function with the args and kwargs
         # passed to the class.
         self._write_docstring(
-            docstring_structure, *self._gen_args,
-            **self._gen_kwargs)
+            docstring_structure, *self._gen_args, **self._gen_kwargs
+        )
         return docstring_structure.flush_structure().decode('utf-8')
 
 

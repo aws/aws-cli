@@ -2,9 +2,9 @@
 Building The Documentation
 ==========================
 
-Before building the documentation, ensure you have the AWS CLI and necessary dependencies installed.  You can
-install dependencies by using the requirements-docs.txt file at the
-root of this repo::
+Before building the documentation, ensure you have the AWS CLI and
+necessary dependencies installed.  You can install dependencies by
+using the requirements-docs.txt file at the root of this repo::
 
     pip install -r requirements-docs.txt
 

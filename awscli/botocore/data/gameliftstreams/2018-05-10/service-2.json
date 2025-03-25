@@ -50,7 +50,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>When you associate, or link, an application with a stream group, then Amazon GameLift Streams can launch the application using the stream group's allocated compute resources. The stream group must be in <code>ACTIVE</code> status. You can reverse this action by using <a>DisassociateApplications</a>.</p>",
+      "documentation":"<p>When you associate, or link, an application with a stream group, then Amazon GameLift Streams can launch the application using the stream group's allocated compute resources. The stream group must be in <code>ACTIVE</code> status. You can reverse this action by using <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_DisassociateApplications.html\">DisassociateApplications</a>.</p>",
       "idempotent":true
     },
     "CreateApplication":{
@@ -70,7 +70,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates an application resource in Amazon GameLift Streams, which specifies the application content you want to stream, such as a game build or other software, and configures the settings to run it.</p> <p> Before you create an application, upload your application content files to an Amazon Simple Storage Service (Amazon S3) bucket. For more information, see <b>Getting Started</b> in the Amazon GameLift Streams Developer Guide. </p> <important> <p> Make sure that your files in the Amazon S3 bucket are the correct version you want to use. As soon as you create a Amazon GameLift Streams application, you cannot change the files at a later time. </p> </important> <p> If the request is successful, Amazon GameLift Streams begins to create an application and sets the status to <code>INITIALIZED</code>. When an application reaches <code>READY</code> status, you can use the application to set up stream groups and start streams. To track application status, call <a>GetApplication</a>. </p>"
+      "documentation":"<p>Creates an application resource in Amazon GameLift Streams, which specifies the application content you want to stream, such as a game build or other software, and configures the settings to run it.</p> <p> Before you create an application, upload your application content files to an Amazon Simple Storage Service (Amazon S3) bucket. For more information, see <b>Getting Started</b> in the Amazon GameLift Streams Developer Guide. </p> <important> <p> Make sure that your files in the Amazon S3 bucket are the correct version you want to use. As soon as you create a Amazon GameLift Streams application, you cannot change the files at a later time. </p> </important> <p> If the request is successful, Amazon GameLift Streams begins to create an application and sets the status to <code>INITIALIZED</code>. When an application reaches <code>READY</code> status, you can use the application to set up stream groups and start streams. To track application status, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetApplication.html\">GetApplication</a>. </p>"
     },
     "CreateStreamGroup":{
       "name":"CreateStreamGroup",
@@ -83,13 +83,14 @@
       "output":{"shape":"CreateStreamGroupOutput"},
       "errors":[
         {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p> Manage how Amazon GameLift Streams streams your applications by using a stream group. A stream group is a collection of resources that Amazon GameLift Streams uses to stream your application to end-users. When you create a stream group, you specify an application to stream by default and the type of hardware to use, such as the graphical processing unit (GPU). You can also link additional applications, which allows you to stream those applications using this stream group. Depending on your expected users, you also scale the number of concurrent streams you want to support at one time, and in what locations. </p> <p> Stream capacity represents the number of concurrent streams that can be active at a time. You set stream capacity per location, per stream group. There are two types of capacity: always-on and on-demand: </p> <ul> <li> <p> <b>Always-on</b>: The streaming capacity that is allocated and ready to handle stream requests without delay. You pay for this capacity whether it's in use or not. Best for quickest time from streaming request to streaming session. <pre><code> &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;b&gt;On-demand&lt;/b&gt;: The streaming capacity that Amazon GameLift Streams can allocate in response to stream requests, and then de-allocate when the session has terminated. This offers a cost control measure at the expense of a greater startup time (typically under 5 minutes). &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;p&gt; To adjust the capacity of any &lt;code&gt;ACTIVE&lt;/code&gt; stream group, call &lt;a&gt;UpdateStreamGroup&lt;/a&gt;. &lt;/p&gt; &lt;p&gt; If the request is successful, Amazon GameLift Streams begins creating the stream group. Amazon GameLift Streams assigns a unique ID to the stream group resource and sets the status to &lt;code&gt;ACTIVATING&lt;/code&gt;. When the stream group reaches &lt;code&gt;ACTIVE&lt;/code&gt; status, you can start stream sessions by using &lt;a&gt;StartStreamSession&lt;/a&gt;. To check the stream group's status, call &lt;a&gt;GetStreamGroup&lt;/a&gt;. &lt;/p&gt; </code></pre>",
+      "documentation":"<p> Manage how Amazon GameLift Streams streams your applications by using a stream group. A stream group is a collection of resources that Amazon GameLift Streams uses to stream your application to end-users. When you create a stream group, you specify an application to stream by default and the type of hardware to use, such as the graphical processing unit (GPU). You can also link additional applications, which allows you to stream those applications using this stream group. Depending on your expected users, you also scale the number of concurrent streams you want to support at one time, and in what locations. </p> <p> Stream capacity represents the number of concurrent streams that can be active at a time. You set stream capacity per location, per stream group. There are two types of capacity: always-on and on-demand: </p> <ul> <li> <p> <b>Always-on</b>: The streaming capacity that is allocated and ready to handle stream requests without delay. You pay for this capacity whether it's in use or not. Best for quickest time from streaming request to streaming session. <pre><code> &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;b&gt;On-demand&lt;/b&gt;: The streaming capacity that Amazon GameLift Streams can allocate in response to stream requests, and then de-allocate when the session has terminated. This offers a cost control measure at the expense of a greater startup time (typically under 5 minutes). &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;p&gt; To adjust the capacity of any &lt;code&gt;ACTIVE&lt;/code&gt; stream group, call &lt;a href=&quot;https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_UpdateStreamGroup.html&quot;&gt;UpdateStreamGroup&lt;/a&gt;. &lt;/p&gt; &lt;p&gt; If the request is successful, Amazon GameLift Streams begins creating the stream group. Amazon GameLift Streams assigns a unique ID to the stream group resource and sets the status to &lt;code&gt;ACTIVATING&lt;/code&gt;. When the stream group reaches &lt;code&gt;ACTIVE&lt;/code&gt; status, you can start stream sessions by using &lt;a href=&quot;https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_StartStreamSession.html&quot;&gt;StartStreamSession&lt;/a&gt;. To check the stream group's status, call &lt;a href=&quot;https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamGroup.html&quot;&gt;GetStreamGroup&lt;/a&gt;. &lt;/p&gt; </code></pre>",
       "idempotent":true
     },
     "CreateStreamSessionConnection":{
@@ -127,7 +128,7 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Permanently deletes an Amazon GameLift Streams application resource. This also deletes the application content files stored with Amazon GameLift Streams. However, this does not delete the original files that you uploaded to your Amazon S3 bucket; you can delete these any time after Amazon GameLift Streams creates an application, which is the only time Amazon GameLift Streams accesses your Amazon S3 bucket.</p> <p> You can only delete an application that meets the following conditions: </p> <ul> <li> <p>The application is in <code>READY</code> or <code>ERROR</code> status. You cannot delete an application that's in <code>PROCESSING</code> or <code>INITIALIZED</code> status.</p> </li> <li> <p>The application is not the default application of any stream groups. You must first delete the stream group by using <a>DeleteStreamGroup</a>.</p> </li> <li> <p>The application is not linked to any stream groups. You must first unlink the stream group by using <a>DisassociateApplications</a>.</p> </li> <li> <p> An application is not streaming in any ongoing stream session. You must wait until the client ends the stream session or call <a>TerminateStreamSession</a> to end the stream. </p> </li> </ul> <p>If any active stream groups exist for this application, this request returns a <code>ValidationException</code>. </p>",
+      "documentation":"<p>Permanently deletes an Amazon GameLift Streams application resource. This also deletes the application content files stored with Amazon GameLift Streams. However, this does not delete the original files that you uploaded to your Amazon S3 bucket; you can delete these any time after Amazon GameLift Streams creates an application, which is the only time Amazon GameLift Streams accesses your Amazon S3 bucket.</p> <p> You can only delete an application that meets the following conditions: </p> <ul> <li> <p>The application is in <code>READY</code> or <code>ERROR</code> status. You cannot delete an application that's in <code>PROCESSING</code> or <code>INITIALIZED</code> status.</p> </li> <li> <p>The application is not the default application of any stream groups. You must first delete the stream group by using <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_DeleteStreamGroup.html\">DeleteStreamGroup</a>.</p> </li> <li> <p>The application is not linked to any stream groups. You must first unlink the stream group by using <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_DisassociateApplications.html\">DisassociateApplications</a>.</p> </li> <li> <p> An application is not streaming in any ongoing stream session. You must wait until the client ends the stream session or call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_TerminateStreamSession.html\">TerminateStreamSession</a> to end the stream. </p> </li> </ul> <p>If any active stream groups exist for this application, this request returns a <code>ValidationException</code>. </p>",
       "idempotent":true
     },
     "DeleteStreamGroup":{
@@ -146,7 +147,7 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Permanently deletes all compute resources and information related to a stream group. To delete a stream group, specify the unique stream group identifier. During the deletion process, the stream group's status is <code>DELETING</code>. This operation stops streams in progress and prevents new streams from starting. As a best practice, before deleting the stream group, call <a>ListStreamSessions</a> to check for streams in progress and take action to stop them. When you delete a stream group, any application associations referring to that stream group are automatically removed.</p>",
+      "documentation":"<p>Permanently deletes all compute resources and information related to a stream group. To delete a stream group, specify the unique stream group identifier. During the deletion process, the stream group's status is <code>DELETING</code>. This operation stops streams in progress and prevents new streams from starting. As a best practice, before deleting the stream group, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_ListStreamSessions.html\">ListStreamSessions</a> to check for streams in progress and take action to stop them. When you delete a stream group, any application associations referring to that stream group are automatically removed.</p>",
       "idempotent":true
     },
     "DisassociateApplications":{
@@ -165,7 +166,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p> When you disassociate, or unlink, an application from a stream group, you can no longer stream this application by using that stream group's allocated compute resources. Any streams in process will continue until they terminate, which helps avoid interrupting an end-user's stream. Amazon GameLift Streams will not initiate new streams using this stream group. The disassociate action does not affect the stream capacity of a stream group. </p> <p> You can only disassociate an application if it's not a default application of the stream group. Check <code>DefaultApplicationIdentifier</code> by calling <a>GetStreamGroup</a>. </p>",
+      "documentation":"<p> When you disassociate, or unlink, an application from a stream group, you can no longer stream this application by using that stream group's allocated compute resources. Any streams in process will continue until they terminate, which helps avoid interrupting an end-user's stream. Amazon GameLift Streams will not initiate new streams using this stream group. The disassociate action does not affect the stream capacity of a stream group. </p> <p> You can only disassociate an application if it's not a default application of the stream group. Check <code>DefaultApplicationIdentifier</code> by calling <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamGroup.html\">GetStreamGroup</a>. </p>",
       "idempotent":true
     },
     "ExportStreamSessionFiles":{
@@ -308,7 +309,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves a list of Amazon GameLift Streams stream sessions that this user account has access to.</p> <p>In the returned list of stream sessions, the <code>ExportFilesMetadata</code> property only shows the <code>Status</code> value. To get the <code>OutpurUri</code> and <code>StatusReason</code> values, use <a>GetStreamSession</a>.</p> <p>We don't recommend using this operation to regularly check stream session statuses because it's costly. Instead, to check status updates for a specific stream session, use <a>GetStreamSession</a>.</p>"
+      "documentation":"<p>Retrieves a list of Amazon GameLift Streams stream sessions that this user account has access to.</p> <p>In the returned list of stream sessions, the <code>ExportFilesMetadata</code> property only shows the <code>Status</code> value. To get the <code>OutpurUri</code> and <code>StatusReason</code> values, use <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamSession.html\">GetStreamSession</a>.</p> <p>We don't recommend using this operation to regularly check stream session statuses because it's costly. Instead, to check status updates for a specific stream session, use <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamSession.html\">GetStreamSession</a>.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -356,12 +357,13 @@
       "output":{"shape":"StartStreamSessionOutput"},
       "errors":[
         {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p> This action initiates a new stream session and outputs connection information that clients can use to access the stream. A stream session refers to an instance of a stream that Amazon GameLift Streams transmits from the server to the end-user. A stream session runs on a compute resource, or stream capacity, that a stream group has allocated. </p> <p>To start a new stream session, specify a stream group and application ID, along with the transport protocol and signal request settings to use with the stream. You must have associated at least one application to the stream group before starting a stream session, either when creating the stream group, or by using <a>AssociateApplications</a>.</p> <p> For stream groups that have multiple locations, provide a set of locations ordered by priority by setting <code>Locations</code>. Amazon GameLift Streams will start a single stream session in the next available location. An application must be finished replicating in a remote location before the remote location can host a stream. </p> <p> If the request is successful, Amazon GameLift Streams begins to prepare the stream. Amazon GameLift Streams assigns an Amazon Resource Name (ARN) value to the stream session resource and sets the status to <code>ACTIVATING</code>. During the stream preparation process, Amazon GameLift Streams queues the request and searches for available stream capacity to run the stream. This can result to one of the following: </p> <ul> <li> <p> Amazon GameLift Streams identifies an available compute resource to run the application content and start the stream. When the stream is ready, the stream session's status changes to <code>ACTIVE</code> and includes stream connection information. Provide the connection information to the requesting client to join the stream session.</p> </li> <li> <p> Amazon GameLift Streams doesn't identify an available resource within a certain time, set by <code>ClientToken</code>. In this case, Amazon GameLift Streams stops processing the request, and the stream session object status changes to <code>ERROR</code> with status reason <code>placementTimeout</code>.</p> </li> </ul>"
+      "documentation":"<p> This action initiates a new stream session and outputs connection information that clients can use to access the stream. A stream session refers to an instance of a stream that Amazon GameLift Streams transmits from the server to the end-user. A stream session runs on a compute resource, or stream capacity, that a stream group has allocated. </p> <p>To start a new stream session, specify a stream group and application ID, along with the transport protocol and signal request settings to use with the stream. You must have associated at least one application to the stream group before starting a stream session, either when creating the stream group, or by using <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_AssociateApplications.html\">AssociateApplications</a>.</p> <p> For stream groups that have multiple locations, provide a set of locations ordered by priority by setting <code>Locations</code>. Amazon GameLift Streams will start a single stream session in the next available location. An application must be finished replicating in a remote location before the remote location can host a stream. </p> <p> If the request is successful, Amazon GameLift Streams begins to prepare the stream. Amazon GameLift Streams assigns an Amazon Resource Name (ARN) value to the stream session resource and sets the status to <code>ACTIVATING</code>. During the stream preparation process, Amazon GameLift Streams queues the request and searches for available stream capacity to run the stream. This can result to one of the following: </p> <ul> <li> <p> Amazon GameLift Streams identifies an available compute resource to run the application content and start the stream. When the stream is ready, the stream session's status changes to <code>ACTIVE</code> and includes stream connection information. Provide the connection information to the requesting client to join the stream session.</p> </li> <li> <p> Amazon GameLift Streams doesn't identify an available resource within a certain time, set by <code>ClientToken</code>. In this case, Amazon GameLift Streams stops processing the request, and the stream session object status changes to <code>ERROR</code> with status reason <code>placementTimeout</code>.</p> </li> </ul>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -482,7 +484,7 @@
       "members":{
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p> A stream group to add the specified locations to. </p> <p>This value is a Amazon Resource Name (ARN) that uniquely identifies the stream group resource. Format example: <code>1AB2C3De4</code>. </p>",
+          "documentation":"<p> A stream group to add the specified locations to. </p> <p>This value is a Amazon Resource Name (ARN) that uniquely identifies the stream group resource. Format example: <code>sg-1AB2C3De4</code>. </p>",
           "location":"uri",
           "locationName":"Identifier"
         },
@@ -501,7 +503,7 @@
       "members":{
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p>This value is the Amazon Resource Name (ARN) that uniquely identifies the stream group resource. Format example: <code>1AB2C3De4</code>. </p>"
+          "documentation":"<p>This value is the Amazon Resource Name (ARN) that uniquely identifies the stream group resource. Format example: <code>sg-1AB2C3De4</code>. </p>"
         },
         "Locations":{
           "shape":"LocationStates",
@@ -547,7 +549,7 @@
       "required":["Arn"],
       "members":{
         "Arn":{
-          "shape":"Arn",
+          "shape":"Identifier",
           "documentation":"<p>An Amazon Resource Name (ARN) that's assigned to an application resource and uniquely identifies the application across all Amazon Web Services Regions. Format is <code>arn:aws:gameliftstreams:[AWS Region]:[AWS account]:application/[resource ID]</code>.</p>"
         },
         "CreatedAt":{
@@ -560,7 +562,7 @@
         },
         "Id":{
           "shape":"Id",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code> or ID-<code>9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code> or ID-<code>a-9ZY8X7Wv6</code>. </p>"
         },
         "LastUpdatedAt":{
           "shape":"Timestamp",
@@ -568,14 +570,14 @@
         },
         "RuntimeEnvironment":{
           "shape":"RuntimeEnvironment",
-          "documentation":"<p> A set of configuration settings to run the application on a stream group. This configures the operating system, and can include compatibility layers and other drivers. </p> <p>A runtime environment can be one of the following:</p> <ul> <li> <p> For Linux applications </p> <ul> <li> <p> Ubuntu 22.04 LTS(<code>Type=UBUNTU, Version=22_04_LTS</code>) </p> </li> </ul> </li> <li> <p> For Windows applications </p> <ul> <li> <p>Microsoft Windows Server 2022 Base (<code>Type=WINDOWS, Version=2022</code>)</p> </li> <li> <p>Proton 8.0-5 (<code>Type=PROTON, Version=20241007</code>)</p> </li> <li> <p>Proton 8.0-2c (<code>Type=PROTON, Version=20230704</code>)</p> </li> </ul> </li> </ul>"
+          "documentation":"<p> Configuration settings that identify the operating system for an application resource. This can also include a compatibility layer and other drivers. </p> <p>A runtime environment can be one of the following:</p> <ul> <li> <p> For Linux applications </p> <ul> <li> <p> Ubuntu 22.04 LTS (<code>Type=UBUNTU, Version=22_04_LTS</code>) </p> </li> </ul> </li> <li> <p> For Windows applications </p> <ul> <li> <p>Microsoft Windows Server 2022 Base (<code>Type=WINDOWS, Version=2022</code>)</p> </li> <li> <p>Proton 8.0-5 (<code>Type=PROTON, Version=20241007</code>)</p> </li> <li> <p>Proton 8.0-2c (<code>Type=PROTON, Version=20230704</code>)</p> </li> </ul> </li> </ul>"
         },
         "Status":{
           "shape":"ApplicationStatus",
           "documentation":"<p>The current status of the application resource. Possible statuses include the following:</p> <ul> <li> <p> <code>INITIALIZED</code>: Amazon GameLift Streams has received the request and is initiating the work flow to create an application. </p> </li> <li> <p> <code>PROCESSING</code>: The create application work flow is in process. Amazon GameLift Streams is copying the content and caching for future deployment in a stream group.</p> </li> <li> <p> <code>READY</code>: The application is ready to deploy in a stream group.</p> </li> <li> <p> <code>ERROR</code>: An error occurred when setting up the application. See <code>StatusReason</code> for more information.</p> </li> <li> <p> <code>DELETING</code>: Amazon GameLift Streams is in the process of deleting the application.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Describes an application resource that represents a collection of content for streaming with Amazon GameLift Streams. To retrieve additional application details, call <a>GetApplication</a>.</p>"
+      "documentation":"<p>Describes an application resource that represents a collection of content for streaming with Amazon GameLift Streams. To retrieve additional application details, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetApplication.html\">GetApplication</a>.</p>"
     },
     "ApplicationSummaryList":{
       "type":"list",
@@ -600,11 +602,11 @@
       "members":{
         "ApplicationIdentifiers":{
           "shape":"Identifiers",
-          "documentation":"<p>A set of applications to associate with the stream group.</p> <p>This value is a set of either <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARN)</a> or IDs that uniquely identify application resources. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code> or ID-<code>9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p>A set of applications to associate with the stream group.</p> <p>This value is a set of either <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARN)</a> or IDs that uniquely identify application resources. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code> or ID-<code>a-9ZY8X7Wv6</code>. </p>"
         },
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p>A stream group to associate to the applications.</p> <p>This value is a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code> or ID-<code>1AB2C3De4</code>. </p>",
+          "documentation":"<p>A stream group to associate to the applications.</p> <p>This value is a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/sg-1AB2C3De4</code> or ID-<code>sg-1AB2C3De4</code>. </p>",
           "location":"uri",
           "locationName":"Identifier"
         }
@@ -615,11 +617,11 @@
       "members":{
         "ApplicationArns":{
           "shape":"ArnList",
-          "documentation":"<p>A set of applications that are associated to the stream group.</p> <p>This value is a set of either <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARN)</a> or IDs that uniquely identify application resources. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code> or ID-<code>9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p>A set of applications that are associated to the stream group.</p> <p>This value is a set of either <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARN)</a> or IDs that uniquely identify application resources. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code> or ID-<code>a-9ZY8X7Wv6</code>. </p>"
         },
         "Arn":{
           "shape":"Arn",
-          "documentation":"<p>A stream group that is associated to the applications.</p> <p>This value is a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code> or ID-<code>1AB2C3De4</code>. </p>"
+          "documentation":"<p>A stream group that is associated to the applications.</p> <p>This value is a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/sg-1AB2C3De4</code> or ID-<code>sg-1AB2C3De4</code>. </p>"
         }
       }
     },
@@ -667,15 +669,15 @@
       "members":{
         "ApplicationLogOutputUri":{
           "shape":"ApplicationLogOutputUri",
-          "documentation":"<p>An Amazon S3 URI to a bucket where you would like Amazon GameLift Streams to save application logs. Use the following format for the URI: <code>s3://[bucket name]/[prefix]</code>. Required if you specify one or more <code>LogPaths</code>.</p> <note> <p>The log bucket must have permissions that give Amazon GameLift Streams access to write the log files. For more information, see <b>Getting Started</b> in the Amazon GameLift Streams Developer Guide. </p> </note>"
+          "documentation":"<p>An Amazon S3 URI to a bucket where you would like Amazon GameLift Streams to save application logs. Required if you specify one or more <code>ApplicationLogPaths</code>.</p> <note> <p>The log bucket must have permissions that give Amazon GameLift Streams access to write the log files. For more information, see <b>Getting Started</b> in the Amazon GameLift Streams Developer Guide. </p> </note>"
         },
         "ApplicationLogPaths":{
           "shape":"FilePaths",
-          "documentation":"<p>Locations of log files that your content generates during a stream session. Enter path values that are relative to the <code>ApplicationSourceUri</code> location. You can specify up to 10 log locations. Amazon GameLift Streams uploads designated log files to the Amazon S3 bucket that you specify in <code>ApplicationLogOutputUri</code> at the end of a stream session. To retrieve stored log files, call <a>GetStreamSession</a> and get the <code>LogFileLocationUri</code>.</p>"
+          "documentation":"<p>Locations of log files that your content generates during a stream session. Enter path values that are relative to the <code>ApplicationSourceUri</code> location. You can specify up to 10 log paths. Amazon GameLift Streams uploads designated log files to the Amazon S3 bucket that you specify in <code>ApplicationLogOutputUri</code> at the end of a stream session. To retrieve stored log files, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamSession.html\">GetStreamSession</a> and get the <code>LogFileLocationUri</code>.</p>"
         },
         "ApplicationSourceUri":{
           "shape":"ApplicationSourceUri",
-          "documentation":"<p>The location of the content that you want to stream. Enter the URI of an Amazon S3 location (bucket name and prefixes) that contains your content. Use the following format for the URI: <code>s3://[bucket name]/[prefix]</code>. The location can have a multi-level prefix structure, but it must include all the files needed to run the content. Amazon GameLift Streams copies everything under the specified location.</p> <p>This value is immutable. To designate a different content location, create a new application.</p> <note> <p>The S3 bucket and the Amazon GameLift Streams application must be in the same Amazon Web Services Region.</p> </note>"
+          "documentation":"<p>The location of the content that you want to stream. Enter an Amazon S3 URI to a bucket that contains your game or other application. The location can have a multi-level prefix structure, but it must include all the files needed to run the content. Amazon GameLift Streams copies everything under the specified location.</p> <p>This value is immutable. To designate a different content location, create a new application.</p> <note> <p>The Amazon S3 bucket and the Amazon GameLift Streams application must be in the same Amazon Web Services Region.</p> </note>"
         },
         "ClientToken":{
           "shape":"ClientToken",
@@ -692,11 +694,11 @@
         },
         "RuntimeEnvironment":{
           "shape":"RuntimeEnvironment",
-          "documentation":"<p>A set of configuration settings to run the application on a stream group. This configures the operating system, and can include compatibility layers and other drivers.</p> <p>A runtime environment can be one of the following:</p> <ul> <li> <p> For Linux applications </p> <ul> <li> <p> Ubuntu 22.04 LTS(<code>Type=UBUNTU, Version=22_04_LTS</code>) </p> </li> </ul> </li> <li> <p> For Windows applications </p> <ul> <li> <p>Microsoft Windows Server 2022 Base (<code>Type=WINDOWS, Version=2022</code>)</p> </li> <li> <p>Proton 8.0-5 (<code>Type=PROTON, Version=20241007</code>)</p> </li> <li> <p>Proton 8.0-2c (<code>Type=PROTON, Version=20230704</code>)</p> </li> </ul> </li> </ul>"
+          "documentation":"<p>Configuration settings that identify the operating system for an application resource. This can also include a compatibility layer and other drivers.</p> <p>A runtime environment can be one of the following:</p> <ul> <li> <p> For Linux applications </p> <ul> <li> <p> Ubuntu 22.04 LTS (<code>Type=UBUNTU, Version=22_04_LTS</code>) </p> </li> </ul> </li> <li> <p> For Windows applications </p> <ul> <li> <p>Microsoft Windows Server 2022 Base (<code>Type=WINDOWS, Version=2022</code>)</p> </li> <li> <p>Proton 8.0-5 (<code>Type=PROTON, Version=20241007</code>)</p> </li> <li> <p>Proton 8.0-2c (<code>Type=PROTON, Version=20230704</code>)</p> </li> </ul> </li> </ul>"
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>A list of labels to assign to the new application resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources is useful for resource management, access management and cost allocation. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>. You can use <a>TagResource</a> to add tags, <a>UntagResource</a> to remove tags, and <a>ListTagsForResource</a> to view tags on existing resources. The maximum tag limit might be lower than stated. See the <i>Amazon Web Services General Reference</i> for actual tagging limits.</p>"
+          "documentation":"<p>A list of labels to assign to the new application resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources is useful for resource management, access management and cost allocation. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>. You can use <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_TagResource.html\">TagResource</a> to add tags, <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_UntagResource.html\">UntagResource</a> to remove tags, and <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_ListTagsForResource.html\">ListTagsForResource</a> to view tags on existing resources.</p>"
         }
       }
     },
@@ -706,18 +708,18 @@
       "members":{
         "ApplicationLogOutputUri":{
           "shape":"ApplicationLogOutputUri",
-          "documentation":"<p>An Amazon S3 URI to a bucket where you would like Amazon GameLift Streams to save application logs. Use the following format for the URI: <code>s3://[bucket name]/[prefix]</code>. Required if you specify one or more <code>LogPaths</code>.</p>"
+          "documentation":"<p>An Amazon S3 URI to a bucket where you would like Amazon GameLift Streams to save application logs. Required if you specify one or more <code>ApplicationLogPaths</code>.</p>"
         },
         "ApplicationLogPaths":{
           "shape":"FilePaths",
-          "documentation":"<p>Locations of log files that your content generates during a stream session. Amazon GameLift Streams uploads log files to the Amazon S3 bucket that you specify in <code>ApplicationLogOutputUri</code> at the end of a stream session. To retrieve stored log files, call <a>GetStreamSession</a> and get the <code>LogFileLocationUri</code>.</p>"
+          "documentation":"<p>Locations of log files that your content generates during a stream session. Amazon GameLift Streams uploads log files to the Amazon S3 bucket that you specify in <code>ApplicationLogOutputUri</code> at the end of a stream session. To retrieve stored log files, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamSession.html\">GetStreamSession</a> and get the <code>LogFileLocationUri</code>.</p>"
         },
         "ApplicationSourceUri":{
           "shape":"ApplicationSourceUri",
           "documentation":"<p>The original Amazon S3 location of uploaded stream content for the application.</p>"
         },
         "Arn":{
-          "shape":"Arn",
+          "shape":"Identifier",
           "documentation":"<p>An Amazon Resource Name (ARN) that's assigned to an application resource and uniquely identifies it across all Amazon Web Services Regions. Format is <code>arn:aws:gameliftstreams:[AWS Region]:[AWS account]:application/[resource ID]</code>.</p>"
         },
         "AssociatedStreamGroups":{
@@ -738,7 +740,7 @@
         },
         "Id":{
           "shape":"Id",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code> or ID-<code>9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code> or ID-<code>a-9ZY8X7Wv6</code>. </p>"
         },
         "LastUpdatedAt":{
           "shape":"Timestamp",
@@ -750,7 +752,7 @@
         },
         "RuntimeEnvironment":{
           "shape":"RuntimeEnvironment",
-          "documentation":"<p> A set of configuration settings to run the application on a stream group. This configures the operating system, and can include compatibility layers and other drivers. </p> <p>A runtime environment can be one of the following:</p> <ul> <li> <p> For Linux applications </p> <ul> <li> <p> Ubuntu 22.04 LTS(<code>Type=UBUNTU, Version=22_04_LTS</code>) </p> </li> </ul> </li> <li> <p> For Windows applications </p> <ul> <li> <p>Microsoft Windows Server 2022 Base (<code>Type=WINDOWS, Version=2022</code>)</p> </li> <li> <p>Proton 8.0-5 (<code>Type=PROTON, Version=20241007</code>)</p> </li> <li> <p>Proton 8.0-2c (<code>Type=PROTON, Version=20230704</code>)</p> </li> </ul> </li> </ul>"
+          "documentation":"<p> Configuration settings that identify the operating system for an application resource. This can also include a compatibility layer and other drivers. </p> <p>A runtime environment can be one of the following:</p> <ul> <li> <p> For Linux applications </p> <ul> <li> <p> Ubuntu 22.04 LTS (<code>Type=UBUNTU, Version=22_04_LTS</code>) </p> </li> </ul> </li> <li> <p> For Windows applications </p> <ul> <li> <p>Microsoft Windows Server 2022 Base (<code>Type=WINDOWS, Version=2022</code>)</p> </li> <li> <p>Proton 8.0-5 (<code>Type=PROTON, Version=20241007</code>)</p> </li> <li> <p>Proton 8.0-2c (<code>Type=PROTON, Version=20230704</code>)</p> </li> </ul> </li> </ul>"
         },
         "Status":{
           "shape":"ApplicationStatus",
@@ -788,11 +790,11 @@
         },
         "StreamClass":{
           "shape":"StreamClass",
-          "documentation":"<p>The target stream quality for sessions that are hosted in this stream group. Set a stream class that is appropriate to the type of content that you're streaming. Stream class determines the type of computing resources Amazon GameLift Streams uses and impacts the cost of streaming. The following options are available: </p> <p>A stream class can be one of the following:</p> <ul> <li> <p> <b> <code>gen5n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with most Unreal Engine 5.x builds, 32-bit applications, and anti-cheat technology. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 12 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_ultra</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Uses dedicated NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with most Unreal Engine 5.2 and 5.3 builds, 32-bit applications, and anti-cheat technology. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 8 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_ultra</code> (NVIDIA, ultra)</b> Supports applications with high 3D scene complexity. Uses dedicated NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> </ul>"
+          "documentation":"<p>The target stream quality for sessions that are hosted in this stream group. Set a stream class that is appropriate to the type of content that you're streaming. Stream class determines the type of computing resources Amazon GameLift Streams uses and impacts the cost of streaming. The following options are available: </p> <p>A stream class can be one of the following:</p> <ul> <li> <p> <b> <code>gen5n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with Unreal Engine versions up through 5.4, 32 and 64-bit applications, and anti-cheat technology. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 12 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_ultra</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Uses dedicated NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with Unreal Engine versions up through 5.4, 32 and 64-bit applications, and anti-cheat technology. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 8 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_ultra</code> (NVIDIA, ultra)</b> Supports applications with high 3D scene complexity. Uses dedicated NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> </ul>"
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>A list of labels to assign to the new stream group resource. Tags are developer-defined key-value pairs. It is useful to tag Amazon Web Services resources for resource management, access management, and cost allocation. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>. You can use <a>TagResource</a>, <a>UntagResource</a>, and <a>ListTagsForResource</a> to add, remove, and view tags on existing resources. The maximum tag limit might be lower than stated. See the <i>Amazon Web Services </i> for actual tagging limits.</p>"
+          "documentation":"<p>A list of labels to assign to the new stream group resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources is useful for resource management, access management and cost allocation. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>. You can use <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_TagResource.html\">TagResource</a> to add tags, <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_UntagResource.html\">UntagResource</a> to remove tags, and <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_ListTagsForResource.html\">ListTagsForResource</a> to view tags on existing resources.</p>"
         }
       }
     },
@@ -801,12 +803,12 @@
       "required":["Arn"],
       "members":{
         "Arn":{
-          "shape":"Arn",
+          "shape":"Identifier",
           "documentation":"<p>An Amazon Resource Name (ARN) that is assigned to the stream group resource and that uniquely identifies the group across all Amazon Web Services Regions. Format is <code>arn:aws:gameliftstreams:[AWS Region]:[AWS account]:streamgroup/[resource ID]</code>.</p>"
         },
         "AssociatedApplications":{
           "shape":"ArnList",
-          "documentation":"<p> A set of applications that this stream group is associated to. You can stream any of these applications by using this stream group. </p> <p>This value is a set of <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARNs)</a> that uniquely identify application resources. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p> A set of applications that this stream group is associated to. You can stream any of these applications by using this stream group. </p> <p>This value is a set of <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARNs)</a> that uniquely identify application resources. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code>. </p>"
         },
         "CreatedAt":{
           "shape":"Timestamp",
@@ -814,7 +816,7 @@
         },
         "DefaultApplication":{
           "shape":"DefaultApplication",
-          "documentation":"<p>The Amazon GameLift Streams application that is associated with this stream group.</p>"
+          "documentation":"<p>The default Amazon GameLift Streams application that is associated with this stream group.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -822,7 +824,7 @@
         },
         "Id":{
           "shape":"Id",
-          "documentation":"<p>A unique ID value that is assigned to the resource when it's created. Format example: <code>1AB2C3De4</code>.</p>"
+          "documentation":"<p>A unique ID value that is assigned to the resource when it's created. Format example: <code>sg-1AB2C3De4</code>.</p>"
         },
         "LastUpdatedAt":{
           "shape":"Timestamp",
@@ -842,7 +844,7 @@
         },
         "StreamClass":{
           "shape":"StreamClass",
-          "documentation":"<p>The target stream quality for the stream group.</p> <p>A stream class can be one of the following:</p> <ul> <li> <p> <b> <code>gen5n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with most Unreal Engine 5.x builds, 32-bit applications, and anti-cheat technology. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 12 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_ultra</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Uses dedicated NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with most Unreal Engine 5.2 and 5.3 builds, 32-bit applications, and anti-cheat technology. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 8 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_ultra</code> (NVIDIA, ultra)</b> Supports applications with high 3D scene complexity. Uses dedicated NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> </ul>"
+          "documentation":"<p>The target stream quality for the stream group.</p> <p>A stream class can be one of the following:</p> <ul> <li> <p> <b> <code>gen5n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with Unreal Engine versions up through 5.4, 32 and 64-bit applications, and anti-cheat technology. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 12 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_ultra</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Uses dedicated NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with Unreal Engine versions up through 5.4, 32 and 64-bit applications, and anti-cheat technology. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 8 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_ultra</code> (NVIDIA, ultra)</b> Supports applications with high 3D scene complexity. Uses dedicated NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> </ul>"
         }
       }
     },
@@ -861,7 +863,7 @@
         },
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code> or ID-<code>1AB2C3De4</code>. </p> <p> The stream group that you want to run this stream session with. The stream group must be in <code>ACTIVE</code> status and have idle stream capacity. </p>",
+          "documentation":"<p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/sg-1AB2C3De4</code> or ID-<code>sg-1AB2C3De4</code>. </p> <p> The stream group that you want to run this stream session with. The stream group must be in <code>ACTIVE</code> status and have idle stream capacity. </p>",
           "location":"uri",
           "locationName":"Identifier"
         },
@@ -891,14 +893,14 @@
       "members":{
         "Arn":{
           "shape":"Arn",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code> or ID-<code>1AB2C3De4</code>. </p>"
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> that uniquely identifies the application resource. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code>. </p>"
         },
         "Id":{
           "shape":"Id",
-          "documentation":"<p>The default application of the stream group.</p> <p>This value is an <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code> or ID-<code>9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p>An ID that uniquely identifies the application resource. For example: <code>a-9ZY8X7Wv6</code>.</p>"
         }
       },
-      "documentation":"<p>Represents the Amazon GameLift Streams application that a stream group hosts.</p>"
+      "documentation":"<p>Represents the default Amazon GameLift Streams application that a stream group hosts.</p>"
     },
     "DeleteApplicationInput":{
       "type":"structure",
@@ -906,7 +908,7 @@
       "members":{
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code> or ID-<code>9ZY8X7Wv6</code>. </p>",
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code> or ID-<code>a-9ZY8X7Wv6</code>. </p>",
           "location":"uri",
           "locationName":"Identifier"
         }
@@ -918,7 +920,7 @@
       "members":{
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p>The unique ID value of the stream group resource to delete. Format example: <code>1AB2C3De4</code>.</p>",
+          "documentation":"<p>The unique ID value of the stream group resource to delete. Format example: <code>sg-1AB2C3De4</code>.</p>",
           "location":"uri",
           "locationName":"Identifier"
         }
@@ -939,11 +941,11 @@
       "members":{
         "ApplicationIdentifiers":{
           "shape":"Identifiers",
-          "documentation":"<p>A set of applications that you want to disassociate from the stream group.</p> <p>This value is a set of either <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARN)</a> or IDs that uniquely identify application resources. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code> or ID-<code>9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p>A set of applications that you want to disassociate from the stream group.</p> <p>This value is a set of either <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARN)</a> or IDs that uniquely identify application resources. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code> or ID-<code>a-9ZY8X7Wv6</code>. </p>"
         },
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p>A stream group to disassociate these applications from.</p> <p>This value is an <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code> or ID-<code>1AB2C3De4</code>. </p>",
+          "documentation":"<p>A stream group to disassociate these applications from.</p> <p>This value is an <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/sg-1AB2C3De4</code> or ID-<code>sg-1AB2C3De4</code>. </p>",
           "location":"uri",
           "locationName":"Identifier"
         }
@@ -954,11 +956,11 @@
       "members":{
         "ApplicationArns":{
           "shape":"ArnList",
-          "documentation":"<p>A set of applications that are disassociated from this stream group.</p> <p>This value is a set of either <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARN)</a> or IDs that uniquely identify application resources. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code> or ID-<code>9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p>A set of applications that are disassociated from this stream group.</p> <p>This value is a set of either <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARN)</a> or IDs that uniquely identify application resources. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code> or ID-<code>a-9ZY8X7Wv6</code>. </p>"
         },
         "Arn":{
           "shape":"Arn",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code> or ID-<code>1AB2C3De4</code>. </p>"
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/sg-1AB2C3De4</code> or ID-<code>sg-1AB2C3De4</code>. </p>"
         }
       }
     },
@@ -994,7 +996,7 @@
         },
         "Status":{
           "shape":"ExportFilesStatus",
-          "documentation":"<p>The result of the <a>ExportStreamSessionFiles</a> operation.</p>"
+          "documentation":"<p>The result of the <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_ExportStreamSessionFiles.html\">ExportStreamSessionFiles</a> operation.</p>"
         },
         "StatusReason":{
           "shape":"ExportFilesReason",
@@ -1026,7 +1028,7 @@
       "members":{
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code> or ID-<code>1AB2C3De4</code>. </p>",
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/sg-1AB2C3De4</code> or ID-<code>sg-1AB2C3De4</code>. </p>",
           "location":"uri",
           "locationName":"Identifier"
         },
@@ -1071,7 +1073,7 @@
       "members":{
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code> or ID-<code>9ZY8X7Wv6</code>. </p>",
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code> or ID-<code>a-9ZY8X7Wv6</code>. </p>",
           "location":"uri",
           "locationName":"Identifier"
         }
@@ -1083,23 +1085,23 @@
       "members":{
         "ApplicationLogOutputUri":{
           "shape":"ApplicationLogOutputUri",
-          "documentation":"<p>An Amazon S3 URI to a bucket where you would like Amazon GameLift Streams to save application logs. Use the following format for the URI: <code>s3://[bucket name]/[prefix]</code>. Required if you specify one or more <code>LogPaths</code>.</p>"
+          "documentation":"<p>An Amazon S3 URI to a bucket where you would like Amazon GameLift Streams to save application logs. Required if you specify one or more <code>ApplicationLogPaths</code>.</p>"
         },
         "ApplicationLogPaths":{
           "shape":"FilePaths",
-          "documentation":"<p>Locations of log files that your content generates during a stream session. Amazon GameLift Streams uploads log files to the Amazon S3 bucket that you specify in <code>ApplicationLogOutputUri</code> at the end of a stream session. To retrieve stored log files, call <a>GetStreamSession</a> and get the <code>LogFileLocationUri</code>.</p>"
+          "documentation":"<p>Locations of log files that your content generates during a stream session. Amazon GameLift Streams uploads log files to the Amazon S3 bucket that you specify in <code>ApplicationLogOutputUri</code> at the end of a stream session. To retrieve stored log files, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamSession.html\">GetStreamSession</a> and get the <code>LogFileLocationUri</code>.</p>"
         },
         "ApplicationSourceUri":{
           "shape":"ApplicationSourceUri",
           "documentation":"<p>The original Amazon S3 location of uploaded stream content for the application.</p>"
         },
         "Arn":{
-          "shape":"Arn",
+          "shape":"Identifier",
           "documentation":"<p>An Amazon Resource Name (ARN) that's assigned to an application resource and uniquely identifies it across all Amazon Web Services Regions. Format is <code>arn:aws:gameliftstreams:[AWS Region]:[AWS account]:application/[resource ID]</code>.</p>"
         },
         "AssociatedStreamGroups":{
           "shape":"ArnList",
-          "documentation":"<p> A set of stream groups that this application is associated with. You can use any of these stream groups to stream your application. </p> <p>This value is a set of <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARNs)</a> that uniquely identify stream group resources. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code>. </p>"
+          "documentation":"<p> A set of stream groups that this application is associated with. You can use any of these stream groups to stream your application. </p> <p>This value is a set of <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARNs)</a> that uniquely identify stream group resources. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/sg-1AB2C3De4</code>. </p>"
         },
         "CreatedAt":{
           "shape":"Timestamp",
@@ -1115,7 +1117,7 @@
         },
         "Id":{
           "shape":"Id",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code> or ID-<code>9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code> or ID-<code>a-9ZY8X7Wv6</code>. </p>"
         },
         "LastUpdatedAt":{
           "shape":"Timestamp",
@@ -1127,7 +1129,7 @@
         },
         "RuntimeEnvironment":{
           "shape":"RuntimeEnvironment",
-          "documentation":"<p> A set of configuration settings to run the application on a stream group. This configures the operating system, and can include compatibility layers and other drivers. </p> <p>A runtime environment can be one of the following:</p> <ul> <li> <p> For Linux applications </p> <ul> <li> <p> Ubuntu 22.04 LTS(<code>Type=UBUNTU, Version=22_04_LTS</code>) </p> </li> </ul> </li> <li> <p> For Windows applications </p> <ul> <li> <p>Microsoft Windows Server 2022 Base (<code>Type=WINDOWS, Version=2022</code>)</p> </li> <li> <p>Proton 8.0-5 (<code>Type=PROTON, Version=20241007</code>)</p> </li> <li> <p>Proton 8.0-2c (<code>Type=PROTON, Version=20230704</code>)</p> </li> </ul> </li> </ul>"
+          "documentation":"<p> Configuration settings that identify the operating system for an application resource. This can also include a compatibility layer and other drivers. </p> <p>A runtime environment can be one of the following:</p> <ul> <li> <p> For Linux applications </p> <ul> <li> <p> Ubuntu 22.04 LTS (<code>Type=UBUNTU, Version=22_04_LTS</code>) </p> </li> </ul> </li> <li> <p> For Windows applications </p> <ul> <li> <p>Microsoft Windows Server 2022 Base (<code>Type=WINDOWS, Version=2022</code>)</p> </li> <li> <p>Proton 8.0-5 (<code>Type=PROTON, Version=20241007</code>)</p> </li> <li> <p>Proton 8.0-2c (<code>Type=PROTON, Version=20230704</code>)</p> </li> </ul> </li> </ul>"
         },
         "Status":{
           "shape":"ApplicationStatus",
@@ -1145,7 +1147,7 @@
       "members":{
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p>The unique ID value of the stream group resource to retrieve. Format example: <code>1AB2C3De4</code>.</p>",
+          "documentation":"<p>The unique ID value of the stream group resource to retrieve. Format example: <code>sg-1AB2C3De4</code>.</p>",
           "location":"uri",
           "locationName":"Identifier"
         }
@@ -1156,12 +1158,12 @@
       "required":["Arn"],
       "members":{
         "Arn":{
-          "shape":"Arn",
+          "shape":"Identifier",
           "documentation":"<p>An Amazon Resource Name (ARN) that is assigned to the stream group resource and that uniquely identifies the group across all Amazon Web Services Regions. Format is <code>arn:aws:gameliftstreams:[AWS Region]:[AWS account]:streamgroup/[resource ID]</code>.</p>"
         },
         "AssociatedApplications":{
           "shape":"ArnList",
-          "documentation":"<p> A set of applications that this stream group is associated to. You can stream any of these applications by using this stream group. </p> <p>This value is a set of <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARNs)</a> that uniquely identify application resources. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p> A set of applications that this stream group is associated to. You can stream any of these applications by using this stream group. </p> <p>This value is a set of <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARNs)</a> that uniquely identify application resources. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code>. </p>"
         },
         "CreatedAt":{
           "shape":"Timestamp",
@@ -1169,7 +1171,7 @@
         },
         "DefaultApplication":{
           "shape":"DefaultApplication",
-          "documentation":"<p>The Amazon GameLift Streams application that is associated with this stream group.</p>"
+          "documentation":"<p>The default Amazon GameLift Streams application that is associated with this stream group.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -1177,7 +1179,7 @@
         },
         "Id":{
           "shape":"Id",
-          "documentation":"<p>A unique ID value that is assigned to the resource when it's created. Format example: <code>1AB2C3De4</code>.</p>"
+          "documentation":"<p>A unique ID value that is assigned to the resource when it's created. Format example: <code>sg-1AB2C3De4</code>.</p>"
         },
         "LastUpdatedAt":{
           "shape":"Timestamp",
@@ -1197,7 +1199,7 @@
         },
         "StreamClass":{
           "shape":"StreamClass",
-          "documentation":"<p>The target stream quality for the stream group.</p> <p>A stream class can be one of the following:</p> <ul> <li> <p> <b> <code>gen5n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with most Unreal Engine 5.x builds, 32-bit applications, and anti-cheat technology. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 12 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_ultra</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Uses dedicated NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with most Unreal Engine 5.2 and 5.3 builds, 32-bit applications, and anti-cheat technology. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 8 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_ultra</code> (NVIDIA, ultra)</b> Supports applications with high 3D scene complexity. Uses dedicated NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> </ul>"
+          "documentation":"<p>The target stream quality for the stream group.</p> <p>A stream class can be one of the following:</p> <ul> <li> <p> <b> <code>gen5n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with Unreal Engine versions up through 5.4, 32 and 64-bit applications, and anti-cheat technology. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 12 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_ultra</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Uses dedicated NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with Unreal Engine versions up through 5.4, 32 and 64-bit applications, and anti-cheat technology. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 8 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_ultra</code> (NVIDIA, ultra)</b> Supports applications with high 3D scene complexity. Uses dedicated NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> </ul>"
         }
       }
     },
@@ -1210,7 +1212,7 @@
       "members":{
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p>The stream group that runs this stream session.</p> <p>This value is an <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code> or ID-<code>1AB2C3De4</code>. </p>",
+          "documentation":"<p>The stream group that runs this stream session.</p> <p>This value is an <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/sg-1AB2C3De4</code> or ID-<code>sg-1AB2C3De4</code>. </p>",
           "location":"uri",
           "locationName":"Identifier"
         },
@@ -1235,7 +1237,7 @@
         },
         "ApplicationArn":{
           "shape":"Arn",
-          "documentation":"<p>The application streaming in this session.</p> <p>This value is an <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> that uniquely identifies the application resource. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p>The application streaming in this session.</p> <p>This value is an <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> that uniquely identifies the application resource. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code>. </p>"
         },
         "Arn":{
           "shape":"Arn",
@@ -1263,7 +1265,7 @@
         },
         "Location":{
           "shape":"LocationName",
-          "documentation":"<p>The location where Amazon GameLift Streams is hosting the stream session.</p> <p> A location's name. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, see the Regions and quotas section in the Amazon GameLift Streams Developer Guide . </p>"
+          "documentation":"<p>The location where Amazon GameLift Streams is hosting the stream session.</p> <p> A location's name. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, refer to <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/developerguide/regions-quotas.html\">Regions and quotas</a> in the <i>Amazon GameLift Streams Developer Guide</i>. </p>"
         },
         "LogFileLocationUri":{
           "shape":"FileLocationUri",
@@ -1522,14 +1524,14 @@
         },
         "LocationName":{
           "shape":"LocationName",
-          "documentation":"<p> A location's name. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, see the Regions and quotas section in the Amazon GameLift Streams Developer Guide . </p>"
+          "documentation":"<p> A location's name. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, refer to <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/developerguide/regions-quotas.html\">Regions and quotas</a> in the <i>Amazon GameLift Streams Developer Guide</i>. </p>"
         },
         "OnDemandCapacity":{
           "shape":"OnDemandCapacity",
           "documentation":"<p> The streaming capacity that Amazon GameLift Streams can allocate in response to stream requests, and then de-allocate when the session has terminated. This offers a cost control measure at the expense of a greater startup time (typically under 5 minutes). </p>"
         }
       },
-      "documentation":"<p>Configuration settings that define a stream group's stream capacity for a location. When configuring a location for the first time, you must specify a numeric value for at least one of the two capacity types. To update the capacity for an existing stream group, call <a>UpdateStreamGroup</a>. To add a new location and specify its capacity, call <a>AddStreamGroupLocations</a>.</p>"
+      "documentation":"<p>Configuration settings that define a stream group's stream capacity for a location. When configuring a location for the first time, you must specify a numeric value for at least one of the two capacity types. To update the capacity for an existing stream group, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_UpdateStreamGroup.html\">UpdateStreamGroup</a>. To add a new location and specify its capacity, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_AddStreamGroupLocations.html\">AddStreamGroupLocations</a>.</p>"
     },
     "LocationConfigurations":{
       "type":"list",
@@ -1565,7 +1567,7 @@
         },
         "LocationName":{
           "shape":"LocationName",
-          "documentation":"<p> A location's name. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, see the Regions and quotas section in the Amazon GameLift Streams Developer Guide . </p>"
+          "documentation":"<p> A location's name. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, refer to <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/developerguide/regions-quotas.html\">Regions and quotas</a> in the <i>Amazon GameLift Streams Developer Guide</i>. </p>"
         },
         "OnDemandCapacity":{
           "shape":"OnDemandCapacity",
@@ -1623,13 +1625,13 @@
       "members":{
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p> A stream group to remove the specified locations from. </p> <p> This value is a Amazon Resource Name (ARN) that uniquely identifies the stream group resource. Format example: <code>1AB2C3De4</code>. <pre><code> &lt;/p&gt; </code></pre>",
+          "documentation":"<p> A stream group to remove the specified locations from. </p> <p> This value is a Amazon Resource Name (ARN) that uniquely identifies the stream group resource. Format example: <code>sg-1AB2C3De4</code>. </p>",
           "location":"uri",
           "locationName":"Identifier"
         },
         "Locations":{
           "shape":"LocationsList",
-          "documentation":"<p> A set of locations to remove this stream group. </p> <p> A set of location names. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, see the Regions and quotas section in the Amazon GameLift Streams Developer Guide . <pre><code> &lt;/p&gt; </code></pre>",
+          "documentation":"<p> A set of locations to remove this stream group. </p> <p> A set of location names. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, refer to <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/developerguide/regions-quotas.html\">Regions and quotas</a> in the <i>Amazon GameLift Streams Developer Guide</i>. </p>",
           "location":"querystring",
           "locationName":"locations"
         }
@@ -1640,7 +1642,7 @@
       "members":{
         "Location":{
           "shape":"LocationName",
-          "documentation":"<p> A location's name. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, see the Regions and quotas section in the Amazon GameLift Streams Developer Guide . </p>"
+          "documentation":"<p> A location's name. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, refer to <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/developerguide/regions-quotas.html\">Regions and quotas</a> in the <i>Amazon GameLift Streams Developer Guide</i>. </p>"
         },
         "Status":{
           "shape":"ReplicationStatusType",
@@ -1692,7 +1694,7 @@
           "documentation":"<p>Versioned container environment for the application operating system.</p>"
         }
       },
-      "documentation":"<p>Configuration settings that identify the operating system for an application resource. This can also include a compatibility layer and other drivers.</p> <p>A runtime environment can be one of the following:</p> <ul> <li> <p> For Linux applications </p> <ul> <li> <p> Ubuntu 22.04 LTS(<code>Type=UBUNTU, Version=22_04_LTS</code>) </p> </li> </ul> </li> <li> <p> For Windows applications </p> <ul> <li> <p>Microsoft Windows Server 2022 Base (<code>Type=WINDOWS, Version=2022</code>)</p> </li> <li> <p>Proton 8.0-5 (<code>Type=PROTON, Version=20241007</code>)</p> </li> <li> <p>Proton 8.0-2c (<code>Type=PROTON, Version=20230704</code>)</p> </li> </ul> </li> </ul>"
+      "documentation":"<p>Configuration settings that identify the operating system for an application resource. This can also include a compatibility layer and other drivers.</p> <p>A runtime environment can be one of the following:</p> <ul> <li> <p> For Linux applications </p> <ul> <li> <p> Ubuntu 22.04 LTS (<code>Type=UBUNTU, Version=22_04_LTS</code>) </p> </li> </ul> </li> <li> <p> For Windows applications </p> <ul> <li> <p>Microsoft Windows Server 2022 Base (<code>Type=WINDOWS, Version=2022</code>)</p> </li> <li> <p>Proton 8.0-5 (<code>Type=PROTON, Version=20241007</code>)</p> </li> <li> <p>Proton 8.0-2c (<code>Type=PROTON, Version=20230704</code>)</p> </li> </ul> </li> </ul>"
     },
     "RuntimeEnvironmentType":{
       "type":"string",
@@ -1757,7 +1759,7 @@
         },
         "ApplicationIdentifier":{
           "shape":"Identifier",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code> or ID-<code>9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code> or ID-<code>a-9ZY8X7Wv6</code>. </p>"
         },
         "ClientToken":{
           "shape":"ClientToken",
@@ -1774,13 +1776,13 @@
         },
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p>The stream group to run this stream session with.</p> <p>This value is an <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code> or ID-<code>1AB2C3De4</code>. </p>",
+          "documentation":"<p>The stream group to run this stream session with.</p> <p>This value is an <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/sg-1AB2C3De4</code> or ID-<code>sg-1AB2C3De4</code>. </p>",
           "location":"uri",
           "locationName":"Identifier"
         },
         "Locations":{
           "shape":"LocationList",
-          "documentation":"<p> A list of locations, in order of priority, where you want Amazon GameLift Streams to start a stream from. Amazon GameLift Streams selects the location with the next available capacity to start a single stream session in. If this value is empty, Amazon GameLift Streams attempts to start a stream session in the primary location. </p> <p> This value is A set of location names. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, see the Regions and quotas section in the Amazon GameLift Streams Developer Guide . <pre><code> &lt;/p&gt; </code></pre>"
+          "documentation":"<p> A list of locations, in order of priority, where you want Amazon GameLift Streams to start a stream from. Amazon GameLift Streams selects the location with the next available capacity to start a single stream session in. If this value is empty, Amazon GameLift Streams attempts to start a stream session in the primary location. </p> <p> This value is A set of location names. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, refer to <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/developerguide/regions-quotas.html\">Regions and quotas</a> in the <i>Amazon GameLift Streams Developer Guide</i>. </p>"
         },
         "Protocol":{
           "shape":"Protocol",
@@ -1813,7 +1815,7 @@
         },
         "ApplicationArn":{
           "shape":"Arn",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> that uniquely identifies the application resource. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> that uniquely identifies the application resource. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code>. </p>"
         },
         "Arn":{
           "shape":"Arn",
@@ -1841,7 +1843,7 @@
         },
         "Location":{
           "shape":"LocationName",
-          "documentation":"<p> The location where Amazon GameLift Streams is streaming your application from. </p> <p> A location's name. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, see the Regions and quotas section in the Amazon GameLift Streams Developer Guide . </p>"
+          "documentation":"<p> The location where Amazon GameLift Streams is streaming your application from. </p> <p> A location's name. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, refer to <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/developerguide/regions-quotas.html\">Regions and quotas</a> in the <i>Amazon GameLift Streams Developer Guide</i>. </p>"
         },
         "LogFileLocationUri":{
           "shape":"FileLocationUri",
@@ -1928,8 +1930,8 @@
       "required":["Arn"],
       "members":{
         "Arn":{
-          "shape":"Arn",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code> or ID-<code>1AB2C3De4</code>. </p>"
+          "shape":"Identifier",
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/sg-1AB2C3De4</code> or ID-<code>sg-1AB2C3De4</code>. </p>"
         },
         "CreatedAt":{
           "shape":"Timestamp",
@@ -1945,7 +1947,7 @@
         },
         "Id":{
           "shape":"Id",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code> or ID-<code>1AB2C3De4</code>. </p>"
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/sg-1AB2C3De4</code> or ID-<code>sg-1AB2C3De4</code>. </p>"
         },
         "LastUpdatedAt":{
           "shape":"Timestamp",
@@ -1957,10 +1959,10 @@
         },
         "StreamClass":{
           "shape":"StreamClass",
-          "documentation":"<p>The target stream quality for the stream group. </p> <p>A stream class can be one of the following:</p> <ul> <li> <p> <b> <code>gen5n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with most Unreal Engine 5.x builds, 32-bit applications, and anti-cheat technology. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 12 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_ultra</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Uses dedicated NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with most Unreal Engine 5.2 and 5.3 builds, 32-bit applications, and anti-cheat technology. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 8 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_ultra</code> (NVIDIA, ultra)</b> Supports applications with high 3D scene complexity. Uses dedicated NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> </ul>"
+          "documentation":"<p>The target stream quality for the stream group. </p> <p>A stream class can be one of the following:</p> <ul> <li> <p> <b> <code>gen5n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with Unreal Engine versions up through 5.4, 32 and 64-bit applications, and anti-cheat technology. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 12 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_ultra</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Uses dedicated NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with Unreal Engine versions up through 5.4, 32 and 64-bit applications, and anti-cheat technology. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 8 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_ultra</code> (NVIDIA, ultra)</b> Supports applications with high 3D scene complexity. Uses dedicated NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> </ul>"
         }
       },
-      "documentation":"<p>Describes a Amazon GameLift Streams stream group resource for hosting content streams. To retrieve additional stream group details, call <a>GetStreamGroup</a>.</p>"
+      "documentation":"<p>Describes a Amazon GameLift Streams stream group resource for hosting content streams. To retrieve additional stream group details, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamGroup.html\">GetStreamGroup</a>.</p>"
     },
     "StreamGroupSummaryList":{
       "type":"list",
@@ -1993,7 +1995,7 @@
       "members":{
         "ApplicationArn":{
           "shape":"Arn",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code> or ID-<code>9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code> or ID-<code>a-9ZY8X7Wv6</code>. </p>"
         },
         "Arn":{
           "shape":"Arn",
@@ -2013,7 +2015,7 @@
         },
         "Location":{
           "shape":"LocationName",
-          "documentation":"<p>The location where Amazon GameLift Streams is hosting the stream session.</p> <p> A location's name. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, see the Regions and quotas section in the Amazon GameLift Streams Developer Guide . </p>"
+          "documentation":"<p>The location where Amazon GameLift Streams is hosting the stream session.</p> <p> A location's name. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, refer to <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/developerguide/regions-quotas.html\">Regions and quotas</a> in the <i>Amazon GameLift Streams Developer Guide</i>. </p>"
         },
         "Protocol":{
           "shape":"Protocol",
@@ -2028,7 +2030,7 @@
           "documentation":"<p> An opaque, unique identifier for an end-user, defined by the developer. </p>"
         }
       },
-      "documentation":"<p>Describes a Amazon GameLift Streams stream session. To retrieve additional details for the stream session, call <a>GetStreamSession</a>.</p>"
+      "documentation":"<p>Describes a Amazon GameLift Streams stream session. To retrieve additional details for the stream session, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamSession.html\">GetStreamSession</a>.</p>"
     },
     "StreamSessionSummaryList":{
       "type":"list",
@@ -2091,7 +2093,7 @@
       "members":{
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code> or ID-<code>1AB2C3De4</code>. </p> <p>The stream group that runs this stream session.</p>",
+          "documentation":"<p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/sg-1AB2C3De4</code> or ID-<code>sg-1AB2C3De4</code>. </p> <p>The stream group that runs this stream session.</p>",
           "location":"uri",
           "locationName":"Identifier"
         },
@@ -2153,11 +2155,11 @@
       "members":{
         "ApplicationLogOutputUri":{
           "shape":"ApplicationLogOutputUri",
-          "documentation":"<p>An Amazon S3 URI to a bucket where you would like Amazon GameLift Streams to save application logs. Use the following format for the URI: <code>s3://[bucket name]/[prefix]</code>. Required if you specify one or more <code>LogPaths</code>.</p> <note> <p>The log bucket must have permissions that give Amazon GameLift Streams access to write the log files. For more information, see <b>Getting Started</b> in the Amazon GameLift Streams Developer Guide. </p> </note>"
+          "documentation":"<p>An Amazon S3 URI to a bucket where you would like Amazon GameLift Streams to save application logs. Required if you specify one or more <code>ApplicationLogPaths</code>.</p> <note> <p>The log bucket must have permissions that give Amazon GameLift Streams access to write the log files. For more information, see <b>Getting Started</b> in the Amazon GameLift Streams Developer Guide. </p> </note>"
         },
         "ApplicationLogPaths":{
           "shape":"FilePaths",
-          "documentation":"<p>Locations of log files that your content generates during a stream session. Enter path values that are relative to the <code>ApplicationSourceUri</code> location. You can specify up to 10 log locations. Amazon GameLift Streams uploads designated log files to the Amazon S3 bucket that you specify in <code>ApplicationLogOutputUri</code> at the end of a stream session. To retrieve stored log files, call <a>GetStreamSession</a> and get the <code>LogFileLocationUri</code>.</p>"
+          "documentation":"<p>Locations of log files that your content generates during a stream session. Enter path values that are relative to the <code>ApplicationSourceUri</code> location. You can specify up to 10 log paths. Amazon GameLift Streams uploads designated log files to the Amazon S3 bucket that you specify in <code>ApplicationLogOutputUri</code> at the end of a stream session. To retrieve stored log files, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamSession.html\">GetStreamSession</a> and get the <code>LogFileLocationUri</code>.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -2165,7 +2167,7 @@
         },
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code> or ID-<code>9ZY8X7Wv6</code>. </p>",
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code> or ID-<code>a-9ZY8X7Wv6</code>. </p>",
           "location":"uri",
           "locationName":"Identifier"
         }
@@ -2177,23 +2179,23 @@
       "members":{
         "ApplicationLogOutputUri":{
           "shape":"ApplicationLogOutputUri",
-          "documentation":"<p>An Amazon S3 URI to a bucket where you would like Amazon GameLift Streams to save application logs. Use the following format for the URI: <code>s3://[bucket name]/[prefix]</code>. Required if you specify one or more <code>LogPaths</code>.</p>"
+          "documentation":"<p>An Amazon S3 URI to a bucket where you would like Amazon GameLift Streams to save application logs. Required if you specify one or more <code>ApplicationLogPaths</code>.</p>"
         },
         "ApplicationLogPaths":{
           "shape":"FilePaths",
-          "documentation":"<p>Locations of log files that your content generates during a stream session. Amazon GameLift Streams uploads log files to the Amazon S3 bucket that you specify in <code>ApplicationLogOutputUri</code> at the end of a stream session. To retrieve stored log files, call <a>GetStreamSession</a> and get the <code>LogFileLocationUri</code>.</p>"
+          "documentation":"<p>Locations of log files that your content generates during a stream session. Amazon GameLift Streams uploads log files to the Amazon S3 bucket that you specify in <code>ApplicationLogOutputUri</code> at the end of a stream session. To retrieve stored log files, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamSession.html\">GetStreamSession</a> and get the <code>LogFileLocationUri</code>.</p>"
         },
         "ApplicationSourceUri":{
           "shape":"ApplicationSourceUri",
           "documentation":"<p>The original Amazon S3 location of uploaded stream content for the application.</p>"
         },
         "Arn":{
-          "shape":"Arn",
+          "shape":"Identifier",
           "documentation":"<p>An Amazon Resource Name (ARN) that's assigned to an application resource and uniquely identifies it across all Amazon Web Services Regions. Format is <code>arn:aws:gameliftstreams:[AWS Region]:[AWS account]:application/[resource ID]</code>.</p>"
         },
         "AssociatedStreamGroups":{
           "shape":"ArnList",
-          "documentation":"<p> A set of stream groups that this application is associated with. You can use any of these stream groups to stream your application. </p> <p>This value is a set of <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARNs)</a> that uniquely identify stream group resources. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code>. </p>"
+          "documentation":"<p> A set of stream groups that this application is associated with. You can use any of these stream groups to stream your application. </p> <p>This value is a set of <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARNs)</a> that uniquely identify stream group resources. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/sg-1AB2C3De4</code>. </p>"
         },
         "CreatedAt":{
           "shape":"Timestamp",
@@ -2209,7 +2211,7 @@
         },
         "Id":{
           "shape":"Id",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code> or ID-<code>9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the application resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code> or ID-<code>a-9ZY8X7Wv6</code>. </p>"
         },
         "LastUpdatedAt":{
           "shape":"Timestamp",
@@ -2221,7 +2223,7 @@
         },
         "RuntimeEnvironment":{
           "shape":"RuntimeEnvironment",
-          "documentation":"<p> A set of configuration settings to run the application on a stream group. This configures the operating system, and can include compatibility layers and other drivers. </p> <p>A runtime environment can be one of the following:</p> <ul> <li> <p> For Linux applications </p> <ul> <li> <p> Ubuntu 22.04 LTS(<code>Type=UBUNTU, Version=22_04_LTS</code>) </p> </li> </ul> </li> <li> <p> For Windows applications </p> <ul> <li> <p>Microsoft Windows Server 2022 Base (<code>Type=WINDOWS, Version=2022</code>)</p> </li> <li> <p>Proton 8.0-5 (<code>Type=PROTON, Version=20241007</code>)</p> </li> <li> <p>Proton 8.0-2c (<code>Type=PROTON, Version=20230704</code>)</p> </li> </ul> </li> </ul>"
+          "documentation":"<p> Configuration settings that identify the operating system for an application resource. This can also include a compatibility layer and other drivers. </p> <p>A runtime environment can be one of the following:</p> <ul> <li> <p> For Linux applications </p> <ul> <li> <p> Ubuntu 22.04 LTS (<code>Type=UBUNTU, Version=22_04_LTS</code>) </p> </li> </ul> </li> <li> <p> For Windows applications </p> <ul> <li> <p>Microsoft Windows Server 2022 Base (<code>Type=WINDOWS, Version=2022</code>)</p> </li> <li> <p>Proton 8.0-5 (<code>Type=PROTON, Version=20241007</code>)</p> </li> <li> <p>Proton 8.0-2c (<code>Type=PROTON, Version=20230704</code>)</p> </li> </ul> </li> </ul>"
         },
         "Status":{
           "shape":"ApplicationStatus",
@@ -2243,7 +2245,7 @@
         },
         "Identifier":{
           "shape":"Identifier",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/1AB2C3De4</code> or ID-<code>1AB2C3De4</code>. </p>",
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Format example: ARN-<code>arn:aws:gameliftstreams:us-west-2:123456789012:streamgroup/sg-1AB2C3De4</code> or ID-<code>sg-1AB2C3De4</code>. </p>",
           "location":"uri",
           "locationName":"Identifier"
         },
@@ -2258,12 +2260,12 @@
       "required":["Arn"],
       "members":{
         "Arn":{
-          "shape":"Arn",
+          "shape":"Identifier",
           "documentation":"<p>An Amazon Resource Name (ARN) that is assigned to the stream group resource and that uniquely identifies the group across all Amazon Web Services Regions. Format is <code>arn:aws:gameliftstreams:[AWS Region]:[AWS account]:streamgroup/[resource ID]</code>.</p>"
         },
         "AssociatedApplications":{
           "shape":"ArnList",
-          "documentation":"<p> A set of applications that this stream group is associated with. You can stream any of these applications with the stream group. </p> <p>This value is a set of <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARNs)</a> that uniquely identify application resources. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:application/9ZY8X7Wv6</code>. </p>"
+          "documentation":"<p> A set of applications that this stream group is associated with. You can stream any of these applications with the stream group. </p> <p>This value is a set of <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARNs)</a> that uniquely identify application resources. Format example: <code>arn:aws:gameliftstreams:us-west-2:123456789012:application/a-9ZY8X7Wv6</code>. </p>"
         },
         "CreatedAt":{
           "shape":"Timestamp",
@@ -2271,7 +2273,7 @@
         },
         "DefaultApplication":{
           "shape":"DefaultApplication",
-          "documentation":"<p>The Amazon GameLift Streams application that is associated with this stream group.</p>"
+          "documentation":"<p>The default Amazon GameLift Streams application that is associated with this stream group.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -2279,7 +2281,7 @@
         },
         "Id":{
           "shape":"Id",
-          "documentation":"<p>A unique ID value that is assigned to the resource when it's created. Format example: <code>1AB2C3De4</code>.</p>"
+          "documentation":"<p>A unique ID value that is assigned to the resource when it's created. Format example: <code>sg-1AB2C3De4</code>.</p>"
         },
         "LastUpdatedAt":{
           "shape":"Timestamp",
@@ -2299,7 +2301,7 @@
         },
         "StreamClass":{
           "shape":"StreamClass",
-          "documentation":"<p>The target stream quality for the stream group.</p> <p>A stream class can be one of the following:</p> <ul> <li> <p> <b> <code>gen5n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with most Unreal Engine 5.x builds, 32-bit applications, and anti-cheat technology. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 12 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_ultra</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Uses dedicated NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with most Unreal Engine 5.2 and 5.3 builds, 32-bit applications, and anti-cheat technology. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 8 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_ultra</code> (NVIDIA, ultra)</b> Supports applications with high 3D scene complexity. Uses dedicated NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> </ul>"
+          "documentation":"<p>The target stream quality for the stream group.</p> <p>A stream class can be one of the following:</p> <ul> <li> <p> <b> <code>gen5n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with Unreal Engine versions up through 5.4, 32 and 64-bit applications, and anti-cheat technology. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 12 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen5n_ultra</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Uses dedicated NVIDIA A10G Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 24 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_win2022</code> (NVIDIA, ultra)</b> Supports applications with extremely high 3D scene complexity. Runs applications on Microsoft Windows Server 2022 Base and supports DirectX 12. Compatible with Unreal Engine versions up through 5.4, 32 and 64-bit applications, and anti-cheat technology. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_high</code> (NVIDIA, high)</b> Supports applications with moderate to high 3D scene complexity. Uses NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 4 vCPUs, 16 GB RAM, 8 GB VRAM</p> </li> <li> <p>Tenancy: Supports up to 2 concurrent stream sessions</p> </li> </ul> </li> <li> <p> <b> <code>gen4n_ultra</code> (NVIDIA, ultra)</b> Supports applications with high 3D scene complexity. Uses dedicated NVIDIA T4 Tensor GPU.</p> <ul> <li> <p>Reference resolution: 1080p</p> </li> <li> <p>Reference frame rate: 60 fps</p> </li> <li> <p>Workload specifications: 8 vCPUs, 32 GB RAM, 16 GB VRAM</p> </li> <li> <p>Tenancy: Supports 1 concurrent stream session</p> </li> </ul> </li> </ul>"
         }
       }
     },

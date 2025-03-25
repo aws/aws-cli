@@ -3555,18 +3555,20 @@ class TestSSOCredentialFetcher(unittest.TestCase):
         self.account_id = '1234567890'
         self.access_token = {
             'accessToken': 'some.sso.token',
+            'expiresAt': '2018-10-18T22:26:40Z'
         }
         # This is just an arbitrary point in time we can pin to
         self.now = datetime(2008, 9, 23, 12, 26, 40, tzinfo=tzutc())
         # The SSO endpoint uses ms whereas the OIDC endpoint uses seconds
         self.now_timestamp = 1222172800000
+        self.mock_time_fetcher = mock.Mock(return_value=self.now)
 
         self.loader = mock.Mock(spec=SSOTokenLoader)
         self.loader.return_value = self.access_token
         self.fetcher = SSOCredentialFetcher(
             self.start_url, self.sso_region, self.role_name, self.account_id,
             self.mock_session.create_client, token_loader=self.loader,
-            cache=self.cache,
+            cache=self.cache, time_fetcher=self.mock_time_fetcher
         )
 
     def test_can_fetch_credentials(self):
@@ -3621,6 +3623,22 @@ class TestSSOCredentialFetcher(unittest.TestCase):
         with self.assertRaises(botocore.exceptions.UnauthorizedSSOTokenError):
             with self.stubber:
                 credentials = self.fetcher.fetch_credentials()
+
+    def test_expired_legacy_token_has_expected_behavior(self):
+        # Mock the current time to be in the future after the access token has expired
+        now = datetime(2018, 10, 19, 12, 26, 40, tzinfo=tzutc())
+        mock_client = mock.Mock()
+        create_mock_client = mock.Mock(return_value=mock_client)
+        fetcher = SSOCredentialFetcher(
+            self.start_url, self.sso_region, self.role_name, self.account_id,
+            create_mock_client, token_loader=self.loader,
+            cache=self.cache, time_fetcher=mock.Mock(return_value=now)
+        )
+        # since the cached token is expired, an UnauthorizedSSOTokenError should be 
+        # raised and GetRoleCredentials should not be called.
+        with self.assertRaises(botocore.exceptions.UnauthorizedSSOTokenError):
+            fetcher.fetch_credentials()
+        self.assertFalse(mock_client.get_role_credentials.called)
 
 
 class TestSSOProvider(unittest.TestCase):

@@ -2500,7 +2500,7 @@
         },
         "modelArn":{
           "shape":"BedrockModelArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the foundation model used for context enrichment.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model used to create vector embeddings for the knowledge base.</p>"
         }
       },
       "documentation":"<p>Context enrichment configuration is used to provide additional context to the RAG application using Amazon Bedrock foundation models.</p>"
@@ -6647,7 +6647,8 @@
         "REDIS_ENTERPRISE_CLOUD",
         "RDS",
         "MONGO_DB_ATLAS",
-        "NEPTUNE_ANALYTICS"
+        "NEPTUNE_ANALYTICS",
+        "OPENSEARCH_MANAGED_CLUSTER"
       ]
     },
     "KnowledgeBaseSummaries":{
@@ -7777,6 +7778,76 @@
     "NumericalVersion":{
       "type":"string",
       "pattern":"^[0-9]{1,5}$"
+    },
+    "OpenSearchManagedClusterConfiguration":{
+      "type":"structure",
+      "required":[
+        "domainArn",
+        "domainEndpoint",
+        "fieldMapping",
+        "vectorIndexName"
+      ],
+      "members":{
+        "domainArn":{
+          "shape":"OpenSearchManagedClusterDomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OpenSearch domain.</p>"
+        },
+        "domainEndpoint":{
+          "shape":"OpenSearchManagedClusterDomainEndpoint",
+          "documentation":"<p>The endpoint URL the OpenSearch domain.</p>"
+        },
+        "fieldMapping":{
+          "shape":"OpenSearchManagedClusterFieldMapping",
+          "documentation":"<p>Contains the names of the fields to which to map information about the vector store.</p>"
+        },
+        "vectorIndexName":{
+          "shape":"OpenSearchManagedClusterIndexName",
+          "documentation":"<p>The name of the vector store.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the Managed Cluster configuration of the knowledge base in Amazon OpenSearch Service. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-osm.html\">Create a vector index in OpenSearch Managed Cluster</a>.</p>"
+    },
+    "OpenSearchManagedClusterDomainArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^arn:aws(|-cn|-us-gov|-iso):es:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:domain/[a-z][a-z0-9-]{3,28}$"
+    },
+    "OpenSearchManagedClusterDomainEndpoint":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^https://.*$"
+    },
+    "OpenSearchManagedClusterFieldMapping":{
+      "type":"structure",
+      "required":[
+        "metadataField",
+        "textField",
+        "vectorField"
+      ],
+      "members":{
+        "metadataField":{
+          "shape":"FieldName",
+          "documentation":"<p>The name of the field in which Amazon Bedrock stores metadata about the vector store.</p>"
+        },
+        "textField":{
+          "shape":"FieldName",
+          "documentation":"<p>The name of the field in which Amazon Bedrock stores the raw text from your data. The text is split according to the chunking strategy you choose.</p>"
+        },
+        "vectorField":{
+          "shape":"FieldName",
+          "documentation":"<p>The name of the field in which Amazon Bedrock stores the vector embeddings for your data sources.</p>"
+        }
+      },
+      "documentation":"<p>Contains the names of the fields to which to map information about the vector store.</p>"
+    },
+    "OpenSearchManagedClusterIndexName":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^(?![\\-_+.])[a-z0-9][a-z0-9\\-_\\.]*$",
+      "sensitive":true
     },
     "OpenSearchServerlessCollectionArn":{
       "type":"string",
@@ -9503,6 +9574,10 @@
           "shape":"NeptuneAnalyticsConfiguration",
           "documentation":"<p>Contains details about the Neptune Analytics configuration of the knowledge base in Amazon Neptune. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-neptune.html\">Create a vector index in Amazon Neptune Analytics.</a>.</p>"
         },
+        "opensearchManagedClusterConfiguration":{
+          "shape":"OpenSearchManagedClusterConfiguration",
+          "documentation":"<p>Contains details about the storage configuration of the knowledge base in OpenSearch Managed Cluster. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-osm.html\">Create a vector index in Amazon OpenSearch Service</a>.</p>"
+        },
         "opensearchServerlessConfiguration":{
           "shape":"OpenSearchServerlessConfiguration",
           "documentation":"<p>Contains the storage configuration of the knowledge base in Amazon OpenSearch Service.</p>"
@@ -10118,7 +10193,7 @@
         },
         "parentActionGroupSignatureParams":{
           "shape":"ActionGroupSignatureParams",
-          "documentation":"<p>The configuration settings for a computer use action.</p> <important> <p> Computer use is a new Anthropic Claude model capability (in beta) available with Claude 3.7 and Claude 3.5 Sonnet v2 only. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agent-computer-use.html\">Configure an Amazon Bedrock Agent to complete tasks with computer use tools</a>. </p> </important>"
+          "documentation":"<p>The configuration settings for a computer use action.</p> <important> <p> Computer use is a new Anthropic Claude model capability (in beta) available with Claude 3.7 Sonnet and Claude 3.5 Sonnet v2 only. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agent-computer-use.html\">Configure an Amazon Bedrock Agent to complete tasks with computer use tools</a>. </p> </important>"
         }
       }
     },

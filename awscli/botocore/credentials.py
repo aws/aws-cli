@@ -22,10 +22,10 @@ import time
 from collections import namedtuple
 from copy import deepcopy
 from hashlib import sha1
-import dateutil.parser
 
 import botocore.compat
 import botocore.configloader
+import dateutil.parser
 from botocore import UNSIGNED
 from botocore.compat import compat_shell_split, total_seconds
 from botocore.config import Config

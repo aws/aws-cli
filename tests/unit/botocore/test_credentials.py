@@ -3730,7 +3730,7 @@ class TestSSOCredentialFetcher(unittest.TestCase):
         self.account_id = '1234567890'
         self.access_token = {
             'accessToken': 'some.sso.token',
-            'expiresAt': '2018-10-18T22:26:40Z'
+            'expiresAt': '2018-10-18T22:26:40Z',
         }
         # This is just an arbitrary point in time we can pin to
         self.now = datetime(2008, 9, 23, 12, 26, 40, tzinfo=tzutc())
@@ -3810,11 +3810,16 @@ class TestSSOCredentialFetcher(unittest.TestCase):
         mock_client = mock.Mock()
         create_mock_client = mock.Mock(return_value=mock_client)
         fetcher = SSOCredentialFetcher(
-            self.start_url, self.sso_region, self.role_name, self.account_id,
-            create_mock_client, token_loader=self.loader,
-            cache=self.cache, time_fetcher=mock.Mock(return_value=now)
+            self.start_url,
+            self.sso_region,
+            self.role_name,
+            self.account_id,
+            create_mock_client,
+            token_loader=self.loader,
+            cache=self.cache,
+            time_fetcher=mock.Mock(return_value=now),
         )
-        # since the cached token is expired, an UnauthorizedSSOTokenError should be 
+        # since the cached token is expired, an UnauthorizedSSOTokenError should be
         # raised and GetRoleCredentials should not be called.
         with self.assertRaises(botocore.exceptions.UnauthorizedSSOTokenError):
             fetcher.fetch_credentials()

@@ -3,7 +3,6 @@ import os
 import struct
 
 import pytest
-
 from botocore.parsers import ResponseParserError, RpcV2CBORParser
 
 IGNORE_CASES = [

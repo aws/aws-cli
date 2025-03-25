@@ -582,7 +582,7 @@ class TestAssumeRole(BaseAssumeRoleTest):
         token_cache_key = 'f395038c92f1828cbb3991d2d6152d326b895606'
         cached_token = {
             'accessToken': 'a.token',
-            'expiresAt': self.some_future_time(),
+            'expiresAt': self.some_future_time().strftime("%Y-%m-%dT%H:%M:%SZ"),
         }
         temp_cache = JSONFileCache(self.tempdir)
         temp_cache[token_cache_key] = cached_token

@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+1.38.20
+=======
+
+* api-change:``bedrock-agent``: Adding support for Amazon OpenSearch Managed clusters as a vector database in Knowledge Bases for Amazon Bedrock
+* api-change:``eks``: Added support to override upgrade-blocking readiness checks via force flag when updating a cluster.
+* api-change:``gameliftstreams``: Minor updates to improve developer experience.
+* api-change:``keyspaces``: Removing replication region limitation for Amazon Keyspaces Multi-Region Replication APIs.
+* api-change:``marketplace-entitlement``: This release enhances the GetEntitlements API to support new filter CUSTOMER_AWS_ACCOUNT_ID in request and CustomerAWSAccountId field in response.
+* api-change:``meteringmarketplace``: This release enhances the BatchMeterUsage API to support new field CustomerAWSAccountId in request and response and making CustomerIdentifier optional. CustomerAWSAccountId or CustomerIdentifier must be provided in request but not both.
+* api-change:``sagemaker``: This release adds support for customer-managed KMS keys in Amazon SageMaker Partner AI Apps
+* api-change:``workspaces-thin-client``: Deprecate tags field in Get API responses
+
+
+1.38.19
+=======
+
+* api-change:``iotwireless``: Mark EutranCid under LteNmr optional.
+* api-change:``pcs``: ClusterName/ClusterIdentifier, ComputeNodeGroupName/ComputeNodeGroupIdentifier, and QueueName/QueueIdentifier can now have 10 characters, and a minimum of 3 characters. The TagResource API action can now return ServiceQuotaExceededException.
+* api-change:``qconnect``: Provides the correct value for supported model ID.
+* api-change:``ssm``: This release adds the AvailableSecurityUpdatesComplianceStatus field to patch baseline operations, as well as the AvailableSecurityUpdateCount and InstancesWithAvailableSecurityUpdates to patch state operations. Applies to Windows Server managed nodes only.
+
+
 1.38.18
 =======
 

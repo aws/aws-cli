@@ -212,7 +212,7 @@ class MockPipedStdout(io.BytesIO):
     def __init__(self):
         self.encoding = None
 
-        super(MockPipedStdout, self).__init__()
+        super().__init__()
 
     def write(self, data):
         # sys.stdout.write() will default to encoding to ascii, when its
@@ -221,7 +221,7 @@ class MockPipedStdout(io.BytesIO):
             data = data.encode('ascii')
         else:
             data = data.encode(self.encoding)
-        super(MockPipedStdout, self).write(data)
+        super().write(data)
 
 
 class TestUniPrint(unittest.TestCase):

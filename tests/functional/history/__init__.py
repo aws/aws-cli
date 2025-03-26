@@ -26,7 +26,7 @@ from awscli.testutils import (
 class BaseHistoryCommandParamsTest(BaseAWSCommandParamsTest):
     def setUp(self):
         history_recorder = self._make_clean_history_recorder()
-        super(BaseHistoryCommandParamsTest, self).setUp()
+        super().setUp()
         self.history_recorder = history_recorder
         self.files = FileCreator()
         config_contents = '[default]\n' 'cli_history = enabled'
@@ -75,6 +75,6 @@ class BaseHistoryCommandParamsTest(BaseAWSCommandParamsTest):
             handler._writer.close()
 
     def tearDown(self):
-        super(BaseHistoryCommandParamsTest, self).tearDown()
+        super().tearDown()
         self._cleanup_db_connections()
         self.files.remove_all()

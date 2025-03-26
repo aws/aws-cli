@@ -96,7 +96,7 @@ class CodeCommitGetCommand(BasicCommand):
     ]
 
     def __init__(self, session):
-        super(CodeCommitGetCommand, self).__init__(session)
+        super().__init__(session)
 
     def _run_main(self, args, parsed_globals):
         git_parameters = self.read_git_parameters()

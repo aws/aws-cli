@@ -34,9 +34,7 @@ class FakeError(Exception):
 
 class RecordingFormatter(Formatter):
     def __init__(self, output=None, include=None, exclude=None):
-        super(RecordingFormatter, self).__init__(
-            output=output, include=include, exclude=exclude
-        )
+        super().__init__(output=output, include=include, exclude=exclude)
         self.history = []
 
     def _display(self, event_record):

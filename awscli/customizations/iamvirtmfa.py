@@ -47,7 +47,7 @@ class FileArgument(StatefulArgument):
         # Validate the file here so we can raise an error prior
         # calling the service.
         value = resolve_given_outfile_path(value)
-        super(FileArgument, self).add_to_params(parameters, value)
+        super().add_to_params(parameters, value)
 
 
 class IAMVMFAWrapper:

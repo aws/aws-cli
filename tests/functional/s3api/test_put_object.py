@@ -34,14 +34,14 @@ class TestPutObject(BaseAWSCommandParamsTest):
     prefix = 's3api put-object'
 
     def setUp(self):
-        super(TestPutObject, self).setUp()
+        super().setUp()
         self.file_path = os.path.join(
             os.path.dirname(__file__), 'test_put_object_data'
         )
         self.files = FileCreator()
 
     def tearDown(self):
-        super(TestPutObject, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def test_simple(self):

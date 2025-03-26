@@ -18,7 +18,7 @@ class TestSubscribe(BaseAWSCommandParamsTest):
     prefix = 'configservice subscribe'
 
     def setUp(self):
-        super(TestSubscribe, self).setUp()
+        super().setUp()
         self.parsed_responses = [
             {},  # S3 HeadBucket
             {'TopicArn': 'my-topic-arn'},  # SNS CreateTopic

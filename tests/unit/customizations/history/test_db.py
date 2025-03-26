@@ -243,7 +243,7 @@ class BaseDatabaseRecordWriterTester(BaseDatabaseRecordTester):
 
 class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
     def setUp(self):
-        super(TestDatabaseRecordWriter, self).setUp()
+        super().setUp()
 
     def _read_last_record(self):
         cursor = self.db.execute('SELECT * FROM records')

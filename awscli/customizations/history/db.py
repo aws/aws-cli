@@ -99,7 +99,7 @@ class PayloadSerializer(json.JSONEncoder):
 
     def encode(self, obj):
         try:
-            return super(PayloadSerializer, self).encode(obj)
+            return super().encode(obj)
         except UnicodeDecodeError:
             # This happens in PY2 in the case where a record payload has some
             # binary data in it that is not utf-8 encodable. PY2 will not call
@@ -113,7 +113,7 @@ class PayloadSerializer(json.JSONEncoder):
             # ourselves and replace all strings that are not utf-8 decodable
             # and try to encode again.
             scrubbed_obj = self._remove_non_unicode_stings(obj)
-            return super(PayloadSerializer, self).encode(scrubbed_obj)
+            return super().encode(scrubbed_obj)
 
     def default(self, obj):
         if isinstance(obj, datetime.datetime):

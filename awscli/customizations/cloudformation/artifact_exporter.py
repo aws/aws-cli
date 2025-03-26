@@ -306,7 +306,7 @@ class ResourceWithS3UrlDict(Resource):
     VERSION_PROPERTY = None
 
     def __init__(self, uploader):
-        super(ResourceWithS3UrlDict, self).__init__(uploader)
+        super().__init__(uploader)
 
     def do_export(self, resource_id, resource_dict, parent_dir):
         """
@@ -466,7 +466,7 @@ class CloudFormationStackResource(Resource):
     PROPERTY_NAME = "TemplateURL"
 
     def __init__(self, uploader):
-        super(CloudFormationStackResource, self).__init__(uploader)
+        super().__init__(uploader)
 
     def do_export(self, resource_id, resource_dict, parent_dir):
         """

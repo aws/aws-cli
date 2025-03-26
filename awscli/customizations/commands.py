@@ -348,9 +348,7 @@ class BasicHelp(HelpCommand):
         arg_table,
         event_handler_class=None,
     ):
-        super(BasicHelp, self).__init__(
-            session, command_object, command_table, arg_table
-        )
+        super().__init__(session, command_object, command_table, arg_table)
         # This is defined in HelpCommand so we're matching the
         # casing here.
         if event_handler_class is None:
@@ -414,7 +412,7 @@ class BasicHelp(HelpCommand):
 
 class BasicDocHandler(OperationDocumentEventHandler):
     def __init__(self, help_command):
-        super(BasicDocHandler, self).__init__(help_command)
+        super().__init__(help_command)
         self.doc = help_command.doc
 
     def doc_description(self, help_command, **kwargs):
@@ -424,9 +422,7 @@ class BasicDocHandler(OperationDocumentEventHandler):
 
     def doc_synopsis_start(self, help_command, **kwargs):
         if not help_command.synopsis:
-            super(BasicDocHandler, self).doc_synopsis_start(
-                help_command=help_command, **kwargs
-            )
+            super().doc_synopsis_start(help_command=help_command, **kwargs)
         else:
             self.doc.style.h2('Synopsis')
             self.doc.style.start_codeblock()
@@ -463,9 +459,7 @@ class BasicDocHandler(OperationDocumentEventHandler):
 
     def doc_synopsis_end(self, help_command, **kwargs):
         if not help_command.synopsis and not help_command.command_table:
-            super(BasicDocHandler, self).doc_synopsis_end(
-                help_command=help_command, **kwargs
-            )
+            super().doc_synopsis_end(help_command=help_command, **kwargs)
         else:
             self.doc.style.end_codeblock()
 

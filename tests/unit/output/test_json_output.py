@@ -29,7 +29,7 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
     COMMAND = 'iam add-user-to-group --group-name foo --user-name bar'
 
     def setUp(self):
-        super(TestGetPasswordData, self).setUp()
+        super().setUp()
         self.parsed_response = {}
 
     def test_empty_dict_response_prints_nothing(self):
@@ -52,7 +52,7 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
 
 class TestListUsers(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestListUsers, self).setUp()
+        super().setUp()
         self.parsed_response = {
             'Users': [
                 {

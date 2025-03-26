@@ -22,7 +22,7 @@ from awscli.testutils import BaseAWSCommandParamsTest, capture_input
 
 class TestPut(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestPut, self).setUp()
+        super().setUp()
         self.parsed_response = {}
         self.tempdir = tempfile.mkdtemp()
         self.original_tag_handlers = yaml.YAML(
@@ -30,7 +30,7 @@ class TestPut(BaseAWSCommandParamsTest):
         ).constructor.yaml_constructors.copy()
 
     def tearDown(self):
-        super(TestPut, self).tearDown()
+        super().tearDown()
         shutil.rmtree(self.tempdir)
         # This line looks wrong, right?  Well... the "yaml_constructors"
         # is actually a class attribute that's shared across *all* of the

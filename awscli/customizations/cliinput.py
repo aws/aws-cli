@@ -54,7 +54,7 @@ class CliInputArgument(OverrideRequiredArgsArgument):
         self._session.register(
             'calling-command.*', self.add_to_call_parameters
         )
-        super(CliInputArgument, self)._register_argument_action()
+        super()._register_argument_action()
 
     def add_to_call_parameters(self, call_parameters, parsed_args, **kwargs):
         arg_value = self._get_arg_value(parsed_args)

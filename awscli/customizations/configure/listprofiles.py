@@ -22,7 +22,7 @@ class ListProfilesCommand(BasicCommand):
     EXAMPLES = 'aws configure list-profiles\n\n'
 
     def __init__(self, session, out_stream=None):
-        super(ListProfilesCommand, self).__init__(session)
+        super().__init__(session)
 
         if out_stream is None:
             out_stream = sys.stdout

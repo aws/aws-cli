@@ -534,7 +534,7 @@ class TestNormalizeSort(unittest.TestCase):
 
 class S3FileGeneratorTest(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(S3FileGeneratorTest, self).setUp()
+        super().setUp()
         self.client = self.driver.session.create_client('s3')
         self.bucket = 'foo'
         self.file1 = self.bucket + '/' + 'text1.txt'

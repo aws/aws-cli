@@ -21,7 +21,7 @@ from awscli.testutils import BaseCLIWireResponseTest, FileCreator
 
 class TestCLITimestampParser(BaseCLIWireResponseTest):
     def setUp(self):
-        super(TestCLITimestampParser, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.wire_response = json.dumps(
             {
@@ -36,7 +36,7 @@ class TestCLITimestampParser(BaseCLIWireResponseTest):
         self.patch_send(content=self.wire_response)
 
     def tearDown(self):
-        super(TestCLITimestampParser, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def test_iso(self):

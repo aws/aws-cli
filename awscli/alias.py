@@ -121,7 +121,7 @@ class AliasCommandInjector(BaseAliasCommandInjector):
         :type alias_loader: awscli.alias.AliasLoader
         :param alias_loader: The alias loader to use
         """
-        super(AliasCommandInjector, self).__init__(alias_loader)
+        super().__init__(alias_loader)
         self._session = session
 
     def inject_aliases(self, command_table, parser):
@@ -150,7 +150,7 @@ class AliasCommandInjector(BaseAliasCommandInjector):
 
 class AliasSubCommandInjector(BaseAliasCommandInjector):
     def __init__(self, alias_loader):
-        super(AliasSubCommandInjector, self).__init__(alias_loader)
+        super().__init__(alias_loader)
         self._global_cmd_driver = None
         self._global_args_parser = None
 
@@ -249,7 +249,7 @@ class BaseInternalAliasCommand(BaseAliasCommand):
     UNSUPPORTED_GLOBAL_PARAMETERS = ['debug', 'profile']
 
     def __init__(self, alias_name, alias_value, session):
-        super(BaseInternalAliasCommand, self).__init__(alias_name, alias_value)
+        super().__init__(alias_name, alias_value)
         self._session = session
 
     def _get_alias_args(self):
@@ -350,9 +350,7 @@ class ServiceAliasCommand(BaseInternalAliasCommand):
             to this command as opposed to proxy to itself in the command
             table
         """
-        super(ServiceAliasCommand, self).__init__(
-            alias_name, alias_value, session
-        )
+        super().__init__(alias_name, alias_value, session)
         self._command_table = command_table
         self._parser = parser
         self._shadow_proxy_command = shadow_proxy_command
@@ -410,7 +408,7 @@ class ExternalAliasCommand(BaseAliasCommand):
         :param invoker: Callable to run arguments of external alias. The
             signature should match that of ``subprocess.call``
         """
-        super(ExternalAliasCommand, self).__init__(alias_name, alias_value)
+        super().__init__(alias_name, alias_value)
         self._invoker = invoker
 
     def __call__(self, args, parsed_globals):
@@ -436,9 +434,7 @@ class InternalAliasSubCommand(BaseInternalAliasCommand):
         session,
         proxied_sub_command=None,
     ):
-        super(InternalAliasSubCommand, self).__init__(
-            alias_name, alias_value, session
-        )
+        super().__init__(alias_name, alias_value, session)
         self._command_object = command_object
         self._global_args_parser = global_args_parser
         self._proxied_sub_command = proxied_sub_command

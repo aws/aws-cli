@@ -20,7 +20,7 @@ class TestAddModel(BaseAWSCommandParamsTest):
     prefix = 'configure add-model'
 
     def setUp(self):
-        super(TestAddModel, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.customer_data_root = self.files.rootdir
         self.data_loader = self.driver.session.get_component('data_loader')
@@ -46,7 +46,7 @@ class TestAddModel(BaseAWSCommandParamsTest):
         }
 
     def tearDown(self):
-        super(TestAddModel, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def test_add_model(self):

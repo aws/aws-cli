@@ -158,7 +158,7 @@ class OpsWorksRegister(BasicCommand):
     ]
 
     def __init__(self, session):
-        super(OpsWorksRegister, self).__init__(session)
+        super().__init__(session)
         self._stack = None
         self._ec2_instance = None
         self._prov_params = None

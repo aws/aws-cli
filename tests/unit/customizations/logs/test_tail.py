@@ -310,7 +310,7 @@ class TestNoFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
 
 class TestFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
     def setUp(self):
-        super(TestFollowLogEventsGenerator, self).setUp()
+        super().setUp()
         self.mock_sleep = mock.Mock(time.sleep)
         self.logs_generator = FollowLogEventsGenerator(
             self.client, TimestampUtils(), self.mock_sleep

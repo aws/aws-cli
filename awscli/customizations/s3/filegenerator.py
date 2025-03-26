@@ -93,7 +93,7 @@ class FileDecodingError(Exception):
             'directory "%s". \n%s'
             % (repr(self.file_name), self.directory, self.ADVICE)
         )
-        super(FileDecodingError, self).__init__(self.error_message)
+        super().__init__(self.error_message)
 
 
 class FileStat:

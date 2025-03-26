@@ -81,7 +81,7 @@ LOG = logging.getLogger(__name__)
 class StdinMissingError(Exception):
     def __init__(self):
         message = 'stdin is required for this operation, but is not available.'
-        super(StdinMissingError, self).__init__(message)
+        super().__init__(message)
 
 
 class NonTranslatedStdout:

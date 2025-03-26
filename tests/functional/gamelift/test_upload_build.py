@@ -19,11 +19,11 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
     prefix = 'gamelift upload-build'
 
     def setUp(self):
-        super(TestUploadBuild, self).setUp()
+        super().setUp()
         self.files = FileCreator()
 
     def tearDown(self):
-        super(TestUploadBuild, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def test_upload_build(self):

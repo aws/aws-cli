@@ -37,7 +37,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
     prefix = 's3 cp '
 
     def setUp(self):
-        super(TestGetObject, self).setUp()
+        super().setUp()
         self.file_path = os.path.join(
             os.path.dirname(__file__), 'test_copy_params_data'
         )

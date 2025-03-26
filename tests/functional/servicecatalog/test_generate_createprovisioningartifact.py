@@ -71,7 +71,7 @@ class TestGenerateProvisioningArtifact(BaseAWSCommandParamsTest):
         return cmd_line
 
     def setUp(self):
-        super(TestGenerateProvisioningArtifact, self).setUp()
+        super().setUp()
         self.init_params()
 
     def test_generate_provisioning_artifact_success(self):

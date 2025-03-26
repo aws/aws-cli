@@ -25,7 +25,7 @@ from awscli.testutils import (
 
 class BaseSSOTest(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(BaseSSOTest, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.start_url = 'https://mysigin.com'
         self.sso_region = 'us-west-2'
@@ -74,7 +74,7 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         self.expiration_time = time.time() + 1000
 
     def tearDown(self):
-        super(BaseSSOTest, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
         self.open_browser_patch.stop()
         self.auth_code_fetcher_patch.stop()

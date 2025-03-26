@@ -125,7 +125,7 @@ class FakeParsedArgs:
 
 class TestCommandsRunProperly(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestCommandsRunProperly, self).setUp()
+        super().setUp()
         self.query_objects = mock.Mock()
         self.describe_objects = mock.Mock()
         self.client = mock.Mock()

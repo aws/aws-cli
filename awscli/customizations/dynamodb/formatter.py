@@ -21,7 +21,7 @@ from awscli.formatter import YAMLDumper
 
 class DynamoYAMLDumper(YAMLDumper):
     def __init__(self):
-        super(DynamoYAMLDumper, self).__init__()
+        super().__init__()
         self._yaml.representer.add_representer(
             decimal.Decimal, self._represent_decimal
         )
@@ -44,4 +44,4 @@ class DynamoYAMLDumper(YAMLDumper):
             stream.write(str(response))
             stream.write('\n')
             return
-        super(DynamoYAMLDumper, self).dump(response, stream)
+        super().dump(response, stream)

@@ -113,12 +113,12 @@ def _add_doctype_service_model(file_creator, session, model=None):
 
 class TestDocumentTypeIO(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestDocumentTypeIO, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         _add_doctype_service_model(self.files, self.driver.session)
 
     def tearDown(self):
-        super(TestDocumentTypeIO, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def assert_raises_shorthand_syntax_error(
@@ -394,12 +394,12 @@ class TestDocumentTypeIO(BaseAWSCommandParamsTest):
 
 class TestDocTypesHelp(BaseAWSHelpOutputTest):
     def setUp(self):
-        super(TestDocTypesHelp, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         _add_doctype_service_model(self.files, self.driver.session)
 
     def tearDown(self):
-        super(TestDocTypesHelp, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def run_help(self):

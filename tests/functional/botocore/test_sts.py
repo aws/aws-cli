@@ -25,7 +25,7 @@ _V4_SIGNING_REGION_REGEX = re.compile(
 
 class TestSTSPresignedUrl(BaseSessionTest):
     def setUp(self):
-        super(TestSTSPresignedUrl, self).setUp()
+        super().setUp()
         self.client = self.session.create_client('sts', 'us-west-2')
         # Makes sure that no requests will go through
         self.stubber = Stubber(self.client)

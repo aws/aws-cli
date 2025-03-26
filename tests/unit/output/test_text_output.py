@@ -24,7 +24,7 @@ from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 
 class TestListUsers(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestListUsers, self).setUp()
+        super().setUp()
         self.first_parsed_response = {
             'Users': [
                 {
@@ -76,7 +76,7 @@ class TestListUsers(BaseAWSCommandParamsTest):
 
 class TestDescribeChangesets(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestDescribeChangesets, self).setUp()
+        super().setUp()
         self.first_parsed_response = {
             'Capabilities': ['CAPABILITY_IAM'],
             'ChangeSetId': (

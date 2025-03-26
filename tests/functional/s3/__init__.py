@@ -30,7 +30,7 @@ from tests import CLIRunner, HTTPResponse, SessionStubber
 
 class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(BaseS3TransferCommandTest, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.init_clidriver()
 
@@ -43,7 +43,7 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
             self.entry_point = AWSCLIEntryPoint(self.driver)
 
     def tearDown(self):
-        super(BaseS3TransferCommandTest, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def assert_operations_called(self, expected_operations_with_params):
@@ -413,7 +413,7 @@ class BaseS3CLIRunnerTest(unittest.TestCase):
 
 class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
     def setUp(self):
-        super(BaseCRTTransferClientTest, self).setUp()
+        super().setUp()
         self.crt_client_patch = mock.patch('s3transfer.crt.S3Client')
         self.mock_crt_client = self.crt_client_patch.start()
         self.mock_crt_client.return_value.make_request.side_effect = (
@@ -423,7 +423,7 @@ class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
         self.expected_download_content = b'content'
 
     def tearDown(self):
-        super(BaseCRTTransferClientTest, self).tearDown()
+        super().tearDown()
         self.crt_client_patch.stop()
         self.files.remove_all()
 

@@ -21,13 +21,13 @@ from tests import BaseSessionTest, ClientHTTPStubber, mock
 
 class TestRetry(BaseSessionTest):
     def setUp(self):
-        super(TestRetry, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.sleep_patch = mock.patch('time.sleep')
         self.sleep_patch.start()
 
     def tearDown(self):
-        super(TestRetry, self).tearDown()
+        super().tearDown()
         self.sleep_patch.stop()
 
     @contextlib.contextmanager

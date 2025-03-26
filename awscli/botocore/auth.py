@@ -480,7 +480,7 @@ class SigV4Auth(BaseSigner):
 
 class S3SigV4Auth(SigV4Auth):
     def _modify_request_before_signing(self, request):
-        super(S3SigV4Auth, self)._modify_request_before_signing(request)
+        super()._modify_request_before_signing(request)
         if 'X-Amz-Content-SHA256' in request.headers:
             del request.headers['X-Amz-Content-SHA256']
 
@@ -525,7 +525,7 @@ class S3SigV4Auth(SigV4Auth):
 
         # If the S3-specific checks had no results, delegate to the generic
         # checks.
-        return super(S3SigV4Auth, self)._should_sha256_sign_payload(request)
+        return super()._should_sha256_sign_payload(request)
 
     def _normalize_url_path(self, path):
         # For S3, we do not normalize the path.
@@ -708,9 +708,7 @@ class SigV4QueryAuth(SigV4Auth):
     def __init__(
         self, credentials, service_name, region_name, expires=DEFAULT_EXPIRES
     ):
-        super(SigV4QueryAuth, self).__init__(
-            credentials, service_name, region_name
-        )
+        super().__init__(credentials, service_name, region_name)
         self._expires = expires
 
     def _modify_request_before_signing(self, request):

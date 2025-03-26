@@ -29,7 +29,7 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
     prefix = 'ec2 get-password-data'
 
     def setUp(self):
-        super(TestGetPasswordData, self).setUp()
+        super().setUp()
         self.parsed_response = {
             'InstanceId': 'i-12345678',
             'Timestamp': '2013-07-27T18:29:23.000Z',

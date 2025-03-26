@@ -22,12 +22,12 @@ class TestGetObject(BaseAWSCommandParamsTest):
     prefix = ['s3api', 'select-object-content']
 
     def setUp(self):
-        super(TestGetObject, self).setUp()
+        super().setUp()
         self.parsed_response = {'Payload': self.create_fake_payload()}
         self._tempdir = tempfile.mkdtemp()
 
     def tearDown(self):
-        super(TestGetObject, self).tearDown()
+        super().tearDown()
         shutil.rmtree(self._tempdir)
 
     def create_fake_payload(self):

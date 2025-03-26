@@ -103,7 +103,7 @@ class CreateDefaultRole(BasicCommand):
     ]
 
     def __init__(self, session):
-        super(CreateDefaultRole, self).__init__(session)
+        super().__init__(session)
 
     def _run_main(self, parsed_args, parsed_globals):
         """Call to run the commands"""

@@ -20,7 +20,7 @@ from tests import BaseSessionTest, ClientHTTPStubber, unittest
 
 class TestKinesisListStreams(BaseSessionTest):
     def setUp(self):
-        super(TestKinesisListStreams, self).setUp()
+        super().setUp()
         self.stream_name = "kinesis-test-stream"
         self.region = "us-east-1"
         self.client = self.session.create_client("kinesis", self.region)

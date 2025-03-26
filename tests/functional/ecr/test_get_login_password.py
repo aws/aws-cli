@@ -16,7 +16,7 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 class TestGetLoginPasswordCommand(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestGetLoginPasswordCommand, self).setUp()
+        super().setUp()
         self.parsed_responses = [
             {
                 'authorizationData': [

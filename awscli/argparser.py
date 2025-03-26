@@ -42,9 +42,7 @@ class CommandAction(argparse.Action):
 
     def __init__(self, option_strings, dest, command_table, **kwargs):
         self.command_table = command_table
-        super(CommandAction, self).__init__(
-            option_strings, dest, choices=self.choices, **kwargs
-        )
+        super().__init__(option_strings, dest, choices=self.choices, **kwargs)
 
     def __call__(self, parser, namespace, values, option_string=None):
         setattr(namespace, self.dest, values)
@@ -92,9 +90,7 @@ class CLIArgParser(argparse.ArgumentParser):
             raise argparse.ArgumentError(action, '\n'.join(msg))
 
     def parse_known_args(self, args, namespace=None):
-        parsed, remaining = super(CLIArgParser, self).parse_known_args(
-            args, namespace
-        )
+        parsed, remaining = super().parse_known_args(args, namespace)
         terminal_encoding = getattr(sys.stdin, 'encoding', 'utf-8')
         if terminal_encoding is None:
             # In some cases, sys.stdin won't have an encoding set,
@@ -141,7 +137,7 @@ class MainArgParser(CLIArgParser):
         argument_table,
         prog=None,
     ):
-        super(MainArgParser, self).__init__(
+        super().__init__(
             formatter_class=self.Formatter,
             add_help=False,
             conflict_handler='resolve',
@@ -174,7 +170,7 @@ class MainArgParser(CLIArgParser):
 
 class ServiceArgParser(CLIArgParser):
     def __init__(self, operations_table, service_name):
-        super(ServiceArgParser, self).__init__(
+        super().__init__(
             formatter_class=argparse.RawTextHelpFormatter,
             add_help=False,
             conflict_handler='resolve',
@@ -196,7 +192,7 @@ class ArgTableArgParser(CLIArgParser):
         # command_table is an optional subcommand_table.  If it's passed
         # in, then we'll update the argparse to parse a 'subcommand' argument
         # and populate the choices field with the command table keys.
-        super(ArgTableArgParser, self).__init__(
+        super().__init__(
             formatter_class=self.Formatter,
             add_help=False,
             usage=USAGE,
@@ -224,9 +220,7 @@ class ArgTableArgParser(CLIArgParser):
             namespace.help = 'help'
             return namespace, []
         else:
-            return super(ArgTableArgParser, self).parse_known_args(
-                args, namespace
-            )
+            return super().parse_known_args(args, namespace)
 
 
 class SubCommandArgParser(ArgTableArgParser):
@@ -239,9 +233,7 @@ class SubCommandArgParser(ArgTableArgParser):
     """
 
     def parse_known_args(self, args, namespace=None):
-        parsed_args, remaining = super(
-            SubCommandArgParser, self
-        ).parse_known_args(args, namespace)
+        parsed_args, remaining = super().parse_known_args(args, namespace)
         if getattr(parsed_args, 'subcommand', None) is not None:
             new_args = self._remove_subcommand(args, parsed_args)
             return new_args, parsed_args.subcommand

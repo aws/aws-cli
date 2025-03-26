@@ -42,7 +42,7 @@ class ParamError(Exception):
 
         """
         full_message = "Error parsing parameter '%s': %s" % (cli_name, message)
-        super(ParamError, self).__init__(full_message)
+        super().__init__(full_message)
         self.cli_name = cli_name
         self.message = message
 
@@ -55,7 +55,7 @@ class ParamUnknownKeyError(Exception):
     def __init__(self, key, valid_keys):
         valid_keys = ', '.join(valid_keys)
         full_message = f"Unknown key '{key}', valid choices are: {valid_keys}"
-        super(ParamUnknownKeyError, self).__init__(full_message)
+        super().__init__(full_message)
 
 
 class TooComplexError(Exception):

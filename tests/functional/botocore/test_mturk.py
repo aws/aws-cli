@@ -17,14 +17,14 @@ from tests import BaseSessionTest
 
 class TestMturk(BaseSessionTest):
     def setUp(self):
-        super(TestMturk, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client('mturk', self.region)
         self.stubber = Stubber(self.client)
         self.stubber.activate()
 
     def tearDown(self):
-        super(TestMturk, self).tearDown()
+        super().tearDown()
         self.stubber.deactivate()
 
     def test_list_hits_aliased(self):

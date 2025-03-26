@@ -34,7 +34,7 @@ class TestPutBucketTagging(BaseAWSCommandParamsTest):
     prefix = 's3api put-bucket-tagging'
 
     def setUp(self):
-        super(TestPutBucketTagging, self).setUp()
+        super().setUp()
         self.payload = None
 
     def test_simple(self):

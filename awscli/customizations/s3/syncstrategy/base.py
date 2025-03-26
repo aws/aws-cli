@@ -247,7 +247,7 @@ class SizeAndLastModifiedSync(BaseSync):
 
 class NeverSync(BaseSync):
     def __init__(self, sync_type='file_not_at_src'):
-        super(NeverSync, self).__init__(sync_type)
+        super().__init__(sync_type)
 
     def determine_should_sync(self, src_file, dest_file):
         return False
@@ -255,7 +255,7 @@ class NeverSync(BaseSync):
 
 class MissingFileSync(BaseSync):
     def __init__(self, sync_type='file_not_at_dest'):
-        super(MissingFileSync, self).__init__(sync_type)
+        super().__init__(sync_type)
 
     def determine_should_sync(self, src_file, dest_file):
         LOG.debug(

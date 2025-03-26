@@ -19,7 +19,7 @@ from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 class BaseLambdaTests(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(BaseLambdaTests, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.temp_file = self.files.create_file('foo', 'mycontents')
         self.zip_file = os.path.join(self.files.rootdir, 'foo.zip')
@@ -29,7 +29,7 @@ class BaseLambdaTests(BaseAWSCommandParamsTest):
             self.zip_file_contents = f.read()
 
     def tearDown(self):
-        super(BaseLambdaTests, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
 

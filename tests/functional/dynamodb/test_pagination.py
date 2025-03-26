@@ -17,7 +17,7 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 class TestPagination(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestPagination, self).setUp()
+        super().setUp()
         self.first_response = {
             "Items": [{"Key": {"B": "MjEzNw=="}}],
             "Count": 1,

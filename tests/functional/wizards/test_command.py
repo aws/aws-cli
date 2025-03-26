@@ -24,7 +24,7 @@ from awscli.testutils import (
 
 class TestRunWizard(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestRunWizard, self).setUp()
+        super().setUp()
         self.tempdir = tempfile.mkdtemp()
         with cd(self.tempdir):
             os.mkdir('iam')
@@ -35,7 +35,7 @@ class TestRunWizard(BaseAWSCommandParamsTest):
         self.root_dir_patch.start()
 
     def tearDown(self):
-        super(TestRunWizard, self).tearDown()
+        super().tearDown()
         shutil.rmtree(self.tempdir)
         self.root_dir_patch.stop()
 

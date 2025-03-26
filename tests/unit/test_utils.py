@@ -752,7 +752,7 @@ class TestIsDocumentTypeContainer(BaseShapeTest):
 
 class TestOperationUsesDocumentTypes(BaseShapeTest):
     def setUp(self):
-        super(TestOperationUsesDocumentTypes, self).setUp()
+        super().setUp()
         self.input_shape_definition = {'type': 'structure', 'members': {}}
         self.shapes['Input'] = self.input_shape_definition
         self.output_shape_definition = {'type': 'structure', 'members': {}}
@@ -803,7 +803,7 @@ class TestDumpYamlToStr(unittest.TestCase):
 
 class TestShapeWalker(BaseShapeTest):
     def setUp(self):
-        super(TestShapeWalker, self).setUp()
+        super().setUp()
         self.walker = ShapeWalker()
         self.visitor = ShapeRecordingVisitor()
 

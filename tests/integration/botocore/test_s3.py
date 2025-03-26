@@ -235,7 +235,7 @@ class BaseS3ClientTest(unittest.TestCase):
 
 class TestS3BaseWithBucket(BaseS3ClientTest):
     def setUp(self):
-        super(TestS3BaseWithBucket, self).setUp()
+        super().setUp()
         self.caught_exceptions = []
 
     def create_multipart_upload(self, key_name):
@@ -314,7 +314,7 @@ class TestS3BaseWithBucket(BaseS3ClientTest):
 
 class TestS3Buckets(TestS3BaseWithBucket):
     def setUp(self):
-        super(TestS3Buckets, self).setUp()
+        super().setUp()
 
     def test_can_make_request(self):
         # Basic smoke test to ensure we can talk to s3.
@@ -608,7 +608,7 @@ class TestS3Objects(TestS3BaseWithBucket):
 
 class TestS3Regions(BaseS3ClientTest):
     def setUp(self):
-        super(TestS3Regions, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client('s3', region_name=self.region)
 
@@ -695,7 +695,7 @@ class BaseS3PresignTest(BaseS3ClientTest):
 
 class TestS3PresignUsStandard(BaseS3PresignTest):
     def setUp(self):
-        super(TestS3PresignUsStandard, self).setUp()
+        super().setUp()
         self.region = 'us-east-1'
         self.client_config = Config(region_name=self.region)
         self.client = self.session.create_client(
@@ -778,7 +778,7 @@ class TestS3PresignUsStandard(BaseS3PresignTest):
 
 class TestS3PresignNonUsStandard(BaseS3PresignTest):
     def setUp(self):
-        super(TestS3PresignNonUsStandard, self).setUp()
+        super().setUp()
         self.client_config = Config(region_name=self.region)
         self.client = self.session.create_client(
             's3', config=self.client_config
@@ -879,7 +879,7 @@ class TestCreateBucketInOtherRegion(TestS3BaseWithBucket):
 
 class TestS3SigV4Client(BaseS3ClientTest):
     def setUp(self):
-        super(TestS3SigV4Client, self).setUp()
+        super().setUp()
         self.client = self.session.create_client(
             's3', self.region, config=Config(signature_version='s3v4')
         )
@@ -1180,7 +1180,7 @@ class TestSupportedPutObjectBodyTypesSigv4(TestSupportedPutObjectBodyTypes):
 
 class TestAutoS3Addressing(BaseS3ClientTest):
     def setUp(self):
-        super(TestAutoS3Addressing, self).setUp()
+        super().setUp()
         self.addressing_style = 'auto'
         self.client = self.create_client()
 
@@ -1218,21 +1218,21 @@ class TestAutoS3Addressing(BaseS3ClientTest):
 
 class TestS3VirtualAddressing(TestAutoS3Addressing):
     def setUp(self):
-        super(TestS3VirtualAddressing, self).setUp()
+        super().setUp()
         self.addressing_style = 'virtual'
         self.client = self.create_client()
 
 
 class TestS3PathAddressing(TestAutoS3Addressing):
     def setUp(self):
-        super(TestS3PathAddressing, self).setUp()
+        super().setUp()
         self.addressing_style = 'path'
         self.client = self.create_client()
 
 
 class TestRegionRedirect(BaseS3ClientTest):
     def setUp(self):
-        super(TestRegionRedirect, self).setUp()
+        super().setUp()
         self.bucket_region = self.region
         self.client_region = 'eu-central-1'
 

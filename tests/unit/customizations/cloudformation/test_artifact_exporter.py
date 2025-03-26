@@ -206,7 +206,7 @@ def _helper_verify_export_resources(
 
 class TestArtifactExporter(BaseYAMLTest):
     def setUp(self):
-        super(TestArtifactExporter, self).setUp()
+        super().setUp()
         self.s3_uploader_mock = mock.Mock()
         self.s3_uploader_mock.s3.meta.endpoint_url = (
             "https://s3.some-valid-region.amazonaws.com"

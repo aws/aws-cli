@@ -237,7 +237,7 @@ class APICallEvent(BaseMonitorEvent):
         :param retries_exceeded: True if API call exceeded retries. False
             otherwise
         """
-        super(APICallEvent, self).__init__(
+        super().__init__(
             service=service, operation=operation, timestamp=timestamp
         )
         self.latency = latency
@@ -318,7 +318,7 @@ class APICallAttemptEvent(BaseMonitorEvent):
         :param wire_exception: The exception raised in sending the HTTP
             request (i.e. ConnectionError)
         """
-        super(APICallAttemptEvent, self).__init__(
+        super().__init__(
             service=service, operation=operation, timestamp=timestamp
         )
         self.latency = latency

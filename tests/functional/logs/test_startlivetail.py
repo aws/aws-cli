@@ -15,7 +15,7 @@ from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 class TestStartLiveTailCommand(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestStartLiveTailCommand, self).setUp()
+        super().setUp()
         self.log_group_identifiers = [
             "arn:aws:logs:us-east-1:123456789012:log-group:mygroup"
         ]
@@ -44,7 +44,7 @@ class TestStartLiveTailCommand(BaseAWSCommandParamsTest):
         self.parsed_responses = [{"responseStream": self.event_stream}]
 
     def tearDown(self):
-        super(TestStartLiveTailCommand, self).tearDown()
+        super().tearDown()
 
     def test_start_live_tail(self):
         self.event_stream.close = mock.MagicMock()

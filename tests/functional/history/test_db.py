@@ -59,7 +59,7 @@ class BaseDatabaseTest(unittest.TestCase):
 
 class BaseThreadedDatabaseWriter(BaseDatabaseTest):
     def setUp(self):
-        super(BaseThreadedDatabaseWriter, self).setUp()
+        super().setUp()
         self.threads = []
         self.writer = DatabaseRecordWriter(self.connection)
 
@@ -72,7 +72,7 @@ class BaseThreadedDatabaseWriter(BaseDatabaseTest):
     def tearDown(self):
         for t in self.threads:
             t.close()
-        super(BaseThreadedDatabaseWriter, self).tearDown()
+        super().tearDown()
 
 
 @unittest.skipIf(sqlite3 is None, "sqlite3 not supported in this python")

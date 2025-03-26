@@ -1496,7 +1496,7 @@ class TestResultPrinter(BaseResultPrinterTest):
 
 class TestNoProgressResultPrinter(BaseResultPrinterTest):
     def setUp(self):
-        super(TestNoProgressResultPrinter, self).setUp()
+        super().setUp()
         self.result_printer = NoProgressResultPrinter(
             result_recorder=self.result_recorder,
             out_file=self.out_file,
@@ -1568,7 +1568,7 @@ class TestNoProgressResultPrinter(BaseResultPrinterTest):
 
 class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):
     def setUp(self):
-        super(TestOnlyShowErrorsResultPrinter, self).setUp()
+        super().setUp()
         self.result_printer = OnlyShowErrorsResultPrinter(
             result_recorder=self.result_recorder,
             out_file=self.out_file,

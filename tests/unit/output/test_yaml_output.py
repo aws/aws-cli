@@ -21,7 +21,7 @@ from awscli.testutils import BaseAWSCommandParamsTest, skip_if_windows
 
 class TestYAMLOutput(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestYAMLOutput, self).setUp()
+        super().setUp()
         self.parsed_response = {
             'Users': [
                 {

@@ -147,7 +147,7 @@ class SshCommand(BasicCommand):
     DESCRIPTION = 'Connect to your EC2 instance using your OpenSSH client.'
 
     def __init__(self, session, key_manager=None):
-        super(SshCommand, self).__init__(session)
+        super().__init__(session)
         self._key_manager = (
             KeyManager() if (key_manager is None) else key_manager
         )

@@ -82,7 +82,7 @@ def _setup_mock_traverser(
 
 class BaseCloudTrailCommandTest(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(BaseCloudTrailCommandTest, self).setUp()
+        super().setUp()
         # We need to remove this handler to ensure that we can mock out the
         # get_bucket_location operation.
         self.driver.session.unregister(
@@ -121,12 +121,12 @@ class BaseCloudTrailCommandTest(BaseAWSCommandParamsTest):
 
 class TestCloudTrailCommand(BaseCloudTrailCommandTest):
     def setUp(self):
-        super(TestCloudTrailCommand, self).setUp()
+        super().setUp()
         self._traverser_patch = mock.patch(RETRIEVER_FUNCTION)
         self._mock_traverser = self._traverser_patch.start()
 
     def tearDown(self):
-        super(TestCloudTrailCommand, self).tearDown()
+        super().tearDown()
         self._traverser_patch.stop()
 
     def test_verbose_output_shows_happy_case(self):

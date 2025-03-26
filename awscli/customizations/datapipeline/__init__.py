@@ -62,7 +62,7 @@ class DocSectionNotFoundError(Exception):
 class ParameterDefinitionError(ParamValidationError):
     def __init__(self, msg):
         full_msg = "Error in parameter: %s\n" % msg
-        super(ParameterDefinitionError, self).__init__(full_msg)
+        super().__init__(full_msg)
         self.msg = msg
 
 

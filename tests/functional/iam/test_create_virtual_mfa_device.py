@@ -20,7 +20,7 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
     prefix = 'iam create-virtual-mfa-device'
 
     def setUp(self):
-        super(TestCreateVirtualMFADevice, self).setUp()
+        super().setUp()
         self.parsed_response = {
             'ResponseMetadata': {
                 'HTTPStatusCode': 200,

@@ -88,7 +88,7 @@ class ShorthandParseSyntaxError(ShorthandParseError):
         self.actual = actual
         self.index = index
         msg = self._construct_msg()
-        super(ShorthandParseSyntaxError, self).__init__(msg)
+        super().__init__(msg)
 
     def _construct_msg(self):
         msg = ("Expected: '%s', received: '%s' for input:\n %s") % (
@@ -105,7 +105,7 @@ class DuplicateKeyInObjectError(ShorthandParseError):
         self.value = value
         self.index = index
         msg = self._construct_msg()
-        super(DuplicateKeyInObjectError, self).__init__(msg)
+        super().__init__(msg)
 
     def _construct_msg(self):
         msg = (
@@ -490,9 +490,7 @@ class BackCompatVisitor(ModelVisitor):
             if value is not None:
                 parent[name] = [value]
         else:
-            return super(BackCompatVisitor, self)._visit_list(
-                parent, shape, name, value
-            )
+            return super()._visit_list(parent, shape, name, value)
 
     def _visit_scalar(self, parent, shape, name, value):
         if value is None:

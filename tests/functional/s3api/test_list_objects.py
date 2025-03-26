@@ -21,7 +21,7 @@ class TestListObjects(BaseAWSCommandParamsTest):
     prefix = 's3api list-objects'
 
     def setUp(self):
-        super(TestListObjects, self).setUp()
+        super().setUp()
         self.parsed_response = {'Contents': []}
 
     def test_simple(self):

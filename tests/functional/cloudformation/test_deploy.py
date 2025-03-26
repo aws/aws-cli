@@ -17,7 +17,7 @@ from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 class TestDeployCommand(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestDeployCommand, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.parsed_responses = [
             # First it checks to see if a stack with that name exists. So
@@ -52,7 +52,7 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
 
     def tearDown(self):
         self.files.remove_all()
-        super(TestDeployCommand, self).tearDown()
+        super().tearDown()
 
     def test_does_return_zero_exit_code_on_empty_changeset_by_default(self):
         self.run_cmd(self.command, expected_rc=0)
@@ -68,7 +68,7 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
 
 class TestDeployCommandParameterOverrides(TestDeployCommand):
     def setUp(self):
-        super(TestDeployCommandParameterOverrides, self).setUp()
+        super().setUp()
         template = '''{
           "AWSTemplateFormatVersion": "2010-09-09",
           "Parameters": {

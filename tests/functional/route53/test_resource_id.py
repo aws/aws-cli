@@ -28,7 +28,7 @@ class TestGetHostedZone(BaseAWSCommandParamsTest):
     prefix = 'route53 get-hosted-zone'
 
     def setUp(self):
-        super(TestGetHostedZone, self).setUp()
+        super().setUp()
 
     def test_full_resource_id(self):
         args = ' --id /hostedzone/ZD3IYMVP1KDDM'
@@ -49,7 +49,7 @@ class TestChangeResourceRecord(BaseAWSCommandParamsTest):
     prefix = 'route53 change-resource-record-sets'
 
     def setUp(self):
-        super(TestChangeResourceRecord, self).setUp()
+        super().setUp()
 
     def test_full_resource_id(self):
         args = ' --hosted-zone-id /change/ZD3IYMVP1KDDM'
@@ -79,7 +79,7 @@ class TestGetChange(BaseAWSCommandParamsTest):
     prefix = 'route53 get-change'
 
     def setUp(self):
-        super(TestGetChange, self).setUp()
+        super().setUp()
 
     def test_full_resource_id(self):
         args = ' --id /change/ZD3IYMVP1KDDM'
@@ -98,7 +98,7 @@ class TestReusableDelegationSet(BaseAWSCommandParamsTest):
     prefix = 'route53 get-reusable-delegation-set'
 
     def setUp(self):
-        super(TestReusableDelegationSet, self).setUp()
+        super().setUp()
 
     def test_full_resource_id(self):
         args = ' --id /delegationset/N9INWVYQ6Q0FN'

@@ -18,17 +18,17 @@ from awscli.utils import dump_yaml_to_str
 
 class BaseCLIInputArgumentTest(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(BaseCLIInputArgumentTest, self).setUp()
+        super().setUp()
         self.files = FileCreator()
 
     def tearDown(self):
-        super(BaseCLIInputArgumentTest, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
 
 class TestCLIInputJSON(BaseCLIInputArgumentTest):
     def setUp(self):
-        super(TestCLIInputJSON, self).setUp()
+        super().setUp()
         self.input_json = '{"Bucket": "bucket", "Key": "key"}'
         self.input_file = self.files.create_file('foo.json', self.input_json)
 

@@ -125,7 +125,7 @@ class BaseHelpView(BaseHelpContainer):
 
     def create_window(self, help_buffer):
         return Frame(
-            super(BaseHelpView, self).create_window(help_buffer),
+            super().create_window(help_buffer),
             title=self.TITLE,
         )
 

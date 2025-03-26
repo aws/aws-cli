@@ -139,7 +139,7 @@ class DocumentStructure(ReSTDocument):
         :param context: A dictionary of data to store with the strucuture. These
             are only stored per section not the entire structure.
         """
-        super(DocumentStructure, self).__init__(target=target)
+        super().__init__(target=target)
         self._name = name
         self._structure = OrderedDict()
         self._path = [self._name]

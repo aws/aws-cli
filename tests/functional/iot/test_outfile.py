@@ -19,11 +19,11 @@ from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 class TestOutFileQueryArguments(BaseAWSCommandParamsTest):
     def setUp(self):
         self.files = FileCreator()
-        super(TestOutFileQueryArguments, self).setUp()
+        super().setUp()
 
     def tearDown(self):
         self.files.remove_all()
-        super(TestOutFileQueryArguments, self).tearDown()
+        super().tearDown()
 
     def test_saves_cert_to_file_for_create_certificate_from_csr(self):
         self.parsed_response = {

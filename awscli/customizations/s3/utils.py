@@ -443,9 +443,7 @@ class PrintTask(
         :param total_parts: The total number of parts for multipart transfers.
         :param warning: Boolean indicating a warning
         """
-        return super(PrintTask, cls).__new__(
-            cls, message, error, total_parts, warning
-        )
+        return super().__new__(cls, message, error, total_parts, warning)
 
 
 WarningResult = PrintTask

@@ -100,7 +100,7 @@ class ConfigureCommand(BasicCommand):
     ]
 
     def __init__(self, session, prompter=None, config_writer=None):
-        super(ConfigureCommand, self).__init__(session)
+        super().__init__(session)
         if prompter is None:
             prompter = InteractivePrompter()
         self._prompter = prompter

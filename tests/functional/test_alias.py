@@ -46,7 +46,7 @@ class CustomTestCommand(BasicCommand):
 
 class TestAliases(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestAliases, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.alias_file = self.files.create_file('alias', '[toplevel]\n')
         self.driver.alias_loader = AliasLoader(self.alias_file)
@@ -63,7 +63,7 @@ class TestAliases(BaseAWSCommandParamsTest):
         )
 
     def tearDown(self):
-        super(TestAliases, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def add_alias(self, alias_name, alias_value):

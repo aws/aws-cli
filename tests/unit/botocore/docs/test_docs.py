@@ -23,7 +23,7 @@ from tests.unit.botocore.docs import BaseDocsTest
 
 class TestGenerateDocs(BaseDocsTest):
     def setUp(self):
-        super(TestGenerateDocs, self).setUp()
+        super().setUp()
         self.docs_root = tempfile.mkdtemp()
         self.loader_patch = mock.patch(
             'botocore.session.create_loader', return_value=self.loader
@@ -36,7 +36,7 @@ class TestGenerateDocs(BaseDocsTest):
         self.available_service_patch.start()
 
     def tearDown(self):
-        super(TestGenerateDocs, self).tearDown()
+        super().tearDown()
         shutil.rmtree(self.docs_root)
         self.loader_patch.stop()
         self.available_service_patch.stop()

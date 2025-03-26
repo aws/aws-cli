@@ -36,7 +36,7 @@ def get_example_template():
 
 class TestPackageCommand(BaseYAMLTest):
     def setUp(self):
-        super(TestPackageCommand, self).setUp()
+        super().setUp()
         self.session = mock.Mock()
         self.session.get_scoped_config.return_value = {}
         self.parsed_args = FakeArgs(

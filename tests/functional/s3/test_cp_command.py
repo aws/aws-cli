@@ -1168,7 +1168,7 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
 
 class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
     def setUp(self):
-        super(TestCpCommandWithRequesterPayer, self).setUp()
+        super().setUp()
         self.multipart_threshold = 8 * MB
 
     def test_single_upload(self):
@@ -1531,7 +1531,7 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
         self.accesspoint_arn = (
             'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint'
         )
-        super(TestAccesspointCPCommand, self).setUp()
+        super().setUp()
 
     def test_upload(self):
         filename = self.files.create_file('myfile', 'mycontent')
@@ -1657,7 +1657,7 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
 
 class BaseCopyPropsCpCommandTest(BaseCPCommandTest):
     def setUp(self):
-        super(BaseCopyPropsCpCommandTest, self).setUp()
+        super().setUp()
         self.source_bucket = 'source-bucket'
         self.source_key = 'source-key'
         self.target_bucket = 'target-bucket'
@@ -1708,7 +1708,7 @@ class BaseCopyPropsCpCommandTest(BaseCPCommandTest):
             bucket = self.target_bucket
         if key is None:
             key = self.target_key
-        return super(BaseCopyPropsCpCommandTest, self).copy_object_request(
+        return super().copy_object_request(
             source_bucket, source_key, bucket, key, **override_kwargs
         )
 
@@ -1717,9 +1717,7 @@ class BaseCopyPropsCpCommandTest(BaseCPCommandTest):
             bucket = self.target_bucket
         if key is None:
             key = self.target_key
-        return super(BaseCopyPropsCpCommandTest, self).create_mpu_request(
-            bucket, key, **override_kwargs
-        )
+        return super().create_mpu_request(bucket, key, **override_kwargs)
 
     def all_metadata_directive_props(self):
         return {
@@ -1737,9 +1735,7 @@ class BaseCopyPropsCpCommandTest(BaseCPCommandTest):
             bucket = self.source_bucket
         if key is None:
             key = self.source_key
-        return super(
-            BaseCopyPropsCpCommandTest, self
-        ).get_object_tagging_request(bucket, key)
+        return super().get_object_tagging_request(bucket, key)
 
     def put_object_tagging_request(self, bucket=None, key=None, tags=None):
         if bucket is None:
@@ -1748,9 +1744,9 @@ class BaseCopyPropsCpCommandTest(BaseCPCommandTest):
             key = self.target_key
         if tags is None:
             tags = {}
-        return super(
-            BaseCopyPropsCpCommandTest, self
-        ).put_object_tagging_request(bucket=bucket, key=key, tags=tags)
+        return super().put_object_tagging_request(
+            bucket=bucket, key=key, tags=tags
+        )
 
 
 class TestCopyPropsNoneCpCommand(BaseCopyPropsCpCommandTest):

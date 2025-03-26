@@ -21,7 +21,7 @@ from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 class TestGetTokenCommand(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestGetTokenCommand, self).setUp()
+        super().setUp()
         self.cluster_name = 'MyCluster'
         self.role_arn = 'arn:aws:iam::012345678910:role/RoleArn'
         self.access_key = 'ABCDEFGHIJKLMNOPQRST'

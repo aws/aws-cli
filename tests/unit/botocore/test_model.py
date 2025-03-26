@@ -556,7 +556,7 @@ class TestOperationModelFromService(unittest.TestCase):
 
 class TestOperationModelEventStreamTypes(unittest.TestCase):
     def setUp(self):
-        super(TestOperationModelEventStreamTypes, self).setUp()
+        super().setUp()
         self.model = {
             'metadata': {'protocol': 'rest-xml', 'endpointPrefix': 'foo'},
             'documentation': '',
@@ -661,7 +661,7 @@ class TestOperationModelEventStreamTypes(unittest.TestCase):
 
 class TestOperationModelStreamingTypes(unittest.TestCase):
     def setUp(self):
-        super(TestOperationModelStreamingTypes, self).setUp()
+        super().setUp()
         self.model = {
             'metadata': {'protocol': 'query', 'endpointPrefix': 'foo'},
             'documentation': '',

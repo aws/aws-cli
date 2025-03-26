@@ -347,7 +347,7 @@ class TestTransformName(unittest.TestCase):
 
 class TestValidateJMESPathForSet(unittest.TestCase):
     def setUp(self):
-        super(TestValidateJMESPathForSet, self).setUp()
+        super().setUp()
         self.data = {
             'Response': {
                 'Thing': {
@@ -374,7 +374,7 @@ class TestValidateJMESPathForSet(unittest.TestCase):
 
 class TestSetValueFromJMESPath(unittest.TestCase):
     def setUp(self):
-        super(TestSetValueFromJMESPath, self).setUp()
+        super().setUp()
         self.data = {
             'Response': {
                 'Thing': {
@@ -3292,7 +3292,7 @@ class TestInstanceMetadataFetcher(unittest.TestCase):
 
 class TestSSOTokenFetcher(unittest.TestCase):
     def setUp(self):
-        super(TestSSOTokenFetcher, self).setUp()
+        super().setUp()
         self.cache = {}
         self.start_url = 'https://d-abc123.awsapps.com/start'
         self.sso_region = 'us-west-2'
@@ -3614,7 +3614,7 @@ class TestSSOTokenFetcher(unittest.TestCase):
 
 class TestSSOTokenLoader(unittest.TestCase):
     def setUp(self):
-        super(TestSSOTokenLoader, self).setUp()
+        super().setUp()
         self.session_name = 'admin'
         self.start_url = 'https://d-abc123.awsapps.com/start'
         self.cache_key = '40a89917e3175433e361b710a9d43528d7f1890a'

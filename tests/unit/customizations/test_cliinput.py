@@ -125,7 +125,7 @@ class TestCliInputJSONArgument(unittest.TestCase):
 
 class TestCliInputYAMLArgument(TestCliInputJSONArgument):
     def setUp(self):
-        super(TestCliInputYAMLArgument, self).setUp()
+        super().setUp()
         self.argument = CliInputYAMLArgument(self.session)
         self.input_yaml = "A: foo\nB: bar"
 

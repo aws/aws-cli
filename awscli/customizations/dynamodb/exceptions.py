@@ -19,16 +19,14 @@ class DDBError(Exception):
 
 class EmptyExpressionError(DDBError, ParamValidationError):
     def __init__(self):
-        super(EmptyExpressionError, self).__init__(
-            "Expressions must not be empty"
-        )
+        super().__init__("Expressions must not be empty")
 
 
 class LexerError(DDBError, ParamValidationError):
     def __init__(self, expression, position, message):
         underline = ' ' * position + '^'
         error_message = '%s\n%s\n%s' % (message, expression, underline)
-        super(LexerError, self).__init__(error_message)
+        super().__init__(error_message)
 
 
 class ParserError(DDBError, ParamValidationError):
@@ -60,7 +58,7 @@ class UnexpectedTokenError(ParserError):
         self.token = token
         self.expression = expression
         self.expected_type = expected_type
-        super(UnexpectedTokenError, self).__init__(message)
+        super().__init__(message)
 
 
 class InvalidLiteralValueError(ParserError):
@@ -77,7 +75,7 @@ class InvalidLiteralValueError(ParserError):
         )
         self.token = token
         self.expression = expression
-        super(InvalidLiteralValueError, self).__init__(error_message)
+        super().__init__(error_message)
 
 
 class UnknownExpressionError(ParserError):
@@ -95,4 +93,4 @@ class UnknownExpressionError(ParserError):
         )
         self.start_token = start_token
         self.expression = expression
-        super(UnknownExpressionError, self).__init__(message)
+        super().__init__(message)

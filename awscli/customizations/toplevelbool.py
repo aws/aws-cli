@@ -119,7 +119,7 @@ class PositiveBooleanArgument(arguments.CLIArgument):
         serialized_name,
         group_name,
     ):
-        super(PositiveBooleanArgument, self).__init__(
+        super().__init__(
             name,
             argument_model,
             operation_model,
@@ -171,7 +171,7 @@ class NegativeBooleanParameter(arguments.BooleanArgument):
         dest=None,
         group_name=None,
     ):
-        super(NegativeBooleanParameter, self).__init__(
+        super().__init__(
             name,
             argument_model,
             operation_model,

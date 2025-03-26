@@ -18,7 +18,7 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
     prefix = 'ec2 modify-instance-attribute '
 
     def setUp(self):
-        super(TestModifyInstanceAttribute, self).setUp()
+        super().setUp()
         self.expected_result = {
             'InstanceId': 'i-1234',
             'InstanceInitiatedShutdownBehavior': {'Value': 'terminate'},

@@ -211,7 +211,7 @@ class TestHelpDocumentationModifications(TestPaginateBase):
 
 class TestStringLimitKey(TestPaginateBase):
     def setUp(self):
-        super(TestStringLimitKey, self).setUp()
+        super().setUp()
         self.bar_param.type_name = 'string'
 
     def test_integer_limit_key(self):
@@ -231,7 +231,7 @@ class TestStringLimitKey(TestPaginateBase):
 
 class TestIntegerLimitKey(TestPaginateBase):
     def setUp(self):
-        super(TestIntegerLimitKey, self).setUp()
+        super().setUp()
         self.bar_param.type_name = 'integer'
 
     def test_integer_limit_key(self):
@@ -251,7 +251,7 @@ class TestIntegerLimitKey(TestPaginateBase):
 
 class TestBadLimitKey(TestPaginateBase):
     def setUp(self):
-        super(TestBadLimitKey, self).setUp()
+        super().setUp()
         self.bar_param.type_name = 'bad'
 
     def test_integer_limit_key(self):
@@ -270,7 +270,7 @@ class TestBadLimitKey(TestPaginateBase):
 
 class TestShouldEnablePagination(TestPaginateBase):
     def setUp(self):
-        super(TestShouldEnablePagination, self).setUp()
+        super().setUp()
         self.parsed_globals = mock.Mock()
         self.parsed_args = mock.Mock()
         self.parsed_args.starting_token = None
@@ -416,7 +416,7 @@ class TestShouldEnablePagination(TestPaginateBase):
 
 class TestEnsurePagingParamsNotSet(TestPaginateBase):
     def setUp(self):
-        super(TestEnsurePagingParamsNotSet, self).setUp()
+        super().setUp()
         self.parsed_args = mock.Mock()
 
         self.parsed_args.starting_token = None

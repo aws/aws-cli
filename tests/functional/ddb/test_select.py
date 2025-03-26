@@ -27,7 +27,7 @@ class BaseSelectTest(BaseAWSCommandParamsTest):
 
 class TestSelect(BaseSelectTest):
     def setUp(self):
-        super(TestSelect, self).setUp()
+        super().setUp()
         self.parsed_response = {
             "Count": 1,
             "Items": [{"foo": {"S": "spam"}}],
@@ -509,7 +509,7 @@ class TestSelect(BaseSelectTest):
 
 class TestSelectPagination(BaseSelectTest):
     def setUp(self):
-        super(TestSelectPagination, self).setUp()
+        super().setUp()
         self.parsed_responses = [
             {
                 "Count": 1,

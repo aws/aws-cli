@@ -17,11 +17,11 @@ from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 class TestStreamingOutput(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestStreamingOutput, self).setUp()
+        super().setUp()
         self.files = FileCreator()
 
     def tearDown(self):
-        super(TestStreamingOutput, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def test_get_media_streaming_output(self):

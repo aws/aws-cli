@@ -225,7 +225,7 @@ class DigestSignatureError(DigestError):
             f'Digest file\ts3://{bucket}/{key}\tINVALID: signature verification '
             'failed'
         )
-        super(DigestSignatureError, self).__init__(message)
+        super().__init__(message)
 
 
 class InvalidDigestFormat(DigestError):
@@ -233,7 +233,7 @@ class InvalidDigestFormat(DigestError):
 
     def __init__(self, bucket, key):
         message = f'Digest file\ts3://{bucket}/{key}\tINVALID: invalid format'
-        super(InvalidDigestFormat, self).__init__(message)
+        super().__init__(message)
 
 
 class DigestProvider:
@@ -793,7 +793,7 @@ class CloudTrailValidateLogs(BasicCommand):
     ]
 
     def __init__(self, session):
-        super(CloudTrailValidateLogs, self).__init__(session)
+        super().__init__(session)
         self.trail_arn = None
         self.is_verbose = False
         self.start_time = None

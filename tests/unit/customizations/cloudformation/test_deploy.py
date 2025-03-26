@@ -42,7 +42,7 @@ ChangeSetResult = collections.namedtuple(
 
 class TestDeployCommand(BaseYAMLTest):
     def setUp(self):
-        super(TestDeployCommand, self).setUp()
+        super().setUp()
         self.session = mock.Mock()
         self.session.get_scoped_config.return_value = {}
         self.parsed_args = FakeArgs(

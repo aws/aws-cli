@@ -47,9 +47,7 @@ class FlattenedArgument(CustomArgument):
         self._property = prop
         self._hydrate = hydrate
         self._hydrate_value = hydrate_value
-        super(FlattenedArgument, self).__init__(
-            name=name, help_text=help_text, required=required
-        )
+        super().__init__(name=name, help_text=help_text, required=required)
 
     @property
     def cli_type_name(self):

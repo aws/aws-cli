@@ -30,7 +30,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
     POLICY_SIGNATURE = 'ynxybUMv9YuGbPl7HZ8AFJW/2t0='
 
     def setUp(self):
-        super(TestBundleInstance, self).setUp()
+        super().setUp()
         # This mocks out datetime.datetime.utcnow() so that it always
         # returns the same datetime object.  This is because this value
         # is embedded into the policy file that is generated and we
@@ -45,7 +45,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
         mocked_datetime.utcnow.return_value = datetime.datetime(2013, 8, 9)
 
     def tearDown(self):
-        super(TestBundleInstance, self).tearDown()
+        super().tearDown()
         self.datetime_patcher.stop()
 
     def test_no_policy_provided(self):

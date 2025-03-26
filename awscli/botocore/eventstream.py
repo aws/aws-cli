@@ -33,7 +33,7 @@ class DuplicateHeader(ParserError):
 
     def __init__(self, header):
         message = 'Duplicate header present: "%s"' % header
-        super(DuplicateHeader, self).__init__(message)
+        super().__init__(message)
 
 
 class InvalidHeadersLength(ParserError):
@@ -44,7 +44,7 @@ class InvalidHeadersLength(ParserError):
             length,
             _MAX_HEADERS_LENGTH,
         )
-        super(InvalidHeadersLength, self).__init__(message)
+        super().__init__(message)
 
 
 class ChecksumMismatch(ParserError):
@@ -55,7 +55,7 @@ class ChecksumMismatch(ParserError):
             expected,
             calculated,
         )
-        super(ChecksumMismatch, self).__init__(message)
+        super().__init__(message)
 
 
 class NoInitialResponseError(ParserError):
@@ -67,7 +67,7 @@ class NoInitialResponseError(ParserError):
 
     def __init__(self):
         message = 'First event was not of the initial-response type'
-        super(NoInitialResponseError, self).__init__(message)
+        super().__init__(message)
 
 
 class DecodeUtils:

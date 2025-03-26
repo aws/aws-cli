@@ -714,7 +714,7 @@ class ListCommand(S3Command):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(ListCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
         self._empty_result = False
         self._at_first_page = True
         self._size_accumulator = 0
@@ -899,7 +899,7 @@ class WebsiteCommand(S3Command):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(WebsiteCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
         bucket = self._get_bucket_name(parsed_args.paths[0])
         website_configuration = self._build_website_configuration(parsed_args)
         self.client.put_bucket_website(
@@ -957,7 +957,7 @@ class PresignCommand(S3Command):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(PresignCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
         path = parsed_args.path
         if path.startswith('s3://'):
             path = path[5:]
@@ -974,7 +974,7 @@ class PresignCommand(S3Command):
 
 class S3TransferCommand(S3Command):
     def _run_main(self, parsed_args, parsed_globals):
-        super(S3TransferCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
         register_feature_id('S3_TRANSFER')
         self._convert_path_args(parsed_args)
         params = self._get_params(parsed_args, parsed_globals, self._session)
@@ -1137,7 +1137,7 @@ class MbCommand(S3Command):
     ARG_TABLE = [{'name': 'path', 'positional_arg': True, 'synopsis': USAGE}]
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(MbCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
 
         if not parsed_args.path.startswith('s3://'):
             raise ParamValidationError(
@@ -1184,7 +1184,7 @@ class RbCommand(S3Command):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(RbCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
 
         if not parsed_args.path.startswith('s3://'):
             raise ParamValidationError(

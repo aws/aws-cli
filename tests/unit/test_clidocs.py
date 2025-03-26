@@ -529,7 +529,7 @@ class TestTopicDocumentEventHandlerBase(unittest.TestCase):
 
 class TestTopicListerDocumentEventHandler(TestTopicDocumentEventHandlerBase):
     def setUp(self):
-        super(TestTopicListerDocumentEventHandler, self).setUp()
+        super().setUp()
         self.descriptions = [
             'This describes the first topic',
             'This describes the second topic',
@@ -629,7 +629,7 @@ class TestTopicListerDocumentEventHandler(TestTopicDocumentEventHandlerBase):
 
 class TestTopicDocumentEventHandler(TestTopicDocumentEventHandlerBase):
     def setUp(self):
-        super(TestTopicDocumentEventHandler, self).setUp()
+        super().setUp()
         self.name = 'topic-name-1'
         self.title = 'The first topic title'
         self.description = 'This is about the first topic'

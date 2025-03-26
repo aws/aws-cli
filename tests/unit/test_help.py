@@ -197,7 +197,7 @@ class TestHelpCommand(TestHelpCommandBase):
     """
 
     def setUp(self):
-        super(TestHelpCommand, self).setUp()
+        super().setUp()
         self.doc_handler_mock = mock.Mock()
         self.subcommand_mock = mock.Mock()
         self.renderer = mock.Mock()
@@ -232,7 +232,7 @@ class TestHelpCommand(TestHelpCommandBase):
 
 class TestProviderHelpCommand(TestHelpCommandBase):
     def setUp(self):
-        super(TestProviderHelpCommand, self).setUp()
+        super().setUp()
         self.session.provider = None
         self.command_table = {}
         self.arg_table = {}
@@ -261,7 +261,7 @@ class TestProviderHelpCommand(TestHelpCommandBase):
 
     def tearDown(self):
         self.json_patch.stop()
-        super(TestProviderHelpCommand, self).tearDown()
+        super().tearDown()
 
     def test_related_items(self):
         self.assertEqual(self.cmd.related_items, ['aws help topics'])
@@ -291,7 +291,7 @@ class TestProviderHelpCommand(TestHelpCommandBase):
 
 class TestTopicListerCommand(TestHelpCommandBase):
     def setUp(self):
-        super(TestTopicListerCommand, self).setUp()
+        super().setUp()
         self.cmd = TopicListerCommand(self.session)
 
     def test_event_class(self):
@@ -303,7 +303,7 @@ class TestTopicListerCommand(TestHelpCommandBase):
 
 class TestTopicHelpCommand(TestHelpCommandBase):
     def setUp(self):
-        super(TestTopicHelpCommand, self).setUp()
+        super().setUp()
         self.name = 'topic-name-1'
         self.cmd = TopicHelpCommand(self.session, self.name)
 

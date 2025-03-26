@@ -31,11 +31,11 @@ class BaseYAMLTest(unittest.TestCase):
     """
 
     def setUp(self):
-        super(BaseYAMLTest, self).setUp()
+        super().setUp()
         self.original_implicit_resolvers = copy.deepcopy(
             yaml.resolver.implicit_resolvers
         )
 
     def tearDown(self):
-        super(BaseYAMLTest, self).tearDown()
+        super().tearDown()
         yaml.resolver.implicit_resolvers = self.original_implicit_resolvers

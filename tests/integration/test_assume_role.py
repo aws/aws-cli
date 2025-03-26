@@ -26,7 +26,7 @@ S3_READ_POLICY_ARN = 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
 
 class TestAssumeRoleCredentials(unittest.TestCase):
     def setUp(self):
-        super(TestAssumeRoleCredentials, self).setUp()
+        super().setUp()
         self.environ = os.environ.copy()
         self.parent_session = Session()
         self.iam = self.parent_session.create_client('iam')
@@ -49,7 +49,7 @@ class TestAssumeRoleCredentials(unittest.TestCase):
         }
 
     def tearDown(self):
-        super(TestAssumeRoleCredentials, self).tearDown()
+        super().tearDown()
         shutil.rmtree(self.tempdir)
 
     def random_name(self):

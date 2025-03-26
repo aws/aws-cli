@@ -18,7 +18,7 @@ from tests.unit.botocore.docs import BaseDocsTest
 
 class TestWaiterDocumenter(BaseDocsTest):
     def setUp(self):
-        super(TestWaiterDocumenter, self).setUp()
+        super().setUp()
         self.add_shape_to_params('Biz', 'String')
         self.setup_client()
         waiter_model = WaiterModel(self.waiter_json_model)

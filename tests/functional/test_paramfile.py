@@ -21,12 +21,12 @@ logger = logging.getLogger(__name__)
 
 class BaseTestCLIFollowParamFile(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(BaseTestCLIFollowParamFile, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.prefix = 'lambda get-function --function-name'
 
     def tearDown(self):
-        super(BaseTestCLIFollowParamFile, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def assert_param_expansion_is_correct(
@@ -69,7 +69,7 @@ class TestCLIFollowParamFileDefault(BaseTestCLIFollowParamFile):
 
 class TestCLIUseEncodingFromEnv(BaseTestCLIFollowParamFile):
     def setUp(self):
-        super(TestCLIUseEncodingFromEnv, self).setUp()
+        super().setUp()
         self.path = self.files.create_file(
             'foobar.txt', '經理', encoding='utf-8'
         )

@@ -54,7 +54,7 @@ def _create_functional_test_loader():
 
 class FunctionalSessionTest(BaseEnvVar):
     def setUp(self, **environ):
-        super(FunctionalSessionTest, self).setUp()
+        super().setUp()
         self.environ['AWS_ACCESS_KEY_ID'] = 'access_key'
         self.environ['AWS_SECRET_ACCESS_KEY'] = 'secret_key'
         self.environ['AWS_CONFIG_FILE'] = 'no-exist-foo'

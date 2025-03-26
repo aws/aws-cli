@@ -36,7 +36,7 @@ from tests import BaseEnvVar, mock
 
 class TestJSONFileLoader(BaseEnvVar):
     def setUp(self):
-        super(TestJSONFileLoader, self).setUp()
+        super().setUp()
         self.data_path = os.path.join(os.path.dirname(__file__), 'data')
         self.file_loader = JSONFileLoader()
         self.valid_file_path = os.path.join(self.data_path, 'foo')
@@ -238,7 +238,7 @@ class TestLoader(BaseEnvVar):
 
 class TestMergeExtras(BaseEnvVar):
     def setUp(self):
-        super(TestMergeExtras, self).setUp()
+        super().setUp()
         self.file_loader = mock.Mock()
         self.data_loader = Loader(
             extra_search_paths=['datapath'],
@@ -257,7 +257,7 @@ class TestMergeExtras(BaseEnvVar):
         self.isdir_patch.start()
 
     def tearDown(self):
-        super(TestMergeExtras, self).tearDown()
+        super().tearDown()
         self.isdir_patch.stop()
 
     def test_merge_extras(self):
@@ -360,7 +360,7 @@ class TestMergeExtras(BaseEnvVar):
 
 class TestExtrasProcessor(BaseEnvVar):
     def setUp(self):
-        super(TestExtrasProcessor, self).setUp()
+        super().setUp()
         self.processor = ExtrasProcessor()
         self.service_data = {
             'shapes': {
@@ -399,11 +399,11 @@ class TestExtrasProcessor(BaseEnvVar):
 
 class TestLoadersWithDirectorySearching(BaseEnvVar):
     def setUp(self):
-        super(TestLoadersWithDirectorySearching, self).setUp()
+        super().setUp()
         self.fake_directories = {}
 
     def tearDown(self):
-        super(TestLoadersWithDirectorySearching, self).tearDown()
+        super().tearDown()
 
     @contextlib.contextmanager
     def loader_with_fake_dirs(self):

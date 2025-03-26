@@ -93,7 +93,7 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
     }
 
     def setUp(self):
-        super(TestDeployCommand, self).setUp()
+        super().setUp()
         # setup required values
         files = FileCreator()
         self.task_def_file = files.create_file(
@@ -141,7 +141,7 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
         )
 
     def tearDown(self):
-        super(TestDeployCommand, self).tearDown()
+        super().tearDown()
 
     def test_deploy_with_defaults(self):
         cmdline = self.PREFIX

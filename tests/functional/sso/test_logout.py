@@ -19,7 +19,7 @@ from tests.functional.sso import BaseSSOTest
 
 class TestLogoutCommand(BaseSSOTest):
     def setUp(self):
-        super(TestLogoutCommand, self).setUp()
+        super().setUp()
         self.logout_token_cache_dir_patch = mock.patch(
             'awscli.customizations.sso.logout.SSO_TOKEN_DIR',
             self.token_cache_dir,
@@ -33,7 +33,7 @@ class TestLogoutCommand(BaseSSOTest):
         self.aws_creds_cache_dir_patch.start()
 
     def tearDown(self):
-        super(TestLogoutCommand, self).tearDown()
+        super().tearDown()
         self.logout_token_cache_dir_patch.stop()
         self.aws_creds_cache_dir_patch.stop()
 

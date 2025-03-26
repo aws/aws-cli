@@ -100,7 +100,7 @@ class TestGenerateProduct(BaseAWSCommandParamsTest):
         return cmd_line
 
     def setUp(self):
-        super(TestGenerateProduct, self).setUp()
+        super().setUp()
         self.init_params()
 
     def test_generate_product_success(self):

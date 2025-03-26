@@ -75,7 +75,7 @@ class SubscribeCommand(BasicCommand):
         self._s3_client = None
         self._sns_client = None
         self._config_client = None
-        super(SubscribeCommand, self).__init__(session)
+        super().__init__(session)
 
     def _run_main(self, parsed_args, parsed_globals):
         # Setup the necessary all of the necessary clients.

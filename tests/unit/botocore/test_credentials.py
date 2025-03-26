@@ -102,7 +102,7 @@ class TestCredentials(BaseEnvVar):
 
 class TestRefreshableCredentials(TestCredentials):
     def setUp(self):
-        super(TestRefreshableCredentials, self).setUp()
+        super().setUp()
         self.refresher = mock.Mock()
         self.future_time = datetime.now(tzlocal()) + timedelta(hours=24)
         self.expiry_time = datetime.now(tzlocal()) - timedelta(minutes=30)
@@ -241,7 +241,7 @@ class TestDeferredRefreshableCredentials(unittest.TestCase):
 
 class TestAssumeRoleCredentialFetcher(BaseEnvVar):
     def setUp(self):
-        super(TestAssumeRoleCredentialFetcher, self).setUp()
+        super().setUp()
         self.source_creds = credentials.Credentials('a', 'b', 'c')
         self.role_arn = 'myrole'
 
@@ -744,7 +744,7 @@ class TestAssumeRoleCredentialFetcher(BaseEnvVar):
 
 class TestAssumeRoleWithWebIdentityCredentialFetcher(BaseEnvVar):
     def setUp(self):
-        super(TestAssumeRoleWithWebIdentityCredentialFetcher, self).setUp()
+        super().setUp()
         self.role_arn = 'myrole'
 
     def load_token(self):
@@ -1423,7 +1423,7 @@ class TestEnvVar(BaseEnvVar):
 
 class TestSharedCredentialsProvider(BaseEnvVar):
     def setUp(self):
-        super(TestSharedCredentialsProvider, self).setUp()
+        super().setUp()
         self.ini_parser = mock.Mock()
 
     def test_credential_file_exists_default_profile(self):
@@ -1546,7 +1546,7 @@ class TestSharedCredentialsProvider(BaseEnvVar):
 
 class TestConfigFileProvider(BaseEnvVar):
     def setUp(self):
-        super(TestConfigFileProvider, self).setUp()
+        super().setUp()
         profile_config = {
             'aws_access_key_id': 'a',
             'aws_secret_access_key': 'b',
@@ -1627,7 +1627,7 @@ class TestConfigFileProvider(BaseEnvVar):
 
 class TestBotoProvider(BaseEnvVar):
     def setUp(self):
-        super(TestBotoProvider, self).setUp()
+        super().setUp()
         self.ini_parser = mock.Mock()
 
     def test_boto_config_file_exists_in_home_dir(self):
@@ -1758,7 +1758,7 @@ class TestInstanceMetadataProvider(BaseEnvVar):
 
 class CredentialResolverTest(BaseEnvVar):
     def setUp(self):
-        super(CredentialResolverTest, self).setUp()
+        super().setUp()
         self.provider1 = mock.Mock()
         self.provider1.METHOD = 'provider1'
         self.provider1.CANONICAL_NAME = 'CustomProvider1'
@@ -1883,7 +1883,7 @@ class CredentialResolverTest(BaseEnvVar):
 
 class TestCreateCredentialResolver(BaseEnvVar):
     def setUp(self):
-        super(TestCreateCredentialResolver, self).setUp()
+        super().setUp()
 
         self.session = mock.Mock(spec=botocore.session.Session)
         self.session.get_component = self.fake_get_component
@@ -1955,7 +1955,7 @@ class TestCreateCredentialResolver(BaseEnvVar):
 
 class TestCanonicalNameSourceProvider(BaseEnvVar):
     def setUp(self):
-        super(TestCanonicalNameSourceProvider, self).setUp()
+        super().setUp()
         self.custom_provider1 = mock.Mock(spec=CredentialProvider)
         self.custom_provider1.METHOD = 'provider1'
         self.custom_provider1.CANONICAL_NAME = 'CustomProvider1'
@@ -3368,7 +3368,7 @@ class TestContainerProvider(BaseEnvVar):
 
 class TestProcessProvider(BaseEnvVar):
     def setUp(self):
-        super(TestProcessProvider, self).setUp()
+        super().setUp()
         self.loaded_config = {}
         self.load_config = mock.Mock(return_value=self.loaded_config)
         self.invoked_process = mock.Mock()
@@ -3697,7 +3697,7 @@ class TestProcessProvider(BaseEnvVar):
 
 class TestProfileProviderBuilder(unittest.TestCase):
     def setUp(self):
-        super(TestProfileProviderBuilder, self).setUp()
+        super().setUp()
         self.mock_session = mock.Mock(spec=Session)
         self.builder = ProfileProviderBuilder(self.mock_session)
 

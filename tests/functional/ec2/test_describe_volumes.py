@@ -20,11 +20,11 @@ class TestDescribeVolumes(BaseAWSCommandParamsTest):
     prefix = 'ec2 describe-volumes'
 
     def setUp(self):
-        super(TestDescribeVolumes, self).setUp()
+        super().setUp()
         self.file_creator = FileCreator()
 
     def tearDown(self):
-        super(TestDescribeVolumes, self).tearDown()
+        super().tearDown()
         shutil.rmtree(self.file_creator.rootdir)
 
     def test_max_results_set_by_default(self):

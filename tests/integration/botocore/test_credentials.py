@@ -27,7 +27,7 @@ S3_READ_POLICY_ARN = 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
 
 class TestCredentialPrecedence(BaseEnvVar):
     def setUp(self):
-        super(TestCredentialPrecedence, self).setUp()
+        super().setUp()
 
         # Set the config file to something that doesn't exist so
         # that we don't accidentally load a config.
@@ -147,7 +147,7 @@ class TestAssumeRoleCredentials(BaseEnvVar):
     def setUp(self):
         self.env_original = os.environ.copy()
         self.environ_copy = os.environ.copy()
-        super(TestAssumeRoleCredentials, self).setUp()
+        super().setUp()
         os.environ = self.environ_copy
         # The tests rely on manipulating AWS_CONFIG_FILE,
         # but we also need to make sure we don't accidentally
@@ -174,7 +174,7 @@ class TestAssumeRoleCredentials(BaseEnvVar):
         }
 
     def tearDown(self):
-        super(TestAssumeRoleCredentials, self).tearDown()
+        super().tearDown()
         shutil.rmtree(self.tempdir)
         os.environ = self.env_original.copy()
 

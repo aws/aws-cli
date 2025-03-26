@@ -69,7 +69,7 @@ class BaseArgProcessTest(BaseCLIDriverTest):
 
 class TestURIParams(BaseArgProcessTest):
     def setUp(self):
-        super(TestURIParams, self).setUp()
+        super().setUp()
         self.uri_param = URIArgumentHandler(LOCAL_PREFIX_MAP.copy())
 
     def test_uri_param(self):
@@ -173,7 +173,7 @@ class TestParamShorthand(BaseArgProcessTest):
     maxDiff = None
 
     def setUp(self):
-        super(TestParamShorthand, self).setUp()
+        super().setUp()
         self._shorthand = ParamShorthandParser()
 
     def parse_shorthand(self, cli_argument, value, event_name=None):
@@ -490,7 +490,7 @@ class TestParamShorthand(BaseArgProcessTest):
 
 class TestParamShorthandCustomArguments(BaseArgProcessTest):
     def setUp(self):
-        super(TestParamShorthandCustomArguments, self).setUp()
+        super().setUp()
         self.shorthand = ParamShorthandParser()
 
     def test_list_structure_list_scalar_custom_arg(self):
@@ -555,7 +555,7 @@ class TestDocGen(BaseArgProcessTest):
     # flexible and allow the docs to slightly change without breaking these
     # tests.
     def setUp(self):
-        super(TestDocGen, self).setUp()
+        super().setUp()
         self.shorthand_documenter = ParamShorthandDocGen()
         self.service_name = 'foo'
         self.operation_name = 'bar'
@@ -872,7 +872,7 @@ class TestDocGen(BaseArgProcessTest):
 
 class TestUnpackJSONParams(BaseArgProcessTest):
     def setUp(self):
-        super(TestUnpackJSONParams, self).setUp()
+        super().setUp()
         self.simplify = ParamShorthandParser()
 
     def test_json_with_spaces(self):
@@ -907,7 +907,7 @@ class TestUnpackJSONParams(BaseArgProcessTest):
 
 class TestJSONValueHeaderParams(BaseArgProcessTest):
     def setUp(self):
-        super(TestJSONValueHeaderParams, self).setUp()
+        super().setUp()
         self.p = self.get_param_model(
             'lex-runtime.PostContent.sessionAttributes'
         )

@@ -138,7 +138,7 @@ class BaseTestWithFileCreator(unittest.TestCase):
 
 class TestProvideLastModifiedTimeSubscriber(BaseTestWithFileCreator):
     def setUp(self):
-        super(TestProvideLastModifiedTimeSubscriber, self).setUp()
+        super().setUp()
         self.filename = self.file_creator.create_file('myfile', 'my contents')
         self.desired_utime = datetime.datetime(
             2016, 1, 18, 7, 0, 0, tzinfo=tzlocal()
@@ -174,7 +174,7 @@ class TestProvideLastModifiedTimeSubscriber(BaseTestWithFileCreator):
 
 class TestDirectoryCreatorSubscriber(BaseTestWithFileCreator):
     def setUp(self):
-        super(TestDirectoryCreatorSubscriber, self).setUp()
+        super().setUp()
         self.directory_to_create = os.path.join(
             self.file_creator.rootdir, 'new-directory'
         )
@@ -364,7 +364,7 @@ class BaseCopyPropsSubscriberTest(unittest.TestCase):
 
 class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):
     def setUp(self):
-        super(TestCopyPropsSubscriberFactory, self).setUp()
+        super().setUp()
         self.set_cli_params_to_recursive_copy()
         self.factory = CopyPropsSubscriberFactory(
             self.client, self.transfer_config, self.cli_params
@@ -442,7 +442,7 @@ class TestReplaceTaggingDirectiveSubscriber(BaseCopyPropsSubscriberTest):
 
 class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
     def setUp(self):
-        super(TestSetMetadataDirectivePropsSubscriber, self).setUp()
+        super().setUp()
         self.head_object_response = {}
         self.subscriber = SetMetadataDirectivePropsSubscriber(
             client=self.client,
@@ -611,7 +611,7 @@ class PutObjectTaggingException(Exception):
 
 class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
     def setUp(self):
-        super(TestSetTagsSubscriber, self).setUp()
+        super().setUp()
         self.source_client = mock.Mock()
         self.subscriber = SetTagsSubscriber(
             client=self.client,

@@ -19,7 +19,7 @@ from awscli.customizations.exceptions import ParamValidationError
 class PipelineDefinitionError(ParamValidationError):
     def __init__(self, msg, definition):
         full_msg = "Error in pipeline definition: %s\n" % msg
-        super(PipelineDefinitionError, self).__init__(full_msg)
+        super().__init__(full_msg)
         self.msg = msg
         self.definition = definition
 

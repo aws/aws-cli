@@ -66,7 +66,7 @@ class WizardDev(BasicCommand):
     ]
 
     def __init__(self, session, dev_runner=None):
-        super(WizardDev, self).__init__(session)
+        super().__init__(session)
         if dev_runner is None:
             dev_runner = create_default_wizard_dev_runner(session)
         self._dev_runner = dev_runner

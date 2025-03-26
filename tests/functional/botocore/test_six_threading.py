@@ -34,7 +34,7 @@ def _reload_six():
 
 class _ExampleThread(threading.Thread):
     def __init__(self):
-        super(_ExampleThread, self).__init__()
+        super().__init__()
         self.daemon = False
         self.exc_info = None
 

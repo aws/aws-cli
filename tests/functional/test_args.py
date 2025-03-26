@@ -20,7 +20,7 @@ from awscli.testutils import (
 
 class TestArgsResolution(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestArgsResolution, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         config_contents = '[profile bar]\n' 'region = us-west-2\n'
         self.environ['AWS_CONFIG_FILE'] = self.files.create_file(
@@ -30,7 +30,7 @@ class TestArgsResolution(BaseAWSCommandParamsTest):
         self.entry_point = AWSCLIEntryPoint(self.driver)
 
     def tearDown(self):
-        super(TestArgsResolution, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def test_profile_resolution_order(self):

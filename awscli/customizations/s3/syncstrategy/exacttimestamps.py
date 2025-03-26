@@ -41,6 +41,4 @@ class ExactTimestampsSync(SizeAndLastModifiedSync):
         if cmd == 'download':
             return self.total_seconds(delta) == 0
         else:
-            return super(ExactTimestampsSync, self).compare_time(
-                src_file, dest_file
-            )
+            return super().compare_time(src_file, dest_file)

@@ -23,7 +23,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
     prefix = 's3api get-object'
 
     def setUp(self):
-        super(TestGetObject, self).setUp()
+        super().setUp()
         self.parsed_response = {'Body': StringIO()}
 
     def remove_file_if_exists(self, filename):

@@ -102,9 +102,7 @@ class GenerateProductCommand(GenerateBaseCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(GenerateProductCommand, self)._run_main(
-            parsed_args, parsed_globals
-        )
+        super()._run_main(parsed_args, parsed_globals)
         self.region = self.get_and_validate_region(parsed_globals)
 
         self.s3_url = self.create_s3_url(

@@ -286,7 +286,7 @@ class TestLSCommand(unittest.TestCase):
 
 class CommandArchitectureTest(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(CommandArchitectureTest, self).setUp()
+        super().setUp()
         self.session = self.driver.session
         self.bucket = 'mybucket'
         self.transfer_manager = mock.Mock()
@@ -307,7 +307,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         sys.stdout = self.saved_stdout
         sys.stderr = self.saved_stderr
 
-        super(CommandArchitectureTest, self).tearDown()
+        super().tearDown()
         clean_loc_files(self.file_creator)
 
     def get_cmd_architecture(self, cmd, params):
@@ -672,11 +672,11 @@ class CommandParametersTest(unittest.TestCase):
 
 class HelpDocTest(BaseAWSHelpOutputTest):
     def setUp(self):
-        super(HelpDocTest, self).setUp()
+        super().setUp()
         self.session = botocore.session.get_session()
 
     def tearDown(self):
-        super(HelpDocTest, self).tearDown()
+        super().tearDown()
 
     def test_s3_help(self):
         # This tests the help command for the s3 service. This

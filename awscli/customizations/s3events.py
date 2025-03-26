@@ -98,7 +98,7 @@ class S3SelectStreamOutputArgument(CustomArgument):
     _DOCUMENT_AS_REQUIRED = True
 
     def __init__(self, stream_key, session, **kwargs):
-        super(S3SelectStreamOutputArgument, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         # This is the key in the response body where we can find the
         # streamed contents.
         self._stream_key = stream_key

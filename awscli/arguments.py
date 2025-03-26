@@ -548,7 +548,7 @@ class BooleanArgument(CLIArgument):
         default=None,
         serialized_name=None,
     ):
-        super(BooleanArgument, self).__init__(
+        super().__init__(
             name,
             argument_model,
             operation_model,

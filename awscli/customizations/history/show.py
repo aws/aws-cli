@@ -151,7 +151,7 @@ class DetailedFormatter(Formatter):
     }
 
     def __init__(self, output=None, include=None, exclude=None, colorize=True):
-        super(DetailedFormatter, self).__init__(output, include, exclude)
+        super().__init__(output, include, exclude)
         self._request_id_to_api_num = {}
         self._num_api_calls = 0
         self._colorize = colorize

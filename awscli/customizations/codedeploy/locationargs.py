@@ -107,7 +107,7 @@ def modify_revision_arguments(argument_table, session, **kwargs):
 
 class LocationArgument(CustomArgument):
     def __init__(self, session, *args, **kwargs):
-        super(LocationArgument, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._session = session
 
     def add_to_params(self, parameters, value):

@@ -15,14 +15,14 @@ from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 class BaseQuickSightAssetBundleTest(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(BaseQuickSightAssetBundleTest, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.temp_file = self.files.create_file('foo', 'mycontents')
         with open(self.temp_file, 'rb') as f:
             self.temp_file_bytes = f.read()
 
     def tearDown(self):
-        super(BaseQuickSightAssetBundleTest, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
 

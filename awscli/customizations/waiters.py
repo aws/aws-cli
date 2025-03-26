@@ -69,7 +69,7 @@ class WaitCommand(BasicCommand):
             model=self._model,
             service_model=self._service_model,
         )
-        super(WaitCommand, self).__init__(session)
+        super().__init__(session)
 
     def _run_main(self, parsed_args, parsed_globals):
         if parsed_args.subcommand is None:
@@ -77,7 +77,7 @@ class WaitCommand(BasicCommand):
         return 0
 
     def _build_subcommand_table(self):
-        subcommand_table = super(WaitCommand, self)._build_subcommand_table()
+        subcommand_table = super()._build_subcommand_table()
         self.waiter_cmd_builder.build_all_waiter_state_cmds(subcommand_table)
         self._add_lineage(subcommand_table)
         return subcommand_table
@@ -229,7 +229,7 @@ class WaiterStateCommand(ServiceOperation):
     DESCRIPTION = ''
 
     def create_help_command(self):
-        help_command = super(WaiterStateCommand, self).create_help_command()
+        help_command = super().create_help_command()
         # Change the operation object's description by changing it to the
         # description for a waiter state command.
         self._operation_model.documentation = self.DESCRIPTION

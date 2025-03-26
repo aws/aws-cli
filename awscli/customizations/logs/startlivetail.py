@@ -930,7 +930,7 @@ class StartLiveTailCommand(BasicCommand):
     ]
 
     def __init__(self, session):
-        super(StartLiveTailCommand, self).__init__(session)
+        super().__init__(session)
         self._output = get_stdout_text_writer()
 
     def _get_client(self, parsed_globals):

@@ -17,14 +17,14 @@ class TestImortTerminology(BaseAWSCommandParamsTest):
     prefix = 'translate import-terminology'
 
     def setUp(self):
-        super(TestImortTerminology, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.temp_file = self.files.create_file('foo', 'mycontents')
         with open(self.temp_file, 'rb') as f:
             self.temp_file_contents = f.read()
 
     def tearDown(self):
-        super(TestImortTerminology, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def test_import_terminology_with_file_and_csv(self):

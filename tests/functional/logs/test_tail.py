@@ -19,7 +19,7 @@ from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 class TestTailCommand(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestTailCommand, self).setUp()
+        super().setUp()
         self.group_name = 'mygroup'
         self.stream_name = 'mystream'
         self.response_log_timestamp = 1100  # 1.1 seconds
@@ -41,7 +41,7 @@ class TestTailCommand(BaseAWSCommandParamsTest):
         ]
 
     def tearDown(self):
-        super(TestTailCommand, self).tearDown()
+        super().tearDown()
 
     def test_tail(self):
         stdout, _, _ = self.assert_params_for_cmd(

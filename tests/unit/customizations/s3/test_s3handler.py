@@ -312,7 +312,7 @@ class BaseTransferRequestSubmitterTest(unittest.TestCase):
 
 class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
-        super(TestUploadRequestSubmitter, self).setUp()
+        super().setUp()
         self.transfer_request_submitter = UploadRequestSubmitter(
             self.transfer_manager, self.result_queue, self.cli_params
         )
@@ -470,7 +470,7 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
 
 class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
-        super(TestDownloadRequestSubmitter, self).setUp()
+        super().setUp()
         self.transfer_request_submitter = DownloadRequestSubmitter(
             self.transfer_manager, self.result_queue, self.cli_params
         )
@@ -675,7 +675,7 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
 
 class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
-        super(TestCopyRequestSubmitter, self).setUp()
+        super().setUp()
         self.source_bucket = 'mysourcebucket'
         self.source_key = 'mysourcekey'
         self.transfer_request_submitter = CopyRequestSubmitter(
@@ -916,7 +916,7 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
 
 class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
-        super(TestUploadStreamRequestSubmitter, self).setUp()
+        super().setUp()
         self.filename = '-'
         self.cli_params['is_stream'] = True
         self.transfer_request_submitter = UploadStreamRequestSubmitter(
@@ -1001,7 +1001,7 @@ class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
 
 class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
-        super(TestDownloadStreamRequestSubmitter, self).setUp()
+        super().setUp()
         self.filename = '-'
         self.cli_params['is_stream'] = True
         self.transfer_request_submitter = DownloadStreamRequestSubmitter(
@@ -1069,7 +1069,7 @@ class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
 
 class TestDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
-        super(TestDeleteRequestSubmitter, self).setUp()
+        super().setUp()
         self.transfer_request_submitter = DeleteRequestSubmitter(
             self.transfer_manager, self.result_queue, self.cli_params
         )
@@ -1141,14 +1141,14 @@ class TestDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
 
 class TestLocalDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
-        super(TestLocalDeleteRequestSubmitter, self).setUp()
+        super().setUp()
         self.transfer_request_submitter = LocalDeleteRequestSubmitter(
             self.transfer_manager, self.result_queue, self.cli_params
         )
         self.file_creator = FileCreator()
 
     def tearDown(self):
-        super(TestLocalDeleteRequestSubmitter, self).tearDown()
+        super().tearDown()
         self.file_creator.remove_all()
 
     def test_can_submit(self):

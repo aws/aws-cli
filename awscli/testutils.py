@@ -271,14 +271,14 @@ class BaseCLIDriverTest(unittest.TestCase):
 
 class BaseAWSHelpOutputTest(BaseCLIDriverTest):
     def setUp(self):
-        super(BaseAWSHelpOutputTest, self).setUp()
+        super().setUp()
         self.renderer_patch = mock.patch('awscli.help.get_renderer')
         self.renderer_mock = self.renderer_patch.start()
         self.renderer = CapturedRenderer()
         self.renderer_mock.return_value = self.renderer
 
     def tearDown(self):
-        super(BaseAWSHelpOutputTest, self).tearDown()
+        super().tearDown()
         self.renderer_patch.stop()
 
     def assert_contains(self, contains):

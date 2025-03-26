@@ -175,7 +175,7 @@ def register_bundleinstance(event_handler):
 
 class BundleArgument(CustomArgument):
     def __init__(self, storage_param, *args, **kwargs):
-        super(BundleArgument, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._storage_param = storage_param
 
     def _build_storage(self, params, value):

@@ -35,7 +35,7 @@ class RegionCapture:
 
 class TestSession(BaseCLIDriverTest):
     def setUp(self):
-        super(TestSession, self).setUp()
+        super().setUp()
         urllib3_session_send = 'botocore.httpsession.URLLib3Session.send'
         self._urllib3_patch = mock.patch(urllib3_session_send)
         self._send = self._urllib3_patch.start()
@@ -116,7 +116,7 @@ class TestSession(BaseCLIDriverTest):
 
 class TestPlugins(BaseCLIDriverTest):
     def setUp(self):
-        super(TestPlugins, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.plugins_site_packages = os.path.join(
             self.files.rootdir, 'site-packages'
@@ -133,7 +133,7 @@ class TestPlugins(BaseCLIDriverTest):
         shutil.copy(self.plugin_filename, self.plugins_site_packages)
 
     def tearDown(self):
-        super(TestPlugins, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def assert_plugin_loaded(self, clidriver):

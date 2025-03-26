@@ -20,7 +20,7 @@ class TestGetGameSessionLog(BaseAWSCommandParamsTest):
     prefix = 'gamelift get-game-session-log'
 
     def setUp(self):
-        super(TestGetGameSessionLog, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.filename = os.path.join(self.files.rootdir, 'myfile')
         self.urlopen_patch = mock.patch(
@@ -31,7 +31,7 @@ class TestGetGameSessionLog(BaseAWSCommandParamsTest):
         self.urlopen_mock.return_value = BytesIO(self.contents)
 
     def tearDown(self):
-        super(TestGetGameSessionLog, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
         self.urlopen_patch.stop()
 

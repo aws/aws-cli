@@ -32,7 +32,7 @@ class GetStatusCommand(BasicCommand):
 
     def __init__(self, session):
         self._config_client = None
-        super(GetStatusCommand, self).__init__(session)
+        super().__init__(session)
 
     def _run_main(self, parsed_args, parsed_globals):
         self._setup_client(parsed_globals)

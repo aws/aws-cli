@@ -38,7 +38,7 @@ class ConfigureGetCommand(BasicCommand):
     ]
 
     def __init__(self, session, stream=None, error_stream=None):
-        super(ConfigureGetCommand, self).__init__(session)
+        super().__init__(session)
         if stream is None:
             stream = sys.stdout
         if error_stream is None:

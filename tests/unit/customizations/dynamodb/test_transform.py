@@ -65,7 +65,7 @@ class BaseTransformationTest(unittest.TestCase):
 
 class TestInputOutputTransformer(BaseTransformationTest):
     def setUp(self):
-        super(TestInputOutputTransformer, self).setUp()
+        super().setUp()
         self.transformation = lambda params: self.transformed_value
         self.add_shape({self.target_shape: {'type': 'string'}})
 

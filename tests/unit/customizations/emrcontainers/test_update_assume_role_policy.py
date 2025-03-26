@@ -56,7 +56,7 @@ class TestUpdateAssumeRolePolicy(BaseAWSCommandParamsTest):
     }
 
     def setUp(self):
-        super(TestUpdateAssumeRolePolicy, self).setUp()
+        super().setUp()
 
         self.command = (
             'emr-containers update-role-trust-policy --cluster-name=%s '

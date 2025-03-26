@@ -12,7 +12,7 @@ from tests.unit.customizations.cloudformation import BaseYAMLTest
 
 class TestDeployer(BaseYAMLTest):
     def setUp(self):
-        super(TestDeployer, self).setUp()
+        super().setUp()
         client = botocore.session.get_session().create_client(
             'cloudformation', region_name="us-east-1"
         )

@@ -67,12 +67,12 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
     }
 
     def __init__(self, session, operation_model):
-        super(GenerateCliSkeletonArgument, self).__init__(session)
+        super().__init__(session)
         self._operation_model = operation_model
 
     def _register_argument_action(self):
         self._session.register('calling-command.*', self.generate_skeleton)
-        super(GenerateCliSkeletonArgument, self)._register_argument_action()
+        super()._register_argument_action()
 
     def override_required_args(self, argument_table, args, **kwargs):
         arg_name = '--' + self.name
@@ -87,9 +87,7 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
                     return
             except IndexError:
                 pass
-            super(GenerateCliSkeletonArgument, self).override_required_args(
-                argument_table, args, **kwargs
-            )
+            super().override_required_args(argument_table, args, **kwargs)
 
     def generate_skeleton(
         self, call_parameters, parsed_args, parsed_globals, **kwargs
@@ -166,9 +164,7 @@ class _Bytes:
 
 class YAMLArgumentGenerator(ArgumentGenerator):
     def __init__(self, use_member_names=False, yaml=None):
-        super(YAMLArgumentGenerator, self).__init__(
-            use_member_names=use_member_names
-        )
+        super().__init__(use_member_names=use_member_names)
         self._yaml = yaml
         if self._yaml is None:
             self._yaml = YAML()
@@ -180,9 +176,7 @@ class YAMLArgumentGenerator(ArgumentGenerator):
         # serialization output more usable on python 3.
         if shape.type_name == 'blob':
             return _Bytes()
-        return super(YAMLArgumentGenerator, self)._generate_skeleton(
-            shape, stack, name
-        )
+        return super()._generate_skeleton(shape, stack, name)
 
     def _generate_type_structure(self, shape, stack):
         if stack.count(shape.name) > 1:
@@ -220,6 +214,4 @@ class YAMLArgumentGenerator(ArgumentGenerator):
         # YAML has support for ordered maps, so don't use ordereddicts
         # because that isn't necessary and it makes the output harder to
         # understand and read.
-        return dict(
-            super(YAMLArgumentGenerator, self)._generate_type_map(shape, stack)
-        )
+        return dict(super()._generate_type_map(shape, stack))

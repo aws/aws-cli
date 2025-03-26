@@ -591,7 +591,7 @@ class TestSigner(BaseSignerTest):
 
 class TestCloudfrontSigner(BaseSignerTest):
     def setUp(self):
-        super(TestCloudfrontSigner, self).setUp()
+        super().setUp()
         self.signer = CloudFrontSigner("MY_KEY_ID", lambda message: b'signed')
         # It helps but the long string diff will still be slightly different on
         # Python 2.6/2.7/3.x. We won't soly rely on that anyway, so it's fine.
@@ -662,7 +662,7 @@ class TestCloudfrontSigner(BaseSignerTest):
 
 class TestS3PostPresigner(BaseSignerTest):
     def setUp(self):
-        super(TestS3PostPresigner, self).setUp()
+        super().setUp()
         self.request_signer = RequestSigner(
             ServiceId('service_name'),
             'region_name',
@@ -694,7 +694,7 @@ class TestS3PostPresigner(BaseSignerTest):
         self.datetime_mock.timedelta.return_value = self.fixed_delta
 
     def tearDown(self):
-        super(TestS3PostPresigner, self).tearDown()
+        super().tearDown()
         self.datetime_patch.stop()
 
     def test_generate_presigned_post(self):

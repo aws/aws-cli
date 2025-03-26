@@ -18,7 +18,7 @@ from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 class EMRBaseAWSCommandParamsTest(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(EMRBaseAWSCommandParamsTest, self).setUp()
+        super().setUp()
 
         # Do not use any emr-specific configs for the test cases
         self.get_scoped_config_mock = mock.Mock()
@@ -35,7 +35,7 @@ class EMRBaseAWSCommandParamsTest(BaseAWSCommandParamsTest):
         self.get_scoped_config_mock.return_value = {'emr': configs}
 
     def tearDown(self):
-        super(EMRBaseAWSCommandParamsTest, self).tearDown()
+        super().tearDown()
         self.patcher_update_config.stop()
 
     def assert_error_msg(

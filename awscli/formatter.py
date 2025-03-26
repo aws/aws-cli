@@ -140,7 +140,7 @@ class YAMLDumper:
 
 class YAMLFormatter(FullyBufferedFormatter):
     def __init__(self, args, yaml_dumper=None):
-        super(YAMLFormatter, self).__init__(args)
+        super().__init__(args)
         self._yaml_dumper = yaml_dumper
         if yaml_dumper is None:
             self._yaml_dumper = YAMLDumper()
@@ -153,7 +153,7 @@ class YAMLFormatter(FullyBufferedFormatter):
 
 class StreamedYAMLFormatter(Formatter):
     def __init__(self, args, yaml_dumper=None):
-        super(StreamedYAMLFormatter, self).__init__(args)
+        super().__init__(args)
         self._yaml_dumper = yaml_dumper
         if yaml_dumper is None:
             self._yaml_dumper = YAMLDumper()
@@ -204,7 +204,7 @@ class TableFormatter(FullyBufferedFormatter):
     """
 
     def __init__(self, args, table=None):
-        super(TableFormatter, self).__init__(args)
+        super().__init__(args)
         if args.color == 'auto':
             self.table = MultiTable(
                 initial_section=False, column_separator='|'

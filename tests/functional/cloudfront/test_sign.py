@@ -52,7 +52,7 @@ class TestSign(BaseAWSCommandParamsTest):
         files = FileCreator()
         self.private_key_file = files.create_file('foo.pem', self.private_key)
         self.addCleanup(files.remove_all)
-        super(TestSign, self).setUp()
+        super().setUp()
 
     def assertDesiredUrl(self, url, base, params):
         self.assertEqual(len(url.splitlines()), 1, "Expects only 1 line")

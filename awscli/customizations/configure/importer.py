@@ -67,7 +67,7 @@ class ConfigureImportCommand(BasicCommand):
     def __init__(
         self, session, csv_parser=None, importer=None, out_stream=None
     ):
-        super(ConfigureImportCommand, self).__init__(session)
+        super().__init__(session)
         if csv_parser is None:
             csv_parser = CSVCredentialParser()
         self._csv_parser = csv_parser

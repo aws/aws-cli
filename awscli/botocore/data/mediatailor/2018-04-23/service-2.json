@@ -611,7 +611,7 @@
       "members":{
         "StreamingMediaFileConditioning":{
           "shape":"StreamingMediaFileConditioning",
-          "documentation":"<p>For ads that have media files with streaming delivery and supported file extensions, indicates what transcoding action MediaTailor takes when it first receives these ads from the ADS. <code>TRANSCODE</code> indicates that MediaTailor must transcode the ads. <code>NONE</code> indicates that you have already transcoded the ads outside of MediaTailor and don't need them transcoded as part of the ad insertion workflow. For more information about ad conditioning see <a href=\"https://docs.aws.amazon.com/precondition-ads.html\">https://docs.aws.amazon.com/precondition-ads.html</a>.</p>"
+          "documentation":"<p>For ads that have media files with streaming delivery and supported file extensions, indicates what transcoding action MediaTailor takes when it first receives these ads from the ADS. <code>TRANSCODE</code> indicates that MediaTailor must transcode the ads. <code>NONE</code> indicates that you have already transcoded the ads outside of MediaTailor and don't need them transcoded as part of the ad insertion workflow. For more information about ad conditioning see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/precondition-ads.html\">Using preconditioned ads</a> in the Elemental MediaTailor user guide.</p>"
         }
       },
       "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns.</p>"
@@ -632,6 +632,70 @@
         "DATERANGE",
         "SCTE35_ENHANCED"
       ]
+    },
+    "AdsInteractionExcludeEventType":{
+      "type":"string",
+      "enum":[
+        "AD_MARKER_FOUND",
+        "NON_AD_MARKER_FOUND",
+        "MAKING_ADS_REQUEST",
+        "MODIFIED_TARGET_URL",
+        "VAST_REDIRECT",
+        "EMPTY_VAST_RESPONSE",
+        "EMPTY_VMAP_RESPONSE",
+        "VAST_RESPONSE",
+        "REDIRECTED_VAST_RESPONSE",
+        "FILLED_AVAIL",
+        "FILLED_OVERLAY_AVAIL",
+        "BEACON_FIRED",
+        "WARNING_NO_ADVERTISEMENTS",
+        "WARNING_VPAID_AD_DROPPED",
+        "WARNING_URL_VARIABLE_SUBSTITUTION_FAILED",
+        "ERROR_UNKNOWN",
+        "ERROR_UNKNOWN_HOST",
+        "ERROR_DISALLOWED_HOST",
+        "ERROR_ADS_IO",
+        "ERROR_ADS_TIMEOUT",
+        "ERROR_ADS_RESPONSE_PARSE",
+        "ERROR_ADS_RESPONSE_UNKNOWN_ROOT_ELEMENT",
+        "ERROR_ADS_INVALID_RESPONSE",
+        "ERROR_VAST_REDIRECT_EMPTY_RESPONSE",
+        "ERROR_VAST_REDIRECT_MULTIPLE_VAST",
+        "ERROR_VAST_REDIRECT_FAILED",
+        "ERROR_VAST_MISSING_MEDIAFILES",
+        "ERROR_VAST_MISSING_CREATIVES",
+        "ERROR_VAST_MISSING_OVERLAYS",
+        "ERROR_VAST_MISSING_IMPRESSION",
+        "ERROR_VAST_INVALID_VAST_AD_TAG_URI",
+        "ERROR_VAST_MULTIPLE_TRACKING_EVENTS",
+        "ERROR_VAST_MULTIPLE_LINEAR",
+        "ERROR_VAST_INVALID_MEDIA_FILE",
+        "ERROR_FIRING_BEACON_FAILED",
+        "ERROR_PERSONALIZATION_DISABLED",
+        "VOD_TIME_BASED_AVAIL_PLAN_VAST_RESPONSE_FOR_OFFSET",
+        "VOD_TIME_BASED_AVAIL_PLAN_SUCCESS",
+        "VOD_TIME_BASED_AVAIL_PLAN_WARNING_NO_ADVERTISEMENTS",
+        "INTERSTITIAL_VOD_SUCCESS",
+        "INTERSTITIAL_VOD_FAILURE"
+      ]
+    },
+    "AdsInteractionLog":{
+      "type":"structure",
+      "members":{
+        "PublishOptInEventTypes":{
+          "shape":"__adsInteractionPublishOptInEventTypesList",
+          "documentation":"<p>Indicates that MediaTailor emits <code>RAW_ADS_RESPONSE</code> logs for playback sessions that are initialized with this configuration.</p>"
+        },
+        "ExcludeEventTypes":{
+          "shape":"__adsInteractionExcludeEventTypesList",
+          "documentation":"<p>Indicates that MediaTailor won't emit the selected events in the logs for playback sessions that are initialized with this configuration.</p>"
+        }
+      },
+      "documentation":"<p>Settings for customizing what events are included in logs for interactions with the ad decision server (ADS).</p> <p>For more information about ADS logs, inlcuding descriptions of the event types, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/ads-log-format.html\">MediaTailor ADS logs description and event types</a> in Elemental MediaTailor User Guide.</p>"
+    },
+    "AdsInteractionPublishOptInEventType":{
+      "type":"string",
+      "enum":["RAW_ADS_RESPONSE"]
     },
     "Alert":{
       "type":"structure",
@@ -961,6 +1025,14 @@
         "EnabledLoggingStrategies":{
           "shape":"__listOfLoggingStrategies",
           "documentation":"<p>The method used for collecting logs from AWS Elemental MediaTailor. To configure MediaTailor to send logs directly to Amazon CloudWatch Logs, choose <code>LEGACY_CLOUDWATCH</code>. To configure MediaTailor to send logs to CloudWatch, which then vends the logs to your destination of choice, choose <code>VENDED_LOGS</code>. Supported destinations are CloudWatch Logs log group, Amazon S3 bucket, and Amazon Data Firehose stream.</p> <p>To use vended logs, you must configure the delivery destination in Amazon CloudWatch, as described in <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html#AWS-vended-logs-permissions-V2\">Enable logging from AWS services, Logging that requires additional permissions [V2]</a>.</p>"
+        },
+        "AdsInteractionLog":{
+          "shape":"AdsInteractionLog",
+          "documentation":"<p>The event types that MediaTailor emits in logs for interactions with the ADS.</p>"
+        },
+        "ManifestServiceInteractionLog":{
+          "shape":"ManifestServiceInteractionLog",
+          "documentation":"<p>The event types that MediaTailor emits in logs for interactions with the origin server.</p>"
         }
       },
       "documentation":"<p>Configures Amazon CloudWatch log settings for a playback configuration.</p>"
@@ -980,6 +1052,14 @@
         "EnabledLoggingStrategies":{
           "shape":"__listOfLoggingStrategies",
           "documentation":"<p>The method used for collecting logs from AWS Elemental MediaTailor. <code>LEGACY_CLOUDWATCH</code> indicates that MediaTailor is sending logs directly to Amazon CloudWatch Logs. <code>VENDED_LOGS</code> indicates that MediaTailor is sending logs to CloudWatch, which then vends the logs to your destination of choice. Supported destinations are CloudWatch Logs log group, Amazon S3 bucket, and Amazon Data Firehose stream. </p>"
+        },
+        "AdsInteractionLog":{
+          "shape":"AdsInteractionLog",
+          "documentation":"<p>The event types that MediaTailor emits in logs for interactions with the ADS.</p>"
+        },
+        "ManifestServiceInteractionLog":{
+          "shape":"ManifestServiceInteractionLog",
+          "documentation":"<p>The event types that MediaTailor emits in logs for interactions with the origin server.</p>"
         }
       }
     },
@@ -2651,6 +2731,14 @@
         "EnabledLoggingStrategies":{
           "shape":"__listOfLoggingStrategies",
           "documentation":"<p>The method used for collecting logs from AWS Elemental MediaTailor. <code>LEGACY_CLOUDWATCH</code> indicates that MediaTailor is sending logs directly to Amazon CloudWatch Logs. <code>VENDED_LOGS</code> indicates that MediaTailor is sending logs to CloudWatch, which then vends the logs to your destination of choice. Supported destinations are CloudWatch Logs log group, Amazon S3 bucket, and Amazon Data Firehose stream. </p>"
+        },
+        "AdsInteractionLog":{
+          "shape":"AdsInteractionLog",
+          "documentation":"<p>Settings for customizing what events are included in logs for interactions with the ad decision server (ADS).</p>"
+        },
+        "ManifestServiceInteractionLog":{
+          "shape":"ManifestServiceInteractionLog",
+          "documentation":"<p>Settings for customizing what events are included in logs for interactions with the origin server.</p>"
         }
       },
       "documentation":"<p>Defines where AWS Elemental MediaTailor sends logs for the playback configuration.</p>"
@@ -2693,6 +2781,53 @@
         }
       },
       "documentation":"<p>The configuration for manifest processing rules. Manifest processing rules enable customization of the personalized manifests created by MediaTailor.</p>"
+    },
+    "ManifestServiceExcludeEventType":{
+      "type":"string",
+      "enum":[
+        "GENERATED_MANIFEST",
+        "ORIGIN_MANIFEST",
+        "SESSION_INITIALIZED",
+        "TRACKING_RESPONSE",
+        "CONFIG_SYNTAX_ERROR",
+        "CONFIG_SECURITY_ERROR",
+        "UNKNOWN_HOST",
+        "TIMEOUT_ERROR",
+        "CONNECTION_ERROR",
+        "IO_ERROR",
+        "UNKNOWN_ERROR",
+        "HOST_DISALLOWED",
+        "PARSING_ERROR",
+        "MANIFEST_ERROR",
+        "NO_MASTER_OR_MEDIA_PLAYLIST",
+        "NO_MASTER_PLAYLIST",
+        "NO_MEDIA_PLAYLIST",
+        "INCOMPATIBLE_HLS_VERSION",
+        "SCTE35_PARSING_ERROR",
+        "INVALID_SINGLE_PERIOD_DASH_MANIFEST",
+        "UNSUPPORTED_SINGLE_PERIOD_DASH_MANIFEST",
+        "LAST_PERIOD_MISSING_AUDIO",
+        "LAST_PERIOD_MISSING_AUDIO_WARNING",
+        "ERROR_ORIGIN_PREFIX_INTERPOLATION",
+        "ERROR_ADS_INTERPOLATION",
+        "ERROR_LIVE_PRE_ROLL_ADS_INTERPOLATION",
+        "ERROR_CDN_AD_SEGMENT_INTERPOLATION",
+        "ERROR_CDN_CONTENT_SEGMENT_INTERPOLATION",
+        "ERROR_SLATE_AD_URL_INTERPOLATION",
+        "ERROR_PROFILE_NAME_INTERPOLATION",
+        "ERROR_BUMPER_START_INTERPOLATION",
+        "ERROR_BUMPER_END_INTERPOLATION"
+      ]
+    },
+    "ManifestServiceInteractionLog":{
+      "type":"structure",
+      "members":{
+        "ExcludeEventTypes":{
+          "shape":"__manifestServiceExcludeEventTypesList",
+          "documentation":"<p>Indicates that MediaTailor won't emit the selected events in the logs for playback sessions that are initialized with this configuration.</p>"
+        }
+      },
+      "documentation":"<p>Settings for customizing what events are included in logs for interactions with the origin server.</p> <p>For more information about manifest service logs, including descriptions of the event types, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/log-types.html\">MediaTailor manifest logs description and event types</a> in Elemental MediaTailor User Guide.</p>"
     },
     "MaxResults":{
       "type":"integer",
@@ -3998,6 +4133,14 @@
       },
       "documentation":"<p>VOD source configuration parameters.</p>"
     },
+    "__adsInteractionExcludeEventTypesList":{
+      "type":"list",
+      "member":{"shape":"AdsInteractionExcludeEventType"}
+    },
+    "__adsInteractionPublishOptInEventTypesList":{
+      "type":"list",
+      "member":{"shape":"AdsInteractionPublishOptInEventType"}
+    },
     "__boolean":{
       "type":"boolean",
       "box":true
@@ -4084,6 +4227,10 @@
     "__long":{
       "type":"long",
       "box":true
+    },
+    "__manifestServiceExcludeEventTypesList":{
+      "type":"list",
+      "member":{"shape":"ManifestServiceExcludeEventType"}
     },
     "__mapOf__string":{
       "type":"map",

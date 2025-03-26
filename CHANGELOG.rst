@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.25.4
+======
+
+* api-change:``arc-zonal-shift``: Add new shiftType field for ARC zonal shifts.
+* api-change:``rds``: Add note about the Availability Zone where RDS restores the DB cluster for the RestoreDBClusterToPointInTime operation.
+* api-change:``directconnect``: With this release, AWS Direct Connect allows you to tag your Direct Connect gateways. Tags are metadata that you can create and use to manage your Direct Connect gateways. For more information about tagging, see AWS Tagging Strategies.
+* api-change:``wafv2``: This release adds the ability to associate an AWS WAF v2 web ACL with an AWS Amplify App.
+* api-change:``mediatailor``: Add support for log filtering which allow customers to filter out selected event types from logs.
+* api-change:``mediaconvert``: This release adds a configurable Quality Level setting for the top rendition of Auto ABR jobs
+* api-change:``polly``: Added support for the new voice - Jihye (ko-KR). Jihye is available as a Neural voice only.
+
+
 2.25.3
 ======
 

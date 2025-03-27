@@ -31,7 +31,7 @@ def test_no_event_stream_unless_allowed():
                 op_help = sub_command.create_help_command()
                 model = op_help.obj
                 if isinstance(model, OperationModel):
-                    full_command = '%s %s' % (command_name, sub_name)
+                    full_command = f'{command_name} {sub_name}'
                     if (
                         model.has_event_stream_input
                         or model.has_event_stream_output
@@ -40,9 +40,9 @@ def test_no_event_stream_unless_allowed():
                             continue
                         supported_commands = '\n'.join(_ALLOWED_COMMANDS)
                         errors.append(
-                            'The "%s" command uses event streams '
+                            f'The "{full_command}" command uses event streams '
                             'which is only supported for these operations:\n'
-                            '%s' % (full_command, supported_commands)
+                            f'{supported_commands}'
                         )
     if errors:
         raise AssertionError('\n' + '\n'.join(errors))

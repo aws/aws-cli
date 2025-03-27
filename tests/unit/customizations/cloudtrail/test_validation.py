@@ -49,7 +49,7 @@ from . import get_private_key_path, get_public_key_path
 START_DATE = parser.parse('20140810T000000Z')
 END_DATE = parser.parse('20150810T000000Z')
 TEST_ACCOUNT_ID = '123456789012'
-TEST_TRAIL_ARN = 'arn:aws:cloudtrail:us-east-1:%s:trail/foo' % TEST_ACCOUNT_ID
+TEST_TRAIL_ARN = f'arn:aws:cloudtrail:us-east-1:{TEST_ACCOUNT_ID}:trail/foo'
 VALID_TEST_KEY = (
     'MIIBCgKCAQEAn11L2YZ9h7onug2ILi1MWyHiMRsTQjfWE+pHVRLk1QjfW'
     'hirG+lpOa8NrwQ/r7Ah5bNL6HepznOU9XTDSfmmnP97mqyc7z/upfZdS/'
@@ -238,7 +238,7 @@ class TestValidation(unittest.TestCase):
     def test_ensures_cloudtrail_arns_are_valid_when_missing_resource(self):
         try:
             assert_cloudtrail_arn_is_valid(
-                'arn:aws:cloudtrail:us-east-1:%s:foo' % TEST_ACCOUNT_ID
+                f'arn:aws:cloudtrail:us-east-1:{TEST_ACCOUNT_ID}:foo'
             )
             self.fail('Should have failed')
         except ParamValidationError as e:
@@ -246,7 +246,7 @@ class TestValidation(unittest.TestCase):
 
     def test_allows_valid_arns(self):
         assert_cloudtrail_arn_is_valid(
-            'arn:aws:cloudtrail:us-east-1:%s:trail/foo' % TEST_ACCOUNT_ID
+            f'arn:aws:cloudtrail:us-east-1:{TEST_ACCOUNT_ID}:trail/foo'
         )
 
     def test_normalizes_date_timezones(self):
@@ -452,7 +452,7 @@ class TestSha256RSADigestValidator(unittest.TestCase):
             get_private_key_path(), get_public_key_path()
         )
         sha256_hash = hashlib.sha256(self._inflated_digest)
-        string_to_sign = "%s\n%s/%s\n%s\n%s" % (
+        string_to_sign = "{}\n{}/{}\n{}\n{}".format(
             self._digest_data['digestEndTime'],
             self._digest_data['digestS3Bucket'],
             self._digest_data['digestS3Object'],
@@ -767,8 +767,8 @@ class TestDigestTraverser(unittest.TestCase):
         self.assertEqual(1, len(calls))
         self.assertEqual(
             (
-                'Digest file\ts3://1/%s\tINVALID: public key not '
-                'found in region %s for fingerprint abc' % (key_name, region)
+                f'Digest file\ts3://1/{key_name}\tINVALID: public key not '
+                f'found in region {region} for fingerprint abc'
             ),
             calls[0]['message'],
         )
@@ -835,7 +835,7 @@ class TestDigestTraverser(unittest.TestCase):
         self.assertIsNone(next(digest_iter, None))
         self.assertEqual(1, len(collected))
         self.assertEqual(
-            'Digest file\ts3://1/%s\tINVALID: invalid format' % key_name,
+            f'Digest file\ts3://1/{key_name}\tINVALID: invalid format',
             collected[0]['message'],
         )
 
@@ -1036,7 +1036,7 @@ class TestDigestTraverser(unittest.TestCase):
         digest_iter = traverser.traverse(start_date, end_date)
         next(digest_iter, None)
         self.assertIn(
-            'Digest file\ts3://1/%s\tINVALID: ' % end_timestamp,
+            f'Digest file\ts3://1/{end_timestamp}\tINVALID: ',
             calls[0]['message'],
         )
 

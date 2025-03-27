@@ -59,9 +59,8 @@ class TestUpdateAssumeRolePolicy(BaseAWSCommandParamsTest):
         super(TestUpdateAssumeRolePolicy, self).setUp()
 
         self.command = (
-            'emr-containers update-role-trust-policy --cluster-name=%s '
-            '--namespace=%s --role-name=%s'
-            % (self.cluster_name, self.namespace, self.role_name)
+            f'emr-containers update-role-trust-policy --cluster-name={self.cluster_name} '
+            f'--namespace={self.namespace} --role-name={self.role_name}'
         )
         self.policy_document = {
             "Version": "2012-10-17",

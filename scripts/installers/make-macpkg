@@ -51,11 +51,10 @@ def do_make_pkg(workdir, pkg_name):
             (
                 'pkgbuild --identifier com.amazon.aws.cli2 '
                 '--root ./stage '
-                '--scripts %s '
-                '--version %s '
-                '%s'
-            )
-            % (SCRIPTS_DIR, version, TEMP_PKG_NAME),
+                f'--scripts {SCRIPTS_DIR} '
+                f'--version {version} '
+                f'{TEMP_PKG_NAME}'
+            ),
             cwd=workdir,
         )
     )
@@ -65,8 +64,9 @@ def do_make_pkg(workdir, pkg_name):
         )
         print(
             run(
-                ('productbuild --distribution %s --resources %s %s')
-                % (DISTRIBUTION_PATH, formatted_resource_dir, PKG_NAME),
+                (
+                    f'productbuild --distribution {DISTRIBUTION_PATH} --resources {formatted_resource_dir} {PKG_NAME}'
+                ),
                 cwd=workdir,
             )
         )
@@ -76,7 +76,7 @@ def do_make_pkg(workdir, pkg_name):
 def get_version(output_dir):
     exe_dir = os.path.join(output_dir, 'stage', 'aws-cli')
     exe_path = os.path.join(exe_dir, EXE_NAME)
-    result = run('%s --version' % exe_path, cwd=exe_dir).strip()
+    result = run(f'{exe_path} --version', cwd=exe_dir).strip()
     version = result.split(' ')[0].split('/')[1]
     return version
 
@@ -107,7 +107,7 @@ def main():
         default=os.path.join(ROOT, 'dist', PKG_NAME),
         help=(
             'The output PKG name. By default, this will be '
-            '"dist/%s" in the root of the awscli.' % PKG_NAME
+            f'"dist/{PKG_NAME}" in the root of the awscli.'
         ),
     )
     parser.add_argument(
@@ -115,7 +115,7 @@ def main():
         default=os.path.join(ROOT, 'dist', EXE_ZIP_NAME),
         help=(
             'The exe used to build the PKG. By default, this will be the'
-            '"dist/%s" zipfile in the root of the awscli.' % EXE_ZIP_NAME
+            f'"dist/{EXE_ZIP_NAME}" zipfile in the root of the awscli.'
         ),
     )
     args = parser.parse_args()

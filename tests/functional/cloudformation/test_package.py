@@ -95,7 +95,7 @@ def test_known_templates(input_template, output_template):
 
     assert result == expected, (
         '\nAcutal template:\n'
-        '%s'
+        f'{result}'
         '\nDiffers from expected template:\n'
-        '%s' % (result, expected)
+        f'{expected}'
     )

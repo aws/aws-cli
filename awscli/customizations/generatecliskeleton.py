@@ -98,7 +98,7 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
             return
         arg_value = parsed_args.generate_cli_skeleton
         return getattr(
-            self, '_generate_%s_skeleton' % arg_value.replace('-', '_')
+            self, '_generate_{}_skeleton'.format(arg_value.replace('-', '_'))
         )(call_parameters=call_parameters, parsed_globals=parsed_globals)
 
     def _generate_yaml_input_skeleton(self, **kwargs):
@@ -214,7 +214,7 @@ class YAMLArgumentGenerator(ArgumentGenerator):
             skeleton.yaml_add_eol_comment('# ' + comment, member_name)
 
     def _get_enums_comment_content(self, enums):
-        return 'Valid values are: %s.' % ', '.join(enums)
+        return 'Valid values are: {}.'.format(', '.join(enums))
 
     def _generate_type_map(self, shape, stack):
         # YAML has support for ordered maps, so don't use ordereddicts

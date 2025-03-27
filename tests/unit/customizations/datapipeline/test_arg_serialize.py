@@ -41,7 +41,7 @@ class TestPutPipelineDefinition(BaseAWSCommandParamsTest):
             f.flush()
             cmdline = self.prefix
             cmdline += ' --pipeline-id name'
-            cmdline += ' --pipeline-definition file://%s' % f.name
+            cmdline += f' --pipeline-definition file://{f.name}'
             result = {
                 'pipelineId': 'name',
                 'pipelineObjects': [

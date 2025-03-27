@@ -28,14 +28,8 @@ from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 
 class TestCreateDefaultRole(BaseAWSCommandParamsTest):
     prefix = 'dlm create-default-role'
-    LIFECYCLE_DEFAULT_MANAGED_POLICY_ARN = (
-        "arn:aws:iam::aws:policy/service-role/%s"
-        % (LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME)
-    )
-    LIFECYCLE_DEFAULT_MANAGED_POLICY_AMI_ARN = (
-        "arn:aws:iam::aws:policy/service-role/%s"
-        % (LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME_AMI)
-    )
+    LIFECYCLE_DEFAULT_MANAGED_POLICY_ARN = f"arn:aws:iam::aws:policy/service-role/{LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME}"
+    LIFECYCLE_DEFAULT_MANAGED_POLICY_AMI_ARN = f"arn:aws:iam::aws:policy/service-role/{LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME_AMI}"
 
     # Call to attach policy to role
     def assert_attached_policy_to_role(
@@ -148,7 +142,7 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
         role_exists_patch.return_value = False
 
         self.run_cmd(
-            self.prefix + " --resource-type=%s" % (RESOURCE_TYPE_SNAPSHOT),
+            self.prefix + f" --resource-type={RESOURCE_TYPE_SNAPSHOT}",
             expected_rc=0,
         )
         self.assertEqual(len(self.operations_called), 5)
@@ -211,7 +205,7 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
         role_exists_patch.return_value = False
 
         self.run_cmd(
-            self.prefix + " --resource-type=%s" % (RESOURCE_TYPE_IMAGE),
+            self.prefix + f" --resource-type={RESOURCE_TYPE_IMAGE}",
             expected_rc=0,
         )
         self.assertEqual(len(self.operations_called), 5)

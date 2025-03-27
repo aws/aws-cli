@@ -68,35 +68,26 @@ class TestGenerateProduct(BaseAWSCommandParamsTest):
     def build_cmd_line(self):
         cmd_line = self.prefix
         if self.template_path:
-            cmd_line += ' --file-path %s' % self.template_path
+            cmd_line += f' --file-path {self.template_path}'
         if self.bucket_name:
-            cmd_line += ' --bucket-name %s' % self.bucket_name
+            cmd_line += f' --bucket-name {self.bucket_name}'
         if self.product_name:
-            cmd_line += ' --product-name %s' % self.product_name
-        cmd_line += ' --tags %s' % self.tags
+            cmd_line += f' --product-name {self.product_name}'
+        cmd_line += f' --tags {self.tags}'
         if self.product_owner:
-            cmd_line += ' --product-owner %s' % self.product_owner
+            cmd_line += f' --product-owner {self.product_owner}'
         if self.product_type:
-            cmd_line += ' --product-type %s' % self.product_type
+            cmd_line += f' --product-type {self.product_type}'
         if self.provisioning_artifact_name:
-            cmd_line += (
-                ' --provisioning-artifact-name %s'
-                % self.provisioning_artifact_name
-            )
+            cmd_line += f' --provisioning-artifact-name {self.provisioning_artifact_name}'
         if self.provisioning_artifact_description:
-            cmd_line += (
-                ' --provisioning-artifact-description %s'
-                % self.provisioning_artifact_description
-            )
+            cmd_line += f' --provisioning-artifact-description {self.provisioning_artifact_description}'
         if self.provisioning_artifact_type:
-            cmd_line += (
-                ' --provisioning-artifact-type %s'
-                % self.provisioning_artifact_type
-            )
-        cmd_line += ' --product-description %s' % self.product_description
-        cmd_line += ' --product-distributor %s' % self.product_distributor
-        cmd_line += ' --support-description %s' % self.support_description
-        cmd_line += ' --support-email %s' % self.support_email
+            cmd_line += f' --provisioning-artifact-type {self.provisioning_artifact_type}'
+        cmd_line += f' --product-description {self.product_description}'
+        cmd_line += f' --product-distributor {self.product_distributor}'
+        cmd_line += f' --support-description {self.support_description}'
+        cmd_line += f' --support-email {self.support_email}'
         return cmd_line
 
     def setUp(self):

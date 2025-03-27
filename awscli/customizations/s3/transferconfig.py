@@ -107,11 +107,11 @@ class RuntimeConfig:
                     runtime_config[attr] = int(value)
                 else:
                     raise InvalidConfigError(
-                        'Invalid rate: %s. The value must be expressed '
+                        f'Invalid rate: {value}. The value must be expressed '
                         'as an integer in terms of bytes per second '
                         '(e.g. 10485760) or a rate in terms of bytes '
                         'per second (e.g. 10MB/s or 800KB/s) or bits per '
-                        'second (e.g. 10Mb/s or 800Kb/s)' % value
+                        'second (e.g. 10Mb/s or 800Kb/s)'
                     )
 
     def _human_readable_rate_to_int(self, value):
@@ -180,7 +180,7 @@ class RuntimeConfig:
 
     def _error_positive_value(self, name, value):
         raise InvalidConfigError(
-            "Value for %s must be a positive integer: %s" % (name, value)
+            f"Value for {name} must be a positive integer: {value}"
         )
 
     def _error_invalid_choice(self, name, value):

@@ -21,7 +21,7 @@ class TestCreateQueue(BaseAWSCommandParamsTest):
 
     def test_simple(self):
         cmdline = self.prefix
-        cmdline += ' --queue-name %s' % self.queue_name
+        cmdline += f' --queue-name {self.queue_name}'
         result = {'QueueName': self.queue_name}
         self.assert_params_for_cmd(cmdline, result)
 

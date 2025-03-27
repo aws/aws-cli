@@ -151,8 +151,8 @@ def verify_no_http_links(filename):
         marker_idx = error_line.find('http://') - 1
         marker_line = (" " * marker_idx) + '^'
         raise AssertionError(
-            'Found http:// link in the examples file %s, line %s\n'
-            '%s\n%s' % (filename, error_line_number, error_line, marker_line)
+            f'Found http:// link in the examples file {filename}, line {error_line_number}\n'
+            f'{error_line}\n{marker_line}'
         )
 
 
@@ -171,8 +171,8 @@ def verify_has_only_ascii_chars(filename):
             error_text = '\n'.join([bad_text, underlined])
             line_number = bytes_content[:offset].count(b'\n') + 1
             raise AssertionError(
-                "Non ascii characters found in the examples file %s, line %s:"
-                "\n\n%s\n" % (filename, line_number, error_text)
+                f"Non ascii characters found in the examples file {filename}, line {line_number}:"
+                f"\n\n{error_text}\n"
             )
 
 
@@ -211,7 +211,7 @@ def _make_error_msg(filename, errors):
         lines = f.readlines()
     relative_name = filename[len(EXAMPLES_DIR) + 1 :]
     failure_message = [
-        'The file "%s" contains invalid RST: ' % relative_name,
+        f'The file "{relative_name}" contains invalid RST: ',
         '',
     ]
     for error in errors:
@@ -224,8 +224,8 @@ def _make_error_msg(filename, errors):
         if line_number > 0:
             line_number -= 1
         current_message = [
-            'Line %s: %s' % (error['line_number'], error['msg']),
-            '  %s' % lines[line_number],
+            'Line {}: {}'.format(error['line_number'], error['msg']),
+            f'  {lines[line_number]}',
         ]
         failure_message.extend(current_message)
     return '\n'.join(failure_message)
@@ -271,8 +271,8 @@ class CommandValidator:
             command_parts = shlex.split(command)[1:]
         except Exception as e:
             raise AssertionError(
-                "Failed to parse this example as shell command: %s\n\n"
-                "Error:\n%s\n" % (command, e)
+                f"Failed to parse this example as shell command: {command}\n\n"
+                f"Error:\n{e}\n"
             )
         # Strip off the 'aws ' part and break it out into a list.
         parsed_args, remaining = self._parse_next_command(
@@ -297,7 +297,7 @@ class CommandValidator:
             # Yes...we have to catch SystemExit. argparse raises this
             # when you have an invalid command.
             error_msg = [
-                'Invalid CLI command: %s\n\n' % original_cmd,
+                f'Invalid CLI command: {original_cmd}\n\n',
             ]
             if errors:
                 error_msg.extend(errors)

@@ -129,9 +129,8 @@ class TestCredentialRefreshRaces(unittest.TestCase):
         max_calls_allowed = math.ceil((end - start) / 2.0) + 1
         self.assertTrue(
             creds.refresh_counter <= max_calls_allowed,
-            "Too many cred refreshes, max: %s, actual: %s, "
-            "time_delta: %.4f"
-            % (max_calls_allowed, creds.refresh_counter, (end - start)),
+            f"Too many cred refreshes, max: {max_calls_allowed}, actual: {creds.refresh_counter}, "
+            f"time_delta: {end - start:.4f}",
         )
 
     def test_no_race_for_immediate_advisory_expiration(self):
@@ -208,9 +207,9 @@ class BaseAssumeRoleTest(BaseEnvVar):
 
     def create_random_credentials(self):
         return Credentials(
-            'fake-%s' % random_chars(15),
-            'fake-%s' % random_chars(35),
-            'fake-%s' % random_chars(45),
+            f'fake-{random_chars(15)}',
+            f'fake-{random_chars(35)}',
+            f'fake-{random_chars(45)}',
             # The account_id gets resolved from the
             # Arn in create_assume_role_response().
             account_id='1234567890',
@@ -246,10 +245,7 @@ class TestAssumeRole(BaseAssumeRoleTest):
         credential_process = os.path.join(
             current_dir, 'utils', 'credentialprocess.py'
         )
-        self.credential_process = '%s %s' % (
-            sys.executable,
-            credential_process,
-        )
+        self.credential_process = f'{sys.executable} {credential_process}'
 
     def mock_provider(self, provider_cls):
         mock_instance = mock.Mock(spec=provider_cls)
@@ -493,7 +489,7 @@ class TestAssumeRole(BaseAssumeRoleTest):
             'role_arn = arn:aws:iam::123456789:role/RoleA\n'
             'source_profile = B\n'
             '[profile B]\n'
-            'credential_process = %s\n' % self.credential_process
+            f'credential_process = {self.credential_process}\n'
         )
         self.write_config(config)
 
@@ -526,7 +522,7 @@ class TestAssumeRole(BaseAssumeRoleTest):
             'source_profile = B\n'
             '[profile B]\n'
             'role_arn = arn:aws:iam::123456789:role/RoleB\n'
-            'web_identity_token_file = %s\n' % token_path
+            f'web_identity_token_file = {token_path}\n'
         )
         self.write_config(config)
 
@@ -567,7 +563,7 @@ class TestAssumeRole(BaseAssumeRoleTest):
             'role_arn = arn:aws:iam::123456789:role/RoleA\n'
             'source_profile = B\n'
             '[profile B]\n'
-            'web_identity_token_file = %s\n' % token_path
+            f'web_identity_token_file = {token_path}\n'
         )
         self.write_config(config)
 
@@ -831,8 +827,8 @@ class TestAssumeRoleWithWebIdentity(BaseAssumeRoleTest):
             '[profile A]\n'
             'role_arn = arn:aws:iam::123456789:role/RoleA\n'
             'role_session_name = sname\n'
-            'web_identity_token_file = %s\n'
-        ) % self.token_file
+            f'web_identity_token_file = {self.token_file}\n'
+        )
         self.write_config(config)
         expected_params = {
             'RoleArn': 'arn:aws:iam::123456789:role/RoleA',
@@ -860,8 +856,8 @@ class TestAssumeRoleWithWebIdentity(BaseAssumeRoleTest):
             '[profile A]\n'
             'role_arn = arn:aws:iam::123456789:role/RoleA\n'
             'role_session_name = aname\n'
-            'web_identity_token_file = %s\n'
-        ) % self.token_file
+            f'web_identity_token_file = {self.token_file}\n'
+        )
         self.write_config(config)
 
         different_token = os.path.join(self.tempdir, str(uuid.uuid4()))
@@ -884,10 +880,7 @@ class TestProcessProvider(unittest.TestCase):
         credential_process = os.path.join(
             current_dir, 'utils', 'credentialprocess.py'
         )
-        self.credential_process = '%s %s' % (
-            sys.executable,
-            credential_process,
-        )
+        self.credential_process = f'{sys.executable} {credential_process}'
         self.environ = os.environ.copy()
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()

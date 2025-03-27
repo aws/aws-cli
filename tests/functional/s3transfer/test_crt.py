@@ -80,7 +80,7 @@ class TestCRTTransferManager(unittest.TestCase):
             'myfile', self.expected_content, mode='wb'
         )
         self.expected_path = "/" + self.bucket + "/" + self.key
-        self.expected_host = "s3.%s.amazonaws.com" % (self.region)
+        self.expected_host = f"s3.{self.region}.amazonaws.com"
         self.expected_s3express_host = f'{self.s3express_bucket}.s3express-usw2-az5.us-west-2.amazonaws.com'
         self.expected_s3express_path = f'/{self.key}'
         self.expected_mrap_host = (

@@ -221,7 +221,7 @@ class TestDirectoryCreatorSubscriber(BaseTestWithFileCreator):
                 self.fail(
                     'on_queued should not have raised an exception related '
                     'to directory creation especially if one already existed '
-                    'but got %s' % e
+                    f'but got {e}'
                 )
 
 

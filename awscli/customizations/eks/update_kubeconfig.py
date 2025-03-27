@@ -162,13 +162,13 @@ class UpdateKubeconfigCommand(BasicCommand):
 
             if updating_existing:
                 uni_print(
-                    "Updated context {0} in {1}\n".format(
+                    "Updated context {} in {}\n".format(
                         new_context_dict["name"], config.path
                     )
                 )
             else:
                 uni_print(
-                    "Added new context {0} to {1}\n".format(
+                    "Added new context {} to {}\n".format(
                         new_context_dict["name"], config.path
                     )
                 )
@@ -284,7 +284,7 @@ class EKSClient:
                 "UPDATING",
             ]:
                 raise EKSClusterError(
-                    "Cluster status is {0}".format(
+                    "Cluster status is {}".format(
                         self._cluster_description["status"]
                     )
                 )

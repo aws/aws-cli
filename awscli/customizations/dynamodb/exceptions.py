@@ -27,7 +27,7 @@ class EmptyExpressionError(DDBError, ParamValidationError):
 class LexerError(DDBError, ParamValidationError):
     def __init__(self, expression, position, message):
         underline = ' ' * position + '^'
-        error_message = '%s\n%s\n%s' % (message, expression, underline)
+        error_message = f'{message}\n{expression}\n{underline}'
         super(LexerError, self).__init__(error_message)
 
 

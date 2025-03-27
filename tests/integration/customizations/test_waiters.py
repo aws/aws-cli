@@ -26,7 +26,7 @@ class TestDynamoDBWait(unittest.TestCase):
     @pytest.mark.slow
     def test_wait_table_exists(self):
         # Create a table.
-        table_name = 'awscliddb-%s' % random_chars(10)
+        table_name = f'awscliddb-{random_chars(10)}'
         self.client.create_table(
             TableName=table_name,
             ProvisionedThroughput={
@@ -42,8 +42,7 @@ class TestDynamoDBWait(unittest.TestCase):
 
         # Wait for the table to be active.
         p = aws(
-            'dynamodb wait table-exists --table-name %s --region us-west-2'
-            % table_name
+            f'dynamodb wait table-exists --table-name {table_name} --region us-west-2'
         )
         self.assertEqual(p.rc, 0)
 

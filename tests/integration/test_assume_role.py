@@ -42,7 +42,7 @@ class TestAssumeRoleCredentials(unittest.TestCase):
             "Statement": [
                 {
                     "Effect": "Allow",
-                    "Principal": {"AWS": "arn:aws:iam::%s:root" % account_id},
+                    "Principal": {"AWS": f"arn:aws:iam::{account_id}:root"},
                     "Action": "sts:AssumeRole",
                 }
             ],
@@ -129,7 +129,7 @@ class TestAssumeRoleCredentials(unittest.TestCase):
                 attempts_remaining -= 1
             time.sleep(delay)
 
-        raise Exception("Unable to assume role %s" % role_arn)
+        raise Exception(f"Unable to assume role {role_arn}")
 
     def create_assume_policy(self, role_arn):
         policy_document = {
@@ -153,12 +153,12 @@ class TestAssumeRoleCredentials(unittest.TestCase):
 
     def assert_s3_read_only_profile(self, profile_name):
         # Calls to S3 should succeed
-        command = 's3api list-buckets --profile %s' % profile_name
+        command = f's3api list-buckets --profile {profile_name}'
         result = aws(command, env_vars=self.environ)
         self.assertEqual(result.rc, 0, result.stderr)
 
         # Calls to other services should not
-        command = 'iam list-groups --profile %s' % profile_name
+        command = f'iam list-groups --profile {profile_name}'
         result = aws(command, env_vars=self.environ)
         self.assertNotEqual(result.rc, 0, result.stdout)
         self.assertIn('AccessDenied', result.stderr)

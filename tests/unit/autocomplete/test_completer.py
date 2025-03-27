@@ -593,7 +593,7 @@ class TestFilePathCompleter(unittest.TestCase):
         parsed = self.parser.parse('aws --profile file://~')
         self.assertEqual(
             list(self.completer.complete(parsed)),
-            [CompletionResult('file://~%s' % os.sep, 0, False)],
+            [CompletionResult(f'file://~{os.sep}', 0, False)],
         )
 
     def test_complete_pass_correct_prefix(self):

@@ -61,7 +61,7 @@ class TestOutput(BaseAWSCommandParamsTest):
 
     def write_cli_pager_config(self, pager):
         config_file = self.files.create_file(
-            'config', '[default]\n' 'cli_pager = %s\n' % pager
+            'config', '[default]\n' f'cli_pager = {pager}\n'
         )
         self.environ['AWS_CONFIG_FILE'] = config_file
         self.driver = create_clidriver()

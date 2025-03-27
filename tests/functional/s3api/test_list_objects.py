@@ -61,7 +61,7 @@ class TestListObjects(BaseAWSCommandParamsTest):
         token = {"Marker": "foo"}
         token = base64.b64encode(json.dumps(token).encode('utf-8'))
         token = token.decode('utf-8')
-        cmdline += ' --starting-token %s' % token
+        cmdline += f' --starting-token {token}'
         self.assert_params_for_cmd(
             cmdline,
             {'Bucket': 'mybucket', 'Marker': 'foo', 'EncodingType': 'url'},

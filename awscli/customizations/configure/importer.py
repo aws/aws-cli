@@ -94,7 +94,7 @@ class ConfigureImportCommand(BasicCommand):
                 config_path,
                 profile_prefix=self._profile_prefix,
             )
-        import_msg = 'Successfully imported %s profile(s)\n' % len(credentials)
+        import_msg = f'Successfully imported {len(credentials)} profile(s)\n'
         uni_print(import_msg, out_file=self._out_stream)
 
     def _run_main(self, parsed_args, parsed_globals):

@@ -294,8 +294,8 @@ class TransferCoordinator:
         with self._lock:
             if self.done():
                 raise RuntimeError(
-                    'Unable to transition from done state %s to non-done '
-                    'state %s.' % (self.status, desired_state)
+                    f'Unable to transition from done state {self.status} to non-done '
+                    f'state {desired_state}.'
                 )
             self._status = desired_state
 
@@ -397,7 +397,7 @@ class TransferCoordinator:
         # We do not want a callback interrupting the process, especially
         # in the failure cleanups. So log and catch, the exception.
         except Exception:
-            logger.debug("Exception raised in %s." % callback, exc_info=True)
+            logger.debug(f"Exception raised in {callback}.", exc_info=True)
 
 
 class BoundedExecutor:

@@ -72,7 +72,7 @@ class TestCLIArgument(unittest.TestCase):
         argument = self.create_argument()
         params = {}
         argument.add_to_params(params, 'value')
-        expected_event_name = 'process-cli-arg.%s.%s' % (
+        expected_event_name = 'process-cli-arg.{}.{}'.format(
             self.service_name,
             'sample-operation',
         )

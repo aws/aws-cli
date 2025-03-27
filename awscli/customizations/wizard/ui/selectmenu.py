@@ -146,7 +146,7 @@ class SelectionMenuControl(UIControl):
 
         text, tw = _trim_text(item, menu_width - self._format_overhead)
         padding = ' ' * (menu_width - self._format_overhead - tw)
-        return [(style_str, '%s %s%s  ' % (cursor, text, padding))]
+        return [(style_str, f'{cursor} {text}{padding}  ')]
 
     def create_content(self, width, height):
         def get_line(i):

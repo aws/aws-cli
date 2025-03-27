@@ -61,7 +61,7 @@ class TestEndpointDiscovery(FunctionalSessionTest):
 
     def set_endpoint_discovery_config_file(self, fileobj, config_val):
         fileobj.write(
-            '[default]\n' 'endpoint_discovery_enabled=%s\n' % config_val
+            '[default]\n' f'endpoint_discovery_enabled={config_val}\n'
         )
         fileobj.flush()
         self.environ['AWS_CONFIG_FILE'] = fileobj.name

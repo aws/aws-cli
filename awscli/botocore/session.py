@@ -517,18 +517,12 @@ class Session:
 
         """
         if truncate:
-            return '%s/%s' % (self.user_agent_name, self.user_agent_version)
-        base = '%s/%s Python/%s %s/%s' % (
-            self.user_agent_name,
-            self.user_agent_version,
-            platform.python_version(),
-            platform.system(),
-            platform.release(),
-        )
+            return f'{self.user_agent_name}/{self.user_agent_version}'
+        base = f'{self.user_agent_name}/{self.user_agent_version} Python/{platform.python_version()} {platform.system()}/{platform.release()}'
         if os.environ.get('AWS_EXECUTION_ENV') is not None:
-            base += ' exec-env/%s' % os.environ.get('AWS_EXECUTION_ENV')
+            base += ' exec-env/{}'.format(os.environ.get('AWS_EXECUTION_ENV'))
         if self.user_agent_extra:
-            base += ' %s' % self.user_agent_extra
+            base += f' {self.user_agent_extra}'
 
         return base
 
@@ -758,9 +752,9 @@ class Session:
         except ValueError:
             if name in ['endpoint_resolver', 'exceptions_factory']:
                 warnings.warn(
-                    'Fetching the %s component with the get_component() '
+                    f'Fetching the {name} component with the get_component() '
                     'method is deprecated as the component has always been '
-                    'considered an internal interface of botocore' % name,
+                    'considered an internal interface of botocore',
                     DeprecationWarning,
                 )
                 return self._internal_components.get_component(name)
@@ -1069,7 +1063,7 @@ class ComponentLocator:
         try:
             return self._components[name]
         except KeyError:
-            raise ValueError("Unknown component: %s" % name)
+            raise ValueError(f"Unknown component: {name}")
 
     def register_component(self, name, component):
         self._components[name] = component

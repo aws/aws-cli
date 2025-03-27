@@ -390,8 +390,9 @@ class TestEnumDocsArentDuplicated(BaseAWSHelpOutputTest):
             contents.count("CREATE_IN_PROGRESS") == 1,
             (
                 "Enum param was only suppose to be appear once in "
-                "rendered doc output, appeared: %s"
-                % contents.count("CREATE_IN_PROGRESS")
+                "rendered doc output, appeared: {}".format(
+                    contents.count("CREATE_IN_PROGRESS")
+                )
             ),
         )
 
@@ -484,7 +485,7 @@ class TestAliases(BaseAWSHelpOutputTest):
 
     def add_alias(self, alias_name, alias_value):
         with open(self.alias_file, 'a+') as f:
-            f.write('%s = %s\n' % (alias_name, alias_value))
+            f.write(f'{alias_name} = {alias_value}\n')
 
     def test_alias_not_in_main_help(self):
         self.add_alias('my-alias', 'ec2 describe-regions')

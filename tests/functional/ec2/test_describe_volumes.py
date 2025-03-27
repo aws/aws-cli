@@ -56,5 +56,5 @@ class TestDescribeVolumes(BaseAWSCommandParamsTest):
             'params.json', json.dumps(params)
         )
 
-        command = self.prefix + ' --cli-input-json file://%s' % file_path
+        command = self.prefix + f' --cli-input-json file://{file_path}'
         self.assert_params_for_cmd(command, params)

@@ -32,7 +32,7 @@ class TestTranslateDocument(BaseAWSCommandParamsTest):
         cmdline += " --source-language-code FOO"
         cmdline += " --target-language-code BAR"
         cmdline += " --document ContentType=datatype"
-        cmdline += " --document-content fileb://%s" % self.temp_file
+        cmdline += f" --document-content fileb://{self.temp_file}"
         result = {
             "Document": {
                 "Content": self.temp_file_contents,
@@ -61,7 +61,7 @@ class TestTranslateDocument(BaseAWSCommandParamsTest):
         cmdline += " --source-language-code FOO"
         cmdline += " --target-language-code BAR"
         cmdline += " --document Content=data,ContentType=datatype"
-        cmdline += " --document-content fileb://%s" % self.temp_file
+        cmdline += f" --document-content fileb://{self.temp_file}"
 
         stdout, stderr, rc = self.assert_params_for_cmd(
             cmdline, expected_rc=252

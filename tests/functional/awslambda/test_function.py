@@ -40,7 +40,7 @@ class TestCreateFunction(BaseLambdaTests):
         cmdline = self.prefix
         cmdline += ' --function-name myfunction --runtime myruntime'
         cmdline += ' --role myrole --handler myhandler'
-        cmdline += ' --zip-file fileb://%s' % self.zip_file
+        cmdline += f' --zip-file fileb://{self.zip_file}'
         result = {
             'FunctionName': 'myfunction',
             'Runtime': 'myruntime',
@@ -73,7 +73,7 @@ class TestCreateFunction(BaseLambdaTests):
         cmdline += ' --function-name myfunction --runtime myruntime'
         cmdline += ' --role myrole --handler myhandler'
         cmdline += ' --code S3Bucket=mybucket,S3Key=mykey,S3ObjectVersion=vs'
-        cmdline += ' --zip-file fileb://%s' % self.zip_file
+        cmdline += f' --zip-file fileb://{self.zip_file}'
         result = {
             'FunctionName': 'myfunction',
             'Runtime': 'myruntime',
@@ -114,7 +114,7 @@ class TestCreateFunction(BaseLambdaTests):
         cmdline += ' --function-name myfunction --runtime myruntime'
         cmdline += ' --role myrole --handler myhandler'
         # Note file:// instead of fileb://
-        cmdline += ' --zip-file file://%s' % self.zip_file
+        cmdline += f' --zip-file file://{self.zip_file}'
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         # Ensure we mention fileb:// to give the user an idea of
         # where to go next.
@@ -127,7 +127,7 @@ class TestPublishLayerVersion(BaseLambdaTests):
     def test_publish_layer_version_with_file(self):
         cmdline = self.prefix
         cmdline += ' --layer-name mylayer'
-        cmdline += ' --zip-file fileb://%s' % self.zip_file
+        cmdline += f' --zip-file fileb://{self.zip_file}'
         result = {
             'LayerName': 'mylayer',
             'Content': {'ZipFile': self.zip_file_contents},
@@ -154,7 +154,7 @@ class TestPublishLayerVersion(BaseLambdaTests):
         cmdline += ' --layer-name mylayer'
         cmdline += ' --content'
         cmdline += ' S3Bucket=mybucket,S3Key=mykey,S3ObjectVersion=vs'
-        cmdline += ' --zip-file fileb://%s' % self.zip_file
+        cmdline += f' --zip-file fileb://{self.zip_file}'
         result = {
             'LayerName': 'mylayer',
             'Content': {
@@ -190,7 +190,7 @@ class TestPublishLayerVersion(BaseLambdaTests):
         cmdline = self.prefix
         cmdline += ' --layer-name mylayer'
         # Note file:// instead of fileb://
-        cmdline += ' --zip-file file://%s' % self.zip_file
+        cmdline += f' --zip-file file://{self.zip_file}'
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         # Ensure we mention fileb:// to give the user an idea of
         # where to go next.
@@ -211,7 +211,7 @@ class TestUpdateFunctionCode(BaseLambdaTests):
     def test_using_fileb_prefix_succeeds(self):
         cmdline = self.prefix
         cmdline += ' --function-name myfunction'
-        cmdline += ' --zip-file fileb://%s' % self.zip_file
+        cmdline += f' --zip-file fileb://{self.zip_file}'
         result = {
             'FunctionName': 'myfunction',
             'ZipFile': self.zip_file_contents,

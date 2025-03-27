@@ -37,7 +37,7 @@ class HistoryDriver(FileHistory):
             return reversed(commands)
         except Exception as e:
             LOG.debug(
-                'Exception on loading prompt history: %s' % e, exc_info=True
+                f'Exception on loading prompt history: {e}', exc_info=True
             )
             return []
 

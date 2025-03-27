@@ -28,13 +28,13 @@ class TestMvCommand(BaseS3TransferCommandTest):
     prefix = 's3 mv '
 
     def test_cant_mv_object_onto_itself(self):
-        cmdline = '%s s3://bucket/key s3://bucket/key' % self.prefix
+        cmdline = f'{self.prefix} s3://bucket/key s3://bucket/key'
         stderr = self.run_cmd(cmdline, expected_rc=252)[1]
         self.assertIn('Cannot mv a file onto itself', stderr)
 
     def test_cant_mv_object_with_implied_name(self):
         # The "key" key name is implied in the dst argument.
-        cmdline = '%s s3://bucket/key s3://bucket/' % self.prefix
+        cmdline = f'{self.prefix} s3://bucket/key s3://bucket/'
         stderr = self.run_cmd(cmdline, expected_rc=252)[1]
         self.assertIn('Cannot mv a file onto itself', stderr)
 
@@ -62,7 +62,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
 
     def test_website_redirect_ignore_paramfile(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket/key.txt --website-redirect %s' % (
+        cmdline = '{} {} s3://bucket/key.txt --website-redirect {}'.format(
             self.prefix,
             full_path,
             'http://someserver',
@@ -86,8 +86,8 @@ class TestMvCommand(BaseS3TransferCommandTest):
             {'ETag': '"foo-2"'},
         ]
         cmdline = (
-            '%s s3://bucket/key.txt s3://bucket/key2.txt'
-            ' --metadata-directive REPLACE' % self.prefix
+            f'{self.prefix} s3://bucket/key.txt s3://bucket/key2.txt'
+            ' --metadata-directive REPLACE'
         )
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(
@@ -102,10 +102,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
 
     def test_no_metadata_directive_for_non_copy(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket --metadata-directive REPLACE' % (
-            self.prefix,
-            full_path,
-        )
+        cmdline = f'{self.prefix} {full_path} s3://bucket --metadata-directive REPLACE'
         self.parsed_responses = [
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
@@ -117,10 +114,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
         self.assertNotIn('MetadataDirective', self.operations_called[0][1])
 
     def test_download_move_with_request_payer(self):
-        cmdline = '%s s3://mybucket/mykey %s --request-payer' % (
-            self.prefix,
-            self.files.rootdir,
-        )
+        cmdline = f'{self.prefix} s3://mybucket/mykey {self.files.rootdir} --request-payer'
 
         self.parsed_responses = [
             # Response for HeadObject

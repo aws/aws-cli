@@ -60,10 +60,10 @@ class Command(BasicCommand):
             ]
 
         if configs_added:
-            LOG.debug("Updated arguments with configs: %s" % configs_added)
+            LOG.debug(f"Updated arguments with configs: {configs_added}")
         else:
             LOG.debug("No configs applied")
-        LOG.debug("Running command with args: %s" % parsed_args)
+        LOG.debug(f"Running command with args: {parsed_args}")
 
     def _get_applicable_configurations(self, parsed_args, parsed_configs):
         # We need to find the applicable configurations by applying

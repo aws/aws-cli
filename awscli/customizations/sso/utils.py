@@ -332,8 +332,8 @@ class BaseSSOCommand(BasicCommand):
 
         if missing:
             error_msg = (
-                'Missing the following required SSO configuration values: %s. '
-            ) % ', '.join(missing)
+                'Missing the following required SSO configuration values: {}. '
+            ).format(', '.join(missing))
             raise InvalidSSOConfigError(error_msg)
 
         return sso_config
@@ -342,9 +342,9 @@ class BaseSSOCommand(BasicCommand):
         sso_config, missing = self._get_required_config_vars(scoped_config)
         if missing:
             raise InvalidSSOConfigError(
-                'Missing the following required SSO configuration values: %s. '
+                'Missing the following required SSO configuration values: {}. '
                 'To make sure this profile is properly configured to use SSO, '
-                'please run: aws configure sso' % ', '.join(missing)
+                'please run: aws configure sso'.format(', '.join(missing))
             )
         return sso_config
 

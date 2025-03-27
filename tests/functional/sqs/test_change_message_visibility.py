@@ -22,8 +22,8 @@ class TestChangeMessageVisibility(BaseAWSCommandParamsTest):
 
     def test_all_params(self):
         cmdline = self.prefix
-        cmdline += ' --queue-url %s' % self.queue_url
-        cmdline += ' --receipt-handle %s' % self.receipt_handle
+        cmdline += f' --queue-url {self.queue_url}'
+        cmdline += f' --receipt-handle {self.receipt_handle}'
         cmdline += ' --visibility-timeout 30'
         result = {
             'QueueUrl': self.queue_url,

@@ -177,8 +177,8 @@ class TestPush(unittest.TestCase):
         self.push._push(self.args)
         output = stdout_mock.getvalue().strip()
         expected_revision_output = (
-            '--s3-location bucket={0},key={1},'
-            'bundleType=zip,eTag={2},version={3}'.format(
+            '--s3-location bucket={},key={},'
+            'bundleType=zip,eTag={},version={}'.format(
                 self.bucket,
                 self.key,
                 self.eTag.replace('"', ""),

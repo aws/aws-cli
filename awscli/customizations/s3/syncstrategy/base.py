@@ -70,8 +70,8 @@ class BaseSync:
     def _check_sync_type(self, sync_type):
         if sync_type not in VALID_SYNC_TYPES:
             raise ParamValidationError(
-                "Unknown sync_type: %s.\n"
-                "Valid options are %s." % (sync_type, VALID_SYNC_TYPES)
+                f"Unknown sync_type: {sync_type}.\n"
+                f"Valid options are {VALID_SYNC_TYPES}."
             )
 
     @property

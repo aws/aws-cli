@@ -70,7 +70,7 @@ def _collect_metadata():
     # This helps us make more meaningful comparison.
     metadata = {
         'python_version': platform.python_version(),
-        'os': '%s/%s' % (platform.system(), platform.release()),
+        'os': f'{platform.system()}/{platform.release()}',
     }
     _inject_package_info(awscli, metadata)
     _inject_package_info(s3transfer, metadata)
@@ -100,7 +100,7 @@ def _get_git_version(package):
         .communicate()[0]
         .strip()
     )
-    return '%s (%s)' % (git_sha, git_branch)
+    return f'{git_sha} ({git_branch})'
 
 
 def main(args):
@@ -129,18 +129,16 @@ def benchmark(bucket, results_dir, num_iterations=1):
         os.makedirs(results)
         benchmark_cp = os.path.join(perf_dir, 'benchmark-cp')
         run(
-            benchmark_cp + ' --recursive --num-iterations %s '
-            '--source %s --dest %s --result-dir %s --no-cleanup'
-            % (num_iterations, local_dir, s3_location, results)
+            benchmark_cp + f' --recursive --num-iterations {num_iterations} '
+            f'--source {local_dir} --dest {s3_location} --result-dir {results} --no-cleanup'
         )
 
         # 10k download
         results = os.path.join(results_dir, 'download-10k-small')
         os.makedirs(results)
         run(
-            benchmark_cp + ' --recursive --num-iterations %s '
-            '--source %s --dest %s --result-dir %s'
-            % (num_iterations, s3_location, local_dir, results)
+            benchmark_cp + f' --recursive --num-iterations {num_iterations} '
+            f'--source {s3_location} --dest {local_dir} --result-dir {results}'
         )
 
         # 10k rm
@@ -148,9 +146,8 @@ def benchmark(bucket, results_dir, num_iterations=1):
         os.makedirs(results)
         benchmark_rm = os.path.join(perf_dir, 'benchmark-rm')
         run(
-            benchmark_rm + ' --recursive --num-iterations %s '
-            '--target %s --result-dir %s'
-            % (num_iterations, s3_location, results)
+            benchmark_rm + f' --recursive --num-iterations {num_iterations} '
+            f'--target {s3_location} --result-dir {results}'
         )
     finally:
         # Note that the delete-10k-small benchmark restores
@@ -166,18 +163,16 @@ def benchmark(bucket, results_dir, num_iterations=1):
         results = os.path.join(results_dir, 'upload-10gb')
         os.makedirs(results)
         run(
-            benchmark_cp + ' --recursive --num-iterations %s '
-            '--source %s --dest %s --result-dir %s --no-cleanup'
-            % (num_iterations, local_dir, s3_location, results)
+            benchmark_cp + f' --recursive --num-iterations {num_iterations} '
+            f'--source {local_dir} --dest {s3_location} --result-dir {results} --no-cleanup'
         )
 
         # 10gb download
         results = os.path.join(results_dir, 'download-10gb')
         os.makedirs(results)
         run(
-            benchmark_cp + ' --recursive --num-iterations %s '
-            '--source %s --dest %s --result-dir %s'
-            % (num_iterations, s3_location, local_dir, results)
+            benchmark_cp + f' --recursive --num-iterations {num_iterations} '
+            f'--source {s3_location} --dest {local_dir} --result-dir {results}'
         )
     finally:
         # Not benchmarking a single rm call since it's just a single call

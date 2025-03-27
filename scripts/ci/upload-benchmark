@@ -17,7 +17,7 @@ DATE_FORMAT = "%Y-%m-%d-%H-%M-%S-"
 def main(args):
     source = get_latest_results_directory(args.directory)
     run_id = source.split(os.sep)[-1]
-    destination = '%s/%s' % (args.bucket, run_id)
+    destination = f'{args.bucket}/{run_id}'
     check_call(f'aws s3 cp --recursive {source} {destination}', shell=True)
 
 
@@ -38,7 +38,7 @@ def get_latest_results_directory(parent):
         if os.path.isdir(directory) and _is_result_dir_format(d):
             return directory
 
-    raise ValueError("No valid result directories found in %s" % parent)
+    raise ValueError(f"No valid result directories found in {parent}")
 
 
 def _is_result_dir_format(directory):

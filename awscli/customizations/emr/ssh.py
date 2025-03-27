@@ -29,7 +29,7 @@ class Socks(Command):
     NAME = 'socks'
     DESCRIPTION = (
         'Create a socks tunnel on port 8157 from your machine '
-        'to the master.\n%s' % KEY_PAIR_FILE_HELP_TEXT
+        f'to the master.\n{KEY_PAIR_FILE_HELP_TEXT}'
     )
     ARG_TABLE = [
         {
@@ -91,7 +91,7 @@ class Socks(Command):
 class SSH(Command):
     NAME = 'ssh'
     DESCRIPTION = (
-        'SSH into master node of the cluster.\n%s' % KEY_PAIR_FILE_HELP_TEXT
+        f'SSH into master node of the cluster.\n{KEY_PAIR_FILE_HELP_TEXT}'
     )
     ARG_TABLE = [
         {
@@ -155,9 +155,7 @@ class SSH(Command):
 
 class Put(Command):
     NAME = 'put'
-    DESCRIPTION = (
-        'Put file onto the master node.\n%s' % KEY_PAIR_FILE_HELP_TEXT
-    )
+    DESCRIPTION = f'Put file onto the master node.\n{KEY_PAIR_FILE_HELP_TEXT}'
     ARG_TABLE = [
         {
             'name': 'cluster-id',
@@ -219,7 +217,7 @@ class Put(Command):
 
 class Get(Command):
     NAME = 'get'
-    DESCRIPTION = 'Get file from master node.\n%s' % KEY_PAIR_FILE_HELP_TEXT
+    DESCRIPTION = f'Get file from master node.\n{KEY_PAIR_FILE_HELP_TEXT}'
     ARG_TABLE = [
         {
             'name': 'cluster-id',

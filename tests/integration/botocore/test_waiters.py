@@ -24,7 +24,7 @@ class TestWaiterForDynamoDB(unittest.TestCase):
         self.client = self.session.create_client('dynamodb', 'us-west-2')
 
     def test_create_table_and_wait(self):
-        table_name = 'botocoretest-%s' % random_chars(10)
+        table_name = f'botocoretest-{random_chars(10)}'
         self.client.create_table(
             TableName=table_name,
             ProvisionedThroughput={

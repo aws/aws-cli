@@ -29,7 +29,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
 
     def test_website_redirect_ignore_paramfile(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket/key.txt --website-redirect %s' % (
+        cmdline = '{} {} s3://bucket/key.txt --website-redirect {}'.format(
             self.prefix,
             self.files.rootdir,
             'http://someserver',
@@ -60,7 +60,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
 
     def test_sync_from_non_existant_directory(self):
         non_existant_directory = os.path.join(self.files.rootdir, 'fakedir')
-        cmdline = '%s %s s3://bucket/' % (self.prefix, non_existant_directory)
+        cmdline = f'{self.prefix} {non_existant_directory} s3://bucket/'
         self.parsed_responses = [{"CommonPrefixes": [], "Contents": []}]
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=255)
         self.assertIn('does not exist', stderr)
@@ -68,7 +68,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
     def test_sync_to_non_existant_directory(self):
         key = 'foo.txt'
         non_existant_directory = os.path.join(self.files.rootdir, 'fakedir')
-        cmdline = '%s s3://bucket/ %s' % (self.prefix, non_existant_directory)
+        cmdline = f'{self.prefix} s3://bucket/ {non_existant_directory}'
         self.parsed_responses = [
             {
                 "CommonPrefixes": [],
@@ -131,10 +131,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             },
             {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
         ]
-        cmdline = '%s s3://bucket/foo %s --force-glacier-transfer' % (
-            self.prefix,
-            self.files.rootdir,
-        )
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --force-glacier-transfer'
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(
             len(self.operations_called), 2, self.operations_called
@@ -161,7 +158,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                 ]
             }
         ]
-        cmdline = '%s s3://bucket/ %s' % (self.prefix, self.files.rootdir)
+        cmdline = f'{self.prefix} s3://bucket/ {self.files.rootdir}'
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
         # There should not have been a download attempted because the
         # operation was skipped because it is glacier and glacier
@@ -191,10 +188,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                 ]
             }
         ]
-        cmdline = '%s s3://bucket/ %s --ignore-glacier-warnings' % (
-            self.prefix,
-            self.files.rootdir,
-        )
+        cmdline = f'{self.prefix} s3://bucket/ {self.files.rootdir} --ignore-glacier-warnings'
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
         # There should not have been a download attempted because the
         # operation was skipped because it is glacier incompatible.
@@ -205,10 +199,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
     def test_warning_on_invalid_timestamp(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
 
-        cmdline = '%s %s s3://bucket/key.txt' % (
-            self.prefix,
-            self.files.rootdir,
-        )
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/key.txt'
         self.parsed_responses = [
             {"CommonPrefixes": [], "Contents": []},
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'},
@@ -232,10 +223,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
 
     def test_sync_with_delete_on_downloads(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s s3://bucket %s --delete' % (
-            self.prefix,
-            self.files.rootdir,
-        )
+        cmdline = f'{self.prefix} s3://bucket {self.files.rootdir} --delete'
         self.parsed_responses = [
             {"CommonPrefixes": [], "Contents": []},
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'},
@@ -260,7 +248,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self,
     ):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket/' % (self.prefix, self.files.rootdir)
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/'
 
         # FileGenerator.list_files should skip over files that cause an
         # IOError to be raised because they are missing when we try to
@@ -288,7 +276,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self,
     ):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket/' % (self.prefix, self.files.rootdir)
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/'
 
         # FileGenerator.list_files should skip over files that cause an
         # OSError to be raised because they are missing when we try to
@@ -311,8 +299,8 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
     def test_request_payer(self):
-        cmdline = '%s s3://sourcebucket/ s3://mybucket --request-payer' % (
-            self.prefix
+        cmdline = (
+            f'{self.prefix} s3://sourcebucket/ s3://mybucket --request-payer'
         )
         self.parsed_responses = [
             # Response for ListObjects on source bucket
@@ -341,7 +329,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         )
 
     def test_request_payer_with_deletes(self):
-        cmdline = '%s s3://sourcebucket/ s3://mybucket' % self.prefix
+        cmdline = f'{self.prefix} s3://sourcebucket/ s3://mybucket'
         cmdline += ' --request-payer'
         cmdline += ' --delete'
         self.parsed_responses = [
@@ -371,8 +359,8 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint'
         )
         cmdline = self.prefix
-        cmdline += 's3://%s' % accesspoint_arn
-        cmdline += ' %s' % self.files.rootdir
+        cmdline += f's3://{accesspoint_arn}'
+        cmdline += f' {self.files.rootdir}'
         self.parsed_responses = [
             self.list_objects_response(['mykey']),
             self.get_object_response(),
@@ -680,40 +668,28 @@ class TestSyncCommandWithS3Express(BaseS3TransferCommandTest):
     prefix = 's3 sync '
 
     def test_incompatible_with_sync_upload(self):
-        cmdline = '%s %s s3://testdirectorybucket--usw2-az1--x-s3/' % (
-            self.prefix,
-            self.files.rootdir,
-        )
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://testdirectorybucket--usw2-az1--x-s3/'
         stderr = self.run_cmd(cmdline, expected_rc=252)[1]
         self.assertIn(
             'Cannot use sync command with a directory bucket.', stderr
         )
 
     def test_incompatible_with_sync_download(self):
-        cmdline = '%s s3://testdirectorybucket--usw2-az1--x-s3/ %s' % (
-            self.prefix,
-            self.files.rootdir,
-        )
+        cmdline = f'{self.prefix} s3://testdirectorybucket--usw2-az1--x-s3/ {self.files.rootdir}'
         stderr = self.run_cmd(cmdline, expected_rc=252)[1]
         self.assertIn(
             'Cannot use sync command with a directory bucket.', stderr
         )
 
     def test_incompatible_with_sync_copy(self):
-        cmdline = (
-            '%s s3://bucket/ s3://testdirectorybucket--usw2-az1--x-s3/'
-            % self.prefix
-        )
+        cmdline = f'{self.prefix} s3://bucket/ s3://testdirectorybucket--usw2-az1--x-s3/'
         stderr = self.run_cmd(cmdline, expected_rc=252)[1]
         self.assertIn(
             'Cannot use sync command with a directory bucket.', stderr
         )
 
     def test_incompatible_with_sync_with_delete(self):
-        cmdline = (
-            '%s s3://bucket/ s3://testdirectorybucket--usw2-az1--x-s3/ --delete'
-            % self.prefix
-        )
+        cmdline = f'{self.prefix} s3://bucket/ s3://testdirectorybucket--usw2-az1--x-s3/ --delete'
         stderr = self.run_cmd(cmdline, expected_rc=252)[1]
         self.assertIn(
             'Cannot use sync command with a directory bucket.', stderr
@@ -724,8 +700,7 @@ class TestSyncCommandWithS3Express(BaseS3TransferCommandTest):
     ):
         self.parsed_responses = [{'Contents': []}]
         cmdline = (
-            '%s s3://bucket/ testdirectorybucket--usw2-az1--x-s3/'
-            % self.prefix
+            f'{self.prefix} s3://bucket/ testdirectorybucket--usw2-az1--x-s3/'
         )
         with cd(self.files.rootdir):
             _, stderr, _ = self.run_cmd(cmdline)

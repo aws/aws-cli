@@ -68,11 +68,11 @@ def config_with_profile(session, files):
         creds = session.get_credentials()
         f.write(
             "[profile testprofile]\n"
-            "aws_access_key_id=%s\n"
-            "aws_secret_access_key=%s\n" % (creds.access_key, creds.secret_key)
+            f"aws_access_key_id={creds.access_key}\n"
+            f"aws_secret_access_key={creds.secret_key}\n"
         )
         if creds.token is not None:
-            f.write("aws_session_token=%s\n" % creds.token)
+            f.write(f"aws_session_token={creds.token}\n")
         f.flush()
     yield config_file
 
@@ -154,8 +154,8 @@ def wait_for_process_exit(process, timeout=60):
     else:
         process.kill()
         raise AssertionError(
-            "CLI did not exist within %s seconds of "
-            "receiving a Ctrl+C" % timeout
+            f"CLI did not exist within {timeout} seconds of "
+            "receiving a Ctrl+C"
         )
 
 
@@ -189,7 +189,7 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
     def test_mv_local_to_s3(self, s3_bucket, files, s3_utils, request):
         shared_bucket = request.getfixturevalue(s3_bucket)
         full_path = files.create_file('foo.txt', 'this is foo.txt')
-        p = aws('s3 mv %s s3://%s/foo.txt' % (full_path, shared_bucket))
+        p = aws(f's3 mv {full_path} s3://{shared_bucket}/foo.txt')
         self.assert_no_errors(p)
         # When we move an object, the local file is gone:
         assert not os.path.exists(full_path)
@@ -206,7 +206,7 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
         s3_utils.put_object(shared_bucket, 'foo.txt', 'this is foo.txt')
         full_path = files.full_path(f'{s3_bucket}_foo.txt')
         assert s3_utils.key_exists(shared_bucket, key_name='foo.txt')
-        p = aws('s3 mv s3://%s/foo.txt %s' % (shared_bucket, full_path))
+        p = aws(f's3 mv s3://{shared_bucket}/foo.txt {full_path}')
         self.assert_no_errors(p)
         assert os.path.exists(full_path)
         with open(full_path) as f:
@@ -249,9 +249,7 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
         file_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         s3_utils.put_object(from_bucket, 'foo.txt', file_contents)
 
-        p = aws(
-            's3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket)
-        )
+        p = aws(f's3 mv s3://{from_bucket}/foo.txt s3://{to_bucket}/foo.txt')
         self.assert_no_errors(p)
         s3_utils.assert_key_contents_equal(to_bucket, 'foo.txt', file_contents)
         # And verify that the object no longer exists in the from_bucket.
@@ -268,9 +266,7 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
         s3_utils.put_object(from_bucket, 'largefile', large_file_contents)
         s3_utils.put_object(from_bucket, 'smallfile', small_file_contents)
 
-        p = aws(
-            's3 mv s3://%s/ s3://%s/ --recursive' % (from_bucket, to_bucket)
-        )
+        p = aws(f's3 mv s3://{from_bucket}/ s3://{to_bucket}/ --recursive')
         self.assert_no_errors(p)
         # Nothing's in the from_bucket.
         assert s3_utils.key_not_exists(from_bucket, key_name='largefile')
@@ -316,7 +312,7 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
         foo_txt = files.create_file(
             'foo.txt', file_contents.getvalue().decode('utf-8')
         )
-        p = aws('s3 mv %s s3://%s/foo.txt' % (foo_txt, shared_bucket))
+        p = aws(f's3 mv {foo_txt} s3://{shared_bucket}/foo.txt')
         self.assert_no_errors(p)
         # When we move an object, the local file is gone:
         assert not os.path.exists(foo_txt)
@@ -326,7 +322,7 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
         )
 
         # Now verify we can download this file.
-        p = aws('s3 mv s3://%s/foo.txt %s' % (shared_bucket, foo_txt))
+        p = aws(f's3 mv s3://{shared_bucket}/foo.txt {foo_txt}')
         self.assert_no_errors(p)
         assert os.path.exists(foo_txt)
         assert os.path.getsize(foo_txt) == len(file_contents.getvalue())
@@ -343,8 +339,7 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
         # immediately validate that we can't move a file onto itself.
         s3_utils.put_object(shared_bucket, key_name='key.txt', contents='foo')
         p = aws(
-            's3 mv s3://%s/key.txt s3://%s/key.txt'
-            % (shared_bucket, shared_bucket)
+            f's3 mv s3://{shared_bucket}/key.txt s3://{shared_bucket}/key.txt'
         )
         assert p.rc == 252
         assert 'Cannot mv a file onto itself' in p.stderr
@@ -359,8 +354,7 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
             shared_bucket, key_name='key.txt', contents=file_contents
         )
         p = aws(
-            's3 mv s3://%s/key.txt s3://%s/key.txt'
-            % (shared_bucket, shared_bucket)
+            f's3 mv s3://{shared_bucket}/key.txt s3://{shared_bucket}/key.txt'
         )
         assert p.rc == 252
         assert 'Cannot mv a file onto itself' in p.stderr
@@ -374,14 +368,14 @@ class TestRm(BaseParameterizedS3ClientTest):
     def test_rm_with_newlines(self, files, s3_utils, shared_bucket):
         # Note the carriage return in the key name.
         foo_txt = files.create_file('foo\r.txt', 'this is foo.txt')
-        p = aws('s3 cp %s s3://%s/foo\r.txt' % (foo_txt, shared_bucket))
+        p = aws(f's3 cp {foo_txt} s3://{shared_bucket}/foo\r.txt')
         self.assert_no_errors(p)
 
         # Make sure object is in bucket.
         assert s3_utils.key_exists(shared_bucket, key_name='foo\r.txt')
 
         # Then delete the file.
-        aws('s3 rm s3://%s/ --recursive' % (shared_bucket,))
+        aws(f's3 rm s3://{shared_bucket}/ --recursive')
 
         # And verify it's gone.
         assert s3_utils.key_not_exists(shared_bucket, key_name='foo\r.txt')
@@ -393,7 +387,7 @@ class TestRm(BaseParameterizedS3ClientTest):
         shared_bucket = request.getfixturevalue(s3_bucket)
         s3_utils.put_object(shared_bucket, 'foo.txt', contents='hello world')
         s3_utils.put_object(shared_bucket, 'bar.txt', contents='hello world2')
-        p = aws('s3 rm s3://%s/ --recursive --page-size 1' % shared_bucket)
+        p = aws(f's3 rm s3://{shared_bucket}/ --recursive --page-size 1')
         self.assert_no_errors(p)
 
         assert s3_utils.key_not_exists(shared_bucket, key_name='foo.txt')
@@ -412,7 +406,7 @@ class TestCp(BaseParameterizedS3ClientTest):
 
         # copy file into bucket.
         foo_txt = files.create_file(f'{s3_bucket}_foo.txt', 'this is foo.txt')
-        p = aws('s3 cp %s s3://%s/foo.txt' % (foo_txt, shared_bucket))
+        p = aws(f's3 cp {foo_txt} s3://{shared_bucket}/foo.txt')
         self.assert_no_errors(p)
 
         # Make sure object is in bucket.
@@ -426,7 +420,7 @@ class TestCp(BaseParameterizedS3ClientTest):
 
         # Make a new name for the file and copy it locally.
         full_path = files.full_path(f'{s3_bucket}_bar.txt')
-        p = aws('s3 cp s3://%s/foo.txt %s' % (shared_bucket, full_path))
+        p = aws(f's3 cp s3://{shared_bucket}/foo.txt {full_path}')
         self.assert_no_errors(p)
 
         with open(full_path) as f:
@@ -439,7 +433,7 @@ class TestCp(BaseParameterizedS3ClientTest):
         # copy file into bucket.
         foo_txt = files.create_file('foo.txt', 'this is foo.txt')
         # Note that the destination has no trailing slash.
-        p = aws('s3 cp %s s3://%s' % (foo_txt, shared_bucket))
+        p = aws(f's3 cp {foo_txt} s3://{shared_bucket}')
         self.assert_no_errors(p)
 
         # Make sure object is in bucket.
@@ -456,16 +450,14 @@ class TestCp(BaseParameterizedS3ClientTest):
         file_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         s3_utils.put_object(from_bucket, 'foo.txt', file_contents)
 
-        p = aws(
-            's3 cp s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket)
-        )
+        p = aws(f's3 cp s3://{from_bucket}/foo.txt s3://{to_bucket}/foo.txt')
         self.assert_no_errors(p)
         s3_utils.assert_key_contents_equal(to_bucket, 'foo.txt', file_contents)
         assert s3_utils.key_exists(from_bucket, key_name='foo.txt')
 
     def test_guess_mime_type(self, files, s3_utils, shared_bucket):
         bar_png = files.create_file('bar.jpeg', 'fake png image')
-        p = aws('s3 cp %s s3://%s/bar.jpeg' % (bar_png, shared_bucket))
+        p = aws(f's3 cp {bar_png} s3://{shared_bucket}/bar.jpeg')
         self.assert_no_errors(p)
 
         # We should have correctly guessed the content type based on the
@@ -482,7 +474,7 @@ class TestCp(BaseParameterizedS3ClientTest):
             shared_bucket, key_name='foo.txt', contents=foo_contents
         )
         local_foo_txt = files.full_path('foo.txt')
-        p = aws('s3 cp s3://%s/foo.txt %s' % (shared_bucket, local_foo_txt))
+        p = aws(f's3 cp s3://{shared_bucket}/foo.txt {local_foo_txt}')
         self.assert_no_errors(p)
         assert os.path.getsize(local_foo_txt) == len(foo_contents.getvalue())
 
@@ -498,8 +490,7 @@ class TestCp(BaseParameterizedS3ClientTest):
         # --quiet is added to make sure too much output is not communicated
         # to the PIPE, causing a deadlock when not consumed.
         process = aws(
-            's3 cp s3://%s/foo.txt %s --quiet'
-            % (shared_bucket, local_foo_txt),
+            f's3 cp s3://{shared_bucket}/foo.txt {local_foo_txt} --quiet',
             wait_for_finish=False,
         )
         # Give it some time to start up and enter it's main task loop.
@@ -529,7 +520,7 @@ class TestCp(BaseParameterizedS3ClientTest):
         # --quiet is added to make sure too much output is not communicated
         # to the PIPE, causing a deadlock when not consumed.
         process = aws(
-            's3 cp %s s3://%s/ --quiet' % (foo_txt, shared_bucket),
+            f's3 cp {foo_txt} s3://{shared_bucket}/ --quiet',
             wait_for_finish=False,
         )
         time.sleep(3)
@@ -550,7 +541,7 @@ class TestCp(BaseParameterizedS3ClientTest):
 
     def test_cp_empty_file(self, files, s3_utils, shared_bucket):
         foo_txt = files.create_file('foo.txt', contents='')
-        p = aws('s3 cp %s s3://%s/' % (foo_txt, shared_bucket))
+        p = aws(f's3 cp {foo_txt} s3://{shared_bucket}/')
         assert p.rc == 0
         assert 'failed' not in p.stderr
         assert s3_utils.key_exists(shared_bucket, 'foo.txt')
@@ -579,8 +570,7 @@ class TestCp(BaseParameterizedS3ClientTest):
         )
         local_filename = files.full_path('foo.txt')
         p = aws(
-            's3 cp s3://%s/%s %s --region eu-central-1'
-            % (bucket_name, object_name, local_filename)
+            f's3 cp s3://{bucket_name}/{object_name} {local_filename} --region eu-central-1'
         )
         assert p.rc == 0
         # Assert that the file was downloaded properly.
@@ -591,10 +581,7 @@ class TestCp(BaseParameterizedS3ClientTest):
         object_name = 'empty-object'
         s3_utils.put_object(shared_bucket, object_name, '')
         local_filename = files.full_path('empty.txt')
-        p = aws(
-            's3 cp s3://%s/%s %s'
-            % (shared_bucket, object_name, local_filename)
-        )
+        p = aws(f's3 cp s3://{shared_bucket}/{object_name} {local_filename}')
         assert p.rc == 0
         # Assert that the file was downloaded and has no content.
         with open(local_filename) as f:
@@ -606,8 +593,7 @@ class TestCp(BaseParameterizedS3ClientTest):
         foo_txt = files.create_file('foo.txt', 'bar')
         website_redirect = 'http://someserver'
         p = aws(
-            's3 cp %s s3://%s/foo.txt --website-redirect %s'
-            % (foo_txt, shared_bucket, website_redirect)
+            f's3 cp {foo_txt} s3://{shared_bucket}/foo.txt --website-redirect {website_redirect}'
         )
         self.assert_no_errors(p)
 
@@ -628,9 +614,7 @@ class TestCp(BaseParameterizedS3ClientTest):
             for i in range(num_mb):
                 f.write(b'a' * 1024 * 1024)
 
-        p = aws(
-            's3 cp %s s3://%s/ --region eu-central-1' % (foo_txt, bucket_name)
-        )
+        p = aws(f's3 cp {foo_txt} s3://{bucket_name}/ --region eu-central-1')
         self.assert_no_errors(p)
         assert s3_utils.key_exists(bucket_name, key_name='foo.txt')
 
@@ -640,8 +624,7 @@ class TestCp(BaseParameterizedS3ClientTest):
         key = random_chars(6)
         filename = files.create_file(key, contents='')
         p = aws(
-            's3 cp %s s3://%s/%s --metadata keyname=value'
-            % (filename, shared_bucket, key)
+            f's3 cp {filename} s3://{shared_bucket}/{key} --metadata keyname=value'
         )
         self.assert_no_errors(p)
         response = s3_utils.head_object(shared_bucket, key)
@@ -651,8 +634,8 @@ class TestCp(BaseParameterizedS3ClientTest):
     def test_copy_metadata_directive(self, s3_utils, shared_bucket):
         # Copy the same style of parsing as the CLI session. This is needed
         # For comparing expires timestamp.
-        original_key = '%s-a' % random_chars(6)
-        new_key = '%s-b' % random_chars(6)
+        original_key = f'{random_chars(6)}-a'
+        new_key = f'{random_chars(6)}-b'
         metadata = {
             'ContentType': 'foo',
             'ContentDisposition': 'foo',
@@ -665,8 +648,7 @@ class TestCp(BaseParameterizedS3ClientTest):
             shared_bucket, original_key, contents='foo', extra_args=metadata
         )
         p = aws(
-            's3 cp s3://%s/%s s3://%s/%s'
-            % (shared_bucket, original_key, shared_bucket, new_key)
+            f's3 cp s3://{shared_bucket}/{original_key} s3://{shared_bucket}/{new_key}'
         )
         self.assert_no_errors(p)
         response = s3_utils.head_object(shared_bucket, new_key)
@@ -680,10 +662,9 @@ class TestCp(BaseParameterizedS3ClientTest):
 
         # Use REPLACE to wipe out all of the metadata when copying to a new
         # key.
-        new_key = '%s-c' % random_chars(6)
+        new_key = f'{random_chars(6)}-c'
         p = aws(
-            's3 cp s3://%s/%s s3://%s/%s --metadata-directive REPLACE'
-            % (shared_bucket, original_key, shared_bucket, new_key)
+            f's3 cp s3://{shared_bucket}/{original_key} s3://{shared_bucket}/{new_key} --metadata-directive REPLACE'
         )
         self.assert_no_errors(p)
         response = s3_utils.head_object(shared_bucket, new_key)
@@ -693,11 +674,10 @@ class TestCp(BaseParameterizedS3ClientTest):
 
         # Use REPLACE to wipe out all of the metadata but include a new
         # metadata value.
-        new_key = '%s-d' % random_chars(6)
+        new_key = f'{random_chars(6)}-d'
         p = aws(
-            's3 cp s3://%s/%s s3://%s/%s --metadata-directive REPLACE '
+            f's3 cp s3://{shared_bucket}/{original_key} s3://{shared_bucket}/{new_key} --metadata-directive REPLACE '
             '--content-type bar'
-            % (shared_bucket, original_key, shared_bucket, new_key)
         )
         self.assert_no_errors(p)
         response = s3_utils.head_object(shared_bucket, new_key)
@@ -709,9 +689,7 @@ class TestCp(BaseParameterizedS3ClientTest):
 
     def test_cp_with_request_payer(self, files, s3_utils, shared_bucket):
         foo_txt = files.create_file('foo.txt', 'this is foo.txt')
-        p = aws(
-            's3 cp %s s3://%s/mykey --request-payer' % (foo_txt, shared_bucket)
-        )
+        p = aws(f's3 cp {foo_txt} s3://{shared_bucket}/mykey --request-payer')
 
         # From the S3 API, the only way to for sure know that request payer is
         # working is to set up a bucket with request payer and have another
@@ -746,15 +724,11 @@ class TestSync(BaseParameterizedS3ClientTest):
             filenames.append(
                 files.create_file('foo +%06d' % i, contents='', mtime=mtime)
             )
-        p = aws(
-            's3 sync %s s3://%s/ --page-size 2'
-            % (files.rootdir, shared_bucket)
-        )
+        p = aws(f's3 sync {files.rootdir} s3://{shared_bucket}/ --page-size 2')
         self.assert_no_errors(p)
         time.sleep(1)
         p2 = aws(
-            's3 sync %s s3://%s/ --page-size 2'
-            % (files.rootdir, shared_bucket)
+            f's3 sync {files.rootdir} s3://{shared_bucket}/ --page-size 2'
         )
         assert 'upload:' not in p2.stdout
         assert '' == p2.stdout
@@ -771,22 +745,20 @@ class TestSync(BaseParameterizedS3ClientTest):
         bucket_name = shared_bucket
         bucket_name_2 = shared_copy_bucket
 
-        p = aws('s3 sync %s s3://%s' % (files.rootdir, bucket_name))
+        p = aws(f's3 sync {files.rootdir} s3://{bucket_name}')
         self.assert_no_errors(p)
         for key in keynames:
             assert s3_utils.key_exists(bucket_name, key)
 
         p = aws(
-            's3 sync s3://%s/ s3://%s/ --page-size 2'
-            % (bucket_name, bucket_name_2)
+            f's3 sync s3://{bucket_name}/ s3://{bucket_name_2}/ --page-size 2'
         )
         self.assert_no_errors(p)
         for key in keynames:
             assert s3_utils.key_exists(bucket_name_2, key)
 
         p2 = aws(
-            's3 sync s3://%s/ s3://%s/ --page-size 2'
-            % (bucket_name, bucket_name_2)
+            f's3 sync s3://{bucket_name}/ s3://{bucket_name_2}/ --page-size 2'
         )
         assert 'copy:' not in p2.stdout
         assert '' == p2.stdout
@@ -796,14 +768,14 @@ class TestSync(BaseParameterizedS3ClientTest):
         files.create_file(os.path.join('xyz1', 'test'), contents='test2')
         files.create_file(os.path.join('xyz', 'test'), contents='test3')
 
-        p = aws('s3 sync %s s3://%s' % (files.rootdir, shared_bucket))
+        p = aws(f's3 sync {files.rootdir} s3://{shared_bucket}')
         self.assert_no_errors(p)
         time.sleep(2)
         assert s3_utils.key_exists(shared_bucket, 'xyz123456789')
         assert s3_utils.key_exists(shared_bucket, 'xyz1/test')
         assert s3_utils.key_exists(shared_bucket, 'xyz/test')
 
-        p2 = aws('s3 sync %s s3://%s/' % (files.rootdir, shared_bucket))
+        p2 = aws(f's3 sync {files.rootdir} s3://{shared_bucket}/')
         assert 'upload:' not in p2.stdout
         assert '' == p2.stdout
 
@@ -812,7 +784,7 @@ class TestSync(BaseParameterizedS3ClientTest):
         bar_txt = files.create_file('bar.txt', 'bar contents')
 
         # Sync the directory and the bucket.
-        p = aws('s3 sync %s s3://%s' % (files.rootdir, shared_bucket))
+        p = aws(f's3 sync {files.rootdir} s3://{shared_bucket}')
         self.assert_no_errors(p)
 
         # Ensure both files are in the bucket.
@@ -822,7 +794,7 @@ class TestSync(BaseParameterizedS3ClientTest):
         # Sync back down.  First remote the local files.
         os.remove(foo_txt)
         os.remove(bar_txt)
-        p = aws('s3 sync s3://%s %s' % (shared_bucket, files.rootdir))
+        p = aws(f's3 sync s3://{shared_bucket} {files.rootdir}')
         # The files should be back now.
         assert os.path.isfile(foo_txt)
         assert os.path.isfile(bar_txt)
@@ -842,7 +814,7 @@ class TestSync(BaseParameterizedS3ClientTest):
     def test_sync_with_empty_files(self, files, s3_utils, shared_bucket):
         files.create_file('foo.txt', 'foo contents')
         files.create_file('bar.txt', contents='')
-        p = aws('s3 sync %s s3://%s/' % (files.rootdir, shared_bucket))
+        p = aws(f's3 sync {files.rootdir} s3://{shared_bucket}/')
         assert p.rc == 0
         assert 'failed' not in p.stderr
         assert s3_utils.key_exists(shared_bucket, 'bar.txt')
@@ -873,7 +845,7 @@ class TestSync(BaseParameterizedS3ClientTest):
         # Allow settling time so that we have a different time between
         # source and destination.
         time.sleep(2)
-        p = aws('s3 sync %s s3://%s/' % (files.rootdir, shared_bucket))
+        p = aws(f's3 sync {files.rootdir} s3://{shared_bucket}/')
         self.assert_no_errors(p)
 
         # Now here's the issue.  If we try to sync the contents down
@@ -881,8 +853,7 @@ class TestSync(BaseParameterizedS3ClientTest):
         # sync operation should determine that nothing is different and
         # therefore do nothing.  We can just use --dryrun to show the issue.
         p = aws(
-            's3 sync s3://%s/ %s --dryrun --delete'
-            % (shared_bucket, files.rootdir)
+            f's3 sync s3://{shared_bucket}/ {files.rootdir} --dryrun --delete'
         )
         self.assert_no_errors(p)
         # These assertion methods will give better error messages than just
@@ -904,8 +875,7 @@ class TestSync(BaseParameterizedS3ClientTest):
         files.create_file(src_key_name, contents='hello')
 
         p = aws(
-            's3 sync %s s3://%s --region %s'
-            % (files.rootdir, src_bucket, src_region)
+            f's3 sync {files.rootdir} s3://{src_bucket} --region {src_region}'
         )
         self.assert_no_errors(p)
         assert s3_utils.key_exists(src_bucket, src_key_name)
@@ -916,17 +886,15 @@ class TestSync(BaseParameterizedS3ClientTest):
         files.create_file(dst_key_name, contents='goodbye')
 
         p = aws(
-            's3 sync %s s3://%s --region %s'
-            % (files.rootdir, dst_bucket, dst_region)
+            f's3 sync {files.rootdir} s3://{dst_bucket} --region {dst_region}'
         )
         self.assert_no_errors(p)
         assert s3_utils.key_exists(dst_bucket, dst_key_name)
         assert s3_utils.key_not_exists(dst_bucket, src_key_name)
 
         p = aws(
-            's3 sync --delete s3://%s s3://%s '
-            '--source-region %s --region %s'
-            % (src_bucket, dst_bucket, src_region, dst_region)
+            f's3 sync --delete s3://{src_bucket} s3://{dst_bucket} '
+            f'--source-region {src_region} --region {dst_region}'
         )
         self.assert_no_errors(p)
 
@@ -939,9 +907,7 @@ class TestSync(BaseParameterizedS3ClientTest):
         file_to_delete = files.create_file('foo.txt', contents='foo contents')
         s3_utils.put_object(shared_bucket, 'bar.txt', contents='bar contents')
 
-        p = aws(
-            's3 sync s3://%s/ %s --delete' % (shared_bucket, files.rootdir)
-        )
+        p = aws(f's3 sync s3://{shared_bucket}/ {files.rootdir} --delete')
         self.assert_no_errors(p)
 
         # Make sure the uploaded file got downloaded and the previously
@@ -964,13 +930,12 @@ class TestSourceRegion(BaseParameterizedS3ClientTest):
         dest_bucket = shared_non_dns_compatible_us_east_1_bucket
         files.create_file('foo.txt', 'foo')
         p = aws(
-            's3 sync %s s3://%s/ --region %s'
-            % (files.rootdir, src_bucket, src_region)
+            f's3 sync {files.rootdir} s3://{src_bucket}/ --region {src_region}'
         )
         self.assert_no_errors(p)
         p2 = aws(
-            's3 cp s3://%s/ s3://%s/ --region %s --source-region %s '
-            '--recursive' % (src_bucket, dest_bucket, dest_region, src_region)
+            f's3 cp s3://{src_bucket}/ s3://{dest_bucket}/ --region {dest_region} --source-region {src_region} '
+            '--recursive'
         )
         assert p2.rc == 0, p2.stdout
         assert s3_utils.key_exists(dest_bucket, 'foo.txt')
@@ -988,13 +953,11 @@ class TestSourceRegion(BaseParameterizedS3ClientTest):
         dest_bucket = shared_non_dns_compatible_us_east_1_bucket
         files.create_file('foo.txt', 'foo')
         p = aws(
-            's3 sync %s s3://%s/ --region %s'
-            % (files.rootdir, src_bucket, src_region)
+            f's3 sync {files.rootdir} s3://{src_bucket}/ --region {src_region}'
         )
         self.assert_no_errors(p)
         p2 = aws(
-            's3 sync s3://%s/ s3://%s/ --region %s --source-region %s '
-            % (src_bucket, dest_bucket, dest_region, src_region)
+            f's3 sync s3://{src_bucket}/ s3://{dest_bucket}/ --region {dest_region} --source-region {src_region} '
         )
         assert p2.rc == 0, p2.stdout
         assert s3_utils.key_exists(dest_bucket, 'foo.txt')
@@ -1012,13 +975,12 @@ class TestSourceRegion(BaseParameterizedS3ClientTest):
         dest_bucket = shared_non_dns_compatible_us_east_1_bucket
         files.create_file('foo.txt', 'foo')
         p = aws(
-            's3 sync %s s3://%s/ --region %s'
-            % (files.rootdir, src_bucket, src_region)
+            f's3 sync {files.rootdir} s3://{src_bucket}/ --region {src_region}'
         )
         self.assert_no_errors(p)
         p2 = aws(
-            's3 mv s3://%s/ s3://%s/ --region %s --source-region %s '
-            '--recursive' % (src_bucket, dest_bucket, dest_region, src_region)
+            f's3 mv s3://{src_bucket}/ s3://{dest_bucket}/ --region {dest_region} --source-region {src_region} '
+            '--recursive'
         )
         assert p2.rc == 0, p2.stdout
         assert s3_utils.key_exists(dest_bucket, 'foo.txt')
@@ -1037,14 +999,12 @@ class TestSourceRegion(BaseParameterizedS3ClientTest):
         dest_bucket = shared_non_dns_compatible_us_east_1_bucket
         foo_txt = files.create_file('foo.txt', 'a' * 1024 * 1024 * 10)
         p = aws(
-            's3 cp %s s3://%s/foo.txt --region %s'
-            % (foo_txt, src_bucket, src_region)
+            f's3 cp {foo_txt} s3://{src_bucket}/foo.txt --region {src_region}'
         )
         self.assert_no_errors(p)
 
         p2 = aws(
-            's3 mv s3://%s/foo.txt s3://%s/ --region %s --source-region %s '
-            % (src_bucket, dest_bucket, dest_region, src_region)
+            f's3 mv s3://{src_bucket}/foo.txt s3://{dest_bucket}/ --region {dest_region} --source-region {src_region} '
         )
         self.assert_no_errors(p2)
         assert s3_utils.key_exists(dest_bucket, 'foo.txt')
@@ -1054,7 +1014,7 @@ class TestSourceRegion(BaseParameterizedS3ClientTest):
 class TestWarnings(BaseParameterizedS3ClientTest):
     def test_no_exist(self, files, shared_bucket):
         filename = os.path.join(files.rootdir, "no-exists-file")
-        p = aws('s3 cp %s s3://%s/' % (filename, shared_bucket))
+        p = aws(f's3 cp {filename} s3://{shared_bucket}/')
         # If the local path provided by the user is nonexistant for an
         # upload, this should error out.
         assert p.rc == 255, p.stderr
@@ -1070,7 +1030,7 @@ class TestWarnings(BaseParameterizedS3ClientTest):
         # Remove read permissions
         permissions = permissions ^ stat.S_IREAD
         os.chmod(filename, permissions)
-        p = aws('s3 cp %s s3://%s/' % (filename, shared_bucket))
+        p = aws(f's3 cp {filename} s3://{shared_bucket}/')
         assert p.rc == 2, p.stderr
         warning_msg = (
             f'warning: Skipping file {filename}. File/Directory is '
@@ -1084,7 +1044,7 @@ class TestWarnings(BaseParameterizedS3ClientTest):
         # Use socket for special file.
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         sock.bind(file_path)
-        p = aws('s3 cp %s s3://%s/' % (file_path, shared_bucket))
+        p = aws(f's3 cp {file_path} s3://{shared_bucket}/')
         assert p.rc == 2, p.stderr
         warning_msg = (
             f"warning: Skipping file {file_path}. File is character "
@@ -1102,8 +1062,9 @@ class TestUnableToWriteToFile(BaseParameterizedS3ClientTest):
         os.chmod(files.rootdir, 0o444)
         s3_utils.put_object(shared_bucket, 'foo.txt', contents='Hello world')
         p = aws(
-            's3 cp s3://%s/foo.txt %s'
-            % (shared_bucket, os.path.join(files.rootdir, 'foo.txt'))
+            's3 cp s3://{}/foo.txt {}'.format(
+                shared_bucket, os.path.join(files.rootdir, 'foo.txt')
+            )
         )
         assert p.rc == 1
         assert 'download failed' in p.stderr
@@ -1121,8 +1082,9 @@ class TestUnableToWriteToFile(BaseParameterizedS3ClientTest):
         s3_utils.put_object(shared_bucket, 'foo.txt', contents=contents)
         os.chmod(files.rootdir, 0o444)
         p = aws(
-            's3 cp s3://%s/foo.txt %s'
-            % (shared_bucket, os.path.join(files.rootdir, 'foo.txt'))
+            's3 cp s3://{}/foo.txt {}'.format(
+                shared_bucket, os.path.join(files.rootdir, 'foo.txt')
+            )
         )
         assert p.rc == 1
         assert 'download failed' in p.stderr
@@ -1138,8 +1100,7 @@ class TestSymlinks(BaseParameterizedS3ClientTest):
         self, files, s3_utils, symlink_files, shared_bucket
     ):
         p = aws(
-            's3 sync %s s3://%s/ --no-follow-symlinks'
-            % (files.rootdir, shared_bucket)
+            f's3 sync {files.rootdir} s3://{shared_bucket}/ --no-follow-symlinks'
         )
         self.assert_no_errors(p)
         assert s3_utils.key_not_exists(shared_bucket, 'a-goodsymlink')
@@ -1156,8 +1117,7 @@ class TestSymlinks(BaseParameterizedS3ClientTest):
         # Get rid of the bad symlink first.
         os.remove(os.path.join(files.rootdir, 'b-badsymlink'))
         p = aws(
-            's3 sync %s s3://%s/ --follow-symlinks'
-            % (files.rootdir, shared_bucket)
+            f's3 sync {files.rootdir} s3://{shared_bucket}/ --follow-symlinks'
         )
         self.assert_no_errors(p)
         contents = s3_utils.get_key_contents(shared_bucket, 'a-goodsymlink')
@@ -1177,7 +1137,7 @@ class TestSymlinks(BaseParameterizedS3ClientTest):
     ):
         # Get rid of the bad symlink first.
         os.remove(os.path.join(files.rootdir, 'b-badsymlink'))
-        p = aws('s3 sync %s s3://%s/' % (files.rootdir, shared_bucket))
+        p = aws(f's3 sync {files.rootdir} s3://{shared_bucket}/')
         self.assert_no_errors(p)
         contents = s3_utils.get_key_contents(shared_bucket, 'a-goodsymlink')
         assert contents == 'foo.txt contents'
@@ -1192,11 +1152,10 @@ class TestSymlinks(BaseParameterizedS3ClientTest):
         assert contents == 'foo.txt contents'
 
     def test_bad_symlink(self, files, symlink_files, shared_bucket):
-        p = aws('s3 sync %s s3://%s/' % (files.rootdir, shared_bucket))
+        p = aws(f's3 sync {files.rootdir} s3://{shared_bucket}/')
         assert p.rc == 2, p.stderr
-        warning_msg = (
-            'warning: Skipping file %s. File does not exist.'
-            % os.path.join(files.rootdir, 'b-badsymlink')
+        warning_msg = 'warning: Skipping file {}. File does not exist.'.format(
+            os.path.join(files.rootdir, 'b-badsymlink')
         )
         assert warning_msg in p.stderr
 
@@ -1212,17 +1171,16 @@ class TestUnicode(BaseParameterizedS3ClientTest):
         local_example1_txt = files.create_file(
             '\u00e9xample.txt', 'example1 contents'
         )
-        s3_example1_txt = 's3://%s/%s' % (
-            shared_bucket,
-            os.path.basename(local_example1_txt),
+        s3_example1_txt = (
+            f's3://{shared_bucket}/{os.path.basename(local_example1_txt)}'
         )
         local_example2_txt = files.full_path('\u00e9xample2.txt')
 
-        p = aws('s3 cp %s %s' % (local_example1_txt, s3_example1_txt))
+        p = aws(f's3 cp {local_example1_txt} {s3_example1_txt}')
         self.assert_no_errors(p)
 
         # Download the file to the second example2.txt filename.
-        p = aws('s3 cp %s %s --quiet' % (s3_example1_txt, local_example2_txt))
+        p = aws(f's3 cp {s3_example1_txt} {local_example2_txt} --quiet')
         self.assert_no_errors(p)
         with open(local_example2_txt, 'rb') as f:
             assert f.read() == b'example1 contents'
@@ -1235,8 +1193,7 @@ class TestUnicode(BaseParameterizedS3ClientTest):
             '\u00e9xample2.txt', 'example2 contents'
         )
         p = aws(
-            's3 cp %s s3://%s --recursive --quiet'
-            % (files.rootdir, shared_bucket)
+            f's3 cp {files.rootdir} s3://{shared_bucket} --recursive --quiet'
         )
         self.assert_no_errors(p)
 
@@ -1244,8 +1201,7 @@ class TestUnicode(BaseParameterizedS3ClientTest):
         os.remove(local_example2_txt)
 
         p = aws(
-            's3 cp s3://%s %s --recursive --quiet'
-            % (shared_bucket, files.rootdir)
+            f's3 cp s3://{shared_bucket} {files.rootdir} --recursive --quiet'
         )
         self.assert_no_errors(p)
         assert open(local_example1_txt).read() == 'example1 contents'
@@ -1296,7 +1252,7 @@ class TestLs(BaseS3IntegrationTest):
         s3_utils.put_object(shared_bucket, 'foo', 'contents')
         s3_utils.put_object(shared_bucket, 'bar.txt', 'contents')
         s3_utils.put_object(shared_bucket, 'subdir/foo.txt', 'contents')
-        p = aws('s3 ls s3://%s' % shared_bucket)
+        p = aws(f's3 ls s3://{shared_bucket}')
         assert 'PRE subdir/' in p.stdout
         assert '8 foo.txt' in p.stdout
         assert '8 foo' in p.stdout
@@ -1311,7 +1267,7 @@ class TestLs(BaseS3IntegrationTest):
         s3_utils.put_object(shared_bucket, 'foo', 'contents')
         s3_utils.put_object(shared_bucket, 'bar.txt', 'contents')
         s3_utils.put_object(shared_bucket, 'subdir/foo.txt', 'contents')
-        p = aws('s3 ls s3://%s --recursive' % shared_bucket)
+        p = aws(f's3 ls s3://{shared_bucket} --recursive')
         assert '8 foo.txt' in p.stdout
         assert '8 foo' in p.stdout
         assert '8 bar.txt' in p.stdout
@@ -1321,28 +1277,28 @@ class TestLs(BaseS3IntegrationTest):
         # The ls command does not require an s3:// prefix,
         # we're always listing s3 contents.
         s3_utils.put_object(shared_bucket, 'foo.txt', 'contents')
-        p = aws('s3 ls %s' % shared_bucket)
+        p = aws(f's3 ls {shared_bucket}')
         assert p.rc == 0
         assert 'foo.txt' in p.stdout
 
     def test_only_prefix(self, s3_utils, shared_bucket):
         s3_utils.put_object(shared_bucket, 'temp/foo.txt', 'contents')
-        p = aws('s3 ls s3://%s/temp/foo.txt' % shared_bucket)
+        p = aws(f's3 ls s3://{shared_bucket}/temp/foo.txt')
         assert p.rc == 0
         assert 'foo.txt' in p.stdout
 
     def test_ls_empty_bucket(self, shared_bucket):
-        p = aws('s3 ls %s' % shared_bucket)
+        p = aws(f's3 ls {shared_bucket}')
         # There should not be an error thrown for checking the contents of
         # an empty bucket because no key was specified.
         assert p.rc == 0
 
     def test_ls_fail(self, shared_bucket):
-        p = aws('s3 ls s3://%s/foo' % shared_bucket)
+        p = aws(f's3 ls s3://{shared_bucket}/foo')
         assert p.rc == 1
 
     def test_ls_fail_recursive(self, shared_bucket):
-        p = aws('s3 ls s3://%s/bar --recursive' % shared_bucket)
+        p = aws(f's3 ls s3://{shared_bucket}/bar --recursive')
         assert p.rc == 1
 
 
@@ -1353,7 +1309,7 @@ class TestMbRb(BaseS3IntegrationTest):
 
     def test_mb_rb(self, s3_utils):
         bucket_name = random_bucket_name()
-        p = aws('s3 mb s3://%s' % bucket_name)
+        p = aws(f's3 mb s3://{bucket_name}')
         self.assert_no_errors(p)
 
         # Give the bucket time to form.
@@ -1361,7 +1317,7 @@ class TestMbRb(BaseS3IntegrationTest):
         response = s3_utils.list_buckets()
         assert bucket_name in [b['Name'] for b in response]
 
-        p = aws('s3 rb s3://%s' % bucket_name)
+        p = aws(f's3 rb s3://{bucket_name}')
         self.assert_no_errors(p)
 
     def test_fail_mb_rb(self):
@@ -1381,19 +1337,19 @@ class TestOutput(BaseParameterizedS3ClientTest):
         foo_txt = files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://%s/' % (foo_txt, shared_bucket))
+        p = aws(f's3 cp {foo_txt} s3://{shared_bucket}/')
         assert p.rc == 0
         # Check that there were no errors and that parts of the expected
         # progress message are written to stdout.
         self.assert_no_errors(p)
         assert 'upload' in p.stdout
-        assert 's3://%s/foo.txt' % shared_bucket in p.stdout
+        assert f's3://{shared_bucket}/foo.txt' in p.stdout
 
     def test_normal_output_quiet(self, files, shared_bucket):
         foo_txt = files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://%s/ --quiet' % (foo_txt, shared_bucket))
+        p = aws(f's3 cp {foo_txt} s3://{shared_bucket}/ --quiet')
         assert p.rc == 0
         # Check that nothing was printed to stdout.
         assert '' == p.stdout
@@ -1402,9 +1358,7 @@ class TestOutput(BaseParameterizedS3ClientTest):
         foo_txt = files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws(
-            's3 cp %s s3://%s/ --only-show-errors' % (foo_txt, shared_bucket)
-        )
+        p = aws(f's3 cp {foo_txt} s3://{shared_bucket}/ --only-show-errors')
         assert p.rc == 0
         # Check that nothing was printed to stdout.
         assert '' == p.stdout
@@ -1413,11 +1367,11 @@ class TestOutput(BaseParameterizedS3ClientTest):
         foo_txt = files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://%s/ --no-progress' % (foo_txt, shared_bucket))
+        p = aws(f's3 cp {foo_txt} s3://{shared_bucket}/ --no-progress')
         assert p.rc == 0
         # Ensure success message was printed
         assert 'upload' in p.stdout
-        assert 's3://%s/foo.txt' % shared_bucket in p.stdout
+        assert f's3://{shared_bucket}/foo.txt' in p.stdout
         assert 'Completed ' not in p.stdout
         assert 'calculating' not in p.stdout
 
@@ -1465,8 +1419,7 @@ class TestOutput(BaseParameterizedS3ClientTest):
         long_prefix = 'd' * 1022
 
         p = aws(
-            's3 cp %s s3://%s/%s/ --only-show-errors --recursive'
-            % (files.rootdir, shared_bucket, long_prefix)
+            f's3 cp {files.rootdir} s3://{shared_bucket}/{long_prefix}/ --only-show-errors --recursive'
         )
 
         # Check that there was at least one error.
@@ -1491,7 +1444,7 @@ class TestDryrun(BaseParameterizedS3ClientTest):
         foo_txt = files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://%s/ --dryrun' % (foo_txt, shared_bucket))
+        p = aws(f's3 cp {foo_txt} s3://{shared_bucket}/ --dryrun')
         assert p.rc == 0
         self.assert_no_errors(p)
         assert s3_utils.key_not_exists(shared_bucket, 'foo.txt')
@@ -1500,7 +1453,7 @@ class TestDryrun(BaseParameterizedS3ClientTest):
         foo_txt = files.create_file('foo.txt', 'a' * 1024 * 1024 * 10)
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://%s/ --dryrun' % (foo_txt, shared_bucket))
+        p = aws(f's3 cp {foo_txt} s3://{shared_bucket}/ --dryrun')
         assert p.rc == 0
         self.assert_no_errors(p)
         assert s3_utils.key_not_exists(shared_bucket, 'foo.txt'), (
@@ -1514,7 +1467,7 @@ class TestDryrun(BaseParameterizedS3ClientTest):
             s3_utils.put_object(shared_bucket, 'foo.txt', body)
 
         foo_txt = files.full_path('foo.txt')
-        p = aws('s3 cp s3://%s/foo.txt %s --dryrun' % (shared_bucket, foo_txt))
+        p = aws(f's3 cp s3://{shared_bucket}/foo.txt {foo_txt} --dryrun')
         assert p.rc == 0
         self.assert_no_errors(p)
         assert not os.path.exists(foo_txt), (
@@ -1546,13 +1499,8 @@ class TestMemoryUtilization(BaseS3IntegrationTest):
         peak_memory = max(process.memory_usage)
         if peak_memory > max_mem_allowed:
             failure_message = (
-                'Exceeded max memory allowed (%s MB) for command '
-                '"%s": %s MB'
-                % (
-                    self.max_mem_allowed / 1024.0 / 1024.0,
-                    full_command,
-                    peak_memory / 1024.0 / 1024.0,
-                )
+                f'Exceeded max memory allowed ({self.max_mem_allowed / 1024.0 / 1024.0} MB) for command '
+                f'"{full_command}": {peak_memory / 1024.0 / 1024.0} MB'
             )
             self.fail(failure_message)
 
@@ -1560,16 +1508,13 @@ class TestMemoryUtilization(BaseS3IntegrationTest):
         # 40MB will force a multipart upload.
         file_contents = 'abcdabcd' * (1024 * 1024 * 10)
         foo_txt = files.create_file('foo.txt', file_contents)
-        full_command = 's3 mv %s s3://%s/foo.txt' % (foo_txt, shared_bucket)
+        full_command = f's3 mv {foo_txt} s3://{shared_bucket}/foo.txt'
         p = aws(full_command, collect_memory=True)
         self.assert_no_errors(p)
         self.assert_max_memory_used(p, self.max_mem_allowed, full_command)
 
         # Verify downloading it back down obeys memory utilization.
-        download_full_command = 's3 mv s3://%s/foo.txt %s' % (
-            shared_bucket,
-            foo_txt,
-        )
+        download_full_command = f's3 mv s3://{shared_bucket}/foo.txt {foo_txt}'
         p = aws(download_full_command, collect_memory=True)
         self.assert_no_errors(p)
         self.assert_max_memory_used(
@@ -1606,17 +1551,14 @@ class TestMemoryUtilization(BaseS3IntegrationTest):
         # by a thread when performing a streaming multipart upload.
         max_mem_allowed = self.max_mem_allowed + 2 * self.chunk_size
 
-        full_command = 's3 cp - s3://%s/foo.txt' % shared_bucket
+        full_command = f's3 cp - s3://{shared_bucket}/foo.txt'
         with open(foo_txt, 'rb') as f:
             p = aws(full_command, input_file=f, collect_memory=True)
             self.assert_no_errors(p)
             self.assert_max_memory_used(p, max_mem_allowed, full_command)
 
         # Now perform a streaming download of the file.
-        full_command = 's3 cp s3://%s/foo.txt - > %s' % (
-            shared_bucket,
-            foo_txt,
-        )
+        full_command = f's3 cp s3://{shared_bucket}/foo.txt - > {foo_txt}'
         p = aws(full_command, collect_memory=True)
         self.assert_no_errors(p)
         # Use the usual bar for maximum memory usage since a streaming
@@ -1628,8 +1570,8 @@ class TestMemoryUtilization(BaseS3IntegrationTest):
 class TestWebsiteConfiguration(BaseS3IntegrationTest):
     def test_create_website_index_configuration(self, s3_utils, shared_bucket):
         # Supply only --index-document argument.
-        full_command = 's3 website %s --index-document index.html' % (
-            shared_bucket
+        full_command = (
+            f's3 website {shared_bucket} --index-document index.html'
         )
         p = aws(full_command)
         assert p.rc == 0
@@ -1646,8 +1588,8 @@ class TestWebsiteConfiguration(BaseS3IntegrationTest):
     ):
         # Supply both --index-document and --error-document arguments.
         p = aws(
-            's3 website %s --index-document index.html '
-            '--error-document error.html' % shared_bucket
+            f's3 website {shared_bucket} --index-document index.html '
+            '--error-document error.html'
         )
         assert p.rc == 0
         self.assert_no_errors(p)
@@ -1669,21 +1611,20 @@ class TestIncludeExcludeFilters(BaseParameterizedS3ClientTest):
     def test_basic_exclude_filter_for_single_file(self, files):
         full_path = files.create_file('foo.txt', 'this is foo.txt')
         # With no exclude we should upload the file.
-        p = aws('s3 cp %s s3://random-bucket-name/ --dryrun' % full_path)
+        p = aws(f's3 cp {full_path} s3://random-bucket-name/ --dryrun')
         self.assert_no_errors(p)
         assert '(dryrun) upload:' in p.stdout
 
         p2 = aws(
-            "s3 cp %s s3://random-bucket-name/ --dryrun --exclude '*'"
-            % full_path
+            f"s3 cp {full_path} s3://random-bucket-name/ --dryrun --exclude '*'"
         )
         self.assert_no_files_would_be_uploaded(p2)
 
     def test_explicitly_exclude_single_file(self, files):
         full_path = files.create_file('foo.txt', 'this is foo.txt')
         p = aws(
-            's3 cp %s s3://random-bucket-name/'
-            ' --dryrun --exclude foo.txt' % full_path
+            f's3 cp {full_path} s3://random-bucket-name/'
+            ' --dryrun --exclude foo.txt'
         )
         self.assert_no_files_would_be_uploaded(p)
 
@@ -1692,8 +1633,7 @@ class TestIncludeExcludeFilters(BaseParameterizedS3ClientTest):
         with tempfile.TemporaryDirectory() as tempdir:
             with cd(tempdir):
                 p = aws(
-                    "s3 cp %s s3://random-bucket-name/ --dryrun --exclude '*'"
-                    % full_path
+                    f"s3 cp {full_path} s3://random-bucket-name/ --dryrun --exclude '*'"
                 )
         self.assert_no_files_would_be_uploaded(p)
 
@@ -1710,15 +1650,15 @@ class TestIncludeExcludeFilters(BaseParameterizedS3ClientTest):
         files.create_file('test.txt', 'test.txt contents')
         # An --exclude test* should exclude everything here.
         p = aws(
-            "s3 cp %s s3://random-bucket-name/ --dryrun --exclude '*' "
-            "--recursive" % files.rootdir
+            f"s3 cp {files.rootdir} s3://random-bucket-name/ --dryrun --exclude '*' "
+            "--recursive"
         )
         self.assert_no_files_would_be_uploaded(p)
 
         # We can include the test directory though.
         p = aws(
-            "s3 cp %s s3://random-bucket-name/ --dryrun "
-            "--exclude '*' --include 'test/*' --recursive" % files.rootdir
+            f"s3 cp {files.rootdir} s3://random-bucket-name/ --dryrun "
+            "--exclude '*' --include 'test/*' --recursive"
         )
         self.assert_no_errors(p)
         assert re.search(r'\(dryrun\) upload:.*test/foo.txt.*', p.stdout)
@@ -1729,19 +1669,18 @@ class TestIncludeExcludeFilters(BaseParameterizedS3ClientTest):
         s3_utils.put_object(shared_bucket, key_name='bar.txt')
         s3_utils.put_object(shared_bucket, key_name='baz.jpg')
         p = aws(
-            "s3 rm s3://%s/ --dryrun --exclude '*' --recursive" % shared_bucket
+            f"s3 rm s3://{shared_bucket}/ --dryrun --exclude '*' --recursive"
         )
         self.assert_no_files_would_be_uploaded(p)
 
         p = aws(
-            "s3 rm s3://%s/ --dryrun --exclude '*.jpg' --exclude '*.txt' "
-            "--recursive" % shared_bucket
+            f"s3 rm s3://{shared_bucket}/ --dryrun --exclude '*.jpg' --exclude '*.txt' "
+            "--recursive"
         )
         self.assert_no_files_would_be_uploaded(p)
 
         p = aws(
-            "s3 rm s3://%s/ --dryrun --exclude '*.txt' --recursive"
-            % shared_bucket
+            f"s3 rm s3://{shared_bucket}/ --dryrun --exclude '*.txt' --recursive"
         )
         self.assert_no_errors(p)
         assert re.search(r'\(dryrun\) delete:.*baz.jpg.*', p.stdout)
@@ -1752,7 +1691,7 @@ class TestIncludeExcludeFilters(BaseParameterizedS3ClientTest):
         # Test for: https://github.com/aws/aws-cli/issues/778
         files.create_file('foo.txt', 'contents')
         second = files.create_file('bar.py', 'contents')
-        p = aws("s3 sync %s s3://%s/" % (files.rootdir, shared_bucket))
+        p = aws(f"s3 sync {files.rootdir} s3://{shared_bucket}/")
         self.assert_no_errors(p)
         assert s3_utils.key_exists(shared_bucket, key_name='bar.py')
         os.remove(second)
@@ -1766,8 +1705,7 @@ class TestIncludeExcludeFilters(BaseParameterizedS3ClientTest):
         # If we now run --exclude '*.py' --delete, then we should *not*
         # delete bar.py and the remote side.
         p = aws(
-            "s3 sync %s s3://%s/ --exclude '*.py' --delete"
-            % (files.rootdir, shared_bucket)
+            f"s3 sync {files.rootdir} s3://{shared_bucket}/ --exclude '*.py' --delete"
         )
         self.assert_no_errors(p)
         assert s3_utils.key_exists(shared_bucket, key_name='bar.py'), (
@@ -1783,7 +1721,7 @@ class TestIncludeExcludeFilters(BaseParameterizedS3ClientTest):
         # use an absolute path on the source dir.
         files.create_file('foo.txt', 'contents')
         second = files.create_file('bar.py', 'contents')
-        p = aws("s3 sync %s s3://%s/" % (files.rootdir, shared_bucket))
+        p = aws(f"s3 sync {files.rootdir} s3://{shared_bucket}/")
         self.assert_no_errors(p)
         assert s3_utils.key_exists(shared_bucket, key_name='bar.py')
         os.remove(second)
@@ -1792,7 +1730,7 @@ class TestIncludeExcludeFilters(BaseParameterizedS3ClientTest):
             os.chdir(files.rootdir)
             # Note how we're using "." for the source directory.
             p = aws(
-                "s3 sync . s3://%s/ --exclude '*.py' --delete" % shared_bucket
+                f"s3 sync . s3://{shared_bucket}/ --exclude '*.py' --delete"
             )
         finally:
             os.chdir(cwd)
@@ -1806,8 +1744,7 @@ class TestIncludeExcludeFilters(BaseParameterizedS3ClientTest):
     def test_filter_s3_with_prefix(self, files, s3_utils, shared_bucket):
         s3_utils.put_object(shared_bucket, key_name='temp/test')
         p = aws(
-            's3 cp s3://%s/temp/ %s --recursive --exclude test --dryrun'
-            % (shared_bucket, files.rootdir)
+            f's3 cp s3://{shared_bucket}/temp/ {files.rootdir} --recursive --exclude test --dryrun'
         )
         self.assert_no_files_would_be_uploaded(p)
 
@@ -1817,14 +1754,13 @@ class TestIncludeExcludeFilters(BaseParameterizedS3ClientTest):
         dir_name = os.path.join(files.rootdir, 'temp')
         files.create_file(os.path.join(dir_name, 'test.txt'), contents='foo')
         # Sync a local directory to an s3 prefix.
-        p = aws('s3 sync %s s3://%s/temp' % (dir_name, shared_bucket))
+        p = aws(f's3 sync {dir_name} s3://{shared_bucket}/temp')
         self.assert_no_errors(p)
         assert s3_utils.key_exists(shared_bucket, key_name='temp/test.txt')
 
         # Nothing should be synced down if filters are used.
         p = aws(
-            "s3 sync s3://%s/temp %s --exclude '*' --include test.txt"
-            % (shared_bucket, dir_name)
+            f"s3 sync s3://{shared_bucket}/temp {dir_name} --exclude '*' --include test.txt"
         )
         self.assert_no_files_would_be_uploaded(p)
 
@@ -1832,15 +1768,11 @@ class TestIncludeExcludeFilters(BaseParameterizedS3ClientTest):
 class TestFileWithSpaces(BaseParameterizedS3ClientTest):
     def test_upload_download_file_with_spaces(self, files, shared_bucket):
         filename = files.create_file('with space.txt', 'contents')
-        p = aws(
-            's3 cp %s s3://%s/ --recursive' % (files.rootdir, shared_bucket)
-        )
+        p = aws(f's3 cp {files.rootdir} s3://{shared_bucket}/ --recursive')
         self.assert_no_errors(p)
         os.remove(filename)
         # Now download the file back down locally.
-        p = aws(
-            's3 cp s3://%s/ %s --recursive' % (shared_bucket, files.rootdir)
-        )
+        p = aws(f's3 cp s3://{shared_bucket}/ {files.rootdir} --recursive')
         self.assert_no_errors(p)
         assert os.listdir(files.rootdir)[0] == 'with space.txt'
 
@@ -1848,12 +1780,12 @@ class TestFileWithSpaces(BaseParameterizedS3ClientTest):
         files.create_file(
             'with space.txt', 'contents', mtime=time.time() - 300
         )
-        p = aws('s3 sync %s s3://%s/' % (files.rootdir, shared_bucket))
+        p = aws(f's3 sync {files.rootdir} s3://{shared_bucket}/')
         self.assert_no_errors(p)
         time.sleep(1)
         # Now syncing again should *not* trigger any uploads (i.e we should
         # get nothing on stdout).
-        p2 = aws('s3 sync %s s3://%s/' % (files.rootdir, shared_bucket))
+        p2 = aws(f's3 sync {files.rootdir} s3://{shared_bucket}/')
         assert p2.stdout == ''
         assert p2.stderr == ''
         assert p2.rc == 0
@@ -1865,7 +1797,7 @@ class TestStreams(BaseParameterizedS3ClientTest):
         This tests uploading a small stream from stdin.
         """
         p = aws(
-            's3 cp - s3://%s/stream' % shared_bucket,
+            f's3 cp - s3://{shared_bucket}/stream',
             input_data=b'This is a test',
         )
         self.assert_no_errors(p)
@@ -1879,7 +1811,7 @@ class TestStreams(BaseParameterizedS3ClientTest):
         """
         unicode_str = '\u00e9 This is a test'
         byte_str = unicode_str.encode('utf-8')
-        p = aws('s3 cp - s3://%s/stream' % shared_bucket, input_data=byte_str)
+        p = aws(f's3 cp - s3://{shared_bucket}/stream', input_data=byte_str)
         self.assert_no_errors(p)
         assert s3_utils.key_exists(shared_bucket, 'stream')
         contents = s3_utils.get_key_contents(shared_bucket, 'stream')
@@ -1894,7 +1826,7 @@ class TestStreams(BaseParameterizedS3ClientTest):
         data = '\u00e9bcd' * (1024 * 1024 * 10)
         data_encoded = data.encode('utf-8')
         p = aws(
-            's3 cp - s3://%s/stream' % shared_bucket, input_data=data_encoded
+            f's3 cp - s3://{shared_bucket}/stream', input_data=data_encoded
         )
         self.assert_no_errors(p)
         assert s3_utils.key_exists(shared_bucket, 'stream')
@@ -1906,12 +1838,12 @@ class TestStreams(BaseParameterizedS3ClientTest):
         This tests downloading a small stream from stdout.
         """
         p = aws(
-            's3 cp - s3://%s/stream' % shared_bucket,
+            f's3 cp - s3://{shared_bucket}/stream',
             input_data=b'This is a test',
         )
         self.assert_no_errors(p)
 
-        p = aws('s3 cp s3://%s/stream -' % shared_bucket)
+        p = aws(f's3 cp s3://{shared_bucket}/stream -')
         self.assert_no_errors(p)
         assert p.stdout == 'This is a test'
 
@@ -1922,12 +1854,12 @@ class TestStreams(BaseParameterizedS3ClientTest):
         data = '\u00e9 This is a test'
         data_encoded = data.encode('utf-8')
         p = aws(
-            's3 cp - s3://%s/stream' % shared_bucket, input_data=data_encoded
+            f's3 cp - s3://{shared_bucket}/stream', input_data=data_encoded
         )
         self.assert_no_errors(p)
 
         # Downloading the unicode stream to standard out.
-        p = aws('s3 cp s3://%s/stream -' % shared_bucket)
+        p = aws(f's3 cp s3://{shared_bucket}/stream -')
         self.assert_no_errors(p)
         assert p.stdout == data_encoded.decode(get_stdout_encoding())
 
@@ -1942,11 +1874,11 @@ class TestStreams(BaseParameterizedS3ClientTest):
         data = '\u00e9bcd' * (1024 * 1024 * 10)
         data_encoded = data.encode('utf-8')
         p = aws(
-            's3 cp - s3://%s/stream' % shared_bucket, input_data=data_encoded
+            f's3 cp - s3://{shared_bucket}/stream', input_data=data_encoded
         )
 
         # Download the unicode stream to standard out.
-        p = aws('s3 cp s3://%s/stream -' % shared_bucket)
+        p = aws(f's3 cp s3://{shared_bucket}/stream -')
         self.assert_no_errors(p)
         assert p.stdout == data_encoded.decode(get_stdout_encoding())
 
@@ -1971,16 +1903,14 @@ class TestNoSignRequests(BaseParameterizedS3ClientTest):
         env_vars['AWS_ACCESS_KEY_ID'] = 'foo'
         env_vars['AWS_SECRET_ACCESS_KEY'] = 'bar'
         p = aws(
-            's3 cp s3://%s/foo %s/ --region %s'
-            % (shared_bucket, files.rootdir, region),
+            f's3 cp s3://{shared_bucket}/foo {files.rootdir}/ --region {region}',
             env_vars=env_vars,
         )
         # Should have credential issues
         assert p.rc == 1
 
         p = aws(
-            's3 cp s3://%s/foo %s/ --region %s --no-sign-request'
-            % (shared_bucket, files.rootdir, region),
+            f's3 cp s3://{shared_bucket}/foo {files.rootdir}/ --region {region} --no-sign-request',
             env_vars=env_vars,
         )
         # Should be able to download the file when not signing the request.
@@ -2019,10 +1949,7 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
         # with --sse aws:kms is enabled to ensure sigv4 is used on the
         # download, as it is required for kms.
         download_filename = os.path.join(files.rootdir, 'tmp', key)
-        p = aws(
-            's3 cp s3://%s/%s %s --sse aws:kms'
-            % (bucket, key, download_filename)
-        )
+        p = aws(f's3 cp s3://{bucket}/{key} {download_filename} --sse aws:kms')
         self.assert_no_errors(p)
 
         assert os.path.isfile(download_filename)
@@ -2035,10 +1962,7 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
         file_name = files.create_file(key, contents)
 
         # Upload the file using AES256
-        p = aws(
-            's3 cp %s s3://%s/%s --sse AES256'
-            % (file_name, shared_bucket, key)
-        )
+        p = aws(f's3 cp {file_name} s3://{shared_bucket}/{key} --sse AES256')
         self.assert_no_errors(p)
 
         # Ensure the file was uploaded correctly
@@ -2050,10 +1974,7 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
         file_name = files.create_file(key, contents)
 
         # Upload the file using AES256
-        p = aws(
-            's3 cp %s s3://%s/%s --sse AES256'
-            % (file_name, shared_bucket, key)
-        )
+        p = aws(f's3 cp {file_name} s3://{shared_bucket}/{key} --sse AES256')
         self.assert_no_errors(p)
 
         # Ensure the file was uploaded correctly
@@ -2065,10 +1986,7 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
         file_name = files.create_file(key, contents)
 
         # Upload the file using KMS
-        p = aws(
-            's3 cp %s s3://%s/%s --sse aws:kms'
-            % (file_name, shared_bucket, key)
-        )
+        p = aws(f's3 cp {file_name} s3://{shared_bucket}/{key} --sse aws:kms')
         self.assert_no_errors(p)
 
         self.download_and_assert_kms_object_integrity(
@@ -2081,10 +1999,7 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
         file_name = files.create_file(key, contents)
 
         # Upload the file using KMS
-        p = aws(
-            's3 cp %s s3://%s/%s --sse aws:kms'
-            % (file_name, shared_bucket, key)
-        )
+        p = aws(f's3 cp {file_name} s3://{shared_bucket}/{key} --sse aws:kms')
         self.assert_no_errors(p)
         self.download_and_assert_kms_object_integrity(
             shared_bucket, key, contents, files, s3_utils
@@ -2098,8 +2013,7 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
 
         # Copy the file using AES256
         p = aws(
-            's3 cp s3://%s/%s s3://%s/%s --sse AES256'
-            % (shared_bucket, key, shared_bucket, new_key)
+            f's3 cp s3://{shared_bucket}/{key} s3://{shared_bucket}/{new_key} --sse AES256'
         )
         self.assert_no_errors(p)
 
@@ -2114,13 +2028,12 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
         # This is a little faster and more efficient than
         # calling self.put_object()
         file_name = files.create_file(key, contents)
-        p = aws('s3 cp %s s3://%s/%s' % (file_name, shared_bucket, key))
+        p = aws(f's3 cp {file_name} s3://{shared_bucket}/{key}')
         self.assert_no_errors(p)
 
         # Copy the file using AES256
         p = aws(
-            's3 cp s3://%s/%s s3://%s/%s --sse AES256'
-            % (shared_bucket, key, shared_bucket, new_key)
+            f's3 cp s3://{shared_bucket}/{key} s3://{shared_bucket}/{new_key} --sse AES256'
         )
         self.assert_no_errors(p)
 
@@ -2135,8 +2048,7 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
 
         # Copy the file using KMS
         p = aws(
-            's3 cp s3://%s/%s s3://%s/%s --sse aws:kms'
-            % (shared_bucket, key, shared_bucket, new_key)
+            f's3 cp s3://{shared_bucket}/{key} s3://{shared_bucket}/{new_key} --sse aws:kms'
         )
         self.assert_no_errors(p)
         self.download_and_assert_kms_object_integrity(
@@ -2151,13 +2063,12 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
         # This is a little faster and more efficient than
         # calling self.put_object()
         file_name = files.create_file(key, contents)
-        p = aws('s3 cp %s s3://%s/%s' % (file_name, shared_bucket, key))
+        p = aws(f's3 cp {file_name} s3://{shared_bucket}/{key}')
         self.assert_no_errors(p)
 
         # Copy the file using KMS
         p = aws(
-            's3 cp s3://%s/%s s3://%s/%s --sse aws:kms'
-            % (shared_bucket, key, shared_bucket, new_key)
+            f's3 cp s3://{shared_bucket}/{key} s3://{shared_bucket}/{new_key} --sse aws:kms'
         )
         self.assert_no_errors(p)
         self.download_and_assert_kms_object_integrity(
@@ -2171,16 +2082,14 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
 
         # Upload sync
         p = aws(
-            's3 sync %s s3://%s/foo/ --sse AES256'
-            % (files.rootdir, shared_bucket)
+            f's3 sync {files.rootdir} s3://{shared_bucket}/foo/ --sse AES256'
         )
         self.assert_no_errors(p)
         s3_utils.wait_until_key_exists(shared_bucket, 'foo/foo.txt')
 
         # Copy sync
         p = aws(
-            's3 sync s3://%s/foo/ s3://%s/bar/ --sse AES256'
-            % (shared_bucket, shared_bucket)
+            f's3 sync s3://{shared_bucket}/foo/ s3://{shared_bucket}/bar/ --sse AES256'
         )
         self.assert_no_errors(p)
         s3_utils.wait_until_key_exists(shared_bucket, 'bar/foo.txt')
@@ -2190,8 +2099,7 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
 
         # Download sync
         p = aws(
-            's3 sync s3://%s/bar/ %s --sse AES256'
-            % (shared_bucket, files.rootdir)
+            f's3 sync s3://{shared_bucket}/bar/ {files.rootdir} --sse AES256'
         )
         self.assert_no_errors(p)
 
@@ -2206,15 +2114,13 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
 
         # Upload sync
         p = aws(
-            's3 sync %s s3://%s/foo/ --sse aws:kms'
-            % (files.rootdir, shared_bucket)
+            f's3 sync {files.rootdir} s3://{shared_bucket}/foo/ --sse aws:kms'
         )
         self.assert_no_errors(p)
 
         # Copy sync
         p = aws(
-            's3 sync s3://%s/foo/ s3://%s/bar/ --sse aws:kms'
-            % (shared_bucket, shared_bucket)
+            f's3 sync s3://{shared_bucket}/foo/ s3://{shared_bucket}/bar/ --sse aws:kms'
         )
         self.assert_no_errors(p)
 
@@ -2223,8 +2129,7 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
 
         # Download sync
         p = aws(
-            's3 sync s3://%s/bar/ %s --sse aws:kms'
-            % (shared_bucket, files.rootdir)
+            f's3 sync s3://{shared_bucket}/bar/ {files.rootdir} --sse aws:kms'
         )
         self.assert_no_errors(p)
 
@@ -2244,8 +2149,7 @@ class TestSSECRelatedParams(BaseParameterizedS3ClientTest):
         )
         download_filename = os.path.join(files.rootdir, 'tmp', key)
         p = aws(
-            's3 cp s3://%s/%s %s --sse-c AES256 --sse-c-key %s'
-            % (bucket, key, download_filename, encrypt_key)
+            f's3 cp s3://{bucket}/{key} {download_filename} --sse-c AES256 --sse-c-key {encrypt_key}'
         )
         self.assert_no_errors(p)
 
@@ -2262,8 +2166,7 @@ class TestSSECRelatedParams(BaseParameterizedS3ClientTest):
 
         # Upload the file using SSE-C
         p = aws(
-            's3 cp %s s3://%s --sse-c AES256 --sse-c-key %s'
-            % (file_name, shared_bucket, encrypt_key)
+            f's3 cp {file_name} s3://{shared_bucket} --sse-c AES256 --sse-c-key {encrypt_key}'
         )
         self.assert_no_errors(p)
 
@@ -2285,7 +2188,7 @@ class TestSSECRelatedParams(BaseParameterizedS3ClientTest):
                 'SSECustomerAlgorithm': 'AES256',
             },
         )
-        p = aws('s3 rm s3://%s/%s' % (shared_bucket, key))
+        p = aws(f's3 rm s3://{shared_bucket}/{key}')
         self.assert_no_errors(p)
         assert not s3_utils.key_exists(shared_bucket, key)
 
@@ -2298,8 +2201,7 @@ class TestSSECRelatedParams(BaseParameterizedS3ClientTest):
 
         # Upload the file using SSE-C
         p = aws(
-            's3 cp %s s3://%s --sse-c AES256 --sse-c-key %s'
-            % (file_name, shared_bucket, encrypt_key)
+            f's3 cp {file_name} s3://{shared_bucket} --sse-c AES256 --sse-c-key {encrypt_key}'
         )
         self.assert_no_errors(p)
 
@@ -2317,23 +2219,14 @@ class TestSSECRelatedParams(BaseParameterizedS3ClientTest):
 
         # Upload the file using SSE-C
         p = aws(
-            's3 cp %s s3://%s --sse-c AES256 --sse-c-key %s'
-            % (file_name, shared_bucket, encrypt_key)
+            f's3 cp {file_name} s3://{shared_bucket} --sse-c AES256 --sse-c-key {encrypt_key}'
         )
         self.assert_no_errors(p)
 
         # Copy the file using SSE-C and a new encryption key
         p = aws(
-            's3 cp s3://%s/%s s3://%s/%s --sse-c AES256 --sse-c-key %s '
-            '--sse-c-copy-source AES256 --sse-c-copy-source-key %s'
-            % (
-                shared_bucket,
-                key,
-                shared_bucket,
-                new_key,
-                other_encrypt_key,
-                encrypt_key,
-            )
+            f's3 cp s3://{shared_bucket}/{key} s3://{shared_bucket}/{new_key} --sse-c AES256 --sse-c-key {other_encrypt_key} '
+            f'--sse-c-copy-source AES256 --sse-c-copy-source-key {encrypt_key}'
         )
         self.assert_no_errors(p)
         self.download_and_assert_sse_c_object_integrity(
@@ -2355,23 +2248,14 @@ class TestSSECRelatedParams(BaseParameterizedS3ClientTest):
 
         # Upload the file using SSE-C
         p = aws(
-            's3 cp %s s3://%s --sse-c AES256 --sse-c-key %s'
-            % (file_name, shared_bucket, encrypt_key)
+            f's3 cp {file_name} s3://{shared_bucket} --sse-c AES256 --sse-c-key {encrypt_key}'
         )
         self.assert_no_errors(p)
 
         # Copy the file using SSE-C and a new encryption key
         p = aws(
-            's3 cp s3://%s/%s s3://%s/%s --sse-c AES256 --sse-c-key %s '
-            '--sse-c-copy-source AES256 --sse-c-copy-source-key %s'
-            % (
-                shared_bucket,
-                key,
-                shared_bucket,
-                new_key,
-                other_encrypt_key,
-                encrypt_key,
-            )
+            f's3 cp s3://{shared_bucket}/{key} s3://{shared_bucket}/{new_key} --sse-c AES256 --sse-c-key {other_encrypt_key} '
+            f'--sse-c-copy-source AES256 --sse-c-copy-source-key {encrypt_key}'
         )
         self.assert_no_errors(p)
         self.download_and_assert_sse_c_object_integrity(
@@ -2392,17 +2276,15 @@ class TestSSECRelatedParams(BaseParameterizedS3ClientTest):
 
         # Upload sync
         p = aws(
-            's3 sync %s s3://%s/foo/ --sse-c AES256 --sse-c-key %s'
-            % (files.rootdir, shared_bucket, encrypt_key)
+            f's3 sync {files.rootdir} s3://{shared_bucket}/foo/ --sse-c AES256 --sse-c-key {encrypt_key}'
         )
         self.assert_no_errors(p)
 
         # Copy sync
         p = aws(
-            's3 sync s3://%s/foo/ s3://%s/bar/ --sse-c AES256 '
-            '--sse-c-key %s --sse-c-copy-source AES256 '
-            '--sse-c-copy-source-key %s'
-            % (shared_bucket, shared_bucket, other_encrypt_key, encrypt_key)
+            f's3 sync s3://{shared_bucket}/foo/ s3://{shared_bucket}/bar/ --sse-c AES256 '
+            f'--sse-c-key {other_encrypt_key} --sse-c-copy-source AES256 '
+            f'--sse-c-copy-source-key {encrypt_key}'
         )
         self.assert_no_errors(p)
 
@@ -2411,8 +2293,7 @@ class TestSSECRelatedParams(BaseParameterizedS3ClientTest):
 
         # Download sync
         p = aws(
-            's3 sync s3://%s/bar/ %s --sse-c AES256 --sse-c-key %s'
-            % (shared_bucket, files.rootdir, other_encrypt_key)
+            f's3 sync s3://{shared_bucket}/bar/ {files.rootdir} --sse-c AES256 --sse-c-key {other_encrypt_key}'
         )
         self.assert_no_errors(p)
 
@@ -2425,7 +2306,7 @@ class TestPresignCommand(BaseS3IntegrationTest):
     def test_can_retrieve_presigned_url(self, s3_utils, shared_bucket):
         original_contents = b'this is foo.txt'
         s3_utils.put_object(shared_bucket, 'foo.txt', original_contents)
-        p = aws('s3 presign s3://%s/foo.txt' % (shared_bucket,))
+        p = aws(f's3 presign s3://{shared_bucket}/foo.txt')
         self.assert_no_errors(p)
         url = p.stdout.strip()
         contents = urlopen(url).read()

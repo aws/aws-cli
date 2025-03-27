@@ -155,7 +155,7 @@ class LexTester:
         try:
             list(self.lexer.tokenize(expression))
             raise AssertionError(
-                'LexerError not raised for expression: %s' % expression
+                f'LexerError not raised for expression: {expression}'
             )
         except LexerError as e:
             assert error_part in str(e)

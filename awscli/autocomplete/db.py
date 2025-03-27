@@ -10,7 +10,7 @@ LOG = logging.getLogger(__name__)
 # of our shipped distributable, but for now we'll add this to our cache
 # dir.
 INDEX_DIR = os.path.expanduser(os.path.join('~', '.aws', 'cli', 'cache'))
-INDEX_FILE = os.path.join(INDEX_DIR, '%s.index' % cli_version)
+INDEX_FILE = os.path.join(INDEX_DIR, f'{cli_version}.index')
 BUILTIN_INDEX_FILE = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
     'data',

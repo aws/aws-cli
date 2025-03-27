@@ -35,16 +35,14 @@ class TestCLIInputJSON(BaseCLIInputArgumentTest):
     def test_cli_input_json_no_exta_args(self):
         # Run a head command using the input json
         cmdline = (
-            's3api head-object --cli-input-json file://%s'
-        ) % self.input_file
+            f's3api head-object --cli-input-json file://{self.input_file}'
+        )
         self.assert_params_for_cmd(
             cmdline, params={'Bucket': 'bucket', 'Key': 'key'}
         )
 
     def test_cli_input_json_can_override_param(self):
-        cmdline = (
-            's3api head-object --key bar --cli-input-json file://%s'
-        ) % self.input_file
+        cmdline = f's3api head-object --key bar --cli-input-json file://{self.input_file}'
         self.assert_params_for_cmd(cmdline, {'Bucket': 'bucket', 'Key': 'bar'})
 
     def test_cli_input_json_not_from_file(self):
@@ -116,7 +114,7 @@ class TestCLIInputYAML(BaseCLIInputArgumentTest):
             's3api',
             'list-objects-v2',
             '--cli-input-yaml',
-            'file://%s' % filename,
+            f'file://{filename}',
         ]
         self.assert_params_for_cmd(
             command, {'Bucket': 'test-bucket', 'EncodingType': 'url'}

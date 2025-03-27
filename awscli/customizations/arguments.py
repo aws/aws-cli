@@ -26,7 +26,7 @@ def resolve_given_outfile_path(path):
         return
     outfile = os.path.expanduser(os.path.expandvars(path))
     if not os.access(os.path.dirname(os.path.abspath(outfile)), os.W_OK):
-        raise ParamValidationError('Unable to write to file: %s' % outfile)
+        raise ParamValidationError(f'Unable to write to file: {outfile}')
     return outfile
 
 
@@ -106,8 +106,8 @@ class QueryOutFileArgument(StatefulArgument):
         # Generate default help_text if text was not provided.
         if 'help_text' not in kwargs:
             kwargs['help_text'] = (
-                'Saves the command output contents of %s '
-                'to the given filename' % self.query
+                f'Saves the command output contents of {self.query} '
+                'to the given filename'
             )
         super(QueryOutFileArgument, self).__init__(name, *args, **kwargs)
 

@@ -123,7 +123,7 @@ def temporary_file(mode):
 
     """
     temporary_directory = tempfile.mkdtemp()
-    basename = 'tmpfile-%s-%s' % (int(time.time()), random.randint(1, 1000))
+    basename = f'tmpfile-{int(time.time())}-{random.randint(1, 1000)}'
     full_filename = os.path.join(temporary_directory, basename)
     open(full_filename, 'w').close()
     try:
@@ -282,7 +282,7 @@ class ClientDriver:
         self.send_cmd(*cmd)
         result = self._popen.stdout.readline().strip()
         if result != b'OK':
-            raise RuntimeError("Error from command '%s': %s" % (cmd, result))
+            raise RuntimeError(f"Error from command '{cmd}': {result}")
 
 
 # This is added to this file because it's used in both
@@ -525,7 +525,9 @@ class ConsistencyWaiter:
 
     def _fail_message(self, attempts, successes):
         format_args = (attempts, successes)
-        return 'Failed after %s attempts, only had %s successes' % format_args
+        return 'Failed after {} attempts, only had {} successes'.format(
+            *format_args
+        )
 
 
 class StubbedSession(botocore.session.Session):

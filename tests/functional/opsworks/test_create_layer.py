@@ -30,7 +30,7 @@ class TestCreateLayer(BaseAWSCommandParamsTest):
         cmdline += ' --type rails-app'
         cmdline += ' --name Rails_App_Server'
         cmdline += ' --enable-auto-healing'
-        cmdline += ' --attributes file://%s' % data_path
+        cmdline += f' --attributes file://{data_path}'
         cmdline += ' --shortname foo'
         result = {
             'StackId': '35959772-cd1e-4082-8346-79096d4179f2',

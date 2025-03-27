@@ -951,7 +951,7 @@ class TestOpsWorksRegisterEc2(TestOpsWorksBase):
         except Exception as e:
             self.fail(
                 'Register should work with bytes response from urlopen.read. '
-                'Got exception: %s' % e
+                f'Got exception: {e}'
             )
 
     def test_retrieve_stack_ec2(self):

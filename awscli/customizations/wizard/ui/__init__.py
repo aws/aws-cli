@@ -26,7 +26,7 @@ class Prompter:
 class UIPrompter(Prompter):
     def prompt(self, display_text, choices=None):
         if not choices:
-            return prompt_toolkit.prompt('%s: ' % display_text)
+            return prompt_toolkit.prompt(f'{display_text}: ')
         else:
             prompt_toolkit.print_formatted_text(display_text)
             if isinstance(choices[0], str):
@@ -63,5 +63,5 @@ class UIFilePrompter:
 
     def prompt(self, display_text):
         return prompt_toolkit.prompt(
-            '%s: ' % display_text, completer=self._completer
+            f'{display_text}: ', completer=self._completer
         )

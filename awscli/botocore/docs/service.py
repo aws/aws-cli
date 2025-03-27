@@ -60,7 +60,7 @@ class ServiceDocumenter:
         section.style.h1(self._client.__class__.__name__)
         service_id = self._client.meta.service_model.service_id.hyphenize()
         self._event_emitter.emit(
-            'docs.%s.%s' % ('title', service_id), section=section
+            'docs.{}.{}'.format('title', service_id), section=section
         )
 
     def table_of_contents(self, section):

@@ -153,7 +153,7 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
             '[{"FromPort":8000,"ToPort":9000,'
             '"IpProtocol":"tcp","IpRanges":[{"CidrIp":"192.168.100.0/24"}]}]'
         )
-        args = self.prefix + '--group-name foobar --ip-permissions %s' % json
+        args = self.prefix + f'--group-name foobar --ip-permissions {json}'
         result = {
             'GroupName': 'foobar',
             'IpPermissions': [
@@ -172,9 +172,7 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
             '[{"FromPort":8000,"ToPort":9000,"IpProtocol":"tcp",'
             '"IpRanges":[{"CidrIp":"192.168.100.0/24"}]}]'
         )
-        args = (
-            self.prefix + '--group-id sg-12345678 --ip-permissions %s' % json
-        )
+        args = self.prefix + f'--group-id sg-12345678 --ip-permissions {json}'
         result = {
             'GroupId': 'sg-12345678',
             'IpPermissions': [
@@ -195,7 +193,7 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
         )
         args = (
             self.prefix
-            + '--group-name foobar --port 100 --ip-permissions %s' % json
+            + f'--group-name foobar --port 100 --ip-permissions {json}'
         )
         self.assert_params_for_cmd(args, expected_rc=252)
 

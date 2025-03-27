@@ -34,7 +34,7 @@ def make_exe(exe_zipfile, cleanup=True, ac_index=None):
         do_make_exe(workdir, exe_zipfile, ac_index)
         if cleanup:
             cleanup_build()
-    print('Exe build is available at: %s' % exe_zipfile)
+    print(f'Exe build is available at: {exe_zipfile}')
 
 
 def do_make_exe(workdir, exe_zipfile, ac_index):
@@ -65,22 +65,22 @@ def delete_existing_exe_build():
 
 def pyinstaller(specfile):
     aws_spec_path = os.path.join(PYINSTALLER_DIR, specfile)
-    print(run('pyinstaller %s' % (aws_spec_path), cwd=PYINSTALLER_DIR))
+    print(run(f'pyinstaller {aws_spec_path}', cwd=PYINSTALLER_DIR))
     return os.path.join(PYINSTALLER_DIR, 'dist', os.path.splitext(specfile)[0])
 
 
 def copy_directory(src, dst):
-    print('Copying %s -> %s' % (src, dst))
+    print(f'Copying {src} -> {dst}')
     shutil.copytree(src, dst)
 
 
 def copy_directory_contents_into(src, dst):
-    print('Copying contents of %s into %s' % (src, dst))
+    print(f'Copying contents of {src} into {dst}')
     copy_tree(src, dst)
 
 
 def copy_file(src, dst):
-    print('Copying file %s -> %s' % (src, dst))
+    print(f'Copying file {src} -> {dst}')
     shutil.copy2(src, dst)
 
 
@@ -91,7 +91,7 @@ def cleanup_build():
     ]
     for location in locations:
         shutil.rmtree(location)
-        print('Deleted build directory: %s' % location)
+        print(f'Deleted build directory: {location}')
 
 
 def main():
@@ -101,8 +101,8 @@ def main():
         default=os.path.join(ROOT, 'dist', DEFAULT_OUTPUT_ZIP),
         help=(
             'The name of the file to save the exe zip. By default, '
-            'this will be saved in "dist/%s" directory in the root of the '
-            'awscli.' % DEFAULT_OUTPUT_ZIP
+            f'this will be saved in "dist/{DEFAULT_OUTPUT_ZIP}" directory in the root of the '
+            'awscli.'
         ),
     )
     parser.add_argument(

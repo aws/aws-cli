@@ -187,7 +187,7 @@ class FlattenArguments:
             overwritten = False
 
             LOG.debug(
-                'Flattening {0} argument {1} into {2}'.format(
+                'Flattening {} argument {} into {}'.format(
                     command.name,
                     name,
                     ', '.join(

@@ -162,7 +162,7 @@ class TestWildcardHandlers(unittest.TestCase):
         self.emitter.emit(event)
         after = len(self.hook_calls)
         if not after > starting:
-            self.fail("Handler was not called for event: %s" % event)
+            self.fail(f"Handler was not called for event: {event}")
         self.assertEqual(self.hook_calls[-1]['event_name'], event)
 
     def assert_hook_is_not_called_given_event(self, event):
@@ -172,8 +172,7 @@ class TestWildcardHandlers(unittest.TestCase):
         if not after == starting:
             self.fail(
                 "Handler was called for event but was not "
-                "suppose to be called: %s, last_event: %s"
-                % (event, self.hook_calls[-1])
+                f"suppose to be called: {event}, last_event: {self.hook_calls[-1]}"
             )
 
     def test_one_level_wildcard_handler(self):

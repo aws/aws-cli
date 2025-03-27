@@ -39,7 +39,7 @@ class TestElasticTranscoder(unittest.TestCase):
         self.iam_client = self.session.create_client('iam', 'us-east-1')
 
     def create_bucket(self):
-        bucket_name = 'ets-bucket-1-%s' % random_chars(50)
+        bucket_name = f'ets-bucket-1-{random_chars(50)}'
         self.s3_client.create_bucket(Bucket=bucket_name)
         waiter = self.s3_client.get_waiter('bucket_exists')
         waiter.wait(Bucket=bucket_name)
@@ -47,7 +47,7 @@ class TestElasticTranscoder(unittest.TestCase):
         return bucket_name
 
     def create_iam_role(self):
-        role_name = 'ets-role-name-1-%s' % random_chars(10)
+        role_name = f'ets-role-name-1-{random_chars(10)}'
         parsed = self.iam_client.create_role(
             RoleName=role_name, AssumeRolePolicyDocument=DEFAULT_ROLE_POLICY
         )
@@ -69,7 +69,7 @@ class TestElasticTranscoder(unittest.TestCase):
         input_bucket = self.create_bucket()
         output_bucket = self.create_bucket()
         role = self.create_iam_role()
-        pipeline_name = 'botocore-test-create-%s' % random_chars(10)
+        pipeline_name = f'botocore-test-create-{random_chars(10)}'
 
         parsed = self.client.create_pipeline(
             InputBucket=input_bucket,

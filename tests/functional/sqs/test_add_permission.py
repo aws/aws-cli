@@ -21,7 +21,7 @@ class TestAddPermission(BaseAWSCommandParamsTest):
 
     def test_all_param(self):
         cmdline = self.prefix
-        cmdline += ' --queue-url %s' % self.queue_url
+        cmdline += f' --queue-url {self.queue_url}'
         cmdline += ' --aws-account-ids 888888888888'
         cmdline += ' --actions SendMessage'
         cmdline += ' --label FooBarLabel'
@@ -35,7 +35,7 @@ class TestAddPermission(BaseAWSCommandParamsTest):
 
     def test_multiple_accounts(self):
         cmdline = self.prefix
-        cmdline += ' --queue-url %s' % self.queue_url
+        cmdline += f' --queue-url {self.queue_url}'
         cmdline += ' --aws-account-ids 888888888888 999999999999'
         cmdline += ' --actions SendMessage'
         cmdline += ' --label FooBarLabel'
@@ -49,7 +49,7 @@ class TestAddPermission(BaseAWSCommandParamsTest):
 
     def test_multiple_actions(self):
         cmdline = self.prefix
-        cmdline += ' --queue-url %s' % self.queue_url
+        cmdline += f' --queue-url {self.queue_url}'
         cmdline += ' --aws-account-ids 888888888888'
         cmdline += ' --actions SendMessage ReceiveMessage'
         cmdline += ' --label FooBarLabel'

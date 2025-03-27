@@ -49,9 +49,9 @@ class InstallerTester:
         env = os.environ.copy()
         aws_cmd = self.get_aws_cmd()
         self._assert_aws_cmd(aws_cmd)
-        sys.stdout.write('Setting test command to "%s"\n' % aws_cmd)
+        sys.stdout.write(f'Setting test command to "{aws_cmd}"\n')
         env['AWS_TEST_COMMAND'] = aws_cmd
-        run('nosetests -v -s %s' % SMOKE_TEST_PATH, env=env)
+        run(f'nosetests -v -s {SMOKE_TEST_PATH}', env=env)
         return 0
 
     def cleanup(self):
@@ -60,7 +60,7 @@ class InstallerTester:
     def _assert_aws_cmd(self, aws_cmd):
         # Do a quick --version check to make sure we can execute
         # the provided command
-        run('%s --version' % aws_cmd)
+        run(f'{aws_cmd} --version')
 
 
 class ExeTester(InstallerTester):
@@ -82,8 +82,7 @@ class ExeTester(InstallerTester):
             extract_zip(self._installer_location, workdir)
             install_script = os.path.join(workdir, 'aws', 'install')
             run(
-                '%s --install-dir %s --bin-dir %s'
-                % (install_script, install_dir, bin_dir)
+                f'{install_script} --install-dir {install_dir} --bin-dir {bin_dir}'
             )
 
     def cleanup(self):
@@ -100,17 +99,17 @@ class PkgTester(InstallerTester):
     _PKG_ID = 'com.amazon.aws.cli2'
 
     def get_aws_cmd(self):
-        value = run('%s %s check' % (sys.executable, UNINSTALL_MAC_PKG_PATH))
+        value = run(f'{sys.executable} {UNINSTALL_MAC_PKG_PATH} check')
         match = re.search('installed at (.+)?\n', value)
         base_path = match.group(1)
         cmd_path = os.path.join(base_path, EXE_NAME)
         return cmd_path
 
     def setup(self):
-        run('sudo installer -pkg %s -target /' % self._installer_location)
+        run(f'sudo installer -pkg {self._installer_location} -target /')
 
     def cleanup(self):
-        run('sudo %s %s uninstall' % (sys.executable, UNINSTALL_MAC_PKG_PATH))
+        run(f'sudo {sys.executable} {UNINSTALL_MAC_PKG_PATH} uninstall')
 
     def __call__(self):
         assert (

@@ -62,7 +62,7 @@ class TestRegisterInstancesWithLoadBalancer(BaseAWSCommandParamsTest):
         data_path = os.path.join(os.path.dirname(__file__), 'test.json')
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
-        cmdline += ' --instances file://%s' % data_path
+        cmdline += f' --instances file://{data_path}'
         self.assert_params_for_cmd(cmdline, TWO_INSTANCE_EXPECTED)
 
     def test_json_file_with_spaces(self):
@@ -71,7 +71,7 @@ class TestRegisterInstancesWithLoadBalancer(BaseAWSCommandParamsTest):
         )
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
-        cmdline += ' --instances file://%s' % data_path
+        cmdline += f' --instances file://{data_path}'
         self.assert_params_for_cmd(cmdline, TWO_INSTANCE_EXPECTED)
 
     def test_two_instance_shorthand(self):

@@ -24,7 +24,7 @@ HELP_BLURB = (
 )
 USAGE = (
     "aws [options] <command> <subcommand> [<subcommand> ...] [parameters]\n"
-    "%s" % HELP_BLURB
+    f"{HELP_BLURB}"
 )
 
 
@@ -85,9 +85,9 @@ class CLIArgParser(argparse.ArgumentParser):
                 msg.append(' | '.join(current))
             possible = get_close_matches(value, action.choices, cutoff=0.8)
             if possible:
-                extra = ['\n\nInvalid choice: %r, maybe you meant:\n' % value]
+                extra = [f'\n\nInvalid choice: {value!r}, maybe you meant:\n']
                 for word in possible:
-                    extra.append('  * %s' % word)
+                    extra.append(f'  * {word}')
                 msg.extend(extra)
             raise argparse.ArgumentError(action, '\n'.join(msg))
 
@@ -154,7 +154,7 @@ class MainArgParser(CLIArgParser):
     def _create_choice_help(self, choices):
         help_str = ''
         for choice in sorted(choices):
-            help_str += '* %s\n' % choice
+            help_str += f'* {choice}\n'
         return help_str
 
     def _build(self, command_table, version_string, argument_table):

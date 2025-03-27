@@ -34,7 +34,7 @@ class GenerateBaseCommand(BasicCommand):
                 parsed_args.file_path, get_s3_path(parsed_args.file_path)
             )
         except OSError:
-            raise RuntimeError("%s cannot be found" % parsed_args.file_path)
+            raise RuntimeError(f"{parsed_args.file_path} cannot be found")
 
     def get_and_validate_region(self, parsed_globals):
         region = parsed_globals.region

@@ -41,7 +41,7 @@ LOG = logging.getLogger('awscli.help')
 class ExecutableNotFoundError(Exception):
     def __init__(self, executable_name):
         super(ExecutableNotFoundError, self).__init__(
-            'Could not find executable named "%s"' % executable_name
+            f'Could not find executable named "{executable_name}"'
         )
 
 
@@ -140,7 +140,7 @@ class PosixHelpRenderer(PagingHelpRenderer):
         cmdline = self.get_pager_cmdline()
         if not self._exists_on_path(cmdline[0]):
             LOG.debug(
-                "Pager '%s' not found in PATH, printing raw help." % cmdline[0]
+                f"Pager '{cmdline[0]}' not found in PATH, printing raw help."
             )
             self.output_stream.write(output.decode('utf-8') + "\n")
             self.output_stream.flush()

@@ -48,26 +48,17 @@ class TestGenerateProvisioningArtifact(BaseAWSCommandParamsTest):
     def build_cmd_line(self):
         cmd_line = self.prefix
         if self.template_path:
-            cmd_line += ' --file-path %s' % self.template_path
+            cmd_line += f' --file-path {self.template_path}'
         if self.bucket_name:
-            cmd_line += ' --bucket-name %s' % self.bucket_name
+            cmd_line += f' --bucket-name {self.bucket_name}'
         if self.provisioning_artifact_name:
-            cmd_line += (
-                ' --provisioning-artifact-name %s'
-                % self.provisioning_artifact_name
-            )
+            cmd_line += f' --provisioning-artifact-name {self.provisioning_artifact_name}'
         if self.provisioning_artifact_description:
-            cmd_line += (
-                ' --provisioning-artifact-description %s'
-                % self.provisioning_artifact_description
-            )
+            cmd_line += f' --provisioning-artifact-description {self.provisioning_artifact_description}'
         if self.provisioning_artifact_type:
-            cmd_line += (
-                ' --provisioning-artifact-type %s'
-                % self.provisioning_artifact_type
-            )
+            cmd_line += f' --provisioning-artifact-type {self.provisioning_artifact_type}'
         if self.product_id:
-            cmd_line += ' --product-id %s' % self.product_id
+            cmd_line += f' --product-id {self.product_id}'
         return cmd_line
 
     def setUp(self):

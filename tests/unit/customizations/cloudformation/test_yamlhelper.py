@@ -217,5 +217,5 @@ class TestYaml(BaseYAMLTest):
         ]
         for bool_as_string in bools_as_strings:
             self.assertEqual(
-                yaml_dump(bool_as_string), "'%s'\n" % bool_as_string
+                yaml_dump(bool_as_string), f"'{bool_as_string}'\n"
             )

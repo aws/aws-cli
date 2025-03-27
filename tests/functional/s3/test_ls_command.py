@@ -45,8 +45,9 @@ class TestLSCommand(BaseS3TransferCommandTest):
         time_local = parser.parse(time_utc).astimezone(tz.tzlocal())
         self.assertEqual(
             stdout,
-            '%s        100 foo/bar.txt\n'
-            % time_local.strftime('%Y-%m-%d %H:%M:%S'),
+            '{}        100 foo/bar.txt\n'.format(
+                time_local.strftime('%Y-%m-%d %H:%M:%S')
+            ),
         )
 
     def test_errors_out_with_extra_arguments(self):
@@ -224,12 +225,12 @@ class TestLSCommand(BaseS3TransferCommandTest):
         # is specific to your tzinfo, so shift the timezone to your local's.
         time_local = parser.parse(time_utc).astimezone(tz.tzlocal())
         time_fmt = time_local.strftime('%Y-%m-%d %H:%M:%S')
-        self.assertIn('%s     1 Byte onebyte.txt\n' % time_fmt, stdout)
-        self.assertIn('%s    1.0 KiB onekilobyte.txt\n' % time_fmt, stdout)
-        self.assertIn('%s    1.0 MiB onemegabyte.txt\n' % time_fmt, stdout)
-        self.assertIn('%s    1.0 GiB onegigabyte.txt\n' % time_fmt, stdout)
-        self.assertIn('%s    1.0 TiB oneterabyte.txt\n' % time_fmt, stdout)
-        self.assertIn('%s    1.0 PiB onepetabyte.txt\n' % time_fmt, stdout)
+        self.assertIn(f'{time_fmt}     1 Byte onebyte.txt\n', stdout)
+        self.assertIn(f'{time_fmt}    1.0 KiB onekilobyte.txt\n', stdout)
+        self.assertIn(f'{time_fmt}    1.0 MiB onemegabyte.txt\n', stdout)
+        self.assertIn(f'{time_fmt}    1.0 GiB onegigabyte.txt\n', stdout)
+        self.assertIn(f'{time_fmt}    1.0 TiB oneterabyte.txt\n', stdout)
+        self.assertIn(f'{time_fmt}    1.0 PiB onepetabyte.txt\n', stdout)
 
     def test_summarize(self):
         time_utc = "2014-01-09T20:45:49.000Z"
@@ -386,7 +387,7 @@ class TestLSCommand(BaseS3TransferCommandTest):
     def test_accesspoint_arn(self):
         self.parsed_responses = [self.list_objects_response(['bar.txt'])]
         arn = 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint'
-        self.run_cmd('s3 ls s3://%s' % arn, expected_rc=0)
+        self.run_cmd(f's3 ls s3://{arn}', expected_rc=0)
         call_args = self.operations_called[0][1]
         self.assertEqual(call_args['Bucket'], arn)
 

@@ -53,7 +53,7 @@ class TestChangeResourceRecord(BaseAWSCommandParamsTest):
 
     def test_full_resource_id(self):
         args = ' --hosted-zone-id /change/ZD3IYMVP1KDDM'
-        args += ' --change-batch %s' % CHANGEBATCH_JSON
+        args += f' --change-batch {CHANGEBATCH_JSON}'
         cmdline = self.prefix + args
         expected = {
             "HostedZoneId": "ZD3IYMVP1KDDM",

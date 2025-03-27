@@ -158,9 +158,9 @@ class S3BucketHelper:
         bucket_exists = self._check_bucket_exists(bucket)
         if not bucket_exists:
             self._create_bucket(bucket)
-            sys.stdout.write('Using new S3 bucket: %s\n' % bucket)
+            sys.stdout.write(f'Using new S3 bucket: {bucket}\n')
         else:
-            sys.stdout.write('Using existing S3 bucket: %s\n' % bucket)
+            sys.stdout.write(f'Using existing S3 bucket: {bucket}\n')
         return bucket, key
 
     def _check_bucket_exists(self, bucket):
@@ -185,9 +185,9 @@ class SNSTopicHelper:
         if not self._check_is_arn(sns_topic):
             response = self._sns_client.create_topic(Name=sns_topic)
             sns_topic_arn = response['TopicArn']
-            sys.stdout.write('Using new SNS topic: %s\n' % sns_topic_arn)
+            sys.stdout.write(f'Using new SNS topic: {sns_topic_arn}\n')
         else:
-            sys.stdout.write('Using existing SNS topic: %s\n' % sns_topic_arn)
+            sys.stdout.write(f'Using existing SNS topic: {sns_topic_arn}\n')
         return sns_topic_arn
 
     def _check_is_arn(self, sns_topic):

@@ -107,26 +107,20 @@ def add_paging_description(help_command, **kwargs):
         return
     help_command.doc.style.new_paragraph()
     help_command.doc.writeln(
-        (
-            '``%s`` is a paginated operation. Multiple API calls may be issued '
-            'in order to retrieve the entire data set of results. You can '
-            'disable pagination by providing the ``--no-paginate`` argument.'
-        )
-        % help_command.name
+        f'``{help_command.name}`` is a paginated operation. Multiple API calls may be issued '
+        'in order to retrieve the entire data set of results. You can '
+        'disable pagination by providing the ``--no-paginate`` argument.'
     )
     # Only include result key information if it is present.
     if paginator_config.get('result_key'):
         queries = paginator_config['result_key']
         if type(queries) is not list:
             queries = [queries]
-        queries = ", ".join([('``%s``' % s) for s in queries])
+        queries = ", ".join([(f'``{s}``') for s in queries])
         help_command.doc.writeln(
-            (
-                'When using ``--output text`` and the ``--query`` argument on a '
-                'paginated response, the ``--query`` argument must extract data '
-                'from the results of the following query expressions: %s'
-            )
-            % queries
+            'When using ``--output text`` and the ``--query`` argument on a '
+            'paginated response, the ``--query`` argument must extract data '
+            f'from the results of the following query expressions: {queries}'
         )
 
 
@@ -171,8 +165,8 @@ def unify_paging_params(
         if type_name not in PageArgument.type_map:
             raise TypeError(
                 (
-                    'Unsupported pagination type {0} for operation {1}'
-                    ' and parameter {2}'
+                    'Unsupported pagination type {} for operation {}'
+                    ' and parameter {}'
                 ).format(
                     type_name,
                     operation_model.name,
@@ -295,7 +289,7 @@ def ensure_paging_params_not_set(parsed_args, shadowed_args):
         )
         raise ParamValidationError(
             "Cannot specify --no-paginate along with pagination "
-            "arguments: %s" % converted_params
+            f"arguments: {converted_params}"
         )
 
 

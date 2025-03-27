@@ -41,9 +41,9 @@ class TestConfigFileWriter(unittest.TestCase):
             self.fail(
                 "Config file contents do not match.\n"
                 "Expected contents:\n"
-                "%s\n\n"
+                f"{updated_config_contents}\n\n"
                 "Actual Contents:\n"
-                "%s\n" % (updated_config_contents, new_contents)
+                f"{new_contents}\n"
             )
 
     def test_update_single_existing_value(self):

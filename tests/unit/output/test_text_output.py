@@ -150,6 +150,5 @@ class TestDescribeChangesets(BaseAWSCommandParamsTest):
             self.assertEqual(
                 count,
                 actual_count,
-                "%s was found in the output %s times. Expected %s."
-                % (key, actual_count, count),
+                f"{key} was found in the output {actual_count} times. Expected {count}.",
             )

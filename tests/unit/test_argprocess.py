@@ -80,7 +80,7 @@ class TestURIParams(BaseArgProcessTest):
             )
             f.write(json_argument)
             f.flush()
-            result = self.uri_param('event-name', p, 'file://%s' % f.name)
+            result = self.uri_param('event-name', p, f'file://{f.name}')
         self.assertEqual(result, json_argument)
 
 

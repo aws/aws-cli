@@ -102,7 +102,7 @@ class Deregister(BasicCommand):
             sys.stdout.write('Tags:')
             for tag in params.tags:
                 sys.stdout.write(
-                    ' Key={0},Value={1}'.format(tag['Key'], tag['Value'])
+                    ' Key={},Value={}'.format(tag['Key'], tag['Value'])
                 )
             sys.stdout.write('\n')
 

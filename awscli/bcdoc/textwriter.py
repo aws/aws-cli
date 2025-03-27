@@ -191,7 +191,7 @@ class TextTranslator(nodes.NodeVisitor):
     def visit_desc_signature(self, node):
         self.new_state(0)
         if node.parent['objtype'] in ('class', 'exception'):
-            self.add_text('%s ' % node.parent['objtype'])
+            self.add_text('{} '.format(node.parent['objtype']))
 
     def depart_desc_signature(self, node):
         # XXX: wrap signatures in a way that makes sense
@@ -300,7 +300,7 @@ class TextTranslator(nodes.NodeVisitor):
         self.new_state(len(self._footnote) + 3)
 
     def depart_footnote(self, node):
-        self.end_state(first='[%s] ' % self._footnote)
+        self.end_state(first=f'[{self._footnote}] ')
 
     def visit_citation(self, node):
         if len(node) and isinstance(node[0], nodes.label):
@@ -310,7 +310,7 @@ class TextTranslator(nodes.NodeVisitor):
         self.new_state(len(self._citlabel) + 3)
 
     def depart_citation(self, node):
-        self.end_state(first='[%s] ' % self._citlabel)
+        self.end_state(first=f'[{self._citlabel}] ')
 
     def visit_label(self, node):
         raise nodes.SkipNode
@@ -519,7 +519,7 @@ class TextTranslator(nodes.NodeVisitor):
         elif self.list_counter[-1] == -2:
             pass
         else:
-            self.end_state(first='%s. ' % self.list_counter[-1], end=None)
+            self.end_state(first=f'{self.list_counter[-1]}. ', end=None)
 
     def visit_definition_list_item(self, node):
         self._li_has_classifier = len(node) >= 2 and isinstance(
@@ -699,7 +699,7 @@ class TextTranslator(nodes.NodeVisitor):
 
     def depart_abbreviation(self, node):
         if node.hasattr('explanation'):
-            self.add_text(' (%s)' % node['explanation'])
+            self.add_text(' ({})'.format(node['explanation']))
 
     def visit_title_reference(self, node):
         self.add_text('*')
@@ -726,11 +726,11 @@ class TextTranslator(nodes.NodeVisitor):
         pass
 
     def visit_footnote_reference(self, node):
-        self.add_text('[%s]' % node.astext())
+        self.add_text(f'[{node.astext()}]')
         raise nodes.SkipNode
 
     def visit_citation_reference(self, node):
-        self.add_text('[%s]' % node.astext())
+        self.add_text(f'[{node.astext()}]')
         raise nodes.SkipNode
 
     def visit_Text(self, node):
@@ -759,7 +759,7 @@ class TextTranslator(nodes.NodeVisitor):
 
     def visit_system_message(self, node):
         self.new_state(0)
-        self.add_text('<SYSTEM MESSAGE: %s>' % node.astext())
+        self.add_text(f'<SYSTEM MESSAGE: {node.astext()}>')
         self.end_state()
         raise nodes.SkipNode
 

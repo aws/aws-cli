@@ -55,8 +55,7 @@ class TestSchemaTransformer(unittest.TestCase):
         actual = transformer.transform(schema)
         if actual != transforms_to:
             self.fail(
-                "Transform failed.\n\nExpected:\n%s\n\nActual:\n%s\n"
-                % (pprint.pformat(transforms_to), pprint.pformat(actual))
+                f"Transform failed.\n\nExpected:\n{pprint.pformat(transforms_to)}\n\nActual:\n{pprint.pformat(actual)}\n"
             )
 
     def test_transforms_list_of_single_string(self):

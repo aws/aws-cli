@@ -791,7 +791,7 @@ class BaseAssumeRoleCredentialFetcher(CachedCredentialFetcher):
         )
 
     def _generate_assume_role_name(self):
-        self._role_session_name = 'botocore-session-%s' % (int(time.time()))
+        self._role_session_name = f'botocore-session-{int(time.time())}'
         self._assume_kwargs['RoleSessionName'] = self._role_session_name
         self._using_default_session_name = True
 
@@ -897,7 +897,7 @@ class AssumeRoleCredentialFetcher(BaseAssumeRoleCredentialFetcher):
         mfa_serial = assume_role_kwargs.get('SerialNumber')
 
         if mfa_serial is not None:
-            prompt = 'Enter MFA code for %s: ' % mfa_serial
+            prompt = f'Enter MFA code for {mfa_serial}: '
             token_code = self._mfa_prompter(prompt)
             assume_role_kwargs['TokenCode'] = token_code
 
@@ -1083,8 +1083,8 @@ class ProcessProvider(CredentialProvider):
             raise CredentialRetrievalError(
                 provider=self.METHOD,
                 error_msg=(
-                    "Unsupported version '%s' for credential process "
-                    "provider, supported versions: 1" % version
+                    f"Unsupported version '{version}' for credential process "
+                    "provider, supported versions: 1"
                 ),
             )
         try:
@@ -1098,7 +1098,7 @@ class ProcessProvider(CredentialProvider):
         except KeyError as e:
             raise CredentialRetrievalError(
                 provider=self.METHOD,
-                error_msg="Missing required key in response: %s" % e,
+                error_msg=f"Missing required key in response: {e}",
             )
 
     @property
@@ -1666,8 +1666,8 @@ class AssumeRoleProvider(CredentialProvider):
         if credential_source is not None and source_profile is not None:
             raise InvalidConfigError(
                 error_msg=(
-                    'The profile "%s" contains both source_profile and '
-                    'credential_source.' % profile_name
+                    f'The profile "{profile_name}" contains both source_profile and '
+                    'credential_source.'
                 )
             )
         elif credential_source is None and source_profile is None:
@@ -1686,16 +1686,15 @@ class AssumeRoleProvider(CredentialProvider):
         if self._credential_sourcer is None:
             raise InvalidConfigError(
                 error_msg=(
-                    'The credential_source "%s" is specified in profile "%s", '
+                    f'The credential_source "{credential_source}" is specified in profile "{parent_profile}", '
                     'but no source provider was configured.'
-                    % (credential_source, parent_profile)
                 )
             )
         if not self._credential_sourcer.is_supported(credential_source):
             raise InvalidConfigError(
                 error_msg=(
-                    'The credential source "%s" referenced in profile "%s" is not '
-                    'valid.' % (credential_source, parent_profile)
+                    f'The credential source "{credential_source}" referenced in profile "{parent_profile}" is not '
+                    'valid.'
                 )
             )
 
@@ -1714,9 +1713,8 @@ class AssumeRoleProvider(CredentialProvider):
         if source_profile_name not in profiles:
             raise InvalidConfigError(
                 error_msg=(
-                    'The source_profile "%s" referenced in '
-                    'the profile "%s" does not exist.'
-                    % (source_profile_name, parent_profile_name)
+                    f'The source_profile "{source_profile_name}" referenced in '
+                    f'the profile "{parent_profile_name}" does not exist.'
                 )
             )
 
@@ -1817,7 +1815,7 @@ class AssumeRoleProvider(CredentialProvider):
                 provider=credential_source,
                 error_msg=(
                     'No credentials found in credential_source referenced '
-                    'in profile %s' % profile_name
+                    f'in profile {profile_name}'
                 ),
             )
         return credentials
@@ -2355,8 +2353,8 @@ class SSOProvider(CredentialProvider):
             missing = ', '.join(missing_config_vars)
             raise InvalidConfigError(
                 error_msg=(
-                    'The profile "%s" is configured to use SSO but is missing '
-                    'required configuration: %s' % (profile_name, missing)
+                    f'The profile "{profile_name}" is configured to use SSO but is missing '
+                    f'required configuration: {missing}'
                 )
             )
         return config

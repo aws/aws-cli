@@ -59,8 +59,7 @@ def replace_event_stream_docs(help_command, **kwargs):
             # This should never happen, but in the rare case that it does
             # we should be raising something with a helpful error message.
             raise DocSectionNotFoundError(
-                'Could not find the "output" section for the command: %s'
-                % help_command
+                f'Could not find the "output" section for the command: {help_command}'
             )
     doc.write('======\nOutput\n======\n')
     doc.write(

@@ -45,7 +45,7 @@ def _ensure_docker_is_available():
     except (OSError, BadRCError) as e:
         raise RuntimeError(
             'Docker must be installed to run this script. Received '
-            'following error from docker --version: %s' % e
+            f'following error from docker --version: {e}'
         )
 
 
@@ -97,7 +97,7 @@ def _docker_save(tags, output):
     if not os.path.exists(parent_dir):
         os.makedirs(parent_dir)
     run(['docker', 'save', '--output', output] + tags)
-    print('Saved image at: %s' % output)
+    print(f'Saved image at: {output}')
 
 
 def main():
@@ -107,7 +107,7 @@ def main():
         default=DEFAULT_EXE_ZIP,
         help=(
             'The name of the exe zip to build into the Docker image. By '
-            'default the exe located at: %s' % DEFAULT_EXE_ZIP
+            f'default the exe located at: {DEFAULT_EXE_ZIP}'
         ),
     )
     parser.add_argument(
@@ -115,7 +115,7 @@ def main():
         default=DEFAULT_DOCKER_OUTPUT,
         help=(
             'The name of the file to save the Docker image. By default, '
-            'this will be saved at: %s' % DEFAULT_DOCKER_OUTPUT
+            f'this will be saved at: {DEFAULT_DOCKER_OUTPUT}'
         ),
     )
     parser.add_argument(
@@ -125,7 +125,7 @@ def main():
         help=(
             'The tags to give the image. This is the value provided to the '
             '`-t` flag when running `docker build`. By default, the image '
-            'will have the tags: %s' % ''.join(DEFAULT_TAGS)
+            'will have the tags: {}'.format(''.join(DEFAULT_TAGS))
         ),
     )
     parsed_args = parser.parse_args()

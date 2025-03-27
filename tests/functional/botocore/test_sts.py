@@ -62,7 +62,7 @@ class TestSTSEndpoints(BaseSessionTest):
         )
 
     def set_sts_regional_for_config_file(self, fileobj, config_val):
-        fileobj.write('[default]\n' 'sts_regional_endpoints=%s\n' % config_val)
+        fileobj.write('[default]\n' f'sts_regional_endpoints={config_val}\n')
         fileobj.flush()
         self.environ['AWS_CONFIG_FILE'] = fileobj.name
 

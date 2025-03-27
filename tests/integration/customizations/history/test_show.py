@@ -44,8 +44,7 @@ class TestShow(unittest.TestCase):
             new_pos = contents.find(line)
             if new_pos < current_pos:
                 self.fail(
-                    'Line: "%s" should have came after line: "%s"'
-                    % (line, prev_line)
+                    f'Line: "{line}" should have came after line: "{prev_line}"'
                 )
             prev_line = line
             current_pos = new_pos

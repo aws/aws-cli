@@ -280,7 +280,7 @@ class CopySubmissionTask(SubmissionTask):
             raise TypeError(
                 'Expecting dictionary formatted: '
                 '{"Bucket": bucket_name, "Key": key} '
-                'but got %s or type %s.' % (copy_source, type(copy_source))
+                f'but got {copy_source} or type {type(copy_source)}.'
             )
 
     def _extra_upload_part_args(self, extra_args):

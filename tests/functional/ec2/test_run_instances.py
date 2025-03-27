@@ -42,7 +42,7 @@ class TestRunInstances(BaseAWSCommandParamsTest):
             with compat_open(tmp.name, 'w') as f:
                 f.write(data)
                 f.flush()
-                args = ' --image-id foo --user-data file://%s' % f.name
+                args = f' --image-id foo --user-data file://{f.name}'
                 result = {
                     'ImageId': 'foo',
                     'MaxCount': 1,

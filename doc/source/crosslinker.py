@@ -73,11 +73,7 @@ class AWSCLICrossLinkGenerator:
     def _generate_cross_link(self, service_name, operation_name):
         if operation_name not in self._service_operations[service_name]:
             return self.SERVICE_BASE % service_name
-        return '%s/%s/%s.html' % (
-            self.BASE_URL,
-            service_name,
-            self._service_operations[service_name][operation_name],
-        )
+        return f'{self.BASE_URL}/{service_name}/{self._service_operations[service_name][operation_name]}.html'
 
     def _is_catchall_regex(self, parts):
         # This is the catch-all regex used as a safety net
@@ -122,9 +118,9 @@ def create_goto_links_iter(session):
         if uid is None:
             continue
         for operation_name in m.operation_names:
-            yield '/goto/{toolname}/%s/%s' % (uid, operation_name)
+            yield f'/goto/{{toolname}}/{uid}/{operation_name}'
         # We also want to yield a catch-all link for the service.
-        yield '/goto/{toolname}/%s/(.*)' % uid
+        yield f'/goto/{{toolname}}/{uid}/(.*)'
     # And a catch-all for the entire tool.
     yield '/goto/{toolname}/(.*)'
 
@@ -133,7 +129,7 @@ def create_rewrite_rule(incoming_link, redirect):
     # Given an incoming_link (/goto/aws-cli/...) and the
     # URL it should redirect to, generate the actual
     # rewrite rule.
-    return 'RewriteRule ^%s$ %s [L,R,NE]\n' % (incoming_link, redirect)
+    return f'RewriteRule ^{incoming_link}$ {redirect} [L,R,NE]\n'
 
 
 def generate_all_cross_links(session, out_file):

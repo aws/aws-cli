@@ -325,21 +325,19 @@ class ResponseParser:
         }
 
     def _do_parse(self, response, shape):
-        raise NotImplementedError("%s._do_parse" % self.__class__.__name__)
+        raise NotImplementedError(f"{self.__class__.__name__}._do_parse")
 
     def _do_error_parse(self, response, shape):
-        raise NotImplementedError(
-            "%s._do_error_parse" % self.__class__.__name__
-        )
+        raise NotImplementedError(f"{self.__class__.__name__}._do_error_parse")
 
     def _do_modeled_error_parse(self, response, shape, parsed):
         raise NotImplementedError(
-            "%s._do_modeled_error_parse" % self.__class__.__name__
+            f"{self.__class__.__name__}._do_modeled_error_parse"
         )
 
     def _parse_shape(self, shape, node):
         handler = getattr(
-            self, '_handle_%s' % shape.type_name, self._default_handle
+            self, f'_handle_{shape.type_name}', self._default_handle
         )
         return handler(shape, node)
 
@@ -434,7 +432,7 @@ class BaseXMLResponseParser(ResponseParser):
                 elif tag_name == value_location_name:
                     val_name = self._parse_shape(value_shape, single_pair)
                 else:
-                    raise ResponseParserError("Unknown tag: %s" % tag_name)
+                    raise ResponseParserError(f"Unknown tag: {tag_name}")
             parsed[key_name] = val_name
         return parsed
 
@@ -542,9 +540,8 @@ class BaseXMLResponseParser(ResponseParser):
             root = parser.close()
         except XMLParseError as e:
             raise ResponseParserError(
-                "Unable to parse response (%s), "
-                "invalid XML received. Further retries may succeed:\n%s"
-                % (e, xml_string)
+                f"Unable to parse response ({e}), "
+                f"invalid XML received. Further retries may succeed:\n{xml_string}"
             )
         return root
 

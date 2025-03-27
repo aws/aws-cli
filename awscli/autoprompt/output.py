@@ -69,8 +69,9 @@ class OutputGetter:
         output = parsed.global_params.get('output') or session_output
         if output not in self._output_formats:
             error_message = (
-                "Bad value for --output: %s\n\nValid values are: %s"
-                % (output, ', '.join(self._output_formats))
+                "Bad value for --output: {}\n\nValid values are: {}".format(
+                    output, ', '.join(self._output_formats)
+                )
             )
         return output, error_message
 
@@ -98,7 +99,7 @@ class OutputGetter:
         try:
             self._current_expression = jmespath.compile(query)
         except jmespath.exceptions.ParseError as e:
-            error_message = "Bad value for --query: %s\n\n%s" % (query, str(e))
+            error_message = f"Bad value for --query: {query}\n\n{str(e)}"
         except jmespath.exceptions.EmptyExpressionError:
             self._current_expression = None
         except Exception:

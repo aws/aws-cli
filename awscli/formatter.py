@@ -220,7 +220,7 @@ class TableFormatter(FullyBufferedFormatter):
                 initial_section=False, column_separator='|', styler=styler
             )
         else:
-            raise ValueError("Unknown color option: %s" % args.color)
+            raise ValueError(f"Unknown color option: {args.color}")
 
     def _format_response(self, command_name, response, stream):
         if self._build_table(command_name, response):
@@ -379,6 +379,6 @@ CLI_OUTPUT_FORMATS = {
 
 def get_formatter(format_type, args):
     if format_type not in CLI_OUTPUT_FORMATS:
-        raise ValueError("Unknown output type: %s" % format_type)
+        raise ValueError(f"Unknown output type: {format_type}")
     format_type_cls = CLI_OUTPUT_FORMATS[format_type]
     return format_type_cls(args)

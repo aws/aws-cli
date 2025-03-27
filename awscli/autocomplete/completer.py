@@ -81,15 +81,7 @@ class CompletionResult:
         )
 
     def __repr__(self):
-        return '%s(%s, %s, %s, %s, %s, %s)' % (
-            self.__class__.__name__,
-            self.name,
-            self.starting_index,
-            self.required,
-            self.cli_type_name,
-            self.help_text,
-            self.display_text,
-        )
+        return f'{self.__class__.__name__}({self.name}, {self.starting_index}, {self.required}, {self.cli_type_name}, {self.help_text}, {self.display_text})'
 
 
 class BaseCompleter:

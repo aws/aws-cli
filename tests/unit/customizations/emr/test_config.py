@@ -11,10 +11,7 @@ INSTANCE_GROUPS_ARG = (
     'InstanceCount=1,InstanceType=m1.large '
 )
 
-CREATE_CLUSTER_CMD = (
-    "emr create-cluster --ami-version 3.1.0 --instance-groups %s"
-    % INSTANCE_GROUPS_ARG
-)
+CREATE_CLUSTER_CMD = f"emr create-cluster --ami-version 3.1.0 --instance-groups {INSTANCE_GROUPS_ARG}"
 
 DEFAULT_CONFIGS = {
     'service_role': 'my_default_emr_role',
@@ -41,10 +38,10 @@ BAD_CONFIGS = {
 TEST_CLUSTER_ID = "j-227H3PFKLBOBP"
 TEST_SRC_PATH = "/home/my_src"
 
-SSH_CMD = 'emr ssh --cluster-id %s' % TEST_CLUSTER_ID
-SOCKS_CMD = 'emr socks --cluster-id %s' % TEST_CLUSTER_ID
-GET_CMD = 'emr get --cluster-id %s --src %s' % (TEST_CLUSTER_ID, TEST_SRC_PATH)
-PUT_CMD = 'emr put --cluster-id %s --src %s' % (TEST_CLUSTER_ID, TEST_SRC_PATH)
+SSH_CMD = f'emr ssh --cluster-id {TEST_CLUSTER_ID}'
+SOCKS_CMD = f'emr socks --cluster-id {TEST_CLUSTER_ID}'
+GET_CMD = f'emr get --cluster-id {TEST_CLUSTER_ID} --src {TEST_SRC_PATH}'
+PUT_CMD = f'emr put --cluster-id {TEST_CLUSTER_ID} --src {TEST_SRC_PATH}'
 
 CREATE_DEFAULT_ROLES_CMD = 'emr create-default-roles'
 
@@ -91,10 +88,12 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_with_bad_boolean_value(self):
         self.set_configs(BAD_BOOLEAN_VALUE_CONFIGS)
         cmd = CREATE_CLUSTER_CMD
-        expect_error_msg = "\n%s\n" % InvalidBooleanConfigError.fmt.format(
-            config_value='False1',
-            config_key='enable_debugging',
-            profile_var_name='default',
+        expect_error_msg = "\n{}\n".format(
+            InvalidBooleanConfigError.fmt.format(
+                config_value='False1',
+                config_key='enable_debugging',
+                profile_var_name='default',
+            )
         )
         result = self.run_cmd(cmd, 252)
         self.assertEqual(expect_error_msg, result[1])

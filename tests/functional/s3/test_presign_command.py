@@ -37,7 +37,7 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
 
     def enable_addressing_mode_in_config(self, fileobj, mode):
         fileobj.write(
-            "[default]\n" "s3 =\n" "    addressing_style = %s\n" % mode
+            "[default]\n" "s3 =\n" f"    addressing_style = {mode}\n"
         )
         fileobj.flush()
         self.environ['AWS_CONFIG_FILE'] = fileobj.name
@@ -137,7 +137,7 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
     def test_handles_expires_in(self):
         expires_in = 1000
         stdout = self.get_presigned_url_for_cmd(
-            self.prefix + 's3://bucket/key --expires-in %s' % expires_in
+            self.prefix + f's3://bucket/key --expires-in {expires_in}'
         )
 
         self.assert_presigned_url_matches(

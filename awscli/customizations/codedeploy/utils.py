@@ -131,6 +131,6 @@ def validate_s3_location(params, arg_name):
                 params.key = matcher.group(2)
             else:
                 raise ParamValidationError(
-                    '--{0} must specify the Amazon S3 URL format as '
+                    '--{} must specify the Amazon S3 URL format as '
                     's3://<bucket>/<key>.'.format(arg_name.replace('_', '-'))
                 )

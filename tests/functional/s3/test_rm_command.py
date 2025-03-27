@@ -22,7 +22,7 @@ class TestRmCommand(BaseS3TransferCommandTest):
     prefix = 's3 rm'
 
     def test_operations_used(self):
-        cmdline = '%s s3://bucket/key.txt' % self.prefix
+        cmdline = f'{self.prefix} s3://bucket/key.txt'
         self.run_cmd(cmdline, expected_rc=0)
         # The only operation we should have called is DeleteObject.
         self.assertEqual(
@@ -38,7 +38,7 @@ class TestRmCommand(BaseS3TransferCommandTest):
         self.assertIn('(dryrun) delete: s3://bucket/key.txt', stdout)
 
     def test_delete_with_request_payer(self):
-        cmdline = '%s s3://mybucket/mykey --request-payer' % self.prefix
+        cmdline = f'{self.prefix} s3://mybucket/mykey --request-payer'
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
@@ -54,7 +54,7 @@ class TestRmCommand(BaseS3TransferCommandTest):
         )
 
     def test_recursive_delete_with_requests(self):
-        cmdline = '%s s3://mybucket/ --recursive --request-payer' % self.prefix
+        cmdline = f'{self.prefix} s3://mybucket/ --recursive --request-payer'
         self.parsed_responses = [
             self.list_objects_response(['mykey']),
             self.empty_response(),

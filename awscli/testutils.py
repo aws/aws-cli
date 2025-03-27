@@ -147,7 +147,7 @@ def temporary_file(mode):
 
     """
     temporary_directory = tempfile.mkdtemp()
-    basename = 'tmpfile-%s' % str(random_chars(8))
+    basename = f'tmpfile-{str(random_chars(8))}'
     full_filename = os.path.join(temporary_directory, basename)
     open(full_filename, 'w').close()
     try:
@@ -284,9 +284,8 @@ class BaseAWSHelpOutputTest(BaseCLIDriverTest):
     def assert_contains(self, contains):
         if contains not in self.renderer.rendered_contents:
             self.fail(
-                "The expected contents:\n%s\nwere not in the "
-                "actual rendered contents:\n%s"
-                % (contains, self.renderer.rendered_contents)
+                f"The expected contents:\n{contains}\nwere not in the "
+                f"actual rendered contents:\n{self.renderer.rendered_contents}"
             )
 
     def assert_contains_with_count(self, contains, count):
@@ -302,9 +301,8 @@ class BaseAWSHelpOutputTest(BaseCLIDriverTest):
     def assert_not_contains(self, contents):
         if contents in self.renderer.rendered_contents:
             self.fail(
-                "The contents:\n%s\nwere not suppose to be in the "
-                "actual rendered contents:\n%s"
-                % (contents, self.renderer.rendered_contents)
+                f"The contents:\n{contents}\nwere not suppose to be in the "
+                f"actual rendered contents:\n{self.renderer.rendered_contents}"
             )
 
     def assert_text_order(self, *args, **kwargs):
@@ -319,13 +317,12 @@ class BaseAWSHelpOutputTest(BaseCLIDriverTest):
         for i, index in enumerate(arg_indices[1:], 1):
             if index == -1:
                 self.fail(
-                    'The string %r was not found in the contents: %s'
-                    % (args[index], contents)
+                    f'The string {args[index]!r} was not found in the contents: {contents}'
                 )
             if index < previous:
                 self.fail(
-                    'The string %r came before %r, but was suppose to come '
-                    'after it.\n%s' % (args[i], args[i - 1], contents)
+                    f'The string {args[i]!r} came before {args[i - 1]!r}, but was suppose to come '
+                    f'after it.\n{contents}'
                 )
             previous = index
 
@@ -478,8 +475,8 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
                 self.fail(
                     "Actual params did not match expected params.\n"
                     "Expected:\n\n"
-                    "%s\n"
-                    "Actual:\n\n%s\n" % (pformat(params), pformat(last_kwargs))
+                    f"{pformat(params)}\n"
+                    f"Actual:\n\n{pformat(last_kwargs)}\n"
                 )
         return stdout, stderr, rc
 
@@ -506,8 +503,8 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.assertEqual(
             rc,
             expected_rc,
-            "Unexpected rc (expected: %s, actual: %s) for command: %s\n"
-            "stdout:\n%sstderr:\n%s" % (expected_rc, rc, cmd, stdout, stderr),
+            f"Unexpected rc (expected: {expected_rc}, actual: {rc}) for command: {cmd}\n"
+            f"stdout:\n{stdout}stderr:\n{stderr}",
         )
         return stdout, stderr, rc
 
@@ -560,8 +557,8 @@ class BaseCLIWireResponseTest(unittest.TestCase):
         self.assertEqual(
             rc,
             expected_rc,
-            "Unexpected rc (expected: %s, actual: %s) for command: %s\n"
-            "stdout:\n%sstderr:\n%s" % (expected_rc, rc, cmd, stdout, stderr),
+            f"Unexpected rc (expected: {expected_rc}, actual: {rc}) for command: {cmd}\n"
+            f"stdout:\n{stdout}stderr:\n{stderr}",
         )
         return stdout, stderr, rc
 
@@ -710,8 +707,8 @@ def aws(
     if 'AWS_TEST_COMMAND' in os.environ:
         aws_command = os.environ['AWS_TEST_COMMAND']
     else:
-        aws_command = 'python %s' % get_aws_cmd()
-    full_command = '%s %s' % (aws_command, command)
+        aws_command = f'python {get_aws_cmd()}'
+    full_command = f'{aws_command} {command}'
     stdout_encoding = get_stdout_encoding()
     INTEG_LOG.debug("Running command: %s", full_command)
     env = os.environ.copy()
@@ -762,8 +759,7 @@ def _wait_and_collect_mem(process):
         get_memory = _get_memory_with_ps
     else:
         raise ValueError(
-            "Can't collect memory for process on platform %s."
-            % platform.system()
+            f"Can't collect memory for process on platform {platform.system()}."
         )
     memory = []
     while process.poll() is None:
@@ -848,8 +844,8 @@ class BaseS3CLICommand(unittest.TestCase):
         self.assertEqual(len(actual_contents), len(expected_contents))
         if actual_contents != expected_contents:
             self.fail(
-                "Contents for %s/%s do not match (but they "
-                "have the same length)" % (bucket, key)
+                f"Contents for {bucket}/{key} do not match (but they "
+                "have the same length)"
             )
 
     def delete_public_access_block(self, bucket_name):
@@ -1021,7 +1017,7 @@ class BaseS3CLICommand(unittest.TestCase):
         self.assertEqual(
             p.rc,
             0,
-            "Non zero rc (%s) received: %s" % (p.rc, p.stdout + p.stderr),
+            f"Non zero rc ({p.rc}) received: {p.stdout + p.stderr}",
         )
         self.assertNotIn("Error:", p.stderr)
         self.assertNotIn("failed:", p.stderr)
@@ -1113,4 +1109,6 @@ class ConsistencyWaiter:
 
     def _fail_message(self, attempts, successes):
         format_args = (attempts, successes)
-        return 'Failed after %s attempts, only had %s successes' % format_args
+        return 'Failed after {} attempts, only had {} successes'.format(
+            *format_args
+        )

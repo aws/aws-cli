@@ -995,7 +995,7 @@ class TestGenerateUrl(unittest.TestCase):
             self.assertTrue(
                 kwargs.get('context', {}).get('is_presign_request'),
                 'The context did not have is_presign_request set to True for '
-                'the following kwargs emitted: %s' % kwargs,
+                f'the following kwargs emitted: {kwargs}',
             )
 
     def test_context_param_from_event_handler_sent_to_endpoint_resolver(self):

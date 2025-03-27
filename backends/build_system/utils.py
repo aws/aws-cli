@@ -235,19 +235,19 @@ class Utils:
         return subprocess.run(args, **kwargs)
 
     def copy_file(self, src: str, dst: str):
-        print("Copying file %s -> %s" % (src, dst))
+        print(f"Copying file {src} -> {dst}")
         shutil.copy2(src, dst)
 
     def copy_directory_contents_into(self, src: str, dst: str):
-        print("Copying contents of %s into %s" % (src, dst))
+        print(f"Copying contents of {src} into {dst}")
         shutil.copytree(src, dst, dirs_exist_ok=True)
 
     def copy_directory(self, src: str, dst: str):
-        print("Copying %s -> %s" % (src, dst))
+        print(f"Copying {src} -> {dst}")
         shutil.copytree(src, dst)
 
     def update_metadata(self, dirname, **kwargs):
-        print("Update metadata values %s" % kwargs)
+        print(f"Update metadata values {kwargs}")
         metadata_file = os.path.join(
             dirname, "awscli", "data", "metadata.json"
         )

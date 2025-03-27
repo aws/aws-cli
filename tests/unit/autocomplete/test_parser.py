@@ -247,11 +247,9 @@ def _assert_parses_to(command_line, expected):
     result = p.parse(command_line)
     for key, value in vars(expected).items():
         actual = getattr(result, key)
-        assert getattr(result, key) == value, '%r != %r for attribute: %r' % (
-            actual,
-            value,
-            key,
-        )
+        assert (
+            getattr(result, key) == value
+        ), f'{actual!r} != {value!r} for attribute: {key!r}'
 
 
 def _generate_command_chunks():
@@ -307,7 +305,7 @@ class TestCanParseCLICommand(unittest.TestCase):
             self.assertEqual(
                 actual_value,
                 value,
-                '%r != %r (attr: %r)' % (actual_value, value, key),
+                f'{actual_value!r} != {value!r} (attr: {key!r})',
             )
 
     def assert_parsed_s3api_result_correct(self, result):

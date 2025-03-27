@@ -103,4 +103,4 @@ class ExeBuilder:
         ]
         for location in locations:
             self._utils.rmtree(location)
-            print("Deleted build directory: %s" % location)
+            print(f"Deleted build directory: {location}")

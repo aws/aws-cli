@@ -85,7 +85,7 @@ class TestListUsers(BaseAWSCommandParamsTest):
     def test_jmespath_json_response(self):
         jmespath_query = 'Users[*].UserName'
         output = self.run_cmd(
-            'iam list-users --query %s' % jmespath_query, expected_rc=0
+            f'iam list-users --query {jmespath_query}', expected_rc=0
         )[0]
         parsed_output = json.loads(output)
         self.assertEqual(parsed_output, ['testuser-50', 'testuser-51'])
@@ -96,7 +96,7 @@ class TestListUsers(BaseAWSCommandParamsTest):
         # evalutes to 0.
         jmespath_query = '`0`'
         output = self.run_cmd(
-            'iam list-users --query %s' % jmespath_query, expected_rc=0
+            f'iam list-users --query {jmespath_query}', expected_rc=0
         )[0]
         self.assertEqual(output, '0\n')
 

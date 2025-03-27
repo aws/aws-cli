@@ -31,7 +31,7 @@ class TestImortTerminology(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --name myterminology --merge-strategy OVERWRITE'
         cmdline += ' --terminology-data Format=CSV'
-        cmdline += ' --data-file fileb://%s' % self.temp_file
+        cmdline += f' --data-file fileb://{self.temp_file}'
         result = {
             'Name': 'myterminology',
             'MergeStrategy': 'OVERWRITE',
@@ -46,7 +46,7 @@ class TestImortTerminology(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --name myterminology --merge-strategy OVERWRITE'
         cmdline += ' --terminology-data Format=TMX'
-        cmdline += ' --data-file fileb://%s' % self.temp_file
+        cmdline += f' --data-file fileb://{self.temp_file}'
         result = {
             'Name': 'myterminology',
             'MergeStrategy': 'OVERWRITE',
@@ -80,7 +80,7 @@ class TestImortTerminology(BaseAWSCommandParamsTest):
     def test_import_terminology_with_no_format(self):
         cmdline = self.prefix
         cmdline += ' --name myterminology --merge-strategy OVERWRITE'
-        cmdline += ' --data-file fileb://%s' % self.temp_file
+        cmdline += f' --data-file fileb://{self.temp_file}'
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn(
             'Missing required parameter in TerminologyData: "Format"', stderr

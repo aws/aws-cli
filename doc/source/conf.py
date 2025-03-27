@@ -122,7 +122,7 @@ pygments_style = 'guzzle_sphinx_theme.GuzzleStyle'
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = "AWS CLI %s Command Reference" % release
+html_title = f"AWS CLI {release} Command Reference"
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 # html_short_title = None

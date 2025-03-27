@@ -106,7 +106,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegex(output, 'username={0}\npassword=.+'.format('access'))
+        self.assertRegex(output, 'username={}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @mock.patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH_TRAILING_NEWLINE))
@@ -114,7 +114,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegex(output, 'username={0}\npassword=.+'.format('access'))
+        self.assertRegex(output, 'username={}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @mock.patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH_BLANK_LINE))
@@ -122,7 +122,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegex(output, 'username={0}\npassword=.+'.format('access'))
+        self.assertRegex(output, 'username={}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @mock.patch('sys.stdin', StringIO(FIPS_PROTOCOL_HOST_PATH))
@@ -134,7 +134,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegex(output, 'username={0}\npassword=.+'.format('access'))
+        self.assertRegex(output, 'username={}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @mock.patch('sys.stdin', StringIO(VPC_1_PROTOCOL_HOST_PATH))
@@ -144,7 +144,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegex(output, 'username={0}\npassword=.+'.format('access'))
+        self.assertRegex(output, 'username={}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @mock.patch('sys.stdin', StringIO(VPC_2_PROTOCOL_HOST_PATH))
@@ -156,7 +156,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegex(output, 'username={0}\npassword=.+'.format('access'))
+        self.assertRegex(output, 'username={}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @mock.patch('sys.stdin', StringIO(FIPS_VPC_1_PROTOCOL_HOST_PATH))
@@ -168,7 +168,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegex(output, 'username={0}\npassword=.+'.format('access'))
+        self.assertRegex(output, 'username={}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @mock.patch('sys.stdin', StringIO(FIPS_VPC_2_PROTOCOL_HOST_PATH))
@@ -180,7 +180,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegex(output, 'username={0}\npassword=.+'.format('access'))
+        self.assertRegex(output, 'username={}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @mock.patch('sys.stdin', StringIO(NO_REGION_PROTOCOL_HOST_PATH))
@@ -188,7 +188,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegex(output, 'username={0}\npassword=.+'.format('access'))
+        self.assertRegex(output, 'username={}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @mock.patch('sys.stdin', StringIO(NON_AWS_PROTOCOL_HOST_PATH))
@@ -212,7 +212,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
         self.assertRegex(
-            output, 'username={0}%{1}\npassword=.+'.format('access', 'token')
+            output, 'username={}%{}\npassword=.+'.format('access', 'token')
         )
 
     @mock.patch('sys.stdout', MOCK_STDOUT_CLASS())

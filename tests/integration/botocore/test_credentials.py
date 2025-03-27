@@ -167,7 +167,7 @@ class TestAssumeRoleCredentials(BaseEnvVar):
             "Statement": [
                 {
                     "Effect": "Allow",
-                    "Principal": {"AWS": "arn:aws:iam::%s:root" % account_id},
+                    "Principal": {"AWS": f"arn:aws:iam::{account_id}:root"},
                     "Action": "sts:AssumeRole",
                 }
             ],
@@ -264,7 +264,7 @@ class TestAssumeRoleCredentials(BaseEnvVar):
                 else:
                     raise
 
-        raise Exception("Unable to assume role %s" % role_arn)
+        raise Exception(f"Unable to assume role {role_arn}")
 
     def create_assume_policy(self, role_arn):
         policy_document = {

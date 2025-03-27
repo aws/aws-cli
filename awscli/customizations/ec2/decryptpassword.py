@@ -85,10 +85,7 @@ class LaunchKeyArgument(BaseCLIArgument):
             if os.path.isfile(path):
                 self._key_path = path
                 service_id = self._operation_model.service_model.service_id
-                event = 'after-call.%s.%s' % (
-                    service_id.hyphenize(),
-                    self._operation_model.name,
-                )
+                event = f'after-call.{service_id.hyphenize()}.{self._operation_model.name}'
                 self._session.register(event, self._decrypt_password_data)
             else:
                 msg = (

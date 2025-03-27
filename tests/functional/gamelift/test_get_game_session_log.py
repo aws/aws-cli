@@ -38,7 +38,7 @@ class TestGetGameSessionLog(BaseAWSCommandParamsTest):
     def test_get_game_session_log(self):
         cmdline = self.prefix
         cmdline += ' --game-session-id mysession'
-        cmdline += ' --save-as %s' % self.filename
+        cmdline += f' --save-as {self.filename}'
 
         self.parsed_responses = [{'PreSignedUrl': 'myurl'}]
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
@@ -58,6 +58,6 @@ class TestGetGameSessionLog(BaseAWSCommandParamsTest):
         # Ensure the output is as expected
         self.assertIn(
             'Successfully downloaded log archive for game session '
-            'mysession to %s' % self.filename,
+            f'mysession to {self.filename}',
             stdout,
         )

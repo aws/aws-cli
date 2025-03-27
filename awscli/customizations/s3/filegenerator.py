@@ -80,18 +80,16 @@ class FileDecodingError(Exception):
     """Raised when there was an issue decoding the file."""
 
     ADVICE = (
-        "Please check your locale settings.  The filename was decoded as: %s\n"
+        f"Please check your locale settings.  The filename was decoded as: {sys.getfilesystemencoding()}\n"
         "On posix platforms, check the LC_CTYPE environment variable."
-        % (sys.getfilesystemencoding())
     )
 
     def __init__(self, directory, filename):
         self.directory = directory
         self.file_name = filename
         self.error_message = (
-            'There was an error trying to decode the the file %s in '
-            'directory "%s". \n%s'
-            % (repr(self.file_name), self.directory, self.ADVICE)
+            f'There was an error trying to decode the the file {repr(self.file_name)} in '
+            f'directory "{self.directory}". \n{self.ADVICE}'
         )
         super(FileDecodingError, self).__init__(self.error_message)
 
@@ -396,7 +394,7 @@ class FileGenerator:
             # The key does not exist so we'll raise a more specific
             # error message here.
             response = e.response.copy()
-            response['Error']['Message'] = 'Key "%s" does not exist' % key
+            response['Error']['Message'] = f'Key "{key}" does not exist'
             raise ClientError(response, 'HeadObject')
         response['Size'] = int(response.pop('ContentLength'))
         last_update = parse(response['LastModified'])

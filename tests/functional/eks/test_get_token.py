@@ -79,7 +79,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
     @mock.patch('awscli.customizations.eks.get_token.datetime')
     def test_get_token(self, mock_datetime):
         mock_datetime.utcnow.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         response = self.run_get_token(cmd)
         self.assertEqual(
             response,
@@ -97,7 +97,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
     @mock.patch('awscli.customizations.eks.get_token.datetime')
     def test_query_nested_object(self, mock_datetime):
         mock_datetime.utcnow.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         cmd += ' --query status'
         response = self.run_get_token(cmd)
         self.assertEqual(
@@ -109,7 +109,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         )
 
     def test_query_value(self):
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         cmd += ' --query apiVersion'
         response = self.run_get_token(cmd)
         self.assertEqual(
@@ -120,7 +120,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
     @mock.patch('awscli.customizations.eks.get_token.datetime')
     def test_output_text(self, mock_datetime):
         mock_datetime.utcnow.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         cmd += ' --output text'
         stdout, _, _ = self.run_cmd(cmd)
         self.assertIn("ExecCredential", stdout)
@@ -130,7 +130,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
     @mock.patch('awscli.customizations.eks.get_token.datetime')
     def test_output_table(self, mock_datetime):
         mock_datetime.utcnow.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         cmd += ' --output table'
         stdout, _, _ = self.run_cmd(cmd)
         self.assertIn("ExecCredential", stdout)
@@ -138,12 +138,12 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         self.assertIn("2019-10-23T23:14:00Z", stdout)
 
     def test_url(self):
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         response = self.run_get_token(cmd)
         self.assert_url_correct(response)
 
     def test_url_with_region(self):
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         cmd += ' --region us-west-2'
         response = self.run_get_token(cmd)
         self.assert_url_correct(
@@ -153,8 +153,8 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         )
 
     def test_url_with_arn(self):
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
-        cmd += ' --role-arn %s' % self.role_arn
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
+        cmd += f' --role-arn {self.role_arn}'
         self.parsed_responses = [
             {
                 "Credentials": {
@@ -174,7 +174,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         self.assert_url_correct(response, has_session_token=True)
 
     def test_token_has_no_padding(self):
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         num_rounds = 100
         # It is difficult to patch everything out to get an exact
         # reproduceable token. So to make sure there is no padding, we
@@ -185,7 +185,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
             self.assertNotIn('=', response['status']['token'])
 
     def test_url_different_partition(self):
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         cmd += ' --region cn-north-1'
         response = self.run_get_token(cmd)
         self.assert_url_correct(
@@ -196,7 +196,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
 
     def test_api_version_discovery_deprecated(self):
         self.set_kubernetes_exec_info('v1alpha1')
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         stdout, stderr, _ = self.run_cmd(cmd)
         response = json.loads(stdout)
 
@@ -219,7 +219,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
             '"apiVersion":"client.authentication.k8s.io/v1alpha1",'
             '"spec":{"interactive":true}}'
         )
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         stdout, stderr, _ = self.run_cmd(cmd)
         response = json.loads(stdout)
 
@@ -237,7 +237,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         )
 
     def test_api_version_discovery_empty(self):
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         stdout, stderr, _ = self.run_cmd(cmd)
         response = json.loads(stdout)
 
@@ -253,7 +253,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
 
     def test_api_version_discovery_v1(self):
         self.set_kubernetes_exec_info('v1')
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         stdout, stderr, _ = self.run_cmd(cmd)
         response = json.loads(stdout)
 
@@ -266,7 +266,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
 
     def test_api_version_discovery_v1beta1(self):
         self.set_kubernetes_exec_info('v1beta1')
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         stdout, stderr, _ = self.run_cmd(cmd)
         response = json.loads(stdout)
 
@@ -279,7 +279,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
 
     def test_api_version_discovery_unknown(self):
         self.set_kubernetes_exec_info('v2')
-        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd = f'eks get-token --cluster-name {self.cluster_name}'
         stdout, stderr, _ = self.run_cmd(cmd)
         response = json.loads(stdout)
 

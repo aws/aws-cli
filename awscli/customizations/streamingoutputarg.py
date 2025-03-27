@@ -92,7 +92,7 @@ class StreamingOutputArgument(BaseCLIArgument):
         service_id = self._operation_model.service_model.service_id.hyphenize()
         operation_name = self._operation_model.name
         self._session.register(
-            'after-call.%s.%s' % (service_id, operation_name), self.save_file
+            f'after-call.{service_id}.{operation_name}', self.save_file
         )
 
     def save_file(self, parsed, **kwargs):

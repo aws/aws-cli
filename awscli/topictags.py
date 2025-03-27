@@ -201,8 +201,7 @@ class TopicTagDB:
                 self._add_tag_to_dict(topic_name, tag, tag_values)
             else:
                 raise ValueError(
-                    "Tag %s found under topic %s is not supported."
-                    % (tag, topic_name)
+                    f"Tag {tag} found under topic {topic_name} is not supported."
                 )
 
     def _add_topic_name_to_dict(self, topic_name):
@@ -296,8 +295,8 @@ class TopicTagDB:
         if value is not None:
             if len(value) != 1:
                 raise ValueError(
-                    'Tag %s for topic %s has value %s. Expected a single '
-                    'element in list.' % (tag, topic_name, value)
+                    f'Tag {tag} for topic {topic_name} has value {value}. Expected a single '
+                    'element in list.'
                 )
             value = value[0]
         return value

@@ -78,7 +78,7 @@ class TestPut(BaseAWSCommandParamsTest):
 
     def test_batch_write_multiple_batches(self):
         items = ', '.join(["{foo: bar}" for _ in range(40)])
-        command = ['ddb', 'put', 'mytable', '[%s]' % items]
+        command = ['ddb', 'put', 'mytable', f'[{items}]']
         self.run_cmd(command, expected_rc=0)
         operations_called = [o[0].name for o in self.operations_called]
         self.assertEqual(
@@ -115,7 +115,7 @@ class TestPut(BaseAWSCommandParamsTest):
         ]
 
         items = ', '.join(["{foo: bar}" for _ in range(40)])
-        command = ['ddb', 'put', 'mytable', '[%s]' % items]
+        command = ['ddb', 'put', 'mytable', f'[{items}]']
         self.run_cmd(command, expected_rc=0)
         operations_called = [o[0].name for o in self.operations_called]
         self.assertEqual(
@@ -174,7 +174,7 @@ class TestPut(BaseAWSCommandParamsTest):
         with open(filename, 'w') as f:
             f.write('{foo: bar}\n')
 
-        command = ['ddb', 'put', 'mytable', 'file://%s' % filename]
+        command = ['ddb', 'put', 'mytable', f'file://{filename}']
         expected_params = {
             'TableName': 'mytable',
             'ReturnConsumedCapacity': 'NONE',

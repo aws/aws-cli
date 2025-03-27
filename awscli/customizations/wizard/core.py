@@ -579,7 +579,7 @@ class SharedConfigAPI:
         if profile is not None:
             section = profile
             if profile != 'default':
-                section = 'profile %s' % section
+                section = f'profile {section}'
             config_params['__section__'] = section
         config_params.update(values)
         config_filename = os.path.expanduser(

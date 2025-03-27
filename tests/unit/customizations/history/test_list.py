@@ -72,7 +72,7 @@ class TestTextFormatter(unittest.TestCase):
                 }
             ]
         )
-        expected_output = 'foo       %s s3 ls     0\n' % self.formatted_time
+        expected_output = f'foo       {self.formatted_time} s3 ls     0\n'
         actual_output = ensure_text_type(self.output_stream.getvalue())
         self.assertEqual(expected_output, actual_output)
 
@@ -94,8 +94,9 @@ class TestTextFormatter(unittest.TestCase):
             ]
         )
         expected_output = (
-            'foo       %s s3 ls     0\n' 'bar       %s s3 cp     1\n'
-        ) % (self.formatted_time, self.formatted_time)
+            f'foo       {self.formatted_time} s3 ls     0\n'
+            f'bar       {self.formatted_time} s3 cp     1\n'
+        )
         actual_output = ensure_text_type(self.output_stream.getvalue())
         self.assertEqual(expected_output, actual_output)
 
@@ -115,7 +116,7 @@ class TestTextFormatter(unittest.TestCase):
                 }
             ]
         )
-        expected_output = 'foo       %s s3 aaa... 0\n' % self.formatted_time
+        expected_output = f'foo       {self.formatted_time} s3 aaa... 0\n'
         actual_output = ensure_text_type(self.output_stream.getvalue())
         self.assertEqual(expected_output, actual_output)
 

@@ -261,7 +261,7 @@ def join(values, separator=',', lastSeparator='and'):
     elif len(values) == 1:
         return values[0]
     else:
-        separator = '%s ' % separator
+        separator = f'{separator} '
         return ' '.join(
             [separator.join(values[:-1]), lastSeparator, values[-1]]
         )

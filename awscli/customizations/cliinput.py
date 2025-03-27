@@ -66,7 +66,7 @@ class CliInputArgument(OverrideRequiredArgsArgument):
             raise ParamError(
                 self.cli_name,
                 "Invalid type: expecting map, "
-                "received %s" % type(loaded_params),
+                f"received {type(loaded_params)}",
             )
         self._update_call_parameters(call_parameters, loaded_params)
 

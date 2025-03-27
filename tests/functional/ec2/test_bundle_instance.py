@@ -77,7 +77,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
         policy_signature = 'a5SmoLOxoM0MHpOdC25nE7KIafg='
         args = ' --instance-id i-12345678 --owner-akid AKIAIOSFODNN7EXAMPLE'
         args += ' --owner-sak wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
-        args += ' --bucket mybucket --prefix foobar --policy %s' % base64policy
+        args += f' --bucket mybucket --prefix foobar --policy {base64policy}'
         args_list = (self.prefix + args).split()
         result = {
             'InstanceId': 'i-12345678',
@@ -96,10 +96,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
     def test_both(self):
         captured = StringIO()
         json = """{"S3":{"Bucket":"foobar","Prefix":"fiebaz"}}"""
-        args = (
-            ' --instance-id i-12345678 --owner-akid blah --owner-sak blah --storage %s'
-            % json
-        )
+        args = f' --instance-id i-12345678 --owner-akid blah --owner-sak blah --storage {json}'
         args_list = (self.prefix + args).split()
         _, stderr, _ = self.assert_params_for_cmd(args_list, expected_rc=252)
         self.assertIn('Mixing the --storage option', stderr)

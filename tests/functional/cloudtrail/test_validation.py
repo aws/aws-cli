@@ -142,14 +142,13 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
         )
         stdout, stderr, rc = self.run_cmd(
             (
-                "cloudtrail validate-logs --trail-arn %s --start-time %s "
+                f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time {START_TIME_ARG} "
                 "--region us-east-1 --verbose"
-            )
-            % (TEST_TRAIL_ARN, START_TIME_ARG),
+            ),
             0,
         )
         self.assertIn(
-            'Digest file\ts3://1/%s\tvalid' % digest_provider.digests[0],
+            f'Digest file\ts3://1/{digest_provider.digests[0]}\tvalid',
             stdout,
         )
 
@@ -159,12 +158,11 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
             self._mock_traverser, key_provider, digest_provider, validator
         )
         stdout, stderr, rc = self.run_cmd(
-            "cloudtrail validate-logs --trail-arn %s --start-time %s --verbose"
-            % (TEST_TRAIL_ARN, START_TIME_ARG),
+            f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time {START_TIME_ARG} --verbose",
             0,
         )
         self.assertIn(
-            'Digest file\ts3://1/%s\tvalid' % digest_provider.digests[0],
+            f'Digest file\ts3://1/{digest_provider.digests[0]}\tvalid',
             stdout,
         )
 
@@ -176,18 +174,15 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
             self._mock_traverser, key_provider, digest_provider, validator
         )
         stdout, stderr, rc = self.run_cmd(
-            "cloudtrail validate-logs --trail-arn %s --start-time %s --verbose"
-            % (TEST_TRAIL_ARN, START_TIME_ARG),
+            f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time {START_TIME_ARG} --verbose",
             1,
         )
         self.assertIn(
-            'Digest file\ts3://1/%s\tINVALID: not found'
-            % digest_provider.digests[1],
+            f'Digest file\ts3://1/{digest_provider.digests[1]}\tINVALID: not found',
             stderr,
         )
         self.assertIn(
-            'Digest file\ts3://1/%s\tINVALID: not found'
-            % digest_provider.digests[3],
+            f'Digest file\ts3://1/{digest_provider.digests[3]}\tINVALID: not found',
             stderr,
         )
 
@@ -199,8 +194,7 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
             self._mock_traverser, key_provider, digest_provider, validator
         )
         stdout, stderr, rc = self.run_cmd(
-            "cloudtrail validate-logs --trail-arn %s --start-time '%s'"
-            % (TEST_TRAIL_ARN, START_TIME_ARG),
+            f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time '{START_TIME_ARG}'",
             0,
         )
         self.assertIn(
@@ -219,13 +213,12 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
             self._mock_traverser, key_provider, digest_provider, validator
         )
         stdout, stderr, rc = self.run_cmd(
-            "cloudtrail validate-logs --trail-arn %s --start-time %s"
-            % (TEST_TRAIL_ARN, START_TIME_ARG),
+            f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time {START_TIME_ARG}",
             1,
         )
         self.assertIn('invalid error', stderr)
         self.assertIn(
-            'Results requested for %s to ' % format_display_date(START_DATE),
+            f'Results requested for {format_display_date(START_DATE)} to ',
             stdout,
         )
         self.assertIn(
@@ -241,10 +234,9 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
         )
         stdout, stderr, rc = self.run_cmd(
             (
-                "cloudtrail validate-logs --trail-arn %s --start-time %s "
-                "--end-time %s --verbose"
-            )
-            % (TEST_TRAIL_ARN, START_TIME_ARG, END_TIME_ARG),
+                f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time {START_TIME_ARG} "
+                f"--end-time {END_TIME_ARG} --verbose"
+            ),
             0,
         )
         self.assertIn(
@@ -271,15 +263,13 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
         )
         stdout, stderr, rc = self.run_cmd(
             (
-                'cloudtrail validate-logs --trail-arn %s --start-time %s '
-                '--end-time %s'
-            )
-            % (TEST_TRAIL_ARN, START_TIME_ARG, END_TIME_ARG),
+                f'cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time {START_TIME_ARG} '
+                f'--end-time {END_TIME_ARG}'
+            ),
             0,
         )
         self.assertIn(
-            'Results requested for %s to %s\nNo digests found'
-            % (format_display_date(START_DATE), format_display_date(END_DATE)),
+            f'Results requested for {format_display_date(START_DATE)} to {format_display_date(END_DATE)}\nNo digests found',
             stdout,
         )
 
@@ -294,15 +284,13 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
         )
         stdout, stderr, rc = self.run_cmd(
             (
-                "cloudtrail validate-logs --trail-arn %s --start-time '%s' "
-                "--end-time '%s'"
-            )
-            % (TEST_TRAIL_ARN, START_TIME_ARG, END_TIME_ARG),
+                f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time '{START_TIME_ARG}' "
+                f"--end-time '{END_TIME_ARG}'"
+            ),
             0,
         )
         self.assertIn(
-            'Results requested for %s to %s\nNo digests found'
-            % (format_display_date(START_DATE), format_display_date(END_DATE)),
+            f'Results requested for {format_display_date(START_DATE)} to {format_display_date(END_DATE)}\nNo digests found',
             stdout,
         )
 
@@ -315,15 +303,13 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
         )
         stdout, stderr, rc = self.run_cmd(
             (
-                "cloudtrail validate-logs --trail-arn %s --start-time '%s' "
-                "--end-time '%s'"
-            )
-            % (TEST_TRAIL_ARN, START_TIME_ARG, END_TIME_ARG),
+                f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time '{START_TIME_ARG}' "
+                f"--end-time '{END_TIME_ARG}'"
+            ),
             1,
         )
         self.assertIn(
-            'Results requested for %s to %s\nNo valid digests found in range'
-            % (format_display_date(START_DATE), format_display_date(END_DATE)),
+            f'Results requested for {format_display_date(START_DATE)} to {format_display_date(END_DATE)}\nNo valid digests found in range',
             stdout,
         )
 
@@ -340,10 +326,9 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
         )
         stdout, stderr, rc = self.run_cmd(
             (
-                "cloudtrail validate-logs --trail-arn %s --start-time "
-                "--region us-east-1 '%s'"
-            )
-            % (TEST_TRAIL_ARN, START_TIME_ARG),
+                f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time "
+                f"--region us-east-1 '{START_TIME_ARG}'"
+            ),
             1,
         )
         self.assertIn(
@@ -365,8 +350,7 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
             self._mock_traverser, key_provider, digest_provider, validator
         )
         stdout, stderr, rc = self.run_cmd(
-            "cloudtrail validate-logs --trail-arn %s --start-time %s --verbose"
-            % (TEST_TRAIL_ARN, START_TIME_ARG),
+            f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time {START_TIME_ARG} --verbose",
             0,
         )
         self.assertIn('s3://1/key1', stdout)
@@ -400,14 +384,13 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
             self._mock_traverser, mock.Mock(), digest_provider, mock.Mock()
         )
         stdout, stderr, rc = self.run_cmd(
-            "cloudtrail validate-logs --trail-arn %s --start-time %s"
-            % (TEST_TRAIL_ARN, START_TIME_ARG),
+            f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time {START_TIME_ARG}",
             1,
         )
         self.assertIn(
             (
-                'Digest file\ts3://1/%s\tINVALID: has been moved from its '
-                'original location' % key_name
+                f'Digest file\ts3://1/{key_name}\tINVALID: has been moved from its '
+                'original location'
             ),
             stderr,
         )
@@ -422,12 +405,11 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
             self._mock_traverser, mock.Mock(), digest_provider, mock.Mock()
         )
         stdout, stderr, rc = self.run_cmd(
-            "cloudtrail validate-logs --trail-arn %s --start-time %s"
-            % (TEST_TRAIL_ARN, START_TIME_ARG),
+            f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time {START_TIME_ARG}",
             1,
         )
         self.assertIn(
-            'Digest file\ts3://1/%s\tINVALID: invalid format' % key_name,
+            f'Digest file\ts3://1/{key_name}\tINVALID: invalid format',
             stderr,
         )
 
@@ -454,15 +436,13 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
         )
         stdout, stderr, rc = self.run_cmd(
             (
-                "cloudtrail validate-logs --trail-arn %s --start-time %s "
+                f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time {START_TIME_ARG} "
                 "--region us-east-1"
-            )
-            % (TEST_TRAIL_ARN, START_TIME_ARG),
+            ),
             1,
         )
         self.assertIn(
-            'Digest file\ts3://1/%s\tINVALID: signature verification failed'
-            % key,
+            f'Digest file\ts3://1/{key}\tINVALID: signature verification failed',
             stderr,
         )
 
@@ -482,30 +462,29 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
         )
         stdout, stderr, rc = self.run_cmd(
             (
-                "cloudtrail validate-logs --trail-arn %s --start-time %s "
+                f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time {START_TIME_ARG} "
                 "--region us-east-1 --verbose"
-            )
-            % (TEST_TRAIL_ARN, START_TIME_ARG),
+            ),
             0,
         )
         self.assertIn(
-            'Digest file\ts3://3/%s\tvalid' % digest_provider.digests[0],
+            f'Digest file\ts3://3/{digest_provider.digests[0]}\tvalid',
             stdout,
         )
         self.assertIn(
-            'Digest file\ts3://2/%s\tvalid' % digest_provider.digests[1],
+            f'Digest file\ts3://2/{digest_provider.digests[1]}\tvalid',
             stdout,
         )
         self.assertIn(
-            'Digest file\ts3://2/%s\tvalid' % digest_provider.digests[2],
+            f'Digest file\ts3://2/{digest_provider.digests[2]}\tvalid',
             stdout,
         )
         self.assertIn(
-            'Digest file\ts3://1/%s\tvalid' % digest_provider.digests[3],
+            f'Digest file\ts3://1/{digest_provider.digests[3]}\tvalid',
             stdout,
         )
         self.assertIn(
-            'Digest file\ts3://1/%s\tvalid' % digest_provider.digests[4],
+            f'Digest file\ts3://1/{digest_provider.digests[4]}\tvalid',
             stdout,
         )
 
@@ -530,8 +509,7 @@ class TestCloudTrailCommandWithMissingLogs(BaseCloudTrailCommandTest):
                 validator,
             )
             stdout, stderr, rc = self.run_cmd(
-                "cloudtrail validate-logs --trail-arn %s --start-time '%s'"
-                % (TEST_TRAIL_ARN, START_TIME_ARG),
+                f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} --start-time '{START_TIME_ARG}'",
                 1,
             )
             self.assertIn(

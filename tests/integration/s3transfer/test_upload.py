@@ -94,7 +94,7 @@ class TestUpload(BaseTransferManagerIntegTest):
                     future.cancel()
                     raise RuntimeError(
                         "Download transfer did not start after waiting for "
-                        "%s seconds." % timeout
+                        f"{timeout} seconds."
                     )
                 # Raise an exception which should cause the preceding
                 # download to cancel and exit quickly

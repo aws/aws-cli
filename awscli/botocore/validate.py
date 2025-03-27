@@ -106,21 +106,20 @@ class ValidationErrors:
         error_type, name, additional = error
         name = self._get_name(name)
         if error_type == 'missing required field':
-            return 'Missing required parameter in %s: "%s"' % (
+            return 'Missing required parameter in {}: "{}"'.format(
                 name,
                 additional['required_name'],
             )
         elif error_type == 'unknown field':
-            return 'Unknown parameter in %s: "%s", must be one of: %s' % (
+            return 'Unknown parameter in {}: "{}", must be one of: {}'.format(
                 name,
                 additional['unknown_param'],
                 ', '.join(additional['valid_names']),
             )
         elif error_type == 'invalid type':
             return (
-                'Invalid type for parameter %s, value: %s, type: %s, '
-                'valid types: %s'
-                % (
+                'Invalid type for parameter {}, value: {}, type: {}, '
+                'valid types: {}'.format(
                     name,
                     additional['param'],
                     str(type(additional['param'])),
@@ -130,27 +129,28 @@ class ValidationErrors:
         elif error_type == 'invalid range':
             min_allowed = additional['min_allowed']
             return (
-                'Invalid value for parameter %s, value: %s, '
-                'valid min value: %s'
-                % (name, additional['param'], min_allowed)
+                'Invalid value for parameter {}, value: {}, '
+                'valid min value: {}'.format(
+                    name, additional['param'], min_allowed
+                )
             )
         elif error_type == 'invalid length':
             min_allowed = additional['min_allowed']
             return (
-                'Invalid length for parameter %s, value: %s, '
-                'valid min length: %s'
-                % (name, additional['param'], min_allowed)
+                'Invalid length for parameter {}, value: {}, '
+                'valid min length: {}'.format(
+                    name, additional['param'], min_allowed
+                )
             )
         elif error_type == 'unable to encode to json':
-            return 'Invalid parameter %s must be json serializable: %s' % (
+            return 'Invalid parameter {} must be json serializable: {}'.format(
                 name,
                 additional['type_error'],
             )
         elif error_type == 'invalid type for document':
             return (
-                'Invalid type for document parameter %s, value: %s, type: %s, '
-                'valid types: %s'
-                % (
+                'Invalid type for document parameter {}, value: {}, type: {}, '
+                'valid types: {}'.format(
                     name,
                     additional['param'],
                     str(type(additional['param'])),
@@ -160,13 +160,16 @@ class ValidationErrors:
         elif error_type == 'more than one input':
             return (
                 'Invalid number of parameters set for tagged union structure'
-                ' %s. Can only set one of the following keys: %s.'
-                % (name, '. '.join(additional['members']))
+                ' {}. Can only set one of the following keys: {}.'.format(
+                    name, '. '.join(additional['members'])
+                )
             )
         elif error_type == 'empty input':
             return (
                 'Must set one of the following keys for tagged union'
-                'structure %s: %s.' % (name, '. '.join(additional['members']))
+                'structure {}: {}.'.format(
+                    name, '. '.join(additional['members'])
+                )
             )
 
     def _get_name(self, name):
@@ -213,7 +216,7 @@ class ParamValidator:
         if special_validator:
             special_validator(params, shape, errors, name)
         else:
-            getattr(self, '_validate_%s' % shape.type_name)(
+            getattr(self, f'_validate_{shape.type_name}')(
                 params, shape, errors, name
             )
 
@@ -286,7 +289,7 @@ class ParamValidator:
                 params[param],
                 shape.members[param],
                 errors,
-                '%s.%s' % (name, param),
+                f'{name}.{param}',
             )
 
     @type_check(valid_types=(str,))
@@ -306,17 +309,15 @@ class ParamValidator:
         member_shape = shape.member
         range_check(name, len(param), shape, 'invalid length', errors)
         for i, item in enumerate(param):
-            self._validate(item, member_shape, errors, '%s[%s]' % (name, i))
+            self._validate(item, member_shape, errors, f'{name}[{i}]')
 
     @type_check(valid_types=(dict,))
     def _validate_map(self, param, shape, errors, name):
         key_shape = shape.key
         value_shape = shape.value
         for key, value in param.items():
-            self._validate(
-                key, key_shape, errors, "%s (key: %s)" % (name, key)
-            )
-            self._validate(value, value_shape, errors, '%s.%s' % (name, key))
+            self._validate(key, key_shape, errors, f"{name} (key: {key})")
+            self._validate(value, value_shape, errors, f'{name}.{key}')
 
     @type_check(valid_types=(int,))
     def _validate_integer(self, param, shape, errors, name):

@@ -88,7 +88,7 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
     def test_jmespath_yaml_response(self):
         jmespath_query = 'Users[*].UserName'
         stdout, _, _ = self.run_cmd(
-            'iam list-users --output yaml --query %s' % jmespath_query,
+            f'iam list-users --output yaml --query {jmespath_query}',
             expected_rc=0,
         )
         parsed_output = self.yaml.load(stdout)
@@ -153,7 +153,7 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
     def test_print_string_literal(self):
         jmespath_query = 'Users[0].UserName'
         stdout, _, _ = self.run_cmd(
-            'iam list-users --output yaml --query %s' % jmespath_query,
+            f'iam list-users --output yaml --query {jmespath_query}',
             expected_rc=0,
         )
         self.assertEqual(stdout, '"testuser-50"\n')

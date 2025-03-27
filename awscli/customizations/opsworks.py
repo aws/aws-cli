@@ -227,9 +227,9 @@ class OpsWorksRegister(BasicCommand):
         if args.hostname:
             if not HOSTNAME_RE.match(args.hostname):
                 raise ParamValidationError(
-                    "Invalid hostname: '%s'. Hostnames must consist of "
+                    f"Invalid hostname: '{args.hostname}'. Hostnames must consist of "
                     "letters, digits and dashes only and must not start or "
-                    "end with a dash." % args.hostname
+                    "end with a dash."
                 )
 
     def retrieve_stack(self, args):
@@ -302,12 +302,11 @@ class OpsWorksRegister(BasicCommand):
 
             if not instances:
                 raise ValueError(
-                    "Did not find any instance matching %s." % args.target
+                    f"Did not find any instance matching {args.target}."
                 )
             elif len(instances) > 1:
                 raise ValueError(
-                    "Found multiple instances matching %s: %s."
-                    % (
+                    "Found multiple instances matching {}: {}.".format(
                         args.target,
                         ", ".join(i['InstanceId'] for i in instances),
                     )
@@ -329,8 +328,8 @@ class OpsWorksRegister(BasicCommand):
                 for instance in instances
             ):
                 raise ValueError(
-                    "Invalid hostname: '%s'. Hostnames must be unique within "
-                    "a stack." % args.hostname
+                    f"Invalid hostname: '{args.hostname}'. Hostnames must be unique within "
+                    "a stack."
                 )
 
         if args.infrastructure_class == 'ec2' and args.local:
@@ -397,7 +396,9 @@ class OpsWorksRegister(BasicCommand):
             return
 
         LOG.debug("Creating the IAM group if necessary")
-        group_name = "OpsWorks-%s" % clean_for_iam(self._stack['StackId'])
+        group_name = "OpsWorks-{}".format(
+            clean_for_iam(self._stack['StackId'])
+        )
         try:
             self.iam.create_group(GroupName=group_name, Path=IAM_PATH)
             LOG.debug("Created IAM group %s", group_name)
@@ -414,12 +415,12 @@ class OpsWorksRegister(BasicCommand):
 
         # create the IAM user, trying alternatives if it already exists
         LOG.debug("Creating an IAM user")
-        base_username = "OpsWorks-%s-%s" % (
+        base_username = "OpsWorks-{}-{}".format(
             shorten_name(clean_for_iam(self._stack['Name']), 25),
             shorten_name(clean_for_iam(self._name_for_iam), 25),
         )
         for try_ in range(20):
-            username = base_username + ("+%s" % try_ if try_ else "")
+            username = base_username + (f"+{try_}" if try_ else "")
             try:
                 self.iam.create_user(UserName=username, Path=IAM_PATH)
             except ClientError as e:
@@ -514,12 +515,12 @@ class OpsWorksRegister(BasicCommand):
                 else:
                     call = 'plink'
                     if args.username:
-                        call += ' -l "%s"' % args.username
+                        call += f' -l "{args.username}"'
                     if args.private_key:
-                        call += ' -i "%s"' % args.private_key
-                    call += ' "%s"' % self._use_address
+                        call += f' -i "{args.private_key}"'
+                    call += f' "{self._use_address}"'
                     call += ' -m'
-                call += ' "%s"' % script_file.name
+                call += f' "{script_file.name}"'
 
                 subprocess.check_call(call, shell=True)
             finally:
@@ -580,8 +581,7 @@ class OpsWorksRegister(BasicCommand):
     @staticmethod
     def _to_ruby_yaml(parameters):
         return "\n".join(
-            ":%s: %s" % (k, json.dumps(v))
-            for k, v in sorted(parameters.items())
+            f":{k}: {json.dumps(v)}" for k, v in sorted(parameters.items())
         )
 
 

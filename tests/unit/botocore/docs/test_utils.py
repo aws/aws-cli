@@ -197,7 +197,7 @@ class TestHideParamFromOperations(BaseDocsTest):
 
     def test_hides_params_from_doc_string(self):
         section = self.doc_structure.add_new_section(self.name)
-        param_signature = ':param %s: ' % self.name
+        param_signature = f':param {self.name}: '
         section.write(param_signature)
         self.assert_contains_line(param_signature)
         self.param.hide_param(
@@ -209,7 +209,7 @@ class TestHideParamFromOperations(BaseDocsTest):
     def test_hides_param_from_example(self):
         structure = self.doc_structure.add_new_section('structure-value')
         section = structure.add_new_section(self.name)
-        example = '%s: \'string\'' % self.name
+        example = f'{self.name}: \'string\''
         section.write(example)
         self.assert_contains_line(example)
         self.param.hide_param(

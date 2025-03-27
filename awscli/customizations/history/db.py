@@ -167,15 +167,12 @@ class DatabaseRecordWriter:
 
 class DatabaseRecordReader:
     _ORDERING = 'ORDER BY timestamp'
-    _GET_LAST_ID_RECORDS = (
-        """
+    _GET_LAST_ID_RECORDS = f"""
         SELECT * FROM records
         WHERE id =
         (SELECT id FROM records WHERE timestamp =
-        (SELECT max(timestamp) FROM records)) %s;"""
-        % _ORDERING
-    )
-    _GET_RECORDS_BY_ID = 'SELECT * from records where id = ? %s' % _ORDERING
+        (SELECT max(timestamp) FROM records)) {_ORDERING};"""
+    _GET_RECORDS_BY_ID = f'SELECT * from records where id = ? {_ORDERING}'
     _GET_ALL_RECORDS = (
         'SELECT a.id AS id_a, '
         '    b.id AS id_b, '
@@ -186,7 +183,7 @@ class DatabaseRecordReader:
         'where a.event_type == "CLI_ARGUMENTS" AND '
         '    b.event_type = "CLI_RC" AND '
         '    id_a == id_b '
-        '%s DESC' % _ORDERING
+        f'{_ORDERING} DESC'
     )
 
     def __init__(self, connection):

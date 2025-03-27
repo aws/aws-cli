@@ -51,8 +51,7 @@ class GetGameSessionLogCommand(BasicCommand):
         contents = urlopen(url)
 
         sys.stdout.write(
-            'Downloading log archive for game session %s...\r'
-            % args.game_session_id
+            f'Downloading log archive for game session {args.game_session_id}...\r'
         )
 
         with open(args.save_as, 'wb') as f:
@@ -61,7 +60,7 @@ class GetGameSessionLogCommand(BasicCommand):
 
         sys.stdout.write(
             'Successfully downloaded log archive for game '
-            'session %s to %s\n' % (args.game_session_id, args.save_as)
+            f'session {args.game_session_id} to {args.save_as}\n'
         )
 
         return 0

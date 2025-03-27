@@ -26,7 +26,7 @@ def register_wizard_commands(event_handlers):
 def _register_wizards_for_commands(commands, event_handlers):
     for command in commands:
         event_handlers.register(
-            'building-command-table.%s' % command, _add_wizard_command
+            f'building-command-table.{command}', _add_wizard_command
         )
 
 
@@ -100,7 +100,7 @@ class TopLevelWizardCommand(BasicCommand):
             self._runner[version].run(loaded)
         else:
             raise ParamValidationError(
-                'Definition file has unsupported version %s ' % version
+                f'Definition file has unsupported version {version} '
             )
 
     def create_help_command(self):

@@ -243,7 +243,7 @@ class TestLoginCommand(BaseSSOTest):
         )
 
     def test_login_device_partially_missing_sso_configuration(self):
-        content = '[default]\n' 'sso_start_url=%s\n' % self.start_url
+        content = '[default]\n' f'sso_start_url={self.start_url}\n'
         self.set_config_file_content(content=content)
         _, stderr, _ = self.run_cmd(
             'sso login --use-device-code', expected_rc=253

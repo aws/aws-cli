@@ -53,7 +53,7 @@ class BaseLogEventsFormatter:
 
 class ShortLogEventsFormatter(BaseLogEventsFormatter):
     def display_log_event(self, log_event):
-        log_event = '%s %s' % (
+        log_event = '{} {}'.format(
             self._format_timestamp(log_event['timestamp']),
             log_event['message'],
         )
@@ -67,7 +67,7 @@ class ShortLogEventsFormatter(BaseLogEventsFormatter):
 
 class DetailedLogEventsFormatter(BaseLogEventsFormatter):
     def display_log_event(self, log_event):
-        log_event = '%s %s %s' % (
+        log_event = '{} {} {}'.format(
             self._format_timestamp(log_event['timestamp']),
             self._color_if_configured(
                 log_event['logStreamName'], self._STREAM_NAME_COLOR
@@ -84,7 +84,7 @@ class DetailedLogEventsFormatter(BaseLogEventsFormatter):
 
 class PrettyJSONLogEventsFormatter(BaseLogEventsFormatter):
     def display_log_event(self, log_event):
-        log_event = '%s %s %s' % (
+        log_event = '{} {} {}'.format(
             self._format_timestamp(log_event['timestamp']),
             self._color_if_configured(
                 log_event['logStreamName'], self._STREAM_NAME_COLOR
@@ -96,7 +96,7 @@ class PrettyJSONLogEventsFormatter(BaseLogEventsFormatter):
     def _format_pretty_json(self, log_message):
         try:
             loaded_json = json.loads(log_message)
-            return '\n%s' % json.dumps(loaded_json, indent=4)
+            return f'\n{json.dumps(loaded_json, indent=4)}'
         except json.decoder.JSONDecodeError:
             pass
         return log_message

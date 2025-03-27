@@ -33,7 +33,7 @@ def _sign_exe_zip(exe_zipfile, signature_filename, key_name):
     if key_name:
         options.extend(['--local-user', key_name])
     options = ' '.join(options)
-    run('gpg ' + options + ' --detach-sign %s' % exe_zipfile)
+    run('gpg ' + options + f' --detach-sign {exe_zipfile}')
 
 
 def main():
@@ -43,7 +43,7 @@ def main():
         default=os.path.join(ROOT, 'dist', SIGNATURE_FILENAME),
         help=(
             'The output signature file. By default, this will be '
-            '"dist/%s" in the root of the awscli.' % SIGNATURE_FILENAME
+            f'"dist/{SIGNATURE_FILENAME}" in the root of the awscli.'
         ),
     )
     parser.add_argument(
@@ -51,7 +51,7 @@ def main():
         default=os.path.join(ROOT, 'dist', EXE_ZIP_NAME),
         help=(
             'The exe zip to sign. By default, this will be the'
-            '"dist/%s" zipfile in the root of the awscli.' % EXE_ZIP_NAME
+            f'"dist/{EXE_ZIP_NAME}" zipfile in the root of the awscli.'
         ),
     )
     parser.add_argument(

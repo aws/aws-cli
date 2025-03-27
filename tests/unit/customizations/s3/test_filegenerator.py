@@ -265,7 +265,7 @@ class TestThrowsWarning(unittest.TestCase):
         warning_message = file_gen.result_queue.get()
         self.assertEqual(
             warning_message.message,
-            ("warning: Skipping file %s. File does not exist." % filename),
+            (f"warning: Skipping file {filename}. File does not exist."),
         )
 
     def test_no_read_access(self):
@@ -281,8 +281,8 @@ class TestThrowsWarning(unittest.TestCase):
         self.assertEqual(
             warning_message.message,
             (
-                "warning: Skipping file %s. File/Directory is "
-                "not readable." % full_path
+                f"warning: Skipping file {full_path}. File/Directory is "
+                "not readable."
             ),
         )
 
@@ -299,9 +299,9 @@ class TestThrowsWarning(unittest.TestCase):
         self.assertEqual(
             warning_message.message,
             (
-                "warning: Skipping file %s. File is character "
+                f"warning: Skipping file {file_path}. File is character "
                 "special device, block special device, FIFO, or "
-                "socket." % file_path
+                "socket."
             ),
         )
 
@@ -500,9 +500,9 @@ class TestListFilesLocally(unittest.TestCase):
                 "a\u0300",
                 "a\u0300-1",
                 "a\u03001",
-                "a\u0300a%sa" % os.path.sep,
-                "a\u0300a%sz" % os.path.sep,
-                "a\u0300a%s\u00e6" % os.path.sep,
+                f"a\u0300a{os.path.sep}a",
+                f"a\u0300a{os.path.sep}z",
+                f"a\u0300a{os.path.sep}\u00e6",
                 "z",
                 "\u00e6",
             ]

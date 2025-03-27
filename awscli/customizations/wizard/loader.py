@@ -91,7 +91,7 @@ class WizardLoader:
         except OSError:
             raise WizardNotExistError(
                 "Wizard does not exist for command "
-                "'%s', name: '%s'" % (command_name, wizard_name)
+                f"'{command_name}', name: '{wizard_name}'"
             )
 
     def _load_yaml(self, contents):

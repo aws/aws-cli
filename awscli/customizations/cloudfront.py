@@ -80,7 +80,7 @@ def register(event_handler):
 
 
 def unique_string(prefix='cli'):
-    return '%s-%s-%s' % (prefix, int(time.time()), random.randint(1, 1000000))
+    return f'{prefix}-{int(time.time())}-{random.randint(1, 1000000)}'
 
 
 def _add_paths(argument_table, **kwargs):

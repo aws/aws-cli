@@ -114,7 +114,7 @@ class LocationArgument(CustomArgument):
         if value is None:
             return
         parsed = self._session.emit_first_non_none_response(
-            'process-cli-arg.codedeploy.%s' % self.name,
+            f'process-cli-arg.codedeploy.{self.name}',
             param=self.argument_model,
             cli_argument=self,
             value=value,

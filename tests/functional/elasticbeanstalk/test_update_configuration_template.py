@@ -26,7 +26,7 @@ class TestUpdateConfigurationTemplate(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --application-name FooBar'
         cmdline += ' --template-name x86_64_m1_medium_config'
-        cmdline += ' --option-settings file://%s' % data_path
+        cmdline += f' --option-settings file://{data_path}'
         cmdline += ' --description This_is_a_test'
         result = {
             'ApplicationName': 'FooBar',

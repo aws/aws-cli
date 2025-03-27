@@ -182,8 +182,7 @@ class SessionStubber:
     def assert_no_remaining_responses(self):
         if len(self._responses) != 0:
             raise AssertionError(
-                "The following queued responses are remaining: %s"
-                % self._responses
+                f"The following queued responses are remaining: {self._responses}"
             )
 
     def _capture_aws_request(self, params, model, context, **kwargs):
@@ -234,9 +233,8 @@ class AWSResponse(BaseResponse):
 
     def __repr__(self):
         return (
-            'AWSResponse(service_name=%r, operation_name=%r, '
-            'parsed_response=%r)'
-            % (self._service_name, self._operation_name, self._parsed_response)
+            f'AWSResponse(service_name={self._service_name!r}, operation_name={self._operation_name!r}, '
+            f'parsed_response={self._parsed_response!r})'
         )
 
     def _get_service_model(self):
@@ -313,11 +311,7 @@ class AWSRequest:
         self.http_requests = []
 
     def __repr__(self):
-        return 'AWSRequest(service_name=%r, operation_name=%r, params=%r)' % (
-            self.service_name,
-            self.operation_name,
-            self.params,
-        )
+        return f'AWSRequest(service_name={self.service_name!r}, operation_name={self.operation_name!r}, params={self.params!r})'
 
     def __eq__(self, other):
         return (
@@ -338,12 +332,7 @@ class HTTPRequest:
         self.body = body
 
     def __repr__(self):
-        return 'HTTPRequest(method=%r, url=%r, headers=%r, body=%r)' % (
-            self.method,
-            self.url,
-            self.headers,
-            self.body,
-        )
+        return f'HTTPRequest(method={self.method!r}, url={self.url!r}, headers={self.headers!r}, body={self.body!r})'
 
     def __eq__(self, other):
         return (

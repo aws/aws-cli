@@ -192,7 +192,7 @@ class BaseMonitorEvent:
         self.timestamp = timestamp
 
     def __repr__(self):
-        return '%s(%r)' % (self.__class__.__name__, self.__dict__)
+        return f'{self.__class__.__name__}({self.__dict__!r})'
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
@@ -377,9 +377,8 @@ class CSMSerializer:
     def _validate_client_id(self, csm_client_id):
         if len(csm_client_id) > self._MAX_CLIENT_ID_LENGTH:
             raise ValueError(
-                'The value provided for csm_client_id: %s exceeds the '
-                'maximum length of %s characters'
-                % (csm_client_id, self._MAX_CLIENT_ID_LENGTH)
+                f'The value provided for csm_client_id: {csm_client_id} exceeds the '
+                f'maximum length of {self._MAX_CLIENT_ID_LENGTH} characters'
             )
 
     def serialize(self, event):

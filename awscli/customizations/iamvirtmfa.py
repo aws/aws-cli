@@ -38,7 +38,7 @@ OUTPUT_HELP = (
 )
 BOOTSTRAP_HELP = (
     'Method to use to seed the virtual MFA.  '
-    'Valid values are: %s | %s' % CHOICES
+    'Valid values are: {} | {}'.format(*CHOICES)
 )
 
 

@@ -40,7 +40,7 @@ class BaseCPCommandTest(BaseS3TransferCommandTest):
 class TestCPCommand(BaseCPCommandTest):
     def test_operations_used_in_upload(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket/key.txt' % (self.prefix, full_path)
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt'
         self.parsed_responses = [
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
@@ -53,7 +53,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_key_name_added_when_only_bucket_provided(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket/' % (self.prefix, full_path)
+        cmdline = f'{self.prefix} {full_path} s3://bucket/'
         self.parsed_responses = [
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
@@ -70,7 +70,7 @@ class TestCPCommand(BaseCPCommandTest):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         # Here we're saying s3://bucket instead of s3://bucket/
         # This should still work the same as if we added the trailing slash.
-        cmdline = '%s %s s3://bucket' % (self.prefix, full_path)
+        cmdline = f'{self.prefix} {full_path} s3://bucket'
         self.parsed_responses = [
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
@@ -117,9 +117,8 @@ class TestCPCommand(BaseCPCommandTest):
     def test_upload_grants(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = (
-            '%s %s s3://bucket/key.txt --grants read=id=foo '
+            f'{self.prefix} {full_path} s3://bucket/key.txt --grants read=id=foo '
             'full=id=bar readacl=id=biz writeacl=id=baz'
-            % (self.prefix, full_path)
         )
         self.parsed_responses = [
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
@@ -147,10 +146,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_upload_expires(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket/key.txt --expires 90' % (
-            self.prefix,
-            full_path,
-        )
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --expires 90'
         self.parsed_responses = [
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
@@ -166,10 +162,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_upload_standard_ia(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket/key.txt --storage-class STANDARD_IA' % (
-            self.prefix,
-            full_path,
-        )
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --storage-class STANDARD_IA'
         self.parsed_responses = [
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
@@ -185,10 +178,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_upload_onezone_ia(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket/key.txt --storage-class ONEZONE_IA' % (
-            self.prefix,
-            full_path,
-        )
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --storage-class ONEZONE_IA'
         self.parsed_responses = [
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
@@ -204,10 +194,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_upload_intelligent_tiering(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = (
-            '%s %s s3://bucket/key.txt --storage-class INTELLIGENT_TIERING'
-            % (self.prefix, full_path)
-        )
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --storage-class INTELLIGENT_TIERING'
         self.parsed_responses = [
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
@@ -223,10 +210,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_upload_glacier(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket/key.txt --storage-class GLACIER' % (
-            self.prefix,
-            full_path,
-        )
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --storage-class GLACIER'
         self.parsed_responses = [
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
@@ -242,10 +226,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_upload_deep_archive(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket/key.txt --storage-class DEEP_ARCHIVE' % (
-            self.prefix,
-            full_path,
-        )
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --storage-class DEEP_ARCHIVE'
         self.parsed_responses = [
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
@@ -264,10 +245,7 @@ class TestCPCommand(BaseCPCommandTest):
             {"ContentLength": "100", "LastModified": "00:00:00Z"},
             {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
         ]
-        cmdline = '%s s3://bucket/key.txt %s' % (
-            self.prefix,
-            self.files.rootdir,
-        )
+        cmdline = f'{self.prefix} s3://bucket/key.txt {self.files.rootdir}'
         self.run_cmd(cmdline, expected_rc=0)
         # The only operations we should have called are HeadObject/GetObject.
         self.assertEqual(
@@ -280,10 +258,7 @@ class TestCPCommand(BaseCPCommandTest):
         self.parsed_responses = [
             {'ETag': '"foo-1"', 'Contents': [], 'CommonPrefixes': []},
         ]
-        cmdline = '%s s3://bucket/key.txt %s --recursive' % (
-            self.prefix,
-            self.files.rootdir,
-        )
+        cmdline = f'{self.prefix} s3://bucket/key.txt {self.files.rootdir} --recursive'
         self.run_cmd(cmdline, expected_rc=0)
         # We called ListObjectsV2 but had no objects to download, so
         # we only have a single ListObjectsV2 operation being called.
@@ -316,7 +291,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_website_redirect_ignore_paramfile(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket/key.txt --website-redirect %s' % (
+        cmdline = '{} {} s3://bucket/key.txt --website-redirect {}'.format(
             self.prefix,
             full_path,
             'http://someserver',
@@ -360,8 +335,8 @@ class TestCPCommand(BaseCPCommandTest):
             {'ETag': '"foo-1"'},
         ]
         cmdline = (
-            '%s s3://bucket/key.txt s3://bucket/key2.txt'
-            ' --metadata KeyName=Value' % self.prefix
+            f'{self.prefix} s3://bucket/key.txt s3://bucket/key2.txt'
+            ' --metadata KeyName=Value'
         )
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(
@@ -379,9 +354,9 @@ class TestCPCommand(BaseCPCommandTest):
             {"ContentLength": "100", "LastModified": "00:00:00Z"},
             {'ETag': '"foo-1"'},
         ]
-        cmdline = '%s %s s3://bucket/key2.txt' ' --metadata KeyName=Value' % (
-            self.prefix,
-            full_path,
+        cmdline = (
+            f'{self.prefix} {full_path} s3://bucket/key2.txt'
+            ' --metadata KeyName=Value'
         )
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(
@@ -400,9 +375,9 @@ class TestCPCommand(BaseCPCommandTest):
             {'ETag': '"foo-2"'},
             {},
         ]
-        cmdline = '%s %s s3://bucket/key2.txt' ' --metadata KeyName=Value' % (
-            self.prefix,
-            full_path,
+        cmdline = (
+            f'{self.prefix} {full_path} s3://bucket/key2.txt'
+            ' --metadata KeyName=Value'
         )
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(
@@ -421,8 +396,8 @@ class TestCPCommand(BaseCPCommandTest):
             {'ETag': '"foo-1"'},
         ]
         cmdline = (
-            '%s s3://bucket/key.txt s3://bucket/key2.txt'
-            ' --metadata-directive REPLACE' % self.prefix
+            f'{self.prefix} s3://bucket/key.txt s3://bucket/key2.txt'
+            ' --metadata-directive REPLACE'
         )
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(
@@ -436,10 +411,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_no_metadata_directive_for_non_copy(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket --metadata-directive REPLACE' % (
-            self.prefix,
-            full_path,
-        )
+        cmdline = f'{self.prefix} {full_path} s3://bucket --metadata-directive REPLACE'
         self.parsed_responses = [
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
@@ -452,7 +424,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_cp_succeeds_with_mimetype_errors(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket/key.txt' % (self.prefix, full_path)
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt'
         self.parsed_responses = [
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
@@ -466,7 +438,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_cp_fails_with_utime_errors_but_continues(self):
         full_path = self.files.create_file('foo.txt', '')
-        cmdline = '%s s3://bucket/key.txt %s' % (self.prefix, full_path)
+        cmdline = f'{self.prefix} s3://bucket/key.txt {full_path}'
         self.parsed_responses = [
             {"ContentLength": "100", "LastModified": "00:00:00Z"},
             {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
@@ -492,10 +464,7 @@ class TestCPCommand(BaseCPCommandTest):
             },
             {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
         ]
-        cmdline = (
-            '%s s3://bucket/foo %s --recursive --force-glacier-transfer'
-            % (self.prefix, self.files.rootdir)
-        )
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --recursive --force-glacier-transfer'
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(
             len(self.operations_called), 2, self.operations_called
@@ -518,9 +487,8 @@ class TestCPCommand(BaseCPCommandTest):
                 'CommonPrefixes': [],
             }
         ]
-        cmdline = '%s s3://bucket/foo %s --recursive' % (
-            self.prefix,
-            self.files.rootdir,
+        cmdline = (
+            f'{self.prefix} s3://bucket/foo {self.files.rootdir} --recursive'
         )
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
         self.assertEqual(
@@ -537,7 +505,7 @@ class TestCPCommand(BaseCPCommandTest):
                 'StorageClass': 'GLACIER',
             },
         ]
-        cmdline = '%s s3://bucket/key.txt .' % self.prefix
+        cmdline = f'{self.prefix} s3://bucket/key.txt .'
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
         # There should not have been a download attempted because the
         # operation was skipped because it is glacier incompatible.
@@ -553,7 +521,7 @@ class TestCPCommand(BaseCPCommandTest):
                 'StorageClass': 'DEEP_ARCHIVE',
             },
         ]
-        cmdline = '%s s3://bucket/key.txt .' % self.prefix
+        cmdline = f'{self.prefix} s3://bucket/key.txt .'
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
         # There should not have been a download attempted because the
         # operation was skipped because it is glacier
@@ -570,7 +538,7 @@ class TestCPCommand(BaseCPCommandTest):
                 'StorageClass': 'GLACIER',
             },
         ]
-        cmdline = '%s s3://bucket/key.txt .' % self.prefix
+        cmdline = f'{self.prefix} s3://bucket/key.txt .'
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
         # There should not have been a download attempted because the
         # operation was skipped because it is glacier incompatible.
@@ -586,7 +554,7 @@ class TestCPCommand(BaseCPCommandTest):
                 'StorageClass': 'DEEP_ARCHIVE',
             },
         ]
-        cmdline = '%s s3://bucket/key.txt .' % self.prefix
+        cmdline = f'{self.prefix} s3://bucket/key.txt .'
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
         # There should not have been a download attempted because the
         # operation was skipped because it is glacier
@@ -604,7 +572,7 @@ class TestCPCommand(BaseCPCommandTest):
             },
         ]
         cmdline = (
-            '%s s3://bucket/key.txt . --ignore-glacier-warnings' % self.prefix
+            f'{self.prefix} s3://bucket/key.txt . --ignore-glacier-warnings'
         )
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
         # There should not have been a download attempted because the
@@ -622,7 +590,7 @@ class TestCPCommand(BaseCPCommandTest):
             },
         ]
         cmdline = (
-            '%s s3://bucket/key.txt . --ignore-glacier-warnings' % self.prefix
+            f'{self.prefix} s3://bucket/key.txt . --ignore-glacier-warnings'
         )
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
         # There should not have been a download attempted because the
@@ -633,7 +601,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_cp_with_sse_flag(self):
         full_path = self.files.create_file('foo.txt', 'contents')
-        cmdline = '%s %s s3://bucket/key.txt --sse' % (self.prefix, full_path)
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --sse'
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
@@ -651,10 +619,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_cp_with_sse_c_flag(self):
         full_path = self.files.create_file('foo.txt', 'contents')
-        cmdline = '%s %s s3://bucket/key.txt --sse-c --sse-c-key foo' % (
-            self.prefix,
-            full_path,
-        )
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --sse-c --sse-c-key foo'
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
@@ -680,10 +645,7 @@ class TestCPCommand(BaseCPCommandTest):
         )
         with open(key_path, 'wb') as f:
             f.write(key_contents)
-        cmdline = (
-            '%s %s s3://bucket/key.txt --sse-c --sse-c-key fileb://%s'
-            % (self.prefix, file_path, key_path)
-        )
+        cmdline = f'{self.prefix} {file_path} s3://bucket/key.txt --sse-c --sse-c-key fileb://{key_path}'
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
@@ -730,9 +692,8 @@ class TestCPCommand(BaseCPCommandTest):
         with open(key_path, 'wb') as f:
             f.write(key_contents)
         cmdline = (
-            '%s s3://bucket-one/key.txt s3://bucket/key.txt '
-            '--sse-c-copy-source --sse-c-copy-source-key fileb://%s'
-            % (self.prefix, key_path)
+            f'{self.prefix} s3://bucket-one/key.txt s3://bucket/key.txt '
+            f'--sse-c-copy-source --sse-c-copy-source-key fileb://{key_path}'
         )
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 2)
@@ -753,10 +714,7 @@ class TestCPCommand(BaseCPCommandTest):
     # up the tests
     def test_cp_upload_with_sse_kms_and_key_id(self):
         full_path = self.files.create_file('foo.txt', 'contents')
-        cmdline = (
-            '%s %s s3://bucket/key.txt --sse aws:kms --sse-kms-key-id foo'
-            % (self.prefix, full_path)
-        )
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --sse aws:kms --sse-kms-key-id foo'
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
@@ -782,8 +740,8 @@ class TestCPCommand(BaseCPCommandTest):
         ]
         full_path = self.files.create_file('foo.txt', 'a' * 10 * (1024**2))
         cmdline = (
-            '%s %s s3://bucket/key.txt --copy-props none '
-            '--sse aws:kms --sse-kms-key-id foo' % (self.prefix, full_path)
+            f'{self.prefix} {full_path} s3://bucket/key.txt --copy-props none '
+            '--sse aws:kms --sse-kms-key-id foo'
         )
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 4)
@@ -811,8 +769,8 @@ class TestCPCommand(BaseCPCommandTest):
             {},  # CopyObject
         ]
         cmdline = (
-            '%s s3://bucket/key1.txt s3://bucket/key2.txt '
-            '--sse aws:kms --sse-kms-key-id foo' % self.prefix
+            f'{self.prefix} s3://bucket/key1.txt s3://bucket/key2.txt '
+            '--sse aws:kms --sse-kms-key-id foo'
         )
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 2)
@@ -840,8 +798,8 @@ class TestCPCommand(BaseCPCommandTest):
             {},  # CompleteMultipartUpload
         ]
         cmdline = (
-            '%s s3://bucket/key1.txt s3://bucket/key2.txt --copy-props none '
-            '--sse aws:kms --sse-kms-key-id foo' % self.prefix
+            f'{self.prefix} s3://bucket/key1.txt s3://bucket/key2.txt --copy-props none '
+            '--sse aws:kms --sse-kms-key-id foo'
         )
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 5)
@@ -862,7 +820,7 @@ class TestCPCommand(BaseCPCommandTest):
         )
 
     def test_cannot_use_recursive_with_stream(self):
-        cmdline = '%s - s3://bucket/key.txt --recursive' % self.prefix
+        cmdline = f'{self.prefix} - s3://bucket/key.txt --recursive'
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn(
             'Streaming currently is only compatible with non-recursive cp '
@@ -947,8 +905,8 @@ class TestCPCommand(BaseCPCommandTest):
             {},
         ]
         cmdline = (
-            '%s %s s3://bucket/key2.txt'
-            ' --checksum-algorithm CRC32' % (self.prefix, full_path)
+            f'{self.prefix} {full_path} s3://bucket/key2.txt'
+            ' --checksum-algorithm CRC32'
         )
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(
@@ -1173,9 +1131,8 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
 
     def test_single_upload(self):
         full_path = self.files.create_file('myfile', 'mycontent')
-        cmdline = '%s %s s3://mybucket/mykey --request-payer' % (
-            self.prefix,
-            full_path,
+        cmdline = (
+            f'{self.prefix} {full_path} s3://mybucket/mykey --request-payer'
         )
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
@@ -1195,9 +1152,8 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
 
     def test_multipart_upload(self):
         full_path = self.files.create_file('myfile', 'a' * 10 * (1024**2))
-        cmdline = '%s %s s3://mybucket/mykey --request-payer' % (
-            self.prefix,
-            full_path,
+        cmdline = (
+            f'{self.prefix} {full_path} s3://mybucket/mykey --request-payer'
         )
 
         self.parsed_responses = [
@@ -1262,10 +1218,7 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
 
     def test_recursive_upload(self):
         self.files.create_file('myfile', 'mycontent')
-        cmdline = '%s %s s3://mybucket/ --request-payer --recursive' % (
-            self.prefix,
-            self.files.rootdir,
-        )
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://mybucket/ --request-payer --recursive'
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
@@ -1283,10 +1236,7 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         )
 
     def test_single_download(self):
-        cmdline = '%s s3://mybucket/mykey %s --request-payer' % (
-            self.prefix,
-            self.files.rootdir,
-        )
+        cmdline = f'{self.prefix} s3://mybucket/mykey {self.files.rootdir} --request-payer'
         self.parsed_responses = [
             self.head_object_response(),
             self.get_object_response(),
@@ -1305,10 +1255,7 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         )
 
     def test_ranged_download(self):
-        cmdline = '%s s3://mybucket/mykey %s --request-payer' % (
-            self.prefix,
-            self.files.rootdir,
-        )
+        cmdline = f'{self.prefix} s3://mybucket/mykey {self.files.rootdir} --request-payer'
         self.parsed_responses = [
             self.head_object_response(ContentLength=10 * (1024**2)),
             self.get_object_response(),
@@ -1337,10 +1284,7 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         )
 
     def test_recursive_download(self):
-        cmdline = '%s s3://mybucket/ %s --request-payer --recursive' % (
-            self.prefix,
-            self.files.rootdir,
-        )
+        cmdline = f'{self.prefix} s3://mybucket/ {self.files.rootdir} --request-payer --recursive'
         self.parsed_responses = [
             self.list_objects_response(['mykey']),
             self.get_object_response(),
@@ -1536,8 +1480,8 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
     def test_upload(self):
         filename = self.files.create_file('myfile', 'mycontent')
         cmdline = self.prefix
-        cmdline += ' %s' % filename
-        cmdline += ' s3://%s/mykey' % self.accesspoint_arn
+        cmdline += f' {filename}'
+        cmdline += f' s3://{self.accesspoint_arn}/mykey'
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [self.put_object_request(self.accesspoint_arn, 'mykey')]
@@ -1546,8 +1490,8 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
     def test_recusive_upload(self):
         self.files.create_file('myfile', 'mycontent')
         cmdline = self.prefix
-        cmdline += ' %s' % self.files.rootdir
-        cmdline += ' s3://%s/' % self.accesspoint_arn
+        cmdline += f' {self.files.rootdir}'
+        cmdline += f' s3://{self.accesspoint_arn}/'
         cmdline += ' --recursive'
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
@@ -1556,8 +1500,8 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
 
     def test_download(self):
         cmdline = self.prefix
-        cmdline += ' s3://%s/mykey' % self.accesspoint_arn
-        cmdline += ' %s' % self.files.rootdir
+        cmdline += f' s3://{self.accesspoint_arn}/mykey'
+        cmdline += f' {self.files.rootdir}'
         self.parsed_responses = [
             self.head_object_response(),
             self.get_object_response(),
@@ -1572,8 +1516,8 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
 
     def test_recursive_download(self):
         cmdline = self.prefix
-        cmdline += ' s3://%s' % self.accesspoint_arn
-        cmdline += ' %s' % self.files.rootdir
+        cmdline += f' s3://{self.accesspoint_arn}'
+        cmdline += f' {self.files.rootdir}'
         cmdline += ' --recursive'
         self.parsed_responses = [
             self.list_objects_response(['mykey']),
@@ -1589,9 +1533,9 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
 
     def test_copy(self):
         cmdline = self.prefix
-        cmdline += ' s3://%s/mykey' % self.accesspoint_arn
+        cmdline += f' s3://{self.accesspoint_arn}/mykey'
         accesspoint_arn_dest = self.accesspoint_arn + '-dest'
-        cmdline += ' s3://%s' % accesspoint_arn_dest
+        cmdline += f' s3://{accesspoint_arn_dest}'
         self.parsed_responses = [
             self.head_object_response(),
             self.copy_object_response(),
@@ -1611,9 +1555,9 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
 
     def test_recursive_copy(self):
         cmdline = self.prefix
-        cmdline += ' s3://%s' % self.accesspoint_arn
+        cmdline += f' s3://{self.accesspoint_arn}'
         accesspoint_arn_dest = self.accesspoint_arn + '-dest'
-        cmdline += ' s3://%s' % accesspoint_arn_dest
+        cmdline += f' s3://{accesspoint_arn_dest}'
         cmdline += ' --recursive'
         self.parsed_responses = [
             self.list_objects_response(['mykey']),
@@ -1636,8 +1580,8 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
         mrap_arn = 'arn:aws:s3::123456789012:accesspoint:mfzwi23gnjvgw.mrap'
         filename = self.files.create_file('myfile', 'mycontent')
         cmdline = self.prefix
-        cmdline += ' %s' % filename
-        cmdline += ' s3://%s/mykey' % mrap_arn
+        cmdline += f' {filename}'
+        cmdline += f' s3://{mrap_arn}/mykey'
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [self.put_object_request(mrap_arn, 'mykey')]
@@ -1647,8 +1591,8 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
         mrap_arn = 'arn:aws:s3::123456789012:accesspoint/mfzwi23gnjvgw.mrap'
         filename = self.files.create_file('myfile', 'mycontent')
         cmdline = self.prefix
-        cmdline += ' %s' % filename
-        cmdline += ' s3://%s/mykey' % mrap_arn
+        cmdline += f' {filename}'
+        cmdline += f' s3://{mrap_arn}/mykey'
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [self.put_object_request(mrap_arn, 'mykey')]
@@ -1673,23 +1617,21 @@ class BaseCopyPropsCpCommandTest(BaseCPCommandTest):
         self.tags_over_2k = {'tag-key': 'value' * (2 * 1024)}
 
     def get_s3_cp_copy_command(self, copy_props=None):
-        cmdline = self.prefix + 's3://%s/%s s3://%s/%s' % (
-            self.source_bucket,
-            self.source_key,
-            self.target_bucket,
-            self.target_key,
+        cmdline = (
+            self.prefix
+            + f's3://{self.source_bucket}/{self.source_key} s3://{self.target_bucket}/{self.target_key}'
         )
         if copy_props:
-            cmdline += ' --copy-props %s' % copy_props
+            cmdline += f' --copy-props {copy_props}'
         return cmdline
 
     def get_recursive_s3_copy_command(self, copy_props=None):
-        cmdline = self.prefix + 's3://%s/ s3://%s/ --recursive' % (
-            self.source_bucket,
-            self.target_bucket,
+        cmdline = (
+            self.prefix
+            + f's3://{self.source_bucket}/ s3://{self.target_bucket}/ --recursive'
         )
         if copy_props:
-            cmdline += ' --copy-props %s' % copy_props
+            cmdline += f' --copy-props {copy_props}'
         return cmdline
 
     def copy_object_request(

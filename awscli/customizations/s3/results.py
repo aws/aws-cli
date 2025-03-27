@@ -188,7 +188,7 @@ class ResultRecorder(BaseResultHandler):
         if not isinstance(result, BaseResult):
             raise ValueError(
                 'Any result using _get_ongoing_dict_key must subclass from '
-                'BaseResult. Provided result is of type: %s' % type(result)
+                f'BaseResult. Provided result is of type: {type(result)}'
             )
         key_parts = []
         for result_property in [result.transfer_type, result.src, result.dest]:

@@ -294,7 +294,7 @@ class PromptToolkitCompleter(Completer):
             )
         except Exception as e:
             LOG.debug(
-                'Exception caught in PromptToolkitCompleter: %s' % e,
+                f'Exception caught in PromptToolkitCompleter: {e}',
                 exc_info=True,
             )
 

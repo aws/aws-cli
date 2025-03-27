@@ -32,7 +32,7 @@ class TestObjectLambdaHandling(BaseAWSCommandParamsTest):
             'arn:aws:s3-object-lambda:us-west-2:123456789012:'
             'accesspoint:my-accesspoint'
         )
-        object_lambda_arn_with_key = '%s/my-key' % object_lambda_arn
+        object_lambda_arn_with_key = f'{object_lambda_arn}/my-key'
         for prefix in self.prefixes:
             cmdline = prefix.format(object_lambda_arn=object_lambda_arn)
             _, stderr, _ = self.run_cmd(cmdline, 252)
@@ -48,7 +48,7 @@ class TestObjectLambdaHandling(BaseAWSCommandParamsTest):
             'arn:aws:s3-object-lambda:us-west-2:123456789012:'
             'accesspoint/my-accesspoint'
         )
-        object_lambda_arn_with_key = '%s/my-key' % object_lambda_arn
+        object_lambda_arn_with_key = f'{object_lambda_arn}/my-key'
         for prefix in self.prefixes:
             cmdline = prefix.format(object_lambda_arn=object_lambda_arn)
             _, stderr, _ = self.run_cmd(cmdline, 252)

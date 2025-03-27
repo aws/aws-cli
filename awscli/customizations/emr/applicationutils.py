@@ -62,8 +62,8 @@ def build_applications(region, parsed_applications, ami_version=None):
                 )
             else:
                 raise ParamValidationError(
-                    'aws: error: AMI version %s is not '
-                    'compatible with HBase.' % ami_version
+                    f'aws: error: AMI version {ami_version} is not '
+                    'compatible with HBase.'
                 )
         elif app_name == constants.IMPALA:
             ba_list.append(

@@ -91,7 +91,7 @@ def human_readable_size(value):
     for i, suffix in enumerate(HUMANIZE_SUFFIXES):
         unit = base ** (i + 2)
         if round((bytes_int / unit) * base) < base:
-            return '%.1f %s' % ((base * bytes_int / unit), suffix)
+            return f'{base * bytes_int / unit:.1f} {suffix}'
 
 
 def human_readable_to_int(value):
@@ -114,7 +114,7 @@ def human_readable_to_int(value):
         try:
             return int(value)
         except ValueError:
-            raise ValueError("Invalid size value: %s" % value)
+            raise ValueError(f"Invalid size value: {value}")
     else:
         multiplier = SIZE_SUFFIX[suffix]
         return int(value[: -len(suffix)]) * multiplier
@@ -254,9 +254,7 @@ def get_file_stat(path):
     try:
         stats = os.stat(path)
     except OSError as e:
-        raise ValueError(
-            'Could not retrieve file stat of "%s": %s' % (path, e)
-        )
+        raise ValueError(f'Could not retrieve file stat of "{path}": {e}')
 
     try:
         update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())

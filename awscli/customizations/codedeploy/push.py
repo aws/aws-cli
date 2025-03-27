@@ -145,8 +145,7 @@ class Push(BasicCommand):
                     params.version = upload_response['VersionId']
             except Exception as e:
                 raise RuntimeError(
-                    'Failed to upload \'%s\' to \'%s\': %s'
-                    % (params.source, params.s3_location, str(e))
+                    f'Failed to upload \'{params.source}\' to \'{params.s3_location}\': {str(e)}'
                 )
         self._register_revision(params)
 

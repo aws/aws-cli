@@ -144,7 +144,7 @@ class TestSNSTopicHelper(unittest.TestCase):
         with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.helper.prepare_topic(name)
             self.assertIn(
-                'Using existing SNS topic: %s' % name, mock_stdout.getvalue()
+                f'Using existing SNS topic: {name}', mock_stdout.getvalue()
             )
 
 

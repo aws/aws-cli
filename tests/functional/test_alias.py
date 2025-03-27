@@ -68,7 +68,7 @@ class TestAliases(BaseAWSCommandParamsTest):
 
     def add_alias(self, alias_name, alias_value):
         with open(self.alias_file, 'a+') as f:
-            f.write('%s = %s\n' % (alias_name, alias_value))
+            f.write(f'{alias_name} = {alias_value}\n')
 
     def assert_single_operation_called(
         self, cmdline, service_name, operation_name, params
@@ -242,7 +242,7 @@ class TestAliases(BaseAWSCommandParamsTest):
         # The external alias is tested by using mkdir; a command that
         # is universal for the various OS's we support
         directory_to_make = os.path.join(self.files.rootdir, 'newdir')
-        self.add_alias('mkdir', '!mkdir %s' % directory_to_make)
+        self.add_alias('mkdir', f'!mkdir {directory_to_make}')
         self.run_cmd('mkdir')
         self.assertTrue(os.path.isdir(directory_to_make))
 
@@ -251,7 +251,7 @@ class TestAliases(BaseAWSCommandParamsTest):
         # is universal for the various OS's we support
         directory_to_make = os.path.join(self.files.rootdir, 'newdir')
         self.add_alias('mkdir', '!mkdir')
-        self.run_cmd('mkdir %s' % directory_to_make)
+        self.run_cmd(f'mkdir {directory_to_make}')
         self.assertTrue(os.path.isdir(directory_to_make))
 
     def test_external_alias_with_quoted_arguments(self):
@@ -266,7 +266,7 @@ class TestAliases(BaseAWSCommandParamsTest):
         # is universal for the various OS's we support
         directory_to_make = os.path.join(self.files.rootdir, 'newdir')
         self.add_alias('mkdir', '!f() { mkdir "${1}"; }; f')
-        self.run_cmd('mkdir %s' % directory_to_make)
+        self.run_cmd(f'mkdir {directory_to_make}')
         self.assertTrue(os.path.isdir(directory_to_make))
 
     def test_operation_level_alias_with_additonal_params(self):
@@ -332,7 +332,7 @@ class TestAliases(BaseAWSCommandParamsTest):
         with open(self.alias_file, 'a+') as f:
             f.write('[command ec2]\n')
             f.write('mkdir = !mkdir\n')
-        self.run_cmd('ec2 mkdir %s' % directory_to_make)
+        self.run_cmd(f'ec2 mkdir {directory_to_make}')
         self.assertTrue(os.path.isdir(directory_to_make))
 
     def test_can_create_bag_of_options_alias(self):

@@ -75,12 +75,7 @@ class TestPosix(unittest.TestCase):
         # also depends on the strip=False behavior to pass on windows.
         self.assertEqual(
             captured.stdout.getvalue(),
-            '%sfoo%sbar%s'
-            % (
-                self._ANSI_FORE_RED,
-                self._ANSI_RESET_ALL,
-                self._ANSI_RESET_ALL,
-            ),
+            f'{self._ANSI_FORE_RED}foo{self._ANSI_RESET_ALL}bar{self._ANSI_RESET_ALL}',
         )
 
     def test_colorama_does_not_strip(self):
@@ -91,7 +86,7 @@ class TestPosix(unittest.TestCase):
             sys.stdout.write(content)
             self.assertEqual(
                 captured.stdout.getvalue(),
-                '%sfoo%s' % (self._ANSI_FORE_BLUE, self._ANSI_RESET_ALL),
+                f'{self._ANSI_FORE_BLUE}foo{self._ANSI_RESET_ALL}',
             )
 
     def test_colorama_does_not_strip_non_tty(self):
@@ -100,5 +95,5 @@ class TestPosix(unittest.TestCase):
             sys.stdout.write(content)
             self.assertEqual(
                 captured.stdout.getvalue(),
-                '%sfoo%s' % (self._ANSI_FORE_BLUE, self._ANSI_RESET_ALL),
+                f'{self._ANSI_FORE_BLUE}foo{self._ANSI_RESET_ALL}',
             )

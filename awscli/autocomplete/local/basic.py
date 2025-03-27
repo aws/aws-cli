@@ -119,7 +119,7 @@ class FilePathCompleter(BaseCompleter):
             # PathCompleter makes really strange suggestions for lonely ~
             # "username/", so in this case we handle it by ourselves
             if filename_part == '~':
-                return [CompletionResult(''.join([prefix, '~%s' % os.sep]))]
+                return [CompletionResult(''.join([prefix, f'~{os.sep}']))]
             dirname = os.path.dirname(filename_part)
             if dirname and dirname != os.sep:
                 dirname = f'{dirname}{os.sep}'
@@ -238,7 +238,7 @@ class ModelIndexCompleter(BaseCompleter):
                 results.append(
                     self._outfile_filter(
                         CompletionResult(
-                            '--%s' % arg_name,
+                            f'--{arg_name}',
                             starting_index=offset,
                             required=arg_data.required,
                             cli_type_name=arg_data.type_name,
@@ -269,7 +269,7 @@ class ModelIndexCompleter(BaseCompleter):
                 )
             global_param_completions.append(
                 CompletionResult(
-                    '--%s' % arg_name,
+                    f'--{arg_name}',
                     starting_index=offset,
                     required=False,
                     cli_type_name=type_name,
@@ -342,10 +342,7 @@ class ShorthandCompleter(BaseCompleter):
     def _set_results_name(self, results, fragment):
         for result in results:
             name_part_len = len(fragment) - len(result.name)
-            result.name = "%s%s" % (
-                fragment[:name_part_len],
-                result.display_text,
-            )
+            result.name = f"{fragment[:name_part_len]}{result.display_text}"
         return results
 
     def _close_brackets(self, fragment):
@@ -405,7 +402,7 @@ class ShorthandCompleter(BaseCompleter):
 
     def _get_completion(self, arg_model, parsed_input):
         completion = getattr(
-            self, "_get_prompt_for_%s" % arg_model.type_name, self._no_prompt
+            self, f"_get_prompt_for_{arg_model.type_name}", self._no_prompt
         )(arg_model, parsed_input)
         if completion is None:
             return []
@@ -532,7 +529,7 @@ class ShorthandCompleter(BaseCompleter):
         results = []
         for member_name, member in arg_model.members.items():
             if member_name not in entered_keys:
-                display_text = '%s=%s' % (
+                display_text = '{}={}'.format(
                     member_name,
                     self._VALUE_PREFIXES.get(member.type_name, ''),
                 )
@@ -607,9 +604,8 @@ class QueryCompleter(BaseCompleter):
         )
         for completion in completions:
             name_part_len = len(fragment) - len(completion.name)
-            completion.name = "%s%s" % (
-                fragment[:name_part_len],
-                completion.display_text,
+            completion.name = (
+                f"{fragment[:name_part_len]}{completion.display_text}"
             )
         return completions
 

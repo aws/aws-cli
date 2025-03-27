@@ -505,7 +505,7 @@ class TestTopicDBScan(TestTopicTagDB):
         for i in range(5):
             topic_name = topic_base + '-' + str(i)
             tags = [
-                ':description: This is about %s' % topic_name,
+                f':description: This is about {topic_name}',
                 ':title: Title',
                 ':category: Foo',
                 ':related topic: Bar',
@@ -513,7 +513,7 @@ class TestTopicDBScan(TestTopicTagDB):
             ]
 
             reference_tag_dict[topic_name] = {
-                'description': ['This is about %s' % topic_name],
+                'description': [f'This is about {topic_name}'],
                 'title': ['Title'],
                 'category': ['Foo'],
                 'related topic': ['Bar'],

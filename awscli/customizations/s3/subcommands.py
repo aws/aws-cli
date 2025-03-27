@@ -857,7 +857,7 @@ class ListCommand(S3Command):
             str(last_mod.minute).zfill(2),
             str(last_mod.second).zfill(2),
         )
-        last_mod_str = "%s-%s-%s %s:%s:%s" % last_mod_tup
+        last_mod_str = "{}-{}-{} {}:{}:{}".format(*last_mod_tup)
         return last_mod_str.ljust(19, ' ')
 
     def _make_size_str(self, size):
@@ -1141,7 +1141,7 @@ class MbCommand(S3Command):
 
         if not parsed_args.path.startswith('s3://'):
             raise ParamValidationError(
-                "%s\nError: Invalid argument type" % self.USAGE
+                f"{self.USAGE}\nError: Invalid argument type"
             )
         bucket, _ = split_s3_bucket_key(parsed_args.path)
 
@@ -1158,11 +1158,11 @@ class MbCommand(S3Command):
         # TODO: Consolidate how we handle return codes and errors
         try:
             self.client.create_bucket(**params)
-            uni_print("make_bucket: %s\n" % bucket)
+            uni_print(f"make_bucket: {bucket}\n")
             return 0
         except Exception as e:
             uni_print(
-                "make_bucket failed: %s %s\n" % (parsed_args.path, e),
+                f"make_bucket failed: {parsed_args.path} {e}\n",
                 sys.stderr,
             )
             return 1
@@ -1188,14 +1188,14 @@ class RbCommand(S3Command):
 
         if not parsed_args.path.startswith('s3://'):
             raise ParamValidationError(
-                "%s\nError: Invalid argument type" % self.USAGE
+                f"{self.USAGE}\nError: Invalid argument type"
             )
         bucket, key = split_s3_bucket_key(parsed_args.path)
 
         if key:
             raise ParamValidationError(
                 'Please specify a valid bucket name only. '
-                'E.g. s3://%s' % bucket
+                f'E.g. s3://{bucket}'
             )
 
         if parsed_args.force:
@@ -1203,11 +1203,11 @@ class RbCommand(S3Command):
 
         try:
             self.client.delete_bucket(Bucket=bucket)
-            uni_print("remove_bucket: %s\n" % bucket)
+            uni_print(f"remove_bucket: {bucket}\n")
             return 0
         except Exception as e:
             uni_print(
-                "remove_bucket failed: %s %s\n" % (parsed_args.path, e),
+                f"remove_bucket failed: {parsed_args.path} {e}\n",
                 sys.stderr,
             )
             return 1
@@ -1613,7 +1613,9 @@ class CommandParameters:
         if 'locals3' == params['paths_type'] and not params['is_stream']:
             if not os.path.exists(params['src']):
                 raise RuntimeError(
-                    'The user-provided path %s does not exist.' % params['src']
+                    'The user-provided path {} does not exist.'.format(
+                        params['src']
+                    )
                 )
         # If the operation is downloading to a directory that does not exist,
         # create the directories so no warnings are thrown during the syncing
@@ -1740,7 +1742,7 @@ class CommandParameters:
             'locallocal': [],
         }
         paths_type = ''
-        usage = "usage: aws s3 %s %s" % (self.cmd, self.usage)
+        usage = f"usage: aws s3 {self.cmd} {self.usage}"
         for i in range(len(paths)):
             if paths[i].startswith('s3://'):
                 paths_type = paths_type + 's3'
@@ -1750,7 +1752,7 @@ class CommandParameters:
             self.parameters['paths_type'] = paths_type
         else:
             raise ParamValidationError(
-                "%s\nError: Invalid argument type" % usage
+                f"{usage}\nError: Invalid argument type"
             )
 
     def add_region(self, parsed_globals):
@@ -1790,14 +1792,14 @@ class CommandParameters:
         if self.parameters.get(sse_c_type):
             if not self.parameters.get(sse_c_key_type):
                 raise ParamValidationError(
-                    'If %s is specified, %s must be specified '
-                    'as well.' % (sse_c_type_param, sse_c_key_type_param)
+                    f'If {sse_c_type_param} is specified, {sse_c_key_type_param} must be specified '
+                    'as well.'
                 )
         if self.parameters.get(sse_c_key_type):
             if not self.parameters.get(sse_c_type):
                 raise ParamValidationError(
-                    'If %s is specified, %s must be specified '
-                    'as well.' % (sse_c_key_type_param, sse_c_type_param)
+                    f'If {sse_c_key_type_param} is specified, {sse_c_type_param} must be specified '
+                    'as well.'
                 )
 
     def _validate_sse_c_copy_source_for_paths(self):

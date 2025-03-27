@@ -233,13 +233,7 @@ class StreamingChecksumBody(StreamingBody):
 
     def _validate_checksum(self):
         if self._checksum.digest() != base64.b64decode(self._expected):
-            error_msg = (
-                "Expected checksum %s did not match calculated checksum: %s"
-                % (
-                    self._expected,
-                    self._checksum.b64digest(),
-                )
-            )
+            error_msg = f"Expected checksum {self._expected} did not match calculated checksum: {self._checksum.b64digest()}"
             raise FlexibleChecksumError(error_msg=error_msg)
 
 
@@ -277,7 +271,7 @@ def resolve_request_checksum_algorithm(
         algorithm_name = params[algorithm_member].lower()
         if algorithm_name not in supported_algorithms:
             raise FlexibleChecksumError(
-                error_msg="Unsupported checksum algorithm: %s" % algorithm_name
+                error_msg=f"Unsupported checksum algorithm: {algorithm_name}"
             )
     elif request_checksum_required or (
         algorithm_member and request_checksum_calculation == "when_supported"
@@ -347,7 +341,7 @@ def apply_request_checksum(request):
         _apply_request_trailer_checksum(request)
     else:
         raise FlexibleChecksumError(
-            error_msg="Unknown checksum variant: %s" % algorithm["in"]
+            error_msg="Unknown checksum variant: {}".format(algorithm["in"])
         )
     if "request_algorithm_header" in checksum_context:
         request_algorithm_header = checksum_context["request_algorithm_header"]
@@ -445,7 +439,7 @@ def handle_checksum_body(http_response, response, context, operation_model):
         return
 
     for algorithm in algorithms:
-        header_name = "x-amz-checksum-%s" % algorithm
+        header_name = f"x-amz-checksum-{algorithm}"
         # If the header is not found, check the next algorithm
         if header_name not in headers:
             continue
@@ -479,7 +473,7 @@ def handle_checksum_body(http_response, response, context, operation_model):
 
 def _handle_streaming_response(http_response, response, algorithm):
     checksum_cls = _CHECKSUM_CLS.get(algorithm)
-    header_name = "x-amz-checksum-%s" % algorithm
+    header_name = f"x-amz-checksum-{algorithm}"
     return StreamingChecksumBody(
         http_response.raw,
         response["headers"].get("content-length"),
@@ -490,19 +484,13 @@ def _handle_streaming_response(http_response, response, algorithm):
 
 def _handle_bytes_response(http_response, response, algorithm):
     body = http_response.content
-    header_name = "x-amz-checksum-%s" % algorithm
+    header_name = f"x-amz-checksum-{algorithm}"
     checksum_cls = _CHECKSUM_CLS.get(algorithm)
     checksum = checksum_cls()
     checksum.update(body)
     expected = response["headers"][header_name]
     if checksum.digest() != base64.b64decode(expected):
-        error_msg = (
-            "Expected checksum %s did not match calculated checksum: %s"
-            % (
-                expected,
-                checksum.b64digest(),
-            )
-        )
+        error_msg = f"Expected checksum {expected} did not match calculated checksum: {checksum.b64digest()}"
         raise FlexibleChecksumError(error_msg=error_msg)
     return body
 

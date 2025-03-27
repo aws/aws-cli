@@ -165,8 +165,8 @@ class ProvideLastModifiedTimeSubscriber(OnDoneFilteredSubscriber):
             utils.set_file_utime(filename, int(mod_timestamp))
         except Exception as e:
             warning_message = (
-                'Successfully Downloaded %s but was unable to update the '
-                'last modified time. %s' % (filename, e)
+                f'Successfully Downloaded {filename} but was unable to update the '
+                f'last modified time. {e}'
             )
             self._result_queue.put(
                 utils.create_warning(filename, warning_message)
@@ -184,7 +184,7 @@ class DirectoryCreatorSubscriber(BaseSubscriber):
         except OSError as e:
             if not e.errno == errno.EEXIST:
                 raise CreateDirectoryError(
-                    "Could not create directory %s: %s" % (d, e)
+                    f"Could not create directory {d}: {e}"
                 )
 
 
@@ -198,7 +198,7 @@ class CopyPropsSubscriberFactory:
         copy_props = self._cli_params.get('copy_props', 'default').replace(
             '-', '_'
         )
-        return getattr(self, '_get_%s_subscribers' % copy_props)(fileinfo)
+        return getattr(self, f'_get_{copy_props}_subscribers')(fileinfo)
 
     def _get_none_subscribers(self, fileinfo):
         return [

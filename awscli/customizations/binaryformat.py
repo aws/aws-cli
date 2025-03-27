@@ -57,7 +57,7 @@ class Base64DecodeVisitor(ModelVisitor):
         try:
             parent[name] = base64.b64decode(value)
         except (binascii.Error, TypeError):
-            raise InvalidBase64Error('Invalid base64: "%s"' % value)
+            raise InvalidBase64Error(f'Invalid base64: "{value}"')
 
 
 class BinaryFormatHandler:

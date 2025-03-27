@@ -120,7 +120,7 @@ def get_values_from_editor(args):
         f.flush()
         env = os.environ
         editor = env.get('VISUAL', env.get('EDITOR', 'vim'))
-        p = subprocess.Popen('%s %s' % (editor, f.name), shell=True)
+        p = subprocess.Popen(f'{editor} {f.name}', shell=True)
         p.communicate()
         with open(f.name) as f:
             filled_in_contents = f.read()
@@ -133,11 +133,7 @@ def replace_issue_references(parsed, repo_name):
 
     def linkify(match):
         number = match.group()[1:]
-        return '`%s <https://github.com/%s/issues/%s>`__' % (
-            match.group(),
-            repo_name,
-            number,
-        )
+        return f'`{match.group()} <https://github.com/{repo_name}/issues/{number}>`__'
 
     new_description = re.sub('#\d+', linkify, description)
     parsed['description'] = new_description
@@ -158,11 +154,11 @@ def write_new_change(parsed_values):
         type_name=parsed_values['type'], summary=short_summary
     )
     possible_filename = os.path.join(
-        dirname, '%s-%s.json' % (filename, str(random.randint(1, 100000)))
+        dirname, f'{filename}-{str(random.randint(1, 100000))}.json'
     )
     while os.path.isfile(possible_filename):
         possible_filename = os.path.join(
-            dirname, '%s-%s.json' % (filename, str(random.randint(1, 100000)))
+            dirname, f'{filename}-{str(random.randint(1, 100000))}.json'
         )
     with open(possible_filename, 'w') as f:
         f.write(json.dumps(parsed_values, indent=2) + "\n")

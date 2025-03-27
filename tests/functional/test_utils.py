@@ -22,5 +22,5 @@ class TestWriteException(unittest.TestCase):
             write_exception(ex, outfile)
             outfile.seek(0)
 
-            expected_output = "\n%s\n" % error_message
+            expected_output = f"\n{error_message}\n"
             self.assertEqual(outfile.read(), expected_output)

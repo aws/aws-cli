@@ -64,7 +64,7 @@ def test_no_shadowed_builtins(command_name, command_table, builtins):
                 # Then we are shadowing or prefixing a top level argument
                 errors.append(
                     'Shadowing/Prefixing a top level option: '
-                    '%s.%s.%s' % (command_name, sub_name, arg_name)
+                    f'{command_name}.{sub_name}.{arg_name}'
                 )
     if errors:
         raise AssertionError('\n' + '\n'.join(errors))

@@ -130,9 +130,9 @@ class TestDocumentTypeIO(BaseAWSCommandParamsTest):
 
     def nested_doctype_shorthand_error(self, parameter_name, member_name):
         return (
-            "Error parsing parameter '%s': Shorthand syntax does not support "
+            f"Error parsing parameter '{parameter_name}': Shorthand syntax does not support "
             "document types. Use JSON input for top-level argument to specify "
-            "nested parameter: %s" % (parameter_name, member_name)
+            f"nested parameter: {member_name}"
         )
 
     def test_can_provide_json_for_doc_type(self):

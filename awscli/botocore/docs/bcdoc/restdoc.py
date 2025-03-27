@@ -45,7 +45,7 @@ class ReSTDocument:
         """
         Write content on a newline.
         """
-        self._write('%s%s\n' % (self.style.spaces(), content))
+        self._write(f'{self.style.spaces()}{content}\n')
 
     def peek_write(self):
         """

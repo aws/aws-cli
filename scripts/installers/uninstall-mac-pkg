@@ -43,21 +43,21 @@ def uninstall():
     # Finally we forget the package receipt.
     _forget()
 
-    print('Successfully uninstalled AWS CLI from %s' % root_dir)
+    print(f'Successfully uninstalled AWS CLI from {root_dir}')
     return 0
 
 
 def _get_root_dir():
-    lines = run('pkgutil --pkg-info %s /' % _PKG_ID, echo=False)
+    lines = run(f'pkgutil --pkg-info {_PKG_ID} /', echo=False)
     output = _PKGUTIL_PATTERN.search(lines)
     path = os.path.join(output.group('volume'), output.group('location'))
     return path
 
 
 def _get_file_list(root):
-    lines = run(
-        'pkgutil --only-files --files %s /' % _PKG_ID, echo=False
-    ).split('\n')
+    lines = run(f'pkgutil --only-files --files {_PKG_ID} /', echo=False).split(
+        '\n'
+    )
     pkg_file_list = [os.path.join(root, line) for line in lines if line]
     extra_files = _read_install_metadata(root)
     return pkg_file_list + extra_files
@@ -77,9 +77,9 @@ def _read_install_metadata(root):
 
 
 def _get_dir_list(root):
-    lines = run(
-        'pkgutil --only-dirs --files %s /' % _PKG_ID, echo=False
-    ).split('\n')
+    lines = run(f'pkgutil --only-dirs --files {_PKG_ID} /', echo=False).split(
+        '\n'
+    )
     # Longer directory names are listed first to force them to come before
     # their parent directories. This ensures that child directories are
     # deleted before their parents.
@@ -105,24 +105,26 @@ def _forget():
     # Forget is the pkgutil command to delete the pkg installer receipt.
     # Once the files have been deleted, the pkgutil command will continue to
     # report that they are installed until the pkg id has been forgotten.
-    run('pkgutil --forget %s' % _PKG_ID, echo=False)
+    run(f'pkgutil --forget {_PKG_ID}', echo=False)
 
 
 def check():
     assert _is_installed(), 'Could not find AWS CLI installation.'
 
-    lines = run('pkgutil --pkg-info %s /' % _PKG_ID, echo=False)
+    lines = run(f'pkgutil --pkg-info {_PKG_ID} /', echo=False)
     output = _PKGUTIL_PATTERN.search(lines)
     root = os.path.join(output.group('volume'), output.group('location'))
     print(
-        'Found AWS CLI version %s installed at %s'
-        % (output.group('version'), root)
+        'Found AWS CLI version {} installed at {}'.format(
+            output.group('version'), root
+        )
     )
     print(
-        'Installed on %s'
-        % datetime.fromtimestamp(int(output.group('install_time')))
+        'Installed on {}'.format(
+            datetime.fromtimestamp(int(output.group('install_time')))
+        )
     )
-    command = 'sudo %s uninstall' % os.path.abspath(__file__)
+    command = f'sudo {os.path.abspath(__file__)} uninstall'
     print('To uninstall run the command:')
     print(command)
     return 0
@@ -130,7 +132,7 @@ def check():
 
 def _is_installed():
     try:
-        result = run('pkgutil --pkg-info %s /' % _PKG_ID, echo=False)
+        result = run(f'pkgutil --pkg-info {_PKG_ID} /', echo=False)
     except BadRCError:
         return False
     return True

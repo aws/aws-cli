@@ -304,19 +304,18 @@ class BaseTransferRequestSubmitter:
         if not self._cli_params.get('force_glacier_transfer'):
             if not fileinfo.is_glacier_compatible():
                 LOGGER.debug(
-                    'Encountered glacier object s3://%s. Not performing '
-                    '%s on object.' % (fileinfo.src, fileinfo.operation_name)
+                    f'Encountered glacier object s3://{fileinfo.src}. Not performing '
+                    f'{fileinfo.operation_name} on object.'
                 )
                 if not self._cli_params.get('ignore_glacier_warnings'):
                     warning = create_warning(
                         's3://' + fileinfo.src,
                         'Object is of storage class GLACIER. Unable to '
-                        'perform %s operations on GLACIER objects. You must '
+                        f'perform {fileinfo.operation_name} operations on GLACIER objects. You must '
                         'restore the object to be able to perform the '
-                        'operation. See aws s3 %s help for additional '
+                        f'operation. See aws s3 {fileinfo.operation_name} help for additional '
                         'parameter options to ignore or force these '
-                        'transfers.'
-                        % (fileinfo.operation_name, fileinfo.operation_name),
+                        'transfers.',
                     )
                     self._result_queue.put(warning)
                 return True
@@ -387,10 +386,7 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
     def _warn_if_too_large(self, fileinfo):
         if getattr(fileinfo, 'size') and fileinfo.size > MAX_UPLOAD_SIZE:
             file_path = relative_path(fileinfo.src)
-            warning_message = "File %s exceeds s3 upload limit of %s." % (
-                file_path,
-                human_readable_size(MAX_UPLOAD_SIZE),
-            )
+            warning_message = f"File {file_path} exceeds s3 upload limit of {human_readable_size(MAX_UPLOAD_SIZE)}."
             warning = create_warning(
                 file_path, warning_message, skip_file=False
             )

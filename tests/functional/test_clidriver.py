@@ -149,16 +149,15 @@ class TestPlugins(BaseCLIDriverTest):
     def test_plugins_loaded_from_specified_path(self):
         self.create_config(
             '[plugins]\n'
-            'cli_legacy_plugin_path = %s\n'
-            'myplugin = %s\n'
-            % (self.plugins_site_packages, self.plugin_module_name)
+            f'cli_legacy_plugin_path = {self.plugins_site_packages}\n'
+            f'myplugin = {self.plugin_module_name}\n'
         )
         clidriver = create_clidriver()
         self.assert_plugin_loaded(clidriver)
 
     def test_plugins_are_not_loaded_when_path_specified(self):
         self.create_config(
-            '[plugins]\n' 'myplugin = %s\n' % self.plugin_module_name
+            '[plugins]\n' f'myplugin = {self.plugin_module_name}\n'
         )
         clidriver = create_clidriver()
         self.assert_plugin_not_loaded(clidriver)
@@ -170,8 +169,8 @@ class TestPlugins(BaseCLIDriverTest):
         )
         self.create_config(
             '[plugins]\n'
-            'cli_legacy_plugin_path = %s\n'
-            'myplugin = %s\n' % (plugin_path, self.plugin_module_name)
+            f'cli_legacy_plugin_path = {plugin_path}\n'
+            f'myplugin = {self.plugin_module_name}\n'
         )
         clidriver = create_clidriver()
         self.assert_plugin_loaded(clidriver)

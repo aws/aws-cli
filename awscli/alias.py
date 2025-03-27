@@ -257,9 +257,8 @@ class BaseInternalAliasCommand(BaseAliasCommand):
             alias_args = shlex.split(self._alias_value)
         except ValueError as e:
             raise InvalidAliasException(
-                'Value of alias "%s" could not be parsed. '
-                'Received error: %s when parsing:\n%s'
-                % (self._alias_name, e, self._alias_value)
+                f'Value of alias "{self._alias_name}" could not be parsed. '
+                f'Received error: {e} when parsing:\n{self._alias_value}'
             )
 
         alias_args = [arg.strip(os.linesep) for arg in alias_args]
@@ -301,9 +300,8 @@ class BaseInternalAliasCommand(BaseAliasCommand):
             if arg_parser.get_default(parsed_param) != value:
                 if parsed_param in self.UNSUPPORTED_GLOBAL_PARAMETERS:
                     raise InvalidAliasException(
-                        'Global parameter "--%s" detected in alias "%s" '
+                        f'Global parameter "--{parsed_param}" detected in alias "{self._alias_name}" '
                         'which is not supported in subcommand aliases.'
-                        % (parsed_param, self._alias_name)
                     )
                 else:
                     global_params_to_update.append(parsed_param)

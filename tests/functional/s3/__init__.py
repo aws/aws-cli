@@ -64,9 +64,8 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
             if expected_operation_with_params == actual_operation_with_params:
                 return
         self.fail(
-            'Expected request: %s does not match any of the actual requests '
-            'made: %s'
-            % (expected_operation_with_params, actual_operations_with_params)
+            f'Expected request: {expected_operation_with_params} does not match any of the actual requests '
+            f'made: {actual_operations_with_params}'
         )
 
     def head_object_response(self, **override_kwargs):

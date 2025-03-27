@@ -138,8 +138,8 @@ class BasicCommand(CLICommand):
         # an arg parser and parse them.
         self._subcommand_table = self._build_subcommand_table()
         self._arg_table = self._build_arg_table()
-        event = 'before-building-argument-table-parser.%s' % ".".join(
-            self.lineage_names
+        event = 'before-building-argument-table-parser.{}'.format(
+            ".".join(self.lineage_names)
         )
         self._session.emit(
             event,
@@ -177,7 +177,7 @@ class BasicCommand(CLICommand):
             # a chance to process and override its value.
             if self._should_allow_plugins_override(cli_argument, value):
                 override = self._session.emit_first_non_none_response(
-                    'process-cli-arg.%s.%s' % ('custom', self.name),
+                    'process-cli-arg.{}.{}'.format('custom', self.name),
                     cli_argument=cli_argument,
                     value=value,
                     operation=None,
@@ -204,7 +204,7 @@ class BasicCommand(CLICommand):
             # function for this top level command.
             if remaining:
                 raise ParamValidationError(
-                    "Unknown options: %s" % ','.join(remaining)
+                    "Unknown options: {}".format(','.join(remaining))
                 )
             rc = self._run_main(parsed_args, parsed_globals)
             if rc is None:
@@ -239,7 +239,7 @@ class BasicCommand(CLICommand):
             subcommand_table[subcommand_name] = subcommand_class(self._session)
         name = '_'.join([c.name for c in self.lineage])
         self._session.emit(
-            'building-command-table.%s' % name,
+            f'building-command-table.{name}',
             command_table=subcommand_table,
             session=self._session,
             command_object=self,
@@ -277,7 +277,7 @@ class BasicCommand(CLICommand):
         arg_table = OrderedDict()
         name = '_'.join([c.name for c in self.lineage])
         self._session.emit(
-            'building-arg-table.%s' % name, arg_table=self.ARG_TABLE
+            f'building-arg-table.{name}', arg_table=self.ARG_TABLE
         )
         for arg_data in self.ARG_TABLE:
             # If a custom schema was passed in, create the argument_model
@@ -328,9 +328,9 @@ class BasicCommand(CLICommand):
     def _raise_usage_error(self):
         lineage = ' '.join([c.name for c in self.lineage])
         error_msg = (
-            "usage: aws [options] %s <subcommand> "
+            f"usage: aws [options] {lineage} <subcommand> "
             "[parameters]\naws: error: too few arguments"
-        ) % lineage
+        )
         raise ParamValidationError(error_msg)
 
     def _add_customization_to_user_agent(self):
@@ -447,14 +447,14 @@ class BasicDocHandler(OperationDocumentEventHandler):
                 )
                 self._documented_arg_groups.append(argument.group_name)
             elif argument.cli_type_name == 'boolean':
-                option_str = '%s' % argument.cli_name
+                option_str = f'{argument.cli_name}'
             elif argument.nargs == '+':
-                option_str = "%s <value> [<value>...]" % argument.cli_name
+                option_str = f"{argument.cli_name} <value> [<value>...]"
             else:
-                option_str = '%s <value>' % argument.cli_name
+                option_str = f'{argument.cli_name} <value>'
             if not (argument.required or argument.positional_arg):
-                option_str = '[%s]' % option_str
-            doc.writeln('%s' % option_str)
+                option_str = f'[{option_str}]'
+            doc.writeln(f'{option_str}')
 
         else:
             # A synopsis has been provided so we don't need to write

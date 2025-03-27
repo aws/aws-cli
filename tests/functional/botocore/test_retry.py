@@ -41,7 +41,7 @@ class TestRetry(BaseSessionTest):
             for _ in range(num_responses):
                 http_stubber.add_response(status=status, body=body)
             with self.assertRaisesRegex(
-                ClientError, 'reached max retries: %s' % num_retries
+                ClientError, f'reached max retries: {num_retries}'
             ):
                 yield
             self.assertEqual(len(http_stubber.requests), num_responses)

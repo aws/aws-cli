@@ -322,7 +322,7 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
         data_path = os.path.join(
             os.path.dirname(__file__), 'input_emr_fs.json'
         )
-        emrfs_option_value = 'file://%s' % data_path
+        emrfs_option_value = f'file://{data_path}'
         expected_emrfs_ba_key_values = [
             'fs.s3.consistent=true',
             'fs.s3.consistent.retryCount=10',
@@ -467,11 +467,7 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
             DEFAULT_CONFIGURATIONS, separators=(',', ':')
         )
 
-        cmd = "%s --release-label emr-4.0 --emrfs %s --configurations %s" % (
-            DEFAULT_CMD,
-            emrfs_option_value,
-            configurations,
-        )
+        cmd = f"{DEFAULT_CMD} --release-label emr-4.0 --emrfs {emrfs_option_value} --configurations {configurations}"
 
         expected_emrfs_properties = {'someProperty': 'someValue'}
 
@@ -497,11 +493,7 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
 
         configurations_json = json.dumps(configurations, separators=(',', ':'))
 
-        cmd = "%s --release-label emr-4.0 --emrfs %s --configurations %s" % (
-            DEFAULT_CMD,
-            emrfs_option_value,
-            configurations_json,
-        )
+        cmd = f"{DEFAULT_CMD} --release-label emr-4.0 --emrfs {emrfs_option_value} --configurations {configurations_json}"
 
         result = copy.deepcopy(DEFAULT_RESULT)
         result['ReleaseLabel'] = 'emr-4.0'
@@ -516,10 +508,7 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
         error_msg_kwargs,
         rc=255,
     ):
-        cmd = "%s --ami-version 3.4 --emrfs %s" % (
-            DEFAULT_CMD,
-            emrfs_option_value,
-        )
+        cmd = f"{DEFAULT_CMD} --ami-version 3.4 --emrfs {emrfs_option_value}"
         self.assert_error_msg(
             cmd,
             exception_class_name=exception_class_name,
@@ -527,10 +516,7 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
             rc=rc,
         )
 
-        cmd = "%s --release-label emr-4.0 --emrfs %s" % (
-            DEFAULT_CMD,
-            emrfs_option_value,
-        )
+        cmd = f"{DEFAULT_CMD} --release-label emr-4.0 --emrfs {emrfs_option_value}"
         self.assert_error_msg(
             cmd,
             exception_class_name=exception_class_name,
@@ -546,9 +532,8 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
         provider_location=None,
     ):
         if expected_emrfs_ba_key_values is not None:
-            cmd = "%s --ami-version 3.4 --emrfs %s" % (
-                DEFAULT_CMD,
-                emrfs_option_value,
+            cmd = (
+                f"{DEFAULT_CMD} --ami-version 3.4 --emrfs {emrfs_option_value}"
             )
             result = copy.deepcopy(DEFAULT_RESULT)
             result['BootstrapActions'] = (
@@ -566,10 +551,7 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
             self.assert_params_for_cmd(cmd, result)
 
         if expected_emrfs_properties is not None:
-            cmd = "%s --release-label emr-4.0 --emrfs %s" % (
-                DEFAULT_CMD,
-                emrfs_option_value,
-            )
+            cmd = f"{DEFAULT_CMD} --release-label emr-4.0 --emrfs {emrfs_option_value}"
             result = copy.deepcopy(DEFAULT_RESULT)
             emrfs_configuration = copy.deepcopy(EMPTY_EMRFS_CONFIGURATION)
             emrfs_configuration['Properties'] = expected_emrfs_properties

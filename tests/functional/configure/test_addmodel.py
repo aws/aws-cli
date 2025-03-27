@@ -50,8 +50,8 @@ class TestAddModel(BaseAWSCommandParamsTest):
         self.files.remove_all()
 
     def test_add_model(self):
-        cmdline = self.prefix + ' --service-model %s' % json.dumps(
-            self.service_definition, separators=(',', ':')
+        cmdline = self.prefix + ' --service-model {}'.format(
+            json.dumps(self.service_definition, separators=(',', ':'))
         )
         self.run_cmd(cmdline)
 
@@ -68,8 +68,8 @@ class TestAddModel(BaseAWSCommandParamsTest):
         )
 
     def test_add_model_with_unicode(self):
-        cmdline = self.prefix + ' --service-model %s' % json.dumps(
-            self.service_unicode_definition, separators=(',', ':')
+        cmdline = self.prefix + ' --service-model {}'.format(
+            json.dumps(self.service_unicode_definition, separators=(',', ':'))
         )
         self.run_cmd(cmdline)
 
@@ -86,8 +86,8 @@ class TestAddModel(BaseAWSCommandParamsTest):
         )
 
     def test_add_model_with_service_name(self):
-        cmdline = self.prefix + ' --service-model %s' % json.dumps(
-            self.service_definition, separators=(',', ':')
+        cmdline = self.prefix + ' --service-model {}'.format(
+            json.dumps(self.service_definition, separators=(',', ':'))
         )
         cmdline += ' --service-name override-name'
         self.run_cmd(cmdline)

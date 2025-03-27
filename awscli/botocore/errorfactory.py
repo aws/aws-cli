@@ -49,8 +49,9 @@ class BaseClientExceptions:
             for exception_cls in self._code_to_exception.values()
         ]
         raise AttributeError(
-            '%r object has no attribute %r. Valid exceptions are: %s'
-            % (self, name, ', '.join(exception_cls_names))
+            '{!r} object has no attribute {!r}. Valid exceptions are: {}'.format(
+                self, name, ', '.join(exception_cls_names)
+            )
         )
 
 

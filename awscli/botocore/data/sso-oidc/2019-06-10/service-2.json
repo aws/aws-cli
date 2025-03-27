@@ -147,6 +147,16 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "AwsAdditionalDetails":{
+      "type":"structure",
+      "members":{
+        "identityContext":{
+          "shape":"IdentityContext",
+          "documentation":"<p>STS context assertion that carries a user identifier to the Amazon Web Services service that it calls and can be used to obtain an identity-enhanced IAM role session. This value corresponds to the <code>sts:identity_context</code> claim in the ID token.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains Amazon Web Services-specific parameter extensions for the token endpoint responses and includes the identity context.</p>"
+    },
     "ClientId":{"type":"string"},
     "ClientName":{"type":"string"},
     "ClientSecret":{
@@ -312,6 +322,10 @@
         "scope":{
           "shape":"Scopes",
           "documentation":"<p>The list of scopes for which authorization is granted. The access token that is issued is limited to the scopes that are granted.</p>"
+        },
+        "awsAdditionalDetails":{
+          "shape":"AwsAdditionalDetails",
+          "documentation":"<p>A structure containing information from the <code>idToken</code>. Only the <code>identityContext</code> is in it, which is a value extracted from the <code>idToken</code>. This provides direct access to identity information without requiring JWT parsing.</p>"
         }
       }
     },
@@ -344,6 +358,7 @@
       "type":"string",
       "sensitive":true
     },
+    "IdentityContext":{"type":"string"},
     "InternalServerException":{
       "type":"structure",
       "members":{

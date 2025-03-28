@@ -18,7 +18,7 @@ def initialize(cli):
     """
     The entry point for CloudFormation high level commands.
     """
-    cli.register('building-command-table.cloudformation', inject_commands)
+    cli.register("building-command-table.cloudformation", inject_commands)
 
 
 def inject_commands(command_table, session, **kwargs):
@@ -27,5 +27,5 @@ def inject_commands(command_table, session, **kwargs):
     inject new high level commands into the command list. These high level
     commands must not collide with existing low-level API call names.
     """
-    command_table['package'] = PackageCommand(session)
-    command_table['deploy'] = DeployCommand(session)
+    command_table["package"] = PackageCommand(session)
+    command_table["deploy"] = DeployCommand(session)

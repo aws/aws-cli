@@ -2302,9 +2302,9 @@ class TestS3EndpointSetter(unittest.TestCase):
         if bucket:
             url += bucket
         if key:
-            url += '/%s' % key
+            url += f'/{key}'
         if querystring:
-            url += '?%s' % querystring
+            url += f'?{querystring}'
         return AWSRequest(method='GET', headers={}, url=url)
 
     def get_s3_outpost_request(self, **s3_request_kwargs):
@@ -2371,65 +2371,37 @@ class TestS3EndpointSetter(unittest.TestCase):
     def test_outpost_endpoint(self):
         request = self.get_s3_outpost_request()
         self.call_set_endpoint(self.endpoint_setter, request=request)
-        expected_url = 'https://%s-%s.%s.s3-outposts.%s.amazonaws.com/' % (
-            self.accesspoint_name,
-            self.account,
-            self.outpost_name,
-            self.region_name,
-        )
+        expected_url = f'https://{self.accesspoint_name}-{self.account}.{self.outpost_name}.s3-outposts.{self.region_name}.amazonaws.com/'
         self.assertEqual(request.url, expected_url)
 
     def test_outpost_endpoint_preserves_key_in_path(self):
         request = self.get_s3_outpost_request(key=self.key)
         self.call_set_endpoint(self.endpoint_setter, request=request)
-        expected_url = 'https://%s-%s.%s.s3-outposts.%s.amazonaws.com/%s' % (
-            self.accesspoint_name,
-            self.account,
-            self.outpost_name,
-            self.region_name,
-            self.key,
-        )
+        expected_url = f'https://{self.accesspoint_name}-{self.account}.{self.outpost_name}.s3-outposts.{self.region_name}.amazonaws.com/{self.key}'
         self.assertEqual(request.url, expected_url)
 
     def test_accesspoint_endpoint(self):
         request = self.get_s3_accesspoint_request()
         self.call_set_endpoint(self.endpoint_setter, request=request)
-        expected_url = 'https://%s-%s.s3-accesspoint.%s.amazonaws.com/' % (
-            self.accesspoint_name,
-            self.account,
-            self.region_name,
-        )
+        expected_url = f'https://{self.accesspoint_name}-{self.account}.s3-accesspoint.{self.region_name}.amazonaws.com/'
         self.assertEqual(request.url, expected_url)
 
     def test_accesspoint_preserves_key_in_path(self):
         request = self.get_s3_accesspoint_request(key=self.key)
         self.call_set_endpoint(self.endpoint_setter, request=request)
-        expected_url = 'https://%s-%s.s3-accesspoint.%s.amazonaws.com/%s' % (
-            self.accesspoint_name,
-            self.account,
-            self.region_name,
-            self.key,
-        )
+        expected_url = f'https://{self.accesspoint_name}-{self.account}.s3-accesspoint.{self.region_name}.amazonaws.com/{self.key}'
         self.assertEqual(request.url, expected_url)
 
     def test_accesspoint_preserves_scheme(self):
         request = self.get_s3_accesspoint_request(scheme='http://')
         self.call_set_endpoint(self.endpoint_setter, request=request)
-        expected_url = 'http://%s-%s.s3-accesspoint.%s.amazonaws.com/' % (
-            self.accesspoint_name,
-            self.account,
-            self.region_name,
-        )
+        expected_url = f'http://{self.accesspoint_name}-{self.account}.s3-accesspoint.{self.region_name}.amazonaws.com/'
         self.assertEqual(request.url, expected_url)
 
     def test_accesspoint_preserves_query_string(self):
         request = self.get_s3_accesspoint_request(querystring='acl')
         self.call_set_endpoint(self.endpoint_setter, request=request)
-        expected_url = 'https://%s-%s.s3-accesspoint.%s.amazonaws.com/?acl' % (
-            self.accesspoint_name,
-            self.account,
-            self.region_name,
-        )
+        expected_url = f'https://{self.accesspoint_name}-{self.account}.s3-accesspoint.{self.region_name}.amazonaws.com/?acl'
         self.assertEqual(request.url, expected_url)
 
     def test_uses_resolved_dns_suffix(self):
@@ -2438,11 +2410,7 @@ class TestS3EndpointSetter(unittest.TestCase):
         }
         request = self.get_s3_accesspoint_request()
         self.call_set_endpoint(self.endpoint_setter, request=request)
-        expected_url = 'https://%s-%s.s3-accesspoint.%s.mysuffix.com/' % (
-            self.accesspoint_name,
-            self.account,
-            self.region_name,
-        )
+        expected_url = f'https://{self.accesspoint_name}-{self.account}.s3-accesspoint.{self.region_name}.mysuffix.com/'
         self.assertEqual(request.url, expected_url)
 
     def test_uses_region_of_client_if_use_arn_disabled(self):
@@ -2452,11 +2420,7 @@ class TestS3EndpointSetter(unittest.TestCase):
         )
         request = self.get_s3_accesspoint_request()
         self.call_set_endpoint(self.endpoint_setter, request=request)
-        expected_url = 'https://%s-%s.s3-accesspoint.%s.amazonaws.com/' % (
-            self.accesspoint_name,
-            self.account,
-            client_region,
-        )
+        expected_url = f'https://{self.accesspoint_name}-{self.account}.s3-accesspoint.{client_region}.amazonaws.com/'
         self.assertEqual(request.url, expected_url)
 
     def test_accesspoint_supports_custom_endpoint(self):
@@ -2465,9 +2429,8 @@ class TestS3EndpointSetter(unittest.TestCase):
         )
         request = self.get_s3_accesspoint_request()
         self.call_set_endpoint(endpoint_setter, request=request)
-        expected_url = 'https://%s-%s.custom.com/' % (
-            self.accesspoint_name,
-            self.account,
+        expected_url = (
+            f'https://{self.accesspoint_name}-{self.account}.custom.com/'
         )
         self.assertEqual(request.url, expected_url)
 
@@ -2497,9 +2460,8 @@ class TestS3EndpointSetter(unittest.TestCase):
         )
         request = self.get_s3_request(self.bucket, self.key)
         self.call_set_endpoint(endpoint_setter, request)
-        expected_url = 'https://%s.s3.us-west-2.amazonaws.com/%s' % (
-            self.bucket,
-            self.key,
+        expected_url = (
+            f'https://{self.bucket}.s3.us-west-2.amazonaws.com/{self.key}'
         )
         self.assertEqual(request.url, expected_url)
 
@@ -2509,9 +2471,8 @@ class TestS3EndpointSetter(unittest.TestCase):
         )
         request = self.get_s3_request(self.bucket, self.key)
         self.call_set_endpoint(endpoint_setter, request)
-        expected_url = 'https://%s.s3.us-west-2.amazonaws.com/%s' % (
-            self.bucket,
-            self.key,
+        expected_url = (
+            f'https://{self.bucket}.s3.us-west-2.amazonaws.com/{self.key}'
         )
         self.assertEqual(request.url, expected_url)
 
@@ -2521,9 +2482,8 @@ class TestS3EndpointSetter(unittest.TestCase):
         )
         request = self.get_s3_request(self.bucket, self.key)
         self.call_set_endpoint(endpoint_setter, request)
-        expected_url = 'https://s3.us-west-2.amazonaws.com/%s/%s' % (
-            self.bucket,
-            self.key,
+        expected_url = (
+            f'https://s3.us-west-2.amazonaws.com/{self.bucket}/{self.key}'
         )
         self.assertEqual(request.url, expected_url)
 
@@ -2533,9 +2493,8 @@ class TestS3EndpointSetter(unittest.TestCase):
         )
         request = self.get_s3_request(self.bucket, self.key)
         self.call_set_endpoint(endpoint_setter, request)
-        expected_url = 'https://%s.s3-accelerate.amazonaws.com/%s' % (
-            self.bucket,
-            self.key,
+        expected_url = (
+            f'https://{self.bucket}.s3-accelerate.amazonaws.com/{self.key}'
         )
         self.assertEqual(request.url, expected_url)
 

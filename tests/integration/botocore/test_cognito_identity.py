@@ -23,7 +23,7 @@ class TestCognitoIdentity(unittest.TestCase):
         )
 
     def test_can_create_and_delete_identity_pool(self):
-        pool_name = 'test%s' % random_chars(10)
+        pool_name = f'test{random_chars(10)}'
         response = self.client.create_identity_pool(
             IdentityPoolName=pool_name, AllowUnauthenticatedIdentities=True
         )

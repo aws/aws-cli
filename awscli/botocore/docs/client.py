@@ -53,7 +53,7 @@ class ClientDocumenter:
             self._client.meta.service_model
         )
         section.write(
-            'A low-level client representing %s' % official_service_name
+            f'A low-level client representing {official_service_name}'
         )
         section.style.new_line()
         section.include_doc_string(
@@ -69,13 +69,11 @@ class ClientDocumenter:
         section.style.new_line()
         class_name = self._client.__class__.__name__
         for method_name in sorted(client_methods):
-            section.style.li(
-                ':py:meth:`~%s.Client.%s`' % (class_name, method_name)
-            )
+            section.style.li(f':py:meth:`~{class_name}.Client.{method_name}`')
 
     def _add_class_signature(self, section):
         section.style.start_sphinx_py_class(
-            class_name='%s.Client' % self._client.__class__.__name__
+            class_name=f'{self._client.__class__.__name__}.Client'
         )
 
     def _add_client_creation_example(self, section):
@@ -113,15 +111,15 @@ class ClientDocumenter:
         error_section.style.new_line()
         client_name = self._client.__class__.__name__
         for error in operation_model.error_shapes:
-            class_name = '%s.Client.exceptions.%s' % (client_name, error.name)
-            error_section.style.li(':py:class:`%s`' % class_name)
+            class_name = f'{client_name}.Client.exceptions.{error.name}'
+            error_section.style.li(f':py:class:`{class_name}`')
 
     def _add_model_driven_method(self, section, method_name):
         service_model = self._client.meta.service_model
         operation_name = self._client.meta.method_to_api_mapping[method_name]
         operation_model = service_model.operation_model(operation_name)
 
-        example_prefix = 'response = client.%s' % method_name
+        example_prefix = f'response = client.{method_name}'
         document_model_driven_method(
             section,
             method_name,
@@ -209,7 +207,7 @@ class ClientExceptionsDocumenter:
 
     def _exception_class_name(self, shape):
         cls_name = self._client.__class__.__name__
-        return '%s.Client.exceptions.%s' % (cls_name, shape.name)
+        return f'{cls_name}.Client.exceptions.{shape.name}'
 
     def _add_exceptions_list(self, section):
         error_shapes = self._client.meta.service_model.error_shapes
@@ -223,7 +221,7 @@ class ClientExceptionsDocumenter:
         section.style.new_line()
         for shape in error_shapes:
             class_name = self._exception_class_name(shape)
-            section.style.li(':py:class:`%s`' % class_name)
+            section.style.li(f':py:class:`{class_name}`')
 
     def _add_exception_classes(self, section):
         for shape in self._client.meta.service_model.error_shapes:
@@ -254,7 +252,7 @@ class ClientExceptionsDocumenter:
         section.write('...')
         section.style.dedent()
         section.style.new_line()
-        section.write('except client.exceptions.%s as e:' % shape.name)
+        section.write(f'except client.exceptions.{shape.name} as e:')
         section.style.indent()
         section.style.new_line()
         section.write('print(e.response)')

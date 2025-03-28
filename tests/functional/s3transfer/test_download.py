@@ -141,7 +141,7 @@ class BaseDownloadTest(BaseGeneralInterfaceTest):
         # Make sure the file exists
         self.assertTrue(os.path.exists(self.filename))
         # Make sure the random temporary file does not exist
-        possible_matches = glob.glob('%s*' % self.filename + os.extsep)
+        possible_matches = glob.glob(f'{self.filename}*' + os.extsep)
         self.assertEqual(possible_matches, [])
 
     def test_download_for_fileobj(self):
@@ -201,7 +201,7 @@ class BaseDownloadTest(BaseGeneralInterfaceTest):
             future.result()
         # Make sure the actual file and the temporary do not exist
         # by globbing for the file and any of its extensions
-        possible_matches = glob.glob('%s*' % self.filename)
+        possible_matches = glob.glob(f'{self.filename}*')
         self.assertEqual(possible_matches, [])
 
     def test_download_with_nonexistent_directory(self):

@@ -76,7 +76,7 @@ class ShapeDocumenter:
                 param_type = 'document'
             getattr(
                 self,
-                'document_shape_type_%s' % param_type,
+                f'document_shape_type_{param_type}',
                 self.document_shape_default,
             )(
                 section,
@@ -90,24 +90,13 @@ class ShapeDocumenter:
             )
             if is_top_level_param:
                 self._event_emitter.emit(
-                    'docs.%s.%s.%s.%s'
-                    % (
-                        self.EVENT_NAME,
-                        self._service_id,
-                        self._operation_name,
-                        name,
-                    ),
+                    f'docs.{self.EVENT_NAME}.{self._service_id}.{self._operation_name}.{name}',
                     section=section,
                 )
             at_overlying_method_section = len(history) == 1
             if at_overlying_method_section:
                 self._event_emitter.emit(
-                    'docs.%s.%s.%s.complete-section'
-                    % (
-                        self.EVENT_NAME,
-                        self._service_id,
-                        self._operation_name,
-                    ),
+                    f'docs.{self.EVENT_NAME}.{self._service_id}.{self._operation_name}.complete-section',
                     section=section,
                 )
             history.pop()

@@ -326,7 +326,7 @@ def test_client_can_retry_request_properly(
         except ClientError as e:
             assert False, (
                 'Request was not retried properly, '
-                'received error:\n%s' % pformat(e)
+                f'received error:\n{pformat(e)}'
             )
         # Ensure we used the stubber as we're not using it in strict mode
         assert len(http_stubber.responses) == 0, 'Stubber was not used!'

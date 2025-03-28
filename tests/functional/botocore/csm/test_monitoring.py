@@ -104,7 +104,7 @@ def _configured_session(case_configuration, listener_port):
 def _setup_shared_config(fileobj, shared_config_options, environ):
     fileobj.write('[default]\n')
     for key, value in shared_config_options.items():
-        fileobj.write('%s = %s\n' % (key, value))
+        fileobj.write(f'{key} = {value}\n')
     fileobj.flush()
     environ['AWS_CONFIG_FILE'] = fileobj.name
 

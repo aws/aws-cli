@@ -1346,7 +1346,7 @@ class TestWriteGetObjectResponse(BaseS3ClientConfigurationTest):
             self.assert_signing_region(request, region)
             expected_endpoint = (
                 'endpoint-io.a1c1d5c7.s3-object-lambda.'
-                '%s.amazonaws.com' % region
+                f'{region}.amazonaws.com'
             )
             self.assert_endpoint(request, expected_endpoint)
 
@@ -3476,7 +3476,7 @@ def _verify_presigned_url_addressing(
     # We're not trying to verify the params for URL presigning,
     # those are tested elsewhere.  We just care about the hostname/path.
     parts = urlsplit(url)
-    actual = '%s://%s%s' % parts[:3]
+    actual = '{}://{}{}'.format(*parts[:3])
     assert actual == expected_url
 
 

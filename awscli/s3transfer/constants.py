@@ -34,5 +34,5 @@ FULL_OBJECT_CHECKSUM_ARGS = [
     'ChecksumSHA256',
 ]
 
-USER_AGENT = 's3transfer/%s' % s3transfer.__version__
-PROCESS_USER_AGENT = '%s processpool' % USER_AGENT
+USER_AGENT = f's3transfer/{s3transfer.__version__}'
+PROCESS_USER_AGENT = f'{USER_AGENT} processpool'

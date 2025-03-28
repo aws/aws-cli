@@ -531,9 +531,8 @@ class ClientError(Exception):
             metadata = response['ResponseMetadata']
             if metadata.get('MaxAttemptsReached', False):
                 if 'RetryAttempts' in metadata:
-                    retry_info = (
-                        ' (reached max retries: %s)'
-                        % metadata['RetryAttempts']
+                    retry_info = ' (reached max retries: {})'.format(
+                        metadata['RetryAttempts']
                     )
         return retry_info
 

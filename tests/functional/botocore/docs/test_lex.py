@@ -21,11 +21,11 @@ class TestLexDocs(BaseDocsFunctionalTest):
         self.assert_contains_lines_in_order(
             [
                 '**Request Syntax**',
-                'sessionAttributes=%s,' % self.TYPE_STRING,
+                f'sessionAttributes={self.TYPE_STRING},',
                 ':type sessionAttributes: JSON serializable',
                 '**Response Syntax**',
-                '\'slots\': %s,' % self.TYPE_STRING,
-                '\'sessionAttributes\': %s' % self.TYPE_STRING,
+                f'\'slots\': {self.TYPE_STRING},',
+                f'\'sessionAttributes\': {self.TYPE_STRING}',
                 '**slots** (JSON serializable)',
                 '**sessionAttributes** (JSON serializable)',
             ],

@@ -32,7 +32,7 @@ class DuplicateHeader(ParserError):
     """Duplicate header found in the event."""
 
     def __init__(self, header):
-        message = 'Duplicate header present: "%s"' % header
+        message = f'Duplicate header present: "{header}"'
         super(DuplicateHeader, self).__init__(message)
 
 
@@ -40,10 +40,7 @@ class InvalidHeadersLength(ParserError):
     """Headers length is longer than the maximum."""
 
     def __init__(self, length):
-        message = 'Header length of %s exceeded the maximum of %s' % (
-            length,
-            _MAX_HEADERS_LENGTH,
-        )
+        message = f'Header length of {length} exceeded the maximum of {_MAX_HEADERS_LENGTH}'
         super(InvalidHeadersLength, self).__init__(message)
 
 
@@ -51,10 +48,7 @@ class ChecksumMismatch(ParserError):
     """Calculated checksum did not match the expected checksum."""
 
     def __init__(self, expected, calculated):
-        message = 'Checksum mismatch: expected 0x%08x, calculated 0x%08x' % (
-            expected,
-            calculated,
-        )
+        message = f'Checksum mismatch: expected 0x{expected:08x}, calculated 0x{calculated:08x}'
         super(ChecksumMismatch, self).__init__(message)
 
 

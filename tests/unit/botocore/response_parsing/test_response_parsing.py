@@ -41,7 +41,7 @@ def _test_parsed_response(xmlfile, operation_model, expected):
     response = {'body': response_body, 'status_code': 200, 'headers': {}}
     for case in SPECIAL_CASES:
         if case in xmlfile:
-            print("SKIP: %s" % xmlfile)
+            print(f"SKIP: {xmlfile}")
             return
     if 'errors' in xmlfile:
         response['status_code'] = 400
@@ -80,7 +80,7 @@ def _test_parsed_response(xmlfile, operation_model, expected):
         pretty_d1 = pprint.pformat(d1, width=1).splitlines()
         pretty_d2 = pprint.pformat(d2, width=1).splitlines()
         diff = '\n' + '\n'.join(difflib.ndiff(pretty_d1, pretty_d2))
-        raise AssertionError("Dicts are not equal:\n%s" % diff)
+        raise AssertionError(f"Dicts are not equal:\n{diff}")
 
 
 def _convert_bytes_to_str(parsed):
@@ -131,15 +131,13 @@ def _xml_test_cases():
         data_path = os.path.join(os.path.dirname(__file__), 'xml')
         data_path = os.path.join(data_path, dp)
         session = create_session()
-        xml_files = glob.glob('%s/*.xml' % data_path)
+        xml_files = glob.glob(f'{data_path}/*.xml')
         service_names = set()
         for fn in xml_files:
             service_names.add(os.path.split(fn)[1].split('-')[0])
         for service_name in service_names:
             service_model = session.get_service_model(service_name)
-            service_xml_files = glob.glob(
-                '%s/%s-*.xml' % (data_path, service_name)
-            )
+            service_xml_files = glob.glob(f'{data_path}/{service_name}-*.xml')
             for xmlfile in service_xml_files:
                 expected = _get_expected_parsed_result(xmlfile)
                 operation_model = _get_operation_model(service_model, xmlfile)

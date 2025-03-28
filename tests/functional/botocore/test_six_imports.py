@@ -35,20 +35,18 @@ class SixImportChecker(ast.NodeVisitor):
             if getattr(alias, 'name', '') == 'six':
                 line = self._get_line_content(self.filename, node.lineno)
                 raise AssertionError(
-                    "A bare 'import six' was found in %s:\n"
-                    "\n%s: %s\n"
+                    f"A bare 'import six' was found in {self.filename}:\n"
+                    f"\n{node.lineno}: {line}\n"
                     "Please use 'from botocore.compat import six' instead"
-                    % (self.filename, node.lineno, line)
                 )
 
     def visit_ImportFrom(self, node):
         if node.module == 'six':
             line = self._get_line_content(self.filename, node.lineno)
             raise AssertionError(
-                "A bare 'from six import ...' was found in %s:\n"
-                "\n%s:%s\n"
+                f"A bare 'from six import ...' was found in {self.filename}:\n"
+                f"\n{node.lineno}:{line}\n"
                 "Please use 'from botocore.compat import six' instead"
-                % (self.filename, node.lineno, line)
             )
 
     def _get_line_content(self, filename, lineno):

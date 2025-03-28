@@ -94,7 +94,7 @@ class HTTPClientError(BotoCoreError):
     def __init__(self, request=None, response=None, **kwargs):
         self.request = request
         self.response = response
-        super(HTTPClientError, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def __reduce__(self):
         return _exception_from_packed_args, (
@@ -464,7 +464,7 @@ class WaiterError(BotoCoreError):
     fmt = 'Waiter {name} failed: {reason}'
 
     def __init__(self, name, reason, last_response):
-        super(WaiterError, self).__init__(name=name, reason=reason)
+        super().__init__(name=name, reason=reason)
         self.last_response = last_response
 
 
@@ -521,7 +521,7 @@ class ClientError(Exception):
             operation_name=operation_name,
             retry_info=retry_info,
         )
-        super(ClientError, self).__init__(msg)
+        super().__init__(msg)
         self.response = error_response
         self.operation_name = operation_name
 
@@ -531,9 +531,8 @@ class ClientError(Exception):
             metadata = response['ResponseMetadata']
             if metadata.get('MaxAttemptsReached', False):
                 if 'RetryAttempts' in metadata:
-                    retry_info = (
-                        ' (reached max retries: %s)'
-                        % metadata['RetryAttempts']
+                    retry_info = ' (reached max retries: {})'.format(
+                        metadata['RetryAttempts']
                     )
         return retry_info
 

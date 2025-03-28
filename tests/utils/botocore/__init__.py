@@ -123,7 +123,7 @@ def temporary_file(mode):
 
     """
     temporary_directory = tempfile.mkdtemp()
-    basename = 'tmpfile-%s-%s' % (int(time.time()), random.randint(1, 1000))
+    basename = f'tmpfile-{int(time.time())}-{random.randint(1, 1000)}'
     full_filename = os.path.join(temporary_directory, basename)
     open(full_filename, 'w').close()
     try:
@@ -160,7 +160,7 @@ class BaseSessionTest(BaseEnvVar):
     """
 
     def setUp(self, **environ):
-        super(BaseSessionTest, self).setUp()
+        super().setUp()
         self.environ['AWS_ACCESS_KEY_ID'] = 'access_key'
         self.environ['AWS_SECRET_ACCESS_KEY'] = 'secret_key'
         self.environ['AWS_CONFIG_FILE'] = 'no-exist-foo'
@@ -282,7 +282,7 @@ class ClientDriver:
         self.send_cmd(*cmd)
         result = self._popen.stdout.readline().strip()
         if result != b'OK':
-            raise RuntimeError("Error from command '%s': %s" % (cmd, result))
+            raise RuntimeError(f"Error from command '{cmd}': {result}")
 
 
 # This is added to this file because it's used in both
@@ -320,7 +320,7 @@ class IntegerRefresher(credentials.RefreshableCredentials):
         )
         if refresh_function is None:
             refresh_function = self._do_refresh
-        super(IntegerRefresher, self).__init__(
+        super().__init__(
             '0', '0', '0', expires_in, refresh_function, 'INTREFRESH'
         )
         self.creds_last_for = creds_last_for
@@ -525,12 +525,14 @@ class ConsistencyWaiter:
 
     def _fail_message(self, attempts, successes):
         format_args = (attempts, successes)
-        return 'Failed after %s attempts, only had %s successes' % format_args
+        return 'Failed after {} attempts, only had {} successes'.format(
+            *format_args
+        )
 
 
 class StubbedSession(botocore.session.Session):
     def __init__(self, *args, **kwargs):
-        super(StubbedSession, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._cached_clients = {}
         self._client_stubs = {}
 
@@ -549,9 +551,7 @@ class StubbedSession(botocore.session.Session):
         return self._cached_clients[service_name]
 
     def _create_stubbed_client(self, service_name, *args, **kwargs):
-        client = super(StubbedSession, self).create_client(
-            service_name, *args, **kwargs
-        )
+        client = super().create_client(service_name, *args, **kwargs)
         stubber = Stubber(client)
         self._client_stubs[service_name] = stubber
         return client

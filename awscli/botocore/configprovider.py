@@ -560,7 +560,7 @@ class ChainProvider(BaseProvider):
         return value
 
     def __repr__(self):
-        return '[%s]' % ', '.join([str(p) for p in self._providers])
+        return '[{}]'.format(', '.join([str(p) for p in self._providers]))
 
 
 class InstanceVarProvider(BaseProvider):
@@ -586,10 +586,7 @@ class InstanceVarProvider(BaseProvider):
         return value
 
     def __repr__(self):
-        return 'InstanceVarProvider(instance_var=%s, session=%s)' % (
-            self._instance_var,
-            self._session,
-        )
+        return f'InstanceVarProvider(instance_var={self._instance_var}, session={self._session})'
 
 
 class ScopedConfigProvider(BaseProvider):
@@ -620,10 +617,7 @@ class ScopedConfigProvider(BaseProvider):
         return scoped_config.get(self._config_var_name)
 
     def __repr__(self):
-        return 'ScopedConfigProvider(config_var_name=%s, session=%s)' % (
-            self._config_var_name,
-            self._session,
-        )
+        return f'ScopedConfigProvider(config_var_name={self._config_var_name}, session={self._session})'
 
 
 class EnvironmentProvider(BaseProvider):
@@ -648,7 +642,7 @@ class EnvironmentProvider(BaseProvider):
         return None
 
     def __repr__(self):
-        return 'EnvironmentProvider(name=%s, env=%s)' % (self._name, self._env)
+        return f'EnvironmentProvider(name={self._name}, env={self._env})'
 
 
 class SectionConfigProvider(BaseProvider):
@@ -688,13 +682,8 @@ class SectionConfigProvider(BaseProvider):
 
     def __repr__(self):
         return (
-            'SectionConfigProvider(section_name=%s, '
-            'session=%s, override_providers=%s)'
-            % (
-                self._section_name,
-                self._session,
-                self._override_providers,
-            )
+            f'SectionConfigProvider(section_name={self._section_name}, '
+            f'session={self._session}, override_providers={self._override_providers})'
         )
 
 
@@ -709,7 +698,7 @@ class ConstantProvider(BaseProvider):
         return self._value
 
     def __repr__(self):
-        return 'ConstantProvider(value=%s)' % self._value
+        return f'ConstantProvider(value={self._value})'
 
 
 class ConfiguredEndpointProvider(BaseProvider):

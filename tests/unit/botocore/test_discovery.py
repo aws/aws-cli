@@ -122,7 +122,7 @@ class BaseEndpointDiscoveryTest(unittest.TestCase):
 
 class TestEndpointDiscoveryManager(BaseEndpointDiscoveryTest):
     def setUp(self):
-        super(TestEndpointDiscoveryManager, self).setUp()
+        super().setUp()
         self.construct_manager()
 
     def construct_manager(self, cache=None, time=None, side_effect=None):
@@ -379,7 +379,7 @@ class TestEndpointDiscoveryManager(BaseEndpointDiscoveryTest):
 
 class TestEndpointDiscoveryHandler(BaseEndpointDiscoveryTest):
     def setUp(self):
-        super(TestEndpointDiscoveryHandler, self).setUp()
+        super().setUp()
         self.manager = mock.Mock(spec=EndpointDiscoveryManager)
         self.handler = EndpointDiscoveryHandler(self.manager)
         self.service_model = ServiceModel(self.service_description)

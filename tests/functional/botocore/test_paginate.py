@@ -22,7 +22,7 @@ from tests import BaseSessionTest, random_chars
 
 class TestRDSPagination(BaseSessionTest):
     def setUp(self):
-        super(TestRDSPagination, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client('rds', self.region)
         self.stubber = Stubber(self.client)
@@ -64,7 +64,7 @@ class TestRDSPagination(BaseSessionTest):
 
 class TestAutoscalingPagination(BaseSessionTest):
     def setUp(self):
-        super(TestAutoscalingPagination, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client(
             'autoscaling',
@@ -172,7 +172,7 @@ class TestAutoscalingPagination(BaseSessionTest):
 
 class TestCloudwatchLogsPagination(BaseSessionTest):
     def setUp(self):
-        super(TestCloudwatchLogsPagination, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client(
             'logs',

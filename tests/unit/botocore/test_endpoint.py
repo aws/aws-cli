@@ -181,7 +181,7 @@ class TestEndpointFeatures(TestEndpointBase):
 
 class TestRetryInterface(TestEndpointBase):
     def setUp(self):
-        super(TestRetryInterface, self).setUp()
+        super().setUp()
         self.retried_on_exception = None
         self._operation = mock.Mock(spec=OperationModel)
         self._operation.name = 'DescribeInstances'
@@ -258,7 +258,7 @@ class TestRetryInterface(TestEndpointBase):
 
 class TestS3ResetStreamOnRetry(TestEndpointBase):
     def setUp(self):
-        super(TestS3ResetStreamOnRetry, self).setUp()
+        super().setUp()
 
     def max_attempts_retry_handler(self, attempts, **kwargs):
         # Simulate a max requests of 3.
@@ -343,7 +343,7 @@ class TestEndpointCreator(unittest.TestCase):
             )
 
     def test_create_endpoint_with_default_timeout(self):
-        endpoint = self.creator.create_endpoint(
+        self.creator.create_endpoint(
             self.service_model,
             region_name='us-west-2',
             endpoint_url='https://example.com',
@@ -353,7 +353,7 @@ class TestEndpointCreator(unittest.TestCase):
         self.assertEqual(session_args.get('timeout'), DEFAULT_TIMEOUT)
 
     def test_create_endpoint_with_customized_timeout(self):
-        endpoint = self.creator.create_endpoint(
+        self.creator.create_endpoint(
             self.service_model,
             region_name='us-west-2',
             endpoint_url='https://example.com',
@@ -364,7 +364,7 @@ class TestEndpointCreator(unittest.TestCase):
         self.assertEqual(session_args.get('timeout'), 123)
 
     def test_get_endpoint_default_verify_ssl(self):
-        endpoint = self.creator.create_endpoint(
+        self.creator.create_endpoint(
             self.service_model,
             region_name='us-west-2',
             endpoint_url='https://example.com',
@@ -374,7 +374,7 @@ class TestEndpointCreator(unittest.TestCase):
         self.assertTrue(session_args.get('verify'))
 
     def test_verify_ssl_can_be_disabled(self):
-        endpoint = self.creator.create_endpoint(
+        self.creator.create_endpoint(
             self.service_model,
             region_name='us-west-2',
             endpoint_url='https://example.com',
@@ -385,7 +385,7 @@ class TestEndpointCreator(unittest.TestCase):
         self.assertFalse(session_args.get('verify'))
 
     def test_verify_ssl_can_specify_cert_bundle(self):
-        endpoint = self.creator.create_endpoint(
+        self.creator.create_endpoint(
             self.service_model,
             region_name='us-west-2',
             endpoint_url='https://example.com',
@@ -397,7 +397,7 @@ class TestEndpointCreator(unittest.TestCase):
 
     def test_client_cert_can_specify_path(self):
         client_cert = '/some/path/cert'
-        endpoint = self.creator.create_endpoint(
+        self.creator.create_endpoint(
             self.service_model,
             region_name='us-west-2',
             endpoint_url='https://example.com',
@@ -409,7 +409,7 @@ class TestEndpointCreator(unittest.TestCase):
 
     def test_honor_cert_bundle_env_var(self):
         self.environ['REQUESTS_CA_BUNDLE'] = '/env/cacerts.pem'
-        endpoint = self.creator.create_endpoint(
+        self.creator.create_endpoint(
             self.service_model,
             region_name='us-west-2',
             endpoint_url='https://example.com',
@@ -420,7 +420,7 @@ class TestEndpointCreator(unittest.TestCase):
 
     def test_env_ignored_if_explicitly_passed(self):
         self.environ['REQUESTS_CA_BUNDLE'] = '/env/cacerts.pem'
-        endpoint = self.creator.create_endpoint(
+        self.creator.create_endpoint(
             self.service_model,
             region_name='us-west-2',
             endpoint_url='https://example.com',
@@ -432,7 +432,7 @@ class TestEndpointCreator(unittest.TestCase):
         self.assertEqual(session_args.get('verify'), '/path/cacerts.pem')
 
     def test_can_specify_max_pool_conns(self):
-        endpoint = self.creator.create_endpoint(
+        self.creator.create_endpoint(
             self.service_model,
             region_name='us-west-2',
             endpoint_url='https://example.com',

@@ -90,7 +90,7 @@ class TestPythonDefault(unittest.TestCase):
 
 class TestGetOfficialServiceName(BaseDocsTest):
     def setUp(self):
-        super(TestGetOfficialServiceName, self).setUp()
+        super().setUp()
         self.service_model.metadata = {'serviceFullName': 'Official Name'}
 
     def test_no_short_name(self):
@@ -122,7 +122,7 @@ class TestGetOfficialServiceName(BaseDocsTest):
 
 class TestAutopopulatedParam(BaseDocsTest):
     def setUp(self):
-        super(TestAutopopulatedParam, self).setUp()
+        super().setUp()
         self.name = 'MyMember'
         self.param = AutoPopulatedParam(self.name)
 
@@ -189,7 +189,7 @@ class TestAutopopulatedParam(BaseDocsTest):
 
 class TestHideParamFromOperations(BaseDocsTest):
     def setUp(self):
-        super(TestHideParamFromOperations, self).setUp()
+        super().setUp()
         self.name = 'MyMember'
         self.param = HideParamFromOperations(
             's3', self.name, ['SampleOperation']
@@ -197,7 +197,7 @@ class TestHideParamFromOperations(BaseDocsTest):
 
     def test_hides_params_from_doc_string(self):
         section = self.doc_structure.add_new_section(self.name)
-        param_signature = ':param %s: ' % self.name
+        param_signature = f':param {self.name}: '
         section.write(param_signature)
         self.assert_contains_line(param_signature)
         self.param.hide_param(
@@ -209,7 +209,7 @@ class TestHideParamFromOperations(BaseDocsTest):
     def test_hides_param_from_example(self):
         structure = self.doc_structure.add_new_section('structure-value')
         section = structure.add_new_section(self.name)
-        example = '%s: \'string\'' % self.name
+        example = f'{self.name}: \'string\''
         section.write(example)
         self.assert_contains_line(example)
         self.param.hide_param(
@@ -221,7 +221,7 @@ class TestHideParamFromOperations(BaseDocsTest):
 
 class TestAppendParamDocumentation(BaseDocsTest):
     def setUp(self):
-        super(TestAppendParamDocumentation, self).setUp()
+        super().setUp()
         self.name = 'MyMember'
         self.param = AppendParamDocumentation(self.name, 'hello!')
 

@@ -17,7 +17,7 @@ from tests import BaseSessionTest, ClientHTTPStubber, mock
 
 class TestLex(BaseSessionTest):
     def setUp(self):
-        super(TestLex, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client('lex-runtime', self.region)
         self.http_stubber = ClientHTTPStubber(self.client)

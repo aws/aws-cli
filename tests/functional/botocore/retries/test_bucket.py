@@ -9,7 +9,7 @@ from tests import unittest
 
 class InstrumentedTokenBucket(bucket.TokenBucket):
     def _acquire(self, amount, block):
-        rval = super(InstrumentedTokenBucket, self)._acquire(amount, block)
+        rval = super()._acquire(amount, block)
         assert self._current_capacity >= 0
         return rval
 

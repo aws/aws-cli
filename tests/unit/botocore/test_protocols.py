@@ -155,7 +155,7 @@ def test_input_compliance(json_description, case, basename):
     try:
         protocol_serializer = PROTOCOL_SERIALIZERS[protocol_type]
     except KeyError:
-        raise RuntimeError("Unknown protocol: %s" % protocol_type)
+        raise RuntimeError(f"Unknown protocol: {protocol_type}")
     serializer = protocol_serializer()
     serializer.MAP_TYPE = OrderedDict
     operation_model = OperationModel(case['given'], model)
@@ -175,7 +175,7 @@ def _assert_request_body_is_bytes(body):
     if not isinstance(body, bytes):
         raise AssertionError(
             "Expected body to be serialized as type "
-            "bytes(), instead got: %s" % type(body)
+            f"bytes(), instead got: {type(body)}"
         )
 
 
@@ -259,10 +259,9 @@ def test_output_compliance(json_description, case, basename):
         parsed = _fixup_parsed_result(parsed)
     except Exception as e:
         msg = (
-            "\nFailed to run test  : %s\n"
-            "Protocol            : %s\n"
-            "Description         : %s (%s:%s)\n"
-            % (
+            "\nFailed to run test  : {}\n"
+            "Protocol            : {}\n"
+            "Description         : {} ({}:{})\n".format(
                 e,
                 model.metadata['protocol'],
                 case['description'],
@@ -381,14 +380,13 @@ def _output_failure_message(
 ):
     j = _try_json_dump
     error_message = (
-        "\nDescription           : %s (%s:%s)\n"
-        "Protocol:             : %s\n"
-        "Given                 : %s\n"
-        "Response              : %s\n"
-        "Expected serialization: %s\n"
-        "Actual serialization  : %s\n"
-        "Assertion message     : %s\n"
-        % (
+        "\nDescription           : {} ({}:{})\n"
+        "Protocol:             : {}\n"
+        "Given                 : {}\n"
+        "Response              : {}\n"
+        "Expected serialization: {}\n"
+        "Actual serialization  : {}\n"
+        "Assertion message     : {}\n".format(
             case['description'],
             case['suite_id'],
             case['test_id'],
@@ -406,14 +404,13 @@ def _output_failure_message(
 def _input_failure_message(protocol_type, case, actual_request, error):
     j = _try_json_dump
     error_message = (
-        "\nDescription           : %s (%s:%s)\n"
-        "Protocol:             : %s\n"
-        "Given                 : %s\n"
-        "Params                : %s\n"
-        "Expected serialization: %s\n"
-        "Actual serialization  : %s\n"
-        "Assertion message     : %s\n"
-        % (
+        "\nDescription           : {} ({}:{})\n"
+        "Protocol:             : {}\n"
+        "Given                 : {}\n"
+        "Params                : {}\n"
+        "Expected serialization: {}\n"
+        "Actual serialization  : {}\n"
+        "Assertion message     : {}\n".format(
             case['description'],
             case['suite_id'],
             case['test_id'],
@@ -442,17 +439,9 @@ def assert_equal(first, second, prefix):
         assert first == second
     except Exception:
         try:
-            better = "%s (actual != expected)\n%s !=\n%s" % (
-                prefix,
-                json.dumps(first, indent=2),
-                json.dumps(second, indent=2),
-            )
+            better = f"{prefix} (actual != expected)\n{json.dumps(first, indent=2)} !=\n{json.dumps(second, indent=2)}"
         except (ValueError, TypeError):
-            better = "%s (actual != expected)\n%s !=\n%s" % (
-                prefix,
-                first,
-                second,
-            )
+            better = f"{prefix} (actual != expected)\n{first} !=\n{second}"
         raise AssertionError(better)
 
 
@@ -468,9 +457,9 @@ def _serialize_request_description(request_dict):
             # test runner we need to handle the case where the url_path
             # already has query params.
             if '?' not in request_dict['url_path']:
-                request_dict['url_path'] += '?%s' % encoded
+                request_dict['url_path'] += f'?{encoded}'
             else:
-                request_dict['url_path'] += '&%s' % encoded
+                request_dict['url_path'] += f'&{encoded}'
 
 
 def _assert_requests_equal(actual, expected, protocol):

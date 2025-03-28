@@ -376,12 +376,9 @@ def _assert_test_case(test_case, client, stubber):
         exception_cls = getattr(exceptions, assertions['exception'])
         if exception_raised is None:
             raise RuntimeError(
-                'Expected exception "%s" was not raised' % exception_cls
+                f'Expected exception "{exception_cls}" was not raised'
             )
-        error_msg = ('Expected exception "%s", got "%s"') % (
-            exception_cls,
-            type(exception_raised),
-        )
+        error_msg = f'Expected exception "{exception_cls}", got "{type(exception_raised)}"'
         assert isinstance(exception_raised, exception_cls), error_msg
     else:
         assert len(stubber.requests) == 1

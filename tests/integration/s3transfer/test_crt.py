@@ -510,6 +510,6 @@ class TestCRTS3Transfers(BaseTransferManagerIntegTest):
             future.result()
             self.assertEqual(err.name, 'AWS_ERROR_S3_CANCELED')
 
-        possible_matches = glob.glob('%s*' % download_path)
+        possible_matches = glob.glob(f'{download_path}*')
         self.assertEqual(possible_matches, [])
         self._assert_subscribers_called()

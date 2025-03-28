@@ -247,7 +247,6 @@ def test_invalid_arn_returns_none(rule_lib):
                 "service": "s3",
                 "region": "",
                 "accountId": "",
-                "region": "",
                 "resourceId": ["myBucket"],
             },
         ),

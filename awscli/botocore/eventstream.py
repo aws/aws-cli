@@ -32,30 +32,24 @@ class DuplicateHeader(ParserError):
     """Duplicate header found in the event."""
 
     def __init__(self, header):
-        message = 'Duplicate header present: "%s"' % header
-        super(DuplicateHeader, self).__init__(message)
+        message = f'Duplicate header present: "{header}"'
+        super().__init__(message)
 
 
 class InvalidHeadersLength(ParserError):
     """Headers length is longer than the maximum."""
 
     def __init__(self, length):
-        message = 'Header length of %s exceeded the maximum of %s' % (
-            length,
-            _MAX_HEADERS_LENGTH,
-        )
-        super(InvalidHeadersLength, self).__init__(message)
+        message = f'Header length of {length} exceeded the maximum of {_MAX_HEADERS_LENGTH}'
+        super().__init__(message)
 
 
 class ChecksumMismatch(ParserError):
     """Calculated checksum did not match the expected checksum."""
 
     def __init__(self, expected, calculated):
-        message = 'Checksum mismatch: expected 0x%08x, calculated 0x%08x' % (
-            expected,
-            calculated,
-        )
-        super(ChecksumMismatch, self).__init__(message)
+        message = f'Checksum mismatch: expected 0x{expected:08x}, calculated 0x{calculated:08x}'
+        super().__init__(message)
 
 
 class NoInitialResponseError(ParserError):
@@ -67,7 +61,7 @@ class NoInitialResponseError(ParserError):
 
     def __init__(self):
         message = 'First event was not of the initial-response type'
-        super(NoInitialResponseError, self).__init__(message)
+        super().__init__(message)
 
 
 class DecodeUtils:
@@ -591,8 +585,7 @@ class EventStream:
         event_stream_buffer = EventStreamBuffer()
         for chunk in self._raw_stream.stream():
             event_stream_buffer.add_data(chunk)
-            for event in event_stream_buffer:
-                yield event
+            yield from event_stream_buffer
 
     def _parse_event(self, event):
         response_dict = event.to_response_dict()

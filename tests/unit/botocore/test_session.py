@@ -237,7 +237,10 @@ class SessionTest(BaseSessionTest):
 
     def test_emit_delegates_to_emitter(self):
         calls = []
-        handler = lambda **kwargs: calls.append(kwargs)
+
+        def handler(**kwargs):
+            return calls.append(kwargs)
+
         self.session.register('foo', handler)
         self.session.emit('foo')
         self.assertEqual(len(calls), 1)
@@ -247,7 +250,10 @@ class SessionTest(BaseSessionTest):
         events = HierarchicalEmitter()
         session = create_session(event_hooks=events)
         calls = []
-        handler = lambda **kwargs: calls.append(kwargs)
+
+        def handler(**kwargs):
+            return calls.append(kwargs)
+
         events.register('foo', handler)
 
         session.emit('foo')
@@ -281,7 +287,10 @@ class SessionTest(BaseSessionTest):
 
     def test_register_with_unique_id(self):
         calls = []
-        handler = lambda **kwargs: calls.append(kwargs)
+
+        def handler(**kwargs):
+            return calls.append(kwargs)
+
         self.session.register('foo', handler, unique_id='bar')
         self.session.emit('foo')
         self.assertEqual(calls[0]['event_name'], 'foo')
@@ -293,7 +302,7 @@ class SessionTest(BaseSessionTest):
 
 class TestBuiltinEventHandlers(BaseSessionTest):
     def setUp(self):
-        super(TestBuiltinEventHandlers, self).setUp()
+        super().setUp()
         self.builtin_handlers = [
             ('foo', self.on_foo),
         ]
@@ -307,7 +316,7 @@ class TestBuiltinEventHandlers(BaseSessionTest):
         self.foo_called = True
 
     def tearDown(self):
-        super(TestBuiltinEventHandlers, self).tearDown()
+        super().tearDown()
         self.handler_patch.stop()
 
     def test_registered_builtin_handlers(self):
@@ -749,7 +758,7 @@ class TestClientMonitoring(BaseSessionTest):
         with mock.patch(
             'botocore.monitoring.SocketPublisher', spec=True
         ) as mock_publisher:
-            client = session.create_client('ec2', 'us-west-2')
+            session.create_client('ec2', 'us-west-2')
         self.assertEqual(mock_publisher.call_count, 1)
         _, args, kwargs = mock_publisher.mock_calls[0]
         self.assertEqual(kwargs.get('host'), host)
@@ -830,14 +839,20 @@ class TestComponentLocator(unittest.TestCase):
 
     def test_can_lazy_register_a_component(self):
         component = object()
-        lazy = lambda: component
+
+        def lazy():
+            return component
+
         self.components.lazy_register_component('foo', lazy)
         self.assertIs(self.components.get_component('foo'), component)
 
     def test_latest_registration_wins_even_if_lazy(self):
         first = object()
         second = object()
-        lazy_second = lambda: second
+
+        def lazy_second():
+            return second
+
         self.components.register_component('foo', first)
         self.components.lazy_register_component('foo', lazy_second)
         self.assertIs(self.components.get_component('foo'), second)
@@ -845,7 +860,10 @@ class TestComponentLocator(unittest.TestCase):
     def test_latest_registration_overrides_lazy(self):
         first = object()
         second = object()
-        lazy_first = lambda: first
+
+        def lazy_first():
+            return first
+
         self.components.lazy_register_component('foo', lazy_first)
         self.components.register_component('foo', second)
         self.assertIs(self.components.get_component('foo'), second)
@@ -893,7 +911,7 @@ class TestSessionRegionSetup(BaseSessionTest):
 
     def test_new_session_with_invalid_region(self):
         with self.assertRaises(botocore.exceptions.InvalidRegionError):
-            s3_client = self.session.create_client('s3', 'not.a.real#region')
+            self.session.create_client('s3', 'not.a.real#region')
 
     def test_new_session_with_none_region(self):
         s3_client = self.session.create_client('s3', region_name=None)

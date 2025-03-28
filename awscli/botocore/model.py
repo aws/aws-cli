@@ -203,7 +203,7 @@ class Shape:
         return self._shape_resolver.resolve_shape_ref(shape_ref)
 
     def __repr__(self):
-        return "<%s(%s)>" % (self.__class__.__name__, self.name)
+        return f"<{self.__class__.__name__}({self.name})>"
 
     @property
     def event_stream_name(self):
@@ -463,8 +463,7 @@ class ServiceModel:
             return self.metadata[name]
         except KeyError:
             raise UndefinedModelAttributeError(
-                '"%s" not defined in the metadata of the model: %s'
-                % (name, self)
+                f'"{name}" not defined in the metadata of the model: {self}'
             )
 
     # Signature version is one of the rare properties
@@ -486,7 +485,7 @@ class ServiceModel:
         return 'awsQueryCompatible' in self.metadata
 
     def __repr__(self):
-        return '%s(%s)' % (self.__class__.__name__, self.service_name)
+        return f'{self.__class__.__name__}({self.service_name})'
 
 
 class OperationModel:
@@ -719,7 +718,7 @@ class OperationModel:
         return None
 
     def __repr__(self):
-        return '%s(name=%s)' % (self.__class__.__name__, self.name)
+        return f'{self.__class__.__name__}(name={self.name})'
 
 
 class ShapeResolver:
@@ -746,7 +745,7 @@ class ShapeResolver:
             shape_cls = self.SHAPE_CLASSES.get(shape_model['type'], Shape)
         except KeyError:
             raise InvalidShapeError(
-                "Shape is missing required key 'type': %s" % shape_model
+                f"Shape is missing required key 'type': {shape_model}"
             )
         if member_traits:
             shape_model = shape_model.copy()
@@ -771,7 +770,7 @@ class ShapeResolver:
                 shape_name = member_traits.pop('shape')
             except KeyError:
                 raise InvalidShapeReferenceError(
-                    "Invalid model, missing shape reference: %s" % shape_ref
+                    f"Invalid model, missing shape reference: {shape_ref}"
                 )
             return self.get_shape_by_name(shape_name, member_traits)
 
@@ -886,7 +885,9 @@ class DenormalizedStructureBuilder:
         ]:
             shapes[shape_name] = self._build_scalar(model)
         else:
-            raise InvalidShapeError("Unknown shape type: %s" % model['type'])
+            raise InvalidShapeError(
+                "Unknown shape type: {}".format(model['type'])
+            )
 
     def _build_structure(self, model, shapes):
         members = OrderedDict()
@@ -976,4 +977,4 @@ class ShapeNameGenerator:
         """
         self._name_cache[type_name] += 1
         current_index = self._name_cache[type_name]
-        return '%sType%s' % (type_name.capitalize(), current_index)
+        return f'{type_name.capitalize()}Type{current_index}'

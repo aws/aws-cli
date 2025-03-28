@@ -636,7 +636,7 @@ class TaskSemaphore:
         """
         logger.debug("Acquiring %s", tag)
         if not self._semaphore.acquire(blocking):
-            raise NoResourcesAvailable("Cannot acquire tag '%s'" % tag)
+            raise NoResourcesAvailable(f"Cannot acquire tag '{tag}'")
 
     def release(self, tag, acquire_token):
         """Release the semaphore
@@ -694,7 +694,7 @@ class SlidingWindowSemaphore(TaskSemaphore):
         try:
             if self._count == 0:
                 if not blocking:
-                    raise NoResourcesAvailable("Cannot acquire tag '%s'" % tag)
+                    raise NoResourcesAvailable(f"Cannot acquire tag '{tag}'")
                 else:
                     while self._count == 0:
                         self._condition.wait()
@@ -716,7 +716,7 @@ class SlidingWindowSemaphore(TaskSemaphore):
         self._condition.acquire()
         try:
             if tag not in self._tag_sequences:
-                raise ValueError("Attempted to release unknown tag: %s" % tag)
+                raise ValueError(f"Attempted to release unknown tag: {tag}")
             max_sequence = self._tag_sequences[tag]
             if self._lowest_sequence[tag] == sequence_number:
                 # We can immediately process this request and free up
@@ -743,7 +743,7 @@ class SlidingWindowSemaphore(TaskSemaphore):
             else:
                 raise ValueError(
                     "Attempted to release unknown sequence number "
-                    "%s for tag: %s" % (sequence_number, tag)
+                    f"{sequence_number} for tag: {tag}"
                 )
         finally:
             self._condition.release()
@@ -781,13 +781,13 @@ class ChunksizeAdjuster:
         if current_chunksize > self.max_size:
             logger.debug(
                 "Chunksize greater than maximum chunksize. "
-                "Setting to %s from %s." % (self.max_size, current_chunksize)
+                f"Setting to {self.max_size} from {current_chunksize}."
             )
             return self.max_size
         elif current_chunksize < self.min_size:
             logger.debug(
                 "Chunksize less than minimum chunksize. "
-                "Setting to %s from %s." % (self.min_size, current_chunksize)
+                f"Setting to {self.min_size} from {current_chunksize}."
             )
             return self.min_size
         else:
@@ -804,8 +804,7 @@ class ChunksizeAdjuster:
         if chunksize != current_chunksize:
             logger.debug(
                 "Chunksize would result in the number of parts exceeding the "
-                "maximum. Setting to %s from %s."
-                % (chunksize, current_chunksize)
+                f"maximum. Setting to {chunksize} from {current_chunksize}."
             )
 
         return chunksize

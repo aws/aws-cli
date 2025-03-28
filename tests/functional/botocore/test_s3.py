@@ -52,7 +52,7 @@ class TestS3BucketValidation(unittest.TestCase):
 
 class BaseS3OperationTest(BaseSessionTest):
     def setUp(self):
-        super(BaseS3OperationTest, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client('s3', self.region)
         self.http_stubber = ClientHTTPStubber(self.client)
@@ -73,7 +73,7 @@ class BaseS3ClientConfigurationTest(BaseSessionTest):
     )
 
     def setUp(self):
-        super(BaseS3ClientConfigurationTest, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
 
     def _get_auth_regex(self, auth_header):
@@ -436,7 +436,7 @@ class TestS3200ErrorResponse(BaseS3OperationTest):
 
 class TestAccesspointArn(BaseS3ClientConfigurationTest):
     def setUp(self):
-        super(TestAccesspointArn, self).setUp()
+        super().setUp()
         self.client, self.http_stubber = self.create_stubbed_s3_client()
 
     def create_stubbed_s3_client(self, **kwargs):
@@ -1346,7 +1346,7 @@ class TestWriteGetObjectResponse(BaseS3ClientConfigurationTest):
             self.assert_signing_region(request, region)
             expected_endpoint = (
                 'endpoint-io.a1c1d5c7.s3-object-lambda.'
-                '%s.amazonaws.com' % region
+                f'{region}.amazonaws.com'
             )
             self.assert_endpoint(request, expected_endpoint)
 
@@ -1380,7 +1380,7 @@ class TestWriteGetObjectResponse(BaseS3ClientConfigurationTest):
 
 class TestS3SigV4(BaseS3OperationTest):
     def setUp(self):
-        super(TestS3SigV4, self).setUp()
+        super().setUp()
         self.client = self.session.create_client(
             's3', self.region, config=Config(signature_version='s3v4')
         )
@@ -1601,7 +1601,7 @@ class TestCanSendIntegerHeaders(BaseSessionTest):
 
 class TestRegionRedirect(BaseS3OperationTest):
     def setUp(self):
-        super(TestRegionRedirect, self).setUp()
+        super().setUp()
         self.client = self.session.create_client(
             's3',
             'us-west-2',
@@ -1763,7 +1763,7 @@ class TestRegionRedirect(BaseS3OperationTest):
             http_stubber.add_response(headers=region_headers)
             # The final request still fails with a 400.
             http_stubber.add_response(status=400)
-            with self.assertRaises(ClientError) as e:
+            with self.assertRaises(ClientError):
                 client.head_object(Bucket='foo', Key='bar')
             self.assertEqual(len(http_stubber.requests), 4)
 
@@ -1785,7 +1785,7 @@ class TestRegionRedirect(BaseS3OperationTest):
 
 class TestFipsRegionRedirect(BaseS3OperationTest):
     def setUp(self):
-        super(TestFipsRegionRedirect, self).setUp()
+        super().setUp()
         self.client = self.session.create_client(
             "s3",
             "fips-us-west-2",
@@ -3476,7 +3476,7 @@ def _verify_presigned_url_addressing(
     # We're not trying to verify the params for URL presigning,
     # those are tested elsewhere.  We just care about the hostname/path.
     parts = urlsplit(url)
-    actual = '%s://%s%s' % parts[:3]
+    actual = '{}://{}{}'.format(*parts[:3])
     assert actual == expected_url
 
 
@@ -3517,7 +3517,7 @@ class TestS3XMLPayloadEscape(BaseS3OperationTest):
     def test_escape_keys_in_xml_delete_objects(self):
         self.http_stubber.add_response()
         with self.http_stubber:
-            response = self.client.delete_objects(
+            self.client.delete_objects(
                 Bucket='mybucket',
                 Delete={'Objects': [{'Key': 'some\r\n\rkey'}]},
             )
@@ -3529,7 +3529,7 @@ class TestS3XMLPayloadEscape(BaseS3OperationTest):
     def test_escape_keys_in_xml_put_bucket_lifecycle_configuration(self):
         self.http_stubber.add_response()
         with self.http_stubber:
-            response = self.client.put_bucket_lifecycle_configuration(
+            self.client.put_bucket_lifecycle_configuration(
                 Bucket='mybucket',
                 LifecycleConfiguration={
                     'Rules': [

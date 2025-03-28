@@ -99,7 +99,7 @@ class TestDownload(BaseTransferManagerIntegTest):
                     future.cancel()
                     raise RuntimeError(
                         "Download transfer did not start after waiting for "
-                        "%s seconds." % timeout
+                        f"{timeout} seconds."
                     )
                 # Raise an exception which should cause the preceding
                 # download to cancel and exit quickly
@@ -125,7 +125,7 @@ class TestDownload(BaseTransferManagerIntegTest):
 
         # Make sure the actual file and the temporary do not exist
         # by globbing for the file and any of its extensions
-        possible_matches = glob.glob('%s*' % download_path)
+        possible_matches = glob.glob(f'{download_path}*')
         self.assertEqual(possible_matches, [])
 
     @skip_if_using_serial_implementation(
@@ -183,7 +183,7 @@ class TestDownload(BaseTransferManagerIntegTest):
 
         # For the transfer that did get cancelled, make sure the temporary
         # file got removed.
-        possible_matches = glob.glob('%s*' % future.meta.call_args.fileobj)
+        possible_matches = glob.glob(f'{future.meta.call_args.fileobj}*')
         self.assertEqual(possible_matches, [])
 
     def test_progress_subscribers_on_download(self):
@@ -281,5 +281,5 @@ class TestDownload(BaseTransferManagerIntegTest):
         except Exception as e:
             self.fail(
                 'Should have been able to download to /dev/null but received '
-                'following exception %s' % e
+                f'following exception {e}'
             )

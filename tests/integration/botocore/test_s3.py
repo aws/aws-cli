@@ -235,7 +235,7 @@ class BaseS3ClientTest(unittest.TestCase):
 
 class TestS3BaseWithBucket(BaseS3ClientTest):
     def setUp(self):
-        super(TestS3BaseWithBucket, self).setUp()
+        super().setUp()
         self.caught_exceptions = []
 
     def create_multipart_upload(self, key_name):
@@ -294,8 +294,7 @@ class TestS3BaseWithBucket(BaseS3ClientTest):
                 # Sleep and try again.
                 time.sleep(2)
         self.fail(
-            "Expected to see %s uploads, instead saw: %s"
-            % (num_uploads, amount_seen)
+            f"Expected to see {num_uploads} uploads, instead saw: {amount_seen}"
         )
 
     def create_client(self):
@@ -314,7 +313,7 @@ class TestS3BaseWithBucket(BaseS3ClientTest):
 
 class TestS3Buckets(TestS3BaseWithBucket):
     def setUp(self):
-        super(TestS3Buckets, self).setUp()
+        super().setUp()
 
     def test_can_make_request(self):
         # Basic smoke test to ensure we can talk to s3.
@@ -359,7 +358,7 @@ class TestS3Objects(TestS3BaseWithBucket):
     @pytest.mark.slow
     def test_can_paginate(self):
         for i in range(5):
-            key_name = 'key%s' % i
+            key_name = f'key{i}'
             self.create_object(key_name)
         # Eventual consistency.
         time.sleep(3)
@@ -373,7 +372,7 @@ class TestS3Objects(TestS3BaseWithBucket):
     @pytest.mark.slow
     def test_can_paginate_with_page_size(self):
         for i in range(5):
-            key_name = 'key%s' % i
+            key_name = f'key{i}'
             self.create_object(key_name)
         # Eventual consistency.
         time.sleep(3)
@@ -390,9 +389,9 @@ class TestS3Objects(TestS3BaseWithBucket):
     @pytest.mark.slow
     def test_result_key_iters(self):
         for i in range(5):
-            key_name = 'key/%s/%s' % (i, i)
+            key_name = f'key/{i}/{i}'
             self.create_object(key_name)
-            key_name2 = 'key/%s' % i
+            key_name2 = f'key/{i}'
             self.create_object(key_name2)
         time.sleep(3)
         paginator = self.client.get_paginator('list_objects')
@@ -576,7 +575,7 @@ class TestS3Objects(TestS3BaseWithBucket):
         threads = []
         for i in range(10):
             t = threading.Thread(
-                target=self.create_object_catch_exceptions, args=('foo%s' % i,)
+                target=self.create_object_catch_exceptions, args=(f'foo{i}',)
             )
             t.daemon = True
             threads.append(t)
@@ -587,13 +586,12 @@ class TestS3Objects(TestS3BaseWithBucket):
         self.assertEqual(
             self.caught_exceptions,
             [],
-            "Unexpectedly caught exceptions: %s" % self.caught_exceptions,
+            f"Unexpectedly caught exceptions: {self.caught_exceptions}",
         )
         self.assertEqual(
             len(set(self.auth_paths)),
             10,
-            "Expected 10 unique auth paths, instead received: %s"
-            % (self.auth_paths),
+            f"Expected 10 unique auth paths, instead received: {self.auth_paths}",
         )
 
     def test_non_normalized_key_paths(self):
@@ -608,7 +606,7 @@ class TestS3Objects(TestS3BaseWithBucket):
 
 class TestS3Regions(BaseS3ClientTest):
     def setUp(self):
-        super(TestS3Regions, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client('s3', region_name=self.region)
 
@@ -636,7 +634,7 @@ class TestS3Copy(TestS3BaseWithBucket):
         self.client.copy_object(
             Bucket=self.bucket_name,
             Key=key_name2,
-            CopySource='%s/%s' % (self.bucket_name, key_name),
+            CopySource=f'{self.bucket_name}/{key_name}',
         )
 
         # Now verify we can retrieve the copied object.
@@ -651,7 +649,7 @@ class TestS3Copy(TestS3BaseWithBucket):
         self.client.copy_object(
             Bucket=self.bucket_name,
             Key=key_name2,
-            CopySource='%s/%s' % (self.bucket_name, key_name),
+            CopySource=f'{self.bucket_name}/{key_name}',
         )
 
         # Now verify we can retrieve the copied object.
@@ -680,7 +678,7 @@ class TestS3Copy(TestS3BaseWithBucket):
         parsed = self.client.copy_object(
             Bucket=self.bucket_name,
             Key=copied_key,
-            CopySource='%s/%s' % (self.bucket_name, key_name),
+            CopySource=f'{self.bucket_name}/{key_name}',
             MetadataDirective='REPLACE',
             Metadata={"mykey": "myvalue", "mykey2": "myvalue2"},
         )
@@ -695,7 +693,7 @@ class BaseS3PresignTest(BaseS3ClientTest):
 
 class TestS3PresignUsStandard(BaseS3PresignTest):
     def setUp(self):
-        super(TestS3PresignUsStandard, self).setUp()
+        super().setUp()
         self.region = 'us-east-1'
         self.client_config = Config(region_name=self.region)
         self.client = self.session.create_client(
@@ -730,11 +728,10 @@ class TestS3PresignUsStandard(BaseS3PresignTest):
         )
         self.assertTrue(
             presigned_url.startswith(
-                'https://%s.s3.us-east-1.amazonaws.com/%s'
-                % (self.bucket_name, self.key)
+                f'https://{self.bucket_name}.s3.us-east-1.amazonaws.com/{self.key}'
             ),
             "Host was suppose to be the us-east-1 endpoint, instead "
-            "got: %s" % presigned_url,
+            f"got: {presigned_url}",
         )
         # Try to retrieve the object using the presigned url.
         self.assertEqual(http_get(presigned_url).data, b'foo')
@@ -766,10 +763,10 @@ class TestS3PresignUsStandard(BaseS3PresignTest):
         # Make sure the correct endpoint is being used
         self.assertTrue(
             post_args['url'].startswith(
-                'https://%s.s3.us-east-1.amazonaws.com/' % self.bucket_name
+                f'https://{self.bucket_name}.s3.us-east-1.amazonaws.com/'
             ),
             "Host was suppose to use us-east-1 endpoint, instead "
-            "got: %s" % post_args['url'],
+            "got: {}".format(post_args['url']),
         )
 
         r = http_post(post_args['url'], data=post_args['fields'], files=files)
@@ -778,7 +775,7 @@ class TestS3PresignUsStandard(BaseS3PresignTest):
 
 class TestS3PresignNonUsStandard(BaseS3PresignTest):
     def setUp(self):
-        super(TestS3PresignNonUsStandard, self).setUp()
+        super().setUp()
         self.client_config = Config(region_name=self.region)
         self.client = self.session.create_client(
             's3', config=self.client_config
@@ -803,11 +800,10 @@ class TestS3PresignNonUsStandard(BaseS3PresignTest):
 
         self.assertTrue(
             presigned_url.startswith(
-                'https://s3.us-west-2.amazonaws.com/%s/%s'
-                % (self.bucket_name, self.key)
+                f'https://s3.us-west-2.amazonaws.com/{self.bucket_name}/{self.key}'
             ),
             "Host was suppose to be the us-west-2 endpoint, instead "
-            "got: %s" % presigned_url,
+            f"got: {presigned_url}",
         )
         # Try to retrieve the object using the presigned url.
         self.assertEqual(http_get(presigned_url).data, b'foo')
@@ -839,10 +835,11 @@ class TestS3PresignNonUsStandard(BaseS3PresignTest):
         # Make sure the correct endpoint is being used
         self.assertTrue(
             post_args['url'].startswith(
-                'https://%s.s3.us-west-2.amazonaws.com/' % self.bucket_name
+                f'https://{self.bucket_name}.s3.us-west-2.amazonaws.com/'
             ),
-            "Host was suppose to use DNS style, instead "
-            "got: %s" % post_args['url'],
+            "Host was suppose to use DNS style, instead " "got: {}".format(
+                post_args['url']
+            ),
         )
 
         r = http_post(post_args['url'], data=post_args['fields'], files=files)
@@ -879,7 +876,7 @@ class TestCreateBucketInOtherRegion(TestS3BaseWithBucket):
 
 class TestS3SigV4Client(BaseS3ClientTest):
     def setUp(self):
-        super(TestS3SigV4Client, self).setUp()
+        super().setUp()
         self.client = self.session.create_client(
             's3', self.region, config=Config(signature_version='s3v4')
         )
@@ -1180,7 +1177,7 @@ class TestSupportedPutObjectBodyTypesSigv4(TestSupportedPutObjectBodyTypes):
 
 class TestAutoS3Addressing(BaseS3ClientTest):
     def setUp(self):
-        super(TestAutoS3Addressing, self).setUp()
+        super().setUp()
         self.addressing_style = 'auto'
         self.client = self.create_client()
 
@@ -1218,21 +1215,21 @@ class TestAutoS3Addressing(BaseS3ClientTest):
 
 class TestS3VirtualAddressing(TestAutoS3Addressing):
     def setUp(self):
-        super(TestS3VirtualAddressing, self).setUp()
+        super().setUp()
         self.addressing_style = 'virtual'
         self.client = self.create_client()
 
 
 class TestS3PathAddressing(TestAutoS3Addressing):
     def setUp(self):
-        super(TestS3PathAddressing, self).setUp()
+        super().setUp()
         self.addressing_style = 'path'
         self.client = self.create_client()
 
 
 class TestRegionRedirect(BaseS3ClientTest):
     def setUp(self):
-        super(TestRegionRedirect, self).setUp()
+        super().setUp()
         self.bucket_region = self.region
         self.client_region = 'eu-central-1'
 
@@ -1292,7 +1289,7 @@ class TestRegionRedirect(BaseS3ClientTest):
             )
             self.assertEqual(response.get('ContentLength'), len(key))
         except ClientError as e:
-            self.fail("S3 Client failed to redirect Head Object: %s" % e)
+            self.fail(f"S3 Client failed to redirect Head Object: {e}")
 
 
 class TestBucketWithVersions(BaseS3ClientTest):

@@ -31,7 +31,7 @@ class TestCanChangeParsing(unittest.TestCase):
         dates = [bucket['CreationDate'] for bucket in parsed['Buckets']]
         self.assertTrue(
             all(isinstance(date, str) for date in dates),
-            "Expected all str types but instead got: %s" % dates,
+            f"Expected all str types but instead got: {dates}",
         )
 
     def test_maps_service_name_when_overriden(self):

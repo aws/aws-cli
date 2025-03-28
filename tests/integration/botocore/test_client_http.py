@@ -23,7 +23,7 @@ from tests import mock, unittest
 class TestClientHTTPBehavior(unittest.TestCase):
     def setUp(self):
         self.port = unused_port()
-        self.localhost = 'http://localhost:%s/' % self.port
+        self.localhost = f'http://localhost:{self.port}/'
         self.session = botocore.session.get_session()
         # We need to set fake credentials to ensure credentials aren't searched
         # for which might make additional API calls (assume role, etc).
@@ -31,7 +31,7 @@ class TestClientHTTPBehavior(unittest.TestCase):
 
     @unittest.skip('Test has suddenly become extremely flakey.')
     def test_can_proxy_https_request_with_auth(self):
-        proxy_url = 'http://user:pass@localhost:%s/' % self.port
+        proxy_url = f'http://user:pass@localhost:{self.port}/'
         config = Config(proxies={'https': proxy_url}, region_name='us-west-1')
         client = self.session.create_client('ec2', config=config)
 
@@ -51,7 +51,7 @@ class TestClientHTTPBehavior(unittest.TestCase):
 
     @unittest.skip('Proxy cannot connect to service when run in CodeBuild.')
     def test_proxy_request_includes_host_header(self):
-        proxy_url = 'http://user:pass@localhost:%s/' % self.port
+        proxy_url = f'http://user:pass@localhost:{self.port}/'
         config = Config(
             proxies={'https': proxy_url},
             proxies_config={'proxy_use_forwarding_for_https': True},

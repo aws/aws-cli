@@ -391,9 +391,7 @@ class TestSigner(BaseSignerTest):
         )
         auth_cls = mock.Mock()
         with mock.patch.dict(botocore.auth.AUTH_TYPE_MAPS, {'v4': auth_cls}):
-            auth = self.signer.get_auth_instance(
-                'service_name', 'region_name', 'v4'
-            )
+            self.signer.get_auth_instance('service_name', 'region_name', 'v4')
             auth_cls.assert_called_with(
                 service_name='service_name',
                 region_name='region_name',
@@ -591,7 +589,7 @@ class TestSigner(BaseSignerTest):
 
 class TestCloudfrontSigner(BaseSignerTest):
     def setUp(self):
-        super(TestCloudfrontSigner, self).setUp()
+        super().setUp()
         self.signer = CloudFrontSigner("MY_KEY_ID", lambda message: b'signed')
         # It helps but the long string diff will still be slightly different on
         # Python 2.6/2.7/3.x. We won't soly rely on that anyway, so it's fine.
@@ -662,7 +660,7 @@ class TestCloudfrontSigner(BaseSignerTest):
 
 class TestS3PostPresigner(BaseSignerTest):
     def setUp(self):
-        super(TestS3PostPresigner, self).setUp()
+        super().setUp()
         self.request_signer = RequestSigner(
             ServiceId('service_name'),
             'region_name',
@@ -694,7 +692,7 @@ class TestS3PostPresigner(BaseSignerTest):
         self.datetime_mock.timedelta.return_value = self.fixed_delta
 
     def tearDown(self):
-        super(TestS3PostPresigner, self).tearDown()
+        super().tearDown()
         self.datetime_patch.stop()
 
     def test_generate_presigned_post(self):
@@ -995,7 +993,7 @@ class TestGenerateUrl(unittest.TestCase):
             self.assertTrue(
                 kwargs.get('context', {}).get('is_presign_request'),
                 'The context did not have is_presign_request set to True for '
-                'the following kwargs emitted: %s' % kwargs,
+                f'the following kwargs emitted: {kwargs}',
             )
 
     def test_context_param_from_event_handler_sent_to_endpoint_resolver(self):

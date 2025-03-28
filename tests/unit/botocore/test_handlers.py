@@ -744,7 +744,7 @@ class TestHandlers(BaseSessionTest):
         request = AWSRequest()
         url = 'https://machinelearning.us-east-1.amazonaws.com'
         new_endpoint = 'https://my-custom-endpoint.amazonaws.com'
-        data = '{"PredictEndpoint":"%s"}' % new_endpoint
+        data = f'{{"PredictEndpoint":"{new_endpoint}"}}'
         request.data = data.encode('utf-8')
         request.url = url
         handlers.switch_host_with_param(request, 'PredictEndpoint')
@@ -799,7 +799,7 @@ class TestHandlers(BaseSessionTest):
             arn = 'arn:aws:s3:us-west-2:123456789012:accesspoint:endpoint'
             handlers.validate_bucket_name({'Bucket': arn})
         except ParamValidationError:
-            self.fail('The s3 arn: %s should pass validation' % arn)
+            self.fail(f'The s3 arn: {arn} should pass validation')
 
     def test_validation_is_s3_outpost_arn(self):
         try:
@@ -809,7 +809,7 @@ class TestHandlers(BaseSessionTest):
             )
             handlers.validate_bucket_name({'Bucket': arn})
         except ParamValidationError:
-            self.fail('The s3 arn: %s should pass validation' % arn)
+            self.fail(f'The s3 arn: {arn} should pass validation')
 
     def test_validation_is_global_s3_bucket_arn(self):
         with self.assertRaises(ParamValidationError):
@@ -1196,7 +1196,7 @@ class TestRetryHandlerOrder(BaseSessionTest):
 
 class BaseMD5Test(BaseSessionTest):
     def setUp(self, **environ):
-        super(BaseMD5Test, self).setUp(**environ)
+        super().setUp(**environ)
         self.md5_object = mock.Mock()
         self.md5_digest = mock.Mock(return_value=b'foo')
         self.md5_object.digest = self.md5_digest
@@ -1207,7 +1207,7 @@ class BaseMD5Test(BaseSessionTest):
         self.set_md5_available()
 
     def tearDown(self):
-        super(BaseMD5Test, self).tearDown()
+        super().tearDown()
         self.md5_patch.stop()
         if self._md5_available_patch:
             self._md5_available_patch.stop()
@@ -1242,7 +1242,7 @@ class TestSSEMD5(BaseMD5Test):
             'UploadPart',
             'UploadPartCopy',
         ):
-            event = 'before-parameter-build.s3.%s' % op
+            event = f'before-parameter-build.s3.{op}'
             params = {
                 'SSECustomerKey': b'bar',
                 'SSECustomerAlgorithm': 'AES256',
@@ -1264,7 +1264,7 @@ class TestSSEMD5(BaseMD5Test):
 
     def test_copy_source_sse_params(self):
         for op in ['CopyObject', 'UploadPartCopy']:
-            event = 'before-parameter-build.s3.%s' % op
+            event = f'before-parameter-build.s3.{op}'
             params = {
                 'CopySourceSSECustomerKey': b'bar',
                 'CopySourceSSECustomerAlgorithm': 'AES256',

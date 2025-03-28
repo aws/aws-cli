@@ -282,7 +282,7 @@ class TestOSUtils(BaseUtilsTest):
         try:
             OSUtils().remove_file(non_existent_file)
         except OSError as e:
-            self.fail('OSError should have been caught: %s' % e)
+            self.fail(f'OSError should have been caught: {e}')
 
     def test_remove_file_proxies_remove_file(self):
         OSUtils().remove_file(self.filename)
@@ -306,7 +306,7 @@ class TestOSUtils(BaseUtilsTest):
         filename = 'myfile'
         self.assertIsNotNone(
             re.match(
-                r'%s\.[0-9A-Fa-f]{8}$' % filename,
+                rf'{filename}\.[0-9A-Fa-f]{{8}}$',
                 OSUtils().get_temp_filename(filename),
             )
         )

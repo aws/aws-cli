@@ -33,23 +33,21 @@ class WaiterDocumenter:
         section.writeln('The available waiters are:')
         for waiter_name in self._service_waiter_model.waiter_names:
             section.style.li(
-                ':py:class:`%s.Waiter.%s`'
-                % (self._client.__class__.__name__, waiter_name)
+                f':py:class:`{self._client.__class__.__name__}.Waiter.{waiter_name}`'
             )
             self._add_single_waiter(section, waiter_name)
 
     def _add_single_waiter(self, section, waiter_name):
         section = section.add_new_section(waiter_name)
         section.style.start_sphinx_py_class(
-            class_name='%s.Waiter.%s'
-            % (self._client.__class__.__name__, waiter_name)
+            class_name=f'{self._client.__class__.__name__}.Waiter.{waiter_name}'
         )
 
         # Add example on how to instantiate waiter.
         section.style.start_codeblock()
         section.style.new_line()
         section.write(
-            'waiter = client.get_waiter(\'%s\')' % xform_name(waiter_name)
+            f'waiter = client.get_waiter(\'{xform_name(waiter_name)}\')'
         )
         section.style.end_codeblock()
 

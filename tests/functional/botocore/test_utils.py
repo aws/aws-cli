@@ -27,7 +27,7 @@ from tests import mock, unittest
 
 class TestFileWebIdentityTokenLoader(unittest.TestCase):
     def setUp(self):
-        super(TestFileWebIdentityTokenLoader, self).setUp()
+        super().setUp()
         self.tempdir = tempfile.mkdtemp()
         self.token = 'totally.a.token'
         self.token_file = os.path.join(self.tempdir, 'token.jwt')
@@ -35,7 +35,7 @@ class TestFileWebIdentityTokenLoader(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.tempdir)
-        super(TestFileWebIdentityTokenLoader, self).tearDown()
+        super().tearDown()
 
     def write_token(self, token, path=None):
         if path is None:

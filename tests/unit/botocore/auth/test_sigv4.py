@@ -122,7 +122,7 @@ def create_request_from_raw_request(raw_request):
     # so we need decode this into utf-8.
     if isinstance(raw.path, str):
         raw.path = raw.path.encode('iso-8859-1').decode('utf-8')
-    url = 'https://%s%s' % (host, raw.path)
+    url = f'https://{host}{raw.path}'
     if '?' in url:
         split_url = urlsplit(url)
         params = dict(parse_qsl(split_url.query))
@@ -192,9 +192,9 @@ def _test_crt_signature_version_4(test_case):
 
 def assert_equal(actual, expected, raw_request, part):
     if actual != expected:
-        message = "The %s did not match" % part
-        message += "\nACTUAL:%r !=\nEXPECT:%r" % (actual, expected)
-        message += '\nThe raw request was:\n%s' % raw_request
+        message = f"The {part} did not match"
+        message += f"\nACTUAL:{actual!r} !=\nEXPECT:{expected!r}"
+        message += f'\nThe raw request was:\n{raw_request}'
         raise AssertionError(message)
 
 

@@ -81,7 +81,7 @@ class TestIdempotencyToken(unittest.TestCase):
 
 class TestCopySnapshotCustomization(BaseSessionTest):
     def setUp(self):
-        super(TestCopySnapshotCustomization, self).setUp()
+        super().setUp()
         self.session = botocore.session.get_session()
         self.client = self.session.create_client('ec2', 'us-east-1')
         self.http_stubber = ClientHTTPStubber(self.client)
@@ -102,7 +102,7 @@ class TestCopySnapshotCustomization(BaseSessionTest):
         self.mocked_datetime.utcnow.return_value = self.now
 
     def tearDown(self):
-        super(TestCopySnapshotCustomization, self).tearDown()
+        super().tearDown()
         self.datetime_patch.stop()
 
     def add_copy_snapshot_response(self, snapshot_id):

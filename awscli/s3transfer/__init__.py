@@ -822,8 +822,8 @@ class S3Transfer:
         for kwarg in actual:
             if kwarg not in allowed:
                 raise ValueError(
-                    "Invalid extra_args key '%s', "
-                    "must be one of: %s" % (kwarg, ', '.join(allowed))
+                    "Invalid extra_args key '{}', "
+                    "must be one of: {}".format(kwarg, ', '.join(allowed))
                 )
 
     def _ranged_download(

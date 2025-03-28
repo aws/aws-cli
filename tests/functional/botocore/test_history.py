@@ -15,7 +15,7 @@ class RecordingHandler(BaseHistoryHandler):
 
 class TestRecordStatementsInjections(BaseSessionTest):
     def setUp(self):
-        super(TestRecordStatementsInjections, self).setUp()
+        super().setUp()
         self.client = self.session.create_client('s3', 'us-west-2')
         self.http_stubber = ClientHTTPStubber(self.client)
         self.s3_response_body = (

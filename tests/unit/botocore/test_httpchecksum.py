@@ -648,7 +648,7 @@ class TestAwsChunkedWrapper(unittest.TestCase):
         class OneLessBytesIO(BytesIO):
             def read(self, size=-1):
                 # Return 1 less byte than was asked for
-                return super(OneLessBytesIO, self).read(size - 1)
+                return super().read(size - 1)
 
         bytes = OneLessBytesIO(b"abcdefghijklmnopqrstuvwxyz")
         wrapper = AwsChunkedWrapper(bytes, chunk_size=10)

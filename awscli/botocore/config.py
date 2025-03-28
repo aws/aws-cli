@@ -336,14 +336,13 @@ class Config:
                 user_provided_options[key] = value
             # The key must exist in the available options
             else:
-                raise TypeError('Got unexpected keyword argument \'%s\'' % key)
+                raise TypeError(f'Got unexpected keyword argument \'{key}\'')
 
         # The number of args should not be longer than the allowed
         # options
         if len(args) > len(option_order):
             raise TypeError(
-                'Takes at most %s arguments (%s given)'
-                % (len(option_order), len(args))
+                f'Takes at most {len(option_order)} arguments ({len(args)} given)'
             )
 
         # Iterate through the args passed through to the constructor and map
@@ -352,8 +351,7 @@ class Config:
             # If it a kwarg was specified for the arg, then error out
             if option_order[i] in user_provided_options:
                 raise TypeError(
-                    'Got multiple values for keyword argument \'%s\''
-                    % (option_order[i])
+                    f'Got multiple values for keyword argument \'{option_order[i]}\''
                 )
             user_provided_options[option_order[i]] = arg
 

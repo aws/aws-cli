@@ -49,8 +49,7 @@ def test_retry_info_added_when_present():
     error_msg = str(exceptions.ClientError(response, 'operation'))
     if '(reached max retries: 3)' not in error_msg:
         raise AssertionError(
-            "retry information not inject into error "
-            "message: %s" % error_msg
+            "retry information not inject into error " f"message: {error_msg}"
         )
 
 
@@ -68,7 +67,7 @@ def test_retry_info_not_added_if_retry_attempts_not_present():
         raise AssertionError(
             "Retry information should not be in exception "
             "message when retry attempts not in response "
-            "metadata: %s" % error_msg
+            f"metadata: {error_msg}"
         )
 
 
@@ -85,7 +84,7 @@ def test_can_handle_when_response_missing_error_key():
     if 'An error occurred (Unknown)' not in str(e):
         raise AssertionError(
             "Error code should default to 'Unknown' "
-            "when missing error response, instead got: %s" % str(e)
+            f"when missing error response, instead got: {str(e)}"
         )
 
 

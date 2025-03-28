@@ -17,8 +17,7 @@ from tests import ALL_SERVICES
 
 def _all_service_error_shapes():
     for service_model in ALL_SERVICES:
-        for shape in service_model.error_shapes:
-            yield shape
+        yield from service_model.error_shapes
 
 
 def _all_operations():

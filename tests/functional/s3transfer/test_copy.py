@@ -396,7 +396,7 @@ class TestMultipartCopy(BaseCopyTest):
             if extra_expected_params:
                 if 'ChecksumAlgorithm' in extra_expected_params:
                     name = extra_expected_params['ChecksumAlgorithm']
-                    checksum_member = 'Checksum%s' % name.upper()
+                    checksum_member = f'Checksum{name.upper()}'
                     response = upload_part_response['service_response']
                     response['CopyPartResult'][checksum_member] = 'sum%s==' % (
                         i + 1

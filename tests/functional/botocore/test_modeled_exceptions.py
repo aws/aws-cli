@@ -17,7 +17,7 @@ from tests import BaseSessionTest, ClientHTTPStubber, unittest
 
 class TestModeledExceptions(BaseSessionTest):
     def setUp(self):
-        super(TestModeledExceptions, self).setUp()
+        super().setUp()
         self.region = "us-east-1"
 
     def _create_client(self, service):

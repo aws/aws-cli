@@ -270,8 +270,7 @@ class TestAWSResponse(unittest.TestCase):
 
     def set_raw_stream(self, blobs):
         def stream(*args, **kwargs):
-            for blob in blobs:
-                yield blob
+            yield from blobs
 
         self.response.raw.stream.return_value = stream()
 

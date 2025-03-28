@@ -15,7 +15,7 @@ from tests import BaseSessionTest, ClientHTTPStubber
 
 class TestApiGateway(BaseSessionTest):
     def setUp(self):
-        super(TestApiGateway, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client('apigateway', self.region)
         self.http_stubber = ClientHTTPStubber(self.client)

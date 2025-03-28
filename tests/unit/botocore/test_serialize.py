@@ -96,7 +96,7 @@ class TestBinaryTypes(BaseModelWithBlob):
 
 class TestBinaryTypesJSON(BaseModelWithBlob):
     def setUp(self):
-        super(TestBinaryTypesJSON, self).setUp()
+        super().setUp()
         self.model['metadata'] = {
             'protocol': 'json',
             'apiVersion': '2014-01-01',
@@ -115,7 +115,7 @@ class TestBinaryTypesJSON(BaseModelWithBlob):
 
 class TestBinaryTypesWithRestXML(BaseModelWithBlob):
     def setUp(self):
-        super(TestBinaryTypesWithRestXML, self).setUp()
+        super().setUp()
         self.model['metadata'] = {
             'protocol': 'rest-xml',
             'apiVersion': '2014-01-01',

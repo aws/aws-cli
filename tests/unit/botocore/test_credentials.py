@@ -11,8 +11,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import copy
-import json
 import logging
 import os
 import shutil
@@ -102,7 +100,7 @@ class TestCredentials(BaseEnvVar):
 
 class TestRefreshableCredentials(TestCredentials):
     def setUp(self):
-        super(TestRefreshableCredentials, self).setUp()
+        super().setUp()
         self.refresher = mock.Mock()
         self.future_time = datetime.now(tzlocal()) + timedelta(hours=24)
         self.expiry_time = datetime.now(tzlocal()) - timedelta(minutes=30)
@@ -241,7 +239,7 @@ class TestDeferredRefreshableCredentials(unittest.TestCase):
 
 class TestAssumeRoleCredentialFetcher(BaseEnvVar):
     def setUp(self):
-        super(TestAssumeRoleCredentialFetcher, self).setUp()
+        super().setUp()
         self.source_creds = credentials.Credentials('a', 'b', 'c')
         self.role_arn = 'myrole'
 
@@ -744,7 +742,7 @@ class TestAssumeRoleCredentialFetcher(BaseEnvVar):
 
 class TestAssumeRoleWithWebIdentityCredentialFetcher(BaseEnvVar):
     def setUp(self):
-        super(TestAssumeRoleWithWebIdentityCredentialFetcher, self).setUp()
+        super().setUp()
         self.role_arn = 'myrole'
 
     def load_token(self):
@@ -1423,7 +1421,7 @@ class TestEnvVar(BaseEnvVar):
 
 class TestSharedCredentialsProvider(BaseEnvVar):
     def setUp(self):
-        super(TestSharedCredentialsProvider, self).setUp()
+        super().setUp()
         self.ini_parser = mock.Mock()
 
     def test_credential_file_exists_default_profile(self):
@@ -1546,7 +1544,7 @@ class TestSharedCredentialsProvider(BaseEnvVar):
 
 class TestConfigFileProvider(BaseEnvVar):
     def setUp(self):
-        super(TestConfigFileProvider, self).setUp()
+        super().setUp()
         profile_config = {
             'aws_access_key_id': 'a',
             'aws_secret_access_key': 'b',
@@ -1627,7 +1625,7 @@ class TestConfigFileProvider(BaseEnvVar):
 
 class TestBotoProvider(BaseEnvVar):
     def setUp(self):
-        super(TestBotoProvider, self).setUp()
+        super().setUp()
         self.ini_parser = mock.Mock()
 
     def test_boto_config_file_exists_in_home_dir(self):
@@ -1758,7 +1756,7 @@ class TestInstanceMetadataProvider(BaseEnvVar):
 
 class CredentialResolverTest(BaseEnvVar):
     def setUp(self):
-        super(CredentialResolverTest, self).setUp()
+        super().setUp()
         self.provider1 = mock.Mock()
         self.provider1.METHOD = 'provider1'
         self.provider1.CANONICAL_NAME = 'CustomProvider1'
@@ -1883,7 +1881,7 @@ class CredentialResolverTest(BaseEnvVar):
 
 class TestCreateCredentialResolver(BaseEnvVar):
     def setUp(self):
-        super(TestCreateCredentialResolver, self).setUp()
+        super().setUp()
 
         self.session = mock.Mock(spec=botocore.session.Session)
         self.session.get_component = self.fake_get_component
@@ -1955,7 +1953,7 @@ class TestCreateCredentialResolver(BaseEnvVar):
 
 class TestCanonicalNameSourceProvider(BaseEnvVar):
     def setUp(self):
-        super(TestCanonicalNameSourceProvider, self).setUp()
+        super().setUp()
         self.custom_provider1 = mock.Mock(spec=CredentialProvider)
         self.custom_provider1.METHOD = 'provider1'
         self.custom_provider1.CANONICAL_NAME = 'CustomProvider1'
@@ -2944,9 +2942,9 @@ class ProfileProvider:
 
     def load(self):
         return Credentials(
-            '%s-access-key' % self._profile_name,
-            '%s-secret-key' % self._profile_name,
-            '%s-token' % self._profile_name,
+            f'{self._profile_name}-access-key',
+            f'{self._profile_name}-secret-key',
+            f'{self._profile_name}-token',
             self.METHOD,
         )
 
@@ -3134,7 +3132,7 @@ class TestContainerProvider(BaseEnvVar):
         self.assertIsNone(creds)
 
     def full_url(self, url):
-        return 'http://%s%s' % (ContainerMetadataFetcher.IP_ADDRESS, url)
+        return f'http://{ContainerMetadataFetcher.IP_ADDRESS}{url}'
 
     def create_fetcher(self):
         fetcher = mock.Mock(spec=ContainerMetadataFetcher)
@@ -3199,16 +3197,13 @@ class TestContainerProvider(BaseEnvVar):
             'AWS_CONTAINER_CREDENTIALS_RELATIVE_URI': '/latest/credentials?id=foo'
         }
         fetcher = mock.Mock(spec=credentials.ContainerMetadataFetcher)
-        timeobj = datetime.now(tzlocal())
-        expired_timestamp = (timeobj - timedelta(hours=23)).isoformat()
-        future_timestamp = (timeobj + timedelta(hours=1)).isoformat()
         exception = botocore.exceptions.CredentialRetrievalError
         fetcher.retrieve_full_uri.side_effect = exception(
             provider='ecs-role', error_msg='fake http error'
         )
         with self.assertRaises(exception):
             provider = credentials.ContainerProvider(environ, fetcher)
-            creds = provider.load()
+            provider.load()
 
     def test_http_error_propagated_on_refresh(self):
         # We should ensure errors are still propagated even in the
@@ -3235,7 +3230,7 @@ class TestContainerProvider(BaseEnvVar):
         creds = provider.load()
         # Second time with a refresh should propagate an error.
         with self.assertRaises(raised_exception):
-            frozen_creds = creds.get_frozen_credentials()
+            creds.get_frozen_credentials()
 
     def test_can_use_full_url(self):
         environ = {
@@ -3368,7 +3363,7 @@ class TestContainerProvider(BaseEnvVar):
 
 class TestProcessProvider(BaseEnvVar):
     def setUp(self):
-        super(TestProcessProvider, self).setUp()
+        super().setUp()
         self.loaded_config = {}
         self.load_config = mock.Mock(return_value=self.loaded_config)
         self.invoked_process = mock.Mock()
@@ -3697,7 +3692,7 @@ class TestProcessProvider(BaseEnvVar):
 
 class TestProfileProviderBuilder(unittest.TestCase):
     def setUp(self):
-        super(TestProfileProviderBuilder, self).setUp()
+        super().setUp()
         self.mock_session = mock.Mock(spec=Session)
         self.builder = ProfileProviderBuilder(self.mock_session)
 
@@ -3802,7 +3797,7 @@ class TestSSOCredentialFetcher(unittest.TestCase):
         )
         with self.assertRaises(botocore.exceptions.UnauthorizedSSOTokenError):
             with self.stubber:
-                credentials = self.fetcher.fetch_credentials()
+                self.fetcher.fetch_credentials()
 
     def test_expired_legacy_token_has_expected_behavior(self):
         # Mock the current time to be in the future after the access token has expired

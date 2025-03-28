@@ -847,7 +847,7 @@ class ServiceWaiterFunctionalTest(BaseEnvVar):
     """
 
     def setUp(self):
-        super(ServiceWaiterFunctionalTest, self).setUp()
+        super().setUp()
         self.data_path = os.path.join(
             os.path.dirname(botocore.__file__), 'data'
         )
@@ -878,7 +878,7 @@ class ServiceWaiterFunctionalTest(BaseEnvVar):
 
 class CloudFrontWaitersTest(ServiceWaiterFunctionalTest):
     def setUp(self):
-        super(CloudFrontWaitersTest, self).setUp()
+        super().setUp()
         self.client = mock.Mock()
         self.service = 'cloudfront'
 

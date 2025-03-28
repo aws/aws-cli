@@ -94,7 +94,7 @@ class BaseUploadTest(BaseGeneralInterfaceTest):
                 data=params['Body'],
             )
             self.client.meta.events.emit(
-                'request-created.s3.%s' % model.name,
+                f'request-created.s3.{model.name}',
                 request=request,
                 operation_name=model.name,
             )

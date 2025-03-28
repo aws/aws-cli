@@ -103,7 +103,7 @@ class Endpoint:
             self.http_session = URLLib3Session()
 
     def __repr__(self):
-        return '%s(%s)' % (self._endpoint_prefix, self.host)
+        return f'{self._endpoint_prefix}({self.host})'
 
     def make_request(self, operation_model, request_dict):
         logger.debug(
@@ -204,7 +204,7 @@ class Endpoint:
             )
         service_id = operation_model.service_model.service_id.hyphenize()
         self._event_emitter.emit(
-            'response-received.%s.%s' % (service_id, operation_model.name),
+            f'response-received.{service_id}.{operation_model.name}',
             **kwargs_to_emit,
         )
         return success_response, exception
@@ -223,10 +223,7 @@ class Endpoint:
                 },
             )
             service_id = operation_model.service_model.service_id.hyphenize()
-            event_name = 'before-send.%s.%s' % (
-                service_id,
-                operation_model.name,
-            )
+            event_name = f'before-send.{service_id}.{operation_model.name}'
             responses = self._event_emitter.emit(event_name, request=request)
             http_response = first_non_none_response(responses)
             if http_response is None:
@@ -310,7 +307,7 @@ class Endpoint:
         caught_exception=None,
     ):
         service_id = operation_model.service_model.service_id.hyphenize()
-        event_name = 'needs-retry.%s.%s' % (service_id, operation_model.name)
+        event_name = f'needs-retry.{service_id}.{operation_model.name}'
         responses = self._event_emitter.emit(
             event_name,
             response=response,
@@ -359,7 +356,7 @@ class EndpointCreator:
         if not is_valid_endpoint_url(
             endpoint_url
         ) and not is_valid_ipv6_endpoint_url(endpoint_url):
-            raise ValueError("Invalid endpoint: %s" % endpoint_url)
+            raise ValueError(f"Invalid endpoint: {endpoint_url}")
 
         if proxies is None:
             proxies = self._get_proxies(endpoint_url)

@@ -172,7 +172,7 @@ class TestS3SigV4Auth(BaseTestWithFixedDate):
     maxDiff = None
 
     def setUp(self):
-        super(TestS3SigV4Auth, self).setUp()
+        super().setUp()
         self.credentials = botocore.credentials.Credentials(
             access_key='foo', secret_key='bar', token='baz'
         )
@@ -212,7 +212,7 @@ class TestS3SigV4Auth(BaseTestWithFixedDate):
     def test_query_string_params_in_urls(self):
         if not hasattr(self.AuthClass, 'canonical_query_string'):
             raise unittest.SkipTest(
-                '%s does not expose interim steps' % self.AuthClass.__name__
+                f'{self.AuthClass.__name__} does not expose interim steps'
             )
 
         request = AWSRequest()
@@ -502,7 +502,7 @@ class TestSigV4Resign(BaseTestWithFixedDate):
     AuthClass = botocore.auth.SigV4Auth
 
     def setUp(self):
-        super(TestSigV4Resign, self).setUp()
+        super().setUp()
         self.credentials = botocore.credentials.Credentials(
             access_key='foo', secret_key='bar', token='baz'
         )
@@ -761,7 +761,7 @@ class BaseS3PresignPostTest(unittest.TestCase):
         }
 
         self.request = AWSRequest()
-        self.request.url = 'https://s3.amazonaws.com/%s' % self.bucket
+        self.request.url = f'https://s3.amazonaws.com/{self.bucket}'
         self.request.method = 'POST'
 
         self.request.context['s3-presign-post-fields'] = self.fields
@@ -770,7 +770,7 @@ class BaseS3PresignPostTest(unittest.TestCase):
 
 class TestS3SigV4Post(BaseS3PresignPostTest):
     def setUp(self):
-        super(TestS3SigV4Post, self).setUp()
+        super().setUp()
         self.auth = botocore.auth.S3SigV4PostAuth(
             self.credentials, self.service_name, self.region_name
         )
@@ -829,7 +829,7 @@ class TestS3SigV4Post(BaseS3PresignPostTest):
 
     def test_empty_fields_and_policy(self):
         self.request = AWSRequest()
-        self.request.url = 'https://s3.amazonaws.com/%s' % self.bucket
+        self.request.url = f'https://s3.amazonaws.com/{self.bucket}'
         self.request.method = 'POST'
         self.auth.add_auth(self.request)
 

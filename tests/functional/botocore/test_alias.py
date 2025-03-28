@@ -81,6 +81,8 @@ def _can_use_parameter_in_client_call(session, case, use_alias=True):
         getattr(client, operation)(**params)
     except ParamValidationError as e:
         raise AssertionError(
-            'Expecting %s to be valid parameter for %s.%s but received '
-            '%s.' % (case['new_name'], case['service'], case['operation'], e)
+            'Expecting {} to be valid parameter for {}.{} but received '
+            '{}.'.format(
+                case['new_name'], case['service'], case['operation'], e
+            )
         )

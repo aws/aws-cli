@@ -81,9 +81,9 @@ class HTMLTree:
 
     def _doc_has_handler(self, tag, is_start):
         if is_start:
-            handler_name = 'start_%s' % tag
+            handler_name = f'start_{tag}'
         else:
-            handler_name = 'end_%s' % tag
+            handler_name = f'end_{tag}'
 
         return hasattr(self.doc.style, handler_name)
 
@@ -104,7 +104,7 @@ class Node:
 
 class StemNode(Node):
     def __init__(self, parent=None):
-        super(StemNode, self).__init__(parent)
+        super().__init__(parent)
         self.children = []
 
     def add_child(self, child):
@@ -125,7 +125,7 @@ class TagNode(StemNode):
     """
 
     def __init__(self, tag, attrs=None, parent=None):
-        super(TagNode, self).__init__(parent)
+        super().__init__(parent)
         self.attrs = attrs
         self.tag = tag
 
@@ -135,23 +135,23 @@ class TagNode(StemNode):
         self._write_end(doc)
 
     def _write_start(self, doc):
-        handler_name = 'start_%s' % self.tag
+        handler_name = f'start_{self.tag}'
         if hasattr(doc.style, handler_name):
             getattr(doc.style, handler_name)(self.attrs)
 
     def _write_end(self, doc):
-        handler_name = 'end_%s' % self.tag
+        handler_name = f'end_{self.tag}'
         if hasattr(doc.style, handler_name):
             getattr(doc.style, handler_name)()
 
 
 class LineItemNode(TagNode):
     def __init__(self, attrs=None, parent=None):
-        super(LineItemNode, self).__init__('li', attrs, parent)
+        super().__init__('li', attrs, parent)
 
     def write(self, doc):
         self._lstrip(self)
-        super(LineItemNode, self).write(doc)
+        super().write(doc)
 
     def _lstrip(self, node):
         """
@@ -178,9 +178,9 @@ class DataNode(Node):
     """
 
     def __init__(self, data, parent=None):
-        super(DataNode, self).__init__(parent)
+        super().__init__(parent)
         if not isinstance(data, str):
-            raise ValueError("Expecting string type, %s given." % type(data))
+            raise ValueError(f"Expecting string type, {type(data)} given.")
         self.data = data
 
     def lstrip(self):

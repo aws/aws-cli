@@ -64,10 +64,8 @@ class ClientRateLimiter:
         timestamp = self._clock.current_time()
         with self._lock:
             if not self._throttling_detector.is_throttling_error(**kwargs):
-                throttling = False
                 new_rate = self._rate_adjustor.success_received(timestamp)
             else:
-                throttling = True
                 if not self._enabled:
                     rate_to_use = measured_rate
                 else:

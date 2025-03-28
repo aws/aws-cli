@@ -90,7 +90,6 @@ class TestEndpointDiscovery(FunctionalSessionTest):
             self.assert_endpoint_discovery_used(stubber, discovered_endpoint)
 
     def test_endpoint_discovery_with_invalid_endpoint(self):
-        discovered_endpoint = 'https://discovered.domain'
         response = {
             'Error': {
                 'Code': 'InvalidEndpointException',

@@ -307,7 +307,7 @@ def test_can_make_request_and_understand_errors_with_client(
     client = _get_client(botocore_session, service_name)
     method = getattr(client, xform_name(operation_name))
     with pytest.raises(ClientError):
-        response = method(**kwargs)
+        method(**kwargs)
 
 
 @pytest.mark.parametrize(
@@ -322,7 +322,7 @@ def test_client_can_retry_request_properly(
     with ClientHTTPStubber(client, strict=False) as http_stubber:
         http_stubber.responses.append(exception)
         try:
-            response = operation(**kwargs)
+            operation(**kwargs)
         except ClientError as e:
             assert False, (
                 'Request was not retried properly, '

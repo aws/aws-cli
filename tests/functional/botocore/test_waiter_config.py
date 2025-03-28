@@ -81,7 +81,6 @@ def _waiter_configs():
     validator = Draft4Validator(WAITER_SCHEMA)
     for service_name in session.get_available_services():
         client = session.create_client(service_name, 'us-east-1')
-        service_model = client.meta.service_model
         try:
             # We use the loader directly here because we need the entire
             # json document, not just the portions exposed (either

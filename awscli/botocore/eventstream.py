@@ -585,8 +585,7 @@ class EventStream:
         event_stream_buffer = EventStreamBuffer()
         for chunk in self._raw_stream.stream():
             event_stream_buffer.add_data(chunk)
-            for event in event_stream_buffer:
-                yield event
+            yield from event_stream_buffer
 
     def _parse_event(self, event):
         response_dict = event.to_response_dict()

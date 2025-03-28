@@ -2561,7 +2561,7 @@ class TestContainerMetadataFetcher(unittest.TestCase):
         }
         self.set_http_responses_to({'foo': 'bar'})
         fetcher = self.create_fetcher()
-        response = fetcher.retrieve_full_uri('http://localhost', headers)
+        fetcher.retrieve_full_uri('http://localhost', headers)
         self.assert_request('GET', 'http://localhost', headers)
 
     def test_can_retrieve_uri(self):
@@ -2842,7 +2842,6 @@ class TestInstanceMetadataFetcher(unittest.TestCase):
 
     def test_ipv6_endpoint_no_brackets_env_var_set(self):
         url = 'http://fd00:ec2::010/'
-        config = {'ec2_metadata_service_endpoint': url}
         self.assertFalse(is_valid_ipv6_endpoint_url(url))
 
     def test_ipv6_invalid_endpoint(self):
@@ -3593,12 +3592,12 @@ class TestSSOTokenLoader(unittest.TestCase):
 
     def test_can_handle_does_not_exist(self):
         with self.assertRaises(SSOTokenLoadError):
-            access_token = self.loader(self.start_url)
+            self.loader(self.start_url)
 
     def test_can_handle_invalid_cache(self):
         self.cache[self.cache_key] = {}
         with self.assertRaises(SSOTokenLoadError):
-            access_token = self.loader(self.start_url)
+            self.loader(self.start_url)
 
     def test_can_save_token(self):
         self.loader.save_token(self.start_url, self.cached_token)

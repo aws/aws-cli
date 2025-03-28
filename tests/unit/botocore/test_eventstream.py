@@ -471,8 +471,7 @@ def create_mock_raw_stream(*data):
     raw_stream = mock.Mock()
 
     def generator():
-        for chunk in data:
-            yield chunk
+        yield from data
 
     raw_stream.stream = generator
     return raw_stream

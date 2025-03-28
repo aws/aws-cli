@@ -1763,7 +1763,7 @@ class TestRegionRedirect(BaseS3OperationTest):
             http_stubber.add_response(headers=region_headers)
             # The final request still fails with a 400.
             http_stubber.add_response(status=400)
-            with self.assertRaises(ClientError) as e:
+            with self.assertRaises(ClientError):
                 client.head_object(Bucket='foo', Key='bar')
             self.assertEqual(len(http_stubber.requests), 4)
 
@@ -3517,7 +3517,7 @@ class TestS3XMLPayloadEscape(BaseS3OperationTest):
     def test_escape_keys_in_xml_delete_objects(self):
         self.http_stubber.add_response()
         with self.http_stubber:
-            response = self.client.delete_objects(
+            self.client.delete_objects(
                 Bucket='mybucket',
                 Delete={'Objects': [{'Key': 'some\r\n\rkey'}]},
             )
@@ -3529,7 +3529,7 @@ class TestS3XMLPayloadEscape(BaseS3OperationTest):
     def test_escape_keys_in_xml_put_bucket_lifecycle_configuration(self):
         self.http_stubber.add_response()
         with self.http_stubber:
-            response = self.client.put_bucket_lifecycle_configuration(
+            self.client.put_bucket_lifecycle_configuration(
                 Bucket='mybucket',
                 LifecycleConfiguration={
                     'Rules': [

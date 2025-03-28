@@ -346,8 +346,7 @@ class PageIterator:
         for page in self:
             results = compiled.search(page)
             if isinstance(results, list):
-                for element in results:
-                    yield element
+                yield from results
             else:
                 # Yield result directly if it is not a list.
                 yield results
@@ -717,5 +716,4 @@ class ResultKeyIterator:
             results = self.result_key.search(page)
             if results is None:
                 results = []
-            for result in results:
-                yield result
+            yield from results

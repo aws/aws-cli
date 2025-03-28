@@ -391,9 +391,7 @@ class TestSigner(BaseSignerTest):
         )
         auth_cls = mock.Mock()
         with mock.patch.dict(botocore.auth.AUTH_TYPE_MAPS, {'v4': auth_cls}):
-            auth = self.signer.get_auth_instance(
-                'service_name', 'region_name', 'v4'
-            )
+            self.signer.get_auth_instance('service_name', 'region_name', 'v4')
             auth_cls.assert_called_with(
                 service_name='service_name',
                 region_name='region_name',

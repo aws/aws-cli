@@ -315,9 +315,8 @@ class SigV4Auth(BaseSigner):
         return ' '.join(value.split())
 
     def signed_headers(self, headers_to_sign):
-        l = [f'{n.lower().strip()}' for n in set(headers_to_sign)]
-        l = sorted(l)
-        return ';'.join(l)
+        headers = sorted(n.lower().strip() for n in set(headers_to_sign))
+        return ';'.join(headers)
 
     def _is_streaming_checksum_payload(self, request):
         checksum_context = request.context.get('checksum', {})
@@ -436,11 +435,13 @@ class SigV4Auth(BaseSigner):
         self._inject_signature_to_request(request, signature)
 
     def _inject_signature_to_request(self, request, signature):
-        l = [f'AWS4-HMAC-SHA256 Credential={self.scope(request)}']
+        auth_str = [f'AWS4-HMAC-SHA256 Credential={self.scope(request)}']
         headers_to_sign = self.headers_to_sign(request)
-        l.append(f'SignedHeaders={self.signed_headers(headers_to_sign)}')
-        l.append(f'Signature={signature}')
-        request.headers['Authorization'] = ', '.join(l)
+        auth_str.append(
+            f"SignedHeaders={self.signed_headers(headers_to_sign)}"
+        )
+        auth_str.append(f'Signature={signature}')
+        request.headers['Authorization'] = ', '.join(auth_str)
         return request
 
     def _modify_request_before_signing(self, request):
@@ -878,7 +879,7 @@ class BearerAuth(TokenSigner):
 # the botocore.crt.auth module imports functions/classes defined above from
 # this module. In the future, we should isolate those functions/classes into
 # a separate utility module to avoid any potential circular import.
-import botocore.crt.auth
+import botocore.crt.auth  # noqa
 
 
 def resolve_auth_type(auth_trait):

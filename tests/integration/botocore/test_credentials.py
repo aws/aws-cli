@@ -69,7 +69,7 @@ class TestCredentialPrecedence(BaseEnvVar):
         # take precedence.
         s = self.create_session(profile='test')
 
-        client = s.create_client(
+        s.create_client(
             's3', aws_access_key_id='code', aws_secret_access_key='code-secret'
         )
 
@@ -99,7 +99,7 @@ class TestCredentialPrecedence(BaseEnvVar):
         os.environ['AWS_SECRET_ACCESS_KEY'] = 'secret'
         s = self.create_session()
 
-        client = s.create_client(
+        s.create_client(
             's3', aws_access_key_id='code', aws_secret_access_key='code-secret'
         )
 

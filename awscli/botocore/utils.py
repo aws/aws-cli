@@ -2481,7 +2481,6 @@ class S3ControlEndpointSetter:
             self._add_headers_from_arn_details(request)
         elif self._use_endpoint_from_outpost_id(request):
             self._validate_outpost_redirection_valid(request)
-            outpost_id = request.context['outpost_id']
             self._override_signing_name(request, 's3-outposts')
             new_netloc = self._construct_outpost_endpoint(self._region)
             self._update_request_netloc(request, new_netloc)

@@ -298,7 +298,9 @@ class TestWildcardHandlers(unittest.TestCase):
         self.assertEqual(len(self.hook_calls), 0)
 
     def test_remove_handler_with_unique_id(self):
-        hook2 = lambda **kwargs: self.hook_calls.append(kwargs)
+        def hook2(**kwargs):
+            return self.hook_calls.append(kwargs)
+
         self.emitter.register('foo.bar.baz', self.hook, unique_id='foo')
         self.emitter.register('foo.bar.baz', hook2)
         self.emitter.emit('foo.bar.baz')

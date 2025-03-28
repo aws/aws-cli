@@ -494,7 +494,7 @@ class TestLoadersWithDirectorySearching(BaseEnvVar):
             },
         }
         with self.loader_with_fake_dirs() as loader:
-            latest = loader.determine_latest_version('ec2', 'service-2')
+            loader.determine_latest_version('ec2', 'service-2')
             self.assertEqual(
                 loader.determine_latest_version('ec2', 'service-2'),
                 '2014-10-01',

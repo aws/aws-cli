@@ -122,7 +122,6 @@ def _get_operation_model(service_model, filename):
     for operation_name in operation_names:
         if xform_name(operation_name) == opname.replace('-', '_'):
             return service_model.operation_model(operation_name)
-    return operation
 
 
 def _xml_test_cases():

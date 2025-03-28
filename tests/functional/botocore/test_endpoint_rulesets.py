@@ -171,7 +171,7 @@ def iter_e2e_test_cases_that_produce(endpoints=False, errors=False):
             if endpoints and 'endpoint' in expected_object:
                 expected_endpoint = expected_object['endpoint']
                 expected_props = expected_endpoint.get('properties', {})
-                expected_authschemes = [
+                [
                     auth_scheme['name']
                     for auth_scheme in expected_props.get('authSchemes', [])
                 ]

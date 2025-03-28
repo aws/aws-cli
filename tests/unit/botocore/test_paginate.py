@@ -93,7 +93,7 @@ class TestPaginatorModel(unittest.TestCase):
 
     def test_get_paginator_no_exists(self):
         with self.assertRaises(ValueError):
-            paginator_config = self.paginator_model.get_paginator('ListBars')
+            self.paginator_model.get_paginator('ListBars')
 
 
 class TestPagination(unittest.TestCase):
@@ -1613,11 +1613,11 @@ class TestStringPageSize(unittest.TestCase):
         )
 
     def test_int_page_size(self):
-        res = list(self.paginator.paginate(PaginationConfig={'PageSize': 1}))
+        list(self.paginator.paginate(PaginationConfig={'PageSize': 1}))
         self.method.assert_called_with(MaxItems='1')
 
     def test_str_page_size(self):
-        res = list(self.paginator.paginate(PaginationConfig={'PageSize': '1'}))
+        list(self.paginator.paginate(PaginationConfig={'PageSize': '1'}))
         self.method.assert_called_with(MaxItems='1')
 
 

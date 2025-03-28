@@ -11,8 +11,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import copy
-import json
 import logging
 import os
 import shutil
@@ -3200,15 +3198,15 @@ class TestContainerProvider(BaseEnvVar):
         }
         fetcher = mock.Mock(spec=credentials.ContainerMetadataFetcher)
         timeobj = datetime.now(tzlocal())
-        expired_timestamp = (timeobj - timedelta(hours=23)).isoformat()
-        future_timestamp = (timeobj + timedelta(hours=1)).isoformat()
+        (timeobj - timedelta(hours=23)).isoformat()
+        (timeobj + timedelta(hours=1)).isoformat()
         exception = botocore.exceptions.CredentialRetrievalError
         fetcher.retrieve_full_uri.side_effect = exception(
             provider='ecs-role', error_msg='fake http error'
         )
         with self.assertRaises(exception):
             provider = credentials.ContainerProvider(environ, fetcher)
-            creds = provider.load()
+            provider.load()
 
     def test_http_error_propagated_on_refresh(self):
         # We should ensure errors are still propagated even in the
@@ -3235,7 +3233,7 @@ class TestContainerProvider(BaseEnvVar):
         creds = provider.load()
         # Second time with a refresh should propagate an error.
         with self.assertRaises(raised_exception):
-            frozen_creds = creds.get_frozen_credentials()
+            creds.get_frozen_credentials()
 
     def test_can_use_full_url(self):
         environ = {
@@ -3802,7 +3800,7 @@ class TestSSOCredentialFetcher(unittest.TestCase):
         )
         with self.assertRaises(botocore.exceptions.UnauthorizedSSOTokenError):
             with self.stubber:
-                credentials = self.fetcher.fetch_credentials()
+                self.fetcher.fetch_credentials()
 
     def test_expired_legacy_token_has_expected_behavior(self):
         # Mock the current time to be in the future after the access token has expired

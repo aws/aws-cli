@@ -11,7 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import json
 import re
+
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import applicationutils
 from awscli.customizations.emr import argumentschema
@@ -27,7 +29,6 @@ from awscli.customizations.emr import steputils
 from awscli.customizations.emr.command import Command
 from awscli.customizations.emr.constants import EC2_ROLE_NAME
 from awscli.customizations.emr.constants import EMR_ROLE_NAME
-from botocore.compat import json
 
 
 class CreateCluster(Command):

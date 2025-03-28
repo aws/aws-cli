@@ -11,8 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pprint
-
-from botocore.compat import OrderedDict
+from collections import OrderedDict
 
 from awscli.testutils import unittest
 from awscli.schema import ParameterRequiredError, SchemaTransformer

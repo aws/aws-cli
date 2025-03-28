@@ -3197,9 +3197,6 @@ class TestContainerProvider(BaseEnvVar):
             'AWS_CONTAINER_CREDENTIALS_RELATIVE_URI': '/latest/credentials?id=foo'
         }
         fetcher = mock.Mock(spec=credentials.ContainerMetadataFetcher)
-        timeobj = datetime.now(tzlocal())
-        (timeobj - timedelta(hours=23)).isoformat()
-        (timeobj + timedelta(hours=1)).isoformat()
         exception = botocore.exceptions.CredentialRetrievalError
         fetcher.retrieve_full_uri.side_effect = exception(
             provider='ecs-role', error_msg='fake http error'

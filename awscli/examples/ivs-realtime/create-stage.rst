@@ -30,6 +30,10 @@ Output::
                         "SEQUENTIAL"
                     ],
                     "recordingMode": "DISABLED"
+                },
+                "recordingReconnectWindowSeconds": 0,
+                "hlsConfiguration": {
+                    "targetSegmentDurationSeconds": 6
                 }
             },
             "endpoints": {
@@ -43,7 +47,7 @@ Output::
         }
     }
 
-For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/multiple-hosts.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/multiple-hosts.html>`__ in the *Amazon IVS Low-Latency Streaming User Guide*.
 
 **Example 2: To create a stage and configure individial participant recording**
 
@@ -51,7 +55,8 @@ The following ``create-stage`` example creates a stage and configures individual
 
     aws ivs-realtime create-stage \
         --name stage1 \
-        --auto-participant-recording-configuration '{"mediaTypes": ["AUDIO_VIDEO"],"storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/abcdABCDefgh"}'
+        --auto-participant-recording-configuration '{"mediaTypes": ["AUDIO_VIDEO"],"storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/abcdABCDefgh", "recordingReconnectWindowSeconds": 100, \
+            "hlsConfiguration": {"targetSegmentDurationSeconds": 5}}'
 
 Output::
 
@@ -70,8 +75,12 @@ Output::
                         "SEQUENTIAL"
                     ],
                     "recordingMode": "DISABLED"
+                },
+                "recordingReconnectWindowSeconds": 100,
+                "hlsConfiguration": {
+                    "targetSegmentDurationSeconds": 5
                 }
-            },            
+            },
             "endpoints": {
                 "events": "wss://global.events.live-video.net",
                 "rtmp": "rtmp://9x0y8z7s6t5u.global-contribute-staging.live-video.net/app/",
@@ -83,7 +92,7 @@ Output::
         }
     }
 
-For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/multiple-hosts.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/multiple-hosts.html>`__ in the *Amazon IVS Low-Latency Streaming User Guide*.
 
 **Example 3: To create a stage and configure individial participant recording with thumbnail recording enabled**
 
@@ -111,8 +120,12 @@ Output::
                         "SEQUENTIAL"
                     ],
                     "recordingMode": "INTERVAL"
+                },
+                "recordingReconnectWindowSeconds": 0,
+                "hlsConfiguration": {
+                    "targetSegmentDurationSeconds": 6
                 }
-            },            
+            },
             "endpoints": {
                 "events": "wss://global.events.live-video.net",
                 "rtmp": "rtmp://9x0y8z7s6t5u.global-contribute-staging.live-video.net/app/",
@@ -124,4 +137,4 @@ Output::
         }
     }
 
-For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/multiple-hosts.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/multiple-hosts.html>`__ in the *Amazon IVS Low-Latency Streaming User Guide*.

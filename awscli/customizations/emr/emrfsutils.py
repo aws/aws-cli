@@ -11,11 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.emr import constants
-from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import exceptions
 from botocore.compat import OrderedDict
 
+from awscli.customizations.emr import constants, emrutils, exceptions
 
 CONSISTENT_OPTIONAL_KEYS = ['RetryCount', 'RetryPeriod']
 CSE_KMS_REQUIRED_KEYS = ['KMSKeyId']

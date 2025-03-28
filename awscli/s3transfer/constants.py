@@ -27,11 +27,11 @@ ALLOWED_DOWNLOAD_ARGS = [
 ]
 
 FULL_OBJECT_CHECKSUM_ARGS = [
-     'ChecksumCRC32',
-     'ChecksumCRC32C',
-     'ChecksumCRC64NVME',
-     'ChecksumSHA1',
-     'ChecksumSHA256',
+    'ChecksumCRC32',
+    'ChecksumCRC32C',
+    'ChecksumCRC64NVME',
+    'ChecksumSHA1',
+    'ChecksumSHA256',
 ]
 
 USER_AGENT = 's3transfer/%s' % s3transfer.__version__

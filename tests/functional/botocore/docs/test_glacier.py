@@ -19,10 +19,12 @@ class TestGlacierDocs(BaseDocsFunctionalTest):
             service_name='glacier',
             method_name='abort_multipart_upload',
             param_name='accountId',
-            doc_string='Note: this parameter is set to "-"')
+            doc_string='Note: this parameter is set to "-"',
+        )
 
     def test_checksum(self):
         self.assert_is_documented_as_autopopulated_param(
             service_name='glacier',
             method_name='upload_archive',
-            param_name='checksum')
+            param_name='checksum',
+        )

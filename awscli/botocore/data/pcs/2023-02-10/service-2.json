@@ -274,6 +274,7 @@
       },
       "input":{"shape":"TagResourceRequest"},
       "errors":[
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Adds or edits tags on an Amazon Web Services PCS resource. Each tag consists of a tag key and a tag value. The tag key and tag value are case-sensitive strings. The tag value can be an empty (null) string. To add a tag, specify a new tag key and a tag value. To edit a tag, specify an existing tag key and a new tag value.</p>",
@@ -420,7 +421,7 @@
     },
     "ClusterIdentifier":{
       "type":"string",
-      "pattern":"(pcs_[a-zA-Z0-9]+|[A-Za-z][A-Za-z0-9-]{1,40})"
+      "pattern":"(pcs_[a-zA-Z0-9]+|[A-Za-z][A-Za-z0-9-]{3,40})"
     },
     "ClusterList":{
       "type":"list",
@@ -429,8 +430,8 @@
     "ClusterName":{
       "type":"string",
       "max":40,
-      "min":1,
-      "pattern":"(?!pcs_)^(?![A-Za-z0-9]{10}$)[A-Za-z][A-Za-z0-9-]+"
+      "min":3,
+      "pattern":"(?!pcs_)^[A-Za-z][A-Za-z0-9-]+"
     },
     "ClusterSlurmConfiguration":{
       "type":"structure",
@@ -616,7 +617,7 @@
     },
     "ComputeNodeGroupIdentifier":{
       "type":"string",
-      "pattern":"(pcs_[a-zA-Z0-9]+|[A-Za-z][A-Za-z0-9-]{1,25})"
+      "pattern":"(pcs_[a-zA-Z0-9]+|[A-Za-z][A-Za-z0-9-]{3,25})"
     },
     "ComputeNodeGroupList":{
       "type":"list",
@@ -625,8 +626,8 @@
     "ComputeNodeGroupName":{
       "type":"string",
       "max":25,
-      "min":1,
-      "pattern":"(?!pcs_)^(?![A-Za-z0-9]{10}$)[A-Za-z][A-Za-z0-9-]+"
+      "min":3,
+      "pattern":"(?!pcs_)^[A-Za-z][A-Za-z0-9-]+"
     },
     "ComputeNodeGroupSlurmConfiguration":{
       "type":"structure",
@@ -1328,7 +1329,7 @@
     },
     "QueueIdentifier":{
       "type":"string",
-      "pattern":"(pcs_[a-zA-Z0-9]+|[A-Za-z][A-Za-z0-9-]{1,25})"
+      "pattern":"(pcs_[a-zA-Z0-9]+|[A-Za-z][A-Za-z0-9-]{3,25})"
     },
     "QueueList":{
       "type":"list",
@@ -1337,8 +1338,8 @@
     "QueueName":{
       "type":"string",
       "max":25,
-      "min":1,
-      "pattern":"(?!pcs_)^(?![A-Za-z0-9]{10}$)[A-Za-z][A-Za-z0-9-]+"
+      "min":3,
+      "pattern":"(?!pcs_)^[A-Za-z][A-Za-z0-9-]+"
     },
     "QueueStatus":{
       "type":"string",

@@ -2807,7 +2807,7 @@
         },
         "endpointConfiguration":{
           "shape":"EndpointConfiguration",
-          "documentation":"<p>The endpoint configuration of this DomainName showing the endpoint types of the domain name. </p>"
+          "documentation":"<p>The endpoint configuration of this DomainName showing the endpoint types and IP address types of the domain name. </p>"
         },
         "tags":{
           "shape":"MapOfStringToString",
@@ -2948,7 +2948,7 @@
         },
         "endpointConfiguration":{
           "shape":"EndpointConfiguration",
-          "documentation":"<p>The endpoint configuration of this RestApi showing the endpoint types of the API. </p>"
+          "documentation":"<p>The endpoint configuration of this RestApi showing the endpoint types and IP address types of the API. </p>"
         },
         "policy":{
           "shape":"String",
@@ -3805,7 +3805,7 @@
         },
         "endpointConfiguration":{
           "shape":"EndpointConfiguration",
-          "documentation":"<p>The endpoint configuration of this DomainName showing the endpoint types of the domain name. </p>"
+          "documentation":"<p>The endpoint configuration of this DomainName showing the endpoint types and IP address types of the domain name. </p>"
         },
         "domainNameStatus":{
           "shape":"DomainNameStatus",
@@ -3909,12 +3909,16 @@
           "shape":"ListOfEndpointType",
           "documentation":"<p>A list of endpoint types of an API (RestApi) or its custom domain name (DomainName). For an edge-optimized API and its custom domain name, the endpoint type is <code>\"EDGE\"</code>. For a regional API and its custom domain name, the endpoint type is <code>REGIONAL</code>. For a private API, the endpoint type is <code>PRIVATE</code>.</p>"
         },
+        "ipAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address types that can invoke an API (RestApi) or a DomainName. Use <code>ipv4</code> to allow only IPv4 addresses to invoke an API or DomainName, or use <code>dualstack</code> to allow both IPv4 and IPv6 addresses to invoke an API or a DomainName. For the <code>PRIVATE</code> endpoint type, only <code>dualstack</code> is supported.</p>"
+        },
         "vpcEndpointIds":{
           "shape":"ListOfString",
           "documentation":"<p>A list of VpcEndpointIds of an API (RestApi) against which to create Route53 ALIASes. It is only supported for <code>PRIVATE</code> endpoint type.</p>"
         }
       },
-      "documentation":"<p>The endpoint configuration to indicate the types of endpoints an API (RestApi) or its custom domain name (DomainName) has. </p>"
+      "documentation":"<p>The endpoint configuration to indicate the types of endpoints an API (RestApi) or its custom domain name (DomainName) has and the IP address types that can invoke it. </p>"
     },
     "EndpointType":{
       "type":"string",
@@ -5420,6 +5424,13 @@
         "AWS_PROXY"
       ]
     },
+    "IpAddressType":{
+      "type":"string",
+      "enum":[
+        "ipv4",
+        "dualstack"
+      ]
+    },
     "LimitExceededException":{
       "type":"structure",
       "members":{
@@ -6341,7 +6352,7 @@
         },
         "endpointConfiguration":{
           "shape":"EndpointConfiguration",
-          "documentation":"<p>The endpoint configuration of this RestApi showing the endpoint types of the API. </p>"
+          "documentation":"<p>The endpoint configuration of this RestApi showing the endpoint types and IP address types of the API. </p>"
         },
         "policy":{
           "shape":"String",

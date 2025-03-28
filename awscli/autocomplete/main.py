@@ -16,10 +16,8 @@
 # everytime a user hits <TAB>.  Try to avoid any expensive module level
 # work or really heavyweight imports.  Prefer to lazy load as much as possible.
 
-from awscli.autocomplete import parser, completer, filters
-from awscli.autocomplete.local import model, basic, fetcher
-from awscli.autocomplete import serverside
-from awscli.autocomplete import custom
+from awscli.autocomplete import completer, custom, filters, parser, serverside
+from awscli.autocomplete.local import basic, fetcher, model
 
 
 def create_autocompleter(

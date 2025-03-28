@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 import dateutil.parser
 import pytest
-
 from botocore.exceptions import (
     InvalidConfigError,
     SSOTokenLoadError,
@@ -20,6 +19,7 @@ from botocore.exceptions import (
 )
 from botocore.session import Session
 from botocore.tokens import SSOTokenProvider
+
 from tests import mock
 
 

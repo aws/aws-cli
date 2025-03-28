@@ -13,8 +13,7 @@
 
 
 from awscli.arguments import CustomArgument
-from awscli.customizations.emr import helptext
-from awscli.customizations.emr import emrutils
+from awscli.customizations.emr import emrutils, helptext
 
 
 def modify_tags_argument(argument_table, **kwargs):

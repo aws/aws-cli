@@ -50,30 +50,40 @@ can set the BOTOCORE_TEST_ID env var with the ``suite_id:test_id`` syntax.
     BOTOCORE_TEST_ID=5:1 pytest tests/unit/test_protocols.py
 
 """
-import os
+
+import base64
 import copy
+import os
+from base64 import b64decode
 from enum import Enum
 
-from base64 import b64decode
+import pytest
+from botocore.awsrequest import HeadersDict, prepare_request_dict
+from botocore.compat import OrderedDict, json, urlsplit
+from botocore.eventstream import EventStream
+from botocore.model import NoShapeFoundError, OperationModel, ServiceModel
+from botocore.parsers import (
+    EC2QueryParser,
+    JSONParser,
+    QueryParser,
+    RestJSONParser,
+    RestXMLParser,
+    RpcV2CBORParser,
+)
+from botocore.serialize import (
+    EC2Serializer,
+    JSONSerializer,
+    QuerySerializer,
+    RestJSONSerializer,
+    RestXMLSerializer,
+    RpcV2CBORSerializer,
+)
+from botocore.utils import parse_timestamp, percent_encode_sequence
 from dateutil.tz import tzutc
 
-import pytest
-
-from botocore.awsrequest import HeadersDict
-from botocore.compat import json, OrderedDict, urlsplit
-from botocore.eventstream import EventStream
-from botocore.model import ServiceModel, OperationModel
-from botocore.serialize import EC2Serializer, QuerySerializer, \
-        JSONSerializer, RestJSONSerializer, RestXMLSerializer
-from botocore.parsers import QueryParser, JSONParser, \
-        RestJSONParser, RestXMLParser, EC2QueryParser
-from botocore.utils import parse_timestamp, percent_encode_sequence
-from botocore.awsrequest import prepare_request_dict
-from botocore.model import NoShapeFoundError
-
 TEST_DIR = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
-    'protocols')
+    os.path.dirname(os.path.abspath(__file__)), 'protocols'
+)
 NOT_SPECIFIED = object()
 PROTOCOL_SERIALIZERS = {
     'ec2': EC2Serializer,
@@ -81,6 +91,7 @@ PROTOCOL_SERIALIZERS = {
     'json': JSONSerializer,
     'rest-json': RestJSONSerializer,
     'rest-xml': RestXMLSerializer,
+    'smithy-rpc-v2-cbor': RpcV2CBORSerializer,
 }
 PROTOCOL_PARSERS = {
     'ec2': EC2QueryParser,
@@ -88,10 +99,9 @@ PROTOCOL_PARSERS = {
     'json': JSONParser,
     'rest-json': RestJSONParser,
     'rest-xml': RestXMLParser,
+    'smithy-rpc-v2-cbor': RpcV2CBORParser,
 }
-PROTOCOL_TEST_BLACKLIST = [
-    'Idempotency token auto fill'
-]
+PROTOCOL_TEST_BLACKLIST = ['Idempotency token auto fill']
 IGNORE_LIST_FILENAME = "protocol-tests-ignore-list.json"
 
 
@@ -133,8 +143,7 @@ def _compliance_tests(test_type=None):
 
 
 @pytest.mark.parametrize(
-    "json_description, case, basename",
-    _compliance_tests(TestType.INPUT)
+    "json_description, case, basename", _compliance_tests(TestType.INPUT)
 )
 def test_input_compliance(json_description, case, basename):
     service_description = copy.deepcopy(json_description)
@@ -150,12 +159,13 @@ def test_input_compliance(json_description, case, basename):
     serializer = protocol_serializer()
     serializer.MAP_TYPE = OrderedDict
     operation_model = OperationModel(case['given'], model)
+    case['params'] = _convert_strings_to_special_float(case['params'])
     request = serializer.serialize_to_request(case['params'], operation_model)
     _serialize_request_description(request)
     client_endpoint = service_description.get('clientEndpoint')
     try:
         _assert_request_body_is_bytes(request['body'])
-        _assert_requests_equal(request, case['serialized'])
+        _assert_requests_equal(request, case['serialized'], protocol_type)
         _assert_endpoints_equal(request, case['serialized'], client_endpoint)
     except AssertionError as e:
         _input_failure_message(protocol_type, case, request, e)
@@ -163,8 +173,10 @@ def test_input_compliance(json_description, case, basename):
 
 def _assert_request_body_is_bytes(body):
     if not isinstance(body, bytes):
-        raise AssertionError("Expected body to be serialized as type "
-                             "bytes(), instead got: %s" % type(body))
+        raise AssertionError(
+            "Expected body to be serialized as type "
+            "bytes(), instead got: %s" % type(body)
+        )
 
 
 def _assert_endpoints_equal(actual, expected, endpoint):
@@ -175,16 +187,16 @@ def _assert_endpoints_equal(actual, expected, endpoint):
     assert_equal(actual_host, expected['host'], 'Host')
 
 
-class MockRawResponse(object):
+class MockRawResponse:
     def __init__(self, data):
         self._data = b64decode(data)
 
     def stream(self):
         yield self._data
 
+
 @pytest.mark.parametrize(
-    "json_description, case, basename",
-    _compliance_tests(TestType.OUTPUT)
+    "json_description, case, basename", _compliance_tests(TestType.OUTPUT)
 )
 def test_output_compliance(json_description, case, basename):
     service_description = copy.deepcopy(json_description)
@@ -198,7 +210,8 @@ def test_output_compliance(json_description, case, basename):
         operation_model = OperationModel(case['given'], model)
         protocol = model.metadata['protocol']
         parser = PROTOCOL_PARSERS[protocol](
-            timestamp_parser=_compliance_timestamp_parser)
+            timestamp_parser=_compliance_timestamp_parser
+        )
         # We load the json as utf-8, but the response parser is at the
         # botocore boundary, so it expects to work with bytes.
         # If a test case doesn't define a response body, set it to `None`.
@@ -219,6 +232,10 @@ def test_output_compliance(json_description, case, basename):
             case['response']['body'] = MockRawResponse(body_bytes)
         if 'error' in case:
             output_shape = operation_model.output_shape
+            if protocol == 'smithy-rpc-v2-cbor':
+                case['response']['body'] = base64.b64decode(
+                    case['response']['body']
+                )
             parsed = parser.parse(case['response'], output_shape)
             try:
                 error_code = parsed.get("Error", {}).get("Code")
@@ -234,15 +251,25 @@ def test_output_compliance(json_description, case, basename):
                 output_shape.serialization['resultWrapper'] = (
                     f'{operation_name}Result'
                 )
+            elif protocol == 'smithy-rpc-v2-cbor':
+                case['response']['body'] = base64.b64decode(
+                    case['response']['body']
+                )
             parsed = parser.parse(case['response'], output_shape)
         parsed = _fixup_parsed_result(parsed)
     except Exception as e:
         msg = (
             "\nFailed to run test  : %s\n"
             "Protocol            : %s\n"
-            "Description         : %s (%s:%s)\n" % (
-                e, model.metadata['protocol'],
-                case['description'], case['suite_id'], case['test_id']))
+            "Description         : %s (%s:%s)\n"
+            % (
+                e,
+                model.metadata['protocol'],
+                case['description'],
+                case['suite_id'],
+                case['test_id'],
+            )
+        )
         raise AssertionError(msg)
     try:
         if 'error' in case:
@@ -257,8 +284,9 @@ def test_output_compliance(json_description, case, basename):
             expected_result = case['result']
         assert_equal(parsed, expected_result, "Body")
     except Exception as e:
-        _output_failure_message(model.metadata['protocol'],
-                                case, parsed, expected_result, e)
+        _output_failure_message(
+            model.metadata['protocol'], case, parsed, expected_result, e
+        )
 
 
 def _fixup_parsed_result(parsed):
@@ -318,6 +346,17 @@ def _convert_bytes_to_str(parsed):
         return parsed
 
 
+def _convert_strings_to_special_float(parsed):
+    for key, value in parsed.items():
+        if value == 'Infinity':
+            parsed[key] = float('Infinity')
+        elif value == '-Infinity':
+            parsed[key] = float('-Infinity')
+        elif value == 'NaN':
+            parsed[key] = float('NaN')
+    return parsed
+
+
 def _convert_special_floats_to_string(parsed):
     for key, value in parsed.items():
         if value == float('Infinity'):
@@ -338,8 +377,7 @@ def _compliance_timestamp_parser(value):
 
 
 def _output_failure_message(
-    protocol_type, case, actual_parsed,
-    expected_result, error
+    protocol_type, case, actual_parsed, expected_result, error
 ):
     j = _try_json_dump
     error_message = (
@@ -349,11 +387,19 @@ def _output_failure_message(
         "Response              : %s\n"
         "Expected serialization: %s\n"
         "Actual serialization  : %s\n"
-        "Assertion message     : %s\n" % (
-            case['description'], case['suite_id'],
-            case['test_id'], protocol_type,
-            j(case['given']), j(case['response']),
-            j(expected_result), j(actual_parsed), error))
+        "Assertion message     : %s\n"
+        % (
+            case['description'],
+            case['suite_id'],
+            case['test_id'],
+            protocol_type,
+            j(case['given']),
+            j(case['response']),
+            j(expected_result),
+            j(actual_parsed),
+            error,
+        )
+    )
     raise AssertionError(error_message)
 
 
@@ -366,11 +412,19 @@ def _input_failure_message(protocol_type, case, actual_request, error):
         "Params                : %s\n"
         "Expected serialization: %s\n"
         "Actual serialization  : %s\n"
-        "Assertion message     : %s\n" % (
-            case['description'], case['suite_id'],
-            case['test_id'], protocol_type,
-            j(case['given']), j(case['params']),
-            j(case['serialized']), j(actual_request), error))
+        "Assertion message     : %s\n"
+        % (
+            case['description'],
+            case['suite_id'],
+            case['test_id'],
+            protocol_type,
+            j(case['given']),
+            j(case['params']),
+            j(case['serialized']),
+            j(actual_request),
+            error,
+        )
+    )
     raise AssertionError(error_message)
 
 
@@ -391,10 +445,14 @@ def assert_equal(first, second, prefix):
             better = "%s (actual != expected)\n%s !=\n%s" % (
                 prefix,
                 json.dumps(first, indent=2),
-                json.dumps(second, indent=2))
+                json.dumps(second, indent=2),
+            )
         except (ValueError, TypeError):
             better = "%s (actual != expected)\n%s !=\n%s" % (
-                prefix, first, second)
+                prefix,
+                first,
+                second,
+            )
         raise AssertionError(better)
 
 
@@ -415,9 +473,30 @@ def _serialize_request_description(request_dict):
                 request_dict['url_path'] += '&%s' % encoded
 
 
-def _assert_requests_equal(actual, expected):
-    assert_equal(actual['body'], expected.get('body', '').encode('utf-8'),
-                 'Body value')
+def _assert_requests_equal(actual, expected, protocol):
+    # For CBOR, we need to assert that the bodies are equal based on their parsed
+    # values to ensure we are properly testing things like
+    if protocol == 'smithy-rpc-v2-cbor' and actual['body']:
+        parser = RpcV2CBORParser()
+        actual_body_stream = parser.get_peekable_stream_from_bytes(
+            actual['body']
+        )
+        expected_body_stream = parser.get_peekable_stream_from_bytes(
+            base64.b64decode(expected['body'])
+        )
+        actual_body = _convert_special_floats_to_string(
+            parser.parse_data_item(actual_body_stream)
+        )
+        expected_body = _convert_special_floats_to_string(
+            parser.parse_data_item(expected_body_stream)
+        )
+        assert_equal(actual_body, expected_body, 'Body value')
+    else:
+        assert_equal(
+            actual['body'],
+            expected.get('body', '').encode('utf-8'),
+            'Body value',
+        )
     actual_headers = HeadersDict(actual['headers'])
     expected_headers = HeadersDict(expected.get('headers', {}))
     excluded_headers = expected.get('forbidHeaders', [])
@@ -487,9 +566,11 @@ def _get_suite_test_id():
             suite_id = int(split[0])
     except TypeError:
         # Same exception, just give a better error message.
-        raise TypeError("Invalid format for BOTOCORE_TEST_ID, should be "
-                        "suite_id[:test_id], and both values should be "
-                        "integers.")
+        raise TypeError(
+            "Invalid format for BOTOCORE_TEST_ID, should be "
+            "suite_id[:test_id], and both values should be "
+            "integers."
+        )
     return suite_id, test_id
 
 

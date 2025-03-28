@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 
-class EKS(object):
+class EKS:
     def __init__(self, eks_client):
         self.eks_client = eks_client
         self.cluster_info = {}

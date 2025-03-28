@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-
 from botocore.session import get_session
 
 _H2_REQUIRED = object()
@@ -21,6 +20,7 @@ _KNOWN_SERVICES = {
     'kinesis': ['SubscribeToShard'],
     'lexv2-runtime': ['StartConversation'],
 }
+
 
 def _all_test_cases():
     session = get_session()
@@ -32,7 +32,9 @@ def _all_test_cases():
 
     for service in services:
         service_model = session.get_service_model(service)
-        h2_config = service_model.metadata.get('protocolSettings', {}).get('h2')
+        h2_config = service_model.metadata.get('protocolSettings', {}).get(
+            'h2'
+        )
         if h2_config == 'required':
             h2_services.append(service)
         elif h2_config == 'eventstream':

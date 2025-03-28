@@ -2,6 +2,95 @@
 CHANGELOG
 =========
 
+2.25.6
+======
+
+* api-change:``bedrock-runtime``: Launching Multi-modality Content Filter for Amazon Bedrock Guardrails.
+* api-change:``apigateway``: Adds support for setting the IP address type to allow dual-stack or IPv4 address types to invoke your APIs or domain names.
+* api-change:``sagemaker``: TransformAmiVersion for Batch Transform and SageMaker Search Service Aggregate Search API Extension
+* api-change:``payment-cryptography``: The service adds support for transferring AES-256 and other keys between the service and other service providers and HSMs. This feature uses ECDH to derive a one-time key transport key to enable these secure key exchanges.
+* api-change:``apigatewayv2``: Adds support for setting the IP address type to allow dual-stack or IPv4 address types to invoke your APIs or domain names.
+* api-change:``networkmanager``: Add support for NetworkManager Dualstack endpoints.
+* api-change:``meteringmarketplace``: Add support for Marketplace Metering Service dual-stack endpoints.
+* api-change:``codebuild``: This release adds support for cacheNamespace in ProjectCache
+* api-change:``ecs``: This is an Amazon ECS documentation only release that addresses tickets.
+* api-change:``quicksight``: RLS permission dataset with userAs: RLS_RULES flag, Q in QuickSight/Threshold Alerts/Schedules/Snapshots in QS embedding, toggle dataset refresh email alerts via API, transposed table with options: column width, type and index, toggle Q&A on dashboards, Oracle Service Name when creating data source.
+
+
+2.25.5
+======
+
+* api-change:``gamelift``: Amazon GameLift Servers add support for additional instance types.
+* api-change:``sagemaker``: add: recovery mode for SageMaker Studio apps
+* api-change:``iam``: Update IAM dual-stack endpoints for BJS, IAD and PDT partitions
+* api-change:``bedrock-agent-runtime``: bedrock flow now support node action trace.
+* api-change:``cloudformation``: Adding support for the new parameter "ScanFilters" in the CloudFormation StartResourceScan API. When this parameter is included, the StartResourceScan API will initiate a scan limited to the resource types specified by the parameter.
+* api-change:``datazone``: This release adds new action type of Create Listing Changeset for the Metadata Enforcement Rule feature.
+* api-change:``sso-oidc``: This release adds AwsAdditionalDetails in the CreateTokenWithIAM API response.
+* api-change:``eks``: Added support for BOTTLEROCKET FIPS AMIs to AMI types in US regions.
+* api-change:``bcm-pricing-calculator``: Added standaloneAccountRateTypeSelections for GetPreferences and UpdatePreferences APIs. Added STALE enum value to status attribute in GetBillScenario and UpdateBillScenario APIs.
+* api-change:``batch``: This release will enable two features: Firelens log driver, and Execute Command on Batch jobs on ECS. Both features will be passed through to ECS.
+
+
+2.25.4
+======
+
+* api-change:``arc-zonal-shift``: Add new shiftType field for ARC zonal shifts.
+* api-change:``rds``: Add note about the Availability Zone where RDS restores the DB cluster for the RestoreDBClusterToPointInTime operation.
+* api-change:``directconnect``: With this release, AWS Direct Connect allows you to tag your Direct Connect gateways. Tags are metadata that you can create and use to manage your Direct Connect gateways. For more information about tagging, see AWS Tagging Strategies.
+* api-change:``wafv2``: This release adds the ability to associate an AWS WAF v2 web ACL with an AWS Amplify App.
+* api-change:``mediatailor``: Add support for log filtering which allow customers to filter out selected event types from logs.
+* api-change:``mediaconvert``: This release adds a configurable Quality Level setting for the top rendition of Auto ABR jobs
+* api-change:``polly``: Added support for the new voice - Jihye (ko-KR). Jihye is available as a Neural voice only.
+
+
+2.25.3
+======
+
+* api-change:``workspaces-thin-client``: Deprecate tags field in Get API responses
+* api-change:``eks``: Added support to override upgrade-blocking readiness checks via force flag when updating a cluster.
+* api-change:``gameliftstreams``: Minor updates to improve developer experience.
+* api-change:``bedrock-agent``: Adding support for Amazon OpenSearch Managed clusters as a vector database in Knowledge Bases for Amazon Bedrock
+* api-change:``marketplace-entitlement``: This release enhances the GetEntitlements API to support new filter CUSTOMER_AWS_ACCOUNT_ID in request and CustomerAWSAccountId field in response.
+* api-change:``keyspaces``: Removing replication region limitation for Amazon Keyspaces Multi-Region Replication APIs.
+* enhancement:``sso``: Updates legacy token auth flow to check if cached legacy tokens are expired according to the local clock. If expired, it will raise an ``UnauthorizedSSOTokenError`` instead of sending an expired token to Identity Center's ``GetRoleCredentials`` API.
+* api-change:``sagemaker``: This release adds support for customer-managed KMS keys in Amazon SageMaker Partner AI Apps
+* api-change:``meteringmarketplace``: This release enhances the BatchMeterUsage API to support new field CustomerAWSAccountId in request and response and making CustomerIdentifier optional. CustomerAWSAccountId or CustomerIdentifier must be provided in request but not both.
+
+
+2.25.2
+======
+
+* api-change:``pcs``: ClusterName/ClusterIdentifier, ComputeNodeGroupName/ComputeNodeGroupIdentifier, and QueueName/QueueIdentifier can now have 10 characters, and a minimum of 3 characters. The TagResource API action can now return ServiceQuotaExceededException.
+* api-change:``iotwireless``: Mark EutranCid under LteNmr optional.
+* bugfix:dependency: Relax symlink verification when building MacOS executables
+* api-change:``ssm``: This release adds the AvailableSecurityUpdatesComplianceStatus field to patch baseline operations, as well as the AvailableSecurityUpdateCount and InstancesWithAvailableSecurityUpdates to patch state operations. Applies to Windows Server managed nodes only.
+* api-change:``qconnect``: Provides the correct value for supported model ID.
+
+
+2.25.1
+======
+
+* api-change:``datazone``: Add support for overriding selection of default AWS IAM Identity Center instance as part of Amazon DataZone domain APIs.
+* api-change:``sagemaker``: This release does the following: 1.) Adds DurationHours as a required field to the SearchTrainingPlanOfferings action in the SageMaker AI API; 2.) Adds support for G6e instance types for SageMaker AI inference optimization jobs.
+* enhancement:Protocol: Adds support for the smithy-rpc-v2-cbor protocol.  If a service supports smithy-rpc-v2-cbor, this protocol will automatically be used.  For more information, see https://smithy.io/2.0/additional-specs/protocols/smithy-rpc-v2.html
+* api-change:``route53-recovery-control-config``: Adds dual-stack (IPv4 and IPv6) endpoint support for route53-recovery-control-config operations, opt-in dual-stack addresses for cluster endpoints, and UpdateCluster API to update the network-type of clusters between IPv4 and dual-stack.
+* api-change:``bedrock``: A CustomModelUnit(CMU) is an abstract view of the hardware utilization that Bedrock needs to host a a single copy of your custom imported model. Bedrock determines the number of CMUs that a model copy needs when you import the custom model. You can use CMUs to estimate the cost of Inference's.
+
+
+2.25.0
+======
+
+* feature:Endpoints: Generate and use AWS-account-based endpoints for compatible services when the account ID is available. At launch, DynamoDB is the first and only compatible service. The new endpoint URL pattern will be ``https://<account-id>.ddb.<region>.amazonaws.com``. Additional services may be added in the future. See the documentation for details: https://docs.aws.amazon.com/sdkref/latest/guide/feature-account-endpoints.html
+* enhancement:dependency: Upgrade pyinstaller from 5.13.2 to 6.11.1.
+* api-change:``controlcatalog``: Add ExemptAssumeRoot parameter to adapt for new AWS AssumeRoot capability.
+* api-change:``network-firewall``: You can now use flow operations to either flush or capture traffic monitored in your firewall's flow table.
+* api-change:``bedrock``: With this release, Bedrock Evaluation will now support bring your own inference responses.
+* enhancement:dependency: Set ``PYINSTALLER_RESET_ENVIRONMENT`` if not already set when starting child processes. This supports using the CLI as a credential process for itself.
+* api-change:``mailmanager``: Amazon SES Mail Manager. Extended rule string and boolean expressions to support analysis in condition evaluation. Extended ingress point string expression to support analysis in condition evaluation
+* api-change:``amplify``: Added appId field to Webhook responses
+
+
 2.24.27
 =======
 

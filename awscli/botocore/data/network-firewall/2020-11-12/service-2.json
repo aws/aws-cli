@@ -242,6 +242,22 @@
       ],
       "documentation":"<p>Returns the data objects for the specified firewall policy. </p>"
     },
+    "DescribeFlowOperation":{
+      "name":"DescribeFlowOperation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeFlowOperationRequest"},
+      "output":{"shape":"DescribeFlowOperationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns key information about a specific flow operation.</p>"
+    },
     "DescribeLoggingConfiguration":{
       "name":"DescribeLoggingConfiguration",
       "http":{
@@ -402,6 +418,38 @@
       ],
       "documentation":"<p>Retrieves the metadata for the firewalls that you have defined. If you provide VPC identifiers in your request, this returns only the firewalls for those VPCs.</p> <p>Depending on your setting for max results and the number of firewalls, a single call might not return the full list. </p>"
     },
+    "ListFlowOperationResults":{
+      "name":"ListFlowOperationResults",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListFlowOperationResultsRequest"},
+      "output":{"shape":"ListFlowOperationResultsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the results of a specific flow operation. </p> <p>Flow operations let you manage the flows tracked in the flow table, also known as the firewall table.</p> <p>A flow is network traffic that is monitored by a firewall, either by stateful or stateless rules. For traffic to be considered part of a flow, it must share Destination, DestinationPort, Direction, Protocol, Source, and SourcePort. </p>"
+    },
+    "ListFlowOperations":{
+      "name":"ListFlowOperations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListFlowOperationsRequest"},
+      "output":{"shape":"ListFlowOperationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of all flow operations ran in a specific firewall. You can optionally narrow the request scope by specifying the operation type or Availability Zone associated with a firewall's flow operations. </p> <p>Flow operations let you manage the flows tracked in the flow table, also known as the firewall table.</p> <p>A flow is network traffic that is monitored by a firewall, either by stateful or stateless rules. For traffic to be considered part of a flow, it must share Destination, DestinationPort, Direction, Protocol, Source, and SourcePort. </p>"
+    },
     "ListRuleGroups":{
       "name":"ListRuleGroups",
       "http":{
@@ -480,6 +528,38 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Generates a traffic analysis report for the timeframe and traffic type you specify.</p> <p>For information on the contents of a traffic analysis report, see <a>AnalysisReport</a>.</p>"
+    },
+    "StartFlowCapture":{
+      "name":"StartFlowCapture",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartFlowCaptureRequest"},
+      "output":{"shape":"StartFlowCaptureResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Begins capturing the flows in a firewall, according to the filters you define. Captures are similar, but not identical to snapshots. Capture operations provide visibility into flows that are not closed and are tracked by a firewall's flow table. Unlike snapshots, captures are a time-boxed view. </p> <p>A flow is network traffic that is monitored by a firewall, either by stateful or stateless rules. For traffic to be considered part of a flow, it must share Destination, DestinationPort, Direction, Protocol, Source, and SourcePort. </p> <note> <p>To avoid encountering operation limits, you should avoid starting captures with broad filters, like wide IP ranges. Instead, we recommend you define more specific criteria with <code>FlowFilters</code>, like narrow IP ranges, ports, or protocols.</p> </note>"
+    },
+    "StartFlowFlush":{
+      "name":"StartFlowFlush",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartFlowFlushRequest"},
+      "output":{"shape":"StartFlowFlushResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Begins the flushing of traffic from the firewall, according to the filters you define. When the operation starts, impacted flows are temporarily marked as timed out before the Suricata engine prunes, or flushes, the flows from the firewall table.</p> <important> <p>While the flush completes, impacted flows are processed as midstream traffic. This may result in a temporary increase in midstream traffic metrics. We recommend that you double check your stream exception policy before you perform a flush operation.</p> </important>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -726,6 +806,7 @@
       "type":"list",
       "member":{"shape":"Address"}
     },
+    "Age":{"type":"integer"},
     "AnalysisReport":{
       "type":"structure",
       "members":{
@@ -950,6 +1031,7 @@
       "member":{"shape":"AzSubnet"}
     },
     "Boolean":{"type":"boolean"},
+    "ByteCount":{"type":"long"},
     "CIDRCount":{
       "type":"integer",
       "max":1000000,
@@ -1432,6 +1514,64 @@
         "FirewallStatus":{
           "shape":"FirewallStatus",
           "documentation":"<p>Detailed information about the current status of a <a>Firewall</a>. You can retrieve this for a firewall by calling <a>DescribeFirewall</a> and providing the firewall name and ARN.</p>"
+        }
+      }
+    },
+    "DescribeFlowOperationRequest":{
+      "type":"structure",
+      "required":[
+        "FirewallArn",
+        "FlowOperationId"
+      ],
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        },
+        "FlowOperationId":{
+          "shape":"FlowOperationId",
+          "documentation":"<p>A unique identifier for the flow operation. This ID is returned in the responses to start and list commands. You provide to describe commands.</p>"
+        }
+      }
+    },
+    "DescribeFlowOperationResponse":{
+      "type":"structure",
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        },
+        "FlowOperationId":{
+          "shape":"FlowOperationId",
+          "documentation":"<p>A unique identifier for the flow operation. This ID is returned in the responses to start and list commands. You provide to describe commands.</p>"
+        },
+        "FlowOperationType":{
+          "shape":"FlowOperationType",
+          "documentation":"<p>Defines the type of <code>FlowOperation</code>.</p>"
+        },
+        "FlowOperationStatus":{
+          "shape":"FlowOperationStatus",
+          "documentation":"<p>Returns the status of the flow operation. This string is returned in the responses to start, list, and describe commands.</p> <p>If the status is <code>COMPLETED_WITH_ERRORS</code>, results may be returned with any number of <code>Flows</code> missing from the response. If the status is <code>FAILED</code>, <code>Flows</code> returned will be empty.</p>"
+        },
+        "StatusMessage":{
+          "shape":"StatusReason",
+          "documentation":"<p>If the asynchronous operation fails, Network Firewall populates this with the reason for the error or failure. Options include <code>Flow operation error</code> and <code>Flow timeout</code>.</p>"
+        },
+        "FlowRequestTimestamp":{
+          "shape":"FlowRequestTimestamp",
+          "documentation":"<p>A timestamp indicating when the Suricata engine identified flows impacted by an operation. </p>"
+        },
+        "FlowOperation":{
+          "shape":"FlowOperation",
+          "documentation":"<p>Returns key information about a flow operation, such as related statuses, unique identifiers, and all filters defined in the operation.</p>"
         }
       }
     },
@@ -1958,6 +2098,125 @@
       "type":"list",
       "member":{"shape":"TCPFlag"}
     },
+    "Flow":{
+      "type":"structure",
+      "members":{
+        "SourceAddress":{"shape":"Address"},
+        "DestinationAddress":{"shape":"Address"},
+        "SourcePort":{
+          "shape":"Port",
+          "documentation":"<p>The source port to inspect for. You can specify an individual port, for example <code>1994</code> and you can specify a port range, for example <code>1990:1994</code>. To match with any port, specify <code>ANY</code>.</p>"
+        },
+        "DestinationPort":{
+          "shape":"Port",
+          "documentation":"<p>The destination port to inspect for. You can specify an individual port, for example <code>1994</code> and you can specify a port range, for example <code>1990:1994</code>. To match with any port, specify <code>ANY</code>.</p>"
+        },
+        "Protocol":{
+          "shape":"ProtocolString",
+          "documentation":"<p>The protocols to inspect for, specified using the assigned internet protocol number (IANA) for each protocol. If not specified, this matches with any protocol.</p>"
+        },
+        "Age":{
+          "shape":"Age",
+          "documentation":"<p>Returned as info about age of the flows identified by the flow operation.</p>"
+        },
+        "PacketCount":{
+          "shape":"PacketCount",
+          "documentation":"<p>Returns the total number of data packets received or transmitted in a flow.</p>"
+        },
+        "ByteCount":{
+          "shape":"ByteCount",
+          "documentation":"<p>Returns the number of bytes received or transmitted in a specific flow.</p>"
+        }
+      },
+      "documentation":"<p>Any number of arrays, where each array is a single flow identified in the scope of the operation. If multiple flows were in the scope of the operation, multiple <code>Flows</code> arrays are returned.</p>"
+    },
+    "FlowFilter":{
+      "type":"structure",
+      "members":{
+        "SourceAddress":{"shape":"Address"},
+        "DestinationAddress":{"shape":"Address"},
+        "SourcePort":{
+          "shape":"Port",
+          "documentation":"<p>The source port to inspect for. You can specify an individual port, for example <code>1994</code> and you can specify a port range, for example <code>1990:1994</code>. To match with any port, specify <code>ANY</code>.</p>"
+        },
+        "DestinationPort":{
+          "shape":"Port",
+          "documentation":"<p>The destination port to inspect for. You can specify an individual port, for example <code>1994</code> and you can specify a port range, for example <code>1990:1994</code>. To match with any port, specify <code>ANY</code>.</p>"
+        },
+        "Protocols":{
+          "shape":"ProtocolStrings",
+          "documentation":"<p>The protocols to inspect for, specified using the assigned internet protocol number (IANA) for each protocol. If not specified, this matches with any protocol.</p>"
+        }
+      },
+      "documentation":"<p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+    },
+    "FlowFilters":{
+      "type":"list",
+      "member":{"shape":"FlowFilter"}
+    },
+    "FlowOperation":{
+      "type":"structure",
+      "members":{
+        "MinimumFlowAgeInSeconds":{
+          "shape":"Age",
+          "documentation":"<p>The reqested <code>FlowOperation</code> ignores flows with an age (in seconds) lower than <code>MinimumFlowAgeInSeconds</code>. You provide this for start commands.</p>"
+        },
+        "FlowFilters":{
+          "shape":"FlowFilters",
+          "documentation":"<p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a flow operation, such as related statuses, unique identifiers, and all filters defined in the operation.</p> <p>Flow operations let you manage the flows tracked in the flow table, also known as the firewall table.</p> <p>A flow is network traffic that is monitored by a firewall, either by stateful or stateless rules. For traffic to be considered part of a flow, it must share Destination, DestinationPort, Direction, Protocol, Source, and SourcePort. </p>"
+    },
+    "FlowOperationId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^([0-9a-f]{8})-([0-9a-f]{4}-){3}([0-9a-f]{12})$"
+    },
+    "FlowOperationMetadata":{
+      "type":"structure",
+      "members":{
+        "FlowOperationId":{
+          "shape":"FlowOperationId",
+          "documentation":"<p>A unique identifier for the flow operation. This ID is returned in the responses to start and list commands. You provide to describe commands.</p>"
+        },
+        "FlowOperationType":{
+          "shape":"FlowOperationType",
+          "documentation":"<p>Defines the type of <code>FlowOperation</code>.</p>"
+        },
+        "FlowRequestTimestamp":{
+          "shape":"FlowRequestTimestamp",
+          "documentation":"<p>A timestamp indicating when the Suricata engine identified flows impacted by an operation. </p>"
+        },
+        "FlowOperationStatus":{
+          "shape":"FlowOperationStatus",
+          "documentation":"<p>Returns the status of the flow operation. This string is returned in the responses to start, list, and describe commands.</p> <p>If the status is <code>COMPLETED_WITH_ERRORS</code>, results may be returned with any number of <code>Flows</code> missing from the response. If the status is <code>FAILED</code>, <code>Flows</code> returned will be empty.</p>"
+        }
+      },
+      "documentation":"<p>An array of objects with metadata about the requested <code>FlowOperation</code>.</p>"
+    },
+    "FlowOperationStatus":{
+      "type":"string",
+      "enum":[
+        "COMPLETED",
+        "IN_PROGRESS",
+        "FAILED",
+        "COMPLETED_WITH_ERRORS"
+      ]
+    },
+    "FlowOperationType":{
+      "type":"string",
+      "enum":[
+        "FLOW_FLUSH",
+        "FLOW_CAPTURE"
+      ]
+    },
+    "FlowOperations":{
+      "type":"list",
+      "member":{"shape":"FlowOperationMetadata"}
+    },
+    "FlowRequestTimestamp":{"type":"timestamp"},
     "FlowTimeouts":{
       "type":"structure",
       "members":{
@@ -1967,6 +2226,10 @@
         }
       },
       "documentation":"<p>Describes the amount of time that can pass without any traffic sent through the firewall before the firewall determines that the connection is idle and Network Firewall removes the flow entry from its flow table. Existing connections and flows are not impacted when you update this value. Only new connections after you update this value are impacted. </p>"
+    },
+    "Flows":{
+      "type":"list",
+      "member":{"shape":"Flow"}
     },
     "GeneratedRulesType":{
       "type":"string",
@@ -2067,7 +2330,7 @@
         },
         "SourcePort":{
           "shape":"Port",
-          "documentation":"<p>The source port to inspect for. You can specify an individual port, for example <code>1994</code> and you can specify a port range, for example <code>1990:1994</code>. To match with any port, specify <code>ANY</code>. </p>"
+          "documentation":"<p>The source port to inspect for. You can specify an individual port, for example <code>1994</code> and you can specify a port range, for example <code>1990:1994</code>. To match with any port, specify <code>ANY</code>.</p>"
         },
         "Direction":{
           "shape":"StatefulRuleDirection",
@@ -2079,7 +2342,7 @@
         },
         "DestinationPort":{
           "shape":"Port",
-          "documentation":"<p>The destination port to inspect for. You can specify an individual port, for example <code>1994</code> and you can specify a port range, for example <code>1990:1994</code>. To match with any port, specify <code>ANY</code>. </p>"
+          "documentation":"<p>The destination port to inspect for. You can specify an individual port, for example <code>1994</code> and you can specify a port range, for example <code>1990:1994</code>. To match with any port, specify <code>ANY</code>.</p>"
         }
       },
       "documentation":"<p>The basic rule criteria for Network Firewall to use to inspect packet headers in stateful traffic flow inspection. Traffic flows that match the criteria are a match for the corresponding <a>StatefulRule</a>. </p>"
@@ -2324,6 +2587,111 @@
         }
       }
     },
+    "ListFlowOperationResultsRequest":{
+      "type":"structure",
+      "required":[
+        "FirewallArn",
+        "FlowOperationId"
+      ],
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "FlowOperationId":{
+          "shape":"FlowOperationId",
+          "documentation":"<p>A unique identifier for the flow operation. This ID is returned in the responses to start and list commands. You provide to describe commands.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        },
+        "MaxResults":{
+          "shape":"PaginationMaxResults",
+          "documentation":"<p>The maximum number of objects that you want Network Firewall to return for this request. If more objects are available, in the response, Network Firewall provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        }
+      }
+    },
+    "ListFlowOperationResultsResponse":{
+      "type":"structure",
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        },
+        "FlowOperationId":{
+          "shape":"FlowOperationId",
+          "documentation":"<p>A unique identifier for the flow operation. This ID is returned in the responses to start and list commands. You provide to describe commands.</p>"
+        },
+        "FlowOperationStatus":{
+          "shape":"FlowOperationStatus",
+          "documentation":"<p>Returns the status of the flow operation. This string is returned in the responses to start, list, and describe commands.</p> <p>If the status is <code>COMPLETED_WITH_ERRORS</code>, results may be returned with any number of <code>Flows</code> missing from the response. If the status is <code>FAILED</code>, <code>Flows</code> returned will be empty.</p>"
+        },
+        "StatusMessage":{
+          "shape":"StatusReason",
+          "documentation":"<p>If the asynchronous operation fails, Network Firewall populates this with the reason for the error or failure. Options include <code>Flow operation error</code> and <code>Flow timeout</code>.</p>"
+        },
+        "FlowRequestTimestamp":{
+          "shape":"FlowRequestTimestamp",
+          "documentation":"<p>A timestamp indicating when the Suricata engine identified flows impacted by an operation. </p>"
+        },
+        "Flows":{
+          "shape":"Flows",
+          "documentation":"<p>Any number of arrays, where each array is a single flow identified in the scope of the operation. If multiple flows were in the scope of the operation, multiple <code>Flows</code> arrays are returned.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        }
+      }
+    },
+    "ListFlowOperationsRequest":{
+      "type":"structure",
+      "required":["FirewallArn"],
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        },
+        "FlowOperationType":{
+          "shape":"FlowOperationType",
+          "documentation":"<p>An optional string that defines whether any or all operation types are returned.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        },
+        "MaxResults":{
+          "shape":"PaginationMaxResults",
+          "documentation":"<p>The maximum number of objects that you want Network Firewall to return for this request. If more objects are available, in the response, Network Firewall provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+        }
+      }
+    },
+    "ListFlowOperationsResponse":{
+      "type":"structure",
+      "members":{
+        "FlowOperations":{
+          "shape":"FlowOperations",
+          "documentation":"<p>Flow operations let you manage the flows tracked in the flow table, also known as the firewall table.</p> <p>A flow is network traffic that is monitored by a firewall, either by stateful or stateless rules. For traffic to be considered part of a flow, it must share Destination, DestinationPort, Direction, Protocol, Source, and SourcePort. </p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        }
+      }
+    },
     "ListRuleGroupsRequest":{
       "type":"structure",
       "members":{
@@ -2502,15 +2870,15 @@
         },
         "SourcePorts":{
           "shape":"PortRanges",
-          "documentation":"<p>The source ports to inspect for. If not specified, this matches with any source port. This setting is only used for protocols 6 (TCP) and 17 (UDP). </p> <p>You can specify individual ports, for example <code>1994</code> and you can specify port ranges, for example <code>1990:1994</code>. </p>"
+          "documentation":"<p>The source port to inspect for. You can specify an individual port, for example <code>1994</code> and you can specify a port range, for example <code>1990:1994</code>. To match with any port, specify <code>ANY</code>.</p> <p> If not specified, this matches with any source port.</p> <p>This setting is only used for protocols 6 (TCP) and 17 (UDP).</p>"
         },
         "DestinationPorts":{
           "shape":"PortRanges",
-          "documentation":"<p>The destination ports to inspect for. If not specified, this matches with any destination port. This setting is only used for protocols 6 (TCP) and 17 (UDP). </p> <p>You can specify individual ports, for example <code>1994</code> and you can specify port ranges, for example <code>1990:1994</code>. </p>"
+          "documentation":"<p>The destination port to inspect for. You can specify an individual port, for example <code>1994</code> and you can specify a port range, for example <code>1990:1994</code>. To match with any port, specify <code>ANY</code>.</p> <p>This setting is only used for protocols 6 (TCP) and 17 (UDP). </p>"
         },
         "Protocols":{
           "shape":"ProtocolNumbers",
-          "documentation":"<p>The protocols to inspect for, specified using each protocol's assigned internet protocol number (IANA). If not specified, this matches with any protocol. </p>"
+          "documentation":"<p>The protocols to inspect for, specified using the assigned internet protocol number (IANA) for each protocol. If not specified, this matches with any protocol.</p>"
         },
         "TCPFlags":{
           "shape":"TCPFlags",
@@ -2524,6 +2892,7 @@
       "type":"string",
       "enum":["DROP_TO_ALERT"]
     },
+    "PacketCount":{"type":"integer"},
     "PaginationMaxResults":{
       "type":"integer",
       "max":100,
@@ -2634,6 +3003,16 @@
     "ProtocolNumbers":{
       "type":"list",
       "member":{"shape":"ProtocolNumber"}
+    },
+    "ProtocolString":{
+      "type":"string",
+      "max":12,
+      "min":1,
+      "pattern":"^.*$"
+    },
+    "ProtocolStrings":{
+      "type":"list",
+      "member":{"shape":"ProtocolString"}
     },
     "PublishMetricAction":{
       "type":"structure",
@@ -3042,7 +3421,7 @@
         },
         "Protocols":{
           "shape":"ProtocolNumbers",
-          "documentation":"<p>The protocols to decrypt for inspection, specified using each protocol's assigned internet protocol number (IANA). Network Firewall currently supports only TCP.</p>"
+          "documentation":"<p>The protocols to inspect for, specified using the assigned internet protocol number (IANA) for each protocol. If not specified, this matches with any protocol.</p> <p>Network Firewall currently supports only TCP.</p>"
         }
       },
       "documentation":"<p>Settings that define the Secure Sockets Layer/Transport Layer Security (SSL/TLS) traffic that Network Firewall should decrypt for inspection by the stateful rule engine.</p>"
@@ -3110,6 +3489,90 @@
         "AnalysisReportId":{
           "shape":"AnalysisReportId",
           "documentation":"<p>The unique ID of the query that ran when you requested an analysis report. </p>"
+        }
+      }
+    },
+    "StartFlowCaptureRequest":{
+      "type":"structure",
+      "required":[
+        "FirewallArn",
+        "FlowFilters"
+      ],
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        },
+        "MinimumFlowAgeInSeconds":{
+          "shape":"Age",
+          "documentation":"<p>The reqested <code>FlowOperation</code> ignores flows with an age (in seconds) lower than <code>MinimumFlowAgeInSeconds</code>. You provide this for start commands.</p> <note> <p>We recommend setting this value to at least 1 minute (60 seconds) to reduce chance of capturing flows that are not yet established.</p> </note>"
+        },
+        "FlowFilters":{
+          "shape":"FlowFilters",
+          "documentation":"<p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        }
+      }
+    },
+    "StartFlowCaptureResponse":{
+      "type":"structure",
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "FlowOperationId":{
+          "shape":"FlowOperationId",
+          "documentation":"<p>A unique identifier for the flow operation. This ID is returned in the responses to start and list commands. You provide to describe commands.</p>"
+        },
+        "FlowOperationStatus":{
+          "shape":"FlowOperationStatus",
+          "documentation":"<p>Returns the status of the flow operation. This string is returned in the responses to start, list, and describe commands.</p> <p>If the status is <code>COMPLETED_WITH_ERRORS</code>, results may be returned with any number of <code>Flows</code> missing from the response. If the status is <code>FAILED</code>, <code>Flows</code> returned will be empty.</p>"
+        }
+      }
+    },
+    "StartFlowFlushRequest":{
+      "type":"structure",
+      "required":[
+        "FirewallArn",
+        "FlowFilters"
+      ],
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        },
+        "MinimumFlowAgeInSeconds":{
+          "shape":"Age",
+          "documentation":"<p>The reqested <code>FlowOperation</code> ignores flows with an age (in seconds) lower than <code>MinimumFlowAgeInSeconds</code>. You provide this for start commands.</p>"
+        },
+        "FlowFilters":{
+          "shape":"FlowFilters",
+          "documentation":"<p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        }
+      }
+    },
+    "StartFlowFlushResponse":{
+      "type":"structure",
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "FlowOperationId":{
+          "shape":"FlowOperationId",
+          "documentation":"<p>A unique identifier for the flow operation. This ID is returned in the responses to start and list commands. You provide to describe commands.</p>"
+        },
+        "FlowOperationStatus":{
+          "shape":"FlowOperationStatus",
+          "documentation":"<p>Returns the status of the flow operation. This string is returned in the responses to start, list, and describe commands.</p> <p>If the status is <code>COMPLETED_WITH_ERRORS</code>, results may be returned with any number of <code>Flows</code> missing from the response. If the status is <code>FAILED</code>, <code>Flows</code> returned will be empty.</p>"
         }
       }
     },

@@ -16,7 +16,6 @@ import logging
 import os
 
 import pytest
-
 from botocore.endpoint_provider import (
     EndpointProvider,
     EndpointRule,
@@ -134,6 +133,7 @@ def endpoint_rule():
 
 def ruleset_testcases():
     filenames = [
+        "account-id",
         "array-index",
         "aws-region",
         "default-values",
@@ -152,7 +152,6 @@ def ruleset_testcases():
     endpoint_cases = []
     base_path = os.path.join(os.path.dirname(__file__), "data", "endpoints")
     for name in filenames:
-
         with open(os.path.join(base_path, "valid-rules", f"{name}.json")) as f:
             ruleset = json.load(f)
         with open(os.path.join(base_path, "test-cases", f"{name}.json")) as f:

@@ -10,13 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import codecs
 import os
 import sys
-import codecs
 
-from awscli.customizations.utils import uni_print
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.utils import uni_print
 
 
 class ConfigureImportCommand(BasicCommand):
@@ -108,7 +108,7 @@ class CredentialParserError(Exception):
     pass
 
 
-class CSVCredentialParser(object):
+class CSVCredentialParser:
     _USERNAME_HEADER = 'User Name'
     _AKID_HEADER = 'Access Key ID'
     _SAK_HEADER = 'Secret Access key'
@@ -193,7 +193,7 @@ class CSVCredentialParser(object):
         return self._convert_rows_to_credentials(parsed_rows)
 
 
-class CredentialImporter(object):
+class CredentialImporter:
     def __init__(self, writer):
         self._config_writer = writer
 

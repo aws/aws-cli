@@ -12,10 +12,12 @@
 # language governing permissions and limitations under the License.
 
 
-from awscli.customizations.emr import argumentschema
-from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import helptext
-from awscli.customizations.emr import instancegroupsutils
+from awscli.customizations.emr import (
+    argumentschema,
+    emrutils,
+    helptext,
+    instancegroupsutils,
+)
 from awscli.customizations.emr.command import Command
 
 

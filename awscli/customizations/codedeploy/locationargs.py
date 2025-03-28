@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 
 from awscli.argprocess import unpack_cli_arg
-from awscli.arguments import CustomArgument
-from awscli.arguments import create_argument_model_from_schema
+from awscli.arguments import CustomArgument, create_argument_model_from_schema
 from awscli.customizations.exceptions import ParamValidationError
 
 S3_LOCATION_ARG_DESCRIPTION = {

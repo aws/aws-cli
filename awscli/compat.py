@@ -10,28 +10,27 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import sys
-import re
-import shlex
+import collections.abc as collections_abc
+import contextlib
+import io
+import locale
+import logging
 import os
 import os.path
 import platform
-import zipfile
-import signal
-import contextlib
-import collections.abc as collections_abc
-import locale
 import queue
-import io
-import logging
-from urllib.request import urlopen
+import re
+import shlex
+import signal
+import sys
+import urllib.parse as urlparse
+import zipfile
 from configparser import RawConfigParser
 from functools import partial
-import urllib.parse as urlparse
 from urllib.error import URLError
+from urllib.request import urlopen
 
-from botocore.compat import six
-from botocore.compat import OrderedDict
+from botocore.compat import OrderedDict, six
 
 # Backwards compatible definitions from six
 PY3 = sys.version_info[0] == 3
@@ -85,7 +84,7 @@ class StdinMissingError(Exception):
         super(StdinMissingError, self).__init__(message)
 
 
-class NonTranslatedStdout(object):
+class NonTranslatedStdout:
     """This context manager sets the line-end translation mode for stdout.
 
     It is deliberately set to binary mode so that `\r` does not get added to
@@ -527,7 +526,7 @@ except ImportError:
         # that the distribution doesn't get identified as Debian.
         # https://bugs.python.org/issue9514
         try:
-            with open("/etc/lsb-release", "r") as etclsbrel:
+            with open("/etc/lsb-release") as etclsbrel:
                 for line in etclsbrel:
                     m = _distributor_id_file_re.search(line)
                     if m:
@@ -540,7 +539,7 @@ except ImportError:
                         _u_id = m.group(1).strip()
                 if _u_distname and _u_version:
                     return (_u_distname, _u_version, _u_id)
-        except (EnvironmentError, UnboundLocalError):
+        except (OSError, UnboundLocalError):
             pass
 
         try:
@@ -562,7 +561,6 @@ except ImportError:
         # Read the first line
         with open(
             os.path.join(_UNIXCONFDIR, file),
-            'r',
             encoding='utf-8',
             errors='surrogateescape',
         ) as f:

@@ -1,8 +1,6 @@
 import socket
 
 import pytest
-from urllib3.exceptions import NewConnectionError, ProtocolError, ProxyError
-
 from botocore.awsrequest import (
     AWSHTTPConnectionPool,
     AWSHTTPSConnectionPool,
@@ -19,6 +17,8 @@ from botocore.httpsession import (
     get_cert_path,
     mask_proxy_url,
 )
+from urllib3.exceptions import NewConnectionError, ProtocolError, ProxyError
+
 from tests import mock, unittest
 
 

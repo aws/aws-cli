@@ -18,6 +18,7 @@ in the `service-2.json` files.
 """
 
 from collections import namedtuple
+
 from awscli.autocomplete import db
 
 # This module and the awscli.autocomplete.db module are imported
@@ -41,7 +42,7 @@ CLIArgument = namedtuple(
 )
 
 
-class ModelIndex(object):
+class ModelIndex:
     """Retrieve command/param names through querying an index.
 
     This class provides methods for retrieving valid command

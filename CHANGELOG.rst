@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.38.23
+=======
+
+* api-change:``apigateway``: Adds support for setting the IP address type to allow dual-stack or IPv4 address types to invoke your APIs or domain names.
+* api-change:``apigatewayv2``: Adds support for setting the IP address type to allow dual-stack or IPv4 address types to invoke your APIs or domain names.
+* api-change:``bedrock-runtime``: Launching Multi-modality Content Filter for Amazon Bedrock Guardrails.
+* api-change:``codebuild``: This release adds support for cacheNamespace in ProjectCache
+* api-change:``ecs``: This is an Amazon ECS documentation only release that addresses tickets.
+* api-change:``meteringmarketplace``: Add support for Marketplace Metering Service dual-stack endpoints.
+* api-change:``networkmanager``: Add support for NetworkManager Dualstack endpoints.
+* api-change:``payment-cryptography``: The service adds support for transferring AES-256 and other keys between the service and other service providers and HSMs. This feature uses ECDH to derive a one-time key transport key to enable these secure key exchanges.
+* api-change:``quicksight``: RLS permission dataset with userAs: RLS_RULES flag, Q in QuickSight/Threshold Alerts/Schedules/Snapshots in QS embedding, toggle dataset refresh email alerts via API, transposed table with options: column width, type and index, toggle Q&A on dashboards, Oracle Service Name when creating data source.
+* api-change:``sagemaker``: TransformAmiVersion for Batch Transform and SageMaker Search Service Aggregate Search API Extension
+
+
 1.38.22
 =======
 

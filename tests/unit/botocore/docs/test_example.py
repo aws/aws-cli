@@ -23,7 +23,7 @@ from tests.unit.botocore.docs import BaseDocsTest
 
 class BaseExampleDocumenterTest(BaseDocsTest):
     def setUp(self):
-        super(BaseExampleDocumenterTest, self).setUp()
+        super().setUp()
         self.event_emitter = HierarchicalEmitter()
         self.request_example = RequestExampleDocumenter(
             service_id='myservice',
@@ -39,7 +39,7 @@ class BaseExampleDocumenterTest(BaseDocsTest):
 
 class TestDocumentDefaultValue(BaseExampleDocumenterTest):
     def setUp(self):
-        super(TestDocumentDefaultValue, self).setUp()
+        super().setUp()
         self.add_shape_to_params('Foo', 'String', 'This describes foo.')
 
     def test_request_example(self):
@@ -69,7 +69,7 @@ class TestDocumentDefaultValue(BaseExampleDocumenterTest):
 
 class TestDocumentNoMembers(BaseExampleDocumenterTest):
     def setUp(self):
-        super(TestDocumentNoMembers, self).setUp()
+        super().setUp()
 
     def test_request_example(self):
         self.request_example.document_example(
@@ -91,7 +91,7 @@ class TestDocumentNoMembers(BaseExampleDocumenterTest):
 
 class TestTraverseAndDocumentShape(BaseExampleDocumenterTest):
     def setUp(self):
-        super(TestTraverseAndDocumentShape, self).setUp()
+        super().setUp()
         self.add_shape_to_params('Foo', 'String', 'This describes foo.')
         self.event_emitter = mock.Mock()
         self.request_example = RequestExampleDocumenter(
@@ -161,7 +161,7 @@ class TestTraverseAndDocumentShape(BaseExampleDocumenterTest):
 
 class TestDocumentEnumValue(BaseExampleDocumenterTest):
     def setUp(self):
-        super(TestDocumentEnumValue, self).setUp()
+        super().setUp()
         self.add_shape(
             {'EnumString': {'type': 'string', 'enum': ['foo', 'bar']}}
         )
@@ -194,7 +194,7 @@ class TestDocumentEnumValue(BaseExampleDocumenterTest):
 
 class TestDocumentMultipleDefaultValues(BaseExampleDocumenterTest):
     def setUp(self):
-        super(TestDocumentMultipleDefaultValues, self).setUp()
+        super().setUp()
         self.add_shape_to_params('Foo', 'String', 'This describes foo.')
         self.add_shape_to_params(
             'Bar', 'String', 'This describes bar.', is_required=True
@@ -234,7 +234,7 @@ class TestDocumentMultipleDefaultValues(BaseExampleDocumenterTest):
 
 class TestDocumentInclude(BaseExampleDocumenterTest):
     def setUp(self):
-        super(TestDocumentInclude, self).setUp()
+        super().setUp()
         self.add_shape_to_params('Foo', 'String', 'This describes foo.')
         self.include_params = [
             DocumentedShape(
@@ -280,7 +280,7 @@ class TestDocumentInclude(BaseExampleDocumenterTest):
 
 class TestDocumentExclude(BaseExampleDocumenterTest):
     def setUp(self):
-        super(TestDocumentExclude, self).setUp()
+        super().setUp()
         self.add_shape_to_params('Foo', 'String', 'This describes foo.')
         self.add_shape_to_params(
             'Bar', 'String', 'This describes bar.', is_required=True
@@ -318,7 +318,7 @@ class TestDocumentExclude(BaseExampleDocumenterTest):
 
 class TestDocumentList(BaseExampleDocumenterTest):
     def setUp(self):
-        super(TestDocumentList, self).setUp()
+        super().setUp()
         self.add_shape(
             {
                 'List': {
@@ -367,7 +367,7 @@ class TestDocumentList(BaseExampleDocumenterTest):
 
 class TestDocumentMap(BaseExampleDocumenterTest):
     def setUp(self):
-        super(TestDocumentMap, self).setUp()
+        super().setUp()
         self.add_shape(
             {
                 'Map': {
@@ -414,7 +414,7 @@ class TestDocumentMap(BaseExampleDocumenterTest):
 
 class TestDocumentStructure(BaseExampleDocumenterTest):
     def setUp(self):
-        super(TestDocumentStructure, self).setUp()
+        super().setUp()
         self.add_shape(
             {
                 'Structure': {
@@ -467,7 +467,7 @@ class TestDocumentStructure(BaseExampleDocumenterTest):
 
 class TestDocumentRecursiveShape(BaseExampleDocumenterTest):
     def setUp(self):
-        super(TestDocumentRecursiveShape, self).setUp()
+        super().setUp()
         self.add_shape(
             {
                 'Structure': {

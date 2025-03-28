@@ -108,7 +108,7 @@ class DocumentedShape(_DocumentedShape):
             members = []
         if required_members is None:
             required_members = []
-        return super(DocumentedShape, cls).__new__(
+        return super().__new__(
             cls,
             name,
             type_name,

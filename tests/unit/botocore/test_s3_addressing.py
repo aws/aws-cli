@@ -23,7 +23,7 @@ from tests import BaseSessionTest, ClientHTTPStubber
 
 class TestS3Addressing(BaseSessionTest):
     def setUp(self):
-        super(TestS3Addressing, self).setUp()
+        super().setUp()
         self.region_name = 'us-east-1'
         self.signature_version = 's3v4'
 

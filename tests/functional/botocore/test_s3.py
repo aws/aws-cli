@@ -52,7 +52,7 @@ class TestS3BucketValidation(unittest.TestCase):
 
 class BaseS3OperationTest(BaseSessionTest):
     def setUp(self):
-        super(BaseS3OperationTest, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client('s3', self.region)
         self.http_stubber = ClientHTTPStubber(self.client)
@@ -73,7 +73,7 @@ class BaseS3ClientConfigurationTest(BaseSessionTest):
     )
 
     def setUp(self):
-        super(BaseS3ClientConfigurationTest, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
 
     def _get_auth_regex(self, auth_header):
@@ -436,7 +436,7 @@ class TestS3200ErrorResponse(BaseS3OperationTest):
 
 class TestAccesspointArn(BaseS3ClientConfigurationTest):
     def setUp(self):
-        super(TestAccesspointArn, self).setUp()
+        super().setUp()
         self.client, self.http_stubber = self.create_stubbed_s3_client()
 
     def create_stubbed_s3_client(self, **kwargs):
@@ -1380,7 +1380,7 @@ class TestWriteGetObjectResponse(BaseS3ClientConfigurationTest):
 
 class TestS3SigV4(BaseS3OperationTest):
     def setUp(self):
-        super(TestS3SigV4, self).setUp()
+        super().setUp()
         self.client = self.session.create_client(
             's3', self.region, config=Config(signature_version='s3v4')
         )
@@ -1601,7 +1601,7 @@ class TestCanSendIntegerHeaders(BaseSessionTest):
 
 class TestRegionRedirect(BaseS3OperationTest):
     def setUp(self):
-        super(TestRegionRedirect, self).setUp()
+        super().setUp()
         self.client = self.session.create_client(
             's3',
             'us-west-2',
@@ -1785,7 +1785,7 @@ class TestRegionRedirect(BaseS3OperationTest):
 
 class TestFipsRegionRedirect(BaseS3OperationTest):
     def setUp(self):
-        super(TestFipsRegionRedirect, self).setUp()
+        super().setUp()
         self.client = self.session.create_client(
             "s3",
             "fips-us-west-2",

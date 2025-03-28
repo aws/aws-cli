@@ -160,7 +160,7 @@ class BaseSessionTest(BaseEnvVar):
     """
 
     def setUp(self, **environ):
-        super(BaseSessionTest, self).setUp()
+        super().setUp()
         self.environ['AWS_ACCESS_KEY_ID'] = 'access_key'
         self.environ['AWS_SECRET_ACCESS_KEY'] = 'secret_key'
         self.environ['AWS_CONFIG_FILE'] = 'no-exist-foo'
@@ -320,7 +320,7 @@ class IntegerRefresher(credentials.RefreshableCredentials):
         )
         if refresh_function is None:
             refresh_function = self._do_refresh
-        super(IntegerRefresher, self).__init__(
+        super().__init__(
             '0', '0', '0', expires_in, refresh_function, 'INTREFRESH'
         )
         self.creds_last_for = creds_last_for
@@ -532,7 +532,7 @@ class ConsistencyWaiter:
 
 class StubbedSession(botocore.session.Session):
     def __init__(self, *args, **kwargs):
-        super(StubbedSession, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._cached_clients = {}
         self._client_stubs = {}
 
@@ -551,9 +551,7 @@ class StubbedSession(botocore.session.Session):
         return self._cached_clients[service_name]
 
     def _create_stubbed_client(self, service_name, *args, **kwargs):
-        client = super(StubbedSession, self).create_client(
-            service_name, *args, **kwargs
-        )
+        client = super().create_client(service_name, *args, **kwargs)
         stubber = Stubber(client)
         self._client_stubs[service_name] = stubber
         return client

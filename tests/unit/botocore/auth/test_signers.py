@@ -172,7 +172,7 @@ class TestS3SigV4Auth(BaseTestWithFixedDate):
     maxDiff = None
 
     def setUp(self):
-        super(TestS3SigV4Auth, self).setUp()
+        super().setUp()
         self.credentials = botocore.credentials.Credentials(
             access_key='foo', secret_key='bar', token='baz'
         )
@@ -502,7 +502,7 @@ class TestSigV4Resign(BaseTestWithFixedDate):
     AuthClass = botocore.auth.SigV4Auth
 
     def setUp(self):
-        super(TestSigV4Resign, self).setUp()
+        super().setUp()
         self.credentials = botocore.credentials.Credentials(
             access_key='foo', secret_key='bar', token='baz'
         )
@@ -770,7 +770,7 @@ class BaseS3PresignPostTest(unittest.TestCase):
 
 class TestS3SigV4Post(BaseS3PresignPostTest):
     def setUp(self):
-        super(TestS3SigV4Post, self).setUp()
+        super().setUp()
         self.auth = botocore.auth.S3SigV4PostAuth(
             self.credentials, self.service_name, self.region_name
         )

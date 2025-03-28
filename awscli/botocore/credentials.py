@@ -686,9 +686,7 @@ class DeferredRefreshableCredentials(RefreshableCredentials):
     def refresh_needed(self, refresh_in=None):
         if self._frozen_credentials is None:
             return True
-        return super(DeferredRefreshableCredentials, self).refresh_needed(
-            refresh_in
-        )
+        return super().refresh_needed(refresh_in)
 
 
 class CachedCredentialFetcher:
@@ -786,9 +784,7 @@ class BaseAssumeRoleCredentialFetcher(CachedCredentialFetcher):
         if not self._role_session_name:
             self._generate_assume_role_name()
 
-        super(BaseAssumeRoleCredentialFetcher, self).__init__(
-            cache, expiry_window_seconds
-        )
+        super().__init__(cache, expiry_window_seconds)
 
     def _generate_assume_role_name(self):
         self._role_session_name = f'botocore-session-{int(time.time())}'
@@ -874,7 +870,7 @@ class AssumeRoleCredentialFetcher(BaseAssumeRoleCredentialFetcher):
         if self._mfa_prompter is None:
             self._mfa_prompter = getpass.getpass
 
-        super(AssumeRoleCredentialFetcher, self).__init__(
+        super().__init__(
             client_creator,
             role_arn,
             extra_args=extra_args,
@@ -960,7 +956,7 @@ class AssumeRoleWithWebIdentityCredentialFetcher(
         """
         self._web_identity_token_loader = web_identity_token_loader
 
-        super(AssumeRoleWithWebIdentityCredentialFetcher, self).__init__(
+        super().__init__(
             client_creator,
             role_arn,
             extra_args=extra_args,
@@ -2207,9 +2203,7 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
         self._token_provider = token_provider
         self._sso_session_name = sso_session_name
         self._time_fetcher = time_fetcher
-        super(SSOCredentialFetcher, self).__init__(
-            cache, expiry_window_seconds
-        )
+        super().__init__(cache, expiry_window_seconds)
 
     def _create_cache_key(self):
         """Create a predictable cache key for the current configuration.

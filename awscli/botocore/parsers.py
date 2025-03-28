@@ -410,9 +410,7 @@ class ResponseParser:
 
 class BaseXMLResponseParser(ResponseParser):
     def __init__(self, timestamp_parser=None, blob_parser=None):
-        super(BaseXMLResponseParser, self).__init__(
-            timestamp_parser, blob_parser
-        )
+        super().__init__(timestamp_parser, blob_parser)
         self._namespace_re = re.compile('{.*}')
 
     def _handle_map(self, shape, node):
@@ -447,7 +445,7 @@ class BaseXMLResponseParser(ResponseParser):
         # it's flattened, and if it's not, then we make it a one element list.
         if shape.serialization.get('flattened') and not isinstance(node, list):
             node = [node]
-        return super(BaseXMLResponseParser, self)._handle_list(shape, node)
+        return super()._handle_list(shape, node)
 
     def _handle_structure(self, shape, node):
         parsed = {}
@@ -658,7 +656,7 @@ class EC2QueryParser(QueryParser):
         # </Response>
         # This is different from QueryParser in that it's RequestID,
         # not RequestId
-        original = super(EC2QueryParser, self)._do_error_parse(response, shape)
+        original = super()._do_error_parse(response, shape)
         if 'RequestID' in original:
             original['ResponseMetadata'] = {
                 'RequestId': original.pop('RequestID')
@@ -1228,7 +1226,7 @@ class BaseRestParser(ResponseParser):
         if location == 'header' and not isinstance(node, list):
             # List in headers may be a comma separated string as per RFC7230
             node = [e.strip() for e in node.split(',')]
-        return super(BaseRestParser, self)._handle_list(shape, node)
+        return super()._handle_list(shape, node)
 
 
 class BaseRpcV2Parser(ResponseParser):
@@ -1309,7 +1307,7 @@ class RestJSONParser(BaseRestParser, BaseJSONParser):
         return self._parse_body_as_json(body_contents)
 
     def _do_error_parse(self, response, shape):
-        error = super(RestJSONParser, self)._do_error_parse(response, shape)
+        error = super()._do_error_parse(response, shape)
         self._inject_error_code(error, response)
         return error
 
@@ -1471,7 +1469,7 @@ class RestXMLParser(BaseRestParser, BaseXMLResponseParser):
 
     @_text_content
     def _handle_string(self, shape, text):
-        text = super(RestXMLParser, self)._handle_string(shape, text)
+        text = super()._handle_string(shape, text)
         return text
 
 

@@ -21,7 +21,7 @@ from tests.unit.botocore.docs import BaseDocsTest
 
 class TestDocumentSharedExamples(BaseDocsTest):
     def setUp(self):
-        super(TestDocumentSharedExamples, self).setUp()
+        super().setUp()
         self.add_shape({"foo": {"type": "string"}})
         self.add_shape({"nested": {"type": "string"}})
         self.add_shape(
@@ -98,7 +98,7 @@ class TestDocumentSharedExamples(BaseDocsTest):
 
 class TestSharedExampleDocumenter(BaseDocsTest):
     def setUp(self):
-        super(TestSharedExampleDocumenter, self).setUp()
+        super().setUp()
         self.documenter = SharedExampleDocumenter()
 
     def test_is_input(self):

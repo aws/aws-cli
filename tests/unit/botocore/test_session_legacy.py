@@ -296,7 +296,7 @@ class SessionTest(BaseSessionTest):
 
 class TestBuiltinEventHandlers(BaseSessionTest):
     def setUp(self):
-        super(TestBuiltinEventHandlers, self).setUp()
+        super().setUp()
         self.builtin_handlers = [
             ('foo', self.on_foo),
         ]
@@ -310,7 +310,7 @@ class TestBuiltinEventHandlers(BaseSessionTest):
         self.foo_called = True
 
     def tearDown(self):
-        super(TestBuiltinEventHandlers, self).tearDown()
+        super().tearDown()
         self.handler_patch.stop()
 
     def test_registered_builtin_handlers(self):

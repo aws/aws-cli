@@ -172,7 +172,7 @@ class TestCredentialRefreshRaces(unittest.TestCase):
 
 class BaseAssumeRoleTest(BaseEnvVar):
     def setUp(self):
-        super(BaseAssumeRoleTest, self).setUp()
+        super().setUp()
         self.tempdir = tempfile.mkdtemp()
         self.config_file = os.path.join(self.tempdir, 'config')
         self.environ['AWS_CONFIG_FILE'] = self.config_file
@@ -180,7 +180,7 @@ class BaseAssumeRoleTest(BaseEnvVar):
 
     def tearDown(self):
         shutil.rmtree(self.tempdir)
-        super(BaseAssumeRoleTest, self).tearDown()
+        super().tearDown()
 
     def some_future_time(self):
         timeobj = datetime.now(tzlocal())
@@ -231,7 +231,7 @@ class BaseAssumeRoleTest(BaseEnvVar):
 
 class TestAssumeRole(BaseAssumeRoleTest):
     def setUp(self):
-        super(TestAssumeRole, self).setUp()
+        super().setUp()
         self.environ['AWS_ACCESS_KEY_ID'] = 'access_key'
         self.environ['AWS_SECRET_ACCESS_KEY'] = 'secret_key'
 
@@ -799,7 +799,7 @@ class TestAssumeRole(BaseAssumeRoleTest):
 
 class TestAssumeRoleWithWebIdentity(BaseAssumeRoleTest):
     def setUp(self):
-        super(TestAssumeRoleWithWebIdentity, self).setUp()
+        super().setUp()
         self.token_file = os.path.join(self.tempdir, 'token.jwt')
         self.write_token('totally.a.token')
 

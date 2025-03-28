@@ -1196,7 +1196,7 @@ class TestRetryHandlerOrder(BaseSessionTest):
 
 class BaseMD5Test(BaseSessionTest):
     def setUp(self, **environ):
-        super(BaseMD5Test, self).setUp(**environ)
+        super().setUp(**environ)
         self.md5_object = mock.Mock()
         self.md5_digest = mock.Mock(return_value=b'foo')
         self.md5_object.digest = self.md5_digest
@@ -1207,7 +1207,7 @@ class BaseMD5Test(BaseSessionTest):
         self.set_md5_available()
 
     def tearDown(self):
-        super(BaseMD5Test, self).tearDown()
+        super().tearDown()
         self.md5_patch.stop()
         if self._md5_available_patch:
             self._md5_available_patch.stop()

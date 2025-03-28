@@ -15,7 +15,7 @@ from tests import BaseSessionTest, ClientHTTPStubber
 
 class TestRDSPresignUrlInjection(BaseSessionTest):
     def setUp(self):
-        super(TestRDSPresignUrlInjection, self).setUp()
+        super().setUp()
         self.client = self.session.create_client('rds', 'us-west-2')
         self.http_stubber = ClientHTTPStubber(self.client)
 
@@ -80,7 +80,7 @@ class TestRDSPresignUrlInjection(BaseSessionTest):
 
 class TestRDS(BaseSessionTest):
     def setUp(self):
-        super(TestRDS, self).setUp()
+        super().setUp()
         self.client = self.session.create_client('rds', 'us-west-2')
 
     def test_generate_db_auth_token(self):

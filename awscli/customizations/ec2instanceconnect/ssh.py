@@ -18,13 +18,7 @@ import subprocess
 import sys
 import tempfile
 
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
-from cryptography.hazmat.primitives.serialization import (
-    Encoding,
-    NoEncryption,
-    PrivateFormat,
-    PublicFormat,
-)
+from awscrt.crypto import ED25519, ED25519ExportFormat
 
 from awscli.compat import compat_shell_quote
 from awscli.customizations.commands import BasicCommand
@@ -448,19 +442,23 @@ class SshCommand(BasicCommand):
 class KeyManager:
     def generate_key(self):
         logger.debug('Generate Ed25519 Key')
-        return Ed25519PrivateKey.generate()
+        return ED25519.new_generate()
+
+    def _get_public_key(self, private_key):
+        return f"ssh-ed25519 {ED25519.export_public_key(private_key, export_format=ED25519ExportFormat.OPENSSH_B64).decode()}"
 
     def get_public_key(self, private_key):
-        return private_key.public_key().public_bytes(
-            encoding=Encoding.OpenSSH, format=PublicFormat.OpenSSH
-        )
+        return self._get_public_key(private_key)
+
+    def _get_private_pem(self, private_key):
+        return (
+            '-----BEGIN OPENSSH PRIVATE KEY-----\n'
+            f'{ED25519.export_private_key(private_key, export_format=ED25519ExportFormat.OPENSSH_B64).decode()}\n'
+            '-----END OPENSSH PRIVATE KEY-----\n'
+        ).encode()
 
     def get_private_pem(self, private_key):
-        return private_key.private_bytes(
-            encoding=Encoding.PEM,
-            format=PrivateFormat.OpenSSH,
-            encryption_algorithm=NoEncryption(),
-        )
+        return self._get_private_pem(private_key=private_key)
 
     def upload_public_key(
         self, ec2_instance_connect_client, instance_id, os_user, public_key
@@ -469,5 +467,5 @@ class KeyManager:
         ec2_instance_connect_client.send_ssh_public_key(
             InstanceId=instance_id,
             InstanceOSUser=os_user,
-            SSHPublicKey=public_key.decode(),
+            SSHPublicKey=public_key,
         )

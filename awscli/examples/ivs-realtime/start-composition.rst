@@ -7,6 +7,7 @@ The following ``start-composition`` example starts a composition for the specifi
         --destinations '[{"channel": {"channelArn": "arn:aws:ivs:ap-northeast-1:123456789012:channel/abcABCdefDEg", \
             "encoderConfigurationArn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"}}, \
             {"s3":{"encoderConfigurationArns":["arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"], \ 
+            "recordingConfiguration": {"hlsConfiguration": {"targetSegmentDurationSeconds": 5}}, \
             "storageConfigurationArn":"arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE"}}]'
 
 Output::
@@ -34,7 +35,10 @@ Output::
                                 "arn:aws:ivs:arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
                             ],
                             "recordingConfiguration": {
-                                "format": "HLS"
+                                "format": "HLS",
+                                "hlsConfiguration": {
+                                    "targetSegmentDurationSeconds": 5
+                                }
                             },
                             "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE"
                         }
@@ -64,7 +68,7 @@ Output::
         }
     }
 
-For more information, see `Composite Recording (Real-Time Streaming) <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `IVS Composite Recording | Real-Time Streaming <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon IVS Real-Time Streaming User Guide*.
 
 **Example 2: To start a composition with PiP layout**
 
@@ -103,7 +107,10 @@ Output::
                                 "arn:aws:ivs:arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
                             ],
                             "recordingConfiguration": {
-                                "format": "HLS"
+                                "format": "HLS",
+                                "hlsConfiguration": {
+                                    "targetSegmentDurationSeconds": 2
+                                }
                             },
                             "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE"
                         }
@@ -136,9 +143,9 @@ Output::
         }
     }
 
-For more information, see `Composite Recording (Real-Time Streaming) <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `IVS Composite Recording | Real-Time Streaming <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon IVS Real-Time Streaming User Guide*.
 
-**Example 3: To start a composition with thubnail recording enabled**
+**Example 3: To start a composition with thumbnail recording enabled**
 
 The following ``start-composition`` example starts a composition for the specified stage to be streamed to the specified locations with thumbnail recording enabled. ::
 
@@ -175,7 +182,10 @@ Output::
                                 "arn:aws:ivs:arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
                             ],
                             "recordingConfiguration": {
-                                "format": "HLS"
+                                "format": "HLS",
+                                "hlsConfiguration": {
+                                    "targetSegmentDurationSeconds": 2
+                                }
                             },
                             "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE",
                             "thumbnailConfigurations": [
@@ -213,4 +223,4 @@ Output::
         }
     }
 
-For more information, see `Composite Recording (Real-Time Streaming) <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `IVS Composite Recording | Real-Time Streaming <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon IVS Real-Time Streaming User Guide*.

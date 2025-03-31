@@ -1779,11 +1779,11 @@
       "members":{
         "IdentityProviderDetails":{
           "shape":"WebAppIdentityProviderDetails",
-          "documentation":"<p>You can provide a structure that contains the details for the identity provider to use with your web app.</p>"
+          "documentation":"<p>You can provide a structure that contains the details for the identity provider to use with your web app.</p> <p>For more details about this parameter, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/webapp-identity-center.html\">Configure your identity provider for Transfer Family web apps</a>.</p>"
         },
         "AccessEndpoint":{
           "shape":"WebAppAccessEndpoint",
-          "documentation":"<p>The <code>AccessEndpoint</code> is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value.</p>"
+          "documentation":"<p>The <code>AccessEndpoint</code> is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value.</p> <p>Before you enter a custom URL for this parameter, follow the steps described in <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/webapp-customize.html\">Update your access endpoint with a custom URL</a>.</p>"
         },
         "WebAppUnits":{
           "shape":"WebAppUnits",
@@ -1792,6 +1792,10 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Key-value pairs that can be used to group and search for web apps.</p>"
+        },
+        "WebAppEndpointPolicy":{
+          "shape":"WebAppEndpointPolicy",
+          "documentation":"<p> Setting for the type of endpoint policy for the web app. The default value is <code>STANDARD</code>. </p> <p>If you are creating the web app in an Amazon Web Services GovCloud (US) Region, you can set this parameter to <code>FIPS</code>.</p>"
         }
       }
     },
@@ -2923,7 +2927,7 @@
         },
         "SshPublicKeys":{
           "shape":"SshPublicKeys",
-          "documentation":"<p>Specifies the public key portion of the Secure Shell (SSH) keys stored for the described user.</p>"
+          "documentation":"<p>Specifies the public key portion of the Secure Shell (SSH) keys stored for the described user.</p> <note> <p>To delete the public key body, set its value to zero keys, as shown here:</p> <p> <code>SshPublicKeys: []</code> </p> </note>"
         },
         "Tags":{
           "shape":"Tags",
@@ -2970,6 +2974,10 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Key-value pairs that can be used to group and search for web apps. Tags are metadata attached to web apps for any purpose.</p>"
+        },
+        "WebAppEndpointPolicy":{
+          "shape":"WebAppEndpointPolicy",
+          "documentation":"<p> Setting for the type of endpoint policy for the web app. The default value is <code>STANDARD</code>. </p> <p>If your web app was created in an Amazon Web Services GovCloud (US) Region, the value of this parameter can be <code>FIPS</code>, which indicates the web app endpoint is FIPS-compliant.</p>"
         }
       },
       "documentation":"<p>A structure that describes the parameters for the web app, as identified by the <code>WebAppId</code>.</p>"
@@ -2999,7 +3007,7 @@
         },
         "FaviconFile":{
           "shape":"WebAppFaviconFile",
-          "documentation":"<p>Returns a icon file data string (in base64 encoding).</p>"
+          "documentation":"<p>Returns an icon file data string (in base64 encoding).</p>"
         }
       },
       "documentation":"<p>A structure that contains the customization fields for the web app. You can provide a title, logo, and icon to customize the appearance of your web app.</p>"
@@ -5755,7 +5763,7 @@
         },
         "FaviconFile":{
           "shape":"WebAppFaviconFile",
-          "documentation":"<p>Specify icon file data string (in base64 encoding).</p>"
+          "documentation":"<p>Specify an icon file data string (in base64 encoding).</p>"
         }
       }
     },
@@ -5881,6 +5889,13 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "WebAppEndpointPolicy":{
+      "type":"string",
+      "enum":[
+        "FIPS",
+        "STANDARD"
+      ]
     },
     "WebAppFaviconFile":{
       "type":"blob",

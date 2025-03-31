@@ -57,6 +57,11 @@
             "required": false,
             "documentation": "When an Access Point ARN is provided and this flag is enabled, the SDK MUST use the ARN's region when constructing the endpoint instead of the client's configured region.",
             "type": "Boolean"
+        },
+        "UseS3ExpressControlEndpoint": {
+            "required": false,
+            "documentation": "Internal parameter to indicate whether S3Express operation should use control plane, (ex. ListDirectoryAccessPoints)",
+            "type": "Boolean"
         }
     },
     "rules": [
@@ -75,99 +80,41 @@
                 {
                     "conditions": [
                         {
-                            "fn": "stringEquals",
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseFIPS"
+                                },
+                                true
+                            ]
+                        },
+                        {
+                            "fn": "aws.partition",
                             "argv": [
                                 {
                                     "ref": "Region"
-                                },
-                                "snow"
-                            ]
-                        },
-                        {
-                            "fn": "isSet",
-                            "argv": [
-                                {
-                                    "ref": "Endpoint"
-                                }
-                            ]
-                        },
-                        {
-                            "fn": "parseURL",
-                            "argv": [
-                                {
-                                    "ref": "Endpoint"
                                 }
                             ],
-                            "assign": "url"
-                        }
-                    ],
-                    "rules": [
+                            "assign": "partitionResult"
+                        },
                         {
-                            "conditions": [
+                            "fn": "stringEquals",
+                            "argv": [
                                 {
-                                    "fn": "aws.partition",
+                                    "fn": "getAttr",
                                     "argv": [
                                         {
-                                            "ref": "Region"
-                                        }
-                                    ],
-                                    "assign": "partitionResult"
-                                }
-                            ],
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseDualStack"
-                                                },
-                                                true
-                                            ]
-                                        }
-                                    ],
-                                    "error": "S3 Snow does not support DualStack",
-                                    "type": "error"
-                                },
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseFIPS"
-                                                },
-                                                true
-                                            ]
-                                        }
-                                    ],
-                                    "error": "S3 Snow does not support FIPS",
-                                    "type": "error"
-                                },
-                                {
-                                    "conditions": [],
-                                    "endpoint": {
-                                        "url": "{url#scheme}://{url#authority}",
-                                        "properties": {
-                                            "authSchemes": [
-                                                {
-                                                    "disableDoubleEncoding": true,
-                                                    "name": "sigv4",
-                                                    "signingName": "s3",
-                                                    "signingRegion": "{Region}"
-                                                }
-                                            ]
+                                            "ref": "partitionResult"
                                         },
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                }
-                            ],
-                            "type": "tree"
+                                        "name"
+                                    ]
+                                },
+                                "aws-cn"
+                            ]
                         }
                     ],
-                    "type": "tree"
+                    "error": "Partition does not support FIPS",
+                    "type": "error"
                 },
                 {
                     "conditions": [
@@ -194,36 +141,6 @@
                                 }
                             ],
                             "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseFIPS"
-                                                },
-                                                true
-                                            ]
-                                        },
-                                        {
-                                            "fn": "stringEquals",
-                                            "argv": [
-                                                {
-                                                    "fn": "getAttr",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "partitionResult"
-                                                        },
-                                                        "name"
-                                                    ]
-                                                },
-                                                "aws-cn"
-                                            ]
-                                        }
-                                    ],
-                                    "error": "Partition does not support FIPS",
-                                    "type": "error"
-                                },
                                 {
                                     "conditions": [
                                         {
@@ -498,6 +415,691 @@
                                     "conditions": [],
                                     "error": "Invalid region: region was not a valid DNS name.",
                                     "type": "error"
+                                }
+                            ],
+                            "type": "tree"
+                        }
+                    ],
+                    "type": "tree"
+                },
+                {
+                    "conditions": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "AccessPointName"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "substring",
+                            "argv": [
+                                {
+                                    "ref": "AccessPointName"
+                                },
+                                0,
+                                7,
+                                true
+                            ],
+                            "assign": "accessPointSuffix"
+                        },
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "ref": "accessPointSuffix"
+                                },
+                                "--xa-s3"
+                            ]
+                        }
+                    ],
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "aws.partition",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ],
+                                    "assign": "partitionResult"
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "error": "S3Express does not support Dual-stack.",
+                                    "type": "error"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "substring",
+                                            "argv": [
+                                                {
+                                                    "ref": "AccessPointName"
+                                                },
+                                                7,
+                                                15,
+                                                true
+                                            ],
+                                            "assign": "s3expressAvailabilityZoneId"
+                                        },
+                                        {
+                                            "fn": "substring",
+                                            "argv": [
+                                                {
+                                                    "ref": "AccessPointName"
+                                                },
+                                                15,
+                                                17,
+                                                true
+                                            ],
+                                            "assign": "s3expressAvailabilityZoneDelim"
+                                        },
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "s3expressAvailabilityZoneDelim"
+                                                },
+                                                "--"
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://s3express-control-fips.{Region}.{partitionResult#dnsSuffix}",
+                                                "properties": {
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://s3express-control.{Region}.{partitionResult#dnsSuffix}",
+                                                "properties": {
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "substring",
+                                            "argv": [
+                                                {
+                                                    "ref": "AccessPointName"
+                                                },
+                                                7,
+                                                16,
+                                                true
+                                            ],
+                                            "assign": "s3expressAvailabilityZoneId"
+                                        },
+                                        {
+                                            "fn": "substring",
+                                            "argv": [
+                                                {
+                                                    "ref": "AccessPointName"
+                                                },
+                                                16,
+                                                18,
+                                                true
+                                            ],
+                                            "assign": "s3expressAvailabilityZoneDelim"
+                                        },
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "s3expressAvailabilityZoneDelim"
+                                                },
+                                                "--"
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://s3express-control-fips.{Region}.{partitionResult#dnsSuffix}",
+                                                "properties": {
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://s3express-control.{Region}.{partitionResult#dnsSuffix}",
+                                                "properties": {
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "substring",
+                                            "argv": [
+                                                {
+                                                    "ref": "AccessPointName"
+                                                },
+                                                7,
+                                                20,
+                                                true
+                                            ],
+                                            "assign": "s3expressAvailabilityZoneId"
+                                        },
+                                        {
+                                            "fn": "substring",
+                                            "argv": [
+                                                {
+                                                    "ref": "AccessPointName"
+                                                },
+                                                20,
+                                                22,
+                                                true
+                                            ],
+                                            "assign": "s3expressAvailabilityZoneDelim"
+                                        },
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "s3expressAvailabilityZoneDelim"
+                                                },
+                                                "--"
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://s3express-control-fips.{Region}.{partitionResult#dnsSuffix}",
+                                                "properties": {
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://s3express-control.{Region}.{partitionResult#dnsSuffix}",
+                                                "properties": {
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "substring",
+                                            "argv": [
+                                                {
+                                                    "ref": "AccessPointName"
+                                                },
+                                                7,
+                                                21,
+                                                true
+                                            ],
+                                            "assign": "s3expressAvailabilityZoneId"
+                                        },
+                                        {
+                                            "fn": "substring",
+                                            "argv": [
+                                                {
+                                                    "ref": "AccessPointName"
+                                                },
+                                                21,
+                                                23,
+                                                true
+                                            ],
+                                            "assign": "s3expressAvailabilityZoneDelim"
+                                        },
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "s3expressAvailabilityZoneDelim"
+                                                },
+                                                "--"
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://s3express-control-fips.{Region}.{partitionResult#dnsSuffix}",
+                                                "properties": {
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://s3express-control.{Region}.{partitionResult#dnsSuffix}",
+                                                "properties": {
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "substring",
+                                            "argv": [
+                                                {
+                                                    "ref": "AccessPointName"
+                                                },
+                                                7,
+                                                27,
+                                                true
+                                            ],
+                                            "assign": "s3expressAvailabilityZoneId"
+                                        },
+                                        {
+                                            "fn": "substring",
+                                            "argv": [
+                                                {
+                                                    "ref": "AccessPointName"
+                                                },
+                                                27,
+                                                29,
+                                                true
+                                            ],
+                                            "assign": "s3expressAvailabilityZoneDelim"
+                                        },
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "s3expressAvailabilityZoneDelim"
+                                                },
+                                                "--"
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://s3express-control-fips.{Region}.{partitionResult#dnsSuffix}",
+                                                "properties": {
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://s3express-control.{Region}.{partitionResult#dnsSuffix}",
+                                                "properties": {
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [],
+                                    "error": "Unrecognized S3Express Access Point name format.",
+                                    "type": "error"
+                                }
+                            ],
+                            "type": "tree"
+                        }
+                    ],
+                    "type": "tree"
+                },
+                {
+                    "conditions": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "UseS3ExpressControlEndpoint"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseS3ExpressControlEndpoint"
+                                },
+                                true
+                            ]
+                        }
+                    ],
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "aws.partition",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ],
+                                    "assign": "partitionResult"
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseFIPS"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "endpoint": {
+                                        "url": "https://s3express-control-fips.{Region}.{partitionResult#dnsSuffix}",
+                                        "properties": {
+                                            "authSchemes": [
+                                                {
+                                                    "disableDoubleEncoding": true,
+                                                    "name": "sigv4",
+                                                    "signingName": "s3express",
+                                                    "signingRegion": "{Region}"
+                                                }
+                                            ]
+                                        },
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                },
+                                {
+                                    "conditions": [],
+                                    "endpoint": {
+                                        "url": "https://s3express-control.{Region}.{partitionResult#dnsSuffix}",
+                                        "properties": {
+                                            "authSchemes": [
+                                                {
+                                                    "disableDoubleEncoding": true,
+                                                    "name": "sigv4",
+                                                    "signingName": "s3express",
+                                                    "signingRegion": "{Region}"
+                                                }
+                                            ]
+                                        },
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ],
+                            "type": "tree"
+                        }
+                    ],
+                    "type": "tree"
+                },
+                {
+                    "conditions": [
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                },
+                                "snow"
+                            ]
+                        },
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "parseURL",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ],
+                            "assign": "url"
+                        }
+                    ],
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "aws.partition",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ],
+                                    "assign": "partitionResult"
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "error": "S3 Snow does not support DualStack",
+                                    "type": "error"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseFIPS"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "error": "S3 Snow does not support FIPS",
+                                    "type": "error"
+                                },
+                                {
+                                    "conditions": [],
+                                    "endpoint": {
+                                        "url": "{url#scheme}://{url#authority}",
+                                        "properties": {
+                                            "authSchemes": [
+                                                {
+                                                    "disableDoubleEncoding": true,
+                                                    "name": "sigv4",
+                                                    "signingName": "s3",
+                                                    "signingRegion": "{Region}"
+                                                }
+                                            ]
+                                        },
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
                                 }
                             ],
                             "type": "tree"
@@ -1781,36 +2383,6 @@
                                 }
                             ],
                             "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseFIPS"
-                                                },
-                                                true
-                                            ]
-                                        },
-                                        {
-                                            "fn": "stringEquals",
-                                            "argv": [
-                                                {
-                                                    "fn": "getAttr",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "partitionResult"
-                                                        },
-                                                        "name"
-                                                    ]
-                                                },
-                                                "aws-cn"
-                                            ]
-                                        }
-                                    ],
-                                    "error": "Partition does not support FIPS",
-                                    "type": "error"
-                                },
                                 {
                                     "conditions": [
                                         {

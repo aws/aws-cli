@@ -874,7 +874,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Updates an Amazon EKS cluster configuration. Your cluster continues to function during the update. The response output includes an update ID that you can use to track the status of your cluster update with <code>DescribeUpdate</code>\"/&gt;.</p> <p>You can use this API operation to enable or disable exporting the Kubernetes control plane logs for your cluster to CloudWatch Logs. By default, cluster control plane logs aren't exported to CloudWatch Logs. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html\">Amazon EKS Cluster control plane logs</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> <note> <p>CloudWatch Logs ingestion, archive storage, and data scanning rates apply to exported control plane logs. For more information, see <a href=\"http://aws.amazon.com/cloudwatch/pricing/\">CloudWatch Pricing</a>.</p> </note> <p>You can also use this API operation to enable or disable public and private access to your cluster's Kubernetes API server endpoint. By default, public access is enabled, and private access is disabled. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html\">Amazon EKS cluster endpoint access control</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> <p>You can also use this API operation to choose different subnets and security groups for the cluster. You must specify at least two subnets that are in different Availability Zones. You can't change which VPC the subnets are from, the subnets must be in the same VPC as the subnets that the cluster was created with. For more information about the VPC requirements, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html\">https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> <p>You can also use this API operation to enable or disable ARC zonal shift. If zonal shift is enabled, Amazon Web Services configures zonal autoshift for the cluster.</p> <p>Cluster updates are asynchronous, and they should finish within a few minutes. During an update, the cluster status moves to <code>UPDATING</code> (this status transition is eventually consistent). When the update is complete (either <code>Failed</code> or <code>Successful</code>), the cluster status moves to <code>Active</code>.</p>"
+      "documentation":"<p>Updates an Amazon EKS cluster configuration. Your cluster continues to function during the update. The response output includes an update ID that you can use to track the status of your cluster update with <code>DescribeUpdate</code>.</p> <p>You can use this operation to do the following actions:</p> <ul> <li> <p>You can use this API operation to enable or disable exporting the Kubernetes control plane logs for your cluster to CloudWatch Logs. By default, cluster control plane logs aren't exported to CloudWatch Logs. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html\">Amazon EKS Cluster control plane logs</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> <note> <p>CloudWatch Logs ingestion, archive storage, and data scanning rates apply to exported control plane logs. For more information, see <a href=\"http://aws.amazon.com/cloudwatch/pricing/\">CloudWatch Pricing</a>.</p> </note> </li> <li> <p>You can also use this API operation to enable or disable public and private access to your cluster's Kubernetes API server endpoint. By default, public access is enabled, and private access is disabled. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html\">Amazon EKS cluster endpoint access control</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> </li> <li> <p>You can also use this API operation to choose different subnets and security groups for the cluster. You must specify at least two subnets that are in different Availability Zones. You can't change which VPC the subnets are from, the subnets must be in the same VPC as the subnets that the cluster was created with. For more information about the VPC requirements, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html\">https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> </li> <li> <p>You can also use this API operation to enable or disable ARC zonal shift. If zonal shift is enabled, Amazon Web Services configures zonal autoshift for the cluster.</p> </li> <li> <p>You can also use this API operation to add, change, or remove the configuration in the cluster for EKS Hybrid Nodes. To remove the configuration, use the <code>remoteNetworkConfig</code> key with an object containing both subkeys with empty arrays for each. Here is an inline example: <code>\"remoteNetworkConfig\": { \"remoteNodeNetworks\": [], \"remotePodNetworks\": [] }</code>.</p> </li> </ul> <p>Cluster updates are asynchronous, and they should finish within a few minutes. During an update, the cluster status moves to <code>UPDATING</code> (this status transition is eventually consistent). When the update is complete (either <code>Failed</code> or <code>Successful</code>), the cluster status moves to <code>Active</code>.</p>"
     },
     "UpdateClusterVersion":{
       "name":"UpdateClusterVersion",
@@ -1727,7 +1727,7 @@
         },
         "remoteNetworkConfig":{
           "shape":"RemoteNetworkConfigResponse",
-          "documentation":"<p>The configuration in the cluster for EKS Hybrid Nodes. You can't change or update this configuration after the cluster is created.</p>"
+          "documentation":"<p>The configuration in the cluster for EKS Hybrid Nodes. You can add, change, or remove this configuration after the cluster is created.</p>"
         },
         "computeConfig":{
           "shape":"ComputeConfigResponse",
@@ -2188,7 +2188,7 @@
         },
         "remoteNetworkConfig":{
           "shape":"RemoteNetworkConfigRequest",
-          "documentation":"<p>The configuration in the cluster for EKS Hybrid Nodes. You can't change or update this configuration after the cluster is created.</p>"
+          "documentation":"<p>The configuration in the cluster for EKS Hybrid Nodes. You can add, change, or remove this configuration after the cluster is created.</p>"
         },
         "computeConfig":{
           "shape":"ComputeConfigRequest",
@@ -5112,7 +5112,7 @@
           "documentation":"<p>The list of network CIDRs that can contain pods that run Kubernetes webhooks on hybrid nodes.</p> <p>These CIDR blocks are determined by configuring your Container Network Interface (CNI) plugin. We recommend the Calico CNI or Cilium CNI. Note that the Amazon VPC CNI plugin for Kubernetes isn't available for on-premises and edge locations.</p> <p>Enter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for example, <code> 10.2.0.0/16</code>).</p> <p>It must satisfy the following requirements:</p> <ul> <li> <p>Each block must be within an <code>IPv4</code> RFC-1918 network range. Minimum allowed size is /24, maximum allowed size is /8. Publicly-routable addresses aren't supported.</p> </li> <li> <p>Each block cannot overlap with the range of the VPC CIDR blocks for your EKS resources, or the block of the Kubernetes service IP range.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>The configuration in the cluster for EKS Hybrid Nodes. You can't change or update this configuration after the cluster is created.</p>"
+      "documentation":"<p>The configuration in the cluster for EKS Hybrid Nodes. You can add, change, or remove this configuration after the cluster is created.</p>"
     },
     "RemoteNetworkConfigResponse":{
       "type":"structure",
@@ -5126,7 +5126,7 @@
           "documentation":"<p>The list of network CIDRs that can contain pods that run Kubernetes webhooks on hybrid nodes.</p>"
         }
       },
-      "documentation":"<p>The configuration in the cluster for EKS Hybrid Nodes. You can't change or update this configuration after the cluster is created.</p>"
+      "documentation":"<p>The configuration in the cluster for EKS Hybrid Nodes. You can add, change, or remove this configuration after the cluster is created.</p>"
     },
     "RemoteNodeNetwork":{
       "type":"structure",
@@ -5651,7 +5651,8 @@
         "storageConfig":{
           "shape":"StorageConfigRequest",
           "documentation":"<p>Update the configuration of the block storage capability of your EKS Auto Mode cluster. For example, enable the capability.</p>"
-        }
+        },
+        "remoteNetworkConfig":{"shape":"RemoteNetworkConfigRequest"}
       }
     },
     "UpdateClusterConfigResponse":{
@@ -5895,7 +5896,8 @@
         "ZonalShiftConfig",
         "ComputeConfig",
         "StorageConfig",
-        "KubernetesNetworkConfig"
+        "KubernetesNetworkConfig",
+        "RemoteNetworkConfig"
       ]
     },
     "UpdateParams":{
@@ -5979,7 +5981,8 @@
         "AccessConfigUpdate",
         "UpgradePolicyUpdate",
         "ZonalShiftConfigUpdate",
-        "AutoModeUpdate"
+        "AutoModeUpdate",
+        "RemoteNetworkConfigUpdate"
       ]
     },
     "UpgradePolicyRequest":{

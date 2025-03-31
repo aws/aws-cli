@@ -4,8 +4,9 @@ The following ``update-stage`` example updates a stage for a specified stage ARN
 
     aws ivs-realtime update-stage \
         --arn arn:aws:ivs:us-west-2:123456789012:stage/abcdABCDefgh \
-        --auto-participant-recording-configuration '{"mediaTypes": ["AUDIO_VIDEO"],"storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/abcdABCDefgh", \
-            "thumbnailConfiguration": {"recordingMode": "INTERVAL","storage": ["SEQUENTIAL"],"targetIntervalSeconds": 60}}' \
+        --auto-participant-recording-configuration '{"mediaTypes": ["AUDIO_VIDEO"],"storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/abcdABCDefgh", "recordingReconnectWindowSeconds": 100, \
+            "thumbnailConfiguration": {"recordingMode": "INTERVAL","storage": ["SEQUENTIAL"],"targetIntervalSeconds": 60}} \
+            "hlsConfiguration": {"targetSegmentDurationSeconds": 5}}' \
         --name stage1a
 
 Output::
@@ -24,6 +25,10 @@ Output::
                         "SEQUENTIAL"
                     ],
                     "recordingMode": "INTERVAL"
+                },
+                "recordingReconnectWindowSeconds": 100,
+                "hlsConfiguration": {
+                    "targetSegmentDurationSeconds": 5
                 }
             },
             "endpoints": {
@@ -37,4 +42,4 @@ Output::
         }
     }
 
-For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/multiple-hosts.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/multiple-hosts.html>`__ in the *Amazon IVS Low-Latency Streaming User Guide*.

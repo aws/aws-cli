@@ -2,6 +2,48 @@
 CHANGELOG
 =========
 
+1.38.23
+=======
+
+* api-change:``apigateway``: Adds support for setting the IP address type to allow dual-stack or IPv4 address types to invoke your APIs or domain names.
+* api-change:``apigatewayv2``: Adds support for setting the IP address type to allow dual-stack or IPv4 address types to invoke your APIs or domain names.
+* api-change:``bedrock-runtime``: Launching Multi-modality Content Filter for Amazon Bedrock Guardrails.
+* api-change:``codebuild``: This release adds support for cacheNamespace in ProjectCache
+* api-change:``ecs``: This is an Amazon ECS documentation only release that addresses tickets.
+* api-change:``meteringmarketplace``: Add support for Marketplace Metering Service dual-stack endpoints.
+* api-change:``networkmanager``: Add support for NetworkManager Dualstack endpoints.
+* api-change:``payment-cryptography``: The service adds support for transferring AES-256 and other keys between the service and other service providers and HSMs. This feature uses ECDH to derive a one-time key transport key to enable these secure key exchanges.
+* api-change:``quicksight``: RLS permission dataset with userAs: RLS_RULES flag, Q in QuickSight/Threshold Alerts/Schedules/Snapshots in QS embedding, toggle dataset refresh email alerts via API, transposed table with options: column width, type and index, toggle Q&A on dashboards, Oracle Service Name when creating data source.
+* api-change:``sagemaker``: TransformAmiVersion for Batch Transform and SageMaker Search Service Aggregate Search API Extension
+
+
+1.38.22
+=======
+
+* api-change:``batch``: This release will enable two features: Firelens log driver, and Execute Command on Batch jobs on ECS. Both features will be passed through to ECS.
+* api-change:``bcm-pricing-calculator``: Added standaloneAccountRateTypeSelections for GetPreferences and UpdatePreferences APIs. Added STALE enum value to status attribute in GetBillScenario and UpdateBillScenario APIs.
+* api-change:``bedrock-agent-runtime``: bedrock flow now support node action trace.
+* api-change:``cloudformation``: Adding support for the new parameter "ScanFilters" in the CloudFormation StartResourceScan API. When this parameter is included, the StartResourceScan API will initiate a scan limited to the resource types specified by the parameter.
+* api-change:``datazone``: This release adds new action type of Create Listing Changeset for the Metadata Enforcement Rule feature.
+* api-change:``eks``: Added support for BOTTLEROCKET FIPS AMIs to AMI types in US regions.
+* api-change:``gamelift``: Amazon GameLift Servers add support for additional instance types.
+* api-change:``iam``: Update IAM dual-stack endpoints for BJS, IAD and PDT partitions
+* api-change:``sagemaker``: add: recovery mode for SageMaker Studio apps
+* api-change:``sso-oidc``: This release adds AwsAdditionalDetails in the CreateTokenWithIAM API response.
+
+
+1.38.21
+=======
+
+* api-change:``arc-zonal-shift``: Add new shiftType field for ARC zonal shifts.
+* api-change:``directconnect``: With this release, AWS Direct Connect allows you to tag your Direct Connect gateways. Tags are metadata that you can create and use to manage your Direct Connect gateways. For more information about tagging, see AWS Tagging Strategies.
+* api-change:``mediaconvert``: This release adds a configurable Quality Level setting for the top rendition of Auto ABR jobs
+* api-change:``mediatailor``: Add support for log filtering which allow customers to filter out selected event types from logs.
+* api-change:``polly``: Added support for the new voice - Jihye (ko-KR). Jihye is available as a Neural voice only.
+* api-change:``rds``: Add note about the Availability Zone where RDS restores the DB cluster for the RestoreDBClusterToPointInTime operation.
+* api-change:``wafv2``: This release adds the ability to associate an AWS WAF v2 web ACL with an AWS Amplify App.
+
+
 1.38.20
 =======
 

@@ -57,11 +57,13 @@ class TestAwsCliVenv:
         dep = dep.rstrip("<=>")
         dep = dep.lower()
         dep = dep.replace("-", "_")
+        dep = dep.replace(".", "_")
         return dep
 
     def _normalize_dist_info_name(self, name: str) -> str:
         name = name.split("-")[0]
         name = name.lower()
+        name = name.replace(".", "_")
         return name
 
     def _get_install_requires(self):

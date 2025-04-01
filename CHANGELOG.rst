@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.38.25
+=======
+
+* api-change:``cleanrooms``: This release adds support for updating the analytics engine of a collaboration.
+* api-change:``sagemaker``: Added tagging support for SageMaker notebook instance lifecycle configurations
+
+
 1.38.24
 =======
 

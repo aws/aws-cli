@@ -427,8 +427,8 @@ class BenchmarkHarness(object):
                 ) as err:
                     try:
                         # redirect standard output of the child process to a file
-                        # os.dup2(out.fileno(), sys.stdout.fileno())
-                        # os.dup2(err.fileno(), sys.stderr.fileno())
+                        os.dup2(out.fileno(), sys.stdout.fileno())
+                        os.dup2(err.fileno(), sys.stderr.fileno())
                         # execute command on child process
                         # print('BEGIN CHILD PROCESS')
                         self._run_command_with_metric_hooks(
@@ -922,8 +922,8 @@ class BenchmarkHarness(object):
                         for (case, service, test_case, protocol, dimension) in plethora:
                             if (service, test_case, protocol, dimension) not in benchmark_results:
                                 benchmark_results[(service, test_case, protocol, dimension)] = []
-                            print(test_case)
-                            print(case)
+                            # print(test_case)
+                            # print(case)
                             benchmark_results[(service, test_case, protocol, dimension)].append(self._run_isolated_benchmark(
                                 result_dir,
                                 case,
@@ -944,7 +944,7 @@ class BenchmarkHarness(object):
                                 args,
                             ))
                     elif args.service and args.service == 'cloudwatch':
-                        print(benchmark)
+                        # print(benchmark)
                         case, service, test_case, protocol, dimension = benchmark
                         if (service, test_case, protocol, dimension) not in benchmark_results:
                             benchmark_results[(service, test_case, protocol, dimension)] = []

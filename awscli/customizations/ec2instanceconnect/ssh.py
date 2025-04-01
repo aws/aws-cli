@@ -141,7 +141,7 @@ class SshCommand(BasicCommand):
     DESCRIPTION = 'Connect to your EC2 instance using your OpenSSH client.'
 
     def __init__(self, session, key_manager=None):
-        super(SshCommand, self).__init__(session)
+        super().__init__(session)
         self._key_manager = (
             KeyManager() if (key_manager is None) else key_manager
         )
@@ -445,15 +445,21 @@ class KeyManager:
         return ED25519.new_generate()
 
     def _get_public_key(self, private_key):
-        return f"ssh-ed25519 {ED25519.export_public_key(private_key, export_format=ED25519ExportFormat.OPENSSH_B64).decode()}"
+        public_key_bytes = ED25519.export_public_key(
+            private_key, export_format=ED25519ExportFormat.OPENSSH_B64
+        )
+        return f"ssh-ed25519 {public_key_bytes.decode()}".encode()
 
     def get_public_key(self, private_key):
         return self._get_public_key(private_key)
 
     def _get_private_pem(self, private_key):
+        private_key_bytes = ED25519.export_private_key(
+            private_key, export_format=ED25519ExportFormat.OPENSSH_B64
+        )
         return (
             '-----BEGIN OPENSSH PRIVATE KEY-----\n'
-            f'{ED25519.export_private_key(private_key, export_format=ED25519ExportFormat.OPENSSH_B64).decode()}\n'
+            f'{private_key_bytes.decode()}\n'
             '-----END OPENSSH PRIVATE KEY-----\n'
         ).encode()
 

@@ -35,4 +35,15 @@ if __name__ == "__main__":
         type=int,
         help='The number of iterations to repeat the benchmark for.',
     )
+    parser.add_argument(
+        '--service',
+        default=None,
+        choices=['echo', 'cloudwatch', 'secrets'],
+        help='Choose to run a pre-packaged benchmark.'
+    )
+    parser.add_argument(
+        '--credentials-file',
+        default=None,
+        help='Specify a path to use for AWS credentials for integration benchmark tests.'
+    )
     harness.run_benchmarks(parser.parse_args())

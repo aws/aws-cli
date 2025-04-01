@@ -10,7 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import base64
 import csv
+import json
 import signal
 import datetime
 import contextlib
@@ -366,11 +368,13 @@ def operation_uses_document_types(operation_model):
 
 
 def json_encoder(obj):
-    """JSON encoder that formats datetimes as ISO8601 format."""
+    """JSON encoder that formats datetimes as ISO8601 format and decodes bytes to ASCII strings."""
     if isinstance(obj, datetime.datetime):
         return obj.isoformat()
+    elif isinstance(obj, bytes):
+        return base64.b64encode(obj).decode("ascii")
     else:
-        return obj
+        raise TypeError('Encountered unrecognized type in JSON encoder.')
 
 
 @contextlib.contextmanager

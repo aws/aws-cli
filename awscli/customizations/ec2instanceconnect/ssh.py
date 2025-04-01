@@ -448,7 +448,7 @@ class KeyManager:
         public_key_bytes = ED25519.export_public_key(
             private_key, export_format=ED25519ExportFormat.OPENSSH_B64
         )
-        return f"ssh-ed25519 {public_key_bytes.decode()}".encode()
+        return f"ssh-ed25519 {public_key_bytes.decode()}"
 
     def get_public_key(self, private_key):
         return self._get_public_key(private_key)

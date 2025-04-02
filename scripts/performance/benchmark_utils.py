@@ -317,13 +317,11 @@ class BenchmarkHarness(object):
         """
         Runs a CLI command and logs CLI-specific metrics to a file.
         """
-        print('begin run cmd with metric')
         first_client_invocation_time = None
         serialization_time = None
         deserialization_time = None
         request_payload_size = None
         response_payload_size = None
-        total_request_time = None
         start_time = time.time()
         driver = create_clidriver()
         event_emitter = driver.session.get_component('event_emitter')
@@ -334,7 +332,6 @@ class BenchmarkHarness(object):
                 first_client_invocation_time = time.time()
 
         def _log_metrics_from_context(**kwargs):
-            print('BEGIN')
             context = kwargs['context']
             parsed_response = kwargs['parsed_response']
             nonlocal first_client_invocation_time
@@ -342,7 +339,6 @@ class BenchmarkHarness(object):
             nonlocal deserialization_time
             nonlocal request_payload_size
             nonlocal response_payload_size
-            nonlocal total_request_time
             if serialization_time is None and context is not None and 'serialize_time' in context:
                 serialization_time = context['serialize_time']
             if deserialization_time is None and context is not None and 'deserialize_time' in context:
@@ -351,10 +347,6 @@ class BenchmarkHarness(object):
                 request_payload_size = parsed_response['ResponseMetadata']['RequestPayloadSize']
             if response_payload_size is None and parsed_response is not None and parsed_response['ResponseMetadata'] is not None:
                 response_payload_size = parsed_response['ResponseMetadata']['ResponsePayloadSize']
-            if first_client_invocation_time is not None:
-                total_request_time = time.time() - first_client_invocation_time
-
-        print('END DEF LOG METRICS')
 
         event_emitter.register_last(
             'before-call',
@@ -367,8 +359,7 @@ class BenchmarkHarness(object):
             'benchmarks.log-metrics-from-context',
         )
         # print(f'hooked to events: {cmd}')
-        rc = AWSCLIEntryPoint(driver).main(cmd)
-        print(f'child RC: {rc}')
+        rc, req_time = AWSCLIEntryPoint(driver).main(cmd)
         end_time = time.time()
         # print('completed main')
 
@@ -385,14 +376,13 @@ class BenchmarkHarness(object):
                     'deserialization_time': deserialization_time,
                     'request_payload_size': request_payload_size,
                     'response_payload_size': response_payload_size,
-                    'total_request_time':  total_request_time,
+                    'total_request_time':  req_time,
                 }
             )
         )
         metrics_f.flush()
         os.fsync(metrics_f.fileno())
         metrics_f.close()
-        print('END')
 
     def _run_isolated_benchmark(
         self, result_dir, benchmark, client, process_benchmarker, args
@@ -971,7 +961,7 @@ class BenchmarkHarness(object):
                             time.sleep(2)
 
                 # --- PUSH-RESULTS (add/transform results from each case in the sequence/plethora)
-                if args.service and (args.service == 'secrets' or args.service == 'echo'):
+                if args.service and (args.service == 'secrets' or args.service == 'echo' or args.service == 'cloudwatch'):
                     # for each caseresult, map to a list (size  # metrics) containing one output per metric
                     for ((service, case, protocol, dimension), metrics) in benchmark_results.items():
                         # Serialization time (ms)
@@ -1036,7 +1026,7 @@ class BenchmarkHarness(object):
                                 'p90': np.percentile(req_time_measures, 90) * 1000,
                                 'max': np.max(req_time_measures) * 1000,
                             })
-                        print('END CODE PUSH RESULTS FOR')
+                        # print('END CODE PUSH RESULTS FOR')
                         # TODO Total request time (ms) for secrets and cloudwatch
                     # summaries['results'] += benchmark_results.values()
                 # summaries['results'].append(benchmark_result)

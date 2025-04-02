@@ -7588,6 +7588,11 @@
           "shape": "MulticastSettingsCreateRequest",
           "locationName": "multicastSettings",
           "documentation": "Multicast Input settings."
+        },
+        "Smpte2110ReceiverGroupSettings": {
+          "shape": "Smpte2110ReceiverGroupSettings",
+          "locationName": "smpte2110ReceiverGroupSettings",
+          "documentation": "Include this parameter if the input is a SMPTE 2110 input, to identify the stream sources for this input."
         }
       },
       "documentation": "Placeholder documentation for CreateInput"
@@ -7663,6 +7668,11 @@
           "shape": "MulticastSettingsCreateRequest",
           "locationName": "multicastSettings",
           "documentation": "Multicast Input settings."
+        },
+        "Smpte2110ReceiverGroupSettings": {
+          "shape": "Smpte2110ReceiverGroupSettings",
+          "locationName": "smpte2110ReceiverGroupSettings",
+          "documentation": "Include this parameter if the input is a SMPTE 2110 input, to identify the stream sources for this input."
         }
       },
       "documentation": "The name of the input"
@@ -8842,6 +8852,11 @@
           "shape": "MulticastSettings",
           "locationName": "multicastSettings",
           "documentation": "Multicast Input settings."
+        },
+        "Smpte2110ReceiverGroupSettings": {
+          "shape": "Smpte2110ReceiverGroupSettings",
+          "locationName": "smpte2110ReceiverGroupSettings",
+          "documentation": "Include this parameter if the input is a SMPTE 2110 input, to identify the stream sources for this input."
         }
       },
       "documentation": "Placeholder documentation for DescribeInputResponse"
@@ -12211,6 +12226,11 @@
           "shape": "MulticastSettings",
           "locationName": "multicastSettings",
           "documentation": "Multicast Input settings."
+        },
+        "Smpte2110ReceiverGroupSettings": {
+          "shape": "Smpte2110ReceiverGroupSettings",
+          "locationName": "smpte2110ReceiverGroupSettings",
+          "documentation": "Include this parameter if the input is a SMPTE 2110 input, to identify the stream sources for this input."
         }
       },
       "documentation": "Placeholder documentation for Input"
@@ -13351,7 +13371,8 @@
         "AWS_CDI",
         "TS_FILE",
         "SRT_CALLER",
-        "MULTICAST"
+        "MULTICAST",
+        "SMPTE_2110_RECEIVER_GROUP"
       ]
     },
     "InputVpcRequest": {
@@ -18810,6 +18831,11 @@
           "shape": "MulticastSettingsUpdateRequest",
           "locationName": "multicastSettings",
           "documentation": "Multicast Input settings."
+        },
+        "Smpte2110ReceiverGroupSettings": {
+          "shape": "Smpte2110ReceiverGroupSettings",
+          "locationName": "smpte2110ReceiverGroupSettings",
+          "documentation": "Include this parameter if the input is a SMPTE 2110 input, to identify the stream sources for this input."
         }
       },
       "documentation": "Placeholder documentation for UpdateInput"
@@ -19014,6 +19040,11 @@
           "shape": "MulticastSettingsUpdateRequest",
           "locationName": "multicastSettings",
           "documentation": "Multicast Input settings."
+        },
+        "Smpte2110ReceiverGroupSettings": {
+          "shape": "Smpte2110ReceiverGroupSettings",
+          "locationName": "smpte2110ReceiverGroupSettings",
+          "documentation": "Include this parameter if the input is a SMPTE 2110 input, to identify the stream sources for this input."
         }
       },
       "documentation": "A request to update an input.",
@@ -28468,6 +28499,78 @@
       "min": 80,
       "max": 800,
       "documentation": "Placeholder documentation for __integerMin80Max800"
+    },
+    "InputSdpLocation": {
+      "type": "structure",
+      "members": {
+        "MediaIndex": {
+          "shape": "__integer",
+          "locationName": "mediaIndex",
+          "documentation": "The index of the media stream in the SDP file for one SMPTE 2110 stream."
+        },
+        "SdpUrl": {
+          "shape": "__string",
+          "locationName": "sdpUrl",
+          "documentation": "The URL of the SDP file for one SMPTE 2110 stream."
+        }
+      },
+      "documentation": "The location of the SDP file for one of the SMPTE 2110 streams in a receiver group."
+    },
+    "Smpte2110ReceiverGroup": {
+      "type": "structure",
+      "members": {
+        "SdpSettings": {
+          "shape": "Smpte2110ReceiverGroupSdpSettings",
+          "locationName": "sdpSettings",
+          "documentation": "The single Smpte2110ReceiverGroupSdpSettings that identify the video, audio, and ancillary streams for this receiver group."
+        }
+      },
+      "documentation": "A receiver group is a collection of video, audio, and ancillary streams that you want to group together and attach to one input."
+    },
+    "Smpte2110ReceiverGroupSdpSettings": {
+      "type": "structure",
+      "members": {
+        "AncillarySdps": {
+          "shape": "__listOfInputSdpLocation",
+          "locationName": "ancillarySdps",
+          "documentation": "A list of InputSdpLocations. Each item in the list specifies the SDP file and index for one ancillary SMPTE 2110 stream.\nEach stream encapsulates one captions stream (out of any number you can include) or the single SCTE 35 stream that you can include."
+        },
+        "AudioSdps": {
+          "shape": "__listOfInputSdpLocation",
+          "locationName": "audioSdps",
+          "documentation": "A list of InputSdpLocations. Each item in the list specifies the SDP file and index for one audio SMPTE 2110 stream."
+        },
+        "VideoSdp": {
+          "shape": "InputSdpLocation",
+          "locationName": "videoSdp",
+          "documentation": "The InputSdpLocation that specifies the SDP file and index for the single video SMPTE 2110 stream for this 2110 input."
+        }
+      },
+      "documentation": "Information about the SDP files that describe the SMPTE 2110 streams that go into one SMPTE 2110 receiver group."
+    },
+    "Smpte2110ReceiverGroupSettings": {
+      "type": "structure",
+      "members": {
+        "Smpte2110ReceiverGroups": {
+          "shape": "__listOfSmpte2110ReceiverGroup",
+          "locationName": "smpte2110ReceiverGroups"
+        }
+      },
+      "documentation": "Configures the sources for the SMPTE 2110 Receiver Group input."
+    },
+    "__listOfInputSdpLocation": {
+      "type": "list",
+      "member": {
+        "shape": "InputSdpLocation"
+      },
+      "documentation": "Placeholder documentation for __listOfInputSdpLocation"
+    },
+    "__listOfSmpte2110ReceiverGroup": {
+      "type": "list",
+      "member": {
+        "shape": "Smpte2110ReceiverGroup"
+      },
+      "documentation": "Placeholder documentation for __listOfSmpte2110ReceiverGroup"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

@@ -66,13 +66,12 @@ def is_serial_implementation():
 
 def assert_files_equal(first, second):
     if os.path.getsize(first) != os.path.getsize(second):
-        raise AssertionError("Files are not equal: %s, %s" % (first, second))
+        raise AssertionError(f"Files are not equal: {first}, {second}")
     first_md5 = md5_checksum(first)
     second_md5 = md5_checksum(second)
     if first_md5 != second_md5:
         raise AssertionError(
-            "Files are not equal: %s(md5=%s) != %s(md5=%s)"
-            % (first, first_md5, second, second_md5)
+            f"Files are not equal: {first}(md5={first_md5}) != {second}(md5={second_md5})"
         )
 
 
@@ -209,19 +208,17 @@ class RecordingOSUtils(OSUtils):
     """An OSUtil abstraction that records openings and renamings"""
 
     def __init__(self):
-        super(RecordingOSUtils, self).__init__()
+        super().__init__()
         self.open_records = []
         self.rename_records = []
 
     def open(self, filename, mode):
         self.open_records.append((filename, mode))
-        return super(RecordingOSUtils, self).open(filename, mode)
+        return super().open(filename, mode)
 
     def rename_file(self, current_filename, new_filename):
         self.rename_records.append((current_filename, new_filename))
-        super(RecordingOSUtils, self).rename_file(
-            current_filename, new_filename
-        )
+        super().rename_file(current_filename, new_filename)
 
 
 class RecordingSubscriber(BaseSubscriber):
@@ -310,7 +307,7 @@ class StubbedClientTest(unittest.TestCase):
 
 class BaseTaskTest(StubbedClientTest):
     def setUp(self):
-        super(BaseTaskTest, self).setUp()
+        super().setUp()
         self.transfer_coordinator = TransferCoordinator()
 
     def get_task(self, task_cls, **kwargs):
@@ -326,7 +323,7 @@ class BaseTaskTest(StubbedClientTest):
 
 class BaseSubmissionTaskTest(BaseTaskTest):
     def setUp(self):
-        super(BaseSubmissionTaskTest, self).setUp()
+        super().setUp()
         self.config = TransferConfig()
         self.osutil = OSUtils()
         self.executor = BoundedExecutor(
@@ -339,7 +336,7 @@ class BaseSubmissionTaskTest(BaseTaskTest):
         )
 
     def tearDown(self):
-        super(BaseSubmissionTaskTest, self).tearDown()
+        super().tearDown()
         self.executor.shutdown()
 
 
@@ -489,7 +486,7 @@ class BaseGeneralInterfaceTest(StubbedClientTest):
 
 class NonSeekableReader(io.RawIOBase):
     def __init__(self, b=b''):
-        super(NonSeekableReader, self).__init__()
+        super().__init__()
         self._data = io.BytesIO(b)
 
     def seekable(self):
@@ -515,7 +512,7 @@ class NonSeekableReader(io.RawIOBase):
 
 class NonSeekableWriter(io.RawIOBase):
     def __init__(self, fileobj):
-        super(NonSeekableWriter, self).__init__()
+        super().__init__()
         self._fileobj = fileobj
 
     def seekable(self):

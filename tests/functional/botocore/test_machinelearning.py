@@ -15,7 +15,7 @@ from tests import BaseSessionTest, ClientHTTPStubber
 
 class TestMachineLearning(BaseSessionTest):
     def setUp(self):
-        super(TestMachineLearning, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client(
             'machinelearning', self.region

@@ -64,7 +64,7 @@ class AWSConnection:
     """
 
     def __init__(self, *args, **kwargs):
-        super(AWSConnection, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._original_response_cls = self.response_class
         # We'd ideally hook into httplib's states, but they're all
         # __mangled_vars so we use our own state var.  This variable is set
@@ -78,7 +78,7 @@ class AWSConnection:
         self._expect_header_set = False
 
     def close(self):
-        super(AWSConnection, self).close()
+        super().close()
         # Reset all of our instance state we were tracking.
         self._response_received = False
         self._expect_header_set = False
@@ -91,7 +91,7 @@ class AWSConnection:
         else:
             self._expect_header_set = False
             self.response_class = self._original_response_cls
-        rval = super(AWSConnection, self)._send_request(
+        rval = super()._send_request(
             method, url, body, headers, *args, **kwargs
         )
         self._expect_header_set = False
@@ -215,7 +215,7 @@ class AWSConnection:
                 "Not sending data."
             )
             return
-        return super(AWSConnection, self).send(str)
+        return super().send(str)
 
     def _is_100_continue_status(self, maybe_status_line):
         parts = maybe_status_line.split(None, 2)
@@ -275,9 +275,9 @@ def prepare_request_dict(
         percent_encode_sequence = botocore.utils.percent_encode_sequence
         encoded_query_string = percent_encode_sequence(r['query_string'])
         if '?' not in url:
-            url += '?%s' % encoded_query_string
+            url += f'?{encoded_query_string}'
         else:
-            url += '&%s' % encoded_query_string
+            url += f'&{encoded_query_string}'
     r['url'] = url
     r['context'] = context
     if context is None:
@@ -371,7 +371,7 @@ class AWSRequestPreparer:
         url = original.url
         if original.params:
             params = urlencode(list(original.params.items()), doseq=True)
-            url = '%s?%s' % (url, params)
+            url = f'{url}?{params}'
         return url
 
     def _prepare_headers(self, original, prepared_body=None):

@@ -46,7 +46,7 @@ def register_retry_handler(client, max_attempts=DEFAULT_MAX_ATTEMPTS):
     service_id = client.meta.service_model.service_id
     service_event_name = service_id.hyphenize()
     client.meta.events.register(
-        'after-call.%s' % service_event_name, retry_quota.release_retry_quota
+        f'after-call.{service_event_name}', retry_quota.release_retry_quota
     )
 
     handler = RetryHandler(
@@ -58,9 +58,9 @@ def register_retry_handler(client, max_attempts=DEFAULT_MAX_ATTEMPTS):
         retry_quota=retry_quota,
     )
 
-    unique_id = 'retry-config-%s' % service_event_name
+    unique_id = f'retry-config-{service_event_name}'
     client.meta.events.register(
-        'needs-retry.%s' % service_event_name,
+        f'needs-retry.{service_event_name}',
         handler.needs_retry,
         unique_id=unique_id,
     )

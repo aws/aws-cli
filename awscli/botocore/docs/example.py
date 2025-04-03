@@ -66,7 +66,7 @@ class BaseExampleDocumenter(ShapeDocumenter):
     ):
         if 'enum' in shape.metadata:
             for i, enum in enumerate(shape.metadata['enum']):
-                section.write('\'%s\'' % enum)
+                section.write(f'\'{enum}\'')
                 if i < len(shape.metadata['enum']) - 1:
                     section.write('|')
         else:
@@ -105,7 +105,7 @@ class BaseExampleDocumenter(ShapeDocumenter):
             if exclude and param in exclude:
                 continue
             param_section = section.add_new_section(param)
-            param_section.write('\'%s\': ' % param)
+            param_section.write(f'\'{param}\': ')
             param_shape = input_members[param]
             param_value_section = param_section.add_new_section(
                 'member-value', context={'shape': param_shape.name}

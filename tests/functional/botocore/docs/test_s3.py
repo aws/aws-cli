@@ -63,7 +63,7 @@ class TestS3Docs(BaseDocsFunctionalTest):
             "{'Bucket': 'string', 'Key': 'string', 'VersionId': 'string'}"
         )
         self.assert_contains_line(
-            "CopySource='string' or %s" % dict_form, content
+            f"CopySource='string' or {dict_form}", content
         )
 
     def test_copy_source_param_docs_also_modified(self):

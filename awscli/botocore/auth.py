@@ -130,7 +130,7 @@ class SigV2Auth(BaseSigner):
         path = split.path
         if len(path) == 0:
             path = '/'
-        string_to_sign = '%s\n%s\n%s\n' % (request.method, split.netloc, path)
+        string_to_sign = f'{request.method}\n{split.netloc}\n{path}\n'
         lhmac = hmac.new(
             self.credentials.secret_key.encode('utf-8'), digestmod=sha256
         )
@@ -199,8 +199,7 @@ class SigV3Auth(BaseSigner):
         new_hmac.update(request.headers['Date'].encode('utf-8'))
         encoded_signature = encodebytes(new_hmac.digest()).strip()
         signature = (
-            'AWS3-HTTPS AWSAccessKeyId=%s,Algorithm=%s,Signature=%s'
-            % (
+            'AWS3-HTTPS AWSAccessKeyId={},Algorithm={},Signature={}'.format(
                 self.credentials.access_key,
                 'HmacSHA256',
                 encoded_signature.decode('utf-8'),
@@ -271,7 +270,7 @@ class SigV4Auth(BaseSigner):
         # Sort by the URI-encoded key names, and in the case of
         # repeated keys, then sort by the value.
         for key, value in sorted(key_val_pairs):
-            sorted_key_vals.append('%s=%s' % (key, value))
+            sorted_key_vals.append(f'{key}={value}')
         canonical_query_string = '&'.join(sorted_key_vals)
         return canonical_query_string
 
@@ -287,7 +286,7 @@ class SigV4Auth(BaseSigner):
             # Sort by the URI-encoded key names, and in the case of
             # repeated keys, then sort by the value.
             for key, value in sorted(key_val_pairs):
-                sorted_key_vals.append('%s=%s' % (key, value))
+                sorted_key_vals.append(f'{key}={value}')
             canonical_query_string = '&'.join(sorted_key_vals)
         return canonical_query_string
 
@@ -304,7 +303,7 @@ class SigV4Auth(BaseSigner):
             value = ','.join(
                 self._header_value(v) for v in headers_to_sign.get_all(key)
             )
-            headers.append('%s:%s' % (key, ensure_unicode(value)))
+            headers.append(f'{key}:{ensure_unicode(value)}')
         return '\n'.join(headers)
 
     def _header_value(self, value):
@@ -316,9 +315,8 @@ class SigV4Auth(BaseSigner):
         return ' '.join(value.split())
 
     def signed_headers(self, headers_to_sign):
-        l = ['%s' % n.lower().strip() for n in set(headers_to_sign)]
-        l = sorted(l)
-        return ';'.join(l)
+        headers = sorted(n.lower().strip() for n in set(headers_to_sign))
+        return ';'.join(headers)
 
     def _is_streaming_checksum_payload(self, request):
         checksum_context = request.context.get('checksum', {})
@@ -437,11 +435,13 @@ class SigV4Auth(BaseSigner):
         self._inject_signature_to_request(request, signature)
 
     def _inject_signature_to_request(self, request, signature):
-        l = ['AWS4-HMAC-SHA256 Credential=%s' % self.scope(request)]
+        auth_str = [f'AWS4-HMAC-SHA256 Credential={self.scope(request)}']
         headers_to_sign = self.headers_to_sign(request)
-        l.append('SignedHeaders=%s' % self.signed_headers(headers_to_sign))
-        l.append('Signature=%s' % signature)
-        request.headers['Authorization'] = ', '.join(l)
+        auth_str.append(
+            f"SignedHeaders={self.signed_headers(headers_to_sign)}"
+        )
+        auth_str.append(f'Signature={signature}')
+        request.headers['Authorization'] = ', '.join(auth_str)
         return request
 
     def _modify_request_before_signing(self, request):
@@ -480,7 +480,7 @@ class SigV4Auth(BaseSigner):
 
 class S3SigV4Auth(SigV4Auth):
     def _modify_request_before_signing(self, request):
-        super(S3SigV4Auth, self)._modify_request_before_signing(request)
+        super()._modify_request_before_signing(request)
         if 'X-Amz-Content-SHA256' in request.headers:
             del request.headers['X-Amz-Content-SHA256']
 
@@ -525,7 +525,7 @@ class S3SigV4Auth(SigV4Auth):
 
         # If the S3-specific checks had no results, delegate to the generic
         # checks.
-        return super(S3SigV4Auth, self)._should_sha256_sign_payload(request)
+        return super()._should_sha256_sign_payload(request)
 
     def _normalize_url_path(self, path):
         # For S3, we do not normalize the path.
@@ -688,7 +688,7 @@ class S3ExpressQueryAuth(S3ExpressAuth):
         # Rather than calculating an "Authorization" header, for the query
         # param quth, we just append an 'X-Amz-Signature' param to the end
         # of the query string.
-        request.url += '&X-Amz-Signature=%s' % signature
+        request.url += f'&X-Amz-Signature={signature}'
 
     def _normalize_url_path(self, path):
         # For S3, we do not normalize the path.
@@ -708,9 +708,7 @@ class SigV4QueryAuth(SigV4Auth):
     def __init__(
         self, credentials, service_name, region_name, expires=DEFAULT_EXPIRES
     ):
-        super(SigV4QueryAuth, self).__init__(
-            credentials, service_name, region_name
-        )
+        super().__init__(credentials, service_name, region_name)
         self._expires = expires
 
     def _modify_request_before_signing(self, request):
@@ -784,7 +782,7 @@ class SigV4QueryAuth(SigV4Auth):
         # Rather than calculating an "Authorization" header, for the query
         # param quth, we just append an 'X-Amz-Signature' param to the end
         # of the query string.
-        request.url += '&X-Amz-Signature=%s' % signature
+        request.url += f'&X-Amz-Signature={signature}'
 
 
 class S3SigV4QueryAuth(SigV4QueryAuth):
@@ -881,7 +879,7 @@ class BearerAuth(TokenSigner):
 # the botocore.crt.auth module imports functions/classes defined above from
 # this module. In the future, we should isolate those functions/classes into
 # a separate utility module to avoid any potential circular import.
-import botocore.crt.auth
+import botocore.crt.auth  # noqa
 
 
 def resolve_auth_type(auth_trait):

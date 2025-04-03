@@ -29,7 +29,7 @@ class BaseTestValidate(unittest.TestCase):
         input_shape = s.get_shape_by_name('Input')
         validator = ParamValidator()
         errors_found = validator.validate(input_params, input_shape)
-        error_message = errors_found.generate_report()
+        errors_found.generate_report()
         return errors_found
 
 

@@ -506,7 +506,7 @@ class TestURLLib3Session(unittest.TestCase):
         proxies = {'https': 'http://proxy.com', 'http': 'http://proxy2.com'}
         session = URLLib3Session(proxies=proxies)
         for proxy, proxy_url in proxies.items():
-            self.request.url = '%s://example.com/' % proxy
+            self.request.url = f'{proxy}://example.com/'
             session.send(self.request.prepare())
 
         session.close()

@@ -190,7 +190,7 @@ class ClientCreator:
         bases = [BaseClient]
         service_id = service_model.service_id.hyphenize()
         self._event_emitter.emit(
-            'creating-client-class.%s' % service_id,
+            f'creating-client-class.{service_id}',
             class_attributes=class_attributes,
             base_classes=bases,
         )
@@ -214,10 +214,9 @@ class ClientCreator:
                 else:
                     client_config = config_use_fips_endpoint
                 logger.warning(
-                    'transforming region from %s to %s and setting '
+                    f'transforming region from {region_name} to {normalized_region_name} and setting '
                     'use_fips_endpoint to true. client should not '
                     'be configured with a fips psuedo region.'
-                    % (region_name, normalized_region_name)
                 )
                 region_name = normalized_region_name
         return region_name, client_config
@@ -399,7 +398,7 @@ class ClientCreator:
             # 1 argument.
             if args:
                 raise TypeError(
-                    "%s() only accepts keyword arguments." % py_operation_name
+                    f"{py_operation_name}() only accepts keyword arguments."
                 )
             # The "self" in this scope is referring to the BaseClient.
             return self._make_api_call(operation_name, kwargs)
@@ -413,7 +412,7 @@ class ClientCreator:
             method_name=operation_name,
             event_emitter=self._event_emitter,
             method_description=operation_model.documentation,
-            example_prefix='response = client.%s' % py_operation_name,
+            example_prefix=f'response = client.{py_operation_name}',
             include_signature=False,
         )
         _api_call.__doc__ = docstring
@@ -626,7 +625,7 @@ class ClientEndpointBridge:
             scheme = 'https'
         else:
             scheme = 'http'
-        return '%s://%s' % (scheme, hostname)
+        return f'{scheme}://{hostname}'
 
     def _resolve_signing_name(self, service_name, resolved):
         # CredentialScope overrides everything else.
@@ -748,9 +747,8 @@ class BaseClient:
         self._register_handlers()
 
     def __getattr__(self, item):
-        event_name = 'getattr.%s.%s' % (
-            self._service_model.service_id.hyphenize(),
-            item,
+        event_name = (
+            f'getattr.{self._service_model.service_id.hyphenize()}.{item}'
         )
         handler, event_response = self.meta.events.emit_until_response(
             event_name, client=self
@@ -760,15 +758,14 @@ class BaseClient:
             return event_response
 
         raise AttributeError(
-            "'%s' object has no attribute '%s'"
-            % (self.__class__.__name__, item)
+            f"'{self.__class__.__name__}' object has no attribute '{item}'"
         )
 
     def _register_handlers(self):
         # Register the handler required to sign requests.
         service_id = self.meta.service_model.service_id.hyphenize()
         self.meta.events.register(
-            'request-created.%s' % service_id, self._request_signer.handler
+            f'request-created.{service_id}', self._request_signer.handler
         )
         # Rebuild user agent string right before request is sent
         # to ensure all registered features are included.
@@ -1029,11 +1026,7 @@ class BaseClient:
 
             # Rename the paginator class based on the type of paginator.
             paginator_class_name = str(
-                '%s.Paginator.%s'
-                % (
-                    get_service_module_name(self.meta.service_model),
-                    actual_operation_name,
-                )
+                f'{get_service_module_name(self.meta.service_model)}.Paginator.{actual_operation_name}'
             )
 
             # Create the new paginator class
@@ -1100,13 +1093,13 @@ class BaseClient:
         """
         config = self._get_waiter_config()
         if not config:
-            raise ValueError("Waiter does not exist: %s" % waiter_name)
+            raise ValueError(f"Waiter does not exist: {waiter_name}")
         model = waiter.WaiterModel(config)
         mapping = {}
         for name in model.waiter_names:
             mapping[xform_name(name)] = name
         if waiter_name not in mapping:
-            raise ValueError("Waiter does not exist: %s" % waiter_name)
+            raise ValueError(f"Waiter does not exist: {waiter_name}")
 
         return waiter.create_waiter_with_client(
             mapping[waiter_name], model, self

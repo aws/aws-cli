@@ -451,7 +451,7 @@ def test_single_service_region_endpoint(
     result = bridge.resolve(service_name, region_name)
     scheme = urlparse(expected_endpoint).scheme
     if not scheme:
-        expected_endpoint = 'https://%s' % expected_endpoint
+        expected_endpoint = f'https://{expected_endpoint}'
     assert result['endpoint_url'] == expected_endpoint
 
 
@@ -487,7 +487,7 @@ def test_non_partition_endpoint_requires_region(patched_session):
 
 class TestEndpointResolution(BaseSessionTest):
     def setUp(self):
-        super(TestEndpointResolution, self).setUp()
+        super().setUp()
         self.xml_response = (
             b'<?xml version="1.0" encoding="UTF-8"?>\n\n'
             b'<ListRolesResponse '

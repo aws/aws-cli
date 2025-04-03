@@ -153,7 +153,7 @@ class Serializer:
             timestamp_format = self.TIMESTAMP_FORMAT
         timestamp_format = timestamp_format.lower()
         datetime_obj = parse_to_aware_datetime(value)
-        converter = getattr(self, '_timestamp_%s' % timestamp_format)
+        converter = getattr(self, f'_timestamp_{timestamp_format}')
         final_value = converter(datetime_obj)
         return final_value
 
@@ -227,7 +227,7 @@ class QuerySerializer(Serializer):
         #         key (i.e Foo.bar.members.1).
         method = getattr(
             self,
-            '_serialize_type_%s' % shape.type_name,
+            f'_serialize_type_{shape.type_name}',
             self._default_serialize,
         )
         method(serialized, value, shape, prefix=prefix)
@@ -238,7 +238,7 @@ class QuerySerializer(Serializer):
             member_shape = members[key]
             member_prefix = self._get_serialized_name(member_shape, key)
             if prefix:
-                member_prefix = '%s.%s' % (prefix, member_prefix)
+                member_prefix = f'{prefix}.{member_prefix}'
             self._serialize(serialized, value, member_shape, member_prefix)
 
     def _serialize_type_list(self, serialized, value, shape, prefix=''):
@@ -254,9 +254,9 @@ class QuerySerializer(Serializer):
                 list_prefix = '.'.join(prefix.split('.')[:-1] + [name])
         else:
             list_name = shape.member.serialization.get('name', 'member')
-            list_prefix = '%s.%s' % (prefix, list_name)
+            list_prefix = f'{prefix}.{list_name}'
         for i, element in enumerate(value, 1):
-            element_prefix = '%s.%s' % (list_prefix, i)
+            element_prefix = f'{list_prefix}.{i}'
             element_shape = shape.member
             self._serialize(serialized, element, element_shape, element_prefix)
 
@@ -264,7 +264,7 @@ class QuerySerializer(Serializer):
         if self._is_shape_flattened(shape):
             full_prefix = prefix
         else:
-            full_prefix = '%s.entry' % prefix
+            full_prefix = f'{prefix}.entry'
         template = full_prefix + '.{i}.{suffix}'
         key_shape = shape.key
         value_shape = shape.value
@@ -323,7 +323,7 @@ class EC2Serializer(QuerySerializer):
 
     def _serialize_type_list(self, serialized, value, shape, prefix=''):
         for i, element in enumerate(value, 1):
-            element_prefix = '%s.%s' % (prefix, i)
+            element_prefix = f'{prefix}.{i}'
             element_shape = shape.member
             self._serialize(serialized, element, element_shape, element_prefix)
 
@@ -332,7 +332,7 @@ class JSONSerializer(Serializer):
     TIMESTAMP_FORMAT = 'unixtimestamp'
 
     def serialize_to_request(self, parameters, operation_model):
-        target = '%s.%s' % (
+        target = '{}.{}'.format(
             operation_model.metadata['targetPrefix'],
             operation_model.name,
         )
@@ -343,7 +343,7 @@ class JSONSerializer(Serializer):
         )
         serialized['headers'] = {
             'X-Amz-Target': target,
-            'Content-Type': 'application/x-amz-json-%s' % json_version,
+            'Content-Type': f'application/x-amz-json-{json_version}',
         }
         body = self.MAP_TYPE()
         input_shape = operation_model.input_shape
@@ -360,7 +360,7 @@ class JSONSerializer(Serializer):
     def _serialize(self, serialized, value, shape, key=None):
         method = getattr(
             self,
-            '_serialize_type_%s' % shape.type_name,
+            f'_serialize_type_{shape.type_name}',
             self._default_serialize,
         )
         method(serialized, value, shape, key)
@@ -980,7 +980,7 @@ class RestXMLSerializer(BaseRestSerializer):
     def _serialize(self, shape, params, xmlnode, name):
         method = getattr(
             self,
-            '_serialize_type_%s' % shape.type_name,
+            f'_serialize_type_{shape.type_name}',
             self._default_serialize,
         )
         method(xmlnode, params, shape, name)
@@ -992,7 +992,7 @@ class RestXMLSerializer(BaseRestSerializer):
             namespace_metadata = shape.serialization['xmlNamespace']
             attribute_name = 'xmlns'
             if namespace_metadata.get('prefix'):
-                attribute_name += ':%s' % namespace_metadata['prefix']
+                attribute_name += ':{}'.format(namespace_metadata['prefix'])
             structure_node.attrib[attribute_name] = namespace_metadata['uri']
         for key, value in params.items():
             member_shape = shape.members[key]

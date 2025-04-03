@@ -27,7 +27,7 @@ S3_READ_POLICY_ARN = 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
 
 class TestCredentialPrecedence(BaseEnvVar):
     def setUp(self):
-        super(TestCredentialPrecedence, self).setUp()
+        super().setUp()
 
         # Set the config file to something that doesn't exist so
         # that we don't accidentally load a config.
@@ -69,7 +69,7 @@ class TestCredentialPrecedence(BaseEnvVar):
         # take precedence.
         s = self.create_session(profile='test')
 
-        client = s.create_client(
+        s.create_client(
             's3', aws_access_key_id='code', aws_secret_access_key='code-secret'
         )
 
@@ -99,7 +99,7 @@ class TestCredentialPrecedence(BaseEnvVar):
         os.environ['AWS_SECRET_ACCESS_KEY'] = 'secret'
         s = self.create_session()
 
-        client = s.create_client(
+        s.create_client(
             's3', aws_access_key_id='code', aws_secret_access_key='code-secret'
         )
 
@@ -147,7 +147,7 @@ class TestAssumeRoleCredentials(BaseEnvVar):
     def setUp(self):
         self.env_original = os.environ.copy()
         self.environ_copy = os.environ.copy()
-        super(TestAssumeRoleCredentials, self).setUp()
+        super().setUp()
         os.environ = self.environ_copy
         # The tests rely on manipulating AWS_CONFIG_FILE,
         # but we also need to make sure we don't accidentally
@@ -167,14 +167,14 @@ class TestAssumeRoleCredentials(BaseEnvVar):
             "Statement": [
                 {
                     "Effect": "Allow",
-                    "Principal": {"AWS": "arn:aws:iam::%s:root" % account_id},
+                    "Principal": {"AWS": f"arn:aws:iam::{account_id}:root"},
                     "Action": "sts:AssumeRole",
                 }
             ],
         }
 
     def tearDown(self):
-        super(TestAssumeRoleCredentials, self).tearDown()
+        super().tearDown()
         shutil.rmtree(self.tempdir)
         os.environ = self.env_original.copy()
 
@@ -264,7 +264,7 @@ class TestAssumeRoleCredentials(BaseEnvVar):
                 else:
                     raise
 
-        raise Exception("Unable to assume role %s" % role_arn)
+        raise Exception(f"Unable to assume role {role_arn}")
 
     def create_assume_policy(self, role_arn):
         policy_document = {

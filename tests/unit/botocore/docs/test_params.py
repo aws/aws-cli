@@ -23,7 +23,7 @@ from tests.unit.botocore.docs import BaseDocsTest
 
 class BaseParamsDocumenterTest(BaseDocsTest):
     def setUp(self):
-        super(BaseParamsDocumenterTest, self).setUp()
+        super().setUp()
         self.event_emitter = HierarchicalEmitter()
         self.request_params = RequestParamsDocumenter(
             service_id='myservice',
@@ -39,7 +39,7 @@ class BaseParamsDocumenterTest(BaseDocsTest):
 
 class TestDocumentDefaultValue(BaseParamsDocumenterTest):
     def setUp(self):
-        super(TestDocumentDefaultValue, self).setUp()
+        super().setUp()
         self.add_shape_to_params('Foo', 'String', 'This describes foo.')
 
     def test_request_params(self):
@@ -61,7 +61,7 @@ class TestDocumentDefaultValue(BaseParamsDocumenterTest):
 
 class TestTraverseAndDocumentShape(BaseParamsDocumenterTest):
     def setUp(self):
-        super(TestTraverseAndDocumentShape, self).setUp()
+        super().setUp()
         self.add_shape_to_params('Foo', 'String', 'This describes foo.')
         self.event_emitter = mock.Mock()
         self.request_params = RequestParamsDocumenter(
@@ -124,7 +124,7 @@ class TestTraverseAndDocumentShape(BaseParamsDocumenterTest):
 
 class TestDocumentMultipleDefaultValues(BaseParamsDocumenterTest):
     def setUp(self):
-        super(TestDocumentMultipleDefaultValues, self).setUp()
+        super().setUp()
         self.add_shape_to_params('Foo', 'String', 'This describes foo.')
         self.add_shape_to_params(
             'Bar', 'String', 'This describes bar.', is_required=True
@@ -158,7 +158,7 @@ class TestDocumentMultipleDefaultValues(BaseParamsDocumenterTest):
 
 class TestDocumentInclude(BaseParamsDocumenterTest):
     def setUp(self):
-        super(TestDocumentInclude, self).setUp()
+        super().setUp()
         self.add_shape_to_params('Foo', 'String', 'This describes foo.')
         self.include_params = [
             DocumentedShape(
@@ -200,7 +200,7 @@ class TestDocumentInclude(BaseParamsDocumenterTest):
 
 class TestDocumentExclude(BaseParamsDocumenterTest):
     def setUp(self):
-        super(TestDocumentExclude, self).setUp()
+        super().setUp()
         self.add_shape_to_params('Foo', 'String', 'This describes foo.')
         self.add_shape_to_params(
             'Bar', 'String', 'This describes bar.', is_required=True
@@ -239,7 +239,7 @@ class TestDocumentExclude(BaseParamsDocumenterTest):
 
 class TestDocumentList(BaseParamsDocumenterTest):
     def setUp(self):
-        super(TestDocumentList, self).setUp()
+        super().setUp()
         self.add_shape(
             {
                 'List': {
@@ -287,7 +287,7 @@ class TestDocumentList(BaseParamsDocumenterTest):
 
 class TestDocumentMap(BaseParamsDocumenterTest):
     def setUp(self):
-        super(TestDocumentMap, self).setUp()
+        super().setUp()
         self.add_shape(
             {
                 'Map': {
@@ -328,7 +328,7 @@ class TestDocumentMap(BaseParamsDocumenterTest):
 
 class TestDocumentStructure(BaseParamsDocumenterTest):
     def setUp(self):
-        super(TestDocumentStructure, self).setUp()
+        super().setUp()
         self.add_shape(
             {
                 'Structure': {
@@ -373,7 +373,7 @@ class TestDocumentStructure(BaseParamsDocumenterTest):
 
 class TestDocumentRecursiveShape(BaseParamsDocumenterTest):
     def setUp(self):
-        super(TestDocumentRecursiveShape, self).setUp()
+        super().setUp()
         self.add_shape(
             {
                 'Structure': {

@@ -419,14 +419,18 @@ class CloudFrontSigner:
         if isinstance(policy, str):
             policy = policy.encode('utf8')
         if date_less_than is not None:
-            params = ['Expires=%s' % int(datetime2timestamp(date_less_than))]
+            params = [f'Expires={int(datetime2timestamp(date_less_than))}']
         else:
-            params = ['Policy=%s' % self._url_b64encode(policy).decode('utf8')]
+            params = [
+                'Policy={}'.format(self._url_b64encode(policy).decode('utf8'))
+            ]
         signature = self.rsa_signer(policy)
         params.extend(
             [
-                'Signature=%s' % self._url_b64encode(signature).decode('utf8'),
-                'Key-Pair-Id=%s' % self.key_id,
+                'Signature={}'.format(
+                    self._url_b64encode(signature).decode('utf8')
+                ),
+                f'Key-Pair-Id={self.key_id}',
             ]
         )
         return self._build_url(url, params)
@@ -543,7 +547,7 @@ def generate_db_auth_token(self, DBHostname, Port, DBUsername, Region=None):
     # netloc would be treated as a path component. To work around this we
     # introduce https here and remove it once we're done processing it.
     scheme = 'https://'
-    endpoint_url = '%s%s:%s' % (scheme, DBHostname, Port)
+    endpoint_url = f'{scheme}{DBHostname}:{Port}'
     prepare_request_dict(request_dict, endpoint_url)
     presigned_url = self._request_signer.generate_presigned_url(
         operation_name='connect',

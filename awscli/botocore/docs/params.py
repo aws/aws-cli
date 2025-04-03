@@ -162,7 +162,7 @@ class ResponseParamsDocumenter(BaseParamsDocumenter):
         name_section = section.add_new_section('param-name')
         name_section.write('- ')
         if name is not None:
-            name_section.style.bold('%s ' % name)
+            name_section.style.bold(f'{name} ')
         type_section = section.add_new_section('param-type')
         self._document_non_top_level_param_type(type_section, shape)
 
@@ -184,7 +184,7 @@ class ResponseParamsDocumenter(BaseParamsDocumenter):
                     '    as follows'
                 )
                 tagged_union_members_str = ', '.join(
-                    ['``%s``' % key for key in shape.members.keys()]
+                    [f'``{key}``' for key in shape.members.keys()]
                 )
                 unknown_code_example = (
                     '\'SDK_UNKNOWN_MEMBER\': '
@@ -249,17 +249,17 @@ class RequestParamsDocumenter(BaseParamsDocumenter):
             py_type = py_type_name(shape.type_name)
         if is_top_level_param:
             type_section = section.add_new_section('param-type')
-            type_section.write(':type %s: %s' % (name, py_type))
+            type_section.write(f':type {name}: {py_type}')
             end_type_section = type_section.add_new_section('end-param-type')
             end_type_section.style.new_line()
             name_section = section.add_new_section('param-name')
-            name_section.write(':param %s: ' % name)
+            name_section.write(f':param {name}: ')
 
         else:
             name_section = section.add_new_section('param-name')
             name_section.write('- ')
             if name is not None:
-                name_section.style.bold('%s ' % name)
+                name_section.style.bold(f'{name} ')
             type_section = section.add_new_section('param-type')
             self._document_non_top_level_param_type(type_section, shape)
 
@@ -282,7 +282,7 @@ class RequestParamsDocumenter(BaseParamsDocumenter):
                     '    following top level keys can be set: %s. '
                 )
                 tagged_union_members_str = ', '.join(
-                    ['``%s``' % key for key in shape.members.keys()]
+                    [f'``{key}``' for key in shape.members.keys()]
                 )
                 tagged_union_docs.write(note % (tagged_union_members_str))
             documentation_section.include_doc_string(shape.documentation)

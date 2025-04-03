@@ -25,7 +25,7 @@ _V4_SIGNING_REGION_REGEX = re.compile(
 
 class TestSTSPresignedUrl(BaseSessionTest):
     def setUp(self):
-        super(TestSTSPresignedUrl, self).setUp()
+        super().setUp()
         self.client = self.session.create_client('sts', 'us-west-2')
         # Makes sure that no requests will go through
         self.stubber = Stubber(self.client)
@@ -62,7 +62,7 @@ class TestSTSEndpoints(BaseSessionTest):
         )
 
     def set_sts_regional_for_config_file(self, fileobj, config_val):
-        fileobj.write('[default]\n' 'sts_regional_endpoints=%s\n' % config_val)
+        fileobj.write('[default]\n' f'sts_regional_endpoints={config_val}\n')
         fileobj.flush()
         self.environ['AWS_CONFIG_FILE'] = fileobj.name
 

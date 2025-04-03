@@ -108,7 +108,7 @@ class DocumentedShape(_DocumentedShape):
             members = []
         if required_members is None:
             required_members = []
-        return super(DocumentedShape, cls).__new__(
+        return super().__new__(
             cls,
             name,
             type_name,
@@ -214,8 +214,11 @@ _CONTROLS = {
 }
 # Combines all CONTROLS keys into a big or regular expression
 _ESCAPE_CONTROLS_RE = re.compile('|'.join(map(re.escape, _CONTROLS)))
+
+
 # Based on the match get the appropriate replacement from CONTROLS
-_CONTROLS_MATCH_HANDLER = lambda match: _CONTROLS[match.group(0)]
+def _CONTROLS_MATCH_HANDLER(match):
+    return _CONTROLS[match.group(0)]
 
 
 def escape_controls(value):

@@ -133,7 +133,7 @@ class TestTransferCoordinatorController(unittest.TestCase):
         try:
             self.coordinator_controller.wait()
         except FutureResultException as e:
-            self.fail('%s should not have been raised.' % e)
+            self.fail(f'{e} should not have been raised.')
 
     def test_wait_can_be_interrupted(self):
         inject_interrupt_coordinator = TransferCoordinatorWithInterrupt()

@@ -23,7 +23,7 @@ class RecordingHandler:
 
 class TestClientEvents(BaseSessionTest):
     def setUp(self):
-        super(TestClientEvents, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client('ec2', self.region)
 

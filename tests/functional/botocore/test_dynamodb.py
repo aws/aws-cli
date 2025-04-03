@@ -18,7 +18,7 @@ from tests import BaseSessionTest, ClientHTTPStubber
 
 class TestDynamoDBEndpointDiscovery(BaseSessionTest):
     def setUp(self):
-        super(TestDynamoDBEndpointDiscovery, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.config = Config(endpoint_discovery_enabled=True)
         self.create_client()

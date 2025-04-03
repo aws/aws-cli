@@ -116,10 +116,10 @@ class CrtSigV4Auth(BaseSigner):
             array = []
             for param, value in aws_request.params.items():
                 value = str(value)
-                array.append('%s=%s' % (param, value))
+                array.append(f'{param}={value}')
             crt_path = crt_path + '?' + '&'.join(array)
         elif url_parts.query:
-            crt_path = '%s?%s' % (crt_path, url_parts.query)
+            crt_path = f'{crt_path}?{url_parts.query}'
 
         crt_headers = awscrt.http.HttpHeaders(aws_request.headers.items())
 
@@ -314,10 +314,10 @@ class CrtSigV4AsymAuth(BaseSigner):
             array = []
             for param, value in aws_request.params.items():
                 value = str(value)
-                array.append('%s=%s' % (param, value))
+                array.append(f'{param}={value}')
             crt_path = crt_path + '?' + '&'.join(array)
         elif url_parts.query:
-            crt_path = '%s?%s' % (crt_path, url_parts.query)
+            crt_path = f'{crt_path}?{url_parts.query}'
 
         crt_headers = awscrt.http.HttpHeaders(aws_request.headers.items())
 

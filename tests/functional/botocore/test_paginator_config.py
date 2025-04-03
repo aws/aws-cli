@@ -158,8 +158,7 @@ def _validate_known_pagination_keys(page_config):
     for key in page_config:
         if key not in KNOWN_PAGE_KEYS:
             raise AssertionError(
-                "Unknown key '%s' in pagination config: %s"
-                % (key, page_config)
+                f"Unknown key '{key}' in pagination config: {page_config}"
             )
 
 
@@ -167,7 +166,7 @@ def _valiate_result_key_exists(page_config):
     if 'result_key' not in page_config:
         raise AssertionError(
             "Required key 'result_key' is missing "
-            "from pagination config: %s" % page_config
+            f"from pagination config: {page_config}"
         )
 
 
@@ -175,7 +174,7 @@ def _validate_referenced_operation_exists(operation_name, service_model):
     if operation_name not in service_model.operation_names:
         raise AssertionError(
             "Pagination config refers to operation that "
-            "does not exist: %s" % operation_name
+            f"does not exist: {operation_name}"
         )
 
 
@@ -185,7 +184,7 @@ def _validate_operation_has_output(operation_name, service_model):
     if output is None or not output.members:
         raise AssertionError(
             "Pagination config refers to operation "
-            "that does not have any output: %s" % operation_name
+            f"that does not have any output: {operation_name}"
         )
 
 
@@ -199,17 +198,16 @@ def _validate_input_keys_match(operation_name, page_config, service_model):
     for token in input_tokens:
         if token not in valid_input_names:
             raise AssertionError(
-                "input_token '%s' refers to a non existent "
-                "input member for operation: %s" % (token, operation_name)
+                f"input_token '{token}' refers to a non existent "
+                f"input member for operation: {operation_name}"
             )
     if 'limit_key' in page_config:
         limit_key = page_config['limit_key']
         if limit_key not in valid_input_names:
             raise AssertionError(
-                "limit_key '%s' refers to a non existent "
-                "input member for operation: %s, valid keys: "
-                "%s"
-                % (
+                "limit_key '{}' refers to a non existent "
+                "input member for operation: {}, valid keys: "
+                "{}".format(
                     limit_key,
                     operation_name,
                     ', '.join(list(valid_input_names)),
@@ -233,30 +231,25 @@ def _validate_output_keys_match(operation_name, page_config, service_model):
         else:
             if output_key not in output_members:
                 raise AssertionError(
-                    "Pagination key '%s' refers to an output "
-                    "member that does not exist: %s" % (key_name, output_key)
+                    f"Pagination key '{key_name}' refers to an output "
+                    f"member that does not exist: {output_key}"
                 )
             output_members.remove(output_key)
 
     for member in list(output_members):
-        key = "%s.%s.%s" % (service_model.service_name, operation_name, member)
+        key = f"{service_model.service_name}.{operation_name}.{member}"
         if key in KNOWN_EXTRA_OUTPUT_KEYS:
             output_members.remove(member)
 
     if output_members:
         for member in output_members:
-            key = "%s.%s.%s" % (
-                service_model.service_name,
-                operation_name,
-                member,
-            )
+            key = f"{service_model.service_name}.{operation_name}.{member}"
             with open('/tmp/blah', 'a') as f:
-                f.write("'%s',\n" % key)
+                f.write(f"'{key}',\n")
         raise AssertionError(
             "There are member names in the output shape of "
-            "%s that are not accounted for in the pagination "
-            "config for service %s: %s"
-            % (
+            "{} that are not accounted for in the pagination "
+            "config for service {}: {}".format(
                 operation_name,
                 service_model.service_name,
                 ', '.join(output_members),
@@ -276,7 +269,7 @@ def _validate_jmespath_compiles(expression):
     except JMESPathError as e:
         raise AssertionError(
             "Invalid JMESPath expression used "
-            "in pagination config: %s\nerror: %s" % (expression, e)
+            f"in pagination config: {expression}\nerror: {e}"
         )
 
 

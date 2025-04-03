@@ -15,7 +15,7 @@ from tests import BaseSessionTest, ClientHTTPStubber
 
 class TestCloudsearchdomain(BaseSessionTest):
     def setUp(self):
-        super(TestCloudsearchdomain, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client(
             'cloudsearchdomain', self.region

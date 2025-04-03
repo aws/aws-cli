@@ -1589,6 +1589,81 @@
       },
       "documentation":"<p>Used to associate a configuration set with a MailManager archive.</p>"
     },
+    "Attachment":{
+      "type":"structure",
+      "required":[
+        "RawContent",
+        "FileName"
+      ],
+      "members":{
+        "RawContent":{
+          "shape":"RawAttachmentData",
+          "documentation":"<p> The raw data of the attachment. It needs to be base64-encoded if you are accessing Amazon SES directly through the HTTPS interface. If you are accessing Amazon SES using an Amazon Web Services SDK, the SDK takes care of the base 64-encoding for you.</p>"
+        },
+        "ContentDisposition":{
+          "shape":"AttachmentContentDisposition",
+          "documentation":"<p> A standard descriptor indicating how the attachment should be rendered in the email. Supported values: <code>ATTACHMENT</code> or <code>INLINE</code>.</p>"
+        },
+        "FileName":{
+          "shape":"AttachmentFileName",
+          "documentation":"<p>The file name for the attachment as it will appear in the email. Amazon SES restricts certain file extensions. To ensure attachments are accepted, check the <a href=\"https://docs.aws.amazon.com/ses/latest/dg/mime-types.html\">Unsupported attachment types</a> in the Amazon SES Developer Guide.</p>"
+        },
+        "ContentDescription":{
+          "shape":"AttachmentContentDescription",
+          "documentation":"<p> A brief description of the attachment content.</p>"
+        },
+        "ContentId":{
+          "shape":"AttachmentContentId",
+          "documentation":"<p> Unique identifier for the attachment, used for referencing attachments with INLINE disposition in HTML content.</p>"
+        },
+        "ContentTransferEncoding":{
+          "shape":"AttachmentContentTransferEncoding",
+          "documentation":"<p> Specifies how the attachment is encoded. Supported values: <code>BASE64</code>, <code>QUOTED_PRINTABLE</code>, <code>SEVEN_BIT</code>.</p>"
+        },
+        "ContentType":{
+          "shape":"AttachmentContentType",
+          "documentation":"<p> The MIME type of the attachment.</p> <note> <p>Example: <code>application/pdf</code>, <code>image/jpeg</code> </p> </note>"
+        }
+      },
+      "documentation":"<p> Contains metadata and attachment raw content.</p>"
+    },
+    "AttachmentContentDescription":{
+      "type":"string",
+      "max":1000
+    },
+    "AttachmentContentDisposition":{
+      "type":"string",
+      "enum":[
+        "ATTACHMENT",
+        "INLINE"
+      ]
+    },
+    "AttachmentContentId":{
+      "type":"string",
+      "max":78,
+      "min":1
+    },
+    "AttachmentContentTransferEncoding":{
+      "type":"string",
+      "enum":[
+        "BASE64",
+        "QUOTED_PRINTABLE",
+        "SEVEN_BIT"
+      ]
+    },
+    "AttachmentContentType":{
+      "type":"string",
+      "max":78,
+      "min":1
+    },
+    "AttachmentFileName":{
+      "type":"string",
+      "max":255
+    },
+    "AttachmentList":{
+      "type":"list",
+      "member":{"shape":"Attachment"}
+    },
     "AttributesData":{"type":"string"},
     "BadRequestException":{
       "type":"structure",
@@ -3222,7 +3297,7 @@
       "members":{
         "Simple":{
           "shape":"Message",
-          "documentation":"<p>The simple email message. The message consists of a subject and a message body.</p>"
+          "documentation":"<p>The simple email message. The message consists of a subject, message body and attachments list.</p>"
         },
         "Raw":{
           "shape":"RawMessage",
@@ -3233,7 +3308,7 @@
           "documentation":"<p>The template to use for the email message.</p>"
         }
       },
-      "documentation":"<p>An object that defines the entire content of the email, including the message headers and the body content. You can create a simple email message, in which you specify the subject and the text and HTML versions of the message body. You can also create raw messages, in which you specify a complete MIME-formatted message. Raw messages can include attachments and custom headers.</p>"
+      "documentation":"<p>An object that defines the entire content of the email, including the message headers, body content, and attachments. For a simple email message, you specify the subject and provide both text and HTML versions of the message body. You can also add attachments to simple and templated messages. For a raw message, you provide a complete MIME-formatted message, which can include custom headers and attachments.</p>"
     },
     "EmailInsights":{
       "type":"structure",
@@ -5417,6 +5492,10 @@
         "Headers":{
           "shape":"MessageHeaderList",
           "documentation":"<p>The list of message headers that will be added to the email message.</p>"
+        },
+        "Attachments":{
+          "shape":"AttachmentList",
+          "documentation":"<p> The List of attachments to include in your email. All recipients will receive the same attachments.</p>"
         }
       },
       "documentation":"<p>Represents the email message that you're sending. The <code>Message</code> object consists of a subject line and a message body.</p>"
@@ -6379,6 +6458,7 @@
       "max":255,
       "min":1
     },
+    "RawAttachmentData":{"type":"blob"},
     "RawMessage":{
       "type":"structure",
       "required":["Data"],
@@ -7028,6 +7108,10 @@
         "Headers":{
           "shape":"MessageHeaderList",
           "documentation":"<p>The list of message headers that will be added to the email message.</p>"
+        },
+        "Attachments":{
+          "shape":"AttachmentList",
+          "documentation":"<p> The List of attachments to include in your email. All recipients will receive the same attachments.</p>"
         }
       },
       "documentation":"<p>An object that defines the email template to use for an email message, and the values to use for any message variables in that template. An <i>email template</i> is a type of message template that contains content that you want to reuse in email messages that you send. You can specifiy the email template by providing the name or ARN of an <i>email template</i> previously saved in your Amazon SES account or by providing the full template content.</p>"

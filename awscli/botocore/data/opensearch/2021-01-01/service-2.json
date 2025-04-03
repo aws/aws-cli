@@ -183,7 +183,7 @@
         {"shape":"InternalException"},
         {"shape":"DisabledOperationException"}
       ],
-      "documentation":"<p>Creates an OpenSearch Application.</p>"
+      "documentation":"<p>Creates an OpenSearch UI application. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/application.html\">Using the OpenSearch user interface in Amazon OpenSearch Service</a>.</p>"
     },
     "CreateDomain":{
       "name":"CreateDomain",
@@ -275,7 +275,7 @@
         {"shape":"InternalException"},
         {"shape":"DisabledOperationException"}
       ],
-      "documentation":"<p>Deletes an existing OpenSearch Application.</p>"
+      "documentation":"<p>Deletes a specified OpenSearch application.</p>"
     },
     "DeleteDataSource":{
       "name":"DeleteDataSource",
@@ -684,7 +684,7 @@
         {"shape":"InternalException"},
         {"shape":"DisabledOperationException"}
       ],
-      "documentation":"<p>Check the configuration and status of an existing OpenSearch Application.</p>"
+      "documentation":"<p>Retrieves the configuration and status of an existing OpenSearch application.</p>"
     },
     "GetCompatibleVersions":{
       "name":"GetCompatibleVersions",
@@ -823,7 +823,7 @@
         {"shape":"InternalException"},
         {"shape":"DisabledOperationException"}
       ],
-      "documentation":"<p>List all OpenSearch Applications under your account.</p>"
+      "documentation":"<p>Lists all OpenSearch applications under your account.</p>"
     },
     "ListDataSources":{
       "name":"ListDataSources",
@@ -1151,7 +1151,7 @@
         {"shape":"InternalException"},
         {"shape":"DisabledOperationException"}
       ],
-      "documentation":"<p>Update the OpenSearch Application. </p>"
+      "documentation":"<p>Updates the configuration and settings of an existing OpenSearch application.</p>"
     },
     "UpdateDataSource":{
       "name":"UpdateDataSource",
@@ -1657,14 +1657,14 @@
       "members":{
         "key":{
           "shape":"AppConfigType",
-          "documentation":"<p>Specify the item to configure, such as admin role for the OpenSearch Application.</p>"
+          "documentation":"<p>The configuration item to set, such as the admin role for the OpenSearch application.</p>"
         },
         "value":{
           "shape":"AppConfigValue",
-          "documentation":"<p>Specifies the value to configure for the key, such as an IAM user ARN.</p>"
+          "documentation":"<p>The value assigned to the configuration key, such as an IAM user ARN.</p>"
         }
       },
-      "documentation":"<p>Configurations of the OpenSearch Application.</p>"
+      "documentation":"<p>Configuration settings for an OpenSearch application. For more information, see see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/application.html\">Using the OpenSearch user interface in Amazon OpenSearch Service</a>.</p>"
     },
     "AppConfigType":{
       "type":"string",
@@ -1712,31 +1712,31 @@
       "members":{
         "id":{
           "shape":"Id",
-          "documentation":"<p>Unique identifier for an OpenSearch application.</p>"
+          "documentation":"<p>The unique identifier of an OpenSearch application.</p>"
         },
         "arn":{"shape":"ARN"},
         "name":{
           "shape":"ApplicationName",
-          "documentation":"<p>Name of an OpenSearch Application.</p>"
+          "documentation":"<p>The name of an OpenSearch application.</p>"
         },
         "endpoint":{
           "shape":"String",
-          "documentation":"<p>Endpoint URL of an OpenSearch Application.</p>"
+          "documentation":"<p>The endpoint URL of an OpenSearch application.</p>"
         },
         "status":{
           "shape":"ApplicationStatus",
-          "documentation":"<p>Status of an OpenSearch Application. Possible values are <code>CREATING</code>, <code>UPDATING</code>,<code> DELETING</code>, <code>FAILED</code>, <code>ACTIVE</code>, and <code>DELETED</code>.</p>"
+          "documentation":"<p>The current status of an OpenSearch application. Possible values: <code>CREATING</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>FAILED</code>, <code>ACTIVE</code>, and <code>DELETED</code>.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>Timestamp at which an OpenSearch Application was created.</p>"
+          "documentation":"<p>The timestamp when an OpenSearch application was created.</p>"
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>Timestamp at which an OpenSearch Application was last updated.</p>"
+          "documentation":"<p>The timestamp of the last update to an OpenSearch application.</p>"
         }
       },
-      "documentation":"<p>Basic information of the OpenSearch Application.</p>"
+      "documentation":"<p>Basic details of an OpenSearch application.</p>"
     },
     "AssociatePackageRequest":{
       "type":"structure",
@@ -2521,24 +2521,24 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique client idempotency token. It will be auto generated if not provided.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
           "idempotencyToken":true
         },
         "name":{
           "shape":"ApplicationName",
-          "documentation":"<p>Name of the OpenSearch Appication to create. Application names are unique across the applications owned by an account within an Amazon Web Services Region.</p>"
+          "documentation":"<p>The unique name of the OpenSearch application. Names must be unique within an Amazon Web Services Region for each account.</p>"
         },
         "dataSources":{
           "shape":"DataSources",
-          "documentation":"<p>Data sources to be associated with the OpenSearch Application.</p>"
+          "documentation":"<p>The data sources to link to the OpenSearch application.</p>"
         },
         "iamIdentityCenterOptions":{
           "shape":"IamIdentityCenterOptionsInput",
-          "documentation":"<p>Settings of IAM Identity Center for the OpenSearch Application.</p>"
+          "documentation":"<p>Configuration settings for integrating Amazon Web Services IAM Identity Center with the OpenSearch application.</p>"
         },
         "appConfigs":{
           "shape":"AppConfigs",
-          "documentation":"<p>Configurations of the OpenSearch Application, inlcuding admin configuration.</p>"
+          "documentation":"<p>Configuration settings for the OpenSearch application, including administrative options.</p>"
         },
         "tagList":{"shape":"TagList"}
       }
@@ -2548,29 +2548,29 @@
       "members":{
         "id":{
           "shape":"Id",
-          "documentation":"<p>Unique identifier for the created OpenSearch Application.</p>"
+          "documentation":"<p>The unique identifier assigned to the OpenSearch application.</p>"
         },
         "name":{
           "shape":"ApplicationName",
-          "documentation":"<p>Name of the created OpenSearch Application.</p>"
+          "documentation":"<p>The name of the OpenSearch application.</p>"
         },
         "arn":{"shape":"ARN"},
         "dataSources":{
           "shape":"DataSources",
-          "documentation":"<p>Data sources associated with the created OpenSearch Application.</p>"
+          "documentation":"<p>The data sources linked to the OpenSearch application.</p>"
         },
         "iamIdentityCenterOptions":{
           "shape":"IamIdentityCenterOptions",
-          "documentation":"<p>Settings of IAM Identity Center for the created OpenSearch Application.</p>"
+          "documentation":"<p>The IAM Identity Center settings configured for the OpenSearch application.</p>"
         },
         "appConfigs":{
           "shape":"AppConfigs",
-          "documentation":"<p>Configurations of the OpenSearch Application, inlcuding admin configuration.</p>"
+          "documentation":"<p>Configuration settings for the OpenSearch application, including administrative options.</p>"
         },
         "tagList":{"shape":"TagList"},
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>Timestamp when the OpenSearch Application was created.</p>"
+          "documentation":"<p>The timestamp indicating when the OpenSearch application was created.</p>"
         }
       }
     },
@@ -2640,7 +2640,7 @@
         },
         "IdentityCenterOptions":{
           "shape":"IdentityCenterOptionsInput",
-          "documentation":"<p>Options for IAM Identity Center Option control for the domain.</p>"
+          "documentation":"<p>Configuration options for enabling and managing IAM Identity Center integration within a domain.</p>"
         },
         "TagList":{
           "shape":"TagList",
@@ -2910,7 +2910,7 @@
       "members":{
         "id":{
           "shape":"Id",
-          "documentation":"<p>Unique identifier for the OpenSearch Application that you want to delete.</p>",
+          "documentation":"<p>The unique identifier of the OpenSearch application to delete.</p>",
           "location":"uri",
           "locationName":"id"
         }
@@ -3850,7 +3850,7 @@
         },
         "IdentityCenterOptions":{
           "shape":"IdentityCenterOptionsStatus",
-          "documentation":"<p>Container for IAM Identity Center Option control for the domain.</p>"
+          "documentation":"<p>Configuration options for enabling and managing IAM Identity Center integration within a domain.</p>"
         },
         "AutoTuneOptions":{
           "shape":"AutoTuneOptionsStatus",
@@ -4036,7 +4036,7 @@
         },
         "NodeType":{
           "shape":"NodeType",
-          "documentation":"<p>Indicates whether the nodes is a data, master, or ultrawarm node.</p>"
+          "documentation":"<p>Indicates whether the nodes is a data, master, or UltraWarm node.</p>"
         },
         "AvailabilityZone":{
           "shape":"AvailabilityZone",
@@ -4056,7 +4056,7 @@
         },
         "StorageVolumeType":{
           "shape":"VolumeType",
-          "documentation":"<p>If the nodes has EBS storage, indicates if the volume type is GP2 or GP3. Only applicable for data nodes. </p>"
+          "documentation":"<p>If the nodes has EBS storage, indicates if the volume type is gp2 or gp3. Only applicable for data nodes. </p>"
         },
         "StorageSize":{
           "shape":"VolumeSize",
@@ -4269,7 +4269,7 @@
         },
         "IdentityCenterOptions":{
           "shape":"IdentityCenterOptions",
-          "documentation":"<p>Container for IAM Identity Center Option control for the domain.</p>"
+          "documentation":"<p>Configuration options for controlling IAM Identity Center integration within a domain.</p>"
         },
         "AutoTuneOptions":{
           "shape":"AutoTuneOptionsOutput",
@@ -4542,7 +4542,7 @@
       "members":{
         "id":{
           "shape":"Id",
-          "documentation":"<p>Unique identifier of the checked OpenSearch Application.</p>",
+          "documentation":"<p>The unique identifier of the OpenSearch application to retrieve.</p>",
           "location":"uri",
           "locationName":"id"
         }
@@ -4553,40 +4553,40 @@
       "members":{
         "id":{
           "shape":"Id",
-          "documentation":"<p>Unique identifier of the checked OpenSearch Application.</p>"
+          "documentation":"<p>The unique identifier of the OpenSearch application.</p>"
         },
         "arn":{"shape":"ARN"},
         "name":{
           "shape":"ApplicationName",
-          "documentation":"<p>Name of the checked OpenSearch Application.</p>"
+          "documentation":"<p>The name of the OpenSearch application.</p>"
         },
         "endpoint":{
           "shape":"String",
-          "documentation":"<p>Endpoint URL of the checked OpenSearch Application.</p>"
+          "documentation":"<p>The endpoint URL of the OpenSearch application.</p>"
         },
         "status":{
           "shape":"ApplicationStatus",
-          "documentation":"<p>Current status of the checked OpenSearch Application. Possible values are <code>CREATING</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>FAILED</code>, <code>ACTIVE</code>, and <code>DELETED</code>.</p>"
+          "documentation":"<p>The current status of the OpenSearch application. Possible values: <code>CREATING</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>FAILED</code>, <code>ACTIVE</code>, and <code>DELETED</code>.</p>"
         },
         "iamIdentityCenterOptions":{
           "shape":"IamIdentityCenterOptions",
-          "documentation":"<p>IAM Identity Center settings for the checked OpenSearch Application.</p>"
+          "documentation":"<p>The IAM Identity Center settings configured for the OpenSearch application.</p>"
         },
         "dataSources":{
           "shape":"DataSources",
-          "documentation":"<p>Associated data sources to the checked OpenSearch Application.</p>"
+          "documentation":"<p>The data sources associated with the OpenSearch application.</p>"
         },
         "appConfigs":{
           "shape":"AppConfigs",
-          "documentation":"<p>App configurations of the checked OpenSearch Application.</p>"
+          "documentation":"<p>The configuration settings of the OpenSearch application.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>Timestamp at which the checked OpenSearch Application was created.</p>"
+          "documentation":"<p>The timestamp when the OpenSearch application was created.</p>"
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>Timestamp at which the checked OpenSearch Application was last updated.</p>"
+          "documentation":"<p>The timestamp of the last update to the OpenSearch application.</p>"
         }
       }
     },
@@ -4886,31 +4886,31 @@
       "members":{
         "enabled":{
           "shape":"Boolean",
-          "documentation":"<p>IAM Identity Center is enabled for the OpenSearch Application.</p>"
+          "documentation":"<p>Indicates whether IAM Identity Center is enabled for the OpenSearch Application.</p>"
         },
         "iamIdentityCenterInstanceArn":{"shape":"ARN"},
         "iamRoleForIdentityCenterApplicationArn":{
           "shape":"RoleArn",
-          "documentation":"<p>Amazon Resource Name of the IAM Identity Center's Application created for the OpenSearch Application after enabling IAM Identity Center.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role assigned to the IAM Identity Center application for the OpenSearch Application.</p>"
         },
         "iamIdentityCenterApplicationArn":{"shape":"ARN"}
       },
-      "documentation":"<p>Settings for IAM Identity Center for an OpenSearch Application.</p>"
+      "documentation":"<p>Configuration settings for IAM Identity Center in an OpenSearch Application.</p>"
     },
     "IamIdentityCenterOptionsInput":{
       "type":"structure",
       "members":{
         "enabled":{
           "shape":"Boolean",
-          "documentation":"<p>Enable/disable settings for IAM Identity Center.</p>"
+          "documentation":"<p>Specifies whether IAM Identity Center is enabled or disabled.</p>"
         },
         "iamIdentityCenterInstanceArn":{"shape":"ARN"},
         "iamRoleForIdentityCenterApplicationArn":{
           "shape":"RoleArn",
-          "documentation":"<p>Amazon Resource Name of IAM Identity Center's application.</p>"
+          "documentation":"<p>The ARN of the IAM role associated with the IAM Identity Center application.</p>"
         }
       },
-      "documentation":"<p>Settings for IAM Identity Center.</p>"
+      "documentation":"<p>Configuration settings for enabling and managing IAM Identity Center.</p>"
     },
     "Id":{
       "type":"string",
@@ -4933,52 +4933,52 @@
       "members":{
         "EnabledAPIAccess":{
           "shape":"Boolean",
-          "documentation":"<p>True to enable IAM Identity Center for API access in Amazon OpenSearch Service.</p>"
+          "documentation":"<p>Indicates whether IAM Identity Center is enabled for the application.</p>"
         },
         "IdentityCenterInstanceARN":{
           "shape":"IdentityCenterInstanceARN",
-          "documentation":"<p>The ARN for IAM Identity Center Instance.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity Center instance.</p>"
         },
         "SubjectKey":{
           "shape":"SubjectKeyIdCOption",
-          "documentation":"<p>Specify the attribute that contains the subject (username, userID, email) of IAM Identity Center.</p>"
+          "documentation":"<p>Specifies the attribute that contains the subject identifier (such as username, user ID, or email) in IAM Identity Center.</p>"
         },
         "RolesKey":{
           "shape":"RolesKeyIdCOption",
-          "documentation":"<p>Specify the attribute that contains the backend role (groupName, groupID) of IAM Identity Center</p>"
+          "documentation":"<p>Specifies the attribute that contains the backend role identifier (such as group name or group ID) in IAM Identity Center.</p>"
         },
         "IdentityCenterApplicationARN":{
           "shape":"IdentityCenterApplicationARN",
-          "documentation":"<p>The ARN for IAM Identity Center Application which will integrate with Amazon OpenSearch Service.</p>"
+          "documentation":"<p>The ARN of the IAM Identity Center application that integrates with Amazon OpenSearch Service.</p>"
         },
         "IdentityStoreId":{
           "shape":"IdentityStoreId",
-          "documentation":"<p>The ID of IAM Identity Store.</p>"
+          "documentation":"<p>The identifier of the IAM Identity Store.</p>"
         }
       },
-      "documentation":"<p>Container for IAM Identity Center Options settings.</p>"
+      "documentation":"<p>Settings container for integrating IAM Identity Center with OpenSearch UI applications, which enables enabling secure user authentication and access control across multiple data sources. This setup supports single sign-on (SSO) through IAM Identity Center, allowing centralized user management.</p>"
     },
     "IdentityCenterOptionsInput":{
       "type":"structure",
       "members":{
         "EnabledAPIAccess":{
           "shape":"Boolean",
-          "documentation":"<p>True to enable IAM Identity Center for API access in Amazon OpenSearch Service.</p>"
+          "documentation":"<p>Indicates whether IAM Identity Center is enabled for API access in Amazon OpenSearch Service.</p>"
         },
         "IdentityCenterInstanceARN":{
           "shape":"IdentityCenterInstanceARN",
-          "documentation":"<p>The ARN for IAM Identity Center Instance which will be used for IAM Identity Center Application creation.</p>"
+          "documentation":"<p>The ARN of the IAM Identity Center instance used to create an OpenSearch UI application that uses IAM Identity Center for authentication.</p>"
         },
         "SubjectKey":{
           "shape":"SubjectKeyIdCOption",
-          "documentation":"<p>Specify the attribute that contains the subject (username, userID, email) of IAM Identity Center.</p>"
+          "documentation":"<p>Specifies the attribute that contains the subject identifier (such as username, user ID, or email) in IAM Identity Center.</p>"
         },
         "RolesKey":{
           "shape":"RolesKeyIdCOption",
-          "documentation":"<p>Specify the attribute that contains the backend role (groupName, groupID) of IAM Identity Center</p>"
+          "documentation":"<p>Specifies the attribute that contains the backend role identifier (such as group name or group ID) in IAM Identity Center.</p>"
         }
       },
-      "documentation":"<p>Container for IAM Identity Center Options settings.</p>"
+      "documentation":"<p>Configuration settings for enabling and managing IAM Identity Center.</p>"
     },
     "IdentityCenterOptionsStatus":{
       "type":"structure",
@@ -4989,14 +4989,14 @@
       "members":{
         "Options":{
           "shape":"IdentityCenterOptions",
-          "documentation":"<p>Container for IAM Identity Center Options settings.</p>"
+          "documentation":"<p>Configuration settings for IAM Identity Center integration.</p>"
         },
         "Status":{
           "shape":"OptionStatus",
-          "documentation":"<p>The status of IAM Identity Center Options settings for a domain.</p>"
+          "documentation":"<p>The status of IAM Identity Center configuration settings for a domain.</p>"
         }
       },
-      "documentation":"<p>The status of IAM Identity Center Options settings for a domain.</p>"
+      "documentation":"<p>The status of IAM Identity Center configuration settings for a domain.</p>"
     },
     "IdentityPoolId":{
       "type":"string",
@@ -5306,7 +5306,7 @@
         },
         "statuses":{
           "shape":"ApplicationStatuses",
-          "documentation":"<p>OpenSearch Application Status can be used as filters for the listing request. Possible values are <code>CREATING</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>FAILED</code>, <code>ACTIVE</code>, and <code>DELETED</code>.</p>",
+          "documentation":"<p>Filters the list of OpenSearch applications by status. Possible values: <code>CREATING</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>FAILED</code>, <code>ACTIVE</code>, and <code>DELETED</code>.</p>",
           "location":"querystring",
           "locationName":"statuses"
         },
@@ -5322,7 +5322,7 @@
       "members":{
         "ApplicationSummaries":{
           "shape":"ApplicationSummaries",
-          "documentation":"<p>Summary of the OpenSearch Applications, including ID, ARN, name, endpoint, status, create time and last update time.</p>"
+          "documentation":"<p>Summarizes OpenSearch applications, including ID, ARN, name, endpoint, status, creation time, and last update time.</p>"
         },
         "nextToken":{"shape":"NextToken"}
       }
@@ -5955,18 +5955,18 @@
       "members":{
         "Enabled":{
           "shape":"Boolean",
-          "documentation":"<p>A boolean that indicates whether a particular node type is enabled or not.</p>"
+          "documentation":"<p>A boolean value indicating whether a specific node type is active or inactive.</p>"
         },
         "Type":{
           "shape":"OpenSearchPartitionInstanceType",
-          "documentation":"<p>The instance type of a particular node type in the cluster.</p>"
+          "documentation":"<p>The instance type of a particular node within the cluster.</p>"
         },
         "Count":{
           "shape":"IntegerClass",
-          "documentation":"<p>The number of nodes of a particular node type in the cluster.</p>"
+          "documentation":"<p>The number of nodes of a specific type within the cluster.</p>"
         }
       },
-      "documentation":"<p>Container for specifying configuration of any node type.</p>"
+      "documentation":"<p>Configuration options for defining the setup of any node type within the cluster.</p>"
     },
     "NodeId":{
       "type":"string",
@@ -5978,14 +5978,14 @@
       "members":{
         "NodeType":{
           "shape":"NodeOptionsNodeType",
-          "documentation":"<p>Container for node type like coordinating.</p>"
+          "documentation":"<p>Defines the type of node, such as coordinating nodes.</p>"
         },
         "NodeConfig":{
           "shape":"NodeConfig",
-          "documentation":"<p>Container for specifying configuration of any node type.</p>"
+          "documentation":"<p>Configuration options for defining the setup of any node type.</p>"
         }
       },
-      "documentation":"<p>Container for specifying node type.</p>"
+      "documentation":"<p>Configuration settings for defining the node type within a cluster.</p>"
     },
     "NodeOptionsList":{
       "type":"list",
@@ -6431,7 +6431,7 @@
         },
         "PackageOwner":{
           "shape":"PackageOwner",
-          "documentation":"<p>The owner of the package who is allowed to create/update a package and add users to the package scope.</p>"
+          "documentation":"<p>The owner of the package who is allowed to create and update a package and add users to the package scope.</p>"
         },
         "PackageVendingOptions":{
           "shape":"PackageVendingOptions",
@@ -6439,7 +6439,7 @@
         },
         "PackageEncryptionOptions":{
           "shape":"PackageEncryptionOptions",
-          "documentation":"<p>Package Encryption Options for a package.</p>"
+          "documentation":"<p>Encryption options for a package.</p>"
         }
       },
       "documentation":"<p>Basic information about a package.</p>"
@@ -6454,7 +6454,7 @@
         },
         "PrerequisitePackageIDList":{
           "shape":"PackageIDList",
-          "documentation":"<p>List of package IDs that must be associated with the domain with or before the package can be associated.</p>"
+          "documentation":"<p>List of package IDs that must be linked to the domain before or simultaneously with the package association.</p>"
         },
         "AssociationConfiguration":{
           "shape":"PackageAssociationConfiguration",
@@ -6477,11 +6477,11 @@
       "members":{
         "KmsKeyIdentifier":{
           "shape":"KmsKeyId",
-          "documentation":"<p> KMS key ID for encrypting the package.</p>"
+          "documentation":"<p>KMS key ID for encrypting the package.</p>"
         },
         "EncryptionEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>This indicates whether encryption is enabled for the package.</p>"
+          "documentation":"<p>Whether encryption is enabled for the package.</p>"
         }
       },
       "documentation":"<p>Encryption options for a package.</p>"
@@ -6564,10 +6564,10 @@
       "members":{
         "VendingEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>This indicates whether vending is enabled for the package to determine if package can be used by other users. </p>"
+          "documentation":"<p>Indicates whether the package vending feature is enabled, allowing the package to be used by other users.</p>"
         }
       },
-      "documentation":"<p>The vending options for a package to determine if the package can be used by other users. </p>"
+      "documentation":"<p>Configuration options for determining whether a package can be made available for use by other users.</p>"
     },
     "PackageVersion":{"type":"string"},
     "PackageVersionHistory":{
@@ -7526,17 +7526,17 @@
       "members":{
         "id":{
           "shape":"Id",
-          "documentation":"<p>Unique identifier of the OpenSearch Application to be updated.</p>",
+          "documentation":"<p>The unique identifier for the OpenSearch application to be updated.</p>",
           "location":"uri",
           "locationName":"id"
         },
         "dataSources":{
           "shape":"DataSources",
-          "documentation":"<p>Data sources to be associated with the OpenSearch Application.</p>"
+          "documentation":"<p>The data sources to associate with the OpenSearch application.</p>"
         },
         "appConfigs":{
           "shape":"AppConfigs",
-          "documentation":"<p>Configurations to be changed for the OpenSearch Application.</p>"
+          "documentation":"<p>The configuration settings to modify for the OpenSearch application.</p>"
         }
       }
     },
@@ -7545,32 +7545,32 @@
       "members":{
         "id":{
           "shape":"Id",
-          "documentation":"<p>Unique identifier of the updated OpenSearch Application.</p>"
+          "documentation":"<p>The unique identifier of the updated OpenSearch application.</p>"
         },
         "name":{
           "shape":"ApplicationName",
-          "documentation":"<p>Name of the updated OpenSearch Application.</p>"
+          "documentation":"<p>The name of the updated OpenSearch application.</p>"
         },
         "arn":{"shape":"ARN"},
         "dataSources":{
           "shape":"DataSources",
-          "documentation":"<p>Data sources associated with the updated OpenSearch Application.</p>"
+          "documentation":"<p>The data sources associated with the updated OpenSearch application.</p>"
         },
         "iamIdentityCenterOptions":{
           "shape":"IamIdentityCenterOptions",
-          "documentation":"<p>IAM Identity Center settings for the updated OpenSearch Application.</p>"
+          "documentation":"<p>The IAM Identity Center configuration for the updated OpenSearch application.</p>"
         },
         "appConfigs":{
           "shape":"AppConfigs",
-          "documentation":"<p>Configurations for the updated OpenSearch Application.</p>"
+          "documentation":"<p>The configuration settings for the updated OpenSearch application.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>Timestamp at which the OpenSearch Application was created.</p>"
+          "documentation":"<p>The timestamp when the OpenSearch application was originally created.</p>"
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>Timestamp at which the OpenSearch Application was last updated.</p>"
+          "documentation":"<p>The timestamp when the OpenSearch application was last updated.</p>"
         }
       }
     },

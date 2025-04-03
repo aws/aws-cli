@@ -18,10 +18,10 @@ import logging
 import io
 import sys
 import importlib
+from collections import OrderedDict
 
 from botocore.awsrequest import AWSResponse
 from botocore.exceptions import NoCredentialsError
-from botocore.compat import OrderedDict
 import botocore.model
 
 import awscli

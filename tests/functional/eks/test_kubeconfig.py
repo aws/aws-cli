@@ -13,8 +13,7 @@
 import os
 import shutil
 import tempfile
-
-from botocore.compat import OrderedDict
+from collections import OrderedDict
 
 from awscli.testutils import mock, unittest
 from tests.functional.eks.test_util import get_testdata

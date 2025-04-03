@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.38.27
+=======
+
+* api-change:``bedrock-agent``: Added optional "customMetadataField" for Amazon Aurora knowledge bases, allowing single-column metadata. Also added optional "textIndexName" for MongoDB Atlas knowledge bases, enabling hybrid search support.
+* api-change:``chime-sdk-voice``: Added FOC date as an attribute of PhoneNumberOrder, added AccessDeniedException as a possible return type of ValidateE911Address
+* api-change:``mailmanager``: Add support for Dual_Stack and PrivateLink types of IngressPoint. For configuration requests, SES Mail Manager will now accept both IPv4/IPv6 dual-stack endpoints and AWS PrivateLink VPC endpoints for email receiving.
+* api-change:``opensearch``: Improve descriptions for various API commands and data types.
+* api-change:``route53``: Added us-gov-east-1 and us-gov-west-1 as valid Latency Based Routing regions for change-resource-record-sets.
+* api-change:``sagemaker``: Adds support for i3en, m7i, r7i instance types for SageMaker Hyperpod
+* api-change:``sesv2``: This release enables customers to provide attachments in the SESv2 SendEmail and SendBulkEmail APIs.
+* api-change:``transcribe``: This Feature Adds Support for the "zh-HK" Locale for Batch Operations
+
+
 1.38.26
 =======
 

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.25.11
+=======
+
+* api-change:``ds-data``: Doc only update - fixed broken links.
+* api-change:``s3control``: Updated max size of Prefixes parameter of Scope data type.
+* api-change:``ec2``: Doc-only updates for Amazon EC2
+* api-change:``events``: Amazon EventBridge adds support for customer-managed keys on Archives and validations for two fields: eventSourceArn and kmsKeyIdentifier.
+
+
 2.25.10
 =======
 

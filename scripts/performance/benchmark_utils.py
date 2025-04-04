@@ -869,6 +869,7 @@ class BenchmarkHarness(object):
         else:
             client = StubbedHTTPClient()
             definitions = json.load(open(args.benchmark_definitions, 'r'))
+
         if os.path.exists(result_dir):
             shutil.rmtree(result_dir)
         os.makedirs(result_dir, 0o777)

@@ -128,6 +128,7 @@ class TestPackageModules(unittest.TestCase):
             "outjoin",
             "invoke",
             "zip",
+            "same-mod",
         ]
         for test in tests:
             t, _ = read_source(f"{base}/{test}-template.yaml")

@@ -123,7 +123,6 @@ def process_module_maps(template, parent_module):
 
                 modules[module_id] = copied_module
 
-            # Remember the original module so we can process outputs later
             del modules[k]
 
     return retval

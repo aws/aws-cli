@@ -18,6 +18,7 @@ Basic module processing functions.
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-instance-attributes
 # pylint: disable=too-many-public-methods
+# pylint: disable=fixme
 
 import copy
 import logging
@@ -526,6 +527,7 @@ class Module:
                 self.resolve_output_sub(v.d[SUB], v.p, v.k)
             elif GETATT in v.d:
                 self.resolve_output_getatt(v.d[GETATT], v.p, v.k)
+            # Refs can't point to module outputs since we need Module.Output
 
         sections = [RESOURCES, MODULES, OUTPUTS]
         for section in sections:
@@ -574,6 +576,10 @@ class Module:
             raise exceptions.InvalidModuleError(msg=msg)
 
         # !Sub ${Content.BucketArn} -> !Sub ${ContentBucket.Arn}
+
+        # TODO - Why is this not calling the GetAtt code?
+        # This could be like ${Content[0].Arn}, which means
+        # we need all of that logic...
 
         r = None
         if tokens[0] == self.name:

@@ -78,7 +78,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InvalidEventPatternException"}
       ],
-      "documentation":"<p>Creates an archive of events with the specified settings. When you create an archive, incoming events might not immediately start being sent to the archive. Allow a short period of time for changes to take effect. If you do not specify a pattern to filter events sent to the archive, all events are sent to the archive except replayed events. Replayed events are not sent to an archive.</p> <note> <p>Archives and schema discovery are not supported for event buses encrypted using a customer managed key. EventBridge returns an error if:</p> <ul> <li> <p>You call <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_CreateArchive.html\">CreateArchive</a> </code> on an event bus set to use a customer managed key for encryption.</p> </li> <li> <p>You call <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/schema-reference/v1-discoverers.html#CreateDiscoverer\">CreateDiscoverer</a> </code> on an event bus set to use a customer managed key for encryption.</p> </li> <li> <p>You call <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_UpdatedEventBus.html\">UpdatedEventBus</a> </code> to set a customer managed key on an event bus with an archives or schema discovery enabled.</p> </li> </ul> <p>To enable archives or schema discovery on an event bus, choose to use an Amazon Web Services owned key. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-encryption.html\">Data encryption in EventBridge</a> in the <i>Amazon EventBridge User Guide</i>.</p> </note>"
+      "documentation":"<p>Creates an archive of events with the specified settings. When you create an archive, incoming events might not immediately start being sent to the archive. Allow a short period of time for changes to take effect. If you do not specify a pattern to filter events sent to the archive, all events are sent to the archive except replayed events. Replayed events are not sent to an archive.</p> <important> <p>If you have specified that EventBridge use a customer managed key for encrypting the source event bus, we strongly recommend you also specify a customer managed key for any archives for the event bus as well. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/encryption-archives.html\">Encrypting archives</a> in the <i>Amazon EventBridge User Guide</i>.</p> </important>"
     },
     "CreateConnection":{
       "name":"CreateConnection",
@@ -630,7 +630,7 @@
       "errors":[
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Sends custom events to Amazon EventBridge so that they can be matched to rules.</p> <p>The maximum size for a PutEvents event entry is 256 KB. Entry size is calculated including the event and any necessary characters and keys of the JSON representation of the event. To learn more, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-putevent-size.html\">Calculating PutEvents event entry size</a> in the <i> <i>Amazon EventBridge User Guide</i> </i> </p> <p>PutEvents accepts the data in JSON format. For the JSON number (integer) data type, the constraints are: a minimum value of -9,223,372,036,854,775,808 and a maximum value of 9,223,372,036,854,775,807.</p> <note> <p>PutEvents will only process nested JSON up to 1000 levels deep.</p> </note>"
+      "documentation":"<p>Sends custom events to Amazon EventBridge so that they can be matched to rules.</p> <p>You can batch multiple event entries into one request for efficiency. However, the total entry size must be less than 256KB. You can calculate the entry size before you send the events. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-putevents.html#eb-putevent-size\">Calculating PutEvents event entry size</a> in the <i> <i>Amazon EventBridge User Guide</i> </i>.</p> <p>PutEvents accepts the data in JSON format. For the JSON number (integer) data type, the constraints are: a minimum value of -9,223,372,036,854,775,808 and a maximum value of 9,223,372,036,854,775,807.</p> <note> <p>PutEvents will only process nested JSON up to 1000 levels deep.</p> </note>"
     },
     "PutPartnerEvents":{
       "name":"PutPartnerEvents",
@@ -879,7 +879,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>You do not have the necessary permissons for this action.</p>",
+      "documentation":"<p>You do not have the necessary permissions for this action.</p>",
       "exception":true
     },
     "AccountId":{
@@ -1008,7 +1008,7 @@
           "documentation":"<p>The name of the archive.</p>"
         },
         "EventSourceArn":{
-          "shape":"Arn",
+          "shape":"EventBusArn",
           "documentation":"<p>The ARN of the event bus associated with the archive. Only events from this event bus are sent to the archive.</p>"
         },
         "State":{
@@ -1530,10 +1530,10 @@
       "members":{
         "ResourceConfigurationArn":{
           "shape":"ResourceConfigurationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource configuration for the resource endpoint.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon VPC Lattice resource configuration for the resource endpoint.</p>"
         }
       },
-      "documentation":"<p>The Amazon Resource Name (ARN) of the resource configuration for the resource endpoint.</p>"
+      "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon VPC Lattice resource configuration for the resource endpoint.</p>"
     },
     "ConnectivityResourceParameters":{
       "type":"structure",
@@ -1614,7 +1614,7 @@
           "documentation":"<p>The name for the archive to create.</p>"
         },
         "EventSourceArn":{
-          "shape":"Arn",
+          "shape":"EventBusArn",
           "documentation":"<p>The ARN of the event bus that sends events to the archive.</p>"
         },
         "Description":{
@@ -1628,6 +1628,10 @@
         "RetentionDays":{
           "shape":"RetentionDays",
           "documentation":"<p>The number of days to retain events for. Default value is 0. If set to 0, events are retained indefinitely</p>"
+        },
+        "KmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The identifier of the KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt this archive. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.</p> <p>If you do not specify a customer managed key identifier, EventBridge uses an Amazon Web Services owned key to encrypt the archive.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/viewing-keys.html\">Identify and view keys</a> in the <i>Key Management Service Developer Guide</i>. </p> <important> <p>If you have specified that EventBridge use a customer managed key for encrypting the source event bus, we strongly recommend you also specify a customer managed key for any archives for the event bus as well. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/encryption-archives.html\">Encrypting archives</a> in the <i>Amazon EventBridge User Guide</i>.</p> </important>"
         }
       }
     },
@@ -1785,7 +1789,7 @@
         },
         "InvocationConnectivityParameters":{
           "shape":"ConnectivityResourceParameters",
-          "documentation":"<p>For connections to private resource endpoints, the parameters to use for invoking the resource endpoint.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-target-connection-private.html\">Connecting to private resources</a> in the <i> <i>Amazon EventBridge User Guide</i> </i>.</p>"
+          "documentation":"<p>For connections to private APIs, the parameters to use for invoking the API.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/connection-private.html\">Connecting to private APIs</a> in the <i> <i>Amazon EventBridge User Guide</i> </i>.</p>"
         }
       }
     },
@@ -1895,7 +1899,7 @@
         },
         "KmsKeyIdentifier":{
           "shape":"KmsKeyIdentifier",
-          "documentation":"<p>The identifier of the KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt events on this event bus. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.</p> <p>If you do not specify a customer managed key identifier, EventBridge uses an Amazon Web Services owned key to encrypt events on the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/getting-started.html\">Managing keys</a> in the <i>Key Management Service Developer Guide</i>. </p> <note> <p>Archives and schema discovery are not supported for event buses encrypted using a customer managed key. EventBridge returns an error if:</p> <ul> <li> <p>You call <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_CreateArchive.html\">CreateArchive</a> </code> on an event bus set to use a customer managed key for encryption.</p> </li> <li> <p>You call <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/schema-reference/v1-discoverers.html#CreateDiscoverer\">CreateDiscoverer</a> </code> on an event bus set to use a customer managed key for encryption.</p> </li> <li> <p>You call <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_UpdatedEventBus.html\">UpdatedEventBus</a> </code> to set a customer managed key on an event bus with an archives or schema discovery enabled.</p> </li> </ul> <p>To enable archives or schema discovery on an event bus, choose to use an Amazon Web Services owned key. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-encryption.html\">Data encryption in EventBridge</a> in the <i>Amazon EventBridge User Guide</i>.</p> </note>"
+          "documentation":"<p>The identifier of the KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt events on this event bus. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.</p> <p>If you do not specify a customer managed key identifier, EventBridge uses an Amazon Web Services owned key to encrypt events on the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/viewing-keys.html\">Identify and view keys</a> in the <i>Key Management Service Developer Guide</i>. </p> <note> <p>Schema discovery is not supported for event buses encrypted using a customer managed key. EventBridge returns an error if you call <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/schema-reference/v1-discoverers.html#CreateDiscoverer\">CreateDiscoverer</a> </code> on an event bus set to use a customer managed key for encryption.</p> <p>To enable schema discovery on an event bus, choose to use an Amazon Web Services owned key. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-encryption-event-bus-cmkey.html\">Encrypting events</a> in the <i>Amazon EventBridge User Guide</i>.</p> </note> <important> <p>If you have specified that EventBridge use a customer managed key for encrypting the source event bus, we strongly recommend you also specify a customer managed key for any archives for the event bus as well. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/encryption-archives.html\">Encrypting archives</a> in the <i>Amazon EventBridge User Guide</i>.</p> </important>"
         },
         "DeadLetterConfig":{"shape":"DeadLetterConfig"},
         "Tags":{
@@ -2222,7 +2226,7 @@
           "documentation":"<p>The name of the archive.</p>"
         },
         "EventSourceArn":{
-          "shape":"Arn",
+          "shape":"EventBusArn",
           "documentation":"<p>The ARN of the event source associated with the archive.</p>"
         },
         "Description":{
@@ -2240,6 +2244,10 @@
         "StateReason":{
           "shape":"ArchiveStateReason",
           "documentation":"<p>The reason that the archive is in the state.</p>"
+        },
+        "KmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The identifier of the KMS customer managed key for EventBridge to use to encrypt this archive, if one has been specified.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/encryption-archives.html\">Encrypting archives</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
         },
         "RetentionDays":{
           "shape":"RetentionDays",
@@ -2293,7 +2301,7 @@
         },
         "ResourceAssociationArn":{
           "shape":"ResourceAssociationArn",
-          "documentation":"<p>For connections to private APIs, the Amazon Resource Name (ARN) of the resource association EventBridge created between the connection and the private API's resource configuration.</p>"
+          "documentation":"<p>For connections to private APIs, the Amazon Resource Name (ARN) of the resource association EventBridge created between the connection and the private API's resource configuration.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/connection-private.html#connection-private-snra\"> Managing service network resource associations for connections</a> in the <i> <i>Amazon EventBridge User Guide</i> </i>.</p>"
         }
       },
       "documentation":"<p>The parameters for EventBridge to use when invoking the resource endpoint.</p>"
@@ -2315,7 +2323,7 @@
         },
         "InvocationConnectivityParameters":{
           "shape":"DescribeConnectionConnectivityParameters",
-          "documentation":"<p>For connections to private resource endpoints. The parameters EventBridge uses to invoke the resource endpoint.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-target-connection-private.html\">Connecting to private resources</a> in the <i> <i>Amazon EventBridge User Guide</i> </i>.</p>"
+          "documentation":"<p>For connections to private APIs The parameters EventBridge uses to invoke the resource endpoint.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/connection-private.html\">Connecting to private APIs</a> in the <i> <i>Amazon EventBridge User Guide</i> </i>.</p>"
         },
         "ConnectionState":{
           "shape":"ConnectionState",
@@ -2561,7 +2569,7 @@
           "documentation":"<p>The reason that the replay is in the current state.</p>"
         },
         "EventSourceArn":{
-          "shape":"Arn",
+          "shape":"ArchiveArn",
           "documentation":"<p>The ARN of the archive events were replayed from.</p>"
         },
         "Destination":{
@@ -2898,6 +2906,12 @@
       },
       "documentation":"<p>An event bus receives events from a source, uses rules to evaluate them, applies any configured input transformation, and routes them to the appropriate target(s). Your account's default event bus receives events from Amazon Web Services services. A custom event bus can receive events from your custom applications and services. A partner event bus receives events from an event source created by an SaaS partner. These events come from the partners services or applications.</p>"
     },
+    "EventBusArn":{
+      "type":"string",
+      "max":1600,
+      "min":1,
+      "pattern":"^arn:aws([a-z]|\\-)*:events:([a-z]|\\d|\\-)*:([0-9]{12})?:.+\\/.+$"
+    },
     "EventBusDescription":{
       "type":"string",
       "max":512
@@ -3140,7 +3154,8 @@
     },
     "KmsKeyIdentifier":{
       "type":"string",
-      "max":2048
+      "max":2048,
+      "pattern":"^[a-zA-Z0-9_\\-/:]*$"
     },
     "LaunchType":{
       "type":"string",
@@ -3208,7 +3223,7 @@
           "documentation":"<p>A name prefix to filter the archives returned. Only archives with name that match the prefix are returned.</p>"
         },
         "EventSourceArn":{
-          "shape":"Arn",
+          "shape":"EventBusArn",
           "documentation":"<p>The ARN of the event source associated with the archive.</p>"
         },
         "State":{
@@ -3440,7 +3455,7 @@
           "documentation":"<p>The state of the replay.</p>"
         },
         "EventSourceArn":{
-          "shape":"Arn",
+          "shape":"ArchiveArn",
           "documentation":"<p>The ARN of the archive from which the events are replayed.</p>"
         },
         "NextToken":{
@@ -4254,7 +4269,7 @@
           "documentation":"<p>The name of the replay.</p>"
         },
         "EventSourceArn":{
-          "shape":"Arn",
+          "shape":"ArchiveArn",
           "documentation":"<p>The ARN of the archive to replay event from.</p>"
         },
         "State":{
@@ -4566,14 +4581,14 @@
       "members":{
         "Name":{
           "shape":"SageMakerPipelineParameterName",
-          "documentation":"<p>Name of parameter to start execution of a SageMaker Model Building Pipeline.</p>"
+          "documentation":"<p>Name of parameter to start execution of a SageMaker AI Model Building Pipeline.</p>"
         },
         "Value":{
           "shape":"SageMakerPipelineParameterValue",
-          "documentation":"<p>Value of parameter to start execution of a SageMaker Model Building Pipeline.</p>"
+          "documentation":"<p>Value of parameter to start execution of a SageMaker AI Model Building Pipeline.</p>"
         }
       },
-      "documentation":"<p>Name/Value pair of a parameter to start execution of a SageMaker Model Building Pipeline.</p>"
+      "documentation":"<p>Name/Value pair of a parameter to start execution of a SageMaker AI Model Building Pipeline.</p>"
     },
     "SageMakerPipelineParameterList":{
       "type":"list",
@@ -4596,10 +4611,10 @@
       "members":{
         "PipelineParameterList":{
           "shape":"SageMakerPipelineParameterList",
-          "documentation":"<p>List of Parameter names and values for SageMaker Model Building Pipeline execution.</p>"
+          "documentation":"<p>List of Parameter names and values for SageMaker AI Model Building Pipeline execution.</p>"
         }
       },
-      "documentation":"<p>These are custom parameters to use when the target is a SageMaker Model Building Pipeline that starts based on EventBridge events.</p>"
+      "documentation":"<p>These are custom parameters to use when the target is a SageMaker AI Model Building Pipeline that starts based on EventBridge events.</p>"
     },
     "ScheduleExpression":{
       "type":"string",
@@ -4670,7 +4685,7 @@
           "documentation":"<p>A description for the replay to start.</p>"
         },
         "EventSourceArn":{
-          "shape":"Arn",
+          "shape":"ArchiveArn",
           "documentation":"<p>The ARN of the archive to replay events from.</p>"
         },
         "EventStartTime":{
@@ -4844,7 +4859,7 @@
         },
         "SageMakerPipelineParameters":{
           "shape":"SageMakerPipelineParameters",
-          "documentation":"<p>Contains the SageMaker Model Building Pipeline parameters to start execution of a SageMaker Model Building Pipeline.</p> <p>If you specify a SageMaker Model Building Pipeline as a target, you can use this to specify parameters to start a pipeline execution based on EventBridge events.</p>"
+          "documentation":"<p>Contains the SageMaker AI Model Building Pipeline parameters to start execution of a SageMaker AI Model Building Pipeline.</p> <p>If you specify a SageMaker AI Model Building Pipeline as a target, you can use this to specify parameters to start a pipeline execution based on EventBridge events.</p>"
         },
         "DeadLetterConfig":{
           "shape":"DeadLetterConfig",
@@ -5038,6 +5053,10 @@
         "RetentionDays":{
           "shape":"RetentionDays",
           "documentation":"<p>The number of days to retain events in the archive.</p>"
+        },
+        "KmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The identifier of the KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt this archive. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.</p> <p>If you do not specify a customer managed key identifier, EventBridge uses an Amazon Web Services owned key to encrypt the archive.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/viewing-keys.html\">Identify and view keys</a> in the <i>Key Management Service Developer Guide</i>. </p> <important> <p>If you have specified that EventBridge use a customer managed key for encrypting the source event bus, we strongly recommend you also specify a customer managed key for any archives for the event bus as well. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/encryption-archives.html\">Encrypting archives</a> in the <i>Amazon EventBridge User Guide</i>.</p> </important>"
         }
       }
     },
@@ -5174,7 +5193,7 @@
         },
         "InvocationConnectivityParameters":{
           "shape":"ConnectivityResourceParameters",
-          "documentation":"<p>For connections to private resource endpoints, the parameters to use for invoking the resource endpoint.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-target-connection-private.html\">Connecting to private resources</a> in the <i> <i>Amazon EventBridge User Guide</i> </i>.</p>"
+          "documentation":"<p>For connections to private APIs, the parameters to use for invoking the API.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/connection-private.html\">Connecting to private APIs</a> in the <i> <i>Amazon EventBridge User Guide</i> </i>.</p>"
         }
       }
     },
@@ -5283,7 +5302,7 @@
         },
         "KmsKeyIdentifier":{
           "shape":"KmsKeyIdentifier",
-          "documentation":"<p>The identifier of the KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt events on this event bus. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.</p> <p>If you do not specify a customer managed key identifier, EventBridge uses an Amazon Web Services owned key to encrypt events on the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/getting-started.html\">Managing keys</a> in the <i>Key Management Service Developer Guide</i>. </p> <note> <p>Archives and schema discovery are not supported for event buses encrypted using a customer managed key. EventBridge returns an error if:</p> <ul> <li> <p>You call <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_CreateArchive.html\">CreateArchive</a> </code> on an event bus set to use a customer managed key for encryption.</p> </li> <li> <p>You call <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/schema-reference/v1-discoverers.html#CreateDiscoverer\">CreateDiscoverer</a> </code> on an event bus set to use a customer managed key for encryption.</p> </li> <li> <p>You call <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_UpdatedEventBus.html\">UpdatedEventBus</a> </code> to set a customer managed key on an event bus with an archives or schema discovery enabled.</p> </li> </ul> <p>To enable archives or schema discovery on an event bus, choose to use an Amazon Web Services owned key. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-encryption.html\">Data encryption in EventBridge</a> in the <i>Amazon EventBridge User Guide</i>.</p> </note>"
+          "documentation":"<p>The identifier of the KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt events on this event bus. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.</p> <p>If you do not specify a customer managed key identifier, EventBridge uses an Amazon Web Services owned key to encrypt events on the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/viewing-keys.html\">Identify and view keys</a> in the <i>Key Management Service Developer Guide</i>. </p> <note> <p>Schema discovery is not supported for event buses encrypted using a customer managed key. EventBridge returns an error if you call <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/schema-reference/v1-discoverers.html#CreateDiscoverer\">CreateDiscoverer</a> </code> on an event bus set to use a customer managed key for encryption.</p> <p>To enable schema discovery on an event bus, choose to use an Amazon Web Services owned key. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-encryption-event-bus-cmkey.html\">Encrypting events</a> in the <i>Amazon EventBridge User Guide</i>.</p> </note> <important> <p>If you have specified that EventBridge use a customer managed key for encrypting the source event bus, we strongly recommend you also specify a customer managed key for any archives for the event bus as well. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/encryption-archives.html\">Encrypting archives</a> in the <i>Amazon EventBridge User Guide</i>.</p> </important>"
         },
         "Description":{
           "shape":"EventBusDescription",

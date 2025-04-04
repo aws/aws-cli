@@ -32,6 +32,10 @@ from awscli.customizations.cloudformation.modules.constants import (
     process_constants, 
     replace_constants
 )
+from awscli.customizations.cloudformation.modules.read import (
+    is_s3_url,
+    parse_s3_url,
+)
 import jmespath
 
 
@@ -51,14 +55,6 @@ def make_abs_path(directory, path):
         return path
 
 
-def is_s3_url(url):
-    try:
-        parse_s3_url(url)
-        return True
-    except ValueError:
-        return False
-
-
 def is_local_folder(path):
     return is_path_value_valid(path) and os.path.isdir(path)
 
@@ -71,38 +67,6 @@ def is_zip_file(path):
     return (
         is_path_value_valid(path) and
         zipfile.is_zipfile(path))
-
-
-def parse_s3_url(url,
-                 bucket_name_property="Bucket",
-                 object_key_property="Key",
-                 version_property=None):
-
-    if isinstance(url, str) \
-            and url.startswith("s3://"):
-
-        # Python < 2.7.10 don't parse query parameters from URI with custom
-        # scheme such as s3://blah/blah. As a workaround, remove scheme
-        # altogether to trigger the parser "s3://foo/bar?v=1" =>"//foo/bar?v=1"
-        parsed = urlparse.urlparse(url[3:])
-        query = urlparse.parse_qs(parsed.query)
-
-        if parsed.netloc and parsed.path:
-            result = dict()
-            result[bucket_name_property] = parsed.netloc
-            result[object_key_property] = parsed.path.lstrip('/')
-
-            # If there is a query string that has a single versionId field,
-            # set the object version and return
-            if version_property is not None \
-                    and 'versionId' in query \
-                    and len(query['versionId']) == 1:
-                result[version_property] = query['versionId'][0]
-
-            return result
-
-    raise ValueError("URL given to the parse method is not a valid S3 url "
-                     "{0}".format(url))
 
 
 def upload_local_artifacts(resource_id, resource_dict, property_name,
@@ -603,7 +567,8 @@ class Template(object):
     def __init__(self, template_path, parent_dir, uploader,
                  resources_to_export=RESOURCES_EXPORT_LIST,
                  metadata_to_export=METADATA_EXPORT_LIST,
-                 no_source_map=False, no_metrics=False):
+                 no_source_map=False, no_metrics=False, 
+                 s3_client=None):
         """
         Reads the template and makes it ready for export
         """
@@ -626,6 +591,7 @@ class Template(object):
         self.uploader = uploader
         self.no_metrics = no_metrics
         self.no_source_map = no_source_map
+        self.s3_client = s3_client
 
     def export_global_artifacts(self, template_dict):
         """
@@ -692,7 +658,8 @@ class Template(object):
                     self.module_parent_path, 
                     None, 
                     self.no_metrics, 
-                    self.no_source_map)
+                    self.no_source_map, 
+                    self.s3_client)
         except Exception as e:
             msg=f"Failed to process Modules section: {e}"
             LOG.exception(msg)

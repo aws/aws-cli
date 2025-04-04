@@ -142,17 +142,18 @@ class PackageCommand(BasicCommand):
 
         bucket = parsed_args.s3_bucket
 
+        self.s3_client = self._session.create_client(
+            "s3",
+            config=Config(signature_version='s3v4'),
+            region_name=parsed_globals.region,
+            verify=parsed_globals.verify_ssl)
+
         # Only create the s3 uploader if we need it, 
         # since this command now also supports local modules.
         # Local modules should be able to run without credentials.
         if bucket:
-            s3_client = self._session.create_client(
-                "s3",
-                config=Config(signature_version='s3v4'),
-                region_name=parsed_globals.region,
-                verify=parsed_globals.verify_ssl)
 
-            self.s3_uploader = S3Uploader(s3_client,
+            self.s3_uploader = S3Uploader(self.s3_client,
                                           bucket,
                                           parsed_args.s3_prefix,
                                           parsed_args.kms_key_id,
@@ -183,7 +184,8 @@ class PackageCommand(BasicCommand):
     def _export(self, template_path, use_json):
         template = Template(template_path, os.getcwd(), self.s3_uploader,
             no_source_map=self.no_source_map, 
-            no_metrics=self.no_metrics)
+            no_metrics=self.no_metrics, 
+            s3_client=self.s3_client)
         exported_template = template.export()
 
         if use_json:

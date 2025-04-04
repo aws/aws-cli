@@ -39,6 +39,7 @@ from awscli.customizations.cloudformation.modules.maps import (
 )
 from awscli.customizations.cloudformation.modules.read import (
     is_url,
+    is_s3_url,
     read_source,
     get_packaged_module_path,
 )
@@ -109,6 +110,7 @@ def make_module(
     parent_path,
     no_source_map,
     parent_module,
+    s3_client,
     invoked=False,
 ):
     "Create an instance of a module based on a template and the module config"
@@ -127,7 +129,7 @@ def make_module(
         # This is a reference to a Package
         source_path = get_packaged_module_path(template, source_path)
 
-    if not is_url(source_path):
+    if not is_url(source_path) and not is_s3_url(source_path):
         relative_path = source_path
         module_config[SOURCE] = os.path.join(base_path, relative_path)
         module_config[SOURCE] = os.path.normpath(module_config[SOURCE])
@@ -144,7 +146,7 @@ def make_module(
     if ORIGINAL_MAP_NAME in config:
         module_config[ORIGINAL_MAP_NAME] = config[ORIGINAL_MAP_NAME]
     module_config[NO_SOURCE_MAP] = no_source_map
-    return Module(template, module_config, parent_module)
+    return Module(template, module_config, parent_module, s3_client)
 
 
 def add_metrics_metadata(template):
@@ -162,7 +164,13 @@ def add_metrics_metadata(template):
 
 # pylint:disable=too-many-arguments,too-many-positional-arguments
 def process_module_section(
-    template, base_path, parent_path, parent_module, no_metrics, no_source_map
+    template,
+    base_path,
+    parent_path,
+    parent_module,
+    no_metrics,
+    no_source_map,
+    s3_client=None,
 ):
     "Recursively process the Modules section of a template"
 
@@ -211,6 +219,7 @@ def process_module_section(
             parent_path,
             no_source_map,
             parent_module,
+            s3_client,
         )
         template = module.process()
 
@@ -254,7 +263,7 @@ class Module:
 
     """
 
-    def __init__(self, template, module_config, parent_module):
+    def __init__(self, template, module_config, parent_module, s3_client=None):
         """
         Initialize the module with values from the parent template
 
@@ -265,6 +274,7 @@ class Module:
         # The parent template dictionary
         self.template = template
         self.parent_module = parent_module
+        self.s3_client = s3_client
 
         self.original_module_dict = {}
         self.original_config = module_config.get(ORIGINAL_CONFIG, {})
@@ -335,7 +345,7 @@ class Module:
         :return: The modified parent template dictionary
         """
 
-        content, lines = read_source(self.source)
+        content, lines = read_source(self.source, self.s3_client)
         self.lines = lines
 
         module_dict = yamlhelper.yaml_parse(content)
@@ -479,6 +489,7 @@ class Module:
                 self.parent_path,
                 self.no_source_map,
                 self.parent_module,
+                self.s3_client,
                 True,
             )
             for k, val in params.items():

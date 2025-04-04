@@ -10,16 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import hashlib
 import random
 import sys
 import time
 
 from botocore.signers import CloudFrontSigner
 from botocore.utils import parse_to_aware_datetime
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
-from cryptography.hazmat.primitives.serialization import load_pem_private_key
+
+from awscrt.crypto import RSA, RSASignatureAlgorithm
 
 from awscli.arguments import CustomArgument
 from awscli.customizations.commands import BasicCommand
@@ -303,9 +302,11 @@ class SignCommand(BasicCommand):
 
 class RSASigner:
     def __init__(self, private_key):
-        backend = default_backend()
         key_bytes = private_key.encode('utf8')
-        self.priv_key = load_pem_private_key(key_bytes, None, backend)
+        self.priv_key = RSA.new_private_key_from_pem_data(key_bytes)
 
     def sign(self, message):
-        return self.priv_key.sign(message, PKCS1v15(), hashes.SHA1())
+        return self.priv_key.sign(
+            RSASignatureAlgorithm.PKCS1_5_SHA1,
+            hashlib.sha1(message).digest()
+        )

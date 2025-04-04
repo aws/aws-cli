@@ -75,6 +75,18 @@ class TestGetRegionFromEndpoint(unittest.TestCase):
         # Nothing should have changed
         self.assertEqual(parsed, expected)
 
+    def test_error_message_none(self):
+        parsed = {
+            'Error': {
+                'Message': None,
+                'Code': 'Other Message'
+            }
+        }
+        expected = copy.deepcopy(parsed)
+        s3errormsg.enhance_error_msg(parsed)
+        # Nothing should have changed
+        self.assertEqual(parsed, expected)
+
     def test_not_an_error_message(self):
         parsed = {
             'Success': 'response',

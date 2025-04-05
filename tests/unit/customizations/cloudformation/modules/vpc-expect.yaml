@@ -1,0 +1,233 @@
+Resources:
+  NetworkGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId:
+        Ref: NetworkInternetGateway
+      VpcId:
+        Ref: NetworkVPC
+  NetworkInternetGateway:
+    Type: AWS::EC2::InternetGateway
+  NetworkPrivateSubnet0DefaultRoute:
+    Type: AWS::EC2::Route
+    Metadata:
+      guard:
+        SuppressedRules:
+        - NO_UNRESTRICTED_ROUTE_TO_IGW
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: NetworkPrivateSubnet0NATGateway
+      RouteTableId:
+        Ref: NetworkPrivateSubnet0RouteTable
+    DependsOn: NetworkGatewayAttachment
+  NetworkPrivateSubnet0EIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+  NetworkPrivateSubnet0NATGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+        - NetworkPrivateSubnet0EIP
+        - AllocationId
+      SubnetId:
+        Ref: NetworkPrivateSubnet0Subnet
+  NetworkPrivateSubnet0RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: NetworkVPC
+  NetworkPrivateSubnet0RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: NetworkPrivateSubnet0RouteTable
+      SubnetId:
+        Ref: NetworkPrivateSubnet0Subnet
+  NetworkPrivateSubnet0Subnet:
+    Type: AWS::EC2::Subnet
+    Metadata:
+      guard:
+        SuppressedRules:
+        - SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+        - '0'
+        - Fn::GetAZs:
+            Ref: AWS::Region
+      CidrBlock: 10.0.0.0/18
+      MapPublicIpOnLaunch: true
+      VpcId:
+        Ref: NetworkVPC
+  NetworkPrivateSubnet1DefaultRoute:
+    Type: AWS::EC2::Route
+    Metadata:
+      guard:
+        SuppressedRules:
+        - NO_UNRESTRICTED_ROUTE_TO_IGW
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: NetworkPrivateSubnet1NATGateway
+      RouteTableId:
+        Ref: NetworkPrivateSubnet1RouteTable
+    DependsOn: NetworkGatewayAttachment
+  NetworkPrivateSubnet1EIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+  NetworkPrivateSubnet1NATGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+        - NetworkPrivateSubnet1EIP
+        - AllocationId
+      SubnetId:
+        Ref: NetworkPrivateSubnet1Subnet
+  NetworkPrivateSubnet1RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: NetworkVPC
+  NetworkPrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: NetworkPrivateSubnet1RouteTable
+      SubnetId:
+        Ref: NetworkPrivateSubnet1Subnet
+  NetworkPrivateSubnet1Subnet:
+    Type: AWS::EC2::Subnet
+    Metadata:
+      guard:
+        SuppressedRules:
+        - SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+        - '1'
+        - Fn::GetAZs:
+            Ref: AWS::Region
+      CidrBlock: 10.0.64.0/18
+      MapPublicIpOnLaunch: true
+      VpcId:
+        Ref: NetworkVPC
+  NetworkPublicSubnet0DefaultRoute:
+    Type: AWS::EC2::Route
+    Metadata:
+      guard:
+        SuppressedRules:
+        - NO_UNRESTRICTED_ROUTE_TO_IGW
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: NetworkInternetGateway
+      RouteTableId:
+        Ref: NetworkPublicSubnet0RouteTable
+    DependsOn: NetworkGatewayAttachment
+  NetworkPublicSubnet0EIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+  NetworkPublicSubnet0NATGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+        - NetworkPublicSubnet0EIP
+        - AllocationId
+      SubnetId:
+        Ref: NetworkPublicSubnet0Subnet
+  NetworkPublicSubnet0RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: NetworkVPC
+  NetworkPublicSubnet0RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: NetworkPublicSubnet0RouteTable
+      SubnetId:
+        Ref: NetworkPublicSubnet0Subnet
+  NetworkPublicSubnet0Subnet:
+    Type: AWS::EC2::Subnet
+    Metadata:
+      guard:
+        SuppressedRules:
+        - SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+        - '0'
+        - Fn::GetAZs:
+            Ref: AWS::Region
+      CidrBlock: 10.0.128.0/18
+      MapPublicIpOnLaunch: true
+      VpcId:
+        Ref: NetworkVPC
+  NetworkPublicSubnet1DefaultRoute:
+    Type: AWS::EC2::Route
+    Metadata:
+      guard:
+        SuppressedRules:
+        - NO_UNRESTRICTED_ROUTE_TO_IGW
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: NetworkInternetGateway
+      RouteTableId:
+        Ref: NetworkPublicSubnet1RouteTable
+    DependsOn: NetworkGatewayAttachment
+  NetworkPublicSubnet1EIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+  NetworkPublicSubnet1NATGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+        - NetworkPublicSubnet1EIP
+        - AllocationId
+      SubnetId:
+        Ref: NetworkPublicSubnet1Subnet
+  NetworkPublicSubnet1RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: NetworkVPC
+  NetworkPublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: NetworkPublicSubnet1RouteTable
+      SubnetId:
+        Ref: NetworkPublicSubnet1Subnet
+  NetworkPublicSubnet1Subnet:
+    Type: AWS::EC2::Subnet
+    Metadata:
+      guard:
+        SuppressedRules:
+        - SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+        - '1'
+        - Fn::GetAZs:
+            Ref: AWS::Region
+      CidrBlock: 10.0.192.0/18
+      MapPublicIpOnLaunch: true
+      VpcId:
+        Ref: NetworkVPC
+  NetworkVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default

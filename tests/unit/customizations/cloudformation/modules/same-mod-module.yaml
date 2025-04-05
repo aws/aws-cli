@@ -1,0 +1,14 @@
+Parameters:
+  X:
+    Type: String
+Modules:
+  DEF:
+    Source: same-mod-submod.yaml
+    Properties:
+      X: !Sub ${X}-def
+Resources:
+  ABC:
+    Type: A::B::C
+    Properties:
+      Name: !Ref X
+      SubName: !Sub ${X}-name

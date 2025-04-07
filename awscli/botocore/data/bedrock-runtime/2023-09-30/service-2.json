@@ -231,6 +231,10 @@
         "content":{
           "shape":"GuardrailContentBlockList",
           "documentation":"<p>The content details used in the request to apply the guardrail.</p>"
+        },
+        "outputScope":{
+          "shape":"GuardrailOutputScope",
+          "documentation":"<p>Specifies the scope of the output that you get in the response. Set to <code>FULL</code> to return the entire output, including any detected and non-detected entries in the response for enhanced debugging.</p> <p>Note that the full output scope doesn't apply to word filters or regex in sensitive information filters. It does apply to all other filtering policies, including sensitive information with filters that can detect personally identifiable information (PII).</p>"
         }
       }
     },
@@ -250,6 +254,10 @@
         "action":{
           "shape":"GuardrailAction",
           "documentation":"<p>The action taken in the response from the guardrail.</p>"
+        },
+        "actionReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the action taken when harmful content is detected.</p>"
         },
         "outputs":{
           "shape":"GuardrailOutputContentList",
@@ -391,6 +399,10 @@
       "max":25000000,
       "min":0,
       "sensitive":true
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
     },
     "CachePointBlock":{
       "type":"structure",
@@ -1111,6 +1123,10 @@
         "action":{
           "shape":"GuardrailContentPolicyAction",
           "documentation":"<p>The guardrail action.</p>"
+        },
+        "detected":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether content that breaches the guardrail configuration is detected.</p>"
         }
       },
       "documentation":"<p>The content filter for a guardrail.</p>"
@@ -1150,7 +1166,10 @@
     },
     "GuardrailContentPolicyAction":{
       "type":"string",
-      "enum":["BLOCKED"]
+      "enum":[
+        "BLOCKED",
+        "NONE"
+      ]
     },
     "GuardrailContentPolicyAssessment":{
       "type":"structure",
@@ -1214,6 +1233,10 @@
         "action":{
           "shape":"GuardrailContextualGroundingPolicyAction",
           "documentation":"<p>The action performed by the guardrails contextual grounding filter.</p>"
+        },
+        "detected":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether content that fails the contextual grounding evaluation (grounding or relevance score less than the corresponding threshold) was detected.</p>"
         }
       },
       "documentation":"<p>The details for the guardrails contextual grounding filter.</p>"
@@ -1374,6 +1397,10 @@
         "action":{
           "shape":"GuardrailWordPolicyAction",
           "documentation":"<p>The action for the custom word.</p>"
+        },
+        "detected":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether custom word content that breaches the guardrail configuration is detected.</p>"
         }
       },
       "documentation":"<p>A custom word configured in a guardrail.</p>"
@@ -1481,6 +1508,10 @@
         "action":{
           "shape":"GuardrailWordPolicyAction",
           "documentation":"<p>The action for the managed word.</p>"
+        },
+        "detected":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether managed word content that breaches the guardrail configuration is detected.</p>"
         }
       },
       "documentation":"<p>A managed word configured in a guardrail.</p>"
@@ -1507,6 +1538,13 @@
       "type":"list",
       "member":{"shape":"GuardrailOutputContent"}
     },
+    "GuardrailOutputScope":{
+      "type":"string",
+      "enum":[
+        "INTERVENTIONS",
+        "FULL"
+      ]
+    },
     "GuardrailOutputText":{"type":"string"},
     "GuardrailPiiEntityFilter":{
       "type":"structure",
@@ -1527,6 +1565,10 @@
         "action":{
           "shape":"GuardrailSensitiveInformationPolicyAction",
           "documentation":"<p>The PII entity filter action.</p>"
+        },
+        "detected":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether personally identifiable information (PII) that breaches the guardrail configuration is detected.</p>"
         }
       },
       "documentation":"<p>A Personally Identifiable Information (PII) entity configured in a guardrail.</p>"
@@ -1594,6 +1636,10 @@
         "action":{
           "shape":"GuardrailSensitiveInformationPolicyAction",
           "documentation":"<p>The region filter action.</p>"
+        },
+        "detected":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether custom regex entities that breach the guardrail configuration are detected.</p>"
         }
       },
       "documentation":"<p>A Regex filter configured in a guardrail.</p>"
@@ -1606,7 +1652,8 @@
       "type":"string",
       "enum":[
         "ANONYMIZED",
-        "BLOCKED"
+        "BLOCKED",
+        "NONE"
       ]
     },
     "GuardrailSensitiveInformationPolicyAssessment":{
@@ -1716,6 +1763,10 @@
         "action":{
           "shape":"GuardrailTopicPolicyAction",
           "documentation":"<p>The action the guardrail should take when it intervenes on a topic.</p>"
+        },
+        "detected":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether topic content that breaches the guardrail configuration is detected.</p>"
         }
       },
       "documentation":"<p>Information about a topic guardrail.</p>"
@@ -1726,7 +1777,10 @@
     },
     "GuardrailTopicPolicyAction":{
       "type":"string",
-      "enum":["BLOCKED"]
+      "enum":[
+        "BLOCKED",
+        "NONE"
+      ]
     },
     "GuardrailTopicPolicyAssessment":{
       "type":"structure",
@@ -1751,7 +1805,8 @@
       "type":"string",
       "enum":[
         "enabled",
-        "disabled"
+        "disabled",
+        "enabled_full"
       ]
     },
     "GuardrailTraceAssessment":{
@@ -1768,6 +1823,10 @@
         "outputAssessments":{
           "shape":"GuardrailAssessmentListMap",
           "documentation":"<p>the output assessments.</p>"
+        },
+        "actionReason":{
+          "shape":"String",
+          "documentation":"<p>Provides the reason for the action taken when harmful content is detected.</p>"
         }
       },
       "documentation":"<p>A Top level guardrail trace object. For more information, see <a>ConverseTrace</a>.</p>"
@@ -1820,7 +1879,10 @@
     },
     "GuardrailWordPolicyAction":{
       "type":"string",
-      "enum":["BLOCKED"]
+      "enum":[
+        "BLOCKED",
+        "NONE"
+      ]
     },
     "GuardrailWordPolicyAssessment":{
       "type":"structure",
@@ -3004,7 +3066,8 @@
       "type":"string",
       "enum":[
         "ENABLED",
-        "DISABLED"
+        "DISABLED",
+        "ENABLED_FULL"
       ]
     },
     "ValidationException":{

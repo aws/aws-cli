@@ -5212,6 +5212,236 @@
         }
       ],
       "documentation": "Retrieves an array of all the encoder engine versions that are available in this AWS account."
+    },
+    "CreateSdiSource": {
+      "name": "CreateSdiSource",
+      "http": {
+        "method": "POST",
+        "requestUri": "/prod/sdiSources",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "CreateSdiSourceRequest"
+      },
+      "output": {
+        "shape": "CreateSdiSourceResponse",
+        "documentation": "The SdiSource is created."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "MediaLive can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to create the SdiSource."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on create SdiSource calls to service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The SdiSource is unable to create due to an issue with SdiSource resources."
+        }
+      ],
+      "documentation": "Create an SdiSource for each video source that uses the SDI protocol. You will reference the SdiSource when you create an SDI input in MediaLive. You will also reference it in an SdiSourceMapping, in order to create a connection between the logical SdiSource and the physical SDI card and port that the physical SDI source uses."
+    },
+    "DeleteSdiSource": {
+      "name": "DeleteSdiSource",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/prod/sdiSources/{sdiSourceId}",
+        "responseCode": 202
+      },
+      "input": {
+        "shape": "DeleteSdiSourceRequest"
+      },
+      "output": {
+        "shape": "DeleteSdiSourceResponse",
+        "documentation": "Deletion of the SdiSource is in progress."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to delete the SdiSource."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The SdiSource that you are trying to delete doesn't exist. Check the ID and try again."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on DeleteSdiSource calls to SdiSource service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The SdiSource is unable to delete due to an issue with SdiSource resources."
+        }
+      ],
+      "documentation": "Delete an SdiSource. The SdiSource must not be part of any SidSourceMapping and must not be attached to any input."
+    },
+    "DescribeSdiSource": {
+      "name": "DescribeSdiSource",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/sdiSources/{sdiSourceId}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeSdiSourceRequest"
+      },
+      "output": {
+        "shape": "DescribeSdiSourceResponse",
+        "documentation": "Details for one SdiSource."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to describe the SdiSource."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The SdiSource that you are trying to describe does not exist. Check the ID and try again."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on describe SdiSource calls to SdiSource service."
+        }
+      ],
+      "documentation": "Gets details about a SdiSource."
+    },
+    "ListSdiSources": {
+      "name": "ListSdiSources",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/sdiSources",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListSdiSourcesRequest"
+      },
+      "output": {
+        "shape": "ListSdiSourcesResponse",
+        "documentation": "An array of SdiSources."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "MediaLive can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to list SdiSources."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on ListSdiSources calls to SdiSource service."
+        }
+      ],
+      "documentation": "List all the SdiSources in the AWS account."
+    },
+    "UpdateSdiSource": {
+      "name": "UpdateSdiSource",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/prod/sdiSources/{sdiSourceId}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateSdiSourceRequest"
+      },
+      "output": {
+        "shape": "UpdateSdiSourceResponse",
+        "documentation": "The SdiSource has been successfully updated."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "MediaLive can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to update the SdiSource."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on UpdateSdiSource calls to service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The SdiSource is unable to update due to an issue with SdiSource resources."
+        }
+      ],
+      "documentation": "Change some of the settings in an SdiSource."
     }
   },
   "shapes": {
@@ -7593,6 +7823,10 @@
           "shape": "Smpte2110ReceiverGroupSettings",
           "locationName": "smpte2110ReceiverGroupSettings",
           "documentation": "Include this parameter if the input is a SMPTE 2110 input, to identify the stream sources for this input."
+        },
+        "SdiSources": {
+          "shape": "InputSdiSources",
+          "locationName": "sdiSources"
         }
       },
       "documentation": "Placeholder documentation for CreateInput"
@@ -7673,6 +7907,10 @@
           "shape": "Smpte2110ReceiverGroupSettings",
           "locationName": "smpte2110ReceiverGroupSettings",
           "documentation": "Include this parameter if the input is a SMPTE 2110 input, to identify the stream sources for this input."
+        },
+        "SdiSources": {
+          "shape": "InputSdiSources",
+          "locationName": "sdiSources"
         }
       },
       "documentation": "The name of the input"
@@ -8857,6 +9095,10 @@
           "shape": "Smpte2110ReceiverGroupSettings",
           "locationName": "smpte2110ReceiverGroupSettings",
           "documentation": "Include this parameter if the input is a SMPTE 2110 input, to identify the stream sources for this input."
+        },
+        "SdiSources": {
+          "shape": "InputSdiSources",
+          "locationName": "sdiSources"
         }
       },
       "documentation": "Placeholder documentation for DescribeInputResponse"
@@ -12231,6 +12473,10 @@
           "shape": "Smpte2110ReceiverGroupSettings",
           "locationName": "smpte2110ReceiverGroupSettings",
           "documentation": "Include this parameter if the input is a SMPTE 2110 input, to identify the stream sources for this input."
+        },
+        "SdiSources": {
+          "shape": "InputSdiSources",
+          "locationName": "sdiSources"
         }
       },
       "documentation": "Placeholder documentation for Input"
@@ -13372,7 +13618,8 @@
         "TS_FILE",
         "SRT_CALLER",
         "MULTICAST",
-        "SMPTE_2110_RECEIVER_GROUP"
+        "SMPTE_2110_RECEIVER_GROUP",
+        "SDI"
       ]
     },
     "InputVpcRequest": {
@@ -18836,6 +19083,10 @@
           "shape": "Smpte2110ReceiverGroupSettings",
           "locationName": "smpte2110ReceiverGroupSettings",
           "documentation": "Include this parameter if the input is a SMPTE 2110 input, to identify the stream sources for this input."
+        },
+        "SdiSources": {
+          "shape": "InputSdiSources",
+          "locationName": "sdiSources"
         }
       },
       "documentation": "Placeholder documentation for UpdateInput"
@@ -19045,6 +19296,10 @@
           "shape": "Smpte2110ReceiverGroupSettings",
           "locationName": "smpte2110ReceiverGroupSettings",
           "documentation": "Include this parameter if the input is a SMPTE 2110 input, to identify the stream sources for this input."
+        },
+        "SdiSources": {
+          "shape": "InputSdiSources",
+          "locationName": "sdiSources"
         }
       },
       "documentation": "A request to update an input.",
@@ -26039,6 +26294,11 @@
           "shape": "NodeState",
           "locationName": "state",
           "documentation": "The current state of the Node."
+        },
+        "SdiSourceMappings": {
+          "shape": "SdiSourceMappings",
+          "locationName": "sdiSourceMappings",
+          "documentation": "An array of SDI source mappings. Each mapping connects one logical SdiSource to the physical SDI card and port that the physical SDI source uses."
         }
       },
       "documentation": "Placeholder documentation for CreateNodeResponse"
@@ -26295,6 +26555,11 @@
           "shape": "NodeState",
           "locationName": "state",
           "documentation": "The current state of the Node."
+        },
+        "SdiSourceMappings": {
+          "shape": "SdiSourceMappings",
+          "locationName": "sdiSourceMappings",
+          "documentation": "An array of SDI source mappings. Each mapping connects one logical SdiSource to the physical SDI card and port that the physical SDI source uses."
         }
       },
       "documentation": "Placeholder documentation for DeleteNodeResponse"
@@ -26820,6 +27085,11 @@
           "shape": "NodeState",
           "locationName": "state",
           "documentation": "The current state of the Node."
+        },
+        "SdiSourceMappings": {
+          "shape": "SdiSourceMappings",
+          "locationName": "sdiSourceMappings",
+          "documentation": "An array of SDI source mappings. Each mapping connects one logical SdiSource to the physical SDI card and port that the physical SDI source uses."
         }
       },
       "documentation": "Placeholder documentation for DescribeNodeResponse"
@@ -26876,6 +27146,11 @@
           "shape": "NodeState",
           "locationName": "state",
           "documentation": "The current state of the Node."
+        },
+        "SdiSourceMappings": {
+          "shape": "SdiSourceMappings",
+          "locationName": "sdiSourceMappings",
+          "documentation": "An array of SDI source mappings. Each mapping connects one logical SdiSource to the physical SDI card and port that the physical SDI source uses."
         }
       },
       "documentation": "Contains the response for CreateNode, DescribeNode, DeleteNode, UpdateNode"
@@ -26937,6 +27212,11 @@
           "shape": "NodeState",
           "locationName": "state",
           "documentation": "The current state of the Node."
+        },
+        "SdiSourceMappings": {
+          "shape": "SdiSourceMappings",
+          "locationName": "sdiSourceMappings",
+          "documentation": "An array of SDI source mappings. Each mapping connects one logical SdiSource to the physical SDI card and port that the physical SDI source uses."
         }
       },
       "documentation": "Placeholder documentation for DescribeNodeSummary"
@@ -27928,6 +28208,11 @@
           "shape": "NodeRole",
           "locationName": "role",
           "documentation": "The initial role of the Node in the Cluster. ACTIVE means the Node is available for encoding. BACKUP means the Node is a redundant Node and might get used if an ACTIVE Node fails."
+        },
+        "SdiSourceMappings": {
+          "shape": "SdiSourceMappingsUpdateRequest",
+          "locationName": "sdiSourceMappings",
+          "documentation": "The mappings of a SDI capture card port to a logical SDI data stream"
         }
       },
       "documentation": "A request to update the node.",
@@ -27988,6 +28273,11 @@
           "shape": "NodeState",
           "locationName": "state",
           "documentation": "The current state of the Node."
+        },
+        "SdiSourceMappings": {
+          "shape": "SdiSourceMappings",
+          "locationName": "sdiSourceMappings",
+          "documentation": "An array of SDI source mappings. Each mapping connects one logical SdiSource to the physical SDI card and port that the physical SDI source uses."
         }
       },
       "documentation": "Placeholder documentation for UpdateNodeResponse"
@@ -28079,6 +28369,11 @@
           "shape": "NodeState",
           "locationName": "state",
           "documentation": "The current state of the Node."
+        },
+        "SdiSourceMappings": {
+          "shape": "SdiSourceMappings",
+          "locationName": "sdiSourceMappings",
+          "documentation": "An array of SDI source mappings. Each mapping connects one logical SdiSource to the physical SDI card and port that the physical SDI source uses."
         }
       },
       "documentation": "Placeholder documentation for UpdateNodeStateResponse"
@@ -28571,6 +28866,349 @@
         "shape": "Smpte2110ReceiverGroup"
       },
       "documentation": "Placeholder documentation for __listOfSmpte2110ReceiverGroup"
+    },
+    "CreateSdiSourceRequest": {
+      "type": "structure",
+      "members": {
+        "Mode": {
+          "shape": "SdiSourceMode",
+          "locationName": "mode",
+          "documentation": "Applies only if the type is QUAD. Specify the mode for handling the quad-link signal: QUADRANT or INTERLEAVE."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "Specify a name that is unique in the AWS account. We recommend you assign a name that describes the source, for example curling-cameraA. Names are case-sensitive."
+        },
+        "RequestId": {
+          "shape": "__string",
+          "locationName": "requestId",
+          "documentation": "An ID that you assign to a create request. This ID ensures idempotency when creating resources.",
+          "idempotencyToken": true
+        },
+        "Tags": {
+          "shape": "Tags",
+          "locationName": "tags",
+          "documentation": "A collection of key-value pairs."
+        },
+        "Type": {
+          "shape": "SdiSourceType",
+          "locationName": "type",
+          "documentation": "Specify the  type of the SDI source: SINGLE: The source  is a single-link source. QUAD: The source  is one part of a quad-link source."
+        }
+      },
+      "documentation": "A request to create a SdiSource."
+    },
+    "CreateSdiSourceResponse": {
+      "type": "structure",
+      "members": {
+        "SdiSource": {
+          "shape": "SdiSource",
+          "locationName": "sdiSource",
+          "documentation": "Settings for the SDI source."
+        }
+      },
+      "documentation": "Placeholder documentation for CreateSdiSourceResponse"
+    },
+    "DeleteSdiSourceRequest": {
+      "type": "structure",
+      "members": {
+        "SdiSourceId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "sdiSourceId",
+          "documentation": "The ID of the SdiSource."
+        }
+      },
+      "required": [
+        "SdiSourceId"
+      ],
+      "documentation": "Placeholder documentation for DeleteSdiSourceRequest"
+    },
+    "DeleteSdiSourceResponse": {
+      "type": "structure",
+      "members": {
+        "SdiSource": {
+          "shape": "SdiSource",
+          "locationName": "sdiSource",
+          "documentation": "Settings for the SDI source."
+        }
+      },
+      "documentation": "Placeholder documentation for DeleteSdiSourceResponse"
+    },
+    "DescribeSdiSourceRequest": {
+      "type": "structure",
+      "members": {
+        "SdiSourceId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "sdiSourceId",
+          "documentation": "Get details about an SdiSource."
+        }
+      },
+      "required": [
+        "SdiSourceId"
+      ],
+      "documentation": "Placeholder documentation for DescribeSdiSourceRequest"
+    },
+    "DescribeSdiSourceResponse": {
+      "type": "structure",
+      "members": {
+        "SdiSource": {
+          "shape": "SdiSource",
+          "locationName": "sdiSource",
+          "documentation": "Settings for the SDI source."
+        }
+      },
+      "documentation": "Placeholder documentation for DescribeSdiSourceResponse"
+    },
+    "InputSdiSources": {
+      "type": "list",
+      "documentation": "SDI Sources for this Input.",
+      "member": {
+        "shape": "__string"
+      }
+    },
+    "ListSdiSourcesRequest": {
+      "type": "structure",
+      "members": {
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "The maximum number of items to return."
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "The token to retrieve the next page of results."
+        }
+      },
+      "documentation": "Placeholder documentation for ListSdiSourcesRequest"
+    },
+    "ListSdiSourcesResponse": {
+      "type": "structure",
+      "members": {
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken"
+        },
+        "SdiSources": {
+          "shape": "__listOfSdiSourceSummary",
+          "locationName": "sdiSources"
+        }
+      },
+      "documentation": "Placeholder documentation for ListSdiSourcesResponse"
+    },
+    "SdiSource": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this SdiSource. It is automatically assigned when the SdiSource is created."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the SdiSource. Unique in the AWS account.The ID is the resource-id portion of the ARN."
+        },
+        "Inputs": {
+          "shape": "__listOf__string",
+          "locationName": "inputs",
+          "documentation": "The list of inputs that are currently using this SDI source. This list will be empty if the SdiSource has just been deleted."
+        },
+        "Mode": {
+          "shape": "SdiSourceMode",
+          "locationName": "mode",
+          "documentation": "Applies only if the type is QUAD. The mode for handling the quad-link signal QUADRANT or INTERLEAVE."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name of the SdiSource."
+        },
+        "State": {
+          "shape": "SdiSourceState",
+          "locationName": "state",
+          "documentation": "Specifies whether the SDI source is attached to an SDI input (IN_USE) or not (IDLE)."
+        },
+        "Type": {
+          "shape": "SdiSourceType",
+          "locationName": "type"
+        }
+      },
+      "documentation": "Used in CreateSdiSourceResponse, DeleteSdiSourceResponse, DescribeSdiSourceResponse, ListSdiSourcesResponse, UpdateSdiSourceResponse"
+    },
+    "SdiSourceMapping": {
+      "type": "structure",
+      "members": {
+        "CardNumber": {
+          "shape": "__integer",
+          "locationName": "cardNumber",
+          "documentation": "A number that uniquely identifies the SDI card on the node hardware."
+        },
+        "ChannelNumber": {
+          "shape": "__integer",
+          "locationName": "channelNumber",
+          "documentation": "A number that uniquely identifies a port on the SDI card."
+        },
+        "SdiSource": {
+          "shape": "__string",
+          "locationName": "sdiSource",
+          "documentation": "The ID of the SdiSource to associate with this port on this card. You can use the ListSdiSources operation to discover all the IDs."
+        }
+      },
+      "documentation": "Used in DescribeNodeSummary, DescribeNodeResult."
+    },
+    "SdiSourceMappingUpdateRequest": {
+      "type": "structure",
+      "members": {
+        "CardNumber": {
+          "shape": "__integer",
+          "locationName": "cardNumber",
+          "documentation": "A number that uniquely identifies the SDI card on the node hardware. For information about how physical cards are identified on your node hardware, see the documentation for your node hardware. The numbering always starts at 1."
+        },
+        "ChannelNumber": {
+          "shape": "__integer",
+          "locationName": "channelNumber",
+          "documentation": "A number that uniquely identifies a port on the card. This must be an SDI port (not a timecode port, for example). For information about how ports are identified on physical cards, see the documentation for your node hardware."
+        },
+        "SdiSource": {
+          "shape": "__string",
+          "locationName": "sdiSource",
+          "documentation": "The ID of a SDI source streaming on the given SDI capture card port."
+        }
+      },
+      "documentation": "Used in SdiSourceMappingsUpdateRequest. One SDI source mapping. It connects one logical SdiSource to the physical SDI card and port that the physical SDI source uses. You must specify all three parameters in this object."
+    },
+    "SdiSourceMappings": {
+      "type": "list",
+      "documentation": "Used in SdiSourceMappings.",
+      "member": {
+        "shape": "SdiSourceMapping"
+      }
+    },
+    "SdiSourceMappingsUpdateRequest": {
+      "type": "list",
+      "documentation": "Used in the SdiSourceMappingsUpdateRequest, which is a parameter of the UpdateNodeRequest, which is used in the UpdateNodeRequest operation. This means that you create a mapping for an SDI source by updating a Node. You can't create the mapping when you first create the Node.",
+      "member": {
+        "shape": "SdiSourceMappingUpdateRequest"
+      }
+    },
+    "SdiSourceMode": {
+      "type": "string",
+      "documentation": "Used in SdiSource, CreateSdiSourceRequest, UpdateSdiSourceRequest.",
+      "enum": [
+        "QUADRANT",
+        "INTERLEAVE"
+      ]
+    },
+    "SdiSourceState": {
+      "type": "string",
+      "documentation": "Used in SdiSource, DescribeNodeRequest, DescribeNodeResult",
+      "enum": [
+        "IDLE",
+        "IN_USE",
+        "DELETED"
+      ]
+    },
+    "SdiSourceSummary": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this SdiSource. It is automatically assigned when the SdiSource is created."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the SdiSource. Unique in the AWS account.The ID is the resource-id portion of the ARN."
+        },
+        "Inputs": {
+          "shape": "__listOf__string",
+          "locationName": "inputs",
+          "documentation": "The list of inputs that are currently using this SDI source. This list will be empty if the SdiSource has just been deleted."
+        },
+        "Mode": {
+          "shape": "SdiSourceMode",
+          "locationName": "mode",
+          "documentation": "Applies only if the type is QUAD. The mode for handling the quad-link signal QUADRANT or INTERLEAVE."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name of the SdiSource."
+        },
+        "State": {
+          "shape": "SdiSourceState",
+          "locationName": "state",
+          "documentation": "Specifies whether the SDI source is attached to an SDI input (IN_USE) or not (IDLE)."
+        },
+        "Type": {
+          "shape": "SdiSourceType",
+          "locationName": "type"
+        }
+      },
+      "documentation": "Used in CreateSdiSourceResponse, DeleteSdiSourceResponse, DescribeSdiSourceResponse, ListSdiSourcesResponse, UpdateSdiSourceResponse"
+    },
+    "SdiSourceType": {
+      "type": "string",
+      "documentation": "Used in SdiSource, CreateSdiSourceRequest, UpdateSdiSourceRequest.",
+      "enum": [
+        "SINGLE",
+        "QUAD"
+      ]
+    },
+    "UpdateSdiSourceRequest": {
+      "type": "structure",
+      "members": {
+        "Mode": {
+          "shape": "SdiSourceMode",
+          "locationName": "mode",
+          "documentation": "Include this parameter only if you want to change the name of the SdiSource. Specify a name that is unique in the AWS account. We recommend you assign a name that describes the source, for example curling-cameraA. Names are case-sensitive."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "Include this parameter only if you want to change the name of the SdiSource. Specify a name that is unique in the AWS account. We recommend you assign a name that describes the source, for example curling-cameraA. Names are case-sensitive."
+        },
+        "SdiSourceId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "sdiSourceId",
+          "documentation": "The ID of the SdiSource"
+        },
+        "Type": {
+          "shape": "SdiSourceType",
+          "locationName": "type",
+          "documentation": "Include this parameter only if you want to change the mode. Specify the type of the SDI source: SINGLE: The source is a single-link source. QUAD: The source is one part of a quad-link source."
+        }
+      },
+      "documentation": "A request to update the SdiSource.",
+      "required": [
+        "SdiSourceId"
+      ]
+    },
+    "UpdateSdiSourceResponse": {
+      "type": "structure",
+      "members": {
+        "SdiSource": {
+          "shape": "SdiSource",
+          "locationName": "sdiSource",
+          "documentation": "Settings for the SDI source."
+        }
+      },
+      "documentation": "Placeholder documentation for UpdateSdiSourceResponse"
+    },
+    "__listOfSdiSourceSummary": {
+      "type": "list",
+      "member": {
+        "shape": "SdiSourceSummary"
+      },
+      "documentation": "Placeholder documentation for __listOfSdiSourceSummary"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

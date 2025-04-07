@@ -578,7 +578,7 @@
         {"shape":"InternalServiceError"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Imports the signing and encryption certificates that you need to create local (AS2) profiles and partner profiles.</p>"
+      "documentation":"<p>Imports the signing and encryption certificates that you need to create local (AS2) profiles and partner profiles.</p> <p>You can import both the certificate and its chain in the <code>Certificate</code> parameter.</p> <note> <p>If you use the <code>Certificate</code> parameter to upload both the certificate and its chain, don't use the <code>CertificateChain</code> parameter.</p> </note>"
     },
     "ImportHostKey":{
       "name":"ImportHostKey",
@@ -899,6 +899,40 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Begins a file transfer between local Amazon Web Services storage and a remote AS2 or SFTP server.</p> <ul> <li> <p>For an AS2 connector, you specify the <code>ConnectorId</code> and one or more <code>SendFilePaths</code> to identify the files you want to transfer.</p> </li> <li> <p>For an SFTP connector, the file transfer can be either outbound or inbound. In both cases, you specify the <code>ConnectorId</code>. Depending on the direction of the transfer, you also specify the following items:</p> <ul> <li> <p>If you are transferring file from a partner's SFTP server to Amazon Web Services storage, you specify one or more <code>RetrieveFilePaths</code> to identify the files you want to transfer, and a <code>LocalDirectoryPath</code> to specify the destination folder.</p> </li> <li> <p>If you are transferring file to a partner's SFTP server from Amazon Web Services storage, you specify one or more <code>SendFilePaths</code> to identify the files you want to transfer, and a <code>RemoteDirectoryPath</code> to specify the destination folder.</p> </li> </ul> </li> </ul>"
+    },
+    "StartRemoteDelete":{
+      "name":"StartRemoteDelete",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartRemoteDeleteRequest"},
+      "output":{"shape":"StartRemoteDeleteResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes a file or directory on the remote SFTP server.</p>"
+    },
+    "StartRemoteMove":{
+      "name":"StartRemoteMove",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartRemoteMoveRequest"},
+      "output":{"shape":"StartRemoteMoveResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Moves or renames a file or directory on the remote SFTP server.</p>"
     },
     "StartServer":{
       "name":"StartServer",
@@ -1239,7 +1273,7 @@
         },
         "MdnResponse":{
           "shape":"MdnResponse",
-          "documentation":"<p>Used for outbound requests (from an Transfer Family server to a partner AS2 server) to determine whether the partner response for transfers is synchronous or asynchronous. Specify either of the following values:</p> <ul> <li> <p> <code>SYNC</code>: The system expects a synchronous MDN response, confirming that the file was transferred successfully (or not).</p> </li> <li> <p> <code>NONE</code>: Specifies that no MDN response is required.</p> </li> </ul>"
+          "documentation":"<p>Used for outbound requests (from an Transfer Family connector to a partner AS2 server) to determine whether the partner response for transfers is synchronous or asynchronous. Specify either of the following values:</p> <ul> <li> <p> <code>SYNC</code>: The system expects a synchronous MDN response, confirming that the file was transferred successfully (or not).</p> </li> <li> <p> <code>NONE</code>: Specifies that no MDN response is required.</p> </li> </ul>"
         },
         "BasicAuthSecretId":{
           "shape":"As2ConnectorSecretId",
@@ -1656,7 +1690,7 @@
         },
         "LoggingRole":{
           "shape":"NullableRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "PostAuthenticationLoginBanner":{
           "shape":"PostAuthenticationLoginBanner",
@@ -2016,6 +2050,12 @@
           "documentation":"<p>The identifier of the host key that you are deleting.</p>"
         }
       }
+    },
+    "DeleteId":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[0-9a-zA-Z./-]+"
     },
     "DeleteProfileRequest":{
       "type":"structure",
@@ -2544,7 +2584,7 @@
         },
         "Status":{
           "shape":"CertificateStatusType",
-          "documentation":"<p>Currently, the only available status is <code>ACTIVE</code>: all other values are reserved for future use.</p>"
+          "documentation":"<p>A certificate's status can be either <code>ACTIVE</code> or <code>INACTIVE</code>.</p> <p>You can set <code>ActiveDate</code> and <code>InactiveDate</code> in the <code>UpdateCertificate</code> call. If you set values for these parameters, those values are used to determine whether the certificate has a status of <code>ACTIVE</code> or <code>INACTIVE</code>.</p> <p>If you don't set values for <code>ActiveDate</code> and <code>InactiveDate</code>, we use the <code>NotBefore</code> and <code>NotAfter</code> date as specified on the X509 certificate to determine when a certificate is active and when it is inactive.</p>"
         },
         "Certificate":{
           "shape":"CertificateBodyType",
@@ -2556,11 +2596,11 @@
         },
         "ActiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes active.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes active. If you do not specify a value, <code>ActiveDate</code> takes the same value as <code>NotBeforeDate</code>, which is specified by the CA. </p>"
         },
         "InactiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes inactive.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes inactive. If you do not specify a value, <code>InactiveDate</code> takes the same value as <code>NotAfterDate</code>, which is specified by the CA.</p>"
         },
         "Serial":{
           "shape":"CertSerial",
@@ -2840,7 +2880,7 @@
         },
         "LoggingRole":{
           "shape":"NullableRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "PostAuthenticationLoginBanner":{
           "shape":"PostAuthenticationLoginBanner",
@@ -3426,7 +3466,7 @@
         },
         "Certificate":{
           "shape":"CertificateBodyType",
-          "documentation":"<ul> <li> <p>For the CLI, provide a file path for a certificate in URI format. For example, <code>--certificate file://encryption-cert.pem</code>. Alternatively, you can provide the raw content.</p> </li> <li> <p>For the SDK, specify the raw content of a certificate file. For example, <code>--certificate \"`cat encryption-cert.pem`\"</code>.</p> </li> </ul>"
+          "documentation":"<ul> <li> <p>For the CLI, provide a file path for a certificate in URI format. For example, <code>--certificate file://encryption-cert.pem</code>. Alternatively, you can provide the raw content.</p> </li> <li> <p>For the SDK, specify the raw content of a certificate file. For example, <code>--certificate \"`cat encryption-cert.pem`\"</code>.</p> </li> </ul> <note> <p>You can provide both the certificate and its chain in this parameter, without needing to use the <code>CertificateChain</code> parameter. If you use this parameter for both the certificate and its chain, do not use the <code>CertificateChain</code> parameter.</p> </note>"
         },
         "CertificateChain":{
           "shape":"CertificateChainType",
@@ -3434,15 +3474,15 @@
         },
         "PrivateKey":{
           "shape":"PrivateKeyType",
-          "documentation":"<ul> <li> <p>For the CLI, provide a file path for a private key in URI format.For example, <code>--private-key file://encryption-key.pem</code>. Alternatively, you can provide the raw content of the private key file.</p> </li> <li> <p>For the SDK, specify the raw content of a private key file. For example, <code>--private-key \"`cat encryption-key.pem`\"</code> </p> </li> </ul>"
+          "documentation":"<ul> <li> <p>For the CLI, provide a file path for a private key in URI format. For example, <code>--private-key file://encryption-key.pem</code>. Alternatively, you can provide the raw content of the private key file.</p> </li> <li> <p>For the SDK, specify the raw content of a private key file. For example, <code>--private-key \"`cat encryption-key.pem`\"</code> </p> </li> </ul>"
         },
         "ActiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes active.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes active. If you do not specify a value, <code>ActiveDate</code> takes the same value as <code>NotBeforeDate</code>, which is specified by the CA. </p>"
         },
         "InactiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes inactive.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes inactive. If you do not specify a value, <code>InactiveDate</code> takes the same value as <code>NotAfterDate</code>, which is specified by the CA.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -4133,11 +4173,11 @@
         },
         "ActiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes active.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes active. If you do not specify a value, <code>ActiveDate</code> takes the same value as <code>NotBeforeDate</code>, which is specified by the CA. </p>"
         },
         "InactiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes inactive.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes inactive. If you do not specify a value, <code>InactiveDate</code> takes the same value as <code>NotAfterDate</code>, which is specified by the CA.</p>"
         },
         "Type":{
           "shape":"CertificateType",
@@ -4285,7 +4325,7 @@
         },
         "LoggingRole":{
           "shape":"Role",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "ServerId":{
           "shape":"ServerId",
@@ -4410,7 +4450,7 @@
       "members":{
         "LoggingRole":{
           "shape":"Role",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "LogGroupName":{
           "shape":"LogGroupName",
@@ -4474,6 +4514,12 @@
       "max":1024,
       "min":1,
       "pattern":"[\\p{Print}\\p{Blank}]+"
+    },
+    "MoveId":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[0-9a-zA-Z./-]+"
     },
     "NextToken":{
       "type":"string",
@@ -5099,6 +5145,65 @@
         }
       }
     },
+    "StartRemoteDeleteRequest":{
+      "type":"structure",
+      "required":[
+        "ConnectorId",
+        "DeletePath"
+      ],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique identifier for the connector.</p>"
+        },
+        "DeletePath":{
+          "shape":"FilePath",
+          "documentation":"<p>The absolute path of the file or directory to delete. You can only specify one path per call to this operation.</p>"
+        }
+      }
+    },
+    "StartRemoteDeleteResponse":{
+      "type":"structure",
+      "required":["DeleteId"],
+      "members":{
+        "DeleteId":{
+          "shape":"DeleteId",
+          "documentation":"<p>Returns a unique identifier for the delete operation.</p>"
+        }
+      }
+    },
+    "StartRemoteMoveRequest":{
+      "type":"structure",
+      "required":[
+        "ConnectorId",
+        "SourcePath",
+        "TargetPath"
+      ],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique identifier for the connector.</p>"
+        },
+        "SourcePath":{
+          "shape":"FilePath",
+          "documentation":"<p>The absolute path of the file or directory to move or rename. You can only specify one path per call to this operation.</p>"
+        },
+        "TargetPath":{
+          "shape":"FilePath",
+          "documentation":"<p>The absolute path for the target of the move/rename operation.</p>"
+        }
+      }
+    },
+    "StartRemoteMoveResponse":{
+      "type":"structure",
+      "required":["MoveId"],
+      "members":{
+        "MoveId":{
+          "shape":"MoveId",
+          "documentation":"<p>Returns a unique identifier for the move/rename operation.</p>"
+        }
+      }
+    },
     "StartServerRequest":{
       "type":"structure",
       "required":["ServerId"],
@@ -5481,11 +5586,11 @@
         },
         "ActiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes active.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes active. If you do not specify a value, <code>ActiveDate</code> takes the same value as <code>NotBeforeDate</code>, which is specified by the CA. </p>"
         },
         "InactiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes inactive.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes inactive. If you do not specify a value, <code>InactiveDate</code> takes the same value as <code>NotAfterDate</code>, which is specified by the CA.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -5640,7 +5745,7 @@
         },
         "LoggingRole":{
           "shape":"NullableRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "PostAuthenticationLoginBanner":{
           "shape":"PostAuthenticationLoginBanner",

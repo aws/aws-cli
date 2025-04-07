@@ -4012,9 +4012,33 @@
         "outputModalities":{
           "shape":"GuardrailModalities",
           "documentation":"<p>The output modalities selected for the guardrail content filter.</p>"
+        },
+        "inputAction":{
+          "shape":"GuardrailContentFilterAction",
+          "documentation":"<p>The action to take when harmful content is detected in the input. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "outputAction":{
+          "shape":"GuardrailContentFilterAction",
+          "documentation":"<p>The action to take when harmful content is detected in the output. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "inputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether guardrail evaluation is enabled on the input. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
+        },
+        "outputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether guardrail evaluation is enabled on the output. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>Contains filter strengths for harmful content. Guardrails support the following content filters to detect and filter harmful user inputs and FM-generated outputs.</p> <ul> <li> <p> <b>Hate</b> – Describes language or a statement that discriminates, criticizes, insults, denounces, or dehumanizes a person or group on the basis of an identity (such as race, ethnicity, gender, religion, sexual orientation, ability, and national origin).</p> </li> <li> <p> <b>Insults</b> – Describes language or a statement that includes demeaning, humiliating, mocking, insulting, or belittling language. This type of language is also labeled as bullying.</p> </li> <li> <p> <b>Sexual</b> – Describes language or a statement that indicates sexual interest, activity, or arousal using direct or indirect references to body parts, physical traits, or sex.</p> </li> <li> <p> <b>Violence</b> – Describes language or a statement that includes glorification of or threats to inflict physical pain, hurt, or injury toward a person, group or thing.</p> </li> </ul> <p>Content filtering depends on the confidence classification of user inputs and FM responses across each of the four harmful categories. All input and output statements are classified into one of four confidence levels (NONE, LOW, MEDIUM, HIGH) for each harmful category. For example, if a statement is classified as <i>Hate</i> with HIGH confidence, the likelihood of the statement representing hateful content is high. A single statement can be classified across multiple categories with varying confidence levels. For example, a single statement can be classified as <i>Hate</i> with HIGH confidence, <i>Insults</i> with LOW confidence, <i>Sexual</i> with NONE confidence, and <i>Violence</i> with MEDIUM confidence.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-filters.html\">Guardrails content filters</a>.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetGuardrail.html#API_GetGuardrail_ResponseSyntax\">GetGuardrail response body</a> </p> </li> </ul>"
+    },
+    "GuardrailContentFilterAction":{
+      "type":"string",
+      "enum":[
+        "BLOCK",
+        "NONE"
+      ],
+      "sensitive":true
     },
     "GuardrailContentFilterConfig":{
       "type":"structure",
@@ -4043,6 +4067,22 @@
         "outputModalities":{
           "shape":"GuardrailModalities",
           "documentation":"<p>The output modalities selected for the guardrail content filter configuration.</p>"
+        },
+        "inputAction":{
+          "shape":"GuardrailContentFilterAction",
+          "documentation":"<p>Specifies the action to take when harmful content is detected. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "outputAction":{
+          "shape":"GuardrailContentFilterAction",
+          "documentation":"<p>Specifies the action to take when harmful content is detected in the output. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "inputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable guardrail evaluation on the input. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
+        },
+        "outputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable guardrail evaluation on the output. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>Contains filter strengths for harmful content. Guardrails support the following content filters to detect and filter harmful user inputs and FM-generated outputs.</p> <ul> <li> <p> <b>Hate</b> – Describes language or a statement that discriminates, criticizes, insults, denounces, or dehumanizes a person or group on the basis of an identity (such as race, ethnicity, gender, religion, sexual orientation, ability, and national origin).</p> </li> <li> <p> <b>Insults</b> – Describes language or a statement that includes demeaning, humiliating, mocking, insulting, or belittling language. This type of language is also labeled as bullying.</p> </li> <li> <p> <b>Sexual</b> – Describes language or a statement that indicates sexual interest, activity, or arousal using direct or indirect references to body parts, physical traits, or sex.</p> </li> <li> <p> <b>Violence</b> – Describes language or a statement that includes glorification of or threats to inflict physical pain, hurt, or injury toward a person, group or thing.</p> </li> </ul> <p>Content filtering depends on the confidence classification of user inputs and FM responses across each of the four harmful categories. All input and output statements are classified into one of four confidence levels (NONE, LOW, MEDIUM, HIGH) for each harmful category. For example, if a statement is classified as <i>Hate</i> with HIGH confidence, the likelihood of the statement representing hateful content is high. A single statement can be classified across multiple categories with varying confidence levels. For example, a single statement can be classified as <i>Hate</i> with HIGH confidence, <i>Insults</i> with LOW confidence, <i>Sexual</i> with NONE confidence, and <i>Violence</i> with MEDIUM confidence.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-filters.html\">Guardrails content filters</a>.</p>"
@@ -4091,6 +4131,14 @@
       },
       "documentation":"<p>Contains details about how to handle harmful content.</p>"
     },
+    "GuardrailContextualGroundingAction":{
+      "type":"string",
+      "enum":[
+        "BLOCK",
+        "NONE"
+      ],
+      "sensitive":true
+    },
     "GuardrailContextualGroundingFilter":{
       "type":"structure",
       "required":[
@@ -4105,6 +4153,14 @@
         "threshold":{
           "shape":"GuardrailContextualGroundingFilterThresholdDouble",
           "documentation":"<p>The threshold details for the guardrails contextual grounding filter.</p>"
+        },
+        "action":{
+          "shape":"GuardrailContextualGroundingAction",
+          "documentation":"<p>The action to take when content fails the contextual grounding evaluation. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether contextual grounding is enabled for evaluation. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>The details for the guardrails contextual grounding filter.</p>"
@@ -4123,6 +4179,14 @@
         "threshold":{
           "shape":"GuardrailContextualGroundingFilterConfigThresholdDouble",
           "documentation":"<p>The threshold details for the guardrails contextual grounding filter.</p>"
+        },
+        "action":{
+          "shape":"GuardrailContextualGroundingAction",
+          "documentation":"<p>Specifies the action to take when content fails the contextual grounding evaluation. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable contextual grounding evaluation. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>The filter configuration details for the guardrails contextual grounding filter.</p>"
@@ -4236,6 +4300,22 @@
         "type":{
           "shape":"GuardrailManagedWordsType",
           "documentation":"<p>ManagedWords$type The managed word type that was configured for the guardrail. (For now, we only offer profanity word list)</p>"
+        },
+        "inputAction":{
+          "shape":"GuardrailWordAction",
+          "documentation":"<p>The action to take when harmful content is detected in the input. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "outputAction":{
+          "shape":"GuardrailWordAction",
+          "documentation":"<p>The action to take when harmful content is detected in the output. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "inputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether guardrail evaluation is enabled on the input. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
+        },
+        "outputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether guardrail evaluation is enabled on the output. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>The managed word list that was configured for the guardrail. (This is a list of words that are pre-defined and managed by guardrails only.)</p>"
@@ -4247,6 +4327,22 @@
         "type":{
           "shape":"GuardrailManagedWordsType",
           "documentation":"<p>The managed word type to configure for the guardrail.</p>"
+        },
+        "inputAction":{
+          "shape":"GuardrailWordAction",
+          "documentation":"<p>Specifies the action to take when harmful content is detected in the input. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "outputAction":{
+          "shape":"GuardrailWordAction",
+          "documentation":"<p>Specifies the action to take when harmful content is detected in the output. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "inputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable guardrail evaluation on the input. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
+        },
+        "outputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable guardrail evaluation on the output. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>The managed word list to configure for the guardrail.</p>"
@@ -4304,6 +4400,22 @@
         "action":{
           "shape":"GuardrailSensitiveInformationAction",
           "documentation":"<p>The configured guardrail action when PII entity is detected.</p>"
+        },
+        "inputAction":{
+          "shape":"GuardrailSensitiveInformationAction",
+          "documentation":"<p>The action to take when harmful content is detected in the input. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>ANONYMIZE</code> – Mask the content and replace it with identifier tags.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "outputAction":{
+          "shape":"GuardrailSensitiveInformationAction",
+          "documentation":"<p>The action to take when harmful content is detected in the output. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>ANONYMIZE</code> – Mask the content and replace it with identifier tags.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "inputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether guardrail evaluation is enabled on the input. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
+        },
+        "outputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether guardrail evaluation is enabled on the output. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>The PII entity configured for the guardrail.</p>"
@@ -4322,6 +4434,22 @@
         "action":{
           "shape":"GuardrailSensitiveInformationAction",
           "documentation":"<p>Configure guardrail action when the PII entity is detected.</p>"
+        },
+        "inputAction":{
+          "shape":"GuardrailSensitiveInformationAction",
+          "documentation":"<p>Specifies the action to take when harmful content is detected in the input. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>ANONYMIZE</code> – Mask the content and replace it with identifier tags.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "outputAction":{
+          "shape":"GuardrailSensitiveInformationAction",
+          "documentation":"<p>Specifies the action to take when harmful content is detected in the output. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>ANONYMIZE</code> – Mask the content and replace it with identifier tags.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "inputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable guardrail evaluation on the input. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
+        },
+        "outputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable guardrail evaluation on the output. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>The PII entity to configure for the guardrail.</p>"
@@ -4385,6 +4513,22 @@
         "action":{
           "shape":"GuardrailSensitiveInformationAction",
           "documentation":"<p>The action taken when a match to the regular expression is detected.</p>"
+        },
+        "inputAction":{
+          "shape":"GuardrailSensitiveInformationAction",
+          "documentation":"<p>The action to take when harmful content is detected in the input. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "outputAction":{
+          "shape":"GuardrailSensitiveInformationAction",
+          "documentation":"<p>The action to take when harmful content is detected in the output. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "inputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether guardrail evaluation is enabled on the input. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
+        },
+        "outputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether guardrail evaluation is enabled on the output. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>The regular expression configured for the guardrail.</p>"
@@ -4412,6 +4556,22 @@
         "action":{
           "shape":"GuardrailSensitiveInformationAction",
           "documentation":"<p>The guardrail action to configure when matching regular expression is detected.</p>"
+        },
+        "inputAction":{
+          "shape":"GuardrailSensitiveInformationAction",
+          "documentation":"<p>Specifies the action to take when harmful content is detected in the input. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "outputAction":{
+          "shape":"GuardrailSensitiveInformationAction",
+          "documentation":"<p>Specifies the action to take when harmful content is detected in the output. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "inputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable guardrail evaluation on the input. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
+        },
+        "outputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable guardrail evaluation on the output. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>The regular expression to configure for the guardrail.</p>"
@@ -4460,7 +4620,8 @@
       "type":"string",
       "enum":[
         "BLOCK",
-        "ANONYMIZE"
+        "ANONYMIZE",
+        "NONE"
       ]
     },
     "GuardrailSensitiveInformationPolicy":{
@@ -4589,9 +4750,33 @@
         "type":{
           "shape":"GuardrailTopicType",
           "documentation":"<p>Specifies to deny the topic.</p>"
+        },
+        "inputAction":{
+          "shape":"GuardrailTopicAction",
+          "documentation":"<p>The action to take when harmful content is detected in the input. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "outputAction":{
+          "shape":"GuardrailTopicAction",
+          "documentation":"<p>The action to take when harmful content is detected in the output. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "inputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether guardrail evaluation is enabled on the input. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
+        },
+        "outputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether guardrail evaluation is enabled on the output. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>Details about topics for the guardrail to identify and deny.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetGuardrail.html#API_GetGuardrail_ResponseSyntax\">GetGuardrail response body</a> </p> </li> </ul>"
+    },
+    "GuardrailTopicAction":{
+      "type":"string",
+      "enum":[
+        "BLOCK",
+        "NONE"
+      ],
+      "sensitive":true
     },
     "GuardrailTopicConfig":{
       "type":"structure",
@@ -4616,6 +4801,22 @@
         "type":{
           "shape":"GuardrailTopicType",
           "documentation":"<p>Specifies to deny the topic.</p>"
+        },
+        "inputAction":{
+          "shape":"GuardrailTopicAction",
+          "documentation":"<p>Specifies the action to take when harmful content is detected in the input. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "outputAction":{
+          "shape":"GuardrailTopicAction",
+          "documentation":"<p>Specifies the action to take when harmful content is detected in the output. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "inputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable guardrail evaluation on the input. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
+        },
+        "outputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable guardrail evaluation on the output. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>Details about topics for the guardrail to identify and deny.</p>"
@@ -4694,9 +4895,33 @@
         "text":{
           "shape":"GuardrailWordTextString",
           "documentation":"<p>Text of the word configured for the guardrail to block.</p>"
+        },
+        "inputAction":{
+          "shape":"GuardrailWordAction",
+          "documentation":"<p>The action to take when harmful content is detected in the input. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "outputAction":{
+          "shape":"GuardrailWordAction",
+          "documentation":"<p>The action to take when harmful content is detected in the output. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "inputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether guardrail evaluation is enabled on the input. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
+        },
+        "outputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether guardrail evaluation is enabled on the output. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>A word configured for the guardrail.</p>"
+    },
+    "GuardrailWordAction":{
+      "type":"string",
+      "enum":[
+        "BLOCK",
+        "NONE"
+      ],
+      "sensitive":true
     },
     "GuardrailWordConfig":{
       "type":"structure",
@@ -4705,6 +4930,22 @@
         "text":{
           "shape":"GuardrailWordConfigTextString",
           "documentation":"<p>Text of the word configured for the guardrail to block.</p>"
+        },
+        "inputAction":{
+          "shape":"GuardrailWordAction",
+          "documentation":"<p>Specifies the action to take when harmful content is detected in the input. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "outputAction":{
+          "shape":"GuardrailWordAction",
+          "documentation":"<p>Specifies the action to take when harmful content is detected in the output. Supported values include:</p> <ul> <li> <p> <code>BLOCK</code> – Block the content and replace it with blocked messaging.</p> </li> <li> <p> <code>NONE</code> – Take no action but return detection information in the trace response.</p> </li> </ul>"
+        },
+        "inputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable guardrail evaluation on the intput. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
+        },
+        "outputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable guardrail evaluation on the output. When disabled, you aren't charged for the evaluation. The evaluation doesn't appear in the response.</p>"
         }
       },
       "documentation":"<p>A word to configure for the guardrail.</p>"

@@ -53,6 +53,19 @@
       ],
       "documentation":"<p>Gets information about one or more builds.</p>"
     },
+    "BatchGetCommandExecutions":{
+      "name":"BatchGetCommandExecutions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetCommandExecutionsInput"},
+      "output":{"shape":"BatchGetCommandExecutionsOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Gets information about the command executions.</p>"
+    },
     "BatchGetFleets":{
       "name":"BatchGetFleets",
       "http":{
@@ -104,6 +117,19 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p> Returns an array of reports. </p>"
+    },
+    "BatchGetSandboxes":{
+      "name":"BatchGetSandboxes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetSandboxesInput"},
+      "output":{"shape":"BatchGetSandboxesOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Gets information about the sandbox status.</p>"
     },
     "CreateFleet":{
       "name":"CreateFleet",
@@ -411,6 +437,20 @@
       ],
       "documentation":"<p>Gets a list of build identifiers for the specified build project, with each build identifier representing a single build.</p>"
     },
+    "ListCommandExecutionsForSandbox":{
+      "name":"ListCommandExecutionsForSandbox",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListCommandExecutionsForSandboxInput"},
+      "output":{"shape":"ListCommandExecutionsForSandboxOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets a list of command executions for a sandbox.</p>"
+    },
     "ListCuratedEnvironmentImages":{
       "name":"ListCuratedEnvironmentImages",
       "http":{
@@ -486,6 +526,33 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p> Returns a list of ARNs for the reports that belong to a <code>ReportGroup</code>. </p>"
+    },
+    "ListSandboxes":{
+      "name":"ListSandboxes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSandboxesInput"},
+      "output":{"shape":"ListSandboxesOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Gets a list of sandboxes.</p>"
+    },
+    "ListSandboxesForProject":{
+      "name":"ListSandboxesForProject",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSandboxesForProjectInput"},
+      "output":{"shape":"ListSandboxesForProjectOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets a list of sandboxes for a given project.</p>"
     },
     "ListSharedProjects":{
       "name":"ListSharedProjects",
@@ -598,6 +665,49 @@
       ],
       "documentation":"<p>Starts a batch build for a project.</p>"
     },
+    "StartCommandExecution":{
+      "name":"StartCommandExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartCommandExecutionInput"},
+      "output":{"shape":"StartCommandExecutionOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Starts a command execution.</p>"
+    },
+    "StartSandbox":{
+      "name":"StartSandbox",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartSandboxInput"},
+      "output":{"shape":"StartSandboxOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccountSuspendedException"}
+      ],
+      "documentation":"<p>Starts a sandbox.</p>"
+    },
+    "StartSandboxConnection":{
+      "name":"StartSandboxConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartSandboxConnectionInput"},
+      "output":{"shape":"StartSandboxConnectionOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Starts a sandbox connection.</p>"
+    },
     "StopBuild":{
       "name":"StopBuild",
       "http":{
@@ -625,6 +735,20 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Stops a running batch build.</p>"
+    },
+    "StopSandbox":{
+      "name":"StopSandbox",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopSandboxInput"},
+      "output":{"shape":"StopSandboxOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Stops a sandbox.</p>"
     },
     "UpdateFleet":{
       "name":"UpdateFleet",
@@ -705,6 +829,13 @@
       "members":{
       },
       "documentation":"<p>An Amazon Web Services service limit was exceeded for the calling Amazon Web Services account.</p>",
+      "exception":true
+    },
+    "AccountSuspendedException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The CodeBuild access has been suspended for the calling Amazon Web Services account.</p>",
       "exception":true
     },
     "ArtifactNamespace":{
@@ -830,6 +961,36 @@
         }
       }
     },
+    "BatchGetCommandExecutionsInput":{
+      "type":"structure",
+      "required":[
+        "sandboxId",
+        "commandExecutionIds"
+      ],
+      "members":{
+        "sandboxId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A <code>sandboxId</code> or <code>sandboxArn</code>.</p>"
+        },
+        "commandExecutionIds":{
+          "shape":"CommandExecutionIds",
+          "documentation":"<p>A comma separated list of <code>commandExecutionIds</code>.</p>"
+        }
+      }
+    },
+    "BatchGetCommandExecutionsOutput":{
+      "type":"structure",
+      "members":{
+        "commandExecutions":{
+          "shape":"CommandExecutions",
+          "documentation":"<p>Information about the requested command executions.</p>"
+        },
+        "commandExecutionsNotFound":{
+          "shape":"CommandExecutionIds",
+          "documentation":"<p>The IDs of command executions for which information could not be found.</p>"
+        }
+      }
+    },
     "BatchGetFleetsInput":{
       "type":"structure",
       "required":["names"],
@@ -919,6 +1080,29 @@
         "reportsNotFound":{
           "shape":"ReportArns",
           "documentation":"<p> An array of ARNs passed to <code>BatchGetReportGroups</code> that are not associated with a <code>Report</code>. </p>"
+        }
+      }
+    },
+    "BatchGetSandboxesInput":{
+      "type":"structure",
+      "required":["ids"],
+      "members":{
+        "ids":{
+          "shape":"SandboxIds",
+          "documentation":"<p>A comma separated list of <code>sandboxIds</code> or <code>sandboxArns</code>.</p>"
+        }
+      }
+    },
+    "BatchGetSandboxesOutput":{
+      "type":"structure",
+      "members":{
+        "sandboxes":{
+          "shape":"Sandboxes",
+          "documentation":"<p>Information about the requested sandboxes.</p>"
+        },
+        "sandboxesNotFound":{
+          "shape":"SandboxIds",
+          "documentation":"<p>The IDs of sandboxes for which information could not be found.</p>"
         }
       }
     },
@@ -1587,6 +1771,75 @@
     "CodeCoverages":{
       "type":"list",
       "member":{"shape":"CodeCoverage"}
+    },
+    "CommandExecution":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID of the command execution.</p>"
+        },
+        "sandboxId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A <code>sandboxId</code>.</p>"
+        },
+        "submitTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the command execution process was initially submitted, expressed in Unix time format.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the command execution process started, expressed in Unix time format.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the command execution process ended, expressed in Unix time format.</p>"
+        },
+        "status":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The status of the command execution.</p>"
+        },
+        "command":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The command that needs to be executed.</p>"
+        },
+        "type":{
+          "shape":"CommandType",
+          "documentation":"<p>The command type.</p>"
+        },
+        "exitCode":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The exit code to return upon completion.</p>"
+        },
+        "standardOutputContent":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The text written by the command to stdout.</p>"
+        },
+        "standardErrContent":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The text written by the command to stderr.</p>"
+        },
+        "logs":{"shape":"LogsLocation"},
+        "sandboxArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A <code>sandboxArn</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains command execution information.</p>"
+    },
+    "CommandExecutionIds":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":100,
+      "min":1
+    },
+    "CommandExecutions":{
+      "type":"list",
+      "member":{"shape":"CommandExecution"}
+    },
+    "CommandType":{
+      "type":"string",
+      "enum":["SHELL"]
     },
     "ComputeConfiguration":{
       "type":"structure",
@@ -2773,6 +3026,41 @@
         }
       }
     },
+    "ListCommandExecutionsForSandboxInput":{
+      "type":"structure",
+      "required":["sandboxId"],
+      "members":{
+        "sandboxId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A <code>sandboxId</code> or <code>sandboxArn</code>.</p>"
+        },
+        "maxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of sandbox records to be retrieved.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrderType",
+          "documentation":"<p>The order in which sandbox records should be retrieved.</p>"
+        },
+        "nextToken":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The next token, if any, to get paginated results. You will get this value from previous execution of list sandboxes.</p>"
+        }
+      }
+    },
+    "ListCommandExecutionsForSandboxOutput":{
+      "type":"structure",
+      "members":{
+        "commandExecutions":{
+          "shape":"CommandExecutions",
+          "documentation":"<p>Information about the requested command executions.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>Information about the next token to get paginated results.</p>"
+        }
+      }
+    },
     "ListCuratedEnvironmentImagesInput":{
       "type":"structure",
       "members":{
@@ -2955,6 +3243,71 @@
         "reports":{
           "shape":"ReportArns",
           "documentation":"<p> The list of returned ARNs for the reports in the current Amazon Web Services account. </p>"
+        }
+      }
+    },
+    "ListSandboxesForProjectInput":{
+      "type":"structure",
+      "required":["projectName"],
+      "members":{
+        "projectName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The CodeBuild project name.</p>"
+        },
+        "maxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of sandbox records to be retrieved.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrderType",
+          "documentation":"<p>The order in which sandbox records should be retrieved.</p>"
+        },
+        "nextToken":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The next token, if any, to get paginated results. You will get this value from previous execution of list sandboxes.</p>"
+        }
+      }
+    },
+    "ListSandboxesForProjectOutput":{
+      "type":"structure",
+      "members":{
+        "ids":{
+          "shape":"SandboxIds",
+          "documentation":"<p>Information about the requested sandbox IDs.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>Information about the next token to get paginated results.</p>"
+        }
+      }
+    },
+    "ListSandboxesInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of sandbox records to be retrieved.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrderType",
+          "documentation":"<p>The order in which sandbox records should be retrieved.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The next token, if any, to get paginated results. You will get this value from previous execution of list sandboxes.</p>"
+        }
+      }
+    },
+    "ListSandboxesOutput":{
+      "type":"structure",
+      "members":{
+        "ids":{
+          "shape":"SandboxIds",
+          "documentation":"<p>Information about the requested sandbox IDs.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>Information about the next token to get paginated results.</p>"
         }
       }
     },
@@ -4065,6 +4418,176 @@
       },
       "documentation":"<p> Information about the S3 bucket where the raw data of a report are exported. </p>"
     },
+    "SSMSession":{
+      "type":"structure",
+      "members":{
+        "sessionId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the session.</p>"
+        },
+        "tokenValue":{
+          "shape":"String",
+          "documentation":"<p>An encrypted token value containing session and caller information.</p>"
+        },
+        "streamUrl":{
+          "shape":"String",
+          "documentation":"<p>A URL back to SSM Agent on the managed node that the Session Manager client uses to send commands and receive output from the node.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the Session Manager session.</p>"
+    },
+    "Sandbox":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID of the sandbox.</p>"
+        },
+        "arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the sandbox.</p>"
+        },
+        "projectName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The CodeBuild project name.</p>"
+        },
+        "requestTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the sandbox process was initially requested, expressed in Unix time format.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the sandbox process started, expressed in Unix time format.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the sandbox process ended, expressed in Unix time format.</p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The status of the sandbox.</p>"
+        },
+        "source":{"shape":"ProjectSource"},
+        "sourceVersion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Any version identifier for the version of the sandbox to be built.</p>"
+        },
+        "secondarySources":{
+          "shape":"ProjectSources",
+          "documentation":"<p> An array of <code>ProjectSource</code> objects. </p>"
+        },
+        "secondarySourceVersions":{
+          "shape":"ProjectSecondarySourceVersions",
+          "documentation":"<p> An array of <code>ProjectSourceVersion</code> objects.</p>"
+        },
+        "environment":{"shape":"ProjectEnvironment"},
+        "fileSystemLocations":{
+          "shape":"ProjectFileSystemLocations",
+          "documentation":"<p> An array of <code>ProjectFileSystemLocation</code> objects for a CodeBuild build project. A <code>ProjectFileSystemLocation</code> object specifies the <code>identifier</code>, <code>location</code>, <code>mountOptions</code>, <code>mountPoint</code>, and <code>type</code> of a file system created using Amazon Elastic File System. </p>"
+        },
+        "timeoutInMinutes":{
+          "shape":"WrapperInt",
+          "documentation":"<p>How long, in minutes, from 5 to 2160 (36 hours), for CodeBuild to wait before timing out this sandbox if it does not get marked as completed.</p>"
+        },
+        "queuedTimeoutInMinutes":{
+          "shape":"WrapperInt",
+          "documentation":"<p>The number of minutes a sandbox is allowed to be queued before it times out. </p>"
+        },
+        "vpcConfig":{"shape":"VpcConfig"},
+        "logConfig":{"shape":"LogsConfig"},
+        "encryptionKey":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Key Management Service customer master key (CMK) to be used for encrypting the sandbox output artifacts.</p>"
+        },
+        "serviceRole":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of a service role used for this sandbox.</p>"
+        },
+        "currentSession":{
+          "shape":"SandboxSession",
+          "documentation":"<p>The current session for the sandbox.</p>"
+        }
+      },
+      "documentation":"<p>Contains sandbox information.</p>"
+    },
+    "SandboxIds":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"}
+    },
+    "SandboxSession":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID of the sandbox session.</p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The status of the sandbox session.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the sandbox session started, expressed in Unix time format.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the sandbox session ended, expressed in Unix time format.</p>"
+        },
+        "currentPhase":{
+          "shape":"String",
+          "documentation":"<p>The current phase for the sandbox.</p>"
+        },
+        "phases":{
+          "shape":"SandboxSessionPhases",
+          "documentation":"<p> An array of <code>SandboxSessionPhase</code> objects. </p>"
+        },
+        "resolvedSourceVersion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An identifier for the version of this sandbox's source code.</p>"
+        },
+        "logs":{"shape":"LogsLocation"},
+        "networkInterface":{"shape":"NetworkInterface"}
+      },
+      "documentation":"<p>Contains information about the sandbox session.</p>"
+    },
+    "SandboxSessionPhase":{
+      "type":"structure",
+      "members":{
+        "phaseType":{
+          "shape":"String",
+          "documentation":"<p>The name of the sandbox phase.</p>"
+        },
+        "phaseStatus":{
+          "shape":"StatusType",
+          "documentation":"<p>The current status of the sandbox phase. Valid values include:</p> <dl> <dt>FAILED</dt> <dd> <p>The sandbox phase failed.</p> </dd> <dt>FAULT</dt> <dd> <p>The sandbox phase faulted.</p> </dd> <dt>IN_PROGRESS</dt> <dd> <p>The sandbox phase is still in progress.</p> </dd> <dt>STOPPED</dt> <dd> <p>The sandbox phase stopped.</p> </dd> <dt>SUCCEEDED</dt> <dd> <p>The sandbox phase succeeded.</p> </dd> <dt>TIMED_OUT</dt> <dd> <p>The sandbox phase timed out.</p> </dd> </dl>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the sandbox phase started, expressed in Unix time format.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the sandbox phase ended, expressed in Unix time format.</p>"
+        },
+        "durationInSeconds":{
+          "shape":"WrapperLong",
+          "documentation":"<p>How long, in seconds, between the starting and ending times of the sandbox's phase.</p>"
+        },
+        "contexts":{
+          "shape":"PhaseContexts",
+          "documentation":"<p> An array of <code>PhaseContext</code> objects. </p>"
+        }
+      },
+      "documentation":"<p>Contains information about the sandbox phase.</p>"
+    },
+    "SandboxSessionPhases":{
+      "type":"list",
+      "member":{"shape":"SandboxSessionPhase"}
+    },
+    "Sandboxes":{
+      "type":"list",
+      "member":{"shape":"Sandbox"}
+    },
     "ScalingConfigurationInput":{
       "type":"structure",
       "members":{
@@ -4514,6 +5037,77 @@
         }
       }
     },
+    "StartCommandExecutionInput":{
+      "type":"structure",
+      "required":[
+        "sandboxId",
+        "command"
+      ],
+      "members":{
+        "sandboxId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A <code>sandboxId</code> or <code>sandboxArn</code>.</p>"
+        },
+        "command":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The command that needs to be executed.</p>"
+        },
+        "type":{
+          "shape":"CommandType",
+          "documentation":"<p>The command type.</p>"
+        }
+      }
+    },
+    "StartCommandExecutionOutput":{
+      "type":"structure",
+      "members":{
+        "commandExecution":{
+          "shape":"CommandExecution",
+          "documentation":"<p>Information about the requested command executions.</p>"
+        }
+      }
+    },
+    "StartSandboxConnectionInput":{
+      "type":"structure",
+      "required":["sandboxId"],
+      "members":{
+        "sandboxId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A <code>sandboxId</code> or <code>sandboxArn</code>.</p>"
+        }
+      }
+    },
+    "StartSandboxConnectionOutput":{
+      "type":"structure",
+      "members":{
+        "ssmSession":{
+          "shape":"SSMSession",
+          "documentation":"<p>Information about the Session Manager session.</p>"
+        }
+      }
+    },
+    "StartSandboxInput":{
+      "type":"structure",
+      "members":{
+        "projectName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The CodeBuild project name.</p>"
+        },
+        "idempotencyToken":{
+          "shape":"SensitiveString",
+          "documentation":"<p>A unique client token.</p>"
+        }
+      }
+    },
+    "StartSandboxOutput":{
+      "type":"structure",
+      "members":{
+        "sandbox":{
+          "shape":"Sandbox",
+          "documentation":"<p>Information about the requested sandbox.</p>"
+        }
+      }
+    },
     "StatusType":{
       "type":"string",
       "enum":[
@@ -4557,6 +5151,25 @@
         "build":{
           "shape":"Build",
           "documentation":"<p>Information about the build.</p>"
+        }
+      }
+    },
+    "StopSandboxInput":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Information about the requested sandbox ID.</p>"
+        }
+      }
+    },
+    "StopSandboxOutput":{
+      "type":"structure",
+      "members":{
+        "sandbox":{
+          "shape":"Sandbox",
+          "documentation":"<p>Information about the requested sandbox.</p>"
         }
       }
     },

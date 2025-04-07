@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.38.29
+=======
+
+* api-change:``bedrock``: New options for how to handle harmful content detected by Amazon Bedrock Guardrails.
+* api-change:``bedrock-runtime``: New options for how to handle harmful content detected by Amazon Bedrock Guardrails.
+* api-change:``codebuild``: AWS CodeBuild now offers an enhanced debugging experience.
+* api-change:``glue``: Add input validations for multiple Glue APIs
+* api-change:``medialive``: AWS Elemental MediaLive now supports SDI inputs to MediaLive Anywhere Channels in workflows that use AWS SDKs.
+* api-change:``personalize``: Add support for eventsConfig for CreateSolution, UpdateSolution, DescribeSolution, DescribeSolutionVersion. Add support for GetSolutionMetrics to return weighted NDCG metrics when eventsConfig is enabled for the solution.
+* api-change:``transfer``: This launch enables customers to manage contents of their remote directories, by deleting old files or moving files to archive folders in remote servers once they have been retrieved. Customers will be able to automate the process using event-driven architecture.
+
+
 1.38.28
 =======
 

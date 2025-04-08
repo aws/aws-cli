@@ -143,6 +143,13 @@ class TestPackageModules(unittest.TestCase):
             td = process_module_section(td, base, t, None, True, True)
 
             processed = yamlhelper.yaml_dump(td)
+
+            # Check to make sure the expected output and the actual
+            # output is equivalent yaml.
+            processed = yamlhelper.yaml_parse(processed)
+            e = yamlhelper.yaml_parse(e)
+            processed = yamlhelper.yaml_dump(processed)
+            e = yamlhelper.yaml_dump(e)
             self.assertEqual(e, processed, f"{test} failed")
 
         # These tests should fail to package

@@ -13,7 +13,7 @@
 import os
 
 
-class FileFormat(object):
+class FileFormat:
     def format(self, src, dest, parameters):
         """
         This function formats the source and destination

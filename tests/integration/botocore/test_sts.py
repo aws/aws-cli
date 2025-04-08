@@ -10,10 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import unittest
-
 import botocore.session
 from botocore.exceptions import ClientError
+
+from tests import unittest
+
 
 class TestSTS(unittest.TestCase):
     def setUp(self):
@@ -32,11 +33,14 @@ class TestSTS(unittest.TestCase):
         # that you can send an STS request to a regionalized endpoint
         # by making a call with the explicitly wrong region name
         sts = self.session.create_client(
-            'sts', region_name='ap-southeast-1',
-            endpoint_url='https://sts.us-west-2.amazonaws.com')
+            'sts',
+            region_name='ap-southeast-1',
+            endpoint_url='https://sts.us-west-2.amazonaws.com',
+        )
         self.assertEqual(sts.meta.region_name, 'ap-southeast-1')
-        self.assertEqual(sts.meta.endpoint_url,
-                         'https://sts.us-west-2.amazonaws.com')
+        self.assertEqual(
+            sts.meta.endpoint_url, 'https://sts.us-west-2.amazonaws.com'
+        )
         # Signing error will be thrown with the incorrect region name included.
-        with self.assertRaisesRegex(ClientError, 'ap-southeast-1') as e:
+        with self.assertRaisesRegex(ClientError, 'ap-southeast-1'):
             sts.get_session_token()

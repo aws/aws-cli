@@ -571,6 +571,24 @@
       "members":{
       }
     },
+    "DependencyConfig":{
+      "type":"structure",
+      "required":[
+        "DependencyKeyAttributes",
+        "DependencyOperationName"
+      ],
+      "members":{
+        "DependencyKeyAttributes":{
+          "shape":"Attributes",
+          "documentation":"<p>This is a string-to-string map. It can include the following fields.</p> <ul> <li> <p> <code>Type</code> designates the type of object this is.</p> </li> <li> <p> <code>ResourceType</code> specifies the type of the resource. This field is used only when the value of the <code>Type</code> field is <code>Resource</code> or <code>AWS::Resource</code>.</p> </li> <li> <p> <code>Name</code> specifies the name of the object. This is used only if the value of the <code>Type</code> field is <code>Service</code>, <code>RemoteService</code>, or <code>AWS::Service</code>.</p> </li> <li> <p> <code>Identifier</code> identifies the resource objects of this resource. This is used only if the value of the <code>Type</code> field is <code>Resource</code> or <code>AWS::Resource</code>.</p> </li> <li> <p> <code>Environment</code> specifies the location where this object is hosted, or what it belongs to.</p> </li> </ul>"
+        },
+        "DependencyOperationName":{
+          "shape":"OperationName",
+          "documentation":"<p>The name of the called operation in the dependency.</p>"
+        }
+      },
+      "documentation":"<p>Identifies the dependency using the <code>DependencyKeyAttributes</code> and <code>DependencyOperationName</code>.</p> <p>When creating a service dependency SLO, you must specify the <code>KeyAttributes</code> of the service, and the <code>DependencyConfig</code> for the dependency. You can specify the <code>OperationName</code> of the service, from which it calls the dependency. Alternatively, you can exclude <code>OperationName</code> and the SLO will monitor all of the service's operations that call the dependency.</p>"
+    },
     "Dimension":{
       "type":"structure",
       "required":[
@@ -982,6 +1000,10 @@
           "location":"querystring",
           "locationName":"OperationName"
         },
+        "DependencyConfig":{
+          "shape":"DependencyConfig",
+          "documentation":"<p>Identifies the dependency using the <code>DependencyKeyAttributes</code> and <code>DependencyOperationName</code>. </p>"
+        },
         "MaxResults":{
           "shape":"ListServiceLevelObjectivesMaxResults",
           "documentation":"<p>The maximum number of results to return in one operation. If you omit this parameter, the default of 50 is used.</p>",
@@ -993,6 +1015,10 @@
           "documentation":"<p>Include this value, if it was returned by the previous operation, to get the next set of service level objectives.</p>",
           "location":"querystring",
           "locationName":"NextToken"
+        },
+        "MetricSourceTypes":{
+          "shape":"MetricSourceTypes",
+          "documentation":"<p>Use this optional field to only include SLOs with the specified metric source types in the output. Supported types are:</p> <ul> <li> <p>Service operation</p> </li> <li> <p>Service dependency</p> </li> <li> <p>CloudWatch metric</p> </li> </ul>"
         },
         "IncludeLinkedAccounts":{
           "shape":"Boolean",
@@ -1307,6 +1333,20 @@
       "type":"list",
       "member":{"shape":"MetricReference"}
     },
+    "MetricSourceType":{
+      "type":"string",
+      "enum":[
+        "ServiceOperation",
+        "CloudWatchMetric",
+        "ServiceDependency"
+      ]
+    },
+    "MetricSourceTypes":{
+      "type":"list",
+      "member":{"shape":"MetricSourceType"},
+      "max":3,
+      "min":1
+    },
     "MetricStat":{
       "type":"structure",
       "required":[
@@ -1445,6 +1485,10 @@
         "MonitoredRequestCountMetric":{
           "shape":"MonitoredRequestCountMetricDataQueries",
           "documentation":"<p>This structure defines the metric that is used as the \"good request\" or \"bad request\" value for a request-based SLO. This value observed for the metric defined in <code>TotalRequestCountMetric</code> is divided by the number found for <code>MonitoredRequestCountMetric</code> to determine the percentage of successful requests that this SLO tracks.</p>"
+        },
+        "DependencyConfig":{
+          "shape":"DependencyConfig",
+          "documentation":"<p>Identifies the dependency using the <code>DependencyKeyAttributes</code> and <code>DependencyOperationName</code>. </p>"
         }
       },
       "documentation":"<p>This structure contains the information about the metric that is used for a request-based SLO.</p>"
@@ -1471,6 +1515,10 @@
         "MonitoredRequestCountMetric":{
           "shape":"MonitoredRequestCountMetricDataQueries",
           "documentation":"<p>Use this structure to define the metric that you want to use as the \"good request\" or \"bad request\" value for a request-based SLO. This value observed for the metric defined in <code>TotalRequestCountMetric</code> will be divided by the number found for <code>MonitoredRequestCountMetric</code> to determine the percentage of successful requests that this SLO tracks.</p>"
+        },
+        "DependencyConfig":{
+          "shape":"DependencyConfig",
+          "documentation":"<p>Identifies the dependency using the <code>DependencyKeyAttributes</code> and <code>DependencyOperationName</code>. </p>"
         }
       },
       "documentation":"<p>Use this structure to specify the information for the metric that a period-based SLO will monitor.</p>"
@@ -1702,6 +1750,10 @@
         "MetricDataQueries":{
           "shape":"MetricDataQueries",
           "documentation":"<p>If this SLO monitors a CloudWatch metric or the result of a CloudWatch metric math expression, this structure includes the information about that metric or expression. </p>"
+        },
+        "DependencyConfig":{
+          "shape":"DependencyConfig",
+          "documentation":"<p>Identifies the dependency using the <code>DependencyKeyAttributes</code> and <code>DependencyOperationName</code>. </p>"
         }
       },
       "documentation":"<p>This structure contains the information about the metric that is used for a period-based SLO.</p>"
@@ -1732,6 +1784,10 @@
         "MetricDataQueries":{
           "shape":"MetricDataQueries",
           "documentation":"<p>If this SLO monitors a CloudWatch metric or the result of a CloudWatch metric math expression, use this structure to specify that metric or expression. </p>"
+        },
+        "DependencyConfig":{
+          "shape":"DependencyConfig",
+          "documentation":"<p>Identifies the dependency using the <code>DependencyKeyAttributes</code> and <code>DependencyOperationName</code>. </p>"
         }
       },
       "documentation":"<p>Use this structure to specify the information for the metric that a period-based SLO will monitor.</p>"
@@ -1799,6 +1855,10 @@
         "BurnRateConfigurations":{
           "shape":"BurnRateConfigurations",
           "documentation":"<p>Each object in this array defines the length of the look-back window used to calculate one burn rate metric for this SLO. The burn rate measures how fast the service is consuming the error budget, relative to the attainment goal of the SLO.</p>"
+        },
+        "MetricSourceType":{
+          "shape":"MetricSourceType",
+          "documentation":"<p>Displays the SLI metric source type for this SLO. Supported types are:</p> <ul> <li> <p>Service operation</p> </li> <li> <p>Service dependency</p> </li> <li> <p>CloudWatch metric</p> </li> </ul>"
         }
       },
       "documentation":"<p>A structure containing information about one service level objective (SLO) that has been created in Application Signals. Creating SLOs can help you ensure your services are performing to the level that you expect. SLOs help you set and track a specific target level for the reliability and availability of your applications and services. Each SLO uses a service level indicator (SLI), which is a key performance metric, to calculate how much underperformance can be tolerated before the goal that you set for the SLO is not achieved.</p>"
@@ -1959,9 +2019,21 @@
           "shape":"OperationName",
           "documentation":"<p>If this service level objective is specific to a single operation, this field displays the name of that operation.</p>"
         },
+        "DependencyConfig":{
+          "shape":"DependencyConfig",
+          "documentation":"<p>Identifies the dependency using the <code>DependencyKeyAttributes</code> and <code>DependencyOperationName</code>. </p>"
+        },
         "CreatedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that this service level objective was created. It is expressed as the number of milliseconds since Jan 1, 1970 00:00:00 UTC.</p>"
+        },
+        "EvaluationType":{
+          "shape":"EvaluationType",
+          "documentation":"<p>Displays whether this is a period-based SLO or a request-based SLO.</p>"
+        },
+        "MetricSourceType":{
+          "shape":"MetricSourceType",
+          "documentation":"<p>Displays the SLI metric source type for this SLO. Supported types are:</p> <ul> <li> <p>Service operation</p> </li> <li> <p>Service dependency</p> </li> <li> <p>CloudWatch metric</p> </li> </ul>"
         }
       },
       "documentation":"<p>A structure that contains information about one service level objective (SLO) created in Application Signals.</p>"

@@ -22,6 +22,7 @@ configuration options:
 * The ``user_agent_extra`` field in the :py:class:`botocore.config.Config`.
 
 """
+
 import logging
 import os
 import platform
@@ -31,7 +32,6 @@ from typing import NamedTuple, Optional
 
 from botocore import __version__ as botocore_version
 from botocore.context import get_context
-
 
 logger = logging.getLogger(__name__)
 

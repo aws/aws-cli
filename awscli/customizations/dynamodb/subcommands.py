@@ -10,28 +10,28 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from base64 import b64decode
-from decimal import Decimal
 import logging
 import sys
+from base64 import b64decode
+from decimal import Decimal
 
 from ruamel.yaml import YAML
 
-from awscli.formatter import YAMLFormatter
-from awscli.utils import OutputStreamFactory
 import awscli.customizations.dynamodb.params as parameters
 from awscli.customizations.commands import BasicCommand, CustomArgument
 from awscli.customizations.dynamodb.extractor import AttributeExtractor
+from awscli.customizations.dynamodb.formatter import DynamoYAMLDumper
 from awscli.customizations.dynamodb.transform import (
     ParameterTransformer,
-    TypeSerializer,
     TypeDeserializer,
+    TypeSerializer,
 )
-from awscli.customizations.dynamodb.formatter import DynamoYAMLDumper
-from awscli.customizations.paginate import ensure_paging_params_not_set
 from awscli.customizations.exceptions import ParamValidationError
-from .types import Binary
+from awscli.customizations.paginate import ensure_paging_params_not_set
+from awscli.formatter import YAMLFormatter
+from awscli.utils import OutputStreamFactory
 
+from .types import Binary
 
 LOGGER = logging.getLogger(__name__)
 

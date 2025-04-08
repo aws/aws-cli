@@ -18,14 +18,17 @@ from botocore.docs.waiter import WaiterDocumenter
 from botocore.exceptions import DataNotFoundError
 
 
-class ServiceDocumenter(object):
+class ServiceDocumenter:
     def __init__(self, service_name, session):
         self._session = session
         self._service_name = service_name
 
         self._client = self._session.create_client(
-            service_name, region_name='us-east-1', aws_access_key_id='foo',
-            aws_secret_access_key='bar')
+            service_name,
+            region_name='us-east-1',
+            aws_access_key_id='foo',
+            aws_secret_access_key='bar',
+        )
         self._event_emitter = self._client.meta.events
 
         self.sections = [
@@ -34,7 +37,7 @@ class ServiceDocumenter(object):
             'client-api',
             'client-exceptions',
             'paginator-api',
-            'waiter-api'
+            'waiter-api',
         ]
 
     def document_service(self):
@@ -43,8 +46,8 @@ class ServiceDocumenter(object):
         :returns: The reStructured text of the documented service.
         """
         doc_structure = DocumentStructure(
-            self._service_name, section_names=self.sections,
-            target='html')
+            self._service_name, section_names=self.sections, target='html'
+        )
         self.title(doc_structure.get_section('title'))
         self.table_of_contents(doc_structure.get_section('table-of-contents'))
         self.client_api(doc_structure.get_section('client-api'))
@@ -57,8 +60,7 @@ class ServiceDocumenter(object):
         section.style.h1(self._client.__class__.__name__)
         service_id = self._client.meta.service_model.service_id.hyphenize()
         self._event_emitter.emit(
-            'docs.%s.%s' % ('title', service_id),
-            section=section
+            'docs.{}.{}'.format('title', service_id), section=section
         )
 
     def table_of_contents(self, section):
@@ -79,23 +81,26 @@ class ServiceDocumenter(object):
     def paginator_api(self, section):
         try:
             service_paginator_model = self._session.get_paginator_model(
-                self._service_name)
+                self._service_name
+            )
         except DataNotFoundError:
             return
         paginator_documenter = PaginatorDocumenter(
-            self._client, service_paginator_model)
+            self._client, service_paginator_model
+        )
         paginator_documenter.document_paginators(section)
 
     def waiter_api(self, section):
         if self._client.waiter_names:
             service_waiter_model = self._session.get_waiter_model(
-                self._service_name)
+                self._service_name
+            )
             waiter_documenter = WaiterDocumenter(
-                self._client, service_waiter_model)
+                self._client, service_waiter_model
+            )
             waiter_documenter.document_waiters(section)
 
     def get_examples(self, service_name):
         loader = self._session.get_component('data_loader')
-        examples = loader.load_service_model(
-            service_name, 'examples-1')
+        examples = loader.load_service_model(service_name, 'examples-1')
         return examples['examples']

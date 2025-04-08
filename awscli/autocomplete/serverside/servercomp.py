@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 import logging
 
-from awscli.autocomplete.completer import BaseCompleter, CompletionResult
 from awscli.autocomplete import LazyClientCreator
+from awscli.autocomplete.completer import BaseCompleter, CompletionResult
 from awscli.autocomplete.filters import startswith_filter
 
 LOG = logging.getLogger(__name__)

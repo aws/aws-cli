@@ -14,9 +14,8 @@ from tests import BaseSessionTest, ClientHTTPStubber
 
 
 class TestRDSPresignUrlInjection(BaseSessionTest):
-
     def setUp(self):
-        super(TestRDSPresignUrlInjection, self).setUp()
+        super().setUp()
         self.client = self.session.create_client('rds', 'us-west-2')
         self.http_stubber = ClientHTTPStubber(self.client)
 
@@ -28,12 +27,12 @@ class TestRDSPresignUrlInjection(BaseSessionTest):
         params = {
             'SourceDBSnapshotIdentifier': 'source-db',
             'TargetDBSnapshotIdentifier': 'target-db',
-            'SourceRegion': 'us-east-1'
+            'SourceRegion': 'us-east-1',
         }
         response_body = (
-                    b'<CopyDBSnapshotResponse>'
-                    b'<CopyDBSnapshotResult></CopyDBSnapshotResult>'
-                    b'</CopyDBSnapshotResponse>'
+            b'<CopyDBSnapshotResponse>'
+            b'<CopyDBSnapshotResult></CopyDBSnapshotResult>'
+            b'</CopyDBSnapshotResponse>'
         )
         self.http_stubber.add_response(body=response_body)
         with self.http_stubber:
@@ -45,7 +44,7 @@ class TestRDSPresignUrlInjection(BaseSessionTest):
         params = {
             'SourceDBInstanceIdentifier': 'source-db',
             'DBInstanceIdentifier': 'target-db',
-            'SourceRegion': 'us-east-1'
+            'SourceRegion': 'us-east-1',
         }
         response_body = (
             b'<CreateDBInstanceReadReplicaResponse>'
@@ -72,14 +71,16 @@ class TestRDSPresignUrlInjection(BaseSessionTest):
         )
         self.http_stubber.add_response(body=response_body)
         with self.http_stubber:
-            self.client.start_db_instance_automated_backups_replication(**params)
+            self.client.start_db_instance_automated_backups_replication(
+                **params
+            )
             sent_request = self.http_stubber.requests[0]
             self.assert_presigned_url_injected_in_request(sent_request.body)
 
 
 class TestRDS(BaseSessionTest):
     def setUp(self):
-        super(TestRDS, self).setUp()
+        super().setUp()
         self.client = self.session.create_client('rds', 'us-west-2')
 
     def test_generate_db_auth_token(self):
@@ -87,7 +88,8 @@ class TestRDS(BaseSessionTest):
         port = 3306
         username = 'mySQLUser'
         auth_token = self.client.generate_db_auth_token(
-            DBHostname=hostname, Port=port, DBUsername=username)
+            DBHostname=hostname, Port=port, DBUsername=username
+        )
 
         endpoint_url = 'host.us-east-1.rds.amazonaws.com:3306'
         self.assertIn(endpoint_url, auth_token)

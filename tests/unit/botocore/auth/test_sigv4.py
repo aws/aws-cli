@@ -22,22 +22,22 @@ placed in ./aws4_testsuite, and we're using those to dynamically
 generate testcases based on these files.
 
 """
-import os
-import logging
-import io
+
 import datetime
+import io
+import logging
+import os
 import re
 from http.server import BaseHTTPRequestHandler
-from botocore.compat import urlsplit, parse_qsl
 
-import pytest
-
-from tests import FreezeTime
 import botocore.auth
 import botocore.crt.auth
+import pytest
 from botocore.awsrequest import AWSRequest
+from botocore.compat import parse_qsl, urlsplit
 from botocore.credentials import Credentials
 
+from tests import FreezeTime
 
 SECRET_KEY = "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY"
 ACCESS_KEY = 'AKIDEXAMPLE'
@@ -46,7 +46,8 @@ SERVICE = 'service'
 REGION = 'us-east-1'
 
 TESTSUITE_DIR = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), 'aws4_testsuite')
+    os.path.dirname(os.path.abspath(__file__)), 'aws4_testsuite'
+)
 
 # The following tests are not run.  Each test has a comment as
 # to why the test is being ignored.
@@ -78,7 +79,7 @@ class RawHTTPRequest(BaseHTTPRequestHandler):
 
 
 def generate_test_cases():
-    for (dirpath, dirnames, filenames) in os.walk(TESTSUITE_DIR):
+    for dirpath, dirnames, filenames in os.walk(TESTSUITE_DIR):
         if not any(f.endswith('.req') for f in filenames):
             continue
 
@@ -121,7 +122,7 @@ def create_request_from_raw_request(raw_request):
     # so we need decode this into utf-8.
     if isinstance(raw.path, str):
         raw.path = raw.path.encode('iso-8859-1').decode('utf-8')
-    url = 'https://%s%s' % (host, raw.path)
+    url = f'https://{host}{raw.path}'
     if '?' in url:
         split_url = urlsplit(url)
         params = dict(parse_qsl(split_url.query))
@@ -138,22 +139,35 @@ def _test_signature_version_4(test_case):
 
     auth = botocore.auth.SigV4Auth(test_case.credentials, SERVICE, REGION)
     actual_canonical_request = auth.canonical_request(request)
-    actual_string_to_sign = auth.string_to_sign(request,
-                                                actual_canonical_request)
+    actual_string_to_sign = auth.string_to_sign(
+        request, actual_canonical_request
+    )
     auth.add_auth(request)
     actual_auth_header = request.headers['Authorization']
 
     # Some stuff only works right when you go through auth.add_auth()
     # So don't assert the interim steps unless the end result was wrong.
     if actual_auth_header != test_case.authorization_header:
-        assert_equal(actual_canonical_request, test_case.canonical_request,
-                     test_case.raw_request, 'canonical_request')
+        assert_equal(
+            actual_canonical_request,
+            test_case.canonical_request,
+            test_case.raw_request,
+            'canonical_request',
+        )
 
-        assert_equal(actual_string_to_sign, test_case.string_to_sign,
-                     test_case.raw_request, 'string_to_sign')
+        assert_equal(
+            actual_string_to_sign,
+            test_case.string_to_sign,
+            test_case.raw_request,
+            'string_to_sign',
+        )
 
-        assert_equal(actual_auth_header, test_case.authorization_header,
-                     test_case.raw_request, 'authheader')
+        assert_equal(
+            actual_auth_header,
+            test_case.authorization_header,
+            test_case.raw_request,
+            'authheader',
+        )
 
 
 def _test_crt_signature_version_4(test_case):
@@ -163,44 +177,51 @@ def _test_crt_signature_version_4(test_case):
     # Use CRT logging to diagnose interim steps (canonical request, etc)
     # import awscrt.io
     # awscrt.io.init_logging(awscrt.io.LogLevel.Trace, 'stdout')
-    auth = botocore.crt.auth.CrtSigV4Auth(test_case.credentials,
-                                          SERVICE, REGION)
+    auth = botocore.crt.auth.CrtSigV4Auth(
+        test_case.credentials, SERVICE, REGION
+    )
     auth.add_auth(request)
     actual_auth_header = request.headers['Authorization']
-    assert_equal(actual_auth_header, test_case.authorization_header,
-                 test_case.raw_request, 'authheader')
+    assert_equal(
+        actual_auth_header,
+        test_case.authorization_header,
+        test_case.raw_request,
+        'authheader',
+    )
 
 
 def assert_equal(actual, expected, raw_request, part):
     if actual != expected:
-        message = "The %s did not match" % part
-        message += "\nACTUAL:%r !=\nEXPECT:%r" % (actual, expected)
-        message += '\nThe raw request was:\n%s' % raw_request
+        message = f"The {part} did not match"
+        message += f"\nACTUAL:{actual!r} !=\nEXPECT:{expected!r}"
+        message += f'\nThe raw request was:\n{raw_request}'
         raise AssertionError(message)
 
 
-class SignatureTestCase(object):
+class SignatureTestCase:
     def __init__(self, test_case):
-        filepath = os.path.join(TESTSUITE_DIR, test_case,
-                                os.path.basename(test_case))
+        filepath = os.path.join(
+            TESTSUITE_DIR, test_case, os.path.basename(test_case)
+        )
         # We're using io.open() because we need to open these files with
         # a specific encoding, and in 2.x io.open is the best way to do this.
-        self.raw_request = io.open(filepath + '.req',
-                                   encoding='utf-8').read()
-        self.canonical_request = io.open(
-            filepath + '.creq',
-            encoding='utf-8').read().replace('\r', '')
-        self.string_to_sign = io.open(
-            filepath + '.sts',
-            encoding='utf-8').read().replace('\r', '')
-        self.authorization_header = io.open(
-            filepath + '.authz',
-            encoding='utf-8').read().replace('\r', '')
-        self.signed_request = io.open(filepath + '.sreq',
-                                      encoding='utf-8').read()
+        self.raw_request = open(filepath + '.req', encoding='utf-8').read()
+        self.canonical_request = (
+            open(filepath + '.creq', encoding='utf-8').read().replace('\r', '')
+        )
+        self.string_to_sign = (
+            open(filepath + '.sts', encoding='utf-8').read().replace('\r', '')
+        )
+        self.authorization_header = (
+            open(filepath + '.authz', encoding='utf-8')
+            .read()
+            .replace('\r', '')
+        )
+        self.signed_request = open(filepath + '.sreq', encoding='utf-8').read()
 
         token_pattern = r'^x-amz-security-token:(.*)$'
-        token_match = re.search(token_pattern, self.canonical_request,
-                                re.MULTILINE)
+        token_match = re.search(
+            token_pattern, self.canonical_request, re.MULTILINE
+        )
         token = token_match.group(1) if token_match else None
         self.credentials = Credentials(ACCESS_KEY, SECRET_KEY, token)

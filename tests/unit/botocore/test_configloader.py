@@ -12,14 +12,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import mock, unittest, BaseEnvVar
 import os
-import tempfile
 import shutil
+import tempfile
 
 import botocore.exceptions
-from botocore.configloader import raw_config_parse, load_config, \
-    multi_file_load_config
+from botocore.configloader import (
+    load_config,
+    multi_file_load_config,
+    raw_config_parse,
+)
+
+from tests import BaseEnvVar, mock, unittest
 
 
 def path(filename):
@@ -58,7 +62,7 @@ class TestConfigLoader(BaseEnvVar):
 
     def test_config_not_found(self):
         with self.assertRaises(botocore.exceptions.ConfigNotFound):
-            loaded_config = raw_config_parse(path('aws_config_notfound'))
+            raw_config_parse(path('aws_config_notfound'))
 
     def test_config_parse_error(self):
         filename = path('aws_config_bad')
@@ -85,8 +89,9 @@ class TestConfigLoader(BaseEnvVar):
     def test_profile_map_conversion(self):
         loaded_config = load_config(path('aws_config'))
         self.assertIn('profiles', loaded_config)
-        self.assertEqual(sorted(loaded_config['profiles'].keys()),
-                         ['default', 'personal'])
+        self.assertEqual(
+            sorted(loaded_config['profiles'].keys()), ['default', 'personal']
+        )
 
     def test_bad_profiles_are_ignored(self):
         filename = path('aws_bad_profile')
@@ -115,31 +120,31 @@ class TestConfigLoader(BaseEnvVar):
         # will make sure that indented sections such as singature_version
         # will not be treated as another subsection but rather
         # its literal value.
-        self.assertEqual(
-            raw_config['cloudwatch'], '\nsignature_version = v4')
+        self.assertEqual(raw_config['cloudwatch'], '\nsignature_version = v4')
         self.assertEqual(
             raw_config['s3'],
-            '\nsignature_version = s3v4'
-            '\naddressing_style = path'
+            '\nsignature_version = s3v4' '\naddressing_style = path',
         )
 
     def test_nested_bad_config(self):
         filename = path('aws_config_nested_bad')
         with self.assertRaises(botocore.exceptions.ConfigParseError):
-            loaded_config = load_config(filename)
+            load_config(filename)
 
     def test_nested_bad_config_filesystem_encoding_none(self):
         filename = path('aws_config_nested_bad')
         with mock.patch('sys.getfilesystemencoding') as encoding:
             encoding.return_value = None
             with self.assertRaises(botocore.exceptions.ConfigParseError):
-                loaded_config = load_config(filename)
+                load_config(filename)
 
     def test_multi_file_load(self):
-        filenames = [path('aws_config_other'),
-                     path('aws_config'),
-                     path('aws_third_config'),
-                     path('aws_config_notfound')]
+        filenames = [
+            path('aws_config_other'),
+            path('aws_config'),
+            path('aws_third_config'),
+            path('aws_config_notfound'),
+        ]
         loaded_config = multi_file_load_config(*filenames)
         config = loaded_config['profiles']['default']
         self.assertEqual(config['aws_access_key_id'], 'other_foo')

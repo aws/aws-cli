@@ -13,8 +13,8 @@
 
 
 import pytest
-
 from botocore.exceptions import FlexibleChecksumError
+
 from tests import ClientHTTPStubber, patch_load_service_model
 
 TEST_CHECKSUM_SERVICE_MODEL = {

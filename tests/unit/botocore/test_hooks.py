@@ -12,11 +12,11 @@
 # language governing permissions and limitations under the License.
 import copy
 import functools
-
-from tests import unittest
 from functools import partial
 
 from botocore.hooks import HierarchicalEmitter, first_non_none_response
+
+from tests import unittest
 
 
 class TestHierarchicalEventEmitter(unittest.TestCase):
@@ -44,18 +44,22 @@ class TestHierarchicalEventEmitter(unittest.TestCase):
         self.emitter.emit('foo.bar.baz')
         self.assertEqual(len(self.hook_calls), 3, self.hook_calls)
         # The hook is called with the same event name three times.
-        self.assertEqual([e['event_name'] for e in self.hook_calls],
-                         ['foo.bar.baz', 'foo.bar.baz', 'foo.bar.baz'])
+        self.assertEqual(
+            [e['event_name'] for e in self.hook_calls],
+            ['foo.bar.baz', 'foo.bar.baz', 'foo.bar.baz'],
+        )
 
     def test_hook_called_in_proper_order(self):
         # We should call the hooks from most specific to least
         # specific.
         calls = []
         self.emitter.register('foo', lambda **kwargs: calls.append('foo'))
-        self.emitter.register('foo.bar',
-                              lambda **kwargs: calls.append('foo.bar'))
-        self.emitter.register('foo.bar.baz',
-                              lambda **kwargs: calls.append('foo.bar.baz'))
+        self.emitter.register(
+            'foo.bar', lambda **kwargs: calls.append('foo.bar')
+        )
+        self.emitter.register(
+            'foo.bar.baz', lambda **kwargs: calls.append('foo.bar.baz')
+        )
 
         self.emitter.emit('foo.bar.baz')
         self.assertEqual(calls, ['foo.bar.baz', 'foo.bar', 'foo'])
@@ -136,7 +140,8 @@ class TestFirstNonNoneResponse(unittest.TestCase):
         # If no response is found and a default value is passed in, it will
         # be returned.
         self.assertEqual(
-            first_non_none_response(responses, default='notfound'), 'notfound')
+            first_non_none_response(responses, default='notfound'), 'notfound'
+        )
 
 
 class TestWildcardHandlers(unittest.TestCase):
@@ -157,7 +162,7 @@ class TestWildcardHandlers(unittest.TestCase):
         self.emitter.emit(event)
         after = len(self.hook_calls)
         if not after > starting:
-            self.fail("Handler was not called for event: %s" % event)
+            self.fail(f"Handler was not called for event: {event}")
         self.assertEqual(self.hook_calls[-1]['event_name'], event)
 
     def assert_hook_is_not_called_given_event(self, event):
@@ -165,9 +170,10 @@ class TestWildcardHandlers(unittest.TestCase):
         self.emitter.emit(event)
         after = len(self.hook_calls)
         if not after == starting:
-            self.fail("Handler was called for event but was not "
-                      "suppose to be called: %s, last_event: %s" %
-                      (event, self.hook_calls[-1]))
+            self.fail(
+                "Handler was called for event but was not "
+                f"suppose to be called: {event}, last_event: {self.hook_calls[-1]}"
+            )
 
     def test_one_level_wildcard_handler(self):
         self.emitter.register('foo.*.baz', self.hook)
@@ -292,7 +298,9 @@ class TestWildcardHandlers(unittest.TestCase):
         self.assertEqual(len(self.hook_calls), 0)
 
     def test_remove_handler_with_unique_id(self):
-        hook2 = lambda **kwargs: self.hook_calls.append(kwargs)
+        def hook2(**kwargs):
+            return self.hook_calls.append(kwargs)
+
         self.emitter.register('foo.bar.baz', self.hook, unique_id='foo')
         self.emitter.register('foo.bar.baz', hook2)
         self.emitter.emit('foo.bar.baz')
@@ -331,8 +339,9 @@ class TestWildcardHandlers(unittest.TestCase):
         self.assertEqual(len(self.hook_calls), 0)
 
     def test_register_with_uses_count_initially(self):
-        self.emitter.register('foo', self.hook, unique_id='foo',
-                              unique_id_uses_count=True)
+        self.emitter.register(
+            'foo', self.hook, unique_id='foo', unique_id_uses_count=True
+        )
         # Subsequent calls must set ``unique_id_uses_count`` to True.
         with self.assertRaises(ValueError):
             self.emitter.register('foo', self.hook, unique_id='foo')
@@ -341,14 +350,17 @@ class TestWildcardHandlers(unittest.TestCase):
         self.emitter.register('foo', self.hook, unique_id='foo')
         # Subsequent calls must set ``unique_id_uses_count`` to False.
         with self.assertRaises(ValueError):
-            self.emitter.register('foo', self.hook, unique_id='foo',
-                                  unique_id_uses_count=True)
+            self.emitter.register(
+                'foo', self.hook, unique_id='foo', unique_id_uses_count=True
+            )
 
     def test_register_with_uses_count_unregister(self):
-        self.emitter.register('foo', self.hook, unique_id='foo',
-                              unique_id_uses_count=True)
-        self.emitter.register('foo', self.hook, unique_id='foo',
-                              unique_id_uses_count=True)
+        self.emitter.register(
+            'foo', self.hook, unique_id='foo', unique_id_uses_count=True
+        )
+        self.emitter.register(
+            'foo', self.hook, unique_id='foo', unique_id_uses_count=True
+        )
         # Event was registered to use a count so it must be specified
         # that a count is used when unregistering
         with self.assertRaises(ValueError):
@@ -356,14 +368,16 @@ class TestWildcardHandlers(unittest.TestCase):
         # Event should not have been unregistered.
         self.emitter.emit('foo')
         self.assertEqual(len(self.hook_calls), 1)
-        self.emitter.unregister('foo', self.hook, unique_id='foo',
-                                unique_id_uses_count=True)
+        self.emitter.unregister(
+            'foo', self.hook, unique_id='foo', unique_id_uses_count=True
+        )
         # Event still should not be unregistered.
         self.hook_calls = []
         self.emitter.emit('foo')
         self.assertEqual(len(self.hook_calls), 1)
-        self.emitter.unregister('foo', self.hook, unique_id='foo',
-                                unique_id_uses_count=True)
+        self.emitter.unregister(
+            'foo', self.hook, unique_id='foo', unique_id_uses_count=True
+        )
         # Now the event should be unregistered.
         self.hook_calls = []
         self.emitter.emit('foo')
@@ -373,8 +387,9 @@ class TestWildcardHandlers(unittest.TestCase):
         self.emitter.register('foo', self.hook, unique_id='foo')
         # The event was not registered to use a count initially
         with self.assertRaises(ValueError):
-            self.emitter.unregister('foo', self.hook, unique_id='foo',
-                                    unique_id_uses_count=True)
+            self.emitter.unregister(
+                'foo', self.hook, unique_id='foo', unique_id_uses_count=True
+            )
 
     def test_handlers_called_in_order(self):
         def handler(call_number, **kwargs):
@@ -384,8 +399,7 @@ class TestWildcardHandlers(unittest.TestCase):
         self.emitter.register('foo', partial(handler, call_number=1))
         self.emitter.register('foo', partial(handler, call_number=2))
         self.emitter.emit('foo')
-        self.assertEqual([k['call_number'] for k in self.hook_calls],
-                         [1, 2])
+        self.assertEqual([k['call_number'] for k in self.hook_calls], [1, 2])
 
     def test_handler_call_order_with_hierarchy(self):
         def handler(call_number, **kwargs):
@@ -403,8 +417,9 @@ class TestWildcardHandlers(unittest.TestCase):
         self.emitter.register('foo', partial(handler, call_number=6))
 
         self.emitter.emit('foo.bar.baz')
-        self.assertEqual([k['call_number'] for k in self.hook_calls],
-                         [1, 2, 3, 4, 5, 6])
+        self.assertEqual(
+            [k['call_number'] for k in self.hook_calls], [1, 2, 3, 4, 5, 6]
+        )
 
     def test_register_first_single_level(self):
         def handler(call_number, **kwargs):
@@ -420,8 +435,9 @@ class TestWildcardHandlers(unittest.TestCase):
         self.emitter.register('foo', partial(handler, call_number=5))
 
         self.emitter.emit('foo')
-        self.assertEqual([k['call_number'] for k in self.hook_calls],
-                         [1, 2, 3, 4, 5])
+        self.assertEqual(
+            [k['call_number'] for k in self.hook_calls], [1, 2, 3, 4, 5]
+        )
 
     def test_register_first_hierarchy(self):
         def handler(call_number, **kwargs):
@@ -438,8 +454,9 @@ class TestWildcardHandlers(unittest.TestCase):
         self.emitter.register('foo.bar', partial(handler, call_number=3))
 
         self.emitter.emit('foo.bar')
-        self.assertEqual([k['call_number'] for k in self.hook_calls],
-                         [1, 2, 3, 4, 5, 6])
+        self.assertEqual(
+            [k['call_number'] for k in self.hook_calls], [1, 2, 3, 4, 5, 6]
+        )
 
     def test_register_last_hierarchy(self):
         def handler(call_number, **kwargs):
@@ -450,8 +467,9 @@ class TestWildcardHandlers(unittest.TestCase):
         self.emitter.register('foo', partial(handler, call_number=2))
         self.emitter.register_first('foo', partial(handler, call_number=1))
         self.emitter.emit('foo')
-        self.assertEqual([k['call_number'] for k in self.hook_calls],
-                         [1, 2, 3])
+        self.assertEqual(
+            [k['call_number'] for k in self.hook_calls], [1, 2, 3]
+        )
 
     def test_register_unregister_first_last(self):
         self.emitter.register('foo', self.hook)
@@ -469,10 +487,12 @@ class TestWildcardHandlers(unittest.TestCase):
         # Here we're not testing copy directly, we're testing
         # the observable behavior from copying an event emitter.
         first = []
+
         def first_handler(id_name, **kwargs):
             first.append(id_name)
 
         second = []
+
         def second_handler(id_name, **kwargs):
             second.append(id_name)
 
@@ -511,10 +531,12 @@ class TestWildcardHandlers(unittest.TestCase):
         # Here we're not testing copy directly, we're testing
         # the observable behavior from copying an event emitter.
         first = []
+
         def first_handler(id_name, **kwargs):
             first.append(id_name)
 
         second = []
+
         def second_handler(id_name, **kwargs):
             second.append(id_name)
 
@@ -557,8 +579,9 @@ class TestWildcardHandlers(unittest.TestCase):
         f = functools.partial(handler, 1)
         self.emitter.register('a.b', f)
         copied = copy.copy(self.emitter)
-        self.assertEqual(copied.emit_until_response(
-            'a.b', b='return-val')[1], 'return-val')
+        self.assertEqual(
+            copied.emit_until_response('a.b', b='return-val')[1], 'return-val'
+        )
 
 
 if __name__ == '__main__':

@@ -11,13 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-
 from botocore.client import ClientEndpointBridge
-from botocore.exceptions import NoRegionError
 from botocore.compat import urlparse
+from botocore.exceptions import NoRegionError
 
-from tests import mock, BaseSessionTest, ClientHTTPStubber
-
+from tests import BaseSessionTest, ClientHTTPStubber, mock
 
 # NOTE: sqs endpoint updated to be the CN in the SSL cert because
 # a bug in python2.6 prevents subjectAltNames from being parsed
@@ -64,7 +62,7 @@ KNOWN_REGIONS = {
         'streams.dynamodb': 'streams.dynamodb.ap-northeast-1.amazonaws.com',
         'sts': 'sts.ap-northeast-1.amazonaws.com',
         'swf': 'swf.ap-northeast-1.amazonaws.com',
-        'workspaces': 'workspaces.ap-northeast-1.amazonaws.com'
+        'workspaces': 'workspaces.ap-northeast-1.amazonaws.com',
     },
     'ap-southeast-1': {
         'autoscaling': 'autoscaling.ap-southeast-1.amazonaws.com',
@@ -96,7 +94,7 @@ KNOWN_REGIONS = {
         'streams.dynamodb': 'streams.dynamodb.ap-southeast-1.amazonaws.com',
         'sts': 'sts.ap-southeast-1.amazonaws.com',
         'swf': 'swf.ap-southeast-1.amazonaws.com',
-        'workspaces': 'workspaces.ap-southeast-1.amazonaws.com'
+        'workspaces': 'workspaces.ap-southeast-1.amazonaws.com',
     },
     'ap-southeast-2': {
         'autoscaling': 'autoscaling.ap-southeast-2.amazonaws.com',
@@ -131,11 +129,9 @@ KNOWN_REGIONS = {
         'streams.dynamodb': 'streams.dynamodb.ap-southeast-2.amazonaws.com',
         'sts': 'sts.ap-southeast-2.amazonaws.com',
         'swf': 'swf.ap-southeast-2.amazonaws.com',
-        'workspaces': 'workspaces.ap-southeast-2.amazonaws.com'
+        'workspaces': 'workspaces.ap-southeast-2.amazonaws.com',
     },
-    'aws-us-gov-global': {
-        'iam': 'iam.us-gov.amazonaws.com'
-    },
+    'aws-us-gov-global': {'iam': 'iam.us-gov.amazonaws.com'},
     'cn-north-1': {
         'autoscaling': 'autoscaling.cn-north-1.amazonaws.com.cn',
         'cloudformation': 'cloudformation.cn-north-1.amazonaws.com.cn',
@@ -158,7 +154,7 @@ KNOWN_REGIONS = {
         'storagegateway': 'storagegateway.cn-north-1.amazonaws.com.cn',
         'streams.dynamodb': 'streams.dynamodb.cn-north-1.amazonaws.com.cn',
         'sts': 'sts.cn-north-1.amazonaws.com.cn',
-        'swf': 'swf.cn-north-1.amazonaws.com.cn'
+        'swf': 'swf.cn-north-1.amazonaws.com.cn',
     },
     'eu-central-1': {
         'autoscaling': 'autoscaling.eu-central-1.amazonaws.com',
@@ -188,7 +184,7 @@ KNOWN_REGIONS = {
         'storagegateway': 'storagegateway.eu-central-1.amazonaws.com',
         'streams.dynamodb': 'streams.dynamodb.eu-central-1.amazonaws.com',
         'sts': 'sts.eu-central-1.amazonaws.com',
-        'swf': 'swf.eu-central-1.amazonaws.com'
+        'swf': 'swf.eu-central-1.amazonaws.com',
     },
     'eu-west-1': {
         'apigateway': 'apigateway.eu-west-1.amazonaws.com',
@@ -232,17 +228,11 @@ KNOWN_REGIONS = {
         'streams.dynamodb': 'streams.dynamodb.eu-west-1.amazonaws.com',
         'sts': 'sts.eu-west-1.amazonaws.com',
         'swf': 'swf.eu-west-1.amazonaws.com',
-        'workspaces': 'workspaces.eu-west-1.amazonaws.com'
+        'workspaces': 'workspaces.eu-west-1.amazonaws.com',
     },
-    'fips-us-gov-west-1': {
-        's3': 's3-fips.us-gov-west-1.amazonaws.com'
-    },
-    'local': {
-        'dynamodb': 'http://localhost:8000'
-    },
-    's3-external-1': {
-        's3': 's3-external-1.amazonaws.com'
-    },
+    'fips-us-gov-west-1': {'s3': 's3-fips.us-gov-west-1.amazonaws.com'},
+    'local': {'dynamodb': 'http://localhost:8000'},
+    's3-external-1': {'s3': 's3-external-1.amazonaws.com'},
     'sa-east-1': {
         'autoscaling': 'autoscaling.sa-east-1.amazonaws.com',
         'cloudformation': 'cloudformation.sa-east-1.amazonaws.com',
@@ -266,7 +256,7 @@ KNOWN_REGIONS = {
         'storagegateway': 'storagegateway.sa-east-1.amazonaws.com',
         'streams.dynamodb': 'streams.dynamodb.sa-east-1.amazonaws.com',
         'sts': 'sts.sa-east-1.amazonaws.com',
-        'swf': 'swf.sa-east-1.amazonaws.com'
+        'swf': 'swf.sa-east-1.amazonaws.com',
     },
     'us-east-1': {
         'apigateway': 'apigateway.us-east-1.amazonaws.com',
@@ -322,7 +312,7 @@ KNOWN_REGIONS = {
         'support': 'support.us-east-1.amazonaws.com',
         'swf': 'swf.us-east-1.amazonaws.com',
         'workspaces': 'workspaces.us-east-1.amazonaws.com',
-        'waf': 'waf.amazonaws.com'
+        'waf': 'waf.amazonaws.com',
     },
     'us-gov-west-1': {
         'autoscaling': 'autoscaling.us-gov-west-1.amazonaws.com',
@@ -344,7 +334,7 @@ KNOWN_REGIONS = {
         'sns': 'sns.us-gov-west-1.amazonaws.com',
         'sqs': 'sqs.us-gov-west-1.amazonaws.com',
         'sts': 'sts.us-gov-west-1.amazonaws.com',
-        'swf': 'swf.us-gov-west-1.amazonaws.com'
+        'swf': 'swf.us-gov-west-1.amazonaws.com',
     },
     'us-west-1': {
         'autoscaling': 'autoscaling.us-west-1.amazonaws.com',
@@ -374,7 +364,7 @@ KNOWN_REGIONS = {
         'storagegateway': 'storagegateway.us-west-1.amazonaws.com',
         'streams.dynamodb': 'streams.dynamodb.us-west-1.amazonaws.com',
         'sts': 'sts.us-west-1.amazonaws.com',
-        'swf': 'swf.us-west-1.amazonaws.com'
+        'swf': 'swf.us-west-1.amazonaws.com',
     },
     'us-west-2': {
         'apigateway': 'apigateway.us-west-2.amazonaws.com',
@@ -418,8 +408,8 @@ KNOWN_REGIONS = {
         'streams.dynamodb': 'streams.dynamodb.us-west-2.amazonaws.com',
         'sts': 'sts.us-west-2.amazonaws.com',
         'swf': 'swf.us-west-2.amazonaws.com',
-        'workspaces': 'workspaces.us-west-2.amazonaws.com'
-    }
+        'workspaces': 'workspaces.us-west-2.amazonaws.com',
+    },
 }
 
 
@@ -433,7 +423,7 @@ KNOWN_AWS_PARTITION_WIDE = {
     'route53': 'https://route53.amazonaws.com',
     's3': 'https://s3.amazonaws.com',
     'sts': 'https://sts.amazonaws.com',
-    'iam': 'https://iam.amazonaws.com'
+    'iam': 'https://iam.amazonaws.com',
 }
 
 
@@ -445,10 +435,10 @@ def _known_endpoints_by_region():
 
 @pytest.mark.parametrize(
     "service_name, region_name, expected_endpoint",
-    _known_endpoints_by_region()
+    _known_endpoints_by_region(),
 )
 def test_single_service_region_endpoint(
-        patched_session, service_name, region_name, expected_endpoint
+    patched_session, service_name, region_name, expected_endpoint
 ):
     # Verify the actual values from the partition files.  While
     # TestEndpointHeuristics verified the generic functionality given any
@@ -456,13 +446,12 @@ def test_single_service_region_endpoint(
     # fixed list of known endpoints.  This list doesn't need to be kept 100% up
     # to date, but serves as a basis for regressions as the endpoint data
     # logic evolves.
-    resolver = patched_session._get_internal_component(
-        'endpoint_resolver')
+    resolver = patched_session._get_internal_component('endpoint_resolver')
     bridge = ClientEndpointBridge(resolver, None, None)
     result = bridge.resolve(service_name, region_name)
     scheme = urlparse(expected_endpoint).scheme
     if not scheme:
-        expected_endpoint = 'https://%s' % expected_endpoint
+        expected_endpoint = f'https://{expected_endpoint}'
     assert result['endpoint_url'] == expected_endpoint
 
 
@@ -479,8 +468,7 @@ def test_all_s3_endpoints_have_s3v4(patched_session):
 
 
 @pytest.mark.parametrize(
-    "service_name, expected_endpoint",
-    KNOWN_AWS_PARTITION_WIDE.items()
+    "service_name, expected_endpoint", KNOWN_AWS_PARTITION_WIDE.items()
 )
 def test_single_service_partition_endpoint(
     patched_session, service_name, expected_endpoint
@@ -498,9 +486,8 @@ def test_non_partition_endpoint_requires_region(patched_session):
 
 
 class TestEndpointResolution(BaseSessionTest):
-
     def setUp(self):
-        super(TestEndpointResolution, self).setUp()
+        super().setUp()
         self.xml_response = (
             b'<?xml version="1.0" encoding="UTF-8"?>\n\n'
             b'<ListRolesResponse '
@@ -510,7 +497,9 @@ class TestEndpointResolution(BaseSessionTest):
         )
 
     def create_stubbed_client(self, service_name, region_name, **kwargs):
-        client = self.session.create_client(service_name, region_name, **kwargs)
+        client = self.session.create_client(
+            service_name, region_name, **kwargs
+        )
         http_stubber = ClientHTTPStubber(client)
         http_stubber.start()
         return client, http_stubber
@@ -520,8 +509,7 @@ class TestEndpointResolution(BaseSessionTest):
         stubber.add_response()
         client.list_buckets()
         self.assertEqual(
-            stubber.requests[0].url,
-            'https://s3.us-east-2.amazonaws.com/'
+            stubber.requests[0].url, 'https://s3.us-east-2.amazonaws.com/'
         )
 
     def test_regionalized_client_with_unknown_region(self):
@@ -531,8 +519,7 @@ class TestEndpointResolution(BaseSessionTest):
         # Validate we don't fall back to partition endpoint for
         # regionalized services.
         self.assertEqual(
-            stubber.requests[0].url,
-            'https://s3.not-real.amazonaws.com/'
+            stubber.requests[0].url, 'https://s3.not-real.amazonaws.com/'
         )
 
     def test_unregionalized_client_endpoint_resolution(self):

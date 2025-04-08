@@ -3649,6 +3649,10 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used to build and run the bot.</p>"
         },
         "dataPrivacy":{"shape":"DataPrivacy"},
+        "errorLogSettings":{
+          "shape":"ErrorLogSettings",
+          "documentation":"<p>Allows you to configure destinations where error logs will be published during the bot import process.</p>"
+        },
         "idleSessionTTLInSeconds":{
           "shape":"SessionTTL",
           "documentation":"<p>The time, in seconds, that Amazon Lex should keep information about a user's conversation with the bot. </p> <p>A user interaction remains active for the amount of time specified. If no conversation occurs during this time, the session expires and Amazon Lex deletes any data provided before the timeout.</p> <p>You can specify between 60 (1 minute) and 86,400 (24 hours) seconds.</p>"
@@ -5036,6 +5040,10 @@
         "botMembers":{
           "shape":"BotMembers",
           "documentation":"<p>The list of bot members in a network to be created.</p>"
+        },
+        "errorLogSettings":{
+          "shape":"ErrorLogSettings",
+          "documentation":"<p>Specifies the configuration for error logging during bot creation.</p>"
         }
       }
     },
@@ -5089,6 +5097,10 @@
         "botMembers":{
           "shape":"BotMembers",
           "documentation":"<p>The list of bots in a network that was created.</p>"
+        },
+        "errorLogSettings":{
+          "shape":"ErrorLogSettings",
+          "documentation":"<p>Specifies configuration settings for delivering error logs to Cloudwatch Logs in an Amazon Lex bot response.</p>"
         }
       }
     },
@@ -5274,6 +5286,10 @@
         "qnAIntentConfiguration":{
           "shape":"QnAIntentConfiguration",
           "documentation":"<p>Specifies the configuration of the built-in <code>Amazon.QnAIntent</code>. The <code>AMAZON.QnAIntent</code> intent is called when Amazon Lex can't determine another intent to invoke. If you specify this field, you can't specify the <code>kendraConfiguration</code> field.</p>"
+        },
+        "qInConnectIntentConfiguration":{
+          "shape":"QInConnectIntentConfiguration",
+          "documentation":"<p>Qinconnect intent configuration details for the create intent request.</p>"
         }
       }
     },
@@ -5351,6 +5367,10 @@
         "qnAIntentConfiguration":{
           "shape":"QnAIntentConfiguration",
           "documentation":"<p>Details about the the configuration of the built-in <code>Amazon.QnAIntent</code>.</p>"
+        },
+        "qInConnectIntentConfiguration":{
+          "shape":"QInConnectIntentConfiguration",
+          "documentation":"<p>Qinconnect intent configuration details for the create intent response.</p>"
         }
       }
     },
@@ -6933,6 +6953,10 @@
         "failureReasons":{
           "shape":"FailureReasons",
           "documentation":"<p>If the <code>botStatus</code> is <code>Failed</code>, this contains a list of reasons that the bot couldn't be built.</p>"
+        },
+        "errorLogSettings":{
+          "shape":"ErrorLogSettings",
+          "documentation":"<p>Contains the configuration for error logging that specifies where and how bot errors are recorded, including destinations like CloudWatch Logs.</p>"
         }
       }
     },
@@ -7290,6 +7314,10 @@
         "qnAIntentConfiguration":{
           "shape":"QnAIntentConfiguration",
           "documentation":"<p>Details about the configuration of the built-in <code>Amazon.QnAIntent</code>.</p>"
+        },
+        "qInConnectIntentConfiguration":{
+          "shape":"QInConnectIntentConfiguration",
+          "documentation":"<p>Qinconnect intent configuration details for the describe intent response.</p>"
         }
       }
     },
@@ -7904,6 +7932,17 @@
         "RESOURCE_ALREADY_EXISTS",
         "INTERNAL_SERVER_FAILURE"
       ]
+    },
+    "ErrorLogSettings":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "enabled":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Settings parameters for the error logs, when it is enabled.</p>"
+        }
+      },
+      "documentation":"<p>Settings parameters for the error logs, whether it is enabled or disabled.</p>"
     },
     "ErrorMessage":{"type":"string"},
     "ExactResponseFields":{
@@ -11246,6 +11285,31 @@
       },
       "documentation":"<p>Specifies a list of message groups that Amazon Lex sends to a user to elicit a response.</p>"
     },
+    "QInConnectAssistantARN":{
+      "type":"string",
+      "pattern":"^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){0,2}$"
+    },
+    "QInConnectAssistantConfiguration":{
+      "type":"structure",
+      "required":["assistantArn"],
+      "members":{
+        "assistantArn":{
+          "shape":"QInConnectAssistantARN",
+          "documentation":"<p>The assistant Arn details of the Qinconnect assistant configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details of the Qinconnect assistant.</p>"
+    },
+    "QInConnectIntentConfiguration":{
+      "type":"structure",
+      "members":{
+        "qInConnectAssistantConfiguration":{
+          "shape":"QInConnectAssistantConfiguration",
+          "documentation":"<p>The Qinconnect assistant configuration details of the Qinconnect intent.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details of the Qinconnect intent.</p>"
+    },
     "QnAIntentConfiguration":{
       "type":"structure",
       "members":{
@@ -13904,6 +13968,10 @@
         "botMembers":{
           "shape":"BotMembers",
           "documentation":"<p>The list of bot members in the network associated with the update action.</p>"
+        },
+        "errorLogSettings":{
+          "shape":"ErrorLogSettings",
+          "documentation":"<p>Allows you to modify how Amazon Lex logs errors during bot interactions, including destinations for error logs and the types of errors to be captured.</p>"
         }
       }
     },
@@ -13953,6 +14021,10 @@
         "botMembers":{
           "shape":"BotMembers",
           "documentation":"<p>The list of bot members in the network that was updated.</p>"
+        },
+        "errorLogSettings":{
+          "shape":"ErrorLogSettings",
+          "documentation":"<p>Settings for managing error logs within the response of an update bot operation.</p>"
         }
       }
     },
@@ -14096,6 +14168,10 @@
         "qnAIntentConfiguration":{
           "shape":"QnAIntentConfiguration",
           "documentation":"<p>Specifies the configuration of the built-in <code>Amazon.QnAIntent</code>. The <code>AMAZON.QnAIntent</code> intent is called when Amazon Lex can't determine another intent to invoke. If you specify this field, you can't specify the <code>kendraConfiguration</code> field.</p>"
+        },
+        "qInConnectIntentConfiguration":{
+          "shape":"QInConnectIntentConfiguration",
+          "documentation":"<p>Qinconnect intent configuration details for the update intent request.</p>"
         }
       }
     },
@@ -14181,6 +14257,10 @@
         "qnAIntentConfiguration":{
           "shape":"QnAIntentConfiguration",
           "documentation":"<p>Details about the configuration of the built-in <code>Amazon.QnAIntent</code>.</p>"
+        },
+        "qInConnectIntentConfiguration":{
+          "shape":"QInConnectIntentConfiguration",
+          "documentation":"<p>Qinconnect intent configuration details for the update intent response.</p>"
         }
       }
     },

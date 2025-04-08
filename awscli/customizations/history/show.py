@@ -13,18 +13,18 @@
 import datetime
 import json
 import sys
-import xml.parsers.expat
 import xml.dom.minidom
+import xml.parsers.expat
 
 import colorama
 
-from awscli.table import COLORAMA_KWARGS
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.history.commands import HistorySubcommand
 from awscli.customizations.history.filters import RegexFilter
-from awscli.customizations.exceptions import ParamValidationError
+from awscli.table import COLORAMA_KWARGS
 
 
-class Formatter(object):
+class Formatter:
     def __init__(self, output=None, include=None, exclude=None):
         """Formats and outputs CLI history events
 
@@ -236,7 +236,7 @@ class DetailedFormatter(Formatter):
         return text
 
 
-class SectionValuePrettyFormatter(object):
+class SectionValuePrettyFormatter:
     def pformat(self, value, value_format, event_record):
         return getattr(self, '_pformat_' + value_format)(value, event_record)
 

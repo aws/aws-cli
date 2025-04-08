@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from s3transfer.exceptions import InvalidSubscriberMethodError
 from s3transfer.subscribers import BaseSubscriber
+
 from tests import unittest
 
 
@@ -54,7 +55,7 @@ class TestSubscribers(unittest.TestCase):
         except Exception as e:
             self.fail(
                 'Should be able to call base class subscriber method. '
-                'instead got: %s' % e
+                f'instead got: {e}'
             )
 
     def test_subclass_can_have_and_call_additional_methods(self):

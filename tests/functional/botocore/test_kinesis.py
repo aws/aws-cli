@@ -14,12 +14,13 @@ import json
 import time
 from base64 import b64decode
 from uuid import uuid4
-from tests import unittest, BaseSessionTest, ClientHTTPStubber
+
+from tests import BaseSessionTest, ClientHTTPStubber, unittest
 
 
 class TestKinesisListStreams(BaseSessionTest):
     def setUp(self):
-        super(TestKinesisListStreams, self).setUp()
+        super().setUp()
         self.stream_name = "kinesis-test-stream"
         self.region = "us-east-1"
         self.client = self.session.create_client("kinesis", self.region)
@@ -38,15 +39,15 @@ class TestKinesisListStreams(BaseSessionTest):
         unique_data = str(uuid4())
         with self.http_stubber as stub:
             self.client.put_record(
-                StreamName=self.stream_name, PartitionKey="foo", Data=unique_data
+                StreamName=self.stream_name,
+                PartitionKey="foo",
+                Data=unique_data,
             )
             self.assertEqual(len(stub.requests), 1)
             request = json.loads(stub.requests[0].body.decode("utf-8"))
             self.assertEqual(request["StreamName"], self.stream_name)
             self.assertEqual(request["PartitionKey"], "foo")
-            self.assert_base64encoded_str_equals(
-                request["Data"], unique_data
-            )
+            self.assert_base64encoded_str_equals(request["Data"], unique_data)
 
     def test_can_put_records_single_blob(self):
         unique_data = str(uuid4())
@@ -62,9 +63,7 @@ class TestKinesisListStreams(BaseSessionTest):
 
             record = request["Records"][0]
             self.assertEqual(record["PartitionKey"], "foo")
-            self.assert_base64encoded_str_equals(
-                record["Data"], unique_data
-            )
+            self.assert_base64encoded_str_equals(record["Data"], unique_data)
 
     def test_can_put_records_multiple_blob(self):
         with self.http_stubber as stub:

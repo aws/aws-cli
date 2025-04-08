@@ -18,17 +18,17 @@ from collections.abc import MutableMapping
 from prompt_toolkit.application import Application
 
 from awscli.customizations.wizard import core
-from awscli.customizations.wizard.ui.style import get_default_style
-from awscli.customizations.wizard.ui.keybindings import get_default_keybindings
 from awscli.customizations.wizard.exceptions import (
-    UnexpectedWizardException,
-    UnableToRunWizardError,
     InvalidChoiceException,
+    UnableToRunWizardError,
+    UnexpectedWizardException,
 )
+from awscli.customizations.wizard.ui.keybindings import get_default_keybindings
+from awscli.customizations.wizard.ui.style import get_default_style
 from awscli.utils import json_encoder
 
 
-class WizardAppRunner(object):
+class WizardAppRunner:
     def __init__(self, session, app_factory):
         self._session = session
         self._app_factory = app_factory

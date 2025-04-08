@@ -273,6 +273,16 @@
       "output":{"shape":"AssociateNatGatewayAddressResult"},
       "documentation":"<p>Associates Elastic IP addresses (EIPs) and private IPv4 addresses with a public NAT gateway. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-working-with.html\">Work with NAT gateways</a> in the <i>Amazon VPC User Guide</i>.</p> <p>By default, you can associate up to 2 Elastic IP addresses per public NAT gateway. You can increase the limit by requesting a quota adjustment. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-eips\">Elastic IP address quotas</a> in the <i>Amazon VPC User Guide</i>.</p> <important> <p>When you associate an EIP or secondary EIPs with a public NAT gateway, the network border group of the EIPs must match the network border group of the Availability Zone (AZ) that the public NAT gateway is in. If it's not the same, the EIP will fail to associate. You can see the network border group for the subnet's AZ by viewing the details of the subnet. Similarly, you can view the network border group of an EIP by viewing the details of the EIP address. For more information about network border groups and EIPs, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/WorkWithEIPs.html\">Allocate an Elastic IP address</a> in the <i>Amazon VPC User Guide</i>. </p> </important>"
     },
+    "AssociateRouteServer":{
+      "name":"AssociateRouteServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateRouteServerRequest"},
+      "output":{"shape":"AssociateRouteServerResult"},
+      "documentation":"<p>Associates a route server with a VPC to enable dynamic route updates.</p> <p>A route server association is the connection established between a route server and a VPC.</p> <p>For more information see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/dynamic-routing-route-server.html\">Dynamic routing in your VPC with VPC Route Server</a> in the <i>Amazon VPC User Guide</i>.</p>"
+    },
     "AssociateRouteTable":{
       "name":"AssociateRouteTable",
       "http":{
@@ -1069,6 +1079,36 @@
       "output":{"shape":"CreateRouteResult"},
       "documentation":"<p>Creates a route in a route table within a VPC.</p> <p>You must specify either a destination CIDR block or a prefix list ID. You must also specify exactly one of the resources from the parameter list.</p> <p>When determining how to route traffic, we use the route with the most specific match. For example, traffic is destined for the IPv4 address <code>192.0.2.3</code>, and the route table includes the following two IPv4 routes:</p> <ul> <li> <p> <code>192.0.2.0/24</code> (goes to some target A)</p> </li> <li> <p> <code>192.0.2.0/28</code> (goes to some target B)</p> </li> </ul> <p>Both routes apply to the traffic destined for <code>192.0.2.3</code>. However, the second route in the list covers a smaller number of IP addresses and is therefore more specific, so we use that route to determine where to target the traffic.</p> <p>For more information about route tables, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html\">Route tables</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
+    "CreateRouteServer":{
+      "name":"CreateRouteServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateRouteServerRequest"},
+      "output":{"shape":"CreateRouteServerResult"},
+      "documentation":"<p>Creates a new route server to manage dynamic routing in a VPC.</p> <p>Amazon VPC Route Server simplifies routing for traffic between workloads that are deployed within a VPC and its internet gateways. With this feature, VPC Route Server dynamically updates VPC and internet gateway route tables with your preferred IPv4 or IPv6 routes to achieve routing fault tolerance for those workloads. This enables you to automatically reroute traffic within a VPC, which increases the manageability of VPC routing and interoperability with third-party workloads.</p> <p>Route server supports the follow route table types:</p> <ul> <li> <p>VPC route tables not associated with subnets</p> </li> <li> <p>Subnet route tables</p> </li> <li> <p>Internet gateway route tables</p> </li> </ul> <p>Route server does not support route tables associated with virtual private gateways. To propagate routes into a transit gateway route table, use <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-connect.html\">Transit Gateway Connect</a>.</p> <p>For more information see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/dynamic-routing-route-server.html\">Dynamic routing in your VPC with VPC Route Server</a> in the <i>Amazon VPC User Guide</i>.</p>"
+    },
+    "CreateRouteServerEndpoint":{
+      "name":"CreateRouteServerEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateRouteServerEndpointRequest"},
+      "output":{"shape":"CreateRouteServerEndpointResult"},
+      "documentation":"<p>Creates a new endpoint for a route server in a specified subnet.</p> <p>A route server endpoint is an Amazon Web Services-managed component inside a subnet that facilitates <a href=\"https://en.wikipedia.org/wiki/Border_Gateway_Protocol\">BGP (Border Gateway Protocol)</a> connections between your route server and your BGP peers.</p> <p>For more information see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/dynamic-routing-route-server.html\">Dynamic routing in your VPC with VPC Route Server</a> in the <i>Amazon VPC User Guide</i>.</p>"
+    },
+    "CreateRouteServerPeer":{
+      "name":"CreateRouteServerPeer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateRouteServerPeerRequest"},
+      "output":{"shape":"CreateRouteServerPeerResult"},
+      "documentation":"<p>Creates a new BGP peer for a specified route server endpoint.</p> <p>A route server peer is a session between a route server endpoint and the device deployed in Amazon Web Services (such as a firewall appliance or other network security function running on an EC2 instance). The device must meet these requirements:</p> <ul> <li> <p>Have an elastic network interface in the VPC</p> </li> <li> <p>Support BGP (Border Gateway Protocol)</p> </li> <li> <p>Can initiate BGP sessions</p> </li> </ul> <p>For more information see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/dynamic-routing-route-server.html\">Dynamic routing in your VPC with VPC Route Server</a> in the <i>Amazon VPC User Guide</i>.</p>"
+    },
     "CreateRouteTable":{
       "name":"CreateRouteTable",
       "http":{
@@ -1839,6 +1879,36 @@
       "input":{"shape":"DeleteRouteRequest"},
       "documentation":"<p>Deletes the specified route from the specified route table.</p>"
     },
+    "DeleteRouteServer":{
+      "name":"DeleteRouteServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteRouteServerRequest"},
+      "output":{"shape":"DeleteRouteServerResult"},
+      "documentation":"<p>Deletes the specified route server.</p> <p>Amazon VPC Route Server simplifies routing for traffic between workloads that are deployed within a VPC and its internet gateways. With this feature, VPC Route Server dynamically updates VPC and internet gateway route tables with your preferred IPv4 or IPv6 routes to achieve routing fault tolerance for those workloads. This enables you to automatically reroute traffic within a VPC, which increases the manageability of VPC routing and interoperability with third-party workloads.</p> <p>Route server supports the follow route table types:</p> <ul> <li> <p>VPC route tables not associated with subnets</p> </li> <li> <p>Subnet route tables</p> </li> <li> <p>Internet gateway route tables</p> </li> </ul> <p>Route server does not support route tables associated with virtual private gateways. To propagate routes into a transit gateway route table, use <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-connect.html\">Transit Gateway Connect</a>.</p> <p>For more information see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/dynamic-routing-route-server.html\">Dynamic routing in your VPC with VPC Route Server</a> in the <i>Amazon VPC User Guide</i>.</p>"
+    },
+    "DeleteRouteServerEndpoint":{
+      "name":"DeleteRouteServerEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteRouteServerEndpointRequest"},
+      "output":{"shape":"DeleteRouteServerEndpointResult"},
+      "documentation":"<p>Deletes the specified route server endpoint.</p> <p>A route server endpoint is an Amazon Web Services-managed component inside a subnet that facilitates <a href=\"https://en.wikipedia.org/wiki/Border_Gateway_Protocol\">BGP (Border Gateway Protocol)</a> connections between your route server and your BGP peers.</p>"
+    },
+    "DeleteRouteServerPeer":{
+      "name":"DeleteRouteServerPeer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteRouteServerPeerRequest"},
+      "output":{"shape":"DeleteRouteServerPeerResult"},
+      "documentation":"<p>Deletes the specified BGP peer from a route server.</p> <p>A route server peer is a session between a route server endpoint and the device deployed in Amazon Web Services (such as a firewall appliance or other network security function running on an EC2 instance). The device must meet these requirements:</p> <ul> <li> <p>Have an elastic network interface in the VPC</p> </li> <li> <p>Support BGP (Border Gateway Protocol)</p> </li> <li> <p>Can initiate BGP sessions</p> </li> </ul>"
+    },
     "DeleteRouteTable":{
       "name":"DeleteRouteTable",
       "http":{
@@ -2237,7 +2307,7 @@
       },
       "input":{"shape":"DeregisterImageRequest"},
       "output":{"shape":"DeregisterImageResult"},
-      "documentation":"<p>Deregisters the specified AMI. After you deregister an AMI, it can't be used to launch new instances.</p> <p>If you deregister an AMI that matches a Recycle Bin retention rule, the AMI is retained in the Recycle Bin for the specified retention period. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin.html\">Recycle Bin</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>When you deregister an AMI, it doesn't affect any instances that you've already launched from the AMI. You'll continue to incur usage costs for those instances until you terminate them.</p> <p>When you deregister an Amazon EBS-backed AMI, it doesn't affect the snapshot that was created for the root volume of the instance during the AMI creation process. When you deregister an instance store-backed AMI, it doesn't affect the files that you uploaded to Amazon S3 when you created the AMI.</p>"
+      "documentation":"<p>Deregisters the specified AMI. A deregistered AMI can't be used to launch new instances.</p> <p>If a deregistered EBS-backed AMI matches a Recycle Bin retention rule, it moves to the Recycle Bin for the specified retention period. It can be restored before its retention period expires, after which it is permanently deleted. If the deregistered AMI doesn't match a retention rule, it is permanently deleted immediately. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin.html\">Recycle Bin</a> in the <i>Amazon EBS User Guide</i>.</p> <p>Deregistering an AMI does not delete the following:</p> <ul> <li> <p>Instances already launched from the AMI. You'll continue to incur usage costs for the instances until you terminate them.</p> </li> <li> <p>For EBS-backed AMIs: The snapshots that were created of the root and data volumes of the instance during AMI creation. You'll continue to incur snapshot storage costs.</p> </li> <li> <p>For instance store-backed AMIs: The files uploaded to Amazon S3 during AMI creation. You'll continue to incur S3 storage costs.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/deregister-ami.html\">Deregister an Amazon EC2 AMI</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DeregisterInstanceEventNotificationAttributes":{
       "name":"DeregisterInstanceEventNotificationAttributes",
@@ -3279,6 +3349,36 @@
       "output":{"shape":"DescribeReservedInstancesOfferingsResult"},
       "documentation":"<p>Describes Reserved Instance offerings that are available for purchase. With Reserved Instances, you purchase the right to launch instances for a period of time. During that time period, you do not receive insufficient capacity errors, and you pay a lower usage rate than the rate charged for On-Demand instances for the actual time used.</p> <p>If you have listed your own Reserved Instances for sale in the Reserved Instance Marketplace, they will be excluded from these results. This is to ensure that you do not purchase your own Reserved Instances.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-market-general.html\">Sell in the Reserved Instance Marketplace</a> in the <i>Amazon EC2 User Guide</i>.</p> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
     },
+    "DescribeRouteServerEndpoints":{
+      "name":"DescribeRouteServerEndpoints",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRouteServerEndpointsRequest"},
+      "output":{"shape":"DescribeRouteServerEndpointsResult"},
+      "documentation":"<p>Describes one or more route server endpoints.</p> <p>A route server endpoint is an Amazon Web Services-managed component inside a subnet that facilitates <a href=\"https://en.wikipedia.org/wiki/Border_Gateway_Protocol\">BGP (Border Gateway Protocol)</a> connections between your route server and your BGP peers.</p> <p>For more information see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/dynamic-routing-route-server.html\">Dynamic routing in your VPC with VPC Route Server</a> in the <i>Amazon VPC User Guide</i>.</p>"
+    },
+    "DescribeRouteServerPeers":{
+      "name":"DescribeRouteServerPeers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRouteServerPeersRequest"},
+      "output":{"shape":"DescribeRouteServerPeersResult"},
+      "documentation":"<p>Describes one or more route server peers.</p> <p>A route server peer is a session between a route server endpoint and the device deployed in Amazon Web Services (such as a firewall appliance or other network security function running on an EC2 instance). The device must meet these requirements:</p> <ul> <li> <p>Have an elastic network interface in the VPC</p> </li> <li> <p>Support BGP (Border Gateway Protocol)</p> </li> <li> <p>Can initiate BGP sessions</p> </li> </ul> <p>For more information see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/dynamic-routing-route-server.html\">Dynamic routing in your VPC with VPC Route Server</a> in the <i>Amazon VPC User Guide</i>.</p>"
+    },
+    "DescribeRouteServers":{
+      "name":"DescribeRouteServers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRouteServersRequest"},
+      "output":{"shape":"DescribeRouteServersResult"},
+      "documentation":"<p>Describes one or more route servers.</p> <p>Amazon VPC Route Server simplifies routing for traffic between workloads that are deployed within a VPC and its internet gateways. With this feature, VPC Route Server dynamically updates VPC and internet gateway route tables with your preferred IPv4 or IPv6 routes to achieve routing fault tolerance for those workloads. This enables you to automatically reroute traffic within a VPC, which increases the manageability of VPC routing and interoperability with third-party workloads.</p> <p>Route server supports the follow route table types:</p> <ul> <li> <p>VPC route tables not associated with subnets</p> </li> <li> <p>Subnet route tables</p> </li> <li> <p>Internet gateway route tables</p> </li> </ul> <p>Route server does not support route tables associated with virtual private gateways. To propagate routes into a transit gateway route table, use <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-connect.html\">Transit Gateway Connect</a>.</p> <p>For more information see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/dynamic-routing-route-server.html\">Dynamic routing in your VPC with VPC Route Server</a> in the <i>Amazon VPC User Guide</i>.</p>"
+    },
     "DescribeRouteTables":{
       "name":"DescribeRouteTables",
       "http":{
@@ -4046,6 +4146,16 @@
       "output":{"shape":"DisableIpamOrganizationAdminAccountResult"},
       "documentation":"<p>Disable the IPAM account. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/enable-integ-ipam.html\">Enable integration with Organizations</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
     },
+    "DisableRouteServerPropagation":{
+      "name":"DisableRouteServerPropagation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisableRouteServerPropagationRequest"},
+      "output":{"shape":"DisableRouteServerPropagationResult"},
+      "documentation":"<p>Disables route propagation from a route server to a specified route table.</p> <p>When enabled, route server propagation installs the routes in the FIB on the route table you've specified. Route server supports IPv4 and IPv6 route propagation.</p> <p>Amazon VPC Route Server simplifies routing for traffic between workloads that are deployed within a VPC and its internet gateways. With this feature, VPC Route Server dynamically updates VPC and internet gateway route tables with your preferred IPv4 or IPv6 routes to achieve routing fault tolerance for those workloads. This enables you to automatically reroute traffic within a VPC, which increases the manageability of VPC routing and interoperability with third-party workloads.</p> <p>Route server supports the follow route table types:</p> <ul> <li> <p>VPC route tables not associated with subnets</p> </li> <li> <p>Subnet route tables</p> </li> <li> <p>Internet gateway route tables</p> </li> </ul> <p>Route server does not support route tables associated with virtual private gateways. To propagate routes into a transit gateway route table, use <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-connect.html\">Transit Gateway Connect</a>.</p> <p>For more information see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/dynamic-routing-route-server.html\">Dynamic routing in your VPC with VPC Route Server</a> in the <i>Amazon VPC User Guide</i>.</p>"
+    },
     "DisableSerialConsoleAccess":{
       "name":"DisableSerialConsoleAccess",
       "http":{
@@ -4193,6 +4303,16 @@
       "input":{"shape":"DisassociateNatGatewayAddressRequest"},
       "output":{"shape":"DisassociateNatGatewayAddressResult"},
       "documentation":"<p>Disassociates secondary Elastic IP addresses (EIPs) from a public NAT gateway. You cannot disassociate your primary EIP. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-working-with.html#nat-gateway-edit-secondary\">Edit secondary IP address associations</a> in the <i>Amazon VPC User Guide</i>.</p> <p>While disassociating is in progress, you cannot associate/disassociate additional EIPs while the connections are being drained. You are, however, allowed to delete the NAT gateway.</p> <p>An EIP is released only at the end of MaxDrainDurationSeconds. It stays associated and supports the existing connections but does not support any new connections (new connections are distributed across the remaining associated EIPs). As the existing connections drain out, the EIPs (and the corresponding private IP addresses mapped to them) are released.</p>"
+    },
+    "DisassociateRouteServer":{
+      "name":"DisassociateRouteServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateRouteServerRequest"},
+      "output":{"shape":"DisassociateRouteServerResult"},
+      "documentation":"<p>Disassociates a route server from a VPC.</p> <p>A route server association is the connection established between a route server and a VPC.</p> <p>For more information see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/dynamic-routing-route-server.html\">Dynamic routing in your VPC with VPC Route Server</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "DisassociateRouteTable":{
       "name":"DisassociateRouteTable",
@@ -4392,6 +4512,16 @@
       "input":{"shape":"EnableReachabilityAnalyzerOrganizationSharingRequest"},
       "output":{"shape":"EnableReachabilityAnalyzerOrganizationSharingResult"},
       "documentation":"<p>Establishes a trust relationship between Reachability Analyzer and Organizations. This operation must be performed by the management account for the organization.</p> <p>After you establish a trust relationship, a user in the management account or a delegated administrator account can run a cross-account analysis using resources from the member accounts.</p>"
+    },
+    "EnableRouteServerPropagation":{
+      "name":"EnableRouteServerPropagation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableRouteServerPropagationRequest"},
+      "output":{"shape":"EnableRouteServerPropagationResult"},
+      "documentation":"<p>Defines which route tables the route server can update with routes.</p> <p>When enabled, route server propagation installs the routes in the FIB on the route table you've specified. Route server supports IPv4 and IPv6 route propagation.</p> <p>For more information see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/dynamic-routing-route-server.html\">Dynamic routing in your VPC with VPC Route Server</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "EnableSerialConsoleAccess":{
       "name":"EnableSerialConsoleAccess",
@@ -4850,6 +4980,36 @@
       "input":{"shape":"GetReservedInstancesExchangeQuoteRequest"},
       "output":{"shape":"GetReservedInstancesExchangeQuoteResult"},
       "documentation":"<p>Returns a quote and exchange information for exchanging one or more specified Convertible Reserved Instances for a new Convertible Reserved Instance. If the exchange cannot be performed, the reason is returned in the response. Use <a>AcceptReservedInstancesExchangeQuote</a> to perform the exchange.</p>"
+    },
+    "GetRouteServerAssociations":{
+      "name":"GetRouteServerAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetRouteServerAssociationsRequest"},
+      "output":{"shape":"GetRouteServerAssociationsResult"},
+      "documentation":"<p>Gets information about the associations for the specified route server.</p> <p>A route server association is the connection established between a route server and a VPC.</p> <p>For more information see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/dynamic-routing-route-server.html\">Dynamic routing in your VPC with VPC Route Server</a> in the <i>Amazon VPC User Guide</i>.</p>"
+    },
+    "GetRouteServerPropagations":{
+      "name":"GetRouteServerPropagations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetRouteServerPropagationsRequest"},
+      "output":{"shape":"GetRouteServerPropagationsResult"},
+      "documentation":"<p>Gets information about the route propagations for the specified route server.</p> <p>When enabled, route server propagation installs the routes in the FIB on the route table you've specified. Route server supports IPv4 and IPv6 route propagation.</p> <p>Amazon VPC Route Server simplifies routing for traffic between workloads that are deployed within a VPC and its internet gateways. With this feature, VPC Route Server dynamically updates VPC and internet gateway route tables with your preferred IPv4 or IPv6 routes to achieve routing fault tolerance for those workloads. This enables you to automatically reroute traffic within a VPC, which increases the manageability of VPC routing and interoperability with third-party workloads.</p> <p>Route server supports the follow route table types:</p> <ul> <li> <p>VPC route tables not associated with subnets</p> </li> <li> <p>Subnet route tables</p> </li> <li> <p>Internet gateway route tables</p> </li> </ul> <p>Route server does not support route tables associated with virtual private gateways. To propagate routes into a transit gateway route table, use <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-connect.html\">Transit Gateway Connect</a>.</p>"
+    },
+    "GetRouteServerRoutingDatabase":{
+      "name":"GetRouteServerRoutingDatabase",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetRouteServerRoutingDatabaseRequest"},
+      "output":{"shape":"GetRouteServerRoutingDatabaseResult"},
+      "documentation":"<p>Gets the routing database for the specified route server. The <a href=\"https://en.wikipedia.org/wiki/Routing_table\">Routing Information Base (RIB)</a> serves as a database that stores all the routing information and network topology data collected by a router or routing system, such as routes learned from BGP peers. The RIB is constantly updated as new routing information is received or existing routes change. This ensures that the route server always has the most current view of the network topology and can make optimal routing decisions.</p> <p>Amazon VPC Route Server simplifies routing for traffic between workloads that are deployed within a VPC and its internet gateways. With this feature, VPC Route Server dynamically updates VPC and internet gateway route tables with your preferred IPv4 or IPv6 routes to achieve routing fault tolerance for those workloads. This enables you to automatically reroute traffic within a VPC, which increases the manageability of VPC routing and interoperability with third-party workloads.</p> <p>Route server supports the follow route table types:</p> <ul> <li> <p>VPC route tables not associated with subnets</p> </li> <li> <p>Subnet route tables</p> </li> <li> <p>Internet gateway route tables</p> </li> </ul> <p>Route server does not support route tables associated with virtual private gateways. To propagate routes into a transit gateway route table, use <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-connect.html\">Transit Gateway Connect</a>.</p>"
     },
     "GetSecurityGroupsForVpc":{
       "name":"GetSecurityGroupsForVpc",
@@ -5465,6 +5625,16 @@
       "input":{"shape":"ModifyReservedInstancesRequest"},
       "output":{"shape":"ModifyReservedInstancesResult"},
       "documentation":"<p>Modifies the configuration of your Reserved Instances, such as the Availability Zone, instance count, or instance type. The Reserved Instances to be modified must be identical, except for Availability Zone, network platform, and instance type.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modifying.html\">Modify Reserved Instances</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "ModifyRouteServer":{
+      "name":"ModifyRouteServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyRouteServerRequest"},
+      "output":{"shape":"ModifyRouteServerResult"},
+      "documentation":"<p>Modifies the configuration of an existing route server.</p> <p>Amazon VPC Route Server simplifies routing for traffic between workloads that are deployed within a VPC and its internet gateways. With this feature, VPC Route Server dynamically updates VPC and internet gateway route tables with your preferred IPv4 or IPv6 routes to achieve routing fault tolerance for those workloads. This enables you to automatically reroute traffic within a VPC, which increases the manageability of VPC routing and interoperability with third-party workloads.</p> <p>Route server supports the follow route table types:</p> <ul> <li> <p>VPC route tables not associated with subnets</p> </li> <li> <p>Subnet route tables</p> </li> <li> <p>Internet gateway route tables</p> </li> </ul> <p>Route server does not support route tables associated with virtual private gateways. To propagate routes into a transit gateway route table, use <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-connect.html\">Transit Gateway Connect</a>.</p> <p>For more information see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/dynamic-routing-route-server.html\">Dynamic routing in your VPC with VPC Route Server</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "ModifySecurityGroupRules":{
       "name":"ModifySecurityGroupRules",
@@ -8132,6 +8302,13 @@
         "locationName":"item"
       }
     },
+    "AsPath":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      }
+    },
     "AsnAssociation":{
       "type":"structure",
       "members":{
@@ -8723,6 +8900,37 @@
           "shape":"NatGatewayAddressList",
           "documentation":"<p>The IP addresses.</p>",
           "locationName":"natGatewayAddressSet"
+        }
+      }
+    },
+    "AssociateRouteServerRequest":{
+      "type":"structure",
+      "required":[
+        "RouteServerId",
+        "VpcId"
+      ],
+      "members":{
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The unique identifier for the route server to be associated.</p>"
+        },
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC to associate with the route server.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "AssociateRouteServerResult":{
+      "type":"structure",
+      "members":{
+        "RouteServerAssociation":{
+          "shape":"RouteServerAssociation",
+          "documentation":"<p>Information about the association between the route server and the VPC.</p>",
+          "locationName":"routeServerAssociation"
         }
       }
     },
@@ -10119,6 +10327,7 @@
     },
     "BoxedDouble":{"type":"double"},
     "BoxedInteger":{"type":"integer"},
+    "BoxedLong":{"type":"long"},
     "BundleId":{"type":"string"},
     "BundleIdStringList":{
       "type":"list",
@@ -12854,7 +13063,8 @@
       "members":{
         "ClientToken":{
           "shape":"String",
-          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>"
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
+          "idempotencyToken":true
         },
         "Description":{
           "shape":"String",
@@ -15563,6 +15773,134 @@
           "shape":"Boolean",
           "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
           "locationName":"return"
+        }
+      }
+    },
+    "CreateRouteServerEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "RouteServerId",
+        "SubnetId"
+      ],
+      "members":{
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The ID of the route server for which to create an endpoint.</p>"
+        },
+        "SubnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The ID of the subnet in which to create the route server endpoint.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the route server endpoint during creation.</p>",
+          "locationName":"TagSpecification"
+        }
+      }
+    },
+    "CreateRouteServerEndpointResult":{
+      "type":"structure",
+      "members":{
+        "RouteServerEndpoint":{
+          "shape":"RouteServerEndpoint",
+          "documentation":"<p>Information about the created route server endpoint.</p>",
+          "locationName":"routeServerEndpoint"
+        }
+      }
+    },
+    "CreateRouteServerPeerRequest":{
+      "type":"structure",
+      "required":[
+        "RouteServerEndpointId",
+        "PeerAddress",
+        "BgpOptions"
+      ],
+      "members":{
+        "RouteServerEndpointId":{
+          "shape":"RouteServerEndpointId",
+          "documentation":"<p>The ID of the route server endpoint for which to create a peer.</p>"
+        },
+        "PeerAddress":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 address of the peer device.</p>"
+        },
+        "BgpOptions":{
+          "shape":"RouteServerBgpOptionsRequest",
+          "documentation":"<p>The BGP options for the peer, including ASN (Autonomous System Number) and BFD (Bidrectional Forwarding Detection) settings.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the route server peer during creation.</p>",
+          "locationName":"TagSpecification"
+        }
+      }
+    },
+    "CreateRouteServerPeerResult":{
+      "type":"structure",
+      "members":{
+        "RouteServerPeer":{
+          "shape":"RouteServerPeer",
+          "documentation":"<p>Information about the created route server peer.</p>",
+          "locationName":"routeServerPeer"
+        }
+      }
+    },
+    "CreateRouteServerRequest":{
+      "type":"structure",
+      "required":["AmazonSideAsn"],
+      "members":{
+        "AmazonSideAsn":{
+          "shape":"Long",
+          "documentation":"<p>The private Autonomous System Number (ASN) for the Amazon side of the BGP session. Valid values are from 1 to 4294967295. We recommend using a private ASN in the 64512–65534 (16-bit ASN) or 4200000000–4294967294 (32-bit ASN) range.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "PersistRoutes":{
+          "shape":"RouteServerPersistRoutesAction",
+          "documentation":"<p>Indicates whether routes should be persisted after all BGP sessions are terminated.</p>"
+        },
+        "PersistRoutesDuration":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The number of minutes a route server will wait after BGP is re-established to unpersist the routes in the FIB and RIB. Value must be in the range of 1-5. Required if PersistRoutes is <code>enabled</code>.</p> <p>If you set the duration to 1 minute, then when your network appliance re-establishes BGP with route server, it has 1 minute to relearn it's adjacent network and advertise those routes to route server before route server resumes normal functionality. In most cases, 1 minute is probably sufficient. If, however, you have concerns that your BGP network may not be capable of fully re-establishing and re-learning everything in 1 minute, you can increase the duration up to 5 minutes.</p>"
+        },
+        "SnsNotificationsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether SNS notifications should be enabled for route server events. Enabling SNS notifications persists BGP status changes to an SNS topic provisioned by Amazon Web Services.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the route server during creation.</p>",
+          "locationName":"TagSpecification"
+        }
+      }
+    },
+    "CreateRouteServerResult":{
+      "type":"structure",
+      "members":{
+        "RouteServer":{
+          "shape":"RouteServer",
+          "documentation":"<p>Information about the created route server.</p>",
+          "locationName":"routeServer"
         }
       }
     },
@@ -19179,6 +19517,78 @@
           "shape":"String",
           "documentation":"<p>The IPv6 CIDR range for the route. The value you specify must match the CIDR for the route exactly.</p>",
           "locationName":"destinationIpv6CidrBlock"
+        }
+      }
+    },
+    "DeleteRouteServerEndpointRequest":{
+      "type":"structure",
+      "required":["RouteServerEndpointId"],
+      "members":{
+        "RouteServerEndpointId":{
+          "shape":"RouteServerEndpointId",
+          "documentation":"<p>The ID of the route server endpoint to delete.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteRouteServerEndpointResult":{
+      "type":"structure",
+      "members":{
+        "RouteServerEndpoint":{
+          "shape":"RouteServerEndpoint",
+          "documentation":"<p>Information about the deleted route server endpoint.</p>",
+          "locationName":"routeServerEndpoint"
+        }
+      }
+    },
+    "DeleteRouteServerPeerRequest":{
+      "type":"structure",
+      "required":["RouteServerPeerId"],
+      "members":{
+        "RouteServerPeerId":{
+          "shape":"RouteServerPeerId",
+          "documentation":"<p>The ID of the route server peer to delete.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteRouteServerPeerResult":{
+      "type":"structure",
+      "members":{
+        "RouteServerPeer":{
+          "shape":"RouteServerPeer",
+          "documentation":"<p>Information about the deleted route server peer.</p>",
+          "locationName":"routeServerPeer"
+        }
+      }
+    },
+    "DeleteRouteServerRequest":{
+      "type":"structure",
+      "required":["RouteServerId"],
+      "members":{
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The ID of the route server to delete.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteRouteServerResult":{
+      "type":"structure",
+      "members":{
+        "RouteServer":{
+          "shape":"RouteServer",
+          "documentation":"<p>Information about the deleted route server.</p>",
+          "locationName":"routeServer"
         }
       }
     },
@@ -22890,7 +23300,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters. Filter names and values are case-sensitive.</p> <ul> <li> <p> <code>auto-recovery-supported</code> - Indicates whether Amazon CloudWatch action based recovery is supported (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>bare-metal</code> - Indicates whether it is a bare metal instance type (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>burstable-performance-supported</code> - Indicates whether the instance type is a burstable performance T instance type (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>current-generation</code> - Indicates whether this instance type is the latest generation instance type of an instance family (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-bandwidth-in-mbps</code> - The baseline bandwidth performance for an EBS-optimized instance type, in Mbps.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-iops</code> - The baseline input/output storage operations per second for an EBS-optimized instance type.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-throughput-in-mbps</code> - The baseline throughput performance for an EBS-optimized instance type, in MB/s.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-bandwidth-in-mbps</code> - The maximum bandwidth performance for an EBS-optimized instance type, in Mbps.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-iops</code> - The maximum input/output storage operations per second for an EBS-optimized instance type.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-throughput-in-mbps</code> - The maximum throughput performance for an EBS-optimized instance type, in MB/s.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-support</code> - Indicates whether the instance type is EBS-optimized (<code>supported</code> | <code>unsupported</code> | <code>default</code>).</p> </li> <li> <p> <code>ebs-info.encryption-support</code> - Indicates whether EBS encryption is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>ebs-info.nvme-support</code> - Indicates whether non-volatile memory express (NVMe) is supported for EBS volumes (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>free-tier-eligible</code> - Indicates whether the instance type is eligible to use in the free tier (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hibernation-supported</code> - Indicates whether On-Demand hibernation is supported (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor (<code>nitro</code> | <code>xen</code>).</p> </li> <li> <p> <code>instance-storage-info.disk.count</code> - The number of local disks.</p> </li> <li> <p> <code>instance-storage-info.disk.size-in-gb</code> - The storage size of each instance storage disk, in GB.</p> </li> <li> <p> <code>instance-storage-info.disk.type</code> - The storage technology for the local instance storage disks (<code>hdd</code> | <code>ssd</code>).</p> </li> <li> <p> <code>instance-storage-info.encryption-support</code> - Indicates whether data is encrypted at rest (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>instance-storage-info.nvme-support</code> - Indicates whether non-volatile memory express (NVMe) is supported for instance store (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>instance-storage-info.total-size-in-gb</code> - The total amount of storage available from all local instance storage, in GB.</p> </li> <li> <p> <code>instance-storage-supported</code> - Indicates whether the instance type has local instance storage (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>instance-type</code> - The instance type (for example <code>c5.2xlarge</code> or c5*).</p> </li> <li> <p> <code>memory-info.size-in-mib</code> - The memory size.</p> </li> <li> <p> <code>network-info.bandwidth-weightings</code> - For instances that support bandwidth weighting to boost performance (<code>default</code>, <code>vpc-1</code>, <code>ebs-1</code>).</p> </li> <li> <p> <code>network-info.efa-info.maximum-efa-interfaces</code> - The maximum number of Elastic Fabric Adapters (EFAs) per instance.</p> </li> <li> <p> <code>network-info.efa-supported</code> - Indicates whether the instance type supports Elastic Fabric Adapter (EFA) (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.ena-support</code> - Indicates whether Elastic Network Adapter (ENA) is supported or required (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>network-info.encryption-in-transit-supported</code> - Indicates whether the instance type automatically encrypts in-transit traffic between instances (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.ipv4-addresses-per-interface</code> - The maximum number of private IPv4 addresses per network interface.</p> </li> <li> <p> <code>network-info.ipv6-addresses-per-interface</code> - The maximum number of private IPv6 addresses per network interface.</p> </li> <li> <p> <code>network-info.ipv6-supported</code> - Indicates whether the instance type supports IPv6 (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.maximum-network-cards</code> - The maximum number of network cards per instance.</p> </li> <li> <p> <code>network-info.maximum-network-interfaces</code> - The maximum number of network interfaces per instance.</p> </li> <li> <p> <code>network-info.network-performance</code> - The network performance (for example, \"25 Gigabit\").</p> </li> <li> <p> <code>nitro-enclaves-support</code> - Indicates whether Nitro Enclaves is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>nitro-tpm-support</code> - Indicates whether NitroTPM is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>nitro-tpm-info.supported-versions</code> - The supported NitroTPM version (<code>2.0</code>).</p> </li> <li> <p> <code>processor-info.supported-architecture</code> - The CPU architecture (<code>arm64</code> | <code>i386</code> | <code>x86_64</code>).</p> </li> <li> <p> <code>processor-info.sustained-clock-speed-in-ghz</code> - The CPU clock speed, in GHz.</p> </li> <li> <p> <code>processor-info.supported-features</code> - The supported CPU features (<code>amd-sev-snp</code>).</p> </li> <li> <p> <code>supported-boot-mode</code> - The boot mode (<code>legacy-bios</code> | <code>uefi</code>).</p> </li> <li> <p> <code>supported-root-device-type</code> - The root device type (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>supported-usage-class</code> - The usage class (<code>on-demand</code> | <code>spot</code> | <code>capacity-block</code>).</p> </li> <li> <p> <code>supported-virtualization-type</code> - The virtualization type (<code>hvm</code> | <code>paravirtual</code>).</p> </li> <li> <p> <code>vcpu-info.default-cores</code> - The default number of cores for the instance type.</p> </li> <li> <p> <code>vcpu-info.default-threads-per-core</code> - The default number of threads per core for the instance type.</p> </li> <li> <p> <code>vcpu-info.default-vcpus</code> - The default number of vCPUs for the instance type.</p> </li> <li> <p> <code>vcpu-info.valid-cores</code> - The number of cores that can be configured for the instance type.</p> </li> <li> <p> <code>vcpu-info.valid-threads-per-core</code> - The number of threads per core that can be configured for the instance type. For example, \"1\" or \"1,2\".</p> </li> </ul>",
+          "documentation":"<p>One or more filters. Filter names and values are case-sensitive.</p> <ul> <li> <p> <code>auto-recovery-supported</code> - Indicates whether Amazon CloudWatch action based recovery is supported (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>bare-metal</code> - Indicates whether it is a bare metal instance type (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>burstable-performance-supported</code> - Indicates whether the instance type is a burstable performance T instance type (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>current-generation</code> - Indicates whether this instance type is the latest generation instance type of an instance family (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>dedicated-hosts-supported</code> - Indicates whether the instance type supports Dedicated Hosts. (<code>true</code> | <code>false</code>)</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-bandwidth-in-mbps</code> - The baseline bandwidth performance for an EBS-optimized instance type, in Mbps.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-iops</code> - The baseline input/output storage operations per second for an EBS-optimized instance type.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-throughput-in-mbps</code> - The baseline throughput performance for an EBS-optimized instance type, in MB/s.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-bandwidth-in-mbps</code> - The maximum bandwidth performance for an EBS-optimized instance type, in Mbps.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-iops</code> - The maximum input/output storage operations per second for an EBS-optimized instance type.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-throughput-in-mbps</code> - The maximum throughput performance for an EBS-optimized instance type, in MB/s.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-support</code> - Indicates whether the instance type is EBS-optimized (<code>supported</code> | <code>unsupported</code> | <code>default</code>).</p> </li> <li> <p> <code>ebs-info.encryption-support</code> - Indicates whether EBS encryption is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>ebs-info.nvme-support</code> - Indicates whether non-volatile memory express (NVMe) is supported for EBS volumes (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>free-tier-eligible</code> - Indicates whether the instance type is eligible to use in the free tier (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hibernation-supported</code> - Indicates whether On-Demand hibernation is supported (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor (<code>nitro</code> | <code>xen</code>).</p> </li> <li> <p> <code>instance-storage-info.disk.count</code> - The number of local disks.</p> </li> <li> <p> <code>instance-storage-info.disk.size-in-gb</code> - The storage size of each instance storage disk, in GB.</p> </li> <li> <p> <code>instance-storage-info.disk.type</code> - The storage technology for the local instance storage disks (<code>hdd</code> | <code>ssd</code>).</p> </li> <li> <p> <code>instance-storage-info.encryption-support</code> - Indicates whether data is encrypted at rest (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>instance-storage-info.nvme-support</code> - Indicates whether non-volatile memory express (NVMe) is supported for instance store (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>instance-storage-info.total-size-in-gb</code> - The total amount of storage available from all local instance storage, in GB.</p> </li> <li> <p> <code>instance-storage-supported</code> - Indicates whether the instance type has local instance storage (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>instance-type</code> - The instance type (for example <code>c5.2xlarge</code> or c5*).</p> </li> <li> <p> <code>memory-info.size-in-mib</code> - The memory size.</p> </li> <li> <p> <code>network-info.bandwidth-weightings</code> - For instances that support bandwidth weighting to boost performance (<code>default</code>, <code>vpc-1</code>, <code>ebs-1</code>).</p> </li> <li> <p> <code>network-info.efa-info.maximum-efa-interfaces</code> - The maximum number of Elastic Fabric Adapters (EFAs) per instance.</p> </li> <li> <p> <code>network-info.efa-supported</code> - Indicates whether the instance type supports Elastic Fabric Adapter (EFA) (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.ena-support</code> - Indicates whether Elastic Network Adapter (ENA) is supported or required (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>network-info.encryption-in-transit-supported</code> - Indicates whether the instance type automatically encrypts in-transit traffic between instances (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.ipv4-addresses-per-interface</code> - The maximum number of private IPv4 addresses per network interface.</p> </li> <li> <p> <code>network-info.ipv6-addresses-per-interface</code> - The maximum number of private IPv6 addresses per network interface.</p> </li> <li> <p> <code>network-info.ipv6-supported</code> - Indicates whether the instance type supports IPv6 (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.maximum-network-cards</code> - The maximum number of network cards per instance.</p> </li> <li> <p> <code>network-info.maximum-network-interfaces</code> - The maximum number of network interfaces per instance.</p> </li> <li> <p> <code>network-info.network-performance</code> - The network performance (for example, \"25 Gigabit\").</p> </li> <li> <p> <code>nitro-enclaves-support</code> - Indicates whether Nitro Enclaves is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>nitro-tpm-support</code> - Indicates whether NitroTPM is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>nitro-tpm-info.supported-versions</code> - The supported NitroTPM version (<code>2.0</code>).</p> </li> <li> <p> <code>processor-info.supported-architecture</code> - The CPU architecture (<code>arm64</code> | <code>i386</code> | <code>x86_64</code>).</p> </li> <li> <p> <code>processor-info.sustained-clock-speed-in-ghz</code> - The CPU clock speed, in GHz.</p> </li> <li> <p> <code>processor-info.supported-features</code> - The supported CPU features (<code>amd-sev-snp</code>).</p> </li> <li> <p> <code>supported-boot-mode</code> - The boot mode (<code>legacy-bios</code> | <code>uefi</code>).</p> </li> <li> <p> <code>supported-root-device-type</code> - The root device type (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>supported-usage-class</code> - The usage class (<code>on-demand</code> | <code>spot</code> | <code>capacity-block</code>).</p> </li> <li> <p> <code>supported-virtualization-type</code> - The virtualization type (<code>hvm</code> | <code>paravirtual</code>).</p> </li> <li> <p> <code>vcpu-info.default-cores</code> - The default number of cores for the instance type.</p> </li> <li> <p> <code>vcpu-info.default-threads-per-core</code> - The default number of threads per core for the instance type.</p> </li> <li> <p> <code>vcpu-info.default-vcpus</code> - The default number of vCPUs for the instance type.</p> </li> <li> <p> <code>vcpu-info.valid-cores</code> - The number of cores that can be configured for the instance type.</p> </li> <li> <p> <code>vcpu-info.valid-threads-per-core</code> - The number of threads per core that can be configured for the instance type. For example, \"1\" or \"1,2\".</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -24803,6 +25213,132 @@
         }
       },
       "documentation":"<p>Contains the output for DescribeReservedInstances.</p>"
+    },
+    "DescribeRouteServerEndpointsRequest":{
+      "type":"structure",
+      "members":{
+        "RouteServerEndpointIds":{
+          "shape":"RouteServerEndpointIdsList",
+          "documentation":"<p>The IDs of the route server endpoints to describe.</p>",
+          "locationName":"RouteServerEndpointId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"RouteServerMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to apply to the describe request.</p>",
+          "locationName":"Filter"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeRouteServerEndpointsResult":{
+      "type":"structure",
+      "members":{
+        "RouteServerEndpoints":{
+          "shape":"RouteServerEndpointsList",
+          "documentation":"<p>Information about the described route server endpoints.</p>",
+          "locationName":"routeServerEndpointSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeRouteServerPeersRequest":{
+      "type":"structure",
+      "members":{
+        "RouteServerPeerIds":{
+          "shape":"RouteServerPeerIdsList",
+          "documentation":"<p>The IDs of the route server peers to describe.</p>",
+          "locationName":"RouteServerPeerId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"RouteServerMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to apply to the describe request.</p>",
+          "locationName":"Filter"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeRouteServerPeersResult":{
+      "type":"structure",
+      "members":{
+        "RouteServerPeers":{
+          "shape":"RouteServerPeersList",
+          "documentation":"<p>Information about the described route server peers.</p>",
+          "locationName":"routeServerPeerSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeRouteServersRequest":{
+      "type":"structure",
+      "members":{
+        "RouteServerIds":{
+          "shape":"RouteServerIdsList",
+          "documentation":"<p>The IDs of the route servers to describe.</p>",
+          "locationName":"RouteServerId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"RouteServerMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to apply to the describe request.</p>",
+          "locationName":"Filter"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeRouteServersResult":{
+      "type":"structure",
+      "members":{
+        "RouteServers":{
+          "shape":"RouteServersList",
+          "documentation":"<p>Information about the described route servers.</p>",
+          "locationName":"routeServerSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
     },
     "DescribeRouteTablesMaxResults":{
       "type":"integer",
@@ -28239,6 +28775,37 @@
         }
       }
     },
+    "DisableRouteServerPropagationRequest":{
+      "type":"structure",
+      "required":[
+        "RouteServerId",
+        "RouteTableId"
+      ],
+      "members":{
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The ID of the route server for which to disable propagation.</p>"
+        },
+        "RouteTableId":{
+          "shape":"RouteTableId",
+          "documentation":"<p>The ID of the route table for which to disable route server propagation.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DisableRouteServerPropagationResult":{
+      "type":"structure",
+      "members":{
+        "RouteServerPropagation":{
+          "shape":"RouteServerPropagation",
+          "documentation":"<p>Information about the disabled route server propagation.</p>",
+          "locationName":"routeServerPropagation"
+        }
+      }
+    },
     "DisableSerialConsoleAccessRequest":{
       "type":"structure",
       "members":{
@@ -28636,6 +29203,37 @@
           "shape":"NatGatewayAddressList",
           "documentation":"<p>Information about the NAT gateway IP addresses.</p>",
           "locationName":"natGatewayAddressSet"
+        }
+      }
+    },
+    "DisassociateRouteServerRequest":{
+      "type":"structure",
+      "required":[
+        "RouteServerId",
+        "VpcId"
+      ],
+      "members":{
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The ID of the route server to disassociate.</p>"
+        },
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC to disassociate from the route server.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DisassociateRouteServerResult":{
+      "type":"structure",
+      "members":{
+        "RouteServerAssociation":{
+          "shape":"RouteServerAssociation",
+          "documentation":"<p>Information about the disassociated route server.</p>",
+          "locationName":"routeServerAssociation"
         }
       }
     },
@@ -29809,11 +30407,11 @@
       "members":{
         "EnaSrdEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether ENA Express is enabled for the network interface when you launch an instance from your launch template.</p>"
+          "documentation":"<p>Specifies whether ENA Express is enabled for the network interface when you launch an instance.</p>"
         },
         "EnaSrdUdpSpecification":{
           "shape":"EnaSrdUdpSpecificationRequest",
-          "documentation":"<p>Contains ENA Express settings for UDP network traffic in your launch template.</p>"
+          "documentation":"<p>Contains ENA Express settings for UDP network traffic for the network interface attached to the instance.</p>"
         }
       },
       "documentation":"<p>Launch instances with ENA Express settings configured from your launch template.</p>"
@@ -29834,7 +30432,7 @@
       "members":{
         "EnaSrdUdpEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether UDP traffic uses ENA Express for your instance. To ensure that UDP traffic can use ENA Express when you launch an instance, you must also set <b>EnaSrdEnabled</b> in the <b>EnaSrdSpecificationRequest</b> to <code>true</code> in your launch template.</p>"
+          "documentation":"<p>Indicates whether UDP traffic uses ENA Express for your instance. To ensure that UDP traffic can use ENA Express when you launch an instance, you must also set <b>EnaSrdEnabled</b> in the <b>EnaSrdSpecificationRequest</b> to <code>true</code>.</p>"
         }
       },
       "documentation":"<p>Configures ENA Express for UDP network traffic from your launch template.</p>"
@@ -30351,6 +30949,37 @@
           "shape":"Boolean",
           "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, returns an error.</p>",
           "locationName":"returnValue"
+        }
+      }
+    },
+    "EnableRouteServerPropagationRequest":{
+      "type":"structure",
+      "required":[
+        "RouteServerId",
+        "RouteTableId"
+      ],
+      "members":{
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The ID of the route server for which to enable propagation.</p>"
+        },
+        "RouteTableId":{
+          "shape":"RouteTableId",
+          "documentation":"<p>The ID of the route table to which route server will propagate routes.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "EnableRouteServerPropagationResult":{
+      "type":"structure",
+      "members":{
+        "RouteServerPropagation":{
+          "shape":"RouteServerPropagation",
+          "documentation":"<p>Information about the enabled route server propagation.</p>",
+          "locationName":"routeServerPropagation"
         }
       }
     },
@@ -34025,6 +34654,105 @@
         }
       },
       "documentation":"<p>Contains the output of GetReservedInstancesExchangeQuote.</p>"
+    },
+    "GetRouteServerAssociationsRequest":{
+      "type":"structure",
+      "required":["RouteServerId"],
+      "members":{
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The ID of the route server for which to get association information.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetRouteServerAssociationsResult":{
+      "type":"structure",
+      "members":{
+        "RouteServerAssociations":{
+          "shape":"RouteServerAssociationsList",
+          "documentation":"<p>Information about the associations for the specified route server.</p>",
+          "locationName":"routeServerAssociationSet"
+        }
+      }
+    },
+    "GetRouteServerPropagationsRequest":{
+      "type":"structure",
+      "required":["RouteServerId"],
+      "members":{
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The ID of the route server for which to get propagation information.</p>"
+        },
+        "RouteTableId":{
+          "shape":"RouteTableId",
+          "documentation":"<p>The ID of the route table for which to get propagation information.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetRouteServerPropagationsResult":{
+      "type":"structure",
+      "members":{
+        "RouteServerPropagations":{
+          "shape":"RouteServerPropagationsList",
+          "documentation":"<p>Information about the route propagations for the specified route server.</p>",
+          "locationName":"routeServerPropagationSet"
+        }
+      }
+    },
+    "GetRouteServerRoutingDatabaseRequest":{
+      "type":"structure",
+      "required":["RouteServerId"],
+      "members":{
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The ID of the route server for which to get the routing database.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"RouteServerMaxResults",
+          "documentation":"<p>The maximum number of routing database entries to return in a single response.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>Filters to apply to the routing database query.</p>",
+          "locationName":"Filter"
+        }
+      }
+    },
+    "GetRouteServerRoutingDatabaseResult":{
+      "type":"structure",
+      "members":{
+        "AreRoutesPersisted":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether routes are being persisted in the routing database.</p>",
+          "locationName":"areRoutesPersisted"
+        },
+        "Routes":{
+          "shape":"RouteServerRouteList",
+          "documentation":"<p>The collection of routes in the route server's routing database.</p>",
+          "locationName":"routeSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
     },
     "GetSecurityGroupsForVpcRequest":{
       "type":"structure",
@@ -43143,7 +43871,7 @@
         },
         "DeviceIndex":{
           "shape":"Integer",
-          "documentation":"<p>The device index for the network interface attachment. Each network interface requires a device index. If you create a launch template that includes secondary network interfaces but not a primary network interface, then you must add a primary network interface as a launch parameter when you launch an instance from the template.</p>"
+          "documentation":"<p>The device index for the network interface attachment. The primary network interface has a device index of 0. Each network interface is of type <code>interface</code>, you must specify a device index. If you create a launch template that includes secondary network interfaces but not a primary network interface, then you must add a primary network interface as a launch parameter when you launch an instance from the template.</p>"
         },
         "Groups":{
           "shape":"SecurityGroupIdStringList",
@@ -45420,7 +46148,7 @@
         },
         "Attribute":{
           "shape":"InstanceAttributeName",
-          "documentation":"<p>The name of the attribute to modify.</p> <important> <p>You can modify the following attributes only: <code>disableApiTermination</code> | <code>instanceType</code> | <code>kernel</code> | <code>ramdisk</code> | <code>instanceInitiatedShutdownBehavior</code> | <code>blockDeviceMapping</code> | <code>userData</code> | <code>sourceDestCheck</code> | <code>groupSet</code> | <code>ebsOptimized</code> | <code>sriovNetSupport</code> | <code>enaSupport</code> | <code>nvmeSupport</code> | <code>disableApiStop</code> | <code>enclaveOptions</code> </p> </important>",
+          "documentation":"<p>The name of the attribute to modify.</p> <note> <p>When changing the instance type: If the original instance type is configured for configurable bandwidth, and the desired instance type doesn't support configurable bandwidth, first set the existing bandwidth configuration to <code>default</code> using the <a>ModifyInstanceNetworkPerformanceOptions</a> operation.</p> </note> <important> <p>You can modify the following attributes only: <code>disableApiTermination</code> | <code>instanceType</code> | <code>kernel</code> | <code>ramdisk</code> | <code>instanceInitiatedShutdownBehavior</code> | <code>blockDeviceMapping</code> | <code>userData</code> | <code>sourceDestCheck</code> | <code>groupSet</code> | <code>ebsOptimized</code> | <code>sriovNetSupport</code> | <code>enaSupport</code> | <code>nvmeSupport</code> | <code>disableApiStop</code> | <code>enclaveOptions</code> </p> </important>",
           "locationName":"attribute"
         },
         "Value":{
@@ -46351,6 +47079,42 @@
         }
       },
       "documentation":"<p>Contains the output of ModifyReservedInstances.</p>"
+    },
+    "ModifyRouteServerRequest":{
+      "type":"structure",
+      "required":["RouteServerId"],
+      "members":{
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The ID of the route server to modify.</p>"
+        },
+        "PersistRoutes":{
+          "shape":"RouteServerPersistRoutesAction",
+          "documentation":"<p>Specifies whether to persist routes after all BGP sessions are terminated.</p> <ul> <li> <p>enable: Routes will be persisted in FIB and RIB after all BGP sessions are terminated.</p> </li> <li> <p>disable: Routes will not be persisted in FIB and RIB after all BGP sessions are terminated.</p> </li> <li> <p>reset: If a route server has persisted routes due to all BGP sessions having ended, reset will withdraw all routes and reset route server to an empty FIB and RIB.</p> </li> </ul>"
+        },
+        "PersistRoutesDuration":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The number of minutes a route server will wait after BGP is re-established to unpersist the routes in the FIB and RIB. Value must be in the range of 1-5. Required if PersistRoutes is <code>enabled</code>.</p> <p>If you set the duration to 1 minute, then when your network appliance re-establishes BGP with route server, it has 1 minute to relearn it's adjacent network and advertise those routes to route server before route server resumes normal functionality. In most cases, 1 minute is probably sufficient. If, however, you have concerns that your BGP network may not be capable of fully re-establishing and re-learning everything in 1 minute, you can increase the duration up to 5 minutes.</p>"
+        },
+        "SnsNotificationsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable SNS notifications for route server events. Enabling SNS notifications persists BGP status changes to an SNS topic provisioned by Amazon Web Services.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ModifyRouteServerResult":{
+      "type":"structure",
+      "members":{
+        "RouteServer":{
+          "shape":"RouteServer",
+          "documentation":"<p>Information about the modified route server.</p>",
+          "locationName":"routeServer"
+        }
+      }
     },
     "ModifySecurityGroupRulesRequest":{
       "type":"structure",
@@ -54458,6 +55222,9 @@
         "verified-access-trust-provider",
         "vpn-connection-device-type",
         "vpc-block-public-access-exclusion",
+        "route-server",
+        "route-server-endpoint",
+        "route-server-peer",
         "ipam-resource-discovery",
         "ipam-resource-discovery-association",
         "instance-connect-endpoint",
@@ -55264,6 +56031,513 @@
         "CreateRoute",
         "EnableVgwRoutePropagation"
       ]
+    },
+    "RouteServer":{
+      "type":"structure",
+      "members":{
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The unique identifier of the route server.</p>",
+          "locationName":"routeServerId"
+        },
+        "AmazonSideAsn":{
+          "shape":"Long",
+          "documentation":"<p>The Border Gateway Protocol (BGP) Autonomous System Number (ASN) for the appliance. Valid values are from 1 to 4294967295. We recommend using a private ASN in the 64512–65534 (16-bit ASN) or 4200000000–4294967294 (32-bit ASN) range.</p>",
+          "locationName":"amazonSideAsn"
+        },
+        "State":{
+          "shape":"RouteServerState",
+          "documentation":"<p>The current state of the route server.</p>",
+          "locationName":"state"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Any tags assigned to the route server.</p>",
+          "locationName":"tagSet"
+        },
+        "PersistRoutesState":{
+          "shape":"RouteServerPersistRoutesState",
+          "documentation":"<p>The current state of route persistence for the route server.</p>",
+          "locationName":"persistRoutesState"
+        },
+        "PersistRoutesDuration":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The number of minutes a route server will wait after BGP is re-established to unpersist the routes in the FIB and RIB. Value must be in the range of 1-5. The default value is 1. Only valid if <code>persistRoutesState</code> is 'enabled'.</p> <p>If you set the duration to 1 minute, then when your network appliance re-establishes BGP with route server, it has 1 minute to relearn it's adjacent network and advertise those routes to route server before route server resumes normal functionality. In most cases, 1 minute is probably sufficient. If, however, you have concerns that your BGP network may not be capable of fully re-establishing and re-learning everything in 1 minute, you can increase the duration up to 5 minutes.</p>",
+          "locationName":"persistRoutesDuration"
+        },
+        "SnsNotificationsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether SNS notifications are enabled for the route server. Enabling SNS notifications persists BGP status changes to an SNS topic provisioned by Amazon Web Services.</p>",
+          "locationName":"snsNotificationsEnabled"
+        },
+        "SnsTopicArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the SNS topic where notifications are published.</p>",
+          "locationName":"snsTopicArn"
+        }
+      },
+      "documentation":"<p>Describes a route server and its configuration.</p> <p>Amazon VPC Route Server simplifies routing for traffic between workloads that are deployed within a VPC and its internet gateways. With this feature, VPC Route Server dynamically updates VPC and internet gateway route tables with your preferred IPv4 or IPv6 routes to achieve routing fault tolerance for those workloads. This enables you to automatically reroute traffic within a VPC, which increases the manageability of VPC routing and interoperability with third-party workloads.</p> <p>Route server supports the follow route table types:</p> <ul> <li> <p>VPC route tables not associated with subnets</p> </li> <li> <p>Subnet route tables</p> </li> <li> <p>Internet gateway route tables</p> </li> </ul> <p>Route server does not support route tables associated with virtual private gateways. To propagate routes into a transit gateway route table, use <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-connect.html\">Transit Gateway Connect</a>.</p>"
+    },
+    "RouteServerAssociation":{
+      "type":"structure",
+      "members":{
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The ID of the associated route server.</p>",
+          "locationName":"routeServerId"
+        },
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the associated VPC.</p>",
+          "locationName":"vpcId"
+        },
+        "State":{
+          "shape":"RouteServerAssociationState",
+          "documentation":"<p>The current state of the association.</p>",
+          "locationName":"state"
+        }
+      },
+      "documentation":"<p>Describes the association between a route server and a VPC.</p> <p>A route server association is the connection established between a route server and a VPC.</p>"
+    },
+    "RouteServerAssociationState":{
+      "type":"string",
+      "enum":[
+        "associating",
+        "associated",
+        "disassociating"
+      ]
+    },
+    "RouteServerAssociationsList":{
+      "type":"list",
+      "member":{
+        "shape":"RouteServerAssociation",
+        "locationName":"item"
+      }
+    },
+    "RouteServerBfdState":{
+      "type":"string",
+      "enum":[
+        "up",
+        "down"
+      ]
+    },
+    "RouteServerBfdStatus":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"RouteServerBfdState",
+          "documentation":"<p>The operational status of the BFD session.</p>",
+          "locationName":"status"
+        }
+      },
+      "documentation":"<p>The current status of Bidirectional Forwarding Detection (BFD) for a BGP session.</p>"
+    },
+    "RouteServerBgpOptions":{
+      "type":"structure",
+      "members":{
+        "PeerAsn":{
+          "shape":"Long",
+          "documentation":"<p>The Border Gateway Protocol (BGP) Autonomous System Number (ASN) for the appliance. Valid values are from 1 to 4294967295. We recommend using a private ASN in the 64512–65534 (16-bit ASN) or 4200000000–4294967294 (32-bit ASN) range.</p>",
+          "locationName":"peerAsn"
+        },
+        "PeerLivenessDetection":{
+          "shape":"RouteServerPeerLivenessMode",
+          "documentation":"<p>The liveness detection protocol used for the BGP peer.</p> <p>The requested liveness detection protocol for the BGP peer.</p> <ul> <li> <p> <code>bgp-keepalive</code>: The standard BGP keep alive mechanism (<a href=\"https://www.rfc-editor.org/rfc/rfc4271#page-21\">RFC4271</a>) that is stable but may take longer to fail-over in cases of network impact or router failure.</p> </li> <li> <p> <code>bfd</code>: An additional Bidirectional Forwarding Detection (BFD) protocol (<a href=\"https://www.rfc-editor.org/rfc/rfc5880\">RFC5880</a>) that enables fast failover by using more sensitive liveness detection.</p> </li> </ul> <p>Defaults to <code>bgp-keepalive</code>.</p>",
+          "locationName":"peerLivenessDetection"
+        }
+      },
+      "documentation":"<p>The BGP configuration options for a route server peer.</p>"
+    },
+    "RouteServerBgpOptionsRequest":{
+      "type":"structure",
+      "required":["PeerAsn"],
+      "members":{
+        "PeerAsn":{
+          "shape":"Long",
+          "documentation":"<p>The Border Gateway Protocol (BGP) Autonomous System Number (ASN) for the appliance. Valid values are from 1 to 4294967295. We recommend using a private ASN in the 64512–65534 (16-bit ASN) or 4200000000–4294967294 (32-bit ASN) range.</p>"
+        },
+        "PeerLivenessDetection":{
+          "shape":"RouteServerPeerLivenessMode",
+          "documentation":"<p>The requested liveness detection protocol for the BGP peer.</p> <ul> <li> <p> <code>bgp-keepalive</code>: The standard BGP keep alive mechanism (<a href=\"https://www.rfc-editor.org/rfc/rfc4271#page-21\">RFC4271</a>) that is stable but may take longer to fail-over in cases of network impact or router failure.</p> </li> <li> <p> <code>bfd</code>: An additional Bidirectional Forwarding Detection (BFD) protocol (<a href=\"https://www.rfc-editor.org/rfc/rfc5880\">RFC5880</a>) that enables fast failover by using more sensitive liveness detection.</p> </li> </ul> <p>Defaults to <code>bgp-keepalive</code>.</p>"
+        }
+      },
+      "documentation":"<p>The BGP configuration options requested for a route server peer.</p>"
+    },
+    "RouteServerBgpState":{
+      "type":"string",
+      "enum":[
+        "up",
+        "down"
+      ]
+    },
+    "RouteServerBgpStatus":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"RouteServerBgpState",
+          "documentation":"<p>The operational status of the BGP session. The status enables you to monitor session liveness if you lack monitoring on your router/appliance.</p>",
+          "locationName":"status"
+        }
+      },
+      "documentation":"<p>The current status of a BGP session.</p>"
+    },
+    "RouteServerEndpoint":{
+      "type":"structure",
+      "members":{
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The ID of the route server associated with this endpoint.</p>",
+          "locationName":"routeServerId"
+        },
+        "RouteServerEndpointId":{
+          "shape":"RouteServerEndpointId",
+          "documentation":"<p>The unique identifier of the route server endpoint.</p>",
+          "locationName":"routeServerEndpointId"
+        },
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC containing the endpoint.</p>",
+          "locationName":"vpcId"
+        },
+        "SubnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The ID of the subnet to place the route server endpoint into.</p>",
+          "locationName":"subnetId"
+        },
+        "EniId":{
+          "shape":"NetworkInterfaceId",
+          "documentation":"<p>The ID of the Elastic network interface for the endpoint.</p>",
+          "locationName":"eniId"
+        },
+        "EniAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address of the Elastic network interface for the endpoint.</p>",
+          "locationName":"eniAddress"
+        },
+        "State":{
+          "shape":"RouteServerEndpointState",
+          "documentation":"<p>The current state of the route server endpoint.</p>",
+          "locationName":"state"
+        },
+        "FailureReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for any failure in endpoint creation or operation.</p>",
+          "locationName":"failureReason"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Any tags assigned to the route server endpoint.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes a route server endpoint and its properties.</p> <p>A route server endpoint is an Amazon Web Services-managed component inside a subnet that facilitates <a href=\"https://en.wikipedia.org/wiki/Border_Gateway_Protocol\">BGP (Border Gateway Protocol)</a> connections between your route server and your BGP peers.</p>"
+    },
+    "RouteServerEndpointId":{"type":"string"},
+    "RouteServerEndpointIdsList":{
+      "type":"list",
+      "member":{"shape":"RouteServerEndpointId"}
+    },
+    "RouteServerEndpointState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "available",
+        "deleting",
+        "deleted",
+        "failing",
+        "failed",
+        "delete-failed"
+      ]
+    },
+    "RouteServerEndpointsList":{
+      "type":"list",
+      "member":{
+        "shape":"RouteServerEndpoint",
+        "locationName":"item"
+      }
+    },
+    "RouteServerId":{"type":"string"},
+    "RouteServerIdsList":{
+      "type":"list",
+      "member":{"shape":"RouteServerId"}
+    },
+    "RouteServerMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "RouteServerPeer":{
+      "type":"structure",
+      "members":{
+        "RouteServerPeerId":{
+          "shape":"RouteServerPeerId",
+          "documentation":"<p>The unique identifier of the route server peer.</p>",
+          "locationName":"routeServerPeerId"
+        },
+        "RouteServerEndpointId":{
+          "shape":"RouteServerEndpointId",
+          "documentation":"<p>The ID of the route server endpoint associated with this peer.</p>",
+          "locationName":"routeServerEndpointId"
+        },
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The ID of the route server associated with this peer.</p>",
+          "locationName":"routeServerId"
+        },
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC containing the route server peer.</p>",
+          "locationName":"vpcId"
+        },
+        "SubnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The ID of the subnet containing the route server peer.</p>",
+          "locationName":"subnetId"
+        },
+        "State":{
+          "shape":"RouteServerPeerState",
+          "documentation":"<p>The current state of the route server peer.</p>",
+          "locationName":"state"
+        },
+        "FailureReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for any failure in peer creation or operation.</p>",
+          "locationName":"failureReason"
+        },
+        "EndpointEniId":{
+          "shape":"NetworkInterfaceId",
+          "documentation":"<p>The ID of the Elastic network interface for the route server endpoint.</p>",
+          "locationName":"endpointEniId"
+        },
+        "EndpointEniAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address of the Elastic network interface for the route server endpoint.</p>",
+          "locationName":"endpointEniAddress"
+        },
+        "PeerAddress":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 address of the peer device.</p>",
+          "locationName":"peerAddress"
+        },
+        "BgpOptions":{
+          "shape":"RouteServerBgpOptions",
+          "documentation":"<p>The BGP configuration options for this peer, including ASN (Autonomous System Number) and BFD (Bidrectional Forwarding Detection) settings.</p>",
+          "locationName":"bgpOptions"
+        },
+        "BgpStatus":{
+          "shape":"RouteServerBgpStatus",
+          "documentation":"<p>The current status of the BGP session with this peer.</p>",
+          "locationName":"bgpStatus"
+        },
+        "BfdStatus":{
+          "shape":"RouteServerBfdStatus",
+          "documentation":"<p>The current status of the BFD session with this peer.</p>",
+          "locationName":"bfdStatus"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Any tags assigned to the route server peer.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes a BGP peer configuration for a route server endpoint.</p> <p>A route server peer is a session between a route server endpoint and the device deployed in Amazon Web Services (such as a firewall appliance or other network security function running on an EC2 instance). The device must meet these requirements:</p> <ul> <li> <p>Have an elastic network interface in the VPC</p> </li> <li> <p>Support BGP (Border Gateway Protocol)</p> </li> <li> <p>Can initiate BGP sessions</p> </li> </ul>"
+    },
+    "RouteServerPeerId":{"type":"string"},
+    "RouteServerPeerIdsList":{
+      "type":"list",
+      "member":{"shape":"RouteServerPeerId"}
+    },
+    "RouteServerPeerLivenessMode":{
+      "type":"string",
+      "enum":[
+        "bfd",
+        "bgp-keepalive"
+      ]
+    },
+    "RouteServerPeerState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "available",
+        "deleting",
+        "deleted",
+        "failing",
+        "failed"
+      ]
+    },
+    "RouteServerPeersList":{
+      "type":"list",
+      "member":{
+        "shape":"RouteServerPeer",
+        "locationName":"item"
+      }
+    },
+    "RouteServerPersistRoutesAction":{
+      "type":"string",
+      "enum":[
+        "enable",
+        "disable",
+        "reset"
+      ]
+    },
+    "RouteServerPersistRoutesState":{
+      "type":"string",
+      "enum":[
+        "enabling",
+        "enabled",
+        "resetting",
+        "disabling",
+        "disabled",
+        "modifying"
+      ]
+    },
+    "RouteServerPropagation":{
+      "type":"structure",
+      "members":{
+        "RouteServerId":{
+          "shape":"RouteServerId",
+          "documentation":"<p>The ID of the route server configured for route propagation.</p>",
+          "locationName":"routeServerId"
+        },
+        "RouteTableId":{
+          "shape":"RouteTableId",
+          "documentation":"<p>The ID of the route table configured for route server propagation.</p>",
+          "locationName":"routeTableId"
+        },
+        "State":{
+          "shape":"RouteServerPropagationState",
+          "documentation":"<p>The current state of route propagation.</p>",
+          "locationName":"state"
+        }
+      },
+      "documentation":"<p>Describes the route propagation configuration between a route server and a route table.</p> <p>When enabled, route server propagation installs the routes in the FIB on the route table you've specified. Route server supports IPv4 and IPv6 route propagation.</p>"
+    },
+    "RouteServerPropagationState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "available",
+        "deleting"
+      ]
+    },
+    "RouteServerPropagationsList":{
+      "type":"list",
+      "member":{
+        "shape":"RouteServerPropagation",
+        "locationName":"item"
+      }
+    },
+    "RouteServerRoute":{
+      "type":"structure",
+      "members":{
+        "RouteServerEndpointId":{
+          "shape":"RouteServerEndpointId",
+          "documentation":"<p>The ID of the route server endpoint that received this route.</p>",
+          "locationName":"routeServerEndpointId"
+        },
+        "RouteServerPeerId":{
+          "shape":"RouteServerPeerId",
+          "documentation":"<p>The ID of the route server peer that advertised this route.</p>",
+          "locationName":"routeServerPeerId"
+        },
+        "RouteInstallationDetails":{
+          "shape":"RouteServerRouteInstallationDetails",
+          "documentation":"<p>Details about the installation status of this route in route tables.</p>",
+          "locationName":"routeInstallationDetailSet"
+        },
+        "RouteStatus":{
+          "shape":"RouteServerRouteStatus",
+          "documentation":"<p>The current status of the route in the routing database. Values are <code>in-rib</code> or <code>in-fib</code> depending on if the routes are in the RIB or the FIB database.</p> <p>The <a href=\"https://en.wikipedia.org/wiki/Routing_table\">Routing Information Base (RIB)</a> serves as a database that stores all the routing information and network topology data collected by a router or routing system, such as routes learned from BGP peers. The RIB is constantly updated as new routing information is received or existing routes change. This ensures that the route server always has the most current view of the network topology and can make optimal routing decisions.</p> <p>The <a href=\"https://en.wikipedia.org/wiki/Forwarding_information_base\">Forwarding Information Base (FIB)</a> serves as a forwarding table for what route server has determined are the best-path routes in the RIB after evaluating all available routing information and policies. The FIB routes are installed on the route tables. The FIB is recomputed whenever there are changes to the RIB.</p>",
+          "locationName":"routeStatus"
+        },
+        "Prefix":{
+          "shape":"String",
+          "documentation":"<p>The destination CIDR block of the route.</p>",
+          "locationName":"prefix"
+        },
+        "AsPaths":{
+          "shape":"AsPath",
+          "documentation":"<p>The AS path attributes of the BGP route.</p>",
+          "locationName":"asPathSet"
+        },
+        "Med":{
+          "shape":"Integer",
+          "documentation":"<p>The Multi-Exit Discriminator (MED) value of the BGP route.</p>",
+          "locationName":"med"
+        },
+        "NextHopIp":{
+          "shape":"String",
+          "documentation":"<p>The IP address for the next hop.</p>",
+          "locationName":"nextHopIp"
+        }
+      },
+      "documentation":"<p>Describes a route in the route server's routing database.</p>"
+    },
+    "RouteServerRouteInstallationDetail":{
+      "type":"structure",
+      "members":{
+        "RouteTableId":{
+          "shape":"RouteTableId",
+          "documentation":"<p>The ID of the route table where the route is being installed.</p>",
+          "locationName":"routeTableId"
+        },
+        "RouteInstallationStatus":{
+          "shape":"RouteServerRouteInstallationStatus",
+          "documentation":"<p>The current installation status of the route in the route table.</p>",
+          "locationName":"routeInstallationStatus"
+        },
+        "RouteInstallationStatusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current installation status of the route.</p>",
+          "locationName":"routeInstallationStatusReason"
+        }
+      },
+      "documentation":"<p>Describes the installation status of a route in a route table.</p>"
+    },
+    "RouteServerRouteInstallationDetails":{
+      "type":"list",
+      "member":{
+        "shape":"RouteServerRouteInstallationDetail",
+        "locationName":"item"
+      }
+    },
+    "RouteServerRouteInstallationStatus":{
+      "type":"string",
+      "enum":[
+        "installed",
+        "rejected"
+      ]
+    },
+    "RouteServerRouteList":{
+      "type":"list",
+      "member":{
+        "shape":"RouteServerRoute",
+        "locationName":"item"
+      }
+    },
+    "RouteServerRouteStatus":{
+      "type":"string",
+      "enum":[
+        "in-rib",
+        "in-fib"
+      ]
+    },
+    "RouteServerState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "available",
+        "modifying",
+        "deleting",
+        "deleted"
+      ]
+    },
+    "RouteServersList":{
+      "type":"list",
+      "member":{
+        "shape":"RouteServer",
+        "locationName":"item"
+      }
     },
     "RouteState":{
       "type":"string",
@@ -64704,7 +65978,9 @@
         "monitor-failed",
         "deleting",
         "deleted",
-        "available"
+        "available",
+        "creating",
+        "delete-failed"
       ]
     },
     "VpcEndpoint":{

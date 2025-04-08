@@ -10,15 +10,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from botocore.docs.utils import (
+    AppendParamDocumentation,
+    AutoPopulatedParam,
+    HideParamFromOperations,
+    escape_controls,
+    get_official_service_name,
+    py_default,
+    py_type_name,
+)
+
 from tests import unittest
 from tests.unit.botocore.docs import BaseDocsTest
-from botocore.docs.utils import py_type_name
-from botocore.docs.utils import py_default
-from botocore.docs.utils import get_official_service_name
-from botocore.docs.utils import AutoPopulatedParam
-from botocore.docs.utils import HideParamFromOperations
-from botocore.docs.utils import AppendParamDocumentation
-from botocore.docs.utils import escape_controls
 
 
 class TestPythonTypeName(unittest.TestCase):
@@ -87,35 +90,39 @@ class TestPythonDefault(unittest.TestCase):
 
 class TestGetOfficialServiceName(BaseDocsTest):
     def setUp(self):
-        super(TestGetOfficialServiceName, self).setUp()
-        self.service_model.metadata = {
-            'serviceFullName': 'Official Name'
-        }
+        super().setUp()
+        self.service_model.metadata = {'serviceFullName': 'Official Name'}
 
     def test_no_short_name(self):
-        self.assertEqual('Official Name',
-                         get_official_service_name(self.service_model))
+        self.assertEqual(
+            'Official Name', get_official_service_name(self.service_model)
+        )
 
     def test_aws_short_name(self):
         self.service_model.metadata['serviceAbbreviation'] = 'AWS Foo'
-        self.assertEqual('Official Name (Foo)',
-                         get_official_service_name(self.service_model))
+        self.assertEqual(
+            'Official Name (Foo)',
+            get_official_service_name(self.service_model),
+        )
 
     def test_amazon_short_name(self):
         self.service_model.metadata['serviceAbbreviation'] = 'Amazon Foo'
-        self.assertEqual('Official Name (Foo)',
-                         get_official_service_name(self.service_model))
+        self.assertEqual(
+            'Official Name (Foo)',
+            get_official_service_name(self.service_model),
+        )
 
     def test_short_name_in_official_name(self):
         self.service_model.metadata['serviceFullName'] = 'The Foo Service'
         self.service_model.metadata['serviceAbbreviation'] = 'Amazon Foo'
-        self.assertEqual('The Foo Service',
-                         get_official_service_name(self.service_model))
+        self.assertEqual(
+            'The Foo Service', get_official_service_name(self.service_model)
+        )
 
 
 class TestAutopopulatedParam(BaseDocsTest):
     def setUp(self):
-        super(TestAutopopulatedParam, self).setUp()
+        super().setUp()
         self.name = 'MyMember'
         self.param = AutoPopulatedParam(self.name)
 
@@ -123,9 +130,9 @@ class TestAutopopulatedParam(BaseDocsTest):
         section = self.doc_structure.add_new_section(self.name)
         section.add_new_section('param-documentation')
         self.param.document_auto_populated_param(
-            'docs.request-params', self.doc_structure)
-        self.assert_contains_line(
-            'this parameter is automatically populated')
+            'docs.request-params', self.doc_structure
+        )
+        self.assert_contains_line('this parameter is automatically populated')
 
     def test_request_param_required(self):
         section = self.doc_structure.add_new_section(self.name)
@@ -133,10 +140,10 @@ class TestAutopopulatedParam(BaseDocsTest):
         section.add_new_section('param-documentation')
         is_required_section.write('**[REQUIRED]**')
         self.param.document_auto_populated_param(
-            'docs.request-params', self.doc_structure)
+            'docs.request-params', self.doc_structure
+        )
         self.assert_not_contains_line('**[REQUIRED]**')
-        self.assert_contains_line(
-            'this parameter is automatically populated')
+        self.assert_contains_line('this parameter is automatically populated')
 
     def test_non_default_param_description(self):
         description = 'This is a custom description'
@@ -144,7 +151,8 @@ class TestAutopopulatedParam(BaseDocsTest):
         section = self.doc_structure.add_new_section(self.name)
         section.add_new_section('param-documentation')
         self.param.document_auto_populated_param(
-            'docs.request-params', self.doc_structure)
+            'docs.request-params', self.doc_structure
+        )
         self.assert_contains_line(description)
 
     def test_request_example(self):
@@ -154,15 +162,18 @@ class TestAutopopulatedParam(BaseDocsTest):
         section.write(example)
         self.assert_contains_line(example)
         self.param.document_auto_populated_param(
-            'docs.request-example', self.doc_structure)
+            'docs.request-example', self.doc_structure
+        )
         self.assert_not_contains_line(example)
 
     def test_param_not_in_section_request_param(self):
         self.doc_structure.add_new_section('Foo')
         self.param.document_auto_populated_param(
-            'docs.request-params', self.doc_structure)
+            'docs.request-params', self.doc_structure
+        )
         self.assertEqual(
-            '', self.doc_structure.flush_structure().decode('utf-8'))
+            '', self.doc_structure.flush_structure().decode('utf-8')
+        )
 
     def test_param_not_in_section_request_example(self):
         top_section = self.doc_structure.add_new_section('structure-value')
@@ -171,42 +182,46 @@ class TestAutopopulatedParam(BaseDocsTest):
         section.write(example)
         self.assert_contains_line(example)
         self.param.document_auto_populated_param(
-            'docs.request-example', self.doc_structure)
+            'docs.request-example', self.doc_structure
+        )
         self.assert_contains_line(example)
 
 
 class TestHideParamFromOperations(BaseDocsTest):
     def setUp(self):
-        super(TestHideParamFromOperations, self).setUp()
+        super().setUp()
         self.name = 'MyMember'
         self.param = HideParamFromOperations(
-            's3', self.name, ['SampleOperation'])
+            's3', self.name, ['SampleOperation']
+        )
 
     def test_hides_params_from_doc_string(self):
         section = self.doc_structure.add_new_section(self.name)
-        param_signature = ':param %s: ' % self.name
+        param_signature = f':param {self.name}: '
         section.write(param_signature)
         self.assert_contains_line(param_signature)
         self.param.hide_param(
             'docs.request-params.s3.SampleOperation.complete-section',
-            self.doc_structure)
+            self.doc_structure,
+        )
         self.assert_not_contains_line(param_signature)
 
     def test_hides_param_from_example(self):
         structure = self.doc_structure.add_new_section('structure-value')
         section = structure.add_new_section(self.name)
-        example = '%s: \'string\'' % self.name
+        example = f'{self.name}: \'string\''
         section.write(example)
         self.assert_contains_line(example)
         self.param.hide_param(
             'docs.request-example.s3.SampleOperation.complete-section',
-            self.doc_structure)
+            self.doc_structure,
+        )
         self.assert_not_contains_line(example)
 
 
 class TestAppendParamDocumentation(BaseDocsTest):
     def setUp(self):
-        super(TestAppendParamDocumentation, self).setUp()
+        super().setUp()
         self.name = 'MyMember'
         self.param = AppendParamDocumentation(self.name, 'hello!')
 
@@ -215,7 +230,8 @@ class TestAppendParamDocumentation(BaseDocsTest):
         param_section = section.add_new_section('param-documentation')
         param_section.writeln('foo')
         self.param.append_documentation(
-            'docs.request-params', self.doc_structure)
+            'docs.request-params', self.doc_structure
+        )
         self.assert_contains_line('foo\n')
         self.assert_contains_line('hello!')
 
@@ -224,4 +240,3 @@ class TestEscapeControls(unittest.TestCase):
     def test_escapes_controls(self):
         escaped = escape_controls('\na\rb\tc\fd\be')
         self.assertEqual(escaped, '\\na\\rb\\tc\\fd\\be')
-

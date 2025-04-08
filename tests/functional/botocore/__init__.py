@@ -14,6 +14,7 @@ import os
 import uuid
 
 import botocore
+
 from tests import BaseEnvVar
 
 _ORIGINAL = os.environ.copy()
@@ -31,7 +32,8 @@ _CREDENTIAL_ENV_VARS = [
 ]
 
 TEST_MODELS_DIR = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), 'models',
+    os.path.dirname(os.path.abspath(__file__)),
+    'models',
 )
 
 
@@ -52,7 +54,7 @@ def _create_functional_test_loader():
 
 class FunctionalSessionTest(BaseEnvVar):
     def setUp(self, **environ):
-        super(FunctionalSessionTest, self).setUp()
+        super().setUp()
         self.environ['AWS_ACCESS_KEY_ID'] = 'access_key'
         self.environ['AWS_SECRET_ACCESS_KEY'] = 'secret_key'
         self.environ['AWS_CONFIG_FILE'] = 'no-exist-foo'

@@ -219,7 +219,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<note> </note> <p>Sends a prompt for the agent to process and respond to. Note the following fields for the request:</p> <ul> <li> <p>To continue the same conversation with an agent, use the same <code>sessionId</code> value in the request.</p> </li> <li> <p>To activate trace enablement, turn <code>enableTrace</code> to <code>true</code>. Trace enablement helps you follow the agent's reasoning process that led it to the information it processed, the actions it took, and the final result it yielded. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-events\">Trace enablement</a>.</p> </li> <li> <p>To stream agent responses, make sure that only orchestration prompt is enabled. Agent streaming is not supported for the following steps: </p> <ul> <li> <p> <code>Pre-processing</code> </p> </li> <li> <p> <code>Post-processing</code> </p> </li> <li> <p>Agent with 1 Knowledge base and <code>User Input</code> not enabled</p> </li> </ul> </li> <li> <p>End a conversation by setting <code>endSession</code> to <code>true</code>.</p> </li> <li> <p>In the <code>sessionState</code> object, you can include attributes for the session or prompt or, if you configured an action group to return control, results from invocation of the action group.</p> </li> </ul> <p>The response contains both <b>chunk</b> and <b>trace</b> attributes.</p> <p>The final response is returned in the <code>bytes</code> field of the <code>chunk</code> object. The <code>InvokeAgent</code> returns one chunk for the entire interaction.</p> <ul> <li> <p>The <code>attribution</code> object contains citations for parts of the response.</p> </li> <li> <p>If you set <code>enableTrace</code> to <code>true</code> in the request, you can trace the agent's steps and reasoning process that led it to the response.</p> </li> <li> <p>If the action predicted was configured to return control, the response returns parameters for the action, elicited from the user, in the <code>returnControl</code> field.</p> </li> <li> <p>Errors are also surfaced in the response.</p> </li> </ul>"
+      "documentation":"<note> </note> <p>Sends a prompt for the agent to process and respond to. Note the following fields for the request:</p> <ul> <li> <p>To continue the same conversation with an agent, use the same <code>sessionId</code> value in the request.</p> </li> <li> <p>To activate trace enablement, turn <code>enableTrace</code> to <code>true</code>. Trace enablement helps you follow the agent's reasoning process that led it to the information it processed, the actions it took, and the final result it yielded. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-events\">Trace enablement</a>.</p> </li> <li> <p>End a conversation by setting <code>endSession</code> to <code>true</code>.</p> </li> <li> <p>In the <code>sessionState</code> object, you can include attributes for the session or prompt or, if you configured an action group to return control, results from invocation of the action group.</p> </li> </ul> <p>The response contains both <b>chunk</b> and <b>trace</b> attributes.</p> <p>The final response is returned in the <code>bytes</code> field of the <code>chunk</code> object. The <code>InvokeAgent</code> returns one chunk for the entire interaction.</p> <ul> <li> <p>The <code>attribution</code> object contains citations for parts of the response.</p> </li> <li> <p>If you set <code>enableTrace</code> to <code>true</code> in the request, you can trace the agent's steps and reasoning process that led it to the response.</p> </li> <li> <p>If the action predicted was configured to return control, the response returns parameters for the action, elicited from the user, in the <code>returnControl</code> field.</p> </li> <li> <p>Errors are also surfaced in the response.</p> </li> </ul>"
     },
     "InvokeFlow":{
       "name":"InvokeFlow",
@@ -2081,6 +2081,10 @@
           "shape":"FlowTraceConditionNodeResultEvent",
           "documentation":"<p>Contains information about an output from a condition node.</p>"
         },
+        "nodeActionTrace":{
+          "shape":"FlowTraceNodeActionEvent",
+          "documentation":"<p>Contains information about an action (operation) called by a node. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html\">Track each step in your prompt flow by viewing its trace in Amazon Bedrock</a>.</p>"
+        },
         "nodeInputTrace":{
           "shape":"FlowTraceNodeInputEvent",
           "documentation":"<p>Contains information about the input into a node.</p>"
@@ -2147,6 +2151,40 @@
       },
       "documentation":"<p>Contains information about a trace, which tracks an input or output for a node in the flow. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html\">Track each step in your prompt flow by viewing its trace in Amazon Bedrock</a>.</p>",
       "event":true
+    },
+    "FlowTraceNodeActionEvent":{
+      "type":"structure",
+      "required":[
+        "nodeName",
+        "operationName",
+        "requestId",
+        "serviceName",
+        "timestamp"
+      ],
+      "members":{
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the node that called the operation.</p>"
+        },
+        "operationName":{
+          "shape":"String",
+          "documentation":"<p>The name of the operation that the node called.</p>"
+        },
+        "requestId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the request that the node made to the operation.</p>"
+        },
+        "serviceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service that the node called.</p>"
+        },
+        "timestamp":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The date and time that the operation was called.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an action (operation) called by a node in an Amazon Bedrock flow. The service generates action events for calls made by prompt nodes, agent nodes, and Amazon Web Services Lambda nodes. </p>",
+      "sensitive":true
     },
     "FlowTraceNodeInputContent":{
       "type":"structure",
@@ -6501,14 +6539,14 @@
       "members":{
         "applyGuardrailInterval":{
           "shape":"StreamingConfigurationsApplyGuardrailIntervalInteger",
-          "documentation":"<p> The guardrail interval to apply as response is generated. </p>"
+          "documentation":"<p> The guardrail interval to apply as response is generated. By default, the guardrail interval is set to 50 characters. If a larger interval is specified, the response will be generated in larger chunks with fewer <code>ApplyGuardrail</code> calls. The following examples show the response generated for <i>Hello, I am an agent</i> input string.</p> <p> <b>Example response in chunks: Interval set to 3 characters</b> </p> <p> <code>'Hel', 'lo, ','I am', ' an', ' Age', 'nt'</code> </p> <p>Each chunk has at least 3 characters except for the last chunk</p> <p> <b>Example response in chunks: Interval set to 20 or more characters</b> </p> <p> <code>Hello, I am an Agent</code> </p>"
         },
         "streamFinalResponse":{
           "shape":"Boolean",
           "documentation":"<p> Specifies whether to enable streaming for the final response. This is set to <code>false</code> by default. </p>"
         }
       },
-      "documentation":"<p> Configurations for streaming.</p>"
+      "documentation":"<p>Configurations for streaming.</p>"
     },
     "StreamingConfigurationsApplyGuardrailIntervalInteger":{
       "type":"integer",

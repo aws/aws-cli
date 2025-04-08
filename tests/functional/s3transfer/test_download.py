@@ -19,10 +19,10 @@ import time
 from io import BytesIO
 
 from botocore.exceptions import ClientError
-
 from s3transfer.compat import SOCKET_ERROR
 from s3transfer.exceptions import RetriesExceededError
 from s3transfer.manager import TransferConfig, TransferManager
+
 from tests import (
     BaseGeneralInterfaceTest,
     FileSizeProvider,
@@ -116,9 +116,9 @@ class BaseDownloadTest(BaseGeneralInterfaceTest):
                     expected_params
                 )
                 if expected_ranges:
-                    stubbed_response['expected_params'][
-                        'Range'
-                    ] = expected_ranges[i]
+                    stubbed_response['expected_params']['Range'] = (
+                        expected_ranges[i]
+                    )
             self.stubber.add_response(**stubbed_response)
 
     def add_n_retryable_get_object_responses(self, n, num_reads=0):
@@ -141,7 +141,7 @@ class BaseDownloadTest(BaseGeneralInterfaceTest):
         # Make sure the file exists
         self.assertTrue(os.path.exists(self.filename))
         # Make sure the random temporary file does not exist
-        possible_matches = glob.glob('%s*' % self.filename + os.extsep)
+        possible_matches = glob.glob(f'{self.filename}*' + os.extsep)
         self.assertEqual(possible_matches, [])
 
     def test_download_for_fileobj(self):
@@ -201,7 +201,7 @@ class BaseDownloadTest(BaseGeneralInterfaceTest):
             future.result()
         # Make sure the actual file and the temporary do not exist
         # by globbing for the file and any of its extensions
-        possible_matches = glob.glob('%s*' % self.filename)
+        possible_matches = glob.glob(f'{self.filename}*')
         self.assertEqual(possible_matches, [])
 
     def test_download_with_nonexistent_directory(self):

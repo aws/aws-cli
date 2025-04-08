@@ -10,17 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
-import io
-import sys
 import csv
+import io
 import json
-from datetime import datetime
+import os
+import sys
 from collections import namedtuple
+from datetime import datetime
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ConfigurationError
-
 
 # Takes botocore's ReadOnlyCredentials and exposes an expiry_time.
 Credentials = namedtuple(
@@ -47,7 +46,7 @@ def convert_botocore_credentials(credentials):
     )
 
 
-class BaseCredentialFormatter(object):
+class BaseCredentialFormatter:
     FORMAT = None
     DOCUMENTATION = ""
 

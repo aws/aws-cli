@@ -13,12 +13,15 @@
 import functools
 import logging
 
-from botocore import UNSIGNED, waiter, xform_name
+from botocore import (
+    UNSIGNED,  # noqa
+    waiter,
+    xform_name,
+)
 from botocore.args import ClientArgsCreator
 from botocore.auth import AUTH_TYPE_MAPS, resolve_auth_type
 from botocore.awsrequest import prepare_request_dict
 from botocore.compress import maybe_compress_request
-from botocore.config import Config
 
 # Keep this imported.  There's pre-existing code that uses
 # "from botocore.client import UNSIGNED".
@@ -32,7 +35,7 @@ from botocore.discovery import (
 )
 from botocore.docs.docstring import ClientMethodDocstring, PaginatorDocstring
 from botocore.exceptions import (
-    ClientError,
+    ClientError,  # noqa
     DataNotFoundError,
     InvalidEndpointDiscoveryConfigurationError,
     OperationNotPageableError,
@@ -75,11 +78,20 @@ logger = logging.getLogger(__name__)
 history_recorder = get_global_history_recorder()
 
 
-class ClientCreator(object):
+class ClientCreator:
     """Creates client objects for a service."""
-    def __init__(self, loader, endpoint_resolver, user_agent, event_emitter,
-                 response_parser_factory=None, exceptions_factory=None,
-                 config_store=None, user_agent_creator=None):
+
+    def __init__(
+        self,
+        loader,
+        endpoint_resolver,
+        user_agent,
+        event_emitter,
+        response_parser_factory=None,
+        exceptions_factory=None,
+        config_store=None,
+        user_agent_creator=None,
+    ):
         self._loader = loader
         self._endpoint_resolver = endpoint_resolver
         self._user_agent = user_agent
@@ -93,12 +105,21 @@ class ClientCreator(object):
         self._config_store = config_store
         self._user_agent_creator = user_agent_creator
 
-    def create_client(self, service_name, region_name, is_secure=True,
-                      endpoint_url=None, verify=None,
-                      credentials=None, scoped_config=None,
-                      client_config=None, auth_token=None):
+    def create_client(
+        self,
+        service_name,
+        region_name,
+        is_secure=True,
+        endpoint_url=None,
+        verify=None,
+        credentials=None,
+        scoped_config=None,
+        client_config=None,
+        auth_token=None,
+    ):
         responses = self._event_emitter.emit(
-            'choose-service-name', service_name=service_name)
+            'choose-service-name', service_name=service_name
+        )
         service_name = first_non_none_response(responses, default=service_name)
         service_model = self._load_service_model(service_name)
 
@@ -118,7 +139,8 @@ class ClientCreator(object):
 
         cls = self._create_client_class(service_name, service_model)
         region_name, client_config = self._normalize_fips_region(
-            region_name, client_config)
+            region_name, client_config
+        )
         if auth := service_model.metadata.get('auth'):
             service_signature_version = resolve_auth_type(auth)
         else:
@@ -126,13 +148,18 @@ class ClientCreator(object):
                 'signatureVersion'
             )
         endpoint_bridge = ClientEndpointBridge(
-            self._endpoint_resolver, scoped_config, client_config,
+            self._endpoint_resolver,
+            scoped_config,
+            client_config,
             service_signing_name=service_model.metadata.get('signingName'),
             config_store=self._config_store,
             service_signature_version=service_signature_version,
         )
         client_args = self._get_client_args(
-            service_model, region_name, is_secure, endpoint_url,
+            service_model,
+            region_name,
+            is_secure,
+            endpoint_url,
             verify,
             credentials,
             scoped_config,
@@ -163,37 +190,36 @@ class ClientCreator(object):
         bases = [BaseClient]
         service_id = service_model.service_id.hyphenize()
         self._event_emitter.emit(
-            'creating-client-class.%s' % service_id,
+            f'creating-client-class.{service_id}',
             class_attributes=class_attributes,
-            base_classes=bases)
+            base_classes=bases,
+        )
         class_name = get_service_module_name(service_model)
         cls = type(str(class_name), tuple(bases), class_attributes)
         return cls
 
-    def _normalize_fips_region(self, region_name,
-                               client_config):
+    def _normalize_fips_region(self, region_name, client_config):
         if region_name is not None:
-            normalized_region_name = region_name.replace(
-                'fips-', '').replace('-fips', '')
+            normalized_region_name = region_name.replace('fips-', '').replace(
+                '-fips', ''
+            )
             # If region has been transformed then set flag
             if normalized_region_name != region_name:
                 config_use_fips_endpoint = Config(use_fips_endpoint=True)
                 if client_config:
                     # Keeping endpoint setting client specific
                     client_config = client_config.merge(
-                        config_use_fips_endpoint)
+                        config_use_fips_endpoint
+                    )
                 else:
                     client_config = config_use_fips_endpoint
                 logger.warning(
-                    'transforming region from %s to %s and setting '
+                    f'transforming region from {region_name} to {normalized_region_name} and setting '
                     'use_fips_endpoint to true. client should not '
-                    'be configured with a fips psuedo region.' % (
-                        region_name, normalized_region_name
-                    )
+                    'be configured with a fips psuedo region.'
                 )
                 region_name = normalized_region_name
         return region_name, client_config
-
 
     def _load_service_model(self, service_name):
         json_model = self._loader.load_service_model(service_name, 'service-2')
@@ -202,7 +228,8 @@ class ClientCreator(object):
 
     def _load_service_endpoints_ruleset(self, service_name):
         return self._loader.load_service_model(
-            service_name, 'endpoint-rule-set-1',
+            service_name,
+            'endpoint-rule-set-1',
         )
 
     def _register_retries(self, client):
@@ -237,17 +264,22 @@ class ClientCreator(object):
             enabled = config.endpoint_discovery_enabled
         elif self._config_store:
             enabled = self._config_store.get_config_variable(
-                'endpoint_discovery_enabled')
+                'endpoint_discovery_enabled'
+            )
 
         enabled = self._normalize_endpoint_discovery_config(enabled)
         if enabled and self._requires_endpoint_discovery(client, enabled):
             discover = enabled is True
-            manager = EndpointDiscoveryManager(client, always_discover=discover)
+            manager = EndpointDiscoveryManager(
+                client, always_discover=discover
+            )
             handler = EndpointDiscoveryHandler(manager)
             handler.register(events, service_id)
         else:
-            events.register('before-parameter-build',
-                            block_endpoint_discovery_required_operations)
+            events.register(
+                'before-parameter-build',
+                block_endpoint_discovery_required_operations,
+            )
 
     def _normalize_endpoint_discovery_config(self, enabled):
         """Config must either be a boolean-string or string-literal 'auto'"""
@@ -275,7 +307,7 @@ class ClientCreator(object):
         EventbridgeSignerSetter(
             endpoint_resolver=self._endpoint_resolver,
             region=client.meta.region_name,
-            endpoint_url=endpoint_url
+            endpoint_url=endpoint_url,
         ).register(client.meta.events)
 
     def _register_s3express_events(
@@ -301,25 +333,29 @@ class ClientCreator(object):
         S3ControlArnParamHandlerv2().register(client.meta.events)
 
     def _get_client_args(
-            self,
-            service_model,
-            region_name,
-            is_secure,
-            endpoint_url,
-            verify,
-            credentials,
-            scoped_config,
-            client_config,
-            endpoint_bridge,
-            auth_token,
-            endpoints_ruleset_data,
-            partition_data,
+        self,
+        service_model,
+        region_name,
+        is_secure,
+        endpoint_url,
+        verify,
+        credentials,
+        scoped_config,
+        client_config,
+        endpoint_bridge,
+        auth_token,
+        endpoints_ruleset_data,
+        partition_data,
     ):
         args_creator = ClientArgsCreator(
-            self._event_emitter, self._user_agent,
-            self._response_parser_factory, self._loader,
-            self._exceptions_factory, config_store=self._config_store,
-            user_agent_creator=self._user_agent_creator)
+            self._event_emitter,
+            self._user_agent,
+            self._response_parser_factory,
+            self._loader,
+            self._exceptions_factory,
+            config_store=self._config_store,
+            user_agent_creator=self._user_agent_creator,
+        )
         return args_creator.get_client_args(
             service_model,
             region_name,
@@ -340,7 +376,8 @@ class ClientCreator(object):
         for operation_name in service_model.operation_names:
             py_operation_name = xform_name(operation_name)
             op_dict[py_operation_name] = self._create_api_method(
-                py_operation_name, operation_name, service_model)
+                py_operation_name, operation_name, service_model
+            )
         return op_dict
 
     def _create_name_mapping(self, service_model):
@@ -352,15 +389,17 @@ class ClientCreator(object):
             mapping[py_operation_name] = operation_name
         return mapping
 
-    def _create_api_method(self, py_operation_name, operation_name,
-                           service_model):
+    def _create_api_method(
+        self, py_operation_name, operation_name, service_model
+    ):
         def _api_call(self, *args, **kwargs):
             # We're accepting *args so that we can give a more helpful
             # error message than TypeError: _api_call takes exactly
             # 1 argument.
             if args:
                 raise TypeError(
-                    "%s() only accepts keyword arguments." % py_operation_name)
+                    f"{py_operation_name}() only accepts keyword arguments."
+                )
             # The "self" in this scope is referring to the BaseClient.
             return self._make_api_call(operation_name, kwargs)
 
@@ -373,14 +412,14 @@ class ClientCreator(object):
             method_name=operation_name,
             event_emitter=self._event_emitter,
             method_description=operation_model.documentation,
-            example_prefix='response = client.%s' % py_operation_name,
-            include_signature=False
+            example_prefix=f'response = client.{py_operation_name}',
+            include_signature=False,
         )
         _api_call.__doc__ = docstring
         return _api_call
 
 
-class ClientEndpointBridge(object):
+class ClientEndpointBridge:
     """Bridges endpoint data and client creation
 
     This class handles taking out the relevant arguments from the endpoint
@@ -394,10 +433,16 @@ class ClientEndpointBridge(object):
     DEFAULT_ENDPOINT = '{service}.{region}.amazonaws.com'
     _DUALSTACK_CUSTOMIZED_SERVICES = ['s3', 's3-control']
 
-    def __init__(self, endpoint_resolver, scoped_config=None,
-                 client_config=None, default_endpoint=None,
-                 service_signing_name=None, config_store=None,
-                 service_signature_version=None):
+    def __init__(
+        self,
+        endpoint_resolver,
+        scoped_config=None,
+        client_config=None,
+        default_endpoint=None,
+        service_signing_name=None,
+        config_store=None,
+        service_signature_version=None,
+    ):
         self.service_signing_name = service_signing_name
         self.endpoint_resolver = endpoint_resolver
         self.scoped_config = scoped_config
@@ -406,16 +451,19 @@ class ClientEndpointBridge(object):
         self.config_store = config_store
         self.service_signature_version = service_signature_version
 
-    def resolve(self, service_name, region_name=None, endpoint_url=None,
-                is_secure=True):
+    def resolve(
+        self, service_name, region_name=None, endpoint_url=None, is_secure=True
+    ):
         region_name = self._check_default_region(service_name, region_name)
         use_dualstack_endpoint = self._resolve_use_dualstack_endpoint(
-            service_name)
+            service_name
+        )
         use_fips_endpoint = self._resolve_endpoint_variant_config_var(
             'use_fips_endpoint'
         )
         resolved = self.endpoint_resolver.construct_endpoint(
-            service_name, region_name,
+            service_name,
+            region_name,
             use_dualstack_endpoint=use_dualstack_endpoint,
             use_fips_endpoint=use_fips_endpoint,
         )
@@ -426,17 +474,21 @@ class ClientEndpointBridge(object):
             # TODO: fallback partition_name should be configurable in the
             # future for users to define as needed.
             resolved = self.endpoint_resolver.construct_endpoint(
-                service_name, region_name, partition_name='aws',
+                service_name,
+                region_name,
+                partition_name='aws',
                 use_dualstack_endpoint=use_dualstack_endpoint,
                 use_fips_endpoint=use_fips_endpoint,
             )
 
         if resolved:
             return self._create_endpoint(
-                resolved, service_name, region_name, endpoint_url, is_secure)
+                resolved, service_name, region_name, endpoint_url, is_secure
+            )
         else:
-            return self._assume_endpoint(service_name, region_name,
-                                         endpoint_url, is_secure)
+            return self._assume_endpoint(
+                service_name, region_name, endpoint_url, is_secure
+            )
 
     def resolver_uses_builtin_data(self):
         return self.endpoint_resolver.uses_builtin_data
@@ -448,23 +500,31 @@ class ClientEndpointBridge(object):
         if self.client_config and self.client_config.region_name is not None:
             return self.client_config.region_name
 
-    def _create_endpoint(self, resolved, service_name, region_name,
-                         endpoint_url, is_secure):
+    def _create_endpoint(
+        self, resolved, service_name, region_name, endpoint_url, is_secure
+    ):
         region_name, signing_region = self._pick_region_values(
-            resolved, region_name, endpoint_url)
+            resolved, region_name, endpoint_url
+        )
         if endpoint_url is None:
             endpoint_url = self._make_url(
-                resolved.get('hostname'), is_secure,
-                resolved.get('protocols', [])
+                resolved.get('hostname'),
+                is_secure,
+                resolved.get('protocols', []),
             )
         signature_version = self._resolve_signature_version(
-            service_name, resolved)
+            service_name, resolved
+        )
         signing_name = self._resolve_signing_name(service_name, resolved)
         return self._create_result(
-            service_name=service_name, region_name=region_name,
-            signing_region=signing_region, signing_name=signing_name,
-            endpoint_url=endpoint_url, metadata=resolved,
-            signature_version=signature_version)
+            service_name=service_name,
+            region_name=region_name,
+            signing_region=signing_region,
+            signing_name=signing_name,
+            endpoint_url=endpoint_url,
+            metadata=resolved,
+            signature_version=signature_version,
+        )
 
     def _resolve_endpoint_variant_config_var(self, config_var):
         client_config = self.client_config
@@ -483,7 +543,8 @@ class ClientEndpointBridge(object):
         if s3_dualstack_mode is not None:
             return s3_dualstack_mode
         return self._resolve_endpoint_variant_config_var(
-            'use_dualstack_endpoint')
+            'use_dualstack_endpoint'
+        )
 
     def _is_s3_dualstack_mode(self, service_name):
         if service_name not in self._DUALSTACK_CUSTOMIZED_SERVICES:
@@ -493,39 +554,62 @@ class ClientEndpointBridge(object):
         # ClientArgsCreator.  _resolve_signature_version also has similarly
         # duplicated logic.
         client_config = self.client_config
-        if client_config is not None and client_config.s3 is not None and \
-                'use_dualstack_endpoint' in client_config.s3:
+        if (
+            client_config is not None
+            and client_config.s3 is not None
+            and 'use_dualstack_endpoint' in client_config.s3
+        ):
             # Client config trumps scoped config.
             return client_config.s3['use_dualstack_endpoint']
         if self.scoped_config is not None:
             enabled = self.scoped_config.get('s3', {}).get(
-                'use_dualstack_endpoint')
+                'use_dualstack_endpoint'
+            )
             if enabled in [True, 'True', 'true']:
                 return True
 
-    def _assume_endpoint(self, service_name, region_name, endpoint_url,
-                         is_secure):
+    def _assume_endpoint(
+        self, service_name, region_name, endpoint_url, is_secure
+    ):
         if endpoint_url is None:
             # Expand the default hostname URI template.
             hostname = self.default_endpoint.format(
-                service=service_name, region=region_name)
-            endpoint_url = self._make_url(hostname, is_secure,
-                                          ['http', 'https'])
-        logger.debug('Assuming an endpoint for %s, %s: %s',
-                     service_name, region_name, endpoint_url)
+                service=service_name, region=region_name
+            )
+            endpoint_url = self._make_url(
+                hostname, is_secure, ['http', 'https']
+            )
+        logger.debug(
+            'Assuming an endpoint for %s, %s: %s',
+            service_name,
+            region_name,
+            endpoint_url,
+        )
         # We still want to allow the user to provide an explicit version.
         signature_version = self._resolve_signature_version(
-            service_name, {'signatureVersions': ['v4']})
+            service_name, {'signatureVersions': ['v4']}
+        )
         signing_name = self._resolve_signing_name(service_name, resolved={})
         return self._create_result(
-            service_name=service_name, region_name=region_name,
-            signing_region=region_name, signing_name=signing_name,
-            signature_version=signature_version, endpoint_url=endpoint_url,
-            metadata={})
+            service_name=service_name,
+            region_name=region_name,
+            signing_region=region_name,
+            signing_name=signing_name,
+            signature_version=signature_version,
+            endpoint_url=endpoint_url,
+            metadata={},
+        )
 
-    def _create_result(self, service_name, region_name, signing_region,
-                       signing_name, endpoint_url, signature_version,
-                       metadata):
+    def _create_result(
+        self,
+        service_name,
+        region_name,
+        signing_region,
+        signing_name,
+        endpoint_url,
+        signature_version,
+        metadata,
+    ):
         return {
             'service_name': service_name,
             'region_name': region_name,
@@ -533,7 +617,7 @@ class ClientEndpointBridge(object):
             'signing_name': signing_name,
             'endpoint_url': endpoint_url,
             'signature_version': signature_version,
-            'metadata': metadata
+            'metadata': metadata,
         }
 
     def _make_url(self, hostname, is_secure, supported_protocols):
@@ -541,12 +625,14 @@ class ClientEndpointBridge(object):
             scheme = 'https'
         else:
             scheme = 'http'
-        return '%s://%s' % (scheme, hostname)
+        return f'{scheme}://{hostname}'
 
     def _resolve_signing_name(self, service_name, resolved):
         # CredentialScope overrides everything else.
-        if 'credentialScope' in resolved \
-                and 'service' in resolved['credentialScope']:
+        if (
+            'credentialScope' in resolved
+            and 'service' in resolved['credentialScope']
+        ):
             return resolved['credentialScope']['service']
         # Use the signingName from the model if present.
         if self.service_signing_name:
@@ -569,14 +655,17 @@ class ClientEndpointBridge(object):
             # custom endpoints.
             region_name = resolved['endpointName']
             signing_region = region_name
-            if 'credentialScope' in resolved \
-                    and 'region' in resolved['credentialScope']:
+            if (
+                'credentialScope' in resolved
+                and 'region' in resolved['credentialScope']
+            ):
                 signing_region = resolved['credentialScope']['region']
         return region_name, signing_region
 
     def _resolve_signature_version(self, service_name, resolved):
         configured_version = _get_configured_signature_version(
-            service_name, self.client_config, self.scoped_config)
+            service_name, self.client_config, self.scoped_config
+        )
         if configured_version is not None:
             return configured_version
 
@@ -606,7 +695,7 @@ class ClientEndpointBridge(object):
         )
 
 
-class BaseClient(object):
+class BaseClient:
     # This is actually reassigned with the py->op_name mapping
     # when the client creator creates the subclass.  This value is used
     # because calls such as client.get_paginator('list_objects') use the
@@ -615,10 +704,21 @@ class BaseClient(object):
     # we need the reverse mapping here.
     _PY_TO_OP_NAME = {}
 
-    def __init__(self, serializer, endpoint, response_parser,
-                 event_emitter, request_signer, service_model, loader,
-                 client_config, partition, exceptions_factory,
-                 endpoint_ruleset_resolver, user_agent_creator=None):
+    def __init__(
+        self,
+        serializer,
+        endpoint,
+        response_parser,
+        event_emitter,
+        request_signer,
+        service_model,
+        loader,
+        client_config,
+        partition,
+        exceptions_factory,
+        endpoint_ruleset_resolver,
+        user_agent_creator=None,
+    ):
         self._serializer = serializer
         self._endpoint = endpoint
         self._ruleset_resolver = endpoint_ruleset_resolver
@@ -627,9 +727,14 @@ class BaseClient(object):
         self._cache = {}
         self._loader = loader
         self._client_config = client_config
-        self.meta = ClientMeta(event_emitter, self._client_config,
-                               endpoint.host, service_model,
-                               self._PY_TO_OP_NAME, partition)
+        self.meta = ClientMeta(
+            event_emitter,
+            self._client_config,
+            endpoint.host,
+            service_model,
+            self._PY_TO_OP_NAME,
+            partition,
+        )
         self._exceptions_factory = exceptions_factory
         self._exceptions = None
         self._user_agent_creator = user_agent_creator
@@ -642,26 +747,25 @@ class BaseClient(object):
         self._register_handlers()
 
     def __getattr__(self, item):
-        event_name = 'getattr.%s.%s' % (
-            self._service_model.service_id.hyphenize(), item
+        event_name = (
+            f'getattr.{self._service_model.service_id.hyphenize()}.{item}'
         )
         handler, event_response = self.meta.events.emit_until_response(
-            event_name, client=self)
+            event_name, client=self
+        )
 
         if event_response is not None:
             return event_response
 
         raise AttributeError(
-            "'%s' object has no attribute '%s'" % (
-                self.__class__.__name__, item)
+            f"'{self.__class__.__name__}' object has no attribute '{item}'"
         )
 
     def _register_handlers(self):
         # Register the handler required to sign requests.
         service_id = self.meta.service_model.service_id.hyphenize()
         self.meta.events.register(
-            'request-created.%s' % service_id,
-            self._request_signer.handler
+            f'request-created.{service_id}', self._request_signer.handler
         )
         # Rebuild user agent string right before request is sent
         # to ensure all registered features are included.
@@ -678,14 +782,18 @@ class BaseClient(object):
     def _make_api_call(self, operation_name, api_params):
         operation_model = self._service_model.operation_model(operation_name)
         service_name = self._service_model.service_name
-        history_recorder.record('API_CALL', {
-            'service': service_name,
-            'operation': operation_name,
-            'params': api_params,
-        })
+        history_recorder.record(
+            'API_CALL',
+            {
+                'service': service_name,
+                'operation': operation_name,
+                'params': api_params,
+            },
+        )
         if operation_model.deprecated:
-            logger.debug('Warning: %s.%s() is deprecated',
-                         service_name, operation_name)
+            logger.debug(
+                'Warning: %s.%s() is deprecated', service_name, operation_name
+            )
         request_context = {
             'client_region': self.meta.region_name,
             'client_config': self.meta.config,
@@ -722,11 +830,12 @@ class BaseClient(object):
 
         service_id = self._service_model.service_id.hyphenize()
         handler, event_response = self.meta.events.emit_until_response(
-            'before-call.{service_id}.{operation_name}'.format(
-                service_id=service_id,
-                operation_name=operation_name),
-            model=operation_model, params=request_dict,
-            request_signer=self._request_signer, context=request_context)
+            f'before-call.{service_id}.{operation_name}',
+            model=operation_model,
+            params=request_dict,
+            request_signer=self._request_signer,
+            context=request_context,
+        )
 
         if event_response is not None:
             http, parsed_response = event_response
@@ -736,14 +845,15 @@ class BaseClient(object):
             )
             apply_request_checksum(request_dict)
             http, parsed_response = self._make_request(
-                operation_model, request_dict, request_context)
+                operation_model, request_dict, request_context
+            )
 
         self.meta.events.emit(
-            'after-call.{service_id}.{operation_name}'.format(
-                service_id=service_id,
-                operation_name=operation_name),
-            http_response=http, parsed=parsed_response,
-            model=operation_model, context=request_context
+            f'after-call.{service_id}.{operation_name}',
+            http_response=http,
+            parsed=parsed_response,
+            model=operation_model,
+            context=request_context,
         )
 
         if http.status_code >= 300:
@@ -758,24 +868,24 @@ class BaseClient(object):
             return self._endpoint.make_request(operation_model, request_dict)
         except Exception as e:
             self.meta.events.emit(
-                'after-call-error.{service_id}.{operation_name}'.format(
-                    service_id=self._service_model.service_id.hyphenize(),
-                    operation_name=operation_model.name),
-                exception=e, context=request_context
+                f'after-call-error.{self._service_model.service_id.hyphenize()}.{operation_model.name}',
+                exception=e,
+                context=request_context,
             )
             raise
 
     def _convert_to_request_dict(
-            self,
-            api_params,
-            operation_model,
-            endpoint_url,
-            context=None,
-            headers=None,
-            set_user_agent_header=True,
+        self,
+        api_params,
+        operation_model,
+        endpoint_url,
+        context=None,
+        headers=None,
+        set_user_agent_header=True,
     ):
         request_dict = self._serializer.serialize_to_request(
-            api_params, operation_model)
+            api_params, operation_model
+        )
         if not self._client_config.inject_host_prefix:
             request_dict.pop('host_prefix', None)
         if headers is not None:
@@ -802,19 +912,22 @@ class BaseClient(object):
         # parameters or return a new set of parameters to use.
         service_id = self._service_model.service_id.hyphenize()
         responses = self.meta.events.emit(
-            'provide-client-params.{service_id}.{operation_name}'.format(
-                service_id=service_id,
-                operation_name=operation_name),
-            params=api_params, model=operation_model, context=context)
+            f'provide-client-params.{service_id}.{operation_name}',
+            params=api_params,
+            model=operation_model,
+            context=context,
+        )
         api_params = first_non_none_response(responses, default=api_params)
 
-        event_name = (
-            'before-parameter-build.{service_id}.{operation_name}')
+        event_name = 'before-parameter-build.{service_id}.{operation_name}'
         self.meta.events.emit(
             event_name.format(
-                service_id=service_id,
-                operation_name=operation_name),
-            params=api_params, model=operation_model, context=context)
+                service_id=service_id, operation_name=operation_name
+            ),
+            params=api_params,
+            model=operation_model,
+            context=context,
+        )
         return api_params
 
     def _resolve_endpoint_ruleset(
@@ -900,30 +1013,35 @@ class BaseClient(object):
                 return Paginator.paginate(self, **kwargs)
 
             paginator_config = self._cache['page_config'][
-                actual_operation_name]
+                actual_operation_name
+            ]
             # Add the docstring for the paginate method.
             paginate.__doc__ = PaginatorDocstring(
                 paginator_name=actual_operation_name,
                 event_emitter=self.meta.events,
                 service_model=self.meta.service_model,
                 paginator_config=paginator_config,
-                include_signature=False
+                include_signature=False,
             )
 
             # Rename the paginator class based on the type of paginator.
-            paginator_class_name = str('%s.Paginator.%s' % (
-                get_service_module_name(self.meta.service_model),
-                actual_operation_name))
+            paginator_class_name = str(
+                f'{get_service_module_name(self.meta.service_model)}.Paginator.{actual_operation_name}'
+            )
 
             # Create the new paginator class
             documented_paginator_cls = type(
-                paginator_class_name, (Paginator,), {'paginate': paginate})
+                paginator_class_name, (Paginator,), {'paginate': paginate}
+            )
 
-            operation_model = self._service_model.operation_model(actual_operation_name)
+            operation_model = self._service_model.operation_model(
+                actual_operation_name
+            )
             paginator = documented_paginator_cls(
                 getattr(self, operation_name),
                 paginator_config,
-                operation_model)
+                operation_model,
+            )
             return paginator
 
     def can_paginate(self, operation_name):
@@ -944,8 +1062,8 @@ class BaseClient(object):
         if 'page_config' not in self._cache:
             try:
                 page_config = self._loader.load_service_model(
-                    self._service_model.service_name,
-                    'paginators-1')['pagination']
+                    self._service_model.service_name, 'paginators-1'
+                )['pagination']
                 self._cache['page_config'] = page_config
             except DataNotFoundError:
                 self._cache['page_config'] = {}
@@ -956,8 +1074,8 @@ class BaseClient(object):
         if 'waiter_config' not in self._cache:
             try:
                 waiter_config = self._loader.load_service_model(
-                    self._service_model.service_name,
-                    'waiters-2')
+                    self._service_model.service_name, 'waiters-2'
+                )
                 self._cache['waiter_config'] = waiter_config
             except DataNotFoundError:
                 self._cache['waiter_config'] = {}
@@ -975,16 +1093,17 @@ class BaseClient(object):
         """
         config = self._get_waiter_config()
         if not config:
-            raise ValueError("Waiter does not exist: %s" % waiter_name)
+            raise ValueError(f"Waiter does not exist: {waiter_name}")
         model = waiter.WaiterModel(config)
         mapping = {}
         for name in model.waiter_names:
             mapping[xform_name(name)] = name
         if waiter_name not in mapping:
-            raise ValueError("Waiter does not exist: %s" % waiter_name)
+            raise ValueError(f"Waiter does not exist: {waiter_name}")
 
         return waiter.create_waiter_with_client(
-            mapping[waiter_name], model, self)
+            mapping[waiter_name], model, self
+        )
 
     @CachedProperty
     def waiter_names(self):
@@ -1005,10 +1124,11 @@ class BaseClient(object):
 
     def _load_exceptions(self):
         return self._exceptions_factory.create_client_exceptions(
-            self._service_model)
+            self._service_model
+        )
 
 
-class ClientMeta(object):
+class ClientMeta:
     """Holds additional client methods.
 
     This class holds additional information for clients.  It exists for
@@ -1021,8 +1141,15 @@ class ClientMeta(object):
 
     """
 
-    def __init__(self, events, client_config, endpoint_url, service_model,
-                 method_to_api_mapping, partition):
+    def __init__(
+        self,
+        events,
+        client_config,
+        endpoint_url,
+        service_model,
+        method_to_api_mapping,
+        partition,
+    ):
         self.events = events
         self._client_config = client_config
         self._endpoint_url = endpoint_url
@@ -1055,8 +1182,9 @@ class ClientMeta(object):
         return self._partition
 
 
-def _get_configured_signature_version(service_name, client_config,
-                                      scoped_config):
+def _get_configured_signature_version(
+    service_name, client_config, scoped_config
+):
     """
     Gets the manually configured signature version.
 
@@ -1078,6 +1206,8 @@ def _get_configured_signature_version(service_name, client_config,
                 logger.debug(
                     "Switching signature version for service %s "
                     "to version %s based on config file override.",
-                    service_name, version)
+                    service_name,
+                    version,
+                )
                 return version
     return None

@@ -7557,7 +7557,8 @@
     },
     "ConditionList":{
       "type":"list",
-      "member":{"shape":"Condition"}
+      "member":{"shape":"Condition"},
+      "max":500
     },
     "ConfigValueString":{
       "type":"string",
@@ -7864,6 +7865,15 @@
         "FAILED"
       ]
     },
+    "ConnectionString":{
+      "type":"string",
+      "max":255
+    },
+    "ConnectionStringList":{
+      "type":"list",
+      "member":{"shape":"ConnectionString"},
+      "max":1000
+    },
     "ConnectionType":{
       "type":"string",
       "enum":[
@@ -7924,7 +7934,7 @@
       "type":"structure",
       "members":{
         "Connections":{
-          "shape":"OrchestrationStringList",
+          "shape":"ConnectionStringList",
           "documentation":"<p>A list of connections used by the job.</p>"
         }
       },
@@ -9860,7 +9870,7 @@
           "documentation":"<p>The name to be assigned to the workflow. It should be unique within your account.</p>"
         },
         "Description":{
-          "shape":"GenericString",
+          "shape":"WorkflowDescriptionString",
           "documentation":"<p>A description of the workflow.</p>"
         },
         "DefaultRunProperties":{
@@ -26652,7 +26662,7 @@
           "documentation":"<p>Name of the workflow to be updated.</p>"
         },
         "Description":{
-          "shape":"GenericString",
+          "shape":"WorkflowDescriptionString",
           "documentation":"<p>The description of the workflow.</p>"
         },
         "DefaultRunProperties":{
@@ -27103,6 +27113,10 @@
         }
       },
       "documentation":"<p>A workflow is a collection of multiple dependent Glue jobs and crawlers that are run to complete a complex ETL task. A workflow manages the execution and monitoring of all its jobs and crawlers.</p>"
+    },
+    "WorkflowDescriptionString":{
+      "type":"string",
+      "max":120000
     },
     "WorkflowGraph":{
       "type":"structure",

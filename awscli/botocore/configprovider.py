@@ -13,6 +13,7 @@
 """This module contains the interface for controlling how configuration
 is loaded.
 """
+
 import copy
 import logging
 import os
@@ -54,31 +55,42 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
     'data_path': ('data_path', 'AWS_DATA_PATH', None, None),
     'config_file': (None, 'AWS_CONFIG_FILE', '~/.aws/config', None),
     'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE', None, None),
-
     # This is the shared credentials file amongst sdks.
-    'credentials_file': (None, 'AWS_SHARED_CREDENTIALS_FILE',
-                         '~/.aws/credentials', None),
-
+    'credentials_file': (
+        None,
+        'AWS_SHARED_CREDENTIALS_FILE',
+        '~/.aws/credentials',
+        None,
+    ),
     # These variables only exist in the config file.
-
     # This is the number of seconds until we time out a request to
     # the instance metadata service.
     'metadata_service_timeout': (
         'metadata_service_timeout',
-        'AWS_METADATA_SERVICE_TIMEOUT', 1, int),
+        'AWS_METADATA_SERVICE_TIMEOUT',
+        1,
+        int,
+    ),
     # This is the number of request attempts we make until we give
     # up trying to retrieve data from the instance metadata service.
     'metadata_service_num_attempts': (
         'metadata_service_num_attempts',
-        'AWS_METADATA_SERVICE_NUM_ATTEMPTS', 1, int),
+        'AWS_METADATA_SERVICE_NUM_ATTEMPTS',
+        1,
+        int,
+    ),
     'ec2_metadata_service_endpoint': (
         'ec2_metadata_service_endpoint',
         'AWS_EC2_METADATA_SERVICE_ENDPOINT',
-        None, None),
+        None,
+        None,
+    ),
     'ec2_metadata_service_endpoint_mode': (
         'ec2_metadata_service_endpoint_mode',
         'AWS_EC2_METADATA_SERVICE_ENDPOINT_MODE',
-        None, None),
+        None,
+        None,
+    ),
     'ec2_metadata_v1_disabled': (
         'ec2_metadata_v1_disabled',
         'AWS_EC2_METADATA_V1_DISABLED',
@@ -88,15 +100,21 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
     'imds_use_ipv6': (
         'imds_use_ipv6',
         'AWS_IMDS_USE_IPV6',
-        False, utils.ensure_boolean),
+        False,
+        utils.ensure_boolean,
+    ),
     'use_dualstack_endpoint': (
         'use_dualstack_endpoint',
         'AWS_USE_DUALSTACK_ENDPOINT',
-        None, utils.ensure_boolean),
+        None,
+        utils.ensure_boolean,
+    ),
     'use_fips_endpoint': (
         'use_fips_endpoint',
         'AWS_USE_FIPS_ENDPOINT',
-        None, utils.ensure_boolean),
+        None,
+        utils.ensure_boolean,
+    ),
     'ignore_configured_endpoint_urls': (
         'ignore_configured_endpoint_urls',
         'AWS_IGNORE_CONFIGURED_ENDPOINT_URLS',
@@ -108,14 +126,21 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
     # Note: These configurations are considered internal to botocore.
     # Do not use them until publicly documented.
     'csm_enabled': (
-            'csm_enabled', 'AWS_CSM_ENABLED', False, utils.ensure_boolean),
+        'csm_enabled',
+        'AWS_CSM_ENABLED',
+        False,
+        utils.ensure_boolean,
+    ),
     'csm_host': ('csm_host', 'AWS_CSM_HOST', '127.0.0.1', None),
     'csm_port': ('csm_port', 'AWS_CSM_PORT', 31000, int),
     'csm_client_id': ('csm_client_id', 'AWS_CSM_CLIENT_ID', '', None),
     # Endpoint discovery configuration
     'endpoint_discovery_enabled': (
-        'endpoint_discovery_enabled', 'AWS_ENDPOINT_DISCOVERY_ENABLED',
-        'auto', None),
+        'endpoint_discovery_enabled',
+        'AWS_ENDPOINT_DISCOVERY_ENABLED',
+        'auto',
+        None,
+    ),
     'retry_mode': ('retry_mode', 'AWS_RETRY_MODE', 'standard', None),
     'max_attempts': ('max_attempts', 'AWS_MAX_ATTEMPTS', 3, int),
     'user_agent_appid': ('sdk_ua_app_id', 'AWS_SDK_UA_APP_ID', None, None),
@@ -166,25 +191,36 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
 # vars that typically go in the s3 section of the config file. This mapping
 # follows the same schema as the previous session variable mapping.
 DEFAULT_S3_CONFIG_VARS = {
-    'addressing_style': (
-        ('s3', 'addressing_style'), None, None, None),
+    'addressing_style': (('s3', 'addressing_style'), None, None, None),
     'use_accelerate_endpoint': (
-        ('s3', 'use_accelerate_endpoint'), None, None, utils.ensure_boolean
+        ('s3', 'use_accelerate_endpoint'),
+        None,
+        None,
+        utils.ensure_boolean,
     ),
     'use_dualstack_endpoint': (
-        ('s3', 'use_dualstack_endpoint'), None, None, utils.ensure_boolean
+        ('s3', 'use_dualstack_endpoint'),
+        None,
+        None,
+        utils.ensure_boolean,
     ),
     'payload_signing_enabled': (
-        ('s3', 'payload_signing_enabled'), None, None, utils.ensure_boolean
+        ('s3', 'payload_signing_enabled'),
+        None,
+        None,
+        utils.ensure_boolean,
     ),
     'use_arn_region': (
-        ['s3_use_arn_region',
-         ('s3', 'use_arn_region')],
-        'AWS_S3_USE_ARN_REGION', None, utils.ensure_boolean
+        ['s3_use_arn_region', ('s3', 'use_arn_region')],
+        'AWS_S3_USE_ARN_REGION',
+        None,
+        utils.ensure_boolean,
     ),
     's3_disable_multiregion_access_points': (
         ('s3', 's3_disable_multiregion_access_points'),
-        'AWS_S3_DISABLE_MULTIREGION_ACCESS_POINTS', None, utils.ensure_boolean
+        'AWS_S3_DISABLE_MULTIREGION_ACCESS_POINTS',
+        None,
+        utils.ensure_boolean,
     ),
 }
 # A mapping for the proxy specific configuration vars. These are
@@ -194,20 +230,30 @@ DEFAULT_PROXIES_CONFIG_VARS = {
     'proxy_ca_bundle': ('proxy_ca_bundle', None, None, None),
     'proxy_client_cert': ('proxy_client_cert', None, None, None),
     'proxy_use_forwarding_for_https': (
-        'proxy_use_forwarding_for_https', None, None, utils.normalize_boolean),
+        'proxy_use_forwarding_for_https',
+        None,
+        None,
+        utils.normalize_boolean,
+    ),
 }
+
 
 def create_botocore_default_config_mapping(session):
     chain_builder = ConfigChainFactory(session=session)
     config_mapping = _create_config_chain_mapping(
-        chain_builder, BOTOCORE_DEFAUT_SESSION_VARIABLES)
+        chain_builder, BOTOCORE_DEFAUT_SESSION_VARIABLES
+    )
     config_mapping['s3'] = SectionConfigProvider(
-        's3', session, _create_config_chain_mapping(
-            chain_builder, DEFAULT_S3_CONFIG_VARS)
+        's3',
+        session,
+        _create_config_chain_mapping(chain_builder, DEFAULT_S3_CONFIG_VARS),
     )
     config_mapping['proxies_config'] = SectionConfigProvider(
-        'proxies_config', session, _create_config_chain_mapping(
-            chain_builder, DEFAULT_PROXIES_CONFIG_VARS)
+        'proxies_config',
+        session,
+        _create_config_chain_mapping(
+            chain_builder, DEFAULT_PROXIES_CONFIG_VARS
+        ),
     )
     return config_mapping
 
@@ -220,18 +266,19 @@ def _create_config_chain_mapping(chain_builder, config_variables):
             env_var_names=config[1],
             config_property_names=config[0],
             default=config[2],
-            conversion_func=config[3]
+            conversion_func=config[3],
         )
     return mapping
 
 
-class ConfigChainFactory(object):
+class ConfigChainFactory:
     """Factory class to create our most common configuration chain case.
 
     This is a convenience class to construct configuration chains that follow
     our most common pattern. This is to prevent ordering them incorrectly,
     and to make the config chain construction more readable.
     """
+
     def __init__(self, session, environ=None):
         """Initialize a ConfigChainFactory.
 
@@ -248,9 +295,14 @@ class ConfigChainFactory(object):
             environ = os.environ
         self._environ = environ
 
-    def create_config_chain(self, instance_name=None, env_var_names=None,
-                            config_property_names=None, default=None,
-                            conversion_func=None):
+    def create_config_chain(
+        self,
+        instance_name=None,
+        env_var_names=None,
+        config_property_names=None,
+        default=None,
+        conversion_func=None,
+    ):
         """Build a config chain following the standard botocore pattern.
 
         In botocore most of our config chains follow the the precendence:
@@ -292,8 +344,7 @@ class ConfigChainFactory(object):
         if instance_name is not None:
             providers.append(
                 InstanceVarProvider(
-                    instance_var=instance_name,
-                    session=self._session
+                    instance_var=instance_name, session=self._session
                 )
             )
         if env_var_names is not None:
@@ -334,8 +385,9 @@ class ConfigChainFactory(object):
         return scoped_config_providers
 
 
-class ConfigValueStore(object):
+class ConfigValueStore:
     """The ConfigValueStore object stores configuration values."""
+
     def __init__(self, mapping=None):
         """Initialize a ConfigValueStore.
 
@@ -453,12 +505,13 @@ class ConfigValueStore(object):
         self._mapping[logical_name] = provider
 
 
-class BaseProvider(object):
+class BaseProvider:
     """Base class for configuration value providers.
 
     A configuration provider has some method of providing a configuration
     value.
     """
+
     def provide(self):
         """Provide a config value."""
         raise NotImplementedError('provide')
@@ -470,6 +523,7 @@ class ChainProvider(BaseProvider):
     Each provider in the chain is called, the first one returning a non-None
     value is then returned.
     """
+
     def __init__(self, providers=None, conversion_func=None):
         """Initalize a ChainProvider.
 
@@ -506,11 +560,12 @@ class ChainProvider(BaseProvider):
         return value
 
     def __repr__(self):
-        return '[%s]' % ', '.join([str(p) for p in self._providers])
+        return '[{}]'.format(', '.join([str(p) for p in self._providers]))
 
 
 class InstanceVarProvider(BaseProvider):
     """This class loads config values from the session instance vars."""
+
     def __init__(self, instance_var, session):
         """Initialize InstanceVarProvider.
 
@@ -531,10 +586,7 @@ class InstanceVarProvider(BaseProvider):
         return value
 
     def __repr__(self):
-        return 'InstanceVarProvider(instance_var=%s, session=%s)' % (
-            self._instance_var,
-            self._session,
-        )
+        return f'InstanceVarProvider(instance_var={self._instance_var}, session={self._session})'
 
 
 class ScopedConfigProvider(BaseProvider):
@@ -565,14 +617,12 @@ class ScopedConfigProvider(BaseProvider):
         return scoped_config.get(self._config_var_name)
 
     def __repr__(self):
-        return 'ScopedConfigProvider(config_var_name=%s, session=%s)' % (
-            self._config_var_name,
-            self._session,
-        )
+        return f'ScopedConfigProvider(config_var_name={self._config_var_name}, session={self._session})'
 
 
 class EnvironmentProvider(BaseProvider):
     """This class loads config values from environment variables."""
+
     def __init__(self, name, env):
         """Initialize with the keys in the dictionary to check.
 
@@ -592,7 +642,7 @@ class EnvironmentProvider(BaseProvider):
         return None
 
     def __repr__(self):
-        return 'EnvironmentProvider(name=%s, env=%s)' % (self._name, self._env)
+        return f'EnvironmentProvider(name={self._name}, env={self._env})'
 
 
 class SectionConfigProvider(BaseProvider):
@@ -601,11 +651,13 @@ class SectionConfigProvider(BaseProvider):
     This is useful for retrieving scoped config variables (i.e. s3) that have
     their own set of config variables and resolving logic.
     """
+
     def __init__(self, section_name, session, override_providers=None):
         self._section_name = section_name
         self._session = session
         self._scoped_config_provider = ScopedConfigProvider(
-            self._section_name, self._session)
+            self._section_name, self._session
+        )
         self._override_providers = override_providers
         if self._override_providers is None:
             self._override_providers = {}
@@ -613,9 +665,12 @@ class SectionConfigProvider(BaseProvider):
     def provide(self):
         section_config = self._scoped_config_provider.provide()
         if section_config and not isinstance(section_config, dict):
-            logger.debug("The %s config key is not a dictionary type, "
-                         "ignoring its value of: %s", self._section_name,
-                         section_config)
+            logger.debug(
+                "The %s config key is not a dictionary type, "
+                "ignoring its value of: %s",
+                self._section_name,
+                section_config,
+            )
             return None
         for section_config_var, provider in self._override_providers.items():
             provider_val = provider.provide()
@@ -627,16 +682,14 @@ class SectionConfigProvider(BaseProvider):
 
     def __repr__(self):
         return (
-            'SectionConfigProvider(section_name=%s, '
-            'session=%s, override_providers=%s)' % (
-                self._section_name, self._session,
-                self._override_providers,
-            )
+            f'SectionConfigProvider(section_name={self._section_name}, '
+            f'session={self._session}, override_providers={self._override_providers})'
         )
 
 
 class ConstantProvider(BaseProvider):
     """This provider provides a constant value."""
+
     def __init__(self, value):
         self._value = value
 
@@ -645,7 +698,7 @@ class ConstantProvider(BaseProvider):
         return self._value
 
     def __repr__(self):
-        return 'ConstantProvider(value=%s)' % self._value
+        return f'ConstantProvider(value={self._value})'
 
 
 class ConfiguredEndpointProvider(BaseProvider):

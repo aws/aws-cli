@@ -1,8 +1,6 @@
 import socket
 
 import pytest
-from urllib3.exceptions import NewConnectionError, ProtocolError, ProxyError
-
 from botocore.awsrequest import (
     AWSHTTPConnectionPool,
     AWSHTTPSConnectionPool,
@@ -19,6 +17,8 @@ from botocore.httpsession import (
     get_cert_path,
     mask_proxy_url,
 )
+from urllib3.exceptions import NewConnectionError, ProtocolError, ProxyError
+
 from tests import mock, unittest
 
 
@@ -506,7 +506,7 @@ class TestURLLib3Session(unittest.TestCase):
         proxies = {'https': 'http://proxy.com', 'http': 'http://proxy2.com'}
         session = URLLib3Session(proxies=proxies)
         for proxy, proxy_url in proxies.items():
-            self.request.url = '%s://example.com/' % proxy
+            self.request.url = f'{proxy}://example.com/'
             session.send(self.request.prepare())
 
         session.close()

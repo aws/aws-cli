@@ -11,20 +11,20 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from botocore.stub import Stubber
+
 from tests import BaseSessionTest
 
 
 class TestMturk(BaseSessionTest):
     def setUp(self):
-        super(TestMturk, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
-        self.client = self.session.create_client(
-            'mturk', self.region)
+        self.client = self.session.create_client('mturk', self.region)
         self.stubber = Stubber(self.client)
         self.stubber.activate()
 
     def tearDown(self):
-        super(TestMturk, self).tearDown()
+        super().tearDown()
         self.stubber.deactivate()
 
     def test_list_hits_aliased(self):

@@ -1,14 +1,15 @@
 import random
-import time
 import threading
-from tests import unittest
+import time
 
 from botocore.retries import bucket
+
+from tests import unittest
 
 
 class InstrumentedTokenBucket(bucket.TokenBucket):
     def _acquire(self, amount, block):
-        rval = super(InstrumentedTokenBucket, self)._acquire(amount, block)
+        rval = super()._acquire(amount, block)
         assert self._current_capacity >= 0
         return rval
 
@@ -36,7 +37,8 @@ class TestTokenBucketThreading(unittest.TestCase):
         min_rate = 0.1
         max_rate = 1
         token_bucket = bucket.TokenBucket(
-            min_rate=min_rate, max_rate=max_rate,
+            min_rate=min_rate,
+            max_rate=max_rate,
             clock=self.create_clock(),
         )
         # First we'll set the max_rate to 0.1 (min_rate).  This means that
@@ -80,12 +82,15 @@ class TestTokenBucketThreading(unittest.TestCase):
         all_threads = []
         for _ in range(2):
             all_threads.append(
-                threading.Thread(target=self.randomly_set_max_rate,
-                                 args=(token_bucket, 30, 200))
+                threading.Thread(
+                    target=self.randomly_set_max_rate,
+                    args=(token_bucket, 30, 200),
+                )
             )
         for _ in range(10):
-            t = threading.Thread(target=self.acquire_in_loop,
-                                 args=(token_bucket,))
+            t = threading.Thread(
+                target=self.acquire_in_loop, args=(token_bucket,)
+            )
             self.acquisitions_by_thread[t.name] = 0
             all_threads.append(t)
         for thread in all_threads:

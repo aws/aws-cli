@@ -73,31 +73,53 @@ def get_official_service_name(service_model):
     if short_name.startswith('AWS'):
         short_name = short_name[4:]
     if short_name and short_name.lower() not in official_name.lower():
-        official_name += ' ({0})'.format(short_name)
+        official_name += f' ({short_name})'
     return official_name
 
 
 _DocumentedShape = namedtuple(
-    'DocumentedShape', ['name', 'type_name', 'documentation', 'metadata',
-                        'members', 'required_members'])
+    'DocumentedShape',
+    [
+        'name',
+        'type_name',
+        'documentation',
+        'metadata',
+        'members',
+        'required_members',
+    ],
+)
 
 
-class DocumentedShape (_DocumentedShape):
+class DocumentedShape(_DocumentedShape):
     """Use this class to inject new shapes into a model for documentation"""
-    def __new__(cls, name, type_name, documentation, metadata=None,
-                members=None, required_members=None):
+
+    def __new__(
+        cls,
+        name,
+        type_name,
+        documentation,
+        metadata=None,
+        members=None,
+        required_members=None,
+    ):
         if metadata is None:
             metadata = []
         if members is None:
             members = []
         if required_members is None:
             required_members = []
-        return super(DocumentedShape, cls).__new__(
-            cls, name, type_name, documentation, metadata, members,
-            required_members)
+        return super().__new__(
+            cls,
+            name,
+            type_name,
+            documentation,
+            metadata,
+            members,
+            required_members,
+        )
 
 
-class AutoPopulatedParam(object):
+class AutoPopulatedParam:
     def __init__(self, name, param_description=None):
         self.name = name
         self.param_description = param_description
@@ -105,7 +127,8 @@ class AutoPopulatedParam(object):
             self.param_description = (
                 'Please note that this parameter is automatically populated '
                 'if it is not provided. Including this parameter is not '
-                'required\n')
+                'required\n'
+            )
 
     def document_auto_populated_param(self, event_name, section, **kwargs):
         """Documents auto populated parameters
@@ -120,7 +143,8 @@ class AutoPopulatedParam(object):
                 if 'is-required' in section.available_sections:
                     section.delete_section('is-required')
                 description_section = section.get_section(
-                    'param-documentation')
+                    'param-documentation'
+                )
                 description_section.writeln(self.param_description)
         elif event_name.startswith('docs.request-example'):
             section = section.get_section('structure-value')
@@ -128,13 +152,14 @@ class AutoPopulatedParam(object):
                 section.delete_section(self.name)
 
 
-class HideParamFromOperations(object):
+class HideParamFromOperations:
     """Hides a single parameter from multiple operations.
 
     This method will remove a parameter from documentation and from
     examples. This method is typically used for things that are
     automatically populated because a user would be unable to provide
     a value (e.g., a checksum of a serialized XML request body)."""
+
     def __init__(self, service_name, parameter_name, operation_names):
         """
         :type service_name: str
@@ -166,8 +191,9 @@ class HideParamFromOperations(object):
             section.delete_section(self._parameter_name)
 
 
-class AppendParamDocumentation(object):
+class AppendParamDocumentation:
     """Appends documentation to a specific parameter"""
+
     def __init__(self, parameter_name, doc_string):
         self._parameter_name = parameter_name
         self._doc_string = doc_string
@@ -175,8 +201,7 @@ class AppendParamDocumentation(object):
     def append_documentation(self, event_name, section, **kwargs):
         if self._parameter_name in section.available_sections:
             section = section.get_section(self._parameter_name)
-            description_section = section.get_section(
-                'param-documentation')
+            description_section = section.get_section('param-documentation')
             description_section.writeln(self._doc_string)
 
 
@@ -189,8 +214,11 @@ _CONTROLS = {
 }
 # Combines all CONTROLS keys into a big or regular expression
 _ESCAPE_CONTROLS_RE = re.compile('|'.join(map(re.escape, _CONTROLS)))
+
+
 # Based on the match get the appropriate replacement from CONTROLS
-_CONTROLS_MATCH_HANDLER = lambda match: _CONTROLS[match.group(0)]
+def _CONTROLS_MATCH_HANDLER(match):
+    return _CONTROLS[match.group(0)]
 
 
 def escape_controls(value):

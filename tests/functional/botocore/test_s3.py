@@ -12,7 +12,18 @@
 # language governing permissions and limitations under the License.
 import re
 
+import botocore.session
 import pytest
+from botocore import UNSIGNED
+from botocore.compat import datetime, parse_qs, urlsplit
+from botocore.config import Config
+from botocore.exceptions import (
+    ClientError,
+    ParamValidationError,
+    UnsupportedS3AccesspointConfigurationError,
+    UnsupportedS3ConfigurationError,
+)
+from botocore.loaders import Loader
 from dateutil.tz import tzutc
 
 from tests import (
@@ -21,21 +32,10 @@ from tests import (
     FreezeTime,
     create_session,
     mock,
-    temporary_file, unittest,
+    temporary_file,
+    unittest,
 )
 from tests.utils.botocore import get_checksum_cls
-
-import botocore.session
-from botocore.config import Config
-from botocore.compat import datetime, parse_qs, urlsplit
-from botocore.exceptions import (
-    ParamValidationError, ClientError,
-    UnsupportedS3ConfigurationError,
-    UnsupportedS3AccesspointConfigurationError,
-)
-from botocore.loaders import Loader
-from botocore import UNSIGNED
-
 
 DATE = datetime.datetime(2021, 8, 27, 0, 0, 0)
 
@@ -45,16 +45,16 @@ class TestS3BucketValidation(unittest.TestCase):
         session = botocore.session.get_session()
         s3 = session.create_client('s3')
         with self.assertRaises(ParamValidationError):
-            s3.put_object(Bucket='adfgasdfadfs/bucket/name',
-                          Key='foo', Body=b'asdf')
+            s3.put_object(
+                Bucket='adfgasdfadfs/bucket/name', Key='foo', Body=b'asdf'
+            )
 
 
 class BaseS3OperationTest(BaseSessionTest):
     def setUp(self):
-        super(BaseS3OperationTest, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
-        self.client = self.session.create_client(
-            's3', self.region)
+        self.client = self.session.create_client('s3', self.region)
         self.http_stubber = ClientHTTPStubber(self.client)
 
 
@@ -73,7 +73,7 @@ class BaseS3ClientConfigurationTest(BaseSessionTest):
     )
 
     def setUp(self):
-        super(BaseS3ClientConfigurationTest, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
 
     def _get_auth_regex(self, auth_header):
@@ -112,9 +112,7 @@ class BaseS3ClientConfigurationTest(BaseSessionTest):
         self.assertEqual(actual_endpoint, expected_endpoint)
 
     def create_s3_client(self, **kwargs):
-        client_kwargs = {
-            'region_name': self.region
-        }
+        client_kwargs = {'region_name': self.region}
         client_kwargs.update(kwargs)
         return self.session.create_client('s3', **client_kwargs)
 
@@ -132,86 +130,72 @@ class TestS3ClientConfigResolution(BaseS3ClientConfigurationTest):
     def test_client_s3_dualstack_handles_uppercase_true(self):
         with temporary_file('w') as f:
             self.set_config_file(
-                f,
-                '[default]\n'
-                's3 = \n'
-                '    use_dualstack_endpoint = True'
+                f, '[default]\n' 's3 = \n' '    use_dualstack_endpoint = True'
             )
             client = self.create_s3_client()
             self.assertEqual(
-                client.meta.config.s3['use_dualstack_endpoint'], True)
+                client.meta.config.s3['use_dualstack_endpoint'], True
+            )
 
     def test_client_s3_dualstack_handles_lowercase_true(self):
         with temporary_file('w') as f:
             self.set_config_file(
-                f,
-                '[default]\n'
-                's3 = \n'
-                '    use_dualstack_endpoint = true'
+                f, '[default]\n' 's3 = \n' '    use_dualstack_endpoint = true'
             )
             client = self.create_s3_client()
             self.assertEqual(
-                client.meta.config.s3['use_dualstack_endpoint'], True)
+                client.meta.config.s3['use_dualstack_endpoint'], True
+            )
 
     def test_client_s3_accelerate_handles_uppercase_true(self):
         with temporary_file('w') as f:
             self.set_config_file(
-                f,
-                '[default]\n'
-                's3 = \n'
-                '    use_accelerate_endpoint = True'
+                f, '[default]\n' 's3 = \n' '    use_accelerate_endpoint = True'
             )
             client = self.create_s3_client()
             self.assertEqual(
-                client.meta.config.s3['use_accelerate_endpoint'], True)
+                client.meta.config.s3['use_accelerate_endpoint'], True
+            )
 
     def test_client_s3_accelerate_handles_lowercase_true(self):
         with temporary_file('w') as f:
             self.set_config_file(
-                f,
-                '[default]\n'
-                's3 = \n'
-                '    use_accelerate_endpoint = true'
+                f, '[default]\n' 's3 = \n' '    use_accelerate_endpoint = true'
             )
             client = self.create_s3_client()
             self.assertEqual(
-                client.meta.config.s3['use_accelerate_endpoint'], True)
+                client.meta.config.s3['use_accelerate_endpoint'], True
+            )
 
     def test_client_payload_signing_enabled_handles_uppercase_true(self):
         with temporary_file('w') as f:
             self.set_config_file(
-                f,
-                '[default]\n'
-                's3 = \n'
-                '    payload_signing_enabled = True'
+                f, '[default]\n' 's3 = \n' '    payload_signing_enabled = True'
             )
             client = self.create_s3_client()
             self.assertEqual(
-                client.meta.config.s3['payload_signing_enabled'], True)
+                client.meta.config.s3['payload_signing_enabled'], True
+            )
 
     def test_client_payload_signing_enabled_handles_lowercase_true(self):
         with temporary_file('w') as f:
             self.set_config_file(
-                f,
-                '[default]\n'
-                's3 = \n'
-                '    payload_signing_enabled = true'
+                f, '[default]\n' 's3 = \n' '    payload_signing_enabled = true'
             )
             client = self.create_s3_client()
             self.assertEqual(
-                client.meta.config.s3['payload_signing_enabled'], True)
+                client.meta.config.s3['payload_signing_enabled'], True
+            )
 
     def test_includes_unmodeled_s3_config_vars(self):
         with temporary_file('w') as f:
             self.set_config_file(
-                f,
-                '[default]\n'
-                's3 = \n'
-                '    unmodeled = unmodeled_val'
+                f, '[default]\n' 's3 = \n' '    unmodeled = unmodeled_val'
             )
             client = self.create_s3_client()
             self.assertEqual(
-                client.meta.config.s3['unmodeled'], 'unmodeled_val')
+                client.meta.config.s3['unmodeled'], 'unmodeled_val'
+            )
 
     def test_mixed_modeled_and_unmodeled_config_vars(self):
         with temporary_file('w') as f:
@@ -220,15 +204,15 @@ class TestS3ClientConfigResolution(BaseS3ClientConfigurationTest):
                 '[default]\n'
                 's3 = \n'
                 '    payload_signing_enabled = true\n'
-                '    unmodeled = unmodeled_val'
+                '    unmodeled = unmodeled_val',
             )
             client = self.create_s3_client()
             self.assertEqual(
                 client.meta.config.s3,
                 {
                     'payload_signing_enabled': True,
-                    'unmodeled': 'unmodeled_val'
-                }
+                    'unmodeled': 'unmodeled_val',
+                },
             )
 
     def test_use_arn_region(self):
@@ -238,38 +222,31 @@ class TestS3ClientConfigResolution(BaseS3ClientConfigurationTest):
             client.meta.config.s3,
             {
                 'use_arn_region': True,
-            }
+            },
         )
 
     def test_use_arn_region_config_var(self):
         with temporary_file('w') as f:
-            self.set_config_file(
-                f,
-                '[default]\n'
-                's3_use_arn_region = true'
-            )
+            self.set_config_file(f, '[default]\n' 's3_use_arn_region = true')
             client = self.create_s3_client()
             self.assertEqual(
                 client.meta.config.s3,
                 {
                     'use_arn_region': True,
-                }
+                },
             )
 
     def test_use_arn_region_nested_config_var(self):
         with temporary_file('w') as f:
             self.set_config_file(
-                f,
-                '[default]\n'
-                's3 = \n'
-                '    use_arn_region = true'
+                f, '[default]\n' 's3 = \n' '    use_arn_region = true'
             )
             client = self.create_s3_client()
             self.assertEqual(
                 client.meta.config.s3,
                 {
                     'use_arn_region': True,
-                }
+                },
             )
 
     def test_use_arn_region_is_case_insensitive(self):
@@ -279,58 +256,48 @@ class TestS3ClientConfigResolution(BaseS3ClientConfigurationTest):
             client.meta.config.s3,
             {
                 'use_arn_region': True,
-            }
+            },
         )
 
     def test_use_arn_region_env_var_overrides_config_var(self):
         self.environ['AWS_S3_USE_ARN_REGION'] = 'false'
         with temporary_file('w') as f:
             self.set_config_file(
-                f,
-                '[default]\n'
-                's3 = \n'
-                '    use_arn_region = true'
+                f, '[default]\n' 's3 = \n' '    use_arn_region = true'
             )
             client = self.create_s3_client()
         self.assertEqual(
             client.meta.config.s3,
             {
                 'use_arn_region': False,
-            }
+            },
         )
 
     def test_client_config_use_arn_region_overrides_env_var(self):
         self.environ['AWS_S3_USE_ARN_REGION'] = 'true'
         client = self.create_s3_client(
-            config=Config(
-                s3={'use_arn_region': False}
-            )
+            config=Config(s3={'use_arn_region': False})
         )
         self.assertEqual(
             client.meta.config.s3,
             {
                 'use_arn_region': False,
-            }
+            },
         )
 
     def test_client_config_use_arn_region_overrides_config_var(self):
         with temporary_file('w') as f:
             self.set_config_file(
-                f,
-                '[default]\n'
-                's3 = \n'
-                '    use_arn_region = true'
+                f, '[default]\n' 's3 = \n' '    use_arn_region = true'
             )
             client = self.create_s3_client(
-                config=Config(
-                    s3={'use_arn_region': False}
-                )
+                config=Config(s3={'use_arn_region': False})
             )
         self.assertEqual(
             client.meta.config.s3,
             {
                 'use_arn_region': False,
-            }
+            },
         )
 
     def test_client_region_defaults_to_aws_global(self):
@@ -347,11 +314,8 @@ class TestS3ClientConfigResolution(BaseS3ClientConfigurationTest):
 
 
 class TestS3Copy(BaseS3OperationTest):
-
     def create_s3_client(self, **kwargs):
-        client_kwargs = {
-            'region_name': self.region
-        }
+        client_kwargs = {'region_name': self.region}
         client_kwargs.update(kwargs)
         return self.session.create_client('s3', **client_kwargs)
 
@@ -472,7 +436,7 @@ class TestS3200ErrorResponse(BaseS3OperationTest):
 
 class TestAccesspointArn(BaseS3ClientConfigurationTest):
     def setUp(self):
-        super(TestAccesspointArn, self).setUp()
+        super().setUp()
         self.client, self.http_stubber = self.create_stubbed_s3_client()
 
     def create_stubbed_s3_client(self, **kwargs):
@@ -481,12 +445,14 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         http_stubber.start()
         return client, http_stubber
 
-    def assert_expected_copy_source_header(self,
-                                           http_stubber, expected_copy_source):
+    def assert_expected_copy_source_header(
+        self, http_stubber, expected_copy_source
+    ):
         request = self.http_stubber.requests[0]
         self.assertIn('x-amz-copy-source', request.headers)
         self.assertEqual(
-            request.headers['x-amz-copy-source'], expected_copy_source)
+            request.headers['x-amz-copy-source'], expected_copy_source
+        )
 
     def add_copy_object_response(self, http_stubber):
         http_stubber.add_response(
@@ -501,23 +467,17 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         self.assertEqual(request.headers.get(header_key), expected_value)
 
     def test_missing_account_id_in_arn(self):
-        accesspoint_arn = (
-            'arn:aws:s3:us-west-2::accesspoint:myendpoint'
-        )
+        accesspoint_arn = 'arn:aws:s3:us-west-2::accesspoint:myendpoint'
         with self.assertRaises(botocore.exceptions.ParamValidationError):
             self.client.list_objects(Bucket=accesspoint_arn)
 
     def test_missing_accesspoint_name_in_arn(self):
-        accesspoint_arn = (
-            'arn:aws:s3:us-west-2:123456789012:accesspoint'
-        )
+        accesspoint_arn = 'arn:aws:s3:us-west-2:123456789012:accesspoint'
         with self.assertRaises(botocore.exceptions.ParamValidationError):
             self.client.list_objects(Bucket=accesspoint_arn)
 
     def test_accesspoint_includes_asterisk(self):
-        accesspoint_arn = (
-            'arn:aws:s3:us-west-2:123456789012:accesspoint:*'
-        )
+        accesspoint_arn = 'arn:aws:s3:us-west-2:123456789012:accesspoint:*'
         with self.assertRaises(botocore.exceptions.ParamValidationError):
             self.client.list_objects(Bucket=accesspoint_arn)
 
@@ -533,7 +493,8 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint'
         )
         self.client, http_stubber = self.create_stubbed_s3_client(
-            endpoint_url='https://custom.com')
+            endpoint_url='https://custom.com'
+        )
         http_stubber.add_response()
         self.client.list_objects(Bucket=accesspoint_arn)
         expected_endpoint = 'myendpoint-123456789012.custom.com'
@@ -545,7 +506,8 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         )
         self.client, http_stubber = self.create_stubbed_s3_client(
             endpoint_url='https://custom.com',
-            config=Config(s3={'use_dualstack_endpoint': True}))
+            config=Config(s3={'use_dualstack_endpoint': True}),
+        )
         http_stubber.add_response()
         self.client.list_objects(Bucket=accesspoint_arn)
         expected_endpoint = 'myendpoint-123456789012.custom.com'
@@ -556,10 +518,11 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint'
         )
         self.client, _ = self.create_stubbed_s3_client(
-            config=Config(s3={'use_accelerate_endpoint': True}))
+            config=Config(s3={'use_accelerate_endpoint': True})
+        )
         with self.assertRaises(
-                botocore.exceptions.
-                UnsupportedS3AccesspointConfigurationError):
+            botocore.exceptions.UnsupportedS3AccesspointConfigurationError
+        ):
             self.client.list_objects(Bucket=accesspoint_arn)
 
     def test_accesspoint_arn_cross_partition(self):
@@ -567,10 +530,11 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint'
         )
         self.client, _ = self.create_stubbed_s3_client(
-            region_name='cn-north-1')
+            region_name='cn-north-1'
+        )
         with self.assertRaises(
-                botocore.exceptions.
-                UnsupportedS3AccesspointConfigurationError):
+            botocore.exceptions.UnsupportedS3AccesspointConfigurationError
+        ):
             self.client.list_objects(Bucket=accesspoint_arn)
 
     def test_accesspoint_arn_cross_partition_use_client_region(self):
@@ -579,11 +543,11 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         )
         self.client, _ = self.create_stubbed_s3_client(
             region_name='cn-north-1',
-            config=Config(s3={'use_accelerate_endpoint': True})
+            config=Config(s3={'use_accelerate_endpoint': True}),
         )
         with self.assertRaises(
-                botocore.exceptions.
-                UnsupportedS3AccesspointConfigurationError):
+            botocore.exceptions.UnsupportedS3AccesspointConfigurationError
+        ):
             self.client.list_objects(Bucket=accesspoint_arn)
 
     def test_signs_with_arn_region(self):
@@ -591,7 +555,8 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint'
         )
         self.client, self.http_stubber = self.create_stubbed_s3_client(
-            region_name='us-east-1')
+            region_name='us-east-1'
+        )
         self.http_stubber.add_response()
         self.client.list_objects(Bucket=accesspoint_arn)
         self.assert_signing_region(self.http_stubber.requests[0], 'us-west-2')
@@ -602,7 +567,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         )
         self.client, self.http_stubber = self.create_stubbed_s3_client(
             region_name='us-east-1',
-            config=Config(s3={'use_arn_region': False})
+            config=Config(s3={'use_arn_region': False}),
         )
         self.http_stubber.add_response()
         with self.assertRaises(UnsupportedS3AccesspointConfigurationError):
@@ -613,11 +578,11 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint'
         )
         self.client, _ = self.create_stubbed_s3_client(
-            region_name='us-east-1',
-            config=Config(signature_version='s3v4')
+            region_name='us-east-1', config=Config(signature_version='s3v4')
         )
         url = self.client.generate_presigned_url(
-            'get_object', {'Bucket': accesspoint_arn, 'Key': 'mykey'})
+            'get_object', {'Bucket': accesspoint_arn, 'Key': 'mykey'}
+        )
         self.assert_signing_region_in_url(url, 'us-west-2')
 
     def test_presign_signs_with_client_region_when_use_arn_region_false(self):
@@ -628,7 +593,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             region_name='us-east-1',
             config=Config(
                 signature_version='s3v4', s3={'use_arn_region': False}
-            )
+            ),
         )
         with self.assertRaises(UnsupportedS3AccesspointConfigurationError):
             self.client.generate_presigned_url(
@@ -650,7 +615,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             expected_copy_source=(
                 b'arn%3Aaws%3As3%3Aus-west-2%3A123456789012%3Aaccesspoint%3A'
                 b'myendpoint/object/myprefix/myobject'
-            )
+            ),
         )
 
     def test_copy_source_str_with_accesspoint_arn_and_version_id(self):
@@ -668,13 +633,12 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             expected_copy_source=(
                 b'arn%3Aaws%3As3%3Aus-west-2%3A123456789012%3Aaccesspoint%3A'
                 b'myendpoint/object/myprefix/myobject?versionId=myversionid'
-            )
+            ),
         )
 
     def test_copy_source_dict_with_accesspoint_arn(self):
         copy_source = {
-            'Bucket':
-                'arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint',
+            'Bucket': 'arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint',
             'Key': 'myprefix/myobject',
         }
         self.client, self.http_stubber = self.create_stubbed_s3_client()
@@ -687,15 +651,14 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             expected_copy_source=(
                 b'arn%3Aaws%3As3%3Aus-west-2%3A123456789012%3Aaccesspoint%3A'
                 b'myendpoint/object/myprefix/myobject'
-            )
+            ),
         )
 
     def test_copy_source_dict_with_accesspoint_arn_and_version_id(self):
         copy_source = {
-            'Bucket':
-                'arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint',
+            'Bucket': 'arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint',
             'Key': 'myprefix/myobject',
-            'VersionId': 'myversionid'
+            'VersionId': 'myversionid',
         }
         self.client, self.http_stubber = self.create_stubbed_s3_client()
         self.add_copy_object_response(self.http_stubber)
@@ -707,7 +670,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             expected_copy_source=(
                 b'arn%3Aaws%3As3%3Aus-west-2%3A123456789012%3Aaccesspoint%3A'
                 b'myendpoint/object/myprefix/myobject?versionId=myversionid'
-            )
+            ),
         )
 
     def test_basic_outpost_arn(self):
@@ -716,7 +679,8 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'op-01234567890123456:accesspoint:myaccesspoint'
         )
         self.client, self.http_stubber = self.create_stubbed_s3_client(
-            region_name='us-east-1')
+            region_name='us-east-1'
+        )
         self.http_stubber.add_response()
         self.client.list_objects(Bucket=outpost_arn)
         request = self.http_stubber.requests[0]
@@ -737,8 +701,8 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'op-01234567890123456:accesspoint:myaccesspoint'
         )
         self.client, self.http_stubber = self.create_stubbed_s3_client(
-            endpoint_url='https://custom.com',
-            region_name='us-east-1')
+            endpoint_url='https://custom.com', region_name='us-east-1'
+        )
         self.http_stubber.add_response()
         self.client.list_objects(Bucket=outpost_arn)
         request = self.http_stubber.requests[0]
@@ -758,7 +722,9 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'myaccesspoint-123456789012.op-01234567890123456.'
             's3-outposts.us-west-2.amazonaws.com'
         )
-        expected_credentials = '20210827%2Fus-west-2%2Fs3-outposts%2Faws4_request'
+        expected_credentials = (
+            '20210827%2Fus-west-2%2Fs3-outposts%2Faws4_request'
+        )
         expected_signature = (
             'a944fbe2bfbae429f922746546d1c6f890649c88ba7826bd1d258ac13f327e09'
         )
@@ -767,8 +733,10 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             outpost_arn, 'us-west-2', config=config
         )
         self._assert_presigned_url(
-            presigned_url, expected_url,
-            expected_signature, expected_credentials
+            presigned_url,
+            expected_url,
+            expected_signature,
+            expected_credentials,
         )
 
     def test_outpost_arn_presigned_url_with_use_arn_region(self):
@@ -780,7 +748,9 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'myaccesspoint-123456789012.op-01234567890123456.'
             's3-outposts.us-west-2.amazonaws.com'
         )
-        expected_credentials = '20210827%2Fus-west-2%2Fs3-outposts%2Faws4_request'
+        expected_credentials = (
+            '20210827%2Fus-west-2%2Fs3-outposts%2Faws4_request'
+        )
         expected_signature = (
             'a944fbe2bfbae429f922746546d1c6f890649c88ba7826bd1d258ac13f327e09'
         )
@@ -788,14 +758,16 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             signature_version='s3v4',
             s3={
                 'use_arn_region': True,
-            }
+            },
         )
         presigned_url = self._get_presigned_url(
             outpost_arn, 'us-west-2', config=config
         )
         self._assert_presigned_url(
-            presigned_url, expected_url,
-            expected_signature, expected_credentials
+            presigned_url,
+            expected_url,
+            expected_signature,
+            expected_credentials,
         )
 
     def test_outpost_arn_presigned_url_cross_region_arn(self):
@@ -807,7 +779,9 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'myaccesspoint-123456789012.op-01234567890123456.'
             's3-outposts.us-east-1.amazonaws.com'
         )
-        expected_credentials = '20210827%2Fus-east-1%2Fs3-outposts%2Faws4_request'
+        expected_credentials = (
+            '20210827%2Fus-east-1%2Fs3-outposts%2Faws4_request'
+        )
         expected_signature = (
             '7f93df0b81f80e590d95442d579bd6cf749a35ff4bbdc6373fa669b89c7fce4e'
         )
@@ -815,14 +789,16 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             signature_version='s3v4',
             s3={
                 'use_arn_region': True,
-            }
+            },
         )
         presigned_url = self._get_presigned_url(
             outpost_arn, 'us-west-2', config=config
         )
         self._assert_presigned_url(
-            presigned_url, expected_url,
-            expected_signature, expected_credentials
+            presigned_url,
+            expected_url,
+            expected_signature,
+            expected_credentials,
         )
 
     def test_outpost_arn_with_s3_accelerate(self):
@@ -831,7 +807,8 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'op-01234567890123456:accesspoint:myaccesspoint'
         )
         self.client, _ = self.create_stubbed_s3_client(
-            config=Config(s3={'use_accelerate_endpoint': True}))
+            config=Config(s3={'use_accelerate_endpoint': True})
+        )
         with self.assertRaises(UnsupportedS3AccesspointConfigurationError):
             self.client.list_objects(Bucket=outpost_arn)
 
@@ -841,14 +818,13 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'op-01234567890123456:accesspoint:myaccesspoint'
         )
         self.client, _ = self.create_stubbed_s3_client(
-            config=Config(s3={'use_dualstack_endpoint': True}))
+            config=Config(s3={'use_dualstack_endpoint': True})
+        )
         with self.assertRaises(UnsupportedS3AccesspointConfigurationError):
             self.client.list_objects(Bucket=outpost_arn)
 
     def test_incorrect_outpost_format(self):
-        outpost_arn = (
-            'arn:aws:s3-outposts:us-west-2:123456789012:outpost'
-        )
+        outpost_arn = 'arn:aws:s3-outposts:us-west-2:123456789012:outpost'
         with self.assertRaises(botocore.exceptions.ParamValidationError):
             self.client.list_objects(Bucket=outpost_arn)
 
@@ -889,7 +865,8 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'accesspoint/myBanner'
         )
         self.client, _ = self.create_stubbed_s3_client(
-            config=Config(s3={'use_dualstack_endpoint': True}))
+            config=Config(s3={'use_dualstack_endpoint': True})
+        )
         with self.assertRaises(UnsupportedS3AccesspointConfigurationError):
             self.client.list_objects(Bucket=s3_object_lambda_arn)
 
@@ -900,7 +877,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         )
         self.client, _ = self.create_stubbed_s3_client(
             region_name='fips-us-gov-west-1',
-            config=Config(s3={'use_arn_region': False})
+            config=Config(s3={'use_arn_region': False}),
         )
         expected_exception = UnsupportedS3AccesspointConfigurationError
         with self.assertRaises(expected_exception):
@@ -928,7 +905,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         )
         self.client, self.http_stubber = self.create_stubbed_s3_client(
             region_name='us-east-1',
-            config=Config(s3={'use_arn_region': False})
+            config=Config(s3={'use_arn_region': False}),
         )
         self.http_stubber.add_response()
         self.client.list_objects(Bucket=s3_object_lambda_arn)
@@ -946,7 +923,8 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'accesspoint/myBanner'
         )
         self.client, self.http_stubber = self.create_stubbed_s3_client(
-            region_name='us-east-1')
+            region_name='us-east-1'
+        )
         self.http_stubber.add_response()
         self.client.list_objects(Bucket=s3_object_lambda_arn)
         request = self.http_stubber.requests[0]
@@ -965,7 +943,9 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'arn:aws:s3-outposts:us-gov-east-1:123456789012:outpost:'
             'op-01234567890123456:accesspoint:myaccesspoint'
         )
-        self.client, _ = self.create_stubbed_s3_client(region_name="fips-east-1")
+        self.client, _ = self.create_stubbed_s3_client(
+            region_name="fips-east-1"
+        )
         expected_exception = UnsupportedS3AccesspointConfigurationError
         with self.assertRaises(expected_exception):
             self.client.list_objects(Bucket=outpost_arn)
@@ -977,7 +957,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         )
         self.client, _ = self.create_stubbed_s3_client(
             region_name='fips-us-gov-west-1',
-            config=Config(s3={'use_arn_region': False})
+            config=Config(s3={'use_arn_region': False}),
         )
         expected_exception = UnsupportedS3AccesspointConfigurationError
         with self.assertRaises(expected_exception):
@@ -985,7 +965,8 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
 
     def test_accesspoint_fips_raise_if_fips_in_arn(self):
         s3_accesspoint_arn = (
-            "arn:aws-us-gov:s3:fips-us-gov-west-1:123456789012:" "accesspoint:myendpoint"
+            "arn:aws-us-gov:s3:fips-us-gov-west-1:123456789012:"
+            "accesspoint:myendpoint"
         )
         self.client, _ = self.create_stubbed_s3_client(
             region_name="fips-us-gov-west-1",
@@ -1000,7 +981,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         )
         self.client, _ = self.create_stubbed_s3_client(
             region_name='aws-global',
-            config=Config(s3={'use_arn_region': False})
+            config=Config(s3={'use_arn_region': False}),
         )
         expected_exception = UnsupportedS3AccesspointConfigurationError
         with self.assertRaises(expected_exception):
@@ -1009,15 +990,14 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         # It shouldn't raise if use_arn_region is True
         self.client, self.http_stubber = self.create_stubbed_s3_client(
             region_name='s3-external-1',
-            config=Config(s3={'use_arn_region': True})
+            config=Config(s3={'use_arn_region': True}),
         )
 
         self.http_stubber.add_response()
         self.client.list_objects(Bucket=s3_accesspoint_arn)
         request = self.http_stubber.requests[0]
         expected_endpoint = (
-            'myendpoint-123456789012.s3-accesspoint.'
-            'us-east-1.amazonaws.com'
+            'myendpoint-123456789012.s3-accesspoint.' 'us-east-1.amazonaws.com'
         )
         self.assert_endpoint(request, expected_endpoint)
 
@@ -1031,17 +1011,25 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         self.client.list_objects(Bucket=s3_accesspoint_arn)
         request = self.http_stubber.requests[0]
         expected_endpoint = (
-            'myendpoint-123456789012.s3-accesspoint.'
-            'us-east-1.amazonaws.com'
+            'myendpoint-123456789012.s3-accesspoint.' 'us-east-1.amazonaws.com'
         )
         self.assert_endpoint(request, expected_endpoint)
 
     def test_mrap_arn_with_client_regions(self):
         mrap_arn = 'arn:aws:s3::123456789012:accesspoint:mfzwi23gnjvgw.mrap'
         region_tests = [
-            ('us-east-1', 'mfzwi23gnjvgw.mrap.accesspoint.s3-global.amazonaws.com'),
-            ('us-west-2', 'mfzwi23gnjvgw.mrap.accesspoint.s3-global.amazonaws.com'),
-            ('aws-global', 'mfzwi23gnjvgw.mrap.accesspoint.s3-global.amazonaws.com'),
+            (
+                'us-east-1',
+                'mfzwi23gnjvgw.mrap.accesspoint.s3-global.amazonaws.com',
+            ),
+            (
+                'us-west-2',
+                'mfzwi23gnjvgw.mrap.accesspoint.s3-global.amazonaws.com',
+            ),
+            (
+                'aws-global',
+                'mfzwi23gnjvgw.mrap.accesspoint.s3-global.amazonaws.com',
+            ),
         ]
         for region, expected in region_tests:
             self._assert_mrap_endpoint(mrap_arn, region, expected)
@@ -1054,14 +1042,8 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
     def test_mrap_arn_with_invalid_s3_configs(self):
         mrap_arn = 'arn:aws:s3::123456789012:accesspoint:mfzwi23gnjvgw.mrap'
         config_tests = [
-            (
-              'us-west-2',
-              Config(s3={'use_dualstack_endpoint': True})
-            ),
-            (
-              'us-west-2',
-              Config(s3={'use_accelerate_endpoint': True})
-            )
+            ('us-west-2', Config(s3={'use_dualstack_endpoint': True})),
+            ('us-west-2', Config(s3={'use_accelerate_endpoint': True})),
         ]
         for region, config in config_tests:
             self._assert_mrap_config_failure(mrap_arn, region, config=config)
@@ -1081,7 +1063,9 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         mrap_arn = 'arn:aws:s3::123456789012:accesspoint:mfzwi23gnjvgw.mrap'
         config = Config(s3={'s3_disable_multiregion_access_points': False})
         expected = 'mfzwi23gnjvgw.mrap.accesspoint.s3-global.amazonaws.com'
-        self._assert_mrap_endpoint(mrap_arn, 'us-west-2', expected, config=config)
+        self._assert_mrap_endpoint(
+            mrap_arn, 'us-west-2', expected, config=config
+        )
 
     def test_global_arn_without_mrap_suffix(self):
         global_arn_tests = [
@@ -1113,18 +1097,24 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         mrap_arn = 'arn:aws:s3::123456789012:accesspoint:mfzwi23gnjvgw.mrap'
         config = Config(s3={'s3_disable_multiregion_access_points': False})
         expected_url = 'mfzwi23gnjvgw.mrap.accesspoint.s3-global.amazonaws.com'
-        self._assert_mrap_presigned_url(mrap_arn, 'us-west-2', expected_url, config=config)
+        self._assert_mrap_presigned_url(
+            mrap_arn, 'us-west-2', expected_url, config=config
+        )
 
     def test_mrap_presigned_url_disabled(self):
         mrap_arn = 'arn:aws:s3::123456789012:accesspoint:mfzwi23gnjvgw.mrap'
         config = Config(s3={'s3_disable_multiregion_access_points': True})
-        self._assert_mrap_config_presigned_failure(mrap_arn, 'us-west-2', config)
+        self._assert_mrap_config_presigned_failure(
+            mrap_arn, 'us-west-2', config
+        )
 
     def _assert_mrap_config_failure(self, arn, region, config):
         self.client, self.http_stubber = self.create_stubbed_s3_client(
-            region_name=region, config=config)
-        with self.assertRaises(botocore.exceptions.
-                UnsupportedS3AccesspointConfigurationError):
+            region_name=region, config=config
+        )
+        with self.assertRaises(
+            botocore.exceptions.UnsupportedS3AccesspointConfigurationError
+        ):
             self.client.list_objects(Bucket=arn)
 
     @FreezeTime(botocore.auth.datetime, date=DATE)
@@ -1134,12 +1124,10 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             endpoint_url=endpoint_url,
             config=config,
             aws_access_key_id='ACCESS_KEY_ID',
-            aws_secret_access_key='SECRET_ACCESS_KEY'
+            aws_secret_access_key='SECRET_ACCESS_KEY',
         )
         presigned_url = self.client.generate_presigned_url(
-            'get_object',
-            Params={'Bucket': arn, 'Key': 'obj'},
-            ExpiresIn=900
+            'get_object', Params={'Bucket': arn, 'Key': 'obj'}, ExpiresIn=900
         )
         return presigned_url
 
@@ -1148,7 +1136,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         presigned_url,
         expected_url,
         expected_signature,
-        expected_credentials
+        expected_credentials,
     ):
         url_parts = urlsplit(presigned_url)
         assert url_parts.netloc == expected_url
@@ -1156,7 +1144,6 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         query_parts = dict(part.split('=') for part in query_strs)
         assert expected_signature == query_parts['X-Amz-Signature']
         assert expected_credentials in query_parts['X-Amz-Credential']
-
 
     def _assert_mrap_presigned_url(
         self, arn, region, expected, endpoint_url=None, config=None
@@ -1171,19 +1158,21 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
 
     def _assert_mrap_config_presigned_failure(self, arn, region, config):
         self.client, self.http_stubber = self.create_stubbed_s3_client(
-            region_name=region, config=config)
-        with self.assertRaises(botocore.exceptions.
-                UnsupportedS3AccesspointConfigurationError):
+            region_name=region, config=config
+        )
+        with self.assertRaises(
+            botocore.exceptions.UnsupportedS3AccesspointConfigurationError
+        ):
             self.client.generate_presigned_url(
-                'get_object',
-                Params={'Bucket': arn, 'Key': 'test_object'}
+                'get_object', Params={'Bucket': arn, 'Key': 'test_object'}
             )
 
     def _assert_mrap_endpoint(
         self, arn, region, expected, endpoint_url=None, config=None
     ):
         self.client, self.http_stubber = self.create_stubbed_s3_client(
-            region_name=region, endpoint_url=endpoint_url, config=config)
+            region_name=region, endpoint_url=endpoint_url, config=config
+        )
         self.http_stubber.add_response()
         self.client.list_objects(Bucket=arn)
         request = self.http_stubber.requests[0]
@@ -1198,51 +1187,52 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         )
 
 
-
 class TestOnlyAsciiCharsAllowed(BaseS3OperationTest):
     def test_validates_non_ascii_chars_trigger_validation_error(self):
         self.http_stubber.add_response()
         with self.http_stubber:
             with self.assertRaises(ParamValidationError):
                 self.client.put_object(
-                    Bucket='foo', Key='bar', Metadata={
-                        'goodkey': 'good', 'non-ascii': u'\u2713'})
+                    Bucket='foo',
+                    Key='bar',
+                    Metadata={'goodkey': 'good', 'non-ascii': '\u2713'},
+                )
 
 
 class TestS3GetBucketLifecycle(BaseS3OperationTest):
     def test_multiple_transitions_returns_one(self):
         response_body = (
-            '<?xml version="1.0" ?>'
-            '<LifecycleConfiguration xmlns="http://s3.amazonaws.'
-            'com/doc/2006-03-01/">'
-            '	<Rule>'
-            '		<ID>transitionRule</ID>'
-            '		<Prefix>foo</Prefix>'
-            '		<Status>Enabled</Status>'
-            '		<Transition>'
-            '			<Days>40</Days>'
-            '			<StorageClass>STANDARD_IA</StorageClass>'
-            '		</Transition>'
-            '		<Transition>'
-            '			<Days>70</Days>'
-            '			<StorageClass>GLACIER</StorageClass>'
-            '		</Transition>'
-            '	</Rule>'
-            '	<Rule>'
-            '		<ID>noncurrentVersionRule</ID>'
-            '		<Prefix>bar</Prefix>'
-            '		<Status>Enabled</Status>'
-            '		<NoncurrentVersionTransition>'
-            '			<NoncurrentDays>40</NoncurrentDays>'
-            '			<StorageClass>STANDARD_IA</StorageClass>'
-            '		</NoncurrentVersionTransition>'
-            '		<NoncurrentVersionTransition>'
-            '			<NoncurrentDays>70</NoncurrentDays>'
-            '			<StorageClass>GLACIER</StorageClass>'
-            '		</NoncurrentVersionTransition>'
-            '	</Rule>'
-            '</LifecycleConfiguration>'
-        ).encode('utf-8')
+            b'<?xml version="1.0" ?>'
+            b'<LifecycleConfiguration xmlns="http://s3.amazonaws.'
+            b'com/doc/2006-03-01/">'
+            b'	<Rule>'
+            b'		<ID>transitionRule</ID>'
+            b'		<Prefix>foo</Prefix>'
+            b'		<Status>Enabled</Status>'
+            b'		<Transition>'
+            b'			<Days>40</Days>'
+            b'			<StorageClass>STANDARD_IA</StorageClass>'
+            b'		</Transition>'
+            b'		<Transition>'
+            b'			<Days>70</Days>'
+            b'			<StorageClass>GLACIER</StorageClass>'
+            b'		</Transition>'
+            b'	</Rule>'
+            b'	<Rule>'
+            b'		<ID>noncurrentVersionRule</ID>'
+            b'		<Prefix>bar</Prefix>'
+            b'		<Status>Enabled</Status>'
+            b'		<NoncurrentVersionTransition>'
+            b'			<NoncurrentDays>40</NoncurrentDays>'
+            b'			<StorageClass>STANDARD_IA</StorageClass>'
+            b'		</NoncurrentVersionTransition>'
+            b'		<NoncurrentVersionTransition>'
+            b'			<NoncurrentDays>70</NoncurrentDays>'
+            b'			<StorageClass>GLACIER</StorageClass>'
+            b'		</NoncurrentVersionTransition>'
+            b'	</Rule>'
+            b'</LifecycleConfiguration>'
+        )
         s3 = self.session.create_client('s3')
         with ClientHTTPStubber(s3) as http_stubber:
             http_stubber.add_response(body=response_body)
@@ -1251,11 +1241,11 @@ class TestS3GetBucketLifecycle(BaseS3OperationTest):
         # transitions provided.
         self.assertEqual(
             response['Rules'][0]['Transition'],
-            {'Days': 40, 'StorageClass': 'STANDARD_IA'}
+            {'Days': 40, 'StorageClass': 'STANDARD_IA'},
         )
         self.assertEqual(
             response['Rules'][1]['NoncurrentVersionTransition'],
-            {'NoncurrentDays': 40, 'StorageClass': 'STANDARD_IA'}
+            {'NoncurrentDays': 40, 'StorageClass': 'STANDARD_IA'},
         )
 
 
@@ -1276,21 +1266,25 @@ class TestS3PutObject(BaseS3OperationTest):
         # We are unsure of what exactly causes the response to be mangled
         # but we expect it to be how 100 continues are handled.
         non_xml_content = (
-            'x-amz-id-2: foo\r\n'
-            'x-amz-request-id: bar\n'
-            'Date: Tue, 06 Oct 2015 03:20:38 GMT\r\n'
-            'ETag: "a6d856bc171fc6aa1b236680856094e2"\r\n'
-            'Content-Length: 0\r\n'
-            'Server: AmazonS3\r\n'
-        ).encode('utf-8')
+            b'x-amz-id-2: foo\r\n'
+            b'x-amz-request-id: bar\n'
+            b'Date: Tue, 06 Oct 2015 03:20:38 GMT\r\n'
+            b'ETag: "a6d856bc171fc6aa1b236680856094e2"\r\n'
+            b'Content-Length: 0\r\n'
+            b'Server: AmazonS3\r\n'
+        )
         s3 = self.session.create_client('s3')
         with ClientHTTPStubber(s3) as http_stubber:
             http_stubber.add_response(status=500, body=non_xml_content)
             http_stubber.add_response()
-            response = s3.put_object(Bucket='mybucket', Key='mykey', Body=b'foo')
+            response = s3.put_object(
+                Bucket='mybucket', Key='mykey', Body=b'foo'
+            )
             # The first response should have been retried even though the xml is
             # invalid and eventually return the 200 response.
-            self.assertEqual(response['ResponseMetadata']['HTTPStatusCode'], 200)
+            self.assertEqual(
+                response['ResponseMetadata']['HTTPStatusCode'], 200
+            )
             self.assertEqual(len(http_stubber.requests), 2)
 
 
@@ -1340,7 +1334,8 @@ class TestWriteGetObjectResponse(BaseS3ClientConfigurationTest):
         regions = ['us-west-2', 'us-east-1']
         for region in regions:
             self.client, self.http_stubber = self.create_stubbed_s3_client(
-                region_name=region)
+                region_name=region
+            )
             self.http_stubber.add_response()
             self.client.write_get_object_response(
                 RequestRoute='endpoint-io.a1c1d5c7',
@@ -1351,13 +1346,14 @@ class TestWriteGetObjectResponse(BaseS3ClientConfigurationTest):
             self.assert_signing_region(request, region)
             expected_endpoint = (
                 'endpoint-io.a1c1d5c7.s3-object-lambda.'
-                '%s.amazonaws.com' % region
+                f'{region}.amazonaws.com'
             )
             self.assert_endpoint(request, expected_endpoint)
 
     def test_endpoint_redirection_fails_with_custom_endpoint(self):
         self.client, self.http_stubber = self.create_stubbed_s3_client(
-            region_name='us-west-2', endpoint_url="https://example.com")
+            region_name='us-west-2', endpoint_url="https://example.com"
+        )
         self.http_stubber.add_response()
         self.client.write_get_object_response(
             RequestRoute='endpoint-io.a1c1d5c7',
@@ -1384,9 +1380,10 @@ class TestWriteGetObjectResponse(BaseS3ClientConfigurationTest):
 
 class TestS3SigV4(BaseS3OperationTest):
     def setUp(self):
-        super(TestS3SigV4, self).setUp()
+        super().setUp()
         self.client = self.session.create_client(
-            's3', self.region, config=Config(signature_version='s3v4'))
+            's3', self.region, config=Config(signature_version='s3v4')
+        )
         self.http_stubber = ClientHTTPStubber(self.client)
         self.http_stubber.add_response()
 
@@ -1489,10 +1486,11 @@ class TestS3SigV4(BaseS3OperationTest):
         # We do not support payload signing for streaming so the `payload_signing_enabled`
         # config has no effect here.
         config = Config(
-            signature_version='s3v4',
-            s3={'payload_signing_enabled': True})
+            signature_version='s3v4', s3={'payload_signing_enabled': True}
+        )
         self.client = self.session.create_client(
-            's3', self.region, config=config)
+            's3', self.region, config=config
+        )
         self.http_stubber = ClientHTTPStubber(self.client)
         self.http_stubber.add_response()
         with self.http_stubber:
@@ -1511,7 +1509,8 @@ class TestS3SigV4(BaseS3OperationTest):
             s3={'payload_signing_enabled': False},
         )
         self.client = self.session.create_client(
-            's3', self.region, config=config)
+            's3', self.region, config=config
+        )
         self.http_stubber = ClientHTTPStubber(self.client)
         self.http_stubber.add_response()
         with self.http_stubber:
@@ -1575,7 +1574,6 @@ class TestS3SigV4(BaseS3OperationTest):
 
 
 class TestCanSendIntegerHeaders(BaseSessionTest):
-
     def test_int_values_with_sigv4(self):
         s3 = self.session.create_client(
             "s3",
@@ -1586,8 +1584,14 @@ class TestCanSendIntegerHeaders(BaseSessionTest):
         )
         with ClientHTTPStubber(s3) as http_stubber:
             http_stubber.add_response()
-            s3.upload_part(Bucket='foo', Key='bar', Body=b'foo',
-                           UploadId='bar', PartNumber=1, ContentLength=3)
+            s3.upload_part(
+                Bucket='foo',
+                Key='bar',
+                Body=b'foo',
+                UploadId='bar',
+                PartNumber=1,
+                ContentLength=3,
+            )
             headers = http_stubber.requests[0].headers
             # Verify that the request integer value of 3 has been converted to
             # string '3'.  This also means we've made it pass the signer which
@@ -1597,12 +1601,15 @@ class TestCanSendIntegerHeaders(BaseSessionTest):
 
 class TestRegionRedirect(BaseS3OperationTest):
     def setUp(self):
-        super(TestRegionRedirect, self).setUp()
+        super().setUp()
         self.client = self.session.create_client(
-            's3', 'us-west-2', config=Config(
+            's3',
+            'us-west-2',
+            config=Config(
                 signature_version='s3v4',
                 s3={'addressing_style': 'path'},
-            ))
+            ),
+        )
         self.http_stubber = ClientHTTPStubber(self.client)
 
         self.redirect_response = {
@@ -1619,7 +1626,7 @@ class TestRegionRedirect(BaseS3OperationTest):
                 b'    <Bucket>foo</Bucket>'
                 b'    <Endpoint>foo.s3.eu-central-1.amazonaws.com</Endpoint>'
                 b'</Error>'
-            )
+            ),
         }
         self.bad_signing_region_response = {
             'status': 400,
@@ -1634,7 +1641,7 @@ class TestRegionRedirect(BaseS3OperationTest):
                 b'  <RequestId>BD9AA1730D454E39</RequestId>'
                 b'  <HostId></HostId>'
                 b'</Error>'
-            )
+            ),
         }
         self.success_response = {
             'status': 200,
@@ -1649,7 +1656,7 @@ class TestRegionRedirect(BaseS3OperationTest):
                 b'    <EncodingType>url</EncodingType>'
                 b'    <IsTruncated>false</IsTruncated>'
                 b'</ListBucketResult>'
-            )
+            ),
         }
 
     def test_region_redirect(self):
@@ -1660,12 +1667,14 @@ class TestRegionRedirect(BaseS3OperationTest):
         self.assertEqual(response['ResponseMetadata']['HTTPStatusCode'], 200)
         self.assertEqual(len(self.http_stubber.requests), 2)
 
-        initial_url = ('https://s3.us-west-2.amazonaws.com/foo'
-                       '?encoding-type=url')
+        initial_url = (
+            'https://s3.us-west-2.amazonaws.com/foo' '?encoding-type=url'
+        )
         self.assertEqual(self.http_stubber.requests[0].url, initial_url)
 
-        fixed_url = ('https://s3.eu-central-1.amazonaws.com/foo'
-                     '?encoding-type=url')
+        fixed_url = (
+            'https://s3.eu-central-1.amazonaws.com/foo' '?encoding-type=url'
+        )
         self.assertEqual(self.http_stubber.requests[1].url, fixed_url)
 
     def test_region_redirect_cache(self):
@@ -1678,22 +1687,25 @@ class TestRegionRedirect(BaseS3OperationTest):
             second_response = self.client.list_objects(Bucket='foo')
 
         self.assertEqual(
-            first_response['ResponseMetadata']['HTTPStatusCode'], 200)
+            first_response['ResponseMetadata']['HTTPStatusCode'], 200
+        )
         self.assertEqual(
-            second_response['ResponseMetadata']['HTTPStatusCode'], 200)
+            second_response['ResponseMetadata']['HTTPStatusCode'], 200
+        )
 
         self.assertEqual(len(self.http_stubber.requests), 3)
-        initial_url = ('https://s3.us-west-2.amazonaws.com/foo'
-                       '?encoding-type=url')
+        initial_url = (
+            'https://s3.us-west-2.amazonaws.com/foo' '?encoding-type=url'
+        )
         self.assertEqual(self.http_stubber.requests[0].url, initial_url)
 
-        fixed_url = ('https://s3.eu-central-1.amazonaws.com/foo'
-                     '?encoding-type=url')
+        fixed_url = (
+            'https://s3.eu-central-1.amazonaws.com/foo' '?encoding-type=url'
+        )
         self.assertEqual(self.http_stubber.requests[1].url, fixed_url)
         self.assertEqual(self.http_stubber.requests[2].url, fixed_url)
 
     def test_resign_request_with_region_when_needed(self):
-
         # Create a client with no explicit configuration so we can
         # verify the default behavior.
         client = self.session.create_client('s3', 'us-west-2')
@@ -1702,15 +1714,19 @@ class TestRegionRedirect(BaseS3OperationTest):
             http_stubber.add_response(**self.success_response)
             first_response = client.list_objects(Bucket='foo')
             self.assertEqual(
-                first_response['ResponseMetadata']['HTTPStatusCode'], 200)
+                first_response['ResponseMetadata']['HTTPStatusCode'], 200
+            )
 
             self.assertEqual(len(http_stubber.requests), 2)
-            initial_url = ('https://foo.s3.us-west-2.amazonaws.com/'
-                           '?encoding-type=url')
+            initial_url = (
+                'https://foo.s3.us-west-2.amazonaws.com/' '?encoding-type=url'
+            )
             self.assertEqual(http_stubber.requests[0].url, initial_url)
 
-            fixed_url = ('https://foo.s3.eu-central-1.amazonaws.com/'
-                         '?encoding-type=url')
+            fixed_url = (
+                'https://foo.s3.eu-central-1.amazonaws.com/'
+                '?encoding-type=url'
+            )
             self.assertEqual(http_stubber.requests[1].url, fixed_url)
 
     def test_resign_request_in_us_east_1(self):
@@ -1724,13 +1740,15 @@ class TestRegionRedirect(BaseS3OperationTest):
             http_stubber.add_response(headers=region_headers)
             http_stubber.add_response()
             response = client.head_object(Bucket='foo', Key='bar')
-            self.assertEqual(response['ResponseMetadata']['HTTPStatusCode'], 200)
+            self.assertEqual(
+                response['ResponseMetadata']['HTTPStatusCode'], 200
+            )
 
             self.assertEqual(len(http_stubber.requests), 4)
-            initial_url = ('https://foo.s3.us-east-1.amazonaws.com/bar')
+            initial_url = 'https://foo.s3.us-east-1.amazonaws.com/bar'
             self.assertEqual(http_stubber.requests[0].url, initial_url)
 
-            fixed_url = ('https://foo.s3.eu-central-1.amazonaws.com/bar')
+            fixed_url = 'https://foo.s3.eu-central-1.amazonaws.com/bar'
             self.assertEqual(http_stubber.requests[-1].url, fixed_url)
 
     def test_resign_request_in_us_east_1_fails(self):
@@ -1745,7 +1763,7 @@ class TestRegionRedirect(BaseS3OperationTest):
             http_stubber.add_response(headers=region_headers)
             # The final request still fails with a 400.
             http_stubber.add_response(status=400)
-            with self.assertRaises(ClientError) as e:
+            with self.assertRaises(ClientError):
                 client.head_object(Bucket='foo', Key='bar')
             self.assertEqual(len(http_stubber.requests), 4)
 
@@ -1759,14 +1777,15 @@ class TestRegionRedirect(BaseS3OperationTest):
                 self.client.list_objects(Bucket=accesspoint_arn)
             except self.client.exceptions.ClientError as e:
                 self.assertEqual(
-                    e.response['Error']['Code'], 'PermanentRedirect')
+                    e.response['Error']['Code'], 'PermanentRedirect'
+                )
             else:
                 self.fail('PermanentRedirect error should have been raised')
 
 
 class TestFipsRegionRedirect(BaseS3OperationTest):
     def setUp(self):
-        super(TestFipsRegionRedirect, self).setUp()
+        super().setUp()
         self.client = self.session.create_client(
             "s3",
             "fips-us-west-2",
@@ -1848,8 +1867,12 @@ class TestFipsRegionRedirect(BaseS3OperationTest):
             first_response = self.client.list_objects(Bucket="foo")
             second_response = self.client.list_objects(Bucket="foo")
 
-        self.assertEqual(first_response["ResponseMetadata"]["HTTPStatusCode"], 200)
-        self.assertEqual(second_response["ResponseMetadata"]["HTTPStatusCode"], 200)
+        self.assertEqual(
+            first_response["ResponseMetadata"]["HTTPStatusCode"], 200
+        )
+        self.assertEqual(
+            second_response["ResponseMetadata"]["HTTPStatusCode"], 200
+        )
 
         self.assertEqual(len(self.http_stubber.requests), 3)
         initial_url = (
@@ -1864,7 +1887,6 @@ class TestFipsRegionRedirect(BaseS3OperationTest):
         self.assertEqual(self.http_stubber.requests[2].url, fixed_url)
 
     def test_fips_resign_request_with_region_when_needed(self):
-
         # Create a client with no explicit configuration so we can
         # verify the default behavior.
         client = self.session.create_client("s3", "fips-us-west-2")
@@ -1872,14 +1894,20 @@ class TestFipsRegionRedirect(BaseS3OperationTest):
             http_stubber.add_response(**self.bad_signing_region_response)
             http_stubber.add_response(**self.success_response)
             first_response = client.list_objects(Bucket="foo")
-            self.assertEqual(first_response["ResponseMetadata"]["HTTPStatusCode"], 200)
+            self.assertEqual(
+                first_response["ResponseMetadata"]["HTTPStatusCode"], 200
+            )
 
             self.assertEqual(len(http_stubber.requests), 2)
-            initial_url = "https://foo.s3-fips.us-west-2.amazonaws.com/" "?encoding-type=url"
+            initial_url = (
+                "https://foo.s3-fips.us-west-2.amazonaws.com/"
+                "?encoding-type=url"
+            )
             self.assertEqual(http_stubber.requests[0].url, initial_url)
 
             fixed_url = (
-                "https://foo.s3-fips.us-west-1.amazonaws.com/" "?encoding-type=url"
+                "https://foo.s3-fips.us-west-1.amazonaws.com/"
+                "?encoding-type=url"
             )
             self.assertEqual(http_stubber.requests[1].url, fixed_url)
 
@@ -1894,7 +1922,9 @@ class TestFipsRegionRedirect(BaseS3OperationTest):
             http_stubber.add_response(headers=region_headers)
             http_stubber.add_response()
             response = client.head_object(Bucket="foo", Key="bar")
-            self.assertEqual(response["ResponseMetadata"]["HTTPStatusCode"], 200)
+            self.assertEqual(
+                response["ResponseMetadata"]["HTTPStatusCode"], 200
+            )
 
             self.assertEqual(len(http_stubber.requests), 4)
             initial_url = "https://foo.s3-fips.us-east-1.amazonaws.com/bar"
@@ -1921,12 +1951,16 @@ class TestFipsRegionRedirect(BaseS3OperationTest):
 
     def test_fips_no_region_redirect_for_accesspoint(self):
         self.http_stubber.add_response(**self.redirect_response)
-        accesspoint_arn = "arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint"
+        accesspoint_arn = (
+            "arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint"
+        )
         with self.http_stubber:
             try:
                 self.client.list_objects(Bucket=accesspoint_arn)
             except self.client.exceptions.ClientError as e:
-                self.assertEqual(e.response["Error"]["Code"], "PermanentRedirect")
+                self.assertEqual(
+                    e.response["Error"]["Code"], "PermanentRedirect"
+                )
             else:
                 self.fail("PermanentRedirect error should have been raised")
 
@@ -1945,11 +1979,8 @@ class TestGeneratePresigned(BaseS3OperationTest):
         config = Config(signature_version=botocore.UNSIGNED)
         client = self.session.create_client('s3', self.region, config=config)
         url = client.generate_presigned_url(
-            ClientMethod='get_object',
-            Params={
-                'Bucket': 'foo',
-                'Key': 'bar'
-            })
+            ClientMethod='get_object', Params={'Bucket': 'foo', 'Key': 'bar'}
+        )
         self.assertEqual(url, 'https://foo.s3.us-west-2.amazonaws.com/bar')
 
     def test_generate_unauthed_post(self):
@@ -1958,7 +1989,7 @@ class TestGeneratePresigned(BaseS3OperationTest):
         parts = client.generate_presigned_post(Bucket='foo', Key='bar')
         expected = {
             'fields': {'key': 'bar'},
-            'url': 'https://foo.s3.us-west-2.amazonaws.com/'
+            'url': 'https://foo.s3.us-west-2.amazonaws.com/',
         }
         self.assertEqual(parts, expected)
 
@@ -1997,94 +2028,121 @@ class TestGeneratePresigned(BaseS3OperationTest):
                 'Bucket': 'mybucket',
                 'Key': 'mykey',
                 'SSECustomerKey': 'a' * 32,
-                'SSECustomerAlgorithm': 'AES256'
-            }
+                'SSECustomerAlgorithm': 'AES256',
+            },
         )
         # The md5 of the sse-c key will be injected when parameters are
         # built so it should show up in the presigned url as well.
-        self.assertIn(
-            'x-amz-server-side-encryption-customer-key-md5&', url
-        )
+        self.assertIn('x-amz-server-side-encryption-customer-key-md5&', url)
 
     def test_presign_s3_accelerate(self):
-        config = Config(signature_version=botocore.UNSIGNED,
-                        s3={'use_accelerate_endpoint': True})
+        config = Config(
+            signature_version=botocore.UNSIGNED,
+            s3={'use_accelerate_endpoint': True},
+        )
         client = self.session.create_client('s3', 'us-east-1', config=config)
         url = client.generate_presigned_url(
             ClientMethod='get_object',
-            Params={'Bucket': 'mybucket', 'Key': 'mykey'}
+            Params={'Bucket': 'mybucket', 'Key': 'mykey'},
         )
         # The url should be the accelerate endpoint
         self.assertEqual(
-            'https://mybucket.s3-accelerate.amazonaws.com/mykey', url)
+            'https://mybucket.s3-accelerate.amazonaws.com/mykey', url
+        )
 
     def test_presign_s3_accelerate_fails_with_fips(self):
         config = Config(
-            signature_version=botocore.UNSIGNED, s3={"use_accelerate_endpoint": True}
+            signature_version=botocore.UNSIGNED,
+            s3={"use_accelerate_endpoint": True},
         )
-        client = self.session.create_client("s3", "fips-us-east-1", config=config)
+        client = self.session.create_client(
+            "s3", "fips-us-east-1", config=config
+        )
         expected_exception = UnsupportedS3ConfigurationError
         with self.assertRaisesRegex(
             expected_exception, "Accelerate cannot be used with FIPS"
         ):
             client.generate_presigned_url(
-                ClientMethod="get_object", Params={"Bucket": "mybucket", "Key": "mykey"}
+                ClientMethod="get_object",
+                Params={"Bucket": "mybucket", "Key": "mykey"},
             )
 
     def test_presign_post_s3_accelerate(self):
-        config = Config(signature_version=botocore.UNSIGNED,
-                        s3={'use_accelerate_endpoint': True})
+        config = Config(
+            signature_version=botocore.UNSIGNED,
+            s3={'use_accelerate_endpoint': True},
+        )
         client = self.session.create_client('s3', 'us-east-1', config=config)
-        parts = client.generate_presigned_post(
-            Bucket='mybucket', Key='mykey')
+        parts = client.generate_presigned_post(Bucket='mybucket', Key='mykey')
         # The url should be the accelerate endpoint
         expected = {
             'fields': {'key': 'mykey'},
-            'url': 'https://mybucket.s3-accelerate.amazonaws.com/'
+            'url': 'https://mybucket.s3-accelerate.amazonaws.com/',
         }
         self.assertEqual(parts, expected)
 
 
-
 def _checksum_test_cases():
-    yield ('put_bucket_tagging',
-            {"Bucket": "foo", "Tagging":{"TagSet":[]}})
-    yield ('put_bucket_lifecycle',
-            {"Bucket": "foo", "LifecycleConfiguration":{"Rules":[]}})
-    yield ('put_bucket_lifecycle_configuration',
-            {"Bucket": "foo", "LifecycleConfiguration":{"Rules":[]}})
-    yield ('put_bucket_cors',
-            {"Bucket": "foo", "CORSConfiguration":{"CORSRules": []}})
-    yield ('delete_objects',
-            {"Bucket": "foo", "Delete": {"Objects": [{"Key": "bar"}]}})
-    yield ('put_bucket_replication',
-            {"Bucket": "foo",
-             "ReplicationConfiguration": {"Role":"", "Rules": []}})
-    yield ('put_bucket_acl',
-            {"Bucket": "foo", "AccessControlPolicy":{}})
-    yield ('put_bucket_logging',
-            {"Bucket": "foo",
-             "BucketLoggingStatus":{}})
-    yield ('put_bucket_notification',
-            {"Bucket": "foo", "NotificationConfiguration":{}})
-    yield ('put_bucket_policy',
-            {"Bucket": "foo", "Policy": "<bucket-policy>"})
-    yield ('put_bucket_request_payment',
-            {"Bucket": "foo", "RequestPaymentConfiguration":{"Payer": ""}})
-    yield ('put_bucket_versioning',
-            {"Bucket": "foo", "VersioningConfiguration":{}})
-    yield ('put_bucket_website',
-            {"Bucket": "foo",
-             "WebsiteConfiguration":{}})
-    yield ('put_object_acl',
-            {"Bucket": "foo", "Key": "bar", "AccessControlPolicy":{}})
-    yield ('put_object_legal_hold',
-            {"Bucket": "foo", "Key": "bar", "LegalHold":{"Status": "ON"}})
-    yield ('put_object_retention',
-            {"Bucket": "foo", "Key": "bar",
-             "Retention":{"RetainUntilDate":"2020-11-05"}})
-    yield ('put_object_lock_configuration',
-            {"Bucket": "foo", "ObjectLockConfiguration":{}})
+    yield ('put_bucket_tagging', {"Bucket": "foo", "Tagging": {"TagSet": []}})
+    yield (
+        'put_bucket_lifecycle',
+        {"Bucket": "foo", "LifecycleConfiguration": {"Rules": []}},
+    )
+    yield (
+        'put_bucket_lifecycle_configuration',
+        {"Bucket": "foo", "LifecycleConfiguration": {"Rules": []}},
+    )
+    yield (
+        'put_bucket_cors',
+        {"Bucket": "foo", "CORSConfiguration": {"CORSRules": []}},
+    )
+    yield (
+        'delete_objects',
+        {"Bucket": "foo", "Delete": {"Objects": [{"Key": "bar"}]}},
+    )
+    yield (
+        'put_bucket_replication',
+        {
+            "Bucket": "foo",
+            "ReplicationConfiguration": {"Role": "", "Rules": []},
+        },
+    )
+    yield ('put_bucket_acl', {"Bucket": "foo", "AccessControlPolicy": {}})
+    yield ('put_bucket_logging', {"Bucket": "foo", "BucketLoggingStatus": {}})
+    yield (
+        'put_bucket_notification',
+        {"Bucket": "foo", "NotificationConfiguration": {}},
+    )
+    yield ('put_bucket_policy', {"Bucket": "foo", "Policy": "<bucket-policy>"})
+    yield (
+        'put_bucket_request_payment',
+        {"Bucket": "foo", "RequestPaymentConfiguration": {"Payer": ""}},
+    )
+    yield (
+        'put_bucket_versioning',
+        {"Bucket": "foo", "VersioningConfiguration": {}},
+    )
+    yield ('put_bucket_website', {"Bucket": "foo", "WebsiteConfiguration": {}})
+    yield (
+        'put_object_acl',
+        {"Bucket": "foo", "Key": "bar", "AccessControlPolicy": {}},
+    )
+    yield (
+        'put_object_legal_hold',
+        {"Bucket": "foo", "Key": "bar", "LegalHold": {"Status": "ON"}},
+    )
+    yield (
+        'put_object_retention',
+        {
+            "Bucket": "foo",
+            "Key": "bar",
+            "Retention": {"RetainUntilDate": "2020-11-05"},
+        },
+    )
+    yield (
+        'put_object_lock_configuration',
+        {"Bucket": "foo", "ObjectLockConfiguration": {}},
+    )
 
 
 accesspoint_arn = "arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint"
@@ -2100,7 +2158,9 @@ accesspoint_cross_region_arn_gov = (
 
 
 @pytest.mark.parametrize("operation, operation_kwargs", _checksum_test_cases())
-def test_checksums_included_in_expected_operations(operation, operation_kwargs):
+def test_checksums_included_in_expected_operations(
+    operation, operation_kwargs
+):
     """Validate expected calls include Content-MD5 header"""
     client = _create_s3_client()
     with ClientHTTPStubber(client) as stub:
@@ -2133,279 +2193,472 @@ def test_checksum_content_encoding(content_encoding, expected_header):
 
 def _s3_addressing_test_cases():
     # The default behavior for DNS compatible buckets
-    yield dict(region='us-west-2', bucket='bucket', key='key',
-                 expected_url='https://bucket.s3.us-west-2.amazonaws.com/key')
-    yield dict(region='us-east-1', bucket='bucket', key='key',
-                 expected_url='https://bucket.s3.us-east-1.amazonaws.com/key')
-    yield dict(region='us-west-1', bucket='bucket', key='key',
-                 expected_url='https://bucket.s3.us-west-1.amazonaws.com/key')
-    yield dict(region='us-west-1', bucket='bucket', key='key',
-                 is_secure=False,
-                 expected_url='http://bucket.s3.us-west-1.amazonaws.com/key')
+    yield dict(
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
+        expected_url='https://bucket.s3.us-west-2.amazonaws.com/key',
+    )
+    yield dict(
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
+        expected_url='https://bucket.s3.us-east-1.amazonaws.com/key',
+    )
+    yield dict(
+        region='us-west-1',
+        bucket='bucket',
+        key='key',
+        expected_url='https://bucket.s3.us-west-1.amazonaws.com/key',
+    )
+    yield dict(
+        region='us-west-1',
+        bucket='bucket',
+        key='key',
+        is_secure=False,
+        expected_url='http://bucket.s3.us-west-1.amazonaws.com/key',
+    )
 
     # Virtual host addressing is independent of signature version.
-    yield dict(region='aws-global', bucket='bucket', key='key',
-                 signature_version='s3v4',
-                 expected_url='https://bucket.s3.amazonaws.com/key')
-    yield dict(region='us-west-2', bucket='bucket', key='key',
-                 signature_version='s3v4',
-                 expected_url=(
-                     'https://bucket.s3.us-west-2.amazonaws.com/key'))
-    yield dict(region='us-east-1', bucket='bucket', key='key',
-                 signature_version='s3v4',
-                 expected_url='https://bucket.s3.us-east-1.amazonaws.com/key')
-    yield dict(region='us-west-1', bucket='bucket', key='key',
-                 signature_version='s3v4',
-                 expected_url=(
-                     'https://bucket.s3.us-west-1.amazonaws.com/key'))
-    yield dict(region='us-west-1', bucket='bucket', key='key',
-                 signature_version='s3v4', is_secure=False,
-                 expected_url=(
-                     'http://bucket.s3.us-west-1.amazonaws.com/key'))
     yield dict(
-        region='us-west-1', bucket='bucket-with-num-1', key='key',
-        signature_version='s3v4', is_secure=False,
-        expected_url='http://bucket-with-num-1.s3.us-west-1.amazonaws.com/key')
+        region='aws-global',
+        bucket='bucket',
+        key='key',
+        signature_version='s3v4',
+        expected_url='https://bucket.s3.amazonaws.com/key',
+    )
+    yield dict(
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
+        signature_version='s3v4',
+        expected_url=('https://bucket.s3.us-west-2.amazonaws.com/key'),
+    )
+    yield dict(
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
+        signature_version='s3v4',
+        expected_url='https://bucket.s3.us-east-1.amazonaws.com/key',
+    )
+    yield dict(
+        region='us-west-1',
+        bucket='bucket',
+        key='key',
+        signature_version='s3v4',
+        expected_url=('https://bucket.s3.us-west-1.amazonaws.com/key'),
+    )
+    yield dict(
+        region='us-west-1',
+        bucket='bucket',
+        key='key',
+        signature_version='s3v4',
+        is_secure=False,
+        expected_url=('http://bucket.s3.us-west-1.amazonaws.com/key'),
+    )
+    yield dict(
+        region='us-west-1',
+        bucket='bucket-with-num-1',
+        key='key',
+        signature_version='s3v4',
+        is_secure=False,
+        expected_url='http://bucket-with-num-1.s3.us-west-1.amazonaws.com/key',
+    )
 
     # Regions outside of the 'aws' partition.
     # These should still default to virtual hosted addressing
     # unless explicitly configured otherwise.
-    yield dict(region='cn-north-1', bucket='bucket', key='key',
-                 signature_version='s3v4',
-                 expected_url=(
-                     'https://bucket.s3.cn-north-1.amazonaws.com.cn/key'))
+    yield dict(
+        region='cn-north-1',
+        bucket='bucket',
+        key='key',
+        signature_version='s3v4',
+        expected_url=('https://bucket.s3.cn-north-1.amazonaws.com.cn/key'),
+    )
     # If the request is unsigned, we should have the default
     # fix_s3_host behavior which is to use virtual hosting where
     # possible but fall back to path style when needed.
-    yield dict(region='cn-north-1', bucket='bucket', key='key',
-                 signature_version=UNSIGNED,
-                 expected_url=(
-                     'https://bucket.s3.cn-north-1.amazonaws.com.cn/key'))
-    yield dict(region='cn-north-1', bucket='bucket.dot', key='key',
-                 signature_version=UNSIGNED,
-                 expected_url=(
-                     'https://s3.cn-north-1.amazonaws.com.cn/bucket.dot/key'))
+    yield dict(
+        region='cn-north-1',
+        bucket='bucket',
+        key='key',
+        signature_version=UNSIGNED,
+        expected_url=('https://bucket.s3.cn-north-1.amazonaws.com.cn/key'),
+    )
+    yield dict(
+        region='cn-north-1',
+        bucket='bucket.dot',
+        key='key',
+        signature_version=UNSIGNED,
+        expected_url=('https://s3.cn-north-1.amazonaws.com.cn/bucket.dot/key'),
+    )
 
     # And of course you can explicitly specify which style to use.
     virtual_hosting = {'addressing_style': 'virtual'}
-    yield dict(region='cn-north-1', bucket='bucket', key='key',
-                 signature_version=UNSIGNED,
-                 s3_config=virtual_hosting,
-                 expected_url=(
-                     'https://bucket.s3.cn-north-1.amazonaws.com.cn/key'))
+    yield dict(
+        region='cn-north-1',
+        bucket='bucket',
+        key='key',
+        signature_version=UNSIGNED,
+        s3_config=virtual_hosting,
+        expected_url=('https://bucket.s3.cn-north-1.amazonaws.com.cn/key'),
+    )
     path_style = {'addressing_style': 'path'}
-    yield dict(region='cn-north-1', bucket='bucket', key='key',
-                 signature_version=UNSIGNED,
-                 s3_config=path_style,
-                 expected_url=(
-                     'https://s3.cn-north-1.amazonaws.com.cn/bucket/key'))
+    yield dict(
+        region='cn-north-1',
+        bucket='bucket',
+        key='key',
+        signature_version=UNSIGNED,
+        s3_config=path_style,
+        expected_url=('https://s3.cn-north-1.amazonaws.com.cn/bucket/key'),
+    )
 
     # If you don't have a DNS compatible bucket, we use path style.
     yield dict(
-        region='aws-global', bucket='bucket.dot', key='key',
-        expected_url='https://s3.amazonaws.com/bucket.dot/key')
+        region='aws-global',
+        bucket='bucket.dot',
+        key='key',
+        expected_url='https://s3.amazonaws.com/bucket.dot/key',
+    )
     yield dict(
-        region='us-west-2', bucket='bucket.dot', key='key',
-        expected_url='https://s3.us-west-2.amazonaws.com/bucket.dot/key')
+        region='us-west-2',
+        bucket='bucket.dot',
+        key='key',
+        expected_url='https://s3.us-west-2.amazonaws.com/bucket.dot/key',
+    )
     yield dict(
-        region='us-east-1', bucket='bucket.dot', key='key',
-        expected_url='https://s3.us-east-1.amazonaws.com/bucket.dot/key')
+        region='us-east-1',
+        bucket='bucket.dot',
+        key='key',
+        expected_url='https://s3.us-east-1.amazonaws.com/bucket.dot/key',
+    )
     yield dict(
-        region='us-east-1', bucket='BucketName', key='key',
-        expected_url='https://s3.us-east-1.amazonaws.com/BucketName/key')
+        region='us-east-1',
+        bucket='BucketName',
+        key='key',
+        expected_url='https://s3.us-east-1.amazonaws.com/BucketName/key',
+    )
     yield dict(
-        region='us-west-1', bucket='bucket_name', key='key',
-        expected_url='https://s3.us-west-1.amazonaws.com/bucket_name/key')
+        region='us-west-1',
+        bucket='bucket_name',
+        key='key',
+        expected_url='https://s3.us-west-1.amazonaws.com/bucket_name/key',
+    )
     yield dict(
-        region='us-west-1', bucket='-bucket-name', key='key',
-        expected_url='https://s3.us-west-1.amazonaws.com/-bucket-name/key')
+        region='us-west-1',
+        bucket='-bucket-name',
+        key='key',
+        expected_url='https://s3.us-west-1.amazonaws.com/-bucket-name/key',
+    )
     yield dict(
-        region='us-west-1', bucket='bucket-name-', key='key',
-        expected_url='https://s3.us-west-1.amazonaws.com/bucket-name-/key')
+        region='us-west-1',
+        bucket='bucket-name-',
+        key='key',
+        expected_url='https://s3.us-west-1.amazonaws.com/bucket-name-/key',
+    )
     yield dict(
-        region='us-west-1', bucket='aa', key='key',
-        expected_url='https://s3.us-west-1.amazonaws.com/aa/key')
+        region='us-west-1',
+        bucket='aa',
+        key='key',
+        expected_url='https://s3.us-west-1.amazonaws.com/aa/key',
+    )
     yield dict(
-        region='us-west-1', bucket='a'*64, key='key',
-        expected_url=('https://s3.us-west-1.amazonaws.com/%s/key' % ('a' * 64))
+        region='us-west-1',
+        bucket='a' * 64,
+        key='key',
+        expected_url=(
+            'https://s3.us-west-1.amazonaws.com/%s/key' % ('a' * 64)
+        ),
     )
 
     # Custom endpoint url should always be used.
     yield dict(
         customer_provided_endpoint='https://my-custom-s3/',
-        bucket='foo', key='bar',
-        expected_url='https://my-custom-s3/foo/bar')
+        bucket='foo',
+        key='bar',
+        expected_url='https://my-custom-s3/foo/bar',
+    )
     yield dict(
         customer_provided_endpoint='https://my-custom-s3/',
-        bucket='bucket.dots', key='bar',
-        expected_url='https://my-custom-s3/bucket.dots/bar')
+        bucket='bucket.dots',
+        key='bar',
+        expected_url='https://my-custom-s3/bucket.dots/bar',
+    )
     # Doesn't matter what region you specify, a custom endpoint url always
     # wins.
     yield dict(
         customer_provided_endpoint='https://my-custom-s3/',
-        region='us-west-2', bucket='foo', key='bar',
-        expected_url='https://my-custom-s3/foo/bar')
+        region='us-west-2',
+        bucket='foo',
+        key='bar',
+        expected_url='https://my-custom-s3/foo/bar',
+    )
 
     # Explicitly configuring "virtual" addressing_style.
     virtual_hosting = {'addressing_style': 'virtual'}
     yield dict(
-        region='aws-global', bucket='bucket', key='key',
+        region='aws-global',
+        bucket='bucket',
+        key='key',
         s3_config=virtual_hosting,
-        expected_url='https://bucket.s3.amazonaws.com/key')
+        expected_url='https://bucket.s3.amazonaws.com/key',
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         s3_config=virtual_hosting,
-        expected_url='https://bucket.s3.us-east-1.amazonaws.com/key')
+        expected_url='https://bucket.s3.us-east-1.amazonaws.com/key',
+    )
     yield dict(
-        region='us-west-2', bucket='bucket', key='key',
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
         s3_config=virtual_hosting,
-        expected_url='https://bucket.s3.us-west-2.amazonaws.com/key')
+        expected_url='https://bucket.s3.us-west-2.amazonaws.com/key',
+    )
     yield dict(
-        region='eu-central-1', bucket='bucket', key='key',
+        region='eu-central-1',
+        bucket='bucket',
+        key='key',
         s3_config=virtual_hosting,
-        expected_url='https://bucket.s3.eu-central-1.amazonaws.com/key')
+        expected_url='https://bucket.s3.eu-central-1.amazonaws.com/key',
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         s3_config=virtual_hosting,
         customer_provided_endpoint='https://foo.amazonaws.com',
-        expected_url='https://bucket.foo.amazonaws.com/key')
+        expected_url='https://bucket.foo.amazonaws.com/key',
+    )
     yield dict(
-        region='unknown', bucket='bucket', key='key',
+        region='unknown',
+        bucket='bucket',
+        key='key',
         s3_config=virtual_hosting,
-        expected_url='https://bucket.s3.unknown.amazonaws.com/key')
+        expected_url='https://bucket.s3.unknown.amazonaws.com/key',
+    )
 
     # Test us-gov with virtual addressing.
     yield dict(
-        region='us-gov-west-1', bucket='bucket', key='key',
+        region='us-gov-west-1',
+        bucket='bucket',
+        key='key',
         s3_config=virtual_hosting,
-        expected_url='https://bucket.s3.us-gov-west-1.amazonaws.com/key')
+        expected_url='https://bucket.s3.us-gov-west-1.amazonaws.com/key',
+    )
 
     # Test path style addressing.
     path_style = {'addressing_style': 'path'}
     yield dict(
-        region='aws-global', bucket='bucket', key='key',
+        region='aws-global',
+        bucket='bucket',
+        key='key',
         s3_config=path_style,
-        expected_url='https://s3.amazonaws.com/bucket/key')
+        expected_url='https://s3.amazonaws.com/bucket/key',
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         s3_config=path_style,
-        expected_url='https://s3.us-east-1.amazonaws.com/bucket/key')
+        expected_url='https://s3.us-east-1.amazonaws.com/bucket/key',
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         s3_config=path_style,
         customer_provided_endpoint='https://foo.amazonaws.com/',
-        expected_url='https://foo.amazonaws.com/bucket/key')
+        expected_url='https://foo.amazonaws.com/bucket/key',
+    )
     yield dict(
-        region='unknown', bucket='bucket', key='key',
+        region='unknown',
+        bucket='bucket',
+        key='key',
         s3_config=path_style,
-        expected_url='https://s3.unknown.amazonaws.com/bucket/key')
+        expected_url='https://s3.unknown.amazonaws.com/bucket/key',
+    )
 
     # S3 accelerate
     use_accelerate = {'use_accelerate_endpoint': True}
     yield dict(
-        region='aws-global', bucket='bucket', key='key',
+        region='aws-global',
+        bucket='bucket',
+        key='key',
         s3_config=use_accelerate,
-        expected_url='https://bucket.s3-accelerate.amazonaws.com/key')
+        expected_url='https://bucket.s3-accelerate.amazonaws.com/key',
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         s3_config=use_accelerate,
-        expected_url='https://bucket.s3-accelerate.amazonaws.com/key')
+        expected_url='https://bucket.s3-accelerate.amazonaws.com/key',
+    )
     yield dict(
         # region is ignored with S3 accelerate.
-        region='us-west-2', bucket='bucket', key='key',
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
         s3_config=use_accelerate,
-        expected_url='https://bucket.s3-accelerate.amazonaws.com/key')
+        expected_url='https://bucket.s3-accelerate.amazonaws.com/key',
+    )
     # Provided endpoints still get recognized as accelerate endpoints.
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         customer_provided_endpoint='https://s3-accelerate.amazonaws.com',
-        expected_url='https://bucket.s3-accelerate.amazonaws.com/key')
+        expected_url='https://bucket.s3-accelerate.amazonaws.com/key',
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         customer_provided_endpoint='http://s3-accelerate.amazonaws.com',
-        expected_url='http://bucket.s3-accelerate.amazonaws.com/key')
+        expected_url='http://bucket.s3-accelerate.amazonaws.com/key',
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
-        s3_config=use_accelerate, is_secure=False,
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
+        s3_config=use_accelerate,
+        is_secure=False,
         # Note we're using http://  because is_secure=False.
-        expected_url='http://bucket.s3-accelerate.amazonaws.com/key')
+        expected_url='http://bucket.s3-accelerate.amazonaws.com/key',
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         # s3-accelerate must be the first part of the url.
         customer_provided_endpoint='https://foo.s3-accelerate.amazonaws.com',
-        expected_url='https://foo.s3-accelerate.amazonaws.com/bucket/key')
+        expected_url='https://foo.s3-accelerate.amazonaws.com/bucket/key',
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         # The endpoint must be an Amazon endpoint.
         customer_provided_endpoint='https://s3-accelerate.notamazon.com',
-        expected_url='https://s3-accelerate.notamazon.com/bucket/key')
+        expected_url='https://s3-accelerate.notamazon.com/bucket/key',
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         # Extra components must be whitelisted.
         customer_provided_endpoint='https://s3-accelerate.foo.amazonaws.com',
-        expected_url='https://s3-accelerate.foo.amazonaws.com/bucket/key')
+        expected_url='https://s3-accelerate.foo.amazonaws.com/bucket/key',
+    )
     yield dict(
-        region='unknown', bucket='bucket', key='key',
+        region='unknown',
+        bucket='bucket',
+        key='key',
         s3_config=use_accelerate,
-        expected_url='https://bucket.s3-accelerate.amazonaws.com/key')
+        expected_url='https://bucket.s3-accelerate.amazonaws.com/key',
+    )
     # Use virtual even if path is specified for s3 accelerate because
     # path style will not work with S3 accelerate.
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
-        s3_config={'use_accelerate_endpoint': True,
-                   'addressing_style': 'path'},
-        expected_url='https://bucket.s3-accelerate.amazonaws.com/key')
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
+        s3_config={
+            'use_accelerate_endpoint': True,
+            'addressing_style': 'path',
+        },
+        expected_url='https://bucket.s3-accelerate.amazonaws.com/key',
+    )
 
     # S3 dual stack endpoints.
     use_dualstack = {'use_dualstack_endpoint': True}
     yield dict(
-        region=None, bucket='bucket', key='key',
+        region=None,
+        bucket='bucket',
+        key='key',
         s3_config=use_dualstack,
         # Uses us-east-1 for no region set.
-        expected_url='https://bucket.s3.dualstack.us-east-1.amazonaws.com/key')
+        expected_url='https://bucket.s3.dualstack.us-east-1.amazonaws.com/key',
+    )
     yield dict(
-        region='aws-global', bucket='bucket', key='key',
+        region='aws-global',
+        bucket='bucket',
+        key='key',
         s3_config=use_dualstack,
         # The aws-global pseudo region does not support dualstack and should
         # be resolved to us-east-1.
         expected_url=(
-            "https://bucket.s3.dualstack.us-east-1.amazonaws.com/key"))
+            "https://bucket.s3.dualstack.us-east-1.amazonaws.com/key"
+        ),
+    )
     yield dict(
-        region=None, bucket='bucket', key='key',
-        s3_config=use_dualstack, signature_version='s3v4',
-        expected_url='https://bucket.s3.dualstack.us-east-1.amazonaws.com/key')
+        region=None,
+        bucket='bucket',
+        key='key',
+        s3_config=use_dualstack,
+        signature_version='s3v4',
+        expected_url='https://bucket.s3.dualstack.us-east-1.amazonaws.com/key',
+    )
     yield dict(
-        region='aws-global', bucket='bucket', key='key',
-        s3_config=use_dualstack, signature_version='s3v4',
+        region='aws-global',
+        bucket='bucket',
+        key='key',
+        s3_config=use_dualstack,
+        signature_version='s3v4',
         # The aws-global pseudo region does not support dualstack and should
         # be resolved to us-east-1.
-        expected_url='https://bucket.s3.dualstack.us-east-1.amazonaws.com/key')
+        expected_url='https://bucket.s3.dualstack.us-east-1.amazonaws.com/key',
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
-        s3_config=use_dualstack, signature_version='s3v4',
-        expected_url='https://bucket.s3.dualstack.us-east-1.amazonaws.com/key')
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
+        s3_config=use_dualstack,
+        signature_version='s3v4',
+        expected_url='https://bucket.s3.dualstack.us-east-1.amazonaws.com/key',
+    )
     yield dict(
-        region='us-west-2', bucket='bucket', key='key',
-        s3_config=use_dualstack, signature_version='s3v4',
-        expected_url='https://bucket.s3.dualstack.us-west-2.amazonaws.com/key')
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
+        s3_config=use_dualstack,
+        signature_version='s3v4',
+        expected_url='https://bucket.s3.dualstack.us-west-2.amazonaws.com/key',
+    )
     yield dict(
-        region='unknown', bucket='bucket', key='key',
-        s3_config=use_dualstack, signature_version='s3v4',
-        expected_url='https://bucket.s3.dualstack.unknown.amazonaws.com/key')
+        region='unknown',
+        bucket='bucket',
+        key='key',
+        s3_config=use_dualstack,
+        signature_version='s3v4',
+        expected_url='https://bucket.s3.dualstack.unknown.amazonaws.com/key',
+    )
     # Non DNS compatible buckets use path style for dual stack.
     yield dict(
-        region='us-west-2', bucket='bucket.dot', key='key',
+        region='us-west-2',
+        bucket='bucket.dot',
+        key='key',
         s3_config=use_dualstack,
         # Still default to virtual hosted when possible.
         expected_url=(
-            'https://s3.dualstack.us-west-2.amazonaws.com/bucket.dot/key'))
+            'https://s3.dualstack.us-west-2.amazonaws.com/bucket.dot/key'
+        ),
+    )
     # Supports is_secure (use_ssl=False in create_client()).
     yield dict(
-        region='us-west-2', bucket='bucket.dot', key='key', is_secure=False,
+        region='us-west-2',
+        bucket='bucket.dot',
+        key='key',
+        is_secure=False,
         s3_config=use_dualstack,
         # Still default to virtual hosted when possible.
         expected_url=(
-            'http://s3.dualstack.us-west-2.amazonaws.com/bucket.dot/key'))
+            'http://s3.dualstack.us-west-2.amazonaws.com/bucket.dot/key'
+        ),
+    )
 
     # Is path style is requested, we should use it, even if the bucket is
     # DNS compatible.
@@ -2414,10 +2667,13 @@ def _s3_addressing_test_cases():
         'addressing_style': 'path',
     }
     yield dict(
-        region='us-west-2', bucket='bucket', key='key',
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
         s3_config=force_path_style,
         # Still default to virtual hosted when possible.
-        expected_url='https://s3.dualstack.us-west-2.amazonaws.com/bucket/key')
+        expected_url='https://s3.dualstack.us-west-2.amazonaws.com/bucket/key',
+    )
 
     # Accelerate + dual stack
     use_accelerate_dualstack = {
@@ -2425,161 +2681,224 @@ def _s3_addressing_test_cases():
         'use_dualstack_endpoint': True,
     }
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         s3_config=use_accelerate_dualstack,
         expected_url=(
-            'https://bucket.s3-accelerate.dualstack.amazonaws.com/key'))
+            'https://bucket.s3-accelerate.dualstack.amazonaws.com/key'
+        ),
+    )
     yield dict(
         # Region is ignored with S3 accelerate.
-        region='us-west-2', bucket='bucket', key='key',
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
         s3_config=use_accelerate_dualstack,
         expected_url=(
-            'https://bucket.s3-accelerate.dualstack.amazonaws.com/key'))
+            'https://bucket.s3-accelerate.dualstack.amazonaws.com/key'
+        ),
+    )
     # Only s3-accelerate overrides a customer endpoint.
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         s3_config=use_dualstack,
         customer_provided_endpoint='https://s3-accelerate.amazonaws.com',
-        expected_url=(
-            'https://bucket.s3-accelerate.amazonaws.com/key'))
+        expected_url=('https://bucket.s3-accelerate.amazonaws.com/key'),
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         # Dualstack is whitelisted.
         customer_provided_endpoint=(
-            'https://s3-accelerate.dualstack.amazonaws.com'),
+            'https://s3-accelerate.dualstack.amazonaws.com'
+        ),
         expected_url=(
-            'https://bucket.s3-accelerate.dualstack.amazonaws.com/key'))
+            'https://bucket.s3-accelerate.dualstack.amazonaws.com/key'
+        ),
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         # Even whitelisted parts cannot be duplicated.
         customer_provided_endpoint=(
-            'https://s3-accelerate.dualstack.dualstack.amazonaws.com'),
+            'https://s3-accelerate.dualstack.dualstack.amazonaws.com'
+        ),
         expected_url=(
             'https://s3-accelerate.dualstack.dualstack'
-            '.amazonaws.com/bucket/key'))
+            '.amazonaws.com/bucket/key'
+        ),
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         # More than two extra parts is not allowed.
         customer_provided_endpoint=(
             'https://s3-accelerate.dualstack.dualstack.dualstack'
-            '.amazonaws.com'),
+            '.amazonaws.com'
+        ),
         expected_url=(
             'https://s3-accelerate.dualstack.dualstack.dualstack.amazonaws.com'
-            '/bucket/key'))
+            '/bucket/key'
+        ),
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         # Extra components must be whitelisted.
         customer_provided_endpoint='https://s3-accelerate.foo.amazonaws.com',
-        expected_url='https://s3-accelerate.foo.amazonaws.com/bucket/key')
+        expected_url='https://s3-accelerate.foo.amazonaws.com/bucket/key',
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
-        s3_config=use_accelerate_dualstack, is_secure=False,
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
+        s3_config=use_accelerate_dualstack,
+        is_secure=False,
         # Note we're using http://  because is_secure=False.
         expected_url=(
-            'http://bucket.s3-accelerate.dualstack.amazonaws.com/key'))
+            'http://bucket.s3-accelerate.dualstack.amazonaws.com/key'
+        ),
+    )
     # Use virtual even if path is specified for s3 accelerate because
     # path style will not work with S3 accelerate.
     use_accelerate_dualstack['addressing_style'] = 'path'
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         s3_config=use_accelerate_dualstack,
         expected_url=(
-            'https://bucket.s3-accelerate.dualstack.amazonaws.com/key'))
+            'https://bucket.s3-accelerate.dualstack.amazonaws.com/key'
+        ),
+    )
 
     # Access-point arn cases
     yield dict(
-        region='us-west-2', bucket=accesspoint_arn, key='key',
+        region='us-west-2',
+        bucket=accesspoint_arn,
+        key='key',
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'us-west-2.amazonaws.com/key'
-        )
+        ),
     )
     yield dict(
-        region='us-west-2', bucket=accesspoint_arn, key='key',
+        region='us-west-2',
+        bucket=accesspoint_arn,
+        key='key',
         s3_config={'use_arn_region': True},
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'us-west-2.amazonaws.com/key'
-        )
+        ),
     )
     yield dict(
-        region='us-west-2', bucket=accesspoint_arn, key='myendpoint/key',
+        region='us-west-2',
+        bucket=accesspoint_arn,
+        key='myendpoint/key',
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'us-west-2.amazonaws.com/myendpoint/key'
-        )
+        ),
     )
     yield dict(
-        region='us-west-2', bucket=accesspoint_arn, key='foo/myendpoint/key',
+        region='us-west-2',
+        bucket=accesspoint_arn,
+        key='foo/myendpoint/key',
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'us-west-2.amazonaws.com/foo/myendpoint/key'
-        )
+        ),
     )
     yield dict(
         # Note: The access-point arn has us-west-2 and the client's region is
         # us-east-1, for the defauldict the access-point arn region is used.
-        region='us-east-1', bucket=accesspoint_arn, key='key',
+        region='us-east-1',
+        bucket=accesspoint_arn,
+        key='key',
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'us-west-2.amazonaws.com/key'
-        )
+        ),
     )
     yield dict(
-        region='s3-external-1', bucket=accesspoint_arn, key='key',
+        region='s3-external-1',
+        bucket=accesspoint_arn,
+        key='key',
         s3_config={'use_arn_region': True},
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'us-west-2.amazonaws.com/key'
-        )
+        ),
     )
 
     yield dict(
-        region='aws-global', bucket=accesspoint_arn, key='key',
+        region='aws-global',
+        bucket=accesspoint_arn,
+        key='key',
         s3_config={'use_arn_region': True},
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'us-west-2.amazonaws.com/key'
-        )
+        ),
     )
     yield dict(
-        region='unknown', bucket=accesspoint_arn, key='key',
+        region='unknown',
+        bucket=accesspoint_arn,
+        key='key',
         s3_config={'use_arn_region': True},
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'us-west-2.amazonaws.com/key'
-        )
+        ),
     )
     yield dict(
-        region='cn-north-1', bucket=accesspoint_arn_cn, key='key',
+        region='cn-north-1',
+        bucket=accesspoint_arn_cn,
+        key='key',
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'cn-north-1.amazonaws.com.cn/key'
-        )
+        ),
     )
     yield dict(
-        region='cn-northwest-1', bucket=accesspoint_arn_cn, key='key',
+        region='cn-northwest-1',
+        bucket=accesspoint_arn_cn,
+        key='key',
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'cn-north-1.amazonaws.com.cn/key'
-        )
+        ),
     )
     yield dict(
-        region='us-gov-west-1', bucket=accesspoint_arn_gov, key='key',
+        region='us-gov-west-1',
+        bucket=accesspoint_arn_gov,
+        key='key',
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'us-gov-west-1.amazonaws.com/key'
-        )
+        ),
     )
     yield dict(
-        region='fips-us-gov-west-1', bucket=accesspoint_arn_gov, key='key',
+        region='fips-us-gov-west-1',
+        bucket=accesspoint_arn_gov,
+        key='key',
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint-fips.'
             'us-gov-west-1.amazonaws.com/key'
-        )
+        ),
     )
     yield dict(
-        region='fips-us-gov-west-1', bucket=accesspoint_arn_gov, key='key',
+        region='fips-us-gov-west-1',
+        bucket=accesspoint_arn_gov,
+        key='key',
         s3_config={'use_arn_region': False},
         expected_url=(
             "https://myendpoint-123456789012.s3-accesspoint-fips."
@@ -2620,37 +2939,46 @@ def _s3_addressing_test_cases():
     )
 
     yield dict(
-        region='us-west-2', bucket=accesspoint_arn, key='key', is_secure=False,
+        region='us-west-2',
+        bucket=accesspoint_arn,
+        key='key',
+        is_secure=False,
         expected_url=(
             'http://myendpoint-123456789012.s3-accesspoint.'
             'us-west-2.amazonaws.com/key'
-        )
+        ),
     )
     # Dual-stack with access-point arn
     yield dict(
         # Note: The access-point arn has us-west-2 and the client's region is
         # us-east-1, for the defauldict the access-point arn region is used.
-        region='us-east-1', bucket=accesspoint_arn, key='key',
+        region='us-east-1',
+        bucket=accesspoint_arn,
+        key='key',
         s3_config={
             'use_dualstack_endpoint': True,
         },
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.dualstack.'
             'us-west-2.amazonaws.com/key'
-        )
+        ),
     )
     yield dict(
-        region='us-gov-west-1', bucket=accesspoint_arn_gov, key='key',
+        region='us-gov-west-1',
+        bucket=accesspoint_arn_gov,
+        key='key',
         s3_config={
             'use_dualstack_endpoint': True,
         },
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.dualstack.'
             'us-gov-west-1.amazonaws.com/key'
-        )
+        ),
     )
     yield dict(
-        region='fips-us-gov-west-1', bucket=accesspoint_arn_gov, key='key',
+        region='fips-us-gov-west-1',
+        bucket=accesspoint_arn_gov,
+        key='key',
         s3_config={
             'use_arn_region': True,
             'use_dualstack_endpoint': True,
@@ -2658,80 +2986,104 @@ def _s3_addressing_test_cases():
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint-fips.dualstack.'
             'us-gov-west-1.amazonaws.com/key'
-        )
+        ),
     )
     # None of the various s3 settings related to paths should affect what
     # endpoint to use when an access-point is provided.
     yield dict(
-        region='us-west-2', bucket=accesspoint_arn, key='key',
+        region='us-west-2',
+        bucket=accesspoint_arn,
+        key='key',
         s3_config={'addressing_style': 'auto'},
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'us-west-2.amazonaws.com/key'
-        )
+        ),
     )
     yield dict(
-        region='us-west-2', bucket=accesspoint_arn, key='key',
+        region='us-west-2',
+        bucket=accesspoint_arn,
+        key='key',
         s3_config={'addressing_style': 'virtual'},
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'us-west-2.amazonaws.com/key'
-        )
+        ),
     )
     yield dict(
-        region='us-west-2', bucket=accesspoint_arn, key='key',
+        region='us-west-2',
+        bucket=accesspoint_arn,
+        key='key',
         s3_config={'addressing_style': 'path'},
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'us-west-2.amazonaws.com/key'
-        )
+        ),
     )
 
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
-        expected_url=(
-            'https://bucket.s3.us-east-1.amazonaws.com/key'))
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
+        expected_url=('https://bucket.s3.us-east-1.amazonaws.com/key'),
+    )
     yield dict(
-        region='us-west-2', bucket='bucket', key='key',
-        expected_url=(
-            'https://bucket.s3.us-west-2.amazonaws.com/key'))
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
+        expected_url=('https://bucket.s3.us-west-2.amazonaws.com/key'),
+    )
     yield dict(
-        region=None, bucket='bucket', key='key',
-        expected_url=(
-            'https://bucket.s3.amazonaws.com/key'))
+        region=None,
+        bucket='bucket',
+        key='key',
+        expected_url=('https://bucket.s3.amazonaws.com/key'),
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         s3_config={
             'use_dualstack_endpoint': True,
         },
         expected_url=(
-            'https://bucket.s3.dualstack.us-east-1.amazonaws.com/key'))
+            'https://bucket.s3.dualstack.us-east-1.amazonaws.com/key'
+        ),
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         s3_config={
             'use_accelerate_endpoint': True,
         },
-        expected_url=(
-            'https://bucket.s3-accelerate.amazonaws.com/key'))
+        expected_url=('https://bucket.s3-accelerate.amazonaws.com/key'),
+    )
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
         s3_config={
             'use_accelerate_endpoint': True,
             'use_dualstack_endpoint': True,
         },
         expected_url=(
-            'https://bucket.s3-accelerate.dualstack.amazonaws.com/key'))
+            'https://bucket.s3-accelerate.dualstack.amazonaws.com/key'
+        ),
+    )
 
     s3_object_lambda_arn_gov = (
         'arn:aws-us-gov:s3-object-lambda:us-gov-west-1:'
         '123456789012:accesspoint:mybanner'
     )
     yield dict(
-        region='fips-us-gov-west-1', bucket=s3_object_lambda_arn_gov, key='key',
+        region='fips-us-gov-west-1',
+        bucket=s3_object_lambda_arn_gov,
+        key='key',
         expected_url=(
             'https://mybanner-123456789012.s3-object-lambda-fips.'
             'us-gov-west-1.amazonaws.com/key'
-        )
+        ),
     )
     yield dict(
         region="us-gov-west-1",
@@ -2774,12 +3126,14 @@ def _s3_addressing_test_cases():
         "123456789012:accesspoint:mybanner"
     )
     yield dict(
-        region='aws-global', bucket=s3_object_lambda_arn, key='key',
+        region='aws-global',
+        bucket=s3_object_lambda_arn,
+        key='key',
         s3_config={'use_arn_region': True},
         expected_url=(
             'https://mybanner-123456789012.s3-object-lambda.'
             'us-east-1.amazonaws.com/key'
-        )
+        ),
     )
 
 
@@ -2850,7 +3204,7 @@ def _verify_expected_endpoint_url(
     customer_provided_endpoint=None,
     expected_url=None,
     signature_version=None,
-    use_fips_endpoint=None
+    use_fips_endpoint=None,
 ):
     s3 = _create_s3_client(
         region=region,
@@ -2915,102 +3269,169 @@ def _create_s3_client(
             s3=s3_config,
             use_fips_endpoint=use_fips_endpoint,
         )
-        s3 = session.create_client('s3', region_name=region, use_ssl=is_secure,
-                                   config=config,
-                                   endpoint_url=endpoint_url)
+        s3 = session.create_client(
+            's3',
+            region_name=region,
+            use_ssl=is_secure,
+            config=config,
+            endpoint_url=endpoint_url,
+        )
         return s3
 
 
-
 def _addressing_for_presigned_url_test_cases():
+    yield dict(
+        region=None,
+        bucket='bucket',
+        key='key',
+        signature_version=None,
+        expected_url='https://bucket.s3.amazonaws.com/key',
+    )
+    yield dict(
+        region='aws-global',
+        bucket='bucket',
+        key='key',
+        signature_version=None,
+        expected_url='https://bucket.s3.amazonaws.com/key',
+    )
+    yield dict(
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
+        signature_version=None,
+        expected_url='https://bucket.s3.us-east-1.amazonaws.com/key',
+    )
+    yield dict(
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
+        signature_version='s3v4',
+        expected_url='https://bucket.s3.us-east-1.amazonaws.com/key',
+    )
+    yield dict(
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
+        signature_version='s3v4',
+        s3_config={'addressing_style': 'path'},
+        expected_url='https://s3.us-east-1.amazonaws.com/bucket/key',
+    )
 
-    yield dict(region=None, bucket='bucket', key='key',
-                 signature_version=None,
-                 expected_url='https://bucket.s3.amazonaws.com/key')
-    yield dict(region='aws-global', bucket='bucket', key='key',
-                 signature_version=None,
-                 expected_url='https://bucket.s3.amazonaws.com/key')
-    yield dict(region='us-east-1', bucket='bucket', key='key',
-                 signature_version=None,
-                 expected_url='https://bucket.s3.us-east-1.amazonaws.com/key')
-    yield dict(region='us-east-1', bucket='bucket', key='key',
-                 signature_version='s3v4',
-                 expected_url='https://bucket.s3.us-east-1.amazonaws.com/key')
-    yield dict(region='us-east-1', bucket='bucket', key='key',
-                 signature_version='s3v4',
-                 s3_config={'addressing_style': 'path'},
-                 expected_url='https://s3.us-east-1.amazonaws.com/bucket/key')
-
-    yield dict(region='us-west-2', bucket='bucket', key='key',
-                 signature_version=None,
-                 expected_url='https://bucket.s3.us-west-2.amazonaws.com/key')
-    yield dict(region='us-west-2', bucket='bucket', key='key',
-                 signature_version='s3v4',
-                 expected_url='https://bucket.s3.us-west-2.amazonaws.com/key')
-    yield dict(region='us-west-2', bucket='bucket', key='key',
-                 signature_version='s3v4',
-                 s3_config={'addressing_style': 'path'},
-                 expected_url='https://s3.us-west-2.amazonaws.com/bucket/key')
+    yield dict(
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
+        signature_version=None,
+        expected_url='https://bucket.s3.us-west-2.amazonaws.com/key',
+    )
+    yield dict(
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
+        signature_version='s3v4',
+        expected_url='https://bucket.s3.us-west-2.amazonaws.com/key',
+    )
+    yield dict(
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
+        signature_version='s3v4',
+        s3_config={'addressing_style': 'path'},
+        expected_url='https://s3.us-west-2.amazonaws.com/bucket/key',
+    )
 
     # An 's3v4' only region.
-    yield dict(region='us-east-2', bucket='bucket', key='key',
-                 signature_version=None,
-                 expected_url='https://bucket.s3.us-east-2.amazonaws.com/key')
-    yield dict(region='us-east-2', bucket='bucket', key='key',
-                 signature_version='s3v4',
-                 expected_url='https://bucket.s3.us-east-2.amazonaws.com/key')
-    yield dict(region='us-east-2', bucket='bucket', key='key',
-                 signature_version='s3v4',
-                 s3_config={'addressing_style': 'path'},
-                 expected_url='https://s3.us-east-2.amazonaws.com/bucket/key')
+    yield dict(
+        region='us-east-2',
+        bucket='bucket',
+        key='key',
+        signature_version=None,
+        expected_url='https://bucket.s3.us-east-2.amazonaws.com/key',
+    )
+    yield dict(
+        region='us-east-2',
+        bucket='bucket',
+        key='key',
+        signature_version='s3v4',
+        expected_url='https://bucket.s3.us-east-2.amazonaws.com/key',
+    )
+    yield dict(
+        region='us-east-2',
+        bucket='bucket',
+        key='key',
+        signature_version='s3v4',
+        s3_config={'addressing_style': 'path'},
+        expected_url='https://s3.us-east-2.amazonaws.com/bucket/key',
+    )
 
     # Dualstack endpoints
     yield dict(
-        region='us-west-2', bucket='bucket', key='key',
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
         signature_version=None,
         s3_config={'use_dualstack_endpoint': True},
-        expected_url='https://bucket.s3.dualstack.us-west-2.amazonaws.com/key')
+        expected_url='https://bucket.s3.dualstack.us-west-2.amazonaws.com/key',
+    )
     yield dict(
-        region='us-west-2', bucket='bucket', key='key',
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
         signature_version='s3v4',
         s3_config={'use_dualstack_endpoint': True},
-        expected_url='https://bucket.s3.dualstack.us-west-2.amazonaws.com/key')
+        expected_url='https://bucket.s3.dualstack.us-west-2.amazonaws.com/key',
+    )
 
     # Accelerate
-    yield dict(region='us-west-2', bucket='bucket', key='key',
-                 signature_version=None,
-                 s3_config={'use_accelerate_endpoint': True},
-                 expected_url='https://bucket.s3-accelerate.amazonaws.com/key')
+    yield dict(
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
+        signature_version=None,
+        s3_config={'use_accelerate_endpoint': True},
+        expected_url='https://bucket.s3-accelerate.amazonaws.com/key',
+    )
 
     # A region that we don't know about.
-    yield dict(region='boto-west-1', bucket='bucket', key='key',
-                 signature_version=None,
-                 expected_url='https://bucket.s3.boto-west-1.amazonaws.com/key')
+    yield dict(
+        region='boto-west-1',
+        bucket='bucket',
+        key='key',
+        signature_version=None,
+        expected_url='https://bucket.s3.boto-west-1.amazonaws.com/key',
+    )
 
     # Customer provided URL results in us leaving the host untouched.
-    yield dict(region='us-west-2', bucket='bucket', key='key',
-                 signature_version=None,
-                 customer_provided_endpoint='https://foo.com/',
-                 expected_url='https://foo.com/bucket/key')
+    yield dict(
+        region='us-west-2',
+        bucket='bucket',
+        key='key',
+        signature_version=None,
+        customer_provided_endpoint='https://foo.com/',
+        expected_url='https://foo.com/bucket/key',
+    )
 
     # Access-point
     yield dict(
-        region='us-west-2', bucket=accesspoint_arn, key='key',
+        region='us-west-2',
+        bucket=accesspoint_arn,
+        key='key',
         expected_url=(
             'https://myendpoint-123456789012.s3-accesspoint.'
             'us-west-2.amazonaws.com/key'
-        )
+        ),
     )
 
     # Use us-east-1 regional endpoint configuration cases
-    us_east_1_regional_endpoint = {
-        'us_east_1_regional_endpoint': 'regional'
-    }
+    us_east_1_regional_endpoint = {'us_east_1_regional_endpoint': 'regional'}
     yield dict(
-        region='us-east-1', bucket='bucket', key='key',
-        s3_config=us_east_1_regional_endpoint, signature_version='s3v4',
-        expected_url=(
-            'https://bucket.s3.us-east-1.amazonaws.com/key'))
+        region='us-east-1',
+        bucket='bucket',
+        key='key',
+        s3_config=us_east_1_regional_endpoint,
+        signature_version='s3v4',
+        expected_url=('https://bucket.s3.us-east-1.amazonaws.com/key'),
+    )
     # Bucket names that contain dots or are otherwise not virtual host style
     # compatible should always resolve to a regional endpoint.
     # https://github.com/boto/botocore/issues/2798
@@ -3023,7 +3444,9 @@ def _addressing_for_presigned_url_test_cases():
     )
 
 
-@pytest.mark.parametrize("test_case", _addressing_for_presigned_url_test_cases())
+@pytest.mark.parametrize(
+    "test_case", _addressing_for_presigned_url_test_cases()
+)
 def test_addressing_for_presigned_urls(test_case):
     # Here we're just focusing on the addressing mode used for presigned URLs.
     # We special case presigned URLs due to backward compatibility.
@@ -3031,19 +3454,29 @@ def test_addressing_for_presigned_urls(test_case):
 
 
 def _verify_presigned_url_addressing(
-    region=None, bucket='bucket', key='key', s3_config=None, is_secure=True,
-    customer_provided_endpoint=None, expected_url=None, signature_version=None
+    region=None,
+    bucket='bucket',
+    key='key',
+    s3_config=None,
+    is_secure=True,
+    customer_provided_endpoint=None,
+    expected_url=None,
+    signature_version=None,
 ):
-    s3 = _create_s3_client(region=region, is_secure=is_secure,
-                           endpoint_url=customer_provided_endpoint,
-                           s3_config=s3_config,
-                           signature_version=signature_version)
+    s3 = _create_s3_client(
+        region=region,
+        is_secure=is_secure,
+        endpoint_url=customer_provided_endpoint,
+        s3_config=s3_config,
+        signature_version=signature_version,
+    )
     url = s3.generate_presigned_url(
-        'get_object', {'Bucket': bucket, 'Key': key})
+        'get_object', {'Bucket': bucket, 'Key': key}
+    )
     # We're not trying to verify the params for URL presigning,
     # those are tested elsewhere.  We just care about the hostname/path.
     parts = urlsplit(url)
-    actual = '%s://%s%s' % parts[:3]
+    actual = '{}://{}{}'.format(*parts[:3])
     assert actual == expected_url
 
 
@@ -3056,7 +3489,8 @@ class TestRequestPayerObjectTagging(BaseS3OperationTest):
         self.assertIn('x-amz-request-payer', request.headers)
 
     def test_can_provide_request_payer_put_tagging(self):
-        self._assert_request_payer_header('put_object_tagging',
+        self._assert_request_payer_header(
+            'put_object_tagging',
             Bucket='bucket',
             Key='key',
             RequestPayer='requester',
@@ -3064,7 +3498,8 @@ class TestRequestPayerObjectTagging(BaseS3OperationTest):
         )
 
     def test_can_provide_request_payer_get_tagging(self):
-        self._assert_request_payer_header('get_object_tagging',
+        self._assert_request_payer_header(
+            'get_object_tagging',
             Bucket='bucket',
             Key='key',
             RequestPayer='requester',
@@ -3082,11 +3517,9 @@ class TestS3XMLPayloadEscape(BaseS3OperationTest):
     def test_escape_keys_in_xml_delete_objects(self):
         self.http_stubber.add_response()
         with self.http_stubber:
-            response = self.client.delete_objects(
+            self.client.delete_objects(
                 Bucket='mybucket',
-                Delete={
-                    'Objects': [{'Key': 'some\r\n\rkey'}]
-                },
+                Delete={'Objects': [{'Key': 'some\r\n\rkey'}]},
             )
         request = self.http_stubber.requests[0]
         self.assertNotIn(b'\r\n\r', request.body)
@@ -3096,14 +3529,16 @@ class TestS3XMLPayloadEscape(BaseS3OperationTest):
     def test_escape_keys_in_xml_put_bucket_lifecycle_configuration(self):
         self.http_stubber.add_response()
         with self.http_stubber:
-            response = self.client.put_bucket_lifecycle_configuration(
+            self.client.put_bucket_lifecycle_configuration(
                 Bucket='mybucket',
                 LifecycleConfiguration={
-                    'Rules': [{
-                        'Prefix': 'my\r\n\rprefix',
-                        'Status': 'ENABLED',
-                    }]
-                }
+                    'Rules': [
+                        {
+                            'Prefix': 'my\r\n\rprefix',
+                            'Status': 'ENABLED',
+                        }
+                    ]
+                },
             )
         request = self.http_stubber.requests[0]
         self.assertNotIn(b'my\r\n\rprefix', request.body)

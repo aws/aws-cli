@@ -18,15 +18,13 @@ import os
 import socket
 import threading
 
-import pytest
-
-from tests import mock, temporary_file
-from tests import ClientHTTPStubber
-from botocore import xform_name
-import botocore.session
 import botocore.config
 import botocore.exceptions
+import botocore.session
+import pytest
+from botocore import xform_name
 
+from tests import ClientHTTPStubber, mock, temporary_file
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +41,10 @@ class NonRetryableException(Exception):
 
 
 EXPECTED_EXCEPTIONS_THROWN = (
-    botocore.exceptions.ClientError, NonRetryableException, RetryableException)
+    botocore.exceptions.ClientError,
+    NonRetryableException,
+    RetryableException,
+)
 
 
 def _load_test_cases():
@@ -84,14 +85,15 @@ def _configured_session(case_configuration, listener_port):
         'AWS_SECRET_ACCESS_KEY': 'secret-key',
         'AWS_DEFAULT_REGION': case_configuration['region'],
         'AWS_DATA_PATH': DATA_DIR,
-        'AWS_CSM_PORT': listener_port
+        'AWS_CSM_PORT': listener_port,
     }
     if 'sessionToken' in case_configuration:
         environ['AWS_SESSION_TOKEN'] = case_configuration['sessionToken']
     environ.update(case_configuration['environmentVariables'])
     with temporary_file('w') as f:
         _setup_shared_config(
-            f, case_configuration['sharedConfigFile'], environ)
+            f, case_configuration['sharedConfigFile'], environ
+        )
         with mock.patch('os.environ', environ):
             session = botocore.session.Session()
             if 'maxRetries' in case_configuration:
@@ -102,21 +104,23 @@ def _configured_session(case_configuration, listener_port):
 def _setup_shared_config(fileobj, shared_config_options, environ):
     fileobj.write('[default]\n')
     for key, value in shared_config_options.items():
-        fileobj.write('%s = %s\n' % (key, value))
+        fileobj.write(f'{key} = {value}\n')
     fileobj.flush()
     environ['AWS_CONFIG_FILE'] = fileobj.name
 
 
 def _setup_max_retry_attempts(session, case_configuration):
     config = botocore.config.Config(
-        retries={'max_attempts': case_configuration['maxRetries'] + 1})
+        retries={'max_attempts': case_configuration['maxRetries'] + 1}
+    )
     session.set_default_client_config(config)
 
 
 def _run_test_case(case):
     with MonitoringListener() as listener:
         with _configured_session(
-                case['configuration'], listener.port) as session:
+            case['configuration'], listener.port
+        ) as session:
             for api_call in case['apiCalls']:
                 _make_api_call(session, api_call)
     assert listener.received_events == case['expectedMonitoringEvents']
@@ -124,7 +128,8 @@ def _run_test_case(case):
 
 def _make_api_call(session, api_call):
     client = session.create_client(
-        api_call['serviceId'].lower().replace(' ', ''))
+        api_call['serviceId'].lower().replace(' ', '')
+    )
     operation_name = api_call['operationName']
     client_method = getattr(client, xform_name(operation_name))
     with _stubbed_http_layer(client, api_call['attemptResponses']):
@@ -146,8 +151,7 @@ def _add_stubbed_responses(stubber, attempt_responses):
         if 'sdkException' in attempt_response:
             sdk_exception = attempt_response['sdkException']
             _add_sdk_exception(
-                stubber, sdk_exception['message'],
-                sdk_exception['isRetryable']
+                stubber, sdk_exception['message'], sdk_exception['isRetryable']
             )
         else:
             _add_stubbed_response(stubber, attempt_response)
@@ -166,7 +170,7 @@ def _add_stubbed_response(stubber, attempt_response):
     if 'errorCode' in attempt_response:
         error = {
             '__type': attempt_response['errorCode'],
-            'message': attempt_response['errorMessage']
+            'message': attempt_response['errorMessage'],
         }
         content = json.dumps(error).encode('utf-8')
     else:

@@ -8,7 +8,10 @@
     "protocol": "rest-json",
     "jsonVersion": "1.1",
     "uid": "route53-recovery-control-config-2020-11-02",
-    "signatureVersion": "v4"
+    "signatureVersion": "v4",
+    "auth": [
+      "aws.auth#sigv4"
+    ]
   },
   "operations": {
     "CreateCluster": {
@@ -781,6 +784,48 @@
       ],
       "documentation": "<p>Removes a tag from a resource.</p>"
     },
+    "UpdateCluster": {
+      "name": "UpdateCluster",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/cluster",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateClusterRequest"
+      },
+      "output": {
+        "shape": "UpdateClusterResponse",
+        "documentation": "<p>200 response - Success.</p>"
+      },
+      "errors": [
+        {
+          "shape": "ValidationException",
+          "documentation": "<p>400 response - Multiple causes. For example, you might have a malformed query string and input parameter might be out of range, or you used parameters together incorrectly.</p>"
+        },
+        {
+          "shape": "InternalServerException",
+          "documentation": "<p>500 response - InternalServiceError. Temporary service error. Retry the request.</p>"
+        },
+        {
+          "shape": "AccessDeniedException",
+          "documentation": "<p>403 response - AccessDeniedException. You do not have sufficient access to perform this action.</p>"
+        },
+        {
+          "shape": "ResourceNotFoundException",
+          "documentation": "<p>404 response - MalformedQueryString. The query string contains a syntax error or resource not found.</p>"
+        },
+        {
+          "shape": "ThrottlingException",
+          "documentation": "<p>429 response - LimitExceededException or TooManyRequestsException.</p>"
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "<p>409 response - ConflictException. You might be using a predefined variable.</p>"
+        }
+      ],
+      "documentation": "<p>Updates an existing cluster. You can only update the network type of a cluster.</p>"
+    },
     "UpdateControlPanel": {
       "name": "UpdateControlPanel",
       "http": {
@@ -1006,6 +1051,10 @@
         "Owner": {
           "shape": "__stringMin12Max12PatternD12",
           "documentation": "<p>The Amazon Web Services account ID of the cluster owner.</p>"
+        },
+        "NetworkType": {
+          "shape": "NetworkType",
+          "documentation": "<p>The network type of the cluster. NetworkType can be one of the following: IPV4, DUALSTACK.</p>"
         }
       },
       "documentation": "<p>A set of five redundant Regional endpoints against which you can execute API calls to update or get the state of routing controls. You can host multiple control panels and routing controls on one cluster.</p>"
@@ -1090,6 +1139,10 @@
         "Tags": {
           "shape": "__mapOf__stringMin0Max256PatternS",
           "documentation": "<p>The tags associated with the cluster.</p>"
+        },
+        "NetworkType": {
+          "shape": "NetworkType",
+          "documentation": "<p>The network type of the cluster. NetworkType can be one of the following: IPV4, DUALSTACK.</p>"
         }
       },
       "documentation": "<p>Creates a cluster.</p>",
@@ -1230,7 +1283,8 @@
     },
     "DeleteClusterResponse": {
       "type": "structure",
-      "members": {}
+      "members": {
+      }
     },
     "DeleteControlPanelRequest": {
       "type": "structure",
@@ -1248,7 +1302,8 @@
     },
     "DeleteControlPanelResponse": {
       "type": "structure",
-      "members": {}
+      "members": {
+      }
     },
     "DeleteRoutingControlRequest": {
       "type": "structure",
@@ -1266,7 +1321,8 @@
     },
     "DeleteRoutingControlResponse": {
       "type": "structure",
-      "members": {}
+      "members": {
+      }
     },
     "DeleteSafetyRuleRequest": {
       "type": "structure",
@@ -1284,7 +1340,8 @@
     },
     "DeleteSafetyRuleResponse": {
       "type": "structure",
-      "members": {}
+      "members": {
+      }
     },
     "DescribeClusterRequest": {
       "type": "structure",
@@ -1708,6 +1765,14 @@
       "min": 1,
       "max": 1000
     },
+    "NetworkType": {
+      "type": "string",
+      "documentation": "<p>The network type of a cluster. NetworkType can be one of the following:</p> <p>IPV4: Cluster endpoints support IPv4 only.</p> <p>DUALSTACK: Cluster endpoints support both IPv4 and IPv6.</p>",
+      "enum": [
+        "IPV4",
+        "DUALSTACK"
+      ]
+    },
     "NewAssertionRule": {
       "type": "structure",
       "members": {
@@ -1916,7 +1981,8 @@
     },
     "TagResourceResponse": {
       "type": "structure",
-      "members": {}
+      "members": {
+      }
     },
     "ThrottlingException": {
       "type": "structure",
@@ -1958,7 +2024,35 @@
     },
     "UntagResourceResponse": {
       "type": "structure",
-      "members": {}
+      "members": {
+      }
+    },
+    "UpdateClusterRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__stringMin1Max256PatternAZaZ09",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        },
+        "NetworkType": {
+          "shape": "NetworkType",
+          "documentation": "<p>The network type of the cluster. NetworkType can be one of the following: IPV4, DUALSTACK.</p>"
+        }
+      },
+      "documentation": "<p>The details of the cluster that you're updating.</p>",
+      "required": [
+        "ClusterArn",
+        "NetworkType"
+      ]
+    },
+    "UpdateClusterResponse": {
+      "type": "structure",
+      "members": {
+        "Cluster": {
+          "shape": "Cluster",
+          "documentation": "<p>The cluster that was updated.</p>"
+        }
+      }
     },
     "UpdateControlPanelRequest": {
       "type": "structure",

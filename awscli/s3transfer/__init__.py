@@ -123,6 +123,7 @@ transfer.  For example:
 
 
 """
+
 import concurrent.futures
 import functools
 import logging
@@ -134,13 +135,12 @@ import socket
 import string
 import threading
 
+import s3transfer.compat
 from botocore.compat import six  # noqa: F401
 from botocore.exceptions import IncompleteReadError
 from botocore.vendored.requests.packages.urllib3.exceptions import (
     ReadTimeoutError,
 )
-
-import s3transfer.compat
 from s3transfer.exceptions import RetriesExceededError, S3UploadFailedError
 
 __author__ = 'Amazon Web Services'
@@ -681,7 +681,6 @@ class TransferConfig:
 
 
 class S3Transfer:
-
     ALLOWED_DOWNLOAD_ARGS = [
         'VersionId',
         'SSECustomerAlgorithm',
@@ -823,8 +822,8 @@ class S3Transfer:
         for kwarg in actual:
             if kwarg not in allowed:
                 raise ValueError(
-                    "Invalid extra_args key '%s', "
-                    "must be one of: %s" % (kwarg, ', '.join(allowed))
+                    "Invalid extra_args key '{}', "
+                    "must be one of: {}".format(kwarg, ', '.join(allowed))
                 )
 
     def _ranged_download(

@@ -10,43 +10,42 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from math import ceil
 from datetime import datetime
+from math import ceil
 
 import pytest
-
-from tests import random_chars
-from tests import BaseSessionTest
-from botocore.stub import Stubber, StubAssertionError
 from botocore.paginate import TokenDecoder, TokenEncoder
+from botocore.stub import StubAssertionError, Stubber
+
+from tests import BaseSessionTest, random_chars
 
 
 class TestRDSPagination(BaseSessionTest):
     def setUp(self):
-        super(TestRDSPagination, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
-        self.client = self.session.create_client(
-            'rds', self.region)
+        self.client = self.session.create_client('rds', self.region)
         self.stubber = Stubber(self.client)
 
     def test_can_specify_zero_marker(self):
         service_response = {
             'LogFileData': 'foo',
             'Marker': '2',
-            'AdditionalDataPending': True
+            'AdditionalDataPending': True,
         }
         expected_params = {
             'DBInstanceIdentifier': 'foo',
             'LogFileName': 'bar',
             'NumberOfLines': 2,
-            'Marker': '0'
+            'Marker': '0',
         }
         function_name = 'download_db_log_file_portion'
 
         # The stubber will assert that the function is called with the expected
         # parameters.
         self.stubber.add_response(
-            function_name, service_response, expected_params)
+            function_name, service_response, expected_params
+        )
         self.stubber.activate()
 
         try:
@@ -55,10 +54,8 @@ class TestRDSPagination(BaseSessionTest):
                 DBInstanceIdentifier='foo',
                 LogFileName='bar',
                 NumberOfLines=2,
-                PaginationConfig={
-                    'StartingToken': '0',
-                    'MaxItems': 3
-                }).build_full_result()
+                PaginationConfig={'StartingToken': '0', 'MaxItems': 3},
+            ).build_full_result()
             self.assertEqual(result['LogFileData'], 'foo')
             self.assertIn('NextToken', result)
         except StubAssertionError as e:
@@ -67,17 +64,21 @@ class TestRDSPagination(BaseSessionTest):
 
 class TestAutoscalingPagination(BaseSessionTest):
     def setUp(self):
-        super(TestAutoscalingPagination, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client(
-            'autoscaling', self.region, aws_secret_access_key='foo',
-            aws_access_key_id='bar', aws_session_token='baz'
+            'autoscaling',
+            self.region,
+            aws_secret_access_key='foo',
+            aws_access_key_id='bar',
+            aws_session_token='baz',
         )
         self.stubber = Stubber(self.client)
         self.stubber.activate()
 
-    def _setup_scaling_pagination(self, page_size=200, max_items=100,
-                                 total_items=600):
+    def _setup_scaling_pagination(
+        self, page_size=200, max_items=100, total_items=600
+    ):
         """
         Add to the stubber to test paginating describe_scaling_activities.
 
@@ -121,9 +122,7 @@ class TestAutoscalingPagination(BaseSessionTest):
 
             # Copying the page here isn't necessary because it is about to
             # be blown away anyway.
-            self.stubber.add_response(
-                'describe_scaling_activities', page
-            )
+            self.stubber.add_response('describe_scaling_activities', page)
 
             previous_next_token = next_token
 
@@ -132,13 +131,15 @@ class TestAutoscalingPagination(BaseSessionTest):
         page = []
         date = datetime.now()
         for _ in range(page_size):
-            page.append({
-                'AutoScalingGroupName': 'test',
-                'ActivityId': random_chars(10),
-                'Cause': 'test',
-                'StartTime': date,
-                'StatusCode': '200',
-            })
+            page.append(
+                {
+                    'AutoScalingGroupName': 'test',
+                    'ActivityId': random_chars(10),
+                    'Cause': 'test',
+                    'StartTime': date,
+                    'StatusCode': '200',
+                }
+            )
         return {'Activities': page}
 
     def test_repeated_build_full_results(self):
@@ -146,9 +147,7 @@ class TestAutoscalingPagination(BaseSessionTest):
         max_items = 100
         total_items = 600
         self._setup_scaling_pagination(
-            max_items=max_items,
-            total_items=total_items,
-            page_size=200
+            max_items=max_items, total_items=total_items, page_size=200
         )
         paginator = self.client.get_paginator('describe_scaling_activities')
         conf = {'MaxItems': max_items}
@@ -173,28 +172,35 @@ class TestAutoscalingPagination(BaseSessionTest):
 
 class TestCloudwatchLogsPagination(BaseSessionTest):
     def setUp(self):
-        super(TestCloudwatchLogsPagination, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client(
-            'logs', self.region, aws_secret_access_key='foo',
-            aws_access_key_id='bar', aws_session_token='baz'
+            'logs',
+            self.region,
+            aws_secret_access_key='foo',
+            aws_access_key_id='bar',
+            aws_session_token='baz',
         )
         self.stubber = Stubber(self.client)
         self.stubber.activate()
 
     def test_token_with_triple_underscores(self):
         response = {
-            'events': [{
-                'logStreamName': 'foobar',
-                'timestamp': 1560195817,
-                'message': 'a thing happened',
-                'ingestionTime': 1560195817,
-                'eventId': 'foo',
-            }],
-            'searchedLogStreams': [{
-                'logStreamName': 'foobar',
-                'searchedCompletely': False,
-            }],
+            'events': [
+                {
+                    'logStreamName': 'foobar',
+                    'timestamp': 1560195817,
+                    'message': 'a thing happened',
+                    'ingestionTime': 1560195817,
+                    'eventId': 'foo',
+                }
+            ],
+            'searchedLogStreams': [
+                {
+                    'logStreamName': 'foobar',
+                    'searchedCompletely': False,
+                }
+            ],
         }
         group_name = 'foo'
         token = 'foo___bar'
@@ -224,7 +230,7 @@ class TestCloudwatchLogsPagination(BaseSessionTest):
         {'foo': ['bar', b'baz']},
         {'foo': b'\xff'},
         {'foo': {'bar': b'baz', 'bin': [b'bam']}},
-    )
+    ),
 )
 def test_token_encoding(token_dict):
     encoded = TokenEncoder().encode(token_dict)

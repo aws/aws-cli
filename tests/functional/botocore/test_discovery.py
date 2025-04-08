@@ -12,19 +12,22 @@
 # language governing permissions and limitations under the License.
 import os
 
+import botocore
+from botocore.compat import json
+from botocore.config import Config
+from botocore.discovery import EndpointDiscoveryRequired
+from botocore.exceptions import (
+    ClientError,
+    InvalidEndpointDiscoveryConfigurationError,
+)
+
 from tests import ClientHTTPStubber, temporary_file
 from tests.functional.botocore import FunctionalSessionTest
-
-import botocore
-from botocore.config import Config
-from botocore.compat import json
-from botocore.discovery import EndpointDiscoveryRequired
-from botocore.exceptions import ClientError, InvalidEndpointDiscoveryConfigurationError
 
 
 class TestEndpointDiscovery(FunctionalSessionTest):
     def setUp(self):
-        super(TestEndpointDiscovery, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
 
     def create_client(
@@ -32,7 +35,7 @@ class TestEndpointDiscovery(FunctionalSessionTest):
         service_name='dynamodb',
         region=None,
         config=None,
-        endpoint_url=None
+        endpoint_url=None,
     ):
         if region is None:
             region = self.region
@@ -45,10 +48,12 @@ class TestEndpointDiscovery(FunctionalSessionTest):
 
     def add_describe_endpoints_response(self, stubber, discovered_endpoint):
         response = {
-            'Endpoints': [{
-                'Address': discovered_endpoint,
-                'CachePeriodInMinutes': 1,
-            }]
+            'Endpoints': [
+                {
+                    'Address': discovered_endpoint,
+                    'CachePeriodInMinutes': 1,
+                }
+            ]
         }
         response_body = json.dumps(response).encode()
         stubber.add_response(status=200, body=response_body)
@@ -56,8 +61,7 @@ class TestEndpointDiscovery(FunctionalSessionTest):
 
     def set_endpoint_discovery_config_file(self, fileobj, config_val):
         fileobj.write(
-            '[default]\n'
-            'endpoint_discovery_enabled=%s\n' % config_val
+            '[default]\n' f'endpoint_discovery_enabled={config_val}\n'
         )
         fileobj.flush()
         self.environ['AWS_CONFIG_FILE'] = fileobj.name
@@ -70,8 +74,7 @@ class TestEndpointDiscovery(FunctionalSessionTest):
     def assert_discovery_skipped(self, stubber, operation):
         self.assertEqual(len(stubber.requests), 1)
         self.assertEqual(
-            stubber.requests[0].headers.get('X-Amz-Target'),
-            operation
+            stubber.requests[0].headers.get('X-Amz-Target'), operation
         )
 
     def assert_endpoint_used(self, actual_url, expected_url):
@@ -87,7 +90,6 @@ class TestEndpointDiscovery(FunctionalSessionTest):
             self.assert_endpoint_discovery_used(stubber, discovered_endpoint)
 
     def test_endpoint_discovery_with_invalid_endpoint(self):
-        discovered_endpoint = 'https://discovered.domain'
         response = {
             'Error': {
                 'Code': 'InvalidEndpointException',
@@ -120,7 +122,9 @@ class TestEndpointDiscovery(FunctionalSessionTest):
 
     def test_endpoint_discovery_default_required_endpoint(self):
         discovered_endpoint = "https://discovered.domain"
-        client, http_stubber = self.create_client(service_name="test-discovery-endpoint")
+        client, http_stubber = self.create_client(
+            service_name="test-discovery-endpoint"
+        )
         with http_stubber as stubber:
             self.add_describe_endpoints_response(stubber, discovered_endpoint)
             client.test_discovery_required(Foo="bar")
@@ -156,8 +160,7 @@ class TestEndpointDiscovery(FunctionalSessionTest):
             stubber.add_response(status=200, body=b'{}')
             client.test_discovery_required(Foo="bar")
             self.assert_discovery_skipped(
-                stubber,
-                b"test-discovery-endpoint.TestDiscoveryRequired"
+                stubber, b"test-discovery-endpoint.TestDiscoveryRequired"
             )
             self.assert_endpoint_used(stubber.requests[0].url, endpoint)
 
@@ -167,14 +170,13 @@ class TestEndpointDiscovery(FunctionalSessionTest):
         client, http_stubber = self.create_client(
             service_name="test-discovery-endpoint",
             config=config,
-            endpoint_url=endpoint
+            endpoint_url=endpoint,
         )
         with http_stubber as stubber:
             stubber.add_response(status=200, body=b'{}')
             client.test_discovery_required(Foo="bar")
             self.assert_discovery_skipped(
-                stubber,
-                b"test-discovery-endpoint.TestDiscoveryRequired"
+                stubber, b"test-discovery-endpoint.TestDiscoveryRequired"
             )
             self.assert_endpoint_used(stubber.requests[0].url, endpoint)
 
@@ -184,14 +186,13 @@ class TestEndpointDiscovery(FunctionalSessionTest):
         client, http_stubber = self.create_client(
             service_name="test-discovery-endpoint",
             config=config,
-            endpoint_url=endpoint
+            endpoint_url=endpoint,
         )
         with http_stubber as stubber:
             stubber.add_response(status=200, body=b'{}')
             client.test_discovery_required(Foo="bar")
             self.assert_discovery_skipped(
-                stubber,
-                b"test-discovery-endpoint.TestDiscoveryRequired"
+                stubber, b"test-discovery-endpoint.TestDiscoveryRequired"
             )
             self.assert_endpoint_used(stubber.requests[0].url, endpoint)
 
@@ -204,8 +205,7 @@ class TestEndpointDiscovery(FunctionalSessionTest):
             stubber.add_response(status=200, body=b'{}')
             client.test_discovery_optional(Foo="bar")
             self.assert_discovery_skipped(
-                stubber,
-                b"test-discovery-endpoint.TestDiscoveryOptional"
+                stubber, b"test-discovery-endpoint.TestDiscoveryOptional"
             )
             self.assert_endpoint_used(stubber.requests[0].url, endpoint)
 
@@ -215,7 +215,7 @@ class TestEndpointDiscovery(FunctionalSessionTest):
         client, http_stubber = self.create_client(
             service_name="test-discovery-endpoint",
             config=config,
-            endpoint_url=endpoint
+            endpoint_url=endpoint,
         )
         with http_stubber as stubber:
             stubber.add_response(status=200, body=b'{}')
@@ -227,7 +227,9 @@ class TestEndpointDiscovery(FunctionalSessionTest):
             self.assert_endpoint_used(stubber.requests[0].url, endpoint)
 
     def test_endpoint_discovery_default_optional_endpoint(self):
-        client, http_stubber = self.create_client(service_name="test-discovery-endpoint")
+        client, http_stubber = self.create_client(
+            service_name="test-discovery-endpoint"
+        )
         with http_stubber as stubber:
             stubber.add_response(status=200, body=b'{}')
             client.test_discovery_optional(Foo="bar")
@@ -282,8 +284,7 @@ class TestEndpointDiscovery(FunctionalSessionTest):
             stubber.add_response(status=200, body=b'{}')
             client.test_discovery_optional(Foo="bar")
             self.assert_discovery_skipped(
-                stubber,
-                b"test-discovery-endpoint.TestDiscoveryOptional"
+                stubber, b"test-discovery-endpoint.TestDiscoveryOptional"
             )
 
     def test_endpoint_discovery_optional_with_env_var_enabled(self):
@@ -315,9 +316,13 @@ class TestEndpointDiscovery(FunctionalSessionTest):
                 service_name="test-discovery-endpoint"
             )
             with http_stubber as stubber:
-                self.add_describe_endpoints_response(stubber, discovered_endpoint)
+                self.add_describe_endpoints_response(
+                    stubber, discovered_endpoint
+                )
                 client.test_discovery_required(Foo="bar")
-                self.assert_endpoint_discovery_used(stubber, discovered_endpoint)
+                self.assert_endpoint_discovery_used(
+                    stubber, discovered_endpoint
+                )
 
     def test_endpoint_discovery_with_config_file_enabled_lowercase(self):
         with temporary_file('w') as f:
@@ -327,9 +332,13 @@ class TestEndpointDiscovery(FunctionalSessionTest):
                 service_name="test-discovery-endpoint"
             )
             with http_stubber as stubber:
-                self.add_describe_endpoints_response(stubber, discovered_endpoint)
+                self.add_describe_endpoints_response(
+                    stubber, discovered_endpoint
+                )
                 client.test_discovery_required(Foo="bar")
-                self.assert_endpoint_discovery_used(stubber, discovered_endpoint)
+                self.assert_endpoint_discovery_used(
+                    stubber, discovered_endpoint
+                )
 
     def test_endpoint_discovery_with_config_file_disabled(self):
         with temporary_file('w') as f:
@@ -338,7 +347,9 @@ class TestEndpointDiscovery(FunctionalSessionTest):
             client, http_stubber = self.create_client(
                 service_name="test-discovery-endpoint"
             )
-            self.add_describe_endpoints_response(http_stubber, discovered_endpoint)
+            self.add_describe_endpoints_response(
+                http_stubber, discovered_endpoint
+            )
             with self.assertRaises(EndpointDiscoveryRequired):
                 client.test_discovery_required(Foo="bar")
 
@@ -350,6 +361,10 @@ class TestEndpointDiscovery(FunctionalSessionTest):
                 service_name="test-discovery-endpoint"
             )
             with http_stubber as stubber:
-                self.add_describe_endpoints_response(stubber, discovered_endpoint)
+                self.add_describe_endpoints_response(
+                    stubber, discovered_endpoint
+                )
                 client.test_discovery_required(Foo="bar")
-                self.assert_endpoint_discovery_used(stubber, discovered_endpoint)
+                self.assert_endpoint_discovery_used(
+                    stubber, discovered_endpoint
+                )

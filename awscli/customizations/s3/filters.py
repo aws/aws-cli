@@ -10,12 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import logging
 import fnmatch
+import logging
 import os
 
 from awscli.customizations.s3.utils import split_s3_bucket_key
-
 
 LOG = logging.getLogger(__name__)
 
@@ -75,7 +74,7 @@ def _get_local_root(source_location, dir_op):
     return rootdir
 
 
-class Filter(object):
+class Filter:
     """
     This is a universal exclude/include filter.
     """

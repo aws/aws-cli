@@ -12,10 +12,10 @@
 # language governing permissions and limitations under the License.
 import copy
 
-from awscli.arguments import CustomArgument, CLIArgument
+from awscli.arguments import CLIArgument, CustomArgument
 from awscli.customizations.binaryhoist import (
-    BinaryBlobArgumentHoister,
     ArgumentParameters,
+    BinaryBlobArgumentHoister,
 )
 
 FILE_DOCSTRING = (

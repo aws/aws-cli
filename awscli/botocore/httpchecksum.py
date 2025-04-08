@@ -11,13 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-""" The interfaces in this module are not intended for public use.
+"""The interfaces in this module are not intended for public use.
 
 This module defines interfaces for applying checksums to HTTP requests within
 the context of botocore. This involves both resolving the checksum to be used
 based on client configuration and environment, as well as application of the
 checksum to the request.
 """
+
 import base64
 import io
 import logging
@@ -224,7 +225,7 @@ class StreamingChecksumBody(StreamingBody):
         self._expected = expected
 
     def read(self, amt=None):
-        chunk = super(StreamingChecksumBody, self).read(amt=amt)
+        chunk = super().read(amt=amt)
         self._checksum.update(chunk)
         if amt is None or (not chunk and amt > 0):
             self._validate_checksum()
@@ -232,10 +233,7 @@ class StreamingChecksumBody(StreamingBody):
 
     def _validate_checksum(self):
         if self._checksum.digest() != base64.b64decode(self._expected):
-            error_msg = (
-                "Expected checksum %s did not match calculated checksum: %s"
-                % (self._expected, self._checksum.b64digest(),)
-            )
+            error_msg = f"Expected checksum {self._expected} did not match calculated checksum: {self._checksum.b64digest()}"
             raise FlexibleChecksumError(error_msg=error_msg)
 
 
@@ -245,7 +243,10 @@ def resolve_checksum_context(request, operation_model, params):
 
 
 def resolve_request_checksum_algorithm(
-    request, operation_model, params, supported_algorithms=None,
+    request,
+    operation_model,
+    params,
+    supported_algorithms=None,
 ):
     # If the header is already set by the customer, skip calculation
     if has_checksum_header(request):
@@ -270,7 +271,7 @@ def resolve_request_checksum_algorithm(
         algorithm_name = params[algorithm_member].lower()
         if algorithm_name not in supported_algorithms:
             raise FlexibleChecksumError(
-                error_msg="Unsupported checksum algorithm: %s" % algorithm_name
+                error_msg=f"Unsupported checksum algorithm: {algorithm_name}"
             )
     elif request_checksum_required or (
         algorithm_member and request_checksum_calculation == "when_supported"
@@ -340,7 +341,7 @@ def apply_request_checksum(request):
         _apply_request_trailer_checksum(request)
     else:
         raise FlexibleChecksumError(
-            error_msg="Unknown checksum variant: %s" % algorithm["in"]
+            error_msg="Unknown checksum variant: {}".format(algorithm["in"])
         )
     if "request_algorithm_header" in checksum_context:
         request_algorithm_header = checksum_context["request_algorithm_header"]
@@ -388,18 +389,20 @@ def _apply_request_trailer_checksum(request):
         # Send the decoded content length if we can determine it. Some
         # services such as S3 may require the decoded content length
         headers["X-Amz-Decoded-Content-Length"] = str(content_length)
-        
+
         if "Content-Length" in headers:
             del headers["Content-Length"]
             logger.debug(
                 "Removing the Content-Length header since 'chunked' is specified for Transfer-Encoding."
             )
-    
+
     if isinstance(body, (bytes, bytearray)):
         body = io.BytesIO(body)
 
     request["body"] = AwsChunkedWrapper(
-        body, checksum_cls=checksum_cls, checksum_name=location_name,
+        body,
+        checksum_cls=checksum_cls,
+        checksum_name=location_name,
     )
 
 
@@ -436,7 +439,7 @@ def handle_checksum_body(http_response, response, context, operation_model):
         return
 
     for algorithm in algorithms:
-        header_name = "x-amz-checksum-%s" % algorithm
+        header_name = f"x-amz-checksum-{algorithm}"
         # If the header is not found, check the next algorithm
         if header_name not in headers:
             continue
@@ -470,7 +473,7 @@ def handle_checksum_body(http_response, response, context, operation_model):
 
 def _handle_streaming_response(http_response, response, algorithm):
     checksum_cls = _CHECKSUM_CLS.get(algorithm)
-    header_name = "x-amz-checksum-%s" % algorithm
+    header_name = f"x-amz-checksum-{algorithm}"
     return StreamingChecksumBody(
         http_response.raw,
         response["headers"].get("content-length"),
@@ -481,16 +484,13 @@ def _handle_streaming_response(http_response, response, algorithm):
 
 def _handle_bytes_response(http_response, response, algorithm):
     body = http_response.content
-    header_name = "x-amz-checksum-%s" % algorithm
+    header_name = f"x-amz-checksum-{algorithm}"
     checksum_cls = _CHECKSUM_CLS.get(algorithm)
     checksum = checksum_cls()
     checksum.update(body)
     expected = response["headers"][header_name]
     if checksum.digest() != base64.b64decode(expected):
-        error_msg = (
-            "Expected checksum %s did not match calculated checksum: %s"
-            % (expected, checksum.b64digest(),)
-        )
+        error_msg = f"Expected checksum {expected} did not match calculated checksum: {checksum.b64digest()}"
         raise FlexibleChecksumError(error_msg=error_msg)
     return body
 

@@ -1,7 +1,6 @@
-from tests import unittest
-
-
 from botocore.retries import quota
+
+from tests import unittest
 
 
 class TestRetryQuota(unittest.TestCase):

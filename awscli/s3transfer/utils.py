@@ -24,7 +24,6 @@ from collections import defaultdict
 from botocore.exceptions import IncompleteReadError, ReadTimeoutError
 from botocore.httpchecksum import DEFAULT_CHECKSUM_ALGORITHM, AwsChunkedWrapper
 from botocore.utils import is_s3express_bucket
-
 from s3transfer.compat import SOCKET_ERROR, fallocate, rename_file
 from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS
 
@@ -32,8 +31,8 @@ MAX_PARTS = 10000
 # The maximum file size you can upload via S3 per request.
 # See: http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html
 # and: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
-MAX_SINGLE_UPLOAD_SIZE = 5 * (1024 ** 3)
-MIN_UPLOAD_CHUNKSIZE = 5 * (1024 ** 2)
+MAX_SINGLE_UPLOAD_SIZE = 5 * (1024**3)
+MIN_UPLOAD_CHUNKSIZE = 5 * (1024**2)
 logger = logging.getLogger(__name__)
 
 
@@ -194,9 +193,7 @@ class FunctionContainer:
         self._kwargs = kwargs
 
     def __repr__(self):
-        return 'Function: {} with args {} and kwargs {}'.format(
-            self._func, self._args, self._kwargs
-        )
+        return f'Function: {self._func} with args {self._args} and kwargs {self._kwargs}'
 
     def __call__(self):
         return self._func(*self._args, **self._kwargs)
@@ -639,7 +636,7 @@ class TaskSemaphore:
         """
         logger.debug("Acquiring %s", tag)
         if not self._semaphore.acquire(blocking):
-            raise NoResourcesAvailable("Cannot acquire tag '%s'" % tag)
+            raise NoResourcesAvailable(f"Cannot acquire tag '{tag}'")
 
     def release(self, tag, acquire_token):
         """Release the semaphore
@@ -697,7 +694,7 @@ class SlidingWindowSemaphore(TaskSemaphore):
         try:
             if self._count == 0:
                 if not blocking:
-                    raise NoResourcesAvailable("Cannot acquire tag '%s'" % tag)
+                    raise NoResourcesAvailable(f"Cannot acquire tag '{tag}'")
                 else:
                     while self._count == 0:
                         self._condition.wait()
@@ -719,7 +716,7 @@ class SlidingWindowSemaphore(TaskSemaphore):
         self._condition.acquire()
         try:
             if tag not in self._tag_sequences:
-                raise ValueError("Attempted to release unknown tag: %s" % tag)
+                raise ValueError(f"Attempted to release unknown tag: {tag}")
             max_sequence = self._tag_sequences[tag]
             if self._lowest_sequence[tag] == sequence_number:
                 # We can immediately process this request and free up
@@ -746,7 +743,7 @@ class SlidingWindowSemaphore(TaskSemaphore):
             else:
                 raise ValueError(
                     "Attempted to release unknown sequence number "
-                    "%s for tag: %s" % (sequence_number, tag)
+                    f"{sequence_number} for tag: {tag}"
                 )
         finally:
             self._condition.release()
@@ -784,13 +781,13 @@ class ChunksizeAdjuster:
         if current_chunksize > self.max_size:
             logger.debug(
                 "Chunksize greater than maximum chunksize. "
-                "Setting to %s from %s." % (self.max_size, current_chunksize)
+                f"Setting to {self.max_size} from {current_chunksize}."
             )
             return self.max_size
         elif current_chunksize < self.min_size:
             logger.debug(
                 "Chunksize less than minimum chunksize. "
-                "Setting to %s from %s." % (self.min_size, current_chunksize)
+                f"Setting to {self.min_size} from {current_chunksize}."
             )
             return self.min_size
         else:
@@ -807,8 +804,7 @@ class ChunksizeAdjuster:
         if chunksize != current_chunksize:
             logger.debug(
                 "Chunksize would result in the number of parts exceeding the "
-                "maximum. Setting to %s from %s."
-                % (chunksize, current_chunksize)
+                f"maximum. Setting to {chunksize} from {current_chunksize}."
             )
 
         return chunksize
@@ -825,7 +821,7 @@ def add_s3express_defaults(bucket, extra_args):
 
 
 def set_default_checksum_algorithm(extra_args):
-     """Set the default algorithm if not specified by the user."""
-     if any(checksum in extra_args for checksum in FULL_OBJECT_CHECKSUM_ARGS):
-         return
-     extra_args.setdefault("ChecksumAlgorithm", DEFAULT_CHECKSUM_ALGORITHM)
+    """Set the default algorithm if not specified by the user."""
+    if any(checksum in extra_args for checksum in FULL_OBJECT_CHECKSUM_ARGS):
+        return
+    extra_args.setdefault("ChecksumAlgorithm", DEFAULT_CHECKSUM_ALGORITHM)

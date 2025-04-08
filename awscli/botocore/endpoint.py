@@ -58,7 +58,7 @@ def convert_to_response_dict(http_response, operation_model):
         'status_code': http_response.status_code,
         'context': {
             'operation_name': operation_model.name,
-        }
+        },
     }
     if response_dict['status_code'] >= 300:
         response_dict['body'] = http_response.content
@@ -72,7 +72,7 @@ def convert_to_response_dict(http_response, operation_model):
     return response_dict
 
 
-class Endpoint(object):
+class Endpoint:
     """
     Represents an endpoint for a particular service in a specific
     region.  Only an endpoint can make requests.
@@ -82,8 +82,15 @@ class Endpoint(object):
     :ivar host: The fully qualified endpoint hostname.
     :ivar session: The session object.
     """
-    def __init__(self, host, endpoint_prefix, event_emitter,
-                 response_parser_factory=None, http_session=None):
+
+    def __init__(
+        self,
+        host,
+        endpoint_prefix,
+        event_emitter,
+        response_parser_factory=None,
+        http_session=None,
+    ):
         self._endpoint_prefix = endpoint_prefix
         self._event_emitter = event_emitter
         self.host = host
@@ -96,26 +103,32 @@ class Endpoint(object):
             self.http_session = URLLib3Session()
 
     def __repr__(self):
-        return '%s(%s)' % (self._endpoint_prefix, self.host)
+        return f'{self._endpoint_prefix}({self.host})'
 
     def make_request(self, operation_model, request_dict):
-        logger.debug("Making request for %s with params: %s",
-                     operation_model, request_dict)
+        logger.debug(
+            "Making request for %s with params: %s",
+            operation_model,
+            request_dict,
+        )
         return self._send_request(request_dict, operation_model)
 
     def create_request(self, params, operation_model=None):
         request = create_request_object(params)
         if operation_model:
-            request.stream_output = any([
-                operation_model.has_streaming_output,
-                operation_model.has_event_stream_output
-            ])
+            request.stream_output = any(
+                [
+                    operation_model.has_streaming_output,
+                    operation_model.has_event_stream_output,
+                ]
+            )
             service_id = operation_model.service_model.service_id.hyphenize()
-            event_name = 'request-created.{service_id}.{op_name}'.format(
-                service_id=service_id,
-                op_name=operation_model.name)
-            self._event_emitter.emit(event_name, request=request,
-                                     operation_name=operation_model.name)
+            event_name = f'request-created.{service_id}.{operation_model.name}'
+            self._event_emitter.emit(
+                event_name,
+                request=request,
+                operation_name=operation_model.name,
+            )
         prepared_request = self.prepare_request(request)
         return prepared_request
 
@@ -134,9 +147,15 @@ class Endpoint(object):
         request = self.create_request(request_dict, operation_model)
         context = request_dict['context']
         success_response, exception = self._get_response(
-            request, operation_model, context)
-        while self._needs_retry(attempts, operation_model, request_dict,
-                                success_response, exception):
+            request, operation_model, context
+        )
+        while self._needs_retry(
+            attempts,
+            operation_model,
+            request_dict,
+            success_response,
+            exception,
+        ):
             attempts += 1
             # If there is a stream associated with the request, we need
             # to reset it before attempting to send the request again.
@@ -144,16 +163,19 @@ class Endpoint(object):
             # body.
             request.reset_stream()
             # Create a new request when retried (including a new signature).
-            request = self.create_request(
-                request_dict, operation_model)
+            request = self.create_request(request_dict, operation_model)
             success_response, exception = self._get_response(
-                request, operation_model, context)
-        if success_response is not None and \
-                'ResponseMetadata' in success_response[1]:
+                request, operation_model, context
+            )
+        if (
+            success_response is not None
+            and 'ResponseMetadata' in success_response[1]
+        ):
             # We want to share num retries, not num attempts.
             total_retries = attempts - 1
-            success_response[1]['ResponseMetadata']['RetryAttempts'] = \
-                    total_retries
+            success_response[1]['ResponseMetadata']['RetryAttempts'] = (
+                total_retries
+            )
         if exception is not None:
             raise exception
         else:
@@ -166,7 +188,8 @@ class Endpoint(object):
         # If an exception occurs then the success_response is None.
         # If no exception occurs then exception is None.
         success_response, exception = self._do_get_response(
-            request, operation_model, context)
+            request, operation_model, context
+        )
         kwargs_to_emit = {
             'response_dict': None,
             'parsed_response': None,
@@ -177,25 +200,30 @@ class Endpoint(object):
             http_response, parsed_response = success_response
             kwargs_to_emit['parsed_response'] = parsed_response
             kwargs_to_emit['response_dict'] = convert_to_response_dict(
-                http_response, operation_model)
+                http_response, operation_model
+            )
         service_id = operation_model.service_model.service_id.hyphenize()
         self._event_emitter.emit(
-            'response-received.%s.%s' % (
-                service_id, operation_model.name), **kwargs_to_emit)
+            f'response-received.{service_id}.{operation_model.name}',
+            **kwargs_to_emit,
+        )
         return success_response, exception
 
     def _do_get_response(self, request, operation_model, context):
         try:
             logger.debug("Sending http request: %s", request)
-            history_recorder.record('HTTP_REQUEST', {
-                'method': request.method,
-                'headers': request.headers,
-                'streaming': operation_model.has_streaming_input,
-                'url': request.url,
-                'body': request.body
-            })
+            history_recorder.record(
+                'HTTP_REQUEST',
+                {
+                    'method': request.method,
+                    'headers': request.headers,
+                    'streaming': operation_model.has_streaming_input,
+                    'url': request.url,
+                    'body': request.body,
+                },
+            )
             service_id = operation_model.service_model.service_id.hyphenize()
-            event_name = 'before-send.%s.%s' % (service_id, operation_model.name)
+            event_name = f'before-send.{service_id}.{operation_model.name}'
             responses = self._event_emitter.emit(event_name, request=request)
             http_response = first_non_none_response(responses)
             if http_response is None:
@@ -203,18 +231,25 @@ class Endpoint(object):
         except HTTPClientError as e:
             return (None, e)
         except Exception as e:
-            logger.debug("Exception received when sending HTTP request.",
-                         exc_info=True)
+            logger.debug(
+                "Exception received when sending HTTP request.", exc_info=True
+            )
             return (None, e)
         # This returns the http_response and the parsed_data.
-        response_dict = convert_to_response_dict(http_response, operation_model)
+        response_dict = convert_to_response_dict(
+            http_response, operation_model
+        )
         handle_checksum_body(
-            http_response, response_dict, context, operation_model,
+            http_response,
+            response_dict,
+            context,
+            operation_model,
         )
 
         http_response_record_dict = response_dict.copy()
-        http_response_record_dict['streaming'] = \
+        http_response_record_dict['streaming'] = (
             operation_model.has_streaming_output
+        )
         history_recorder.record('HTTP_RESPONSE', http_response_record_dict)
 
         protocol = operation_model.metadata['protocol']
@@ -227,7 +262,8 @@ class Endpoint(object):
         )
         parser = self._response_parser_factory.create_parser(protocol)
         parsed_response = parser.parse(
-            response_dict, operation_model.output_shape)
+            response_dict, operation_model.output_shape
+        )
         parsed_response.update(customized_response_dict)
         # Do a second parsing pass to pick up on any modeled error fields
         # NOTE: Ideally, we would push this down into the parser classes but
@@ -236,15 +272,20 @@ class Endpoint(object):
         # output shape but we can't change that now
         if http_response.status_code >= 300:
             self._add_modeled_error_fields(
-                response_dict, parsed_response,
-                operation_model, parser,
+                response_dict,
+                parsed_response,
+                operation_model,
+                parser,
             )
         history_recorder.record('PARSED_RESPONSE', parsed_response)
         return (http_response, parsed_response), None
 
     def _add_modeled_error_fields(
-            self, response_dict, parsed_response,
-            operation_model, parser,
+        self,
+        response_dict,
+        parsed_response,
+        operation_model,
+        parser,
     ):
         error_code = parsed_response.get("Error", {}).get("Code")
         if error_code is None:
@@ -257,24 +298,35 @@ class Endpoint(object):
         # TODO: avoid naming conflicts with ResponseMetadata and Error
         parsed_response.update(modeled_parse)
 
-    def _needs_retry(self, attempts, operation_model, request_dict,
-                     response=None, caught_exception=None):
+    def _needs_retry(
+        self,
+        attempts,
+        operation_model,
+        request_dict,
+        response=None,
+        caught_exception=None,
+    ):
         service_id = operation_model.service_model.service_id.hyphenize()
-        event_name = 'needs-retry.%s.%s' % (
-            service_id,
-            operation_model.name)
+        event_name = f'needs-retry.{service_id}.{operation_model.name}'
         responses = self._event_emitter.emit(
-            event_name, response=response, endpoint=self,
-            operation=operation_model, attempts=attempts,
-            caught_exception=caught_exception, request_dict=request_dict)
+            event_name,
+            response=response,
+            endpoint=self,
+            operation=operation_model,
+            attempts=attempts,
+            caught_exception=caught_exception,
+            request_dict=request_dict,
+        )
         handler_response = first_non_none_response(responses)
         if handler_response is None:
             return False
         else:
             # Request needs to be retried, and we need to sleep
             # for the specified number of times.
-            logger.debug("Response received to retry, sleeping for "
-                         "%s seconds", handler_response)
+            logger.debug(
+                "Response received to retry, sleeping for " "%s seconds",
+                handler_response,
+            )
             time.sleep(handler_response)
             return True
 
@@ -282,24 +334,29 @@ class Endpoint(object):
         return self.http_session.send(request)
 
 
-class EndpointCreator(object):
+class EndpointCreator:
     def __init__(self, event_emitter):
         self._event_emitter = event_emitter
 
-    def create_endpoint(self, service_model, region_name, endpoint_url,
-                        verify=None, response_parser_factory=None,
-                        timeout=DEFAULT_TIMEOUT,
-                        max_pool_connections=MAX_POOL_CONNECTIONS,
-                        http_session_cls=URLLib3Session,
-                        proxies=None,
-                        socket_options=None,
-                        client_cert=None,
-                        proxies_config=None):
-        if (
-            not is_valid_endpoint_url(endpoint_url)
-            and not is_valid_ipv6_endpoint_url(endpoint_url)
-        ):
-            raise ValueError("Invalid endpoint: %s" % endpoint_url)
+    def create_endpoint(
+        self,
+        service_model,
+        region_name,
+        endpoint_url,
+        verify=None,
+        response_parser_factory=None,
+        timeout=DEFAULT_TIMEOUT,
+        max_pool_connections=MAX_POOL_CONNECTIONS,
+        http_session_cls=URLLib3Session,
+        proxies=None,
+        socket_options=None,
+        client_cert=None,
+        proxies_config=None,
+    ):
+        if not is_valid_endpoint_url(
+            endpoint_url
+        ) and not is_valid_ipv6_endpoint_url(endpoint_url):
+            raise ValueError(f"Invalid endpoint: {endpoint_url}")
 
         if proxies is None:
             proxies = self._get_proxies(endpoint_url)
@@ -313,7 +370,7 @@ class EndpointCreator(object):
             max_pool_connections=max_pool_connections,
             socket_options=socket_options,
             client_cert=client_cert,
-            proxies_config=proxies_config
+            proxies_config=proxies_config,
         )
 
         return Endpoint(
@@ -321,7 +378,7 @@ class EndpointCreator(object):
             endpoint_prefix=endpoint_prefix,
             event_emitter=self._event_emitter,
             response_parser_factory=response_parser_factory,
-            http_session=http_session
+            http_session=http_session,
         )
 
     def _get_proxies(self, url):

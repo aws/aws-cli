@@ -12,11 +12,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pickle
-from tests import unittest
 
 import botocore.awsrequest
 import botocore.session
 from botocore import exceptions
+
+from tests import unittest
 
 
 def test_client_error_can_handle_missing_code_or_message():
@@ -43,12 +44,13 @@ def test_retry_info_added_when_present():
         'ResponseMetadata': {
             'MaxAttemptsReached': True,
             'RetryAttempts': 3,
-        }
+        },
     }
     error_msg = str(exceptions.ClientError(response, 'operation'))
     if '(reached max retries: 3)' not in error_msg:
-        raise AssertionError("retry information not inject into error "
-                             "message: %s" % error_msg)
+        raise AssertionError(
+            "retry information not inject into error " f"message: {error_msg}"
+        )
 
 
 def test_retry_info_not_added_if_retry_attempts_not_present():
@@ -56,15 +58,17 @@ def test_retry_info_not_added_if_retry_attempts_not_present():
         'Error': {},
         'ResponseMetadata': {
             'MaxAttemptsReached': True,
-        }
+        },
     }
     # Because RetryAttempts is missing, retry info is not
     # in the error message.
     error_msg = str(exceptions.ClientError(response, 'operation'))
     if 'max retries' in error_msg:
-        raise AssertionError("Retry information should not be in exception "
-                             "message when retry attempts not in response "
-                             "metadata: %s" % error_msg)
+        raise AssertionError(
+            "Retry information should not be in exception "
+            "message when retry attempts not in response "
+            f"metadata: {error_msg}"
+        )
 
 
 def test_can_handle_when_response_missing_error_key():
@@ -73,23 +77,24 @@ def test_can_handle_when_response_missing_error_key():
             'HTTPHeaders': {},
             'HTTPStatusCode': 503,
             'MaxAttemptsReached': True,
-            'RetryAttempts': 4
+            'RetryAttempts': 4,
         }
     }
     e = exceptions.ClientError(response, 'SomeOperation')
     if 'An error occurred (Unknown)' not in str(e):
         raise AssertionError(
             "Error code should default to 'Unknown' "
-            "when missing error response, instead got: %s" % str(e))
+            f"when missing error response, instead got: {str(e)}"
+        )
 
 
 class TestPickleExceptions(unittest.TestCase):
     def test_single_kwarg_botocore_error(self):
-        exception = botocore.exceptions.DataNotFoundError(
-            data_path='mypath')
+        exception = botocore.exceptions.DataNotFoundError(data_path='mypath')
         unpickled_exception = pickle.loads(pickle.dumps(exception))
         self.assertIsInstance(
-            unpickled_exception, botocore.exceptions.DataNotFoundError)
+            unpickled_exception, botocore.exceptions.DataNotFoundError
+        )
         self.assertEqual(str(unpickled_exception), str(exception))
         self.assertEqual(unpickled_exception.kwargs, exception.kwargs)
 
@@ -99,22 +104,26 @@ class TestPickleExceptions(unittest.TestCase):
         )
         unpickled_exception = pickle.loads(pickle.dumps(exception))
         self.assertIsInstance(
-            unpickled_exception, botocore.exceptions.UnknownServiceError)
+            unpickled_exception, botocore.exceptions.UnknownServiceError
+        )
         self.assertEqual(str(unpickled_exception), str(exception))
         self.assertEqual(unpickled_exception.kwargs, exception.kwargs)
 
     def test_client_error(self):
         exception = botocore.exceptions.ClientError(
             error_response={
-                'Error': {'Code': 'MyCode', 'Message': 'MyMessage'}},
-            operation_name='myoperation'
+                'Error': {'Code': 'MyCode', 'Message': 'MyMessage'}
+            },
+            operation_name='myoperation',
         )
         unpickled_exception = pickle.loads(pickle.dumps(exception))
         self.assertIsInstance(
-            unpickled_exception, botocore.exceptions.ClientError)
+            unpickled_exception, botocore.exceptions.ClientError
+        )
         self.assertEqual(str(unpickled_exception), str(exception))
         self.assertEqual(
-            unpickled_exception.operation_name, exception.operation_name)
+            unpickled_exception.operation_name, exception.operation_name
+        )
         self.assertEqual(unpickled_exception.response, exception.response)
 
     def test_dynamic_client_error(self):
@@ -122,32 +131,31 @@ class TestPickleExceptions(unittest.TestCase):
         client = session.create_client('s3', 'us-west-2')
         exception = client.exceptions.NoSuchKey(
             error_response={
-                'Error': {'Code': 'NoSuchKey', 'Message': 'Not Found'}},
-            operation_name='myoperation'
+                'Error': {'Code': 'NoSuchKey', 'Message': 'Not Found'}
+            },
+            operation_name='myoperation',
         )
         unpickled_exception = pickle.loads(pickle.dumps(exception))
         self.assertIsInstance(
-            unpickled_exception, botocore.exceptions.ClientError)
+            unpickled_exception, botocore.exceptions.ClientError
+        )
         self.assertEqual(str(unpickled_exception), str(exception))
         self.assertEqual(
-            unpickled_exception.operation_name, exception.operation_name)
+            unpickled_exception.operation_name, exception.operation_name
+        )
         self.assertEqual(unpickled_exception.response, exception.response)
 
     def test_http_client_error(self):
         exception = botocore.exceptions.HTTPClientError(
             botocore.awsrequest.AWSRequest(),
             botocore.awsrequest.AWSResponse(
-                url='https://foo.com',
-                status_code=400,
-                headers={},
-                raw=b''
+                url='https://foo.com', status_code=400, headers={}, raw=b''
             ),
-            error='error'
+            error='error',
         )
         unpickled_exception = pickle.loads(pickle.dumps(exception))
         self.assertIsInstance(
-            unpickled_exception,
-            botocore.exceptions.HTTPClientError
+            unpickled_exception, botocore.exceptions.HTTPClientError
         )
         self.assertEqual(str(unpickled_exception), str(exception))
         self.assertEqual(unpickled_exception.kwargs, exception.kwargs)
@@ -155,6 +163,8 @@ class TestPickleExceptions(unittest.TestCase):
         # __eq__ defined so we want to make sure properties are at least
         # of the expected type
         self.assertIsInstance(
-            unpickled_exception.request, botocore.awsrequest.AWSRequest)
+            unpickled_exception.request, botocore.awsrequest.AWSRequest
+        )
         self.assertIsInstance(
-            unpickled_exception.response, botocore.awsrequest.AWSResponse)
+            unpickled_exception.response, botocore.awsrequest.AWSResponse
+        )

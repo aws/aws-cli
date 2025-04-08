@@ -12,15 +12,20 @@
 # language governing permissions and limitations under the License.
 import io
 import os
-from tests import mock, unittest, BaseEnvVar
 
 import botocore
 from botocore.exceptions import ClientError, WaiterConfigError, WaiterError
-from botocore.waiter import Waiter, WaiterModel, SingleWaiterConfig
-from botocore.waiter import create_waiter_with_client
-from botocore.waiter import NormalizedOperationMethod
 from botocore.loaders import Loader
 from botocore.model import ServiceModel
+from botocore.waiter import (
+    NormalizedOperationMethod,
+    SingleWaiterConfig,
+    Waiter,
+    WaiterModel,
+    create_waiter_with_client,
+)
+
+from tests import BaseEnvVar, mock, unittest
 
 
 class TestWaiterModel(unittest.TestCase):
@@ -33,9 +38,7 @@ class TestWaiterModel(unittest.TestCase):
         }
 
     def create_acceptor_function(self, for_config):
-        single_waiter = {
-            'acceptors': [for_config]
-        }
+        single_waiter = {'acceptors': [for_config]}
         single_waiter.update(self.boiler_plate_config)
         config = SingleWaiterConfig(single_waiter)
         return config.acceptors[0].matcher_func
@@ -54,10 +57,7 @@ class TestWaiterModel(unittest.TestCase):
             WaiterModel(waiters)
 
     def test_unsupported_waiter_version(self):
-        waiters = {
-            'version': 1,
-            'waiters': {}
-        }
+        waiters = {'version': 1, 'waiters': {}}
         with self.assertRaises(WaiterConfigError):
             WaiterModel(waiters)
 
@@ -67,10 +67,11 @@ class TestWaiterModel(unittest.TestCase):
             'waiters': {
                 'BarWaiter': {},
                 'FooWaiter': {},
-            }
+            },
         }
-        self.assertEqual(WaiterModel(waiters).waiter_names, ['BarWaiter',
-                                                             'FooWaiter'])
+        self.assertEqual(
+            WaiterModel(waiters).waiter_names, ['BarWaiter', 'FooWaiter']
+        )
 
     def test_get_single_waiter_config(self):
         single_waiter = {
@@ -87,17 +88,14 @@ class TestWaiterModel(unittest.TestCase):
             'version': 2,
             'waiters': {
                 'BucketExists': single_waiter,
-            }
+            },
         }
         model = WaiterModel(waiters)
         config = model.get_waiter('BucketExists')
         self.assertEqual(config.operation, 'HeadBucket')
 
     def test_get_waiter_does_not_exist(self):
-        waiters = {
-            'version': 2,
-            'waiters': {}
-        }
+        waiters = {'version': 2, 'waiters': {}}
         model = WaiterModel(waiters)
         with self.assertRaises(ValueError):
             model.get_waiter('UnknownWaiter')
@@ -108,8 +106,7 @@ class TestWaiterModel(unittest.TestCase):
             'operation': 'HeadBucket',
             'delay': 5,
             'maxAttempts': 20,
-            'acceptors': [
-            ],
+            'acceptors': [],
         }
         config = SingleWaiterConfig(single_waiter)
         self.assertEqual(config.description, 'Waiter description')
@@ -137,8 +134,12 @@ class TestWaiterModel(unittest.TestCase):
     def test_single_waiter_acceptor_matches_jmespath(self):
         single_waiter = {
             'acceptors': [
-                {'state': 'success', 'matcher': 'path',
-                 'argument': 'Table.TableStatus', 'expected': 'ACCEPTED'},
+                {
+                    'state': 'success',
+                    'matcher': 'path',
+                    'argument': 'Table.TableStatus',
+                    'expected': 'ACCEPTED',
+                },
             ],
         }
         single_waiter.update(self.boiler_plate_config)
@@ -147,39 +148,47 @@ class TestWaiterModel(unittest.TestCase):
         # success_acceptor is a callable that takes a response dict and returns
         # True or False.
         self.assertTrue(
-            success_acceptor({'Table': {'TableStatus': 'ACCEPTED'}}))
+            success_acceptor({'Table': {'TableStatus': 'ACCEPTED'}})
+        )
         self.assertFalse(
-            success_acceptor({'Table': {'TableStatus': 'CREATING'}}))
+            success_acceptor({'Table': {'TableStatus': 'CREATING'}})
+        )
 
     def test_single_waiter_supports_status_code(self):
         single_waiter = {
             'acceptors': [
-                {'state': 'success', 'matcher': 'status',
-                 'expected': 200}
+                {'state': 'success', 'matcher': 'status', 'expected': 200}
             ],
         }
         single_waiter.update(self.boiler_plate_config)
         config = SingleWaiterConfig(single_waiter)
         success_acceptor = config.acceptors[0].matcher_func
         self.assertTrue(
-            success_acceptor({'ResponseMetadata': {'HTTPStatusCode': 200}}))
+            success_acceptor({'ResponseMetadata': {'HTTPStatusCode': 200}})
+        )
         self.assertFalse(
-            success_acceptor({'ResponseMetadata': {'HTTPStatusCode': 404}}))
+            success_acceptor({'ResponseMetadata': {'HTTPStatusCode': 404}})
+        )
 
     def test_single_waiter_supports_error(self):
         single_waiter = {
             'acceptors': [
-                {'state': 'success', 'matcher': 'error',
-                 'expected': 'DoesNotExistError'}
+                {
+                    'state': 'success',
+                    'matcher': 'error',
+                    'expected': 'DoesNotExistError',
+                }
             ],
         }
         single_waiter.update(self.boiler_plate_config)
         config = SingleWaiterConfig(single_waiter)
         success_acceptor = config.acceptors[0].matcher_func
         self.assertTrue(
-            success_acceptor({'Error': {'Code': 'DoesNotExistError'}}))
+            success_acceptor({'Error': {'Code': 'DoesNotExistError'}})
+        )
         self.assertFalse(
-            success_acceptor({'Error': {'Code': 'DoesNotExistErorr'}}))
+            success_acceptor({'Error': {'Code': 'DoesNotExistErorr'}})
+        )
 
     def test_single_waiter_supports_no_error(self):
         single_waiter = {
@@ -217,8 +226,11 @@ class TestWaiterModel(unittest.TestCase):
         unknown_type = 'arbitrary_type'
         single_waiter = {
             'acceptors': [
-                {'state': 'success', 'matcher': unknown_type,
-                 'expected': 'foo'}
+                {
+                    'state': 'success',
+                    'matcher': unknown_type,
+                    'expected': 'foo',
+                }
             ]
         }
         single_waiter.update(self.boiler_plate_config)
@@ -228,80 +240,132 @@ class TestWaiterModel(unittest.TestCase):
 
     def test_single_waiter_supports_path_all(self):
         matches = self.create_acceptor_function(
-            for_config={'state': 'success', 'matcher': 'pathAll',
-                        'argument': 'Tables[].State', 'expected': 'GOOD'})
+            for_config={
+                'state': 'success',
+                'matcher': 'pathAll',
+                'argument': 'Tables[].State',
+                'expected': 'GOOD',
+            }
+        )
+        self.assertTrue(matches({'Tables': [{"State": "GOOD"}]}))
         self.assertTrue(
-            matches({'Tables': [{"State": "GOOD"}]}))
-        self.assertTrue(
-            matches({'Tables': [{"State": "GOOD"}, {"State": "GOOD"}]}))
+            matches({'Tables': [{"State": "GOOD"}, {"State": "GOOD"}]})
+        )
 
     def test_single_waiter_supports_path_any(self):
         matches = self.create_acceptor_function(
-            for_config={'state': 'failure', 'matcher': 'pathAny',
-                        'argument': 'Tables[].State', 'expected': 'FAIL'})
+            for_config={
+                'state': 'failure',
+                'matcher': 'pathAny',
+                'argument': 'Tables[].State',
+                'expected': 'FAIL',
+            }
+        )
+        self.assertTrue(matches({'Tables': [{"State": "FAIL"}]}))
         self.assertTrue(
-            matches({'Tables': [{"State": "FAIL"}]}))
-        self.assertTrue(
-            matches({'Tables': [{"State": "GOOD"}, {"State": "FAIL"}]}))
+            matches({'Tables': [{"State": "GOOD"}, {"State": "FAIL"}]})
+        )
 
     def test_waiter_handles_error_responses_with_path_matchers(self):
         path_any = self.create_acceptor_function(
-            for_config={'state': 'success', 'matcher': 'pathAny',
-                        'argument': 'length(Tables) > `0`',
-                        'expected': True})
+            for_config={
+                'state': 'success',
+                'matcher': 'pathAny',
+                'argument': 'length(Tables) > `0`',
+                'expected': True,
+            }
+        )
         path_all = self.create_acceptor_function(
-            for_config={'state': 'success', 'matcher': 'pathAll',
-                        'argument': 'length(Tables) > `0`',
-                        'expected': True})
+            for_config={
+                'state': 'success',
+                'matcher': 'pathAll',
+                'argument': 'length(Tables) > `0`',
+                'expected': True,
+            }
+        )
         path = self.create_acceptor_function(
-            for_config={'state': 'success', 'matcher': 'path',
-                        'argument': 'length(Tables) > `0`',
-                        'expected': True})
+            for_config={
+                'state': 'success',
+                'matcher': 'path',
+                'argument': 'length(Tables) > `0`',
+                'expected': True,
+            }
+        )
         self.assertFalse(path_any({'Error': {'Code': 'DoesNotExist'}}))
         self.assertFalse(path_all({'Error': {'Code': 'DoesNotExist'}}))
         self.assertFalse(path({'Error': {'Code': 'DoesNotExist'}}))
 
     def test_single_waiter_does_not_match_path_all(self):
         matches = self.create_acceptor_function(
-            for_config={'state': 'success', 'matcher': 'pathAll',
-                        'argument': 'Tables[].State', 'expected': 'GOOD'})
+            for_config={
+                'state': 'success',
+                'matcher': 'pathAll',
+                'argument': 'Tables[].State',
+                'expected': 'GOOD',
+            }
+        )
         self.assertFalse(
-            matches({'Tables': [{"State": "GOOD"}, {"State": "BAD"}]}))
+            matches({'Tables': [{"State": "GOOD"}, {"State": "BAD"}]})
+        )
         self.assertFalse(
-            matches({'Tables': [{"State": "BAD"}, {"State": "GOOD"}]}))
+            matches({'Tables': [{"State": "BAD"}, {"State": "GOOD"}]})
+        )
         self.assertFalse(
-            matches({'Tables': [{"State": "BAD"}, {"State": "BAD"}]}))
+            matches({'Tables': [{"State": "BAD"}, {"State": "BAD"}]})
+        )
+        self.assertFalse(matches({'Tables': []}))
         self.assertFalse(
-            matches({'Tables': []}))
-        self.assertFalse(
-            matches({'Tables': [{"State": "BAD"},
-                                {"State": "BAD"},
-                                {"State": "BAD"},
-                                {"State": "BAD"}]}))
+            matches(
+                {
+                    'Tables': [
+                        {"State": "BAD"},
+                        {"State": "BAD"},
+                        {"State": "BAD"},
+                        {"State": "BAD"},
+                    ]
+                }
+            )
+        )
 
     def test_path_all_missing_field(self):
         matches = self.create_acceptor_function(
-            for_config={'state': 'success', 'matcher': 'pathAll',
-                        'argument': 'Tables[].State', 'expected': 'GOOD'})
+            for_config={
+                'state': 'success',
+                'matcher': 'pathAll',
+                'argument': 'Tables[].State',
+                'expected': 'GOOD',
+            }
+        )
         self.assertFalse(
-            matches({'Tables': [{"NotState": "GOOD"}, {"NotState": "BAD"}]}))
+            matches({'Tables': [{"NotState": "GOOD"}, {"NotState": "BAD"}]})
+        )
 
     def test_path_all_matcher_does_not_receive_list(self):
         matches = self.create_acceptor_function(
-            for_config={'state': 'success', 'matcher': 'pathAll',
-                        'argument': 'Tables[].State', 'expected': 'GOOD'})
-        self.assertFalse(
-            matches({"NotTables": []}))
+            for_config={
+                'state': 'success',
+                'matcher': 'pathAll',
+                'argument': 'Tables[].State',
+                'expected': 'GOOD',
+            }
+        )
+        self.assertFalse(matches({"NotTables": []}))
 
     def test_single_waiter_supports_all_three_states(self):
         single_waiter = {
             'acceptors': [
-                {'state': 'success', 'matcher': 'error',
-                 'expected': 'DoesNotExistError'},
-                {'state': 'success', 'matcher': 'status',
-                 'expected': 200},
-                {'state': 'success', 'matcher': 'path',
-                 'argument': 'Foo.Bar', 'expected': 'baz'},
+                {
+                    'state': 'success',
+                    'matcher': 'error',
+                    'expected': 'DoesNotExistError',
+                },
+                {'state': 'success', 'matcher': 'status', 'expected': 200},
+                {
+                    'state': 'success',
+                    'matcher': 'path',
+                    'argument': 'Foo.Bar',
+                    'expected': 'baz',
+                },
             ],
         }
         single_waiter.update(self.boiler_plate_config)
@@ -324,18 +388,19 @@ class TestWaitersObjects(unittest.TestCase):
         operation_method.side_effect = responses
         return operation_method
 
-    def create_waiter_config(self, operation='MyOperation',
-                             delay=0, max_attempts=3,
-                             acceptors=None):
+    def create_waiter_config(
+        self, operation='MyOperation', delay=0, max_attempts=3, acceptors=None
+    ):
         if acceptors is None:
             # Create some arbitrary acceptor that will never match.
-            acceptors = [{'state': 'success', 'matcher': 'status',
-                          'expected': 1000}]
+            acceptors = [
+                {'state': 'success', 'matcher': 'status', 'expected': 1000}
+            ]
         waiter_config = {
             'operation': operation,
             'delay': delay,
             'maxAttempts': max_attempts,
-            'acceptors': acceptors
+            'acceptors': acceptors,
         }
         config = SingleWaiterConfig(waiter_config)
         return config
@@ -343,8 +408,15 @@ class TestWaitersObjects(unittest.TestCase):
     def test_waiter_waits_until_acceptor_matches(self):
         config = self.create_waiter_config(
             max_attempts=3,
-            acceptors=[{'state': 'success', 'matcher': 'path',
-                        'argument': 'Foo', 'expected': 'SUCCESS'}])
+            acceptors=[
+                {
+                    'state': 'success',
+                    'matcher': 'path',
+                    'argument': 'Foo',
+                    'expected': 'SUCCESS',
+                }
+            ],
+        )
         # Simulate the client having two calls that don't
         # match followed by a third call that matches the
         # acceptor.
@@ -354,7 +426,7 @@ class TestWaitersObjects(unittest.TestCase):
             {'Foo': 'FAILURE'},
             {'Foo': 'FAILURE'},
             {'Foo': 'SUCCESS'},
-            for_operation=operation_method
+            for_operation=operation_method,
         )
         waiter.wait()
         self.assertEqual(operation_method.call_count, 3)
@@ -364,13 +436,19 @@ class TestWaitersObjects(unittest.TestCase):
         # because of 'Error' key in success response.
         config = self.create_waiter_config(
             max_attempts=3,
-            acceptors=[{'state': 'success', 'matcher': 'path',
-                        'argument': 'Foo', 'expected': 'SUCCESS'}])
+            acceptors=[
+                {
+                    'state': 'success',
+                    'matcher': 'path',
+                    'argument': 'Foo',
+                    'expected': 'SUCCESS',
+                }
+            ],
+        )
         operation_method = mock.Mock()
         waiter = Waiter('MyWaiter', config, operation_method)
         self.client_responses_are(
-            {'Foo': 'SUCCESS', 'Error': 'foo'},
-            for_operation=operation_method
+            {'Foo': 'SUCCESS', 'Error': 'foo'}, for_operation=operation_method
         )
         waiter.wait()
         self.assertEqual(operation_method.call_count, 1)
@@ -384,7 +462,7 @@ class TestWaitersObjects(unittest.TestCase):
             {'Foo': 'FAILURE'},
             {'Foo': 'FAILURE'},
             {'Foo': 'FAILURE'},
-            for_operation=operation_method
+            for_operation=operation_method,
         )
         waiter = Waiter('MyWaiter', config, operation_method)
         with self.assertRaises(WaiterError):
@@ -401,18 +479,21 @@ class TestWaitersObjects(unittest.TestCase):
             # waiter encounters this response it will transition
             # to the failure state.
             {'Error': {'Code': 'UnknownError', 'Message': 'bad error'}},
-            for_operation=operation_method
+            for_operation=operation_method,
         )
         waiter = Waiter('MyWaiter', config, operation_method)
         with self.assertRaises(WaiterError):
             waiter.wait()
 
     def test_last_response_available_on_waiter_error(self):
-        last_response = {'Error': {'Code': 'UnknownError', 'Message': 'bad error'}}
+        last_response = {
+            'Error': {'Code': 'UnknownError', 'Message': 'bad error'}
+        }
         config = self.create_waiter_config()
         operation_method = mock.Mock()
-        self.client_responses_are(last_response,
-                                  for_operation=operation_method)
+        self.client_responses_are(
+            last_response, for_operation=operation_method
+        )
         waiter = Waiter('MyWaiter', config, operation_method)
         with self.assertRaises(WaiterError) as e:
             waiter.wait()
@@ -431,62 +512,111 @@ class TestWaitersObjects(unittest.TestCase):
             # waiter encounters this response it will transition
             # to the failure state.
             {'Error': {'Code': error_code, 'Message': error_message}},
-            for_operation=operation_method
+            for_operation=operation_method,
         )
         waiter = Waiter('MyWaiter', config, operation_method)
 
         with self.assertRaisesRegex(WaiterError, error_message):
             waiter.wait()
 
-    def _assert_failure_state_error_raised(self, acceptors, responses, expected_msg):
-        config = self.create_waiter_config(
-            acceptors=acceptors)
+    def _assert_failure_state_error_raised(
+        self, acceptors, responses, expected_msg
+    ):
+        config = self.create_waiter_config(acceptors=acceptors)
         operation_method = mock.Mock()
         waiter = Waiter('MyWaiter', config, operation_method)
-        self.client_responses_are(
-            *responses,
-            for_operation=operation_method
-        )
+        self.client_responses_are(*responses, for_operation=operation_method)
         with self.assertRaisesRegex(WaiterError, expected_msg):
             waiter.wait()
 
     def test_waiter_failure_state_error(self):
         test_cases = [
-            ([{'state': 'failure', 'matcher': 'path',
-               'argument': 'Foo', 'expected': 'FAILURE'}],
-             [{'Foo': 'FAILURE'}],
-             'FAILURE'),
-            ([{'state': 'failure', 'matcher': 'pathAll',
-               'argument': 'Tables[].State', 'expected': 'FAILURE'}],
-             [{'Tables': [{"State": "FAILURE"}]}],
-             'FAILURE'),
-            ([{'state': 'failure', 'matcher': 'pathAny',
-               'argument': 'Tables[].State', 'expected': 'FAILURE'}],
-             [{'Tables': [{"State": "FAILURE"}]}],
-             'FAILURE'),
-            ([{'state': 'failure', 'matcher': 'status', 'expected': 404}],
-             [{'ResponseMetadata': {'HTTPStatusCode': 404}}],
-             '404'),
-            ([{'state': 'failure', 'matcher': 'error', 'expected': 'FailError'}],
-             [{'Error': {'Code': 'FailError', 'Message': 'foo'}}],
-             'FailError'),
-            ([{'state': 'retry', 'matcher': 'error', 'expected': 'RetryMe'}],
-             [{'Success': False}]*4,
-             'Max attempts exceeded'),
-            ([
-                {'state': 'success', 'matcher': 'status', 'expected': 200},
-                {'state': 'retry', 'matcher': 'error', 'expected': 'RetryMe'},
-            ],
-             [{'Success': False},
-              {'Error': {'Code': 'RetryMe', 'Message': 'foo'}},
-              {'Success': False},
-              {'Success': False},
-              ],
-             'Previously accepted state'),
+            (
+                [
+                    {
+                        'state': 'failure',
+                        'matcher': 'path',
+                        'argument': 'Foo',
+                        'expected': 'FAILURE',
+                    }
+                ],
+                [{'Foo': 'FAILURE'}],
+                'FAILURE',
+            ),
+            (
+                [
+                    {
+                        'state': 'failure',
+                        'matcher': 'pathAll',
+                        'argument': 'Tables[].State',
+                        'expected': 'FAILURE',
+                    }
+                ],
+                [{'Tables': [{"State": "FAILURE"}]}],
+                'FAILURE',
+            ),
+            (
+                [
+                    {
+                        'state': 'failure',
+                        'matcher': 'pathAny',
+                        'argument': 'Tables[].State',
+                        'expected': 'FAILURE',
+                    }
+                ],
+                [{'Tables': [{"State": "FAILURE"}]}],
+                'FAILURE',
+            ),
+            (
+                [{'state': 'failure', 'matcher': 'status', 'expected': 404}],
+                [{'ResponseMetadata': {'HTTPStatusCode': 404}}],
+                '404',
+            ),
+            (
+                [
+                    {
+                        'state': 'failure',
+                        'matcher': 'error',
+                        'expected': 'FailError',
+                    }
+                ],
+                [{'Error': {'Code': 'FailError', 'Message': 'foo'}}],
+                'FailError',
+            ),
+            (
+                [
+                    {
+                        'state': 'retry',
+                        'matcher': 'error',
+                        'expected': 'RetryMe',
+                    }
+                ],
+                [{'Success': False}] * 4,
+                'Max attempts exceeded',
+            ),
+            (
+                [
+                    {'state': 'success', 'matcher': 'status', 'expected': 200},
+                    {
+                        'state': 'retry',
+                        'matcher': 'error',
+                        'expected': 'RetryMe',
+                    },
+                ],
+                [
+                    {'Success': False},
+                    {'Error': {'Code': 'RetryMe', 'Message': 'foo'}},
+                    {'Success': False},
+                    {'Success': False},
+                ],
+                'Previously accepted state',
+            ),
         ]
 
         for acceptors, responses, expected_msg in test_cases:
-            self._assert_failure_state_error_raised(acceptors, responses, expected_msg)
+            self._assert_failure_state_error_raised(
+                acceptors, responses, expected_msg
+            )
 
     def test_waiter_transitions_to_failure_state(self):
         acceptors = [
@@ -502,7 +632,7 @@ class TestWaitersObjects(unittest.TestCase):
             # causes the waiter to fail fast.
             {'Error': {'Code': 'FailError', 'Message': 'foo'}},
             {'WillNeverGetCalled': True},
-            for_operation=operation_method
+            for_operation=operation_method,
         )
         waiter = Waiter('MyWaiter', config, operation_method)
         with self.assertRaises(WaiterError):
@@ -517,16 +647,14 @@ class TestWaitersObjects(unittest.TestCase):
             {'state': 'success', 'matcher': 'status', 'expected': 200},
             {'state': 'retry', 'matcher': 'error', 'expected': 'RetryMe'},
         ]
-        config = self.create_waiter_config(
-            acceptors=acceptor_with_retry_state)
+        config = self.create_waiter_config(acceptors=acceptor_with_retry_state)
         operation_method = mock.Mock()
         self.client_responses_are(
             {'Nothing': 'foo'},
             {'Error': {'Code': 'RetryMe', 'Message': 'foo'}},
-            {'Success': True,
-             'ResponseMetadata': {'HTTPStatusCode': 200}},
+            {'Success': True, 'ResponseMetadata': {'HTTPStatusCode': 200}},
             {'NeverCalled': True},
-            for_operation=operation_method
+            for_operation=operation_method,
         )
         waiter = Waiter('MyWaiter', config, operation_method)
         waiter.wait()
@@ -539,13 +667,12 @@ class TestWaitersObjects(unittest.TestCase):
         config = self.create_waiter_config(acceptors=acceptors)
         operation_method = mock.Mock()
         self.client_responses_are(
-            {'Error': {'Code': 'MyError'}},
-            for_operation=operation_method)
+            {'Error': {'Code': 'MyError'}}, for_operation=operation_method
+        )
         waiter = Waiter('MyWaiter', config, operation_method)
         waiter.wait(Foo='foo', Bar='bar', Baz='baz')
 
-        operation_method.assert_called_with(Foo='foo', Bar='bar',
-                                            Baz='baz')
+        operation_method.assert_called_with(Foo='foo', Bar='bar', Baz='baz')
 
     @mock.patch('time.sleep')
     def test_waiter_honors_delay_time_between_retries(self, sleep_mock):
@@ -560,7 +687,7 @@ class TestWaitersObjects(unittest.TestCase):
             {'Success': False},
             {'Success': False},
             {'Success': False},
-            for_operation=operation_method
+            for_operation=operation_method,
         )
         waiter = Waiter('MyWaiter', config, operation_method)
         with self.assertRaises(WaiterError):
@@ -579,7 +706,7 @@ class TestWaitersObjects(unittest.TestCase):
             {'Success': False},
             {'Success': False},
             {'Success': False},
-            for_operation=operation_method
+            for_operation=operation_method,
         )
         waiter = Waiter('MyWaiter', config, operation_method)
         custom_delay = 3
@@ -597,7 +724,7 @@ class TestWaitersObjects(unittest.TestCase):
         self.client_responses_are(
             {'Success': False},
             {'Success': False},
-            for_operation=operation_method
+            for_operation=operation_method,
         )
         waiter = Waiter('MyWaiter', config, operation_method)
         custom_max = 2
@@ -630,7 +757,7 @@ class TestCreateWaiter(unittest.TestCase):
                 'Foo': {
                     'name': 'Foo',
                     'input': {'shape': 'FooInputOutput'},
-                    'output': {'shape': 'FooInputOutput'}
+                    'output': {'shape': 'FooInputOutput'},
                 }
             },
             'shapes': {
@@ -639,14 +766,12 @@ class TestCreateWaiter(unittest.TestCase):
                     'members': {
                         'bar': {
                             'shape': 'String',
-                            'documentation': 'Documents bar'
+                            'documentation': 'Documents bar',
                         }
-                    }
+                    },
                 },
-                'String': {
-                    'type': 'string'
-                }
-            }
+                'String': {'type': 'string'},
+            },
         }
         self.service_model = ServiceModel(self.service_json_model, 'myservice')
         self.client = mock.Mock()
@@ -655,29 +780,33 @@ class TestCreateWaiter(unittest.TestCase):
     def test_can_create_waiter_from_client(self):
         waiter_name = 'WaiterName'
         waiter = create_waiter_with_client(
-            waiter_name, self.waiter_model, self.client)
+            waiter_name, self.waiter_model, self.client
+        )
         self.assertIsInstance(waiter, Waiter)
 
     def test_waiter_class_name(self):
         waiter_name = 'WaiterName'
         waiter = create_waiter_with_client(
-            waiter_name, self.waiter_model, self.client)
+            waiter_name, self.waiter_model, self.client
+        )
         self.assertEqual(
-            waiter.__class__.__name__,
-            'MyService.Waiter.WaiterName'
+            waiter.__class__.__name__, 'MyService.Waiter.WaiterName'
         )
 
     def test_waiter_help_documentation(self):
         waiter_name = 'WaiterName'
         waiter = create_waiter_with_client(
-            waiter_name, self.waiter_model, self.client)
+            waiter_name, self.waiter_model, self.client
+        )
         with mock.patch('sys.stdout', io.StringIO()) as mock_stdout:
             help(waiter.wait)
         content = mock_stdout.getvalue()
         lines = [
-            ('    Polls :py:meth:`MyService.Client.foo` every 1 '
-             'seconds until a successful state is reached. An error '
-             'is returned after 1 failed checks.'),
+            (
+                '    Polls :py:meth:`MyService.Client.foo` every 1 '
+                'seconds until a successful state is reached. An error '
+                'is returned after 1 failed checks.'
+            ),
             '    **Request Syntax**',
             '    ::',
             '      waiter.wait(',
@@ -704,9 +833,7 @@ class TestOperationMethods(unittest.TestCase):
         # occurs, but we need to return the parsed error response.
         client_method = mock.Mock()
         op = NormalizedOperationMethod(client_method)
-        parsed_response = {
-            'Error': {'Code': 'Foo', 'Message': 'bar'}
-        }
+        parsed_response = {'Error': {'Code': 'Foo', 'Message': 'bar'}}
         exception = ClientError(parsed_response, 'OperationName')
         client_method.side_effect = exception
         actual_response = op(Foo='a', Bar='b')
@@ -718,73 +845,79 @@ class ServiceWaiterFunctionalTest(BaseEnvVar):
     This class is used as a base class if you want to functionally test the
     waiters for a specific service.
     """
+
     def setUp(self):
-        super(ServiceWaiterFunctionalTest, self).setUp()
+        super().setUp()
         self.data_path = os.path.join(
-            os.path.dirname(botocore.__file__), 'data')
+            os.path.dirname(botocore.__file__), 'data'
+        )
         self.environ['AWS_DATA_PATH'] = self.data_path
         self.loader = Loader([self.data_path])
 
     def get_waiter_model(self, service):
         """Get the waiter model for the service."""
-        with mock.patch('botocore.loaders.Loader.list_available_services',
-                        return_value=[service]):
-            return WaiterModel(self.loader.load_service_model(
-                service, type_name='waiters-2'))
+        with mock.patch(
+            'botocore.loaders.Loader.list_available_services',
+            return_value=[service],
+        ):
+            return WaiterModel(
+                self.loader.load_service_model(service, type_name='waiters-2')
+            )
 
     def get_service_model(self, service):
         """Get the service model for the service."""
-        with mock.patch('botocore.loaders.Loader.list_available_services',
-                        return_value=[service]):
+        with mock.patch(
+            'botocore.loaders.Loader.list_available_services',
+            return_value=[service],
+        ):
             return ServiceModel(
-                self.loader.load_service_model(
-                    service, type_name='service-2'),
-                service_name=service
+                self.loader.load_service_model(service, type_name='service-2'),
+                service_name=service,
             )
 
 
 class CloudFrontWaitersTest(ServiceWaiterFunctionalTest):
     def setUp(self):
-        super(CloudFrontWaitersTest, self).setUp()
+        super().setUp()
         self.client = mock.Mock()
         self.service = 'cloudfront'
 
     def assert_distribution_deployed_call_count(self):
         waiter_name = 'DistributionDeployed'
         waiter_model = self.get_waiter_model(self.service)
-        self.client.meta.service_model = self.get_service_model(
-            self.service)
+        self.client.meta.service_model = self.get_service_model(self.service)
         self.client.get_distribution.side_effect = [
             {'Distribution': {'Status': 'Deployed'}}
         ]
-        waiter = create_waiter_with_client(waiter_name, waiter_model,
-                                           self.client)
+        waiter = create_waiter_with_client(
+            waiter_name, waiter_model, self.client
+        )
         waiter.wait()
         self.assertEqual(self.client.get_distribution.call_count, 1)
 
     def assert_invalidation_completed_call_count(self):
         waiter_name = 'InvalidationCompleted'
         waiter_model = self.get_waiter_model(self.service)
-        self.client.meta.service_model = self.get_service_model(
-            self.service)
+        self.client.meta.service_model = self.get_service_model(self.service)
         self.client.get_invalidation.side_effect = [
             {'Invalidation': {'Status': 'Completed'}}
         ]
-        waiter = create_waiter_with_client(waiter_name, waiter_model,
-                                           self.client)
+        waiter = create_waiter_with_client(
+            waiter_name, waiter_model, self.client
+        )
         waiter.wait()
         self.assertEqual(self.client.get_invalidation.call_count, 1)
 
     def assert_streaming_distribution_deployed_call_count(self):
         waiter_name = 'StreamingDistributionDeployed'
         waiter_model = self.get_waiter_model(self.service)
-        self.client.meta.service_model = self.get_service_model(
-            self.service)
+        self.client.meta.service_model = self.get_service_model(self.service)
         self.client.get_streaming_distribution.side_effect = [
             {'StreamingDistribution': {'Status': 'Deployed'}}
         ]
-        waiter = create_waiter_with_client(waiter_name, waiter_model,
-                                           self.client)
+        waiter = create_waiter_with_client(
+            waiter_name, waiter_model, self.client
+        )
         waiter.wait()
         self.assertEqual(self.client.get_streaming_distribution.call_count, 1)
 

@@ -14,15 +14,15 @@
 """This script is to programatically regenerate the requirements/*-lock.txt
 files. In order to run it you need to have pip-tools installed into the
 currently active virtual environment."""
+
 import argparse
-import sys
 import os
-from typing import List, ClassVar
-from pathlib import Path
+import sys
 from dataclasses import dataclass
+from pathlib import Path
+from typing import ClassVar, List
 
-from utils import run, BadRCError
-
+from utils import BadRCError, run
 
 ROOT = Path(__file__).parents[1]
 IS_WINDOWS = sys.platform == "win32"
@@ -93,7 +93,7 @@ class LockFileBuilder:
 
     def _overwrite_paths(self, output_path: Path):
         rel_output_path = os.path.relpath(output_path, self.build_directory)
-        with open(output_path, "r") as f:
+        with open(output_path) as f:
             content = f.read()
         # Overwrite absolute path in --output-file argument.
         content = content.replace(str(output_path), str(rel_output_path))
@@ -119,15 +119,15 @@ def show_files(build_directory: Path, include_sdist: bool, include_base: bool):
 
 def show_file(path: Path):
     print(path)
-    with open(path, 'r') as f:
+    with open(path) as f:
         print(f.read())
 
 
 def main(
-        build_directory: Path,
-        should_show_files: bool,
-        include_sdist: bool,
-        include_base: bool
+    build_directory: Path,
+    should_show_files: bool,
+    include_sdist: bool,
+    include_base: bool,
 ):
     builder = LockFileBuilder(
         source_directory=ROOT,
@@ -204,13 +204,24 @@ if __name__ == "__main__":
         help=("Default base directory where output lock files to be written."),
     )
     parser.add_argument('--show-files', action='store_true')
-    parser.add_argument('--no-show-files', action='store_false', dest='show_files')
+    parser.add_argument(
+        '--no-show-files', action='store_false', dest='show_files'
+    )
     parser.set_defaults(show_files=False)
     parser.add_argument('--include-sdist', action='store_true')
-    parser.add_argument('--no-include-sdist', action='store_false', dest='include_sdist')
+    parser.add_argument(
+        '--no-include-sdist', action='store_false', dest='include_sdist'
+    )
     parser.set_defaults(include_sdist=True)
     parser.add_argument('--include-base', action='store_true')
-    parser.add_argument('--no-include-base', action='store_false', dest='include_base')
+    parser.add_argument(
+        '--no-include-base', action='store_false', dest='include_base'
+    )
     parser.set_defaults(include_base=False)
     args = parser.parse_args()
-    main(args.output_directory, args.show_files, args.include_sdist, args.include_base)
+    main(
+        args.output_directory,
+        args.show_files,
+        args.include_sdist,
+        args.include_base,
+    )

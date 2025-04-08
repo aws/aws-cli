@@ -11,43 +11,37 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import os
+import difflib
 import glob
 import json
-import pprint
 import logging
-import difflib
-
-import pytest
-
-from tests import create_session
+import os
+import pprint
 
 import botocore.session
-from botocore import xform_name
-from botocore import parsers
+import pytest
+from botocore import parsers, xform_name
+
+from tests import create_session
 
 log = logging.getLogger(__name__)
 
 
 SPECIAL_CASES = [
-    'iam-get-user-policy.xml', # Needs the JSON decode from handlers.py
+    'iam-get-user-policy.xml',  # Needs the JSON decode from handlers.py
     'iam-list-roles.xml',  # Needs the JSON decode from handlers.py for the policy
-    's3-get-bucket-location.xml', # Confirmed, this will need a special handler
+    's3-get-bucket-location.xml',  # Confirmed, this will need a special handler
     #'s3-list-multipart-uploads.xml',  # Bug in model, missing delimeter
-    'cloudformation-get-template.xml', # Need to JSON decode the template body.
+    'cloudformation-get-template.xml',  # Need to JSON decode the template body.
 ]
 
 
 def _test_parsed_response(xmlfile, operation_model, expected):
     response_body = _get_raw_response_body(xmlfile)
-    response = {
-        'body': response_body,
-        'status_code': 200,
-        'headers': {}
-    }
+    response = {'body': response_body, 'status_code': 200, 'headers': {}}
     for case in SPECIAL_CASES:
         if case in xmlfile:
-            print("SKIP: %s" % xmlfile)
+            print(f"SKIP: {xmlfile}")
             return
     if 'errors' in xmlfile:
         response['status_code'] = 400
@@ -85,8 +79,8 @@ def _test_parsed_response(xmlfile, operation_model, expected):
         print(d2)
         pretty_d1 = pprint.pformat(d1, width=1).splitlines()
         pretty_d2 = pprint.pformat(d2, width=1).splitlines()
-        diff = ('\n' + '\n'.join(difflib.ndiff(pretty_d1, pretty_d2)))
-        raise AssertionError("Dicts are not equal:\n%s" % diff)
+        diff = '\n' + '\n'.join(difflib.ndiff(pretty_d1, pretty_d2))
+        raise AssertionError(f"Dicts are not equal:\n{diff}")
 
 
 def _convert_bytes_to_str(parsed):
@@ -128,7 +122,6 @@ def _get_operation_model(service_model, filename):
     for operation_name in operation_names:
         if xform_name(operation_name) == opname.replace('-', '_'):
             return service_model.operation_model(operation_name)
-    return operation
 
 
 def _xml_test_cases():
@@ -137,14 +130,13 @@ def _xml_test_cases():
         data_path = os.path.join(os.path.dirname(__file__), 'xml')
         data_path = os.path.join(data_path, dp)
         session = create_session()
-        xml_files = glob.glob('%s/*.xml' % data_path)
+        xml_files = glob.glob(f'{data_path}/*.xml')
         service_names = set()
         for fn in xml_files:
             service_names.add(os.path.split(fn)[1].split('-')[0])
         for service_name in service_names:
             service_model = session.get_service_model(service_name)
-            service_xml_files = glob.glob('%s/%s-*.xml' % (data_path,
-                                                           service_name))
+            service_xml_files = glob.glob(f'{data_path}/{service_name}-*.xml')
             for xmlfile in service_xml_files:
                 expected = _get_expected_parsed_result(xmlfile)
                 operation_model = _get_operation_model(service_model, xmlfile)
@@ -153,13 +145,10 @@ def _xml_test_cases():
 
 
 @pytest.mark.parametrize(
-    "xmlfile, operation_model, expected",
-    _xml_test_cases()
+    "xmlfile, operation_model, expected", _xml_test_cases()
 )
 def test_xml_parsing(xmlfile, operation_model, expected):
-    _test_parsed_response(
-        xmlfile, operation_model, expected
-    )
+    _test_parsed_response(xmlfile, operation_model, expected)
 
 
 def _get_raw_response_body(xmlfile):
@@ -178,12 +167,15 @@ def _json_test_cases():
     session = botocore.session.get_session()
     for json_response_file in os.listdir(json_responses_dir):
         # Files look like: 'datapipeline-create-pipeline.json'
-        service_name, operation_name = os.path.splitext(
-            json_response_file)[0].split('-', 1)
-        expected_parsed_response = os.path.join(expected_parsed_dir,
-                                                json_response_file)
-        raw_response_file = os.path.join(json_responses_dir,
-                                         json_response_file)
+        service_name, operation_name = os.path.splitext(json_response_file)[
+            0
+        ].split('-', 1)
+        expected_parsed_response = os.path.join(
+            expected_parsed_dir, json_response_file
+        )
+        raw_response_file = os.path.join(
+            json_responses_dir, json_response_file
+        )
         with open(expected_parsed_response) as f:
             expected = json.load(f)
         service_model = session.get_service_model(service_name)
@@ -197,12 +189,7 @@ def _json_test_cases():
 
 
 @pytest.mark.parametrize(
-    "raw_response_file, operation_model, expected",
-    _json_test_cases()
+    "raw_response_file, operation_model, expected", _json_test_cases()
 )
-def test_json_errors_parsing(
-    raw_response_file, operation_model, expected
-):
-    _test_parsed_response(
-        raw_response_file, operation_model, expected
-    )
+def test_json_errors_parsing(raw_response_file, operation_model, expected):
+    _test_parsed_response(raw_response_file, operation_model, expected)

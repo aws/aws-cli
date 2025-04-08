@@ -11,10 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.customizations.sso.utils import (
-    do_sso_login,
-    PrintOnlyHandler,
     LOGIN_ARGS,
     BaseSSOCommand,
+    PrintOnlyHandler,
+    do_sso_login,
 )
 from awscli.customizations.utils import uni_print
 

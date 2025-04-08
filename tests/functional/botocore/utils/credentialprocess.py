@@ -11,24 +11,29 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 """This is a dummy implementation of a credential provider process."""
+
 import argparse
 import json
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--raise-error', action='store_true', help=(
-        'If set, this will cause the process to return a non-zero exit code '
-        'and print to stderr.'
-    ))
+    parser.add_argument(
+        '--raise-error',
+        action='store_true',
+        help=(
+            'If set, this will cause the process to return a non-zero exit code '
+            'and print to stderr.'
+        ),
+    )
     args = parser.parse_args()
     if args.raise_error:
         raise Exception('Failed to fetch credentials.')
-    print(json.dumps({
-        'AccessKeyId': 'spam',
-        'SecretAccessKey': 'eggs',
-        'Version': 1
-    }))
+    print(
+        json.dumps(
+            {'AccessKeyId': 'spam', 'SecretAccessKey': 'eggs', 'Version': 1}
+        )
+    )
 
 
 if __name__ == "__main__":

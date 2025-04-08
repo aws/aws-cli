@@ -10,12 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import pytest
-
 import botocore.session
-from botocore.stub import Stubber
+import pytest
 from botocore.exceptions import ParamValidationError
-
+from botocore.stub import Stubber
 
 ALIAS_CASES = [
     {
@@ -23,7 +21,7 @@ ALIAS_CASES = [
         'operation': 'describe_flow_logs',
         'original_name': 'Filter',
         'new_name': 'Filters',
-        'parameter_value': [{'Name': 'traffic-type', 'Values': ['ACCEPT']}]
+        'parameter_value': [{'Name': 'traffic-type', 'Values': ['ACCEPT']}],
     },
     {
         'service': 'cloudsearchdomain',
@@ -31,7 +29,7 @@ ALIAS_CASES = [
         'original_name': 'return',
         'new_name': 'returnFields',
         'parameter_value': '_all_fields',
-        'extra_args': {'query': 'foo'}
+        'extra_args': {'query': 'foo'},
     },
     {
         'service': 'logs',
@@ -42,9 +40,9 @@ ALIAS_CASES = [
         'extra_args': {
             'logGroupName': 'name',
             'to': 10,
-            'destination': 'mybucket'
-        }
-    }
+            'destination': 'mybucket',
+        },
+    },
 ]
 
 
@@ -62,8 +60,11 @@ def test_can_use_original_name(case):
 
 def _can_use_parameter_in_client_call(session, case, use_alias=True):
     client = session.create_client(
-        case['service'], region_name='us-east-1',
-        aws_access_key_id='foo', aws_secret_access_key='bar')
+        case['service'],
+        region_name='us-east-1',
+        aws_access_key_id='foo',
+        aws_secret_access_key='bar',
+    )
 
     stubber = Stubber(client)
     stubber.activate()
@@ -80,7 +81,8 @@ def _can_use_parameter_in_client_call(session, case, use_alias=True):
         getattr(client, operation)(**params)
     except ParamValidationError as e:
         raise AssertionError(
-            'Expecting %s to be valid parameter for %s.%s but received '
-            '%s.' % (
-                case['new_name'], case['service'], case['operation'], e)
+            'Expecting {} to be valid parameter for {}.{} but received '
+            '{}.'.format(
+                case['new_name'], case['service'], case['operation'], e
+            )
         )

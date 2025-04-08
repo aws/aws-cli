@@ -16,6 +16,7 @@ from concurrent.futures import ThreadPoolExecutor
 from s3transfer.exceptions import CancelledError, FatalError
 from s3transfer.futures import TransferCoordinator
 from s3transfer.manager import TransferConfig, TransferCoordinatorController
+
 from tests import TransferCoordinatorWithInterrupt, unittest
 
 
@@ -132,7 +133,7 @@ class TestTransferCoordinatorController(unittest.TestCase):
         try:
             self.coordinator_controller.wait()
         except FutureResultException as e:
-            self.fail('%s should not have been raised.' % e)
+            self.fail(f'{e} should not have been raised.')
 
     def test_wait_can_be_interrupted(self):
         inject_interrupt_coordinator = TransferCoordinatorWithInterrupt()

@@ -422,6 +422,10 @@
           "shape":"UkraineAdditionalInfo",
           "documentation":"<p> Additional tax information associated with your TRN in Ukraine. </p>"
         },
+        "uzbekistanAdditionalInfo":{
+          "shape":"UzbekistanAdditionalInfo",
+          "documentation":"<p> Additional tax information to specify for a TRN in Uzbekistan. </p>"
+        },
         "vietnamAdditionalInfo":{
           "shape":"VietnamAdditionalInfo",
           "documentation":"<p>Additional tax information to specify for a TRN in Vietnam. </p>"
@@ -503,6 +507,10 @@
         "ukraineAdditionalInfo":{
           "shape":"UkraineAdditionalInfo",
           "documentation":"<p> Additional tax information associated with your TRN in Ukraine. </p>"
+        },
+        "uzbekistanAdditionalInfo":{
+          "shape":"UzbekistanAdditionalInfo",
+          "documentation":"<p> Additional tax information associated with your TRN in Uzbekistan. </p>"
         },
         "vietnamAdditionalInfo":{
           "shape":"VietnamAdditionalInfo",
@@ -2218,6 +2226,27 @@
       "min":1,
       "pattern":"^https.*\\S.*$"
     },
+    "UzbekistanAdditionalInfo":{
+      "type":"structure",
+      "members":{
+        "taxRegistrationNumberType":{
+          "shape":"UzbekistanTaxRegistrationNumberType",
+          "documentation":"<p> The tax registration number type. The tax registration number type valid values are <code>Business</code> and <code>Individual</code>. </p>"
+        },
+        "vatRegistrationNumber":{
+          "shape":"VatRegistrationNumber",
+          "documentation":"<p> The unique 12-digit number issued to identify VAT-registered identities in Uzbekistan. </p>"
+        }
+      },
+      "documentation":"<p> Additional tax information to specify for a TRN in Uzbekistan. </p>"
+    },
+    "UzbekistanTaxRegistrationNumberType":{
+      "type":"string",
+      "enum":[
+        "Business",
+        "Individual"
+      ]
+    },
     "ValidationException":{
       "type":"structure",
       "required":[
@@ -2266,6 +2295,10 @@
     "ValidationExceptionFieldList":{
       "type":"list",
       "member":{"shape":"ValidationExceptionField"}
+    },
+    "VatRegistrationNumber":{
+      "type":"string",
+      "pattern":"^[0-9]{12}$"
     },
     "VerificationDetails":{
       "type":"structure",

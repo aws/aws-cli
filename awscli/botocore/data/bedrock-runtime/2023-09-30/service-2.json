@@ -43,8 +43,8 @@
       "output":{"shape":"ConverseResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ModelTimeoutException"},
         {"shape":"InternalServerException"},
         {"shape":"ServiceUnavailableException"},
@@ -65,8 +65,8 @@
       "output":{"shape":"ConverseStreamResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ModelTimeoutException"},
         {"shape":"InternalServerException"},
         {"shape":"ServiceUnavailableException"},
@@ -110,11 +110,35 @@
         {"shape":"InternalServerException"},
         {"shape":"ServiceUnavailableException"},
         {"shape":"ValidationException"},
-        {"shape":"ModelNotReadyException"},
         {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ModelNotReadyException"},
         {"shape":"ModelErrorException"}
       ],
       "documentation":"<p>Invokes the specified Amazon Bedrock model to run inference using the prompt and inference parameters provided in the request body. You use model inference to generate text, images, and embeddings.</p> <p>For example code, see <i>Invoke model code examples</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permission for the <code>bedrock:InvokeModel</code> action.</p> <important> <p>To deny all inference access to resources that you specify in the modelId field, you need to deny access to the <code>bedrock:InvokeModel</code> and <code>bedrock:InvokeModelWithResponseStream</code> actions. Doing this also denies access to the resource through the Converse API actions (<a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> and <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>). For more information see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/security_iam_id-based-policy-examples.html#security_iam_id-based-policy-examples-deny-inference\">Deny access for inference on specific models</a>. </p> </important> <p>For troubleshooting some of the common errors you might encounter when using the <code>InvokeModel</code> API, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html\">Troubleshooting Amazon Bedrock API Error Codes</a> in the Amazon Bedrock User Guide</p>"
+    },
+    "InvokeModelWithBidirectionalStream":{
+      "name":"InvokeModelWithBidirectionalStream",
+      "http":{
+        "method":"POST",
+        "requestUri":"/model/{modelId}/invoke-with-bidirectional-stream",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeModelWithBidirectionalStreamRequest"},
+      "output":{"shape":"InvokeModelWithBidirectionalStreamResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ModelTimeoutException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ModelStreamErrorException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ModelNotReadyException"},
+        {"shape":"ModelErrorException"}
+      ],
+      "documentation":"<p>Invoke the specified Amazon Bedrock model to run inference using the bidirectional stream. The response is returned in a stream that remains open for 8 minutes. A single session can contain multiple prompts and responses from the model. The prompts to the model are provided as audio files and the model's responses are spoken back to the user and transcribed.</p> <p>It is possible for users to interrupt the model's response with a new prompt, which will halt the response speech. The model will retain contextual awareness of the conversation while pivoting to respond to the new prompt.</p>"
     },
     "InvokeModelWithResponseStream":{
       "name":"InvokeModelWithResponseStream",
@@ -134,8 +158,8 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ModelStreamErrorException"},
         {"shape":"ValidationException"},
-        {"shape":"ModelNotReadyException"},
         {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ModelNotReadyException"},
         {"shape":"ModelErrorException"}
       ],
       "documentation":"<p>Invoke the specified Amazon Bedrock model to run inference using the prompt and inference parameters provided in the request body. The response is returned in a stream.</p> <p>To see if a model supports streaming, call <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModel.html\">GetFoundationModel</a> and check the <code>responseStreamingSupported</code> field in the response.</p> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>InvokeModelWithResponseStream</code>.</p> </note> <p>For example code, see <i>Invoke model with streaming code example</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permissions to perform the <code>bedrock:InvokeModelWithResponseStream</code> action. </p> <important> <p>To deny all inference access to resources that you specify in the modelId field, you need to deny access to the <code>bedrock:InvokeModel</code> and <code>bedrock:InvokeModelWithResponseStream</code> actions. Doing this also denies access to the resource through the Converse API actions (<a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> and <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>). For more information see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/security_iam_id-based-policy-examples.html#security_iam_id-based-policy-examples-deny-inference\">Deny access for inference on specific models</a>. </p> </important> <p>For troubleshooting some of the common errors you might encounter when using the <code>InvokeModelWithResponseStream</code> API, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html\">Troubleshooting Amazon Bedrock API Error Codes</a> in the Amazon Bedrock User Guide</p>"
@@ -168,8 +192,8 @@
       "output":{"shape":"StartAsyncInvokeResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"},
         {"shape":"ServiceUnavailableException"},
         {"shape":"ValidationException"},
@@ -392,6 +416,30 @@
       "members":{
       },
       "documentation":"<p>The Model automatically decides if a tool should be called or whether to generate text instead. For example, <code>{\"auto\" : {}}</code>.</p>"
+    },
+    "BidirectionalInputPayloadPart":{
+      "type":"structure",
+      "members":{
+        "bytes":{
+          "shape":"PartBody",
+          "documentation":"<p>The audio content for the bidirectional input.</p>"
+        }
+      },
+      "documentation":"<p>Payload content for the bidirectional input. The input is an audio stream.</p>",
+      "event":true,
+      "sensitive":true
+    },
+    "BidirectionalOutputPayloadPart":{
+      "type":"structure",
+      "members":{
+        "bytes":{
+          "shape":"PartBody",
+          "documentation":"<p>The speech output of the bidirectional stream.</p>"
+        }
+      },
+      "documentation":"<p>Output from the bidirectional stream. The output is speech and a text transcription.</p>",
+      "event":true,
+      "sensitive":true
     },
     "Blob":{"type":"blob"},
     "Body":{
@@ -2098,6 +2146,83 @@
           "documentation":"<p>Model performance settings for the request.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-PerformanceConfig-Latency"
+        }
+      },
+      "payload":"body"
+    },
+    "InvokeModelWithBidirectionalStreamInput":{
+      "type":"structure",
+      "members":{
+        "chunk":{
+          "shape":"BidirectionalInputPayloadPart",
+          "documentation":"<p>The audio chunk that is used as input for the invocation step.</p>"
+        }
+      },
+      "documentation":"<p>Payload content, the speech chunk, for the bidirectional input of the invocation step.</p>",
+      "eventstream":true
+    },
+    "InvokeModelWithBidirectionalStreamOutput":{
+      "type":"structure",
+      "members":{
+        "chunk":{
+          "shape":"BidirectionalOutputPayloadPart",
+          "documentation":"<p>The speech chunk that was provided as output from the invocation step.</p>"
+        },
+        "internalServerException":{
+          "shape":"InternalServerException",
+          "documentation":"<p>The request encountered an unknown internal error.</p>"
+        },
+        "modelStreamErrorException":{
+          "shape":"ModelStreamErrorException",
+          "documentation":"<p>The request encountered an error with the model stream.</p>"
+        },
+        "validationException":{
+          "shape":"ValidationException",
+          "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>"
+        },
+        "throttlingException":{
+          "shape":"ThrottlingException",
+          "documentation":"<p>The request was denied due to request throttling.</p>"
+        },
+        "modelTimeoutException":{
+          "shape":"ModelTimeoutException",
+          "documentation":"<p>The connection was closed because a request was not received within the timeout period.</p>"
+        },
+        "serviceUnavailableException":{
+          "shape":"ServiceUnavailableException",
+          "documentation":"<p>The request has failed due to a temporary failure of the server.</p>"
+        }
+      },
+      "documentation":"<p>Output from the bidirectional stream that was used for model invocation.</p>",
+      "eventstream":true
+    },
+    "InvokeModelWithBidirectionalStreamRequest":{
+      "type":"structure",
+      "required":[
+        "modelId",
+        "body"
+      ],
+      "members":{
+        "modelId":{
+          "shape":"InvokeModelIdentifier",
+          "documentation":"<p>The model ID or ARN of the model ID to use. Currently, only <code>amazon.nova-sonic-v1:0</code> is supported.</p>",
+          "location":"uri",
+          "locationName":"modelId"
+        },
+        "body":{
+          "shape":"InvokeModelWithBidirectionalStreamInput",
+          "documentation":"<p>The prompt and inference parameters in the format specified in the <code>BidirectionalInputPayloadPart</code> in the header. You must provide the body in JSON format. To see the format and content of the request and response bodies for different models, refer to <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/api-methods-run.html\">Run inference</a> in the Bedrock User Guide.</p>"
+        }
+      },
+      "payload":"body"
+    },
+    "InvokeModelWithBidirectionalStreamResponse":{
+      "type":"structure",
+      "required":["body"],
+      "members":{
+        "body":{
+          "shape":"InvokeModelWithBidirectionalStreamOutput",
+          "documentation":"<p>Streaming response from the model in the format specified by the <code>BidirectionalOutputPayloadPart</code> header.</p>"
         }
       },
       "payload":"body"

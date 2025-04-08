@@ -260,7 +260,7 @@
       "members":{
         "accountScope":{
           "shape":"String",
-          "documentation":"<p>The account scope that you want your recommendations for. Amazon Web Services calculates recommendations including the management account and member accounts if the value is set to <code>PAYER</code>. If the value is <code>LINKED</code>, recommendations are calculated for individual member accounts only.</p>"
+          "documentation":"<p>The account scope for which you want recommendations. Amazon Web Services calculates recommendations including the management account and member accounts if the value is set to <code>PAYER</code>. If the value is <code>LINKED</code>, recommendations are calculated for individual member accounts only.</p>"
         },
         "term":{
           "shape":"String",
@@ -291,6 +291,59 @@
     "Double":{
       "type":"double",
       "box":true
+    },
+    "DynamoDbReservedCapacity":{
+      "type":"structure",
+      "members":{
+        "configuration":{
+          "shape":"DynamoDbReservedCapacityConfiguration",
+          "documentation":"<p>The DynamoDB reserved capacity configuration used for recommendations.</p>"
+        },
+        "costCalculation":{"shape":"ReservedInstancesCostCalculation"}
+      },
+      "documentation":"<p>The DynamoDB reserved capacity recommendation details.</p>"
+    },
+    "DynamoDbReservedCapacityConfiguration":{
+      "type":"structure",
+      "members":{
+        "accountScope":{
+          "shape":"String",
+          "documentation":"<p>The account scope for which you want recommendations.</p>"
+        },
+        "service":{
+          "shape":"String",
+          "documentation":"<p>The service for which you want recommendations.</p>"
+        },
+        "term":{
+          "shape":"String",
+          "documentation":"<p>The reserved capacity recommendation term in years.</p>"
+        },
+        "paymentOption":{
+          "shape":"String",
+          "documentation":"<p>The payment option for the commitment.</p>"
+        },
+        "reservedInstancesRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
+        },
+        "upfrontCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing this reserved capacity costs you upfront.</p>"
+        },
+        "monthlyRecurringCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing this reserved capacity costs you on a monthly basis.</p>"
+        },
+        "numberOfCapacityUnitsToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of reserved capacity units that Amazon Web Services recommends that you purchase.</p>"
+        },
+        "capacityUnits":{
+          "shape":"String",
+          "documentation":"<p>The capacity unit of the recommended reservation.</p>"
+        }
+      },
+      "documentation":"<p>The DynamoDB reserved capacity configuration used for recommendations.</p>"
     },
     "EbsVolume":{
       "type":"structure",
@@ -410,7 +463,7 @@
       "members":{
         "accountScope":{
           "shape":"String",
-          "documentation":"<p>The account scope that you want your recommendations for.</p>"
+          "documentation":"<p>The account scope for which you want recommendations.</p>"
         },
         "term":{
           "shape":"String",
@@ -454,15 +507,11 @@
       "members":{
         "accountScope":{
           "shape":"String",
-          "documentation":"<p>The account scope that you want your recommendations for.</p>"
+          "documentation":"<p>The account scope for which you want recommendations.</p>"
         },
         "service":{
           "shape":"String",
-          "documentation":"<p>The service that you want your recommendations for.</p>"
-        },
-        "normalizedUnitsToPurchase":{
-          "shape":"String",
-          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
+          "documentation":"<p>The service for which you want recommendations.</p>"
         },
         "term":{
           "shape":"String",
@@ -471,6 +520,22 @@
         "paymentOption":{
           "shape":"String",
           "documentation":"<p>The payment option for the commitment.</p>"
+        },
+        "reservedInstancesRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
+        },
+        "upfrontCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
+        },
+        "monthlyRecurringCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing these reserved instances costs you on a monthly basis.</p>"
+        },
+        "normalizedUnitsToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
         },
         "numberOfInstancesToPurchase":{
           "shape":"String",
@@ -488,10 +553,6 @@
           "shape":"String",
           "documentation":"<p>The type of instance that Amazon Web Services recommends.</p>"
         },
-        "reservedInstancesRegion":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
-        },
         "currentGeneration":{
           "shape":"String",
           "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
@@ -507,14 +568,6 @@
         "sizeFlexEligible":{
           "shape":"Boolean",
           "documentation":"<p>Determines whether the recommendation is size flexible.</p>"
-        },
-        "upfrontCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
-        },
-        "monthlyRecurringCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing reserved instances costs you on a monthly basis.</p>"
         }
       },
       "documentation":"<p>The EC2 reserved instances configuration used for recommendations.</p>"
@@ -562,15 +615,11 @@
       "members":{
         "accountScope":{
           "shape":"String",
-          "documentation":"<p>The account scope that you want your recommendations for.</p>"
+          "documentation":"<p>The account scope for which you want recommendations.</p>"
         },
         "service":{
           "shape":"String",
-          "documentation":"<p>The service that you want your recommendations for.</p>"
-        },
-        "normalizedUnitsToPurchase":{
-          "shape":"String",
-          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
+          "documentation":"<p>The service for which you want recommendations.</p>"
         },
         "term":{
           "shape":"String",
@@ -579,6 +628,22 @@
         "paymentOption":{
           "shape":"String",
           "documentation":"<p>The payment option for the commitment.</p>"
+        },
+        "reservedInstancesRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
+        },
+        "upfrontCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
+        },
+        "monthlyRecurringCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing these reserved instances costs you on a monthly basis.</p>"
+        },
+        "normalizedUnitsToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
         },
         "numberOfInstancesToPurchase":{
           "shape":"String",
@@ -592,10 +657,6 @@
           "shape":"String",
           "documentation":"<p>The type of instance that Amazon Web Services recommends.</p>"
         },
-        "reservedInstancesRegion":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
-        },
         "currentGeneration":{
           "shape":"String",
           "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
@@ -603,14 +664,6 @@
         "sizeFlexEligible":{
           "shape":"Boolean",
           "documentation":"<p>Determines whether the recommendation is size flexible.</p>"
-        },
-        "upfrontCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
-        },
-        "monthlyRecurringCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing reserved instances costs you on a monthly basis.</p>"
         }
       },
       "documentation":"<p>The ElastiCache reserved instances configuration used for recommendations.</p>"
@@ -657,7 +710,7 @@
         },
         "accountIds":{
           "shape":"AccountIdList",
-          "documentation":"<p>The account that the recommendation is for.</p>"
+          "documentation":"<p>The account to which the recommendation applies.</p>"
         },
         "regions":{
           "shape":"RegionList",
@@ -735,7 +788,7 @@
         },
         "accountId":{
           "shape":"String",
-          "documentation":"<p>The account that the recommendation is for.</p>"
+          "documentation":"<p>The account to which the recommendation applies.</p>"
         },
         "currencyCode":{
           "shape":"String",
@@ -1032,6 +1085,75 @@
         "None"
       ]
     },
+    "MemoryDbReservedInstances":{
+      "type":"structure",
+      "members":{
+        "configuration":{
+          "shape":"MemoryDbReservedInstancesConfiguration",
+          "documentation":"<p>The MemoryDB reserved instances configuration used for recommendations.</p>"
+        },
+        "costCalculation":{"shape":"ReservedInstancesCostCalculation"}
+      },
+      "documentation":"<p>The MemoryDB reserved instances recommendation details.</p> <note> <p>MemoryDB reserved instances are referred to as \"MemoryDB reserved nodes\" in customer-facing documentation.</p> </note>"
+    },
+    "MemoryDbReservedInstancesConfiguration":{
+      "type":"structure",
+      "members":{
+        "accountScope":{
+          "shape":"String",
+          "documentation":"<p>The account scope for which you want recommendations.</p>"
+        },
+        "service":{
+          "shape":"String",
+          "documentation":"<p>The service for which you want recommendations.</p>"
+        },
+        "term":{
+          "shape":"String",
+          "documentation":"<p>The reserved instances recommendation term in years.</p>"
+        },
+        "paymentOption":{
+          "shape":"String",
+          "documentation":"<p>The payment option for the commitment.</p>"
+        },
+        "reservedInstancesRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
+        },
+        "upfrontCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing these reserved instances costs you upfront.</p>"
+        },
+        "monthlyRecurringCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing these reserved instances costs you on a monthly basis.</p>"
+        },
+        "normalizedUnitsToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
+        },
+        "numberOfInstancesToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of instances that Amazon Web Services recommends that you purchase.</p>"
+        },
+        "instanceType":{
+          "shape":"String",
+          "documentation":"<p>The type of instance that Amazon Web Services recommends.</p>"
+        },
+        "instanceFamily":{
+          "shape":"String",
+          "documentation":"<p>The instance family of the recommended reservation.</p>"
+        },
+        "sizeFlexEligible":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines whether the recommendation is size flexible.</p>"
+        },
+        "currentGeneration":{
+          "shape":"String",
+          "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
+        }
+      },
+      "documentation":"<p>The MemoryDB reserved instances configuration used for recommendations.</p> <note> <p>MemoryDB reserved instances are referred to as \"MemoryDB reserved nodes\" in customer-facing documentation.</p> </note>"
+    },
     "MixedInstanceConfiguration":{
       "type":"structure",
       "members":{
@@ -1065,15 +1187,11 @@
       "members":{
         "accountScope":{
           "shape":"String",
-          "documentation":"<p>The account scope that you want your recommendations for.</p>"
+          "documentation":"<p>The account scope for which you want recommendations.</p>"
         },
         "service":{
           "shape":"String",
-          "documentation":"<p>The service that you want your recommendations for.</p>"
-        },
-        "normalizedUnitsToPurchase":{
-          "shape":"String",
-          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
+          "documentation":"<p>The service for which you want recommendations.</p>"
         },
         "term":{
           "shape":"String",
@@ -1083,6 +1201,22 @@
           "shape":"String",
           "documentation":"<p>The payment option for the commitment.</p>"
         },
+        "reservedInstancesRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
+        },
+        "upfrontCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
+        },
+        "monthlyRecurringCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing these reserved instances costs you on a monthly basis.</p>"
+        },
+        "normalizedUnitsToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
+        },
         "numberOfInstancesToPurchase":{
           "shape":"String",
           "documentation":"<p>The number of instances that Amazon Web Services recommends that you purchase.</p>"
@@ -1091,10 +1225,6 @@
           "shape":"String",
           "documentation":"<p>The type of instance that Amazon Web Services recommends.</p>"
         },
-        "reservedInstancesRegion":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
-        },
         "currentGeneration":{
           "shape":"String",
           "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
@@ -1102,14 +1232,6 @@
         "sizeFlexEligible":{
           "shape":"Boolean",
           "documentation":"<p>Determines whether the recommendation is size flexible.</p>"
-        },
-        "upfrontCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
-        },
-        "monthlyRecurringCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing reserved instances costs you on a monthly basis.</p>"
         }
       },
       "documentation":"<p>The OpenSearch reserved instances configuration used for recommendations.</p>"
@@ -1209,15 +1331,11 @@
       "members":{
         "accountScope":{
           "shape":"String",
-          "documentation":"<p>The account scope that you want your recommendations for.</p>"
+          "documentation":"<p>The account scope for which you want recommendations.</p>"
         },
         "service":{
           "shape":"String",
-          "documentation":"<p>The service that you want your recommendations for.</p>"
-        },
-        "normalizedUnitsToPurchase":{
-          "shape":"String",
-          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
+          "documentation":"<p>The service for which you want recommendations.</p>"
         },
         "term":{
           "shape":"String",
@@ -1226,6 +1344,22 @@
         "paymentOption":{
           "shape":"String",
           "documentation":"<p>The payment option for the commitment.</p>"
+        },
+        "reservedInstancesRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
+        },
+        "upfrontCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
+        },
+        "monthlyRecurringCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing this instance costs you on a monthly basis.</p>"
+        },
+        "normalizedUnitsToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
         },
         "numberOfInstancesToPurchase":{
           "shape":"String",
@@ -1239,10 +1373,6 @@
           "shape":"String",
           "documentation":"<p>The type of instance that Amazon Web Services recommends.</p>"
         },
-        "reservedInstancesRegion":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
-        },
         "sizeFlexEligible":{
           "shape":"Boolean",
           "documentation":"<p>Determines whether the recommendation is size flexible.</p>"
@@ -1250,14 +1380,6 @@
         "currentGeneration":{
           "shape":"String",
           "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
-        },
-        "upfrontCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
-        },
-        "monthlyRecurringCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing this instance costs you on a monthly basis.</p>"
         },
         "licenseModel":{
           "shape":"String",
@@ -1287,7 +1409,7 @@
         },
         "accountId":{
           "shape":"String",
-          "documentation":"<p>The account that the recommendation is for.</p>"
+          "documentation":"<p>The account to which the recommendation applies.</p>"
         },
         "region":{
           "shape":"String",
@@ -1419,15 +1541,11 @@
       "members":{
         "accountScope":{
           "shape":"String",
-          "documentation":"<p>The account scope that you want your recommendations for.</p>"
+          "documentation":"<p>The account scope for which you want recommendations.</p>"
         },
         "service":{
           "shape":"String",
-          "documentation":"<p>The service that you want your recommendations for.</p>"
-        },
-        "normalizedUnitsToPurchase":{
-          "shape":"String",
-          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
+          "documentation":"<p>The service for which you want recommendations.</p>"
         },
         "term":{
           "shape":"String",
@@ -1436,6 +1554,22 @@
         "paymentOption":{
           "shape":"String",
           "documentation":"<p>The payment option for the commitment.</p>"
+        },
+        "reservedInstancesRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
+        },
+        "upfrontCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
+        },
+        "monthlyRecurringCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing these reserved instances costs you on a monthly basis.</p>"
+        },
+        "normalizedUnitsToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
         },
         "numberOfInstancesToPurchase":{
           "shape":"String",
@@ -1449,10 +1583,6 @@
           "shape":"String",
           "documentation":"<p>The type of instance that Amazon Web Services recommends.</p>"
         },
-        "reservedInstancesRegion":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
-        },
         "sizeFlexEligible":{
           "shape":"Boolean",
           "documentation":"<p>Determines whether the recommendation is size flexible.</p>"
@@ -1460,14 +1590,6 @@
         "currentGeneration":{
           "shape":"String",
           "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
-        },
-        "upfrontCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
-        },
-        "monthlyRecurringCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing reserved instances costs you on a monthly basis.</p>"
         }
       },
       "documentation":"<p>The Redshift reserved instances configuration used for recommendations.</p>"
@@ -1592,6 +1714,14 @@
         "rdsDbInstanceStorage":{
           "shape":"RdsDbInstanceStorage",
           "documentation":"<p>The DB instance storage recommendation details.</p>"
+        },
+        "dynamoDbReservedCapacity":{
+          "shape":"DynamoDbReservedCapacity",
+          "documentation":"<p>The DynamoDB reserved capacity recommendation details.</p>"
+        },
+        "memoryDbReservedInstances":{
+          "shape":"MemoryDbReservedInstances",
+          "documentation":"<p>The MemoryDB reserved instances recommendation details.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about the specified resource.</p>",
@@ -1658,7 +1788,9 @@
         "RedshiftReservedInstances",
         "ElastiCacheReservedInstances",
         "RdsDbInstanceStorage",
-        "RdsDbInstance"
+        "RdsDbInstance",
+        "DynamoDbReservedCapacity",
+        "MemoryDbReservedInstances"
       ]
     },
     "ResourceTypeList":{
@@ -1686,7 +1818,7 @@
       "members":{
         "accountScope":{
           "shape":"String",
-          "documentation":"<p>The account scope that you want your recommendations for.</p>"
+          "documentation":"<p>The account scope for which you want recommendations.</p>"
         },
         "term":{
           "shape":"String",

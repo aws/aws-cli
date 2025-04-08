@@ -985,6 +985,12 @@ def remove_qbusiness_chat(class_attributes, **kwargs):
         del class_attributes['chat']
 
 
+def remove_bedrock_runtime_invoke_model_with_bidirectional_stream(class_attributes, **kwargs):
+    """Operation requires h2 which is currently unsupported in Python"""
+    if 'invoke_model_with_bidirectional_stream' in class_attributes:
+        del class_attributes['invoke_model_with_bidirectional_stream']
+ 
+ 
 def remove_bucket_from_url_paths_from_model(params, model, context, **kwargs):
     """Strips leading `{Bucket}/` from any operations that have it.
 
@@ -1242,6 +1248,7 @@ BUILTIN_HANDLERS = [
     ),
     ('creating-client-class.lex-runtime-v2', remove_lex_v2_start_conversation),
     ('creating-client-class.qbusiness', remove_qbusiness_chat),
+    ('creating-client-class.bedrock-runtime', remove_bedrock_runtime_invoke_model_with_bidirectional_stream),
     ('after-call.iam', json_decode_policies),
     ('after-call.ec2.GetConsoleOutput', decode_console_output),
     ('after-call.cloudformation.GetTemplate', json_decode_template_body),

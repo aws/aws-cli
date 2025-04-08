@@ -559,8 +559,6 @@ class Module:
         Outputs:
           B:
             Value: !Sub ${A.MyName}
-          C:
-            Value: !Sub ${A.Name}
 
         The module has:
 
@@ -572,11 +570,10 @@ class Module:
               Properties:
                 Y: !Ref Name
           Outputs:
-            MyName: !GetAtt Y.Name
+            MyName: !GetAtt X.Name
 
         The resulting output:
           B: !Sub ${AX.Name}
-          C: foo
 
         """
 
@@ -588,29 +585,23 @@ class Module:
 
         # !Sub ${Content.BucketArn} -> !Sub ${ContentBucket.Arn}
 
-        # TODO - Why is this not calling the GetAtt code?
-        # This could be like ${Content[0].Arn}, which means
-        # we need all of that logic...
+        # Create a fake getatt and resolve it like normal
+        n = "fake"
+        d = {n: None}
+        self.resolve_output_getatt(tokens, d, n)
+        r = d[n]
 
-        r = None
-        if tokens[0] == self.name:
-            if tokens[1] in self.module_outputs:
-                # We're referring to the module's Outputs
-                r = self.module_outputs[tokens[1]]
-            elif tokens[1] in self.props:
-                # We're referring to parent Module Properties
-                r = self.props[tokens[1]]
-            if r is not None:
-                if GETATT in r:
-                    getatt = r[GETATT]
-                    resolved = "${" + self.name + ".".join(getatt) + "}"
-                elif SUB in r:
-                    resolved = "${" + self.name + r[SUB] + "}"
-                elif REF in r:
-                    resolved = "${" + self.name + r[REF] + "}"
-                else:
-                    # Handle scalar properties
-                    resolved = r
+        if r is not None:
+            if GETATT in r:
+                getatt = r[GETATT]
+                resolved = "${" + ".".join(getatt) + "}"
+            elif SUB in r:
+                resolved = r[SUB]
+            elif REF in r:
+                resolved = "${" + r[REF] + "}"
+            else:
+                # Handle scalar properties
+                resolved = r
 
         return resolved
 
@@ -706,6 +697,8 @@ class Module:
     def replace_reffed_prop(self, r, d, n):
         """
         Replace a reffed prop in an output getatt.
+
+        param r: The Ref, Sub, or GetAtt
 
         Sets d[n].
         """

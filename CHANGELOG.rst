@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.38.31
+=======
+
+* api-change:``controlcatalog``: The GetControl API now surfaces a control's Severity, CreateTime, and Identifier for a control's Implementation. The ListControls API now surfaces a control's Behavior, Severity, CreateTime, and Identifier for a control's Implementation.
+* api-change:``dynamodb``: Documentation update for secondary indexes and Create_Table.
+* api-change:``glue``: The TableOptimizer APIs in AWS Glue now return the DpuHours field in each TableOptimizerRun, providing clients visibility to the DPU-hours used for billing in managed Apache Iceberg table compaction optimization.
+* api-change:``groundstation``: Support tagging Agents and adjust input field validations
+* api-change:``transfer``: This launch includes 2 enhancements to SFTP connectors user-experience: 1) Customers can self-serve concurrent connections setting for their connectors, and 2) Customers can discover the public host key of remote servers using their SFTP connectors.
+
+
 1.38.30
 =======
 

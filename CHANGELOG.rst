@@ -2,6 +2,95 @@
 CHANGELOG
 =========
 
+1.38.31
+=======
+
+* api-change:``controlcatalog``: The GetControl API now surfaces a control's Severity, CreateTime, and Identifier for a control's Implementation. The ListControls API now surfaces a control's Behavior, Severity, CreateTime, and Identifier for a control's Implementation.
+* api-change:``dynamodb``: Documentation update for secondary indexes and Create_Table.
+* api-change:``glue``: The TableOptimizer APIs in AWS Glue now return the DpuHours field in each TableOptimizerRun, providing clients visibility to the DPU-hours used for billing in managed Apache Iceberg table compaction optimization.
+* api-change:``groundstation``: Support tagging Agents and adjust input field validations
+* api-change:``transfer``: This launch includes 2 enhancements to SFTP connectors user-experience: 1) Customers can self-serve concurrent connections setting for their connectors, and 2) Customers can discover the public host key of remote servers using their SFTP connectors.
+
+
+1.38.30
+=======
+
+* api-change:``bedrock-runtime``: This release introduces our latest bedrock runtime API, InvokeModelWithBidirectionalStream. The API supports both input and output streams and is supported by only HTTP2.0.
+* api-change:``ce``: This release supports Pagination traits on Cost Anomaly Detection APIs.
+* api-change:``cost-optimization-hub``: This release adds resource type "MemoryDbReservedInstances" and resource type "DynamoDbReservedCapacity" to the GetRecommendation, ListRecommendations, and ListRecommendationSummaries APIs to support new MemoryDB and DynamoDB RI recommendations.
+* api-change:``iotfleetwise``: This release adds the option to update the strategy of state templates already associated to a vehicle, without the need to remove and re-add them.
+* api-change:``securityhub``: Documentation updates for AWS Security Hub.
+* api-change:``storagegateway``: Added new ActiveDirectoryStatus value, ListCacheReports paginator, and support for longer pagination tokens.
+* api-change:``taxsettings``: Uzbekistan Launch on TaxSettings Page
+
+
+1.38.29
+=======
+
+* api-change:``bedrock``: New options for how to handle harmful content detected by Amazon Bedrock Guardrails.
+* api-change:``bedrock-runtime``: New options for how to handle harmful content detected by Amazon Bedrock Guardrails.
+* api-change:``codebuild``: AWS CodeBuild now offers an enhanced debugging experience.
+* api-change:``glue``: Add input validations for multiple Glue APIs
+* api-change:``medialive``: AWS Elemental MediaLive now supports SDI inputs to MediaLive Anywhere Channels in workflows that use AWS SDKs.
+* api-change:``personalize``: Add support for eventsConfig for CreateSolution, UpdateSolution, DescribeSolution, DescribeSolutionVersion. Add support for GetSolutionMetrics to return weighted NDCG metrics when eventsConfig is enabled for the solution.
+* api-change:``transfer``: This launch enables customers to manage contents of their remote directories, by deleting old files or moving files to archive folders in remote servers once they have been retrieved. Customers will be able to automate the process using event-driven architecture.
+
+
+1.38.28
+=======
+
+* api-change:``ds-data``: Doc only update - fixed broken links.
+* api-change:``ec2``: Doc-only updates for Amazon EC2
+* api-change:``events``: Amazon EventBridge adds support for customer-managed keys on Archives and validations for two fields: eventSourceArn and kmsKeyIdentifier.
+* api-change:``s3control``: Updated max size of Prefixes parameter of Scope data type.
+
+
+1.38.27
+=======
+
+* api-change:``bedrock-agent``: Added optional "customMetadataField" for Amazon Aurora knowledge bases, allowing single-column metadata. Also added optional "textIndexName" for MongoDB Atlas knowledge bases, enabling hybrid search support.
+* api-change:``chime-sdk-voice``: Added FOC date as an attribute of PhoneNumberOrder, added AccessDeniedException as a possible return type of ValidateE911Address
+* api-change:``mailmanager``: Add support for Dual_Stack and PrivateLink types of IngressPoint. For configuration requests, SES Mail Manager will now accept both IPv4/IPv6 dual-stack endpoints and AWS PrivateLink VPC endpoints for email receiving.
+* api-change:``opensearch``: Improve descriptions for various API commands and data types.
+* api-change:``route53``: Added us-gov-east-1 and us-gov-west-1 as valid Latency Based Routing regions for change-resource-record-sets.
+* api-change:``sagemaker``: Adds support for i3en, m7i, r7i instance types for SageMaker Hyperpod
+* api-change:``sesv2``: This release enables customers to provide attachments in the SESv2 SendEmail and SendBulkEmail APIs.
+* api-change:``transcribe``: This Feature Adds Support for the "zh-HK" Locale for Batch Operations
+
+
+1.38.26
+=======
+
+* api-change:``application-signals``: Application Signals now supports creating Service Level Objectives on service dependencies. Users can now create or update SLOs on discovered service dependencies to monitor their standard application metrics.
+* api-change:``codebuild``: This release adds support for environment type WINDOWS_SERVER_2022_CONTAINER in ProjectEnvironment
+* api-change:``ecr``: Fix for customer issues related to AWS account ID and size limitation for token.
+* api-change:``ecs``: This is an Amazon ECS documentation only update to address various tickets.
+* api-change:``lexv2-models``: Release feature of errorlogging for lex bot, customer can config this feature in bot version to generate log for error exception which helps debug
+* api-change:``medialive``: Added support for SMPTE 2110 inputs when running a channel in a MediaLive Anywhere cluster. This feature enables ingestion of SMPTE 2110-compliant video, audio, and ancillary streams by reading SDP files that AWS Elemental MediaLive can retrieve from a network source.
+
+
+1.38.25
+=======
+
+* api-change:``cleanrooms``: This release adds support for updating the analytics engine of a collaboration.
+* api-change:``sagemaker``: Added tagging support for SageMaker notebook instance lifecycle configurations
+
+
+1.38.24
+=======
+
+* api-change:``bedrock-runtime``: Add Prompt Caching support to Converse and ConverseStream APIs
+* api-change:``deadline``: With this release you can use a new field to specify the search term match type. Search term match types currently support fuzzy and contains matching.
+* api-change:``ec2``: Release VPC Route Server, a new feature allowing dynamic routing in VPCs.
+* api-change:``eks``: Add support for updating RemoteNetworkConfig for hybrid nodes on EKS UpdateClusterConfig API
+* api-change:``marketplace-entitlement``: Add support for Marketplace Entitlement Service dual-stack endpoints.
+* api-change:``outposts``: Enabling Asset Level Capacity Management feature, which allows customers to create a Capacity Task for a single Asset on their active Outpost.
+* api-change:``s3``: Amazon S3 adds support for S3 Access Points for directory buckets in AWS Dedicated Local Zones
+* api-change:``s3control``: Amazon S3 adds support for S3 Access Points for directory buckets in AWS Dedicated Local Zones
+* api-change:``sesv2``: Add dual-stack support to global endpoints.
+* api-change:``transfer``: Add WebAppEndpointPolicy support for WebApps
+
+
 1.38.23
 =======
 

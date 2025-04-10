@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.38.32
+=======
+
+* api-change:``application-autoscaling``: Application Auto Scaling now supports horizontal scaling for Elasticache Memcached self-designed clusters using target tracking scaling policies and scheduled scaling.
+* api-change:``elasticache``: AWS ElastiCache SDK now supports using MemcachedUpgradeConfig parameter with ModifyCacheCluster API to enable updating Memcached cache node types. Please refer to updated AWS ElastiCache public documentation for detailed information on API usage and implementation.
+* api-change:``m2``: Introduce three new APIs: CreateDataSetExportTask, GetDataSetExportTask and ListDataSetExportHistory. Add support for batch restart for Blu Age applications.
+* api-change:``medialive``: AWS Elemental MediaLive / Features : Add support for CMAF Ingest CaptionLanguageMappings, TimedMetadataId3 settings, and Link InputResolution.
+* api-change:``qbusiness``: Adds functionality to enable/disable a new Q Business Hallucination Reduction feature. If enabled, Q Business will detect and attempt to remove Hallucinations from certain Chat requests.
+* api-change:``quicksight``: Add support to analysis and sheet level highlighting in QuickSight.
+
+
 1.38.31
 =======
 

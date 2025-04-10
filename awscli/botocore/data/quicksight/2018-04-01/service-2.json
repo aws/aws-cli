@@ -140,8 +140,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"LimitExceededException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates an Amazon QuickSight brand.</p>"
@@ -622,8 +622,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes an Amazon QuickSight brand.</p>",
@@ -642,8 +642,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a brand assignment.</p>",
@@ -1285,8 +1285,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Describes a brand.</p>"
@@ -1304,8 +1304,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Describes a brand assignment.</p>"
@@ -1323,8 +1323,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Describes the published version of the brand.</p>"
@@ -3207,8 +3207,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates a brand.</p>",
@@ -3227,8 +3227,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates a brand assignment.</p>",
@@ -3247,8 +3247,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates the published version of a brand.</p>",
@@ -6092,6 +6092,10 @@
         "ExcludedDataSetArns":{
           "shape":"DataSetArnsList",
           "documentation":"<p>A list of dataset ARNS to exclude from Dashboard Q&amp;A.</p>"
+        },
+        "CustomActionDefaults":{
+          "shape":"VisualCustomActionDefaults",
+          "documentation":"<p>A list of visual custom actions for the analysis.</p>"
         }
       },
       "documentation":"<p>An array of analysis level configurations.</p>"
@@ -30307,6 +30311,10 @@
         "ContentType":{
           "shape":"SheetContentType",
           "documentation":"<p>The layout content type of the sheet. Choose one of the following options:</p> <ul> <li> <p> <code>PAGINATED</code>: Creates a sheet for a paginated report.</p> </li> <li> <p> <code>INTERACTIVE</code>: Creates a sheet for an interactive dashboard.</p> </li> </ul>"
+        },
+        "CustomActionDefaults":{
+          "shape":"VisualCustomActionDefaults",
+          "documentation":"<p>A list of visual custom actions for the sheet.</p>"
         }
       },
       "documentation":"<p>A sheet is an object that contains a set of visuals that are viewed together on one page in a paginated report. Every analysis and dashboard must contain at least one sheet.</p>"
@@ -37924,6 +37932,16 @@
       },
       "documentation":"<p>A custom action defined on a visual.</p>"
     },
+    "VisualCustomActionDefaults":{
+      "type":"structure",
+      "members":{
+        "highlightOperation":{
+          "shape":"VisualHighlightOperation",
+          "documentation":"<p>A list of highlight operations available for visuals in an analysis or sheet.</p>"
+        }
+      },
+      "documentation":"<p>A list of custom actions applied to visuals in an analysis or sheet.</p>"
+    },
     "VisualCustomActionList":{
       "type":"list",
       "member":{"shape":"VisualCustomAction"},
@@ -37967,6 +37985,25 @@
       "enum":[
         "DATA_POINT_CLICK",
         "DATA_POINT_MENU"
+      ]
+    },
+    "VisualHighlightOperation":{
+      "type":"structure",
+      "required":["Trigger"],
+      "members":{
+        "Trigger":{
+          "shape":"VisualHighlightTrigger",
+          "documentation":"<p>Specifies whether a highlight operation is initiated by a click or hover, or whether it's disabled.</p>"
+        }
+      },
+      "documentation":"<p>Defines what initiates a highlight operation on a visual, such as a click or hover.</p>"
+    },
+    "VisualHighlightTrigger":{
+      "type":"string",
+      "enum":[
+        "DATA_POINT_CLICK",
+        "DATA_POINT_HOVER",
+        "NONE"
       ]
     },
     "VisualInteractionOptions":{

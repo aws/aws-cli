@@ -12800,6 +12800,11 @@
           "shape": "__listOfInputDeviceConfigurableAudioChannelPairConfig",
           "locationName": "audioChannelPairs",
           "documentation": "An array of eight audio configurations, one for each audio pair in the source. Set up each audio configuration either to exclude the pair, or to format it and include it in the output from the device. This parameter applies only to UHD devices, and only when the device is configured as the source for a MediaConnect flow. For an HD device, you configure the audio by setting up audio selectors in the channel configuration."
+        },
+        "InputResolution": {
+          "shape": "__string",
+          "locationName": "inputResolution",
+          "documentation": "Choose the resolution of the Link device's source (HD or UHD). Make sure the resolution matches the current source from the device. This value determines MediaLive resource allocation and billing for this input. Only UHD devices can specify this parameter."
         }
       },
       "documentation": "Configurable settings for the input device."
@@ -13190,6 +13195,11 @@
           "shape": "__listOfInputDeviceUhdAudioChannelPairConfig",
           "locationName": "audioChannelPairs",
           "documentation": "An array of eight audio configurations, one for each audio pair in the source. Each audio configuration specifies either to exclude the pair, or to format it and include it in the output from the UHD device. Applies only when the device is configured as the source for a MediaConnect flow."
+        },
+        "InputResolution": {
+          "shape": "__string",
+          "locationName": "inputResolution",
+          "documentation": "The resolution of the Link device's source (HD or UHD). This value determines MediaLive resource allocation and billing for this input."
         }
       },
       "documentation": "Settings that describe the active source from the input device, and the video characteristics of that source."
@@ -21077,6 +21087,26 @@
           "shape": "__stringMax100",
           "locationName": "id3NameModifier",
           "documentation": "Change the modifier that MediaLive automatically adds to the Streams() name that identifies an ID3 track. The default is \"id3\", which means the default name will be Streams(id3.cmfm). Any string you enter here will replace the \"id3\" string.\\nThe modifier can only contain: numbers, letters, plus (+), minus (-), underscore (_) and period (.) and has a maximum length of 100 characters."
+        },
+        "CaptionLanguageMappings": {
+          "shape": "__listOfCmafIngestCaptionLanguageMapping",
+          "locationName": "captionLanguageMappings",
+          "documentation": "An array that identifies the languages in the four caption channels in the embedded captions."
+        },
+        "TimedMetadataId3Frame": {
+          "shape": "CmafTimedMetadataId3Frame",
+          "locationName": "timedMetadataId3Frame",
+          "documentation": "Set to none if you don't want to insert a timecode in the output. Otherwise choose the frame type for the timecode."
+        },
+        "TimedMetadataId3Period": {
+          "shape": "__integerMin0Max10000",
+          "locationName": "timedMetadataId3Period",
+          "documentation": "If you set up to insert a timecode in the output, specify the frequency for the frame, in seconds."
+        },
+        "TimedMetadataPassthrough": {
+          "shape": "CmafTimedMetadataPassthrough",
+          "locationName": "timedMetadataPassthrough",
+          "documentation": "Set to enabled to pass through ID3 metadata from the input sources."
         }
       },
       "documentation": "Cmaf Ingest Group Settings",
@@ -29209,6 +29239,50 @@
         "shape": "SdiSourceSummary"
       },
       "documentation": "Placeholder documentation for __listOfSdiSourceSummary"
+    },
+    "CmafIngestCaptionLanguageMapping": {
+      "type": "structure",
+      "members": {
+        "CaptionChannel": {
+          "shape": "__integerMin1Max4",
+          "locationName": "captionChannel",
+          "documentation": "A number for the channel for this caption, 1 to 4."
+        },
+        "LanguageCode": {
+          "shape": "__stringMin3Max3",
+          "locationName": "languageCode",
+          "documentation": "Language code for the language of the caption in this channel.  For example, ger/deu. See http://www.loc.gov/standards/iso639-2"
+        }
+      },
+      "documentation": "Add an array item for each language. Follow the order of the caption descriptions. For example, if the first caption description is for German, then the first array item must be for German, and its caption channel must be set to 1. The second array item must be 2, and so on.",
+      "required": [
+        "LanguageCode",
+        "CaptionChannel"
+      ]
+    },
+    "CmafTimedMetadataId3Frame": {
+      "type": "string",
+      "documentation": "Cmaf Timed Metadata Id3 Frame",
+      "enum": [
+        "NONE",
+        "PRIV",
+        "TDRL"
+      ]
+    },
+    "CmafTimedMetadataPassthrough": {
+      "type": "string",
+      "documentation": "Cmaf Timed Metadata Passthrough",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
+      ]
+    },
+    "__listOfCmafIngestCaptionLanguageMapping": {
+      "type": "list",
+      "member": {
+        "shape": "CmafIngestCaptionLanguageMapping"
+      },
+      "documentation": "Placeholder documentation for __listOfCmafIngestCaptionLanguageMapping"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

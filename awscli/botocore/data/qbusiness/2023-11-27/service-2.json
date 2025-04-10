@@ -1436,6 +1436,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
@@ -4738,6 +4739,10 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>If the <code>maxResults</code> response was incomplete because there is more data to retrieve, Amazon Q Business returns a pagination token in the response. You can use this pagination token to retrieve the next set of Amazon Q Business chat controls configured.</p>"
+        },
+        "hallucinationReductionConfiguration":{
+          "shape":"HallucinationReductionConfiguration",
+          "documentation":"<p> The hallucination reduction settings for your application.</p>"
         }
       }
     },
@@ -5431,6 +5436,23 @@
     "GroupSummaryList":{
       "type":"list",
       "member":{"shape":"GroupSummary"}
+    },
+    "HallucinationReductionConfiguration":{
+      "type":"structure",
+      "members":{
+        "hallucinationReductionControl":{
+          "shape":"HallucinationReductionControl",
+          "documentation":"<p>Controls whether hallucination reduction has been enabled or disabled for your application. The default status is <code>DISABLED</code>. </p>"
+        }
+      },
+      "documentation":"<p>Configuration information required to setup hallucination reduction. For more information, see <a href=\"amazonq/latest/qbusiness-ug/hallucination-reduction.html\">hallucination reduction</a>.</p> <note> <p>The hallucination reduction feature won't work if chat orchestration controls are enabled for your application.</p> </note>"
+    },
+    "HallucinationReductionControl":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "HookConfiguration":{
       "type":"structure",
@@ -8048,6 +8070,13 @@
       "min":0,
       "pattern":"\\P{C}*"
     },
+    "SystemMessageType":{
+      "type":"string",
+      "enum":[
+        "RESPONSE",
+        "GROUNDED_RESPONSE"
+      ]
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -8141,6 +8170,10 @@
     "TextOutputEvent":{
       "type":"structure",
       "members":{
+        "systemMessageType":{
+          "shape":"SystemMessageType",
+          "documentation":"<p>The type of AI-generated message in a <code>TextOutputEvent</code>. Amazon Q Business currently supports two types of messages:</p> <ul> <li> <p> <code>RESPONSE</code> - The Amazon Q Business system response.</p> </li> <li> <p> <code>GROUNDED_RESPONSE</code> - The corrected, hallucination-reduced, response returned by Amazon Q Business. Available only if hallucination reduction is supported and configured for the application and detected in the end user chat query by Amazon Q Business.</p> </li> </ul>"
+        },
         "conversationId":{
           "shape":"ConversationId",
           "documentation":"<p>The identifier of the conversation with which the text output event is associated.</p>"
@@ -8377,6 +8410,10 @@
         "creatorModeConfiguration":{
           "shape":"CreatorModeConfiguration",
           "documentation":"<p>The configuration details for <code>CREATOR_MODE</code>.</p>"
+        },
+        "hallucinationReductionConfiguration":{
+          "shape":"HallucinationReductionConfiguration",
+          "documentation":"<p> The hallucination reduction settings for your application.</p>"
         }
       }
     },

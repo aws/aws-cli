@@ -76,8 +76,15 @@ def _get_unmet_dependencies(requirements):
         try:
             actual_version = importlib.metadata.version(project_name)
         except importlib.metadata.PackageNotFoundError:
-            unmet.append((project_name, None, requirement))
-            continue
+            try:
+                # Packages built from source may have directory names
+                # that replace "." with "_".
+                actual_version = importlib.metadata.version(
+                    project_name.replace(".", "_")
+                )
+            except importlib.metadata.PackageNotFoundError:
+                unmet.append((project_name, None, requirement))
+                continue
         if not requirement.is_in_range(actual_version):
             unmet.append((project_name, actual_version, requirement))
     return unmet

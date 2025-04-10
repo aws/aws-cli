@@ -17,8 +17,9 @@ import json
 import os
 import re
 import site
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Dict, Iterator, List, Tuple
+from typing import Dict, List, Tuple
 
 import pytest
 from packaging.requirements import Requirement
@@ -95,15 +96,21 @@ class Package:
         # and explicitly provide the directory to avoid needing to use
         # MetaPathFinders and thus avoid this issue.
 
-        # Packages names may have a "-". These get converted to "_" for
+        # Package names may have a "-". These get converted to "_" for
         # their respective directory names in the site packages directory.
-        snake_case_name = name.replace("-", "_")
-        for sitepackages in site.getsitepackages():
-            for filename in os.listdir(sitepackages):
-                if fnmatch.fnmatch(filename, f"{snake_case_name}-*.dist-info"):
-                    return importlib.metadata.Distribution.at(
-                        os.path.join(sitepackages, filename)
-                    )
+        # Directory names may have a "_" in place of a "." if they were
+        # built from source. If the initial normalization fails to match,
+        # we try replacing "." with "_" in the package name.
+        for c in ['-', '.']:
+            snake_case_name = name.replace(c, "_")
+            for sitepackages in site.getsitepackages():
+                for filename in os.listdir(sitepackages):
+                    if fnmatch.fnmatch(
+                        filename, f"{snake_case_name}-*.dist-info"
+                    ):
+                        return importlib.metadata.Distribution.at(
+                            os.path.join(sitepackages, filename)
+                        )
         raise ValueError(
             f'Could not find .dist-info directory for {snake_case_name}'
         )
@@ -169,7 +176,6 @@ class TestDependencyClosure:
             "six",
             "urllib3",
             "wcwidth",
-            "zipp",
         }
         actual_dependencies = set()
         for _, package in awscli_package.runtime_dependencies.walk():

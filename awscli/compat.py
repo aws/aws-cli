@@ -64,11 +64,14 @@ is_windows = sys.platform == 'win32'
 is_macos = sys.platform == 'darwin'
 
 
+less_exists = os.system('command -v less > /dev/null')
+
 if is_windows:
     default_pager = 'more'
+elif less_exists == '0':
+    default_pager = 'less'
 else:
-    default_pager = 'less -R'
-
+    default_pager = ''
 
 class StdinMissingError(Exception):
     def __init__(self):

@@ -64,6 +64,10 @@ class LazyPager:
     def __init__(self, popen, **kwargs):
         self._popen = popen
         self._popen_kwargs = kwargs
+        # When calling out to the system's pager, we want to avoid using
+        # shared libraries bundled with the AWS CLI so that the pager uses
+        # the system's shared libraries.
+        self._popen_kwargs['env'].pop('LD_LIBRARY_PATH', None)
         self._process = None
         self.stdin = LazyStdin(self)
 

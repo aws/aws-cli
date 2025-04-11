@@ -64,10 +64,7 @@ class LazyPager:
     def __init__(self, popen, **kwargs):
         self._popen = popen
         self._popen_kwargs = kwargs
-        # When calling out to the system's pager, we want to avoid using
-        # shared libraries bundled with the AWS CLI so that the pager uses
-        # the system's shared libraries.
-        self._popen_kwargs['env'].pop('LD_LIBRARY_PATH', None)
+        self._replace_or_remove_ld_library_path()
         self._process = None
         self.stdin = LazyStdin(self)
 
@@ -92,6 +89,12 @@ class LazyPager:
             return self._popen(**self._popen_kwargs)
         except FileNotFoundError as e:
             raise PagerInitializationException(e)
+
+    def _replace_or_remove_ld_library_path(self):
+        if self._popen_kwargs.get('env'):
+            self._popen_kwargs['env'].pop('LD_LIBRARY_PATH', None)
+            if orig:= os.environ.get('LD_LIBRARY_PATH_ORIG'):
+                self._popen_kwargs['env']['LD_LIBRARY_PATH'] = orig
 
 
 class IMDSRegionProvider(BaseProvider):

@@ -250,15 +250,15 @@ class EKSClient(object):
         describe-cluster will only be called once.
         """
         if self._cluster_description is None:
-            if self._parsed_globals is None:
-                client = self._session.create_client("eks")
-            else:
-                client = self._session.create_client(
-                    "eks",
-                    region_name=self._parsed_globals.region,
-                    endpoint_url=self._parsed_globals.endpoint_url,
-                    verify=self._parsed_globals.verify_ssl
-                )
+            client_kwargs = {}
+            if self._parsed_globals is not None:
+                client_kwargs["region_name"] = self._parsed_globals.region
+                client_kwargs["endpoint_url"] = self._parsed_globals.endpoint_url
+                client_kwargs["verify"] = self._parsed_globals.verify_ssl
+            if self._parsed_args.role_arn is not None:
+                client_kwargs.update(self.assume_role())
+
+            client = self._session.create_client("eks", **client_kwargs)
             full_description = client.describe_cluster(name=self._cluster_name)
             self._cluster_description = full_description["cluster"]
 
@@ -339,3 +339,19 @@ class EKSClient(object):
             ])]
 
         return generated_user
+
+    def assume_role(self):
+        """
+        Assume a role and return the credentials as dict.
+        """
+        sts_client = self._session.create_client('sts')
+        response = sts_client.assume_role(
+            RoleArn=self._parsed_args.role_arn,
+            RoleSessionName='eks-update-kubeconfig'
+        )
+
+        return {
+            'aws_access_key_id': response['Credentials']['AccessKeyId'],
+            'aws_secret_access_key': response['Credentials']['SecretAccessKey'],
+            'aws_session_token': response['Credentials']['SessionToken']
+        }

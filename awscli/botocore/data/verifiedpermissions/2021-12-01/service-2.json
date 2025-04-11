@@ -192,6 +192,7 @@
       "output":{"shape":"DeletePolicyStoreOutput"},
       "errors":[
         {"shape":"ValidationException"},
+        {"shape":"InvalidStateException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
@@ -1274,6 +1275,10 @@
         "description":{
           "shape":"PolicyStoreDescription",
           "documentation":"<p>Descriptive text that you can provide to help with identification of the current policy store.</p>"
+        },
+        "deletionProtection":{
+          "shape":"DeletionProtection",
+          "documentation":"<p>Specifies whether the policy store can be deleted. If enabled, the policy store can't be deleted.</p> <p>The default state is <code>DISABLED</code>.</p>"
         }
       }
     },
@@ -1451,6 +1456,13 @@
       "type":"structure",
       "members":{
       }
+    },
+    "DeletionProtection":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "DeterminingPolicyItem":{
       "type":"structure",
@@ -1757,6 +1769,10 @@
         "description":{
           "shape":"PolicyStoreDescription",
           "documentation":"<p>Descriptive text that you can provide to help with identification of the current policy store.</p>"
+        },
+        "deletionProtection":{
+          "shape":"DeletionProtection",
+          "documentation":"<p>Specifies whether the policy store can be deleted. If enabled, the policy store can't be deleted.</p> <p>The default state is <code>DISABLED</code>.</p>"
         }
       }
     },
@@ -2010,6 +2026,15 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "InvalidStateException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The policy store can't be deleted because deletion protection is enabled. To delete this policy store, disable deletion protection.</p>",
+      "exception":true
     },
     "IpAddr":{
       "type":"string",
@@ -3394,6 +3419,10 @@
         "validationSettings":{
           "shape":"ValidationSettings",
           "documentation":"<p>A structure that defines the validation settings that want to enable for the policy store.</p>"
+        },
+        "deletionProtection":{
+          "shape":"DeletionProtection",
+          "documentation":"<p>Specifies whether the policy store can be deleted. If enabled, the policy store can't be deleted.</p> <p>When you call <code>UpdatePolicyStore</code>, this parameter is unchanged unless explicitly included in the call.</p>"
         },
         "description":{
           "shape":"PolicyStoreDescription",

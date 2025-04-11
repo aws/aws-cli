@@ -1006,7 +1006,9 @@ class CLIOperationCaller:
         response = self._make_client_call(
             client, operation_name, parameters, parsed_globals
         )
+        print(f"invoke {os.environ.get('LD_LIBRARY_PATH')}")
         with original_ld_library_path():
+            print(f"with original_ld {os.environ.get('LD_LIBRARY_PATH')}")
             self._display_response(operation_name, response, parsed_globals)
         return 0
 
@@ -1029,5 +1031,7 @@ class CLIOperationCaller:
             output = self._session.get_config_variable('output')
 
         formatter = get_formatter(output, parsed_globals)
+        print(f"display_response {os.environ.get('LD_LIBRARY_PATH')}")
         with self._output_stream_factory.get_output_stream() as stream:
+            print(f"with self._out_stream {os.environ.get('LD_LIBRARY_PATH')}")
             formatter(command_name, response, stream)

@@ -419,6 +419,7 @@ class OutputStreamFactory:
         self._default_less_flags = default_less_flags
 
     def get_output_stream(self):
+        print(f"get_output_stream {os.environ.get('LD_LIBRARY_PATH')}")
         pager = self._get_configured_pager()
         if is_a_tty() and pager:
             return self.get_pager_stream(pager)

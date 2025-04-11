@@ -26,6 +26,7 @@ from botocore.utils import (
     BadIMDSRequestError,
     IMDSFetcher,
     resolve_imds_endpoint_mode,
+    original_ld_library_path,
 )
 
 from awscli.compat import (
@@ -438,7 +439,9 @@ class OutputStreamFactory:
             # is closed abruptly and causes a broken pipe.
             pass
         finally:
-            process.communicate()
+            print(f"get_pager_stream finally {os.environ.get('LD_LIBRARY_PATH')}")
+            with original_ld_library_path():
+                process.communicate()
 
     @contextlib.contextmanager
     def get_stdout_stream(self):

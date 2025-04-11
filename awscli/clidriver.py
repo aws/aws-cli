@@ -191,6 +191,7 @@ class AWSCLIEntryPoint:
         self._driver = driver
 
     def main(self, args):
+        os.environ['LD_LIBRARY_PATH'] = '/usr/local/aws-cli/'
         try:
             rc = self._do_main(args)
         except BaseException as e:
@@ -202,6 +203,7 @@ class AWSCLIEntryPoint:
             )
 
         HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')
+        print(f"entrypoint main end {os.environ.get('LD_LIBRARY_PATH')}")
         return rc
 
     def _add_autoprompt_to_user_agent(self, driver, prompt_mode):
@@ -1010,6 +1012,7 @@ class CLIOperationCaller:
         with original_ld_library_path():
             print(f"with original_ld {os.environ.get('LD_LIBRARY_PATH')}")
             self._display_response(operation_name, response, parsed_globals)
+        print(f"invoke end {os.environ.get('LD_LIBRARY_PATH')}")
         return 0
 
     def _make_client_call(

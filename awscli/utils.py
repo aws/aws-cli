@@ -65,12 +65,14 @@ class LazyPager:
     def __init__(self, popen, **kwargs):
         self._popen = popen
         self._popen_kwargs = kwargs
+        self._popen_kwargs.pop('LD_LIBRARY_PATH', None)
         self._process = None
         self.stdin = LazyStdin(self)
 
     def initialize(self):
         if self._process is None:
             self._process = self._do_popen()
+        print(f"lazypager initialize {os.environ.get('LD_LIBRARY_PATH')}")
         return self._process
 
     def __getattr__(self, item):
@@ -81,6 +83,8 @@ class LazyPager:
         # write to its stdin and there is no reason to create it just
         # to call `communicate` so we can ignore this call
         if self._process is not None or args or kwargs:
+            print(f'args {args}')
+            print(f"lazypager communicate {os.environ.get('LD_LIBRARY_PATH')}")
             return getattr(self.initialize(), 'communicate')(*args, **kwargs)
         return None, None
 
@@ -433,6 +437,7 @@ class OutputStreamFactory:
         popen_kwargs = self._get_process_pager_kwargs(preferred_pager)
         process = LazyPager(self._popen, **popen_kwargs)
         try:
+            print(f"get_pager_stream try {os.environ.get('LD_LIBRARY_PATH')}")
             yield process.stdin
         except OSError:
             # Ignore IOError since this can commonly be raised when a pager
@@ -441,6 +446,7 @@ class OutputStreamFactory:
         finally:
             print(f"get_pager_stream finally {os.environ.get('LD_LIBRARY_PATH')}")
             with original_ld_library_path():
+                print(f"get_pager_stream finally with original {os.environ.get('LD_LIBRARY_PATH')}")
                 process.communicate()
 
     @contextlib.contextmanager

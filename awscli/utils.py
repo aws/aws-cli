@@ -65,7 +65,7 @@ class LazyPager:
     def __init__(self, popen, **kwargs):
         self._popen = popen
         self._popen_kwargs = kwargs
-        self._popen_kwargs.pop('LD_LIBRARY_PATH', None)
+        self._popen_kwargs['env'].pop('LD_LIBRARY_PATH', None)
         self._process = None
         self.stdin = LazyStdin(self)
 

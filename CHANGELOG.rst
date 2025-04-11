@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.38.33
+=======
+
+* api-change:``connect-contact-lens``: Making sentiment optional for ListRealtimeContactAnalysisSegments Response depending on conversational analytics configuration
+* api-change:``datazone``: Raise hard limit of authorized principals per SubscriptionTarget from 10 to 20.
+* api-change:``detective``: Add support for Detective DualStack endpoints
+* api-change:``dynamodb``: Doc only update for API descriptions.
+* api-change:``marketplace-entitlement``: Add support for Marketplace Entitlement Service dual-stack endpoints for CN and GOV regions
+* api-change:``meteringmarketplace``: Add support for Marketplace Metering Service dual-stack endpoints for CN regions
+* api-change:``pcs``: Changed the minimum length of clusterIdentifier, computeNodeGroupIdentifier, and queueIdentifier to 3.
+* api-change:``verifiedpermissions``: Adds deletion protection support to policy stores. Deletion protection is disabled by default, can be enabled via the CreatePolicyStore or UpdatePolicyStore APIs, and is visible in GetPolicyStore.
+
+
 1.38.32
 =======
 

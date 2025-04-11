@@ -31,6 +31,7 @@ from botocore.configprovider import (
 )
 from botocore.context import start_as_current_context
 from botocore.history import get_global_history_recorder
+from botocore.utils import original_ld_library_path
 
 from awscli import __version__
 from awscli.alias import AliasCommandInjector, AliasLoader
@@ -1005,7 +1006,8 @@ class CLIOperationCaller:
         response = self._make_client_call(
             client, operation_name, parameters, parsed_globals
         )
-        self._display_response(operation_name, response, parsed_globals)
+        with original_ld_library_path():
+            self._display_response(operation_name, response, parsed_globals)
         return 0
 
     def _make_client_call(

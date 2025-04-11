@@ -33,8 +33,9 @@ PINNED_RUNTIME_DEPS = [
     ('colorama', '0.4.5'),
 ]
 BUILDTIME_DEPS = [
+    ('setuptools', '75.3.2'),  # 75.4 dropped 3.8 support
     ('setuptools-scm', '3.3.3'),
-    ('wheel', '0.33.6'),
+    ('wheel', '0.45.1'),  # 46.0 dropped 3.8 support
 ]
 PIP_DOWNLOAD_ARGS = '--no-build-isolation --no-binary :all:'
 
@@ -82,6 +83,16 @@ def download_package_tarballs(dirname, packages):
             run('%s -m pip download %s==%s %s' % (
                 sys.executable, package, package_version, PIP_DOWNLOAD_ARGS
             ))
+
+
+def download_package_wheels(dirname, packages):
+    with cd(dirname):
+        for package, package_version in packages:
+            run(
+                '%s -m pip download %s==%s --no-build-isolation '
+                '--only-binary :all:'
+                % (sys.executable, package, package_version)
+            )
 
 
 def download_cli_deps(scratch_dir, packages):
@@ -174,9 +185,10 @@ def main():
     # manually install them. We isolate them to a particular directory so we
     # can run the install before the things they're dependent on. We have to do
     # this because pip won't actually find them since it doesn't handle build
-    # dependencies.
+    # dependencies. We use wheels for this, to avoid bootstrapping setuptools
+    # in 3.12+ where its no longer included by default.
     setup_dir = os.path.join(package_dir, 'setup')
-    download_package_tarballs(
+    download_package_wheels(
         setup_dir,
         packages=BUILDTIME_DEPS,
     )

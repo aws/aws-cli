@@ -418,7 +418,6 @@ class OutputStreamFactory:
         if environ is None:
             with original_ld_library_path():
                 self._environ = os.environ.copy()
-            self._environ = os.environ.copy()
         self._default_less_flags = default_less_flags
 
     def get_output_stream(self):

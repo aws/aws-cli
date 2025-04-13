@@ -89,15 +89,17 @@ class TestAutoCompleter(unittest.TestCase):
         self.assertFalse(second.complete.called)
 
     def test_strip_html_tags_and_newlines(self):
-        STARTING_TOKEN_HELP = """
-<p>A token to specify where to start paginating.  This is the
-<code>NextToken</code> from a previously truncated response.</p>
+        EXAMPLE_HELP = """
+<p>The <i>short</i> help description should be short enough
+ to be a single <code>completion</code> sentence. The remaining
+ sentences should provide further detail when using
+ <code>aws help</code></p>
 """
-        help_text = basic.strip_html_tags_and_newlines(STARTING_TOKEN_HELP)
+        help_text = basic.strip_html_tags_and_newlines_and_multiple_sentences(EXAMPLE_HELP)
         self.assertEqual(
             help_text,
-            'A token to specify where to start paginating.  This is the'
-            'NextToken from a previously truncated response.',
+            'The short help description should be short '
+            'enough to be a single completion sentence'
         )
 
 

@@ -17,10 +17,12 @@ from awscli.autocomplete import LazyClientCreator
 from awscli.autocomplete.completer import BaseCompleter, CompletionResult
 from awscli.autocomplete.filters import startswith_filter
 
+HTML_TAG_PATTERN = re.compile('<.*?>')
 
-def strip_html_tags_and_newlines(text):
-    clean = re.compile('<.*?>')
-    return re.sub(clean, '', text).replace('\n', '')
+def strip_html_tags_and_newlines_and_multiple_sentences(text):
+    text = text.split(".", maxsplit=1)[0]
+    text = text.replace('\n', '')
+    return re.sub(HTML_TAG_PATTERN, '', text)
 
 
 class ProfileCompleter(BaseCompleter):
@@ -230,7 +232,7 @@ class ModelIndexCompleter(BaseCompleter):
                 )
                 help_text = None
                 if self._cli_driver_fetcher:
-                    help_text = strip_html_tags_and_newlines(
+                    help_text = strip_html_tags_and_newlines_and_multiple_sentences(
                         self._cli_driver_fetcher.get_argument_documentation(
                             parsed.lineage, parsed.current_command, arg_name
                         )
@@ -262,7 +264,7 @@ class ModelIndexCompleter(BaseCompleter):
         for arg_name, type_name, *_, help_text in arg_data:
             help_text = None
             if self._cli_driver_fetcher:
-                help_text = strip_html_tags_and_newlines(
+                help_text = strip_html_tags_and_newlines_and_multiple_sentences(
                     self._cli_driver_fetcher.get_global_arg_documentation(
                         arg_name
                     )
@@ -536,14 +538,11 @@ class ShorthandCompleter(BaseCompleter):
                     member_name,
                     self._VALUE_PREFIXES.get(member.type_name, ''),
                 )
-                results.append(
-                    CompletionResult(
-                        last_key,
-                        help_text=strip_html_tags_and_newlines(
-                            member.documentation
-                        ),
-                        cli_type_name=member.type_name,
-                        display_text=display_text,
+                results.append(CompletionResult(
+                    last_key,
+                    help_text=strip_html_tags_and_newlines_and_multiple_sentences(member.documentation),
+                    cli_type_name=member.type_name,
+                    display_text=display_text
                     )
                 )
         return self._filter(last_key, results)

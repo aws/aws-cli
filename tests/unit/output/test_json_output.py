@@ -12,14 +12,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import base64
-
-import sys
-
 import contextlib
-
 import io
-
 import platform
+import sys
 
 from botocore.compat import json
 
@@ -158,10 +154,10 @@ class TestBinaryData(unittest.TestCase):
             stdout.flush()
 
         assert (
-                stdout_b.getvalue()
-                == (
-                    '{\n'
-                    f'    "BinaryValue": "{base64.b64encode(raw_bytes).decode("utf-8")}"\n'
-                    '}\n'
-                ).encode()
+            stdout_b.getvalue()
+            == (
+                '{\n'
+                f'    "BinaryValue": "{base64.b64encode(raw_bytes).decode("utf-8")}"\n'
+                '}\n'
+            ).encode()
         )

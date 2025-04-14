@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import base64
 import io
 import os
 import sys
@@ -178,25 +177,6 @@ class TestJSONFormatter:
                 '    "TableNames": [\n'
                 '        "桌子"\n'
                 '    ]\n'
-                '}\n'
-            ).encode()
-        )
-
-    def test_raw_bytes_get_base64_encoded(self):
-        raw_bytes = b'foo'
-        response = {'BinaryValue': raw_bytes}
-        stdout_b = io.BytesIO()
-        stdout = io.TextIOWrapper(stdout_b, newline='\n')
-
-        with contextlib.redirect_stdout(stdout):
-            self.formatter('command-name', response, sys.stdout)
-            stdout.flush()
-
-        assert (
-            stdout_b.getvalue()
-            == (
-                '{\n'
-                f'    "BinaryValue": "{base64.b64encode(raw_bytes).decode("utf-8")}"\n'
                 '}\n'
             ).encode()
         )

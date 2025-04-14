@@ -11,6 +11,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import base64
+
+import sys
+
+import contextlib
+
+import io
+
 from botocore.compat import json
 import platform
 from awscli.formatter import JSONFormatter
@@ -127,3 +135,26 @@ class TestFormattersHandleClosedPipes(unittest.TestCase):
         # we still should have called the flush() on the
         # stream.
         fake_closed_stream.flush.assert_called_with()
+
+
+class TestBinaryData(unittest.TestCase):
+    def test_binary_data_gets_base64_encoded(self):
+        args = mock.Mock(query=None)
+        raw_bytes = b'foo'
+        response = {'BinaryValue': raw_bytes}
+        stdout_b = io.BytesIO()
+        stdout = io.TextIOWrapper(stdout_b, newline='\n')
+        formatter = JSONFormatter(args)
+
+        with contextlib.redirect_stdout(stdout):
+            formatter('command-name', response, sys.stdout)
+            stdout.flush()
+
+        assert (
+                stdout_b.getvalue()
+                == (
+                    '{\n'
+                    f'    "BinaryValue": "{base64.b64encode(raw_bytes).decode("utf-8")}"\n'
+                    '}\n'
+                ).encode()
+        )

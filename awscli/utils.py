@@ -25,6 +25,7 @@ from botocore.useragent import UserAgentComponent
 from botocore.utils import (
     BadIMDSRequestError,
     IMDSFetcher,
+    original_ld_library_path,
     resolve_imds_endpoint_mode,
 )
 
@@ -415,7 +416,11 @@ class OutputStreamFactory:
             self._popen = Popen
         self._environ = environ
         if environ is None:
-            self._environ = os.environ.copy()
+            # When calling out to the system's pager, we want to avoid using
+            # shared libraries bundled with the AWS CLI so that the pager uses
+            # the system's shared libraries.
+            with original_ld_library_path():
+                self._environ = os.environ.copy()
         self._default_less_flags = default_less_flags
 
     def get_output_stream(self):

@@ -343,6 +343,53 @@ class TestOutputStreamFactory(unittest.TestCase):
             self.assertEqual(self.popen.call_count, 0)
         self.assertEqual(self.popen.call_count, 0)
 
+    def test_pyinstaller_ld_library_path_removed(self):
+        # Simulate PyInstaller setting its own LD_LIBRARY_PATH.
+        with mock.patch(
+            'os.environ', {'LD_LIBRARY_PATH': '/pyinstaller/path'}
+        ):
+            stream_factory = OutputStreamFactory(
+                session=self.session,
+                popen=self.popen,
+            )
+        self.set_session_pager('less')
+        with stream_factory.get_output_stream() as stream:
+            stream.write()
+            # Assert that PyInstaller's LD_LIBRARY_PATH was removed.
+            self.assert_popen_call(
+                expected_pager_cmd='less',
+                env={'PYINSTALLER_RESET_ENVIRONMENT': '1', 'LESS': 'FRX'},
+            )
+
+    def test_pyinstaller_ld_library_path_replaced_with_original(self):
+        # Simulate PyInstaller setting its own LD_LIBRARY_PATH and
+        # preserving system value as LD_LIBRARY_PATH_ORIG.
+        with mock.patch(
+            'os.environ',
+            {
+                'LD_LIBRARY_PATH': '/pyinstaller/path',
+                'LD_LIBRARY_PATH_ORIG': '/original/path',
+            },
+        ):
+            stream_factory = OutputStreamFactory(
+                session=self.session,
+                popen=self.popen,
+            )
+        self.set_session_pager('less')
+        with stream_factory.get_output_stream() as stream:
+            stream.write()
+            # Assert that PyInstaller's LD_LIBRARY_PATH was replaced
+            # with the original value.
+            self.assert_popen_call(
+                expected_pager_cmd='less',
+                env={
+                    'LD_LIBRARY_PATH': '/original/path',
+                    'LD_LIBRARY_PATH_ORIG': '/original/path',
+                    'PYINSTALLER_RESET_ENVIRONMENT': '1',
+                    'LESS': 'FRX',
+                },
+            )
+
 
 class BaseIMDSRegionTest(unittest.TestCase):
     def setUp(self):

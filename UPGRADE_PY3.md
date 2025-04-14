@@ -15,7 +15,7 @@ v1. You can upgrade to the AWS CLI v2 to avoid these deprecations in the future.
 ----
 ## Timeline
 
-Going forward, customers using the CLI v1 should transition to using Python 3, with Python 3.8 becoming
+Going forward, customers using the CLI v1 should transition to using Python 3, with Python 3.9 becoming
 the minimum by the end of the transition. The deprecation dates for the affected versions of Python are:
 
 |Python version|Deprecation date|
@@ -24,6 +24,7 @@ the minimum by the end of the transition. The deprecation dates for the affected
 | Python 3.4 and 3.5|   2/1/2021|
 | Python 3.6|          5/30/2022|
 | Python 3.7|         12/13/2023|
+| Python 3.8|          4/22/2025|
 
 ## Impact on the AWS CLI
 
@@ -49,7 +50,7 @@ $ aws --version
 aws-cli/1.18.191 Python/2.7.18 Darwin/19.6.0 botocore/1.19.31
 ```
 
-If the second portion of the version string, starting with **Python/** isn’t Python/3.8.x
+If the second portion of the version string, starting with **Python/** isn’t Python/3.9.x
 or higher, you should review the options below.
 
 ### Installing CLI with Python 3
@@ -62,20 +63,20 @@ Otherwise, upgrading Python versions isn’t difficult.
 
 1. To begin, uninstall your existing copy of the AWS CLI. You can find instructions in the 
 [CLI v1 installation guide](https://docs.aws.amazon.com/cli/latest/userguide/install-linux.html).
-2. Now we’ll install Python 3.8 or later. You can get Python from
+2. Now we’ll install Python 3.9 or later. You can get Python from
 [Python.org](https://www.python.org/downloads) or using your local package manager. 
-In this example, we’ll use a recent version, Python 3.8.7, to ensure the longest support window. 
+In this example, we’ll use a recent version, Python 3.9.22, to ensure the longest support window.
 3. Next, depending on your installation method, the new Python installation should be available at 
 one of these locations. Use these commands to verify:
 ```bash
     $ python --version
-    Python 3.8.7
+    Python 3.9.22
     
     $ python3 --version
-    Python 3.8.7
+    Python 3.9.22
     
-    $ python3.8 --version
-    Python 3.8.7
+    $ python3.9 --version
+    Python 3.9.22
 ```
 5.  Here, we're using the **python** command from above to make sure we're installing with the right 
 version. Use whichever alias provided the desired Python version.
@@ -89,11 +90,11 @@ $ python awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 7. If you wish, you may verify that the newly installed copy of the AWS CLI tool, **aws**, is 
 using the correct version of Python. The **aws --version** command reports the **aws** tool's 
 version number, followed by the version of Python it's running under, then the operating system 
-version and the version of botocore. As long as the Python version is at least 3.8,
+version and the version of botocore. As long as the Python version is at least 3.9,
 you're ready to go:
 ```bash
     $ aws --version
-    aws-cli/1.18.191 Python/3.8.7 Darwin/19.6.0 botocore/1.19.31
+    aws-cli/1.18.191 Python/3.9.22 Darwin/19.6.0 botocore/1.19.31
 ```
 
 ## If you're unable to upgrade to Python 3

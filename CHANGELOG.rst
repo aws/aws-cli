@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.38.34
+=======
+
+* api-change:``entityresolution``: This is to add new metrics to our GetIdMappingJob API and also update uniqueId naming for batchDeleteUniqueIds API to be more accurate
+* api-change:``taxsettings``: Indonesia SOR Tax Registration Launch
+
+
 1.38.33
 =======
 

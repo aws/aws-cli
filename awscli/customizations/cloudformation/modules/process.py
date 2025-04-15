@@ -90,6 +90,7 @@ from awscli.customizations.cloudformation.modules.names import (
     VALUE,
     INVOKE,
     PACKAGES,
+    TRANSFORM,
 )
 
 ORIGINAL_CONFIG = "original_config"
@@ -352,6 +353,24 @@ class Module:
         self.original_module_dict = copy.deepcopy(module_dict)
         return self.process_content(module_dict)
 
+    def process_transform(self, module_dict):
+        "Emit the Transform section into the parent"
+        if TRANSFORM in module_dict:
+            # The module has transforms. Emit them into the parent.
+            if TRANSFORM not in self.template:
+                self.template[TRANSFORM] = {}
+            tt = self.template[TRANSFORM]
+            merged = []
+            mt = module_dict[TRANSFORM]
+            both = [mt, tt]
+            for tr in both:
+                if isinstance(tr, str):
+                    merged.append(tr)
+                else:
+                    for item in tr:
+                        merged.append(item)
+            self.template[TRANSFORM] = merged
+
     # pylint: disable=too-many-branches,too-many-statements
     def process_content(self, module_dict):
         "Process the module content and return the template"
@@ -360,6 +379,8 @@ class Module:
         constants = process_constants(module_dict)
         if constants is not None:
             replace_constants(constants, module_dict)
+
+        self.process_transform(module_dict)
 
         if RESOURCES not in module_dict:
             # The module may only have sub modules in the Modules section

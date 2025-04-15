@@ -137,6 +137,7 @@ class TestPackageModules(unittest.TestCase):
             "zip",
             "same-mod",
             "cond-unres",
+            "transform",
         ]
         for test in tests:
             t, _ = read_source(f"{base}/{test}-template.yaml")

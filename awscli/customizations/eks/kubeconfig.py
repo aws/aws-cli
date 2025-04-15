@@ -15,7 +15,7 @@ import os
 import yaml
 import logging
 import errno
-from botocore.compat import OrderedDict
+from collections import OrderedDict
 
 from awscli.customizations.eks.exceptions import EKSError
 from awscli.customizations.eks.ordered_yaml import (ordered_yaml_load,

@@ -17,9 +17,9 @@ import shutil
 import sys
 import tempfile
 from argparse import Namespace
+from collections import OrderedDict
 
 import botocore
-from botocore.compat import OrderedDict
 
 import awscli.customizations.eks.kubeconfig as kubeconfig
 from awscli.customizations.eks.exceptions import EKSClusterError, EKSError

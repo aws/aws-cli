@@ -12,9 +12,9 @@
 # language governing permissions and limitations under the License.
 
 import logging
+from collections import OrderedDict
 
 from awscli.customizations.flatten import FlattenArguments, SEP
-from botocore.compat import OrderedDict
 
 LOG = logging.getLogger(__name__)
 

@@ -488,7 +488,3 @@ class TestUpdateKubeconfig(unittest.TestCase):
         # Verify that assume_role was not called
         self.mock_create_client.assert_called_once_with("eks")
         self.client.describe_cluster.assert_called_once_with(name="ExampleCluster")
-
-    def _run_main(self, parsed_args, parsed_globals):
-        print(f"Parsed args: {parsed_args}")  # Debug: Print parsed arguments
-        print(f"Assume role ARN: {parsed_args.assume_role_arn}")  # Debug: Print assume_role_arn

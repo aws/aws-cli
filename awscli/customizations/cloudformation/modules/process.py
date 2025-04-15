@@ -394,31 +394,28 @@ class Module:
                 LOG.exception(msg)
                 raise exceptions.InvalidModuleError(msg=msg)
 
-            # Check each resource to see if a Condition omits it
-            for logical_id, resource in self.resources.copy().items():
-                if CONDITION in resource:
-                    if resource[CONDITION] in self.conditions:
-                        if self.conditions[resource[CONDITION]] is False:
-                            del self.resources[logical_id]
-                        else:
-                            del self.resources[logical_id][CONDITION]
-
-            # Do the same for modules in the Modules section
+            sections = [self.resources]
             if MODULES in module_dict:
-                for k, v in module_dict[MODULES].copy().items():
-                    if CONDITION in v:
-                        if v[CONDITION] in self.conditions:
-                            if self.conditions[v[CONDITION]] is False:
-                                del module_dict[MODULES][k]
+                sections.append(module_dict[MODULES])
+            if OUTPUTS in module_dict:
+                sections.append(module_dict[OUTPUTS])
 
-        # Process inline Fn::If conditions
-        process_conditions(
-            self.name,
-            self.conditions,
-            module_dict.get(MODULES, {}),
-            self.resources,
-            self.module_outputs,
-        )
+            # Process inline Fn::If conditions
+            process_conditions(self.name, self.conditions, sections, self.name)
+
+            # Emit unresolved conditions
+            for k, v in self.conditions.items():
+                if v is None:
+                    if CONDITIONS not in self.template:
+                        self.template[CONDITIONS] = {}
+                    newname = self.name + k
+                    if newname in self.template[CONDITIONS]:
+                        if self.template[CONDITIONS][newname] != v:
+                            msg = f"Condition name conflict: {newname}"
+                            raise exceptions.InvalidModuleError(msg=msg)
+                    else:
+                        orig = cs[k]
+                        self.template[CONDITIONS][newname] = orig.copy()
 
         # Recurse on nested modules
         bp = os.path.dirname(self.source)

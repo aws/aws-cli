@@ -23,7 +23,12 @@ from awscli.customizations.cloudformation.modules.merge import merge_props
 from awscli.customizations.cloudformation.modules.process import (
     process_module_section,
 )
-
+from tests.unit.customizations.cloudformation.yaml_compare import (
+    compare_yaml_strings,
+)
+from tests.unit.customizations.cloudformation.test_yaml_compare import (
+    TestYamlCompare,
+)
 
 MODULES = "Modules"
 RESOURCES = "Resources"
@@ -129,6 +134,7 @@ class TestPackageModules(unittest.TestCase):
             "invoke",
             "zip",
             "same-mod",
+            "cond-unres",
         ]
         for test in tests:
             t, _ = read_source(f"{base}/{test}-template.yaml")
@@ -145,12 +151,13 @@ class TestPackageModules(unittest.TestCase):
             processed = yamlhelper.yaml_dump(td)
 
             # Check to make sure the expected output and the actual
-            # output is equivalent yaml.
-            processed = yamlhelper.yaml_parse(processed)
-            e = yamlhelper.yaml_parse(e)
-            processed = yamlhelper.yaml_dump(processed)
-            e = yamlhelper.yaml_dump(e)
-            self.assertEqual(e, processed, f"{test} failed")
+            # output is equivalent yaml, ignoring key order
+            self.assertTrue(
+                compare_yaml_strings(e, processed),
+                f"{test} failed: YAML content not equivalent",
+            )
+
+            # TODO: Output a diff if they are not equivalent
 
         # These tests should fail to package
         bad_tests = ["badref"]
@@ -201,6 +208,19 @@ class TestPackageModules(unittest.TestCase):
         base = "unit/customizations/cloudformation/modules"
         _, lines = read_source(f"{base}/example-module.yaml")
         self.assertEqual(lines["Bucket"], 5)
+
+    def test_yaml_compare(self):
+        """Test the YAML comparison function"""
+
+        # Create an instance of the test class
+        test_instance = TestYamlCompare()
+
+        # Run a few key tests to verify the comparison function works
+        test_instance.test_different_key_order()
+        test_instance.test_nested_dictionaries_different_order()
+        test_instance.test_lists_different_order()
+        test_instance.test_complex_nested_structure()
+        test_instance.test_different_values()
 
     def test_get_packaged_module_path(self):
         "Test converting a package path"

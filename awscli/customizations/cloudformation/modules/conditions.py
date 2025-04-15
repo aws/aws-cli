@@ -16,8 +16,9 @@
 """
 Parse the Conditions section in a module
 
-This section is not emitted into the output.
-We have to be able to fully resolve it locally.
+If we can fully resolve a condition in a module, it is not emitted into
+the parent. Otherwise, it is prefixed with the module name and emitted,
+checking to see if there are any duplicate conditions.
 """
 
 from collections import OrderedDict
@@ -41,6 +42,8 @@ def parse_conditions(d, find_ref):
     for k, v in d.items():
         retval[k] = istrue(v, find_ref, retval)
 
+    print("conditions:", retval)
+
     return retval
 
 
@@ -58,7 +61,13 @@ def resolve_if(v, find_ref, prior):
 
 # pylint: disable=too-many-branches,too-many-statements
 def istrue(v, find_ref, prior):
-    "Recursive function to evaluate a Condition"
+    """
+    Recursive function to evaluate a Condition.
+
+    Returns True or False if a condition can be fully resolved.
+    Otherwise it returns None, which means we have to emit
+    the condition into the parent and prefix the name.
+    """
     if not isdict(v):
         return False
     retval = False
@@ -67,17 +76,23 @@ def istrue(v, find_ref, prior):
         if len(eq) == 2:
             val0 = eq[0]
             val1 = eq[1]
+
             if isdict(val0) and IF in val0:
                 val0 = resolve_if(val0[IF], find_ref, prior)
             if isdict(val1) and IF in val1:
                 val1 = resolve_if(val1[IF], find_ref, prior)
+
             if isdict(val0) and REF in val0:
                 val0 = find_ref(val0[REF])
             if isdict(val1) and REF in val1:
                 val1 = find_ref(val1[REF])
-            # Recurse for nested IFs
+
             if val0 == eq[0] and val1 == eq[1]:
-                retval = val0 == val1
+                if val0 is None or val1 is None:
+                    # One of them is unresolved
+                    retval = None
+                else:
+                    retval = val0 == val1
             else:
                 retval = istrue({EQUALS: [val0, val1]}, find_ref, prior)
         else:
@@ -87,7 +102,14 @@ def istrue(v, find_ref, prior):
         if not isinstance(v[NOT], list):
             msg = f"Not expression should be a list with 1 element: {v[NOT]}"
             raise exceptions.InvalidModuleError(msg=msg)
-        retval = not istrue(v[NOT][0], find_ref, prior)
+        r = istrue(v[NOT][0], find_ref, prior)
+        if r is True or r is False:
+            retval = not r
+        elif r is None:
+            retval = None
+        else:
+            msg = f"Unexpected NOT: {v}"
+            raise exceptions.InvalidModuleError(msg=msg)
     if AND in v:
         vand = v[AND]
         msg = f"And expression should be a list with 2 elements: {vand}"
@@ -125,11 +147,30 @@ def istrue(v, find_ref, prior):
     return retval
 
 
-def process_conditions(name, conditions, modules, resources, outputs):
+def process_conditions(name, conditions, sections, module_name):
     """
-    Visit all modules, resources, and outputs
-    to look for Fn::If conditions
+    Omit sections and nodes based on conditions.
     """
+
+    # Check each Resource, Module, and Output
+    # to see if a Condition omits it
+
+    for section in sections:
+        for k, v in section.copy().items():
+            if CONDITION not in v:
+                continue
+
+            if v[CONDITION] in conditions:
+                cval = conditions[v[CONDITION]]
+                if cval is False:
+                    del section[k]
+                elif cval is True:
+                    del section[k][CONDITION]
+                else:
+                    # It's unresolved, leave it and prefix it
+                    oldname = section[k][CONDITION]
+                    del section[k][CONDITION]
+                    section[k][CONDITION] = module_name + oldname
 
     # Example
     #
@@ -157,18 +198,23 @@ def process_conditions(name, conditions, modules, resources, outputs):
                 # return  # Assume this is a parent template condition?
                 msg = f"{name} Condition not found: {condition_name}"
                 raise exceptions.InvalidModuleError(msg=msg)
-            if conditions[condition_name]:
+            unresolved = False
+            if conditions[condition_name] is True:
                 v.p[v.k] = trueval
-            else:
+            elif conditions[condition_name] is False:
                 v.p[v.k] = falseval
-            newval = v.p[v.k]
-            if isdict(newval) and REF in newval:
-                if newval[REF] == "AWS::NoValue":
-                    del v.p[v.k]
+            else:
+                # Unresolved, leave it alone
+                unresolved = True
 
-    Visitor(modules).visit(vf)
-    Visitor(resources).visit(vf)
-    Visitor(outputs).visit(vf)
+            if not unresolved:
+                newval = v.p[v.k]
+                if isdict(newval) and REF in newval:
+                    if newval[REF] == "AWS::NoValue":
+                        del v.p[v.k]
+
+    for section in sections:
+        Visitor(section).visit(vf)
 
 
 def isdict(v):

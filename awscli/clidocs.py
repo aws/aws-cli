@@ -629,10 +629,6 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                 member, include_enum_values=False
             )
             doc.write('%s %s ...' % (example_type, example_type))
-            if isinstance(member, StringShape) and member.enum:
-                # If we have enum values, we can tell the user
-                # exactly what valid values they can provide.
-                self._write_valid_enums(doc, member.enum)
             doc.style.end_codeblock()
             doc.style.new_paragraph()
         elif cli_argument.cli_type_name not in SCALAR_TYPES:
@@ -642,13 +638,6 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             self._json_example(doc, argument_model, stack=[])
             doc.style.end_codeblock()
             doc.style.new_paragraph()
-
-    def _write_valid_enums(self, doc, enum_values):
-        doc.style.new_paragraph()
-        doc.write("Where valid values are:\n")
-        for value in enum_values:
-            doc.write("    %s\n" % value)
-        doc.write("\n")
 
     def doc_output(self, help_command, event_name, **kwargs):
         doc = help_command.doc

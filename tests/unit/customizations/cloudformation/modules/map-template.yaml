@@ -6,16 +6,16 @@ Parameters:
 Modules:
   Content:
     Source: ./map-module.yaml
-    Map: !Ref List
+    ForEach: !Ref List
     Properties:
-      Name: !Sub my-bucket-$MapValue
+      Name: !Sub my-bucket-$Identifier
   IndexTest:
     Source: ./map-index-module.yaml
-    Map: !Ref List
+    ForEach: !Ref List
     Properties:
-      ContentRef: !GetAtt Content[$MapIndex].Arn
+      ContentRef: !GetAtt Content[$Index].Arn
       NestedRef:
-        Obj: !GetAtt Content[$MapIndex].Arn
+        Obj: !GetAtt Content[$Index].Arn
   ListTest:
     Source: ./map-list-module.yaml
     Properties:

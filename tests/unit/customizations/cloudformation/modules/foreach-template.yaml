@@ -1,0 +1,18 @@
+Modules:
+  Fn::ForEach::A:
+    - TheKey
+    - A,B,C
+    - A:
+        Source: foreach-module.yaml
+        Properties:
+          Name: a-${TheKey}
+  Fn::ForEach::B:
+    - TheKey
+    - A,B,C
+    - B&{TheKey}:
+        Source: foreach-module.yaml
+        Properties:
+          Name: b-${TheKey}
+
+
+        

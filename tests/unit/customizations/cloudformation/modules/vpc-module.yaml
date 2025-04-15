@@ -11,11 +11,11 @@ Parameters:
 
 Modules:
   PublicSubnet:
-    Map: !Ref PublicCidrBlocks
+    ForEach: !Ref PublicCidrBlocks
     Source: ./subnet-module.yaml
     Properties:
-      SubnetCidrBlock: $MapValue
-      AZSelection: $MapIndex
+      SubnetCidrBlock: $Identifier
+      AZSelection: $Index
       VPCId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
       IsPublic: true
@@ -24,11 +24,11 @@ Modules:
         DependsOn: GatewayAttachment
 
   PrivateSubnet:
-    Map: !Ref PrivateCidrBlocks
+    ForEach: !Ref PrivateCidrBlocks
     Source: ./subnet-module.yaml
     Properties:
-      SubnetCidrBlock: $MapValue
-      AZSelection: $MapIndex
+      SubnetCidrBlock: $Identifier
+      AZSelection: $Index
       VPCId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
       IsPublic: false

@@ -648,6 +648,7 @@ class Module:
         # For example, Content.Arn or Content[0].Arn
 
         mapped = self.parent_module.mapped
+
         name = v[0]
         prop_name = v[1]
 
@@ -660,8 +661,17 @@ class Module:
                 if num.isdigit():
                     index = int(num)
                 else:
-                    msg = f"Invalid index in {v}"
-                    raise exceptions.InvalidModuleError(msg=msg)
+                    # Support Content[A].Arn, Content['A'].Arn
+                    if name not in mapped:
+                        msg = f"Invalid index in {v}"
+                        raise exceptions.InvalidModuleError(msg=msg)
+
+                    index = num.strip('"').strip("'")
+
+                    # Validate that the key matches with the CSV
+                    if index not in mapped[name]:
+                        msg = f"Invalid map key {index} in {v}"
+                        raise exceptions.InvalidModuleError(msg=msg)
             else:
                 # This is a reference to all of the mapped values
                 # For example, Content[].Arn
@@ -669,8 +679,14 @@ class Module:
                     self.resolve_output_getatt_map(mapped, name, prop_name)
                 return False
 
-        if index > -1:
-            name = f"{name}{index}"
+        if index != -1:
+            if num.isdigit():
+                name = f"{name}{index}"
+            else:
+                # Find the array index for the key
+                for i, k in enumerate(mapped[name]):
+                    if index == k:
+                        name = f"{name}{i}"
 
         reffed_prop = None
         if name == self.name:
@@ -785,7 +801,7 @@ class Module:
 
     def resolve_output_getatt_map(self, mapped, name, prop_name):
         "Resolve GetAtts that reference all Outputs from a mapped module"
-        num_items = mapped[name]
+        num_items = len(mapped[name])
         dd = [None] * num_items
         for i in range(num_items):
             # Resolve the item as if it was a normal getatt

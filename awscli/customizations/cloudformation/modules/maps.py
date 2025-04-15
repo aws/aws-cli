@@ -86,12 +86,12 @@ def process_module_maps(template, parent_module):
     """
     Loop over Maps in modules.
 
-    Returns a dictionary of mapped module names to map length,
+    Returns a dictionary of mapped module names to [keys],
     for later when we need to expand references that use an array index.
 
     For example:
 
-    {"Content": 3}
+    {"Content": ["A", "B", "C"]}
     """
     retval = {}
     modules = template[MODULES]
@@ -105,7 +105,7 @@ def process_module_maps(template, parent_module):
                     msg = f"{k} has an invalid Map Ref"
                     raise exceptions.InvalidModuleError(msg=msg)
             tokens = m.split(",")
-            retval[k] = len(tokens)
+            retval[k] = tokens
             for i, token in enumerate(tokens):
                 # Make a new module
                 module_id = f"{k}{i}"

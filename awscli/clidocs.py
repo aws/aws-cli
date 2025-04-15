@@ -210,6 +210,7 @@ class CLIDocumentEventHandler:
             self._add_tagged_union_note(argument.argument_model, doc)
         if hasattr(argument, 'argument_model'):
             self._document_enums(argument.argument_model, doc)
+            self._document_constraints(argument.argument_model, doc)
             self._document_nested_structure(argument.argument_model, doc)
         doc.style.dedent()
         doc.style.new_paragraph()
@@ -296,6 +297,8 @@ class CLIDocumentEventHandler:
             doc.style.new_paragraph()
             doc.write('This parameter is required.')
 
+        self._document_enums(member_shape, doc)
+        self._document_constraints(member_shape, doc)
         doc.style.new_paragraph()
         member_type_name = member_shape.type_name
         if member_type_name == 'structure':
@@ -335,6 +338,23 @@ class CLIDocumentEventHandler:
         )
         doc.writeln(msg)
         doc.style.end_note()
+
+    def _document_constraints(self, model, doc):
+        """Documents parameter value constraints"""
+        if not hasattr(model, 'metadata'):
+            return
+        constraints = ['min', 'max', 'pattern']
+        if not any(
+            [constraint in model.metadata for constraint in constraints]
+        ):
+            return
+        doc.style.new_paragraph()
+        doc.write('Constraints:')
+        doc.style.start_ul()
+        for constraint in constraints:
+            if (val := model.metadata.get(constraint)) is not None:
+                doc.style.li(f'{constraint}: ``{val}``')
+        doc.style.end_ul()
 
 
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):

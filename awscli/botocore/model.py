@@ -89,6 +89,7 @@ class Shape:
         'contextParam',
         'clientContextParams',
         'requiresLength',
+        'pattern',
     ]
     MAP_TYPE = OrderedDict
 

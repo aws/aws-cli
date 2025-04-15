@@ -176,3 +176,12 @@ def describe_cluster_deleting_response():
             "createdAt": 1500000000.000
         }
     }
+
+def assume_role_response():
+    return {
+       "Credentials": {
+                "AccessKeyId": "test-access-key",
+                "SecretAccessKey": "test-secret-key",
+                "SessionToken": "test-session-token"
+            } 
+    }

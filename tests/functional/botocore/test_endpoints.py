@@ -86,6 +86,7 @@ def _computed_endpoint_prefixes():
         yield endpoint_prefix
 
 
+@pytest.mark.validates_models
 @pytest.mark.parametrize("endpoint_prefix", _computed_endpoint_prefixes())
 def test_endpoint_matches_service(known_endpoint_prefixes, endpoint_prefix):
     # We need to cross check all computed endpoints against our
@@ -102,6 +103,7 @@ def _available_services():
     return sorted(loader.list_available_services('service-2'))
 
 
+@pytest.mark.validates_models
 @pytest.mark.parametrize("service_name", _available_services())
 def test_client_name_matches_hyphenized_service_id(service_name):
     """Generates tests for each service to verify that the computed service

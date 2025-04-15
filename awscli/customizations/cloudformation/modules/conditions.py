@@ -182,7 +182,8 @@ def process_conditions(name, conditions, sections, module_name):
     #         - !Ref AWS::NoValue
     #
     # In this case, delete the 'Something' node entirely
-    # Otherwise replace the Fn::If with the correct value
+    # Otherwise replace the Fn::If with the correct value.
+    # If it's unresolved, prepend the module name
     def vf(v):
         if isdict(v.d) and IF in v.d and v.p is not None:
             conditional = v.d[IF]
@@ -204,6 +205,7 @@ def process_conditions(name, conditions, sections, module_name):
             else:
                 # Unresolved, leave it alone
                 unresolved = True
+                conditional[0] = module_name + condition_name
 
             if not unresolved:
                 newval = v.p[v.k]

@@ -499,6 +499,22 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         rendered = help_command.doc.getvalue().decode('utf-8')
         self.assertRegex(rendered, r'FooBar[\s\S]*Tagged Union')
 
+    def test_documents_constraints(self):
+        shape = {'type': 'string', 'min': 0, 'max': 10, 'pattern': '.*'}
+        shape = StringShape('ConstrainedArg', shape)
+        arg = CustomArgument('ConstrainedArg', argument_model=shape)
+        help_command = self.create_help_command()
+        help_command.arg_table = {'ConstrainedArg': arg}
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_option(
+            arg_name='ConstrainedArg', help_command=help_command
+        )
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertIn('Constraints', rendered)
+        self.assertIn('min: ``0``', rendered)
+        self.assertIn('max: ``10``', rendered)
+        self.assertIn('pattern: ``.*``', rendered)
+
 
 class TestTopicDocumentEventHandlerBase(unittest.TestCase):
     def setUp(self):

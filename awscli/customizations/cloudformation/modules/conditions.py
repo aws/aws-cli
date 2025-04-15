@@ -42,8 +42,6 @@ def parse_conditions(d, find_ref):
     for k, v in d.items():
         retval[k] = istrue(v, find_ref, retval)
 
-    print("conditions:", retval)
-
     return retval
 
 

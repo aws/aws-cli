@@ -25,7 +25,9 @@ from awscli.customizations.cloudformation.modules.process import (
 )
 from tests.unit.customizations.cloudformation.yaml_compare import (
     compare_yaml_strings,
+    find_yaml_differences,
 )
+from tests.unit.customizations.cloudformation.yaml_diff import show_yaml_diff
 from tests.unit.customizations.cloudformation.test_yaml_compare import (
     TestYamlCompare,
 )
@@ -152,12 +154,18 @@ class TestPackageModules(unittest.TestCase):
 
             # Check to make sure the expected output and the actual
             # output is equivalent yaml, ignoring key order
-            self.assertTrue(
-                compare_yaml_strings(e, processed),
-                f"{test} failed: YAML content not equivalent",
-            )
+            is_equivalent = compare_yaml_strings(e, processed)
+            if not is_equivalent:
+                differences = find_yaml_differences(e, processed)
+                msg = f"\n{test} failed: YAML not equivalent\nDifferences:\n"
+                for diff in differences:
+                    msg += f"  - {diff}\n"
 
-            # TODO: Output a diff if they are not equivalent
+                # Add traditional diff output
+                msg += "\nYAML Diff:\n"
+                msg += show_yaml_diff(e, processed)
+
+                self.assertTrue(is_equivalent, msg)
 
         # These tests should fail to package
         bad_tests = ["badref"]

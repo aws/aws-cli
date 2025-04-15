@@ -4,7 +4,9 @@ Unit tests for the YAML comparison utility.
 """
 
 import unittest
-from tests.unit.customizations.cloudformation.yaml_compare import compare_yaml_strings
+from tests.unit.customizations.cloudformation.yaml_compare import (
+    compare_yaml_strings,
+)
 
 
 class TestYamlCompare(unittest.TestCase):
@@ -19,7 +21,10 @@ class TestYamlCompare(unittest.TestCase):
         self.assertTrue(compare_yaml_strings(yaml1, yaml1))
 
     def test_different_key_order(self):
-        """Test that YAML strings with different key order are considered equivalent."""
+        """
+        Test that YAML strings with different key order are
+        considered equivalent.
+        """
         yaml1 = """
         key1: value1
         key2: value2
@@ -31,7 +36,10 @@ class TestYamlCompare(unittest.TestCase):
         self.assertTrue(compare_yaml_strings(yaml1, yaml2))
 
     def test_nested_dictionaries_different_order(self):
-        """Test that nested dictionaries with different key order are considered equivalent."""
+        """
+        Test that nested dictionaries with different
+        key order are considered equivalent.
+        """
         yaml1 = """
         outer:
           inner1: value1
@@ -79,7 +87,9 @@ class TestYamlCompare(unittest.TestCase):
         self.assertTrue(compare_yaml_strings(yaml1, yaml2))
 
     def test_nested_lists_different_order(self):
-        """Test that nested lists with different order are considered equivalent."""
+        """
+        Test that nested lists with different order are considered equivalent.
+        """
         yaml1 = """
         outer:
           list:
@@ -95,7 +105,10 @@ class TestYamlCompare(unittest.TestCase):
         self.assertTrue(compare_yaml_strings(yaml1, yaml2))
 
     def test_complex_nested_structure(self):
-        """Test complex nested structures with different order are considered equivalent."""
+        """
+        Test complex nested structures with different order
+        are considered equivalent.
+        """
         yaml1 = """
         Resources:
           MyInstance:
@@ -131,7 +144,10 @@ class TestYamlCompare(unittest.TestCase):
         self.assertTrue(compare_yaml_strings(yaml1, yaml2))
 
     def test_different_values(self):
-        """Test that YAML strings with different values are not considered equivalent."""
+        """
+        Test that YAML strings with different values are not considered
+        equivalent.
+        """
         yaml1 = """
         key1: value1
         key2: value2
@@ -143,7 +159,10 @@ class TestYamlCompare(unittest.TestCase):
         self.assertFalse(compare_yaml_strings(yaml1, yaml2))
 
     def test_different_keys(self):
-        """Test that YAML strings with different keys are not considered equivalent."""
+        """
+        Test that YAML strings with different keys are not
+        considered equivalent.
+        """
         yaml1 = """
         key1: value1
         key2: value2
@@ -155,7 +174,10 @@ class TestYamlCompare(unittest.TestCase):
         self.assertFalse(compare_yaml_strings(yaml1, yaml2))
 
     def test_different_structure(self):
-        """Test that YAML strings with different structure are not considered equivalent."""
+        """
+        Test that YAML strings with different structure are
+        not considered equivalent.
+        """
         yaml1 = """
         key1: value1
         key2:
@@ -244,7 +266,10 @@ class TestYamlCompare(unittest.TestCase):
         self.assertTrue(compare_yaml_strings(yaml1, yaml2))
 
     def test_cloudformation_shorthand_vs_full(self):
-        """Test that shorthand and full notation for intrinsics are equivalent."""
+        """
+        Test that shorthand and full notation for intrinsics
+        are equivalent.
+        """
         yaml1 = """
         Resources:
           MyFunction:
@@ -255,8 +280,8 @@ class TestYamlCompare(unittest.TestCase):
         Resources:
           MyFunction:
             Properties:
-              Role: 
-                Fn::GetAtt: 
+              Role:
+                Fn::GetAtt:
                   - MyRole
                   - Arn
         """

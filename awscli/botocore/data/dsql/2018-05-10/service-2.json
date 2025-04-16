@@ -108,6 +108,24 @@
       ],
       "documentation":"<p>Retrieves information about a cluster.</p>"
     },
+    "GetVpcEndpointServiceName":{
+      "name":"GetVpcEndpointServiceName",
+      "http":{
+        "method":"GET",
+        "requestUri":"/clusters/{identifier}/vpc-endpoint-service-name",
+        "responseCode":200
+      },
+      "input":{"shape":"GetVpcEndpointServiceNameInput"},
+      "output":{"shape":"GetVpcEndpointServiceNameOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the VPC endpoint service name.</p>"
+    },
     "ListClusters":{
       "name":"ListClusters",
       "http":{
@@ -244,7 +262,8 @@
     },
     "ClusterId":{
       "type":"string",
-      "documentation":"<p>The ID of the cluster</p>"
+      "documentation":"<p>The ID of the cluster</p>",
+      "pattern":"[a-z0-9]{26}"
     },
     "ClusterList":{
       "type":"list",
@@ -524,6 +543,28 @@
       },
       "documentation":"<p>Output Mixin</p>"
     },
+    "GetVpcEndpointServiceNameInput":{
+      "type":"structure",
+      "required":["identifier"],
+      "members":{
+        "identifier":{
+          "shape":"ClusterId",
+          "documentation":"<p>The ID of the cluster to retrieve.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetVpcEndpointServiceNameOutput":{
+      "type":"structure",
+      "required":["serviceName"],
+      "members":{
+        "serviceName":{
+          "shape":"ServiceName",
+          "documentation":"<p>The VPC endpoint service name.</p>"
+        }
+      }
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -658,6 +699,13 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ServiceName":{
+      "type":"string",
+      "documentation":"<p>VPC Endpoint Service name for a Cluster</p>",
+      "max":128,
+      "min":1,
+      "pattern":"com\\.amazonaws\\.[a-z0-9-]+\\.dsql-[a-f0-9]{6}"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",

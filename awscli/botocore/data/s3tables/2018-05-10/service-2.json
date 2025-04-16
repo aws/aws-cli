@@ -49,7 +49,7 @@
         {"shape":"ConflictException"},
         {"shape":"BadRequestException"}
       ],
-      "documentation":"<p>Creates a new table associated with the given namespace in a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-create.html\">Creating an Amazon S3 table</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:CreateTable</code> permission to use this operation. </p> <note> <p>Additionally, you must have the <code>s3tables:PutTableData</code> permission to use this operation with the optional <code>metadata</code> request parameter. </p> </note> </dd> </dl>"
+      "documentation":"<p>Creates a new table associated with the given namespace in a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-create.html\">Creating an Amazon S3 table</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <ul> <li> <p>You must have the <code>s3tables:CreateTable</code> permission to use this operation. </p> </li> <li> <p>If you use this operation with the optional <code>metadata</code> request parameter you must have the <code>s3tables:PutTableData</code> permission. </p> </li> <li> <p>If you use this operation with the optional <code>encryptionConfiguration</code> request parameter you must have the <code>s3tables:PutTableEncryption</code> permission. </p> </li> </ul> <note> <p>Additionally, </p> </note> </dd> </dl>"
     },
     "CreateTableBucket":{
       "name":"CreateTableBucket",
@@ -68,7 +68,7 @@
         {"shape":"ConflictException"},
         {"shape":"BadRequestException"}
       ],
-      "documentation":"<p>Creates a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-buckets-create.html\">Creating a table bucket</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:CreateTableBucket</code> permission to use this operation. </p> </dd> </dl>"
+      "documentation":"<p>Creates a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-buckets-create.html\">Creating a table bucket</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <ul> <li> <p>You must have the <code>s3tables:CreateTableBucket</code> permission to use this operation. </p> </li> <li> <p>If you use this operation with the optional <code>encryptionConfiguration</code> parameter you must have the <code>s3tables:PutTableBucketEncryption</code> permission.</p> </li> </ul> </dd> </dl>"
     },
     "DeleteNamespace":{
       "name":"DeleteNamespace",
@@ -125,6 +125,25 @@
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Deletes a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-buckets-delete.html\">Deleting a table bucket</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DeleteTableBucket</code> permission to use this operation. </p> </dd> </dl>",
+      "idempotent":true
+    },
+    "DeleteTableBucketEncryption":{
+      "name":"DeleteTableBucketEncryption",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/buckets/{tableBucketARN}/encryption",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTableBucketEncryptionRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes the encryption configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DeleteTableBucketEncryption</code> permission to use this operation.</p> </dd> </dl>",
       "idempotent":true
     },
     "DeleteTableBucketPolicy":{
@@ -225,6 +244,25 @@
       ],
       "documentation":"<p>Gets details on a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-buckets-details.html\">Viewing details about an Amazon S3 table bucket</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableBucket</code> permission to use this operation. </p> </dd> </dl>"
     },
+    "GetTableBucketEncryption":{
+      "name":"GetTableBucketEncryption",
+      "http":{
+        "method":"GET",
+        "requestUri":"/buckets/{tableBucketARN}/encryption",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableBucketEncryptionRequest"},
+      "output":{"shape":"GetTableBucketEncryptionResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets the encryption configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableBucketEncryption</code> permission to use this operation.</p> </dd> </dl>"
+    },
     "GetTableBucketMaintenanceConfiguration":{
       "name":"GetTableBucketMaintenanceConfiguration",
       "http":{
@@ -262,6 +300,25 @@
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Gets details about a table bucket policy. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-bucket-policy.html#table-bucket-policy-get\">Viewing a table bucket policy</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableBucketPolicy</code> permission to use this operation. </p> </dd> </dl>"
+    },
+    "GetTableEncryption":{
+      "name":"GetTableEncryption",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/encryption",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableEncryptionRequest"},
+      "output":{"shape":"GetTableEncryptionResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets the encryption configuration for a table.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableEncryption</code> permission to use this operation.</p> </dd> </dl>"
     },
     "GetTableMaintenanceConfiguration":{
       "name":"GetTableMaintenanceConfiguration",
@@ -397,6 +454,25 @@
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>List tables in the given table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-tables.html\">S3 Tables</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:ListTables</code> permission to use this operation. </p> </dd> </dl>"
+    },
+    "PutTableBucketEncryption":{
+      "name":"PutTableBucketEncryption",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/buckets/{tableBucketARN}/encryption",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTableBucketEncryptionRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Sets the encryption configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTableBucketEncryption</code> permission to use this operation.</p> <note> <p>If you choose SSE-KMS encryption you must grant the S3 Tables maintenance principal access to your KMS key. For more information, see <a href=\"AmazonS3/latest/userguide/s3-tables-kms-permissions.html\">Permissions requirements for S3 Tables SSE-KMS encryption</a> </p> </note> </dd> </dl>",
+      "idempotent":true
     },
     "PutTableBucketMaintenanceConfiguration":{
       "name":"PutTableBucketMaintenanceConfiguration",
@@ -606,6 +682,10 @@
         "name":{
           "shape":"TableBucketName",
           "documentation":"<p>The name for the table bucket.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The encryption configuration to use for the table bucket. This configuration specifies the default encryption settings that will be applied to all tables created in this bucket unless overridden at the table level. The configuration includes the encryption algorithm and, if using SSE-KMS, the KMS key to use.</p>"
         }
       }
     },
@@ -651,6 +731,10 @@
         "metadata":{
           "shape":"TableMetadata",
           "documentation":"<p>The metadata for the table.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The encryption configuration to use for the table. This configuration specifies the encryption algorithm and, if using SSE-KMS, the KMS key to use for encrypting the table. </p> <note> <p>If you choose SSE-KMS encryption you must grant the S3 Tables maintenance principal access to your KMS key. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-kms-permissions.html\">Permissions requirements for S3 Tables SSE-KMS encryption</a>.</p> </note>"
         }
       }
     },
@@ -689,6 +773,18 @@
           "documentation":"<p>The name of the namespace.</p>",
           "location":"uri",
           "locationName":"namespace"
+        }
+      }
+    },
+    "DeleteTableBucketEncryptionRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
         }
       }
     },
@@ -778,6 +874,27 @@
         }
       }
     },
+    "EncryptionConfiguration":{
+      "type":"structure",
+      "required":["sseAlgorithm"],
+      "members":{
+        "sseAlgorithm":{
+          "shape":"SSEAlgorithm",
+          "documentation":"<p>The server-side encryption algorithm to use. Valid values are <code>AES256</code> for S3-managed encryption keys, or <code>aws:kms</code> for Amazon Web Services KMS-managed encryption keys. If you choose SSE-KMS encryption you must grant the S3 Tables maintenance principal access to your KMS key. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-kms-permissions.html\">Permissions requirements for S3 Tables SSE-KMS encryption</a>.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"EncryptionConfigurationKmsKeyArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key to use for encryption. This field is required only when <code>sseAlgorithm</code> is set to <code>aws:kms</code>.</p>"
+        }
+      },
+      "documentation":"<p>Configuration specifying how data should be encrypted. This structure defines the encryption algorithm and optional KMS key to be used for server-side encryption.</p>"
+    },
+    "EncryptionConfigurationKmsKeyArnString":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws[-a-z0-9]*:kms:[-a-z0-9]*:[0-9]{12}:key/.+)"
+    },
     "ErrorMessage":{"type":"string"},
     "ForbiddenException":{
       "type":"structure",
@@ -836,6 +953,36 @@
         "ownerAccountId":{
           "shape":"AccountId",
           "documentation":"<p>The ID of the account that owns the namespcace.</p>"
+        },
+        "namespaceId":{
+          "shape":"NamespaceId",
+          "documentation":"<p>The unique identifier of the namespace.</p>"
+        },
+        "tableBucketId":{
+          "shape":"TableBucketId",
+          "documentation":"<p>The unique identifier of the table bucket containing this namespace.</p>"
+        }
+      }
+    },
+    "GetTableBucketEncryptionRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "GetTableBucketEncryptionResponse":{
+      "type":"structure",
+      "required":["encryptionConfiguration"],
+      "members":{
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the table bucket.</p>"
         }
       }
     },
@@ -926,6 +1073,48 @@
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the table bucket was created.</p>"
+        },
+        "tableBucketId":{
+          "shape":"TableBucketId",
+          "documentation":"<p>The unique identifier of the table bucket.</p>"
+        }
+      }
+    },
+    "GetTableEncryptionRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket containing the table.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetTableEncryptionResponse":{
+      "type":"structure",
+      "required":["encryptionConfiguration"],
+      "members":{
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the table.</p>"
         }
       }
     },
@@ -1167,6 +1356,10 @@
           "shape":"NamespaceList",
           "documentation":"<p>The namespace associated with the table.</p>"
         },
+        "namespaceId":{
+          "shape":"NamespaceId",
+          "documentation":"<p>The unique identifier of the namespace containing this table.</p>"
+        },
         "versionToken":{
           "shape":"VersionToken",
           "documentation":"<p>The version token of the table.</p>"
@@ -1206,6 +1399,10 @@
         "format":{
           "shape":"OpenTableFormat",
           "documentation":"<p>The format of the table.</p>"
+        },
+        "tableBucketId":{
+          "shape":"TableBucketId",
+          "documentation":"<p>The unique identifier of the table bucket containing this table.</p>"
         }
       }
     },
@@ -1217,7 +1414,7 @@
           "documentation":"<p>The target file size for the table in MB.</p>"
         }
       },
-      "documentation":"<p>Contains details about the compaction settings for an Iceberg table. </p>"
+      "documentation":"<p>Contains details about the compaction settings for an Iceberg table.</p>"
     },
     "IcebergMetadata":{
       "type":"structure",
@@ -1253,21 +1450,21 @@
           "documentation":"<p>The maximum age of a snapshot before it can be expired.</p>"
         }
       },
-      "documentation":"<p>Contains details about the snapshot management settings for an Iceberg table. The oldest snapshot expires when its age exceeds the <code>maxSnapshotAgeHours</code> and the total number of snapshots exceeds the value for the minimum number of snapshots to keep <code>minSnapshotsToKeep</code>. </p>"
+      "documentation":"<p>Contains details about the snapshot management settings for an Iceberg table. The oldest snapshot expires when its age exceeds the <code>maxSnapshotAgeHours</code> and the total number of snapshots exceeds the value for the minimum number of snapshots to keep <code>minSnapshotsToKeep</code>.</p>"
     },
     "IcebergUnreferencedFileRemovalSettings":{
       "type":"structure",
       "members":{
         "unreferencedDays":{
           "shape":"PositiveInteger",
-          "documentation":"<p>The number of days an object has to be unreferenced before it is marked as non-current. <pre><code> &lt;/p&gt; </code></pre>"
+          "documentation":"<p>The number of days an object has to be unreferenced before it is marked as non-current.</p>"
         },
         "nonCurrentDays":{
           "shape":"PositiveInteger",
-          "documentation":"<p>The number of days an object has to be non-current before it is deleted. <pre><code>&lt;/p&gt; </code></pre>"
+          "documentation":"<p>The number of days an object has to be non-current before it is deleted.</p>"
         }
       },
-      "documentation":"<p>Contains details about the unreferenced file removal settings for an Iceberg table bucket. </p>"
+      "documentation":"<p>Contains details about the unreferenced file removal settings for an Iceberg table bucket.</p>"
     },
     "InternalServerErrorException":{
       "type":"structure",
@@ -1464,6 +1661,7 @@
       "max":2048,
       "min":1
     },
+    "NamespaceId":{"type":"string"},
     "NamespaceList":{
       "type":"list",
       "member":{"shape":"NamespaceName"}
@@ -1498,6 +1696,14 @@
         "ownerAccountId":{
           "shape":"AccountId",
           "documentation":"<p>The ID of the account that owns the namespace.</p>"
+        },
+        "namespaceId":{
+          "shape":"NamespaceId",
+          "documentation":"<p>The system-assigned unique identifier for the namespace.</p>"
+        },
+        "tableBucketId":{
+          "shape":"TableBucketId",
+          "documentation":"<p>The system-assigned unique identifier for the table bucket that contains this namespace.</p>"
         }
       },
       "documentation":"<p>Contains details about a namespace.</p>"
@@ -1532,6 +1738,25 @@
       "box":true,
       "max":2147483647,
       "min":1
+    },
+    "PutTableBucketEncryptionRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "encryptionConfiguration"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The encryption configuration to apply to the table bucket.</p>"
+        }
+      }
     },
     "PutTableBucketMaintenanceConfigurationRequest":{
       "type":"structure",
@@ -1696,6 +1921,13 @@
       "max":20480,
       "min":1
     },
+    "SSEAlgorithm":{
+      "type":"string",
+      "enum":[
+        "AES256",
+        "aws:kms"
+      ]
+    },
     "SchemaField":{
       "type":"structure",
       "required":[
@@ -1737,6 +1969,7 @@
       "type":"string",
       "pattern":"(arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:bucket/[a-z0-9_-]{3,63})"
     },
+    "TableBucketId":{"type":"string"},
     "TableBucketMaintenanceConfiguration":{
       "type":"map",
       "key":{"shape":"TableBucketMaintenanceType"},
@@ -1801,6 +2034,10 @@
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the table bucket was created at.</p>"
+        },
+        "tableBucketId":{
+          "shape":"TableBucketId",
+          "documentation":"<p>The system-assigned unique identifier for the table bucket.</p>"
         }
       },
       "documentation":"<p>Contains details about a table bucket.</p>"
@@ -1933,6 +2170,14 @@
         "modifiedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the table was last modified at.</p>"
+        },
+        "namespaceId":{
+          "shape":"NamespaceId",
+          "documentation":"<p>The unique identifier for the namespace that contains this table.</p>"
+        },
+        "tableBucketId":{
+          "shape":"TableBucketId",
+          "documentation":"<p>The unique identifier for the table bucket that contains this table.</p>"
         }
       },
       "documentation":"<p>Contains details about a table.</p>"
@@ -2041,5 +2286,5 @@
       "min":1
     }
   },
-  "documentation":"<p>An Amazon S3 table represents a structured dataset consisting of tabular data in <a href=\"https://parquet.apache.org/docs/\">Apache Parquet</a> format and related metadata. This data is stored inside an S3 table as a subresource. All tables in a table bucket are stored in the <a href=\"https://iceberg.apache.org/docs/latest/\">Apache Iceberg</a> table format. Through integration with the <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/glue/latest/dg/catalog-and-crawler.html\">AWS Glue Data Catalog</a> you can interact with your tables using AWS analytics services, such as <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/athena/\">Amazon Athena</a> and <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/redshift/\">Amazon Redshift</a>. Amazon S3 manages maintenance of your tables through automatic file compaction and snapshot management. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-buckets.html\">Amazon S3 table buckets</a>.</p>"
+  "documentation":"<p>An Amazon S3 table represents a structured dataset consisting of tabular data in <a href=\"https://parquet.apache.org/docs/\">Apache Parquet</a> format and related metadata. This data is stored inside an S3 table as a subresource. All tables in a table bucket are stored in the <a href=\"https://iceberg.apache.org/docs/latest/\">Apache Iceberg</a> table format. Through integration with the <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/glue/latest/dg/catalog-and-crawler.html\">Amazon Web Services Glue Data Catalog</a> you can interact with your tables using Amazon Web Services analytics services, such as <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/athena/\">Amazon Athena</a> and <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/redshift/\">Amazon Redshift</a>. Amazon S3 manages maintenance of your tables through automatic file compaction and snapshot management. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-buckets.html\">Amazon S3 table buckets</a>.</p>"
 }

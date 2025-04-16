@@ -28,6 +28,8 @@ from awscli.customizations.cloudformation.modules.names import (
     PACKAGES,
 )
 
+content_cache = {}
+
 
 def is_url(p):
     "Returns true if the path looks like a URL instead of a local file"
@@ -194,7 +196,11 @@ def read_source(source, s3_client=None):
 
     dotzip = ".zip"
 
-    if is_s3_url(source):
+    content = None
+
+    if source in content_cache:
+        content = content_cache[source]
+    elif is_s3_url(source):
         # Handle S3 URLs
         content = _handle_s3_source(source, s3_client, dotzip)
     elif is_url(source):
@@ -203,6 +209,8 @@ def read_source(source, s3_client=None):
     else:
         # Handle local files
         content = _handle_local_source(source, dotzip)
+
+    content_cache[source] = content
 
     node = yamlhelper.yaml_compose(content)
     lines = {}

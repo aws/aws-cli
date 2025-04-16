@@ -36,6 +36,7 @@ from awscli.customizations.cloudformation.modules.maps import (
     resolve_mapped_lists,
     getatt_map_list,
     ORIGINAL_MAP_NAME,
+    MAP_NAME_IS_I,
 )
 from awscli.customizations.cloudformation.modules.read import (
     is_url,
@@ -146,6 +147,8 @@ def make_module(
         module_config[OVERRIDES] = config[OVERRIDES]
     if ORIGINAL_MAP_NAME in config:
         module_config[ORIGINAL_MAP_NAME] = config[ORIGINAL_MAP_NAME]
+    if MAP_NAME_IS_I in config:
+        module_config[MAP_NAME_IS_I] = config[MAP_NAME_IS_I]
     module_config[NO_SOURCE_MAP] = no_source_map
     return Module(template, module_config, parent_module, s3_client)
 
@@ -282,6 +285,11 @@ class Module:
         self.base_path = module_config.get(BASE_PATH, "")
         self.parent_path = module_config.get(PARENT_PATH, "")
         self.invoked = module_config.get(INVOKED, False)
+
+        # Default behavior for Map/ForEach is to use array indexes
+        self.map_name_is_i = True
+        if MAP_NAME_IS_I in module_config:
+            self.map_name_is_i = module_config[MAP_NAME_IS_I]
 
         if RESOURCES not in self.template:
             # The parent might only have Modules
@@ -700,14 +708,25 @@ class Module:
                     self.resolve_output_getatt_map(mapped, name, prop_name)
                 return False
 
+        # index might be a number like 0: Content[0].Arn
+        # or it might be a key like A: Content[A].Arn
+        # The name of the mapped module might be Content0 or ContentA,
+        # depending on if we used an Fn::ForEach identifier.
+
         if index != -1:
-            if num.isdigit():
+            if isinstance(index, int):
                 name = f"{name}{index}"
             else:
                 # Find the array index for the key
-                for i, k in enumerate(mapped[name]):
-                    if index == k:
-                        name = f"{name}{i}"
+                if not self.map_name_is_i:
+                    # If Fn::ForEach was used with an identifier for
+                    # the logical id, we need to use that instead of the index
+                    name = f"{name}{index}"
+                else:
+                    # The mapped name uses the array index
+                    for i, k in enumerate(mapped[name]):
+                        if index == k:
+                            name = f"{name}{i}"
 
         reffed_prop = None
         if name == self.name:

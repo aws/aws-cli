@@ -40,6 +40,7 @@ OUTPUTS = "Outputs"
 ORIGINAL_MAP_NAME = "OriginalMapName"
 VALUE = "Value"
 FOREACH_PREFIX = "Fn::ForEach::"
+MAP_NAME_IS_I = "map_name_is_i"
 
 
 def replace_str(s, m, i):
@@ -289,6 +290,7 @@ def process_module_maps(template, parent_module):
 
                     # Remember the original name for GetAtt resolution
                     modules[module_id][ORIGINAL_MAP_NAME] = loop_name
+                    modules[module_id][MAP_NAME_IS_I] = False
 
             # Remove the ForEach entry
             del modules[k]

@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.26.3
+======
+
+* api-change:``servicecatalog``: Updated default value for the access-level-filter in SearchProvisionedProducts API to Account. For access to userLevel or roleLevel, the user must provide access-level-filter parameter.
+* api-change:``s3tables``: S3 Tables now supports setting encryption configurations on table buckets and tables. Encryption configurations can use server side encryption using AES256 or KMS customer-managed keys.
+* api-change:``dsql``: Added GetClusterEndpointService API. The new API allows retrieving endpoint service name specific to a cluster.
+* bugfix:Formatter: Update JSON formatter to encode raw bytes as UTF-8.
+* api-change:``events``: Adding support for KmsKeyIdentifer in CreateConnection, UpdateConnection and DescribeConnection APIs
+* api-change:``resource-groups``: Resource Groups: TagSyncTasks can be created with ResourceQuery
+* api-change:``eks``: Added support for new AL2023 ARM64 NVIDIA AMIs to the supported AMITypes.
+* api-change:``connectcases``: This feature provides capabilities to help track and meet service level agreements (SLAs) on cases programmatically. It allows configuring a new related item of type `Sla` on a case using CreateRelatedItem API and provides the ability to search for this new related item using SearchRelatedItems API.
+
+
 2.26.2
 ======
 

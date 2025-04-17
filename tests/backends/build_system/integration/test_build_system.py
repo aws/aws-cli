@@ -14,7 +14,6 @@ import os
 import subprocess
 
 import pytest
-from pep517 import BackendUnavailable
 
 from tests.backends.build_system.integration import (
     BaseArtifactTest,

@@ -299,6 +299,24 @@
       ],
       "documentation":"<p>Returns information about an existing workspace. </p>"
     },
+    "DescribeWorkspaceConfiguration":{
+      "name":"DescribeWorkspaceConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/workspaces/{workspaceId}/configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeWorkspaceConfigurationRequest"},
+      "output":{"shape":"DescribeWorkspaceConfigurationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Use this operation to return information about the configuration of a workspace. The configuration details returned include workspace configuration status, label set limits, and retention period.</p>"
+    },
     "GetDefaultScraperConfiguration":{
       "name":"GetDefaultScraperConfiguration",
       "http":{
@@ -522,6 +540,27 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Updates the alias of an existing workspace. </p>",
+      "idempotent":true
+    },
+    "UpdateWorkspaceConfiguration":{
+      "name":"UpdateWorkspaceConfiguration",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/workspaces/{workspaceId}/configuration",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateWorkspaceConfigurationRequest"},
+      "output":{"shape":"UpdateWorkspaceConfigurationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Use this operation to create or update the label sets, label set limits, and retention period of a workspace.</p> <p>You must specify at least one of <code>limitsPerLabelSet</code> or <code>retentionPeriodInDays</code> for the request to be valid.</p>",
       "idempotent":true
     }
   },
@@ -802,7 +841,7 @@
         },
         "roleConfiguration":{
           "shape":"RoleConfiguration",
-          "documentation":"<p>The scraper role configuration for the workspace.</p>"
+          "documentation":"<p>Use this structure to enable cross-account access, so that you can use a target account to access Prometheus metrics from source accounts.</p>"
         },
         "scrapeConfiguration":{
           "shape":"ScrapeConfiguration",
@@ -1132,6 +1171,28 @@
       },
       "documentation":"<p>Represents the output of a <code>DescribeScraper</code> operation.</p>"
     },
+    "DescribeWorkspaceConfigurationRequest":{
+      "type":"structure",
+      "required":["workspaceId"],
+      "members":{
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace that you want to retrieve information for. To find the IDs of your workspaces, use the <a href=\"https://docs.aws.amazon.com/prometheus/latest/APIReference/API_ListWorkspaces.htm\">ListWorkspaces</a> operation.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "DescribeWorkspaceConfigurationResponse":{
+      "type":"structure",
+      "required":["workspaceConfiguration"],
+      "members":{
+        "workspaceConfiguration":{
+          "shape":"WorkspaceConfigurationDescription",
+          "documentation":"<p>This structure contains the information about the workspace configuration.</p>"
+        }
+      }
+    },
     "DescribeWorkspaceRequest":{
       "type":"structure",
       "required":["workspaceId"],
@@ -1268,6 +1329,57 @@
       "max":2048,
       "min":20,
       "pattern":"^arn:aws[-a-z]*:kms:[-a-z0-9]+:[0-9]{12}:key/[-a-f0-9]+$"
+    },
+    "LabelName":{
+      "type":"string",
+      "min":1,
+      "pattern":"^[a-zA-Z_][a-zA-Z0-9_]*$"
+    },
+    "LabelSet":{
+      "type":"map",
+      "key":{"shape":"LabelName"},
+      "value":{"shape":"LabelValue"}
+    },
+    "LabelValue":{
+      "type":"string",
+      "min":1
+    },
+    "LimitsPerLabelSet":{
+      "type":"structure",
+      "required":[
+        "labelSet",
+        "limits"
+      ],
+      "members":{
+        "labelSet":{
+          "shape":"LabelSet",
+          "documentation":"<p>This defines one label set that will have an enforced ingestion limit. </p> <p>Label values accept ASCII characters and must contain at least one character that isn't whitespace. ASCII control characters are not accepted. If the label name is metric name label <code>__<i>name</i>__</code>, then the <i>metric</i> part of the name must conform to the following pattern: <code>[a-zA-Z_:][a-zA-Z0-9_:]*</code> </p>"
+        },
+        "limits":{
+          "shape":"LimitsPerLabelSetEntry",
+          "documentation":"<p>This structure contains the information about the limits that apply to time series that match this label set.</p>"
+        }
+      },
+      "documentation":"<p>This structure defines one label set used to enforce ingestion limits for the workspace, and defines the limit for that label set.</p> <p>A label set is a unique combination of label-value pairs. Use them to control time series ingestion limits and to monitor usage by specific label groups. Example label sets might be <code>team:finance</code> or <code>env:prod</code> </p>"
+    },
+    "LimitsPerLabelSetEntry":{
+      "type":"structure",
+      "members":{
+        "maxSeries":{
+          "shape":"LimitsPerLabelSetEntryMaxSeriesLong",
+          "documentation":"<p>The maximum number of active series that can be ingested that match this label set. </p> <p>Setting this to 0 causes no label set limit to be enforced, but it does cause Amazon Managed Service for Prometheus to vend label set metrics to CloudWatch</p>"
+        }
+      },
+      "documentation":"<p>This structure contains the information about the limits that apply to time series that match one label set.</p>"
+    },
+    "LimitsPerLabelSetEntryMaxSeriesLong":{
+      "type":"long",
+      "box":true,
+      "min":0
+    },
+    "LimitsPerLabelSetList":{
+      "type":"list",
+      "member":{"shape":"LimitsPerLabelSet"}
     },
     "ListRuleGroupsNamespacesRequest":{
       "type":"structure",
@@ -1629,14 +1741,14 @@
       "members":{
         "sourceRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>A ARN identifying the source role configuration.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role used in the source account to enable cross-account scraping. For information about the contents of this policy, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html#cross-account-remote-write\">Cross-account setup</a>.</p>"
         },
         "targetRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>A ARN identifying the target role configuration.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role used in the target account to enable cross-account scraping. For information about the contents of this policy, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html#cross-account-remote-write\">Cross-account setup</a>.</p>"
         }
       },
-      "documentation":"<p>To configure roles that allows users to write to an Amazon Managed Service for Prometheus workspace in a different account.</p>"
+      "documentation":"<p>Use this structure to enable cross-account access, so that you can use a target account to access Prometheus metrics from source accounts.</p>"
     },
     "RuleGroupsNamespaceArn":{
       "type":"string",
@@ -1824,7 +1936,10 @@
           "shape":"IamRoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that provides permissions for the scraper to discover and collect metrics on your behalf.</p> <p>For example, <code>arn:aws:iam::123456789012:role/service-role/AmazonGrafanaServiceRole-12example</code>.</p>"
         },
-        "roleConfiguration":{"shape":"RoleConfiguration"},
+        "roleConfiguration":{
+          "shape":"RoleConfiguration",
+          "documentation":"<p>This structure displays information about the IAM roles used for cross-account scraping configuration.</p>"
+        },
         "scrapeConfiguration":{
           "shape":"ScrapeConfiguration",
           "documentation":"<p>The configuration in use by the scraper.</p>"
@@ -1934,7 +2049,10 @@
           "shape":"IamRoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that provides permissions for the scraper to discover and collect metrics on your behalf.</p>"
         },
-        "roleConfiguration":{"shape":"RoleConfiguration"},
+        "roleConfiguration":{
+          "shape":"RoleConfiguration",
+          "documentation":"<p>This structure displays information about the IAM roles used for cross-account scraping configuration.</p>"
+        },
         "scraperId":{
           "shape":"ScraperId",
           "documentation":"<p>The ID of the scraper.</p>"
@@ -2214,7 +2332,7 @@
         },
         "roleConfiguration":{
           "shape":"RoleConfiguration",
-          "documentation":"<p>The scraper role configuration for the workspace.</p>"
+          "documentation":"<p>Use this structure to enable cross-account access, so that you can use a target account to access Prometheus metrics from source accounts.</p>"
         },
         "scrapeConfiguration":{
           "shape":"ScrapeConfiguration",
@@ -2275,6 +2393,46 @@
         }
       },
       "documentation":"<p>Represents the input of an <code>UpdateWorkspaceAlias</code> operation.</p>"
+    },
+    "UpdateWorkspaceConfigurationRequest":{
+      "type":"structure",
+      "required":["workspaceId"],
+      "members":{
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>You can include a token in your operation to make it an idempotent opeartion. </p>",
+          "idempotencyToken":true
+        },
+        "limitsPerLabelSet":{
+          "shape":"LimitsPerLabelSetList",
+          "documentation":"<p>This is an array of structures, where each structure defines a label set for the workspace, and defines the ingestion limit for active time series for each of those label sets. Each label name in a label set must be unique.</p>"
+        },
+        "retentionPeriodInDays":{
+          "shape":"UpdateWorkspaceConfigurationRequestRetentionPeriodInDaysInteger",
+          "documentation":"<p>Specifies how many days that metrics will be retained in the workspace.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace that you want to update. To find the IDs of your workspaces, use the <a href=\"https://docs.aws.amazon.com/prometheus/latest/APIReference/API_ListWorkspaces.htm\">ListWorkspaces</a> operation.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "UpdateWorkspaceConfigurationRequestRetentionPeriodInDaysInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "UpdateWorkspaceConfigurationResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"WorkspaceConfigurationStatus",
+          "documentation":"<p>The status of the workspace configuration.</p>"
+        }
+      }
     },
     "Uri":{
       "type":"string",
@@ -2351,6 +2509,53 @@
       "type":"string",
       "documentation":"<p>An ARN identifying a Workspace.</p>",
       "pattern":"^arn:aws[-a-z]*:aps:[-a-z0-9]+:[0-9]{12}:workspace/.+$"
+    },
+    "WorkspaceConfigurationDescription":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "limitsPerLabelSet":{
+          "shape":"LimitsPerLabelSetList",
+          "documentation":"<p>This is an array of structures, where each structure displays one label sets for the workspace and the limits for that label set.</p>"
+        },
+        "retentionPeriodInDays":{
+          "shape":"WorkspaceConfigurationDescriptionRetentionPeriodInDaysInteger",
+          "documentation":"<p>This field displays how many days that metrics are retained in the workspace.</p>"
+        },
+        "status":{
+          "shape":"WorkspaceConfigurationStatus",
+          "documentation":"<p>This structure displays the current status of the workspace configuration, and might also contain a reason for that status.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains the description of the workspace configuration.</p>"
+    },
+    "WorkspaceConfigurationDescriptionRetentionPeriodInDaysInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "WorkspaceConfigurationStatus":{
+      "type":"structure",
+      "required":["statusCode"],
+      "members":{
+        "statusCode":{
+          "shape":"WorkspaceConfigurationStatusCode",
+          "documentation":"<p>The current status of the workspace configuration.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current status, if a reason is available.</p>"
+        }
+      },
+      "documentation":"<p>This structure displays the current status of the workspace configuration, and might also contain a reason for that status.</p>"
+    },
+    "WorkspaceConfigurationStatusCode":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "UPDATING",
+        "UPDATE_FAILED"
+      ]
     },
     "WorkspaceDescription":{
       "type":"structure",

@@ -263,7 +263,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>You can create a run cache to save the task outputs from completed tasks in a run for a private workflow. Subsequent runs use the task outputs from the cache, rather than computing the task outputs again. You specify an Amazon S3 location where HealthOmics saves the cached data. This data must be immediately accessible (not in an archived state).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-cache-create.html\">Creating a run cache</a> in the AWS HealthOmics User Guide.</p>",
+      "documentation":"<p>You can create a run cache to save the task outputs from completed tasks in a run for a private workflow. Subsequent runs use the task outputs from the cache, rather than computing the task outputs again. You specify an Amazon S3 location where Amazon Web Services HealthOmics saves the cached data. This data must be immediately accessible (not in an archived state).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-cache-create.html\">Creating a run cache</a> in the Amazon Web Services HealthOmics User Guide.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
     "CreateRunGroup":{
@@ -369,8 +369,31 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Creates a workflow.</p>",
+      "documentation":"<p>Creates a private workflow.Private workflows depend on a variety of resources that you create and configure before creating the workflow:</p> <ul> <li> <p> <i>Input data</i>: Input data for the workflow, stored in an S3 bucket or a Amazon Web Services HealthOmics sequence store. </p> </li> <li> <p> <i>Workflow definition files</i>: Define your workflow in one or more workflow definition files, written in WDL, Nextflow, or CWL. The workflow definition specifies the inputs and outputs for runs that use the workflow. It also includes specifications for the runs and run tasks for your workflow, including compute and memory requirements.</p> </li> <li> <p> <i>Parameter template files</i>: Define run parameters using a parameter template file (written in JSON). </p> </li> <li> <p> <i>ECR container images</i>: Create one or more container images for the workflow. Store the images in a private ECR repository.</p> </li> <li> <p>(Optional) <i>Sentieon licenses</i>: Request a Sentieon license if you plan to use Sentieon software in a private workflow.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/creating-private-workflows.html\">Creating or updating a private workflow in Amazon Web Services HealthOmics</a> in the Amazon Web Services HealthOmics User Guide.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
+    },
+    "CreateWorkflowVersion":{
+      "name":"CreateWorkflowVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workflow/{workflowId}/version",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateWorkflowVersionRequest"},
+      "output":{"shape":"CreateWorkflowVersionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Creates a new workflow version for the workflow that you specify with the <code>workflowId</code> parameter.</p> <p>When you create a new version of a workflow, you need to specify the configuration for the new version. It doesn't inherit any configuration values from the workflow.</p> <p>Provide a version name that is unique for this workflow. You cannot change the name after HealthOmics creates the version.</p> <note> <p>Don’t include any personally identifiable information (PII) in the version name. Version names appear in the workflow version ARN.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-versions.html\">Workflow versioning in Amazon Web Services HealthOmics</a> in the Amazon Web Services HealthOmics User Guide.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
+      "idempotent":true
     },
     "DeleteAnnotationStore":{
       "name":"DeleteAnnotationStore",
@@ -498,7 +521,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Delete a run cache. This action removes the cache metadata stored in the service account, but doesn't delete the data in Amazon S3. You can access the cache data in Amazon S3, for inspection or to troubleshoot issues. You can remove old cache data using standard S3 <code>Delete</code> operations. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-cache-delete.html\">Deleting a run cache</a> in the AWS HealthOmics User Guide.</p>",
+      "documentation":"<p>Delete a run cache. This action removes the cache metadata stored in the service account, but doesn't delete the data in Amazon S3. You can access the cache data in Amazon S3, for inspection or to troubleshoot issues. You can remove old cache data using standard S3 <code>Delete</code> operations. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-cache-delete.html\">Deleting a run cache</a> in the Amazon Web Services HealthOmics User Guide.</p>",
       "endpoint":{"hostPrefix":"workflows-"},
       "idempotent":true
     },
@@ -534,8 +557,8 @@
       "input":{"shape":"DeleteS3AccessPolicyRequest"},
       "output":{"shape":"DeleteS3AccessPolicyResponse"},
       "errors":[
-        {"shape":"InternalServerException"},
         {"shape":"NotSupportedOperationException"},
+        {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
@@ -630,6 +653,28 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Deletes a workflow.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
+      "idempotent":true
+    },
+    "DeleteWorkflowVersion":{
+      "name":"DeleteWorkflowVersion",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/workflow/{workflowId}/version/{versionName}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteWorkflowVersionRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Deletes a workflow version. Deleting a workflow version doesn't affect any ongoing runs that are using the workflow version.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-versions.html\">Workflow versioning in Amazon Web Services HealthOmics</a> in the Amazon Web Services HealthOmics User Guide.</p>",
       "endpoint":{"hostPrefix":"workflows-"},
       "idempotent":true
     },
@@ -892,7 +937,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Gets information about a workflow run.</p> <p>If a workflow is shared with you, you cannot export information about the run.</p> <p>HealthOmics stores a fixed number of runs that are available to the console and API. If GetRun doesn't return the requested run, you can find run logs for all runs in the CloudWatch logs. For more information about viewing the run logs, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/cloudwatch-logs.html\">CloudWatch logs</a> in the <i>AWS HealthOmics User Guide</i>.</p>",
+      "documentation":"<p>Gets information about a workflow run.</p> <p>If a workflow is shared with you, you cannot export information about the run.</p> <p>Amazon Web Services HealthOmics stores a fixed number of runs that are available to the console and API. If GetRun doesn't return the requested run, you can find run logs for all runs in the CloudWatch logs. For more information about viewing the run logs, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/cloudwatch-logs.html\">CloudWatch logs</a> in the <i>in the Amazon Web Services HealthOmics User Guide</i>.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
     "GetRunCache":{
@@ -914,7 +959,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Retrieve the details for the specified run cache.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-call-caching.html\">Call caching for HealthOmics runs</a> in the AWS HealthOmics User Guide.</p>",
+      "documentation":"<p>Retrieve the details for the specified run cache.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-call-caching.html\">Call caching for Amazon Web Services HealthOmics runs</a> in the Amazon Web Services HealthOmics User Guide.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
     "GetRunGroup":{
@@ -971,8 +1016,8 @@
       "input":{"shape":"GetS3AccessPolicyRequest"},
       "output":{"shape":"GetS3AccessPolicyResponse"},
       "errors":[
-        {"shape":"InternalServerException"},
         {"shape":"NotSupportedOperationException"},
+        {"shape":"InternalServerException"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
@@ -1082,6 +1127,28 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Gets information about a workflow.</p> <p>If a workflow is shared with you, you cannot export the workflow.</p>",
+      "endpoint":{"hostPrefix":"workflows-"}
+    },
+    "GetWorkflowVersion":{
+      "name":"GetWorkflowVersion",
+      "http":{
+        "method":"GET",
+        "requestUri":"/workflow/{workflowId}/version/{versionName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWorkflowVersionRequest"},
+      "output":{"shape":"GetWorkflowVersionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Gets information about a workflow version. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-versions.html\">Workflow versioning in Amazon Web Services HealthOmics</a> in the Amazon Web Services HealthOmics User Guide.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
     "ListAnnotationImportJobs":{
@@ -1409,7 +1476,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Retrieves a list of runs.</p> <p>HealthOmics stores a fixed number of runs that are available to the console and API. If the ListRuns response doesn't include specific runs that you expected, you can find run logs for all runs in the CloudWatch logs. For more information about viewing the run logs, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/cloudwatch-logs.html\">CloudWatch logs</a> in the <i>AWS HealthOmics User Guide</i>.</p>",
+      "documentation":"<p>Retrieves a list of runs.</p> <p>Amazon Web Services HealthOmics stores a fixed number of runs that are available to the console and API. If the ListRuns response doesn't include specific runs that you expected, you can find run logs for all runs in the CloudWatch logs. For more information about viewing the run logs, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/cloudwatch-logs.html\">CloudWatch logs</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
     "ListSequenceStores":{
@@ -1512,6 +1579,28 @@
       "documentation":"<p>Retrieves a list of variant stores.</p>",
       "endpoint":{"hostPrefix":"analytics-"}
     },
+    "ListWorkflowVersions":{
+      "name":"ListWorkflowVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/workflow/{workflowId}/version",
+        "responseCode":200
+      },
+      "input":{"shape":"ListWorkflowVersionsRequest"},
+      "output":{"shape":"ListWorkflowVersionsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Lists the workflow versions for the specified workflow. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-versions.html\">Workflow versioning in Amazon Web Services HealthOmics</a> in the Amazon Web Services HealthOmics User Guide.</p>",
+      "endpoint":{"hostPrefix":"workflows-"}
+    },
     "ListWorkflows":{
       "name":"ListWorkflows",
       "http":{
@@ -1544,8 +1633,8 @@
       "input":{"shape":"PutS3AccessPolicyRequest"},
       "output":{"shape":"PutS3AccessPolicyResponse"},
       "errors":[
-        {"shape":"InternalServerException"},
         {"shape":"NotSupportedOperationException"},
+        {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
@@ -1678,7 +1767,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Starts a workflow run. To duplicate a run, specify the run's ID and a role ARN. The remaining parameters are copied from the previous run.</p> <p>StartRun will not support re-run for a workflow that is shared with you.</p> <p>HealthOmics stores a fixed number of runs that are available to the console and API. By default, HealthOmics doesn't any remove any runs. If HealthOmics reaches the maximum number of runs, you must manually remove runs. To have older runs removed automatically, set the retention mode to <code>REMOVE</code>.</p> <p>By default, the run uses STATIC storage. For STATIC storage, set the <code>storageCapacity</code> field. You can set the storage type to DYNAMIC. You do not set <code>storageCapacity</code>, because HealthOmics dynamically scales the storage up or down as required. For more information about static and dynamic storage, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/Using-workflows.html\">Running workflows</a> in the <i>AWS HealthOmics User Guide</i>.</p>",
+      "documentation":"<p>Starts a new run or duplicates an existing run.</p> <p>For a new run, specify a unique <code>requestId</code>, the <code>workflowId</code>, and a role ARN. If you're using static run storage (the default), specify the required <code>storageCapacity</code>.</p> <p>You duplicate a run by specifing a unique <code>requestId</code>, the <code>runID</code> of the run to duplicate, and a role ARN.</p> <p>For more information about the optional parameters in the StartRun request, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/starting-a-run.html\">Starting a run</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
     "StartVariantImportJob":{
@@ -1884,7 +1973,28 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Updates a workflow.</p>",
+      "documentation":"<p>Updates information about a workflow. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/update-private-workflow.html\">Update a private workflow</a> in the Amazon Web Services HealthOmics User Guide.</p>",
+      "endpoint":{"hostPrefix":"workflows-"}
+    },
+    "UpdateWorkflowVersion":{
+      "name":"UpdateWorkflowVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workflow/{workflowId}/version/{versionName}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateWorkflowVersionRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Updates information about the workflow version. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-versions.html\">Workflow versioning in Amazon Web Services HealthOmics</a> in the Amazon Web Services HealthOmics User Guide.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
     "UploadReadSetPart":{
@@ -2878,7 +2988,7 @@
       "members":{
         "cacheBehavior":{
           "shape":"CacheBehavior",
-          "documentation":"<p>Default cache behavior for runs that use this cache. Supported values are:</p> <p> <code>CACHE_ON_FAILURE</code>: Caches task outputs from completed tasks for runs that fail. This setting is useful if you're debugging a workflow that fails after several tasks completed successfully. The subsequent run uses the cache outputs for previously-completed tasks if the task definition, inputs, and container in ECR are identical to the prior run.</p> <p> <code>CACHE_ALWAYS</code>: Caches task outputs from completed tasks for all runs. This setting is useful in development mode, but do not use it in a production setting.</p> <p>If you don't specify a value, the default behavior is CACHE_ON_FAILURE. When you start a run that uses this cache, you can override the default cache behavior.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/how-run-cache.html#run-cache-behavior\">Run cache behavior</a> in the AWS HealthOmics User Guide.</p>"
+          "documentation":"<p>Default cache behavior for runs that use this cache. Supported values are:</p> <p> <code>CACHE_ON_FAILURE</code>: Caches task outputs from completed tasks for runs that fail. This setting is useful if you're debugging a workflow that fails after several tasks completed successfully. The subsequent run uses the cache outputs for previously-completed tasks if the task definition, inputs, and container in ECR are identical to the prior run.</p> <p> <code>CACHE_ALWAYS</code>: Caches task outputs from completed tasks for all runs. This setting is useful in development mode, but do not use it in a production setting.</p> <p>If you don't specify a value, the default behavior is CACHE_ON_FAILURE. When you start a run that uses this cache, you can override the default cache behavior.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/how-run-cache.html#run-cache-behavior\">Run cache behavior</a> in the Amazon Web Services HealthOmics User Guide.</p>"
         },
         "cacheS3Location":{
           "shape":"S3UriForBucketOrObject",
@@ -2894,7 +3004,7 @@
         },
         "requestId":{
           "shape":"RunCacheRequestId",
-          "documentation":"<p>A unique request token, to ensure idempotency. If you don't specify a token, HealthOmics automatically generates a universally unique identifier (UUID) for the request.</p>",
+          "documentation":"<p>A unique request token, to ensure idempotency. If you don't specify a token, Amazon Web Services HealthOmics automatically generates a universally unique identifier (UUID) for the request.</p>",
           "idempotencyToken":true
         },
         "tags":{
@@ -2903,7 +3013,7 @@
         },
         "cacheBucketOwnerId":{
           "shape":"AwsAccountId",
-          "documentation":"<p>The AWS account ID of the expected owner of the S3 bucket for the run cache. If not provided, your account ID is set as the owner of the bucket.</p>"
+          "documentation":"<p>The Amazon Web Services account ID of the expected owner of the S3 bucket for the run cache. If not provided, your account ID is set as the owner of the bucket.</p>"
         }
       }
     },
@@ -3030,7 +3140,7 @@
           "idempotencyToken":true
         },
         "fallbackLocation":{
-          "shape":"S3Destination",
+          "shape":"FallbackLocation",
           "documentation":"<p>An S3 location that is used to store files that have failed a direct upload.</p>"
         },
         "eTagAlgorithmFamily":{
@@ -3080,7 +3190,7 @@
           "documentation":"<p>When the store was created.</p>"
         },
         "fallbackLocation":{
-          "shape":"S3Destination",
+          "shape":"FallbackLocation",
           "documentation":"<p>An S3 location that is used to store files that have failed a direct upload.</p>"
         },
         "eTagAlgorithmFamily":{
@@ -3211,7 +3321,7 @@
         },
         "engine":{
           "shape":"WorkflowEngine",
-          "documentation":"<p>An engine for the workflow.</p>"
+          "documentation":"<p>The workflow engine for the workflow.</p>"
         },
         "definitionZip":{
           "shape":"Blob",
@@ -3231,7 +3341,7 @@
         },
         "storageCapacity":{
           "shape":"CreateWorkflowRequestStorageCapacityInteger",
-          "documentation":"<p>The default storage capacity for the workflow runs, in gibibytes.</p>"
+          "documentation":"<p>The default static storage capacity (in gibibytes) for runs that use this workflow or workflow version.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -3245,6 +3355,10 @@
         "accelerators":{
           "shape":"Accelerators",
           "documentation":"<p>The computational accelerator specified to run the workflow.</p>"
+        },
+        "storageType":{
+          "shape":"StorageType",
+          "documentation":"<p> The default storage type for runs that use this workflow. STATIC storage allocates a fixed amount of storage. DYNAMIC storage dynamically scales the storage up or down, based on file system utilization. For more information about static and dynamic storage, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/Using-workflows.html\">Running workflows</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>"
         }
       }
     },
@@ -3272,6 +3386,114 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The workflow's tags.</p>"
+        },
+        "uuid":{
+          "shape":"WorkflowUuid",
+          "documentation":"<p>The universally unique identifier (UUID) value for this workflow.</p>"
+        }
+      }
+    },
+    "CreateWorkflowVersionRequest":{
+      "type":"structure",
+      "required":[
+        "workflowId",
+        "versionName",
+        "requestId"
+      ],
+      "members":{
+        "workflowId":{
+          "shape":"WorkflowId",
+          "documentation":"<p>The ID of the workflow where you are creating the new version.</p>",
+          "location":"uri",
+          "locationName":"workflowId"
+        },
+        "versionName":{
+          "shape":"WorkflowVersionName",
+          "documentation":"<p>A name for the workflow version. Provide a version name that is unique for this workflow. You cannot change the name after HealthOmics creates the version. </p> <p>The version name must start with a letter or number and it can include upper-case and lower-case letters, numbers, hyphens, periods and underscores. The maximum length is 64 characters. You can use a simple naming scheme, such as version1, version2, version3. You can also match your workflow versions with your own internal versioning conventions, such as 2.7.0, 2.7.1, 2.7.2.</p>"
+        },
+        "definitionZip":{
+          "shape":"Blob",
+          "documentation":"<p>A zip archive containing the workflow definition for this workflow version.</p>"
+        },
+        "definitionUri":{
+          "shape":"WorkflowDefinition",
+          "documentation":"<p>The URI specifies the location of the workflow definition for this workflow version.</p>"
+        },
+        "accelerators":{
+          "shape":"Accelerators",
+          "documentation":"<p>The computational accelerator for this workflow version.</p>"
+        },
+        "description":{
+          "shape":"WorkflowVersionDescription",
+          "documentation":"<p>A description for this workflow version.</p>"
+        },
+        "engine":{
+          "shape":"WorkflowEngine",
+          "documentation":"<p>The workflow engine for this workflow version.</p>"
+        },
+        "main":{
+          "shape":"WorkflowMain",
+          "documentation":"<p>The path of the main definition file for this workflow version.</p>"
+        },
+        "parameterTemplate":{
+          "shape":"WorkflowParameterTemplate",
+          "documentation":"<p>The parameter template defines the input parameters for runs that use this workflow version.</p>"
+        },
+        "requestId":{
+          "shape":"WorkflowRequestId",
+          "documentation":"<p>To ensure that requests don't run multiple times, specify a unique ID for each request.</p>",
+          "idempotencyToken":true
+        },
+        "storageType":{
+          "shape":"StorageType",
+          "documentation":"<p>The default storage type for runs that use this workflow. STATIC storage allocates a fixed amount of storage. DYNAMIC storage dynamically scales the storage up or down, based on file system utilization. For more information about static and dynamic storage, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/Using-workflows.html\">Running workflows</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>"
+        },
+        "storageCapacity":{
+          "shape":"CreateWorkflowVersionRequestStorageCapacityInteger",
+          "documentation":"<p>The default static storage capacity (in gibibytes) for runs that use this workflow or workflow version.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Optional tags to associate with this workflow version.</p>"
+        },
+        "workflowBucketOwnerId":{
+          "shape":"WorkflowBucketOwnerId",
+          "documentation":"<p>Amazon Web Services Id of the owner of the S3 bucket that contains the workflow definition. You need to specify this parameter if your account is not the bucket owner.</p>"
+        }
+      }
+    },
+    "CreateWorkflowVersionRequestStorageCapacityInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100000,
+      "min":0
+    },
+    "CreateWorkflowVersionResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"WorkflowVersionArn",
+          "documentation":"<p>ARN of the workflow version.</p>"
+        },
+        "workflowId":{
+          "shape":"WorkflowId",
+          "documentation":"<p>The workflow's ID.</p>"
+        },
+        "versionName":{
+          "shape":"WorkflowVersionName",
+          "documentation":"<p>The workflow version name.</p>"
+        },
+        "status":{
+          "shape":"WorkflowStatus",
+          "documentation":"<p>The workflow version status.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The workflow version's tags.</p>"
+        },
+        "uuid":{
+          "shape":"WorkflowUuid",
+          "documentation":"<p>The universally unique identifier (UUID) value for this workflow version.</p>"
         }
       }
     },
@@ -3528,6 +3750,27 @@
         }
       }
     },
+    "DeleteWorkflowVersionRequest":{
+      "type":"structure",
+      "required":[
+        "workflowId",
+        "versionName"
+      ],
+      "members":{
+        "workflowId":{
+          "shape":"WorkflowId",
+          "documentation":"<p>The workflow's ID.</p>",
+          "location":"uri",
+          "locationName":"workflowId"
+        },
+        "versionName":{
+          "shape":"WorkflowVersionName",
+          "documentation":"<p>The workflow version name.</p>",
+          "location":"uri",
+          "locationName":"versionName"
+        }
+      }
+    },
     "Description":{
       "type":"string",
       "max":500,
@@ -3697,6 +3940,10 @@
     "ExportReadSetJobDetailList":{
       "type":"list",
       "member":{"shape":"ExportReadSetJobDetail"}
+    },
+    "FallbackLocation":{
+      "type":"string",
+      "pattern":"$|^s3://([a-z0-9][a-z0-9-.]{1,61}[a-z0-9])/?((.{1,1024})/)?"
     },
     "FileInformation":{
       "type":"structure",
@@ -4837,7 +5084,7 @@
         },
         "engineVersion":{
           "shape":"EngineVersion",
-          "documentation":"<p>The workflow engine version.</p>"
+          "documentation":"<p>The actual Nextflow engine version that Amazon Web Services HealthOmics used for the run. The other workflow definition languages don't provide a value for this field.</p>"
         },
         "status":{
           "shape":"RunStatus",
@@ -4954,6 +5201,14 @@
         "workflowOwnerId":{
           "shape":"WorkflowOwnerId",
           "documentation":"<p>The ID of the workflow owner.</p>"
+        },
+        "workflowVersionName":{
+          "shape":"WorkflowVersionName",
+          "documentation":"<p>The workflow version name.</p>"
+        },
+        "workflowUuid":{
+          "shape":"WorkflowUuid",
+          "documentation":"<p>The universally unique identifier (UUID) value for the workflow.</p>"
         }
       }
     },
@@ -5011,7 +5266,7 @@
         },
         "cacheHit":{
           "shape":"Boolean",
-          "documentation":"<p>Set to true if AWS HealthOmics found a matching entry in the run cache for this task.</p>"
+          "documentation":"<p>Set to true if Amazon Web Services HealthOmics found a matching entry in the run cache for this task.</p>"
         },
         "cacheS3Uri":{
           "shape":"S3UriForBucketOrObject",
@@ -5092,7 +5347,7 @@
         },
         "storeId":{
           "shape":"StoreId",
-          "documentation":"<p>The AWS-generated Sequence Store or Reference Store ID.</p>"
+          "documentation":"<p>The Amazon Web Services-generated Sequence Store or Reference Store ID.</p>"
         },
         "storeType":{
           "shape":"StoreType",
@@ -5154,7 +5409,7 @@
           "documentation":"<p>When the store was created.</p>"
         },
         "fallbackLocation":{
-          "shape":"S3Destination",
+          "shape":"FallbackLocation",
           "documentation":"<p>An S3 location that is used to store files that have failed a direct upload.</p>"
         },
         "s3Access":{
@@ -5434,7 +5689,7 @@
         },
         "storageCapacity":{
           "shape":"GetWorkflowResponseStorageCapacityInteger",
-          "documentation":"<p>The workflow's default run storage capacity in gibibytes.</p>"
+          "documentation":"<p>The default static storage capacity (in gibibytes) for runs that use this workflow or workflow version.</p>"
         },
         "creationTime":{
           "shape":"WorkflowTimestamp",
@@ -5450,15 +5705,153 @@
         },
         "metadata":{
           "shape":"WorkflowMetadata",
-          "documentation":"<p>Gets metadata for workflow.</p>"
+          "documentation":"<p>Gets metadata for the workflow.</p>"
         },
         "accelerators":{
           "shape":"Accelerators",
           "documentation":"<p>The computational accelerator specified to run the workflow. </p>"
+        },
+        "storageType":{
+          "shape":"StorageType",
+          "documentation":"<p>The default storage type for runs using this workflow.</p>"
+        },
+        "uuid":{
+          "shape":"WorkflowUuid",
+          "documentation":"<p>The universally unique identifier (UUID) value for this workflow.</p>"
         }
       }
     },
     "GetWorkflowResponseStorageCapacityInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100000,
+      "min":0
+    },
+    "GetWorkflowVersionRequest":{
+      "type":"structure",
+      "required":[
+        "workflowId",
+        "versionName"
+      ],
+      "members":{
+        "workflowId":{
+          "shape":"WorkflowId",
+          "documentation":"<p>The workflow's ID.</p>",
+          "location":"uri",
+          "locationName":"workflowId"
+        },
+        "versionName":{
+          "shape":"WorkflowVersionName",
+          "documentation":"<p>The workflow version name.</p>",
+          "location":"uri",
+          "locationName":"versionName"
+        },
+        "type":{
+          "shape":"WorkflowType",
+          "documentation":"<p>The workflow's type. </p>",
+          "location":"querystring",
+          "locationName":"type"
+        },
+        "export":{
+          "shape":"WorkflowExportList",
+          "documentation":"<p>The export format for the workflow.</p>",
+          "location":"querystring",
+          "locationName":"export"
+        },
+        "workflowOwnerId":{
+          "shape":"WorkflowOwnerId",
+          "documentation":"<p>Amazon Web Services Id of the owner of the workflow.</p>",
+          "location":"querystring",
+          "locationName":"workflowOwnerId"
+        }
+      }
+    },
+    "GetWorkflowVersionResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"WorkflowVersionArn",
+          "documentation":"<p>ARN of the workflow version.</p>"
+        },
+        "workflowId":{
+          "shape":"WorkflowId",
+          "documentation":"<p>The workflow's ID.</p>"
+        },
+        "versionName":{
+          "shape":"WorkflowVersionName",
+          "documentation":"<p>The workflow version name.</p>"
+        },
+        "accelerators":{
+          "shape":"Accelerators",
+          "documentation":"<p>The accelerator for this workflow version.</p>"
+        },
+        "creationTime":{
+          "shape":"WorkflowTimestamp",
+          "documentation":"<p>When the workflow version was created.</p>"
+        },
+        "description":{
+          "shape":"WorkflowVersionDescription",
+          "documentation":"<p>Description of the workflow version.</p>"
+        },
+        "definition":{
+          "shape":"WorkflowDefinition",
+          "documentation":"<p>Definition of the workflow version.</p>"
+        },
+        "digest":{
+          "shape":"WorkflowDigest",
+          "documentation":"<p>The workflow version's digest.</p>"
+        },
+        "engine":{
+          "shape":"WorkflowEngine",
+          "documentation":"<p>The workflow engine for this workflow version.</p>"
+        },
+        "main":{
+          "shape":"WorkflowMain",
+          "documentation":"<p>The path of the main definition file for the workflow.</p>"
+        },
+        "metadata":{
+          "shape":"WorkflowMetadata",
+          "documentation":"<p>The metadata for the workflow version.</p>"
+        },
+        "parameterTemplate":{
+          "shape":"WorkflowParameterTemplate",
+          "documentation":"<p>The parameter template for the workflow version.</p>"
+        },
+        "status":{
+          "shape":"WorkflowStatus",
+          "documentation":"<p>The workflow version status</p>"
+        },
+        "statusMessage":{
+          "shape":"WorkflowStatusMessage",
+          "documentation":"<p>The workflow version status message</p>"
+        },
+        "storageType":{
+          "shape":"StorageType",
+          "documentation":"<p>The default storage type for the run.</p>"
+        },
+        "storageCapacity":{
+          "shape":"GetWorkflowVersionResponseStorageCapacityInteger",
+          "documentation":"<p>The default run storage capacity for static storage.</p>"
+        },
+        "type":{
+          "shape":"WorkflowType",
+          "documentation":"<p>The workflow version type</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The workflow version tags</p>"
+        },
+        "uuid":{
+          "shape":"WorkflowUuid",
+          "documentation":"<p>The universally unique identifier (UUID) value for this workflow version</p>"
+        },
+        "workflowBucketOwnerId":{
+          "shape":"WorkflowBucketOwnerId",
+          "documentation":"<p>Amazon Web Services Id of the owner of the bucket.</p>"
+        }
+      }
+    },
+    "GetWorkflowVersionResponseStorageCapacityInteger":{
       "type":"integer",
       "box":true,
       "max":100000,
@@ -6781,6 +7174,61 @@
         }
       }
     },
+    "ListWorkflowVersionsRequest":{
+      "type":"structure",
+      "required":["workflowId"],
+      "members":{
+        "workflowId":{
+          "shape":"WorkflowId",
+          "documentation":"<p>The workflow's ID.</p>",
+          "location":"uri",
+          "locationName":"workflowId"
+        },
+        "type":{
+          "shape":"WorkflowType",
+          "documentation":"<p>The workflow type.</p>",
+          "location":"querystring",
+          "locationName":"type"
+        },
+        "workflowOwnerId":{
+          "shape":"WorkflowOwnerId",
+          "documentation":"<p>Amazon Web Services Id of the owner of the workflow.</p>",
+          "location":"querystring",
+          "locationName":"workflowOwnerId"
+        },
+        "startingToken":{
+          "shape":"WorkflowVersionListToken",
+          "documentation":"<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"startingToken"
+        },
+        "maxResults":{
+          "shape":"ListWorkflowVersionsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of workflows to return in one page of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListWorkflowVersionsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListWorkflowVersionsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"WorkflowVersionList",
+          "documentation":"<p>A list of workflow version items.</p>"
+        },
+        "nextToken":{
+          "shape":"WorkflowVersionListToken",
+          "documentation":"<p>A pagination token that's included if more results are available.</p>"
+        }
+      }
+    },
     "ListWorkflowsRequest":{
       "type":"structure",
       "members":{
@@ -6964,7 +7412,7 @@
         },
         "storeId":{
           "shape":"StoreId",
-          "documentation":"<p>The AWS-generated Sequence Store or Reference Store ID.</p>"
+          "documentation":"<p>The Amazon Web Services-generated Sequence Store or Reference Store ID.</p>"
         },
         "storeType":{
           "shape":"StoreType",
@@ -7968,6 +8416,10 @@
         "storageType":{
           "shape":"StorageType",
           "documentation":"<p>The run's storage type.</p>"
+        },
+        "workflowVersionName":{
+          "shape":"WorkflowVersionName",
+          "documentation":"<p>The name of the workflow version.</p>"
         }
       },
       "documentation":"<p>A workflow run.</p>"
@@ -8243,7 +8695,7 @@
           "documentation":"<p>When the store was created.</p>"
         },
         "fallbackLocation":{
-          "shape":"S3Destination",
+          "shape":"FallbackLocation",
           "documentation":"<p> An S3 location that is used to store files that have failed a direct upload. </p>"
         },
         "eTagAlgorithmFamily":{
@@ -8894,7 +9346,7 @@
         },
         "cacheBehavior":{
           "shape":"CacheBehavior",
-          "documentation":"<p>The cache behavior for the run. You specify this value if you want to override the default behavior for the cache. You had set the default value when you created the cache. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/how-run-cache.html#run-cache-behavior\">Run cache behavior</a> in the AWS HealthOmics User Guide.</p>"
+          "documentation":"<p>The cache behavior for the run. You specify this value if you want to override the default behavior for the cache. You had set the default value when you created the cache. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/how-run-cache.html#run-cache-behavior\">Run cache behavior</a> in the Amazon Web Services HealthOmics User Guide.</p>"
         },
         "runGroupId":{
           "shape":"RunGroupId",
@@ -8910,7 +9362,7 @@
         },
         "storageCapacity":{
           "shape":"StartRunRequestStorageCapacityInteger",
-          "documentation":"<p>A storage capacity for the run in gibibytes. This field is not required if the storage type is dynamic (the system ignores any value that you enter).</p>"
+          "documentation":"<p>The static storage capacity (in gibibytes) for this run. This field is not required if the storage type is dynamic (the system ignores any value that you enter).</p>"
         },
         "outputUri":{
           "shape":"RunOutputUri",
@@ -8931,15 +9383,19 @@
         },
         "retentionMode":{
           "shape":"RunRetentionMode",
-          "documentation":"<p>The retention mode for the run. The default value is RETAIN. </p> <p>HealthOmics stores a fixed number of runs that are available to the console and API. In the default mode (RETAIN), you need to remove runs manually when the number of run exceeds the maximum. If you set the retention mode to <code>REMOVE</code>, HealthOmics automatically removes runs (that have mode set to REMOVE) when the number of run exceeds the maximum. All run logs are available in CloudWatch logs, if you need information about a run that is no longer available to the API.</p> <p>For more information about retention mode, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/starting-a-run.html\">Specifying run retention mode</a> in the <i>AWS HealthOmics User Guide</i>.</p>"
+          "documentation":"<p>The retention mode for the run. The default value is RETAIN. </p> <p>Amazon Web Services HealthOmics stores a fixed number of runs that are available to the console and API. In the default mode (RETAIN), you need to remove runs manually when the number of run exceeds the maximum. If you set the retention mode to <code>REMOVE</code>, Amazon Web Services HealthOmics automatically removes runs (that have mode set to REMOVE) when the number of run exceeds the maximum. All run logs are available in CloudWatch logs, if you need information about a run that is no longer available to the API.</p> <p>For more information about retention mode, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/starting-a-run.html\">Specifying run retention mode</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>"
         },
         "storageType":{
           "shape":"StorageType",
-          "documentation":"<p>The run's storage type. By default, the run uses STATIC storage type, which allocates a fixed amount of storage. If you set the storage type to DYNAMIC, HealthOmics dynamically scales the storage up or down, based on file system utilization.</p>"
+          "documentation":"<p>The storage type for the run. By default, the run uses STATIC storage type, which allocates a fixed amount of storage. If you set the storage type to DYNAMIC, Amazon Web Services HealthOmics dynamically scales the storage up or down, based on file system utilization. For more information about static and dynamic storage, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/Using-workflows.html\">Running workflows</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>"
         },
         "workflowOwnerId":{
           "shape":"WorkflowOwnerId",
           "documentation":"<p>The ID of the workflow owner. </p>"
+        },
+        "workflowVersionName":{
+          "shape":"WorkflowVersionName",
+          "documentation":"<p>The name of the workflow version.</p>"
         }
       }
     },
@@ -9202,7 +9658,7 @@
         },
         "cacheHit":{
           "shape":"Boolean",
-          "documentation":"<p>Set to true if AWS HealthOmics found a matching entry in the run cache for this task.</p>"
+          "documentation":"<p>Set to true if Amazon Web Services HealthOmics found a matching entry in the run cache for this task.</p>"
         },
         "cacheS3Uri":{
           "shape":"S3UriForBucketOrObject",
@@ -9633,7 +10089,7 @@
           "idempotencyToken":true
         },
         "fallbackLocation":{
-          "shape":"S3Destination",
+          "shape":"FallbackLocation",
           "documentation":"<p>The S3 URI of a bucket and folder to store Read Sets that fail to upload.</p>"
         },
         "propagatedSetLevelTags":{
@@ -9692,7 +10148,7 @@
           "documentation":"<p>The status message of the sequence store.</p>"
         },
         "fallbackLocation":{
-          "shape":"S3Destination",
+          "shape":"FallbackLocation",
           "documentation":"<p>The S3 URI of a bucket and folder to store Read Sets that fail to upload.</p>"
         },
         "s3Access":{"shape":"SequenceStoreS3Access"},
@@ -9781,8 +10237,61 @@
         "description":{
           "shape":"WorkflowDescription",
           "documentation":"<p>A description for the workflow.</p>"
+        },
+        "storageType":{
+          "shape":"StorageType",
+          "documentation":"<p>The default storage type for runs that use this workflow. STATIC storage allocates a fixed amount of storage. DYNAMIC storage dynamically scales the storage up or down, based on file system utilization. For more information about static and dynamic storage, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/Using-workflows.html\">Running workflows</a> in the <i>Amazon Web Services HealthOmics User Guide</i>. </p>"
+        },
+        "storageCapacity":{
+          "shape":"UpdateWorkflowRequestStorageCapacityInteger",
+          "documentation":"<p>The default static storage capacity (in gibibytes) for runs that use this workflow or workflow version. </p>"
         }
       }
+    },
+    "UpdateWorkflowRequestStorageCapacityInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100000,
+      "min":0
+    },
+    "UpdateWorkflowVersionRequest":{
+      "type":"structure",
+      "required":[
+        "workflowId",
+        "versionName"
+      ],
+      "members":{
+        "workflowId":{
+          "shape":"WorkflowId",
+          "documentation":"<p>The workflow's ID.</p>",
+          "location":"uri",
+          "locationName":"workflowId"
+        },
+        "versionName":{
+          "shape":"WorkflowVersionName",
+          "documentation":"<p>The name of the workflow version.</p>",
+          "location":"uri",
+          "locationName":"versionName"
+        },
+        "description":{
+          "shape":"WorkflowVersionDescription",
+          "documentation":"<p>Description of the workflow version.</p>"
+        },
+        "storageType":{
+          "shape":"StorageType",
+          "documentation":"<p>The default storage type for runs that use this workflow. STATIC storage allocates a fixed amount of storage. DYNAMIC storage dynamically scales the storage up or down, based on file system utilization. For more information about static and dynamic storage, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/Using-workflows.html\">Running workflows</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>"
+        },
+        "storageCapacity":{
+          "shape":"UpdateWorkflowVersionRequestStorageCapacityInteger",
+          "documentation":"<p>The default static storage capacity (in gibibytes) for runs that use this workflow or workflow version.</p>"
+        }
+      }
+    },
+    "UpdateWorkflowVersionRequestStorageCapacityInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100000,
+      "min":0
     },
     "UploadId":{
       "type":"string",
@@ -10111,6 +10620,10 @@
       "min":1,
       "pattern":"arn:.+"
     },
+    "WorkflowBucketOwnerId":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
     "WorkflowDefinition":{
       "type":"string",
       "max":256,
@@ -10303,6 +10816,80 @@
       ],
       "max":64,
       "min":1
+    },
+    "WorkflowUuid":{
+      "type":"string",
+      "pattern":"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+    },
+    "WorkflowVersionArn":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"arn:.+"
+    },
+    "WorkflowVersionDescription":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "WorkflowVersionList":{
+      "type":"list",
+      "member":{"shape":"WorkflowVersionListItem"}
+    },
+    "WorkflowVersionListItem":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"WorkflowVersionArn",
+          "documentation":"<p>ARN of the workflow version.</p>"
+        },
+        "workflowId":{
+          "shape":"WorkflowId",
+          "documentation":"<p>The workflow's ID.</p>"
+        },
+        "versionName":{
+          "shape":"WorkflowVersionName",
+          "documentation":"<p>The name of the workflow version.</p>"
+        },
+        "description":{
+          "shape":"WorkflowVersionDescription",
+          "documentation":"<p>The description of the workflow version.</p>"
+        },
+        "status":{
+          "shape":"WorkflowStatus",
+          "documentation":"<p>The status of the workflow version.</p>"
+        },
+        "type":{
+          "shape":"WorkflowType",
+          "documentation":"<p>The type of the workflow version.</p>"
+        },
+        "digest":{
+          "shape":"WorkflowDigest",
+          "documentation":"<p>The digist of the workflow version.</p>"
+        },
+        "creationTime":{
+          "shape":"WorkflowTimestamp",
+          "documentation":"<p>The creation time of the workflow version.</p>"
+        },
+        "metadata":{
+          "shape":"WorkflowMetadata",
+          "documentation":"<p>Metadata for the workflow version.</p>"
+        }
+      },
+      "documentation":"<p>A list of workflow version items.</p>"
+    },
+    "WorkflowVersionListToken":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "WorkflowVersionName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9][A-Za-z0-9\\-\\._]*"
     }
   },
   "documentation":"<p>This is the <i>AWS HealthOmics API Reference</i>. For an introduction to the service, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/\">What is AWS HealthOmics?</a> in the <i>AWS HealthOmics User Guide</i>.</p>"

@@ -438,7 +438,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<important> <p>Only the EMAIL channel is supported. The supported initiation methods are: OUTBOUND, AGENT_REPLY, and FLOW.</p> </important> <p>Creates a new EMAIL contact. </p>"
+      "documentation":"<important> <p>Only the EMAIL and VOICE channels are supported. The supported initiation methods for EMAIL are: OUTBOUND, AGENT_REPLY, and FLOW. For VOICE the supported initiation methods are TRANSFER and the subtype connect:ExternalAudio. </p> </important> <p>Creates a new EMAIL or VOICE contact. </p>"
     },
     "CreateContactFlow":{
       "name":"CreateContactFlow",
@@ -3932,7 +3932,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>When a contact is being recorded, this API suspends recording whatever is selected in the flow configuration: call, screen, or both. If only call recording or only screen recording is enabled, then it would be suspended. For example, you might suspend the screen recording while collecting sensitive information, such as a credit card number. Then use ResumeContactRecording to restart recording the screen.</p> <p>The period of time that the recording is suspended is filled with silence in the final recording.</p> <p>Voice and screen recordings are supported.</p>"
+      "documentation":"<p>When a contact is being recorded, this API suspends recording whatever is selected in the flow configuration: call (IVR or agent), screen, or both. If only call recording or only screen recording is enabled, then it would be suspended. For example, you might suspend the screen recording while collecting sensitive information, such as a credit card number. Then use <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ResumeContactRecording.html\">ResumeContactRecording</a> to restart recording the screen.</p> <p>The period of time that the recording is suspended is filled with silence in the final recording. </p> <p> Voice (IVR, agent) and screen recordings are supported.</p>"
     },
     "TagContact":{
       "name":"TagContact",
@@ -3985,7 +3985,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Transfers <code>TASK</code> or <code>EMAIL</code> contacts from one agent or queue to another agent or queue at any point after a contact is created. You can transfer a contact to another queue by providing the flow which orchestrates the contact to the destination queue. This gives you more control over contact handling and helps you adhere to the service level agreement (SLA) guaranteed to your customers.</p> <p>Note the following requirements:</p> <ul> <li> <p>Transfer is supported for only <code>TASK</code> and <code>EMAIL</code> contacts.</p> </li> <li> <p>Do not use both <code>QueueId</code> and <code>UserId</code> in the same call.</p> </li> <li> <p>The following flow types are supported: Inbound flow, Transfer to agent flow, and Transfer to queue flow.</p> </li> <li> <p>The <code>TransferContact</code> API can be called only on active contacts.</p> </li> <li> <p>A contact cannot be transferred more than 11 times.</p> </li> </ul>"
+      "documentation":"<p>Transfers <code>TASK</code> or <code>EMAIL</code> contacts from one agent or queue to another agent or queue at any point after a contact is created. You can transfer a contact to another queue by providing the flow which orchestrates the contact to the destination queue. This gives you more control over contact handling and helps you adhere to the service level agreement (SLA) guaranteed to your customers.</p> <p>Note the following requirements:</p> <ul> <li> <p>Transfer is only supported for <code>TASK</code> and <code>EMAIL</code> contacts.</p> </li> <li> <p>Do not use both <code>QueueId</code> and <code>UserId</code> in the same call.</p> </li> <li> <p>The following flow types are supported: Inbound flow, Transfer to agent flow, and Transfer to queue flow.</p> </li> <li> <p>The <code>TransferContact</code> API can be called only on active contacts.</p> </li> <li> <p>A contact cannot be transferred more than 11 times.</p> </li> </ul>"
     },
     "UntagContact":{
       "name":"UntagContact",
@@ -4939,6 +4939,7 @@
         "SEND_NOTIFICATION",
         "CREATE_CASE",
         "UPDATE_CASE",
+        "ASSIGN_SLA",
         "END_ASSOCIATED_TASKS",
         "SUBMIT_AUTO_EVALUATION"
       ]
@@ -5517,6 +5518,21 @@
       },
       "documentation":"<p>This action must be set if <code>TriggerEventSource</code> is one of the following values: <code>OnPostCallAnalysisAvailable</code> | <code>OnRealTimeCallAnalysisAvailable</code> | <code>OnRealTimeChatAnalysisAvailable</code> | <code>OnPostChatAnalysisAvailable</code>. Contact is categorized using the rule name.</p> <p> <code>RuleName</code> is used as <code>ContactCategory</code>.</p>"
     },
+    "AssignSlaActionDefinition":{
+      "type":"structure",
+      "required":["SlaAssignmentType"],
+      "members":{
+        "SlaAssignmentType":{
+          "shape":"SlaAssignmentType",
+          "documentation":"<p>Type of SLA assignment.</p>"
+        },
+        "CaseSlaConfiguration":{
+          "shape":"CaseSlaConfiguration",
+          "documentation":"<p>The SLA configuration for Case SLA Assignment.</p>"
+        }
+      },
+      "documentation":"<p>The AssignSla action definition.</p>"
+    },
     "AssociateAnalyticsDataSetRequest":{
       "type":"structure",
       "required":[
@@ -5938,7 +5954,7 @@
         },
         "DisconnectTimestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>The timestamp when the customer endpoint disconnected from Amazon Connect.</p>"
+          "documentation":"<p>The date and time that the customer endpoint disconnected from the current contact, in UTC time. In transfer scenarios, the DisconnectTimestamp of the previous contact indicates the date and time when that contact ended.</p>"
         },
         "InitialContactId":{
           "shape":"ContactId",
@@ -6587,6 +6603,37 @@
       "type":"string",
       "max":100,
       "min":1
+    },
+    "CaseSlaConfiguration":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Type",
+        "TargetSlaMinutes"
+      ],
+      "members":{
+        "Name":{
+          "shape":"SlaName",
+          "documentation":"<p>Name of an SLA.</p>"
+        },
+        "Type":{
+          "shape":"SlaType",
+          "documentation":"<p>Type of SLA for Case SlaAssignmentType.</p>"
+        },
+        "FieldId":{
+          "shape":"FieldValueId",
+          "documentation":"<p>Unique identifier of a Case field.</p>"
+        },
+        "TargetFieldValues":{
+          "shape":"SlaFieldValueUnionList",
+          "documentation":"<p>Represents a list of target field values for the fieldId specified in CaseSlaConfiguration. The SLA is considered met if any one of these target field values matches the actual field value.</p>"
+        },
+        "TargetSlaMinutes":{
+          "shape":"TargetSlaMinutes",
+          "documentation":"<p>Target duration in minutes within which an SLA should be completed.</p>"
+        }
+      },
+      "documentation":"<p>The SLA configuration for Case SlaAssignmentType.</p>"
     },
     "Channel":{
       "type":"string",
@@ -7997,7 +8044,7 @@
         },
         "RelatedContactId":{
           "shape":"ContactId",
-          "documentation":"<p>The unique identifier for an Amazon Connect contact. This identifier is related to the contact starting.</p>"
+          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect. </p>"
         },
         "Attributes":{
           "shape":"Attributes",
@@ -8009,11 +8056,11 @@
         },
         "Channel":{
           "shape":"Channel",
-          "documentation":"<p>The channel for the contact</p> <important> <p>CreateContact only supports the EMAIL channel. The following information that states other channels are supported is incorrect. We are working to update this topic.</p> </important>"
+          "documentation":"<p>The channel for the contact</p> <important> <p>CreateContact only supports the EMAIL and VOICE channels. The following information that states other channels are supported is incorrect. We are working to update this topic.</p> </important>"
         },
         "InitiationMethod":{
           "shape":"ContactInitiationMethod",
-          "documentation":"<p>Indicates how the contact was initiated. </p> <important> <p>CreateContact only supports the following initiation methods: OUTBOUND, AGENT_REPLY, and FLOW. The following information that states other initiation methods are supported is incorrect. We are working to update this topic.</p> </important>"
+          "documentation":"<p>Indicates how the contact was initiated. </p> <important> <p>CreateContact only supports the following initiation methods: </p> <ul> <li> <p>For EMAIL: OUTBOUND, AGENT_REPLY, and FLOW. </p> </li> <li> <p>For VOICE: TRANSFER and the subtype connect:ExternalAudio. </p> </li> </ul> <p>The following information that states other initiation methods are supported is incorrect. We are working to update this topic.</p> </important>"
         },
         "ExpiryDurationInMinutes":{
           "shape":"ExpiryDurationInMinutes",
@@ -12904,7 +12951,8 @@
         "OnContactEvaluationSubmit",
         "OnMetricDataUpdate",
         "OnCaseCreate",
-        "OnCaseUpdate"
+        "OnCaseUpdate",
+        "OnSlaBreach"
       ]
     },
     "Expiry":{
@@ -20699,6 +20747,10 @@
           "shape":"UpdateCaseActionDefinition",
           "documentation":"<p>Information about the update case action.</p> <p>Supported only for <code>TriggerEventSource</code> values: <code>OnCaseCreate</code> | <code>OnCaseUpdate</code>.</p>"
         },
+        "AssignSlaAction":{
+          "shape":"AssignSlaActionDefinition",
+          "documentation":"<p>Information about the assign SLA action.</p>"
+        },
         "EndAssociatedTasksAction":{
           "shape":"EndAssociatedTasksActionDefinition",
           "documentation":"<p>Information about the end associated tasks action.</p> <p>Supported only for <code>TriggerEventSource</code> values: <code>OnCaseUpdate</code>.</p>"
@@ -22176,7 +22228,7 @@
         },
         "TrafficType":{
           "shape":"TrafficType",
-          "documentation":"<p>Denotes the class of traffic.</p>"
+          "documentation":"<p>Denotes the class of traffic.</p> <note> <p>Only the CAMPAIGN traffic type is supported.</p> </note>"
         },
         "SourceCampaign":{
           "shape":"SourceCampaign",
@@ -22286,6 +22338,25 @@
       "type":"string",
       "max":50,
       "min":1
+    },
+    "SlaAssignmentType":{
+      "type":"string",
+      "enum":["CASES"]
+    },
+    "SlaFieldValueUnionList":{
+      "type":"list",
+      "member":{"shape":"FieldValueUnion"},
+      "max":1
+    },
+    "SlaName":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "pattern":"^.*[\\S]$"
+    },
+    "SlaType":{
+      "type":"string",
+      "enum":["CaseField"]
     },
     "SnapshotVersion":{"type":"string"},
     "Sort":{
@@ -22835,7 +22906,7 @@
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>A description of the voice contact that is shown to an agent in the Contact Control Panel (CCP).</p>"
+          "documentation":"<p>A description of the voice contact that appears in the agent's snapshot in the CCP logs. For more information about CCP logs, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/download-ccp-logs.html\">Download and review CCP logs</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
         },
         "References":{
           "shape":"ContactReferences",
@@ -23506,6 +23577,11 @@
     "TargetListType":{
       "type":"string",
       "enum":["PROFICIENCIES"]
+    },
+    "TargetSlaMinutes":{
+      "type":"long",
+      "max":129600,
+      "min":1
     },
     "TaskActionDefinition":{
       "type":"structure",

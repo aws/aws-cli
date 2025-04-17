@@ -13,7 +13,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        # Pin until we fix sdist test
+        # https://github.com/aws/aws-cli/blob/61523c9604dd1955d220e833da8cc0c13c4609b0/tests/backends/build_system/integration/test_build_system.py#L47
+        python-version: ["3.9", "3.10", "3.11", "3.12.9", "3.13.2"]
         # macOS pinned to 13 due to 14+ defaulting to arm64 hardware
         os: [ubuntu-latest, macOS-13, windows-latest]
     steps:

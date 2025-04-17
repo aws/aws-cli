@@ -21,6 +21,7 @@ the parent. Otherwise, it is prefixed with the module name and emitted,
 checking to see if there are any duplicate conditions.
 """
 
+import logging
 from collections import OrderedDict
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.modules.visitor import Visitor
@@ -32,17 +33,31 @@ from awscli.customizations.cloudformation.modules.names import (
     OR,
     REF,
     CONDITION,
+    CONDITIONS,
+    MODULES,
+    OUTPUTS,
+    RESOURCES,
 )
 
+LOG = logging.getLogger(__name__)
+LOG.setLevel(logging.DEBUG)
 
-def parse_conditions(d, find_ref):
-    """Parse conditions and return a map of name:boolean"""
-    retval = {}
 
-    for k, v in d.items():
-        retval[k] = istrue(v, find_ref, retval)
+def parse_conditions(m, module_dict):
+    """
+    Parse conditions and store a map of name:True|False|None.
 
-    return retval
+    None means the condition is unresolved.
+    """
+
+    if CONDITIONS not in module_dict:
+        return
+
+    def find_ref(v):
+        return m.find_ref(v)
+
+    for k, v in module_dict[CONDITIONS].items():
+        m.conditions[k] = istrue(v, find_ref, m.conditions)
 
 
 def resolve_if(v, find_ref, prior):
@@ -57,6 +72,11 @@ def resolve_if(v, find_ref, prior):
     return v[2]
 
 
+def is_scalar(val):
+    "Returns true if the value is int, str, float, bool"
+    return isinstance(val, (int, str, float, bool))
+
+
 # pylint: disable=too-many-branches,too-many-statements
 def istrue(v, find_ref, prior):
     """
@@ -66,9 +86,12 @@ def istrue(v, find_ref, prior):
     Otherwise it returns None, which means we have to emit
     the condition into the parent and prefix the name.
     """
+
     if not isdict(v):
         return False
+
     retval = False
+
     if EQUALS in v:
         eq = v[EQUALS]
         if len(eq) == 2:
@@ -85,14 +108,23 @@ def istrue(v, find_ref, prior):
             if isdict(val1) and REF in val1:
                 val1 = find_ref(val1[REF])
 
-            if val0 == eq[0] and val1 == eq[1]:
-                if val0 is None or val1 is None:
-                    # One of them is unresolved
-                    retval = None
+            if is_scalar(val0) and is_scalar(val1):
+                retval = val0 == val1
+            elif val0 is None or val1 is None:
+                # One of them is unresolved
+                retval = None
+            elif val0 == eq[0] and val1 == eq[1]:
+                # Nothing changed.. This avoids infinite recursion,
+                # but when would this happen and how would they be equal?
+                if val0 == val1:
+                    # Identical objects
+                    retval = True
                 else:
-                    retval = val0 == val1
+                    # Since at least one is not scalar, it must be unresolved
+                    retval = None
             else:
                 retval = istrue({EQUALS: [val0, val1]}, find_ref, prior)
+
         else:
             msg = f"Equals expression should be a list with 2 elements: {eq}"
             raise exceptions.InvalidModuleError(msg=msg)
@@ -145,30 +177,70 @@ def istrue(v, find_ref, prior):
     return retval
 
 
-def process_conditions(name, conditions, sections, module_name):
+def process_conditions(m, module_dict):
     """
     Omit sections and nodes based on conditions.
+
+    :param m: The module
+    :param module_dict: The raw module object
     """
 
-    # Check each Resource, Module, and Output
-    # to see if a Condition omits it
+    name = m.name
 
-    for section in sections:
-        for k, v in section.copy().items():
-            if CONDITION not in v:
-                continue
+    parse_conditions(m, module_dict)
 
-            if v[CONDITION] in conditions:
-                cval = conditions[v[CONDITION]]
-                if cval is False:
-                    del section[k]
-                elif cval is True:
-                    del section[k][CONDITION]
-                else:
-                    # It's unresolved, leave it and prefix it
-                    oldname = section[k][CONDITION]
-                    del section[k][CONDITION]
-                    section[k][CONDITION] = module_name + oldname
+    conditions = m.conditions
+
+    if conditions is None:
+        return
+
+    sections = []
+    if RESOURCES in module_dict:
+        sections.append(module_dict[RESOURCES])
+    if MODULES in module_dict:
+        sections.append(module_dict[MODULES])
+    if OUTPUTS in module_dict:
+        sections.append(module_dict[OUTPUTS])
+
+    omit_section_items(sections, conditions, name)
+
+    omit_fn_ifs(sections, conditions, name)
+
+    emit_unresolved_conditions(m, module_dict)
+
+
+def emit_unresolved_conditions(m, module_dict):
+    """
+    Emit unresolved Conditions into the parent.
+    """
+
+    if CONDITIONS not in module_dict:
+        return
+
+    cs = module_dict[CONDITIONS]
+
+    for k, v in m.conditions.items():
+        if v is None:
+            if CONDITIONS not in m.template:
+                m.template[CONDITIONS] = {}
+            newname = m.name + k
+            if newname in m.template[CONDITIONS]:
+                # If they are exactly the same, we don't need it,
+                # Otherwise it's a name conflict.
+                if m.template[CONDITIONS][newname] != cs[k]:
+
+                    msg = f"Condition name conflict: {newname}"
+                    raise exceptions.InvalidModuleError(msg=msg)
+            else:
+                orig = cs[k].copy()
+                m.template[CONDITIONS][newname] = orig
+
+
+def omit_fn_ifs(sections, conditions, name):
+    """
+    Omit any properties than have a false Fn::If.
+    If the condition is unresolved, leave it and prefix it with the name
+    """
 
     # Example
     #
@@ -194,9 +266,13 @@ def process_conditions(name, conditions, sections, module_name):
             trueval = conditional[1]
             falseval = conditional[2]
             if condition_name not in conditions:
-                # return  # Assume this is a parent template condition?
-                msg = f"{name} Condition not found: {condition_name}"
-                raise exceptions.InvalidModuleError(msg=msg)
+                if condition_name.startswith(name):
+                    unprefixed = condition_name.replace(name, "", 1)
+                    if unprefixed in conditions:
+                        # Special case when we re-evaluate conditions
+                        return
+                    msg = f"{name} Condition not found: {condition_name}"
+                    raise exceptions.InvalidModuleError(msg=msg)
             unresolved = False
             if conditions[condition_name] is True:
                 v.p[v.k] = trueval
@@ -205,7 +281,7 @@ def process_conditions(name, conditions, sections, module_name):
             else:
                 # Unresolved, leave it alone
                 unresolved = True
-                conditional[0] = module_name + condition_name
+                conditional[0] = name + condition_name
 
             if not unresolved:
                 newval = v.p[v.k]
@@ -215,6 +291,29 @@ def process_conditions(name, conditions, sections, module_name):
 
     for section in sections:
         Visitor(section).visit(vf)
+
+
+def omit_section_items(sections, conditions, name):
+    """
+    Omit sections items like resources that have false conditions.
+    If the condition is unresolved, leave it and prefix with the module name
+    """
+    for section in sections:
+        for k, v in section.copy().items():
+            if CONDITION not in v:
+                continue
+
+            if v[CONDITION] in conditions:
+                cval = conditions[v[CONDITION]]
+                if cval is False:
+                    del section[k]
+                elif cval is True:
+                    del section[k][CONDITION]
+                else:
+                    # It's unresolved, leave it and prefix it
+                    oldname = section[k][CONDITION]
+                    del section[k][CONDITION]
+                    section[k][CONDITION] = name + oldname
 
 
 def isdict(v):

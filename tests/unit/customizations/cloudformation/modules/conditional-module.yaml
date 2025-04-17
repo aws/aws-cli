@@ -5,15 +5,17 @@ Parameters:
   
   LambdaRoleName:
     Type: String
-    Description: If set, allow the lambda function to access this table
     Default: ""
+
+  HasLambda:
+    Type: Boolean
+    Default: false
 
 Conditions:
   IfLambdaRoleIsSet:
-    Fn::Not: 
-      - Fn::Equals:
-        - !Ref LambdaRoleName
-        - ""
+    Fn::Equals:
+      - !Ref HasLambda
+      - true 
 
   Nested:
     Fn::And:

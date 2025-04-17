@@ -1,8 +1,19 @@
+Parameters:
+  P:
+    Type: String
 Conditions:
   FooIsRegionUsEast1:
     Fn::Equals:
     - Ref: AWS::Region
     - us-east-1
+  FooIsPTrue:
+    Fn::Equals:
+      - !Ref P
+      - true
+  FooSubIsParam:
+    Fn::Equals:
+      - !Ref P
+      - true
 
 Resources:
   FooS3Bucket:
@@ -16,3 +27,9 @@ Resources:
           - FooIsRegionUsEast1
           - a-east
           - a-not-east
+  FooSubB:
+    Type: A::B::C
+    Condition: FooSubIsParam
+  FooC:
+    Type: D::E::F
+    Condition: FooIsPTrue

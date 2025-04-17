@@ -45,7 +45,6 @@ from awscli.customizations.cloudformation.modules.read import (
     get_packaged_module_path,
 )
 from awscli.customizations.cloudformation.modules.conditions import (
-    parse_conditions,
     process_conditions,
 )
 from awscli.customizations.cloudformation.modules.constants import (
@@ -82,7 +81,6 @@ from awscli.customizations.cloudformation.modules.names import (
     PARAMETERS,
     MODULES,
     OUTPUTS,
-    CONDITIONS,
     CONDITION,
     AWSTOOLSMETRICS,
     CLOUDFORMATION_PACKAGE,
@@ -409,42 +407,13 @@ class Module:
                     msg = f"Output should have Value. {self.source}: {k}: {v}"
                     raise exceptions.InvalidModuleError(msg=msg)
 
-        # Read the Conditions section and store it as a dict of string:boolean
-        if CONDITIONS in module_dict:
-            cs = module_dict[CONDITIONS]
-
-            def find_ref(v):
-                return self.find_ref(v)
-
-            try:
-                self.conditions = parse_conditions(cs, find_ref)
-            except Exception as e:
-                msg = f"Failed to process conditions in {self.source}: {e}"
-                LOG.exception(msg)
-                raise exceptions.InvalidModuleError(msg=msg)
-
-            sections = [self.resources]
-            if MODULES in module_dict:
-                sections.append(module_dict[MODULES])
-            if OUTPUTS in module_dict:
-                sections.append(module_dict[OUTPUTS])
-
-            # Process inline Fn::If conditions
-            process_conditions(self.name, self.conditions, sections, self.name)
-
-            # Emit unresolved conditions
-            for k, v in self.conditions.items():
-                if v is None:
-                    if CONDITIONS not in self.template:
-                        self.template[CONDITIONS] = {}
-                    newname = self.name + k
-                    if newname in self.template[CONDITIONS]:
-                        if self.template[CONDITIONS][newname] != v:
-                            msg = f"Condition name conflict: {newname}"
-                            raise exceptions.InvalidModuleError(msg=msg)
-                    else:
-                        orig = cs[k]
-                        self.template[CONDITIONS][newname] = orig.copy()
+        try:
+            # Process conditions before recursing
+            process_conditions(self, module_dict)
+        except Exception as e:
+            msg = f"Failed to process conditions in {self.source}: {e}"
+            LOG.exception(msg)
+            raise exceptions.InvalidModuleError(msg=msg)
 
         # Recurse on nested modules
         bp = os.path.dirname(self.source)
@@ -456,6 +425,10 @@ class Module:
             msg = f"Failed to process {self.source} Modules section: {e}"
             LOG.exception(msg)
             raise exceptions.InvalidModuleError(msg=msg)
+
+        # Call this again after recursing to pick up any unresolved
+        # conditions that were emitted by sub-modules.
+        process_conditions(self, module_dict)
 
         # Make sure that overrides exist
         self.validate_overrides()

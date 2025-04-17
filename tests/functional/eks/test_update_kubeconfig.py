@@ -26,10 +26,10 @@ from awscli.customizations.eks.kubeconfig import (
 from awscli.customizations.eks.update_kubeconfig import UpdateKubeconfigCommand
 from awscli.testutils import capture_output, mock, unittest
 from tests.functional.eks.test_util import (
+    assume_role_response,
     describe_cluster_creating_response,
     describe_cluster_response,
     get_testdata,
-    assume_role_response
 )
 
 
@@ -470,8 +470,10 @@ class TestUpdateKubeconfig(unittest.TestCase):
 
         # Include the --assume-role-arn argument
         args = [
-            "--name", "ExampleCluster",
-            "--assume-role-arn", "arn:aws:iam::123456789012:role/test-role"
+            "--name",
+            "ExampleCluster",
+            "--assume-role-arn",
+            "arn:aws:iam::123456789012:role/test-role",
         ]
 
         # Mock environment variables and paths
@@ -479,13 +481,16 @@ class TestUpdateKubeconfig(unittest.TestCase):
         default_path = self._get_temp_config("default_temp")
 
         with mock.patch.dict(os.environ, {'KUBECONFIG': kubeconfig_path}):
-            with mock.patch("awscli.customizations.eks.update_kubeconfig.DEFAULT_PATH", default_path):
+            with mock.patch(
+                "awscli.customizations.eks.update_kubeconfig.DEFAULT_PATH",
+                default_path,
+            ):
                 self.command(args, None)
 
         # Verify that assume_role was called with the correct parameters
         self.sts_client_mock.assume_role.assert_called_once_with(
             RoleArn="arn:aws:iam::123456789012:role/test-role",
-            RoleSessionName="EKSDescribeClusterSession"
+            RoleSessionName="EKSDescribeClusterSession",
         )
 
         # Verify that the EKS client was created with the assumed credentials
@@ -493,11 +498,13 @@ class TestUpdateKubeconfig(unittest.TestCase):
             "eks",
             aws_access_key_id="test-access-key",
             aws_secret_access_key="test-secret-key",
-            aws_session_token="test-session-token"
+            aws_session_token="test-session-token",
         )
 
         # Verify that the cluster was described
-        self.client.describe_cluster.assert_called_once_with(name="ExampleCluster")
+        self.client.describe_cluster.assert_called_once_with(
+            name="ExampleCluster"
+        )
 
         # Assert the configuration state
         self.assert_config_state("valid_existing", "output_combined")
@@ -510,9 +517,13 @@ class TestUpdateKubeconfig(unittest.TestCase):
         passed = "valid_existing"
         environment = []
 
-        self.client.describe_cluster = mock.Mock(return_value=describe_cluster_response())
+        self.client.describe_cluster = mock.Mock(
+            return_value=describe_cluster_response()
+        )
         self.assert_cmd(configs, passed, environment)
 
         # Verify that assume_role was not called
         self.mock_create_client.assert_called_once_with("eks")
-        self.client.describe_cluster.assert_called_once_with(name="ExampleCluster")
+        self.client.describe_cluster.assert_called_once_with(
+            name="ExampleCluster"
+        )

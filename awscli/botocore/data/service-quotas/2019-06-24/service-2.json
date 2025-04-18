@@ -5,11 +5,13 @@
     "endpointPrefix":"servicequotas",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"Service Quotas",
     "serviceId":"Service Quotas",
     "signatureVersion":"v4",
     "targetPrefix":"ServiceQuotasV20190624",
-    "uid":"service-quotas-2019-06-24"
+    "uid":"service-quotas-2019-06-24",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AssociateServiceQuotaTemplate":{
@@ -142,7 +144,7 @@
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Retrieves the applied quota value for the specified quota. For some quotas, only the default values are available. If the applied quota value is not available for a quota, the quota is not retrieved.</p>"
+      "documentation":"<p>Retrieves the applied quota value for the specified account-level or resource-level quota. For some quotas, only the default values are available. If the applied quota value is not available for a quota, the quota is not retrieved.</p>"
     },
     "GetServiceQuotaIncreaseRequestFromTemplate":{
       "name":"GetServiceQuotaIncreaseRequestFromTemplate",
@@ -181,7 +183,7 @@
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Lists the default values for the quotas for the specified Amazon Web Service. A default value does not reflect any quota increases.</p>"
+      "documentation":"<p>Lists the default values for the quotas for the specified Amazon Web Services service. A default value does not reflect any quota increases.</p>"
     },
     "ListRequestedServiceQuotaChangeHistory":{
       "name":"ListRequestedServiceQuotaChangeHistory",
@@ -199,7 +201,7 @@
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Retrieves the quota increase requests for the specified Amazon Web Service.</p>"
+      "documentation":"<p>Retrieves the quota increase requests for the specified Amazon Web Services service. Filter responses to return quota requests at either the account level, resource level, or all levels. Responses include any open or closed requests within 90 days.</p>"
     },
     "ListRequestedServiceQuotaChangeHistoryByQuota":{
       "name":"ListRequestedServiceQuotaChangeHistoryByQuota",
@@ -217,7 +219,7 @@
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Retrieves the quota increase requests for the specified quota.</p>"
+      "documentation":"<p>Retrieves the quota increase requests for the specified quota. Filter responses to return quota requests at either the account level, resource level, or all levels.</p>"
     },
     "ListServiceQuotaIncreaseRequestsInTemplate":{
       "name":"ListServiceQuotaIncreaseRequestsInTemplate",
@@ -255,7 +257,7 @@
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Lists the applied quota values for the specified Amazon Web Service. For some quotas, only the default values are available. If the applied quota value is not available for a quota, the quota is not retrieved.</p>"
+      "documentation":"<p>Lists the applied quota values for the specified Amazon Web Services service. For some quotas, only the default values are available. If the applied quota value is not available for a quota, the quota is not retrieved. Filter responses to return applied quota values at either the account level, resource level, or all levels.</p>"
     },
     "ListServices":{
       "name":"ListServices",
@@ -272,7 +274,7 @@
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Lists the names and codes for the Amazon Web Services integrated with Service Quotas.</p>"
+      "documentation":"<p>Lists the names and codes for the Amazon Web Services services integrated with Service Quotas.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -332,7 +334,7 @@
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Submits a quota increase request for the specified quota.</p>"
+      "documentation":"<p>Submits a quota increase request for the specified quota at the account or resource level.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -480,7 +482,7 @@
       "members":{
         "ErrorCode":{
           "shape":"ErrorCode",
-          "documentation":"<p>Service Quotas returns the following error values:</p> <ul> <li> <p> <code>DEPENDENCY_ACCESS_DENIED_ERROR</code> - The caller does not have the required permissions to complete the action. To resolve the error, you must have permission to access the Amazon Web Service or quota.</p> </li> <li> <p> <code>DEPENDENCY_THROTTLING_ERROR</code> - The Amazon Web Service is throttling Service Quotas. </p> </li> <li> <p> <code>DEPENDENCY_SERVICE_ERROR</code> - The Amazon Web Service is not available.</p> </li> <li> <p> <code>SERVICE_QUOTA_NOT_AVAILABLE_ERROR</code> - There was an error in Service Quotas.</p> </li> </ul>"
+          "documentation":"<p>Service Quotas returns the following error values:</p> <ul> <li> <p> <code>DEPENDENCY_ACCESS_DENIED_ERROR</code> - The caller does not have the required permissions to complete the action. To resolve the error, you must have permission to access the Amazon Web Services service or quota.</p> </li> <li> <p> <code>DEPENDENCY_THROTTLING_ERROR</code> - The Amazon Web Services service is throttling Service Quotas. </p> </li> <li> <p> <code>DEPENDENCY_SERVICE_ERROR</code> - The Amazon Web Services service is not available.</p> </li> <li> <p> <code>SERVICE_QUOTA_NOT_AVAILABLE_ERROR</code> - There was an error in Service Quotas.</p> </li> </ul>"
         },
         "ErrorMessage":{
           "shape":"ErrorMessage",
@@ -597,7 +599,7 @@
         },
         "ContextId":{
           "shape":"QuotaContextId",
-          "documentation":"<p>Specifies the Amazon Web Services account or resource to which the quota applies. The value in this field depends on the context scope associated with the specified service quota.</p>"
+          "documentation":"<p>Specifies the resource with an Amazon Resource Name (ARN).</p>"
         }
       }
     },
@@ -704,7 +706,7 @@
         },
         "QuotaRequestedAtLevel":{
           "shape":"AppliedLevelEnum",
-          "documentation":"<p>Specifies at which level within the Amazon Web Services account the quota request applies to.</p>"
+          "documentation":"<p>Filters the response to return quota requests for the <code>ACCOUNT</code>, <code>RESOURCE</code>, or <code>ALL</code> levels. <code>ACCOUNT</code> is the default.</p>"
         }
       }
     },
@@ -742,7 +744,7 @@
         },
         "QuotaRequestedAtLevel":{
           "shape":"AppliedLevelEnum",
-          "documentation":"<p>Specifies at which level within the Amazon Web Services account the quota request applies to.</p>"
+          "documentation":"<p>Filters the response to return quota requests for the <code>ACCOUNT</code>, <code>RESOURCE</code>, or <code>ALL</code> levels. <code>ACCOUNT</code> is the default.</p>"
         }
       }
     },
@@ -815,7 +817,7 @@
         },
         "QuotaAppliedAtLevel":{
           "shape":"AppliedLevelEnum",
-          "documentation":"<p>Specifies at which level of granularity that the quota value is applied.</p>"
+          "documentation":"<p>Filters the response to return applied quota values for the <code>ACCOUNT</code>, <code>RESOURCE</code>, or <code>ALL</code> levels. <code>ACCOUNT</code> is the default.</p>"
         }
       }
     },
@@ -854,7 +856,7 @@
         },
         "Services":{
           "shape":"ServiceInfoListDefinition",
-          "documentation":"<p>The list of the Amazon Web Service names and service codes.</p>"
+          "documentation":"<p>The list of the Amazon Web Services service names and service codes.</p>"
         }
       }
     },
@@ -1009,18 +1011,18 @@
       "members":{
         "ContextScope":{
           "shape":"QuotaContextScope",
-          "documentation":"<p>Specifies whether the quota applies to an Amazon Web Services account, or to a resource.</p>"
+          "documentation":"<p>Specifies the scope to which the quota value is applied. If the scope is <code>RESOURCE</code>, the quota value is applied to each resource in the Amazon Web Services account. If the scope is <code>ACCOUNT</code>, the quota value is applied to the Amazon Web Services account.</p>"
         },
         "ContextScopeType":{
           "shape":"QuotaContextScopeType",
-          "documentation":"<p>When the <code>ContextScope</code> is <code>RESOURCE</code>, then this specifies the resource type of the specified resource.</p>"
+          "documentation":"<p>Specifies the resource type to which the quota can be applied.</p>"
         },
         "ContextId":{
           "shape":"QuotaContextId",
-          "documentation":"<p>Specifies the Amazon Web Services account or resource to which the quota applies. The value in this field depends on the context scope associated with the specified service quota.</p>"
+          "documentation":"<p>Specifies the resource, or resources, to which the quota applies. The value for this field is either an Amazon Resource Name (ARN) or *. If the value is an ARN, the quota value applies to that resource. If the value is *, then the quota value applies to all resources listed in the <code>ContextScopeType</code> field. The quota value applies to all resources for which you haven’t previously applied a quota value, and any new resources you create in your Amazon Web Services account.</p>"
         }
       },
-      "documentation":"<p>A structure that describes the context for a service quota. The context identifies what the quota applies to.</p>"
+      "documentation":"<p>A structure that describes the context for a resource-level quota. For resource-level quotas, such as <code>Instances per OpenSearch Service Domain</code>, you can apply the quota value at the resource-level for each OpenSearch Service Domain in your Amazon Web Services account. Together the attributes of this structure help you understand how the quota is implemented by Amazon Web Services and how you can manage it. For quotas such as <code>Amazon OpenSearch Service Domains</code> which can be managed at the account-level for each Amazon Web Services Region, the <code>QuotaContext</code> field is absent. See the attribute descriptions below to further understand how to use them.</p>"
     },
     "QuotaContextScope":{
       "type":"string",
@@ -1030,6 +1032,12 @@
       ]
     },
     "QuotaContextScopeType":{"type":"string"},
+    "QuotaDescription":{
+      "type":"string",
+      "max":350,
+      "min":0,
+      "pattern":"^.{0,350}$"
+    },
     "QuotaExceededException":{
       "type":"structure",
       "members":{
@@ -1089,7 +1097,11 @@
         },
         "ContextId":{
           "shape":"QuotaContextId",
-          "documentation":"<p>Specifies the Amazon Web Services account or resource to which the quota applies. The value in this field depends on the context scope associated with the specified service quota.</p>"
+          "documentation":"<p>Specifies the resource with an Amazon Resource Name (ARN).</p>"
+        },
+        "SupportCaseAllowed":{
+          "shape":"SupportCaseAllowed",
+          "documentation":"<p>Specifies if an Amazon Web Services Support case can be opened for the quota increase request. This parameter is optional. </p> <p>By default, this flag is set to <code>True</code> and Amazon Web Services may create a support case for some quota increase requests. You can set this flag to <code>False</code> if you do not want a support case created when you request a quota increase. If you set the flag to <code>False</code>, Amazon Web Services does not open a support case and updates the request status to <code>Not approved</code>. </p>"
         }
       }
     },
@@ -1147,7 +1159,7 @@
         },
         "Status":{
           "shape":"RequestStatus",
-          "documentation":"<p>The state of the quota increase request.</p>"
+          "documentation":"<p>The state of the quota increase request.</p> <ul> <li> <p> <code>PENDING</code>: The quota increase request is under review by Amazon Web Services. </p> </li> <li> <p> <code>CASE_OPENED</code>: Service Quotas opened a support case to process the quota increase request. Follow-up on the support case for more information.</p> </li> <li> <p> <code>APPROVED</code>: The quota increase request is approved. </p> </li> <li> <p> <code>DENIED</code>: The quota increase request can't be approved by Service Quotas. Contact Amazon Web Services Support for more details.</p> </li> <li> <p> <code>NOT APPROVED</code>: The quota increase request can't be approved by Service Quotas. Contact Amazon Web Services Support for more details.</p> </li> <li> <p> <code>CASE_CLOSED</code>: The support case associated with this quota increase request was closed. Check the support case correspondence for the outcome of your quota request.</p> </li> <li> <p> <code>INVALID_REQUEST</code>: Service Quotas couldn't process your resource-level quota increase request because the Amazon Resource Name (ARN) specified as part of the <code>ContextId</code> is invalid.</p> </li> </ul>"
         },
         "Created":{
           "shape":"DateTime",
@@ -1175,7 +1187,7 @@
         },
         "QuotaRequestedAtLevel":{
           "shape":"AppliedLevelEnum",
-          "documentation":"<p>Specifies at which level within the Amazon Web Services account the quota request applies to.</p>"
+          "documentation":"<p>Filters the response to return quota requests for the <code>ACCOUNT</code>, <code>RESOURCE</code>, or <code>ALL</code> levels. <code>ACCOUNT</code> is the default.</p>"
         },
         "QuotaContext":{
           "shape":"QuotaContextInfo",
@@ -1224,7 +1236,7 @@
           "documentation":"<p>Specifies the service name.</p>"
         }
       },
-      "documentation":"<p>Information about an Amazon Web Service.</p>"
+      "documentation":"<p>Information about an Amazon Web Services service.</p>"
     },
     "ServiceInfoListDefinition":{
       "type":"list",
@@ -1284,11 +1296,15 @@
         },
         "QuotaAppliedAtLevel":{
           "shape":"AppliedLevelEnum",
-          "documentation":"<p>Specifies at which level of granularity that the quota value is applied.</p>"
+          "documentation":"<p>Filters the response to return applied quota values for the <code>ACCOUNT</code>, <code>RESOURCE</code>, or <code>ALL</code> levels. <code>ACCOUNT</code> is the default.</p>"
         },
         "QuotaContext":{
           "shape":"QuotaContextInfo",
           "documentation":"<p>The context for this service quota.</p>"
+        },
+        "Description":{
+          "shape":"QuotaDescription",
+          "documentation":"<p>The quota description. </p>"
         }
       },
       "documentation":"<p>Information about a quota.</p>"
@@ -1360,6 +1376,7 @@
       "min":1,
       "pattern":"(Sum|Maximum)"
     },
+    "SupportCaseAllowed":{"type":"boolean"},
     "Tag":{
       "type":"structure",
       "required":[
@@ -1467,5 +1484,5 @@
       }
     }
   },
-  "documentation":"<p>With Service Quotas, you can view and manage your quotas easily as your Amazon Web Services workloads grow. Quotas, also referred to as limits, are the maximum number of resources that you can create in your Amazon Web Services account. For more information, see the <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/\">Service Quotas User Guide</a>.</p>"
+  "documentation":"<p>With Service Quotas, you can view and manage your quotas easily as your Amazon Web Services workloads grow. Quotas, also referred to as limits, are the maximum number of resources that you can create in your Amazon Web Services account. For more information, see the <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/\">Service Quotas User Guide</a>.</p> <p>You need Amazon Web Services CLI version 2.13.20 or higher to view and manage resource-level quotas such as <code>Instances per domain</code> for Amazon OpenSearch Service.</p>"
 }

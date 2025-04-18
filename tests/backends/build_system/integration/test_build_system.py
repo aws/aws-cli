@@ -48,7 +48,13 @@ class TestBuildBackendFailureCases:
         with pytest.raises(subprocess.CalledProcessError) as e:
             workspace.call_build_system("system-sandbox", download_deps=False)
         error_text = e.value.stdout.decode()
-        assert "No module named 'flit_core'" in error_text
+        possible_messages = [
+            "No module named 'flit_core'",
+            # Recent versions of pyproject-hooks started consuming
+            # ImportError messages and replacing it.
+            "Cannot import 'pep517'",
+        ]
+        assert any([msg in error_text for msg in possible_messages])
 
 
 class TestInstall(BaseArtifactTest):

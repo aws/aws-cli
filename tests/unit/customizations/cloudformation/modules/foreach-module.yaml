@@ -1,11 +1,13 @@
 Parameters:
   Name:
     Type: String
+
 Resources:
-  Foo:
-    Type: A::B::C
+  Bucket:
+    Type: AWS::S3::Bucket
     Properties:
-      Name: !Ref Name
+      BucketName: !Ref Name
+
 Outputs:
-  Out1:
-    Value: !GetAtt Foo.Arn
+  Arn:
+    Value: !GetAtt Bucket.Arn

@@ -17,7 +17,7 @@ This file implements looping over module content.
 We originally called the attribute "Map" and renamed it to "ForEach" for
 consistency with Fn::ForEach.
 
-See tests/unit/customizations/cloudformation/modules/map*.yaml
+See tests/unit/customizations/cloudformation/modules/foreach*.yaml
 """
 
 import copy
@@ -27,20 +27,20 @@ from awscli.customizations.cloudformation.modules.visitor import Visitor
 from awscli.customizations.cloudformation.modules.parse_sub import WordType
 from awscli.customizations.cloudformation.modules.parse_sub import parse_sub
 
-MAP_PLACEHOLDER = "$Identifier"
+IDENTIFIER_PLACEHOLDER = "$Identifier"
 INDEX_PLACEHOLDER = "$Index"
 SUB = "Fn::Sub"
-MAP = "ForEach"  # Renamed for consistency with Fn::ForEach
+FOREACH = "ForEach"  # Renamed from MAP
 REF = "Ref"
 PROPERTIES = "Properties"
 MODULES = "Modules"
 GETATT = "Fn::GetAtt"
 RESOURCES = "Resources"
 OUTPUTS = "Outputs"
-ORIGINAL_MAP_NAME = "OriginalMapName"
+ORIGINAL_FOREACH_NAME = "OriginalForEachName"  # Renamed from ORIGINAL_MAP_NAME
 VALUE = "Value"
 FOREACH_PREFIX = "Fn::ForEach::"
-MAP_NAME_IS_I = "map_name_is_i"
+FOREACH_NAME_IS_I = "foreach_name_is_i"  # Renamed from MAP_NAME_IS_I
 
 
 def replace_str(s, m, i):
@@ -48,10 +48,10 @@ def replace_str(s, m, i):
     Replace placeholders in a single string.
 
     s: The string to alter
-    m: The map key
-    i: The map index
+    m: The foreach key
+    i: The foreach index
     """
-    s = s.replace(MAP_PLACEHOLDER, m)
+    s = s.replace(IDENTIFIER_PLACEHOLDER, m)
     return s.replace(INDEX_PLACEHOLDER, f"{i}")
 
 
@@ -70,13 +70,13 @@ def replace_identifier(s, identifier, value):
     return s
 
 
-def map_placeholders(i, token, val):
+def foreach_placeholders(i, token, val):
     "Replace $Identifier and $Index"
 
     if isinstance(val, (dict, OrderedDict)):
         if SUB in val:
             sub = val[SUB]
-            if MAP_PLACEHOLDER in sub or INDEX_PLACEHOLDER in sub:
+            if IDENTIFIER_PLACEHOLDER in sub or INDEX_PLACEHOLDER in sub:
                 r = replace_str(sub, token, i)
                 words = parse_sub(r)
                 need_sub = False
@@ -104,7 +104,7 @@ def map_placeholders(i, token, val):
 # pylint: disable=too-many-return-statements
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-locals
-def foreach_placeholders(identifier, value, val):
+def foreach_identifier_placeholders(identifier, value, val):
     """
     Replace ${identifier} and &{identifier} in values.
 
@@ -148,15 +148,20 @@ def foreach_placeholders(identifier, value, val):
                     f"${{{identifier}}}" in k or f"&{{{identifier}}}" in k
                 ):
                     new_key = replace_identifier(k, identifier, value)
-                    result[new_key] = foreach_placeholders(
+                    result[new_key] = foreach_identifier_placeholders(
                         identifier, value, v
                     )
                 else:
-                    result[k] = foreach_placeholders(identifier, value, v)
+                    result[k] = foreach_identifier_placeholders(
+                        identifier, value, v
+                    )
             return result
     elif isinstance(val, list):
         # Process lists
-        return [foreach_placeholders(identifier, value, item) for item in val]
+        return [
+            foreach_identifier_placeholders(identifier, value, item)
+            for item in val
+        ]
     elif isinstance(val, str):
         return replace_identifier(val, identifier, value)
     return val
@@ -164,11 +169,11 @@ def foreach_placeholders(identifier, value, val):
 
 # pylint: disable=cell-var-from-loop
 # pylint: disable=too-many-statements
-def process_module_maps(template, parent_module):
+def process_module_foreach(template, parent_module):
     """
-    Loop over Maps in modules.
+    Loop over ForEach in modules.
 
-    Returns a dictionary of mapped module names to [keys],
+    Returns a dictionary of foreach module names to [keys],
     for later when we need to expand references that use an array index.
 
     For example:
@@ -178,11 +183,11 @@ def process_module_maps(template, parent_module):
     retval = {}
     modules = template[MODULES]
 
-    # Process Map attribute
+    # Process ForEach attribute
     for k, v in modules.copy().items():
-        if MAP in v:
-            # Expect Map to be a CSV or ref to a CSV
-            m = v[MAP]
+        if FOREACH in v:
+            # Expect ForEach to be a CSV or ref to a CSV
+            m = v[FOREACH]
             if isdict(m) and REF in m:
                 m = parent_module.find_ref(m[REF])
                 if m is None:
@@ -194,14 +199,16 @@ def process_module_maps(template, parent_module):
                 # Make a new module
                 module_id = f"{k}{i}"
                 copied_module = copy.deepcopy(v)
-                copied_module[ORIGINAL_MAP_NAME] = k
-                del copied_module[MAP]
+                copied_module[ORIGINAL_FOREACH_NAME] = k
+                del copied_module[FOREACH]
                 # Replace $Identifier and $Index placeholders
                 if PROPERTIES in copied_module:
 
                     def vf(vis):
                         if vis.p is not None:
-                            vis.p[vis.k] = map_placeholders(i, token, vis.d)
+                            vis.p[vis.k] = foreach_placeholders(
+                                i, token, vis.d
+                            )
 
                     Visitor(copied_module[PROPERTIES]).visit(vf)
 
@@ -281,7 +288,7 @@ def process_module_maps(template, parent_module):
                     new_value = copy.deepcopy(template_value)
 
                     # Replace ${identifier} in the value recursively
-                    processed_value = foreach_placeholders(
+                    processed_value = foreach_identifier_placeholders(
                         identifier, value, new_value
                     )
 
@@ -289,8 +296,10 @@ def process_module_maps(template, parent_module):
                     modules[module_id] = processed_value
 
                     # Remember the original name for GetAtt resolution
-                    modules[module_id][ORIGINAL_MAP_NAME] = loop_name
-                    modules[module_id][MAP_NAME_IS_I] = False
+                    modules[module_id][ORIGINAL_FOREACH_NAME] = loop_name
+                    modules[module_id][
+                        FOREACH_NAME_IS_I
+                    ] = not identifier_in_key
 
             # Remove the ForEach entry
             del modules[k]
@@ -298,7 +307,7 @@ def process_module_maps(template, parent_module):
     return retval
 
 
-def resolve_mapped_lists(template, mapped):
+def resolve_foreach_lists(template, foreach_modules):
     """
     Resolve GetAtts like !GetAtt Content[].Arn
 
@@ -309,10 +318,10 @@ def resolve_mapped_lists(template, mapped):
     def vf(v):
         if isdict(v.d) and GETATT in v.d and v.p is not None:
             getatt = v.d[GETATT]
-            s = getatt_map_list(getatt)
+            s = getatt_foreach_list(getatt)
             if s is not None:
-                if s in mapped:
-                    v.p[v.k] = copy.deepcopy(mapped[s])
+                if s in foreach_modules:
+                    v.p[v.k] = copy.deepcopy(foreach_modules[s])
 
     if RESOURCES in template:
         v = Visitor(template[RESOURCES])
@@ -322,14 +331,14 @@ def resolve_mapped_lists(template, mapped):
         for _, val in template[OUTPUTS].items():
             output_val = val.get(VALUE, None)
             if output_val is not None and GETATT in output_val:
-                s = getatt_map_list(output_val[GETATT])
-                if s is not None and s in mapped:
+                s = getatt_foreach_list(output_val[GETATT])
+                if s is not None and s in foreach_modules:
                     # Handling for Override GetAtts to module Outputs
-                    # that reference a module with a Map
-                    val[VALUE] = copy.deepcopy(mapped[s])
+                    # that reference a module with a ForEach
+                    val[VALUE] = copy.deepcopy(foreach_modules[s])
 
 
-def getatt_map_list(getatt):
+def getatt_foreach_list(getatt):
     """
     Converts a getatt array like ['Content[]', 'Arn'] to a string,
     joining with a dot. 'Content[].Arn'

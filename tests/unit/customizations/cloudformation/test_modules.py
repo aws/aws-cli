@@ -118,8 +118,8 @@ class TestPackageModules(unittest.TestCase):
             "output",
             "policy",
             "vpc",
-            "map",
-            "mapout",
+            "foreach",
+            "foreachout",
             "conditional",
             "cond-intrinsics",
             "example",
@@ -138,6 +138,7 @@ class TestPackageModules(unittest.TestCase):
             "same-mod",
             "cond-unres",
             "transform",
+            "fnforeach",
         ]
         for test in tests:
             t, _ = read_source(f"{base}/{test}-template.yaml")

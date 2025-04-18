@@ -1,23 +1,32 @@
+Parameters:
+  List:
+    Type: CommaDelimitedList
+    Default: A,B,C
+
 Modules:
-  Fn::ForEach::A:
-    - TheKey
-    - A,B,C
-    - A:
-        Source: foreach-module.yaml
+  Content:
+    Source: ./foreach-module.yaml
+    ForEach: !Ref List
+    Properties:
+      Name: !Sub my-bucket-$Identifier
+  IndexTest:
+    Source: ./foreach-index-module.yaml
+    ForEach: !Ref List
+    Properties:
+      ContentRef: !GetAtt Content[$Index].Arn
+      NestedRef:
+        Obj: !GetAtt Content[$Index].Arn
+  ListTest:
+    Source: ./foreach-list-module.yaml
+    Properties:
+      ListRef: !GetAtt Content[].Arn
+    Overrides:
+      Bar:
         Properties:
-          Name: a-${TheKey}
-  Fn::ForEach::B:
-    - TheKey
-    - A,B,C
-    - B&{TheKey}:
-        Source: foreach-module.yaml
-        Properties:
-          Name: b-${TheKey}
+          ListOverride: !GetAtt Content[].Arn
+
 Outputs:
-  TestGetAttA:
-    Value: !GetAtt A[0].Out1
-  TestGetAttB:
-    Value: !GetAtt B[B].Out1
-
-
-        
+  TestSubArray:
+    Value: !Sub ${Content[0].Arn}
+  TestUsingKey:
+    Value: !Sub ${Content[A].Arn}

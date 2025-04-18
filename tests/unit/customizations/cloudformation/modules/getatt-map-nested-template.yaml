@@ -1,0 +1,41 @@
+Modules:
+  NetworkRules:
+    Source: ./getatt-map-nested-module.yaml
+    Properties:
+      NestedMap:
+        http:
+          Protocol: tcp
+          Port: 80
+          Ingress:
+            IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            CidrIp: 0.0.0.0/0
+        https:
+          Protocol: tcp
+          Port: 443
+          Ingress:
+            IpProtocol: tcp
+            FromPort: 443
+            ToPort: 443
+            CidrIp: 0.0.0.0/0
+        ssh:
+          Protocol: tcp
+          Port: 22
+          Ingress:
+            IpProtocol: tcp
+            FromPort: 22
+            ToPort: 22
+            CidrIp: 10.0.0.0/8
+Outputs:
+  # Test getting a specific nested attribute
+  HttpPort:
+    Value: !GetAtt NetworkRules.NestedMap[http].Port
+  
+  # Test getting a deeply nested attribute
+  HttpCidr:
+    Value: !GetAtt NetworkRules.NestedMap[http].Ingress.CidrIp
+  
+  # Test getting all protocols from the module output
+  AllProtocolsFromModule:
+    Value: !GetAtt NetworkRules.AllProtocols

@@ -31,12 +31,12 @@ from awscli.customizations.cloudformation.modules.functions import (
     fn_insertfile,
     fn_join,
 )
-from awscli.customizations.cloudformation.modules.maps import (
-    process_module_maps,
-    resolve_mapped_lists,
-    getatt_map_list,
-    ORIGINAL_MAP_NAME,
-    MAP_NAME_IS_I,
+from awscli.customizations.cloudformation.modules.foreach import (
+    process_module_foreach,
+    resolve_foreach_lists,
+    getatt_foreach_list,
+    ORIGINAL_FOREACH_NAME,
+    FOREACH_NAME_IS_I,
 )
 from awscli.customizations.cloudformation.modules.read import (
     is_url,
@@ -143,10 +143,10 @@ def make_module(
         module_config[PROPERTIES] = config[PROPERTIES]
     if OVERRIDES in config:
         module_config[OVERRIDES] = config[OVERRIDES]
-    if ORIGINAL_MAP_NAME in config:
-        module_config[ORIGINAL_MAP_NAME] = config[ORIGINAL_MAP_NAME]
-    if MAP_NAME_IS_I in config:
-        module_config[MAP_NAME_IS_I] = config[MAP_NAME_IS_I]
+    if ORIGINAL_FOREACH_NAME in config:
+        module_config[ORIGINAL_FOREACH_NAME] = config[ORIGINAL_FOREACH_NAME]
+    if FOREACH_NAME_IS_I in config:
+        module_config[FOREACH_NAME_IS_I] = config[FOREACH_NAME_IS_I]
     module_config[NO_SOURCE_MAP] = no_source_map
     return Module(template, module_config, parent_module, s3_client)
 
@@ -207,8 +207,8 @@ def process_module_section(
             parent_module.module_parameters = template[PARAMETERS]
 
     # First, pre-process local modules that are looping over a list
-    mapped = process_module_maps(template, parent_module)
-    parent_module.mapped = mapped
+    foreach_modules = process_module_foreach(template, parent_module)
+    parent_module.foreach_modules = foreach_modules
 
     # Process each Module node separately after processing Maps
     modules = template[MODULES]
@@ -225,7 +225,7 @@ def process_module_section(
         )
         template = module.process()
 
-    # Look for getatts to a mapped list like !GetAtt Content[].Arn
+    # Look for getatts to a foreach list like !GetAtt Content[].Arn
     # This should be converted to an array like
     # - !GetAtt ContentBucket0.Arn
     # - !GetAtt ContentBucket1.Arn
@@ -234,7 +234,7 @@ def process_module_section(
     # As we process module outputs, we need to remember these and
     # apply them here, since each module is processed separately
     # and it can't replace the entire 'Content[]'
-    resolve_mapped_lists(template, mapped)
+    resolve_foreach_lists(template, foreach_modules)
 
     # Special handling for intrinsic functions
     fn_select(template)
@@ -249,12 +249,9 @@ def process_module_section(
     if PACKAGES in template:
         del template[PACKAGES]
 
-    # Lift the created resources up to the parent
+    # Emit the created resources into the parent
     for k, v in template[RESOURCES].items():
         parent_module.template[RESOURCES][parent_module.name + k] = v
-
-    # We only do this for resources, but in the future we might create
-    # a way to lift other sections up to the parent as well.
 
     return template
 
@@ -284,10 +281,10 @@ class Module:
         self.parent_path = module_config.get(PARENT_PATH, "")
         self.invoked = module_config.get(INVOKED, False)
 
-        # Default behavior for Map/ForEach is to use array indexes
-        self.map_name_is_i = True
-        if MAP_NAME_IS_I in module_config:
-            self.map_name_is_i = module_config[MAP_NAME_IS_I]
+        # Default behavior for ForEach is to use array indexes
+        self.foreach_name_is_i = True
+        if FOREACH_NAME_IS_I in module_config:
+            self.foreach_name_is_i = module_config[FOREACH_NAME_IS_I]
 
         if RESOURCES not in self.template:
             # The parent might only have Modules
@@ -296,10 +293,10 @@ class Module:
         # The name of the module, which is used as a logical id prefix
         self.name = module_config[NAME]
 
-        # Only set when we copy a module with a Map attribute
-        self.original_map_name = None
-        if ORIGINAL_MAP_NAME in module_config:
-            self.original_map_name = module_config[ORIGINAL_MAP_NAME]
+        # Only set when we copy a module with a ForEach attribute
+        self.original_foreach_name = None
+        if ORIGINAL_FOREACH_NAME in module_config:
+            self.original_foreach_name = module_config[ORIGINAL_FOREACH_NAME]
 
         # The location of the source for the module, a URI string
         self.source = module_config[SOURCE]
@@ -332,11 +329,11 @@ class Module:
         if module_config.get(NO_SOURCE_MAP, False):
             self.no_source_map = True
 
-        # A dictionary of mapped modules created by this module
-        # If this module contains any sub-modules that are mapped,
+        # A dictionary of foreach modules created by this module
+        # If this module contains any sub-modules that use ForEach,
         # The dictionary will have the name as the key and length as the value.
         # {"Name": Length}
-        self.mapped = {}
+        self.foreach_modules = {}
 
     def __str__(self):
         "Print out a string with module details for logs"
@@ -636,6 +633,16 @@ class Module:
         """
         Resolve a GetAtt that refers to a module Output.
 
+        This might be a simple reference to an Output Value like
+        !Get ModuleName.OutputName.
+
+        It might be a reference to a module that was in a ForEach loop,
+        so we can !GetAtt ModuleName[0].OutputName or
+        !GetAtt ModuleName[Identifier].OutputName.
+
+        We can !GetAtt ModuleName[].OutputName to get a list of all
+        output value for a module that was in a foreach.
+
         :param v The value
         :param d The dictionary
         :param n The name of the node
@@ -649,7 +656,7 @@ class Module:
 
         # For example, Content.Arn or Content[0].Arn
 
-        mapped = self.parent_module.mapped
+        foreach_modules = self.parent_module.foreach_modules
 
         name = v[0]
         prop_name = v[1]
@@ -664,40 +671,45 @@ class Module:
                     index = int(num)
                 else:
                     # Support Content[A].Arn, Content['A'].Arn
-                    if name not in mapped:
+                    if name not in foreach_modules:
                         msg = f"Invalid index in {v}"
                         raise exceptions.InvalidModuleError(msg=msg)
 
                     index = num.strip('"').strip("'")
 
                     # Validate that the key matches with the CSV
-                    if index not in mapped[name]:
+                    if index not in foreach_modules[name]:
                         msg = f"Invalid map key {index} in {v}"
                         raise exceptions.InvalidModuleError(msg=msg)
             else:
-                # This is a reference to all of the mapped values
+                # This is a reference to all of the foreach values
                 # For example, Content[].Arn
-                if name in mapped:
-                    self.resolve_output_getatt_map(mapped, name, prop_name)
+
+                if name in foreach_modules:
+                    self.resolve_output_getatt_foreach(
+                        foreach_modules, name, prop_name
+                    )
+
                 return False
 
         # index might be a number like 0: Content[0].Arn
         # or it might be a key like A: Content[A].Arn
-        # The name of the mapped module might be Content0 or ContentA,
+        # The name of the foreach module might be Content0 or ContentA,
         # depending on if we used an Fn::ForEach identifier.
 
+        # Handle ForEach module references
         if index != -1:
             if isinstance(index, int):
                 name = f"{name}{index}"
             else:
                 # Find the array index for the key
-                if not self.map_name_is_i:
+                if not self.foreach_name_is_i:
                     # If Fn::ForEach was used with an identifier for
                     # the logical id, we need to use that instead of the index
                     name = f"{name}{index}"
                 else:
-                    # The mapped name uses the array index
-                    for i, k in enumerate(mapped[name]):
+                    # The foreach name uses the array index
+                    for i, k in enumerate(foreach_modules[name]):
                         if index == k:
                             name = f"{name}{i}"
 
@@ -741,12 +753,12 @@ class Module:
             if len(getatt) < 2:
                 msg = f"GetAtt {getatt} in {self.name} is invalid"
                 raise exceptions.InvalidModuleError(msg=msg)
-            s = getatt_map_list(getatt)
-            if s is not None and s in self.mapped:
+            s = getatt_foreach_list(getatt)
+            if s is not None and s in self.foreach_modules:
                 # Special handling for Overrides that GetAtt a module
-                # property, when that module has a Map attribute
-                if isinstance(self.mapped[s], list):
-                    d[n] = copy.deepcopy(self.mapped[s])
+                # property, when that module has a ForEach attribute
+                if isinstance(self.foreach_modules[s], list):
+                    d[n] = copy.deepcopy(self.foreach_modules[s])
                     for item in d[n]:
                         if GETATT in item and len(item[GETATT]) > 0:
                             item[GETATT][0] = self.name + item[GETATT][0]
@@ -812,9 +824,9 @@ class Module:
                     raise exceptions.InvalidModuleError(msg=msg)
         return resolved
 
-    def resolve_output_getatt_map(self, mapped, name, prop_name):
-        "Resolve GetAtts that reference all Outputs from a mapped module"
-        num_items = len(mapped[name])
+    def resolve_output_getatt_foreach(self, foreach_modules, name, prop_name):
+        "Resolve GetAtts that reference all Outputs from a foreach module"
+        num_items = len(foreach_modules[name])
         dd = [None] * num_items
         for i in range(num_items):
             # Resolve the item as if it was a normal getatt
@@ -826,12 +838,12 @@ class Module:
                 item_val = dd[i]
                 # Use a key like "Content.Arn"
                 key = name + "[]." + prop_name
-                if key not in mapped:
-                    mapped[key] = []
-                if item_val not in mapped[key]:
+                if key not in foreach_modules:
+                    foreach_modules[key] = []
+                if item_val not in foreach_modules[key]:
                     # Don't double add. We already replaced refs in
                     # modules, so it shows up twice.
-                    mapped[key].append(item_val)
+                    foreach_modules[key].append(item_val)
 
     def validate_overrides(self):
         "Make sure resources referenced by overrides actually exist"
@@ -1104,11 +1116,21 @@ class Module:
         Resolve a GetAtt. All we do here is add the prefix.
 
         !GetAtt Foo.Bar becomes !GetAtt ModuleNameFoo.Bar
+
+        Also handles GetAtts that reference Parameters that are maps:
+        !GetAtt Name[] - Get the keys in the map
+        !GetAtt Name[Key] - Get the entire object for Key
+        !GetAtt Name[Key].Attribute - Get an attribute
         """
         if not isinstance(v, list):
             msg = f"GetAtt {v} is not a list"
             raise exceptions.InvalidModuleError(msg=msg)
 
+        if self.resolve_getatt_mapped_param(v, d, n):
+            print("resolved GetAtt mapped param:", v)
+            return
+
+        # Standard resource GetAtt handling
         # Make sure the logical id exists
         exists = False
         for resource in self.resources:
@@ -1118,6 +1140,87 @@ class Module:
         if exists:
             logical_id = self.name + v[0]
             d[n] = {GETATT: [logical_id, v[1]]}
+
+    def resolve_getatt_mapped_param(self, v, d, n):
+        """
+        Try to resolve a GetAtt that refers to a Parameter that is a map.
+        """
+        name = v[0]
+        prop_name = v[1] if len(v) > 1 else ""
+
+        # Check for map parameter access with [] syntax
+        index = -1
+        if "[" in name:
+            tokens = name.split("[")
+            name = tokens[0]
+            if tokens[1] != "]":
+                num = tokens[1].replace("]", "")
+                if num.isdigit():
+                    index = int(num)
+                else:
+                    # Support Name[A], Name['A']
+                    index = num.strip('"').strip("'")
+            elif name not in self.parent_module.foreach_modules:
+                # This is a reference to all values: Name[]
+                # Check if it's a Map parameter
+                if name in self.props and isinstance(self.props[name], dict):
+                    map_value = self.props[name]
+
+                    # Handle !GetAtt MapName[] - return list of keys
+                    if prop_name == "":
+                        d[n] = list(map_value.keys())
+                        print(
+                            "resolved GetAtt mapped param: all keys for", name
+                        )
+                        return True
+
+                    # Handle !GetAtt MapName[].AttributeName -
+                    # return a list of all values for that attribute
+                    result = []
+                    for key in map_value:
+                        if (
+                            isinstance(map_value[key], dict)
+                            and prop_name in map_value[key]
+                        ):
+                            result.append(map_value[key][prop_name])
+                    if result:
+                        d[n] = result
+                        print(
+                            "resolved GetAtt mapped param: all values for",
+                            name,
+                            prop_name,
+                        )
+                        return True
+
+        # Check if this is a Map parameter access with a specific key
+        if name not in self.parent_module.foreach_modules:
+            if name in self.props and isinstance(self.props[name], dict):
+                map_value = self.props[name]
+
+                # Handle !GetAtt MapName[Key] -
+                # return entire object at that key
+                if (
+                    index != -1
+                    and isinstance(index, str)
+                    and index in map_value
+                ):
+
+                    if prop_name == "":
+                        d[n] = map_value[index]
+                        print("resolved GetAtt mapped param:", v)
+                        return True
+
+                    # Handle !GetAtt MapName[Key].Attribute -
+                    # return specific attribute
+                    if (
+                        isinstance(map_value[index], dict)
+                        and prop_name in map_value[index]
+                    ):
+                        d[n] = map_value[index][prop_name]
+                        print("resolved GetAtt mapped param:", v)
+                        return True
+
+        return False
 
     def find_ref(self, name):
         """

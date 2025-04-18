@@ -1,0 +1,17 @@
+Parameters:
+  ConfigMap:
+    Type: Map
+Resources:
+  DynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${ConfigMap[environment].TablePrefix}-users"
+      BillingMode: !GetAtt ConfigMap[environment].BillingMode
+      ProvisionedThroughput: 
+        ReadCapacityUnits: !GetAtt ConfigMap[environment].ReadCapacity
+        WriteCapacityUnits: !GetAtt ConfigMap[environment].WriteCapacity
+Outputs:
+  TableName:
+    Value: !GetAtt DynamoDBTable.TableName
+  EnvironmentType:
+    Value: !GetAtt ConfigMap[environment].Type

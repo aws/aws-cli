@@ -1,30 +1,75 @@
-Resources:
-  A0Foo:
-    Type: A::B::C
-    Properties:
-      Name: a-A
-  A1Foo:
-    Type: A::B::C
-    Properties:
-      Name: a-B
-  A2Foo:
-    Type: A::B::C
-    Properties:
-      Name: a-C
-  BAFoo:
-    Type: A::B::C
-    Properties:
-      Name: b-A
-  BBFoo:
-    Type: A::B::C
-    Properties:
-      Name: b-B
-  BCFoo:
-    Type: A::B::C
-    Properties:
-      Name: b-C
+Parameters:
+  List:
+    Type: CommaDelimitedList
+    Default: A,B,C
 Outputs:
-  TestGetAttA:
-    Value: !GetAtt A0Foo.Arn
-  TestGetAttB:
-    Value: !GetAtt BBFoo.Arn
+  TestSubArray:
+    Value: !Sub ${Content0Bucket.Arn}
+  TestUsingKey:
+    Value: !Sub ${Content0Bucket.Arn}
+Resources:
+  Content0Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-bucket-A
+  Content1Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-bucket-B
+  Content2Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-bucket-C
+  IndexTest0Foo:
+    Type: A::B::C
+    Properties:
+      Name:
+        Fn::Sub: content-ref-${Content0Bucket.Arn}
+      NestedName:
+        Obj:
+          Fn::GetAtt:
+          - Content0Bucket
+          - Arn
+  IndexTest1Foo:
+    Type: A::B::C
+    Properties:
+      Name:
+        Fn::Sub: content-ref-${Content1Bucket.Arn}
+      NestedName:
+        Obj:
+          Fn::GetAtt:
+          - Content1Bucket
+          - Arn
+  IndexTest2Foo:
+    Type: A::B::C
+    Properties:
+      Name:
+        Fn::Sub: content-ref-${Content2Bucket.Arn}
+      NestedName:
+        Obj:
+          Fn::GetAtt:
+          - Content2Bucket
+          - Arn
+  ListTestBar:
+    Type: A::B::C
+    Properties:
+      Refs:
+      - Fn::GetAtt:
+        - Content0Bucket
+        - Arn
+      - Fn::GetAtt:
+        - Content1Bucket
+        - Arn
+      - Fn::GetAtt:
+        - Content2Bucket
+        - Arn
+      ListOverride:
+      - Fn::GetAtt:
+        - Content0Bucket
+        - Arn
+      - Fn::GetAtt:
+        - Content1Bucket
+        - Arn
+      - Fn::GetAtt:
+        - Content2Bucket
+        - Arn

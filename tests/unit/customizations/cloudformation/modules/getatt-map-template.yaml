@@ -1,0 +1,53 @@
+Modules:
+  MapTest:
+    Source: ./getatt-map-module.yaml
+    Properties:
+      SimpleMap:
+        default:
+          Name: "default-bucket"
+          Region: "us-east-1"
+        dev:
+          Name: "dev-bucket"
+          Region: "us-west-2"
+        prod:
+          Name: "prod-bucket"
+          Region: "us-east-1"
+      ComplexMap:
+        dev:
+          Environment: "Development"
+          Tags:
+            - Key: "Stage"
+              Value: "Dev"
+        prod:
+          Environment: "Production"
+          Tags:
+            - Key: "Stage"
+              Value: "Prod"
+Outputs:
+  # Test getting a specific attribute from a map entry
+  DefaultBucketName:
+    Value: !GetAtt MapTest.SimpleMap[default].Name
+  
+  # Test getting an entire map entry
+  DevEnvironment:
+    Value: !GetAtt MapTest.SimpleMap[dev]
+  
+  # Test getting all keys from a map
+  AllMapKeys:
+    Value: !GetAtt MapTest.SimpleMap[]
+  
+  # Test getting a specific attribute from all map entries
+  AllBucketNames:
+    Value: !GetAtt MapTest.SimpleMap[].Name
+  
+  # Test getting a nested attribute from a map entry
+  ProdEnvironment:
+    Value: !GetAtt MapTest.ComplexMap[prod].Environment
+  
+  # Test module output that used a map parameter
+  ModuleBucketName:
+    Value: !GetAtt MapTest.BucketName
+  
+  # Test module output that used GetAtt on map keys
+  ModuleMapKeyOutput:
+    Value: !GetAtt MapTest.MapKeyOutput

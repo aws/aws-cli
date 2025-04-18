@@ -1,0 +1,23 @@
+Modules:
+  Fn::ForEach::A:
+    - TheKey
+    - A,B,C
+    - A:
+        Source: fnforeach-module.yaml
+        Properties:
+          Name: a-${TheKey}
+  Fn::ForEach::B:
+    - TheKey
+    - A,B,C
+    - B&{TheKey}:
+        Source: fnforeach-module.yaml
+        Properties:
+          Name: b-${TheKey}
+Outputs:
+  TestGetAttA:
+    Value: !GetAtt A[0].Out1
+  TestGetAttB:
+    Value: !GetAtt B[B].Out1
+
+
+        

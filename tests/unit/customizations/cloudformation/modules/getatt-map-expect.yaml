@@ -1,0 +1,36 @@
+Resources:
+  MapTestBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: default-bucket
+      Tags:
+        - Key: Environment
+          Value: Production
+    Metadata:
+      AWS::CloudFormation::SourceMap: ./getatt-map-module.yaml:Bucket:0
+Outputs:
+  DefaultBucketName:
+    Value: default-bucket
+  DevEnvironment:
+    Value:
+      Name: dev-bucket
+      Region: us-west-2
+  AllMapKeys:
+    Value:
+      - default
+      - dev
+      - prod
+  AllBucketNames:
+    Value:
+      - default-bucket
+      - dev-bucket
+      - prod-bucket
+  ProdEnvironment:
+    Value: Production
+  ModuleBucketName:
+    Value: !GetAtt MapTestBucket.BucketName
+  ModuleMapKeyOutput:
+    Value:
+      - default-bucket
+      - dev-bucket
+      - prod-bucket

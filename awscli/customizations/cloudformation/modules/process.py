@@ -256,6 +256,26 @@ def process_module_section(
     return template
 
 
+def convert_resolved_sub_getatt(r):
+    """
+    Convert a part of a Sub that has a GetAtt.
+    """
+    resolved = ""
+    if r is not None:
+        if GETATT in r:
+            getatt = r[GETATT]
+            resolved = "${" + ".".join(getatt) + "}"
+        elif SUB in r:
+            resolved = r[SUB]
+        elif REF in r:
+            resolved = "${" + r[REF] + "}"
+        else:
+            # Handle scalar properties
+            resolved = r
+
+    return resolved
+
+
 class Module:
     """
     Process client-side modules.
@@ -573,7 +593,6 @@ class Module:
 
         """
 
-        resolved = "${" + w + "}"
         tokens = w.split(".", 1)
         if len(tokens) < 2:
             msg = f"GetAtt {w} has unexpected number of tokens"
@@ -587,18 +606,9 @@ class Module:
         self.resolve_output_getatt(tokens, d, n)
         r = d[n]
 
-        if r is not None:
-            if GETATT in r:
-                getatt = r[GETATT]
-                resolved = "${" + ".".join(getatt) + "}"
-            elif SUB in r:
-                resolved = r[SUB]
-            elif REF in r:
-                resolved = "${" + r[REF] + "}"
-            else:
-                # Handle scalar properties
-                resolved = r
-
+        resolved = convert_resolved_sub_getatt(r)
+        if not resolved:
+            resolved = "${" + w + "}"
         return resolved
 
     def resolve_output_sub(self, v, d, n):
@@ -643,6 +653,8 @@ class Module:
         We can !GetAtt ModuleName[].OutputName to get a list of all
         output value for a module that was in a foreach.
 
+        These can also be references to Parameters that are maps.
+
         :param v The value
         :param d The dictionary
         :param n The name of the node
@@ -671,16 +683,7 @@ class Module:
                     index = int(num)
                 else:
                     # Support Content[A].Arn, Content['A'].Arn
-                    if name not in foreach_modules:
-                        msg = f"Invalid index in {v}"
-                        raise exceptions.InvalidModuleError(msg=msg)
-
                     index = num.strip('"').strip("'")
-
-                    # Validate that the key matches with the CSV
-                    if index not in foreach_modules[name]:
-                        msg = f"Invalid map key {index} in {v}"
-                        raise exceptions.InvalidModuleError(msg=msg)
             else:
                 # This is a reference to all of the foreach values
                 # For example, Content[].Arn
@@ -690,7 +693,7 @@ class Module:
                         foreach_modules, name, prop_name
                     )
 
-                return False
+                    return False
 
         # index might be a number like 0: Content[0].Arn
         # or it might be a key like A: Content[A].Arn
@@ -698,7 +701,7 @@ class Module:
         # depending on if we used an Fn::ForEach identifier.
 
         # Handle ForEach module references
-        if index != -1:
+        if index != -1 and name in foreach_modules:
             if isinstance(index, int):
                 name = f"{name}{index}"
             else:
@@ -763,7 +766,8 @@ class Module:
                         if GETATT in item and len(item[GETATT]) > 0:
                             item[GETATT][0] = self.name + item[GETATT][0]
             else:
-                d[n] = {GETATT: [self.name + getatt[0], getatt[1]]}
+                self.resolve_getatt(getatt, d, n)
+
         elif SUB in r:
             # Parse the Sub in the module reference
             words = parse_sub(r[SUB], True)
@@ -1074,14 +1078,19 @@ class Module:
 
     def resolve_sub_getatt(self, w):
         "Resolve a GetAtt ('A.B') inside a Sub string"
-        resolved = "${" + w + "}"
         tokens = w.split(".", 1)
         if len(tokens) < 2:
             msg = f"GetAtt {w} has unexpected number of tokens"
             raise exceptions.InvalidModuleError(msg=msg)
-        if tokens[0] in self.resources:
-            tokens[0] = self.name + tokens[0]
-        resolved = "${" + tokens[0] + "." + tokens[1] + "}"
+
+        # Create a fake getatt
+        n = "fake"
+        d = {n: None}
+        self.resolve_getatt(tokens, d, n)
+
+        resolved = convert_resolved_sub_getatt(d[n])
+        if not resolved:
+            resolved = "${" + w + "}"
         return resolved
 
     # pylint: disable=too-many-branches,unused-argument
@@ -1093,6 +1102,7 @@ class Module:
 
         Use the same logic as with resolve_ref.
         """
+
         words = parse_sub(v, True)
         sub = ""
         for word in words:
@@ -1126,8 +1136,7 @@ class Module:
             msg = f"GetAtt {v} is not a list"
             raise exceptions.InvalidModuleError(msg=msg)
 
-        if self.resolve_getatt_mapped_param(v, d, n):
-            print("resolved GetAtt mapped param:", v)
+        if self.resolve_getatt_map_param(v, d, n):
             return
 
         # Standard resource GetAtt handling
@@ -1141,7 +1150,7 @@ class Module:
             logical_id = self.name + v[0]
             d[n] = {GETATT: [logical_id, v[1]]}
 
-    def resolve_getatt_mapped_param(self, v, d, n):
+    def resolve_getatt_map_param(self, v, d, n):
         """
         Try to resolve a GetAtt that refers to a Parameter that is a map.
         """
@@ -1169,9 +1178,6 @@ class Module:
                     # Handle !GetAtt MapName[] - return list of keys
                     if prop_name == "":
                         d[n] = list(map_value.keys())
-                        print(
-                            "resolved GetAtt mapped param: all keys for", name
-                        )
                         return True
 
                     # Handle !GetAtt MapName[].AttributeName -
@@ -1185,11 +1191,6 @@ class Module:
                             result.append(map_value[key][prop_name])
                     if result:
                         d[n] = result
-                        print(
-                            "resolved GetAtt mapped param: all values for",
-                            name,
-                            prop_name,
-                        )
                         return True
 
         # Check if this is a Map parameter access with a specific key
@@ -1207,7 +1208,6 @@ class Module:
 
                     if prop_name == "":
                         d[n] = map_value[index]
-                        print("resolved GetAtt mapped param:", v)
                         return True
 
                     # Handle !GetAtt MapName[Key].Attribute -
@@ -1217,7 +1217,6 @@ class Module:
                         and prop_name in map_value[index]
                     ):
                         d[n] = map_value[index][prop_name]
-                        print("resolved GetAtt mapped param:", v)
                         return True
 
         return False

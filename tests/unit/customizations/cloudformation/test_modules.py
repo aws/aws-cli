@@ -139,6 +139,9 @@ class TestPackageModules(unittest.TestCase):
             "cond-unres",
             "transform",
             "fnforeach",
+            "getatt-map",
+            "getatt-map-sub",
+            "getatt-map-nested",
         ]
         for test in tests:
             t, _ = read_source(f"{base}/{test}-template.yaml")

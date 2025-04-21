@@ -2,6 +2,41 @@
 CHANGELOG
 =========
 
+2.26.5
+======
+
+* api-change:``qconnect``: This release adds support for the following capabilities: Chunking generative answer replies from Amazon Q in Connect. Integration support for the use of additional LLM models with Amazon Q in Connect.
+* api-change:``service-quotas``: Add new optional SupportCaseAllowed query parameter to the RequestServiceQuotaIncrease API
+* api-change:``sagemaker``: This release adds a new Neuron driver option in InferenceAmiVersion parameter for ProductionVariant. Additionally, it adds support for fetching model lifecycle status in the ListModelPackages API. Users can now use this API to view the lifecycle stage of models that have been shared with them.
+
+
+2.26.4
+======
+
+* api-change:``bedrock``: With this release, Bedrock Evaluation will now support custom metrics for evaluation.
+* api-change:``omics``: Add versioning for HealthOmics workflows
+* api-change:``iotfleetwise``: We've added stricter parameter validations to AWS IoT FleetWise signal catalog, model manifest, and decoder manifest APIs.
+* api-change:``amp``: Add Workspace Configuration APIs for Amazon Prometheus
+* api-change:``connect``: This release adds following capabilities to Contact Lens Rules APIs 1/ 'ASSIGN_SLA' action and  '$.Case.TemplateId' comparison value for 'OnCaseCreate' and 'OnCaseUpdate' event sources 2/ 'OnSlaBreach' Cases event source which supports '$.RelatedItem.SlaConfiguration.Name' comparison value
+* api-change:``memorydb``: Added support for IPv6 and dual stack for Valkey and Redis clusters. Customers can now launch new Valkey and Redis clusters with IPv6 and dual stack networking support.
+* api-change:``accessanalyzer``: Added new resource types to evaluate for public access in resource policies and added support for S3 directory bucket access points.
+* api-change:``ecs``: Adds a new AccountSetting - defaultLogDriverMode for ECS.
+* api-change:``autoscaling``: Doc only update for EC2 Auto Scaling.
+
+
+2.26.3
+======
+
+* api-change:``servicecatalog``: Updated default value for the access-level-filter in SearchProvisionedProducts API to Account. For access to userLevel or roleLevel, the user must provide access-level-filter parameter.
+* api-change:``s3tables``: S3 Tables now supports setting encryption configurations on table buckets and tables. Encryption configurations can use server side encryption using AES256 or KMS customer-managed keys.
+* api-change:``dsql``: Added GetClusterEndpointService API. The new API allows retrieving endpoint service name specific to a cluster.
+* bugfix:Formatter: Update JSON formatter to encode raw bytes as UTF-8.
+* api-change:``events``: Adding support for KmsKeyIdentifer in CreateConnection, UpdateConnection and DescribeConnection APIs
+* api-change:``resource-groups``: Resource Groups: TagSyncTasks can be created with ResourceQuery
+* api-change:``eks``: Added support for new AL2023 ARM64 NVIDIA AMIs to the supported AMITypes.
+* api-change:``connectcases``: This feature provides capabilities to help track and meet service level agreements (SLAs) on cases programmatically. It allows configuring a new related item of type `Sla` on a case using CreateRelatedItem API and provides the ability to search for this new related item using SearchRelatedItems API.
+
+
 2.26.2
 ======
 

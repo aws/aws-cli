@@ -541,6 +541,33 @@
         "state" : "failure",
         "expected" : "FAILED"
       } ]
+    },
+    "WorkflowVersionActive" : {
+      "description" : "Wait until a workflow version is active.",
+      "delay" : 3,
+      "maxAttempts" : 10,
+      "operation" : "GetWorkflowVersion",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "ACTIVE"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "retry",
+        "expected" : "CREATING"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "retry",
+        "expected" : "UPDATING"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "FAILED"
+      } ]
     }
   }
 }

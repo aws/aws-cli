@@ -1230,15 +1230,13 @@
     "CreatePrefetchScheduleRequest":{
       "type":"structure",
       "required":[
-        "Consumption",
         "Name",
-        "PlaybackConfigurationName",
-        "Retrieval"
+        "PlaybackConfigurationName"
       ],
       "members":{
         "Consumption":{
           "shape":"PrefetchConsumption",
-          "documentation":"<p>The configuration settings for MediaTailor's <i>consumption</i> of the prefetched ads from the ad decision server. Each consumption configuration contains an end time and an optional start time that define the <i>consumption window</i>. Prefetch schedules automatically expire no earlier than seven days after the end time.</p>"
+          "documentation":"<p>The configuration settings for how and when MediaTailor consumes prefetched ads from the ad decision server for single prefetch schedules. Each consumption configuration contains an end time and an optional start time that define the <i>consumption window</i>. Prefetch schedules automatically expire no earlier than seven days after the end time.</p>"
         },
         "Name":{
           "shape":"__string",
@@ -1256,6 +1254,14 @@
           "shape":"PrefetchRetrieval",
           "documentation":"<p>The configuration settings for retrieval of prefetched ads from the ad decision server. Only one set of prefetched ads will be retrieved and subsequently consumed for each ad break.</p>"
         },
+        "RecurringPrefetchConfiguration":{
+          "shape":"RecurringPrefetchConfiguration",
+          "documentation":"<p>The configuration that defines how and when MediaTailor performs ad prefetching in a live event.</p>"
+        },
+        "ScheduleType":{
+          "shape":"PrefetchScheduleType",
+          "documentation":"<p>The frequency that MediaTailor creates prefetch schedules. <code>SINGLE</code> indicates that this schedule applies to one ad break. <code>RECURRING</code> indicates that MediaTailor automatically creates a schedule for each ad avail in a live event.</p> <p>For more information about the prefetch types and when you might use each, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/prefetching-ads.html\">Prefetching ads in Elemental MediaTailor.</a> </p>"
+        },
         "StreamId":{
           "shape":"__string",
           "documentation":"<p>An optional stream identifier that MediaTailor uses to prefetch ads for multiple streams that use the same playback configuration. If <code>StreamId</code> is specified, MediaTailor returns all of the prefetch schedules with an exact match on <code>StreamId</code>. If not specified, MediaTailor returns all of the prefetch schedules for the playback configuration, regardless of <code>StreamId</code>.</p>"
@@ -1271,7 +1277,7 @@
         },
         "Consumption":{
           "shape":"PrefetchConsumption",
-          "documentation":"<p>The configuration settings for MediaTailor's <i>consumption</i> of the prefetched ads from the ad decision server. Each consumption configuration contains an end time and an optional start time that define the <i>consumption window</i>. Prefetch schedules automatically expire no earlier than seven days after the end time.</p>"
+          "documentation":"<p>The configuration settings for how and when MediaTailor consumes prefetched ads from the ad decision server for single prefetch schedules. Each consumption configuration contains an end time and an optional start time that define the <i>consumption window</i>. Prefetch schedules automatically expire no earlier than seven days after the end time.</p>"
         },
         "Name":{
           "shape":"__string",
@@ -1284,6 +1290,14 @@
         "Retrieval":{
           "shape":"PrefetchRetrieval",
           "documentation":"<p>The configuration settings for retrieval of prefetched ads from the ad decision server. Only one set of prefetched ads will be retrieved and subsequently consumed for each ad break.</p>"
+        },
+        "RecurringPrefetchConfiguration":{
+          "shape":"RecurringPrefetchConfiguration",
+          "documentation":"<p>The configuration that defines how MediaTailor performs recurring prefetch. </p>"
+        },
+        "ScheduleType":{
+          "shape":"PrefetchScheduleType",
+          "documentation":"<p>The frequency that MediaTailor creates prefetch schedules. <code>SINGLE</code> indicates that this schedule applies to one ad break. <code>RECURRING</code> indicates that MediaTailor automatically creates a schedule for each ad avail in a live event.</p>"
         },
         "StreamId":{
           "shape":"__string",
@@ -2292,7 +2306,7 @@
         },
         "Consumption":{
           "shape":"PrefetchConsumption",
-          "documentation":"<p>Consumption settings determine how, and when, MediaTailor places the prefetched ads into ad breaks. Ad consumption occurs within a span of time that you define, called a <i>consumption window</i>. You can designate which ad breaks that MediaTailor fills with prefetch ads by setting avail matching criteria.</p>"
+          "documentation":"<p>The configuration settings for how and when MediaTailor consumes prefetched ads from the ad decision server for single prefetch schedules. Each consumption configuration contains an end time and an optional start time that define the <i>consumption window</i>. Prefetch schedules automatically expire no earlier than seven days after the end time.</p>"
         },
         "Name":{
           "shape":"__string",
@@ -2305,6 +2319,14 @@
         "Retrieval":{
           "shape":"PrefetchRetrieval",
           "documentation":"<p>A complex type that contains settings for prefetch retrieval from the ad decision server (ADS).</p>"
+        },
+        "ScheduleType":{
+          "shape":"PrefetchScheduleType",
+          "documentation":"<p>The frequency that MediaTailor creates prefetch schedules. <code>SINGLE</code> indicates that this schedule applies to one ad break. <code>RECURRING</code> indicates that MediaTailor automatically creates a schedule for each ad avail in a live event.</p>"
+        },
+        "RecurringPrefetchConfiguration":{
+          "shape":"RecurringPrefetchConfiguration",
+          "documentation":"<p>The configuration that defines how and when MediaTailor performs ad prefetching in a live event.</p>"
         },
         "StreamId":{
           "shape":"__string",
@@ -2539,6 +2561,14 @@
         }
       }
     },
+    "ListPrefetchScheduleType":{
+      "type":"string",
+      "enum":[
+        "SINGLE",
+        "RECURRING",
+        "ALL"
+      ]
+    },
     "ListPrefetchSchedulesRequest":{
       "type":"structure",
       "required":["PlaybackConfigurationName"],
@@ -2556,6 +2586,10 @@
           "documentation":"<p>Retrieves the prefetch schedule(s) for a specific playback configuration.</p>",
           "location":"uri",
           "locationName":"PlaybackConfigurationName"
+        },
+        "ScheduleType":{
+          "shape":"ListPrefetchScheduleType",
+          "documentation":"<p>The type of prefetch schedules that you want to list. <code>SINGLE</code> indicates that you want to list the configured single prefetch schedules. <code>RECURRING</code> indicates that you want to list the configured recurring prefetch schedules. <code>ALL</code> indicates that you want to list all configured prefetch schedules.</p>"
         },
         "StreamId":{
           "shape":"__string",
@@ -2976,7 +3010,7 @@
           "documentation":"<p>The time when prefetched ads are considered for use in an ad break. If you don't specify <code>StartTime</code>, the prefetched ads are available after MediaTailor retrieves them from the ad decision server.</p>"
         }
       },
-      "documentation":"<p>A complex type that contains settings that determine how and when that MediaTailor places prefetched ads into upcoming ad breaks.</p>"
+      "documentation":"<p>For single prefetch, describes how and when that MediaTailor places prefetched ads into upcoming ad breaks.</p>"
     },
     "PrefetchRetrieval":{
       "type":"structure",
@@ -2993,6 +3027,14 @@
         "StartTime":{
           "shape":"__timestampUnix",
           "documentation":"<p>The time when prefetch retrievals can start for this break. Ad prefetching will be attempted for manifest requests that occur at or after this time. Defaults to the current time. If not specified, the prefetch retrieval starts as soon as possible.</p>"
+        },
+        "TrafficShapingType":{
+          "shape":"TrafficShapingType",
+          "documentation":"<p>Indicates if this configuration uses a retrieval window for traffic shaping and limiting the number of requests to the ADS at one time.</p>"
+        },
+        "TrafficShapingRetrievalWindow":{
+          "shape":"TrafficShapingRetrievalWindow",
+          "documentation":"<p>Configuration for spreading ADS traffic across a set window instead of sending ADS requests for all sessions at the same time.</p>"
         }
       },
       "documentation":"<p>A complex type that contains settings governing when MediaTailor prefetches ads, and which dynamic variables that MediaTailor includes in the request to the ad decision server.</p>"
@@ -3001,10 +3043,8 @@
       "type":"structure",
       "required":[
         "Arn",
-        "Consumption",
         "Name",
-        "PlaybackConfigurationName",
-        "Retrieval"
+        "PlaybackConfigurationName"
       ],
       "members":{
         "Arn":{
@@ -3013,7 +3053,7 @@
         },
         "Consumption":{
           "shape":"PrefetchConsumption",
-          "documentation":"<p>Consumption settings determine how, and when, MediaTailor places the prefetched ads into ad breaks. Ad consumption occurs within a span of time that you define, called a <i>consumption window</i>. You can designate which ad breaks that MediaTailor fills with prefetch ads by setting avail matching criteria.</p>"
+          "documentation":"<p>Consumption settings determine how, and when, MediaTailor places the prefetched ads into ad breaks for single prefetch schedules. Ad consumption occurs within a span of time that you define, called a <i>consumption window</i>. You can designate which ad breaks that MediaTailor fills with prefetch ads by setting avail matching criteria.</p>"
         },
         "Name":{
           "shape":"__string",
@@ -3027,12 +3067,27 @@
           "shape":"PrefetchRetrieval",
           "documentation":"<p>A complex type that contains settings for prefetch retrieval from the ad decision server (ADS).</p>"
         },
+        "ScheduleType":{
+          "shape":"PrefetchScheduleType",
+          "documentation":"<p>The frequency that MediaTailor creates prefetch schedules. <code>SINGLE</code> indicates that this schedule applies to one ad break. <code>RECURRING</code> indicates that MediaTailor automatically creates a schedule for each ad avail in a live event.</p> <p>For more information about the prefetch types and when you might use each, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/prefetching-ads.html\">Prefetching ads in Elemental MediaTailor.</a> </p>"
+        },
+        "RecurringPrefetchConfiguration":{
+          "shape":"RecurringPrefetchConfiguration",
+          "documentation":"<p>The settings that determine how and when MediaTailor prefetches ads and inserts them into ad breaks.</p>"
+        },
         "StreamId":{
           "shape":"__string",
           "documentation":"<p>An optional stream identifier that you can specify in order to prefetch for multiple streams that use the same playback configuration.</p>"
         }
       },
       "documentation":"<p>A prefetch schedule allows you to tell MediaTailor to fetch and prepare certain ads before an ad break happens. For more information about ad prefetching, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/prefetching-ads.html\">Using ad prefetching</a> in the <i>MediaTailor User Guide</i>.</p>"
+    },
+    "PrefetchScheduleType":{
+      "type":"string",
+      "enum":[
+        "SINGLE",
+        "RECURRING"
+      ]
     },
     "PutChannelPolicyRequest":{
       "type":"structure",
@@ -3218,6 +3273,69 @@
           "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns, and what priority MediaTailor uses when inserting ads. </p>"
         }
       }
+    },
+    "RecurringConsumption":{
+      "type":"structure",
+      "members":{
+        "RetrievedAdExpirationSeconds":{
+          "shape":"__integer",
+          "documentation":"<p>The number of seconds that an ad is available for insertion after it was prefetched.</p>"
+        },
+        "AvailMatchingCriteria":{
+          "shape":"__listOfAvailMatchingCriteria",
+          "documentation":"<p>The configuration for the dynamic variables that determine which ad breaks that MediaTailor inserts prefetched ads in.</p>"
+        }
+      },
+      "documentation":"<p>The settings that determine how and when MediaTailor places prefetched ads into upcoming ad breaks for recurring prefetch scedules.</p>"
+    },
+    "RecurringPrefetchConfiguration":{
+      "type":"structure",
+      "required":[
+        "EndTime",
+        "RecurringConsumption",
+        "RecurringRetrieval"
+      ],
+      "members":{
+        "StartTime":{
+          "shape":"__timestampUnix",
+          "documentation":"<p>The start time for the window that MediaTailor prefetches and inserts ads in a live event. </p>"
+        },
+        "EndTime":{
+          "shape":"__timestampUnix",
+          "documentation":"<p>The end time for the window that MediaTailor prefetches and inserts ads in a live event. </p>"
+        },
+        "RecurringConsumption":{
+          "shape":"RecurringConsumption",
+          "documentation":"<p>The settings that determine how and when MediaTailor places prefetched ads into upcoming ad breaks for recurring prefetch scedules.</p>"
+        },
+        "RecurringRetrieval":{
+          "shape":"RecurringRetrieval",
+          "documentation":"<p>The configuration for prefetch ad retrieval from the ADS.</p>"
+        }
+      },
+      "documentation":"<p>The configuration that defines how MediaTailor performs recurring prefetch. </p>"
+    },
+    "RecurringRetrieval":{
+      "type":"structure",
+      "members":{
+        "DynamicVariables":{
+          "shape":"__mapOf__string",
+          "documentation":"<p>The dynamic variables to use for substitution during prefetch requests to the ADS.</p>"
+        },
+        "DelayAfterAvailEndSeconds":{
+          "shape":"__integer",
+          "documentation":"<p>The number of seconds that MediaTailor waits after an ad avail before prefetching ads for the next avail. If not set, the default is 0 (no delay).</p>"
+        },
+        "TrafficShapingType":{
+          "shape":"TrafficShapingType",
+          "documentation":"<p>Indicates if this configuration uses a retrieval window for traffic shaping and limiting the number of requests to the ADS at one time.</p>"
+        },
+        "TrafficShapingRetrievalWindow":{
+          "shape":"TrafficShapingRetrievalWindow",
+          "documentation":"<p>Configuration for spreading ADS traffic across a set window instead of sending ADS requests for all sessions at the same time.</p>"
+        }
+      },
+      "documentation":"<p>With recurring prefetch, MediaTailor automatically prefetches ads for every avail that occurs during the retrieval window. The following configurations describe the MediaTailor behavior when prefetching ads for a live event.</p>"
     },
     "RelativePosition":{
       "type":"string",
@@ -3640,6 +3758,20 @@
         }
       },
       "documentation":"<p>The SCTE-35 <code>time_signal</code> message can be sent with one or more <code>segmentation_descriptor</code> messages. A <code>time_signal</code> message can be sent only if a single <code>segmentation_descriptor</code> message is sent.</p> <p>The <code>time_signal</code> message contains only the <code>splice_time</code> field which is constructed using a given presentation timestamp. When sending a <code>time_signal</code> message, the <code>splice_command_type</code> field in the <code>splice_info_section</code> message is set to 6 (0x06).</p> <p>See the <code>time_signal()</code> table of the 2022 SCTE-35 specification for more information.</p>"
+    },
+    "TrafficShapingRetrievalWindow":{
+      "type":"structure",
+      "members":{
+        "RetrievalWindowDurationSeconds":{
+          "shape":"__integer",
+          "documentation":"<p>The amount of time, in seconds, that MediaTailor spreads prefetch requests to the ADS. </p>"
+        }
+      },
+      "documentation":"<p>The configuration that tells Elemental MediaTailor how to spread out requests to the ad decision server (ADS). Instead of sending ADS requests for all sessions at the same time, MediaTailor spreads the requests across the amount of time specified in the retrieval window.</p>"
+    },
+    "TrafficShapingType":{
+      "type":"string",
+      "enum":["RETRIEVAL_WINDOW"]
     },
     "Transition":{
       "type":"structure",

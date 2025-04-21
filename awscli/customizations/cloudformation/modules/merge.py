@@ -15,12 +15,7 @@
 This file implements module override merges.
 """
 
-from collections import OrderedDict
-
-
-def isdict(v):
-    "Returns True if the type is a dict or OrderedDict"
-    return isinstance(v, (dict, OrderedDict))
+from awscli.customizations.cloudformation.modules.util import isdict
 
 
 def merge_props(original, overrides):

@@ -142,6 +142,7 @@ class TestPackageModules(unittest.TestCase):
             "getatt-map",
             "getatt-map-sub",
             "getatt-map-nested",
+            "mappings",
         ]
         for test in tests:
             t, _ = read_source(f"{base}/{test}-template.yaml")

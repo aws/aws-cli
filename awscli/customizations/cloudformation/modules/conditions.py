@@ -22,7 +22,6 @@ checking to see if there are any duplicate conditions.
 """
 
 import logging
-from collections import OrderedDict
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.modules.visitor import Visitor
 from awscli.customizations.cloudformation.modules.names import (
@@ -37,6 +36,9 @@ from awscli.customizations.cloudformation.modules.names import (
     MODULES,
     OUTPUTS,
     RESOURCES,
+)
+from awscli.customizations.cloudformation.modules.util import (
+    isdict,
 )
 
 LOG = logging.getLogger(__name__)
@@ -314,8 +316,3 @@ def omit_section_items(sections, conditions, name):
                     oldname = section[k][CONDITION]
                     del section[k][CONDITION]
                     section[k][CONDITION] = name + oldname
-
-
-def isdict(v):
-    "Returns True if the type is a dict or OrderedDict"
-    return isinstance(v, (dict, OrderedDict))

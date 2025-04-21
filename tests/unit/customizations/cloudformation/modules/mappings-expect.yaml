@@ -1,0 +1,25 @@
+Mappings:
+  ARegionMap:
+    us-east-1:
+      AMI: ami-0ff8a91507f77f867
+      InstanceType: t2.micro
+    us-west-1:
+      AMI: ami-0bdb828fd58c52235
+      InstanceType: t2.micro
+    eu-west-1:
+      AMI: ami-047bb4163c506cd98
+      InstanceType: t2.micro
+
+Resources:
+  AEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap [ARegionMap, !Ref AWS::Region, AMI]
+      InstanceType: t2.micro
+      
+  ARDSInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      Engine: mysql
+      MultiAZ: false
+      DBInstanceClass: db.t2.micro

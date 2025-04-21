@@ -47,12 +47,14 @@ from awscli.customizations.cloudformation.modules.read import (
 from awscli.customizations.cloudformation.modules.conditions import (
     process_conditions,
 )
+from awscli.customizations.cloudformation.modules.mappings import (
+    process_mappings,
+)
 from awscli.customizations.cloudformation.modules.constants import (
     process_constants,
     replace_constants,
 )
 from awscli.customizations.cloudformation.modules.merge import (
-    isdict,
     merge_props,
 )
 from awscli.customizations.cloudformation.modules.parse_sub import (
@@ -91,6 +93,7 @@ from awscli.customizations.cloudformation.modules.names import (
     PACKAGES,
     TRANSFORM,
 )
+from awscli.customizations.cloudformation.modules.util import isdict
 
 ORIGINAL_CONFIG = "original_config"
 BASE_PATH = "base_path"
@@ -343,6 +346,8 @@ class Module:
         # Conditions defined in the module
         self.conditions = {}
 
+        self.mappings = {}
+
         # Line numbers for resources
         self.lines = {}
         self.no_source_map = False
@@ -446,6 +451,9 @@ class Module:
         # Call this again after recursing to pick up any unresolved
         # conditions that were emitted by sub-modules.
         process_conditions(self, module_dict)
+
+        # Emit any unresolved mappings into the parent
+        process_mappings(self, module_dict)
 
         # Make sure that overrides exist
         self.validate_overrides()
@@ -899,6 +907,11 @@ class Module:
 
     def resolve(self, resource):
         "Resolve references in the resource"
+
+        # TODO: If we just called this at a high level at some
+        # point during processing, we probably wouldn't need to
+        # pass around the find_ref function. Nodes would already
+        # be resolved before processing.
 
         def vf(v):
             if not isdict(v.d) or v.p is None:

@@ -228,7 +228,7 @@ def process_module_section(
         )
         template = module.process()
 
-    # Look for getatts to a foreach list like !GetAtt Content[].Arn
+    # Look for getatts to a foreach list like !GetAtt Content[*].Arn
     # This should be converted to an array like
     # - !GetAtt ContentBucket0.Arn
     # - !GetAtt ContentBucket1.Arn
@@ -236,7 +236,7 @@ def process_module_section(
     #
     # As we process module outputs, we need to remember these and
     # apply them here, since each module is processed separately
-    # and it can't replace the entire 'Content[]'
+    # and it can't replace the entire 'Content[*]'
     resolve_foreach_lists(template, foreach_modules)
 
     # Special handling for intrinsic functions
@@ -658,7 +658,7 @@ class Module:
         so we can !GetAtt ModuleName[0].OutputName or
         !GetAtt ModuleName[Identifier].OutputName.
 
-        We can !GetAtt ModuleName[].OutputName to get a list of all
+        We can !GetAtt ModuleName[*].OutputName to get a list of all
         output value for a module that was in a foreach.
 
         These can also be references to Parameters that are maps.
@@ -682,26 +682,28 @@ class Module:
         prop_name = v[1]
 
         index = -1
-        if "[" in name:
+        if "[]" in name:
+            msg = f"Invalid GetAtt: {name}, did you mean [*]?"
+            raise exceptions.InvalidModuleError(msg=msg)
+        if "[*]" in name:
+            # This is a reference to all of the foreach values
+            # For example, Content[*].Arn
+            base_name = name.split("[")[0]
+            if base_name in foreach_modules:
+                self.resolve_output_getatt_foreach(
+                    foreach_modules, base_name, prop_name
+                )
+                return False
+
+        elif "[" in name:
             tokens = name.split("[")
             name = tokens[0]
-            if tokens[1] != "]":
-                num = tokens[1].replace("]", "")
-                if num.isdigit():
-                    index = int(num)
-                else:
-                    # Support Content[A].Arn, Content['A'].Arn
-                    index = num.strip('"').strip("'")
+            num = tokens[1].replace("]", "")
+            if num.isdigit():
+                index = int(num)
             else:
-                # This is a reference to all of the foreach values
-                # For example, Content[].Arn
-
-                if name in foreach_modules:
-                    self.resolve_output_getatt_foreach(
-                        foreach_modules, name, prop_name
-                    )
-
-                    return False
+                # Support Content[A].Arn, Content['A'].Arn
+                index = num.strip('"').strip("'")
 
         # index might be a number like 0: Content[0].Arn
         # or it might be a key like A: Content[A].Arn
@@ -849,7 +851,7 @@ class Module:
                 # we can go back and fix the entire getatt later
                 item_val = dd[i]
                 # Use a key like "Content.Arn"
-                key = name + "[]." + prop_name
+                key = name + "[*]." + prop_name
                 if key not in foreach_modules:
                     foreach_modules[key] = []
                 if item_val not in foreach_modules[key]:
@@ -1141,7 +1143,7 @@ class Module:
         !GetAtt Foo.Bar becomes !GetAtt ModuleNameFoo.Bar
 
         Also handles GetAtts that reference Parameters that are maps:
-        !GetAtt Name[] - Get the keys in the map
+        !GetAtt Name[*] - Get the keys in the map
         !GetAtt Name[Key] - Get the entire object for Key
         !GetAtt Name[Key].Attribute - Get an attribute
         """
@@ -1168,32 +1170,34 @@ class Module:
         Try to resolve a GetAtt that refers to a Parameter that is a map.
         """
         name = v[0]
+
+        if not isinstance(name, str):
+            msg = f"name is not a string: {name}"
+            raise exceptions.InvalidModuleError(msg=msg)
+
         prop_name = v[1] if len(v) > 1 else ""
 
-        # Check for map parameter access with [] syntax
+        # Check for map parameter access with [*] syntax
         index = -1
-        if "[" in name:
-            tokens = name.split("[")
-            name = tokens[0]
-            if tokens[1] != "]":
-                num = tokens[1].replace("]", "")
-                if num.isdigit():
-                    index = int(num)
-                else:
-                    # Support Name[A], Name['A']
-                    index = num.strip('"').strip("'")
-            elif name not in self.parent_module.foreach_modules:
-                # This is a reference to all values: Name[]
+        if "[]" in name:
+            msg = f"Invalid GetAtt: {name}, did you mean [*]?"
+            raise exceptions.InvalidModuleError(msg=msg)
+        if "[*]" in name:
+
+            name = name.replace("[*]", "")
+
+            if name not in self.parent_module.foreach_modules:
+                # This is a reference to all values: Name[*]
                 # Check if it's a Map parameter
                 if name in self.props and isinstance(self.props[name], dict):
                     map_value = self.props[name]
 
-                    # Handle !GetAtt MapName[] - return list of keys
+                    # Handle !GetAtt MapName[*] - return list of keys
                     if prop_name == "":
                         d[n] = list(map_value.keys())
                         return True
 
-                    # Handle !GetAtt MapName[].AttributeName -
+                    # Handle !GetAtt MapName[*].AttributeName -
                     # return a list of all values for that attribute
                     result = []
                     for key in map_value:
@@ -1204,7 +1208,30 @@ class Module:
                             result.append(map_value[key][prop_name])
                     if result:
                         d[n] = result
+                        # Also store in foreach_modules to make
+                        # it accessible to parent
+                        key_name = f"{name}[*].{prop_name}"
+                        self.parent_module.foreach_modules[key_name] = result
+
+                        # Also store with the module name for output references
+                        # This is needed for Map parameters accessed
+                        # via module outputs
+                        if self.name:
+                            module_output_key = f"{self.name}.{key_name}"
+                            self.parent_module.foreach_modules[
+                                module_output_key
+                            ] = result
                         return True
+        elif "[" in name:
+            tokens = name.split("[")
+            name = tokens[0]
+            if tokens[1] != "]":
+                num = tokens[1].replace("]", "")
+                if num.isdigit():
+                    index = int(num)
+                else:
+                    # Support Name[A], Name['A']
+                    index = num.strip('"').strip("'")
 
         # Check if this is a Map parameter access with a specific key
         if name not in self.parent_module.foreach_modules:

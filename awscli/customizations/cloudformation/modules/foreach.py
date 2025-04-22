@@ -309,7 +309,7 @@ def process_module_foreach(template, parent_module):
 
 def resolve_foreach_lists(template, foreach_modules):
     """
-    Resolve GetAtts like !GetAtt Content[].Arn
+    Resolve GetAtts like !GetAtt Content[*].Arn
 
     These are GetAtts that refer to each instance of
     a module's output. These are converted to lists.
@@ -340,14 +340,15 @@ def resolve_foreach_lists(template, foreach_modules):
 
 def getatt_foreach_list(getatt):
     """
-    Converts a getatt array like ['Content[]', 'Arn'] to a string,
-    joining with a dot. 'Content[].Arn'
+    Converts a getatt array like ['Content[*]', 'Arn'] to a string,
+    joining with a dot. 'Content[*].Arn'
     Returns None if the getatt is not a list at least 2 elements long,
-    and if the first element does not contain '[]'
+    and if the first element does not contain '[*]'
     """
     if isinstance(getatt, list) and len(getatt) > 1:
-        if "[]" in getatt[0]:
-            return ".".join(getatt)  # Content[].Arn
+        if "[*]" in getatt[0]:
+            result = ".".join(getatt)  # Content[*].Arn
+            return result
     return None
 
 

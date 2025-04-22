@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.26.7
+======
+
+* api-change:``mq``: You can now delete Amazon MQ broker configurations using the DeleteConfiguration API. For more information, see Configurations in the Amazon MQ API Reference.
+* api-change:``s3control``: Fix endpoint resolution test cases
+* api-change:``redshift-serverless``: Provides new and updated API members to support the Redshift Serverless reservations feature.
+* api-change:``cognito-idp``: This release adds refresh token rotation.
+* api-change:``ec2``: Added support for  ClientRouteEnforcementOptions flag in CreateClientVpnEndpoint and ModifyClientVpnEndpoint requests and DescribeClientVpnEndpoints responses
+* api-change:``account``: AWS Account Management now supports account name update via IAM principals.
+* api-change:``entityresolution``: To expand support for matching records using digital identifiers with TransUnion
+
+
 2.26.6
 ======
 

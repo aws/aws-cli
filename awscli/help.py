@@ -22,6 +22,7 @@ from docutils.writers import manpage
 
 from awscli.argparser import ArgTableArgParser
 from awscli.argprocess import ParamShorthandParser
+from botocore.exceptions import ProfileNotFound
 from awscli.bcdoc import docevents
 from awscli.bcdoc.restdoc import ReSTDocument
 from awscli.bcdoc.textwriter import TextWriter
@@ -249,6 +250,12 @@ class HelpCommand:
         self._related_items = []
         self.renderer = get_renderer()
         self.doc = ReSTDocument(target='man')
+        try:
+            help_output_format = self.session.get_config_variable("cli_help_output")
+        except ProfileNotFound:
+            help_output_format = None
+
+        self.renderer = get_renderer(help_output_format)
 
     @property
     def event_class(self):

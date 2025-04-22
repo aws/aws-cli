@@ -186,7 +186,8 @@ class TestUpdateKubeconfig(unittest.TestCase):
     def assert_cmd(self, configs, passed_config,
                    env_variable_configs,
                    default_config=os.path.join(".kube", "config"),
-                   verbose=False):
+                   verbose=False,
+                   exclude_profile=False,):
         """
         Run update-kubeconfig in a temp directory,
         This directory will have copies of all testdata files whose names
@@ -216,6 +217,8 @@ class TestUpdateKubeconfig(unittest.TestCase):
             args += ["--kubeconfig", self._get_temp_config(passed_config)]
         if verbose:
             args += ["--verbose"]
+        if exclude_profile:
+            args += ["--exclude-profile"]
 
         with mock.patch.dict(os.environ, {'KUBECONFIG': env_variable}):
             with mock.patch(
@@ -422,3 +425,12 @@ class TestUpdateKubeconfig(unittest.TestCase):
 
         self.assert_cmd(configs, passed, environment)
         self.assert_config_state("valid_old_api_version", "valid_old_api_version_updated")
+
+    @mock.patch.dict(os.environ, {'AWS_PROFILE': 'test'})
+    def test_exclude_profile(self):
+        configs = []
+        passed = "new_config"
+        environment = []
+
+        self.assert_cmd(configs, passed, environment, exclude_profile=True)
+        self.assert_config_state("new_config", "output_single")

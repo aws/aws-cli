@@ -348,9 +348,7 @@ class BasicHelp(HelpCommand):
         arg_table,
         event_handler_class=None,
     ):
-        super(BasicHelp, self).__init__(
-            session, command_object, command_table, arg_table
-        )
+        super().__init__(session, command_object, command_table, arg_table)
         # This is defined in HelpCommand so we're matching the
         # casing here.
         if event_handler_class is None:
@@ -383,6 +381,12 @@ class BasicHelp(HelpCommand):
     def event_class(self):
         return '.'.join(self.obj.lineage_names)
 
+    @property
+    def url(self):
+        if len(self.command_table) > 0:
+            return f"{self._base_remote_url}/reference/{self.event_class.replace('.', '/')}/index.html"
+        return f"{self._base_remote_url}/reference/{self.event_class.replace('.', '/')}.html"
+
     def _get_doc_contents(self, attr_name):
         value = getattr(self, attr_name)
         if isinstance(value, BasicCommand.FROM_FILE):
@@ -408,7 +412,12 @@ class BasicHelp(HelpCommand):
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
         docevents.generate_events(self.session, self)
-        self.renderer.render(self.doc.getvalue())
+
+        if self._help_output_format == 'url':
+            self.renderer.render(self.url.encode())
+        else:
+            self.renderer.render(self.doc.getvalue())
+
         instance.unregister()
 
 

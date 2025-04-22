@@ -270,6 +270,9 @@ class CLIDriver:
         config_store.set_config_provider(
             'cli_auto_prompt', self._construct_cli_auto_prompt_chain()
         )
+        config_store.set_config_provider(
+            'cli_help_output', self._construct_cli_help_output_chain()
+        )
 
     def _construct_cli_region_chain(self):
         providers = [
@@ -305,6 +308,16 @@ class CLIDriver:
                 session=self.session,
             ),
             ConstantProvider(value='json'),
+        ]
+        return ChainProvider(providers=providers)
+
+    def _construct_cli_help_output_chain(self):
+        providers = [
+            ScopedConfigProvider(
+                config_var_name='cli_help_output',
+                session=self.session,
+            ),
+            ConstantProvider(value='terminal'),
         ]
         return ChainProvider(providers=providers)
 

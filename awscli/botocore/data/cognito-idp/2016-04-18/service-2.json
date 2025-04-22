@@ -254,6 +254,7 @@
       "output":{"shape":"AdminInitiateAuthResponse"},
       "errors":[
         {"shape":"ResourceNotFoundException"},
+        {"shape":"UnsupportedOperationException"},
         {"shape":"InvalidParameterException"},
         {"shape":"NotAuthorizedException"},
         {"shape":"TooManyRequestsException"},
@@ -855,7 +856,8 @@
         {"shape":"NotAuthorizedException"},
         {"shape":"ScopeDoesNotExistException"},
         {"shape":"InvalidOAuthFlowException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"FeatureUnavailableInTierException"}
       ],
       "documentation":"<p>Creates an app client in a user pool. This operation sets basic and advanced configuration options.</p> <p>Unlike app clients created in the console, Amazon Cognito doesn't automatically assign a branding style to app clients that you configure with this API operation. Managed login and classic hosted UI pages aren't available for your client until after you apply a branding style.</p> <important> <p>If you don't provide a value for an attribute, Amazon Cognito sets it to its default value.</p> </important> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
@@ -870,6 +872,7 @@
       "errors":[
         {"shape":"InvalidParameterException"},
         {"shape":"NotAuthorizedException"},
+        {"shape":"ConcurrentModificationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"LimitExceededException"},
         {"shape":"InternalErrorException"},
@@ -1034,6 +1037,7 @@
       "errors":[
         {"shape":"NotAuthorizedException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ConcurrentModificationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalErrorException"}
       ],
@@ -1371,6 +1375,29 @@
       ],
       "documentation":"<p>Given a user pool ID, returns the signing certificate for SAML 2.0 federation.</p> <p>Issued certificates are valid for 10 years from the date of issue. Amazon Cognito issues and assigns a new signing certificate annually. This renewal process returns a new value in the response to <code>GetSigningCertificate</code>, but doesn't invalidate the original certificate.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-SAML-signing-encryption.html#cognito-user-pools-SAML-signing\">Signing SAML requests</a>.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
+    "GetTokensFromRefreshToken":{
+      "name":"GetTokensFromRefreshToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetTokensFromRefreshTokenRequest"},
+      "output":{"shape":"GetTokensFromRefreshTokenResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UserNotFoundException"},
+        {"shape":"UnexpectedLambdaException"},
+        {"shape":"UserLambdaValidationException"},
+        {"shape":"InvalidLambdaResponseException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"RefreshTokenReuseException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Given a refresh token, issues new ID, access, and optionally refresh tokens for the user who owns the submitted token. This operation issues a new refresh token and invalidates the original refresh token after an optional grace period when refresh token rotation is enabled. If refresh token rotation is disabled, issues new ID and access tokens only.</p>"
+    },
     "GetUICustomization":{
       "name":"GetUICustomization",
       "http":{
@@ -1513,6 +1540,7 @@
       "input":{"shape":"InitiateAuthRequest"},
       "output":{"shape":"InitiateAuthResponse"},
       "errors":[
+        {"shape":"UnsupportedOperationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParameterException"},
         {"shape":"NotAuthorizedException"},
@@ -2247,7 +2275,8 @@
         {"shape":"NotAuthorizedException"},
         {"shape":"ScopeDoesNotExistException"},
         {"shape":"InvalidOAuthFlowException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"FeatureUnavailableInTierException"}
       ],
       "documentation":"<p>Given a user pool app client ID, updates the configuration. To avoid setting parameters to Amazon Cognito defaults, construct this API request to pass the existing configuration of your app client, modified to include the changes that you want to make.</p> <important> <p>If you don't provide a value for an attribute, Amazon Cognito sets it to its default value.</p> </important> <p>Unlike app clients created in the console, Amazon Cognito doesn't automatically assign a branding style to app clients that you configure with this API operation. Managed login and classic hosted UI pages aren't available for your client until after you apply a branding style.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
@@ -2262,6 +2291,7 @@
       "errors":[
         {"shape":"InvalidParameterException"},
         {"shape":"NotAuthorizedException"},
+        {"shape":"ConcurrentModificationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalErrorException"},
@@ -4446,6 +4476,10 @@
         "AuthSessionValidity":{
           "shape":"AuthSessionValidityType",
           "documentation":"<p>Amazon Cognito creates a session token for each API request in an authentication flow. <code>AuthSessionValidity</code> is the duration, in minutes, of that session token. Your user pool native user must respond to each authentication challenge before the session expires.</p>"
+        },
+        "RefreshTokenRotation":{
+          "shape":"RefreshTokenRotationType",
+          "documentation":"<p>The configuration of your app client for refresh token rotation. When enabled, your app client issues new ID, access, and refresh tokens when users renew their sessions with refresh tokens. When disabled, token refresh issues only ID and access tokens.</p>"
         }
       },
       "documentation":"<p>Represents the request to create a user pool client.</p>"
@@ -5542,6 +5576,13 @@
         "ALLOW_USER_AUTH"
       ]
     },
+    "FeatureType":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "FeatureUnavailableInTierException":{
       "type":"structure",
       "members":{
@@ -5782,6 +5823,41 @@
         }
       },
       "documentation":"<p>Response from Amazon Cognito for a signing certificate request.</p>"
+    },
+    "GetTokensFromRefreshTokenRequest":{
+      "type":"structure",
+      "required":[
+        "RefreshToken",
+        "ClientId"
+      ],
+      "members":{
+        "RefreshToken":{
+          "shape":"TokenModelType",
+          "documentation":"<p>A valid refresh token that can authorize the request for new tokens. When refresh token rotation is active in the requested app client, this token is invalidated after the request is complete.</p>"
+        },
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The app client that issued the refresh token to the user who wants to request new tokens.</p>"
+        },
+        "ClientSecret":{
+          "shape":"ClientSecretType",
+          "documentation":"<p>The client secret of the requested app client, if the client has a secret.</p>"
+        },
+        "DeviceKey":{
+          "shape":"DeviceKeyType",
+          "documentation":"<p>When you enable device remembering, Amazon Cognito issues a device key that you can use for device authentication that bypasses multi-factor authentication (MFA). To implement <code>GetTokensFromRefreshToken</code> in a user pool with device remembering, you must capture the device key from the initial authentication request. If your application doesn't provide the key of a registered device, Amazon Cognito issues a new one. You must provide the confirmed device key in this request if device remembering is enabled in your user pool.</p> <p>For more information about device remembering, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html\">Working with devices</a>.</p>"
+        },
+        "ClientMetadata":{
+          "shape":"ClientMetadataType",
+          "documentation":"<p>A map of custom key-value pairs that you can provide as input for certain custom workflows that this action triggers.</p> <p>You create custom workflows by assigning Lambda functions to user pool triggers. When you use the <code>GetTokensFromRefreshToken</code> API action, Amazon Cognito invokes the Lambda function the pre token generation trigger.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html\"> Using Lambda triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the <code>ClientMetadata</code> parameter, note that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the <code>ClientMetadata</code> value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the <code>ClientMetadata</code> parameter serves no purpose.</p> </li> <li> <p>Validate the <code>ClientMetadata</code> value.</p> </li> <li> <p>Encrypt the <code>ClientMetadata</code> value. Don't send sensitive information in this parameter.</p> </li> </ul> </note>"
+        }
+      }
+    },
+    "GetTokensFromRefreshTokenResponse":{
+      "type":"structure",
+      "members":{
+        "AuthenticationResult":{"shape":"AuthenticationResultType"}
+      }
     },
     "GetUICustomizationRequest":{
       "type":"structure",
@@ -7246,6 +7322,29 @@
       "min":1,
       "pattern":"[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]+"
     },
+    "RefreshTokenReuseException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"MessageType"}
+      },
+      "documentation":"<p>This exception is throw when your application requests token refresh with a refresh token that has been invalidated by refresh-token rotation.</p>",
+      "exception":true
+    },
+    "RefreshTokenRotationType":{
+      "type":"structure",
+      "required":["Feature"],
+      "members":{
+        "Feature":{
+          "shape":"FeatureType",
+          "documentation":"<p>The state of refresh token rotation for the current app client.</p>"
+        },
+        "RetryGracePeriodSeconds":{
+          "shape":"RetryGracePeriodSecondsType",
+          "documentation":"<p>When you request a token refresh with <code>GetTokensFromRefreshToken</code>, the original refresh token that you're rotating out can remain valid for a period of time of up to 60 seconds. This allows for client-side retries. When <code>RetryGracePeriodSeconds</code> is <code>0</code>, the grace period is disabled and a successful request immediately invalidates the submitted refresh token.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of your app client for refresh token rotation. When enabled, your app client issues new ID, access, and refresh tokens when users renew their sessions with refresh tokens. When disabled, token refresh issues only ID and access tokens.</p>"
+    },
     "RefreshTokenValidityType":{
       "type":"integer",
       "max":315360000,
@@ -7453,6 +7552,11 @@
         }
       },
       "documentation":"<p>The response to respond to the authentication challenge.</p>"
+    },
+    "RetryGracePeriodSecondsType":{
+      "type":"integer",
+      "max":60,
+      "min":0
     },
     "RevokeTokenRequest":{
       "type":"structure",
@@ -8696,6 +8800,10 @@
         "AuthSessionValidity":{
           "shape":"AuthSessionValidityType",
           "documentation":"<p>Amazon Cognito creates a session token for each API request in an authentication flow. <code>AuthSessionValidity</code> is the duration, in minutes, of that session token. Your user pool native user must respond to each authentication challenge before the session expires.</p>"
+        },
+        "RefreshTokenRotation":{
+          "shape":"RefreshTokenRotationType",
+          "documentation":"<p>The configuration of your app client for refresh token rotation. When enabled, your app client issues new ID, access, and refresh tokens when users renew their sessions with refresh tokens. When disabled, token refresh issues only ID and access tokens.</p>"
         }
       },
       "documentation":"<p>Represents the request to update the user pool client.</p>"
@@ -9161,6 +9269,10 @@
         "AuthSessionValidity":{
           "shape":"AuthSessionValidityType",
           "documentation":"<p>Amazon Cognito creates a session token for each API request in an authentication flow. <code>AuthSessionValidity</code> is the duration, in minutes, of that session token. Your user pool native user must respond to each authentication challenge before the session expires.</p>"
+        },
+        "RefreshTokenRotation":{
+          "shape":"RefreshTokenRotationType",
+          "documentation":"<p>The configuration of your app client for refresh token rotation. When enabled, your app client issues new ID, access, and refresh tokens when users renew their sessions with refresh tokens. When disabled, token refresh issues only ID and access tokens.</p>"
         }
       },
       "documentation":"<p>The configuration of a user pool client.</p>"

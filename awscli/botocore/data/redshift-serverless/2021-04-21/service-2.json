@@ -31,7 +31,7 @@
         {"shape":"TooManyTagsException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Converts a recovery point to a snapshot. For more information about recovery points and snapshots, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-snapshots-recovery.html\">Working with snapshots and recovery points</a>.</p>"
+      "documentation":"<p>Converts a recovery point to a snapshot. For more information about recovery points and snapshots, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-snapshots-recovery-points.html\">Working with snapshots and recovery points</a>.</p>"
     },
     "CreateCustomDomainAssociation":{
       "name":"CreateCustomDomainAssociation",
@@ -87,6 +87,26 @@
       "documentation":"<p>Creates a namespace in Amazon Redshift Serverless.</p>",
       "idempotent":true
     },
+    "CreateReservation":{
+      "name":"CreateReservation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateReservationRequest"},
+      "output":{"shape":"CreateReservationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an Amazon Redshift Serverless reservation, which gives you the option to commit to a specified number of Redshift Processing Units (RPUs) for a year at a discount from Serverless on-demand (OD) rates.</p>",
+      "idempotent":true
+    },
     "CreateScheduledAction":{
       "name":"CreateScheduledAction",
       "http":{
@@ -120,7 +140,7 @@
         {"shape":"TooManyTagsException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a snapshot of all databases in a namespace. For more information about snapshots, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-snapshots-recovery.html\"> Working with snapshots and recovery points</a>.</p>",
+      "documentation":"<p>Creates a snapshot of all databases in a namespace. For more information about snapshots, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-snapshots-recovery-points.html\"> Working with snapshots and recovery points</a>.</p>",
       "idempotent":true
     },
     "CreateSnapshotCopyConfiguration":{
@@ -412,6 +432,38 @@
       ],
       "documentation":"<p>Returns information about a recovery point.</p>"
     },
+    "GetReservation":{
+      "name":"GetReservation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetReservationRequest"},
+      "output":{"shape":"GetReservationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets an Amazon Redshift Serverless reservation. A reservation gives you the option to commit to a specified number of Redshift Processing Units (RPUs) for a year at a discount from Serverless on-demand (OD) rates.</p>"
+    },
+    "GetReservationOffering":{
+      "name":"GetReservationOffering",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetReservationOfferingRequest"},
+      "output":{"shape":"GetReservationOfferingResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the reservation offering. The offering determines the payment schedule for the reservation.</p>"
+    },
     "GetResourcePolicy":{
       "name":"GetResourcePolicy",
       "http":{
@@ -594,6 +646,36 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Returns an array of recovery points.</p>"
+    },
+    "ListReservationOfferings":{
+      "name":"ListReservationOfferings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListReservationOfferingsRequest"},
+      "output":{"shape":"ListReservationOfferingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the current reservation offerings in your account.</p>"
+    },
+    "ListReservations":{
+      "name":"ListReservations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListReservationsRequest"},
+      "output":{"shape":"ListReservationsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of Reservation objects.</p>"
     },
     "ListScheduledActions":{
       "name":"ListScheduledActions",
@@ -1023,6 +1105,8 @@
       "type":"boolean",
       "box":true
     },
+    "Capacity":{"type":"integer"},
+    "Charge":{"type":"double"},
     "ConfigParameter":{
       "type":"structure",
       "members":{
@@ -1226,6 +1310,42 @@
         "namespace":{
           "shape":"Namespace",
           "documentation":"<p>The created namespace object.</p>"
+        }
+      }
+    },
+    "CreateReservationRequest":{
+      "type":"structure",
+      "required":[
+        "capacity",
+        "offeringId"
+      ],
+      "members":{
+        "capacity":{
+          "shape":"Capacity",
+          "documentation":"<p>The number of Redshift Processing Units (RPUs) to reserve.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. This token must be a valid UUIDv4 value. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\"> Making retries safe with idempotent APIs </a>.</p>",
+          "idempotencyToken":true
+        },
+        "offeringId":{
+          "shape":"CreateReservationRequestOfferingIdString",
+          "documentation":"<p>The ID of the offering associated with the reservation. The offering determines the payment schedule for the reservation.</p>"
+        }
+      }
+    },
+    "CreateReservationRequestOfferingIdString":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "CreateReservationResponse":{
+      "type":"structure",
+      "members":{
+        "reservation":{
+          "shape":"Reservation",
+          "documentation":"<p>The reservation object that the <code>CreateReservation</code> action created.</p>"
         }
       }
     },
@@ -1491,6 +1611,7 @@
         }
       }
     },
+    "CurrencyCode":{"type":"string"},
     "CustomDomainCertificateArnString":{
       "type":"string",
       "max":2048,
@@ -1697,6 +1818,7 @@
       "type":"double",
       "box":true
     },
+    "Duration":{"type":"integer"},
     "Endpoint":{
       "type":"structure",
       "members":{
@@ -1900,6 +2022,56 @@
         "recoveryPoint":{
           "shape":"RecoveryPoint",
           "documentation":"<p>The returned recovery point object.</p>"
+        }
+      }
+    },
+    "GetReservationOfferingRequest":{
+      "type":"structure",
+      "required":["offeringId"],
+      "members":{
+        "offeringId":{
+          "shape":"GetReservationOfferingRequestOfferingIdString",
+          "documentation":"<p>The identifier for the offering..</p>"
+        }
+      }
+    },
+    "GetReservationOfferingRequestOfferingIdString":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "GetReservationOfferingResponse":{
+      "type":"structure",
+      "required":["reservationOffering"],
+      "members":{
+        "reservationOffering":{
+          "shape":"ReservationOffering",
+          "documentation":"<p>The returned reservation offering. The offering determines the payment schedule for the reservation.</p>"
+        }
+      }
+    },
+    "GetReservationRequest":{
+      "type":"structure",
+      "required":["reservationId"],
+      "members":{
+        "reservationId":{
+          "shape":"GetReservationRequestReservationIdString",
+          "documentation":"<p>The ID of the reservation to retrieve.</p>"
+        }
+      }
+    },
+    "GetReservationRequestReservationIdString":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "GetReservationResponse":{
+      "type":"structure",
+      "required":["reservation"],
+      "members":{
+        "reservation":{
+          "shape":"Reservation",
+          "documentation":"<p>The returned reservation object.</p>"
         }
       }
     },
@@ -2296,6 +2468,72 @@
         "recoveryPoints":{
           "shape":"RecoveryPointList",
           "documentation":"<p>The returned recovery point objects.</p>"
+        }
+      }
+    },
+    "ListReservationOfferingsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListReservationOfferingsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
+        }
+      }
+    },
+    "ListReservationOfferingsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListReservationOfferingsResponse":{
+      "type":"structure",
+      "required":["reservationOfferingsList"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use when requesting the next set of items.</p>"
+        },
+        "reservationOfferingsList":{
+          "shape":"ReservationOfferingsList",
+          "documentation":"<p>The returned list of reservation offerings.</p>"
+        }
+      }
+    },
+    "ListReservationsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListReservationsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
+        }
+      }
+    },
+    "ListReservationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListReservationsResponse":{
+      "type":"structure",
+      "required":["reservationsList"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use when requesting the next set of items.</p>"
+        },
+        "reservationsList":{
+          "shape":"ReservationsList",
+          "documentation":"<p>The serverless reservations returned by the request.</p>"
         }
       }
     },
@@ -2766,6 +3004,18 @@
       "type":"list",
       "member":{"shape":"Timestamp"}
     },
+    "OfferingId":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "OfferingType":{
+      "type":"string",
+      "enum":[
+        "ALL_UPFRONT",
+        "NO_UPFRONT"
+      ]
+    },
     "OwnerAccount":{
       "type":"string",
       "max":12,
@@ -2871,6 +3121,88 @@
       "max":1024,
       "min":1
     },
+    "Reservation":{
+      "type":"structure",
+      "members":{
+        "capacity":{
+          "shape":"Capacity",
+          "documentation":"<p>The number of Redshift Processing Units (RPUs) to reserve.</p>"
+        },
+        "endDate":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The end date for the serverless reservation. This date is one year after the start date that you specify.</p>"
+        },
+        "offering":{
+          "shape":"ReservationOffering",
+          "documentation":"<p>The type of offering for the reservation. The offering class determines the payment schedule for the reservation.</p>"
+        },
+        "reservationArn":{
+          "shape":"ReservationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the serverless reservation.</p>"
+        },
+        "reservationId":{
+          "shape":"ReservationId",
+          "documentation":"<p>The identifier that uniquely identifies the serverless reservation.</p>"
+        },
+        "startDate":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The start date for the serverless reservation. This is the date you specified for the reservation to start when you created the reservation.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the reservation. Possible values include the following:</p> <ul> <li> <p> <code>payment-pending</code> </p> </li> <li> <p> <code>active</code> </p> </li> <li> <p> <code>payment-failed</code> </p> </li> <li> <p> <code>retired</code> </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Represents an Amazon Redshift Serverless reservation, which gives you the option to commit to a specified number of Redshift Processing Units (RPUs) for a year at a discount from Serverless on-demand (OD) rates.</p>"
+    },
+    "ReservationArn":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ReservationId":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "ReservationOffering":{
+      "type":"structure",
+      "members":{
+        "currencyCode":{
+          "shape":"CurrencyCode",
+          "documentation":"<p>The currency code for the offering.</p>"
+        },
+        "duration":{
+          "shape":"Duration",
+          "documentation":"<p>The duration, in seconds, for which the reservation reserves the RPUs.</p>"
+        },
+        "hourlyCharge":{
+          "shape":"Charge",
+          "documentation":"<p>The rate you are charged for each hour the reservation is active.</p>"
+        },
+        "offeringId":{
+          "shape":"OfferingId",
+          "documentation":"<p>The offering identifier.</p>"
+        },
+        "offeringType":{
+          "shape":"OfferingType",
+          "documentation":"<p>Determines the payment schedule for the reservation.</p>"
+        },
+        "upfrontCharge":{
+          "shape":"Charge",
+          "documentation":"<p>The up-front price you are charged for the reservation.</p>"
+        }
+      },
+      "documentation":"<p>The class of offering for the reservation. The offering class determines the payment schedule for the reservation.</p>"
+    },
+    "ReservationOfferingsList":{
+      "type":"list",
+      "member":{"shape":"ReservationOffering"}
+    },
+    "ReservationsList":{
+      "type":"list",
+      "member":{"shape":"Reservation"}
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "required":["message"],
@@ -2958,7 +3290,7 @@
         },
         "snapshotArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the snapshot to restore from. Required if restoring from Amazon Redshift Serverless to a provisioned cluster. Must not be specified at the same time as <code>snapshotName</code>.</p> <p>The format of the ARN is arn:aws:redshift:&lt;region&gt;:&lt;account_id&gt;:snapshot:&lt;cluster_identifier&gt;/&lt;snapshot_identifier&gt;.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the snapshot to restore from. Required if restoring from a provisioned cluster to Amazon Redshift Serverless. Must not be specified at the same time as <code>snapshotName</code>.</p> <p>The format of the ARN is arn:aws:redshift:&lt;region&gt;:&lt;account_id&gt;:snapshot:&lt;cluster_identifier&gt;/&lt;snapshot_identifier&gt;.</p>"
         },
         "snapshotName":{
           "shape":"String",
@@ -3383,6 +3715,11 @@
         "ACTIVE",
         "DISABLED"
       ]
+    },
+    "Status":{
+      "type":"string",
+      "max":16,
+      "min":1
     },
     "String":{"type":"string"},
     "SubnetId":{"type":"string"},

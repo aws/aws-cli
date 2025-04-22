@@ -3917,7 +3917,7 @@
       },
       "input":{"shape":"DescribeVpcEndpointServicePermissionsRequest"},
       "output":{"shape":"DescribeVpcEndpointServicePermissionsResult"},
-      "documentation":"<p>Describes the principals (service consumers) that are permitted to discover your VPC endpoint service.</p>"
+      "documentation":"<p>Describes the principals (service consumers) that are permitted to discover your VPC endpoint service. Principal ARNs with path components aren't supported.</p>"
     },
     "DescribeVpcEndpointServices":{
       "name":"DescribeVpcEndpointServices",
@@ -5910,7 +5910,7 @@
       },
       "input":{"shape":"ModifyVpcEndpointServicePermissionsRequest"},
       "output":{"shape":"ModifyVpcEndpointServicePermissionsResult"},
-      "documentation":"<p>Modifies the permissions for your VPC endpoint service. You can add or remove permissions for service consumers (Amazon Web Services accounts, users, and IAM roles) to connect to your endpoint service.</p> <p>If you grant permissions to all principals, the service is public. Any users who know the name of a public service can send a request to attach an endpoint. If the service does not require manual approval, attachments are automatically approved.</p>"
+      "documentation":"<p>Modifies the permissions for your VPC endpoint service. You can add or remove permissions for service consumers (Amazon Web Services accounts, users, and IAM roles) to connect to your endpoint service. Principal ARNs with path components aren't supported.</p> <p>If you grant permissions to all principals, the service is public. Any users who know the name of a public service can send a request to attach an endpoint. If the service does not require manual approval, attachments are automatically approved.</p>"
     },
     "ModifyVpcPeeringConnectionOptions":{
       "name":"ModifyVpcPeeringConnectionOptions",
@@ -12088,6 +12088,27 @@
       },
       "documentation":"<p>Current state of options for customizable text banner that will be displayed on Amazon Web Services provided clients when a VPN session is established.</p>"
     },
+    "ClientRouteEnforcementOptions":{
+      "type":"structure",
+      "members":{
+        "Enforced":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable or disable the client route enforcement feature.</p> <p>Valid values: <code>true | false</code> </p> <p>Default value: <code>false</code> </p>"
+        }
+      },
+      "documentation":"<p>Client route enforcement is a feature of the Client VPN service that helps enforce administrator defined routes on devices connected through the VPN. T his feature helps improve your security posture by ensuring that network traffic originating from a connected client is not inadvertently sent outside the VPN tunnel.</p> <p>Client route enforcement works by monitoring the route table of a connected device for routing policy changes to the VPN connection. If the feature detects any VPN routing policy modifications, it will automatically force an update to the route table, reverting it back to the expected route configurations.</p>"
+    },
+    "ClientRouteEnforcementResponseOptions":{
+      "type":"structure",
+      "members":{
+        "Enforced":{
+          "shape":"Boolean",
+          "documentation":"<p>Status of the client route enforcement feature.</p> <p>Valid values: <code>true | false</code> </p> <p>Default value: <code>false</code> </p>",
+          "locationName":"enforced"
+        }
+      },
+      "documentation":"<p>The current status of client route enforcement. The state will either be <code>true</code> (enabled) or <code>false</code> (disabled).</p>"
+    },
     "ClientSecretType":{
       "type":"string",
       "sensitive":true
@@ -12411,6 +12432,11 @@
           "shape":"ClientLoginBannerResponseOptions",
           "documentation":"<p>Options for enabling a customizable text banner that will be displayed on Amazon Web Services provided clients when a VPN session is established.</p>",
           "locationName":"clientLoginBannerOptions"
+        },
+        "ClientRouteEnforcementOptions":{
+          "shape":"ClientRouteEnforcementResponseOptions",
+          "documentation":"<p>Client route enforcement is a feature of the Client VPN service that helps enforce administrator defined routes on devices connected through the VPN. T his feature helps improve your security posture by ensuring that network traffic originating from a connected client is not inadvertently sent outside the VPN tunnel.</p> <p>Client route enforcement works by monitoring the route table of a connected device for routing policy changes to the VPN connection. If the feature detects any VPN routing policy modifications, it will automatically force an update to the route table, reverting it back to the expected route configurations.</p>",
+          "locationName":"clientRouteEnforcementOptions"
         },
         "DisconnectOnSessionTimeout":{
           "shape":"Boolean",
@@ -13670,6 +13696,10 @@
         "ClientLoginBannerOptions":{
           "shape":"ClientLoginBannerOptions",
           "documentation":"<p>Options for enabling a customizable text banner that will be displayed on Amazon Web Services provided clients when a VPN session is established.</p>"
+        },
+        "ClientRouteEnforcementOptions":{
+          "shape":"ClientRouteEnforcementOptions",
+          "documentation":"<p>Client route enforcement is a feature of the Client VPN service that helps enforce administrator defined routes on devices connected through the VPN. T his feature helps improve your security posture by ensuring that network traffic originating from a connected client is not inadvertently sent outside the VPN tunnel.</p> <p>Client route enforcement works by monitoring the route table of a connected device for routing policy changes to the VPN connection. If the feature detects any VPN routing policy modifications, it will automatically force an update to the route table, reverting it back to the expected route configurations.</p>"
         },
         "DisconnectOnSessionTimeout":{
           "shape":"Boolean",
@@ -45799,6 +45829,10 @@
           "shape":"ClientLoginBannerOptions",
           "documentation":"<p>Options for enabling a customizable text banner that will be displayed on Amazon Web Services provided clients when a VPN session is established.</p>"
         },
+        "ClientRouteEnforcementOptions":{
+          "shape":"ClientRouteEnforcementOptions",
+          "documentation":"<p>Client route enforcement is a feature of the Client VPN service that helps enforce administrator defined routes on devices connected through the VPN. T his feature helps improve your security posture by ensuring that network traffic originating from a connected client is not inadvertently sent outside the VPN tunnel.</p> <p>Client route enforcement works by monitoring the route table of a connected device for routing policy changes to the VPN connection. If the feature detects any VPN routing policy modifications, it will automatically force an update to the route table, reverting it back to the expected route configurations.</p>"
+        },
         "DisconnectOnSessionTimeout":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the client VPN session is disconnected after the maximum timeout specified in <code>sessionTimeoutHours</code> is reached. If <code>true</code>, users are prompted to reconnect client VPN. If <code>false</code>, client VPN attempts to reconnect automatically. The default value is <code>false</code>.</p>"
@@ -58342,7 +58376,8 @@
       "type":"string",
       "enum":[
         "alb",
-        "nlb"
+        "nlb",
+        "rnat"
       ]
     },
     "ServiceNetworkArn":{"type":"string"},
@@ -62302,7 +62337,7 @@
         },
         "DefaultRouteTableAssociation":{
           "shape":"DefaultRouteTableAssociationValue",
-          "documentation":"<p>Indicates whether resource attachments are automatically associated with the default association route table.</p>",
+          "documentation":"<p>Indicates whether resource attachments are automatically associated with the default association route table. Enabled by default. If <code>defaultRouteTableAssociation</code> is set to <code>enable</code>, Amazon Web Services Transit Gateway will create the default transit gateway route table.</p>",
           "locationName":"defaultRouteTableAssociation"
         },
         "AssociationDefaultRouteTableId":{
@@ -62312,7 +62347,7 @@
         },
         "DefaultRouteTablePropagation":{
           "shape":"DefaultRouteTablePropagationValue",
-          "documentation":"<p>Indicates whether resource attachments automatically propagate routes to the default propagation route table.</p>",
+          "documentation":"<p>Indicates whether resource attachments automatically propagate routes to the default propagation route table. Enabled by default. If <code>defaultRouteTablePropagation</code> is set to <code>enable</code>, Amazon Web Services Transit Gateway will create the default transit gateway route table.</p>",
           "locationName":"defaultRouteTablePropagation"
         },
         "PropagationDefaultRouteTableId":{

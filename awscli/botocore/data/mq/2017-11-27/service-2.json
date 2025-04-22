@@ -188,6 +188,44 @@
       ],
       "documentation": "<p>Deletes a broker. Note: This API is asynchronous.</p>"
     },
+    "DeleteConfiguration": {
+      "name": "DeleteConfiguration",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/v1/configurations/{configuration-id}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DeleteConfigurationRequest"
+      },
+      "output": {
+        "shape": "DeleteConfigurationResponse",
+        "documentation": "<p>HTTP Status Code 200: OK.</p>"
+      },
+      "errors": [
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "<p>HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue.</p>"
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "<p>HTTP Status Code 409: Conflict. This broker name already exists. Retry your request with another name.</p>"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "<p>HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request.</p>"
+        }
+      ],
+      "documentation": "<p>Deletes the specified configuration.</p>"
+    },
     "DeleteTags": {
       "name": "DeleteTags",
       "http": {
@@ -1809,6 +1847,41 @@
           "shape": "__string",
           "locationName": "brokerId",
           "documentation": "<p>The unique ID that Amazon MQ generates for the broker.</p>"
+        }
+      }
+    },
+    "DeleteConfigurationOutput": {
+      "type": "structure",
+      "members": {
+        "ConfigurationId": {
+          "shape": "__string",
+          "locationName": "configurationId",
+          "documentation": "<p>The unique ID that Amazon MQ generates for the configuration.</p>"
+        }
+      },
+      "documentation": "<p>Returns information about the deleted configuration.</p>"
+    },
+    "DeleteConfigurationRequest": {
+      "type": "structure",
+      "members": {
+        "ConfigurationId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "configuration-id",
+          "documentation": "<p>The unique ID that Amazon MQ generates for the configuration.</p>"
+        }
+      },
+      "required": [
+        "ConfigurationId"
+      ]
+    },
+    "DeleteConfigurationResponse": {
+      "type": "structure",
+      "members": {
+        "ConfigurationId": {
+          "shape": "__string",
+          "locationName": "configurationId",
+          "documentation": "<p>The unique ID that Amazon MQ generates for the configuration.</p>"
         }
       }
     },

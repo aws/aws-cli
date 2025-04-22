@@ -2720,17 +2720,6 @@
             "expect": {
                 "error": "AccountId must only contain a-z, A-Z, 0-9 and `-`."
             },
-            "operationInputs": [
-                {
-                    "builtInParams": {
-                        "AWS::Region": "us-east-1"
-                    },
-                    "operationName": "ListRegionalBuckets",
-                    "operationParams": {
-                        "AccountId": "/?invalid&not-host*label"
-                    }
-                }
-            ],
             "params": {
                 "AccountId": "/?invalid&not-host*label",
                 "Region": "us-east-1",
@@ -2876,18 +2865,6 @@
             "expect": {
                 "error": "AccountId must only contain a-z, A-Z, 0-9 and `-`."
             },
-            "operationInputs": [
-                {
-                    "builtInParams": {
-                        "AWS::Region": "us-east-1",
-                        "SDK::Endpoint": "https://beta.example.com"
-                    },
-                    "operationName": "ListRegionalBuckets",
-                    "operationParams": {
-                        "AccountId": "/?invalid&not-host*label"
-                    }
-                }
-            ],
             "params": {
                 "Region": "us-east-1",
                 "Endpoint": "https://beta.example.com",
@@ -3024,18 +3001,6 @@
             "expect": {
                 "error": "AccountId must only contain a-z, A-Z, 0-9 and `-`."
             },
-            "operationInputs": [
-                {
-                    "builtInParams": {
-                        "AWS::Region": "us-east-2"
-                    },
-                    "operationName": "ListRegionalBuckets",
-                    "operationParams": {
-                        "OutpostId": "op-123",
-                        "AccountId": "/?invalid&not-host*label"
-                    }
-                }
-            ],
             "params": {
                 "AccountId": "/?invalid&not-host*label",
                 "OutpostId": "op-123",
@@ -3229,12 +3194,12 @@
                     "operationName": "ListRegionalBuckets",
                     "operationParams": {
                         "OutpostId": "op-123",
-                        "AccountId": "0123456789012"
+                        "AccountId": "012345678912"
                     }
                 }
             ],
             "params": {
-                "AccountId": "0123456789012",
+                "AccountId": "012345678912",
                 "OutpostId": "op-123",
                 "Region": "cn-north-1",
                 "RequiresAccountId": true,
@@ -3255,12 +3220,12 @@
                     "operationName": "ListRegionalBuckets",
                     "operationParams": {
                         "OutpostId": "?outpost/invalid+",
-                        "AccountId": "0123456789012"
+                        "AccountId": "012345678912"
                     }
                 }
             ],
             "params": {
-                "AccountId": "0123456789012",
+                "AccountId": "012345678912",
                 "OutpostId": "?outpost/invalid+",
                 "Region": "us-west-1",
                 "RequiresAccountId": true,
@@ -3271,11 +3236,11 @@
         {
             "documentation": "bucket ARN with mismatched accountId",
             "expect": {
-                "error": "Invalid ARN: the accountId specified in the ARN (`999999`) does not match the parameter (`0123456789012`)"
+                "error": "Invalid ARN: the accountId specified in the ARN (`999999`) does not match the parameter (`012345678912`)"
             },
             "params": {
                 "Bucket": "arn:aws:s3-outposts:us-west-2:999999:outpost:op-01234567890123456:bucket:mybucket",
-                "AccountId": "0123456789012",
+                "AccountId": "012345678912",
                 "Region": "us-west-2",
                 "RequiresAccountId": true,
                 "UseDualStack": false,

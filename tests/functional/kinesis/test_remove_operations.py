@@ -15,5 +15,5 @@ from tests import CLIRunner
 
 def test_subscribe_to_shard_removed():
     result = CLIRunner().run(['kinesis', 'subscribe-to-shard', 'help'])
-    expected_error = 'argument operation: Invalid choice, valid choices are:'
+    expected_error = "argument operation: Found invalid choice 'subscribe-to-shard'"
     assert expected_error in result.stderr

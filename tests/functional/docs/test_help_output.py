@@ -217,7 +217,7 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
         self.assertEqual(cr, 252)
         # We should see an error message complaining about
         # an invalid choice because the operation has been removed.
-        self.assertIn('argument operation: Invalid choice', stderr.getvalue())
+        self.assertIn('argument operation: Found invalid choice', stderr.getvalue())
 
     def test_ses_deprecated_commands(self):
         self.driver.main(['ses', 'help'])

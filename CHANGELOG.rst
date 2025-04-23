@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.40.0
+======
+
+* api-change:``codebuild``: Add support for custom instance type for reserved capacity fleets
+* api-change:``ecs``: Add support to roll back an In_Progress ECS Service Deployment
+* api-change:``resource-explorer-2``: Documentation-only update for CreateView option correction
+* feature:``eks``: Add assume-role-arn option to update-kubeconfig command for cross-account access
+
+
 1.39.0
 ======
 

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.27.0
+======
+
+* api-change:``imagebuilder``: Add all ``imagebuilder`` modeled paginators that are currently supported by AWS CLI v2.
+* api-change:``ecs``: Add support to roll back an In_Progress ECS Service Deployment
+* api-change:``codebuild``: Add support for custom instance type for reserved capacity fleets
+* api-change:``resource-explorer-2``: Documentation-only update for CreateView option correction
+* feature:``eks``: Add assume-role-arn option to update-kubeconfig command for cross-account access
+
+
 2.26.7
 ======
 

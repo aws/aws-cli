@@ -119,6 +119,16 @@ class UpdateKubeconfigCommand(BasicCommand):
             ),
             'required': False,
         },
+        {
+            'name': 'assume-role-arn',
+            'help_text': (
+                'To assume a role for retrieving cluster information, '
+                'specify an IAM role ARN with this option. '
+                'Use this for cross-account access to get cluster details '
+                'from the account where the cluster resides.'
+            ),
+            'required': False,
+        },
     ]
 
     def _display_entries(self, entries):
@@ -264,32 +274,46 @@ class EKSClient:
         Cache the response in self._cluster_description.
         describe-cluster will only be called once.
         """
-        if self._cluster_description is None:
-            if self._parsed_globals is None:
-                client = self._session.create_client("eks")
-            else:
-                client = self._session.create_client(
-                    "eks",
-                    region_name=self._parsed_globals.region,
-                    endpoint_url=self._parsed_globals.endpoint_url,
-                    verify=self._parsed_globals.verify_ssl,
-                )
-            full_description = client.describe_cluster(name=self._cluster_name)
-            self._cluster_description = full_description["cluster"]
+        if self._cluster_description is not None:
+            return self._cluster_description
 
-            if "status" not in self._cluster_description:
-                raise EKSClusterError("Cluster not found")
-            if self._cluster_description["status"] not in [
-                "ACTIVE",
-                "UPDATING",
-            ]:
-                raise EKSClusterError(
-                    "Cluster status is {0}".format(
-                        self._cluster_description["status"]
-                    )
-                )
+        client_kwargs = {}
+        if self._parsed_globals:
+            client_kwargs.update(
+                {
+                    "region_name": self._parsed_globals.region,
+                    "endpoint_url": self._parsed_globals.endpoint_url,
+                    "verify": self._parsed_globals.verify_ssl,
+                }
+            )
 
-        return self._cluster_description
+        # Handle role assumption if needed
+        if getattr(self._parsed_args, 'assume_role_arn', None):
+            sts_client = self._session.create_client('sts')
+            credentials = sts_client.assume_role(
+                RoleArn=self._parsed_args.assume_role_arn,
+                RoleSessionName='EKSDescribeClusterSession',
+            )["Credentials"]
+
+            client_kwargs.update(
+                {
+                    "aws_access_key_id": credentials["AccessKeyId"],
+                    "aws_secret_access_key": credentials["SecretAccessKey"],
+                    "aws_session_token": credentials["SessionToken"],
+                }
+            )
+
+        client = self._session.create_client("eks", **client_kwargs)
+        full_description = client.describe_cluster(name=self._cluster_name)
+        cluster = full_description.get("cluster")
+
+        if not cluster or "status" not in cluster:
+            raise EKSClusterError("Cluster not found")
+        if cluster["status"] not in ["ACTIVE", "UPDATING"]:
+            raise EKSClusterError(f"Cluster status is {cluster['status']}")
+
+        self._cluster_description = cluster
+        return cluster
 
     def get_cluster_entry(self):
         """

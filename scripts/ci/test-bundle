@@ -5,23 +5,12 @@
 
 import os
 import re
-from contextlib import contextmanager
 from subprocess import check_output
+from awscli.testutils import cd
 
 _dname = os.path.dirname
 
 REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
-
-
-@contextmanager
-def cd(path):
-    """Change directory while inside context manager."""
-    cwd = os.getcwd()
-    try:
-        os.chdir(path)
-        yield
-    finally:
-        os.chdir(cwd)
 
 
 def run(command):

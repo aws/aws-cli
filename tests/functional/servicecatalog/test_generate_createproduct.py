@@ -198,7 +198,7 @@ class TestGenerateProduct(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             self.cmd_line,
             expected_rc=252,
-            stderr_contains='--product-type: Invalid choice',
+            stderr_contains='--product-type: Found invalid choice',
         )
 
     def test_generate_product_invalid_provisioning_artifact_type(self):
@@ -208,5 +208,5 @@ class TestGenerateProduct(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             self.cmd_line,
             expected_rc=252,
-            stderr_contains='--provisioning-artifact-type: Invalid choice',
+            stderr_contains='--provisioning-artifact-type: Found invalid choice',
         )

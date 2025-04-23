@@ -15,5 +15,5 @@ from tests import CLIRunner
 
 def test_start_conversation_removed():
     result = CLIRunner().run(['lexv2-runtime', 'start-conversation', 'help'])
-    expected_error = 'argument operation: Invalid choice, valid choices are:'
+    expected_error = "argument operation: Found invalid choice 'start-conversation'"
     assert expected_error in result.stderr

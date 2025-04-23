@@ -886,7 +886,7 @@ class TestSSHCommand:
                     "test",
                 ],
                 252,
-                "argument --connection-type: Invalid choice, valid choices are:",
+                "argument --connection-type: Found invalid choice 'test'",
                 id='Failure: Customer must provide connection-type when IP defined',
             ),
             pytest.param(

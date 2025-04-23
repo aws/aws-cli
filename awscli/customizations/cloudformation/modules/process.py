@@ -31,6 +31,7 @@ from awscli.customizations.cloudformation.modules.functions import (
     fn_insertfile,
     fn_join,
 )
+from awscli.customizations.cloudformation.modules.flatten import fn_flatten
 from awscli.customizations.cloudformation.modules.foreach import (
     process_module_foreach,
     resolve_foreach_lists,
@@ -186,6 +187,7 @@ def process_module_section(
             constants = process_constants(template)
             if constants is not None:
                 replace_constants(constants, template)
+            fn_flatten(template)
             fn_select(template)
             fn_merge(template)
             fn_join(template)
@@ -208,6 +210,9 @@ def process_module_section(
 
         if PARAMETERS in template:
             parent_module.module_parameters = template[PARAMETERS]
+
+    # Process Fn::Flatten before ForEach since it might be used as input
+    fn_flatten(template)
 
     # First, pre-process local modules that are looping over a list
     foreach_modules = process_module_foreach(template, parent_module)

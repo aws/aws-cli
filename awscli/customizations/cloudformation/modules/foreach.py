@@ -29,6 +29,8 @@ from awscli.customizations.cloudformation.modules.parse_sub import parse_sub
 
 IDENTIFIER_PLACEHOLDER = "$Identifier"
 INDEX_PLACEHOLDER = "$Index"
+VALUE_PLACEHOLDER = "$Value"
+VALUE_PLACEHOLDER = "$Value"
 SUB = "Fn::Sub"
 FOREACH = "ForEach"  # Renamed from MAP
 REF = "Ref"

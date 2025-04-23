@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  TestResource:
+    Type: AWS::CloudFormation::Module
+    Properties:
+      FlattenedItems:
+        Fn::Flatten:
+          Source:
+            Group1:
+              items:
+                - id: "item1"
+                  value: "value1"
+                - id: "item2"
+                  value: "value2"
+            Group2:
+              items:
+                - id: "item3"
+                  value: "value3"
+          Pattern: "$.*.items[*]"

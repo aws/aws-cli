@@ -1,0 +1,15 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  TestResource:
+    Type: AWS::CloudFormation::Module
+    Properties:
+      GroupedItems:
+        Fn::Flatten:
+          Source:
+            - UserName: "john.doe"
+              GroupName: "Admins"
+            - UserName: "john.doe"
+              GroupName: "Developers"
+            - UserName: "jane.smith"
+              GroupName: "Developers"
+          GroupBy: "UserName"

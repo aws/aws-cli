@@ -1,7 +1,6 @@
 "Tests for module support in the package command"
 
 # pylint: disable=fixme
-import pytest
 from awscli.testutils import unittest
 from awscli.customizations.cloudformation import yamlhelper
 from awscli.customizations.cloudformation import exceptions
@@ -100,6 +99,7 @@ class TestPackageModules(unittest.TestCase):
         merged = merge_props(original, overrides)
         self.assertEqual(merged, expect)
 
+    # pylint: disable=broad-exception-caught,too-many-locals
     def test_main(self):
         "Run tests on sample templates that include local modules"
 
@@ -143,46 +143,76 @@ class TestPackageModules(unittest.TestCase):
             "getatt-map-sub",
             "getatt-map-nested",
             "mappings",
+            "flatten",
+            "flatten-transform",
+            "flatten-groupby",
         ]
+
+        # Collect all errors to report at the end
+        errors = []
+
         for test in tests:
-            t, _ = read_source(f"{base}/{test}-template.yaml")
-            td = yamlhelper.yaml_parse(t)
-            e, _ = read_source(f"{base}/{test}-expect.yaml")
+            try:
+                t, _ = read_source(f"{base}/{test}-template.yaml")
+                td = yamlhelper.yaml_parse(t)
+                e, _ = read_source(f"{base}/{test}-expect.yaml")
 
-            constants = process_constants(td)
-            if constants is not None:
-                replace_constants(constants, td)
+                constants = process_constants(td)
+                if constants is not None:
+                    replace_constants(constants, td)
 
-            # Modules section
-            td = process_module_section(td, base, t, None, True, True)
+                # Modules section
+                td = process_module_section(td, base, t, None, True, True)
 
-            processed = yamlhelper.yaml_dump(td)
+                processed = yamlhelper.yaml_dump(td)
 
-            # Check to make sure the expected output and the actual
-            # output is equivalent yaml, ignoring key order
-            is_equivalent = compare_yaml_strings(e, processed)
-            if not is_equivalent:
-                differences = find_yaml_differences(e, processed)
-                msg = f"\n{test} failed: YAML not equivalent\nDifferences:\n"
-                for diff in differences:
-                    msg += f"  - {diff}\n"
+                # Check to make sure the expected output and the actual
+                # output is equivalent yaml, ignoring key order
+                is_equivalent = compare_yaml_strings(e, processed)
+                if not is_equivalent:
+                    differences = find_yaml_differences(e, processed)
+                    error_msg = (
+                        f"\n{test} failed: YAML not equivalent\nDifferences:\n"
+                    )
+                    for diff in differences:
+                        error_msg += f"  - {diff}\n"
 
-                # Add traditional diff output
-                msg += "\nYAML Diff:\n"
-                msg += show_yaml_diff(e, processed)
+                    # Add traditional diff output
+                    error_msg += "\nYAML Diff:\n"
+                    error_msg += show_yaml_diff(e, processed)
 
-                self.assertTrue(is_equivalent, msg)
+                    errors.append(error_msg)
+            except Exception as ex:
+                errors.append(f"\n{test} failed with exception: {str(ex)}")
 
         # These tests should fail to package
         bad_tests = ["badref"]
         for test in bad_tests:
-            t, _ = read_source(f"{base}/{test}-template.yaml")
-            td = yamlhelper.yaml_parse(t)
-            with pytest.raises(exceptions.InvalidModuleError):
+            try:
+                t, _ = read_source(f"{base}/{test}-template.yaml")
+                td = yamlhelper.yaml_parse(t)
+
                 constants = process_constants(td)
                 if constants is not None:
                     replace_constants(constants, td)
                 td = process_module_section(td, base, t, None, True, True)
+
+                # If we get here, the test didn't fail as expected
+                errors.append(f"\n{test} should have failed but didn't")
+            except exceptions.InvalidModuleError:
+                # This is expected, so no error
+                pass
+            except Exception as ex:
+                # Wrong type of exception
+                errors.append(
+                    f"\n{test} failed with unexpected exception: {str(ex)}"
+                )
+
+        # Report all errors at the end
+        if errors:
+            error_summary = f"\n\n{len(errors)} test(s) failed:\n"
+            error_summary += "\n".join(errors)
+            self.fail(error_summary)
 
     def test_visitor(self):
         "Test module_visitor"

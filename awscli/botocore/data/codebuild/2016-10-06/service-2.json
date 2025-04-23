@@ -1859,9 +1859,13 @@
         "machineType":{
           "shape":"MachineType",
           "documentation":"<p>The machine type of the instance type included in your fleet.</p>"
+        },
+        "instanceType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The EC2 instance type to be launched in your fleet.</p>"
         }
       },
-      "documentation":"<p>Contains compute attributes. These attributes only need be specified when your project's or fleet's <code>computeType</code> is set to <code>ATTRIBUTE_BASED_COMPUTE</code>.</p>"
+      "documentation":"<p>Contains compute attributes. These attributes only need be specified when your project's or fleet's <code>computeType</code> is set to <code>ATTRIBUTE_BASED_COMPUTE</code> or <code>CUSTOM_INSTANCE_TYPE</code>.</p>"
     },
     "ComputeType":{
       "type":"string",
@@ -1876,7 +1880,8 @@
         "BUILD_LAMBDA_4GB",
         "BUILD_LAMBDA_8GB",
         "BUILD_LAMBDA_10GB",
-        "ATTRIBUTE_BASED_COMPUTE"
+        "ATTRIBUTE_BASED_COMPUTE",
+        "CUSTOM_INSTANCE_TYPE"
       ]
     },
     "ComputeTypesAllowed":{
@@ -4645,7 +4650,7 @@
         },
         "scope":{
           "shape":"WebhookScopeType",
-          "documentation":"<p>The type of scope for a GitHub or GitLab webhook.</p>"
+          "documentation":"<p>The type of scope for a GitHub or GitLab webhook. The scope default is GITHUB_ORGANIZATION.</p>"
         }
       },
       "documentation":"<p>Contains configuration information about the scope for a webhook. </p>"

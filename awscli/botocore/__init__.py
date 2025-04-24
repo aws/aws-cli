@@ -61,8 +61,8 @@ _xform_cache = {
         'AssociateWhatsAppBusinessAccount',
         '-',
     ): 'associate-whatsapp-business-account',
-    ('DeleteWhatsAppMessageMedia', '_'): 'delete_whatsapp_media_message',
-    ('DeleteWhatsAppMessageMedia', '-'): 'delete-whatsapp-media-message',
+    ('DeleteWhatsAppMessageMedia', '_'): 'delete_whatsapp_message_media',
+    ('DeleteWhatsAppMessageMedia', '-'): 'delete-whatsapp-message-media',
     (
         'DisassociateWhatsAppBusinessAccount',
         '_',

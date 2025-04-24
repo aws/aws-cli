@@ -116,6 +116,7 @@ from awscli.customizations.servicecatalog import (
 from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.sessionmanager import register_ssm_session
 from awscli.customizations.sms_voice import register_sms_voice_hide
+from awscli.customizations.socialmessaging import register_alias_socialmessaging_command
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.translate import (
@@ -210,6 +211,7 @@ def awscli_initialize(event_handlers):
     register_alias_opsworks_cm(event_handlers)
     register_alias_mturk_command(event_handlers)
     register_alias_sagemaker_runtime_command(event_handlers)
+    register_alias_socialmessaging_command(event_handlers)
     register_servicecatalog_commands(event_handlers)
     register_translate_import_terminology(event_handlers)
     register_history_mode(event_handlers)

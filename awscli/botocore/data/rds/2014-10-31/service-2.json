@@ -692,7 +692,8 @@
         {"shape":"DBInstanceNotFoundFault"},
         {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"TenantDatabaseAlreadyExistsFault"},
-        {"shape":"TenantDatabaseQuotaExceededFault"}
+        {"shape":"TenantDatabaseQuotaExceededFault"},
+        {"shape":"KMSKeyNotAccessibleFault"}
       ],
       "documentation":"<p>Creates a tenant database in a DB instance that uses the multi-tenant configuration. Only RDS for Oracle container database (CDB) instances are supported.</p>"
     },
@@ -2317,7 +2318,8 @@
         {"shape":"DBInstanceNotFoundFault"},
         {"shape":"TenantDatabaseNotFoundFault"},
         {"shape":"TenantDatabaseAlreadyExistsFault"},
-        {"shape":"InvalidDBInstanceStateFault"}
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"KMSKeyNotAccessibleFault"}
       ],
       "documentation":"<p>Modifies an existing tenant database in a DB instance. You can change the tenant database name or the master user password. This operation is supported only for RDS for Oracle CDB instances using the multi-tenant configuration.</p>"
     },
@@ -3250,8 +3252,7 @@
     },
     "AuthorizationAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified CIDR IP range or Amazon EC2 security group is already authorized for the specified DB security group.</p>",
       "error":{
         "code":"AuthorizationAlreadyExists",
@@ -3262,8 +3263,7 @@
     },
     "AuthorizationNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified CIDR IP range or Amazon EC2 security group might not be authorized for the specified DB security group.</p> <p>Or, RDS might not be authorized to perform necessary actions using IAM on your behalf.</p>",
       "error":{
         "code":"AuthorizationNotFound",
@@ -3274,8 +3274,7 @@
     },
     "AuthorizationQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB security group authorization quota has been reached.</p>",
       "error":{
         "code":"AuthorizationQuotaExceeded",
@@ -3408,8 +3407,7 @@
     },
     "BackupPolicyNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "deprecated":true,
       "deprecatedMessage":"Please avoid using this fault",
       "error":{
@@ -3468,8 +3466,7 @@
     },
     "BlueGreenDeploymentAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A blue/green deployment with the specified name already exists.</p>",
       "error":{
         "code":"BlueGreenDeploymentAlreadyExistsFault",
@@ -3496,8 +3493,7 @@
     },
     "BlueGreenDeploymentNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>BlueGreenDeploymentIdentifier</code> doesn't refer to an existing blue/green deployment.</p>",
       "error":{
         "code":"BlueGreenDeploymentNotFoundFault",
@@ -3630,8 +3626,7 @@
     },
     "CertificateNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>CertificateIdentifier</code> doesn't refer to an existing certificate.</p>",
       "error":{
         "code":"CertificateNotFound",
@@ -4039,8 +4034,7 @@
     },
     "CreateCustomDBEngineVersionFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An error occurred while trying to create the CEV.</p>",
       "error":{
         "code":"CreateCustomDBEngineVersionFault",
@@ -4298,7 +4292,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether minor engine upgrades are applied automatically to the DB cluster during the maintenance window. By default, minor engine upgrades are applied automatically.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB cluster</p>"
+          "documentation":"<p>Specifies whether minor engine upgrades are applied automatically to the DB cluster during the maintenance window. By default, minor engine upgrades are applied automatically.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB cluster.</p> <p>For more information about automatic minor version upgrades, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Upgrading.html#USER_UpgradeDBInstance.Upgrading.AutoMinorVersionUpgrades\">Automatically upgrading the minor engine version</a>.</p>"
         },
         "MonitoringInterval":{
           "shape":"IntegerOptional",
@@ -4513,7 +4507,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether minor engine upgrades are applied automatically to the DB instance during the maintenance window. By default, minor engine upgrades are applied automatically.</p> <p>If you create an RDS Custom DB instance, you must set <code>AutoMinorVersionUpgrade</code> to <code>false</code>.</p>"
+          "documentation":"<p>Specifies whether minor engine upgrades are applied automatically to the DB instance during the maintenance window. By default, minor engine upgrades are applied automatically.</p> <p>If you create an RDS Custom DB instance, you must set <code>AutoMinorVersionUpgrade</code> to <code>false</code>.</p> <p>For more information about automatic minor version upgrades, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Upgrading.html#USER_UpgradeDBInstance.Upgrading.AutoMinorVersionUpgrades\">Automatically upgrading the minor engine version</a>.</p>"
         },
         "LicenseModel":{
           "shape":"String",
@@ -4728,7 +4722,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether to automatically apply minor engine upgrades to the read replica during the maintenance window.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p> <p>Default: Inherits the value from the source DB instance.</p>"
+          "documentation":"<p>Specifies whether to automatically apply minor engine upgrades to the read replica during the maintenance window.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p> <p>Default: Inherits the value from the source DB instance.</p> <p>For more information about automatic minor version upgrades, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Upgrading.html#USER_UpgradeDBInstance.Upgrading.AutoMinorVersionUpgrades\">Automatically upgrading the minor engine version</a>.</p>"
         },
         "Iops":{
           "shape":"IntegerOptional",
@@ -5322,8 +5316,7 @@
       "required":[
         "DBInstanceIdentifier",
         "TenantDBName",
-        "MasterUsername",
-        "MasterUserPassword"
+        "MasterUsername"
       ],
       "members":{
         "DBInstanceIdentifier":{
@@ -5340,7 +5333,7 @@
         },
         "MasterUserPassword":{
           "shape":"SensitiveString",
-          "documentation":"<p>The password for the master user in your tenant database.</p> <p>Constraints:</p> <ul> <li> <p>Must be 8 to 30 characters.</p> </li> <li> <p>Can include any printable ASCII character except forward slash (<code>/</code>), double quote (<code>\"</code>), at symbol (<code>@</code>), ampersand (<code>&amp;</code>), or single quote (<code>'</code>).</p> </li> </ul>"
+          "documentation":"<p>The password for the master user in your tenant database.</p> <p>Constraints:</p> <ul> <li> <p>Must be 8 to 30 characters.</p> </li> <li> <p>Can include any printable ASCII character except forward slash (<code>/</code>), double quote (<code>\"</code>), at symbol (<code>@</code>), ampersand (<code>&amp;</code>), or single quote (<code>'</code>).</p> </li> <li> <p>Can't be specified when <code>ManageMasterUserPassword</code> is enabled.</p> </li> </ul>"
         },
         "CharacterSetName":{
           "shape":"String",
@@ -5349,6 +5342,14 @@
         "NcharCharacterSetName":{
           "shape":"String",
           "documentation":"<p>The <code>NCHAR</code> value for the tenant database.</p>"
+        },
+        "ManageMasterUserPassword":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to manage the master user password with Amazon Web Services Secrets Manager.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>Can't manage the master user password with Amazon Web Services Secrets Manager if <code>MasterUserPassword</code> is specified.</p> </li> </ul>"
+        },
+        "MasterUserSecretKmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services KMS key identifier to encrypt a secret that is automatically generated and managed in Amazon Web Services Secrets Manager.</p> <p>This setting is valid only if the master user password is managed by RDS in Amazon Web Services Secrets Manager for the DB instance.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key. To use a KMS key in a different Amazon Web Services account, specify the key ARN or alias ARN.</p> <p>If you don't specify <code>MasterUserSecretKmsKeyId</code>, then the <code>aws/secretsmanager</code> KMS key is used to encrypt the secret. If the secret is in a different Amazon Web Services account, then you can't use the <code>aws/secretsmanager</code> KMS key to encrypt the secret, and you must use a customer managed KMS key.</p> <p>There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p>"
         },
         "Tags":{"shape":"TagList"}
       }
@@ -5361,8 +5362,7 @@
     },
     "CustomAvailabilityZoneNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>CustomAvailabilityZoneId</code> doesn't refer to an existing custom Availability Zone identifier.</p>",
       "error":{
         "code":"CustomAvailabilityZoneNotFound",
@@ -5387,8 +5387,7 @@
     },
     "CustomDBEngineVersionAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A CEV with the specified name already exists.</p>",
       "error":{
         "code":"CustomDBEngineVersionAlreadyExistsFault",
@@ -5405,8 +5404,7 @@
     },
     "CustomDBEngineVersionNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified CEV was not found.</p>",
       "error":{
         "code":"CustomDBEngineVersionNotFoundFault",
@@ -5417,8 +5415,7 @@
     },
     "CustomDBEngineVersionQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You have exceeded your CEV quota.</p>",
       "error":{
         "code":"CustomDBEngineVersionQuotaExceededFault",
@@ -5698,7 +5695,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether minor version patches are applied automatically.</p> <p>This setting is for Aurora DB clusters and Multi-AZ DB clusters.</p>"
+          "documentation":"<p>Indicates whether minor version patches are applied automatically.</p> <p>This setting is for Aurora DB clusters and Multi-AZ DB clusters.</p> <p>For more information about automatic minor version upgrades, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Upgrading.html#USER_UpgradeDBInstance.Upgrading.AutoMinorVersionUpgrades\">Automatically upgrading the minor engine version</a>.</p>"
         },
         "MonitoringInterval":{
           "shape":"IntegerOptional",
@@ -5772,8 +5769,7 @@
     },
     "DBClusterAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The user already has a DB cluster with the given identifier.</p>",
       "error":{
         "code":"DBClusterAlreadyExistsFault",
@@ -5908,8 +5904,7 @@
     },
     "DBClusterAutomatedBackupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>No automated backup for this DB cluster was found.</p>",
       "error":{
         "code":"DBClusterAutomatedBackupNotFoundFault",
@@ -5920,8 +5915,7 @@
     },
     "DBClusterAutomatedBackupQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The quota for retained automated backups was exceeded. This prevents you from retaining any additional automated backups. The retained automated backups quota is the same as your DB cluster quota.</p>",
       "error":{
         "code":"DBClusterAutomatedBackupQuotaExceededFault",
@@ -5983,8 +5977,7 @@
     },
     "DBClusterBacktrackNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>BacktrackIdentifier</code> doesn't refer to an existing backtrack.</p>",
       "error":{
         "code":"DBClusterBacktrackNotFoundFault",
@@ -6066,8 +6059,7 @@
     },
     "DBClusterEndpointAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified custom endpoint can't be created because it already exists.</p>",
       "error":{
         "code":"DBClusterEndpointAlreadyExistsFault",
@@ -6098,8 +6090,7 @@
     },
     "DBClusterEndpointNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified custom endpoint doesn't exist.</p>",
       "error":{
         "code":"DBClusterEndpointNotFoundFault",
@@ -6110,8 +6101,7 @@
     },
     "DBClusterEndpointQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The cluster already has the maximum number of custom endpoints.</p>",
       "error":{
         "code":"DBClusterEndpointQuotaExceededFault",
@@ -6179,8 +6169,7 @@
     },
     "DBClusterNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBClusterIdentifier</code> doesn't refer to an existing DB cluster.</p>",
       "error":{
         "code":"DBClusterNotFoundFault",
@@ -6266,8 +6255,7 @@
     },
     "DBClusterParameterGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBClusterParameterGroupName</code> doesn't refer to an existing DB cluster parameter group.</p>",
       "error":{
         "code":"DBClusterParameterGroupNotFound",
@@ -6292,8 +6280,7 @@
     },
     "DBClusterQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The user attempted to create a new DB cluster and the user has already reached the maximum allowed DB cluster quota.</p>",
       "error":{
         "code":"DBClusterQuotaExceededFault",
@@ -6322,8 +6309,7 @@
     },
     "DBClusterRoleAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified IAM role Amazon Resource Name (ARN) is already associated with the specified DB cluster.</p>",
       "error":{
         "code":"DBClusterRoleAlreadyExists",
@@ -6334,8 +6320,7 @@
     },
     "DBClusterRoleNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified IAM role Amazon Resource Name (ARN) isn't associated with the specified DB cluster.</p>",
       "error":{
         "code":"DBClusterRoleNotFound",
@@ -6346,8 +6331,7 @@
     },
     "DBClusterRoleQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You have exceeded the maximum number of IAM roles that can be associated with the specified DB cluster.</p>",
       "error":{
         "code":"DBClusterRoleQuotaExceeded",
@@ -6473,8 +6457,7 @@
     },
     "DBClusterSnapshotAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The user already has a DB cluster snapshot with the given identifier.</p>",
       "error":{
         "code":"DBClusterSnapshotAlreadyExistsFault",
@@ -6542,8 +6525,7 @@
     },
     "DBClusterSnapshotNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBClusterSnapshotIdentifier</code> doesn't refer to an existing DB cluster snapshot.</p>",
       "error":{
         "code":"DBClusterSnapshotNotFoundFault",
@@ -6838,7 +6820,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether minor version patches are applied automatically.</p>"
+          "documentation":"<p>Indicates whether minor version patches are applied automatically.</p> <p>For more information about automatic minor version upgrades, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Upgrading.html#USER_UpgradeDBInstance.Upgrading.AutoMinorVersionUpgrades\">Automatically upgrading the minor engine version</a>.</p>"
         },
         "ReadReplicaSourceDBInstanceIdentifier":{
           "shape":"String",
@@ -7099,8 +7081,7 @@
     },
     "DBInstanceAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The user already has a DB instance with the given identifier.</p>",
       "error":{
         "code":"DBInstanceAlreadyExists",
@@ -7263,8 +7244,7 @@
     },
     "DBInstanceAutomatedBackupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>No automated backup for this DB instance was found.</p>",
       "error":{
         "code":"DBInstanceAutomatedBackupNotFound",
@@ -7275,8 +7255,7 @@
     },
     "DBInstanceAutomatedBackupQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The quota for retained automated backups was exceeded. This prevents you from retaining any additional automated backups. The retained automated backups quota is the same as your DB instance quota.</p>",
       "error":{
         "code":"DBInstanceAutomatedBackupQuotaExceeded",
@@ -7325,8 +7304,7 @@
     },
     "DBInstanceNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBInstanceIdentifier</code> doesn't refer to an existing DB instance.</p>",
       "error":{
         "code":"DBInstanceNotFound",
@@ -7337,8 +7315,7 @@
     },
     "DBInstanceNotReadyFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An attempt to download or examine log files didn't succeed because an Aurora Serverless v2 instance was paused.</p>",
       "error":{
         "code":"DBInstanceNotReady",
@@ -7366,8 +7343,7 @@
     },
     "DBInstanceRoleAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified <code>RoleArn</code> or <code>FeatureName</code> value is already associated with the DB instance.</p>",
       "error":{
         "code":"DBInstanceRoleAlreadyExists",
@@ -7378,8 +7354,7 @@
     },
     "DBInstanceRoleNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified <code>RoleArn</code> value doesn't match the specified feature for the DB instance.</p>",
       "error":{
         "code":"DBInstanceRoleNotFound",
@@ -7390,8 +7365,7 @@
     },
     "DBInstanceRoleQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't associate any more Amazon Web Services Identity and Access Management (IAM) roles with the DB instance because the quota has been reached.</p>",
       "error":{
         "code":"DBInstanceRoleQuotaExceeded",
@@ -7438,8 +7412,7 @@
     },
     "DBLogFileNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>LogFileName</code> doesn't refer to an existing DB log file.</p>",
       "error":{
         "code":"DBLogFileNotFoundFault",
@@ -7473,8 +7446,7 @@
     },
     "DBParameterGroupAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A DB parameter group with the same name exists.</p>",
       "error":{
         "code":"DBParameterGroupAlreadyExists",
@@ -7516,8 +7488,7 @@
     },
     "DBParameterGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBParameterGroupName</code> doesn't refer to an existing DB parameter group.</p>",
       "error":{
         "code":"DBParameterGroupNotFound",
@@ -7528,8 +7499,7 @@
     },
     "DBParameterGroupQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would result in the user exceeding the allowed number of DB parameter groups.</p>",
       "error":{
         "code":"DBParameterGroupQuotaExceeded",
@@ -7641,8 +7611,7 @@
     },
     "DBProxyAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified proxy name must be unique for all proxies owned by your Amazon Web Services account in the specified Amazon Web Services Region.</p>",
       "error":{
         "code":"DBProxyAlreadyExistsFault",
@@ -7703,8 +7672,7 @@
     },
     "DBProxyEndpointAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified DB proxy endpoint name must be unique for all DB proxy endpoints owned by your Amazon Web Services account in the specified Amazon Web Services Region.</p>",
       "error":{
         "code":"DBProxyEndpointAlreadyExistsFault",
@@ -7725,8 +7693,7 @@
     },
     "DBProxyEndpointNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB proxy endpoint doesn't exist.</p>",
       "error":{
         "code":"DBProxyEndpointNotFoundFault",
@@ -7737,8 +7704,7 @@
     },
     "DBProxyEndpointQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB proxy already has the maximum number of endpoints.</p>",
       "error":{
         "code":"DBProxyEndpointQuotaExceededFault",
@@ -7777,8 +7743,7 @@
     },
     "DBProxyNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified proxy name doesn't correspond to a proxy owned by your Amazon Web Services account in the specified Amazon Web Services Region.</p>",
       "error":{
         "code":"DBProxyNotFoundFault",
@@ -7789,8 +7754,7 @@
     },
     "DBProxyQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Your Amazon Web Services account already has the maximum number of proxies in the specified Amazon Web Services Region.</p>",
       "error":{
         "code":"DBProxyQuotaExceededFault",
@@ -7853,8 +7817,7 @@
     },
     "DBProxyTargetAlreadyRegisteredFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The proxy is already associated with the specified RDS DB instance or Aurora DB cluster.</p>",
       "error":{
         "code":"DBProxyTargetAlreadyRegisteredFault",
@@ -7903,8 +7866,7 @@
     },
     "DBProxyTargetGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified target group isn't available for a proxy owned by your Amazon Web Services account in the specified Amazon Web Services Region.</p>",
       "error":{
         "code":"DBProxyTargetGroupNotFoundFault",
@@ -7915,8 +7877,7 @@
     },
     "DBProxyTargetNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified RDS DB instance or Aurora DB cluster isn't available for a proxy owned by your Amazon Web Services account in the specified Amazon Web Services Region.</p>",
       "error":{
         "code":"DBProxyTargetNotFoundFault",
@@ -8071,8 +8032,7 @@
     },
     "DBSecurityGroupAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A DB security group with the name specified in <code>DBSecurityGroupName</code> already exists.</p>",
       "error":{
         "code":"DBSecurityGroupAlreadyExists",
@@ -8125,8 +8085,7 @@
     },
     "DBSecurityGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBSecurityGroupName</code> doesn't refer to an existing DB security group.</p>",
       "error":{
         "code":"DBSecurityGroupNotFound",
@@ -8137,8 +8096,7 @@
     },
     "DBSecurityGroupNotSupportedFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A DB security group isn't allowed for this action.</p>",
       "error":{
         "code":"DBSecurityGroupNotSupported",
@@ -8149,8 +8107,7 @@
     },
     "DBSecurityGroupQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would result in the user exceeding the allowed number of DB security groups.</p>",
       "error":{
         "code":"QuotaExceeded.DBSecurityGroup",
@@ -8215,8 +8172,7 @@
     },
     "DBShardGroupAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified DB shard group name must be unique in your Amazon Web Services account in the specified Amazon Web Services Region.</p>",
       "error":{
         "code":"DBShardGroupAlreadyExists",
@@ -8233,8 +8189,7 @@
     },
     "DBShardGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified DB shard group name wasn't found.</p>",
       "error":{
         "code":"DBShardGroupNotFound",
@@ -8400,8 +8355,7 @@
     },
     "DBSnapshotAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBSnapshotIdentifier</code> is already used by an existing snapshot.</p>",
       "error":{
         "code":"DBSnapshotAlreadyExists",
@@ -8470,8 +8424,7 @@
     },
     "DBSnapshotNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBSnapshotIdentifier</code> doesn't refer to an existing DB snapshot.</p>",
       "error":{
         "code":"DBSnapshotNotFound",
@@ -8538,8 +8491,7 @@
     },
     "DBSnapshotTenantDatabaseNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified snapshot tenant database wasn't found.</p>",
       "error":{
         "code":"DBSnapshotTenantDatabaseNotFoundFault",
@@ -8605,8 +8557,7 @@
     },
     "DBSubnetGroupAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBSubnetGroupName</code> is already used by an existing DB subnet group.</p>",
       "error":{
         "code":"DBSubnetGroupAlreadyExists",
@@ -8617,8 +8568,7 @@
     },
     "DBSubnetGroupDoesNotCoverEnoughAZs":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Subnets in the DB subnet group should cover at least two Availability Zones unless there is only one Availability Zone.</p>",
       "error":{
         "code":"DBSubnetGroupDoesNotCoverEnoughAZs",
@@ -8643,8 +8593,7 @@
     },
     "DBSubnetGroupNotAllowedFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DBSubnetGroup shouldn't be specified while creating read replicas that lie in the same region as the source instance.</p>",
       "error":{
         "code":"DBSubnetGroupNotAllowedFault",
@@ -8655,8 +8604,7 @@
     },
     "DBSubnetGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBSubnetGroupName</code> doesn't refer to an existing DB subnet group.</p>",
       "error":{
         "code":"DBSubnetGroupNotFoundFault",
@@ -8667,8 +8615,7 @@
     },
     "DBSubnetGroupQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would result in the user exceeding the allowed number of DB subnet groups.</p>",
       "error":{
         "code":"DBSubnetGroupQuotaExceeded",
@@ -8686,8 +8633,7 @@
     },
     "DBSubnetQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would result in the user exceeding the allowed number of subnets in a DB subnet groups.</p>",
       "error":{
         "code":"DBSubnetQuotaExceededFault",
@@ -8698,8 +8644,7 @@
     },
     "DBUpgradeDependencyFailureFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB upgrade failed because a resource the DB depends on can't be modified.</p>",
       "error":{
         "code":"DBUpgradeDependencyFailure",
@@ -9103,13 +9048,11 @@
     },
     "DeregisterDBProxyTargetsResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeAccountAttributesMessage":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p/>"
     },
     "DescribeBlueGreenDeploymentsRequest":{
@@ -10535,8 +10478,7 @@
     },
     "DomainNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>Domain</code> doesn't refer to an existing Active Directory domain.</p>",
       "error":{
         "code":"DomainNotFoundFault",
@@ -10643,8 +10585,7 @@
     },
     "Ec2ImagePropertiesNotSupportedFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The AMI configuration prerequisite has not been met.</p>",
       "error":{
         "code":"Ec2ImagePropertiesNotSupportedFault",
@@ -10855,8 +10796,7 @@
     },
     "EventSubscriptionQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You have reached the maximum number of event subscriptions.</p>",
       "error":{
         "code":"EventSubscriptionQuotaExceeded",
@@ -10979,8 +10919,7 @@
     },
     "ExportTaskAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't start an export task that's already running.</p>",
       "error":{
         "code":"ExportTaskAlreadyExists",
@@ -10991,8 +10930,7 @@
     },
     "ExportTaskNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The export task doesn't exist.</p>",
       "error":{
         "code":"ExportTaskNotFound",
@@ -11202,8 +11140,7 @@
     },
     "GlobalClusterAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The <code>GlobalClusterIdentifier</code> already exists. Specify a new global database identifier (unique name) to create a new global database cluster or to rename an existing one.</p>",
       "error":{
         "code":"GlobalClusterAlreadyExistsFault",
@@ -11268,8 +11205,7 @@
     },
     "GlobalClusterNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The <code>GlobalClusterIdentifier</code> doesn't refer to an existing global database cluster.</p>",
       "error":{
         "code":"GlobalClusterNotFoundFault",
@@ -11280,8 +11216,7 @@
     },
     "GlobalClusterQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The number of global database clusters for this account is already at the maximum allowed.</p>",
       "error":{
         "code":"GlobalClusterQuotaExceededFault",
@@ -11334,8 +11269,7 @@
     },
     "IamRoleMissingPermissionsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The IAM role requires additional permissions to export to an Amazon S3 bucket.</p>",
       "error":{
         "code":"IamRoleMissingPermissions",
@@ -11346,8 +11280,7 @@
     },
     "IamRoleNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The IAM role is missing for exporting to an Amazon S3 bucket.</p>",
       "error":{
         "code":"IamRoleNotFound",
@@ -11358,8 +11291,7 @@
     },
     "InstanceQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would result in the user exceeding the allowed number of DB instances.</p>",
       "error":{
         "code":"InstanceQuotaExceeded",
@@ -11370,8 +11302,7 @@
     },
     "InsufficientAvailableIPsInSubnetFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested operation can't be performed because there aren't enough available IP addresses in the proxy's subnets. Add more CIDR blocks to the VPC or remove IP address that aren't required from the subnets.</p>",
       "error":{
         "code":"InsufficientAvailableIPsInSubnetFault",
@@ -11382,8 +11313,7 @@
     },
     "InsufficientDBClusterCapacityFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB cluster doesn't have enough capacity for the current operation.</p>",
       "error":{
         "code":"InsufficientDBClusterCapacityFault",
@@ -11394,8 +11324,7 @@
     },
     "InsufficientDBInstanceCapacityFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified DB instance class isn't available in the specified Availability Zone.</p>",
       "error":{
         "code":"InsufficientDBInstanceCapacity",
@@ -11406,8 +11335,7 @@
     },
     "InsufficientStorageClusterCapacityFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There is insufficient storage available for the current action. You might be able to resolve this error by updating your subnet group to use different Availability Zones that have more storage available.</p>",
       "error":{
         "code":"InsufficientStorageClusterCapacity",
@@ -11471,8 +11399,7 @@
     },
     "IntegrationAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The integration you are trying to create already exists.</p>",
       "error":{
         "code":"IntegrationAlreadyExistsFault",
@@ -11489,8 +11416,7 @@
     },
     "IntegrationConflictOperationFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A conflicting conditional operation is currently in progress against this resource. Typically occurs when there are multiple requests being made to the same resource at the same time, and these requests conflict with each other.</p>",
       "error":{
         "code":"IntegrationConflictOperationFault",
@@ -11548,8 +11474,7 @@
     },
     "IntegrationNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified integration could not be found.</p>",
       "error":{
         "code":"IntegrationNotFoundFault",
@@ -11560,8 +11485,7 @@
     },
     "IntegrationQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't crate any more zero-ETL integrations because the quota has been reached.</p>",
       "error":{
         "code":"IntegrationQuotaExceededFault",
@@ -11584,8 +11508,7 @@
     },
     "InvalidBlueGreenDeploymentStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The blue/green deployment can't be switched over or deleted because there is an invalid configuration in the green environment.</p>",
       "error":{
         "code":"InvalidBlueGreenDeploymentStateFault",
@@ -11596,8 +11519,7 @@
     },
     "InvalidCustomDBEngineVersionStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't delete the CEV.</p>",
       "error":{
         "code":"InvalidCustomDBEngineVersionStateFault",
@@ -11608,8 +11530,7 @@
     },
     "InvalidDBClusterAutomatedBackupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The automated backup is in an invalid state. For example, this automated backup is associated with an active cluster.</p>",
       "error":{
         "code":"InvalidDBClusterAutomatedBackupStateFault",
@@ -11620,8 +11541,7 @@
     },
     "InvalidDBClusterCapacityFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>Capacity</code> isn't a valid Aurora Serverless DB cluster capacity. Valid capacity values are <code>2</code>, <code>4</code>, <code>8</code>, <code>16</code>, <code>32</code>, <code>64</code>, <code>128</code>, and <code>256</code>.</p>",
       "error":{
         "code":"InvalidDBClusterCapacityFault",
@@ -11632,8 +11552,7 @@
     },
     "InvalidDBClusterEndpointStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested operation can't be performed on the endpoint while the endpoint is in this state.</p>",
       "error":{
         "code":"InvalidDBClusterEndpointStateFault",
@@ -11644,8 +11563,7 @@
     },
     "InvalidDBClusterSnapshotStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The supplied value isn't a valid DB cluster snapshot state.</p>",
       "error":{
         "code":"InvalidDBClusterSnapshotStateFault",
@@ -11656,8 +11574,7 @@
     },
     "InvalidDBClusterStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested operation can't be performed while the cluster is in this state.</p>",
       "error":{
         "code":"InvalidDBClusterStateFault",
@@ -11668,8 +11585,7 @@
     },
     "InvalidDBInstanceAutomatedBackupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The automated backup is in an invalid state. For example, this automated backup is associated with an active instance.</p>",
       "error":{
         "code":"InvalidDBInstanceAutomatedBackupState",
@@ -11680,8 +11596,7 @@
     },
     "InvalidDBInstanceStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB instance isn't in a valid state.</p>",
       "error":{
         "code":"InvalidDBInstanceState",
@@ -11692,8 +11607,7 @@
     },
     "InvalidDBParameterGroupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB parameter group is in use or is in an invalid state. If you are attempting to delete the parameter group, you can't delete it when the parameter group is in this state.</p>",
       "error":{
         "code":"InvalidDBParameterGroupState",
@@ -11704,8 +11618,7 @@
     },
     "InvalidDBProxyEndpointStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't perform this operation while the DB proxy endpoint is in a particular state.</p>",
       "error":{
         "code":"InvalidDBProxyEndpointStateFault",
@@ -11716,8 +11629,7 @@
     },
     "InvalidDBProxyStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested operation can't be performed while the proxy is in this state.</p>",
       "error":{
         "code":"InvalidDBProxyStateFault",
@@ -11728,8 +11640,7 @@
     },
     "InvalidDBSecurityGroupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The state of the DB security group doesn't allow deletion.</p>",
       "error":{
         "code":"InvalidDBSecurityGroupState",
@@ -11740,8 +11651,7 @@
     },
     "InvalidDBShardGroupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB shard group must be in the available state.</p>",
       "error":{
         "code":"InvalidDBShardGroupState",
@@ -11752,8 +11662,7 @@
     },
     "InvalidDBSnapshotStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The state of the DB snapshot doesn't allow deletion.</p>",
       "error":{
         "code":"InvalidDBSnapshotState",
@@ -11764,8 +11673,7 @@
     },
     "InvalidDBSubnetGroupFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DBSubnetGroup doesn't belong to the same VPC as that of an existing cross-region read replica of the same source instance.</p>",
       "error":{
         "code":"InvalidDBSubnetGroupFault",
@@ -11776,8 +11684,7 @@
     },
     "InvalidDBSubnetGroupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB subnet group cannot be deleted because it's in use.</p>",
       "error":{
         "code":"InvalidDBSubnetGroupStateFault",
@@ -11788,8 +11695,7 @@
     },
     "InvalidDBSubnetStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB subnet isn't in the <i>available</i> state.</p>",
       "error":{
         "code":"InvalidDBSubnetStateFault",
@@ -11800,8 +11706,7 @@
     },
     "InvalidEventSubscriptionStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This error can occur if someone else is modifying a subscription. You should retry the action.</p>",
       "error":{
         "code":"InvalidEventSubscriptionState",
@@ -11812,8 +11717,7 @@
     },
     "InvalidExportOnlyFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The export is invalid for exporting to an Amazon S3 bucket.</p>",
       "error":{
         "code":"InvalidExportOnly",
@@ -11824,8 +11728,7 @@
     },
     "InvalidExportSourceStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The state of the export snapshot is invalid for exporting to an Amazon S3 bucket.</p>",
       "error":{
         "code":"InvalidExportSourceState",
@@ -11836,8 +11739,7 @@
     },
     "InvalidExportTaskStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't cancel an export task that has completed.</p>",
       "error":{
         "code":"InvalidExportTaskStateFault",
@@ -11848,8 +11750,7 @@
     },
     "InvalidGlobalClusterStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The global cluster is in an invalid state and can't perform the requested operation.</p>",
       "error":{
         "code":"InvalidGlobalClusterStateFault",
@@ -11860,8 +11761,7 @@
     },
     "InvalidIntegrationStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The integration is in an invalid state and can't perform the requested operation.</p>",
       "error":{
         "code":"InvalidIntegrationStateFault",
@@ -11872,8 +11772,7 @@
     },
     "InvalidOptionGroupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The option group isn't in the <i>available</i> state.</p>",
       "error":{
         "code":"InvalidOptionGroupStateFault",
@@ -11884,8 +11783,7 @@
     },
     "InvalidResourceStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The operation can't be performed because another operation is in progress.</p>",
       "error":{
         "code":"InvalidResourceStateFault",
@@ -11896,8 +11794,7 @@
     },
     "InvalidRestoreFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Cannot restore from VPC backup to non-VPC DB instance.</p>",
       "error":{
         "code":"InvalidRestoreFault",
@@ -11908,8 +11805,7 @@
     },
     "InvalidS3BucketFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified Amazon S3 bucket name can't be found or Amazon RDS isn't authorized to access the specified Amazon S3 bucket. Verify the <b>SourceS3BucketName</b> and <b>S3IngestionRoleArn</b> values and try again.</p>",
       "error":{
         "code":"InvalidS3BucketFault",
@@ -11920,8 +11816,7 @@
     },
     "InvalidSubnet":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested subnet is invalid, or multiple subnets were requested that are not all in a common VPC.</p>",
       "error":{
         "code":"InvalidSubnet",
@@ -11932,8 +11827,7 @@
     },
     "InvalidVPCNetworkStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB subnet group doesn't cover all Availability Zones after it's created because of users' change.</p>",
       "error":{
         "code":"InvalidVPCNetworkStateFault",
@@ -11954,8 +11848,7 @@
     },
     "KMSKeyNotAccessibleFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An error occurred accessing an Amazon Web Services KMS key.</p>",
       "error":{
         "code":"KMSKeyNotAccessibleFault",
@@ -12057,8 +11950,7 @@
     },
     "MaxDBShardGroupLimitReached":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The maximum number of DB shard groups for your Amazon Web Services account in the specified Amazon Web Services Region has been reached.</p>",
       "error":{
         "code":"MaxDBShardGroupLimitReached",
@@ -12395,7 +12287,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether minor engine upgrades are applied automatically to the DB cluster during the maintenance window. By default, minor engine upgrades are applied automatically.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>Specifies whether minor engine upgrades are applied automatically to the DB cluster during the maintenance window. By default, minor engine upgrades are applied automatically.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters.</p> <p>For more information about automatic minor version upgrades, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Upgrading.html#USER_UpgradeDBInstance.Upgrading.AutoMinorVersionUpgrades\">Automatically upgrading the minor engine version</a>.</p>"
         },
         "MonitoringInterval":{
           "shape":"IntegerOptional",
@@ -12555,7 +12447,7 @@
         },
         "MasterUserPassword":{
           "shape":"String",
-          "documentation":"<p>The new password for the master user.</p> <p>Changing this parameter doesn't result in an outage and the change is asynchronously applied as soon as possible. Between the time of the request and the completion of the request, the <code>MasterUserPassword</code> element exists in the <code>PendingModifiedValues</code> element of the operation response.</p> <note> <p>Amazon RDS API operations never return the password, so this operation provides a way to regain access to a primary instance user if the password is lost. This includes restoring privileges that might have been accidentally revoked.</p> </note> <p>This setting doesn't apply to the following DB instances:</p> <ul> <li> <p>Amazon Aurora (The password for the master user is managed by the DB cluster. For more information, see <code>ModifyDBCluster</code>.)</p> </li> <li> <p>RDS Custom</p> </li> </ul> <p>Default: Uses existing setting</p> <p>Constraints:</p> <ul> <li> <p>Can't be specified if <code>ManageMasterUserPassword</code> is turned on.</p> </li> <li> <p>Can include any printable ASCII character except \"/\", \"\"\", or \"@\". For RDS for Oracle, can't include the \"&amp;\" (ampersand) or the \"'\" (single quotes) character.</p> </li> </ul> <p>Length Constraints:</p> <ul> <li> <p>RDS for Db2 - Must contain from 8 to 255 characters.</p> </li> <li> <p>RDS for MariaDB - Must contain from 8 to 41 characters.</p> </li> <li> <p>RDS for Microsoft SQL Server - Must contain from 8 to 128 characters.</p> </li> <li> <p>RDS for MySQL - Must contain from 8 to 41 characters.</p> </li> <li> <p>RDS for Oracle - Must contain from 8 to 30 characters.</p> </li> <li> <p>RDS for PostgreSQL - Must contain from 8 to 128 characters.</p> </li> </ul>"
+          "documentation":"<p>The new password for the master user.</p> <p>Changing this parameter doesn't result in an outage and the change is asynchronously applied as soon as possible. Between the time of the request and the completion of the request, the <code>MasterUserPassword</code> element exists in the <code>PendingModifiedValues</code> element of the operation response.</p> <note> <p>Amazon RDS API operations never return the password, so this operation provides a way to regain access to a primary instance user if the password is lost. This includes restoring privileges that might have been accidentally revoked.</p> </note> <p>This setting doesn't apply to the following DB instances:</p> <ul> <li> <p>Amazon Aurora</p> <p>The password for the master user is managed by the DB cluster. For more information, see <code>ModifyDBCluster</code>.</p> </li> <li> <p>RDS Custom</p> </li> <li> <p>RDS for Oracle CDBs in the multi-tenant configuration</p> <p>Specify the master password in <code>ModifyTenantDatabase</code> instead.</p> </li> </ul> <p>Default: Uses existing setting</p> <p>Constraints:</p> <ul> <li> <p>Can't be specified if <code>ManageMasterUserPassword</code> is turned on.</p> </li> <li> <p>Can include any printable ASCII character except \"/\", \"\"\", or \"@\". For RDS for Oracle, can't include the \"&amp;\" (ampersand) or the \"'\" (single quotes) character.</p> </li> </ul> <p>Length Constraints:</p> <ul> <li> <p>RDS for Db2 - Must contain from 8 to 255 characters.</p> </li> <li> <p>RDS for MariaDB - Must contain from 8 to 41 characters.</p> </li> <li> <p>RDS for Microsoft SQL Server - Must contain from 8 to 128 characters.</p> </li> <li> <p>RDS for MySQL - Must contain from 8 to 41 characters.</p> </li> <li> <p>RDS for Oracle - Must contain from 8 to 30 characters.</p> </li> <li> <p>RDS for PostgreSQL - Must contain from 8 to 128 characters.</p> </li> </ul>"
         },
         "DBParameterGroupName":{
           "shape":"String",
@@ -12587,7 +12479,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether minor version upgrades are applied automatically to the DB instance during the maintenance window. An outage occurs when all the following conditions are met:</p> <ul> <li> <p>The automatic upgrade is enabled for the maintenance window.</p> </li> <li> <p>A newer minor version is available.</p> </li> <li> <p>RDS has enabled automatic patching for the engine version.</p> </li> </ul> <p>If any of the preceding conditions isn't met, Amazon RDS applies the change as soon as possible and doesn't cause an outage.</p> <p>For an RDS Custom DB instance, don't enable this setting. Otherwise, the operation returns an error.</p>"
+          "documentation":"<p>Specifies whether minor version upgrades are applied automatically to the DB instance during the maintenance window. An outage occurs when all the following conditions are met:</p> <ul> <li> <p>The automatic upgrade is enabled for the maintenance window.</p> </li> <li> <p>A newer minor version is available.</p> </li> <li> <p>RDS has enabled automatic patching for the engine version.</p> </li> </ul> <p>If any of the preceding conditions isn't met, Amazon RDS applies the change as soon as possible and doesn't cause an outage.</p> <p>For an RDS Custom DB instance, don't enable this setting. Otherwise, the operation returns an error.</p> <p>For more information about automatic minor version upgrades, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Upgrading.html#USER_UpgradeDBInstance.Upgrading.AutoMinorVersionUpgrades\">Automatically upgrading the minor engine version</a>.</p>"
         },
         "LicenseModel":{
           "shape":"String",
@@ -12747,11 +12639,11 @@
         },
         "ManageMasterUserPassword":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether to manage the master user password with Amazon Web Services Secrets Manager.</p> <p>If the DB instance doesn't manage the master user password with Amazon Web Services Secrets Manager, you can turn on this management. In this case, you can't specify <code>MasterUserPassword</code>.</p> <p>If the DB instance already manages the master user password with Amazon Web Services Secrets Manager, and you specify that the master user password is not managed with Amazon Web Services Secrets Manager, then you must specify <code>MasterUserPassword</code>. In this case, Amazon RDS deletes the secret and uses the new password for the master user specified by <code>MasterUserPassword</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>Can't manage the master user password with Amazon Web Services Secrets Manager if <code>MasterUserPassword</code> is specified.</p> </li> </ul>"
+          "documentation":"<p>Specifies whether to manage the master user password with Amazon Web Services Secrets Manager.</p> <p>If the DB instance doesn't manage the master user password with Amazon Web Services Secrets Manager, you can turn on this management. In this case, you can't specify <code>MasterUserPassword</code>.</p> <p>If the DB instance already manages the master user password with Amazon Web Services Secrets Manager, and you specify that the master user password is not managed with Amazon Web Services Secrets Manager, then you must specify <code>MasterUserPassword</code>. In this case, Amazon RDS deletes the secret and uses the new password for the master user specified by <code>MasterUserPassword</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>Can't manage the master user password with Amazon Web Services Secrets Manager if <code>MasterUserPassword</code> is specified.</p> </li> <li> <p>Can't specify for RDS for Oracle CDB instances in the multi-tenant configuration. Use <code>ModifyTenantDatabase</code> instead.</p> </li> <li> <p>Can't specify the parameters <code>ManageMasterUserPassword</code> and <code>MultiTenant</code> in the same operation.</p> </li> </ul>"
         },
         "RotateMasterUserPassword":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether to rotate the secret managed by Amazon Web Services Secrets Manager for the master user password.</p> <p>This setting is valid only if the master user password is managed by RDS in Amazon Web Services Secrets Manager for the DB cluster. The secret value contains the updated password.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>You must apply the change immediately when rotating the master user password.</p> </li> </ul>"
+          "documentation":"<p>Specifies whether to rotate the secret managed by Amazon Web Services Secrets Manager for the master user password.</p> <p>This setting is valid only if the master user password is managed by RDS in Amazon Web Services Secrets Manager for the DB instance. The secret value contains the updated password.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>You must apply the change immediately when rotating the master user password.</p> </li> </ul>"
         },
         "MasterUserSecretKmsKeyId":{
           "shape":"String",
@@ -13169,6 +13061,18 @@
         "NewTenantDBName":{
           "shape":"String",
           "documentation":"<p>The new name of the tenant database when renaming a tenant database. This parameter isn’t case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Can't be the string null or any other reserved word.</p> </li> <li> <p>Can't be longer than 8 characters.</p> </li> </ul>"
+        },
+        "ManageMasterUserPassword":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to manage the master user password with Amazon Web Services Secrets Manager.</p> <p>If the tenant database doesn't manage the master user password with Amazon Web Services Secrets Manager, you can turn on this management. In this case, you can't specify <code>MasterUserPassword</code>.</p> <p>If the tenant database already manages the master user password with Amazon Web Services Secrets Manager, and you specify that the master user password is not managed with Amazon Web Services Secrets Manager, then you must specify <code>MasterUserPassword</code>. In this case, Amazon RDS deletes the secret and uses the new password for the master user specified by <code>MasterUserPassword</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>Can't manage the master user password with Amazon Web Services Secrets Manager if <code>MasterUserPassword</code> is specified.</p> </li> </ul>"
+        },
+        "RotateMasterUserPassword":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to rotate the secret managed by Amazon Web Services Secrets Manager for the master user password.</p> <p>This setting is valid only if the master user password is managed by RDS in Amazon Web Services Secrets Manager for the DB instance. The secret value contains the updated password.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>You must apply the change immediately when rotating the master user password.</p> </li> </ul>"
+        },
+        "MasterUserSecretKmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services KMS key identifier to encrypt a secret that is automatically generated and managed in Amazon Web Services Secrets Manager.</p> <p>This setting is valid only if both of the following conditions are met:</p> <ul> <li> <p>The tenant database doesn't manage the master user password in Amazon Web Services Secrets Manager.</p> <p>If the tenant database already manages the master user password in Amazon Web Services Secrets Manager, you can't change the KMS key used to encrypt the secret.</p> </li> <li> <p>You're turning on <code>ManageMasterUserPassword</code> to manage the master user password in Amazon Web Services Secrets Manager.</p> <p>If you're turning on <code>ManageMasterUserPassword</code> and don't specify <code>MasterUserSecretKmsKeyId</code>, then the <code>aws/secretsmanager</code> KMS key is used to encrypt the secret. If the secret is in a different Amazon Web Services account, then you can't use the <code>aws/secretsmanager</code> KMS key to encrypt the secret, and you must use a self-managed KMS key.</p> </li> </ul> <p>The Amazon Web Services KMS key identifier is any of the following:</p> <ul> <li> <p>Key ARN</p> </li> <li> <p>Key ID</p> </li> <li> <p>Alias ARN</p> </li> <li> <p>Alias name for the KMS key</p> </li> </ul> <p>To use a KMS key in a different Amazon Web Services account, specify the key ARN or alias ARN.</p> <p>A default KMS key exists for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p>"
         }
       }
     },
@@ -13180,8 +13084,7 @@
     },
     "NetworkTypeNotSupported":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The network type is invalid for the DB instance. Valid nework type values are <code>IPV4</code> and <code>DUAL</code>.</p>",
       "error":{
         "code":"NetworkTypeNotSupported",
@@ -13323,8 +13226,7 @@
     },
     "OptionGroupAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The option group you are trying to create already exists.</p>",
       "error":{
         "code":"OptionGroupAlreadyExistsFault",
@@ -13356,8 +13258,7 @@
     },
     "OptionGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified option group could not be found.</p>",
       "error":{
         "code":"OptionGroupNotFoundFault",
@@ -13513,8 +13414,7 @@
     },
     "OptionGroupQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The quota of 20 option groups was exceeded for this Amazon Web Services account.</p>",
       "error":{
         "code":"OptionGroupQuotaExceededFault",
@@ -14097,8 +13997,7 @@
     },
     "PointInTimeRestoreNotEnabledFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>SourceDBInstanceIdentifier</code> refers to a DB instance with <code>BackupRetentionPeriod</code> equal to 0.</p>",
       "error":{
         "code":"PointInTimeRestoreNotEnabled",
@@ -14172,8 +14071,7 @@
     },
     "ProvisionedIopsNotAvailableInAZFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Provisioned IOPS not available in the specified Availability Zone.</p>",
       "error":{
         "code":"ProvisionedIopsNotAvailableInAZFault",
@@ -14656,8 +14554,7 @@
     },
     "ReservedDBInstanceAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>User already has a reservation with the given identifier.</p>",
       "error":{
         "code":"ReservedDBInstanceAlreadyExists",
@@ -14689,8 +14586,7 @@
     },
     "ReservedDBInstanceNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified reserved DB Instance not found.</p>",
       "error":{
         "code":"ReservedDBInstanceNotFound",
@@ -14701,8 +14597,7 @@
     },
     "ReservedDBInstanceQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Request would exceed the user's DB Instance quota.</p>",
       "error":{
         "code":"ReservedDBInstanceQuotaExceeded",
@@ -14781,8 +14676,7 @@
     },
     "ReservedDBInstancesOfferingNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Specified offering does not exist.</p>",
       "error":{
         "code":"ReservedDBInstancesOfferingNotFound",
@@ -14831,8 +14725,7 @@
     },
     "ResourceNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified resource ID was not found.</p>",
       "error":{
         "code":"ResourceNotFoundFault",
@@ -15357,7 +15250,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether to automatically apply minor version upgrades to the DB instance during the maintenance window.</p> <p>If you restore an RDS Custom DB instance, you must disable this parameter.</p>"
+          "documentation":"<p>Specifies whether to automatically apply minor version upgrades to the DB instance during the maintenance window.</p> <p>If you restore an RDS Custom DB instance, you must disable this parameter.</p> <p>For more information about automatic minor version upgrades, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Upgrading.html#USER_UpgradeDBInstance.Upgrading.AutoMinorVersionUpgrades\">Automatically upgrading the minor engine version</a>.</p>"
         },
         "LicenseModel":{
           "shape":"String",
@@ -15487,6 +15380,14 @@
         "EngineLifecycleSupport":{
           "shape":"String",
           "documentation":"<p>The life cycle type for this DB instance.</p> <note> <p>By default, this value is set to <code>open-source-rds-extended-support</code>, which enrolls your DB instance into Amazon RDS Extended Support. At the end of standard support, you can avoid charges for Extended Support by setting the value to <code>open-source-rds-extended-support-disabled</code>. In this case, RDS automatically upgrades your restored DB instance to a higher engine version, if the major engine version is past its end of standard support date.</p> </note> <p>You can use this setting to enroll your DB instance into Amazon RDS Extended Support. With RDS Extended Support, you can run the selected major engine version on your DB instance past the end of standard support for that engine version. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/extended-support.html\">Using Amazon RDS Extended Support</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting applies only to RDS for MySQL and RDS for PostgreSQL. For Amazon Aurora DB instances, the life cycle type is managed by the DB cluster.</p> <p>Valid Values: <code>open-source-rds-extended-support | open-source-rds-extended-support-disabled</code> </p> <p>Default: <code>open-source-rds-extended-support</code> </p>"
+        },
+        "ManageMasterUserPassword":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to manage the master user password with Amazon Web Services Secrets Manager in the restored DB instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Constraints:</p> <ul> <li> <p>Applies to RDS for Oracle only.</p> </li> </ul>"
+        },
+        "MasterUserSecretKmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services KMS key identifier to encrypt a secret that is automatically generated and managed in Amazon Web Services Secrets Manager.</p> <p>This setting is valid only if the master user password is managed by RDS in Amazon Web Services Secrets Manager for the DB instance.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key. To use a KMS key in a different Amazon Web Services account, specify the key ARN or alias ARN.</p> <p>If you don't specify <code>MasterUserSecretKmsKeyId</code>, then the <code>aws/secretsmanager</code> KMS key is used to encrypt the secret. If the secret is in a different Amazon Web Services account, then you can't use the <code>aws/secretsmanager</code> KMS key to encrypt the secret, and you must use a customer managed KMS key.</p> <p>There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p>"
         }
       },
       "documentation":"<p/>"
@@ -15583,7 +15484,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether to automatically apply minor engine upgrades to the DB instance during the maintenance window. By default, minor engine upgrades are not applied automatically.</p>"
+          "documentation":"<p>Specifies whether to automatically apply minor engine upgrades to the DB instance during the maintenance window. By default, minor engine upgrades are not applied automatically.</p> <p>For more information about automatic minor version upgrades, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Upgrading.html#USER_UpgradeDBInstance.Upgrading.AutoMinorVersionUpgrades\">Automatically upgrading the minor engine version</a>.</p>"
         },
         "LicenseModel":{
           "shape":"String",
@@ -15771,7 +15672,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether minor version upgrades are applied automatically to the DB instance during the maintenance window.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>Specifies whether minor version upgrades are applied automatically to the DB instance during the maintenance window.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>For more information about automatic minor version upgrades, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Upgrading.html#USER_UpgradeDBInstance.Upgrading.AutoMinorVersionUpgrades\">Automatically upgrading the minor engine version</a>.</p>"
         },
         "LicenseModel":{
           "shape":"String",
@@ -15909,6 +15810,14 @@
         "EngineLifecycleSupport":{
           "shape":"String",
           "documentation":"<p>The life cycle type for this DB instance.</p> <note> <p>By default, this value is set to <code>open-source-rds-extended-support</code>, which enrolls your DB instance into Amazon RDS Extended Support. At the end of standard support, you can avoid charges for Extended Support by setting the value to <code>open-source-rds-extended-support-disabled</code>. In this case, RDS automatically upgrades your restored DB instance to a higher engine version, if the major engine version is past its end of standard support date.</p> </note> <p>You can use this setting to enroll your DB instance into Amazon RDS Extended Support. With RDS Extended Support, you can run the selected major engine version on your DB instance past the end of standard support for that engine version. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/extended-support.html\">Using Amazon RDS Extended Support</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting applies only to RDS for MySQL and RDS for PostgreSQL. For Amazon Aurora DB instances, the life cycle type is managed by the DB cluster.</p> <p>Valid Values: <code>open-source-rds-extended-support | open-source-rds-extended-support-disabled</code> </p> <p>Default: <code>open-source-rds-extended-support</code> </p>"
+        },
+        "ManageMasterUserPassword":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to manage the master user password with Amazon Web Services Secrets Manager in the restored DB instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Constraints:</p> <ul> <li> <p>Applies to RDS for Oracle only.</p> </li> </ul>"
+        },
+        "MasterUserSecretKmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services KMS key identifier to encrypt a secret that is automatically generated and managed in Amazon Web Services Secrets Manager.</p> <p>This setting is valid only if the master user password is managed by RDS in Amazon Web Services Secrets Manager for the DB instance.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key. To use a KMS key in a different Amazon Web Services account, specify the key ARN or alias ARN.</p> <p>If you don't specify <code>MasterUserSecretKmsKeyId</code>, then the <code>aws/secretsmanager</code> KMS key is used to encrypt the secret. If the secret is in a different Amazon Web Services account, then you can't use the <code>aws/secretsmanager</code> KMS key to encrypt the secret, and you must use a customer managed KMS key.</p> <p>There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p>"
         }
       },
       "documentation":"<p/>"
@@ -15968,8 +15877,7 @@
     },
     "SNSInvalidTopicFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>SNS has responded that there is a problem with the SNS topic specified.</p>",
       "error":{
         "code":"SNSInvalidTopic",
@@ -15980,8 +15888,7 @@
     },
     "SNSNoAuthorizationFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You do not have permission to publish to the SNS topic ARN.</p>",
       "error":{
         "code":"SNSNoAuthorization",
@@ -15992,8 +15899,7 @@
     },
     "SNSTopicArnNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The SNS topic ARN does not exist.</p>",
       "error":{
         "code":"SNSTopicArnNotFound",
@@ -16128,8 +16034,7 @@
     },
     "SharedSnapshotQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You have exceeded the maximum number of accounts that you can share a manual DB snapshot with.</p>",
       "error":{
         "code":"SharedSnapshotQuotaExceeded",
@@ -16140,8 +16045,7 @@
     },
     "SnapshotQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would result in the user exceeding the allowed number of DB snapshots.</p>",
       "error":{
         "code":"SnapshotQuotaExceeded",
@@ -16158,8 +16062,7 @@
     },
     "SourceClusterNotSupportedFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The source DB cluster isn't supported for a blue/green deployment.</p>",
       "error":{
         "code":"SourceClusterNotSupportedFault",
@@ -16170,8 +16073,7 @@
     },
     "SourceDatabaseNotSupportedFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The source DB instance isn't supported for a blue/green deployment.</p>",
       "error":{
         "code":"SourceDatabaseNotSupportedFault",
@@ -16189,8 +16091,7 @@
     },
     "SourceNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested source could not be found.</p>",
       "error":{
         "code":"SourceNotFound",
@@ -16500,8 +16401,7 @@
     },
     "StorageQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would result in the user exceeding the allowed amount of storage available across all DB instances.</p>",
       "error":{
         "code":"StorageQuotaExceeded",
@@ -16512,8 +16412,7 @@
     },
     "StorageTypeNotAvailableFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The <code>aurora-iopt1</code> storage type isn't available, because you modified the DB cluster to use this storage type less than one month ago.</p>",
       "error":{
         "code":"StorageTypeNotAvailableFault",
@@ -16524,8 +16423,7 @@
     },
     "StorageTypeNotSupportedFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified <code>StorageType</code> can't be associated with the DB instance.</p>",
       "error":{
         "code":"StorageTypeNotSupported",
@@ -16566,8 +16464,7 @@
     },
     "SubnetAlreadyInUse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB subnet is already in use in the Availability Zone.</p>",
       "error":{
         "code":"SubnetAlreadyInUse",
@@ -16592,8 +16489,7 @@
     },
     "SubscriptionAlreadyExistFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The supplied subscription name already exists.</p>",
       "error":{
         "code":"SubscriptionAlreadyExist",
@@ -16604,8 +16500,7 @@
     },
     "SubscriptionCategoryNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The supplied category does not exist.</p>",
       "error":{
         "code":"SubscriptionCategoryNotFound",
@@ -16616,8 +16511,7 @@
     },
     "SubscriptionNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The subscription name does not exist.</p>",
       "error":{
         "code":"SubscriptionNotFound",
@@ -16895,6 +16789,7 @@
           "shape":"TenantDatabasePendingModifiedValues",
           "documentation":"<p>Information about pending changes for a tenant database.</p>"
         },
+        "MasterUserSecret":{"shape":"MasterUserSecret"},
         "TagList":{"shape":"TagList"}
       },
       "documentation":"<p>A tenant database in the DB instance. This data type is an element in the response to the <code>DescribeTenantDatabases</code> action.</p>",
@@ -16902,8 +16797,7 @@
     },
     "TenantDatabaseAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You attempted to either create a tenant database that already exists or modify a tenant database to use the name of an existing tenant database.</p>",
       "error":{
         "code":"TenantDatabaseAlreadyExists",
@@ -16914,8 +16808,7 @@
     },
     "TenantDatabaseNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified tenant database wasn't found in the DB instance.</p>",
       "error":{
         "code":"TenantDatabaseNotFound",
@@ -16940,8 +16833,7 @@
     },
     "TenantDatabaseQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You attempted to create more tenant databases than are permitted in your Amazon Web Services account.</p>",
       "error":{
         "code":"TenantDatabaseQuotaExceeded",
@@ -16982,8 +16874,7 @@
     },
     "UnsupportedDBEngineVersionFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified DB engine version isn't supported for Aurora Limitless Database.</p>",
       "error":{
         "code":"UnsupportedDBEngineVersion",
@@ -17071,7 +16962,7 @@
         },
         "ClientPasswordAuthType":{
           "shape":"ClientPasswordAuthType",
-          "documentation":"<p>The type of authentication the proxy uses for connections from clients.</p>"
+          "documentation":"<p>The type of authentication the proxy uses for connections from clients. The following values are defaults for the corresponding engines:</p> <ul> <li> <p>RDS for MySQL: <code>MYSQL_CACHING_SHA2_PASSWORD</code> </p> </li> <li> <p>RDS for SQL Server: <code>SQL_SERVER_AUTHENTICATION</code> </p> </li> <li> <p>RDS for PostgreSQL: <code>POSTGRES_SCRAM_SHA2_256</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>Specifies the details of authentication used by a proxy to log in as a specific database user.</p>"

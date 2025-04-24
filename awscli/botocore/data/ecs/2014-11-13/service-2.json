@@ -731,7 +731,7 @@
         {"shape":"BlockedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Starts a new task using the specified task definition.</p> <note> <p>On March 21, 2024, a change was made to resolve the task definition revision before authorization. When a task definition revision is not specified, authorization will occur using the latest revision of a task definition.</p> </note> <note> <p>Amazon Elastic Inference (EI) is no longer available to customers.</p> </note> <p>You can allow Amazon ECS to place tasks for you, or you can customize how Amazon ECS places tasks using placement constraints and placement strategies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html\">Scheduling Tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Alternatively, you can use <code>StartTask</code> to use your own scheduler or place tasks manually on specific container instances.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when creating or updating a service. For more infomation, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>The Amazon ECS API follows an eventual consistency model. This is because of the distributed nature of the system supporting the API. This means that the result of an API command you run that affects your Amazon ECS resources might not be immediately visible to all subsequent commands you run. Keep this in mind when you carry out an API command that immediately follows a previous API command.</p> <p>To manage eventual consistency, you can do the following:</p> <ul> <li> <p>Confirm the state of the resource before you run a command to modify it. Run the DescribeTasks command using an exponential backoff algorithm to ensure that you allow enough time for the previous command to propagate through the system. To do this, run the DescribeTasks command repeatedly, starting with a couple of seconds of wait time and increasing gradually up to five minutes of wait time.</p> </li> <li> <p>Add wait time between subsequent commands, even if the DescribeTasks command returns an accurate response. Apply an exponential backoff algorithm starting with a couple of seconds of wait time, and increase gradually up to about five minutes of wait time.</p> </li> </ul>"
+      "documentation":"<p>Starts a new task using the specified task definition.</p> <note> <p>On March 21, 2024, a change was made to resolve the task definition revision before authorization. When a task definition revision is not specified, authorization will occur using the latest revision of a task definition.</p> </note> <note> <p>Amazon Elastic Inference (EI) is no longer available to customers.</p> </note> <p>You can allow Amazon ECS to place tasks for you, or you can customize how Amazon ECS places tasks using placement constraints and placement strategies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html\">Scheduling Tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Alternatively, you can use <code>StartTask</code> to use your own scheduler or place tasks manually on specific container instances.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when creating or updating a service. For more infomation, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>The Amazon ECS API follows an eventual consistency model. This is because of the distributed nature of the system supporting the API. This means that the result of an API command you run that affects your Amazon ECS resources might not be immediately visible to all subsequent commands you run. Keep this in mind when you carry out an API command that immediately follows a previous API command.</p> <p>To manage eventual consistency, you can do the following:</p> <ul> <li> <p>Confirm the state of the resource before you run a command to modify it. Run the DescribeTasks command using an exponential backoff algorithm to ensure that you allow enough time for the previous command to propagate through the system. To do this, run the DescribeTasks command repeatedly, starting with a couple of seconds of wait time and increasing gradually up to five minutes of wait time.</p> </li> <li> <p>Add wait time between subsequent commands, even if the DescribeTasks command returns an accurate response. Apply an exponential backoff algorithm starting with a couple of seconds of wait time, and increase gradually up to about five minutes of wait time.</p> </li> </ul> <p>If you get a <code>ConflictException</code> error, the <code>RunTask</code> request could not be processed due to conflicts. The provided <code>clientToken</code> is already in use with a different <code>RunTask</code> request. The <code>resourceIds</code> are the existing task ARNs which are already associated with the <code>clientToken</code>. </p> <p>To fix this issue:</p> <ul> <li> <p>Run <code>RunTask</code> with a unique <code>clientToken</code>.</p> </li> <li> <p>Run <code>RunTask</code> with the <code>clientToken</code> and the original set of parameters</p> </li> </ul>"
     },
     "StartTask":{
       "name":"StartTask",
@@ -767,7 +767,7 @@
         {"shape":"ServiceDeploymentNotFoundException"},
         {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>Stops an ongoing service deployment.</p> <p>The following stop types are avaiable:</p> <ul> <li> <p>ROLLBACK - This option rolls back the service deployment to the previous service revision. </p> <p>You can use this option even if you didn't configure the service deployment for the rollback option. </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/stop-service-deployment.html\">Stopping Amazon ECS service deployments</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+      "documentation":"<p>Stops an ongoing service deployment.</p> <note> <p>StopServiceDeployment isn't currently supported.</p> </note>"
     },
     "StopTask":{
       "name":"StopTask",
@@ -1037,8 +1037,7 @@
   "shapes":{
     "AccessDeniedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You don't have authorization to perform the requested action.</p>",
       "exception":true
     },
@@ -1145,8 +1144,7 @@
     },
     "AttributeLimitExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can apply up to 10 custom attributes for each resource. You can view the attributes of a resource with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListAttributes.html\">ListAttributes</a>. You can remove existing attributes on a resource with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeleteAttributes.html\">DeleteAttributes</a>.</p>",
       "exception":true
     },
@@ -1223,8 +1221,7 @@
     },
     "BlockedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Your Amazon Web Services account was blocked. For more information, contact <a href=\"http://aws.amazon.com/contact-us/\"> Amazon Web ServicesSupport</a>.</p>",
       "exception":true
     },
@@ -1438,22 +1435,19 @@
     },
     "ClusterContainsContainerInstancesException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't delete a cluster that has registered container instances. First, deregister the container instances before you can delete the cluster. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeregisterContainerInstance.html\">DeregisterContainerInstance</a>.</p>",
       "exception":true
     },
     "ClusterContainsServicesException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't delete a cluster that contains services. First, update the service to reduce its desired task count to 0, and then delete the service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a> and <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeleteService.html\">DeleteService</a>.</p>",
       "exception":true
     },
     "ClusterContainsTasksException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't delete a cluster that has active tasks.</p>",
       "exception":true
     },
@@ -1473,8 +1467,7 @@
     },
     "ClusterNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified cluster wasn't found. You can view your available clusters with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListClusters.html\">ListClusters</a>. Amazon ECS clusters are Region specific.</p>",
       "exception":true
     },
@@ -1545,7 +1538,7 @@
           "documentation":"<p>The existing task ARNs which are already associated with the <code>clientToken</code>.</p>"
         }
       },
-      "documentation":"<p>The <code>RunTask</code> request could not be processed due to conflicts. The provided <code>clientToken</code> is already in use with a different <code>RunTask</code> request. The <code>resourceIds</code> are the existing task ARNs which are already associated with the <code>clientToken</code>. </p> <p>To fix this issue:</p> <ul> <li> <p>Run <code>RunTask</code> with a unique <code>clientToken</code>.</p> </li> <li> <p>Run <code>RunTask</code> with the <code>clientToken</code> and the original set of parameters</p> </li> </ul>",
+      "documentation":"<p>The request could not be processed because of conflict in the current state of the resource. </p>",
       "exception":true
     },
     "Connectivity":{
@@ -3656,8 +3649,7 @@
     },
     "InvalidParameterException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified parameter isn't valid. Review the available parameters for the API request.</p> <p>For more information about service event errors, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-event-messages-list.html\">Amazon ECS service event messages</a>. </p>",
       "exception":true
     },
@@ -3707,8 +3699,7 @@
     },
     "LimitExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The limit for the resource was exceeded.</p>",
       "exception":true
     },
@@ -4355,8 +4346,7 @@
     },
     "MissingVersionException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Amazon ECS can't determine the current version of the Amazon ECS container agent on the container instance and doesn't have enough information to proceed with an update. This could be because the agent running on the container instance is a previous or custom version that doesn't use our version information.</p>",
       "exception":true
     },
@@ -4384,8 +4374,7 @@
     },
     "NamespaceNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified namespace wasn't found.</p>",
       "exception":true
     },
@@ -4466,8 +4455,7 @@
     },
     "NoUpdateAvailableException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There's no update available for this Amazon ECS container agent. This might be because the agent is already running the latest version or because it's so old that there's no update path to the current version.</p>",
       "exception":true
     },
@@ -4570,15 +4558,13 @@
     },
     "PlatformTaskDefinitionIncompatibilityException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified platform version doesn't satisfy the required capabilities of the task definition.</p>",
       "exception":true
     },
     "PlatformUnknownException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified platform version doesn't exist.</p>",
       "exception":true
     },
@@ -4984,15 +4970,13 @@
     },
     "ResourceInUseException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified resource is in-use and can't be removed.</p>",
       "exception":true
     },
     "ResourceNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified resource wasn't found.</p>",
       "exception":true
     },
@@ -5629,8 +5613,7 @@
     },
     "ServiceDeploymentNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The service deploy ARN that you specified in the <code>StopServiceDeployment</code> doesn't exist. You can use <code>ListServiceDeployments</code> to retrieve the service deployment ARNs.</p>",
       "exception":true
     },
@@ -5748,15 +5731,13 @@
     },
     "ServiceNotActiveException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified service isn't active. You can't update a service that's inactive. If you have previously deleted a service, you can re-create it with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateService.html\">CreateService</a>.</p>",
       "exception":true
     },
     "ServiceNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified service wasn't found. You can view your available services with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListServices.html\">ListServices</a>. Amazon ECS services are cluster specific and Region specific.</p>",
       "exception":true
     },
@@ -6076,7 +6057,7 @@
         },
         "stopType":{
           "shape":"StopServiceDeploymentStopType",
-          "documentation":"<p>How you want Amazon ECS to stop the task. </p> <p>The valid values are <code>ROLLBACK</code>.</p>"
+          "documentation":"<p>How you want Amazon ECS to stop the service. </p> <p>The ROLLBACK and ABORT stopType aren't supported.</p>"
         }
       }
     },
@@ -6317,8 +6298,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -6334,15 +6314,13 @@
     },
     "TargetNotConnectedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The execute command cannot run. This error can be caused by any of the following configuration issues:</p> <ul> <li> <p>Incorrect IAM permissions</p> </li> <li> <p>The SSM agent is not installed or is not running</p> </li> <li> <p> There is an interface Amazon VPC endpoint for Amazon ECS, but there is not one for Systems Manager Session Manager</p> </li> </ul> <p>For information about how to troubleshoot the issues, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html\">Troubleshooting issues with ECS Exec</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>",
       "exception":true
     },
     "TargetNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified target wasn't found. You can view your available container instances with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListContainerInstances.html\">ListContainerInstances</a>. Amazon ECS container instances are cluster-specific and Region-specific.</p>",
       "exception":true
     },
@@ -6903,8 +6881,7 @@
     },
     "TaskSetNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified task set wasn't found. You can view your available task sets with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeTaskSets.html\">DescribeTaskSets</a>. Task sets are specific to each cluster, service and Region.</p>",
       "exception":true
     },
@@ -7043,8 +7020,7 @@
     },
     "UnsupportedFeatureException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified task isn't supported in this Region.</p>",
       "exception":true
     },
@@ -7067,8 +7043,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateCapacityProviderRequest":{
       "type":"structure",
@@ -7212,8 +7187,7 @@
     },
     "UpdateInProgressException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There's already a current Amazon ECS container agent update in progress on the container instance that's specified. If the container agent becomes disconnected while it's in a transitional stage, such as <code>PENDING</code> or <code>STAGING</code>, the update process can get stuck in that state. However, when the agent reconnects, it resumes where it stopped previously.</p>",
       "exception":true
     },

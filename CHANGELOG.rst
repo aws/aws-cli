@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.27.2
+======
+
+* api-change:``ecs``: Documentation only release for Amazon ECS.
+* api-change:``bedrock-runtime``: You can now reference images and documents stored in Amazon S3 when using InvokeModel and Converse APIs with Amazon Nova Lite and Nova Pro. This enables direct integration of S3-stored multimedia assets in your model requests without manual downloading or base64 encoding.
+* api-change:``marketplace-deployment``: Doc only update for the AWS Marketplace Deployment Service that fixes several customer-reported issues.
+
+
 2.27.1
 ======
 

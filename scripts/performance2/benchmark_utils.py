@@ -56,7 +56,7 @@ class BenchmarkSuite:
         # each generator generates args.num_iterations times
         raise NotImplementedError()
 
-    def begin_iteration(self, case, iteration):
+    def begin_iteration(self, case, workspace_path, assets_path, iteration):
         pass
 
     def consume_case_results(self, case, results):
@@ -95,6 +95,39 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
         self._client = StubbedHTTPClient()
         self._benchmark_results = {}
 
+    def _create_file_with_size(self, path, size):
+        """
+        Creates a full-access file in the given directory with the
+        specified name and size. The created file will be full of
+        null bytes to achieve the specified size.
+        """
+        f = open(path, 'wb')
+        os.chmod(path, 0o777)
+        size = int(size)
+        f.truncate(size)
+        f.close()
+
+    def _create_file_dir(self, dir_path, file_count, size):
+        """
+        Creates a directory with the specified name. Also creates identical files
+        with the given size in the created directory. The number of identical files
+        to be created is specified by file_count. Each file will be full of
+        null bytes to achieve the specified size.
+        """
+        os.mkdir(dir_path, 0o777)
+        for i in range(int(file_count)):
+            file_path = os.path.join(dir_path, f'{i}')
+            self._create_file_with_size(file_path, size)
+
+    # TODO Q: do we want to abstract the stubbing code into parent
+    # StubbedBenchmarkSuite ? leaning towards not at the moment
+    # only observed 2 stub cases: json and echo. echo needed to define its
+    # own stubbed client logic, doesn't fit the pattern of a stack of responses
+    # known ahead-of-time.
+
+    # maybe stubbedclient would be abstract, each suite can override the base impl
+    # as needed. echo would override get response to return request. most suites
+    # would use add response
     def _stub_responses(self, responses, client: StubbedHTTPClient):
         """
         Stubs the supplied HTTP client using the response instructions in the supplied
@@ -111,15 +144,54 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
             else:
                 client.add_response(body, headers, status_code)
 
+    def _get_env_vars(self, config_path):
+        return {
+            'AWS_CONFIG_FILE': config_path,
+            'AWS_DEFAULT_REGION': 'us-west-2',
+        }
+
     def before_suite(self, args):
         self._client = StubbedHTTPClient()
         self._benchmark_results.clear()
         definitions = json.load(open(args.benchmark_definitions, 'r'))
         return [(definition for _ in range(args.num_iterations)) for definition in definitions]
 
-    def begin_iteration(self, case, iteration):
+    def begin_iteration(self, case, workspace_path, assets_path, iteration):
+        env = case.get('environment', {})
+        config_path = os.path.join(assets_path, 'config')
         self._client.setup()
         self._stub_responses(case.get('responses', []), self._client)
+        os.makedirs(os.path.dirname(config_path), mode=0o777, exist_ok=True)
+        with open(config_path, 'w') as f:
+            f.write(env.get('config', "[DEFAULT]"))
+            f.flush()
+        self._env_patch = mock.patch.dict(
+            'os.environ', self._get_env_vars(config_path)
+        )
+        self._env_patch.start()
+        # TODO Q: we're patching HTTP client & environment but not files.
+        # pros and cons
+        if "files" in env:
+            for file_def in env['files']:
+                path = os.path.join(workspace_path, file_def['name'])
+                self._create_file_with_size(path, file_def['size'])
+        if "file_dirs" in env:
+            for file_dir_def in env['file_dirs']:
+                dir_path = os.path.join(workspace_path, file_dir_def['name'])
+                self._create_file_dir(
+                    dir_path,
+                    file_dir_def['file_count'],
+                    file_dir_def['file_size'],
+                )
+        if "file_literals" in env:
+            # todo SWITCH from binary-content key to using mode (default w)
+            for file_lit in env['file_literals']:
+                path = os.path.join(workspace_path, file_lit['name'])
+                mode, content = ('wb', file_lit['binary-content']) if 'binary-content' in file_lit else (
+                'w', file_lit['content'])
+                with open(path, mode) as f:
+                    os.chmod(path, 0o777)
+                    f.write(content)
 
     def consume_case_results(self, case, results):
         # TODO when adding support for multi-command sequences to JSON,
@@ -141,6 +213,7 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
 
     def end_iteration(self):
         self._client.tear_down()
+        self._env_patch.stop()
 
     def provide_sequence_results(self):
         values = self._benchmark_results.values()
@@ -187,6 +260,7 @@ class Summarizer:
     def _finalize_processed_data_for_file(self, samples):
         # compute percentiles
         self._samples.sort(key=self._get_memory)
+        # TODO replace with numpy calls ?
         memory_p50 = self._compute_metric_percentile(50, 'memory')
         memory_p95 = self._compute_metric_percentile(95, 'memory')
         self._samples.sort(key=self._get_cpu)
@@ -295,78 +369,12 @@ class ProcessBenchmarker:
 
 
 class BenchmarkHarness(object):
-    _DEFAULT_FILE_CONFIG_CONTENTS = "[default]"
-
     """
     Orchestrates running benchmarks in isolated, configurable environments defined
     via a specified JSON file.
     """
     def __init__(self):
         self._summarizer = Summarizer()
-
-    def _get_default_env(self, config_file):
-        return {
-            'AWS_CONFIG_FILE': config_file,
-            'AWS_DEFAULT_REGION': 'us-west-2',
-        }
-
-    def _create_file_with_size(self, path, size):
-        """
-        Creates a full-access file in the given directory with the
-        specified name and size. The created file will be full of
-        null bytes to achieve the specified size.
-        """
-        f = open(path, 'wb')
-        os.chmod(path, 0o777)
-        size = int(size)
-        f.truncate(size)
-        f.close()
-
-    def _create_file_dir(self, dir_path, file_count, size):
-        """
-        Creates a directory with the specified name. Also creates identical files
-        with the given size in the created directory. The number of identical files
-        to be created is specified by file_count. Each file will be full of
-        null bytes to achieve the specified size.
-        """
-        os.mkdir(dir_path, 0o777)
-        for i in range(int(file_count)):
-            file_path = os.path.join(dir_path, f'{i}')
-            self._create_file_with_size(file_path, size)
-
-    def _setup_iteration(self, benchmark, result_dir, config_file):
-        """
-        Performs the environment setup for a single iteration of a
-        benchmark. This includes creating the files used by a
-        command and stubbing the HTTP client to use during execution.
-        """
-        # create necessary files for iteration
-        env = benchmark.get('environment', {})
-        if "files" in env:
-            for file_def in env['files']:
-                path = os.path.join(result_dir, file_def['name'])
-                self._create_file_with_size(path, file_def['size'])
-        if "file_dirs" in env:
-            for file_dir_def in env['file_dirs']:
-                dir_path = os.path.join(result_dir, file_dir_def['name'])
-                self._create_file_dir(
-                    dir_path,
-                    file_dir_def['file_count'],
-                    file_dir_def['file_size'],
-                )
-        if "file_literals" in env:
-            # todo SWITCH from binary-content key to using mode (default w)
-            for file_lit in env['file_literals']:
-                path = os.path.join(result_dir, file_lit['name'])
-                mode, content = ('wb', file_lit['binary-content']) if 'binary-content' in file_lit else ('w', file_lit['content'])
-                with open(path, mode) as f:
-                    os.chmod(path, 0o777)
-                    f.write(content)
-        # create config file at specified path
-        os.makedirs(os.path.dirname(config_file), mode=0o777, exist_ok=True)
-        with open(config_file, 'w') as f:
-            f.write(env.get('config', self._DEFAULT_FILE_CONFIG_CONTENTS))
-            f.flush()
 
     def _run_command_with_metric_hooks(self, cmd, out_file, service_id, service_operation_name):
         """
@@ -416,23 +424,17 @@ class BenchmarkHarness(object):
         the environment, running the benchmarked execution, formatting
         the results, and cleaning up the environment.
         """
+        # TODO, like the idea of splitting workspace (results) and assets to sibling folders
         assets_path = os.path.join(result_dir, 'assets')
-        config_path = os.path.join(assets_path, 'config')
         metrics_path = os.path.join(assets_path, 'metrics.json')
         child_output_path = os.path.join(assets_path, 'output.txt')
         child_err_path = os.path.join(assets_path, 'err.txt')
+
         # setup for iteration of benchmark
-        self._setup_iteration(benchmark, result_dir, config_path)
-        suite.begin_iteration(benchmark, iteration)
+        suite.begin_iteration(benchmark, result_dir, assets_path, iteration)
         os.chdir(result_dir)
-        # patch the OS environment with our supplied defaults
-        env_patch = mock.patch.dict(
-            'os.environ', self._get_default_env(config_path)
-        )
-        env_patch.start()
 
         # fork a child process to run the command on.
-        # the parent process benchmarks the child process until the child terminates.
         pid = os.fork()
 
         try:
@@ -450,7 +452,7 @@ class BenchmarkHarness(object):
                     # terminate the child process
                     os._exit(0)
 
-            # benchmark child process from parent process until child terminates
+            # benchmark child process from parent process until child becomes zombie
             samples = process_benchmarker.benchmark_process(
                 pid, args.data_interval
             )
@@ -460,7 +462,7 @@ class BenchmarkHarness(object):
             if status != 0:
                 raise RuntimeError(f'Child process execution failed: status code {status}')
 
-            # load child-collected metrics if exists
+            # load child-collected metrics
             if not os.path.exists(metrics_path):
                 raise RuntimeError(
                     'Child process execution failed: output file not found.'
@@ -478,6 +480,10 @@ class BenchmarkHarness(object):
                     )
 
             # summarize benchmark results and process summary
+            # TODO Q: move the summarizer to the suites?
+            # that would support the use case when a specific format is needed (e.g. cbor benchmarks)
+            # this would mean consume_case_results gets the raw results
+            # and provide_sequence_results calls (internal) summary on each metrics data in the sequence
             summary = self._summarizer.summarize(samples)
             summary['total_time'] = (
                 metrics_f['end_time'] - metrics_f['start_time']
@@ -491,7 +497,6 @@ class BenchmarkHarness(object):
             suite.end_iteration(iteration)
             shutil.rmtree(result_dir, ignore_errors=True)
             os.makedirs(result_dir, 0o777)
-            env_patch.stop()
         return summary
 
     def run_benchmarks(self, suite: BenchmarkSuite, args):
@@ -537,7 +542,7 @@ class BenchmarkHarness(object):
                         # there was an exception? Currently, that's end_iteration whether there
                         # was an exception. Maybe we can pass exception information to end_iteration.
 
-                        # TODO NEXT: finalize these architecture changes.
+                        # TODO NEXT: finalize these architecture changes. and TODOs
                         suite.consume_case_results(test_case, self._run_isolated_benchmark(
                             result_dir,
                             idx,
@@ -548,7 +553,7 @@ class BenchmarkHarness(object):
                         ))
 
 
-                # --- PUSH-RESULTS (add/transform results from each case in the sequence/plethora)
+                # --- PROVIDE-SEQUENCE-RESULTS (add/transform results from each case in the sequence/plethora)
                 if args.service and (args.service == 'secrets' or args.service == 'echo' or args.service == 'cloudwatch'):
                     # for each caseresult, map to a list (size  # metrics) containing one output per metric
                     for ((service, case, protocol, dimension), metrics) in benchmark_results.items():

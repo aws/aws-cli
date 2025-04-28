@@ -32,6 +32,50 @@
       ],
       "documentation":"<p>Associates an alias (also known as a CNAME or an alternate domain name) with a CloudFront distribution.</p> <p>With this operation you can move an alias that's already in use on a CloudFront distribution to a different distribution in one step. This prevents the downtime that could occur if you first remove the alias from one distribution and then separately add the alias to another distribution.</p> <p>To use this operation to associate an alias with a distribution, you provide the alias and the ID of the target distribution for the alias. For more information, including how to set up the target distribution, prerequisites that you must complete, and other restrictions, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html#alternate-domain-names-move\">Moving an alternate domain name to a different distribution</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
     },
+    "AssociateDistributionTenantWebACL":{
+      "name":"AssociateDistributionTenantWebACL2020_05_31",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2020-05-31/distribution-tenant/{Id}/associate-web-acl",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"AssociateDistributionTenantWebACLRequest",
+        "locationName":"AssociateDistributionTenantWebACLRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"AssociateDistributionTenantWebACLResult"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Associates the WAF web ACL with a distribution tenant.</p>"
+    },
+    "AssociateDistributionWebACL":{
+      "name":"AssociateDistributionWebACL2020_05_31",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2020-05-31/distribution/{Id}/associate-web-acl",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"AssociateDistributionWebACLRequest",
+        "locationName":"AssociateDistributionWebACLRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"AssociateDistributionWebACLResult"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Associates the WAF web ACL with a distribution.</p>"
+    },
     "CopyDistribution":{
       "name":"CopyDistribution2020_05_31",
       "http":{
@@ -175,6 +219,29 @@
       ],
       "documentation":"<p>Creates a new origin access identity. If you're using Amazon S3 for your origin, you can use an origin access identity to require users to access your content using a CloudFront URL instead of the Amazon S3 URL. For more information about how to use origin access identities, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html\">Serving Private Content through CloudFront</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
     },
+    "CreateConnectionGroup":{
+      "name":"CreateConnectionGroup2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/connection-group",
+        "responseCode":201
+      },
+      "input":{
+        "shape":"CreateConnectionGroupRequest",
+        "locationName":"CreateConnectionGroupRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"CreateConnectionGroupResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityAlreadyExists"},
+        {"shape":"InvalidTagging"},
+        {"shape":"InvalidArgument"},
+        {"shape":"EntityLimitExceeded"}
+      ],
+      "documentation":"<p>Creates a connection group.</p>"
+    },
     "CreateContinuousDeploymentPolicy":{
       "name":"CreateContinuousDeploymentPolicy2020_05_31",
       "http":{
@@ -267,11 +334,37 @@
         {"shape":"InvalidFunctionAssociation"},
         {"shape":"TooManyDistributionsWithLambdaAssociations"},
         {"shape":"TooManyDistributionsAssociatedToKeyGroup"},
+        {"shape":"EntityLimitExceeded"},
         {"shape":"DistributionAlreadyExists"},
         {"shape":"NoSuchOrigin"},
         {"shape":"TooManyCacheBehaviors"}
       ],
       "documentation":"<p>Creates a CloudFront distribution.</p>"
+    },
+    "CreateDistributionTenant":{
+      "name":"CreateDistributionTenant2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/distribution-tenant",
+        "responseCode":201
+      },
+      "input":{
+        "shape":"CreateDistributionTenantRequest",
+        "locationName":"CreateDistributionTenantRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"CreateDistributionTenantResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityAlreadyExists"},
+        {"shape":"CNAMEAlreadyExists"},
+        {"shape":"InvalidAssociation"},
+        {"shape":"InvalidTagging"},
+        {"shape":"InvalidArgument"},
+        {"shape":"EntityLimitExceeded"}
+      ],
+      "documentation":"<p>Creates a distribution tenant.</p>"
     },
     "CreateDistributionWithTags":{
       "name":"CreateDistributionWithTags2020_05_31",
@@ -436,6 +529,26 @@
         {"shape":"BatchTooLarge"}
       ],
       "documentation":"<p>Create a new invalidation. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html\">Invalidating files</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
+    },
+    "CreateInvalidationForDistributionTenant":{
+      "name":"CreateInvalidationForDistributionTenant2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/distribution-tenant/{Id}/invalidation",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateInvalidationForDistributionTenantRequest"},
+      "output":{"shape":"CreateInvalidationForDistributionTenantResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"TooManyInvalidationsInProgress"},
+        {"shape":"MissingBody"},
+        {"shape":"InconsistentQuantities"},
+        {"shape":"InvalidArgument"},
+        {"shape":"BatchTooLarge"}
+      ],
+      "documentation":"<p>Creates an invalidation for a distribution tenant. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html\">Invalidating files</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
     },
     "CreateKeyGroup":{
       "name":"CreateKeyGroup2020_05_31",
@@ -721,6 +834,24 @@
       ],
       "documentation":"<p>Delete an origin access identity.</p>"
     },
+    "DeleteConnectionGroup":{
+      "name":"DeleteConnectionGroup2020_05_31",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2020-05-31/connection-group/{Id}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteConnectionGroupRequest"},
+      "errors":[
+        {"shape":"CannotDeleteEntityWhileInUse"},
+        {"shape":"PreconditionFailed"},
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"ResourceNotDisabled"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Deletes a connection group.</p>"
+    },
     "DeleteContinuousDeploymentPolicy":{
       "name":"DeleteContinuousDeploymentPolicy2020_05_31",
       "http":{
@@ -748,6 +879,7 @@
       },
       "input":{"shape":"DeleteDistributionRequest"},
       "errors":[
+        {"shape":"ResourceInUse"},
         {"shape":"NoSuchDistribution"},
         {"shape":"PreconditionFailed"},
         {"shape":"AccessDenied"},
@@ -755,6 +887,23 @@
         {"shape":"InvalidIfMatchVersion"}
       ],
       "documentation":"<p>Delete a distribution.</p>"
+    },
+    "DeleteDistributionTenant":{
+      "name":"DeleteDistributionTenant2020_05_31",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2020-05-31/distribution-tenant/{Id}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteDistributionTenantRequest"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"ResourceNotDisabled"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Deletes a distribution tenant. If you use this API operation to delete a distribution tenant that is currently enabled, the request will fail.</p> <p>To delete a distribution tenant, you must first disable the distribution tenant by using the <code>UpdateDistributionTenant</code> API operation.</p>"
     },
     "DeleteFieldLevelEncryptionConfig":{
       "name":"DeleteFieldLevelEncryptionConfig2020_05_31",
@@ -1019,6 +1168,42 @@
       ],
       "documentation":"<p>Specifies the key value store and its configuration.</p>"
     },
+    "DisassociateDistributionTenantWebACL":{
+      "name":"DisassociateDistributionTenantWebACL2020_05_31",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2020-05-31/distribution-tenant/{Id}/disassociate-web-acl",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateDistributionTenantWebACLRequest"},
+      "output":{"shape":"DisassociateDistributionTenantWebACLResult"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Disassociates a distribution tenant from the WAF web ACL.</p>"
+    },
+    "DisassociateDistributionWebACL":{
+      "name":"DisassociateDistributionWebACL2020_05_31",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2020-05-31/distribution/{Id}/disassociate-web-acl",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateDistributionWebACLRequest"},
+      "output":{"shape":"DisassociateDistributionWebACLResult"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Disassociates a distribution from the WAF web ACL.</p>"
+    },
     "GetAnycastIpList":{
       "name":"GetAnycastIpList2020_05_31",
       "http":{
@@ -1096,6 +1281,36 @@
       ],
       "documentation":"<p>Get the configuration information about an origin access identity.</p>"
     },
+    "GetConnectionGroup":{
+      "name":"GetConnectionGroup2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/connection-group/{Identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConnectionGroupRequest"},
+      "output":{"shape":"GetConnectionGroupResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"}
+      ],
+      "documentation":"<p>Gets information about a connection group.</p>"
+    },
+    "GetConnectionGroupByRoutingEndpoint":{
+      "name":"GetConnectionGroupByRoutingEndpoint2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/connection-group",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConnectionGroupByRoutingEndpointRequest"},
+      "output":{"shape":"GetConnectionGroupByRoutingEndpointResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"}
+      ],
+      "documentation":"<p>Gets information about a connection group by using the endpoint that you specify.</p>"
+    },
     "GetContinuousDeploymentPolicy":{
       "name":"GetContinuousDeploymentPolicy2020_05_31",
       "http":{
@@ -1155,6 +1370,36 @@
         {"shape":"AccessDenied"}
       ],
       "documentation":"<p>Get the configuration information about a distribution.</p>"
+    },
+    "GetDistributionTenant":{
+      "name":"GetDistributionTenant2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/distribution-tenant/{Identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDistributionTenantRequest"},
+      "output":{"shape":"GetDistributionTenantResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"}
+      ],
+      "documentation":"<p>Gets information about a distribution tenant.</p>"
+    },
+    "GetDistributionTenantByDomain":{
+      "name":"GetDistributionTenantByDomain2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/distribution-tenant",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDistributionTenantByDomainRequest"},
+      "output":{"shape":"GetDistributionTenantByDomainResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"}
+      ],
+      "documentation":"<p>Gets information about a distribution tenant by the associated domain.</p>"
     },
     "GetFieldLevelEncryption":{
       "name":"GetFieldLevelEncryption2020_05_31",
@@ -1247,6 +1492,22 @@
       ],
       "documentation":"<p>Get the information about an invalidation.</p>"
     },
+    "GetInvalidationForDistributionTenant":{
+      "name":"GetInvalidationForDistributionTenant2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/distribution-tenant/{DistributionTenantId}/invalidation/{Id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetInvalidationForDistributionTenantRequest"},
+      "output":{"shape":"GetInvalidationForDistributionTenantResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"NoSuchInvalidation"}
+      ],
+      "documentation":"<p>Gets information about a specific invalidation for a distribution tenant.</p>"
+    },
     "GetKeyGroup":{
       "name":"GetKeyGroup2020_05_31",
       "http":{
@@ -1274,6 +1535,21 @@
         {"shape":"NoSuchResource"}
       ],
       "documentation":"<p>Gets a key group configuration.</p> <p>To get a key group configuration, you must provide the key group's identifier. If the key group is referenced in a distribution's cache behavior, you can get the key group's identifier using <code>ListDistributions</code> or <code>GetDistribution</code>. If the key group is not referenced in a cache behavior, you can get the identifier using <code>ListKeyGroups</code>.</p>"
+    },
+    "GetManagedCertificateDetails":{
+      "name":"GetManagedCertificateDetails2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/managed-certificate/{Identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetManagedCertificateDetailsRequest"},
+      "output":{"shape":"GetManagedCertificateDetailsResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"}
+      ],
+      "documentation":"<p>Gets details about the CloudFront managed ACM certificate.</p>"
     },
     "GetMonitoringSubscription":{
       "name":"GetMonitoringSubscription2020_05_31",
@@ -1541,6 +1817,26 @@
       ],
       "documentation":"<p>Gets a list of aliases (also called CNAMEs or alternate domain names) that conflict or overlap with the provided alias, and the associated CloudFront distributions and Amazon Web Services accounts for each conflicting alias. In the returned list, the distribution and account IDs are partially hidden, which allows you to identify the distributions and accounts that you own, but helps to protect the information of ones that you don't own.</p> <p>Use this operation to find aliases that are in use in CloudFront that conflict or overlap with the provided alias. For example, if you provide <code>www.example.com</code> as input, the returned list can include <code>www.example.com</code> and the overlapping wildcard alternate domain name (<code>*.example.com</code>), if they exist. If you provide <code>*.example.com</code> as input, the returned list can include <code>*.example.com</code> and any alternate domain names covered by that wildcard (for example, <code>www.example.com</code>, <code>test.example.com</code>, <code>dev.example.com</code>, and so on), if they exist.</p> <p>To list conflicting aliases, you provide the alias to search and the ID of a distribution in your account that has an attached SSL/TLS certificate that includes the provided alias. For more information, including how to set up the distribution and certificate, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html#alternate-domain-names-move\">Moving an alternate domain name to a different distribution</a> in the <i>Amazon CloudFront Developer Guide</i>.</p> <p>You can optionally specify the maximum number of items to receive in the response. If the total number of items in the list exceeds the maximum that you specify, or the default maximum, the response is paginated. To get the next page of items, send a subsequent request that specifies the <code>NextMarker</code> value from the current response as the <code>Marker</code> value in the subsequent request.</p>"
     },
+    "ListConnectionGroups":{
+      "name":"ListConnectionGroups2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/connection-groups",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"ListConnectionGroupsRequest",
+        "locationName":"ListConnectionGroupsRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"ListConnectionGroupsResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Lists the connection groups in your Amazon Web Services account.</p>"
+    },
     "ListContinuousDeploymentPolicies":{
       "name":"ListContinuousDeploymentPolicies2020_05_31",
       "http":{
@@ -1556,6 +1852,46 @@
         {"shape":"NoSuchContinuousDeploymentPolicy"}
       ],
       "documentation":"<p>Gets a list of the continuous deployment policies in your Amazon Web Services account.</p> <p>You can optionally specify the maximum number of items to receive in the response. If the total number of items in the list exceeds the maximum that you specify, or the default maximum, the response is paginated. To get the next page of items, send a subsequent request that specifies the <code>NextMarker</code> value from the current response as the <code>Marker</code> value in the subsequent request.</p>"
+    },
+    "ListDistributionTenants":{
+      "name":"ListDistributionTenants2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/distribution-tenants",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"ListDistributionTenantsRequest",
+        "locationName":"ListDistributionTenantsRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"ListDistributionTenantsResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Lists the distribution tenants in your Amazon Web Services account.</p>"
+    },
+    "ListDistributionTenantsByCustomization":{
+      "name":"ListDistributionTenantsByCustomization2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/distribution-tenants-by-customization",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"ListDistributionTenantsByCustomizationRequest",
+        "locationName":"ListDistributionTenantsByCustomizationRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"ListDistributionTenantsByCustomizationResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Lists distribution tenants by the customization that you specify.</p> <p>You must specify either the <code>CertificateArn</code> parameter or <code>WebACLArn</code> parameter, but not both in the same request.</p>"
     },
     "ListDistributions":{
       "name":"ListDistributions2020_05_31",
@@ -1603,6 +1939,21 @@
         {"shape":"InvalidArgument"}
       ],
       "documentation":"<p>Gets a list of distribution IDs for distributions that have a cache behavior that's associated with the specified cache policy.</p> <p>You can optionally specify the maximum number of items to receive in the response. If the total number of items in the list exceeds the maximum that you specify, or the default maximum, the response is paginated. To get the next page of items, send a subsequent request that specifies the <code>NextMarker</code> value from the current response as the <code>Marker</code> value in the subsequent request.</p>"
+    },
+    "ListDistributionsByConnectionMode":{
+      "name":"ListDistributionsByConnectionMode2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/distributionsByConnectionMode/{ConnectionMode}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDistributionsByConnectionModeRequest"},
+      "output":{"shape":"ListDistributionsByConnectionModeResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Lists the distributions by the connection mode that you specify.</p>"
     },
     "ListDistributionsByKeyGroup":{
       "name":"ListDistributionsByKeyGroup2020_05_31",
@@ -1701,6 +2052,26 @@
       ],
       "documentation":"<p>List the distributions that are associated with a specified WAF web ACL.</p>"
     },
+    "ListDomainConflicts":{
+      "name":"ListDomainConflicts2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/domain-conflicts",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"ListDomainConflictsRequest",
+        "locationName":"ListDomainConflictsRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"ListDomainConflictsResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Lists existing domain associations that conflict with the domain that you specify.</p> <p>You can use this API operation when transferring domains to identify potential domain conflicts. Domain conflicts must be resolved first before they can be moved.</p>"
+    },
     "ListFieldLevelEncryptionConfigs":{
       "name":"ListFieldLevelEncryptionConfigs2020_05_31",
       "http":{
@@ -1759,6 +2130,22 @@
         {"shape":"InvalidArgument"}
       ],
       "documentation":"<p>Lists invalidation batches.</p>"
+    },
+    "ListInvalidationsForDistributionTenant":{
+      "name":"ListInvalidationsForDistributionTenant2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/distribution-tenant/{Id}/invalidation",
+        "responseCode":200
+      },
+      "input":{"shape":"ListInvalidationsForDistributionTenantRequest"},
+      "output":{"shape":"ListInvalidationsForDistributionTenantResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Lists the invalidations for a distribution tenant.</p>"
     },
     "ListKeyGroups":{
       "name":"ListKeyGroups2020_05_31",
@@ -2031,6 +2418,31 @@
       ],
       "documentation":"<p>Update an origin access identity.</p>"
     },
+    "UpdateConnectionGroup":{
+      "name":"UpdateConnectionGroup2020_05_31",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2020-05-31/connection-group/{Id}",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"UpdateConnectionGroupRequest",
+        "locationName":"UpdateConnectionGroupRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"UpdateConnectionGroupResult"},
+      "errors":[
+        {"shape":"ResourceInUse"},
+        {"shape":"PreconditionFailed"},
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityAlreadyExists"},
+        {"shape":"InvalidArgument"},
+        {"shape":"EntityLimitExceeded"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Updates a connection group.</p>"
+    },
     "UpdateContinuousDeploymentPolicy":{
       "name":"UpdateContinuousDeploymentPolicy2020_05_31",
       "http":{
@@ -2131,6 +2543,32 @@
       ],
       "documentation":"<p>Updates the configuration for a CloudFront distribution.</p> <p>The update process includes getting the current distribution configuration, updating it to make your changes, and then submitting an <code>UpdateDistribution</code> request to make the updates.</p> <p> <b>To update a web distribution using the CloudFront API</b> </p> <ol> <li> <p>Use <code>GetDistributionConfig</code> to get the current configuration, including the version identifier (<code>ETag</code>).</p> </li> <li> <p>Update the distribution configuration that was returned in the response. Note the following important requirements and restrictions:</p> <ul> <li> <p>You must copy the <code>ETag</code> field value from the response. (You'll use it for the <code>IfMatch</code> parameter in your request.) Then, remove the <code>ETag</code> field from the distribution configuration.</p> </li> <li> <p>You can't change the value of <code>CallerReference</code>.</p> </li> </ul> </li> <li> <p>Submit an <code>UpdateDistribution</code> request, providing the updated distribution configuration. The new configuration replaces the existing configuration. The values that you specify in an <code>UpdateDistribution</code> request are not merged into your existing configuration. Make sure to include all fields: the ones that you modified and also the ones that you didn't.</p> </li> </ol>"
     },
+    "UpdateDistributionTenant":{
+      "name":"UpdateDistributionTenant2020_05_31",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2020-05-31/distribution-tenant/{Id}",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"UpdateDistributionTenantRequest",
+        "locationName":"UpdateDistributionTenantRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"UpdateDistributionTenantResult"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityAlreadyExists"},
+        {"shape":"CNAMEAlreadyExists"},
+        {"shape":"InvalidAssociation"},
+        {"shape":"InvalidArgument"},
+        {"shape":"EntityLimitExceeded"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Updates a distribution tenant.</p>"
+    },
     "UpdateDistributionWithStagingConfig":{
       "name":"UpdateDistributionWithStagingConfig2020_05_31",
       "http":{
@@ -2205,6 +2643,29 @@
         {"shape":"TooManyCacheBehaviors"}
       ],
       "documentation":"<p>Copies the staging distribution's configuration to its corresponding primary distribution. The primary distribution retains its <code>Aliases</code> (also known as alternate domain names or CNAMEs) and <code>ContinuousDeploymentPolicyId</code> value, but otherwise its configuration is overwritten to match the staging distribution.</p> <p>You can use this operation in a continuous deployment workflow after you have tested configuration changes on the staging distribution. After using a continuous deployment policy to move a portion of your domain name's traffic to the staging distribution and verifying that it works as intended, you can use this operation to copy the staging distribution's configuration to the primary distribution. This action will disable the continuous deployment policy and move your domain's traffic back to the primary distribution.</p> <p>This API operation requires the following IAM permissions:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_GetDistribution.html\">GetDistribution</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html\">UpdateDistribution</a> </p> </li> </ul>"
+    },
+    "UpdateDomainAssociation":{
+      "name":"UpdateDomainAssociation2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/domain-association",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"UpdateDomainAssociationRequest",
+        "locationName":"UpdateDomainAssociationRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"UpdateDomainAssociationResult"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"},
+        {"shape":"IllegalUpdate"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Moves a domain from its current distribution or distribution tenant to another one.</p>"
     },
     "UpdateFieldLevelEncryptionConfig":{
       "name":"UpdateFieldLevelEncryptionConfig2020_05_31",
@@ -2479,6 +2940,26 @@
         {"shape":"InvalidIfMatchVersion"}
       ],
       "documentation":"<p>Update an Amazon CloudFront VPC origin in your account.</p>"
+    },
+    "VerifyDnsConfiguration":{
+      "name":"VerifyDnsConfiguration2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/verify-dns-configuration",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"VerifyDnsConfigurationRequest",
+        "locationName":"VerifyDnsConfigurationRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"VerifyDnsConfigurationResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Verify the DNS configuration for your domain names. This API operation checks whether your domain name points to the correct routing endpoint of the connection group, such as d111111abcdef8.cloudfront.net. You can use this API operation to troubleshoot and resolve DNS configuration issues.</p>"
     }
   },
   "shapes":{
@@ -2783,6 +3264,94 @@
           "documentation":"<p>The alias (also known as a CNAME) to add to the target distribution.</p>",
           "location":"querystring",
           "locationName":"Alias"
+        }
+      }
+    },
+    "AssociateDistributionTenantWebACLRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "WebACLArn"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution tenant.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "WebACLArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the WAF web ACL to associate.</p>"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The current <code>ETag</code> of the distribution tenant. This value is returned in the response of the <code>GetDistributionTenant</code> API operation.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
+    "AssociateDistributionTenantWebACLResult":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution tenant.</p>"
+        },
+        "WebACLArn":{
+          "shape":"string",
+          "documentation":"<p>The ARN of the WAF web ACL that you associated with the distribution tenant.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the distribution tenant.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      }
+    },
+    "AssociateDistributionWebACLRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "WebACLArn"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "WebACLArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the WAF web ACL to associate.</p>"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The value of the <code>ETag</code> header that you received when retrieving the distribution that you're associating with the WAF web ACL.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
+    "AssociateDistributionWebACLResult":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution.</p>"
+        },
+        "WebACLArn":{
+          "shape":"string",
+          "documentation":"<p>The ARN of the WAF web ACL that you associated with the distribution.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the distribution.</p>",
+          "location":"header",
+          "locationName":"ETag"
         }
       }
     },
@@ -3188,12 +3757,30 @@
       },
       "exception":true
     },
+    "Certificate":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ACM certificate.</p>"
+        }
+      },
+      "documentation":"<p>The Certificate Manager (ACM) certificate associated with your distribution.</p>"
+    },
     "CertificateSource":{
       "type":"string",
       "enum":[
         "cloudfront",
         "iam",
         "acm"
+      ]
+    },
+    "CertificateTransparencyLoggingPreference":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "disabled"
       ]
     },
     "CloudFrontOriginAccessIdentity":{
@@ -3376,6 +3963,140 @@
         }
       },
       "documentation":"<p>A list of aliases (also called CNAMEs) and the CloudFront distributions and Amazon Web Services accounts that they are associated with. In the list, the distribution and account IDs are partially hidden, which allows you to identify the distributions and accounts that you own, but helps to protect the information of ones that you don't own.</p>"
+    },
+    "ConnectionGroup":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the connection group.</p>"
+        },
+        "Name":{
+          "shape":"string",
+          "documentation":"<p>The name of the connection group.</p>"
+        },
+        "Arn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connection group.</p>"
+        },
+        "CreatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the connection group was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the connection group was updated.</p>"
+        },
+        "Tags":{"shape":"Tags"},
+        "Ipv6Enabled":{
+          "shape":"boolean",
+          "documentation":"<p>IPv6 is enabled for the connection group.</p>"
+        },
+        "RoutingEndpoint":{
+          "shape":"string",
+          "documentation":"<p>The routing endpoint (also known as the DNS name) that is assigned to the connection group, such as d111111abcdef8.cloudfront.net.</p>"
+        },
+        "AnycastIpListId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Anycast static IP list.</p>"
+        },
+        "Status":{
+          "shape":"string",
+          "documentation":"<p>The status of the connection group.</p>"
+        },
+        "Enabled":{
+          "shape":"boolean",
+          "documentation":"<p>Whether the connection group is enabled.</p>"
+        },
+        "IsDefault":{
+          "shape":"boolean",
+          "documentation":"<p>Whether the connection group is the default connection group for the distribution tenants.</p>"
+        }
+      },
+      "documentation":"<p>The connection group for your distribution tenants. When you first create a distribution tenant and you don't specify a connection group, CloudFront will automatically create a default connection group for you. When you create a new distribution tenant and don't specify a connection group, the default one will be associated with your distribution tenant.</p>"
+    },
+    "ConnectionGroupAssociationFilter":{
+      "type":"structure",
+      "members":{
+        "AnycastIpListId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Anycast static IP list.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about what CloudFront resources your connection groups are associated with.</p>"
+    },
+    "ConnectionGroupSummary":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Name",
+        "Arn",
+        "RoutingEndpoint",
+        "CreatedTime",
+        "LastModifiedTime",
+        "ETag"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the connection group.</p>"
+        },
+        "Name":{
+          "shape":"string",
+          "documentation":"<p>The name of the connection group.</p>"
+        },
+        "Arn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connection group.</p>"
+        },
+        "RoutingEndpoint":{
+          "shape":"string",
+          "documentation":"<p>The routing endpoint (also known as the DNS name) that is assigned to the connection group, such as d111111abcdef8.cloudfront.net.</p>"
+        },
+        "CreatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the connection group was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the connection group was updated.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the connection group.</p>"
+        },
+        "AnycastIpListId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Anycast static IP list.</p>"
+        },
+        "Enabled":{
+          "shape":"boolean",
+          "documentation":"<p>Whether the connection group is enabled</p>"
+        },
+        "Status":{
+          "shape":"string",
+          "documentation":"<p>The status of the connection group.</p>"
+        },
+        "IsDefault":{
+          "shape":"boolean",
+          "documentation":"<p>Whether the connection group is the default connection group for the distribution tenants.</p>"
+        }
+      },
+      "documentation":"<p>A summary that contains details about your connection groups.</p>"
+    },
+    "ConnectionGroupSummaryList":{
+      "type":"list",
+      "member":{
+        "shape":"ConnectionGroupSummary",
+        "locationName":"ConnectionGroupSummary"
+      }
+    },
+    "ConnectionMode":{
+      "type":"string",
+      "enum":[
+        "direct",
+        "tenant-only"
+      ]
     },
     "ContentTypeProfile":{
       "type":"structure",
@@ -3687,7 +4408,7 @@
         },
         "IpCount":{
           "shape":"integer",
-          "documentation":"<p>The number of static IP addresses that are allocated to the Anycast static IP list.</p>"
+          "documentation":"<p>The number of static IP addresses that are allocated to the Anycast static IP list. Valid values: 21 or 3.</p>"
         },
         "Tags":{"shape":"Tags"}
       }
@@ -3780,6 +4501,45 @@
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"CloudFrontOriginAccessIdentity"
     },
+    "CreateConnectionGroupRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"string",
+          "documentation":"<p>The name of the connection group. Enter a friendly identifier that is unique within your Amazon Web Services account. This name can't be updated after you create the connection group.</p>"
+        },
+        "Ipv6Enabled":{
+          "shape":"boolean",
+          "documentation":"<p>Enable IPv6 for the connection group. The default is <code>true</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesEnableIPv6\">Enable IPv6</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
+        },
+        "Tags":{"shape":"Tags"},
+        "AnycastIpListId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Anycast static IP list.</p>"
+        },
+        "Enabled":{
+          "shape":"boolean",
+          "documentation":"<p>Enable the connection group.</p>"
+        }
+      }
+    },
+    "CreateConnectionGroupResult":{
+      "type":"structure",
+      "members":{
+        "ConnectionGroup":{
+          "shape":"ConnectionGroup",
+          "documentation":"<p>The connection group that you created.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the connection group.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"ConnectionGroup"
+    },
     "CreateContinuousDeploymentPolicyRequest":{
       "type":"structure",
       "required":["ContinuousDeploymentPolicyConfig"],
@@ -3851,6 +4611,69 @@
       },
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"Distribution"
+    },
+    "CreateDistributionTenantRequest":{
+      "type":"structure",
+      "required":[
+        "DistributionId",
+        "Name",
+        "Domains"
+      ],
+      "members":{
+        "DistributionId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the multi-tenant distribution to use for creating the distribution tenant.</p>"
+        },
+        "Name":{
+          "shape":"CreateDistributionTenantRequestNameString",
+          "documentation":"<p>The name of the distribution tenant. Enter a friendly identifier that is unique within your Amazon Web Services account. This name can't be updated after you create the distribution tenant.</p>"
+        },
+        "Domains":{
+          "shape":"DomainList",
+          "documentation":"<p>The domains associated with the distribution tenant. You must specify at least one domain in the request.</p>"
+        },
+        "Tags":{"shape":"Tags"},
+        "Customizations":{
+          "shape":"Customizations",
+          "documentation":"<p>Customizations for the distribution tenant. For each distribution tenant, you can specify the geographic restrictions, and the Amazon Resource Names (ARNs) for the ACM certificate and WAF web ACL. These are specific values that you can override or disable from the multi-tenant distribution that was used to create the distribution tenant.</p>"
+        },
+        "Parameters":{
+          "shape":"Parameters",
+          "documentation":"<p>A list of parameter values to add to the resource. A parameter is specified as a key-value pair. A valid parameter value must exist for any parameter that is marked as required in the multi-tenant distribution.</p>"
+        },
+        "ConnectionGroupId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the connection group to associate with the distribution tenant.</p>"
+        },
+        "ManagedCertificateRequest":{
+          "shape":"ManagedCertificateRequest",
+          "documentation":"<p>The configuration for the CloudFront managed ACM certificate request.</p>"
+        },
+        "Enabled":{
+          "shape":"boolean",
+          "documentation":"<p>Indicates whether the distribution tenant should be enabled when created. If the distribution tenant is disabled, the distribution tenant won't serve traffic.</p>"
+        }
+      }
+    },
+    "CreateDistributionTenantRequestNameString":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9-.]{1,126}[a-zA-Z0-9]"
+    },
+    "CreateDistributionTenantResult":{
+      "type":"structure",
+      "members":{
+        "DistributionTenant":{
+          "shape":"DistributionTenant",
+          "documentation":"<p>The distribution tenant that you created.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the distribution tenant.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"DistributionTenant"
     },
     "CreateDistributionWithTagsRequest":{
       "type":"structure",
@@ -4002,6 +4825,40 @@
         }
       },
       "payload":"FunctionSummary"
+    },
+    "CreateInvalidationForDistributionTenantRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "InvalidationBatch"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution tenant.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "InvalidationBatch":{
+          "shape":"InvalidationBatch",
+          "locationName":"InvalidationBatch",
+          "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+        }
+      },
+      "payload":"InvalidationBatch"
+    },
+    "CreateInvalidationForDistributionTenantResult":{
+      "type":"structure",
+      "members":{
+        "Location":{
+          "shape":"string",
+          "documentation":"<p>The location for the invalidation.</p>",
+          "location":"header",
+          "locationName":"Location"
+        },
+        "Invalidation":{"shape":"Invalidation"}
+      },
+      "payload":"Invalidation"
     },
     "CreateInvalidationRequest":{
       "type":"structure",
@@ -4528,6 +5385,31 @@
       },
       "documentation":"<p>A custom origin. A custom origin is any origin that is <i>not</i> an Amazon S3 bucket, with one exception. An Amazon S3 bucket that is <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html\">configured with static website hosting</a> <i>is</i> a custom origin.</p>"
     },
+    "CustomizationActionType":{
+      "type":"string",
+      "enum":[
+        "override",
+        "disable"
+      ]
+    },
+    "Customizations":{
+      "type":"structure",
+      "members":{
+        "WebAcl":{
+          "shape":"WebAclCustomization",
+          "documentation":"<p>The WAF web ACL.</p>"
+        },
+        "Certificate":{
+          "shape":"Certificate",
+          "documentation":"<p>The Certificate Manager (ACM) certificate.</p>"
+        },
+        "GeoRestrictions":{
+          "shape":"GeoRestrictionCustomization",
+          "documentation":"<p>The geographic restrictions.</p>"
+        }
+      },
+      "documentation":"<p>Customizations for the distribution tenant. For each distribution tenant, you can specify the geographic restrictions, and the Amazon Resource Names (ARNs) for the ACM certificate and WAF web ACL. These are specific values that you can override or disable from the multi-tenant distribution that was used to create the distribution tenant.</p>"
+    },
     "DefaultCacheBehavior":{
       "type":"structure",
       "required":[
@@ -4673,6 +5555,27 @@
       },
       "documentation":"<p>Deletes a origin access identity.</p>"
     },
+    "DeleteConnectionGroupRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "IfMatch"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the connection group to delete.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The value of the <code>ETag</code> header that you received when retrieving the connection group to delete.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
     "DeleteContinuousDeploymentPolicyRequest":{
       "type":"structure",
       "required":["Id"],
@@ -4709,6 +5612,27 @@
         }
       },
       "documentation":"<p>This action deletes a web distribution. To delete a web distribution using the CloudFront API, perform the following steps.</p> <p> <b>To delete a web distribution using the CloudFront API:</b> </p> <ol> <li> <p>Disable the web distribution</p> </li> <li> <p>Submit a <code>GET Distribution Config</code> request to get the current configuration and the <code>Etag</code> header for the distribution.</p> </li> <li> <p>Update the XML document that was returned in the response to your <code>GET Distribution Config</code> request to change the value of <code>Enabled</code> to <code>false</code>.</p> </li> <li> <p>Submit a <code>PUT Distribution Config</code> request to update the configuration for your distribution. In the request body, include the XML document that you updated in Step 3. Set the value of the HTTP <code>If-Match</code> header to the value of the <code>ETag</code> header that CloudFront returned when you submitted the <code>GET Distribution Config</code> request in Step 2.</p> </li> <li> <p>Review the response to the <code>PUT Distribution Config</code> request to confirm that the distribution was successfully disabled.</p> </li> <li> <p>Submit a <code>GET Distribution</code> request to confirm that your changes have propagated. When propagation is complete, the value of <code>Status</code> is <code>Deployed</code>.</p> </li> <li> <p>Submit a <code>DELETE Distribution</code> request. Set the value of the HTTP <code>If-Match</code> header to the value of the <code>ETag</code> header that CloudFront returned when you submitted the <code>GET Distribution Config</code> request in Step 6.</p> </li> <li> <p>Review the response to your <code>DELETE Distribution</code> request to confirm that the distribution was successfully deleted.</p> </li> </ol> <p>For information about deleting a distribution using the CloudFront console, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/HowToDeleteDistribution.html\">Deleting a Distribution</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
+    },
+    "DeleteDistributionTenantRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "IfMatch"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution tenant to delete.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The value of the <code>ETag</code> header that you received when retrieving the distribution tenant. This value is returned in the response of the <code>GetDistributionTenant</code> API operation.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
     },
     "DeleteFieldLevelEncryptionConfigRequest":{
       "type":"structure",
@@ -5026,6 +5950,72 @@
       },
       "payload":"KeyValueStore"
     },
+    "DisassociateDistributionTenantWebACLRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution tenant.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The current version of the distribution tenant that you're disassociating from the WAF web ACL. This is the <code>ETag</code> value returned in the response to the <code>GetDistributionTenant</code> API operation.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
+    "DisassociateDistributionTenantWebACLResult":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution tenant.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the distribution tenant.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      }
+    },
+    "DisassociateDistributionWebACLRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The value of the <code>ETag</code> header that you received when retrieving the distribution that you're disassociating from the WAF web ACL.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
+    "DisassociateDistributionWebACLResult":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the distribution.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      }
+    },
     "Distribution":{
       "type":"structure",
       "required":[
@@ -5182,6 +6172,14 @@
         "AnycastIpListId":{
           "shape":"string",
           "documentation":"<p>ID of the Anycast static IP list that is associated with the distribution.</p>"
+        },
+        "TenantConfig":{
+          "shape":"TenantConfig",
+          "documentation":"<p>A distribution tenant configuration.</p>"
+        },
+        "ConnectionMode":{
+          "shape":"ConnectionMode",
+          "documentation":"<p>The connection mode to filter distributions by.</p>"
         }
       },
       "documentation":"<p>A distribution configuration.</p>"
@@ -5295,6 +6293,27 @@
       },
       "exception":true
     },
+    "DistributionResourceId":{
+      "type":"structure",
+      "members":{
+        "DistributionId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the multi-tenant distribution.</p>"
+        },
+        "DistributionTenantId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution tenant.</p>"
+        }
+      },
+      "documentation":"<p>The IDs for the distribution resources.</p>"
+    },
+    "DistributionResourceType":{
+      "type":"string",
+      "enum":[
+        "distribution",
+        "distribution-tenant"
+      ]
+    },
     "DistributionSummary":{
       "type":"structure",
       "required":[
@@ -5326,6 +6345,10 @@
         "ARN":{
           "shape":"string",
           "documentation":"<p>The ARN (Amazon Resource Name) for the distribution. For example: <code>arn:aws:cloudfront::123456789012:distribution/EDFDVBD632BHDS5</code>, where <code>123456789012</code> is your Amazon Web Services account ID.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the distribution.</p>"
         },
         "Status":{
           "shape":"string",
@@ -5403,6 +6426,10 @@
           "shape":"boolean",
           "documentation":"<p>A Boolean that indicates whether this is a staging distribution. When this value is <code>true</code>, this is a staging distribution. When this value is <code>false</code>, this is not a staging distribution.</p>"
         },
+        "ConnectionMode":{
+          "shape":"ConnectionMode",
+          "documentation":"<p>The connection mode to filter distributions by.</p>"
+        },
         "AnycastIpListId":{
           "shape":"string",
           "documentation":"<p>ID of the Anycast static IP list that is associated with the distribution.</p>"
@@ -5416,6 +6443,259 @@
         "shape":"DistributionSummary",
         "locationName":"DistributionSummary"
       }
+    },
+    "DistributionTenant":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution tenant.</p>"
+        },
+        "DistributionId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the multi-tenant distribution.</p>"
+        },
+        "Name":{
+          "shape":"string",
+          "documentation":"<p>The name of the distribution tenant.</p>"
+        },
+        "Arn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the distribution tenant.</p>"
+        },
+        "Domains":{
+          "shape":"DomainResultList",
+          "documentation":"<p>The domains associated with the distribution tenant.</p>"
+        },
+        "Tags":{"shape":"Tags"},
+        "Customizations":{
+          "shape":"Customizations",
+          "documentation":"<p>Customizations for the distribution tenant. For each distribution tenant, you can specify the geographic restrictions, and the Amazon Resource Names (ARNs) for the ACM certificate and WAF web ACL. These are specific values that you can override or disable from the multi-tenant distribution that was used to create the distribution tenant.</p>"
+        },
+        "Parameters":{
+          "shape":"Parameters",
+          "documentation":"<p>A list of parameter values to add to the resource. A parameter is specified as a key-value pair. A valid parameter value must exist for any parameter that is marked as required in the multi-tenant distribution.</p>"
+        },
+        "ConnectionGroupId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the connection group for the distribution tenant. If you don't specify a connection group, CloudFront uses the default connection group.</p>"
+        },
+        "CreatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the distribution tenant was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the distribution tenant was updated.</p>"
+        },
+        "Enabled":{
+          "shape":"boolean",
+          "documentation":"<p>Indicates whether the distribution tenant is in an enabled state. If disabled, the distribution tenant won't serve traffic.</p>"
+        },
+        "Status":{
+          "shape":"string",
+          "documentation":"<p>The status of the distribution tenant.</p>"
+        }
+      },
+      "documentation":"<p>The distribution tenant.</p>"
+    },
+    "DistributionTenantAssociationFilter":{
+      "type":"structure",
+      "members":{
+        "DistributionId":{
+          "shape":"string",
+          "documentation":"<p>The distribution ID to filter by. You can find distribution tenants associated with a specific distribution.</p>"
+        },
+        "ConnectionGroupId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the connection group to filter by. You can find distribution tenants associated with a specific connection group.</p>"
+        }
+      },
+      "documentation":"<p>Filter by the associated distribution ID or connection group ID.</p>"
+    },
+    "DistributionTenantList":{
+      "type":"list",
+      "member":{
+        "shape":"DistributionTenantSummary",
+        "locationName":"DistributionTenantSummary"
+      }
+    },
+    "DistributionTenantSummary":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "DistributionId",
+        "Name",
+        "Arn",
+        "Domains",
+        "CreatedTime",
+        "LastModifiedTime",
+        "ETag"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution tenant.</p>"
+        },
+        "DistributionId":{
+          "shape":"string",
+          "documentation":"<p>The identifier for the multi-tenant distribution. For example: <code>EDFDVBD632BHDS5</code>.</p>"
+        },
+        "Name":{
+          "shape":"string",
+          "documentation":"<p>The name of the distribution tenant.</p>"
+        },
+        "Arn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the distribution tenant.</p>"
+        },
+        "Domains":{
+          "shape":"DomainResultList",
+          "documentation":"<p>The domains associated with the distribution tenant.</p>"
+        },
+        "ConnectionGroupId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the connection group ID for the distribution tenant. If you don't specify a connection group, CloudFront uses the default connection group.</p>"
+        },
+        "Customizations":{
+          "shape":"Customizations",
+          "documentation":"<p>Customizations for the distribution tenant. For each distribution tenant, you can specify the geographic restrictions, and the Amazon Resource Names (ARNs) for the ACM certificate and WAF web ACL. These are specific values that you can override or disable from the multi-tenant distribution that was used to create the distribution tenant.</p>"
+        },
+        "CreatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the distribution tenant was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the distribution tenant was updated.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the distribution tenant.</p>"
+        },
+        "Enabled":{
+          "shape":"boolean",
+          "documentation":"<p>Indicates whether the distribution tenants are in an enabled state. If disabled, the distribution tenant won't service traffic.</p>"
+        },
+        "Status":{
+          "shape":"string",
+          "documentation":"<p>The status of the distribution tenant.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the information about a distribution tenant.</p>"
+    },
+    "DnsConfiguration":{
+      "type":"structure",
+      "required":[
+        "Domain",
+        "Status"
+      ],
+      "members":{
+        "Domain":{
+          "shape":"string",
+          "documentation":"<p>The domain name that you're verifying.</p>"
+        },
+        "Status":{
+          "shape":"DnsConfigurationStatus",
+          "documentation":"<p>The status of your domain name.</p> <ul> <li> <p> <code>valid-configuration</code>: The domain name is correctly configured and points to the correct routing endpoint of the connection group.</p> </li> <li> <p> <code>invalid-configuration</code>: There is either a missing DNS record or the DNS record exists but it's using an incorrect routing endpoint. Update the DNS record to point to the correct routing endpoint.</p> </li> <li> <p> <code>unknown-configuration</code>: CloudFront can't validate your DNS configuration. This status can appear if CloudFront can't verify the DNS record, or the DNS lookup request failed or timed out.</p> </li> </ul>"
+        },
+        "Reason":{
+          "shape":"string",
+          "documentation":"<p>Explains the status of the DNS configuration.</p>"
+        }
+      },
+      "documentation":"<p>The DNS configuration for your domain names.</p>"
+    },
+    "DnsConfigurationList":{
+      "type":"list",
+      "member":{
+        "shape":"DnsConfiguration",
+        "locationName":"DnsConfiguration"
+      }
+    },
+    "DnsConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "valid-configuration",
+        "invalid-configuration",
+        "unknown-configuration"
+      ]
+    },
+    "DomainConflict":{
+      "type":"structure",
+      "required":[
+        "Domain",
+        "ResourceType",
+        "ResourceId",
+        "AccountId"
+      ],
+      "members":{
+        "Domain":{
+          "shape":"string",
+          "documentation":"<p>The domain used to find existing conflicts for domain configurations.</p>"
+        },
+        "ResourceType":{
+          "shape":"DistributionResourceType",
+          "documentation":"<p>The CloudFront resource type that has a domain conflict.</p>"
+        },
+        "ResourceId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the resource that has a domain conflict.</p>"
+        },
+        "AccountId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Amazon Web Services account for the domain conflict.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the domain conflict. Use this information to determine the affected domain, the related resource, and the affected Amazon Web Services account.</p>"
+    },
+    "DomainConflictsList":{
+      "type":"list",
+      "member":{
+        "shape":"DomainConflict",
+        "locationName":"DomainConflicts"
+      }
+    },
+    "DomainItem":{
+      "type":"structure",
+      "required":["Domain"],
+      "members":{
+        "Domain":{
+          "shape":"string",
+          "documentation":"<p>The domain name.</p>"
+        }
+      },
+      "documentation":"<p>The domain for the specified distribution tenant.</p>"
+    },
+    "DomainList":{
+      "type":"list",
+      "member":{"shape":"DomainItem"}
+    },
+    "DomainResult":{
+      "type":"structure",
+      "required":["Domain"],
+      "members":{
+        "Domain":{
+          "shape":"string",
+          "documentation":"<p>The specified domain.</p>"
+        },
+        "Status":{
+          "shape":"DomainStatus",
+          "documentation":"<p>Whether the domain is active or inactive.</p>"
+        }
+      },
+      "documentation":"<p>The details about the domain result.</p>"
+    },
+    "DomainResultList":{
+      "type":"list",
+      "member":{"shape":"DomainResult"}
+    },
+    "DomainStatus":{
+      "type":"string",
+      "enum":[
+        "active",
+        "inactive"
+      ]
     },
     "EncryptionEntities":{
       "type":"structure",
@@ -5472,10 +6752,10 @@
         },
         "KinesisStreamConfig":{
           "shape":"KinesisStreamConfig",
-          "documentation":"<p>Contains information about the Amazon Kinesis data stream where you are sending real-time log data.</p>"
+          "documentation":"<p>Contains information about the Amazon Kinesis data stream where you are sending real-time log data in a real-time log configuration.</p>"
         }
       },
-      "documentation":"<p>Contains information about the Amazon Kinesis data stream where you are sending real-time log data in a real-time log configuration.</p>"
+      "documentation":"<p>Contains information about the Amazon Kinesis data stream where you're sending real-time log data in a real-time log configuration.</p>"
     },
     "EndPointList":{
       "type":"list",
@@ -6137,6 +7417,21 @@
       },
       "documentation":"<p>A complex type that controls the countries in which your content is distributed. CloudFront determines the location of your users using <code>MaxMind</code> GeoIP databases. </p>"
     },
+    "GeoRestrictionCustomization":{
+      "type":"structure",
+      "required":["RestrictionType"],
+      "members":{
+        "RestrictionType":{
+          "shape":"GeoRestrictionType",
+          "documentation":"<p>The method that you want to use to restrict distribution of your content by country:</p> <ul> <li> <p> <code>none</code>: No geographic restriction is enabled, meaning access to content is not restricted by client geo location.</p> </li> <li> <p> <code>blacklist</code>: The <code>Location</code> elements specify the countries in which you don't want CloudFront to distribute your content.</p> </li> <li> <p> <code>whitelist</code>: The <code>Location</code> elements specify the countries in which you want CloudFront to distribute your content.</p> </li> </ul>"
+        },
+        "Locations":{
+          "shape":"LocationList",
+          "documentation":"<p>The locations for geographic restrictions.</p>"
+        }
+      },
+      "documentation":"<p>The customizations that you specified for the distribution tenant for geographic restrictions.</p>"
+    },
     "GeoRestrictionType":{
       "type":"string",
       "enum":[
@@ -6289,6 +7584,59 @@
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"CloudFrontOriginAccessIdentity"
     },
+    "GetConnectionGroupByRoutingEndpointRequest":{
+      "type":"structure",
+      "required":["RoutingEndpoint"],
+      "members":{
+        "RoutingEndpoint":{
+          "shape":"string",
+          "documentation":"<p>The routing endpoint for the target connection group, such as d111111abcdef8.cloudfront.net.</p>",
+          "location":"querystring",
+          "locationName":"RoutingEndpoint"
+        }
+      }
+    },
+    "GetConnectionGroupByRoutingEndpointResult":{
+      "type":"structure",
+      "members":{
+        "ConnectionGroup":{"shape":"ConnectionGroup"},
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the connection group.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"ConnectionGroup"
+    },
+    "GetConnectionGroupRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"string",
+          "documentation":"<p>The ID, name, or Amazon Resource Name (ARN) of the connection group.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        }
+      }
+    },
+    "GetConnectionGroupResult":{
+      "type":"structure",
+      "members":{
+        "ConnectionGroup":{
+          "shape":"ConnectionGroup",
+          "documentation":"<p>The connection group that you retrieved.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the connection group.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"ConnectionGroup"
+    },
     "GetContinuousDeploymentPolicyConfigRequest":{
       "type":"structure",
       "required":["Id"],
@@ -6401,6 +7749,59 @@
       },
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"Distribution"
+    },
+    "GetDistributionTenantByDomainRequest":{
+      "type":"structure",
+      "required":["Domain"],
+      "members":{
+        "Domain":{
+          "shape":"string",
+          "documentation":"<p>A domain name associated with the target distribution tenant.</p>",
+          "location":"querystring",
+          "locationName":"domain"
+        }
+      }
+    },
+    "GetDistributionTenantByDomainResult":{
+      "type":"structure",
+      "members":{
+        "DistributionTenant":{"shape":"DistributionTenant"},
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the distribution tenant.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"DistributionTenant"
+    },
+    "GetDistributionTenantRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution tenant. You can specify the ARN ID, or name of the distribution tenant.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        }
+      }
+    },
+    "GetDistributionTenantResult":{
+      "type":"structure",
+      "members":{
+        "DistributionTenant":{
+          "shape":"DistributionTenant",
+          "documentation":"<p>The distribution tenant that you retrieved.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the distribution tenant.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"DistributionTenant"
     },
     "GetFieldLevelEncryptionConfigRequest":{
       "type":"structure",
@@ -6554,6 +7955,34 @@
       },
       "payload":"FunctionCode"
     },
+    "GetInvalidationForDistributionTenantRequest":{
+      "type":"structure",
+      "required":[
+        "DistributionTenantId",
+        "Id"
+      ],
+      "members":{
+        "DistributionTenantId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution tenant.</p>",
+          "location":"uri",
+          "locationName":"DistributionTenantId"
+        },
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the invalidation to retrieve.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        }
+      }
+    },
+    "GetInvalidationForDistributionTenantResult":{
+      "type":"structure",
+      "members":{
+        "Invalidation":{"shape":"Invalidation"}
+      },
+      "payload":"Invalidation"
+    },
     "GetInvalidationRequest":{
       "type":"structure",
       "required":[
@@ -6642,6 +8071,28 @@
         }
       },
       "payload":"KeyGroup"
+    },
+    "GetManagedCertificateDetailsRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"string",
+          "documentation":"<p>The identifier of the multi-tenant distribution.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        }
+      }
+    },
+    "GetManagedCertificateDetailsResult":{
+      "type":"structure",
+      "members":{
+        "ManagedCertificateDetails":{
+          "shape":"ManagedCertificateDetails",
+          "documentation":"<p>Contains details about the CloudFront managed ACM certificate.</p>"
+        }
+      },
+      "payload":"ManagedCertificateDetails"
     },
     "GetMonitoringSubscriptionRequest":{
       "type":"structure",
@@ -7139,6 +8590,18 @@
       "documentation":"<p>An argument is invalid.</p>",
       "error":{
         "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "InvalidAssociation":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The specified CloudFront resource can't be associated.</p>",
+      "error":{
+        "httpStatusCode":409,
         "senderFault":true
       },
       "exception":true
@@ -8020,6 +9483,36 @@
       },
       "payload":"ConflictingAliasesList"
     },
+    "ListConnectionGroupsRequest":{
+      "type":"structure",
+      "members":{
+        "AssociationFilter":{
+          "shape":"ConnectionGroupAssociationFilter",
+          "documentation":"<p>Filter by associated Anycast IP list ID.</p>"
+        },
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>The marker for the next set of connection groups to retrieve.</p>"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of connection groups to return.</p>"
+        }
+      }
+    },
+    "ListConnectionGroupsResult":{
+      "type":"structure",
+      "members":{
+        "NextMarker":{
+          "shape":"string",
+          "documentation":"<p>A token used for pagination of results returned in the response. You can use the token from the previous request to define where the current request should begin.</p>"
+        },
+        "ConnectionGroups":{
+          "shape":"ConnectionGroupSummaryList",
+          "documentation":"<p>The list of connection groups that you retrieved.</p>"
+        }
+      }
+    },
     "ListContinuousDeploymentPoliciesRequest":{
       "type":"structure",
       "members":{
@@ -8046,6 +9539,67 @@
         }
       },
       "payload":"ContinuousDeploymentPolicyList"
+    },
+    "ListDistributionTenantsByCustomizationRequest":{
+      "type":"structure",
+      "members":{
+        "WebACLArn":{
+          "shape":"string",
+          "documentation":"<p>Filter by the ARN of the associated WAF web ACL.</p>"
+        },
+        "CertificateArn":{
+          "shape":"string",
+          "documentation":"<p>Filter by the ARN of the associated ACM certificate.</p>"
+        },
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>The marker for the next set of results.</p>"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of distribution tenants to return by the specified customization.</p>"
+        }
+      }
+    },
+    "ListDistributionTenantsByCustomizationResult":{
+      "type":"structure",
+      "members":{
+        "NextMarker":{
+          "shape":"string",
+          "documentation":"<p>A token used for pagination of results returned in the response. You can use the token from the previous request to define where the current request should begin.</p>"
+        },
+        "DistributionTenantList":{
+          "shape":"DistributionTenantList",
+          "documentation":"<p>A list of distribution tenants with the specified customization.</p>"
+        }
+      }
+    },
+    "ListDistributionTenantsRequest":{
+      "type":"structure",
+      "members":{
+        "AssociationFilter":{"shape":"DistributionTenantAssociationFilter"},
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>The marker for the next set of results.</p>"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of distribution tenants to return.</p>"
+        }
+      }
+    },
+    "ListDistributionTenantsResult":{
+      "type":"structure",
+      "members":{
+        "NextMarker":{
+          "shape":"string",
+          "documentation":"<p>A token used for pagination of results returned in the response. You can use the token from the previous request to define where the current request should begin.</p>"
+        },
+        "DistributionTenantList":{
+          "shape":"DistributionTenantList",
+          "documentation":"<p>The list of distribution tenants that you retrieved.</p>"
+        }
+      }
     },
     "ListDistributionsByAnycastIpListIdRequest":{
       "type":"structure",
@@ -8111,6 +9665,37 @@
         }
       },
       "payload":"DistributionIdList"
+    },
+    "ListDistributionsByConnectionModeRequest":{
+      "type":"structure",
+      "required":["ConnectionMode"],
+      "members":{
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p> The marker for the next set of distributions to retrieve.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of distributions to return.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        },
+        "ConnectionMode":{
+          "shape":"ConnectionMode",
+          "documentation":"<p>The connection mode to filter distributions by.</p>",
+          "location":"uri",
+          "locationName":"ConnectionMode"
+        }
+      }
+    },
+    "ListDistributionsByConnectionModeResult":{
+      "type":"structure",
+      "members":{
+        "DistributionList":{"shape":"DistributionList"}
+      },
+      "payload":"DistributionList"
     },
     "ListDistributionsByKeyGroupRequest":{
       "type":"structure",
@@ -8332,6 +9917,44 @@
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"DistributionList"
     },
+    "ListDomainConflictsRequest":{
+      "type":"structure",
+      "required":[
+        "Domain",
+        "DomainControlValidationResource"
+      ],
+      "members":{
+        "Domain":{
+          "shape":"string",
+          "documentation":"<p>The domain to check for conflicts.</p>"
+        },
+        "DomainControlValidationResource":{
+          "shape":"DistributionResourceId",
+          "documentation":"<p>The distribution resource identifier. This can be the distribution or distribution tenant that has a valid certificate, which covers the domain that you specify.</p>"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of domain conflicts to return.</p>"
+        },
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>The marker for the next set of domain conflicts.</p>"
+        }
+      }
+    },
+    "ListDomainConflictsResult":{
+      "type":"structure",
+      "members":{
+        "DomainConflicts":{
+          "shape":"DomainConflictsList",
+          "documentation":"<p>Contains details about the domain conflicts.</p>"
+        },
+        "NextMarker":{
+          "shape":"string",
+          "documentation":"<p>A token used for pagination of results returned in the response. You can use the token from the previous request to define where the current request should begin.</p>"
+        }
+      }
+    },
     "ListFieldLevelEncryptionConfigsRequest":{
       "type":"structure",
       "members":{
@@ -8418,6 +10041,37 @@
         }
       },
       "payload":"FunctionList"
+    },
+    "ListInvalidationsForDistributionTenantRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution tenant.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>Use this parameter when paginating results to indicate where to begin in your list of invalidation batches. Because the results are returned in decreasing order from most recent to oldest, the most recent results are on the first page, the second page will contain earlier results, and so on. To get the next page of results, set <code>Marker</code> to the value of the <code>NextMarker</code> from the current page's response. This value is the same as the ID of the last invalidation batch on that page.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of invalidations to return for the distribution tenant.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        }
+      }
+    },
+    "ListInvalidationsForDistributionTenantResult":{
+      "type":"structure",
+      "members":{
+        "InvalidationList":{"shape":"InvalidationList"}
+      },
+      "payload":"InvalidationList"
     },
     "ListInvalidationsRequest":{
       "type":"structure",
@@ -8773,6 +10427,59 @@
         }
       },
       "documentation":"<p>A complex type that specifies whether access logs are written for the distribution.</p> <note> <p>If you already enabled standard logging (legacy) and you want to enable standard logging (v2) to send your access logs to Amazon S3, we recommend that you specify a <i>different</i> Amazon S3 bucket or use a <i>separate path</i> in the same bucket (for example, use a log prefix or partitioning). This helps you keep track of which log files are associated with which logging subscription and prevents log files from overwriting each other. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/AccessLogs.html\">Standard logging (access logs)</a> in the <i>Amazon CloudFront Developer Guide</i>.</p> </note>"
+    },
+    "ManagedCertificateDetails":{
+      "type":"structure",
+      "members":{
+        "CertificateArn":{
+          "shape":"string",
+          "documentation":"<p>The ARN of the CloudFront managed ACM certificate.</p>"
+        },
+        "CertificateStatus":{
+          "shape":"ManagedCertificateStatus",
+          "documentation":"<p>The status of the CloudFront managed ACM certificate.</p> <note> <p>Your distribution tenant will be updated with the latest certificate status. When calling the <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistributionTenant.html\">UpdateDistributionTenant</a> operation, use the latest value for the <code>ETag</code>.</p> </note>"
+        },
+        "ValidationTokenHost":{
+          "shape":"ValidationTokenHost",
+          "documentation":"<p>Contains details about the validation token host of the specified CloudFront managed ACM certificate.</p> <ul> <li> <p>For <code>cloudfront</code>, CloudFront will automatically serve the validation token. Choose this mode if you can point the domain's DNS to CloudFront immediately.</p> </li> <li> <p>For <code>self-hosted</code>, you serve the validation token from your existing infrastructure. Choose this mode when you need to maintain current traffic flow while your certificate is being issued. You can place the validation token at the well-known path on your existing web server, wait for ACM to validate and issue the certificate, and then update your DNS to point to CloudFront.</p> </li> </ul> <note> <p>This setting only affects the initial certificate request. Once the DNS points to CloudFront, all future certificate renewals are automatically handled through CloudFront.</p> </note>"
+        },
+        "ValidationTokenDetails":{
+          "shape":"ValidationTokenDetailList",
+          "documentation":"<p>Contains details about the validation token of the specified CloudFront managed ACM certificate.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the CloudFront managed ACM certificate.</p>"
+    },
+    "ManagedCertificateRequest":{
+      "type":"structure",
+      "required":["ValidationTokenHost"],
+      "members":{
+        "ValidationTokenHost":{
+          "shape":"ValidationTokenHost",
+          "documentation":"<p>Specify how the HTTP validation token will be served when requesting the CloudFront managed ACM certificate.</p> <ul> <li> <p>For <code>cloudfront</code>, CloudFront will automatically serve the validation token. Choose this mode if you can point the domain's DNS to CloudFront immediately.</p> </li> <li> <p>For <code>self-hosted</code>, you serve the validation token from your existing infrastructure. Choose this mode when you need to maintain current traffic flow while your certificate is being issued. You can place the validation token at the well-known path on your existing web server, wait for ACM to validate and issue the certificate, and then update your DNS to point to CloudFront.</p> </li> </ul>"
+        },
+        "PrimaryDomainName":{
+          "shape":"string",
+          "documentation":"<p>The primary domain name associated with the CloudFront managed ACM certificate.</p>"
+        },
+        "CertificateTransparencyLoggingPreference":{
+          "shape":"CertificateTransparencyLoggingPreference",
+          "documentation":"<p>You can opt out of certificate transparency logging by specifying the <code>disabled</code> option. Opt in by specifying <code>enabled</code>. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency\">Certificate Transparency Logging </a> in the <i>Certificate Manager User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents the request for the Amazon CloudFront managed ACM certificate.</p>"
+    },
+    "ManagedCertificateStatus":{
+      "type":"string",
+      "enum":[
+        "pending-validation",
+        "issued",
+        "inactive",
+        "expired",
+        "validation-timed-out",
+        "revoked",
+        "failed"
+      ]
     },
     "Method":{
       "type":"string",
@@ -9679,6 +11386,71 @@
       },
       "documentation":"<p>Contains information about the origins for this distribution.</p>"
     },
+    "Parameter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Value"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ParameterName",
+          "documentation":"<p>The parameter name.</p>"
+        },
+        "Value":{
+          "shape":"ParameterValue",
+          "documentation":"<p>The parameter value.</p>"
+        }
+      },
+      "documentation":"<p>A list of parameter values to add to the resource. A parameter is specified as a key-value pair. A valid parameter value must exist for any parameter that is marked as required in the multi-tenant distribution.</p>"
+    },
+    "ParameterDefinition":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Definition"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ParameterName",
+          "documentation":"<p>The name of the parameter.</p>"
+        },
+        "Definition":{
+          "shape":"ParameterDefinitionSchema",
+          "documentation":"<p>The value that you assigned to the parameter.</p>"
+        }
+      },
+      "documentation":"<p>A list of parameter values to add to the resource. A parameter is specified as a key-value pair. A valid parameter value must exist for any parameter that is marked as required in the multi-tenant distribution.</p>"
+    },
+    "ParameterDefinitionSchema":{
+      "type":"structure",
+      "members":{
+        "StringSchema":{
+          "shape":"StringSchemaConfig",
+          "documentation":"<p>An object that contains information about the string schema.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains information about the parameter definition.</p>"
+    },
+    "ParameterDefinitions":{
+      "type":"list",
+      "member":{"shape":"ParameterDefinition"}
+    },
+    "ParameterName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-_]+"
+    },
+    "ParameterValue":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "Parameters":{
+      "type":"list",
+      "member":{"shape":"Parameter"}
+    },
     "ParametersInCacheKeyAndForwardedToOrigin":{
       "type":"structure",
       "required":[
@@ -9750,7 +11522,8 @@
       "enum":[
         "PriceClass_100",
         "PriceClass_200",
-        "PriceClass_All"
+        "PriceClass_All",
+        "None"
       ]
     },
     "PublicKey":{
@@ -10186,6 +11959,18 @@
         "Message":{"shape":"string"}
       },
       "documentation":"<p>Cannot delete this resource because it is in use.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResourceNotDisabled":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The specified CloudFront resource hasn't been disabled yet.</p>",
       "error":{
         "httpStatusCode":409,
         "senderFault":true
@@ -11123,6 +12908,25 @@
       },
       "documentation":"<p>A complex type that controls whether access logs are written for this streaming distribution.</p>"
     },
+    "StringSchemaConfig":{
+      "type":"structure",
+      "required":["Required"],
+      "members":{
+        "Comment":{
+          "shape":"string",
+          "documentation":"<p>A comment to describe the parameter.</p>"
+        },
+        "DefaultValue":{
+          "shape":"ParameterValue",
+          "documentation":"<p>The default value of the parameter.</p>"
+        },
+        "Required":{
+          "shape":"boolean",
+          "documentation":"<p>Whether the defined parameter is required.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a string schema.</p>"
+    },
     "Tag":{
       "type":"structure",
       "required":["Key"],
@@ -11207,6 +13011,16 @@
         }
       },
       "documentation":"<p>A complex type that contains zero or more <code>Tag</code> elements.</p>"
+    },
+    "TenantConfig":{
+      "type":"structure",
+      "members":{
+        "ParameterDefinitions":{
+          "shape":"ParameterDefinitions",
+          "documentation":"<p>The parameters that you specify for a distribution tenant.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a distribution tenant.</p>"
     },
     "TestFunctionFailed":{
       "type":"structure",
@@ -12127,6 +13941,55 @@
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"CloudFrontOriginAccessIdentity"
     },
+    "UpdateConnectionGroupRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "IfMatch"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the connection group.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "Ipv6Enabled":{
+          "shape":"boolean",
+          "documentation":"<p>Enable IPv6 for the connection group. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesEnableIPv6\">Enable IPv6</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The value of the <code>ETag</code> header that you received when retrieving the connection group that you're updating.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        },
+        "AnycastIpListId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Anycast static IP list.</p>"
+        },
+        "Enabled":{
+          "shape":"boolean",
+          "documentation":"<p>Whether the connection group is enabled.</p>"
+        }
+      }
+    },
+    "UpdateConnectionGroupResult":{
+      "type":"structure",
+      "members":{
+        "ConnectionGroup":{
+          "shape":"ConnectionGroup",
+          "documentation":"<p>The connection group that you updated.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the connection group.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"ConnectionGroup"
+    },
     "UpdateContinuousDeploymentPolicyRequest":{
       "type":"structure",
       "required":[
@@ -12217,6 +14080,71 @@
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"Distribution"
     },
+    "UpdateDistributionTenantRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "IfMatch"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution tenant.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "DistributionId":{
+          "shape":"string",
+          "documentation":"<p>The ID for the multi-tenant distribution.</p>"
+        },
+        "Domains":{
+          "shape":"DomainList",
+          "documentation":"<p>The domains to update for the distribution tenant. A domain object can contain only a domain property. You must specify at least one domain. Each distribution tenant can have up to 5 domains.</p>"
+        },
+        "Customizations":{
+          "shape":"Customizations",
+          "documentation":"<p>Customizations for the distribution tenant. For each distribution tenant, you can specify the geographic restrictions, and the Amazon Resource Names (ARNs) for the ACM certificate and WAF web ACL. These are specific values that you can override or disable from the multi-tenant distribution that was used to create the distribution tenant.</p>"
+        },
+        "Parameters":{
+          "shape":"Parameters",
+          "documentation":"<p>A list of parameter values to add to the resource. A parameter is specified as a key-value pair. A valid parameter value must exist for any parameter that is marked as required in the multi-tenant distribution.</p>"
+        },
+        "ConnectionGroupId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the target connection group.</p>"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The value of the <code>ETag</code> header that you received when retrieving the distribution tenant to update. This value is returned in the response of the <code>GetDistributionTenant</code> API operation.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        },
+        "ManagedCertificateRequest":{
+          "shape":"ManagedCertificateRequest",
+          "documentation":"<p>An object that contains the CloudFront managed ACM certificate request.</p>"
+        },
+        "Enabled":{
+          "shape":"boolean",
+          "documentation":"<p>Indicates whether the distribution tenant should be updated to an enabled state. If you update the distribution tenant and it's not enabled, the distribution tenant won't serve traffic.</p>"
+        }
+      }
+    },
+    "UpdateDistributionTenantResult":{
+      "type":"structure",
+      "members":{
+        "DistributionTenant":{
+          "shape":"DistributionTenant",
+          "documentation":"<p>The distribution tenant that you're updating.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the distribution tenant.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"DistributionTenant"
+    },
     "UpdateDistributionWithStagingConfigRequest":{
       "type":"structure",
       "required":["Id"],
@@ -12253,6 +14181,48 @@
         }
       },
       "payload":"Distribution"
+    },
+    "UpdateDomainAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "Domain",
+        "TargetResource"
+      ],
+      "members":{
+        "Domain":{
+          "shape":"string",
+          "documentation":"<p>The domain to update.</p>"
+        },
+        "TargetResource":{
+          "shape":"DistributionResourceId",
+          "documentation":"<p>The target distribution resource for the domain. You can specify either <code>DistributionId</code> or <code>DistributionTenantId</code>, but not both.</p>"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The value of the <code>ETag</code> identifier for the distribution or distribution tenant that will be associated with the domain.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
+    "UpdateDomainAssociationResult":{
+      "type":"structure",
+      "members":{
+        "Domain":{
+          "shape":"string",
+          "documentation":"<p>The domain that you're moving.</p>"
+        },
+        "ResourceId":{
+          "shape":"string",
+          "documentation":"<p>The intended destination for the domain.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the target distribution or distribution tenant that was associated with the domain.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      }
     },
     "UpdateFieldLevelEncryptionConfigRequest":{
       "type":"structure",
@@ -12776,6 +14746,59 @@
       },
       "payload":"VpcOrigin"
     },
+    "ValidationTokenDetail":{
+      "type":"structure",
+      "required":["Domain"],
+      "members":{
+        "Domain":{
+          "shape":"string",
+          "documentation":"<p>The domain name.</p>"
+        },
+        "RedirectTo":{
+          "shape":"string",
+          "documentation":"<p>The domain to redirect to.</p>"
+        },
+        "RedirectFrom":{
+          "shape":"string",
+          "documentation":"<p>The domain to redirect from.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the validation token.</p>"
+    },
+    "ValidationTokenDetailList":{
+      "type":"list",
+      "member":{"shape":"ValidationTokenDetail"}
+    },
+    "ValidationTokenHost":{
+      "type":"string",
+      "enum":[
+        "cloudfront",
+        "self-hosted"
+      ]
+    },
+    "VerifyDnsConfigurationRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Domain":{
+          "shape":"string",
+          "documentation":"<p>The domain name that you're verifying.</p>"
+        },
+        "Identifier":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution tenant.</p>"
+        }
+      }
+    },
+    "VerifyDnsConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "DnsConfigurationList":{
+          "shape":"DnsConfigurationList",
+          "documentation":"<p>The list of domain names, their statuses, and a description of each status.</p>"
+        }
+      }
+    },
     "ViewerCertificate":{
       "type":"structure",
       "members":{
@@ -12793,7 +14816,7 @@
         },
         "SSLSupportMethod":{
           "shape":"SSLSupportMethod",
-          "documentation":"<p>If the distribution uses <code>Aliases</code> (alternate domain names or CNAMEs), specify which viewers the distribution accepts HTTPS connections from.</p> <ul> <li> <p> <code>sni-only</code> – The distribution accepts HTTPS connections from only viewers that support <a href=\"https://en.wikipedia.org/wiki/Server_Name_Indication\">server name indication (SNI)</a>. This is recommended. Most browsers and clients support SNI.</p> </li> <li> <p> <code>vip</code> – The distribution accepts HTTPS connections from all viewers including those that don't support SNI. This is not recommended, and results in additional monthly charges from CloudFront.</p> </li> <li> <p> <code>static-ip</code> - Do not specify this value unless your distribution has been enabled for this feature by the CloudFront team. If you have a use case that requires static IP addresses for a distribution, contact CloudFront through the <a href=\"https://console.aws.amazon.com/support/home\">Amazon Web ServicesSupport Center</a>.</p> </li> </ul> <p>If the distribution uses the CloudFront domain name such as <code>d111111abcdef8.cloudfront.net</code>, don't set a value for this field.</p>"
+          "documentation":"<p>If the distribution uses <code>Aliases</code> (alternate domain names or CNAMEs), specify which viewers the distribution accepts HTTPS connections from.</p> <ul> <li> <p> <code>sni-only</code> – The distribution accepts HTTPS connections from only viewers that support <a href=\"https://en.wikipedia.org/wiki/Server_Name_Indication\">server name indication (SNI)</a>. This is recommended. Most browsers and clients support SNI.</p> </li> <li> <p> <code>vip</code> – The distribution accepts HTTPS connections from all viewers including those that don't support SNI. This is not recommended, and results in additional monthly charges from CloudFront.</p> </li> <li> <p> <code>static-ip</code> - Do not specify this value unless your distribution has been enabled for this feature by the CloudFront team. If you have a use case that requires static IP addresses for a distribution, contact CloudFront through the <a href=\"https://console.aws.amazon.com/support/home\">Amazon Web Services Support Center</a>.</p> </li> </ul> <p>If the distribution uses the CloudFront domain name such as <code>d111111abcdef8.cloudfront.net</code>, don't set a value for this field.</p>"
         },
         "MinimumProtocolVersion":{
           "shape":"MinimumProtocolVersion",
@@ -12996,6 +15019,21 @@
         "shape":"VpcOriginSummary",
         "locationName":"VpcOriginSummary"
       }
+    },
+    "WebAclCustomization":{
+      "type":"structure",
+      "required":["Action"],
+      "members":{
+        "Action":{
+          "shape":"CustomizationActionType",
+          "documentation":"<p>The action for the WAF web ACL customization. You can specify <code>override</code> to specify a separate WAF web ACL for the distribution tenant. If you specify <code>disable</code>, the distribution tenant won't have WAF web ACL protections and won't inherit from the multi-tenant distribution.</p>"
+        },
+        "Arn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the WAF web ACL.</p>"
+        }
+      },
+      "documentation":"<p>The WAF web ACL customization specified for the distribution tenant.</p>"
     },
     "aliasString":{
       "type":"string",

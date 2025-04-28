@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.27.3
+======
+
+* api-change:``imagebuilder``: Add integration with SSM Parameter Store to Image Builder.
+* api-change:``acm``: Add support for file-based HTTP domain control validation, available through Amazon CloudFront.
+* api-change:``cloudfront``: Add distribution tenant, connection group, and multi-tenant distribution APIs to the CloudFront SDK.
+* api-change:``bedrock-runtime``: This release adds native h2 support for the bedrock runtime API, the support is only limited to SDKs that support h2 requests natively.
+* api-change:``dynamodb``: Doc only update for GSI descriptions.
+
+
 2.27.2
 ======
 

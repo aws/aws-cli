@@ -324,14 +324,11 @@ class CLIDocumentEventHandler:
         doc.style.end_note()
 
     def _check_if_required(self, member_shape, member_name):
-        current = member_shape
-        while hasattr(current, 'parent'):
-            parent = current.parent
+        if hasattr(member_shape, 'parent'):
+            parent = member_shape.parent
             if isinstance(parent, StructureShape):
                 required_members = parent.metadata.get('required', [])
-                if member_name in required_members:
-                    return True
-            current = parent
+                return member_name in required_members
         return False
 
     def _document_constraints(self, model, doc, required = False):

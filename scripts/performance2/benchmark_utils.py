@@ -51,6 +51,19 @@ class StubbedHTTPClient:
 
 
 class BenchmarkSuite:
+    # TODO Q: How can we migrate from using sequence generators to something cleaner / more Pythonic
+    # In itself, it is a complex requirement:
+    #   Benchmark 1+ commands each iteration, and flowing the results back to the harness
+
+    # Either the suite calls it or the harness calls it:
+    # If harness calls it:
+    #   Right now we have the suite return an ordered list of functions so the harness knows what order to call it in.
+    #   This is as good as it gets because alternatives would have to do weird things like decorators to track each function order (then you can't reorder functions which is weird!)
+
+    #   The main alternative would be for suites to control the control flow of executing the CLI command, with all function calls in a single statement (or equivalent)
+    #   This would look more like the pseudocodes defined on the cbor docs, for example, with a yield between each sequence.
+
+    # or if we don't want
     def before_suite(self, args):
         # return [sequence_generator]
         # each generator generates args.num_iterations times
@@ -211,7 +224,7 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
             }
         self._benchmark_results[case['name']]['measurements'].append(results)
 
-    def end_iteration(self):
+    def end_iteration(self, iteration):
         self._client.tear_down()
         self._env_patch.stop()
 
@@ -508,7 +521,7 @@ class BenchmarkHarness(object):
         result_dir = args.result_dir
         process_benchmarker = ProcessBenchmarker()
         # --- BEFORE-SUITE (resource creation, retrieve/return sequence generators, ...)
-        # optionally, files per iteration could be created here all at once
+        # optionally, files per iteration could be created here all at once (e.g. for caching reasons)
         # but it is preferred to be done per-iteration to minimize the life of files
         # on the disk to the time that they're needed/used by the application
         sequence_generators = suite.before_suite(args)

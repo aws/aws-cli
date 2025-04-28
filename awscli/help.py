@@ -16,10 +16,14 @@ import platform
 import shlex
 import sys
 from subprocess import PIPE, Popen
+import tempfile
+import webbrowser
 
 from docutils.core import publish_string
-from docutils.writers import manpage
-
+from docutils.writers import (
+    html4css1,
+    manpage,
+)
 from awscli.argparser import ArgTableArgParser
 from awscli.argprocess import ParamShorthandParser
 from botocore.exceptions import ProfileNotFound
@@ -46,7 +50,7 @@ class ExecutableNotFoundError(Exception):
         )
 
 
-def get_renderer():
+def get_renderer(help_output):
     """
     Return the appropriate HelpRenderer implementation for the
     current platform.
@@ -54,8 +58,9 @@ def get_renderer():
     if platform.system() == 'Windows':
         return WindowsHelpRenderer()
     else:
+        if help_output == "browser":
+            return PosixBrowserHelpRenderer()
         return PosixHelpRenderer()
-
 
 class PagingHelpRenderer:
     """
@@ -108,6 +113,55 @@ class PagingHelpRenderer:
 
     def _convert_doc_content(self, contents):
         return contents
+
+
+class BrowserHelpRenderer:
+    """
+    Interface for a help renderer to a web browser.
+
+    The renderer is responsible for displaying the help content on
+    a particular platform.
+
+    """
+
+    def __init__(self, output_stream=sys.stdout):
+        self.output_stream = output_stream
+
+    _DEFAULT_DOCUTILS_SETTINGS_OVERRIDES = {
+        # The default for line length limit in docutils is 10,000. However,
+        # currently in the documentation, it inlines all possible enums in
+        # the JSON syntax which exceeds this limit for some EC2 commands
+        # and prevents the manpages from being generated.
+        # This is a temporary fix to allow the manpages for these commands
+        # to be rendered. Long term, we should avoid enumerating over all
+        # enums inline for the JSON syntax snippets.
+        'line_length_limit': 50_000
+    }
+
+    def render(self, contents):
+        """
+        Each implementation of HelpRenderer must implement this
+        render method.
+        """
+        converted_content = self._convert_doc_content(contents)
+        self._send_output_to_browser(converted_content)
+
+    def _send_output_to_browser(self, output):
+        html_file = tempfile.NamedTemporaryFile("wb", delete=False)
+        html_file.write(output)
+        html_file.close()
+
+        try:
+            return webbrowser.open_new_tab(f'file://{html_file.name}')
+        except Exception:
+            LOG.debug('Failed to open browser:', exc_info=True)
+
+
+    def _convert_doc_content(self, contents):
+        return contents
+
+    def _popen(self, *args, **kwargs):
+        return Popen(*args, **kwargs)
 
 
 class PosixHelpRenderer(PagingHelpRenderer):
@@ -172,6 +226,43 @@ class PosixHelpRenderer(PagingHelpRenderer):
             ]
         )
 
+class PosixBrowserHelpRenderer(BrowserHelpRenderer):
+    """
+    Render help content on a Posix-like system.  This includes
+    Linux and MacOS X.
+    """
+
+    PAGER = 'less -R'
+
+    def _convert_doc_content(self, contents, output_format='ascii'):
+        settings_overrides = self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES.copy()
+        settings_overrides["report_level"] = 3
+        man_contents = publish_string(
+            contents,
+            writer=manpage.Writer(),
+            settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
+        )
+        if self._exists_on_path('groff'):
+            cmdline = ['groff', '-m', 'man', '-T', 'html']
+        elif self._exists_on_path('mandoc'):
+            cmdline = ['mandoc', '-T', 'html']
+        else:
+            raise ExecutableNotFoundError('groff or mandoc')
+        LOG.debug("Running command: %s", cmdline)
+        p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        output = p3.communicate(input=man_contents)[0]
+        return output
+
+    def _exists_on_path(self, name):
+        # Since we're only dealing with POSIX systems, we can
+        # ignore things like PATHEXT.
+        return any(
+            [
+                os.path.exists(os.path.join(p, name))
+                for p in os.environ.get('PATH', '').split(os.pathsep)
+            ]
+        )
+
 
 class WindowsHelpRenderer(PagingHelpRenderer):
     """Render help content on a Windows platform."""
@@ -181,7 +272,7 @@ class WindowsHelpRenderer(PagingHelpRenderer):
     def _convert_doc_content(self, contents):
         text_output = publish_string(
             contents,
-            writer=TextWriter(),
+            writer=html4css1.Writer(),
             settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
         )
         return text_output
@@ -248,7 +339,6 @@ class HelpCommand:
         self.arg_table = arg_table
         self._subcommand_table = {}
         self._related_items = []
-        self.renderer = get_renderer()
         self.doc = ReSTDocument(target='man')
         try:
             help_output_format = self.session.get_config_variable("cli_help_output")

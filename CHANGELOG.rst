@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.27.4
+======
+
+* api-change:``qbusiness``: Add support for anonymous user access for Q Business applications
+* enhancement:awscrt: Update awscrt version requirement to 0.26.1
+* api-change:``ssm``: This release adds support for just-In-time node access in AWS Systems Manager. Just-in-time node access enables customers to move towards zero standing privileges by requiring operators to request access and obtain approval before remotely connecting to nodes managed by the SSM Agent.
+* api-change:``connectcases``: Introduces CustomEntity as part of the UserUnion data type. This field is used to indicate the entity who is performing the API action.
+* api-change:``kinesis``: Amazon KDS now supports tagging and attribute-based access control (ABAC) for enhanced fan-out consumers.
+* api-change:``sagemaker``: Introduced support for P5en instance types on SageMaker Studio for JupyterLab and CodeEditor applications.
+* api-change:``sagemaker-metrics``: SageMaker Metrics Service now supports FIPS endpoint in all US and Canada Commercial regions.
+* api-change:``pinpoint-sms-voice-v2``: AWS End User Messaging has added MONITOR and FILTER functionality to SMS Protect.
+* enhancement:``cloudfront``: Replace cryptographic functions from ``cryptography`` with ``awscrt`` for the ``sign`` command. Fixes `#9258 <https://github.com/aws/aws-cli/issues/9258>`__.
+* api-change:``ssm-guiconnect``: This release adds API support for the connection recording GUI Connect feature of AWS Systems Manager
+
+
 2.27.3
 ======
 

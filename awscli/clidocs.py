@@ -15,7 +15,7 @@ import os
 import re
 
 from botocore import xform_name
-from botocore.model import StringShape, StructureShape
+from botocore.model import StringShape
 from botocore.utils import is_json_value_header
 
 from awscli import SCALAR_TYPES

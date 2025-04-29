@@ -291,7 +291,6 @@ class CLIDocumentEventHandler:
         doc.include_doc_string(docs)
         if is_tagged_union_type(member_shape):
             self._add_tagged_union_note(member_shape, doc)
-        # self._document_enums(member_shape, doc)
 
         if required:
             doc.style.new_paragraph()

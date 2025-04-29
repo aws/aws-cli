@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+# Don't run tests from the root repo dir.
+# We want to ensure we're importing from the installed
+# binary package not from the CWD.
+
+import os
+import re
+from subprocess import check_output
+from awscli.testutils import cd
+
+_dname = os.path.dirname
+
+REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
+
+
+def run(command):
+    print(f'Running {command}')
+    return check_output(command, shell=True)
+
+
+def run_make_bundle():
+    """
+    Builds the bundled installer, and returns its path
+    """
+    output = run(f'{REPO_ROOT}/scripts/make-bundle')
+    match = re.search(
+        r'Zipped bundle installer is at: (.+?\.zip)', output.decode('utf-8')
+    )
+    if not match:
+        raise RuntimeError("Could not find bundle path in make-bundle output")
+
+    return match.group(1)
+
+
+def install_from_bundle(zip_path):
+    run(f'unzip -o {bundle_path}')
+    path_without_zip = bundle_path[:-4]
+    run(
+        f'sudo {path_without_zip}/install -i /usr/local/aws -b /usr/local/bin/aws'
+    )
+
+
+def verify_installation():
+    version_output = run("aws --version")
+    print(f"Installed AWS CLI version: {version_output}")
+
+
+if __name__ == "__main__":
+    with cd(os.path.join(REPO_ROOT)):
+        bundle_path = run_make_bundle()
+        install_from_bundle(bundle_path)
+        verify_installation()

@@ -210,7 +210,6 @@ class CLIDocumentEventHandler:
             self._add_tagged_union_note(argument.argument_model, doc)
         if hasattr(argument, 'argument_model'):
             self._document_enums(argument.argument_model, doc)
-            self._document_constraints(argument.argument_model, doc)
             self._document_nested_structure(argument.argument_model, doc)
         doc.style.dedent()
         doc.style.new_paragraph()
@@ -248,21 +247,23 @@ class CLIDocumentEventHandler:
         """Recursively documents parameters in nested structures"""
         member_type_name = getattr(model, 'type_name', None)
         if member_type_name == 'structure':
+            required_members = model.metadata.get('required', [])
             for member_name, member_shape in model.members.items():
+                is_required = member_name in required_members
                 self._doc_member(
-                    doc, member_name, member_shape, stack=[model.name]
+                    doc, member_name, member_shape, stack=[model.name], required=is_required
                 )
         elif member_type_name == 'list':
-            self._doc_member(doc, '', model.member, stack=[model.name])
+            self._doc_member(doc, '', model.member, stack=[model.name], required=False)
         elif member_type_name == 'map':
             key_shape = model.key
             key_name = key_shape.serialization.get('name', 'key')
-            self._doc_member(doc, key_name, key_shape, stack=[model.name])
+            self._doc_member(doc, key_name, key_shape, stack=[model.name], required=False)
             value_shape = model.value
             value_name = value_shape.serialization.get('name', 'value')
-            self._doc_member(doc, value_name, value_shape, stack=[model.name])
+            self._doc_member(doc, value_name, value_shape, stack=[model.name], required=False)
 
-    def _doc_member(self, doc, member_name, member_shape, stack):
+    def _doc_member(self, doc, member_name, member_shape, stack, required=False):
         if member_shape.name in stack:
             # Document the recursion once, otherwise just
             # note the fact that it's recursive and return.
@@ -272,11 +273,11 @@ class CLIDocumentEventHandler:
                 return
         stack.append(member_shape.name)
         try:
-            self._do_doc_member(doc, member_name, member_shape, stack)
+            self._do_doc_member(doc, member_name, member_shape, stack, required)
         finally:
             stack.pop()
 
-    def _do_doc_member(self, doc, member_name, member_shape, stack):
+    def _do_doc_member(self, doc, member_name, member_shape, stack, required=False):
         docs = member_shape.documentation
         type_name = self._get_argument_type_name(
             member_shape, member_shape.type_name
@@ -290,25 +291,28 @@ class CLIDocumentEventHandler:
         doc.include_doc_string(docs)
         if is_tagged_union_type(member_shape):
             self._add_tagged_union_note(member_shape, doc)
-        self._document_enums(member_shape, doc)
-        required = self._check_if_required(member_shape, member_name)
-        self._document_constraints(member_shape, doc, required=required)
+        # self._document_enums(member_shape, doc)
+
+        if required:
+            doc.style.new_paragraph()
+            doc.write('This parameter is required.')
+
         doc.style.new_paragraph()
         member_type_name = member_shape.type_name
         if member_type_name == 'structure':
+            required_members = member_shape.metadata.get('required', [])
             for sub_name, sub_shape in member_shape.members.items():
-                sub_shape.parent = member_shape
-                self._doc_member(doc, sub_name, sub_shape, stack)
+                sub_required = sub_name in required_members
+                self._doc_member(doc, sub_name, sub_shape, stack, required=sub_required)
         elif member_type_name == 'map':
             key_shape = member_shape.key
             key_name = key_shape.serialization.get('name', 'key')
-            self._doc_member(doc, key_name, key_shape, stack)
+            self._doc_member(doc, key_name, key_shape, stack, required=False)
             value_shape = member_shape.value
             value_name = value_shape.serialization.get('name', 'value')
-            self._doc_member(doc, value_name, value_shape, stack)
+            self._doc_member(doc, value_name, value_shape, stack, required=False)
         elif member_type_name == 'list':
-            member_shape.member.parent = member_shape
-            self._doc_member(doc, '', member_shape.member, stack)
+            self._doc_member(doc, '', member_shape.member, stack, required=False)
         doc.style.dedent()
         doc.style.new_paragraph()
 
@@ -322,33 +326,6 @@ class CLIDocumentEventHandler:
         )
         doc.writeln(msg)
         doc.style.end_note()
-
-    def _check_if_required(self, member_shape, member_name):
-        if hasattr(member_shape, 'parent'):
-            parent = member_shape.parent
-            if isinstance(parent, StructureShape):
-                required_members = parent.metadata.get('required', [])
-                return member_name in required_members
-        return False
-
-    def _document_constraints(self, model, doc, required = False):
-        """Documents parameter value constraints"""
-        if not hasattr(model, 'metadata'):
-            return
-        constraints = ['min', 'max', 'pattern']
-        has_metadata_constraints = any(
-            [constraint in model.metadata for constraint in constraints]
-        )
-        if required or has_metadata_constraints:
-            doc.style.new_paragraph()
-            doc.write('Constraints:')
-            doc.style.start_ul()
-            if required:
-                doc.style.li('required')
-            for constraint in constraints:
-                if (val := model.metadata.get(constraint)) is not None:
-                    doc.style.li(f'{constraint}: ``{val}``')
-            doc.style.end_ul()
 
     def _add_tagged_union_note(self, shape, doc):
         doc.style.start_note()
@@ -642,6 +619,10 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                 member, include_enum_values=False
             )
             doc.write('%s %s ...' % (example_type, example_type))
+            if isinstance(member, StringShape) and member.enum:
+                # If we have enum values, we can tell the user
+                # exactly what valid values they can provide.
+                self._write_valid_enums(doc, member.enum)
             doc.style.end_codeblock()
             doc.style.new_paragraph()
         elif cli_argument.cli_type_name not in SCALAR_TYPES:
@@ -651,6 +632,13 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             self._json_example(doc, argument_model, stack=[])
             doc.style.end_codeblock()
             doc.style.new_paragraph()
+
+    def _write_valid_enums(self, doc, enum_values):
+        doc.style.new_paragraph()
+        doc.write("Where valid values are:\n")
+        for value in enum_values:
+            doc.write("    %s\n" % value)
+        doc.write("\n")
 
     def doc_output(self, help_command, event_name, **kwargs):
         doc = help_command.doc

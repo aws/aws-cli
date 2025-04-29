@@ -152,6 +152,25 @@
       ],
       "documentation":"<p>Verifies if a user has access permissions for a specified document and returns the actual ACL attached to the document. Resolves user access on the document via user aliases and groups when verifying user access.</p>"
     },
+    "CreateAnonymousWebExperienceUrl":{
+      "name":"CreateAnonymousWebExperienceUrl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/applications/{applicationId}/experiences/{webExperienceId}/anonymous-url",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAnonymousWebExperienceUrlRequest"},
+      "output":{"shape":"CreateAnonymousWebExperienceUrlResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a unique URL for anonymous Amazon Q Business web experience. This URL can only be used once and must be used within 5 minutes after it's generated.</p>"
+    },
     "CreateApplication":{
       "name":"CreateApplication",
       "http":{
@@ -3023,6 +3042,40 @@
       "documentation":"<p>The source reference for an existing attachment.</p>",
       "union":true
     },
+    "CreateAnonymousWebExperienceUrlRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "webExperienceId"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The identifier of the Amazon Q Business application environment attached to the web experience.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "webExperienceId":{
+          "shape":"WebExperienceId",
+          "documentation":"<p>The identifier of the web experience.</p>",
+          "location":"uri",
+          "locationName":"webExperienceId"
+        },
+        "sessionDurationInMinutes":{
+          "shape":"SessionDurationInMinutes",
+          "documentation":"<p>The duration of the session associated with the unique URL for the web experience.</p>"
+        }
+      }
+    },
+    "CreateAnonymousWebExperienceUrlResponse":{
+      "type":"structure",
+      "members":{
+        "anonymousUrl":{
+          "shape":"Url",
+          "documentation":"<p>The unique URL for accessing the web experience.</p> <important> <p>This URL can only be used once and must be used within 5 minutes after it's generated.</p> </important>"
+        }
+      }
+    },
     "CreateApplicationRequest":{
       "type":"structure",
       "required":["displayName"],
@@ -5647,7 +5700,7 @@
           "documentation":"<p>Controls whether hallucination reduction has been enabled or disabled for your application. The default status is <code>DISABLED</code>. </p>"
         }
       },
-      "documentation":"<p>Configuration information required to setup hallucination reduction. For more information, see <a href=\"amazonq/latest/qbusiness-ug/hallucination-reduction.html\">hallucination reduction</a>.</p> <note> <p>The hallucination reduction feature won't work if chat orchestration controls are enabled for your application.</p> </note>"
+      "documentation":"<p>Configuration information required to setup hallucination reduction. For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/hallucination-reduction.html\"> hallucination reduction</a>.</p> <note> <p>The hallucination reduction feature won't work if chat orchestration controls are enabled for your application.</p> </note>"
     },
     "HallucinationReductionControl":{
       "type":"string",
@@ -5723,7 +5776,8 @@
         "AWS_IAM_IDP_SAML",
         "AWS_IAM_IDP_OIDC",
         "AWS_IAM_IDC",
-        "AWS_QUICKSIGHT_IDP"
+        "AWS_QUICKSIGHT_IDP",
+        "ANONYMOUS"
       ]
     },
     "ImageExtractionConfiguration":{
@@ -7970,6 +8024,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SessionDurationInMinutes":{
+      "type":"integer",
+      "box":true,
+      "max":60,
+      "min":15
     },
     "SnippetExcerpt":{
       "type":"structure",

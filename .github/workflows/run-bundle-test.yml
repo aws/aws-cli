@@ -1,0 +1,27 @@
+name: Run bundle test
+
+on:
+  push:
+  pull_request:
+    branches-ignore: [ master ]
+
+jobs:
+  test-bundle:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        os: [ubuntu-latest, macOS-latest]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: python scripts/ci/install
+    - name: Install additional dependencies
+      run: pip install virtualenv==16.3.0 setuptools-scm==3.3.3  # same as internal generate-bundle.ts
+    - name: Test the bundle
+      run: python scripts/ci/test-bundle

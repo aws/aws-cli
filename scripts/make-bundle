@@ -12,6 +12,7 @@ interface for those not familiar with the python
 ecosystem.
 
 """
+
 import os
 import sys
 import subprocess
@@ -31,10 +32,13 @@ PINNED_RUNTIME_DEPS = [
     # require extra build time dependencies. We are pinning it to
     # a version that does not need those.
     ('colorama', '0.4.5'),
+    # 2.0.0 of urllib3 started requiring hatchling as well
+    ('urllib3', '1.26.20'),
 ]
 BUILDTIME_DEPS = [
+    ('setuptools', '75.4.0'),  # start of >= 3.9
     ('setuptools-scm', '3.3.3'),
-    ('wheel', '0.33.6'),
+    ('wheel', '0.45.1'),  # 0.46.0+ requires packaging
 ]
 PIP_DOWNLOAD_ARGS = '--no-build-isolation --no-binary :all:'
 
@@ -54,14 +58,14 @@ def cd(dirname):
 
 
 def run(cmd):
-    sys.stdout.write("Running cmd: %s\n" % cmd)
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
+    sys.stdout.write(f"Running cmd: {cmd}\n")
+    p = subprocess.Popen(
+        cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     stdout, stderr = p.communicate()
     rc = p.wait()
     if p.returncode != 0:
-        raise BadRCError("Bad rc (%s) for cmd '%s': %s" % (
-            rc, cmd, stderr + stdout))
+        raise BadRCError(f"Bad rc ({rc}) for cmd '{cmd}': {stderr + stdout}")
     return stdout
 
 
@@ -79,17 +83,33 @@ def create_scratch_dir():
 def download_package_tarballs(dirname, packages):
     with cd(dirname):
         for package, package_version in packages:
-            run('%s -m pip download %s==%s %s' % (
-                sys.executable, package, package_version, PIP_DOWNLOAD_ARGS
-            ))
+            run(
+                f'{sys.executable} -m pip download {package}=={package_version}'
+                f' {PIP_DOWNLOAD_ARGS}'
+            )
+
+
+def download_package_wheels(dirname, packages):
+    with cd(dirname):
+        for package, package_version in packages:
+            run(
+                f'{sys.executable} -m pip download {package}=={package_version}'
+                f' --only-binary :all:'
+            )
+
+
+def validate_that_wheels_are_universal(dirname):
+    with cd(dirname):
+        for wheel_path in os.listdir():
+            if not wheel_path.endswith('py3-none-any.whl'):
+                raise ValueError(f'Found a non universal wheel: {wheel_path}')
 
 
 def download_cli_deps(scratch_dir, packages):
     # pip download will always download a more recent version of a package
     # even if one exists locally. The list of packages supplied in `packages`
     # forces the use of a specific runtime dependency.
-    awscli_dir = os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__)))
+    awscli_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     pinned_packages = " ".join(
         f"{name}=={version}" for (name, version) in packages
     )
@@ -104,20 +124,21 @@ def _remove_cli_zip(scratch_dir):
 
 
 def add_cli_sdist(scratch_dir):
-    awscli_dir = os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__)))
+    awscli_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     if os.path.exists(os.path.join(awscli_dir, 'dist')):
         shutil.rmtree(os.path.join(awscli_dir, 'dist'))
     with cd(awscli_dir):
-        run('%s setup.py sdist' % sys.executable)
+        run(f'{sys.executable} setup.py sdist')
         filename = os.listdir('dist')[0]
-        shutil.move(os.path.join('dist', filename),
-                    os.path.join(scratch_dir, filename))
+        shutil.move(
+            os.path.join('dist', filename), os.path.join(scratch_dir, filename)
+        )
 
 
 def create_bootstrap_script(scratch_dir):
     install_script = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), 'install')
+        os.path.dirname(os.path.abspath(__file__)), 'install'
+    )
     shutil.copy(install_script, os.path.join(scratch_dir, 'install'))
 
 
@@ -139,11 +160,11 @@ def zip_dir(scratch_dir):
 def verify_preconditions():
     # The pip version looks like:
     # 'pip 1.4.1 from ....'
-    pip_version = run(
-        '%s -m pip --version' % sys.executable).strip().split()[1]
+    pip_version = run(f'{sys.executable} -m pip --version').strip().split()[1]
     # Virtualenv version just has the version string: '1.14.5\n'
     virtualenv_version = run(
-        '%s -m virtualenv --version' % sys.executable).strip()
+        f'{sys.executable} -m virtualenv --version'
+    ).strip()
     _min_version_required('9.0.1', pip_version, 'pip')
     _min_version_required('15.1.0', virtualenv_version, 'virtualenv')
 
@@ -156,15 +177,17 @@ def _min_version_required(min_version, actual_version, name):
     for min_version_part, actual_version_part in zip(min_split, actual_split):
         if int(actual_version_part) >= int(min_version_part):
             return
-    raise ValueError("%s requires at least version %s, but version %s was "
-                     "found." % (name, min_version, actual_version))
+    raise ValueError(
+        f'{name} requires at least version {min_version}, '
+        f'but version {actual_version} was found.'
+    )
 
 
 def main():
     verify_preconditions()
     scratch_dir = create_scratch_dir()
     package_dir = os.path.join(scratch_dir, 'packages')
-    print("Bundle dir at: %s" % scratch_dir)
+    print(f"Bundle dir at: {scratch_dir}")
     download_package_tarballs(
         package_dir,
         packages=EXTRA_RUNTIME_DEPS,
@@ -174,17 +197,19 @@ def main():
     # manually install them. We isolate them to a particular directory so we
     # can run the install before the things they're dependent on. We have to do
     # this because pip won't actually find them since it doesn't handle build
-    # dependencies.
+    # dependencies. We use wheels for this, to avoid bootstrapping setuptools
+    # in 3.12+ where it's no longer included by default.
     setup_dir = os.path.join(package_dir, 'setup')
-    download_package_tarballs(
+    download_package_wheels(
         setup_dir,
         packages=BUILDTIME_DEPS,
     )
+    validate_that_wheels_are_universal(setup_dir)
     download_cli_deps(package_dir, packages=PINNED_RUNTIME_DEPS)
     add_cli_sdist(package_dir)
     create_bootstrap_script(scratch_dir)
     zip_filename = zip_dir(scratch_dir)
-    print("Zipped bundle installer is at: %s" % zip_filename)
+    print(f"Zipped bundle installer is at: {zip_filename}")
 
 
 if __name__ == '__main__':

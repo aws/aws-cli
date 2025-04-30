@@ -29,29 +29,38 @@ LOG = logging.getLogger(__name__)
 FLATTEN = "Fn::Flatten"
 
 
-def _extract_by_pattern(source, pattern):
+def _normalize_pattern(pattern):
     """
-    Extract values from a nested structure using a JSONPath-like pattern.
+    Normalize a JSONPath-like pattern by removing leading $ and dot if present.
 
     Args:
-        source: The source data structure (dict, list, or scalar)
-        pattern: A JSONPath-like pattern string (e.g., "$.*.items[*]")
+        pattern: The pattern to normalize
 
     Returns:
-        A list of extracted values
+        Normalized pattern
     """
     if not pattern or pattern == "$":
-        return [source]
+        return ""
 
     # Remove leading $ if present
     if pattern.startswith("$"):
         pattern = pattern[1:]
         if pattern.startswith("."):
             pattern = pattern[1:]
-        if not pattern:
-            return [source]
 
-    # Split the pattern into segments
+    return pattern
+
+
+def _split_pattern_into_segments(pattern):
+    """
+    Split a JSONPath-like pattern into segments.
+
+    Args:
+        pattern: A JSONPath-like pattern string
+
+    Returns:
+        List of pattern segments
+    """
     segments = []
     current_segment = ""
     in_brackets = False
@@ -78,6 +87,84 @@ def _extract_by_pattern(source, pattern):
     if current_segment:
         segments.append(current_segment)
 
+    return segments
+
+
+def _process_segment(value, segment, next_values):
+    """
+    Process a single segment against a value and add results to next_values.
+
+    Args:
+        value: The current value being processed
+        segment: The segment to apply
+        next_values: List to collect results
+
+    Returns:
+        True if the segment was processed, False otherwise
+    """
+    # Handle wildcard for dictionaries
+    if segment == "*" and isinstance(value, dict):
+        next_values.extend(list(value.values()))
+        return True
+
+    # Handle wildcard for lists
+    if segment == "[*]" and isinstance(value, list):
+        next_values.extend(value)
+        return True
+
+    # Handle specific list index
+    if (
+        segment.startswith("[")
+        and segment.endswith("]")
+        and segment[1:-1].isdigit()
+    ):
+        index = int(segment[1:-1])
+        if isinstance(value, list) and 0 <= index < len(value):
+            next_values.append(value[index])
+            return True
+
+    # Handle dictionary key access
+    if isinstance(value, dict) and segment in value:
+        next_values.append(value[segment])
+        return True
+
+    # Handle array property access with wildcard
+    if segment.endswith("[*]"):
+        prop = segment[:-3]
+        if (
+            isinstance(value, dict)
+            and prop in value
+            and isinstance(value[prop], list)
+        ):
+            next_values.extend(value[prop])
+            return True
+
+    return False
+
+
+def _extract_by_pattern(source, pattern):
+    """
+    Extract values from a nested structure using a JSONPath-like pattern.
+
+    Args:
+        source: The source data structure (dict, list, or scalar)
+        pattern: A JSONPath-like pattern string (e.g., "$.*.items[*]")
+
+    Returns:
+        A list of extracted values
+    """
+    # Handle empty or root pattern
+    if not pattern or pattern == "$":
+        return [source]
+
+    # Normalize the pattern
+    pattern = _normalize_pattern(pattern)
+    if not pattern:
+        return [source]
+
+    # Split the pattern into segments
+    segments = _split_pattern_into_segments(pattern)
+
     # Process segments recursively
     current_values = [source]
 
@@ -85,42 +172,7 @@ def _extract_by_pattern(source, pattern):
         next_values = []
 
         for value in current_values:
-            # Handle wildcard for dictionaries
-            if segment == "*" and isinstance(value, dict):
-                next_values.extend(list(value.values()))
-                continue
-
-            # Handle wildcard for lists
-            if segment == "[*]" and isinstance(value, list):
-                next_values.extend(value)
-                continue
-
-            # Handle specific list index
-            if (
-                segment.startswith("[")
-                and segment.endswith("]")
-                and segment[1:-1].isdigit()
-            ):
-                index = int(segment[1:-1])
-                if isinstance(value, list) and 0 <= index < len(value):
-                    next_values.append(value[index])
-                continue
-
-            # Handle dictionary key access
-            if isinstance(value, dict) and segment in value:
-                next_values.append(value[segment])
-                continue
-
-            # Handle array property access with wildcard
-            if segment.endswith("[*]"):
-                prop = segment[:-3]
-                if (
-                    isinstance(value, dict)
-                    and prop in value
-                    and isinstance(value[prop], list)
-                ):
-                    next_values.extend(value[prop])
-                continue
+            _process_segment(value, segment, next_values)
 
         current_values = next_values
 
@@ -129,6 +181,80 @@ def _extract_by_pattern(source, pattern):
             break
 
     return current_values
+
+
+def _process_item_for_transform(item):
+    """
+    Process an item to extract nested structures if needed.
+
+    Args:
+        item: The item to process
+
+    Returns:
+        List of items to process
+    """
+    result = [item]  # Always include the original item
+
+    if not isdict(item):
+        return result
+
+    # If the item is a dictionary with a single key and that value is a
+    # list or dict, we might need to process its contents
+    if len(item) == 1:
+        key = next(iter(item.keys()))
+        value = item[key]
+
+        # For dictionaries with nested structure, consider its nested content
+        if isinstance(value, list):
+            # Add list items individually
+            result.extend(value)
+        elif isdict(value):
+            # For nested dictionaries, include any list properties
+            for _, prop_value in value.items():
+                if isinstance(prop_value, list):
+                    result.extend(prop_value)
+
+    return result
+
+
+def _extract_variable_values(actual_item, variables):
+    """
+    Extract variable values from an item based on variable patterns.
+
+    Args:
+        actual_item: The item to extract values from
+        variables: Dictionary of variable names to patterns
+
+    Returns:
+        Dictionary of variable names to extracted values
+
+    Raises:
+        InvalidModuleError: If a variable pattern is invalid
+    """
+    var_values = {}
+    for var_name, var_pattern in variables.items():
+        if not isinstance(var_pattern, str):
+            err_msg = (
+                f"Fn::Flatten Transform variable pattern for "
+                f"'{var_name}' must be a string"
+            )
+            raise exceptions.InvalidModuleError(msg=err_msg)
+
+        # Handle special case for direct property access with [*]
+        if var_pattern.startswith("$item.") and var_pattern.endswith("[*]"):
+            prop_name = var_pattern[
+                6:-3
+            ]  # Extract property name between $item. and [*]
+            if prop_name in actual_item and isinstance(
+                actual_item[prop_name], list
+            ):
+                var_values[var_name] = actual_item[prop_name]
+                continue
+
+        # Regular extraction
+        var_values[var_name] = _extract_by_pattern(actual_item, var_pattern)
+
+    return var_values
 
 
 def _apply_transform(items, transform):
@@ -158,41 +284,19 @@ def _apply_transform(items, transform):
 
     result = []
 
-    # Handle different source structures more generically
+    # Process each item and extract nested structures if needed
     processed_items = []
     for item in items:
-
-        # Handle nested structures by checking if we need to extract inner
-        # items
-
-        if isdict(item):
-
-            # If the item is a dictionary with a single key and that value is a
-            # list or dict, we might need to process its contents
-
-            if len(item) == 1:
-                key = next(iter(item.keys()))
-                value = item[key]
-                if isdict(value) or isinstance(value, list):
-
-                    # For dictionaries with nested structure, add the item
-                    # itself and also consider its nested content
-
-                    processed_items.append(item)
-                    if isinstance(value, list):
-                        processed_items.extend(value)
-                    elif isdict(value) and "services" in value:
-                        # Special case for services structure
-                        processed_items.extend(value.get("services", []))
-                    continue
-
-        # Default case: just add the item as is
-        processed_items.append(item)
+        processed_items.extend(_process_item_for_transform(item))
 
     # Process each item with the transform
     for item in processed_items:
         # Determine the actual item to use for variable extraction
-        if len(item) == 1 and isinstance(next(iter(item.values())), dict):
+        if (
+            isdict(item)
+            and len(item) == 1
+            and isinstance(next(iter(item.values())), dict)
+        ):
             actual_item = next(iter(item.values()))
         else:
             actual_item = item
@@ -206,32 +310,7 @@ def _apply_transform(items, transform):
             continue
 
         # Extract variable values
-        var_values = {}
-        for var_name, var_pattern in variables.items():
-            if not isinstance(var_pattern, str):
-                err_msg = (
-                    f"Fn::Flatten Transform variable pattern for "
-                    f"'{var_name}' must be a string"
-                )
-                raise exceptions.InvalidModuleError(msg=err_msg)
-
-            # Handle special case for direct property access with [*]
-            if var_pattern.startswith("$item.") and var_pattern.endswith(
-                "[*]"
-            ):
-                prop_name = var_pattern[
-                    6:-3
-                ]  # Extract property name between $item. and [*]
-                if prop_name in actual_item and isinstance(
-                    actual_item[prop_name], list
-                ):
-                    var_values[var_name] = actual_item[prop_name]
-                    continue
-
-            # Regular extraction
-            var_values[var_name] = _extract_by_pattern(
-                actual_item, var_pattern
-            )
+        var_values = _extract_variable_values(actual_item, variables)
 
         # Generate cross product of all variable combinations
         combinations = _generate_combinations(var_values)
@@ -277,6 +356,121 @@ def _generate_combinations(var_values):
     return result
 
 
+def _process_variable_reference(template_str, context):
+    """
+    Process variable references in a string template.
+
+    Args:
+        template_str: The string template with variable references
+        context: Dictionary of variables available for substitution
+
+    Returns:
+        The processed string with variables replaced
+    """
+    result = template_str
+    i = 0
+
+    while i < len(result):
+        if result[i] == "$" and i + 1 < len(result) and result[i + 1] != "$":
+            # Found a variable reference
+            var_start = i
+
+            # Check if it's a simple reference or a path expression
+            if i + 1 < len(result) and result[i + 1] == "{":
+                # Path expression with braces ${var.path}
+                i += 2  # Skip past ${
+                var_end = result.find("}", i)
+                if var_end == -1:
+                    # No closing brace, treat as literal
+                    i += 1
+                    continue
+                var_path = result[i:var_end].strip()
+                i = var_end + 1
+                full_var = result[var_start:i]
+            else:
+                # Simple reference $var or path expression $var.path
+                i += 1  # Skip past $
+                var_end = i
+                while var_end < len(result) and (
+                    result[var_end].isalnum()
+                    or result[var_end] == "_"
+                    or result[var_end] == "."
+                ):
+                    var_end += 1
+                var_path = result[i:var_end].strip()
+                full_var = result[var_start:var_end]
+                i = var_end
+
+            # Resolve the variable
+            replacement = _resolve_variable_path(var_path, context)
+
+            # Replace the variable reference with its value
+            if replacement is not None:
+                if not isinstance(replacement, str):
+                    replacement = str(replacement)
+                result = result.replace(full_var, replacement)
+                # Reset i to continue from the start of the replacement
+                i = var_start + len(replacement)
+            else:
+                # Variable not found, continue
+                i = var_start + 1
+        else:
+            i += 1
+
+    return result
+
+
+def _resolve_variable_path(var_path, context):
+    """
+    Resolve a variable path expression against a context.
+
+    Args:
+        var_path: The variable path (e.g., "item.name")
+        context: Dictionary of variables
+
+    Returns:
+        The resolved value or None if not found
+    """
+    if "." in var_path:
+        # Handle path expressions like item.name
+        parts = var_path.split(".")
+        if parts[0] in context:
+            current = context[parts[0]]
+            valid_path = True
+            for part in parts[1:]:
+                if isinstance(current, dict) and part in current:
+                    current = current[part]
+                else:
+                    valid_path = False
+                    break
+            if valid_path:
+                return current
+    else:
+        # Simple variable reference
+        if var_path in context:
+            return context[var_path]
+
+    return None
+
+
+def _convert_string_to_number(value_str):
+    """
+    Convert a string to a number if possible.
+
+    Args:
+        value_str: The string to convert
+
+    Returns:
+        The converted number or the original string
+    """
+    if value_str.isdigit():
+        return int(value_str)
+    try:
+        return float(value_str)
+    except ValueError:
+        return value_str
+
+
 def _apply_template(item, template, context):
     """
     Apply a template to an item using the provided context.
@@ -298,89 +492,12 @@ def _apply_template(item, template, context):
     if isinstance(template, list):
         return [_apply_template(item, value, context) for value in template]
 
-    if isinstance(template, str):
-        # Handle string with variable references
-        if "$" in template:
-            result = template
-            # Find all variable references in the string
-            i = 0
-            while i < len(result):
-                if (
-                    result[i] == "$"
-                    and i + 1 < len(result)
-                    and result[i + 1] != "$"
-                ):
-                    # Found a variable reference
-                    var_start = i
-                    # Check if it's a simple reference or a path expression
-                    if i + 1 < len(result) and result[i + 1] == "{":
-                        # Path expression with braces ${var.path}
-                        i += 2  # Skip past ${
-                        var_end = result.find("}", i)
-                        if var_end == -1:
-                            # No closing brace, treat as literal
-                            i += 1
-                            continue
-                        var_path = result[i:var_end].strip()
-                        i = var_end + 1
-                        full_var = result[var_start:i]
-                    else:
-                        # Simple reference $var or path expression $var.path
-                        i += 1  # Skip past $
-                        var_end = i
-                        while var_end < len(result) and (
-                            result[var_end].isalnum()
-                            or result[var_end] == "_"
-                            or result[var_end] == "."
-                        ):
-                            var_end += 1
-                        var_path = result[i:var_end].strip()
-                        full_var = result[var_start:var_end]
-                        i = var_end
+    if isinstance(template, str) and "$" in template:
+        # Process string with variable references
+        result = _process_variable_reference(template, context)
 
-                    # Resolve the variable
-                    replacement = None
-                    if "." in var_path:
-                        # Handle path expressions like item.name
-                        parts = var_path.split(".")
-                        if parts[0] in context:
-                            current = context[parts[0]]
-                            valid_path = True
-                            for part in parts[1:]:
-                                if (
-                                    isinstance(current, dict)
-                                    and part in current
-                                ):
-                                    current = current[part]
-                                else:
-                                    valid_path = False
-                                    break
-                            if valid_path:
-                                replacement = current
-                    else:
-                        # Simple variable reference
-                        if var_path in context:
-                            replacement = context[var_path]
-
-                    # Replace the variable reference with its value
-                    if replacement is not None:
-                        if not isinstance(replacement, str):
-                            replacement = str(replacement)
-                        result = result.replace(full_var, replacement)
-                        # Reset i to continue from the start of the replacement
-                        i = var_start + len(replacement)
-                else:
-                    i += 1
-
-            # If the result is just a string representation of a number,
-            # convert it
-
-            if result.isdigit():
-                return int(result)
-            try:
-                return float(result)
-            except ValueError:
-                return result
+        # Convert to number if appropriate
+        return _convert_string_to_number(result)
 
     # Return as is for non-template values
     return template
@@ -408,6 +525,29 @@ def _group_by_attribute(items, attribute):
         result[key].append(item)
 
     return result
+
+
+def _extract_items_from_source(source):
+    """
+    Extract items from a non-list source without a pattern.
+
+    Args:
+        source: The source to extract items from
+
+    Returns:
+        List of extracted items
+    """
+    if isdict(source):
+        # Check if the source has any list properties that might be the intended items
+        list_props = [v for k, v in source.items() if isinstance(v, list)]
+        if list_props:
+            # Use the first list property as items
+            return list_props[0]
+        # Default to treating the source as a single item
+        return [source]
+
+    # For non-dict, non-list sources, treat as a single item
+    return [source]
 
 
 def _process_flatten(flatten_config):
@@ -454,25 +594,8 @@ def _process_flatten(flatten_config):
     elif isinstance(source, list):
         items = source
     else:
-
-        # For non-list sources without a pattern, we need to handle different
-        # structures Try to extract meaningful items from the source based on
-        # its structure
-
-        if isdict(source):
-
-            # Check if the source has any list properties that might be the
-            # intended items
-
-            list_props = [v for k, v in source.items() if isinstance(v, list)]
-            if list_props:
-                # Use the first list property as items
-                items = list_props[0]
-            else:
-                # Default to treating the source as a single item
-                items = [source]
-        else:
-            items = [source]
+        # For non-list sources without a pattern, extract items
+        items = _extract_items_from_source(source)
 
     # Apply transformation if provided
     if transform:
@@ -491,9 +614,7 @@ def _process_flatten(flatten_config):
             raise exceptions.InvalidModuleError(msg=err_msg)
         return _group_by_attribute(items, group_by)
 
-    result = items
-
-    return result
+    return items
 
 
 def fn_flatten(d):

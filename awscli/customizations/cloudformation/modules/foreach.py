@@ -26,7 +26,6 @@ from awscli.customizations.cloudformation.modules.visitor import Visitor
 from awscli.customizations.cloudformation.modules.parse_sub import (
     is_sub_needed,
 )
-from awscli.customizations.cloudformation.yamlhelper import yaml_dump
 from awscli.customizations.cloudformation.modules.flatten import (
     FLATTEN,
     fn_flatten,
@@ -85,7 +84,11 @@ def replace(i, token, val):
             sub = val[SUB]
             if isinstance(sub, str):
                 # Handle both $Identifier/$Index and ${Identifier} formats
-                if IDENTIFIER_PLACEHOLDER in sub or INDEX_PLACEHOLDER in sub or "${Identifier}" in sub:
+                if (
+                    IDENTIFIER_PLACEHOLDER in sub
+                    or INDEX_PLACEHOLDER in sub
+                    or "${Identifier}" in sub
+                ):
                     r = replace_str(sub, token, i)
                     if is_sub_needed(r):
                         return {SUB: r}
@@ -328,7 +331,7 @@ def _process_module_properties(module, i, token):
     # Then resolve any $Value references if we have a complex value
     if FOREACH_VALUE in module:
         resolve_foreach_value(module)
-        
+
     # Add handling for ${Identifier} references in Fn::Sub expressions
     def resolve_identifier_refs(vis):
         if vis.p is not None:
@@ -341,7 +344,7 @@ def _process_module_properties(module, i, token):
                         vis.d[SUB] = new_val
                     else:
                         vis.p[vis.k] = new_val
-    
+
     # Process ${Identifier} references
     Visitor(module[PROPERTIES]).visit(resolve_identifier_refs)
 
@@ -488,21 +491,23 @@ def resolve_foreach_value(copied_module):
                 prop_name = v.d.split(".")[-1]
                 if isinstance(value_obj, dict) and prop_name in value_obj:
                     v.p[v.k] = value_obj[prop_name]
-        
+
         # Handle Fn::Sub with ${Value.X} references
         elif isinstance(v.d, dict) and SUB in v.d:
             sub_val = v.d[SUB]
             if isinstance(sub_val, str):
                 modified = False
-                
+
                 # Replace ${Value.X} with actual values
                 for prop_name, prop_value in value_obj.items():
                     if isinstance(prop_value, (str, int, float, bool)):
                         placeholder = f"${{Value.{prop_name}}}"
                         if placeholder in sub_val:
-                            sub_val = sub_val.replace(placeholder, str(prop_value))
+                            sub_val = sub_val.replace(
+                                placeholder, str(prop_value)
+                            )
                             modified = True
-                
+
                 # Update the value if modified
                 if modified:
                     # If no more placeholders need substitution, convert to plain string

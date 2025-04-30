@@ -274,6 +274,12 @@ class FakeCommandVerify(FakeCommand):
         return 0
 
 
+class FakeCLISessionOrchestrator:
+    @property
+    def session_id(self):
+        return 'mysessionid'
+
+
 class TestCliDriver:
     def setup_method(self):
         self.session = FakeSession()
@@ -774,13 +780,19 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(rc, 252)
         self.assertNotIn('--idempotency-token', self.stderr.getvalue())
 
+    @mock.patch(
+        'awscli.telemetry._get_cli_session_orchestrator',
+        return_value=FakeCLISessionOrchestrator(),
+    )
     @mock.patch('awscli.clidriver.platform.system', return_value='Linux')
     @mock.patch('awscli.clidriver.platform.machine', return_value='x86_64')
     @mock.patch('awscli.clidriver.distro.id', return_value='amzn')
     @mock.patch('awscli.clidriver.distro.major_version', return_value='1')
     def test_user_agent_for_linux(self, *args):
         driver = create_clidriver()
-        expected_user_agent = 'md/installer#source md/distrib#amzn.1'
+        expected_user_agent = (
+            'md/installer#source md/distrib#amzn.1 sid/mysessionid'
+        )
         self.assertEqual(expected_user_agent, driver.session.user_agent_extra)
 
     def test_user_agent(self, *args):

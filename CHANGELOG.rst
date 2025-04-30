@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.27.5
+======
+
+* api-change:``deadline``: Adds support for tag management on workers and tag inheritance from fleets to their associated workers.
+* api-change:``bedrock-agent``: Features:    Add inline code node to prompt flow
+* api-change:``bedrock-agent-runtime``: Support for Custom Orchestration within InlineAgents
+* api-change:``cleanrooms``: This release adds support for ProtectedQuery results to be delivered to more than one collaboration member via the new distribute output configuration in StartProtectedQuery.
+* api-change:``ecr``: Adds dualstack support for Amazon Elastic Container Registry (Amazon ECR).
+* api-change:``ec2``: Launch of cost distribution feature for IPAM owners to distribute costs to internal teams.
+* api-change:``mailmanager``: Introducing new RuleSet rule PublishToSns action, which allows customers to publish email notifications to an Amazon SNS topic. New PublishToSns action enables customers to easily integrate their email workflows via Amazon SNS, allowing them to notify other systems about important email events.
+* api-change:``bedrock``: You can now specify a cross region inference profile as a teacher model for the CreateModelCustomizationJob API. Additionally, the GetModelCustomizationJob API has been enhanced to return the sub-task statuses of a customization job within the StatusDetails response field.
+* api-change:``ecr-public``: Adds dualstack support for Amazon Elastic Container Registry Public (Amazon ECR Public).
+* bugfix:socialmessaging: Renames the incorrectly named delete-whatsapp-media-message command to the correct name of delete-whatsapp-message-media
+* api-change:``logs``: CloudWatch Logs supports "DELIVERY" log class. This log class is used only for delivering AWS Lambda logs to Amazon S3 or Amazon Data Firehose.
+
+
 2.27.4
 ======
 

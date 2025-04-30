@@ -211,9 +211,6 @@ def process_module_section(
         if PARAMETERS in template:
             parent_module.module_parameters = template[PARAMETERS]
 
-    # Process Fn::Flatten before ForEach since it might be used as input
-    fn_flatten(template)
-
     # First, pre-process local modules that are looping over a list
     foreach_modules = process_module_foreach(template, parent_module)
     parent_module.foreach_modules = foreach_modules
@@ -249,6 +246,7 @@ def process_module_section(
     fn_merge(template)
     fn_join(template)
     fn_insertfile(template, base_path)
+    fn_flatten(template)
 
     # Remove the Modules section from the template
     del template[MODULES]

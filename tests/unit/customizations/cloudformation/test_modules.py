@@ -146,6 +146,8 @@ class TestPackageModules(unittest.TestCase):
             "flatten",
             "flatten-transform",
             "flatten-groupby",
+            "flatten-foreach",
+            "flatten-basic",
         ]
 
         # Collect all errors to report at the end

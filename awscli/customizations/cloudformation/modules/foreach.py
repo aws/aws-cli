@@ -12,49 +12,54 @@
 # language governing permissions and limitations under the License.
 
 """
-This file implements looping over module content.
+This file implements looping over module content with either the
+ForEach attribute or the Fn::ForEach intrinsic function.
 
-We originally called the attribute "Map" and renamed it to "ForEach" for
-consistency with Fn::ForEach.
-
-See tests/unit/customizations/cloudformation/modules/foreach*.yaml
+See tests/unit/customizations/cloudformation/modules/*foreach*.yaml
 """
+
 
 import copy
 from collections import OrderedDict
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.modules.visitor import Visitor
-from awscli.customizations.cloudformation.modules.parse_sub import WordType
-from awscli.customizations.cloudformation.modules.parse_sub import parse_sub
+from awscli.customizations.cloudformation.modules.parse_sub import (
+    is_sub_needed,
+)
+from awscli.customizations.cloudformation.yamlhelper import yaml_dump
+from awscli.customizations.cloudformation.modules.flatten import (
+    FLATTEN,
+    fn_flatten,
+)
 
 IDENTIFIER_PLACEHOLDER = "$Identifier"
 INDEX_PLACEHOLDER = "$Index"
 VALUE_PLACEHOLDER = "$Value"
-VALUE_PLACEHOLDER = "$Value"
 SUB = "Fn::Sub"
-FOREACH = "ForEach"  # Renamed from MAP
+FOREACH = "ForEach"
 REF = "Ref"
 PROPERTIES = "Properties"
 MODULES = "Modules"
 GETATT = "Fn::GetAtt"
 RESOURCES = "Resources"
 OUTPUTS = "Outputs"
-ORIGINAL_FOREACH_NAME = "OriginalForEachName"  # Renamed from ORIGINAL_MAP_NAME
+ORIGINAL_FOREACH_NAME = "OriginalForEachName"
 VALUE = "Value"
 FOREACH_PREFIX = "Fn::ForEach::"
-FOREACH_NAME_IS_I = "foreach_name_is_i"  # Renamed from MAP_NAME_IS_I
+FOREACH_NAME_IS_I = "foreach_name_is_i"
+FOREACH_VALUE = "ForEachValue"
 
 
-def replace_str(s, m, i):
+def replace_str(s, key, index):
     """
     Replace placeholders in a single string.
 
     s: The string to alter
-    m: The foreach key
-    i: The foreach index
+    key: The foreach key
+    index: The foreach index
     """
-    s = s.replace(IDENTIFIER_PLACEHOLDER, m)
-    return s.replace(INDEX_PLACEHOLDER, f"{i}")
+    s = s.replace(IDENTIFIER_PLACEHOLDER, key)
+    return s.replace(INDEX_PLACEHOLDER, f"{index}")
 
 
 def replace_identifier(s, identifier, value):
@@ -67,28 +72,24 @@ def replace_identifier(s, identifier, value):
     """
     # Replace ${identifier} with value
     s = s.replace(f"${{{identifier}}}", value)
-    # Replace &{identifier} with value (for non-alphanumeric characters)
+    # Replace &{identifier} with value
     s = s.replace(f"&{{{identifier}}}", value)
     return s
 
 
-def foreach_placeholders(i, token, val):
+def replace(i, token, val):
     "Replace $Identifier and $Index"
 
     if isinstance(val, (dict, OrderedDict)):
         if SUB in val:
             sub = val[SUB]
-            if IDENTIFIER_PLACEHOLDER in sub or INDEX_PLACEHOLDER in sub:
-                r = replace_str(sub, token, i)
-                words = parse_sub(r)
-                need_sub = False
-                for word in words:
-                    if word.t != WordType.STR:
-                        need_sub = True
-                        break
-                if need_sub:
-                    return {SUB: r}
-                return r
+            if isinstance(sub, str):
+                # Handle both $Identifier/$Index and ${Identifier} formats
+                if IDENTIFIER_PLACEHOLDER in sub or INDEX_PLACEHOLDER in sub or "${Identifier}" in sub:
+                    r = replace_str(sub, token, i)
+                    if is_sub_needed(r):
+                        return {SUB: r}
+                    return r
         elif GETATT in val:
             getatt = val[GETATT]
             # Handle expressions like !GetAtt Content[$Index].Name
@@ -106,76 +107,345 @@ def foreach_placeholders(i, token, val):
 # pylint: disable=too-many-return-statements
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-locals
-def foreach_identifier_placeholders(identifier, value, val):
+def replace_values(identifier, replacement, original):
     """
     Replace ${identifier} and &{identifier} in values.
 
-    identifier: The identifier to replace
-    value: The value to replace it with
-    val: The value to process
+    identifier: The identifier name to replace
+    replacement: The value to replace it with
+    original: The value to process
     """
-    if isinstance(val, (dict, OrderedDict)):
-        if SUB in val:
-            sub = val[SUB]
-            if f"${{{identifier}}}" in sub or f"&{{{identifier}}}" in sub:
-                r = replace_identifier(sub, identifier, value)
-                words = parse_sub(r)
-                need_sub = False
-                for word in words:
-                    if word.t != WordType.STR:
-                        need_sub = True
-                        break
-                if need_sub:
+    if isinstance(original, (dict, OrderedDict)):
+        if SUB in original:
+            sub = original[SUB]
+            if has_identifier(identifier, sub):
+                r = replace_identifier(sub, identifier, replacement)
+                if is_sub_needed(r):
                     return {SUB: r}
                 return r
-        elif GETATT in val:
-            getatt = val[GETATT]
+        elif GETATT in original:
+            getatt = original[GETATT]
             new_getatt = []
-            for item in getatt:
-                if isinstance(item, str) and (
-                    f"${{{identifier}}}" in item
-                    or f"&{{{identifier}}}" in item
-                ):
-                    new_getatt.append(
-                        replace_identifier(item, identifier, value)
-                    )
+            for x in getatt:
+                if isinstance(x, str) and (has_identifier(identifier, x)):
+                    s = replace_identifier(x, identifier, replacement)
+                    new_getatt.append(s)
                 else:
-                    new_getatt.append(item)
+                    new_getatt.append(x)
             return {GETATT: new_getatt}
         else:
             # Process nested dictionaries
             result = {}
-            for k, v in val.items():
-                if isinstance(k, str) and (
-                    f"${{{identifier}}}" in k or f"&{{{identifier}}}" in k
-                ):
-                    new_key = replace_identifier(k, identifier, value)
-                    result[new_key] = foreach_identifier_placeholders(
-                        identifier, value, v
-                    )
+            for k, v in original.items():
+                if isinstance(k, str) and has_identifier(identifier, k):
+                    new_key = replace_identifier(k, identifier, replacement)
+                    r = replace_values(identifier, replacement, v)
+                    result[new_key] = r
                 else:
-                    result[k] = foreach_identifier_placeholders(
-                        identifier, value, v
-                    )
+                    result[k] = replace_values(identifier, replacement, v)
             return result
-    elif isinstance(val, list):
+    elif isinstance(original, list):
         # Process lists
         return [
-            foreach_identifier_placeholders(identifier, value, item)
-            for item in val
+            replace_values(identifier, replacement, item) for item in original
         ]
-    elif isinstance(val, str):
-        return replace_identifier(val, identifier, value)
-    return val
+    elif isinstance(original, str):
+        return replace_identifier(original, identifier, replacement)
+    return original
+
+
+def has_identifier(identifier, s):
+    """
+    Check if a string contains an identifier.
+
+    identifier: The identifier to check for
+    x: The string to check
+    """
+    return f"${{{identifier}}}" in s or f"&{{{identifier}}}" in s
+
+
+# pylint: disable=cell-var-from-loop
+def process_module_foreach_item(name, config, retval, parent_module, template):
+    """
+    Process a single module that has a ForEach.
+
+    ForEach can be:
+    1. A comma-separated string
+    2. A Ref to a parameter (typically CommaDelimitedList)
+    3. A list of objects (typically from Fn::Flatten)
+       - each must have an "Identifier" property
+    4. A Map where keys serve as identifiers
+    """
+
+    modules = template[MODULES]
+
+    # Handle Ref case and validate input
+    _resolve_foreach_ref(config, name, parent_module)
+
+    fe = config[FOREACH]
+
+    # Parse the ForEach value into tokens and values
+    tokens, values = _parse_foreach_value(fe, name)
+
+    # Store tokens and values for later reference resolution
+    _store_foreach_metadata(name, tokens, values, retval, parent_module)
+
+    # Create modules for each token
+    _create_foreach_modules(name, config, tokens, values, modules)
+
+
+def _resolve_foreach_ref(config, k, parent_module):
+    """Resolve and validate ForEach references."""
+
+    fe = config[FOREACH]
+
+    if isdict(fe):
+        if REF in fe:
+            resolved = parent_module.find_ref(fe[REF])
+            if resolved is None:
+                msg = f"{k} has an invalid ForEach Ref: {fe}"
+                raise exceptions.InvalidModuleError(msg=msg)
+            config[FOREACH] = resolved
+            return
+
+        if FLATTEN in fe:
+            parent_module.resolve(fe)
+            fn_flatten(config)
+            return
+
+        # Validate map keys
+        for key in fe:
+            if key.startswith("Fn::"):
+                msg = f"{k} has invalid ForEach map key: {key}"
+                raise exceptions.InvalidModuleError(msg=msg)
+
+
+def _parse_foreach_value(m, k):
+    """Parse ForEach value into tokens and values."""
+    tokens = []
+    values = {}
+
+    # Handle empty list case
+    if isinstance(m, list) and not m:
+        print(f"Warning: ForEach for {k} is an empty list")
+        return tokens, values
+
+    # List of objects with Identifier property
+    if isinstance(m, list) and all(isinstance(item, dict) for item in m):
+        for i, item in enumerate(m):
+            if "Identifier" not in item:
+                msg = (
+                    f"{k} ForEach list item at index {i} "
+                    + "is missing required 'Identifier' property"
+                )
+                raise exceptions.InvalidModuleError(msg=msg)
+
+            identifier = str(item["Identifier"])
+            tokens.append(identifier)
+            values[identifier] = item
+
+    # Map where keys are identifiers
+    elif isinstance(m, dict):
+        tokens = list(m.keys())
+        values = m
+
+    # String (comma-separated list)
+    elif isinstance(m, str):
+        tokens = m.split(",")
+        values = {token: token for token in tokens}
+
+    # Invalid case
+    else:
+        msg = (
+            f"{k} has an invalid ForEach value: must be a string, "
+            "map, or list of objects with 'Identifier' property"
+        )
+        raise exceptions.InvalidModuleError(msg=msg)
+
+    return tokens, values
+
+
+def _store_foreach_metadata(k, tokens, values, retval, parent_module):
+    """Store ForEach metadata for later reference resolution."""
+    # Store tokens for later reference resolution
+    retval[k] = tokens
+
+    # Store values in parent module for $Value resolution
+    if not hasattr(parent_module, "foreach_values"):
+        parent_module.foreach_values = {}
+    parent_module.foreach_values[k] = values
+
+
+def _create_foreach_modules(name, config, tokens, values, modules):
+    """
+    Create modules for each token in the ForEach.
+
+    At the end of this, the original module config is removed and
+    replaced by copies with the index appended to the name,
+    as if the template author had written them all out manually.
+
+    After this, module processing happens as usual.
+    """
+
+    for i, token in enumerate(tokens):
+        # The ForEach attribute always uses index-based suffixes.
+        module_id = f"{name}{i}"
+
+        copied_module = copy.deepcopy(config)
+
+        # We need to remember the original name for later
+        copied_module[ORIGINAL_FOREACH_NAME] = name
+
+        # Store value for $Value resolution if it's a complex value
+        value = values.get(token)
+        if value is not None and value != token:
+            copied_module[FOREACH_VALUE] = value
+
+        del copied_module[FOREACH]
+
+        # Process properties if they exist
+        if PROPERTIES in copied_module:
+            _process_module_properties(copied_module, i, token)
+
+        modules[module_id] = copied_module
+
+    # Remove the original module config
+    del modules[name]
+
+
+def _process_module_properties(module, i, token):
+    """
+    Process properties in a copied module, replacing placeholders.
+    """
+
+    # First replace $Identifier and $Index
+    def vf(vis):
+        if vis.p is not None:
+            vis.p[vis.k] = replace(i, token, vis.d)
+
+    Visitor(module[PROPERTIES]).visit(vf)
+
+    # Then resolve any $Value references if we have a complex value
+    if FOREACH_VALUE in module:
+        resolve_foreach_value(module)
+        
+    # Add handling for ${Identifier} references in Fn::Sub expressions
+    def resolve_identifier_refs(vis):
+        if vis.p is not None:
+            if isinstance(vis.d, dict) and SUB in vis.d:
+                sub_val = vis.d[SUB]
+                if isinstance(sub_val, str) and "${Identifier}" in sub_val:
+                    # Replace ${Identifier} with the actual token
+                    new_val = sub_val.replace("${Identifier}", token)
+                    if is_sub_needed(new_val):
+                        vis.d[SUB] = new_val
+                    else:
+                        vis.p[vis.k] = new_val
+    
+    # Process ${Identifier} references
+    Visitor(module[PROPERTIES]).visit(resolve_identifier_refs)
+
+
+def process_module_fnforeach_item(k, v, retval, parent_module, template):
+    """
+    Process a single module that has Fn::ForEach.
+
+    This works like you would expect for Fn::ForEach, but cannot be
+    nested. It is less capable than the simpler ForEach attribute,
+    which can handle complex objects in addition to simple lists of strings.
+
+    Fn::ForEach allows you to put the identifier in the logical ID, whereas
+    the ForEach attribute always appends an incremented zero-based int.
+    """
+
+    modules = template[MODULES]
+    prefix_len = len(FOREACH_PREFIX)
+    loop_name = k[prefix_len:]
+
+    # Validate ForEach structure
+    if not isinstance(v, list) or len(v) != 3:
+        msg = (
+            f"Fn::ForEach::{loop_name} must be a list "
+            + "with 3 elements: [identifier, collection, template]"
+        )
+        raise exceptions.InvalidModuleError(msg=msg)
+
+    identifier = v[0]
+    collection = v[1]
+    template_fragment = v[2]
+
+    # Handle collection that might be a Ref to a CommaDelimitedList
+    if isdict(collection) and REF in collection:
+        collection = parent_module.find_ref(collection[REF])
+        if collection is None:
+            msg = f"Fn::ForEach::{loop_name} invalid collection Ref"
+            raise exceptions.InvalidModuleError(msg=msg)
+
+    # Convert string to list if it's a comma-delimited string
+    if isinstance(collection, str):
+        collection = collection.split(",")
+
+    # Ensure collection is a list
+    if not isinstance(collection, list):
+        msg = (
+            f"Fn::ForEach::{loop_name} collection must be a "
+            + "list or a reference to a CommaDelimitedList"
+        )
+        raise exceptions.InvalidModuleError(msg=msg)
+
+    # Track the mapping for GetAtt resolution
+    retval[loop_name] = []
+
+    # Process each item in the collection
+    for i, value in enumerate(collection):
+        # Add to the mapping list
+        retval[loop_name].append(value)
+
+        # Process each key in the template fragment
+        for template_key, template_value in template_fragment.items():
+            # Replace ${identifier} in the key
+            if isinstance(template_key, str):
+                new_key = replace_identifier(template_key, identifier, value)
+            else:
+                new_key = template_key
+
+            # Check if the identifier is part of the object key
+            identifier_in_key = isinstance(template_key, str) and (
+                f"${{{identifier}}}" in template_key
+                or f"&{{{identifier}}}" in template_key
+            )
+
+            # If identifier is in the key, use the key value itself
+            # Otherwise, add an index to ensure unique module names
+            if identifier_in_key:
+                module_id = new_key
+            else:
+                module_id = f"{new_key}{i}"
+
+            # Create a deep copy of the template value
+            new_value = copy.deepcopy(template_value)
+
+            # Replace ${identifier} in the value recursively
+            processed_value = replace_values(identifier, value, new_value)
+
+            # Add the processed module to the modules dictionary
+            modules[module_id] = processed_value
+
+            # Remember the original name for GetAtt resolution
+            modules[module_id][ORIGINAL_FOREACH_NAME] = loop_name
+            modules[module_id][FOREACH_NAME_IS_I] = not identifier_in_key
+
+    # Remove the ForEach entry
+    del modules[k]
 
 
 # pylint: disable=cell-var-from-loop
 # pylint: disable=too-many-statements
-def process_module_foreach(template, parent_module):
+def process_module_foreach(t, parent_module):
     """
-    Loop over ForEach in modules.
+    Loop over ForEach in modules. Also handles Fn::ForEach that wraps a module.
 
-    Returns a dictionary of foreach module names to [keys],
+    Returns a dictionary of module name to [keys],
     for later when we need to expand references that use an array index.
 
     For example:
@@ -183,130 +453,66 @@ def process_module_foreach(template, parent_module):
     {"Content": ["A", "B", "C"]}
     """
     retval = {}
-    modules = template[MODULES]
 
-    # Process ForEach attribute
-    for k, v in modules.copy().items():
+    for k, v in t[MODULES].copy().items():
+
+        # Process ForEach attribute
         if FOREACH in v:
-            # Expect ForEach to be a CSV or ref to a CSV
-            m = v[FOREACH]
-            if isdict(m) and REF in m:
-                m = parent_module.find_ref(m[REF])
-                if m is None:
-                    msg = f"{k} has an invalid ForEach Ref"
-                    raise exceptions.InvalidModuleError(msg=msg)
-            tokens = m.split(",")
-            retval[k] = tokens
-            for i, token in enumerate(tokens):
-                # Make a new module
-                module_id = f"{k}{i}"
-                copied_module = copy.deepcopy(v)
-                copied_module[ORIGINAL_FOREACH_NAME] = k
-                del copied_module[FOREACH]
-                # Replace $Identifier and $Index placeholders
-                if PROPERTIES in copied_module:
+            process_module_foreach_item(k, v, retval, parent_module, t)
 
-                    def vf(vis):
-                        if vis.p is not None:
-                            vis.p[vis.k] = foreach_placeholders(
-                                i, token, vis.d
-                            )
-
-                    Visitor(copied_module[PROPERTIES]).visit(vf)
-
-                modules[module_id] = copied_module
-
-            del modules[k]
-
-    # Process Fn::ForEach
-    for k, v in modules.copy().items():
+        # Process Fn::ForEach
         if k.startswith(FOREACH_PREFIX):
-            prefix_len = len(FOREACH_PREFIX)
-            loop_name = k[prefix_len:]
-
-            # Validate ForEach structure
-            if not isinstance(v, list) or len(v) != 3:
-                msg = (
-                    f"Fn::ForEach::{loop_name} must be a list "
-                    + "with 3 elements: [identifier, collection, template]"
-                )
-                raise exceptions.InvalidModuleError(msg=msg)
-
-            identifier = v[0]
-            collection = v[1]
-            template_fragment = v[2]
-
-            # Handle collection that might be a Ref to a CommaDelimitedList
-            if isdict(collection) and REF in collection:
-                collection = parent_module.find_ref(collection[REF])
-                if collection is None:
-                    msg = f"Fn::ForEach::{loop_name} invalid collection Ref"
-                    raise exceptions.InvalidModuleError(msg=msg)
-
-            # Convert string to list if it's a comma-delimited string
-            if isinstance(collection, str):
-                collection = collection.split(",")
-
-            # Ensure collection is a list
-            if not isinstance(collection, list):
-                msg = (
-                    f"Fn::ForEach::{loop_name} collection must be a "
-                    + "list or a reference to a CommaDelimitedList"
-                )
-                raise exceptions.InvalidModuleError(msg=msg)
-
-            # Track the mapping for GetAtt resolution
-            retval[loop_name] = []
-
-            # Process each item in the collection
-            for i, value in enumerate(collection):
-                # Add to the mapping list
-                retval[loop_name].append(value)
-
-                # Process each key in the template fragment
-                for template_key, template_value in template_fragment.items():
-                    # Replace ${identifier} in the key
-                    if isinstance(template_key, str):
-                        new_key = replace_identifier(
-                            template_key, identifier, value
-                        )
-                    else:
-                        new_key = template_key
-
-                    # Check if the identifier is part of the object key
-                    identifier_in_key = isinstance(template_key, str) and (
-                        f"${{{identifier}}}" in template_key
-                        or f"&{{{identifier}}}" in template_key
-                    )
-
-                    # If identifier is in the key, use the key value itself
-                    # Otherwise, add an index to ensure unique module names
-                    if identifier_in_key:
-                        module_id = new_key
-                    else:
-                        module_id = f"{new_key}{i}"
-
-                    # Create a deep copy of the template value
-                    new_value = copy.deepcopy(template_value)
-
-                    # Replace ${identifier} in the value recursively
-                    processed_value = foreach_identifier_placeholders(
-                        identifier, value, new_value
-                    )
-
-                    # Add the processed module to the modules dictionary
-                    modules[module_id] = processed_value
-
-                    # Remember the original name for GetAtt resolution
-                    modules[module_id][ORIGINAL_FOREACH_NAME] = loop_name
-                    modules[module_id][
-                        FOREACH_NAME_IS_I
-                    ] = not identifier_in_key
-
-            # Remove the ForEach entry
-            del modules[k]
+            process_module_fnforeach_item(k, v, retval, parent_module, t)
 
     return retval
+
+
+def resolve_foreach_value(copied_module):
+    """
+    Resolve foreach placeholders that are values.
+    """
+    value_obj = copied_module[FOREACH_VALUE]
+
+    # Resolve $Value references in properties
+    def resolve_value_refs(v):
+        if v.p is None:
+            return
+
+        # Direct $Value replacement
+        if isinstance(v.d, str) and VALUE_PLACEHOLDER in v.d:
+            # Replace $Value with actual property values
+            if v.d == VALUE_PLACEHOLDER:
+                v.p[v.k] = value_obj
+            elif v.d.startswith(f"{VALUE_PLACEHOLDER}."):
+                # The prop name is the last part of the string
+                prop_name = v.d.split(".")[-1]
+                if isinstance(value_obj, dict) and prop_name in value_obj:
+                    v.p[v.k] = value_obj[prop_name]
+        
+        # Handle Fn::Sub with ${Value.X} references
+        elif isinstance(v.d, dict) and SUB in v.d:
+            sub_val = v.d[SUB]
+            if isinstance(sub_val, str):
+                modified = False
+                
+                # Replace ${Value.X} with actual values
+                for prop_name, prop_value in value_obj.items():
+                    if isinstance(prop_value, (str, int, float, bool)):
+                        placeholder = f"${{Value.{prop_name}}}"
+                        if placeholder in sub_val:
+                            sub_val = sub_val.replace(placeholder, str(prop_value))
+                            modified = True
+                
+                # Update the value if modified
+                if modified:
+                    # If no more placeholders need substitution, convert to plain string
+                    if not is_sub_needed(sub_val):
+                        v.p[v.k] = sub_val
+                    else:
+                        v.d[SUB] = sub_val
+
+    # First pass: process all properties
+    Visitor(copied_module[PROPERTIES]).visit(resolve_value_refs)
 
 
 def resolve_foreach_lists(template, foreach_modules):

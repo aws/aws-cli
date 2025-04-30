@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  ServiceConfig:
+    Type: Map
+    Default:
+      services:
+        - name: api
+          environments: [dev, prod]
+        - name: worker
+          environments: [dev, prod]
+        - name: scheduler
+          environments: [prod]
+
+Modules:
+  # Use ForEach with Fn::Flatten to create a module instance for each service-environment combination
+  Service:
+    Source: ./flatten-foreach-module.yaml
+    ForEach:
+      Fn::Flatten:
+        Source: !Ref ServiceConfig
+        Transform:
+          Template:
+            Identifier: "$item.name-$env"
+            ServiceName: "$item.name"
+            Environment: "$env"
+            Type: "service"
+          Variables:
+            env: "$item.environments[*]"
+    Properties:
+      Name: !Sub "${Identifier}"
+      ServiceName: !Sub "${Value.ServiceName}"
+      ServiceType: !Sub "${Value.Type}"
+      InstanceNumber: "1"
+      Environment: !Sub "${Value.Environment}"
+
+Outputs:
+  ApiDevEndpoint:
+    Description: "API endpoint for dev environment"
+    Value: !GetAtt Service[api-dev].Endpoint
+  
+  ApiProdEndpoint:
+    Description: "API endpoint for prod environment"
+    Value: !GetAtt Service[api-prod].Endpoint
+  
+  WorkerEndpoints:
+    Description: "Worker endpoints"
+    Value: !Join
+      - ", "
+      - - !GetAtt Service[worker-dev].Endpoint
+        - !GetAtt Service[worker-prod].Endpoint
+  
+  SchedulerEndpoint:
+    Description: "Scheduler endpoint"
+    Value: !GetAtt Service[scheduler-prod].Endpoint

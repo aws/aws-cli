@@ -3986,6 +3986,10 @@
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Each tag consists of a tag key and a tag value. Tag keys and values are both required, but tag values can be empty strings.</p>"
         }
       }
     },
@@ -4034,6 +4038,10 @@
         "storageProfileId":{
           "shape":"StorageProfileId",
           "documentation":"<p>The storage profile ID.</p>"
+        },
+        "tagPropagationMode":{
+          "shape":"TagPropagationMode",
+          "documentation":"<p>Specifies whether tags associated with a fleet are attached to workers when the worker is launched. </p> <p>When the <code>tagPropagationMode</code> is set to <code>PROPAGATE_TAGS_TO_WORKERS_AT_LAUNCH</code> any tag associated with a fleet is attached to workers when they launch. If the tags for a fleet change, the tags associated with running workers <b>do not</b> change.</p> <p>If you don't specify <code>tagPropagationMode</code>, the default is <code>NO_PROPAGATION</code>.</p>"
         }
       },
       "documentation":"<p>The details of a customer managed fleet configuration.</p>"
@@ -7514,7 +7522,7 @@
     },
     "JobTemplate":{
       "type":"string",
-      "max":300000,
+      "max":1000000,
       "min":1,
       "sensitive":true
     },
@@ -11352,6 +11360,13 @@
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "TagPropagationMode":{
+      "type":"string",
+      "enum":[
+        "NO_PROPAGATION",
+        "PROPAGATE_TAGS_TO_WORKERS_AT_LAUNCH"
+      ]
     },
     "TagResourceRequest":{
       "type":"structure",

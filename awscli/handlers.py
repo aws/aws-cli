@@ -98,6 +98,7 @@ from awscli.customizations.opsworks import initialize as opsworks_init
 from awscli.customizations.opsworkscm import register_alias_opsworks_cm
 from awscli.customizations.paginate import register_pagination
 from awscli.customizations.putmetricdata import register_put_metric_data
+from awscli.customizations.q import register_q_commands
 from awscli.customizations.quicksight import (
     register_quicksight_asset_bundle_customizations,
 )
@@ -237,3 +238,4 @@ def awscli_initialize(event_handlers):
     register_kinesis_list_streams_pagination_backcompat(event_handlers)
     register_quicksight_asset_bundle_customizations(event_handlers)
     register_ec2_instance_connect_commands(event_handlers)
+    register_q_commands(event_handlers)

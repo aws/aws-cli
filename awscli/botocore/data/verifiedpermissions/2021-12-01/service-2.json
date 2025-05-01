@@ -405,6 +405,23 @@
       ],
       "documentation":"<p>Returns a paginated list of all policy templates in the specified policy store.</p>"
     },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceInput"},
+      "output":{"shape":"ListTagsForResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the tags associated with the specified Amazon Verified Permissions resource. In Verified Permissions, policy stores can be tagged.</p>"
+    },
     "PutSchema":{
       "name":"PutSchema",
       "http":{
@@ -424,6 +441,41 @@
       ],
       "documentation":"<p>Creates or updates the policy schema in the specified policy store. The schema is used to validate any Cedar policies and policy templates submitted to the policy store. Any changes to the schema validate only policies and templates submitted after the schema change. Existing policies and templates are not re-evaluated against the changed schema. If you later update a policy, then it is evaluated against the new schema at that time.</p> <note> <p>Verified Permissions is <i> <a href=\"https://wikipedia.org/wiki/Eventual_consistency\">eventually consistent</a> </i>. It can take a few seconds for a new or changed element to propagate through the service and be visible in the results of other Verified Permissions operations.</p> </note>",
       "idempotent":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceInput"},
+      "output":{"shape":"TagResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Assigns one or more tags (key-value pairs) to the specified Amazon Verified Permissions resource. Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values. In Verified Permissions, policy stores can be tagged.</p> <p>Tags don't have any semantic meaning to Amazon Web Services and are interpreted strictly as strings of characters.</p> <p>You can use the TagResource action with a resource that already has tags. If you specify a new tag key, this tag is appended to the list of tags associated with the resource. If you specify a tag key that is already associated with the resource, the new tag value that you specify replaces the previous value for that tag.</p> <p>You can associate as many as 50 tags with a resource.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceInput"},
+      "output":{"shape":"UntagResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Removes one or more tags from the specified Amazon Verified Permissions resource. In Verified Permissions, policy stores can be tagged.</p>"
     },
     "UpdateIdentitySource":{
       "name":"UpdateIdentitySource",
@@ -548,6 +600,12 @@
       "min":1,
       "pattern":"Action$|^.+::Action",
       "sensitive":true
+    },
+    "AmazonResourceName":{
+      "type":"string",
+      "documentation":"<p>An Amazon Resource Name (ARN) uniquely identifies an AWS resource.</p>",
+      "max":2048,
+      "min":1
     },
     "AttributeValue":{
       "type":"structure",
@@ -744,7 +802,7 @@
         },
         "entities":{
           "shape":"EntitiesDefinition",
-          "documentation":"<p>Specifies the list of resources and principals and their associated attributes that Verified Permissions can examine when evaluating the policies. </p> <note> <p>You can include only principal and resource entities in this parameter; you can't include actions. You must specify actions in the schema.</p> </note>"
+          "documentation":"<p>(Optional) Specifies the list of resources and principals and their associated attributes that Verified Permissions can examine when evaluating the policies. These additional entities and their attributes can be referenced and checked by conditional elements in the policies in the specified policy store.</p> <note> <p>You can include only principal and resource entities in this parameter; you can't include actions. You must specify actions in the schema.</p> </note>"
         },
         "requests":{
           "shape":"BatchIsAuthorizedInputList",
@@ -842,7 +900,7 @@
         },
         "entities":{
           "shape":"EntitiesDefinition",
-          "documentation":"<p>Specifies the list of resources and their associated attributes that Verified Permissions can examine when evaluating the policies. </p> <important> <p>You can't include principals in this parameter, only resource and action entities. This parameter can't include any entities of a type that matches the user or group entity types that you defined in your identity source.</p> <ul> <li> <p>The <code>BatchIsAuthorizedWithToken</code> operation takes principal attributes from <b> <i>only</i> </b> the <code>identityToken</code> or <code>accessToken</code> passed to the operation.</p> </li> <li> <p>For action entities, you can include only their <code>Identifier</code> and <code>EntityType</code>. </p> </li> </ul> </important>"
+          "documentation":"<p>(Optional) Specifies the list of resources and their associated attributes that Verified Permissions can examine when evaluating the policies. These additional entities and their attributes can be referenced and checked by conditional elements in the policies in the specified policy store.</p> <important> <p>You can't include principals in this parameter, only resource and action entities. This parameter can't include any entities of a type that matches the user or group entity types that you defined in your identity source.</p> <ul> <li> <p>The <code>BatchIsAuthorizedWithToken</code> operation takes principal attributes from <b> <i>only</i> </b> the <code>identityToken</code> or <code>accessToken</code> passed to the operation.</p> </li> <li> <p>For action entities, you can include only their <code>Identifier</code> and <code>EntityType</code>. </p> </li> </ul> </important>"
         },
         "requests":{
           "shape":"BatchIsAuthorizedWithTokenInputList",
@@ -931,6 +989,13 @@
     "CedarJson":{
       "type":"string",
       "sensitive":true
+    },
+    "CedarVersion":{
+      "type":"string",
+      "enum":[
+        "CEDAR_2",
+        "CEDAR_4"
+      ]
     },
     "Claim":{
       "type":"string",
@@ -1279,6 +1344,10 @@
         "deletionProtection":{
           "shape":"DeletionProtection",
           "documentation":"<p>Specifies whether the policy store can be deleted. If enabled, the policy store can't be deleted.</p> <p>The default state is <code>DISABLED</code>.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The list of key-value pairs to associate with the policy store.</p>"
         }
       }
     },
@@ -1733,6 +1802,10 @@
         "policyStoreId":{
           "shape":"PolicyStoreId",
           "documentation":"<p>Specifies the ID of the policy store that you want information about.</p>"
+        },
+        "tags":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to return the tags that are attached to the policy store. If this parameter is included in the API call, the tags are returned, otherwise they are not returned.</p> <note> <p>If this parameter is included in the API call but there are no tags attached to the policy store, the <code>tags</code> response parameter is omitted from the response.</p> </note>"
         }
       }
     },
@@ -1773,6 +1846,14 @@
         "deletionProtection":{
           "shape":"DeletionProtection",
           "documentation":"<p>Specifies whether the policy store can be deleted. If enabled, the policy store can't be deleted.</p> <p>The default state is <code>DISABLED</code>.</p>"
+        },
+        "cedarVersion":{
+          "shape":"CedarVersion",
+          "documentation":"<p>The version of the Cedar language used with policies, policy templates, and schemas in this policy store. For more information, see <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/cedar4-faq.html\">Amazon Verified Permissions upgrade to Cedar v4 FAQ</a>.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The list of tags associated with the policy store.</p>"
         }
       }
     },
@@ -2069,7 +2150,7 @@
         },
         "entities":{
           "shape":"EntitiesDefinition",
-          "documentation":"<p>Specifies the list of resources and principals and their associated attributes that Verified Permissions can examine when evaluating the policies. </p> <note> <p>You can include only principal and resource entities in this parameter; you can't include actions. You must specify actions in the schema.</p> </note>"
+          "documentation":"<p>(Optional) Specifies the list of resources and principals and their associated attributes that Verified Permissions can examine when evaluating the policies. These additional entities and their attributes can be referenced and checked by conditional elements in the policies in the specified policy store.</p> <note> <p>You can include only principal and resource entities in this parameter; you can't include actions. You must specify actions in the schema.</p> </note>"
         }
       }
     },
@@ -2125,7 +2206,7 @@
         },
         "entities":{
           "shape":"EntitiesDefinition",
-          "documentation":"<p>Specifies the list of resources and their associated attributes that Verified Permissions can examine when evaluating the policies. </p> <important> <p>You can't include principals in this parameter, only resource and action entities. This parameter can't include any entities of a type that matches the user or group entity types that you defined in your identity source.</p> <ul> <li> <p>The <code>IsAuthorizedWithToken</code> operation takes principal attributes from <b> <i>only</i> </b> the <code>identityToken</code> or <code>accessToken</code> passed to the operation.</p> </li> <li> <p>For action entities, you can include only their <code>Identifier</code> and <code>EntityType</code>. </p> </li> </ul> </important>"
+          "documentation":"<p>(Optional) Specifies the list of resources and their associated attributes that Verified Permissions can examine when evaluating the policies. These additional entities and their attributes can be referenced and checked by conditional elements in the policies in the specified policy store.</p> <important> <p>You can't include principals in this parameter, only resource and action entities. This parameter can't include any entities of a type that matches the user or group entity types that you defined in your identity source.</p> <ul> <li> <p>The <code>IsAuthorizedWithToken</code> operation takes principal attributes from <b> <i>only</i> </b> the <code>identityToken</code> or <code>accessToken</code> passed to the operation.</p> </li> <li> <p>For action entities, you can include only their <code>Identifier</code> and <code>EntityType</code>. </p> </li> </ul> </important>"
         }
       }
     },
@@ -2294,6 +2375,25 @@
         "policyTemplates":{
           "shape":"PolicyTemplatesList",
           "documentation":"<p>The list of the policy templates in the specified policy store.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceInput":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of the resource for which you want to view tags.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceOutput":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The list of tags associated with the resource.</p>"
         }
       }
     },
@@ -2747,7 +2847,7 @@
       "type":"string",
       "max":200,
       "min":1,
-      "pattern":"[a-zA-Z0-9-]*"
+      "pattern":"[a-zA-Z0-9-/_]*"
     },
     "PolicyStoreItem":{
       "type":"structure",
@@ -2794,7 +2894,7 @@
       "type":"string",
       "max":200,
       "min":1,
-      "pattern":"[a-zA-Z0-9-]*"
+      "pattern":"[a-zA-Z0-9-/_]*"
     },
     "PolicyTemplateItem":{
       "type":"structure",
@@ -3053,6 +3153,51 @@
       "type":"string",
       "sensitive":true
     },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":200,
+      "min":1
+    },
+    "TagMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":200,
+      "min":0
+    },
+    "TagResourceInput":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of the resource that you're adding tags to.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The list of key-value pairs to associate with the resource.</p>"
+        }
+      }
+    },
+    "TagResourceOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
     "TemplateLinkedPolicyDefinition":{
       "type":"structure",
       "required":["policyTemplateId"],
@@ -3138,6 +3283,37 @@
       "min":1,
       "pattern":"[A-Za-z0-9-_=]+.[A-Za-z0-9-_=]+.[A-Za-z0-9-_=]+",
       "sensitive":true
+    },
+    "TooManyTagsException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"},
+        "resourceName":{"shape":"AmazonResourceName"}
+      },
+      "documentation":"<p>No more tags be added because the limit (50) has been reached. To add new tags, use <code>UntagResource</code> to remove existing tags.</p>",
+      "exception":true
+    },
+    "UntagResourceInput":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN of the resource from which you are removing tags.</p>"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The list of tag keys to remove from the resource.</p>"
+        }
+      }
+    },
+    "UntagResourceOutput":{
+      "type":"structure",
+      "members":{
+      }
     },
     "UpdateCognitoGroupConfiguration":{
       "type":"structure",

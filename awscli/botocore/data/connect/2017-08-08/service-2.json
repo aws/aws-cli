@@ -1477,7 +1477,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Describes the specified contact. </p> <important> <ul> <li> <p> <code>CustomerEndpoint</code> and <code>SystemEndpoint</code> are only populated for EMAIL contacts. </p> </li> <li> <p>Contact information remains available in Amazon Connect for 24 months from the <code>InitiationTimestamp</code>, and then it is deleted. Only contact information that is available in Amazon Connect is returned by this API.</p> </li> </ul> </important>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Describes the specified contact. </p> <important> <ul> <li> <p> <code>SystemEndpoint</code> is not populated for contacts with initiation method of MONITOR, QUEUE_TRANSFER, or CALLBACK</p> </li> <li> <p>Contact information remains available in Amazon Connect for 24 months from the <code>InitiationTimestamp</code>, and then it is deleted. Only contact information that is available in Amazon Connect is returned by this API.</p> </li> </ul> </important>"
     },
     "DescribeContactEvaluation":{
       "name":"DescribeContactEvaluation",
@@ -2164,7 +2164,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Gets the real-time metric data from the specified Amazon Connect instance.</p> <p>For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html\">Real-time Metrics Definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+      "documentation":"<p>Gets the real-time metric data from the specified Amazon Connect instance.</p> <p>For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
     "GetCurrentUserData":{
       "name":"GetCurrentUserData",
@@ -2251,7 +2251,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Gets historical metric data from the specified Amazon Connect instance.</p> <p>For a description of each historical metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html\">Historical Metrics Definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <note> <p>We recommend using the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_GetMetricDataV2.html\">GetMetricDataV2</a> API. It provides more flexibility, features, and the ability to query longer time ranges than <code>GetMetricData</code>. Use it to retrieve historical agent and contact metrics for the last 3 months, at varying intervals. You can also use it to build custom dashboards to measure historical queue and agent performance. For example, you can track the number of incoming contacts for the last 7 days, with data split by day, to see how contact volume changed per day of the week.</p> </note>"
+      "documentation":"<p>Gets historical metric data from the specified Amazon Connect instance.</p> <p>For a description of each historical metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <note> <p>We recommend using the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_GetMetricDataV2.html\">GetMetricDataV2</a> API. It provides more flexibility, features, and the ability to query longer time ranges than <code>GetMetricData</code>. Use it to retrieve historical agent and contact metrics for the last 3 months, at varying intervals. You can also use it to build custom dashboards to measure historical queue and agent performance. For example, you can track the number of incoming contacts for the last 7 days, with data split by day, to see how contact volume changed per day of the week.</p> </note>"
     },
     "GetMetricDataV2":{
       "name":"GetMetricDataV2",
@@ -2268,7 +2268,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Gets metric data from the specified Amazon Connect instance. </p> <p> <code>GetMetricDataV2</code> offers more features than <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_GetMetricData.html\">GetMetricData</a>, the previous version of this API. It has new metrics, offers filtering at a metric level, and offers the ability to filter and group data by channels, queues, routing profiles, agents, and agent hierarchy levels. It can retrieve historical data for the last 3 months, at varying intervals. It does not support agent queues.</p> <p>For a description of the historical metrics that are supported by <code>GetMetricDataV2</code> and <code>GetMetricData</code>, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html\">Historical metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+      "documentation":"<p>Gets metric data from the specified Amazon Connect instance. </p> <p> <code>GetMetricDataV2</code> offers more features than <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_GetMetricData.html\">GetMetricData</a>, the previous version of this API. It has new metrics, offers filtering at a metric level, and offers the ability to filter and group data by channels, queues, routing profiles, agents, and agent hierarchy levels. It can retrieve historical data for the last 3 months, at varying intervals. It does not support agent queues.</p> <p>For a description of the historical metrics that are supported by <code>GetMetricDataV2</code> and <code>GetMetricData</code>, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
     "GetPromptFile":{
       "name":"GetPromptFile",
@@ -5136,7 +5136,27 @@
           "shape":"DeviceInfo",
           "documentation":"<p>Information regarding Agent’s device.</p>"
         },
-        "Capabilities":{"shape":"ParticipantCapabilities"}
+        "Capabilities":{"shape":"ParticipantCapabilities"},
+        "AfterContactWorkDuration":{
+          "shape":"Duration",
+          "documentation":"<p>The difference in time, in whole seconds, between <code>AfterContactWorkStartTimestamp</code> and <code>AfterContactWorkEndTimestamp</code>.</p>"
+        },
+        "AfterContactWorkStartTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the agent started doing After Contact Work for the contact, in UTC time.</p>"
+        },
+        "AfterContactWorkEndTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the agent ended After Contact Work for the contact, in UTC time. In cases when agent finishes doing <code>AfterContactWork</code> for chat contacts and switches their activity status to offline or equivalent without clearing the contact in CCP, discrepancies may be noticed for <code>AfterContactWorkEndTimestamp</code>.</p>"
+        },
+        "AgentInitiatedHoldDuration":{
+          "shape":"Duration",
+          "documentation":"<p>The total hold duration in seconds initiated by the agent.</p>"
+        },
+        "StateTransitions":{
+          "shape":"StateTransitions",
+          "documentation":"<p>List of <code>StateTransition</code> for a supervisor.</p>"
+        }
       },
       "documentation":"<p>Information about the agent who accepted the contact.</p>"
     },
@@ -5514,8 +5534,7 @@
     },
     "AssignContactCategoryActionDefinition":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This action must be set if <code>TriggerEventSource</code> is one of the following values: <code>OnPostCallAnalysisAvailable</code> | <code>OnRealTimeCallAnalysisAvailable</code> | <code>OnRealTimeChatAnalysisAvailable</code> | <code>OnPostChatAnalysisAvailable</code>. Contact is categorized using the rule name.</p> <p> <code>RuleName</code> is used as <code>ContactCategory</code>.</p>"
     },
     "AssignSlaActionDefinition":{
@@ -5650,8 +5669,7 @@
     },
     "AssociateDefaultVocabularyResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AssociateFlowRequest":{
       "type":"structure",
@@ -5684,8 +5702,7 @@
     },
     "AssociateFlowResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AssociateInstanceStorageConfigRequest":{
       "type":"structure",
@@ -5908,8 +5925,7 @@
     },
     "AssociateTrafficDistributionGroupUserResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AssociateUserProficienciesRequest":{
       "type":"structure",
@@ -6910,8 +6926,7 @@
     },
     "CompleteAttachedFileUploadResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"Response from CompleteAttachedFileUpload API"
     },
     "Concurrency":{
@@ -7116,6 +7131,26 @@
         "SegmentAttributes":{
           "shape":"SegmentAttributes",
           "documentation":"<p>A set of system defined key-value pairs stored on individual contact segments using an attribute map. The attributes are standard Amazon Connect attributes and can be accessed in flows. Attribute keys can include only alphanumeric, -, and _ characters. This field can be used to show channel subtype. For example, <code>connect:Guide</code> or <code>connect:SMS</code>.</p>"
+        },
+        "Recordings":{
+          "shape":"Recordings",
+          "documentation":"<p>If recording was enabled, this is information about the recordings.</p>"
+        },
+        "DisconnectReason":{
+          "shape":"String",
+          "documentation":"<p>The disconnect reason for the contact.</p>"
+        },
+        "ContactEvaluations":{
+          "shape":"ContactEvaluations",
+          "documentation":"<p>Information about the contact evaluations where the key is the FormId, which is a unique identifier for the form.</p>"
+        },
+        "ContactDetails":{
+          "shape":"ContactDetails",
+          "documentation":"<p>A map of string key/value pairs that contain user-defined attributes which are lightly typed within the contact. This object is used only for task contacts.</p>"
+        },
+        "Attributes":{
+          "shape":"Attributes",
+          "documentation":"<p>The attributes of the contact.</p>"
         }
       },
       "documentation":"<p>Contains information about a contact.</p>"
@@ -7184,6 +7219,69 @@
       "member":{"shape":"ContactDataRequest"},
       "max":25,
       "min":1
+    },
+    "ContactDetailDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "ContactDetailName":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "ContactDetails":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ContactDetailName",
+          "documentation":"<p>The name of the contact details.</p>"
+        },
+        "Description":{
+          "shape":"ContactDetailDescription",
+          "documentation":"<p>Teh description of the contact details.</p>"
+        }
+      },
+      "documentation":"<p>A map of string key/value pairs that contain user-defined attributes which are lightly typed within the contact. This object is used only for task contacts. </p>"
+    },
+    "ContactEvaluation":{
+      "type":"structure",
+      "members":{
+        "FormId":{
+          "shape":"FormId",
+          "documentation":"<p>The <code>FormId</code> of the contact evaluation.</p>"
+        },
+        "EvaluationArn":{
+          "shape":"EvaluationArn",
+          "documentation":"<p>The Amazon Resource Name for the evaluation form. It is always present.</p>"
+        },
+        "Status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the evaluation.</p>"
+        },
+        "StartTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the evaluation was started, in UTC time.</p>"
+        },
+        "EndTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the evaluation was submitted, in UTC time.</p>"
+        },
+        "DeleteTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the evaluation was deleted, in UTC time.</p>"
+        },
+        "ExportLocation":{
+          "shape":"ExportLocation",
+          "documentation":"<p>The path where evaluation was exported.</p>"
+        }
+      },
+      "documentation":"<p>Information about the contact evaluations where the key is the FormId, which is a unique identifier for the form.</p>"
+    },
+    "ContactEvaluations":{
+      "type":"map",
+      "key":{"shape":"EvaluationId"},
+      "value":{"shape":"ContactEvaluation"}
     },
     "ContactFilter":{
       "type":"structure",
@@ -9387,7 +9485,7 @@
           "documentation":"<p>The unit for the metric.</p>"
         }
       },
-      "documentation":"<p>Contains information about a real-time metric. For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html\">Real-time Metrics Definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+      "documentation":"<p>Contains information about a real-time metric. For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
     "CurrentMetricData":{
       "type":"structure",
@@ -9684,8 +9782,7 @@
     },
     "DeleteAttachedFileResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"Response from DeleteAttachedFile API"
     },
     "DeleteContactEvaluationRequest":{
@@ -9732,8 +9829,7 @@
     },
     "DeleteContactFlowModuleResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteContactFlowRequest":{
       "type":"structure",
@@ -9758,8 +9854,7 @@
     },
     "DeleteContactFlowResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteContactFlowVersionRequest":{
       "type":"structure",
@@ -9791,8 +9886,7 @@
     },
     "DeleteContactFlowVersionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteEmailAddressRequest":{
       "type":"structure",
@@ -9817,8 +9911,7 @@
     },
     "DeleteEmailAddressResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteEvaluationFormRequest":{
       "type":"structure",
@@ -10009,8 +10102,7 @@
     },
     "DeletePushNotificationRegistrationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteQueueRequest":{
       "type":"structure",
@@ -10140,8 +10232,7 @@
     },
     "DeleteTaskTemplateResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteTrafficDistributionGroupRequest":{
       "type":"structure",
@@ -10157,8 +10248,7 @@
     },
     "DeleteTrafficDistributionGroupResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteUseCaseRequest":{
       "type":"structure",
@@ -10253,8 +10343,7 @@
     },
     "DeleteViewResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteViewVersionRequest":{
       "type":"structure",
@@ -10286,8 +10375,7 @@
     },
     "DeleteViewVersionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteVocabularyRequest":{
       "type":"structure",
@@ -11381,8 +11469,7 @@
     },
     "DisassociateFlowResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisassociateInstanceStorageConfigRequest":{
       "type":"structure",
@@ -11613,8 +11700,7 @@
     },
     "DisassociateTrafficDistributionGroupUserResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisassociateUserProficienciesRequest":{
       "type":"structure",
@@ -11691,8 +11777,7 @@
     },
     "DismissUserContactResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisplayName":{
       "type":"string",
@@ -11744,6 +11829,10 @@
       "documentation":"<p>A resource with the specified name already exists.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
+    },
+    "Duration":{
+      "type":"integer",
+      "min":0
     },
     "DurationInSeconds":{"type":"integer"},
     "EffectiveHoursOfOperationList":{
@@ -11966,8 +12055,7 @@
     },
     "EmptyFieldValue":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An empty value.</p>"
     },
     "EncryptionConfig":{
@@ -11994,8 +12082,7 @@
     },
     "EndAssociatedTasksActionDefinition":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>End associated tasks related to a case.</p>"
     },
     "Endpoint":{
@@ -12187,6 +12274,7 @@
       "value":{"shape":"EvaluationAnswerOutput"},
       "max":100
     },
+    "EvaluationArn":{"type":"string"},
     "EvaluationForm":{
       "type":"structure",
       "required":[
@@ -12783,6 +12871,7 @@
       "type":"list",
       "member":{"shape":"EvaluationFormVersionSummary"}
     },
+    "EvaluationId":{"type":"string"},
     "EvaluationMetadata":{
       "type":"structure",
       "required":[
@@ -12970,6 +13059,7 @@
       "documentation":"<p>An object to specify the expiration of a routing step.</p>"
     },
     "ExpiryDurationInMinutes":{"type":"integer"},
+    "ExportLocation":{"type":"string"},
     "Expression":{
       "type":"structure",
       "members":{
@@ -13208,6 +13298,12 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9]{64}$"
     },
+    "FormId":{"type":"string"},
+    "FragmentNumber":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
     "FunctionArn":{
       "type":"string",
       "max":140,
@@ -13358,7 +13454,7 @@
         },
         "CurrentMetrics":{
           "shape":"CurrentMetrics",
-          "documentation":"<p>The metrics to retrieve. Specify the name and unit for each metric. The following metrics are available. For a description of all the metrics, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html\">Real-time Metrics Definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <dl> <dt>AGENTS_AFTER_CONTACT_WORK</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#aftercallwork-real-time\">ACW</a> </p> </dd> <dt>AGENTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#available-real-time\">Available</a> </p> </dd> <dt>AGENTS_ERROR</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#error-real-time\">Error</a> </p> </dd> <dt>AGENTS_NON_PRODUCTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#non-productive-time-real-time\">NPT (Non-Productive Time)</a> </p> </dd> <dt>AGENTS_ON_CALL</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#on-call-real-time\">On contact</a> </p> </dd> <dt>AGENTS_ON_CONTACT</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#on-call-real-time\">On contact</a> </p> </dd> <dt>AGENTS_ONLINE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#online-real-time\">Online</a> </p> </dd> <dt>AGENTS_STAFFED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#staffed-real-time\">Staffed</a> </p> </dd> <dt>CONTACTS_IN_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#in-queue-real-time\">In queue</a> </p> </dd> <dt>CONTACTS_SCHEDULED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#scheduled-real-time\">Scheduled</a> </p> </dd> <dt>OLDEST_CONTACT_AGE</dt> <dd> <p>Unit: SECONDS</p> <p>When you use groupings, Unit says SECONDS and the Value is returned in SECONDS. </p> <p>When you do not use groupings, Unit says SECONDS but the Value is returned in MILLISECONDS. For example, if you get a response like this:</p> <p> <code>{ \"Metric\": { \"Name\": \"OLDEST_CONTACT_AGE\", \"Unit\": \"SECONDS\" }, \"Value\": 24113.0 </code>}</p> <p>The actual OLDEST_CONTACT_AGE is 24 seconds.</p> <p>When the filter <code>RoutingStepExpression</code> is used, this metric is still calculated from enqueue time. For example, if a contact that has been queued under <code>&lt;Expression 1&gt;</code> for 10 seconds has expired and <code>&lt;Expression 2&gt;</code> becomes active, then <code>OLDEST_CONTACT_AGE</code> for this queue will be counted starting from 10, not 0.</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#oldest-real-time\">Oldest</a> </p> </dd> <dt>SLOTS_ACTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#active-real-time\">Active</a> </p> </dd> <dt>SLOTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html#availability-real-time\">Availability</a> </p> </dd> </dl>"
+          "documentation":"<p>The metrics to retrieve. Specify the name and unit for each metric. The following metrics are available. For a description of all the metrics, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <dl> <dt>AGENTS_AFTER_CONTACT_WORK</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#aftercallwork-real-time\">ACW</a> </p> </dd> <dt>AGENTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#available-real-time\">Available</a> </p> </dd> <dt>AGENTS_ERROR</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#error-real-time\">Error</a> </p> </dd> <dt>AGENTS_NON_PRODUCTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#non-productive-time-real-time\">NPT (Non-Productive Time)</a> </p> </dd> <dt>AGENTS_ON_CALL</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#on-call-real-time\">On contact</a> </p> </dd> <dt>AGENTS_ON_CONTACT</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#on-call-real-time\">On contact</a> </p> </dd> <dt>AGENTS_ONLINE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#online-real-time\">Online</a> </p> </dd> <dt>AGENTS_STAFFED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#staffed-real-time\">Staffed</a> </p> </dd> <dt>CONTACTS_IN_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#in-queue-real-time\">In queue</a> </p> </dd> <dt>CONTACTS_SCHEDULED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#scheduled-real-time\">Scheduled</a> </p> </dd> <dt>OLDEST_CONTACT_AGE</dt> <dd> <p>Unit: SECONDS</p> <p>When you use groupings, Unit says SECONDS and the Value is returned in SECONDS. </p> <p>When you do not use groupings, Unit says SECONDS but the Value is returned in MILLISECONDS. For example, if you get a response like this:</p> <p> <code>{ \"Metric\": { \"Name\": \"OLDEST_CONTACT_AGE\", \"Unit\": \"SECONDS\" }, \"Value\": 24113.0 </code>}</p> <p>The actual OLDEST_CONTACT_AGE is 24 seconds.</p> <p>When the filter <code>RoutingStepExpression</code> is used, this metric is still calculated from enqueue time. For example, if a contact that has been queued under <code>&lt;Expression 1&gt;</code> for 10 seconds has expired and <code>&lt;Expression 2&gt;</code> becomes active, then <code>OLDEST_CONTACT_AGE</code> for this queue will be counted starting from 10, not 0.</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#oldest-real-time\">Oldest</a> </p> </dd> <dt>SLOTS_ACTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#active-real-time\">Active</a> </p> </dd> <dt>SLOTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#availability-real-time\">Availability</a> </p> </dd> </dl>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -13601,7 +13697,7 @@
         },
         "HistoricalMetrics":{
           "shape":"HistoricalMetrics",
-          "documentation":"<p>The metrics to retrieve. Specify the name, unit, and statistic for each metric. The following historical metrics are available. For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html\">Historical Metrics Definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <note> <p>This API does not support a contacts incoming metric (there's no CONTACTS_INCOMING metric missing from the documented list). </p> </note> <dl> <dt>ABANDON_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>AFTER_CONTACT_WORK_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>API_CONTACTS_HANDLED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CALLBACK_CONTACTS_HANDLED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_ABANDONED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_AGENT_HUNG_UP_FIRST</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_CONSULTED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HANDLED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HANDLED_INCOMING</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HANDLED_OUTBOUND</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HOLD_ABANDONS</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_MISSED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_QUEUED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_IN</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_IN_FROM_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_OUT</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_OUT_FROM_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>HANDLE_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>HOLD_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>INTERACTION_AND_HOLD_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>INTERACTION_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>OCCUPANCY</dt> <dd> <p>Unit: PERCENT</p> <p>Statistic: AVG</p> </dd> <dt>QUEUE_ANSWER_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>QUEUED_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: MAX</p> </dd> <dt>SERVICE_LEVEL</dt> <dd> <p>You can include up to 20 SERVICE_LEVEL metrics in a request.</p> <p>Unit: PERCENT</p> <p>Statistic: AVG</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you must enter <code>LT</code> (for \"Less than\"). </p> </dd> </dl>"
+          "documentation":"<p>The metrics to retrieve. Specify the name, unit, and statistic for each metric. The following historical metrics are available. For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definition</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <note> <p>This API does not support a contacts incoming metric (there's no CONTACTS_INCOMING metric missing from the documented list). </p> </note> <dl> <dt>ABANDON_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>AFTER_CONTACT_WORK_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>API_CONTACTS_HANDLED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CALLBACK_CONTACTS_HANDLED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_ABANDONED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_AGENT_HUNG_UP_FIRST</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_CONSULTED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HANDLED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HANDLED_INCOMING</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HANDLED_OUTBOUND</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_HOLD_ABANDONS</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_MISSED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_QUEUED</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_IN</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_IN_FROM_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_OUT</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>CONTACTS_TRANSFERRED_OUT_FROM_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Statistic: SUM</p> </dd> <dt>HANDLE_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>HOLD_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>INTERACTION_AND_HOLD_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>INTERACTION_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>OCCUPANCY</dt> <dd> <p>Unit: PERCENT</p> <p>Statistic: AVG</p> </dd> <dt>QUEUE_ANSWER_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: AVG</p> </dd> <dt>QUEUED_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>Statistic: MAX</p> </dd> <dt>SERVICE_LEVEL</dt> <dd> <p>You can include up to 20 SERVICE_LEVEL metrics in a request.</p> <p>Unit: PERCENT</p> <p>Statistic: AVG</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you must enter <code>LT</code> (for \"Less than\"). </p> </dd> </dl>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -13663,7 +13759,7 @@
         },
         "Metrics":{
           "shape":"MetricsV2",
-          "documentation":"<p>The metrics to retrieve. Specify the name, groupings, and filters for each metric. The following historical metrics are available. For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html\">Historical metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <dl> <dt>ABANDONMENT_RATE</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#abandonment-rate-historical\">Abandonment rate</a> </p> </dd> <dt>AGENT_ADHERENT_TIME</dt> <dd> <p>This metric is available only in Amazon Web Services Regions where <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/regions.html#optimization_region\">Forecasting, capacity planning, and scheduling</a> is available.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy </p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#adherent-time-historical\">Adherent time</a> </p> </dd> <dt>AGENT_ANSWER_RATE</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#agent-answer-rate-historical\">Agent answer rate</a> </p> </dd> <dt>AGENT_NON_ADHERENT_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#non-adherent-time\">Non-adherent time</a> </p> </dd> <dt>AGENT_NON_RESPONSE</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy </p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#agent-non-response\">Agent non-response</a> </p> </dd> <dt>AGENT_NON_RESPONSE_WITHOUT_CUSTOMER_ABANDONS</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>Data for this metric is available starting from October 1, 2023 0:00:00 GMT.</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#agent-nonresponse-no-abandon-historical\">Agent non-response without customer abandons</a> </p> </dd> <dt>AGENT_OCCUPANCY</dt> <dd> <p>Unit: Percentage</p> <p>Valid groupings and filters: Routing Profile, Agent, Agent Hierarchy </p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#occupancy-historical\">Occupancy</a> </p> </dd> <dt>AGENT_SCHEDULE_ADHERENCE</dt> <dd> <p>This metric is available only in Amazon Web Services Regions where <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/regions.html#optimization_region\">Forecasting, capacity planning, and scheduling</a> is available.</p> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#adherence-historical\">Adherence</a> </p> </dd> <dt>AGENT_SCHEDULED_TIME</dt> <dd> <p>This metric is available only in Amazon Web Services Regions where <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/regions.html#optimization_region\">Forecasting, capacity planning, and scheduling</a> is available.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#scheduled-time-historical\">Scheduled time</a> </p> </dd> <dt>AVG_ABANDON_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-queue-abandon-time-historical\">Average queue abandon time</a> </p> </dd> <dt>AVG_ACTIVE_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-active-time-historical\">Average active time</a> </p> </dd> <dt>AVG_AFTER_CONTACT_WORK_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-acw-time-historical\">Average after contact work time</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>AVG_AGENT_CONNECTING_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code>. For now, this metric only supports the following as <code>INITIATION_METHOD</code>: <code>INBOUND</code> | <code>OUTBOUND</code> | <code>CALLBACK</code> | <code>API</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#htm-avg-agent-api-connecting-time\">Average agent API connecting time</a> </p> <note> <p>The <code>Negate</code> key in metric-level filters is not applicable for this metric.</p> </note> </dd> <dt>AVG_AGENT_PAUSE_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-agent-pause-time-historical\">Average agent pause time</a> </p> </dd> <dt>AVG_BOT_CONVERSATION_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Bot ID, Bot alias, Bot version, Bot locale, Flows resource ID, Flows module resource ID, Flow type, Flow action ID, Invoking resource published timestamp, Initiation method, Invoking resource type, Parent flows resource ID</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#average-bot-conversation-time-metric\">Average bot conversation time</a> </p> </dd> <dt>AVG_BOT_CONVERSATION_TURNS</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Bot ID, Bot alias, Bot version, Bot locale, Flows resource ID, Flows module resource ID, Flow type, Flow action ID, Invoking resource published timestamp, Initiation method, Invoking resource type, Parent flows resource ID</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#average-bot-conversation-turns-metric\">Average bot conversation turns</a> </p> </dd> <dt>AVG_CASE_RELATED_CONTACTS</dt> <dd> <p>Unit: Count</p> <p>Required filter key: CASE_TEMPLATE_ARN</p> <p>Valid groupings and filters: CASE_TEMPLATE_ARN, CASE_STATUS</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-contacts-case-historical\">Average contacts per case</a> </p> </dd> <dt>AVG_CASE_RESOLUTION_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Required filter key: CASE_TEMPLATE_ARN</p> <p>Valid groupings and filters: CASE_TEMPLATE_ARN, CASE_STATUS</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-case-resolution-time-historical\">Average case resolution time</a> </p> </dd> <dt>AVG_CONTACT_DURATION</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-contact-duration-historical\">Average contact duration</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>AVG_CONVERSATION_DURATION</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-conversation-duration-historical\">Average conversation duration</a> </p> </dd> <dt>AVG_DIALS_PER_MINUTE</dt> <dd> <p>This metric is available only for outbound campaigns that use the agent assisted voice and automated voice delivery modes.</p> <p>Unit: Count</p> <p>Valid groupings and filters: Agent, Campaign, Queue, Routing Profile</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-dials-historical\">Average dials per minute</a> </p> </dd> <dt>AVG_EVALUATION_SCORE</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Agent, Agent Hierarchy, Channel, Evaluation Form ID, Evaluation Section ID, Evaluation Question ID, Evaluation Source, Form Version, Queue, Routing Profile</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-agent-evaluation-score-historical\">Average agent evaluation score</a> </p> </dd> <dt>AVG_FLOW_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Flow type, Flows module resource ID, Flows next resource ID, Flows next resource queue ID, Flows outcome type, Flows resource ID, Initiation method, Resource published timestamp</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-flow-time-historical\">Average flow time</a> </p> </dd> <dt>AVG_GREETING_TIME_AGENT</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-greeting-time-agent-historical\">Average agent greeting time</a> </p> </dd> <dt>AVG_HANDLE_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, RoutingStepExpression</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-handle-time-historical\">Average handle time</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>AVG_HOLD_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-customer-hold-time-historical\">Average customer hold time</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>AVG_HOLD_TIME_ALL_CONTACTS</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#avg-customer-hold-time-all-contacts-historical\">Average customer hold time all contacts</a> </p> </dd> <dt>AVG_HOLDS</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-holds-historical\">Average holds</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>AVG_INTERACTION_AND_HOLD_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-agent-interaction-customer-hold-time-historical\">Average agent interaction and customer hold time</a> </p> </dd> <dt>AVG_INTERACTION_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-agent-interaction-time-historical\">Average agent interaction time</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>AVG_INTERRUPTIONS_AGENT</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-interruptions-agent-historical\">Average agent interruptions</a> </p> </dd> <dt>AVG_INTERRUPTION_TIME_AGENT</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-interruptions-time-agent-historical\">Average agent interruption time</a> </p> </dd> <dt>AVG_NON_TALK_TIME</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html##average-non-talk-time-historical\">Average non-talk time</a> </p> </dd> <dt>AVG_QUEUE_ANSWER_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-queue-answer-time-historical\">Average queue answer time</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>AVG_RESOLUTION_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-resolution-time-historical\">Average resolution time</a> </p> </dd> <dt>AVG_TALK_TIME</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-talk-time-historical\">Average talk time</a> </p> </dd> <dt>AVG_TALK_TIME_AGENT</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-talk-time-agent-historical\">Average agent talk time</a> </p> </dd> <dt>AVG_TALK_TIME_CUSTOMER</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-talk-time-customer-historical\">Average customer talk time</a> </p> </dd> <dt>AVG_WAIT_TIME_AFTER_CUSTOMER_CONNECTION</dt> <dd> <p>This metric is available only for outbound campaigns that use the agent assisted voice and automated voice delivery modes.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Campaign</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-wait-time-historical\">Average wait time after customer connection</a> </p> </dd> <dt>AVG_WEIGHTED_EVALUATION_SCORE</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Agent, Agent Hierarchy, Channel, Evaluation Form Id, Evaluation Section ID, Evaluation Question ID, Evaluation Source, Form Version, Queue, Routing Profile</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#average-weighted-agent-evaluation-score-historical\">Average weighted agent evaluation score</a> </p> </dd> <dt>BOT_CONVERSATIONS_COMPLETED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Bot ID, Bot alias, Bot version, Bot locale, Flows resource ID, Flows module resource ID, Flow type, Flow action ID, Invoking resource published timestamp, Initiation method, Invoking resource type, Parent flows resource ID</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#bot-conversations-completed-metric\">Bot conversations</a> </p> </dd> <dt>BOT_INTENTS_COMPLETED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Bot ID, Bot alias, Bot version, Bot locale, Bot intent name, Flows resource ID, Flows module resource ID, Flow type, Flow action ID, Invoking resource published timestamp, Initiation method, Invoking resource type, Parent flows resource ID</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#bot-intents-completed-metric\">Bot intents completed</a> </p> </dd> <dt>CAMPAIGN_CONTACTS_ABANDONED_AFTER_X</dt> <dd> <p>This metric is available only for outbound campaigns using the agent assisted voice and automated voice delivery modes.</p> <p>Unit: Count</p> <p>Valid groupings and filters: Agent, Campaign</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you must enter <code>GT</code> (for <i>Greater than</i>).</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#campaign-contacts-abandoned-historical\">Campaign contacts abandoned after X</a> </p> </dd> <dt>CAMPAIGN_CONTACTS_ABANDONED_AFTER_X_RATE</dt> <dd> <p>This metric is available only for outbound campaigns using the agent assisted voice and automated voice delivery modes.</p> <p>Unit: Percent</p> <p>Valid groupings and filters: Agent, Campaign</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you must enter <code>GT</code> (for <i>Greater than</i>).</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#campaign-contacts-abandoned-rate-historical\">Campaign contacts abandoned after X rate</a> </p> </dd> <dt>CAMPAIGN_INTERACTIONS</dt> <dd> <p>This metric is available only for outbound campaigns using the email delivery mode. </p> <p>Unit: Count</p> <p>Valid metric filter key: CAMPAIGN_INTERACTION_EVENT_TYPE</p> <p>Valid groupings and filters: Campaign</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#campaign-interactions-historical\">Campaign interactions</a> </p> </dd> <dt>CAMPAIGN_SEND_ATTEMPTS</dt> <dd> <p>This metric is available only for outbound campaigns.</p> <p>Unit: Count</p> <p>Valid groupings and filters: Campaign, Channel, contact/segmentAttributes/connect:Subtype </p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#campaign-send-attempts-historical\">Campaign send attempts</a> </p> </dd> <dt>CASES_CREATED</dt> <dd> <p>Unit: Count</p> <p>Required filter key: CASE_TEMPLATE_ARN</p> <p>Valid groupings and filters: CASE_TEMPLATE_ARN, CASE_STATUS</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#cases-created-historical\">Cases created</a> </p> </dd> <dt>CONTACTS_CREATED</dt> <dd> <p>Unit: Count</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-created-historical\">Contacts created</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>CONTACTS_HANDLED</dt> <dd> <p>Unit: Count</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code>, <code>DISCONNECT_REASON</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, RoutingStepExpression, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#api-contacts-handled-historical\">API contacts handled</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>CONTACTS_HANDLED_BY_CONNECTED_TO_AGENT</dt> <dd> <p>Unit: Count</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code> </p> <p>Valid groupings and filters: Queue, Channel, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-handled-by-connected-to-agent-historical\">Contacts handled (connected to agent timestamp)</a> </p> </dd> <dt>CONTACTS_HOLD_ABANDONS</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-handled-by-connected-to-agent-historical\">Contacts hold disconnect</a> </p> </dd> <dt>CONTACTS_ON_HOLD_AGENT_DISCONNECT</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-hold-agent-disconnect-historical\">Contacts hold agent disconnect</a> </p> </dd> <dt>CONTACTS_ON_HOLD_CUSTOMER_DISCONNECT</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-hold-customer-disconnect-historical\">Contacts hold customer disconnect</a> </p> </dd> <dt>CONTACTS_PUT_ON_HOLD</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-hold-customer-disconnect-historical\">Contacts put on hold</a> </p> </dd> <dt>CONTACTS_TRANSFERRED_OUT_EXTERNAL</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-transferred-out-external-historical\">Contacts transferred out external</a> </p> </dd> <dt>CONTACTS_TRANSFERRED_OUT_INTERNAL</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-transferred-out-internal-historical\">Contacts transferred out internal</a> </p> </dd> <dt>CONTACTS_QUEUED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-queued-historical\">Contacts queued</a> </p> </dd> <dt>CONTACTS_QUEUED_BY_ENQUEUE</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-queued-by-enqueue-historical\">Contacts queued (enqueue timestamp)</a> </p> </dd> <dt>CONTACTS_REMOVED_FROM_QUEUE_IN_X</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Q in Connect</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you can use <code>LT</code> (for \"Less than\") or <code>LTE</code> (for \"Less than equal\").</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-removed-historical\">Contacts removed from queue in X seconds</a> </p> </dd> <dt>CONTACTS_RESOLVED_IN_X</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you can use <code>LT</code> (for \"Less than\") or <code>LTE</code> (for \"Less than equal\").</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-resolved-historical\">Contacts resolved in X</a> </p> </dd> <dt>CONTACTS_TRANSFERRED_OUT</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-transferred-out-historical\">Contacts transferred out</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>CONTACTS_TRANSFERRED_OUT_BY_AGENT</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-transferred-out-by-agent-historical\">Contacts transferred out by agent</a> </p> </dd> <dt>CONTACTS_TRANSFERRED_OUT_FROM_QUEUE</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-transferred-out-by-agent-historical\">Contacts transferred out queue</a> </p> </dd> <dt>CURRENT_CASES</dt> <dd> <p>Unit: Count</p> <p>Required filter key: CASE_TEMPLATE_ARN</p> <p>Valid groupings and filters: CASE_TEMPLATE_ARN, CASE_STATUS</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#current-cases-historical\">Current cases</a> </p> </dd> <dt>DELIVERY_ATTEMPTS</dt> <dd> <p>This metric is available only for outbound campaigns.</p> <p>Unit: Count</p> <p>Valid metric filter key: <code>ANSWERING_MACHINE_DETECTION_STATUS</code>, <code>CAMPAIGN_DELIVERY_EVENT_TYPE</code>, <code>DISCONNECT_REASON</code> </p> <p>Valid groupings and filters: Agent, Answering Machine Detection Status, Campaign, Campaign Delivery EventType, Channel, contact/segmentAttributes/connect:Subtype, Disconnect Reason, Queue, Routing Profile</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#delivery-attempts-historical\">Delivery attempts</a> </p> <note> <p>Campaign Delivery EventType filter and grouping are only available for SMS and Email campaign delivery modes. Agent, Queue, Routing Profile, Answering Machine Detection Status and Disconnect Reason are only available for agent assisted voice and automated voice delivery modes. </p> </note> </dd> <dt>DELIVERY_ATTEMPT_DISPOSITION_RATE</dt> <dd> <p>This metric is available only for outbound campaigns. Dispositions for the agent assisted voice and automated voice delivery modes are only available with answering machine detection enabled.</p> <p>Unit: Percent</p> <p>Valid metric filter key: <code>ANSWERING_MACHINE_DETECTION_STATUS</code>, <code>CAMPAIGN_DELIVERY_EVENT_TYPE</code>, <code>DISCONNECT_REASON</code> </p> <p>Valid groupings and filters: Agent, Answering Machine Detection Status, Campaign, Channel, contact/segmentAttributes/connect:Subtype, Disconnect Reason, Queue, Routing Profile</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#delivery-attempt-disposition-rate-historical\">Delivery attempt disposition rate</a> </p> <note> <p>Campaign Delivery Event Type filter and grouping are only available for SMS and Email campaign delivery modes. Agent, Queue, Routing Profile, Answering Machine Detection Status and Disconnect Reason are only available for agent assisted voice and automated voice delivery modes. </p> </note> </dd> <dt>EVALUATIONS_PERFORMED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Agent, Agent Hierarchy, Channel, Evaluation Form ID, Evaluation Source, Form Version, Queue, Routing Profile</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#evaluations-performed-historical\">Evaluations performed</a> </p> </dd> <dt>FLOWS_OUTCOME</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Flow type, Flows module resource ID, Flows next resource ID, Flows next resource queue ID, Flows outcome type, Flows resource ID, Initiation method, Resource published timestamp</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#flows-outcome-historical\">Flows outcome</a> </p> </dd> <dt>FLOWS_STARTED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Flow type, Flows module resource ID, Flows resource ID, Initiation method, Resource published timestamp</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#flows-started-historical\">Flows started</a> </p> </dd> <dt>HUMAN_ANSWERED_CALLS</dt> <dd> <p>This metric is available only for outbound campaigns. Dispositions for the agent assisted voice and automated voice delivery modes are only available with answering machine detection enabled. </p> <p>Unit: Count</p> <p>Valid groupings and filters: Agent, Campaign</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#human-answered-historical\">Human answered</a> </p> </dd> <dt>MAX_FLOW_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Flow type, Flows module resource ID, Flows next resource ID, Flows next resource queue ID, Flows outcome type, Flows resource ID, Initiation method, Resource published timestamp</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#maximum-flow-time-historical\">Maximum flow time</a> </p> </dd> <dt>MAX_QUEUED_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#maximum-queued-time-historical\">Maximum queued time</a> </p> </dd> <dt>MIN_FLOW_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Flow type, Flows module resource ID, Flows next resource ID, Flows next resource queue ID, Flows outcome type, Flows resource ID, Initiation method, Resource published timestamp</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#minimum-flow-time-historical\">Minimum flow time</a> </p> </dd> <dt>PERCENT_AUTOMATIC_FAILS</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Agent, Agent Hierarchy, Channel, Evaluation Form ID, Evaluation Source, Form Version, Queue, Routing Profile</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#percent-evaluation-automatic-failures-historical\">Automatic fails percent</a> </p> </dd> <dt>PERCENT_BOT_CONVERSATIONS_OUTCOME</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Bot ID, Bot alias, Bot version, Bot locale, Flows resource ID, Flows module resource ID, Flow type, Flow action ID, Invoking resource published timestamp, Initiation method, Invoking resource type, Parent flows resource ID</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#percent-bot-conversations-outcome-metric\">Percent bot conversations outcome</a> </p> </dd> <dt>PERCENT_BOT_INTENTS_OUTCOME</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Bot ID, Bot alias, Bot version, Bot locale, Bot intent name, Flows resource ID, Flows module resource ID, Flow type, Flow action ID, Invoking resource published timestamp, Initiation method, Invoking resource type, Parent flows resource ID</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#percent-bot-intents-outcome-metric\">Percent bot intents outcome</a> </p> </dd> <dt>PERCENT_CASES_FIRST_CONTACT_RESOLVED</dt> <dd> <p>Unit: Percent</p> <p>Required filter key: CASE_TEMPLATE_ARN</p> <p>Valid groupings and filters: CASE_TEMPLATE_ARN, CASE_STATUS</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#cases-resolved-first-contact-historical\">Cases resolved on first contact</a> </p> </dd> <dt>PERCENT_CONTACTS_STEP_EXPIRED</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, RoutingStepExpression</p> <p>UI name: This metric is available in Real-time Metrics UI but not on the Historical Metrics UI.</p> </dd> <dt>PERCENT_CONTACTS_STEP_JOINED</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, RoutingStepExpression</p> <p>UI name: This metric is available in Real-time Metrics UI but not on the Historical Metrics UI.</p> </dd> <dt>PERCENT_FLOWS_OUTCOME</dt> <dd> <p>Unit: Percent</p> <p>Valid metric filter key: <code>FLOWS_OUTCOME_TYPE</code> </p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Flow type, Flows module resource ID, Flows next resource ID, Flows next resource queue ID, Flows outcome type, Flows resource ID, Initiation method, Resource published timestamp</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#flows-outcome-percentage-historical\">Flows outcome percentage</a>.</p> <note> <p>The <code>FLOWS_OUTCOME_TYPE</code> is not a valid grouping.</p> </note> </dd> <dt>PERCENT_NON_TALK_TIME</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Percentage</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#ntt-historical\">Non-talk time percent</a> </p> </dd> <dt>PERCENT_TALK_TIME</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Percentage</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#tt-historical\">Talk time percent</a> </p> </dd> <dt>PERCENT_TALK_TIME_AGENT</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Percentage</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#ttagent-historical\">Agent talk time percent</a> </p> </dd> <dt>PERCENT_TALK_TIME_CUSTOMER</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Percentage</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#ttcustomer-historical\">Customer talk time percent</a> </p> </dd> <dt>REOPENED_CASE_ACTIONS</dt> <dd> <p>Unit: Count</p> <p>Required filter key: CASE_TEMPLATE_ARN</p> <p>Valid groupings and filters: CASE_TEMPLATE_ARN, CASE_STATUS</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#cases-reopened-historical\">Cases reopened</a> </p> </dd> <dt>RESOLVED_CASE_ACTIONS</dt> <dd> <p>Unit: Count</p> <p>Required filter key: CASE_TEMPLATE_ARN</p> <p>Valid groupings and filters: CASE_TEMPLATE_ARN, CASE_STATUS</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#cases-resolved-historical\">Cases resolved</a> </p> </dd> <dt>SERVICE_LEVEL</dt> <dd> <p>You can include up to 20 SERVICE_LEVEL metrics in a request.</p> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Q in Connect</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you can use <code>LT</code> (for \"Less than\") or <code>LTE</code> (for \"Less than equal\").</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#service-level-historical\">Service level X</a> </p> </dd> <dt>STEP_CONTACTS_QUEUED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, RoutingStepExpression</p> <p>UI name: This metric is available in Real-time Metrics UI but not on the Historical Metrics UI.</p> </dd> <dt>SUM_AFTER_CONTACT_WORK_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#acw-historical\">After contact work time</a> </p> </dd> <dt>SUM_CONNECTING_TIME_AGENT</dt> <dd> <p>Unit: Seconds</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code>. This metric only supports the following filter keys as <code>INITIATION_METHOD</code>: <code>INBOUND</code> | <code>OUTBOUND</code> | <code>CALLBACK</code> | <code>API</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#htm-agent-api-connecting-time\">Agent API connecting time</a> </p> <note> <p>The <code>Negate</code> key in metric-level filters is not applicable for this metric.</p> </note> </dd> <dt>CONTACTS_ABANDONED</dt> <dd> <p>Unit: Count</p> <p>Metric filter: </p> <ul> <li> <p>Valid values: <code>API</code>| <code>Incoming</code> | <code>Outbound</code> | <code>Transfer</code> | <code>Callback</code> | <code>Queue_Transfer</code>| <code>Disconnect</code> </p> </li> </ul> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, RoutingStepExpression, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-abandoned-historical\">Contact abandoned</a> </p> </dd> <dt>SUM_CONTACTS_ABANDONED_IN_X</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you can use <code>LT</code> (for \"Less than\") or <code>LTE</code> (for \"Less than equal\").</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-abandoned-x-historical\">Contacts abandoned in X seconds</a> </p> </dd> <dt>SUM_CONTACTS_ANSWERED_IN_X</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you can use <code>LT</code> (for \"Less than\") or <code>LTE</code> (for \"Less than equal\").</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contacts-answered-x-historical\">Contacts answered in X seconds</a> </p> </dd> <dt>SUM_CONTACT_FLOW_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contact-flow-time-historical\">Contact flow time</a> </p> </dd> <dt>SUM_CONTACT_TIME_AGENT</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#agent-on-contact-time-historical\">Agent on contact time</a> </p> </dd> <dt>SUM_CONTACTS_DISCONNECTED </dt> <dd> <p>Valid metric filter key: <code>DISCONNECT_REASON</code> </p> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contact-disconnected-historical\">Contact disconnected</a> </p> </dd> <dt>SUM_ERROR_STATUS_TIME_AGENT</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#error-status-time-historical\">Error status time</a> </p> </dd> <dt>SUM_HANDLE_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#contact-handle-time-historical\">Contact handle time</a> </p> </dd> <dt>SUM_HOLD_TIME</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#customer-hold-time-historical\">Customer hold time</a> </p> </dd> <dt>SUM_IDLE_TIME_AGENT</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#agent-idle-time-historica\">Agent idle time</a> </p> </dd> <dt>SUM_INTERACTION_AND_HOLD_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#agent-interaction-hold-time-historical\">Agent interaction and hold time</a> </p> </dd> <dt>SUM_INTERACTION_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#agent-interaction-time-historical\">Agent interaction time</a> </p> </dd> <dt>SUM_NON_PRODUCTIVE_TIME_AGENT</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#npt-historical\">Non-Productive Time</a> </p> </dd> <dt>SUM_ONLINE_TIME_AGENT</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#online-time-historical\">Online time</a> </p> </dd> <dt>SUM_RETRY_CALLBACK_ATTEMPTS</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#callback-attempts-historical\">Callback attempts</a> </p> </dd> </dl>"
+          "documentation":"<p>The metrics to retrieve. Specify the name, groupings, and filters for each metric. The following historical metrics are available. For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definition</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <dl> <dt>ABANDONMENT_RATE</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#abandonment-rate\">Abandonment rate</a> </p> </dd> <dt>AGENT_ADHERENT_TIME</dt> <dd> <p>This metric is available only in Amazon Web Services Regions where <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/regions.html#optimization_region\">Forecasting, capacity planning, and scheduling</a> is available.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy </p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#adherent-time\">Adherent time</a> </p> </dd> <dt>AGENT_ANSWER_RATE</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#agent-answer-rate\">Agent answer rate</a> </p> </dd> <dt>AGENT_NON_ADHERENT_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#non-adherent-time\">Non-adherent time</a> </p> </dd> <dt>AGENT_NON_RESPONSE</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy </p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#agent-non-response\">Agent non-response</a> </p> </dd> <dt>AGENT_NON_RESPONSE_WITHOUT_CUSTOMER_ABANDONS</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>Data for this metric is available starting from October 1, 2023 0:00:00 GMT.</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#agent-non-response-without-customer-abandons\">Agent non-response without customer abandons</a> </p> </dd> <dt>AGENT_OCCUPANCY</dt> <dd> <p>Unit: Percentage</p> <p>Valid groupings and filters: Routing Profile, Agent, Agent Hierarchy </p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#occupancy\">Occupancy</a> </p> </dd> <dt>AGENT_SCHEDULE_ADHERENCE</dt> <dd> <p>This metric is available only in Amazon Web Services Regions where <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/regions.html#optimization_region\">Forecasting, capacity planning, and scheduling</a> is available.</p> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#adherence\">Adherence</a> </p> </dd> <dt>AGENT_SCHEDULED_TIME</dt> <dd> <p>This metric is available only in Amazon Web Services Regions where <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/regions.html#optimization_region\">Forecasting, capacity planning, and scheduling</a> is available.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#scheduled-time\">Scheduled time</a> </p> </dd> <dt>AVG_ABANDON_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-queue-abandon-time\">Average queue abandon time</a> </p> </dd> <dt>AVG_ACTIVE_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-active-time\">Average active time</a> </p> </dd> <dt>AVG_AFTER_CONTACT_WORK_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#after-contact-work-time\">Average after contact work time</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>AVG_AGENT_CONNECTING_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code>. For now, this metric only supports the following as <code>INITIATION_METHOD</code>: <code>INBOUND</code> | <code>OUTBOUND</code> | <code>CALLBACK</code> | <code>API</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-agent-api-connecting-time\">Average agent API connecting time</a> </p> <note> <p>The <code>Negate</code> key in metric-level filters is not applicable for this metric.</p> </note> </dd> <dt>AVG_AGENT_PAUSE_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-agent-pause-time\">Average agent pause time</a> </p> </dd> <dt>AVG_BOT_CONVERSATION_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Bot ID, Bot alias, Bot version, Bot locale, Flows resource ID, Flows module resource ID, Flow type, Flow action ID, Invoking resource published timestamp, Initiation method, Invoking resource type, Parent flows resource ID</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#average-bot-conversation-time\">Average bot conversation time</a> </p> </dd> <dt>AVG_BOT_CONVERSATION_TURNS</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Bot ID, Bot alias, Bot version, Bot locale, Flows resource ID, Flows module resource ID, Flow type, Flow action ID, Invoking resource published timestamp, Initiation method, Invoking resource type, Parent flows resource ID</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#average-bot-conversation-turns\">Average bot conversation turns</a> </p> </dd> <dt>AVG_CASE_RELATED_CONTACTS</dt> <dd> <p>Unit: Count</p> <p>Required filter key: CASE_TEMPLATE_ARN</p> <p>Valid groupings and filters: CASE_TEMPLATE_ARN, CASE_STATUS</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-contacts-per-case\">Average contacts per case</a> </p> </dd> <dt>AVG_CASE_RESOLUTION_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Required filter key: CASE_TEMPLATE_ARN</p> <p>Valid groupings and filters: CASE_TEMPLATE_ARN, CASE_STATUS</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-case-resolution-time\">Average case resolution time</a> </p> </dd> <dt>AVG_CONTACT_DURATION</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-contact-duration\">Average contact duration</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>AVG_CONVERSATION_DURATION</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-conversation-duration\">Average conversation duration</a> </p> </dd> <dt>AVG_DIALS_PER_MINUTE</dt> <dd> <p>This metric is available only for outbound campaigns that use the agent assisted voice and automated voice delivery modes.</p> <p>Unit: Count</p> <p>Valid groupings and filters: Agent, Campaign, Queue, Routing Profile</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-dials-per-minute\">Average dials per minute</a> </p> </dd> <dt>AVG_EVALUATION_SCORE</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Agent, Agent Hierarchy, Channel, Evaluation Form ID, Evaluation Section ID, Evaluation Question ID, Evaluation Source, Form Version, Queue, Routing Profile</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-evaluation-score\">Average evaluation score</a> </p> </dd> <dt>AVG_FLOW_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Flow type, Flows module resource ID, Flows next resource ID, Flows next resource queue ID, Flows outcome type, Flows resource ID, Initiation method, Resource published timestamp</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-flow-time\">Average flow time</a> </p> </dd> <dt>AVG_GREETING_TIME_AGENT</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-agent-greeting-time\">Average agent greeting time</a> </p> </dd> <dt>AVG_HANDLE_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, RoutingStepExpression</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-handle-time\">Average handle time</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>AVG_HOLD_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-customer-hold-time\">Average customer hold time</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>AVG_HOLD_TIME_ALL_CONTACTS</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-customer-hold-time-all-contacts\">Average customer hold time all contacts</a> </p> </dd> <dt>AVG_HOLDS</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-holds\">Average holds</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>AVG_INTERACTION_AND_HOLD_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-agent-interaction-and-customer-hold-time\">Average agent interaction and customer hold time</a> </p> </dd> <dt>AVG_INTERACTION_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-agent-interaction-time\">Average agent interaction time</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>AVG_INTERRUPTIONS_AGENT</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-agent-interruptions\">Average agent interruptions</a> </p> </dd> <dt>AVG_INTERRUPTION_TIME_AGENT</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-agent-interruption-time\">Average agent interruption time</a> </p> </dd> <dt>AVG_NON_TALK_TIME</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-non-talk-time\">Average non-talk time</a> </p> </dd> <dt>AVG_QUEUE_ANSWER_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-queue-answer-time\">Average queue answer time</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>AVG_RESOLUTION_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-resolution-time\">Average resolution time</a> </p> </dd> <dt>AVG_TALK_TIME</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-talk-time\">Average talk time</a> </p> </dd> <dt>AVG_TALK_TIME_AGENT</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-agent-talk-time\">Average agent talk time</a> </p> </dd> <dt>AVG_TALK_TIME_CUSTOMER</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-customer-talk-time\">Average customer talk time</a> </p> </dd> <dt>AVG_WAIT_TIME_AFTER_CUSTOMER_CONNECTION</dt> <dd> <p>This metric is available only for outbound campaigns that use the agent assisted voice and automated voice delivery modes.</p> <p>Unit: Seconds</p> <p>Valid groupings and filters: Campaign</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-wait-time-after-customer-connection\">Average wait time after customer connection</a> </p> </dd> <dt>AVG_WEIGHTED_EVALUATION_SCORE</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Agent, Agent Hierarchy, Channel, Evaluation Form Id, Evaluation Section ID, Evaluation Question ID, Evaluation Source, Form Version, Queue, Routing Profile</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#average-weighted-evaluation-score\">Average weighted evaluation score</a> </p> </dd> <dt>BOT_CONVERSATIONS_COMPLETED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Bot ID, Bot alias, Bot version, Bot locale, Flows resource ID, Flows module resource ID, Flow type, Flow action ID, Invoking resource published timestamp, Initiation method, Invoking resource type, Parent flows resource ID</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#bot-conversations-completed\">Bot conversations completed</a> </p> </dd> <dt>BOT_INTENTS_COMPLETED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Bot ID, Bot alias, Bot version, Bot locale, Bot intent name, Flows resource ID, Flows module resource ID, Flow type, Flow action ID, Invoking resource published timestamp, Initiation method, Invoking resource type, Parent flows resource ID</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#bot-intents-completed\">Bot intents completed</a> </p> </dd> <dt>CAMPAIGN_CONTACTS_ABANDONED_AFTER_X</dt> <dd> <p>This metric is available only for outbound campaigns using the agent assisted voice and automated voice delivery modes.</p> <p>Unit: Count</p> <p>Valid groupings and filters: Agent, Campaign</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you must enter <code>GT</code> (for <i>Greater than</i>).</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#campaign-contacts-abandoned-after-x\">Campaign contacts abandoned after X</a> </p> </dd> <dt>CAMPAIGN_CONTACTS_ABANDONED_AFTER_X_RATE</dt> <dd> <p>This metric is available only for outbound campaigns using the agent assisted voice and automated voice delivery modes.</p> <p>Unit: Percent</p> <p>Valid groupings and filters: Agent, Campaign</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you must enter <code>GT</code> (for <i>Greater than</i>).</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#campaign-contacts-abandoned-after-x-rate\">Campaign contacts abandoned after X rate</a> </p> </dd> <dt>CAMPAIGN_INTERACTIONS</dt> <dd> <p>This metric is available only for outbound campaigns using the email delivery mode. </p> <p>Unit: Count</p> <p>Valid metric filter key: CAMPAIGN_INTERACTION_EVENT_TYPE</p> <p>Valid groupings and filters: Campaign</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#campaign-interactions\">Campaign interactions</a> </p> </dd> <dt>CAMPAIGN_SEND_ATTEMPTS</dt> <dd> <p>This metric is available only for outbound campaigns.</p> <p>Unit: Count</p> <p>Valid groupings and filters: Campaign, Channel, contact/segmentAttributes/connect:Subtype </p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#campaign-send-attempts\">Campaign send attempts</a> </p> </dd> <dt>CASES_CREATED</dt> <dd> <p>Unit: Count</p> <p>Required filter key: CASE_TEMPLATE_ARN</p> <p>Valid groupings and filters: CASE_TEMPLATE_ARN, CASE_STATUS</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#cases-created\">Cases created</a> </p> </dd> <dt>CONTACTS_CREATED</dt> <dd> <p>Unit: Count</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-created\">Contacts created</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>CONTACTS_HANDLED</dt> <dd> <p>Unit: Count</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code>, <code>DISCONNECT_REASON</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, RoutingStepExpression, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#api-contacts-handled\">API contacts handled</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>CONTACTS_HANDLED_BY_CONNECTED_TO_AGENT</dt> <dd> <p>Unit: Count</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code> </p> <p>Valid groupings and filters: Queue, Channel, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-handled-by-connected-to-agent-timestamp\">Contacts handled (connected to agent timestamp)</a> </p> </dd> <dt>CONTACTS_HOLD_ABANDONS</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-hold-disconnect\">Contacts hold disconnect</a> </p> </dd> <dt>CONTACTS_ON_HOLD_AGENT_DISCONNECT</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-hold-agent-disconnect\">Contacts hold agent disconnect</a> </p> </dd> <dt>CONTACTS_ON_HOLD_CUSTOMER_DISCONNECT</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-hold-customer-disconnect\">Contacts hold customer disconnect</a> </p> </dd> <dt>CONTACTS_PUT_ON_HOLD</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-put-on-hold\">Contacts put on hold</a> </p> </dd> <dt>CONTACTS_TRANSFERRED_OUT_EXTERNAL</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-transferred-out-external\">Contacts transferred out external</a> </p> </dd> <dt>CONTACTS_TRANSFERRED_OUT_INTERNAL</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-transferred-out-internal\">Contacts transferred out internal</a> </p> </dd> <dt>CONTACTS_QUEUED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-queued\">Contacts queued</a> </p> </dd> <dt>CONTACTS_QUEUED_BY_ENQUEUE</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-queued-by-enqueue\">Contacts queued (enqueue timestamp)</a> </p> </dd> <dt>CONTACTS_REMOVED_FROM_QUEUE_IN_X</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Q in Connect</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you can use <code>LT</code> (for \"Less than\") or <code>LTE</code> (for \"Less than equal\").</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-removed-from-queue\">Contacts removed from queue in X seconds</a> </p> </dd> <dt>CONTACTS_RESOLVED_IN_X</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you can use <code>LT</code> (for \"Less than\") or <code>LTE</code> (for \"Less than equal\").</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-resolved\">Contacts resolved in X</a> </p> </dd> <dt>CONTACTS_TRANSFERRED_OUT</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Feature, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-transferred-out\">Contacts transferred out</a> </p> <note> <p>Feature is a valid filter but not a valid grouping.</p> </note> </dd> <dt>CONTACTS_TRANSFERRED_OUT_BY_AGENT</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-transferred-out-by-agent\">Contacts transferred out by agent</a> </p> </dd> <dt>CONTACTS_TRANSFERRED_OUT_FROM_QUEUE</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-transferred-out-queue\">Contacts transferred out queue</a> </p> </dd> <dt>CURRENT_CASES</dt> <dd> <p>Unit: Count</p> <p>Required filter key: CASE_TEMPLATE_ARN</p> <p>Valid groupings and filters: CASE_TEMPLATE_ARN, CASE_STATUS</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#current-cases\">Current cases</a> </p> </dd> <dt>DELIVERY_ATTEMPTS</dt> <dd> <p>This metric is available only for outbound campaigns.</p> <p>Unit: Count</p> <p>Valid metric filter key: <code>ANSWERING_MACHINE_DETECTION_STATUS</code>, <code>CAMPAIGN_DELIVERY_EVENT_TYPE</code>, <code>DISCONNECT_REASON</code> </p> <p>Valid groupings and filters: Agent, Answering Machine Detection Status, Campaign, Campaign Delivery EventType, Channel, contact/segmentAttributes/connect:Subtype, Disconnect Reason, Queue, Routing Profile</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#delivery-attempts\">Delivery attempts</a> </p> <note> <p>Campaign Delivery EventType filter and grouping are only available for SMS and Email campaign delivery modes. Agent, Queue, Routing Profile, Answering Machine Detection Status and Disconnect Reason are only available for agent assisted voice and automated voice delivery modes. </p> </note> </dd> <dt>DELIVERY_ATTEMPT_DISPOSITION_RATE</dt> <dd> <p>This metric is available only for outbound campaigns. Dispositions for the agent assisted voice and automated voice delivery modes are only available with answering machine detection enabled.</p> <p>Unit: Percent</p> <p>Valid metric filter key: <code>ANSWERING_MACHINE_DETECTION_STATUS</code>, <code>CAMPAIGN_DELIVERY_EVENT_TYPE</code>, <code>DISCONNECT_REASON</code> </p> <p>Valid groupings and filters: Agent, Answering Machine Detection Status, Campaign, Channel, contact/segmentAttributes/connect:Subtype, Disconnect Reason, Queue, Routing Profile</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#delivery-attempt-disposition-rate\">Delivery attempt disposition rate</a> </p> <note> <p>Campaign Delivery Event Type filter and grouping are only available for SMS and Email campaign delivery modes. Agent, Queue, Routing Profile, Answering Machine Detection Status and Disconnect Reason are only available for agent assisted voice and automated voice delivery modes. </p> </note> </dd> <dt>EVALUATIONS_PERFORMED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Agent, Agent Hierarchy, Channel, Evaluation Form ID, Evaluation Source, Form Version, Queue, Routing Profile</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#evaluations-performed\">Evaluations performed</a> </p> </dd> <dt>FLOWS_OUTCOME</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Flow type, Flows module resource ID, Flows next resource ID, Flows next resource queue ID, Flows outcome type, Flows resource ID, Initiation method, Resource published timestamp</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#flows-outcome\">Flows outcome</a> </p> </dd> <dt>FLOWS_STARTED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Flow type, Flows module resource ID, Flows resource ID, Initiation method, Resource published timestamp</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#flows-started\">Flows started</a> </p> </dd> <dt>HUMAN_ANSWERED_CALLS</dt> <dd> <p>This metric is available only for outbound campaigns. Dispositions for the agent assisted voice and automated voice delivery modes are only available with answering machine detection enabled. </p> <p>Unit: Count</p> <p>Valid groupings and filters: Agent, Campaign</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#human-answered\">Human answered</a> </p> </dd> <dt>MAX_FLOW_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Flow type, Flows module resource ID, Flows next resource ID, Flows next resource queue ID, Flows outcome type, Flows resource ID, Initiation method, Resource published timestamp</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#maximum-flow-time\">Maximum flow time</a> </p> </dd> <dt>MAX_QUEUED_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#maximum-queued-time\">Maximum queued time</a> </p> </dd> <dt>MIN_FLOW_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Flow type, Flows module resource ID, Flows next resource ID, Flows next resource queue ID, Flows outcome type, Flows resource ID, Initiation method, Resource published timestamp</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#minimum-flow-time\">Minimum flow time</a> </p> </dd> <dt>PERCENT_AUTOMATIC_FAILS</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Agent, Agent Hierarchy, Channel, Evaluation Form ID, Evaluation Source, Form Version, Queue, Routing Profile</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#automatic-fails-percent\">Automatic fails percent</a> </p> </dd> <dt>PERCENT_BOT_CONVERSATIONS_OUTCOME</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Bot ID, Bot alias, Bot version, Bot locale, Flows resource ID, Flows module resource ID, Flow type, Flow action ID, Invoking resource published timestamp, Initiation method, Invoking resource type, Parent flows resource ID</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#percent-bot-conversations-outcome\">Percent bot conversations outcome</a> </p> </dd> <dt>PERCENT_BOT_INTENTS_OUTCOME</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Bot ID, Bot alias, Bot version, Bot locale, Bot intent name, Flows resource ID, Flows module resource ID, Flow type, Flow action ID, Invoking resource published timestamp, Initiation method, Invoking resource type, Parent flows resource ID</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#percent-bot-intents-outcome\">Percent bot intents outcome</a> </p> </dd> <dt>PERCENT_CASES_FIRST_CONTACT_RESOLVED</dt> <dd> <p>Unit: Percent</p> <p>Required filter key: CASE_TEMPLATE_ARN</p> <p>Valid groupings and filters: CASE_TEMPLATE_ARN, CASE_STATUS</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#cases-resolved-on-first-contact\">Cases resolved on first contact</a> </p> </dd> <dt>PERCENT_CONTACTS_STEP_EXPIRED</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, RoutingStepExpression</p> <p>UI name: This metric is available in Real-time Metrics UI but not on the Historical Metrics UI.</p> </dd> <dt>PERCENT_CONTACTS_STEP_JOINED</dt> <dd> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, RoutingStepExpression</p> <p>UI name: This metric is available in Real-time Metrics UI but not on the Historical Metrics UI.</p> </dd> <dt>PERCENT_FLOWS_OUTCOME</dt> <dd> <p>Unit: Percent</p> <p>Valid metric filter key: <code>FLOWS_OUTCOME_TYPE</code> </p> <p>Valid groupings and filters: Channel, contact/segmentAttributes/connect:Subtype, Flow type, Flows module resource ID, Flows next resource ID, Flows next resource queue ID, Flows outcome type, Flows resource ID, Initiation method, Resource published timestamp</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#flows-outcome-percentage\">Flows outcome percentage</a>.</p> <note> <p>The <code>FLOWS_OUTCOME_TYPE</code> is not a valid grouping.</p> </note> </dd> <dt>PERCENT_NON_TALK_TIME</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Percentage</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#non-talk-time-percent\">Non-talk time percent</a> </p> </dd> <dt>PERCENT_TALK_TIME</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Percentage</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#talk-time-percent\">Talk time percent</a> </p> </dd> <dt>PERCENT_TALK_TIME_AGENT</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Percentage</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#agent-talk-time-percent\">Agent talk time percent</a> </p> </dd> <dt>PERCENT_TALK_TIME_CUSTOMER</dt> <dd> <p>This metric is available only for contacts analyzed by Contact Lens conversational analytics.</p> <p>Unit: Percentage</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#customer-talk-time-percent\">Customer talk time percent</a> </p> </dd> <dt>REOPENED_CASE_ACTIONS</dt> <dd> <p>Unit: Count</p> <p>Required filter key: CASE_TEMPLATE_ARN</p> <p>Valid groupings and filters: CASE_TEMPLATE_ARN, CASE_STATUS</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#cases-reopened\">Cases reopened</a> </p> </dd> <dt>RESOLVED_CASE_ACTIONS</dt> <dd> <p>Unit: Count</p> <p>Required filter key: CASE_TEMPLATE_ARN</p> <p>Valid groupings and filters: CASE_TEMPLATE_ARN, CASE_STATUS</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#cases-resolved\">Cases resolved</a> </p> </dd> <dt>SERVICE_LEVEL</dt> <dd> <p>You can include up to 20 SERVICE_LEVEL metrics in a request.</p> <p>Unit: Percent</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Q in Connect</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you can use <code>LT</code> (for \"Less than\") or <code>LTE</code> (for \"Less than equal\").</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#service-level\">Service level X</a> </p> </dd> <dt>STEP_CONTACTS_QUEUED</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, RoutingStepExpression</p> <p>UI name: This metric is available in Real-time Metrics UI but not on the Historical Metrics UI.</p> </dd> <dt>SUM_AFTER_CONTACT_WORK_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#after-contact-work-time\">After contact work time</a> </p> </dd> <dt>SUM_CONNECTING_TIME_AGENT</dt> <dd> <p>Unit: Seconds</p> <p>Valid metric filter key: <code>INITIATION_METHOD</code>. This metric only supports the following filter keys as <code>INITIATION_METHOD</code>: <code>INBOUND</code> | <code>OUTBOUND</code> | <code>CALLBACK</code> | <code>API</code> </p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#agent-api-connecting-time\">Agent API connecting time</a> </p> <note> <p>The <code>Negate</code> key in metric-level filters is not applicable for this metric.</p> </note> </dd> <dt>CONTACTS_ABANDONED</dt> <dd> <p>Unit: Count</p> <p>Metric filter: </p> <ul> <li> <p>Valid values: <code>API</code>| <code>Incoming</code> | <code>Outbound</code> | <code>Transfer</code> | <code>Callback</code> | <code>Queue_Transfer</code>| <code>Disconnect</code> </p> </li> </ul> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, RoutingStepExpression, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-abandoned\">Contact abandoned</a> </p> </dd> <dt>SUM_CONTACTS_ABANDONED_IN_X</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you can use <code>LT</code> (for \"Less than\") or <code>LTE</code> (for \"Less than equal\").</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-abandoned-in-x-seconds\">Contacts abandoned in X seconds</a> </p> </dd> <dt>SUM_CONTACTS_ANSWERED_IN_X</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>Threshold: For <code>ThresholdValue</code>, enter any whole number from 1 to 604800 (inclusive), in seconds. For <code>Comparison</code>, you can use <code>LT</code> (for \"Less than\") or <code>LTE</code> (for \"Less than equal\").</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contacts-answered-in-x-seconds\">Contacts answered in X seconds</a> </p> </dd> <dt>SUM_CONTACT_FLOW_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contact-flow-time\">Contact flow time</a> </p> </dd> <dt>SUM_CONTACT_TIME_AGENT</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#agent-on-contact-time\">Agent on contact time</a> </p> </dd> <dt>SUM_CONTACTS_DISCONNECTED </dt> <dd> <p>Valid metric filter key: <code>DISCONNECT_REASON</code> </p> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contact-disconnected\">Contact disconnected</a> </p> </dd> <dt>SUM_ERROR_STATUS_TIME_AGENT</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#error-status-time\">Error status time</a> </p> </dd> <dt>SUM_HANDLE_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#contact-handle-time\">Contact handle time</a> </p> </dd> <dt>SUM_HOLD_TIME</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#customer-hold-time\">Customer hold time</a> </p> </dd> <dt>SUM_IDLE_TIME_AGENT</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#agent-idle-time\">Agent idle time</a> </p> </dd> <dt>SUM_INTERACTION_AND_HOLD_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#agent-interaction-and-hold-time\">Agent interaction and hold time</a> </p> </dd> <dt>SUM_INTERACTION_TIME</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#agent-interaction-time\">Agent interaction time</a> </p> </dd> <dt>SUM_NON_PRODUCTIVE_TIME_AGENT</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#agent-non-productive-time\">Agent non-productive time</a> </p> </dd> <dt>SUM_ONLINE_TIME_AGENT</dt> <dd> <p>Unit: Seconds</p> <p>Valid groupings and filters: Routing Profile, Agent, Agent Hierarchy</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#online-time\">Online time</a> </p> </dd> <dt>SUM_RETRY_CALLBACK_ATTEMPTS</dt> <dd> <p>Unit: Count</p> <p>Valid groupings and filters: Queue, Channel, Routing Profile, contact/segmentAttributes/connect:Subtype, Q in Connect</p> <p>UI name: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#callback-attempts\">Callback attempts</a> </p> </dd> </dl>"
         },
         "NextToken":{
           "shape":"NextToken2500",
@@ -14192,7 +14288,7 @@
           "documentation":"<p>The unit for the metric.</p>"
         }
       },
-      "documentation":"<p>Contains information about a historical metric. For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html\">Historical Metrics Definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+      "documentation":"<p>Contains information about a historical metric. For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
     "HistoricalMetricData":{
       "type":"structure",
@@ -17557,6 +17653,13 @@
       "documentation":"<p>A set of endpoints used by clients to connect to the media service group for an Amazon Chime SDK meeting.</p>"
     },
     "MediaRegion":{"type":"string"},
+    "MediaStreamType":{
+      "type":"string",
+      "enum":[
+        "AUDIO",
+        "VIDEO"
+      ]
+    },
     "Meeting":{
       "type":"structure",
       "members":{
@@ -17641,7 +17744,7 @@
         },
         "MetricFilterValues":{
           "shape":"MetricFilterValueList",
-          "documentation":"<p>The values to use for filtering data. Values for metric-level filters can be either a fixed set of values or a customized list, depending on the use case.</p> <p>For valid values of metric-level filters <code>INITIATION_METHOD</code>, <code>DISCONNECT_REASON</code>, and <code>ANSWERING_MACHINE_DETECTION_STATUS</code>, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/ctr-data-model.html#ctr-ContactTraceRecord\">ContactTraceRecord</a> in the <i>Amazon Connect Administrator Guide</i>. </p> <p>For valid values of the metric-level filter <code>FLOWS_OUTCOME_TYPE</code>, see the description for the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#flows-outcome-historical\">Flow outcome</a> metric in the <i>Amazon Connect Administrator Guide</i>.</p> <p>For valid values of the metric-level filter <code>BOT_CONVERSATION_OUTCOME_TYPE</code>, see the description for the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#bot-conversations-completed-metric\">Bot conversations completed</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <p>For valid values of the metric-level filter <code>BOT_INTENT_OUTCOME_TYPE</code>, see the description for the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#bot-intents-completed-metric\">Bot intents completed</a> metric in the <i>Amazon Connect Administrator Guide</i>.</p>"
+          "documentation":"<p>The values to use for filtering data. Values for metric-level filters can be either a fixed set of values or a customized list, depending on the use case.</p> <p>For valid values of metric-level filters <code>INITIATION_METHOD</code>, <code>DISCONNECT_REASON</code>, and <code>ANSWERING_MACHINE_DETECTION_STATUS</code>, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/ctr-data-model.html#ctr-ContactTraceRecord\">ContactTraceRecord</a> in the <i>Amazon Connect Administrator Guide</i>. </p> <p>For valid values of the metric-level filter <code>FLOWS_OUTCOME_TYPE</code>, see the description for the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#flows-outcome\">Flow outcome</a> metric in the <i>Amazon Connect Administrator Guide</i>.</p> <p>For valid values of the metric-level filter <code>BOT_CONVERSATION_OUTCOME_TYPE</code>, see the description for the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#bot-conversations-completed-metric\">Bot conversations completed</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <p>For valid values of the metric-level filter <code>BOT_INTENT_OUTCOME_TYPE</code>, see the description for the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#bot-intents-completed-metric\">Bot intents completed</a> metric in the <i>Amazon Connect Administrator Guide</i>.</p>"
         },
         "Negate":{
           "shape":"Boolean",
@@ -18167,6 +18270,15 @@
         "SUPERVISOR"
       ]
     },
+    "ParticipantState":{
+      "type":"string",
+      "enum":[
+        "INITIAL",
+        "CONNECTED",
+        "DISCONNECTED",
+        "MISSED"
+      ]
+    },
     "ParticipantTimerAction":{
       "type":"string",
       "enum":["Unset"]
@@ -18246,6 +18358,16 @@
       },
       "documentation":"<p>The credentials used by the participant.</p>"
     },
+    "ParticipantType":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "MANAGER",
+        "AGENT",
+        "CUSTOMER",
+        "THIRDPARTY"
+      ]
+    },
     "Password":{
       "type":"string",
       "pattern":"/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d\\S]{8,64}$/",
@@ -18274,8 +18396,7 @@
     },
     "PauseContactResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Percentage":{
       "type":"integer",
@@ -19022,8 +19143,7 @@
     },
     "PutUserStatusResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "QualityMetrics":{
       "type":"structure",
@@ -19909,6 +20029,69 @@
       "type":"list",
       "member":{"shape":"RealtimeContactAnalysisSegment"}
     },
+    "RecordingDeletionReason":{"type":"string"},
+    "RecordingInfo":{
+      "type":"structure",
+      "members":{
+        "StorageType":{
+          "shape":"StorageType",
+          "documentation":"<p>Where the recording/transcript is stored.</p>"
+        },
+        "Location":{
+          "shape":"RecordingLocation",
+          "documentation":"<p>The location, in Amazon S3, for the recording/transcript.</p>"
+        },
+        "MediaStreamType":{
+          "shape":"MediaStreamType",
+          "documentation":"<p>Information about the media stream used during the conversation.</p>"
+        },
+        "ParticipantType":{
+          "shape":"ParticipantType",
+          "documentation":"<p>Information about the conversation participant, whether they are an agent or contact. The participant types are as follows:</p> <ul> <li> <p>All</p> </li> <li> <p>Manager</p> </li> <li> <p>Agent</p> </li> <li> <p>Customer</p> </li> <li> <p>Thirdparty</p> </li> <li> <p>Supervisor</p> </li> </ul>"
+        },
+        "FragmentStartNumber":{
+          "shape":"FragmentNumber",
+          "documentation":"<p>The number that identifies the Kinesis Video Streams fragment where the customer audio stream started.</p>"
+        },
+        "FragmentStopNumber":{
+          "shape":"FragmentNumber",
+          "documentation":"<p>The number that identifies the Kinesis Video Streams fragment where the customer audio stream stopped.</p>"
+        },
+        "StartTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>When the conversation of the last leg of the recording started in UTC time.</p>"
+        },
+        "StopTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>When the conversation of the last leg of recording stopped in UTC time.</p>"
+        },
+        "Status":{
+          "shape":"RecordingStatus",
+          "documentation":"<p>The status of the recording/transcript.</p>"
+        },
+        "DeletionReason":{
+          "shape":"RecordingDeletionReason",
+          "documentation":"<p>If the recording/transcript was deleted, this is the reason entered for the deletion.</p>"
+        }
+      },
+      "documentation":"<p>Information about a voice recording, chat transcript, or screen recording.</p>"
+    },
+    "RecordingLocation":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "RecordingStatus":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "DELETED"
+      ]
+    },
+    "Recordings":{
+      "type":"list",
+      "member":{"shape":"RecordingInfo"}
+    },
     "Reference":{
       "type":"structure",
       "required":["Type"],
@@ -20294,8 +20477,7 @@
     },
     "ResumeContactRecordingResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "ResumeContactRequest":{
       "type":"structure",
@@ -20320,8 +20502,7 @@
     },
     "ResumeContactResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RoutingCriteria":{
       "type":"structure",
@@ -22243,8 +22424,7 @@
     },
     "SendOutboundEmailResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -22667,8 +22847,7 @@
     },
     "StartContactRecordingResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StartContactStreamingRequest":{
       "type":"structure",
@@ -22992,8 +23171,7 @@
     },
     "StartScreenSharingResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StartTaskContactRequest":{
       "type":"structure",
@@ -23131,12 +23309,42 @@
         }
       }
     },
+    "StateTransition":{
+      "type":"structure",
+      "members":{
+        "State":{
+          "shape":"ParticipantState",
+          "documentation":"<p>The state of the transition.</p>"
+        },
+        "StateStartTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the state started in UTC time.</p>"
+        },
+        "StateEndTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the state ended in UTC time.</p>"
+        }
+      },
+      "documentation":"<p>Information about the state transition of a supervisor.</p>"
+    },
+    "StateTransitions":{
+      "type":"list",
+      "member":{"shape":"StateTransition"}
+    },
     "Statistic":{
       "type":"string",
       "enum":[
         "SUM",
         "MAX",
         "AVG"
+      ]
+    },
+    "Status":{
+      "type":"string",
+      "enum":[
+        "COMPLETE",
+        "IN_PROGRESS",
+        "DELETED"
       ]
     },
     "Step":{
@@ -23189,8 +23397,7 @@
     },
     "StopContactRecordingResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StopContactRequest":{
       "type":"structure",
@@ -23215,8 +23422,7 @@
     },
     "StopContactResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StopContactStreamingRequest":{
       "type":"structure",
@@ -23242,8 +23448,7 @@
     },
     "StopContactStreamingResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StorageType":{
       "type":"string",
@@ -23422,8 +23627,7 @@
     },
     "SuspendContactRecordingResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagAndConditionList":{
       "type":"list",
@@ -23467,8 +23671,7 @@
     },
     "TagContactResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagKey":{
       "type":"string",
@@ -24192,8 +24395,7 @@
     },
     "UntagContactResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -24340,8 +24542,7 @@
     },
     "UpdateContactAttributesResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateContactEvaluationRequest":{
       "type":"structure",
@@ -24417,8 +24618,7 @@
     },
     "UpdateContactFlowContentResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateContactFlowMetadataRequest":{
       "type":"structure",
@@ -24455,8 +24655,7 @@
     },
     "UpdateContactFlowMetadataResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateContactFlowModuleContentRequest":{
       "type":"structure",
@@ -24486,8 +24685,7 @@
     },
     "UpdateContactFlowModuleContentResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateContactFlowModuleMetadataRequest":{
       "type":"structure",
@@ -24524,8 +24722,7 @@
     },
     "UpdateContactFlowModuleMetadataResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateContactFlowNameRequest":{
       "type":"structure",
@@ -24558,8 +24755,7 @@
     },
     "UpdateContactFlowNameResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateContactRequest":{
       "type":"structure",
@@ -24616,8 +24812,7 @@
     },
     "UpdateContactResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateContactRoutingDataRequest":{
       "type":"structure",
@@ -24654,8 +24849,7 @@
     },
     "UpdateContactRoutingDataResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateContactScheduleRequest":{
       "type":"structure",
@@ -24681,8 +24875,7 @@
     },
     "UpdateContactScheduleResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateEmailAddressMetadataRequest":{
       "type":"structure",
@@ -24993,8 +25186,7 @@
     },
     "UpdateParticipantAuthenticationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateParticipantRoleConfigChannelInfo":{
       "type":"structure",
@@ -25035,8 +25227,7 @@
     },
     "UpdateParticipantRoleConfigResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdatePhoneNumberMetadataRequest":{
       "type":"structure",
@@ -25746,8 +25937,7 @@
     },
     "UpdateTrafficDistributionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateUserHierarchyGroupNameRequest":{
       "type":"structure",
@@ -26020,8 +26210,7 @@
     },
     "UpdateViewMetadataResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UploadUrlMetadata":{
       "type":"structure",

@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  Environments:
+    Type: CommaDelimitedList
+    Default: dev,test,prod
+
+Resources:
+  Bucket0:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-bucket-dev
+      Tags:
+        - Key: Environment
+          Value: dev
+  
+  Bucket1:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-bucket-test
+      Tags:
+        - Key: Environment
+          Value: test
+  
+  Bucket2:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-bucket-prod
+      Tags:
+        - Key: Environment
+          Value: prod
+
+Outputs:
+  BucketArns:
+    Description: "All bucket ARNs"
+    Value:
+      - !GetAtt Bucket0.Arn
+      - !GetAtt Bucket1.Arn
+      - !GetAtt Bucket2.Arn
+  
+  DevBucketArn:
+    Description: "Dev bucket ARN"
+    Value: !GetAtt Bucket0.Arn

@@ -148,6 +148,9 @@ class TestPackageModules(unittest.TestCase):
             "flatten-groupby",
             "flatten-foreach",
             "flatten-basic",
+            "resource-foreach",
+            "resource-flatten-foreach",
+            "module-resource-foreach",
         ]
 
         # Collect all errors to report at the end

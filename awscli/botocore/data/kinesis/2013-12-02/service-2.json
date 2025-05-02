@@ -947,8 +947,7 @@
     },
     "DescribeLimitsInput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeLimitsOutput":{
       "type":"structure",
@@ -1575,6 +1574,7 @@
     },
     "ListTagsForResourceInput":{
       "type":"structure",
+      "required":["ResourceARN"],
       "members":{
         "ResourceARN":{
           "shape":"ResourceARN",
@@ -2546,7 +2546,10 @@
     },
     "TagResourceInput":{
       "type":"structure",
-      "required":["Tags"],
+      "required":[
+        "Tags",
+        "ResourceARN"
+      ],
       "members":{
         "Tags":{
           "shape":"TagMap",
@@ -2567,7 +2570,10 @@
     "Timestamp":{"type":"timestamp"},
     "UntagResourceInput":{
       "type":"structure",
-      "required":["TagKeys"],
+      "required":[
+        "TagKeys",
+        "ResourceARN"
+      ],
       "members":{
         "TagKeys":{
           "shape":"TagKeyList",

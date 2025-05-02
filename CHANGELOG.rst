@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.40.7
+======
+
+* api-change:``bedrock-data-automation``: Added support for Custom output and blueprints for AUDIO data types.
+* api-change:``ds``: Doc only update - fixed typos.
+* api-change:``kinesis``: Marking ResourceARN as required for Amazon Kinesis Data Streams APIs TagResource, UntagResource, and ListTagsForResource.
+
+
 1.40.6
 ======
 

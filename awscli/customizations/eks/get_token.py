@@ -96,6 +96,11 @@ class GetTokenCommand(BasicCommand):
             'required': False,
         },
         {
+            'name': 'external-id',
+            'help_text': ("Use this external ID when assuming the role provided with role-arn."),
+            'required': False
+        },
+        {
             'name': 'cluster-id',
             # When EKS in-region cluster supports cluster-id, we will need to update this help text
             'help_text': (
@@ -114,7 +119,9 @@ class GetTokenCommand(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
         client_factory = STSClientFactory(self._session)
         sts_client = client_factory.get_sts_client(
-            region_name=parsed_globals.region, role_arn=parsed_args.role_arn
+            region_name=parsed_globals.region,
+            role_arn=parsed_args.role_arn,
+            external_id=parsed_args.external_id,
         )
         
         validate_mutually_exclusive(parsed_args, ['cluster_name'], ['cluster_id'])
@@ -240,10 +247,10 @@ class STSClientFactory(object):
     def __init__(self, session):
         self._session = session
 
-    def get_sts_client(self, region_name=None, role_arn=None):
+    def get_sts_client(self, region_name=None, role_arn=None, external_id=None):
         client_kwargs = {'region_name': region_name}
         if role_arn is not None:
-            creds = self._get_role_credentials(region_name, role_arn)
+            creds = self._get_role_credentials(region_name, role_arn, external_id)
             client_kwargs['aws_access_key_id'] = creds['AccessKeyId']
             client_kwargs['aws_secret_access_key'] = creds['SecretAccessKey']
             client_kwargs['aws_session_token'] = creds['SessionToken']
@@ -251,11 +258,12 @@ class STSClientFactory(object):
         self._register_k8s_aws_id_handlers(sts)
         return sts
 
-    def _get_role_credentials(self, region_name, role_arn):
+    def _get_role_credentials(self, region_name, role_arn, external_id):
         sts = self._session.create_client('sts', region_name)
-        return sts.assume_role(
-            RoleArn=role_arn, RoleSessionName='EKSGetTokenAuth'
-        )['Credentials']
+        kwargs = {'RoleArn': role_arn, 'RoleSessionName': 'EKSGetTokenAuth'}
+        if external_id is not None:
+            kwargs['ExternalId'] = external_id
+        return sts.assume_role(**kwargs)['Credentials']
 
     def _register_k8s_aws_id_handlers(self, sts_client):
         sts_client.meta.events.register(

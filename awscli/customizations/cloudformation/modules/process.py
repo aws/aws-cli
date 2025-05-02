@@ -33,7 +33,7 @@ from awscli.customizations.cloudformation.modules.functions import (
 )
 from awscli.customizations.cloudformation.modules.flatten import fn_flatten
 from awscli.customizations.cloudformation.modules.foreach import (
-    process_module_foreach,
+    process_foreach,
     resolve_foreach_lists,
     getatt_foreach_list,
     ORIGINAL_FOREACH_NAME,
@@ -187,11 +187,16 @@ def process_module_section(
             constants = process_constants(template)
             if constants is not None:
                 replace_constants(constants, template)
-            fn_flatten(template)
+            parent_module = Module(template, {NAME: "", SOURCE: ""}, None)
+            if PARAMETERS in template:
+                parent_module.module_parameters = template[PARAMETERS]
+            process_foreach(template, parent_module)
             fn_select(template)
             fn_merge(template)
             fn_join(template)
             fn_insertfile(template, base_path)
+            fn_flatten(template)
+
         return template
 
     if not isdict(template[MODULES]):
@@ -212,7 +217,7 @@ def process_module_section(
             parent_module.module_parameters = template[PARAMETERS]
 
     # First, pre-process local modules that are looping over a list
-    foreach_modules = process_module_foreach(template, parent_module)
+    foreach_modules = process_foreach(template, parent_module)
     parent_module.foreach_modules = foreach_modules
 
     # Process each Module node separately after processing Maps
@@ -679,7 +684,13 @@ class Module:
 
         # For example, Content.Arn or Content[0].Arn
 
-        foreach_modules = self.parent_module.foreach_modules
+        foreach_modules = None
+        if self.parent_module:
+            foreach_modules = self.parent_module.foreach_modules
+        else:
+            foreach_modules = self.foreach_modules
+
+        print("resolve_output_getatt foreach_modules:", foreach_modules)
 
         name = v[0]
         prop_name = v[1]

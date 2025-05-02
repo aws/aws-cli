@@ -30,6 +30,10 @@ from awscli.customizations.cloudformation.modules.flatten import (
     FLATTEN,
     fn_flatten,
 )
+from awscli.customizations.cloudformation.modules.util import (
+    isdict,
+)
+from awscli.customizations.cloudformation.yamlhelper import yaml_dump
 
 IDENTIFIER_PLACEHOLDER = "$Identifier"
 INDEX_PLACEHOLDER = "$Index"
@@ -168,9 +172,12 @@ def has_identifier(identifier, s):
 
 
 # pylint: disable=cell-var-from-loop
-def process_module_foreach_item(name, config, retval, parent_module, template):
+# pylint: disable=too-many-arguments,too-many-positional-arguments
+def process_foreach_item(
+    name, config, identifiers, parent_module, template, section
+):
     """
-    Process a single module that has a ForEach.
+    Process a single module or resource configuration that has a ForEach.
 
     ForEach can be:
     1. A comma-separated string
@@ -180,27 +187,33 @@ def process_module_foreach_item(name, config, retval, parent_module, template):
     4. A Map where keys serve as identifiers
     """
 
-    modules = template[MODULES]
+    print(f"Processing ForEach for {name}")
+    print(config)
+
+    # Modules or Resources
+    items = template[section]
 
     # Handle Ref case and validate input
     _resolve_foreach_ref(config, name, parent_module)
 
-    fe = config[FOREACH]
+    collection = config[FOREACH]
 
     # Parse the ForEach value into tokens and values
-    tokens, values = _parse_foreach_value(fe, name)
+    tokens, values = _parse_foreach_value(collection, name)
 
     # Store tokens and values for later reference resolution
-    _store_foreach_metadata(name, tokens, values, retval, parent_module)
+    _store_foreach_metadata(name, tokens, values, identifiers, parent_module)
 
-    # Create modules for each token
-    _create_foreach_modules(name, config, tokens, values, modules)
+    # Create copies for each token
+    _create_foreach_copies(name, config, tokens, values, items)
 
 
 def _resolve_foreach_ref(config, k, parent_module):
     """Resolve and validate ForEach references."""
 
     fe = config[FOREACH]
+
+    print("_resolve_foreach_ref fe:", yaml_dump(fe))
 
     if isdict(fe):
         if REF in fe:
@@ -212,8 +225,17 @@ def _resolve_foreach_ref(config, k, parent_module):
             return
 
         if FLATTEN in fe:
+
+            print("fe before resolve:", yaml_dump(fe))
+
             parent_module.resolve(fe)
+
+            print("fe after resolve:", yaml_dump(fe))
+
             fn_flatten(config)
+
+            print("config after flatten:", yaml_dump(config))
+
             return
 
         # Validate map keys
@@ -279,44 +301,42 @@ def _store_foreach_metadata(k, tokens, values, retval, parent_module):
     parent_module.foreach_values[k] = values
 
 
-def _create_foreach_modules(name, config, tokens, values, modules):
+def _create_foreach_copies(name, config, tokens, values, items):
     """
-    Create modules for each token in the ForEach.
+    Create copies for each token in the ForEach.
 
-    At the end of this, the original module config is removed and
+    At the end of this, the original config is removed and
     replaced by copies with the index appended to the name,
     as if the template author had written them all out manually.
-
-    After this, module processing happens as usual.
     """
 
     for i, token in enumerate(tokens):
         # The ForEach attribute always uses index-based suffixes.
-        module_id = f"{name}{i}"
+        item_id = f"{name}{i}"
 
-        copied_module = copy.deepcopy(config)
+        copied_item = copy.deepcopy(config)
 
         # We need to remember the original name for later
-        copied_module[ORIGINAL_FOREACH_NAME] = name
+        copied_item[ORIGINAL_FOREACH_NAME] = name
 
         # Store value for $Value resolution if it's a complex value
         value = values.get(token)
         if value is not None and value != token:
-            copied_module[FOREACH_VALUE] = value
+            copied_item[FOREACH_VALUE] = value
 
-        del copied_module[FOREACH]
+        del copied_item[FOREACH]
 
         # Process properties if they exist
-        if PROPERTIES in copied_module:
-            _process_module_properties(copied_module, i, token)
+        if PROPERTIES in copied_item:
+            _process_properties(copied_item, i, token)
 
-        modules[module_id] = copied_module
+        items[item_id] = copied_item
 
     # Remove the original module config
-    del modules[name]
+    del items[name]
 
 
-def _process_module_properties(module, i, token):
+def _process_properties(module, i, token):
     """
     Process properties in a copied module, replacing placeholders.
     """
@@ -344,6 +364,15 @@ def _process_module_properties(module, i, token):
                         vis.d[SUB] = new_val
                     else:
                         vis.p[vis.k] = new_val
+            # Handle GetAtt to $Value.X
+            elif isinstance(vis.d, dict) and GETATT in vis.d:
+                getatt = vis.d[GETATT]
+                if isinstance(getatt, list) and len(getatt) >= 2:
+                    if getatt[0] == "$Value" and FOREACH_VALUE in module:
+                        value_obj = module[FOREACH_VALUE]
+                        prop_name = getatt[1]
+                        if prop_name in value_obj:
+                            vis.p[vis.k] = value_obj[prop_name]
 
     # Process ${Identifier} references
     Visitor(module[PROPERTIES]).visit(resolve_identifier_refs)
@@ -444,7 +473,7 @@ def process_module_fnforeach_item(k, v, retval, parent_module, template):
 
 # pylint: disable=cell-var-from-loop
 # pylint: disable=too-many-statements
-def process_module_foreach(t, parent_module):
+def process_foreach(template, parent_module):
     """
     Loop over ForEach in modules. Also handles Fn::ForEach that wraps a module.
 
@@ -455,19 +484,110 @@ def process_module_foreach(t, parent_module):
 
     {"Content": ["A", "B", "C"]}
     """
-    retval = {}
 
-    for k, v in t[MODULES].copy().items():
+    sections = [MODULES, RESOURCES]
+    identifiers = {}
 
-        # Process ForEach attribute
-        if FOREACH in v:
-            process_module_foreach_item(k, v, retval, parent_module, t)
+    for section in sections:
 
-        # Process Fn::ForEach
-        if k.startswith(FOREACH_PREFIX):
-            process_module_fnforeach_item(k, v, retval, parent_module, t)
+        if section not in template:
+            continue
 
-    return retval
+        for name, config in template[section].copy().items():
+
+            is_foreach = False
+
+            # Process ForEach attribute
+            if FOREACH in config:
+                is_foreach = True
+                process_foreach_item(
+                    name, config, identifiers, parent_module, template, section
+                )
+
+            # Process Fn::ForEach
+            if section == MODULES and name.startswith(FOREACH_PREFIX):
+                is_foreach = True
+                process_module_fnforeach_item(
+                    name, config, identifiers, parent_module, template
+                )
+
+            if is_foreach and OUTPUTS in template and section == RESOURCES:
+                process_resource_outputs(name, identifiers, template)
+
+    if RESOURCES in template:
+        # Remove metadata attributes
+        for name, resource in template[RESOURCES].items():
+            if ORIGINAL_FOREACH_NAME in resource:
+                del resource[ORIGINAL_FOREACH_NAME]
+            if FOREACH_VALUE in resource:
+                del resource[FOREACH_VALUE]
+
+    return identifiers
+
+
+def process_resource_outputs(name, identifiers, template):
+    """
+    Look for references to resources that we copied with ForEach and replace them
+    in the Outputs section. This handles two cases:
+    1. !GetAtt Resource[*].Property - replaced with a list of all instances
+    2. !GetAtt Resource[identifier].Property - replaced with specific instance
+
+    This is similar to resolve_output_getatt in the Module class but specifically
+    for Resources with ForEach rather than Modules.
+    """
+    if OUTPUTS not in template:
+        return
+
+    keys = identifiers.get(name)
+    if keys is None:
+        msg = f"Expected {name} in identifiers"
+        raise exceptions.InvalidModuleError(msg=msg)
+
+    outputs = template[OUTPUTS]
+
+    def vf(v):
+        if v.p is None or not isdict(v.d):
+            return
+
+        # Handle GetAtt references to resources with ForEach
+        if GETATT in v.d:
+            getatt = v.d[GETATT]
+            if isinstance(getatt, list) and len(getatt) >= 2:
+                resource_ref = getatt[0]
+
+                # Case 1: !GetAtt Resource[*].Property - replace with list of all instances
+                if f"{name}[*]" == resource_ref:
+                    property_path = getatt[1]
+                    if len(getatt) > 2:
+                        property_path = ".".join(getatt[1:])
+
+                    # Create a list of GetAtt for each instance
+                    resource_list = []
+                    for i, _ in enumerate(keys):
+                        resource_list.append(
+                            {GETATT: [f"{name}{i}", property_path]}
+                        )
+
+                    v.p[v.k] = resource_list
+                    return
+
+                # Case 2: !GetAtt Resource[identifier].Property - replace with specific instance
+                if "[" in resource_ref and resource_ref.startswith(f"{name}["):
+                    # Extract the identifier from Resource[identifier]
+                    nameend = len(name) + 1
+                    identifier = resource_ref[nameend:].rstrip("]")
+
+                    # Find the index of the identifier in the keys list
+                    if identifier in keys:
+                        index = keys.index(identifier)
+                        property_path = getatt[1]
+                        if len(getatt) > 2:
+                            property_path = ".".join(getatt[1:])
+
+                        # Replace with the specific instance
+                        v.p[v.k] = {GETATT: [f"{name}{index}", property_path]}
+
+    Visitor(outputs).visit(vf)
 
 
 def resolve_foreach_value(copied_module):
@@ -508,15 +628,21 @@ def resolve_foreach_value(copied_module):
                             )
                             modified = True
 
-                # Update the value if modified
                 if modified:
-                    # If no more placeholders need substitution, convert to plain string
                     if not is_sub_needed(sub_val):
                         v.p[v.k] = sub_val
                     else:
                         v.d[SUB] = sub_val
 
-    # First pass: process all properties
+        # Handle GetAtt to $Value.X
+        elif isinstance(v.d, dict) and GETATT in v.d:
+            getatt = v.d[GETATT]
+            if isinstance(getatt, list) and len(getatt) >= 2:
+                if getatt[0] == "$Value" and isinstance(value_obj, dict):
+                    prop_name = getatt[1]
+                    if prop_name in value_obj:
+                        v.p[v.k] = value_obj[prop_name]
+
     Visitor(copied_module[PROPERTIES]).visit(resolve_value_refs)
 
 
@@ -563,8 +689,3 @@ def getatt_foreach_list(getatt):
             result = ".".join(getatt)  # Content[*].Arn
             return result
     return None
-
-
-def isdict(v):
-    "Returns True if the type is a dict or OrderedDict"
-    return isinstance(v, (dict, OrderedDict))

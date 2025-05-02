@@ -22,6 +22,7 @@ import logging
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.modules.visitor import Visitor
 from awscli.customizations.cloudformation.modules.merge import isdict
+from awscli.customizations.cloudformation.yamlhelper import yaml_dump
 
 LOG = logging.getLogger(__name__)
 
@@ -537,17 +538,19 @@ def _extract_items_from_source(source):
     Returns:
         List of extracted items
     """
-    if isdict(source):
-        # Check if the source has any list properties that might be the intended items
-        list_props = [v for k, v in source.items() if isinstance(v, list)]
-        if list_props:
-            # Use the first list property as items
-            return list_props[0]
-        # Default to treating the source as a single item
+    if not isdict(source):
         return [source]
 
-    # For non-dict, non-list sources, treat as a single item
-    return [source]
+    # Convert the dict to a list of dicts
+    result = []
+    for key, value in source.items():
+        if isinstance(value, list):
+            for item in value:
+                result.append({key: item})
+        else:
+            result.append({key: value})
+
+    return result
 
 
 def _process_flatten(flatten_config):
@@ -563,6 +566,8 @@ def _process_flatten(flatten_config):
     Raises:
         InvalidModuleError: If the configuration is invalid
     """
+
+    print("_process_flatten:", yaml_dump(flatten_config))
 
     # Handle simple source case (just a list or scalar)
     if not isdict(flatten_config):
@@ -582,7 +587,8 @@ def _process_flatten(flatten_config):
 
     # Handle empty or invalid source
     if source is None:
-        return []
+        msg = "Fn::Flatten Source must be specified"
+        raise exceptions.InvalidModuleError(msg=msg)
 
     # Extract values using pattern if provided
     items = []
@@ -640,6 +646,8 @@ def fn_flatten(d):
             # Process the Fn::Flatten configuration
             flatten_config = v.d[FLATTEN]
             result = _process_flatten(flatten_config)
+
+            print("flatten result:", yaml_dump(result))
 
             # Replace the Fn::Flatten with its result
             v.p[v.k] = result

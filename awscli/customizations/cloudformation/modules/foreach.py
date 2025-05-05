@@ -599,6 +599,21 @@ def process_resource_outputs(name, identifiers, template):
     Visitor(outputs).visit(vf)
 
 
+def _handle_sub_value(sub_val, value_obj):
+
+    if isinstance(sub_val, str):
+
+        # Replace ${Value.X} with actual values
+        if isdict(value_obj):
+            for prop_name, prop_value in value_obj.items():
+                if isinstance(prop_value, (str, int, float, bool)):
+                    placeholder = f"${{Value.{prop_name}}}"
+                    if placeholder in sub_val:
+                        sub_val = sub_val.replace(placeholder, str(prop_value))
+
+    return sub_val
+
+
 def resolve_foreach_value(copied_module):
     """
     Resolve foreach placeholders that are values.
@@ -624,25 +639,13 @@ def resolve_foreach_value(copied_module):
         # Handle Fn::Sub with ${Value.X} references
         elif isinstance(v.d, dict) and SUB in v.d:
             sub_val = v.d[SUB]
-            if isinstance(sub_val, str):
-                modified = False
 
-                # Replace ${Value.X} with actual values
-                if isdict(value_obj):
-                    for prop_name, prop_value in value_obj.items():
-                        if isinstance(prop_value, (str, int, float, bool)):
-                            placeholder = f"${{Value.{prop_name}}}"
-                            if placeholder in sub_val:
-                                sub_val = sub_val.replace(
-                                    placeholder, str(prop_value)
-                                )
-                                modified = True
+            sub_val = _handle_sub_value(sub_val, value_obj)
 
-                if modified:
-                    if not is_sub_needed(sub_val):
-                        v.p[v.k] = sub_val
-                    else:
-                        v.d[SUB] = sub_val
+            if not is_sub_needed(sub_val):
+                v.p[v.k] = sub_val
+            else:
+                v.d[SUB] = sub_val
 
         # Handle GetAtt to $Value.X
         else:

@@ -731,7 +731,7 @@
         {"shape":"BlockedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Starts a new task using the specified task definition.</p> <note> <p>On March 21, 2024, a change was made to resolve the task definition revision before authorization. When a task definition revision is not specified, authorization will occur using the latest revision of a task definition.</p> </note> <note> <p>Amazon Elastic Inference (EI) is no longer available to customers.</p> </note> <p>You can allow Amazon ECS to place tasks for you, or you can customize how Amazon ECS places tasks using placement constraints and placement strategies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html\">Scheduling Tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Alternatively, you can use <code>StartTask</code> to use your own scheduler or place tasks manually on specific container instances.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when creating or updating a service. For more infomation, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>The Amazon ECS API follows an eventual consistency model. This is because of the distributed nature of the system supporting the API. This means that the result of an API command you run that affects your Amazon ECS resources might not be immediately visible to all subsequent commands you run. Keep this in mind when you carry out an API command that immediately follows a previous API command.</p> <p>To manage eventual consistency, you can do the following:</p> <ul> <li> <p>Confirm the state of the resource before you run a command to modify it. Run the DescribeTasks command using an exponential backoff algorithm to ensure that you allow enough time for the previous command to propagate through the system. To do this, run the DescribeTasks command repeatedly, starting with a couple of seconds of wait time and increasing gradually up to five minutes of wait time.</p> </li> <li> <p>Add wait time between subsequent commands, even if the DescribeTasks command returns an accurate response. Apply an exponential backoff algorithm starting with a couple of seconds of wait time, and increase gradually up to about five minutes of wait time.</p> </li> </ul> <p>If you get a <code>ConflictException</code> error, the <code>RunTask</code> request could not be processed due to conflicts. The provided <code>clientToken</code> is already in use with a different <code>RunTask</code> request. The <code>resourceIds</code> are the existing task ARNs which are already associated with the <code>clientToken</code>. </p> <p>To fix this issue:</p> <ul> <li> <p>Run <code>RunTask</code> with a unique <code>clientToken</code>.</p> </li> <li> <p>Run <code>RunTask</code> with the <code>clientToken</code> and the original set of parameters</p> </li> </ul>"
+      "documentation":"<p>Starts a new task using the specified task definition.</p> <note> <p>On March 21, 2024, a change was made to resolve the task definition revision before authorization. When a task definition revision is not specified, authorization will occur using the latest revision of a task definition.</p> </note> <note> <p>Amazon Elastic Inference (EI) is no longer available to customers.</p> </note> <p>You can allow Amazon ECS to place tasks for you, or you can customize how Amazon ECS places tasks using placement constraints and placement strategies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html\">Scheduling Tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Alternatively, you can use <code>StartTask</code> to use your own scheduler or place tasks manually on specific container instances.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when creating or updating a service. For more infomation, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>The Amazon ECS API follows an eventual consistency model. This is because of the distributed nature of the system supporting the API. This means that the result of an API command you run that affects your Amazon ECS resources might not be immediately visible to all subsequent commands you run. Keep this in mind when you carry out an API command that immediately follows a previous API command.</p> <p>To manage eventual consistency, you can do the following:</p> <ul> <li> <p>Confirm the state of the resource before you run a command to modify it. Run the DescribeTasks command using an exponential backoff algorithm to ensure that you allow enough time for the previous command to propagate through the system. To do this, run the DescribeTasks command repeatedly, starting with a couple of seconds of wait time and increasing gradually up to five minutes of wait time.</p> </li> <li> <p>Add wait time between subsequent commands, even if the DescribeTasks command returns an accurate response. Apply an exponential backoff algorithm starting with a couple of seconds of wait time, and increase gradually up to about five minutes of wait time.</p> </li> </ul> <p>If you get a <code>ConflictException</code> error, the <code>RunTask</code> request could not be processed due to conflicts. The provided <code>clientToken</code> is already in use with a different <code>RunTask</code> request. The <code>resourceIds</code> are the existing task ARNs which are already associated with the <code>clientToken</code>. </p> <p>To fix this issue:</p> <ul> <li> <p>Run <code>RunTask</code> with a unique <code>clientToken</code>.</p> </li> <li> <p>Run <code>RunTask</code> with the <code>clientToken</code> and the original set of parameters</p> </li> </ul> <p>If you get a <code>ClientException</code>error, the <code>RunTask</code> could not be processed because you use managed scaling and there is a capacity error because the quota of tasks in the <code>PROVISIONING</code> per cluster has been reached. For information about the service quotas, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-quotas.html\">Amazon ECS service quotas</a>.</p>"
     },
     "StartTask":{
       "name":"StartTask",
@@ -767,7 +767,7 @@
         {"shape":"ServiceDeploymentNotFoundException"},
         {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>Stops an ongoing service deployment.</p> <note> <p>StopServiceDeployment isn't currently supported.</p> </note>"
+      "documentation":"<p>Stops an ongoing service deployment.</p> <p>The following stop types are avaiable:</p> <ul> <li> <p>ROLLBACK - This option rolls back the service deployment to the previous service revision. </p> <p>You can use this option even if you didn't configure the service deployment for the rollback option. </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/stop-service-deployment.html\">Stopping Amazon ECS service deployments</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
     },
     "StopTask":{
       "name":"StopTask",
@@ -1346,7 +1346,7 @@
           "documentation":"<p> Message that describes the cause of the exception.</p>"
         }
       },
-      "documentation":"<p>These errors are usually caused by a client action. This client action might be using an action or resource on behalf of a user that doesn't have permissions to use the action or resource. Or, it might be specifying an identifier that isn't valid.</p> <p>The following list includes additional causes for the error:</p> <ul> <li> <p>The <code>RunTask</code> could not be processed because you use managed scaling and there is a capacity error because the quota of tasks in the <code>PROVISIONING</code> per cluster has been reached. For information about the service quotas, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-quotas.html\">Amazon ECS service quotas</a>.</p> </li> </ul>",
+      "documentation":"<p>These errors are usually caused by a client action. This client action might be using an action or resource on behalf of a user that doesn't have permissions to use the action or resource. Or, it might be specifying an identifier that isn't valid.</p>",
       "exception":true
     },
     "Cluster":{
@@ -2359,7 +2359,7 @@
         },
         "principalArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the principal. It can be an user, role, or the root user. If you specify the root user, it disables the account setting for all users, roles, and the root user of the account unless a user or role explicitly overrides these settings. If this field is omitted, the setting is changed only for the authenticated user.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the principal. It can be a user, role, or the root user. If you specify the root user, it disables the account setting for all users, roles, and the root user of the account unless a user or role explicitly overrides these settings. If this field is omitted, the setting is changed only for the authenticated user.</p> <p>In order to use this parameter, you must be the root user, or the principal.</p>"
         }
       }
     },
@@ -3750,7 +3750,7 @@
         },
         "principalArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the principal, which can be a user, role, or the root user. If this field is omitted, the account settings are listed only for the authenticated user.</p> <note> <p>Federated users assume the account setting of the root user and can't have explicit account settings set for them.</p> </note>"
+          "documentation":"<p>The ARN of the principal, which can be a user, role, or the root user. If this field is omitted, the account settings are listed only for the authenticated user.</p> <p>In order to use this parameter, you must be the root user, or the principal.</p> <note> <p>Federated users assume the account setting of the root user and can't have explicit account settings set for them.</p> </note>"
         },
         "effectiveSettings":{
           "shape":"Boolean",
@@ -4708,7 +4708,7 @@
         },
         "principalArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the principal, which can be a user, role, or the root user. If you specify the root user, it modifies the account setting for all users, roles, and the root user of the account unless a user or role explicitly overrides these settings. If this field is omitted, the setting is changed only for the authenticated user.</p> <note> <p>You must use the root user when you set the Fargate wait time (<code>fargateTaskRetirementWaitPeriod</code>). </p> <p>Federated users assume the account setting of the root user and can't have explicit account settings set for them.</p> </note>"
+          "documentation":"<p>The ARN of the principal, which can be a user, role, or the root user. If you specify the root user, it modifies the account setting for all users, roles, and the root user of the account unless a user or role explicitly overrides these settings. If this field is omitted, the setting is changed only for the authenticated user.</p> <p>In order to use this parameter, you must be the root user, or the principal.</p> <note> <p>You must use the root user when you set the Fargate wait time (<code>fargateTaskRetirementWaitPeriod</code>). </p> <p>Federated users assume the account setting of the root user and can't have explicit account settings set for them.</p> </note>"
         }
       }
     },
@@ -6057,7 +6057,7 @@
         },
         "stopType":{
           "shape":"StopServiceDeploymentStopType",
-          "documentation":"<p>How you want Amazon ECS to stop the service. </p> <p>The ROLLBACK and ABORT stopType aren't supported.</p>"
+          "documentation":"<p>How you want Amazon ECS to stop the service. </p> <p>The valid values are <code>ROLLBACK</code>.</p>"
         }
       }
     },

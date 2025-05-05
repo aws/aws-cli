@@ -940,6 +940,26 @@
       "output":{"shape":"CreateLocalGatewayRouteTableVpcAssociationResult"},
       "documentation":"<p>Associates the specified VPC with the specified local gateway route table.</p>"
     },
+    "CreateLocalGatewayVirtualInterface":{
+      "name":"CreateLocalGatewayVirtualInterface",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateLocalGatewayVirtualInterfaceRequest"},
+      "output":{"shape":"CreateLocalGatewayVirtualInterfaceResult"},
+      "documentation":"<p>Create a virtual interface for a local gateway. </p>"
+    },
+    "CreateLocalGatewayVirtualInterfaceGroup":{
+      "name":"CreateLocalGatewayVirtualInterfaceGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateLocalGatewayVirtualInterfaceGroupRequest"},
+      "output":{"shape":"CreateLocalGatewayVirtualInterfaceGroupResult"},
+      "documentation":"<p>Create a local gateway virtual interface group.</p>"
+    },
     "CreateManagedPrefixList":{
       "name":"CreateManagedPrefixList",
       "http":{
@@ -1743,6 +1763,26 @@
       "input":{"shape":"DeleteLocalGatewayRouteTableVpcAssociationRequest"},
       "output":{"shape":"DeleteLocalGatewayRouteTableVpcAssociationResult"},
       "documentation":"<p>Deletes the specified association between a VPC and local gateway route table.</p>"
+    },
+    "DeleteLocalGatewayVirtualInterface":{
+      "name":"DeleteLocalGatewayVirtualInterface",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteLocalGatewayVirtualInterfaceRequest"},
+      "output":{"shape":"DeleteLocalGatewayVirtualInterfaceResult"},
+      "documentation":"<p>Deletes the specified local gateway virtual interface.</p>"
+    },
+    "DeleteLocalGatewayVirtualInterfaceGroup":{
+      "name":"DeleteLocalGatewayVirtualInterfaceGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteLocalGatewayVirtualInterfaceGroupRequest"},
+      "output":{"shape":"DeleteLocalGatewayVirtualInterfaceGroupResult"},
+      "documentation":"<p>Delete the specified local gateway interface group.</p>"
     },
     "DeleteManagedPrefixList":{
       "name":"DeleteManagedPrefixList",
@@ -3249,6 +3289,16 @@
       "output":{"shape":"DescribeNetworkInterfacesResult"},
       "documentation":"<p>Describes the specified network interfaces or all your network interfaces.</p> <p>If you have a large number of network interfaces, the operation fails unless you use pagination or one of the following filters: <code>group-id</code>, <code>mac-address</code>, <code>private-dns-name</code>, <code>private-ip-address</code>, <code>subnet-id</code>, or <code>vpc-id</code>.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important>"
     },
+    "DescribeOutpostLags":{
+      "name":"DescribeOutpostLags",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeOutpostLagsRequest"},
+      "output":{"shape":"DescribeOutpostLagsResult"},
+      "documentation":"<p>Describes the Outposts link aggregation groups (LAGs).</p>"
+    },
     "DescribePlacementGroups":{
       "name":"DescribePlacementGroups",
       "http":{
@@ -3448,6 +3498,16 @@
       "input":{"shape":"DescribeSecurityGroupsRequest"},
       "output":{"shape":"DescribeSecurityGroupsResult"},
       "documentation":"<p>Describes the specified security groups or all of your security groups.</p>"
+    },
+    "DescribeServiceLinkVirtualInterfaces":{
+      "name":"DescribeServiceLinkVirtualInterfaces",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeServiceLinkVirtualInterfacesRequest"},
+      "output":{"shape":"DescribeServiceLinkVirtualInterfacesResult"},
+      "documentation":"<p>Describes the Outpost service link virtual interfaces.</p>"
     },
     "DescribeSnapshotAttribute":{
       "name":"DescribeSnapshotAttribute",
@@ -12440,7 +12500,7 @@
         },
         "DisconnectOnSessionTimeout":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the client VPN session is disconnected after the maximum <code>sessionTimeoutHours</code> is reached. If <code>true</code>, users are prompted to reconnect client VPN. If <code>false</code>, client VPN attempts to reconnect automatically. The default value is <code>true</code>.</p>",
+          "documentation":"<p>Indicates whether the client VPN session is disconnected after the maximum <code>sessionTimeoutHours</code> is reached. If <code>true</code>, users are prompted to reconnect client VPN. If <code>false</code>, client VPN attempts to reconnect automatically. The default value is <code>false</code>.</p>",
           "locationName":"disconnectOnSessionTimeout"
         }
       },
@@ -13703,7 +13763,7 @@
         },
         "DisconnectOnSessionTimeout":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the client VPN session is disconnected after the maximum timeout specified in <code>SessionTimeoutHours</code> is reached. If <code>true</code>, users are prompted to reconnect client VPN. If <code>false</code>, client VPN attempts to reconnect automatically. The default value is <code>true</code>.</p>"
+          "documentation":"<p>Indicates whether the client VPN session is disconnected after the maximum timeout specified in <code>SessionTimeoutHours</code> is reached. If <code>true</code>, users are prompted to reconnect client VPN. If <code>false</code>, client VPN attempts to reconnect automatically. The default value is <code>false</code>.</p>"
         }
       }
     },
@@ -15036,6 +15096,102 @@
           "shape":"LocalGatewayRouteTableVpcAssociation",
           "documentation":"<p>Information about the association.</p>",
           "locationName":"localGatewayRouteTableVpcAssociation"
+        }
+      }
+    },
+    "CreateLocalGatewayVirtualInterfaceGroupRequest":{
+      "type":"structure",
+      "required":["LocalGatewayId"],
+      "members":{
+        "LocalGatewayId":{
+          "shape":"LocalGatewayId",
+          "documentation":"<p>The ID of the local gateway.</p>"
+        },
+        "LocalBgpAsn":{
+          "shape":"Integer",
+          "documentation":"<p>The Autonomous System Number(ASN) for the local Border Gateway Protocol (BGP).</p>"
+        },
+        "LocalBgpAsnExtended":{
+          "shape":"Long",
+          "documentation":"<p>The extended 32-bit ASN for the local BGP configuration.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the local gateway virtual interface group when the resource is being created.</p>",
+          "locationName":"TagSpecification"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "CreateLocalGatewayVirtualInterfaceGroupResult":{
+      "type":"structure",
+      "members":{
+        "LocalGatewayVirtualInterfaceGroup":{
+          "shape":"LocalGatewayVirtualInterfaceGroup",
+          "documentation":"<p>Information about the created local gateway virtual interface group.</p>",
+          "locationName":"localGatewayVirtualInterfaceGroup"
+        }
+      }
+    },
+    "CreateLocalGatewayVirtualInterfaceRequest":{
+      "type":"structure",
+      "required":[
+        "LocalGatewayVirtualInterfaceGroupId",
+        "OutpostLagId",
+        "Vlan",
+        "LocalAddress",
+        "PeerAddress"
+      ],
+      "members":{
+        "LocalGatewayVirtualInterfaceGroupId":{
+          "shape":"LocalGatewayVirtualInterfaceGroupId",
+          "documentation":"<p>The ID of the local gateway virtual interface group.</p>"
+        },
+        "OutpostLagId":{
+          "shape":"OutpostLagId",
+          "documentation":"<p>References the Link Aggregation Group (LAG) that connects the Outpost to on-premises network devices.</p>"
+        },
+        "Vlan":{
+          "shape":"Integer",
+          "documentation":"<p>The virtual local area network (VLAN) used for the local gateway virtual interface.</p>"
+        },
+        "LocalAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address assigned to the local gateway virtual interface on the Outpost side. Only IPv4 is supported.</p>"
+        },
+        "PeerAddress":{
+          "shape":"String",
+          "documentation":"<p>The peer IP address for the local gateway virtual interface. Only IPv4 is supported.</p>"
+        },
+        "PeerBgpAsn":{
+          "shape":"Integer",
+          "documentation":"<p>The Autonomous System Number (ASN) of the Border Gateway Protocol (BGP) peer.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to a resource when the local gateway virtual interface is being created. </p>",
+          "locationName":"TagSpecification"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "PeerBgpAsnExtended":{
+          "shape":"Long",
+          "documentation":"<p>The extended 32-bit ASN of the BGP peer for use with larger ASN values.</p>"
+        }
+      }
+    },
+    "CreateLocalGatewayVirtualInterfaceResult":{
+      "type":"structure",
+      "members":{
+        "LocalGatewayVirtualInterface":{
+          "shape":"LocalGatewayVirtualInterface",
+          "documentation":"<p>Information about the local gateway virtual interface.</p>",
+          "locationName":"localGatewayVirtualInterface"
         }
       }
     },
@@ -19177,6 +19333,54 @@
           "shape":"LocalGatewayRouteTableVpcAssociation",
           "documentation":"<p>Information about the association.</p>",
           "locationName":"localGatewayRouteTableVpcAssociation"
+        }
+      }
+    },
+    "DeleteLocalGatewayVirtualInterfaceGroupRequest":{
+      "type":"structure",
+      "required":["LocalGatewayVirtualInterfaceGroupId"],
+      "members":{
+        "LocalGatewayVirtualInterfaceGroupId":{
+          "shape":"LocalGatewayVirtualInterfaceGroupId",
+          "documentation":"<p>The ID of the local gateway virtual interface group to delete.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteLocalGatewayVirtualInterfaceGroupResult":{
+      "type":"structure",
+      "members":{
+        "LocalGatewayVirtualInterfaceGroup":{
+          "shape":"LocalGatewayVirtualInterfaceGroup",
+          "documentation":"<p>Information about the deleted local gateway virtual interface group.</p>",
+          "locationName":"localGatewayVirtualInterfaceGroup"
+        }
+      }
+    },
+    "DeleteLocalGatewayVirtualInterfaceRequest":{
+      "type":"structure",
+      "required":["LocalGatewayVirtualInterfaceId"],
+      "members":{
+        "LocalGatewayVirtualInterfaceId":{
+          "shape":"LocalGatewayVirtualInterfaceId",
+          "documentation":"<p>The ID of the local virtual interface to delete.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteLocalGatewayVirtualInterfaceResult":{
+      "type":"structure",
+      "members":{
+        "LocalGatewayVirtualInterface":{
+          "shape":"LocalGatewayVirtualInterface",
+          "documentation":"<p>Information about the deleted local gateway virtual interface.</p>",
+          "locationName":"localGatewayVirtualInterface"
         }
       }
     },
@@ -24811,6 +25015,48 @@
         }
       }
     },
+    "DescribeOutpostLagsRequest":{
+      "type":"structure",
+      "members":{
+        "OutpostLagIds":{
+          "shape":"OutpostLagIdSet",
+          "documentation":"<p>The IDs of the Outpost LAGs.</p>",
+          "locationName":"OutpostLagId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters to use for narrowing down the request. The following filters are supported:</p> <ul> <li> <p> <code>service-link-virtual-interface-id</code> - The ID of the service link virtual interface.</p> </li> <li> <p> <code>service-link-virtual-interface-arn</code> - The ARN of the service link virtual interface.</p> </li> <li> <p> <code>outpost-id</code> - The Outpost ID.</p> </li> <li> <p> <code>outpost-arn</code> - The Outpost ARN.</p> </li> <li> <p> <code>owner-id</code> - The ID of the Amazon Web Services account that owns the service link virtual interface.</p> </li> <li> <p> <code>vlan</code> - The ID of the address pool.</p> </li> <li> <p> <code>local-address</code> - The local address.</p> </li> <li> <p> <code>peer-address</code> - The peer address.</p> </li> <li> <p> <code>peer-bgp-asn</code> - The peer BGP ASN.</p> </li> <li> <p> <code>outpost-lag-id</code> - The Outpost LAG ID.</p> </li> <li> <p> <code>configuration-state</code> - The configuration state of the service link virtual interface.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"OutpostLagMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeOutpostLagsResult":{
+      "type":"structure",
+      "members":{
+        "OutpostLags":{
+          "shape":"OutpostLagSet",
+          "documentation":"<p>The Outpost LAGs.</p>",
+          "locationName":"outpostLagSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribePlacementGroupsRequest":{
       "type":"structure",
       "members":{
@@ -25698,6 +25944,48 @@
           "shape":"SecurityGroupList",
           "documentation":"<p>Information about the security groups.</p>",
           "locationName":"securityGroupInfo"
+        }
+      }
+    },
+    "DescribeServiceLinkVirtualInterfacesRequest":{
+      "type":"structure",
+      "members":{
+        "ServiceLinkVirtualInterfaceIds":{
+          "shape":"ServiceLinkVirtualInterfaceIdSet",
+          "documentation":"<p>The IDs of the service link virtual interfaces.</p>",
+          "locationName":"ServiceLinkVirtualInterfaceId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters to use for narrowing down the request. The following filters are supported:</p> <ul> <li> <p> <code>outpost-lag-id</code> - The ID of the Outpost LAG.</p> </li> <li> <p> <code>outpost-arn</code> - The Outpost ARN.</p> </li> <li> <p> <code>owner-id</code> - The ID of the Amazon Web Services account that owns the service link virtual interface.</p> </li> <li> <p> <code>state</code> - The state of the Outpost LAG.</p> </li> <li> <p> <code>vlan</code> - The ID of the address pool.</p> </li> <li> <p> <code>service-link-virtual-interface-id</code> - The ID of the service link virtual interface.</p> </li> <li> <p> <code>local-gateway-virtual-interface-id</code> - The ID of the local gateway virtual interface.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"ServiceLinkMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeServiceLinkVirtualInterfacesResult":{
+      "type":"structure",
+      "members":{
+        "ServiceLinkVirtualInterfaces":{
+          "shape":"ServiceLinkVirtualInterfaceSet",
+          "documentation":"<p>Describes the service link virtual interfaces.</p>",
+          "locationName":"serviceLinkVirtualInterfaceSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
         }
       }
     },
@@ -45011,6 +45299,21 @@
           "documentation":"<p>The ID of the local gateway.</p>",
           "locationName":"localGatewayId"
         },
+        "LocalGatewayVirtualInterfaceGroupId":{
+          "shape":"LocalGatewayVirtualInterfaceGroupId",
+          "documentation":"<p>The ID of the local gateway virtual interface group.</p>",
+          "locationName":"localGatewayVirtualInterfaceGroupId"
+        },
+        "LocalGatewayVirtualInterfaceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the local gateway virtual interface.</p>",
+          "locationName":"localGatewayVirtualInterfaceArn"
+        },
+        "OutpostLagId":{
+          "shape":"String",
+          "documentation":"<p>The Outpost LAG ID.</p>",
+          "locationName":"outpostLagId"
+        },
         "Vlan":{
           "shape":"Integer",
           "documentation":"<p>The ID of the VLAN.</p>",
@@ -45036,6 +45339,11 @@
           "documentation":"<p>The peer BGP ASN.</p>",
           "locationName":"peerBgpAsn"
         },
+        "PeerBgpAsnExtended":{
+          "shape":"Long",
+          "documentation":"<p>The extended 32-bit ASN of the BGP peer for use with larger ASN values.</p>",
+          "locationName":"peerBgpAsnExtended"
+        },
         "OwnerId":{
           "shape":"String",
           "documentation":"<p>The ID of the Amazon Web Services account that owns the local gateway virtual interface.</p>",
@@ -45045,9 +45353,23 @@
           "shape":"TagList",
           "documentation":"<p>The tags assigned to the virtual interface.</p>",
           "locationName":"tagSet"
+        },
+        "ConfigurationState":{
+          "shape":"LocalGatewayVirtualInterfaceConfigurationState",
+          "documentation":"<p>The current state of the local gateway virtual interface.</p>",
+          "locationName":"configurationState"
         }
       },
       "documentation":"<p>Describes a local gateway virtual interface.</p>"
+    },
+    "LocalGatewayVirtualInterfaceConfigurationState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "available",
+        "deleting",
+        "deleted"
+      ]
     },
     "LocalGatewayVirtualInterfaceGroup":{
       "type":"structure",
@@ -45072,13 +45394,43 @@
           "documentation":"<p>The ID of the Amazon Web Services account that owns the local gateway virtual interface group.</p>",
           "locationName":"ownerId"
         },
+        "LocalBgpAsn":{
+          "shape":"Integer",
+          "documentation":"<p>The Autonomous System Number(ASN) for the local Border Gateway Protocol (BGP).</p>",
+          "locationName":"localBgpAsn"
+        },
+        "LocalBgpAsnExtended":{
+          "shape":"Long",
+          "documentation":"<p>The extended 32-bit ASN for the local BGP configuration.</p>",
+          "locationName":"localBgpAsnExtended"
+        },
+        "LocalGatewayVirtualInterfaceGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the local gateway virtual interface group.</p>",
+          "locationName":"localGatewayVirtualInterfaceGroupArn"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags assigned to the virtual interface group.</p>",
           "locationName":"tagSet"
+        },
+        "ConfigurationState":{
+          "shape":"LocalGatewayVirtualInterfaceGroupConfigurationState",
+          "documentation":"<p>The current state of the local gateway virtual interface group.</p>",
+          "locationName":"configurationState"
         }
       },
       "documentation":"<p>Describes a local gateway virtual interface group.</p>"
+    },
+    "LocalGatewayVirtualInterfaceGroupConfigurationState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "incomplete",
+        "available",
+        "deleting",
+        "deleted"
+      ]
     },
     "LocalGatewayVirtualInterfaceGroupId":{"type":"string"},
     "LocalGatewayVirtualInterfaceGroupIdSet":{
@@ -45851,7 +46203,7 @@
         },
         "DisconnectOnSessionTimeout":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the client VPN session is disconnected after the maximum timeout specified in <code>sessionTimeoutHours</code> is reached. If <code>true</code>, users are prompted to reconnect client VPN. If <code>false</code>, client VPN attempts to reconnect automatically. The default value is <code>true</code>.</p>"
+          "documentation":"<p>Indicates whether the client VPN session is disconnected after the maximum timeout specified in <code>sessionTimeoutHours</code> is reached. If <code>true</code>, users are prompted to reconnect client VPN. If <code>false</code>, client VPN attempts to reconnect automatically. The default value is <code>false</code>.</p>"
         }
       }
     },
@@ -50755,6 +51107,67 @@
       "type":"string",
       "pattern":"^arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:outpost/op-[a-f0-9]{17}$"
     },
+    "OutpostLag":{
+      "type":"structure",
+      "members":{
+        "OutpostArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the Outpost LAG.</p>",
+          "locationName":"outpostArn"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Outpost LAG owner.</p>",
+          "locationName":"ownerId"
+        },
+        "State":{
+          "shape":"String",
+          "documentation":"<p>The current state of the Outpost LAG.</p>",
+          "locationName":"state"
+        },
+        "OutpostLagId":{
+          "shape":"OutpostLagId",
+          "documentation":"<p>The ID of the Outpost LAG.</p>",
+          "locationName":"outpostLagId"
+        },
+        "LocalGatewayVirtualInterfaceIds":{
+          "shape":"LocalGatewayVirtualInterfaceIdSet",
+          "documentation":"<p>The IDs of the local gateway virtual interfaces associated with the Outpost LAG.</p>",
+          "locationName":"localGatewayVirtualInterfaceIdSet"
+        },
+        "ServiceLinkVirtualInterfaceIds":{
+          "shape":"ServiceLinkVirtualInterfaceIdSet",
+          "documentation":"<p>The service link virtual interface IDs associated with the Outpost LAG.</p>",
+          "locationName":"serviceLinkVirtualInterfaceIdSet"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the Outpost LAG.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes an Outpost link aggregation group (LAG).</p>"
+    },
+    "OutpostLagId":{"type":"string"},
+    "OutpostLagIdSet":{
+      "type":"list",
+      "member":{
+        "shape":"OutpostLagId",
+        "locationName":"item"
+      }
+    },
+    "OutpostLagMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "OutpostLagSet":{
+      "type":"list",
+      "member":{
+        "shape":"OutpostLag",
+        "locationName":"item"
+      }
+    },
     "OwnerStringList":{
       "type":"list",
       "member":{
@@ -55234,6 +55647,7 @@
         "network-insights-path",
         "network-insights-access-scope",
         "network-insights-access-scope-analysis",
+        "outpost-lag",
         "placement-group",
         "prefix-list",
         "replace-root-volume-task",
@@ -55241,6 +55655,7 @@
         "route-table",
         "security-group",
         "security-group-rule",
+        "service-link-virtual-interface",
         "snapshot",
         "spot-fleet-request",
         "spot-instances-request",
@@ -58389,6 +58804,101 @@
       "type":"list",
       "member":{
         "shape":"ServiceDetail",
+        "locationName":"item"
+      }
+    },
+    "ServiceLinkMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "ServiceLinkVirtualInterface":{
+      "type":"structure",
+      "members":{
+        "ServiceLinkVirtualInterfaceId":{
+          "shape":"ServiceLinkVirtualInterfaceId",
+          "documentation":"<p>The ID of the service link virtual interface.</p>",
+          "locationName":"serviceLinkVirtualInterfaceId"
+        },
+        "ServiceLinkVirtualInterfaceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) for the service link virtual interface. </p>",
+          "locationName":"serviceLinkVirtualInterfaceArn"
+        },
+        "OutpostId":{
+          "shape":"String",
+          "documentation":"<p>The Outpost ID for the service link virtual interface.</p>",
+          "locationName":"outpostId"
+        },
+        "OutpostArn":{
+          "shape":"String",
+          "documentation":"<p>The Outpost Amazon Resource Number (ARN) for the service link virtual interface.</p>",
+          "locationName":"outpostArn"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the service link virtual interface..</p>",
+          "locationName":"ownerId"
+        },
+        "LocalAddress":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 address assigned to the local gateway virtual interface on the Outpost side.</p>",
+          "locationName":"localAddress"
+        },
+        "PeerAddress":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 peer address for the service link virtual interface.</p>",
+          "locationName":"peerAddress"
+        },
+        "PeerBgpAsn":{
+          "shape":"Long",
+          "documentation":"<p>The ASN for the Border Gateway Protocol (BGP) associated with the service link virtual interface.</p>",
+          "locationName":"peerBgpAsn"
+        },
+        "Vlan":{
+          "shape":"Integer",
+          "documentation":"<p>The virtual local area network for the service link virtual interface.</p>",
+          "locationName":"vlan"
+        },
+        "OutpostLagId":{
+          "shape":"OutpostLagId",
+          "documentation":"<p>The link aggregation group (LAG) ID for the service link virtual interface.</p>",
+          "locationName":"outpostLagId"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the service link virtual interface.</p>",
+          "locationName":"tagSet"
+        },
+        "ConfigurationState":{
+          "shape":"ServiceLinkVirtualInterfaceConfigurationState",
+          "documentation":"<p>The current state of the service link virtual interface.</p>",
+          "locationName":"configurationState"
+        }
+      },
+      "documentation":"<p>Describes the service link virtual interfaces that establish connectivity between Amazon Web Services Outpost and on-premises networks.</p>"
+    },
+    "ServiceLinkVirtualInterfaceConfigurationState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "available",
+        "deleting",
+        "deleted"
+      ]
+    },
+    "ServiceLinkVirtualInterfaceId":{"type":"string"},
+    "ServiceLinkVirtualInterfaceIdSet":{
+      "type":"list",
+      "member":{
+        "shape":"ServiceLinkVirtualInterfaceId",
+        "locationName":"item"
+      }
+    },
+    "ServiceLinkVirtualInterfaceSet":{
+      "type":"list",
+      "member":{
+        "shape":"ServiceLinkVirtualInterface",
         "locationName":"item"
       }
     },

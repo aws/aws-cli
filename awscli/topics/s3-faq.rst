@@ -46,8 +46,8 @@ later to verify data integrity of download operations (see Download section).
     the same checksum algorithm will be used for all file uploads included in the command execution.
 
 For more information about verifying data integrity in Amazon S3, see
-`Checking object integrity in Amazon S3?
-<https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html/>`_ in the Amazon S3 User Guide.
+`Checking object integrity in Amazon S3
+<https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html>`_ in the Amazon S3 User Guide.
 
 Download
 ~~~~~~
@@ -63,5 +63,5 @@ retried.
     like ``aws s3api get-object``"
 
 For more information about verifying data integrity in Amazon S3, see
-`Checking object integrity in Amazon S3?
-<https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html/>`_ in the Amazon S3 User Guide.
+`Checking object integrity in Amazon S3
+<https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html>`_ in the Amazon S3 User Guide.

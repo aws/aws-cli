@@ -33,7 +33,6 @@ from awscli.customizations.cloudformation.modules.flatten import (
 from awscli.customizations.cloudformation.modules.util import (
     isdict,
 )
-from awscli.customizations.cloudformation.yamlhelper import yaml_dump
 
 IDENTIFIER_PLACEHOLDER = "$Identifier"
 INDEX_PLACEHOLDER = "$Index"
@@ -187,9 +186,6 @@ def process_foreach_item(
     4. A Map where keys serve as identifiers
     """
 
-    print(f"Processing ForEach for {name}")
-    print(config)
-
     # Modules or Resources
     items = template[section]
 
@@ -213,8 +209,6 @@ def _resolve_foreach_ref(config, k, parent_module):
 
     fe = config[FOREACH]
 
-    print("_resolve_foreach_ref fe:", yaml_dump(fe))
-
     if isdict(fe):
         if REF in fe:
             resolved = parent_module.find_ref(fe[REF])
@@ -226,15 +220,9 @@ def _resolve_foreach_ref(config, k, parent_module):
 
         if FLATTEN in fe:
 
-            print("fe before resolve:", yaml_dump(fe))
-
             parent_module.resolve(fe)
 
-            print("fe after resolve:", yaml_dump(fe))
-
             fn_flatten(config)
-
-            print("config after flatten:", yaml_dump(config))
 
             return
 
@@ -252,7 +240,6 @@ def _parse_foreach_value(m, k):
 
     # Handle empty list case
     if isinstance(m, list) and not m:
-        print(f"Warning: ForEach for {k} is an empty list")
         return tokens, values
 
     # List of objects with Identifier property
@@ -336,6 +323,30 @@ def _create_foreach_copies(name, config, tokens, values, items):
     del items[name]
 
 
+def _get_value_from_getatt_reference(node_dict, value_obj):
+    """
+    Extract a value from a GetAtt reference to $Value.X
+
+    node_dict: The dictionary that might contain a GetAtt reference
+    value_obj: The value object containing properties to reference
+
+    Returns: The referenced value if found, None otherwise
+    """
+    if not isinstance(node_dict, dict) or GETATT not in node_dict:
+        return None
+
+    getatt = node_dict[GETATT]
+    if not (isinstance(getatt, list) and len(getatt) >= 2):
+        return None
+
+    if getatt[0] == "$Value" and isinstance(value_obj, dict):
+        prop_name = getatt[1]
+        if prop_name in value_obj:
+            return value_obj[prop_name]
+
+    return None
+
+
 def _process_properties(module, i, token):
     """
     Process properties in a copied module, replacing placeholders.
@@ -365,14 +376,12 @@ def _process_properties(module, i, token):
                     else:
                         vis.p[vis.k] = new_val
             # Handle GetAtt to $Value.X
-            elif isinstance(vis.d, dict) and GETATT in vis.d:
-                getatt = vis.d[GETATT]
-                if isinstance(getatt, list) and len(getatt) >= 2:
-                    if getatt[0] == "$Value" and FOREACH_VALUE in module:
-                        value_obj = module[FOREACH_VALUE]
-                        prop_name = getatt[1]
-                        if prop_name in value_obj:
-                            vis.p[vis.k] = value_obj[prop_name]
+            elif FOREACH_VALUE in module:
+                value = _get_value_from_getatt_reference(
+                    vis.d, module[FOREACH_VALUE]
+                )
+                if value is not None:
+                    vis.p[vis.k] = value
 
     # Process ${Identifier} references
     Visitor(module[PROPERTIES]).visit(resolve_identifier_refs)
@@ -619,14 +628,15 @@ def resolve_foreach_value(copied_module):
                 modified = False
 
                 # Replace ${Value.X} with actual values
-                for prop_name, prop_value in value_obj.items():
-                    if isinstance(prop_value, (str, int, float, bool)):
-                        placeholder = f"${{Value.{prop_name}}}"
-                        if placeholder in sub_val:
-                            sub_val = sub_val.replace(
-                                placeholder, str(prop_value)
-                            )
-                            modified = True
+                if isdict(value_obj):
+                    for prop_name, prop_value in value_obj.items():
+                        if isinstance(prop_value, (str, int, float, bool)):
+                            placeholder = f"${{Value.{prop_name}}}"
+                            if placeholder in sub_val:
+                                sub_val = sub_val.replace(
+                                    placeholder, str(prop_value)
+                                )
+                                modified = True
 
                 if modified:
                     if not is_sub_needed(sub_val):
@@ -635,13 +645,10 @@ def resolve_foreach_value(copied_module):
                         v.d[SUB] = sub_val
 
         # Handle GetAtt to $Value.X
-        elif isinstance(v.d, dict) and GETATT in v.d:
-            getatt = v.d[GETATT]
-            if isinstance(getatt, list) and len(getatt) >= 2:
-                if getatt[0] == "$Value" and isinstance(value_obj, dict):
-                    prop_name = getatt[1]
-                    if prop_name in value_obj:
-                        v.p[v.k] = value_obj[prop_name]
+        else:
+            value = _get_value_from_getatt_reference(v.d, value_obj)
+            if value is not None:
+                v.p[v.k] = value
 
     Visitor(copied_module[PROPERTIES]).visit(resolve_value_refs)
 

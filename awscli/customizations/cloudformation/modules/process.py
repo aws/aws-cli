@@ -64,7 +64,9 @@ from awscli.customizations.cloudformation.modules.parse_sub import (
     is_sub_needed,
 )
 from awscli.customizations.cloudformation.modules.visitor import Visitor
-from awscli.customizations.cloudformation import yamlhelper
+from awscli.customizations.cloudformation.yamlhelper import (
+    yaml_parse,
+)
 from awscli.customizations.cloudformation.modules.names import (
     RESOURCES,
     METADATA,
@@ -368,6 +370,9 @@ class Module:
         # {"Name": Length}
         self.foreach_modules = {}
 
+        # Similar to foreeach_modules, for Resources with a ForEach
+        self.resource_identifiers = {}
+
     def __str__(self):
         "Print out a string with module details for logs"
         return (
@@ -385,7 +390,7 @@ class Module:
         content, lines = read_source(self.source, self.s3_client)
         self.lines = lines
 
-        module_dict = yamlhelper.yaml_parse(content)
+        module_dict = yaml_parse(content)
         self.original_module_dict = copy.deepcopy(module_dict)
         return self.process_content(module_dict)
 
@@ -422,6 +427,7 @@ class Module:
             # The module may only have sub modules in the Modules section
             self.resources = {}
         else:
+            # Store the resources first
             self.resources = module_dict[RESOURCES]
 
         if PARAMETERS in module_dict:
@@ -467,6 +473,15 @@ class Module:
         self.validate_overrides()
 
         if not self.invoked:
+            # Process ForEach in resources before emitting them to the parent template
+            if RESOURCES in module_dict:
+                self.resource_identifiers = process_foreach(
+                    module_dict, self.parent_module
+                )
+
+                # Update resources after ForEach processing
+                self.resources = module_dict[RESOURCES]
+
             # Process resources and put them into the parent template
             for logical_id, resource in self.resources.items():
                 self.process_resource(logical_id, resource)
@@ -690,8 +705,6 @@ class Module:
         else:
             foreach_modules = self.foreach_modules
 
-        print("resolve_output_getatt foreach_modules:", foreach_modules)
-
         name = v[0]
         prop_name = v[1]
 
@@ -749,6 +762,57 @@ class Module:
 
         if reffed_prop is None:
             return False
+
+        # Handle the case where the output value is a GetAtt to a resource with ForEach
+        if isinstance(reffed_prop, dict) and GETATT in reffed_prop:
+            getatt_ref = reffed_prop[GETATT]
+            if isinstance(getatt_ref, list) and len(getatt_ref) >= 2:
+                resource_name = getatt_ref[0]
+                property_path = getatt_ref[1]
+
+                # Check if this is a reference to a resource with ForEach using [*] syntax
+                if "[*]" in resource_name:
+                    base_name = resource_name.split("[")[0]
+                    # Check if we have resource identifiers from ForEach processing
+                    if (
+                        hasattr(self, "resource_identifiers")
+                        and base_name in self.resource_identifiers
+                    ):
+                        # Create a list of GetAtt references to each copied resource
+                        resource_list = []
+                        for i, _ in enumerate(
+                            self.resource_identifiers[base_name]
+                        ):
+                            resource_list.append(
+                                {
+                                    GETATT: [
+                                        f"{self.name}{base_name}{i}",
+                                        property_path,
+                                    ]
+                                }
+                            )
+                        d[n] = resource_list
+                        return True
+
+                # Check if this is a reference to a specific instance using [identifier] syntax
+                elif "[" in resource_name and "]" in resource_name:
+                    base_name = resource_name.split("[")[0]
+                    identifier = resource_name.split("[")[1].split("]")[0]
+
+                    if (
+                        hasattr(self, "resource_identifiers")
+                        and base_name in self.resource_identifiers
+                    ):
+                        keys = self.resource_identifiers[base_name]
+                        if identifier in keys:
+                            index = keys.index(identifier)
+                            d[n] = {
+                                GETATT: [
+                                    f"{self.name}{base_name}{index}",
+                                    property_path,
+                                ]
+                            }
+                            return True
 
         if isinstance(reffed_prop, list):
             for i, r in enumerate(reffed_prop):

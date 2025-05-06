@@ -1743,6 +1743,13 @@
       "type":"timestamp",
       "timestampFormat":"iso8601"
     },
+    "CustomEntity":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_\\-\\.@:/ ]*[a-zA-Z0-9_\\-\\.@:/]$",
+      "sensitive":true
+    },
     "DeleteCaseRuleRequest":{
       "type":"structure",
       "required":[
@@ -3441,7 +3448,7 @@
     "SearchCasesRequestMaxResultsInteger":{
       "type":"integer",
       "box":true,
-      "max":25,
+      "max":100,
       "min":1
     },
     "SearchCasesRequestSearchTermString":{
@@ -3472,7 +3479,7 @@
     "SearchCasesResponseCasesList":{
       "type":"list",
       "member":{"shape":"SearchCasesResponseItem"},
-      "max":25,
+      "max":100,
       "min":0
     },
     "SearchCasesResponseItem":{
@@ -4165,12 +4172,16 @@
     "UserUnion":{
       "type":"structure",
       "members":{
+        "customEntity":{
+          "shape":"CustomEntity",
+          "documentation":"<p>Any provided entity.</p>"
+        },
         "userArn":{
           "shape":"UserArn",
           "documentation":"<p>Represents the Amazon Connect ARN of the user.</p>"
         }
       },
-      "documentation":"<p>Represents the identity of the person who performed the action.</p>",
+      "documentation":"<p>Represents the entity that performed the action.</p>",
       "union":true
     },
     "ValidationException":{

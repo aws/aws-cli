@@ -1799,6 +1799,10 @@
         "lastModified":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that the <code>ChannelNamespace</code> was last changed.</p>"
+        },
+        "handlerConfigs":{
+          "shape":"HandlerConfigs",
+          "documentation":"<p>The configuration for the <code>OnPublish</code> and <code>OnSubscribe</code> handlers.</p>"
         }
       },
       "documentation":"<p>Describes a channel namespace associated with an <code>Api</code>. The <code>ChannelNamespace</code> contains the definitions for code handlers for the <code>Api</code>.</p>"
@@ -2077,7 +2081,11 @@
           "shape":"Code",
           "documentation":"<p>The event handler functions that run custom business logic to process published events and subscribe requests.</p>"
         },
-        "tags":{"shape":"TagMap"}
+        "tags":{"shape":"TagMap"},
+        "handlerConfigs":{
+          "shape":"HandlerConfigs",
+          "documentation":"<p>The configuration for the <code>OnPublish</code> and <code>OnSubscribe</code> handlers.</p>"
+        }
       }
     },
     "CreateChannelNamespaceResponse":{
@@ -3978,6 +3986,45 @@
       "type":"list",
       "member":{"shape":"GraphqlApi"}
     },
+    "HandlerBehavior":{
+      "type":"string",
+      "enum":[
+        "CODE",
+        "DIRECT"
+      ]
+    },
+    "HandlerConfig":{
+      "type":"structure",
+      "required":[
+        "behavior",
+        "integration"
+      ],
+      "members":{
+        "behavior":{
+          "shape":"HandlerBehavior",
+          "documentation":"<p>The behavior for the handler.</p>"
+        },
+        "integration":{
+          "shape":"Integration",
+          "documentation":"<p>The integration data source configuration for the handler.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a handler.</p>"
+    },
+    "HandlerConfigs":{
+      "type":"structure",
+      "members":{
+        "onPublish":{
+          "shape":"HandlerConfig",
+          "documentation":"<p>The configuration for the <code>OnPublish</code> handler.</p>"
+        },
+        "onSubscribe":{
+          "shape":"HandlerConfig",
+          "documentation":"<p>The configuration for the <code>OnSubscribe</code> handler.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the <code>OnPublish</code> and <code>OnSubscribe</code> handlers.</p>"
+    },
     "HttpDataSourceConfig":{
       "type":"structure",
       "members":{
@@ -3992,6 +4039,21 @@
       },
       "documentation":"<p>Describes an HTTP data source configuration.</p>"
     },
+    "Integration":{
+      "type":"structure",
+      "required":["dataSourceName"],
+      "members":{
+        "dataSourceName":{
+          "shape":"String",
+          "documentation":"<p>The unique name of the data source that has been configured on the API.</p>"
+        },
+        "lambdaConfig":{
+          "shape":"LambdaConfig",
+          "documentation":"<p>The configuration for a Lambda data source.</p>"
+        }
+      },
+      "documentation":"<p>The integration data source configuration for the handler.</p>"
+    },
     "InternalFailureException":{
       "type":"structure",
       "members":{
@@ -4001,6 +4063,13 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "InvokeType":{
+      "type":"string",
+      "enum":[
+        "REQUEST_RESPONSE",
+        "EVENT"
+      ]
     },
     "LambdaAuthorizerConfig":{
       "type":"structure",
@@ -4020,6 +4089,16 @@
         }
       },
       "documentation":"<p>A <code>LambdaAuthorizerConfig</code> specifies how to authorize AppSync API access when using the <code>AWS_LAMBDA</code> authorizer mode. Be aware that an AppSync API can have only one Lambda authorizer configured at a time.</p>"
+    },
+    "LambdaConfig":{
+      "type":"structure",
+      "members":{
+        "invokeType":{
+          "shape":"InvokeType",
+          "documentation":"<p>The invocation type for a Lambda data source.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a Lambda data source.</p>"
     },
     "LambdaConflictHandlerConfig":{
       "type":"structure",
@@ -5451,6 +5530,10 @@
         "codeHandlers":{
           "shape":"Code",
           "documentation":"<p>The event handler functions that run custom business logic to process published events and subscribe requests.</p>"
+        },
+        "handlerConfigs":{
+          "shape":"HandlerConfigs",
+          "documentation":"<p>The configuration for the <code>OnPublish</code> and <code>OnSubscribe</code> handlers.</p>"
         }
       }
     },

@@ -493,10 +493,10 @@ class TestCliDriverHooks(unittest.TestCase):
         )
         self.assertEqual(rc, 252)
         # Tell the user what went wrong.
-        self.assertIn("Invalid choice: 'list-objecst'", self.stderr.getvalue())
+        self.assertIn("Found invalid choice 'list-objecst'", self.stderr.getvalue())
         # Offer the user a suggestion.
         self.assertIn(
-            "maybe you meant:\n\n  * list-objects", self.stderr.getvalue()
+            "Maybe you meant:\n\n  * list-objects", self.stderr.getvalue()
         )
 
 

@@ -1888,7 +1888,7 @@
       "members":{
         "ActionFailurePolicy":{
           "shape":"ActionFailurePolicy",
-          "documentation":"<p>A policy that states what to do in the case of failure. The action will fail if there are configuration errors. For example, the specified application has been deleted or the role lacks necessary permissions to call the qbusiness:BatchPutDocument API.</p>"
+          "documentation":"<p>A policy that states what to do in the case of failure. The action will fail if there are configuration errors. For example, the specified application has been deleted or the role lacks necessary permissions to call the <code>qbusiness:BatchPutDocument</code> API.</p>"
         },
         "ApplicationId":{
           "shape":"QBusinessApplicationId",
@@ -1900,7 +1900,7 @@
         },
         "RoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Role to use while delivering to Amazon Q Business. This role must have access to the qbusiness:BatchPutDocument API for the given application and index.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Role to use while delivering to Amazon Q Business. This role must have access to the <code>qbusiness:BatchPutDocument</code> API for the given application and index.</p>"
         }
       },
       "documentation":"<p>The action to deliver incoming emails to an Amazon Q Business application for indexing.</p>"
@@ -4118,6 +4118,10 @@
           "shape":"DropAction",
           "documentation":"<p>This action terminates the evaluation of rules in the rule set.</p>"
         },
+        "PublishToSns":{
+          "shape":"SnsAction",
+          "documentation":"<p>This action publishes the email content to an Amazon SNS topic.</p>"
+        },
         "Relay":{
           "shape":"RelayAction",
           "documentation":"<p>This action relays the email to another SMTP server.</p>"
@@ -4779,6 +4783,56 @@
       "min":8,
       "pattern":"^[A-Za-z0-9!@#$%^&*()_+\\-=\\[\\]{}|.,?]+$",
       "sensitive":true
+    },
+    "SnsAction":{
+      "type":"structure",
+      "required":[
+        "RoleArn",
+        "TopicArn"
+      ],
+      "members":{
+        "ActionFailurePolicy":{
+          "shape":"ActionFailurePolicy",
+          "documentation":"<p>A policy that states what to do in the case of failure. The action will fail if there are configuration errors. For example, specified SNS topic has been deleted or the role lacks necessary permissions to call the <code>sns:Publish</code> API.</p>"
+        },
+        "Encoding":{
+          "shape":"SnsNotificationEncoding",
+          "documentation":"<p>The encoding to use for the email within the Amazon SNS notification. The default value is <code>UTF-8</code>. Use <code>BASE64</code> if you need to preserve all special characters, especially when the original message uses a different encoding format.</p>"
+        },
+        "PayloadType":{
+          "shape":"SnsNotificationPayloadType",
+          "documentation":"<p>The expected payload type within the Amazon SNS notification. <code>CONTENT</code> attempts to publish the full email content with 20KB of headers content. <code>HEADERS</code> extracts up to 100KB of header content to include in the notification, email content will not be included to the notification. The default value is <code>CONTENT</code>.</p>"
+        },
+        "RoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Role to use while writing to Amazon SNS. This role must have access to the <code>sns:Publish</code> API for the given topic.</p>"
+        },
+        "TopicArn":{
+          "shape":"SnsTopicArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon SNS Topic to which notification for the email received will be published.</p>"
+        }
+      },
+      "documentation":"<p>The action to publish the email content to an Amazon SNS topic. When executed, this action will send the email as a notification to the specified SNS topic.</p>"
+    },
+    "SnsNotificationEncoding":{
+      "type":"string",
+      "enum":[
+        "UTF-8",
+        "BASE64"
+      ]
+    },
+    "SnsNotificationPayloadType":{
+      "type":"string",
+      "enum":[
+        "HEADERS",
+        "CONTENT"
+      ]
+    },
+    "SnsTopicArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov):sns:[a-z]{2}-[a-z]+-\\d{1}:\\d{12}:[\\w\\-]{1,256}$"
     },
     "StartAddressListImportJobRequest":{
       "type":"structure",

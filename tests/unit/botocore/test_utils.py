@@ -295,7 +295,7 @@ class TestTransformName(unittest.TestCase):
         )
         self.assertEqual(
             xform_name('DeleteWhatsAppMessageMedia', '-'),
-            'delete-whatsapp-media-message',
+            'delete-whatsapp-message-media',
         )
         self.assertEqual(
             xform_name('DisassociateWhatsAppBusinessAccount', '-'),

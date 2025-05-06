@@ -1685,7 +1685,6 @@
     "AllowedColumnList":{
       "type":"list",
       "member":{"shape":"ColumnName"},
-      "max":225,
       "min":1
     },
     "AllowedResultReceivers":{
@@ -8594,6 +8593,42 @@
       },
       "documentation":"<p>The parameters for an Clean Rooms protected query.</p>"
     },
+    "ProtectedQueryDistributeOutput":{
+      "type":"structure",
+      "members":{
+        "s3":{"shape":"ProtectedQueryS3Output"},
+        "memberList":{
+          "shape":"ProtectedQueryMemberOutputList",
+          "documentation":"<p> Contains the output results for each member location specified in the distribute output configuration. Each entry provides details about the result distribution to a specific collaboration member. </p>"
+        }
+      },
+      "documentation":"<p> Contains the output information for a protected query with a distribute output configuration.</p> <p> This output type allows query results to be distributed to multiple receivers, including S3 and collaboration members. It is only available for queries using the Spark analytics engine.</p>"
+    },
+    "ProtectedQueryDistributeOutputConfiguration":{
+      "type":"structure",
+      "required":["locations"],
+      "members":{
+        "locations":{
+          "shape":"ProtectedQueryDistributeOutputConfigurationLocationsList",
+          "documentation":"<p> A list of locations where you want to distribute the protected query results. Each location must specify either an S3 destination or a collaboration member destination.</p> <important> <p>You can't specify more than one S3 location.</p> <p>You can't specify the query runner's account as a member location.</p> <p>You must include either an S3 or member output configuration for each location, but not both.</p> </important>"
+        }
+      },
+      "documentation":"<p> Specifies the configuration for distributing protected query results to multiple receivers, including S3 and collaboration members.</p>"
+    },
+    "ProtectedQueryDistributeOutputConfigurationLocation":{
+      "type":"structure",
+      "members":{
+        "s3":{"shape":"ProtectedQueryS3OutputConfiguration"},
+        "member":{"shape":"ProtectedQueryMemberOutputConfiguration"}
+      },
+      "documentation":"<p> Specifies where you'll distribute the results of your protected query. You must configure either an S3 destination or a collaboration member destination.</p>",
+      "union":true
+    },
+    "ProtectedQueryDistributeOutputConfigurationLocationsList":{
+      "type":"list",
+      "member":{"shape":"ProtectedQueryDistributeOutputConfigurationLocation"},
+      "min":1
+    },
     "ProtectedQueryError":{
       "type":"structure",
       "required":[
@@ -8638,11 +8673,15 @@
       "members":{
         "s3":{
           "shape":"ProtectedQueryS3Output",
-          "documentation":"<p>If present, the output for a protected query with an `S3` output type.</p>"
+          "documentation":"<p>If present, the output for a protected query with an <code>S3</code> output type.</p>"
         },
         "memberList":{
           "shape":"ProtectedQueryMemberOutputList",
           "documentation":"<p>The list of member Amazon Web Services account(s) that received the results of the query. </p>"
+        },
+        "distribute":{
+          "shape":"ProtectedQueryDistributeOutput",
+          "documentation":"<p>Contains output information for protected queries that use a <code>distribute</code> output type. This output type lets you send query results to multiple locations - either to S3 or to collaboration members. </p> <note> <p> You can only use the <code>distribute</code> output type with the Spark analytics engine. </p> </note>"
         }
       },
       "documentation":"<p>Contains details about the protected query output.</p>",
@@ -8658,6 +8697,10 @@
         "member":{
           "shape":"ProtectedQueryMemberOutputConfiguration",
           "documentation":"<p> Required configuration for a protected query with a <code>member</code> output type.</p>"
+        },
+        "distribute":{
+          "shape":"ProtectedQueryDistributeOutputConfiguration",
+          "documentation":"<p> Required configuration for a protected query with a <code>distribute</code> output type.</p>"
         }
       },
       "documentation":"<p>Contains configuration details for protected query output.</p>",

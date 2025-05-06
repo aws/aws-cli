@@ -65,10 +65,6 @@ class CommandAction(argparse.Action):
 class CLIArgParser(argparse.ArgumentParser):
     Formatter = argparse.RawTextHelpFormatter
 
-    # When displaying invalid choice error messages,
-    # this controls how many options to show per line.
-    ChoicesPerLine = 2
-
     def _check_value(self, action, value):
         """
         It's probably not a great idea to override a "hidden" method
@@ -77,15 +73,10 @@ class CLIArgParser(argparse.ArgumentParser):
         """
         # converted value must be one of the choices (if specified)
         if action.choices is not None and value not in action.choices:
-            msg = ['Invalid choice, valid choices are:\n']
-            for i in range(len(action.choices))[:: self.ChoicesPerLine]:
-                current = []
-                for choice in action.choices[i : i + self.ChoicesPerLine]:
-                    current.append('%-40s' % choice)
-                msg.append(' | '.join(current))
+            msg = [f"Found invalid choice '{value}'\n"]
             possible = get_close_matches(value, action.choices, cutoff=0.8)
             if possible:
-                extra = ['\n\nInvalid choice: %r, maybe you meant:\n' % value]
+                extra = ['Maybe you meant:\n']
                 for word in possible:
                     extra.append('  * %s' % word)
                 msg.extend(extra)
@@ -126,8 +117,8 @@ class CLIArgParser(argparse.ArgumentParser):
         should raise an exception.
         """
         usage_message = self.format_usage()
-        error_message = f'{self.prog}: error: {message}\n'
-        raise ArgParseException(f'{usage_message}\n{error_message}')
+        error_message = f'{self.prog}: error: {message}'
+        raise ArgParseException(f'{error_message}\n\n{usage_message}')
 
 
 class MainArgParser(CLIArgParser):

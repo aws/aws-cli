@@ -2,6 +2,95 @@
 CHANGELOG
 =========
 
+2.27.8
+======
+
+* api-change:``devicefarm``: Add an optional parameter to the GetDevicePoolCompatibility API to pass in project information to check device pool compatibility.
+* api-change:``ecs``: Add support to roll back an In_Progress ECS Service Deployment
+* api-change:``ec2``: This update introduces API operations to manage and create local gateway VIF and VIF groups. It also includes API operations to describe Outpost LAGs and service link VIFs.
+* api-change:``datazone``: This release adds a new authorization policy to control the usage of custom AssetType when creating an Asset. Customer can now add new grant(s) of policyType USE_ASSET_TYPE for custom AssetTypes to apply authorization policy to projects members and domain unit owners.
+* api-change:``mediaconvert``: This release adds an optional sidecar per-frame video quality metrics report and an ALL_PCM option for audio selectors. It also changes the data type for Probe API response fields related to video and audio bitrate from integer to double.
+
+
+2.27.7
+======
+
+* api-change:``ds``: Doc only update - fixed typos.
+* api-change:``bedrock-data-automation``: Added support for Custom output and blueprints for AUDIO data types.
+* api-change:``kinesis``: Marking ResourceARN as required for Amazon Kinesis Data Streams APIs TagResource, UntagResource, and ListTagsForResource.
+
+
+2.27.6
+======
+
+* api-change:``sagemaker``: Feature - Adding support for Scheduled and Rolling Update Software in Sagemaker Hyperpod.
+* api-change:``verifiedpermissions``: Amazon Verified Permissions / Features : Adds support for tagging policy stores.
+* api-change:``appconfig``: Adding waiter support for deployments and environments; documentation updates
+* api-change:``connect``: This release adds the following fields to DescribeContact: DisconnectReason, AgentInitiatedHoldDuration, AfterContactWorkStartTimestamp, AfterContactWorkEndTimestamp, AfterContactWorkDuration, StateTransitions, Recordings, ContactDetails, ContactEvaluations, Attributes
+
+
+2.27.5
+======
+
+* api-change:``deadline``: Adds support for tag management on workers and tag inheritance from fleets to their associated workers.
+* api-change:``bedrock-agent``: Features:    Add inline code node to prompt flow
+* api-change:``bedrock-agent-runtime``: Support for Custom Orchestration within InlineAgents
+* api-change:``cleanrooms``: This release adds support for ProtectedQuery results to be delivered to more than one collaboration member via the new distribute output configuration in StartProtectedQuery.
+* api-change:``ecr``: Adds dualstack support for Amazon Elastic Container Registry (Amazon ECR).
+* api-change:``ec2``: Launch of cost distribution feature for IPAM owners to distribute costs to internal teams.
+* api-change:``mailmanager``: Introducing new RuleSet rule PublishToSns action, which allows customers to publish email notifications to an Amazon SNS topic. New PublishToSns action enables customers to easily integrate their email workflows via Amazon SNS, allowing them to notify other systems about important email events.
+* api-change:``bedrock``: You can now specify a cross region inference profile as a teacher model for the CreateModelCustomizationJob API. Additionally, the GetModelCustomizationJob API has been enhanced to return the sub-task statuses of a customization job within the StatusDetails response field.
+* api-change:``ecr-public``: Adds dualstack support for Amazon Elastic Container Registry Public (Amazon ECR Public).
+* bugfix:socialmessaging: Renames the incorrectly named delete-whatsapp-media-message command to the correct name of delete-whatsapp-message-media
+* api-change:``logs``: CloudWatch Logs supports "DELIVERY" log class. This log class is used only for delivering AWS Lambda logs to Amazon S3 or Amazon Data Firehose.
+
+
+2.27.4
+======
+
+* api-change:``qbusiness``: Add support for anonymous user access for Q Business applications
+* enhancement:awscrt: Update awscrt version requirement to 0.26.1
+* api-change:``ssm``: This release adds support for just-In-time node access in AWS Systems Manager. Just-in-time node access enables customers to move towards zero standing privileges by requiring operators to request access and obtain approval before remotely connecting to nodes managed by the SSM Agent.
+* api-change:``connectcases``: Introduces CustomEntity as part of the UserUnion data type. This field is used to indicate the entity who is performing the API action.
+* api-change:``kinesis``: Amazon KDS now supports tagging and attribute-based access control (ABAC) for enhanced fan-out consumers.
+* api-change:``sagemaker``: Introduced support for P5en instance types on SageMaker Studio for JupyterLab and CodeEditor applications.
+* api-change:``sagemaker-metrics``: SageMaker Metrics Service now supports FIPS endpoint in all US and Canada Commercial regions.
+* api-change:``pinpoint-sms-voice-v2``: AWS End User Messaging has added MONITOR and FILTER functionality to SMS Protect.
+* enhancement:``cloudfront``: Replace cryptographic functions from ``cryptography`` with ``awscrt`` for the ``sign`` command. Fixes `#9258 <https://github.com/aws/aws-cli/issues/9258>`__.
+* api-change:``ssm-guiconnect``: This release adds API support for the connection recording GUI Connect feature of AWS Systems Manager
+
+
+2.27.3
+======
+
+* api-change:``imagebuilder``: Add integration with SSM Parameter Store to Image Builder.
+* api-change:``acm``: Add support for file-based HTTP domain control validation, available through Amazon CloudFront.
+* api-change:``cloudfront``: Add distribution tenant, connection group, and multi-tenant distribution APIs to the CloudFront SDK.
+* api-change:``bedrock-runtime``: This release adds native h2 support for the bedrock runtime API, the support is only limited to SDKs that support h2 requests natively.
+* api-change:``dynamodb``: Doc only update for GSI descriptions.
+
+
+2.27.2
+======
+
+* api-change:``ecs``: Documentation only release for Amazon ECS.
+* api-change:``bedrock-runtime``: You can now reference images and documents stored in Amazon S3 when using InvokeModel and Converse APIs with Amazon Nova Lite and Nova Pro. This enables direct integration of S3-stored multimedia assets in your model requests without manual downloading or base64 encoding.
+* api-change:``marketplace-deployment``: Doc only update for the AWS Marketplace Deployment Service that fixes several customer-reported issues.
+
+
+2.27.1
+======
+
+* api-change:``ecs``: Documentation only release for Amazon ECS
+* api-change:``dynamodb``: Add support for ARN-sourced account endpoint generation for TransactWriteItems. This will generate account endpoints for DynamoDB TransactWriteItems requests using ARN-sourced account ID when available.
+* api-change:``appsync``: Add data source support to Event APIs
+* api-change:``pcs``: Documentation-only update: added valid values for the version property of the Scheduler and SchedulerRequest data types.
+* api-change:``rds``: This Amazon RDS release adds support for managed master user passwords for Oracle CDBs.
+* api-change:``codebuild``: Remove redundant validation check.
+* api-change:``apprunner``: AWS App Runner adds Node.js 22 runtime.
+* api-change:``bedrock-data-automation``: Added support for modality routing and modality enablement on CreateDataAutomationProject and UpdateDataAutomationProject APIs
+
+
 2.27.0
 ======
 

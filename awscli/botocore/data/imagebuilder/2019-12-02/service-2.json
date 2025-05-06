@@ -2099,7 +2099,7 @@
         },
         "parentImage":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The base image for the container recipe.</p>"
+          "documentation":"<p>The base image for customizations specified in the container recipe. This can contain an Image Builder image resource ARN or a container image URI, for example <code>amazonlinux:latest</code>.</p>"
         },
         "dateCreated":{
           "shape":"DateTime",
@@ -3168,6 +3168,10 @@
         "fastLaunchConfigurations":{
           "shape":"FastLaunchConfigurationList",
           "documentation":"<p>The Windows faster-launching configurations to use for AMI distribution.</p>"
+        },
+        "ssmParameterConfigurations":{
+          "shape":"SsmParameterConfigurationList",
+          "documentation":"<p>Contains settings to update Amazon Web Services Systems Manager (SSM) Parameter Store Parameters with output AMI IDs from the build by target Region.</p>"
         }
       },
       "documentation":"<p>Defines the settings for a specific Region.</p>"
@@ -4306,7 +4310,7 @@
         },
         "parentImage":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The base image of the image recipe.</p>"
+          "documentation":"<p>The base image for customizations specified in the image recipe. You can specify the parent image using one of the following options:</p> <ul> <li> <p>AMI ID</p> </li> <li> <p>Image Builder image Amazon Resource Name (ARN)</p> </li> <li> <p>Amazon Web Services Systems Manager (SSM) Parameter Store Parameter, prefixed by <code>ssm:</code>, followed by the parameter name or ARN.</p> </li> <li> <p>Amazon Web Services Marketplace product ID</p> </li> </ul>"
         },
         "blockDeviceMappings":{
           "shape":"InstanceBlockDeviceMappings",
@@ -5122,7 +5126,7 @@
       "members":{
         "image":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The AMI ID to use as the base image for a container build and test instance. If not specified, Image Builder will use the appropriate ECS-optimized AMI as a base image.</p>"
+          "documentation":"<p>The base image for a container build and test instance. This can contain an AMI ID or it can specify an Amazon Web Services Systems Manager (SSM) Parameter Store Parameter, prefixed by <code>ssm:</code>, followed by the parameter name or ARN.</p> <p>If not specified, Image Builder uses the appropriate ECS-optimized AMI as a base image.</p>"
         },
         "blockDeviceMappings":{
           "shape":"InstanceBlockDeviceMappings",
@@ -7270,6 +7274,42 @@
       "pattern":"^arn:aws[^:]*:sns:[^:]+:[0-9]{12}:[a-zA-Z0-9-_]{1,256}$"
     },
     "SourceLayerHash":{"type":"string"},
+    "SsmParameterConfiguration":{
+      "type":"structure",
+      "required":["parameterName"],
+      "members":{
+        "amiAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Specify the account that will own the Parameter in a given Region. During distribution, this account must be specified in distribution settings as a target account for the Region.</p>"
+        },
+        "parameterName":{
+          "shape":"SsmParameterName",
+          "documentation":"<p>This is the name of the Parameter in the target Region or account. The image distribution creates the Parameter if it doesn't already exist. Otherwise, it updates the parameter.</p>"
+        },
+        "dataType":{
+          "shape":"SsmParameterDataType",
+          "documentation":"<p>The data type specifies what type of value the Parameter contains. We recommend that you use data type <code>aws:ec2:image</code>.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a single Parameter in the Amazon Web Services Systems Manager (SSM) Parameter Store in a given Region.</p>"
+    },
+    "SsmParameterConfigurationList":{
+      "type":"list",
+      "member":{"shape":"SsmParameterConfiguration"}
+    },
+    "SsmParameterDataType":{
+      "type":"string",
+      "enum":[
+        "text",
+        "aws:ec2:image"
+      ]
+    },
+    "SsmParameterName":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_.\\-\\/]+$"
+    },
     "StartImagePipelineExecutionRequest":{
       "type":"structure",
       "required":[
@@ -7453,7 +7493,7 @@
       "type":"string",
       "max":100,
       "min":3,
-      "pattern":"[a-zA-Z0-9]{2,}(?:\\/[a-zA-z0-9-_+]+)*"
+      "pattern":"[a-zA-Z0-9]{2,}(?:\\/[a-zA-Z0-9-_+]+)*"
     },
     "UntagResourceRequest":{
       "type":"structure",

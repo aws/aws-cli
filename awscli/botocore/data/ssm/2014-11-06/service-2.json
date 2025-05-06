@@ -987,6 +987,23 @@
       ],
       "documentation":"<p>Deletes the association between an OpsItem and a related item. For example, this API operation can delete an Incident Manager incident from an OpsItem. Incident Manager is a tool in Amazon Web Services Systems Manager.</p>"
     },
+    "GetAccessToken":{
+      "name":"GetAccessToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAccessTokenRequest"},
+      "output":{"shape":"GetAccessTokenResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns a credentials set to be used with just-in-time node access.</p>"
+    },
     "GetAutomationExecution":{
       "name":"GetAutomationExecution",
       "http":{
@@ -1931,6 +1948,24 @@
       ],
       "documentation":"<p>Runs commands on one or more managed nodes.</p>"
     },
+    "StartAccessRequest":{
+      "name":"StartAccessRequest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartAccessRequestRequest"},
+      "output":{"shape":"StartAccessRequestResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Starts the workflow for just-in-time node access sessions.</p>"
+    },
     "StartAssociationsOnce":{
       "name":"StartAssociationsOnce",
       "http":{
@@ -2292,6 +2327,37 @@
     }
   },
   "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The requester doesn't have permissions to perform the requested operation.</p>",
+      "exception":true
+    },
+    "AccessKeyIdType":{
+      "type":"string",
+      "pattern":"\\w{16,128}"
+    },
+    "AccessKeySecretType":{
+      "type":"string",
+      "sensitive":true
+    },
+    "AccessRequestId":{
+      "type":"string",
+      "pattern":"^(oi)-[0-9a-f]{12}$"
+    },
+    "AccessRequestStatus":{
+      "type":"string",
+      "enum":[
+        "Approved",
+        "Rejected",
+        "Revoked",
+        "Expired",
+        "Pending"
+      ]
+    },
     "Account":{"type":"string"},
     "AccountId":{
       "type":"string",
@@ -3811,7 +3877,10 @@
     },
     "AutomationSubtype":{
       "type":"string",
-      "enum":["ChangeRequest"]
+      "enum":[
+        "ChangeRequest",
+        "AccessRequest"
+      ]
     },
     "AutomationTargetParameterName":{
       "type":"string",
@@ -5214,6 +5283,34 @@
       }
     },
     "CreatedDate":{"type":"timestamp"},
+    "Credentials":{
+      "type":"structure",
+      "required":[
+        "AccessKeyId",
+        "SecretAccessKey",
+        "SessionToken",
+        "ExpirationTime"
+      ],
+      "members":{
+        "AccessKeyId":{
+          "shape":"AccessKeyIdType",
+          "documentation":"<p>The access key ID that identifies the temporary security credentials.</p>"
+        },
+        "SecretAccessKey":{
+          "shape":"AccessKeySecretType",
+          "documentation":"<p>The secret access key that can be used to sign requests.</p>"
+        },
+        "SessionToken":{
+          "shape":"SessionTokenType",
+          "documentation":"<p>The token that users must pass to the service API to use the temporary credentials.</p>"
+        },
+        "ExpirationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The datetime on which the current credentials expire.</p>"
+        }
+      },
+      "documentation":"<p>The temporary security credentials, which include an access key ID, a secret access key, and a security (or session) token.</p>"
+    },
     "CustomSchemaCountLimitExceededException":{
       "type":"structure",
       "members":{
@@ -7402,7 +7499,9 @@
         "ProblemAnalysisTemplate",
         "CloudFormation",
         "ConformancePackTemplate",
-        "QuickSetup"
+        "QuickSetup",
+        "ManualApprovalPolicy",
+        "AutoApprovalPolicy"
       ]
     },
     "DocumentVersion":{
@@ -7663,6 +7762,29 @@
       },
       "documentation":"<p>You attempted to register a <code>LAMBDA</code> or <code>STEP_FUNCTIONS</code> task in a region where the corresponding service isn't available. </p>",
       "exception":true
+    },
+    "GetAccessTokenRequest":{
+      "type":"structure",
+      "required":["AccessRequestId"],
+      "members":{
+        "AccessRequestId":{
+          "shape":"AccessRequestId",
+          "documentation":"<p>The ID of a just-in-time node access request.</p>"
+        }
+      }
+    },
+    "GetAccessTokenResponse":{
+      "type":"structure",
+      "members":{
+        "Credentials":{
+          "shape":"Credentials",
+          "documentation":"<p>The temporary security credentials which can be used to start just-in-time node access sessions.</p>"
+        },
+        "AccessRequestStatus":{
+          "shape":"AccessRequestStatus",
+          "documentation":"<p>The status of the access request.</p>"
+        }
+      }
     },
     "GetAutomationExecutionRequest":{
       "type":"structure",
@@ -12902,6 +13024,15 @@
         "Category",
         "Severity",
         "OpsItemType",
+        "AccessRequestByRequesterArn",
+        "AccessRequestByRequesterId",
+        "AccessRequestByApproverArn",
+        "AccessRequestByApproverId",
+        "AccessRequestBySourceAccountId",
+        "AccessRequestBySourceOpsItemId",
+        "AccessRequestBySourceRegion",
+        "AccessRequestByIsReplica",
+        "AccessRequestByTargetResourceId",
         "ChangeRequestByRequesterArn",
         "ChangeRequestByRequesterName",
         "ChangeRequestByApproverArn",
@@ -13152,6 +13283,7 @@
         "ChangeCalendarOverrideRejected",
         "PendingApproval",
         "Approved",
+        "Revoked",
         "Rejected",
         "Closed"
       ]
@@ -15777,6 +15909,35 @@
         }
       }
     },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":[
+        "Message",
+        "QuotaCode",
+        "ServiceCode"
+      ],
+      "members":{
+        "Message":{"shape":"String"},
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the resource referenced in the failed request.</p>"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The resource type of the resource referenced in the failed request.</p>"
+        },
+        "QuotaCode":{
+          "shape":"String",
+          "documentation":"<p>The quota code recognized by the Amazon Web Services Service Quotas service.</p>"
+        },
+        "ServiceCode":{
+          "shape":"String",
+          "documentation":"<p>The code for the Amazon Web Services service that owns the quota.</p>"
+        }
+      },
+      "documentation":"<p>The request exceeds the service quota. Service quotas, also referred to as limits, are the maximum number of service resources or operations for your Amazon Web Services account.</p>",
+      "exception":true
+    },
     "ServiceRole":{"type":"string"},
     "ServiceSetting":{
       "type":"structure",
@@ -16012,6 +16173,10 @@
       "max":400,
       "min":1
     },
+    "SessionTokenType":{
+      "type":"string",
+      "sensitive":true
+    },
     "SeveritySummary":{
       "type":"structure",
       "members":{
@@ -16055,7 +16220,8 @@
         "Reject",
         "StartStep",
         "StopStep",
-        "Resume"
+        "Resume",
+        "Revoke"
       ]
     },
     "SnapshotDownloadUrl":{"type":"string"},
@@ -16086,6 +16252,36 @@
     "StandardOutputContent":{
       "type":"string",
       "max":24000
+    },
+    "StartAccessRequestRequest":{
+      "type":"structure",
+      "required":[
+        "Reason",
+        "Targets"
+      ],
+      "members":{
+        "Reason":{
+          "shape":"String1to256",
+          "documentation":"<p>A brief description explaining why you are requesting access to the node.</p>"
+        },
+        "Targets":{
+          "shape":"Targets",
+          "documentation":"<p>The node you are requesting access to.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Key-value pairs of metadata you want to assign to the access request.</p>"
+        }
+      }
+    },
+    "StartAccessRequestResponse":{
+      "type":"structure",
+      "members":{
+        "AccessRequestId":{
+          "shape":"AccessRequestId",
+          "documentation":"<p>The ID of the access request.</p>"
+        }
+      }
     },
     "StartAssociationsOnceRequest":{
       "type":"structure",
@@ -16521,6 +16717,11 @@
     },
     "StreamUrl":{"type":"string"},
     "String":{"type":"string"},
+    "String1to256":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "StringDateTime":{
       "type":"string",
       "pattern":"^([\\-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d(?!:))?)?(\\17[0-5]\\d([\\.,]\\d)?)?([zZ]|([\\-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$"
@@ -16761,6 +16962,23 @@
           "documentation":"<p>The ID of the session that has been terminated.</p>"
         }
       }
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"String"},
+        "QuotaCode":{
+          "shape":"String",
+          "documentation":"<p>The quota code recognized by the Amazon Web Services Service Quotas service.</p>"
+        },
+        "ServiceCode":{
+          "shape":"String",
+          "documentation":"<p>The code for the Amazon Web Services service that owns the quota.</p>"
+        }
+      },
+      "documentation":"<p>The request or operation couldn't be performed because the service is throttling requests.</p>",
+      "exception":true
     },
     "TimeoutSeconds":{
       "type":"integer",

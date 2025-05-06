@@ -315,6 +315,13 @@
       "member":{"shape":"AudioExtractionCategoryType"},
       "documentation":"<p>List of Audio Extraction Category Type</p>"
     },
+    "AudioOverrideConfiguration":{
+      "type":"structure",
+      "members":{
+        "modalityProcessing":{"shape":"ModalityProcessingConfiguration"}
+      },
+      "documentation":"<p>Override Configuration of Audio</p>"
+    },
     "AudioStandardExtraction":{
       "type":"structure",
       "required":["category"],
@@ -734,6 +741,16 @@
       },
       "documentation":"<p>Delete DataAutomationProject Response</p>"
     },
+    "DesiredModality":{
+      "type":"string",
+      "documentation":"<p>Desired Modality types</p>",
+      "enum":[
+        "IMAGE",
+        "DOCUMENT",
+        "AUDIO",
+        "VIDEO"
+      ]
+    },
     "DocumentBoundingBox":{
       "type":"structure",
       "required":["state"],
@@ -808,7 +825,8 @@
     "DocumentOverrideConfiguration":{
       "type":"structure",
       "members":{
-        "splitter":{"shape":"SplitterConfiguration"}
+        "splitter":{"shape":"SplitterConfiguration"},
+        "modalityProcessing":{"shape":"ModalityProcessingConfiguration"}
       },
       "documentation":"<p>Override Configuration of Document</p>"
     },
@@ -948,6 +966,13 @@
       "member":{"shape":"ImageExtractionCategoryType"},
       "documentation":"<p>List of Image Extraction Category</p>"
     },
+    "ImageOverrideConfiguration":{
+      "type":"structure",
+      "members":{
+        "modalityProcessing":{"shape":"ModalityProcessingConfiguration"}
+      },
+      "documentation":"<p>Override Configuration of Image</p>"
+    },
     "ImageStandardExtraction":{
       "type":"structure",
       "required":[
@@ -1074,6 +1099,23 @@
       "max":1000,
       "min":1
     },
+    "ModalityProcessingConfiguration":{
+      "type":"structure",
+      "members":{
+        "state":{"shape":"State"}
+      },
+      "documentation":"<p>Configuration to enable/disable processing of modality</p>"
+    },
+    "ModalityRoutingConfiguration":{
+      "type":"structure",
+      "members":{
+        "jpeg":{"shape":"DesiredModality"},
+        "png":{"shape":"DesiredModality"},
+        "mp4":{"shape":"DesiredModality"},
+        "mov":{"shape":"DesiredModality"}
+      },
+      "documentation":"<p>Configuration for routing file type to desired modality</p>"
+    },
     "NextToken":{
       "type":"string",
       "documentation":"<p>Pagination token</p>",
@@ -1089,7 +1131,11 @@
     "OverrideConfiguration":{
       "type":"structure",
       "members":{
-        "document":{"shape":"DocumentOverrideConfiguration"}
+        "document":{"shape":"DocumentOverrideConfiguration"},
+        "image":{"shape":"ImageOverrideConfiguration"},
+        "video":{"shape":"VideoOverrideConfiguration"},
+        "audio":{"shape":"AudioOverrideConfiguration"},
+        "modalityRouting":{"shape":"ModalityRoutingConfiguration"}
       },
       "documentation":"<p>Override configuration</p>"
     },
@@ -1228,7 +1274,8 @@
       "documentation":"<p>Type</p>",
       "enum":[
         "DOCUMENT",
-        "IMAGE"
+        "IMAGE",
+        "AUDIO"
       ]
     },
     "UntagResourceRequest":{
@@ -1366,6 +1413,13 @@
       "type":"list",
       "member":{"shape":"VideoExtractionCategoryType"},
       "documentation":"<p>List of Video Extraction Category Type</p>"
+    },
+    "VideoOverrideConfiguration":{
+      "type":"structure",
+      "members":{
+        "modalityProcessing":{"shape":"ModalityProcessingConfiguration"}
+      },
+      "documentation":"<p>Override Configuration of Video</p>"
     },
     "VideoStandardExtraction":{
       "type":"structure",

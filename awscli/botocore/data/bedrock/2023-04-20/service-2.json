@@ -2168,7 +2168,7 @@
       "members":{
         "distillationConfig":{
           "shape":"DistillationConfig",
-          "documentation":"<p>The distillation configuration for the custom model.</p>"
+          "documentation":"<p>The Distillation configuration for the custom model.</p>"
         }
       },
       "documentation":"<p>A model customization configuration</p>",
@@ -2181,6 +2181,24 @@
         "CONTINUED_PRE_TRAINING",
         "DISTILLATION"
       ]
+    },
+    "DataProcessingDetails":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"JobStatusDetails",
+          "documentation":"<p>The status of the data processing sub-task of the job.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the data processing sub-task of the job.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The latest update to the data processing sub-task of the job.</p>"
+        }
+      },
+      "documentation":"<p>For a Distillation job, the status details for the data processing sub-task of the job.</p>"
     },
     "DeleteCustomModelRequest":{
       "type":"structure",
@@ -3674,6 +3692,10 @@
         "failureMessage":{
           "shape":"ErrorMessage",
           "documentation":"<p>Information about why the job failed.</p>"
+        },
+        "statusDetails":{
+          "shape":"StatusDetails",
+          "documentation":"<p>For a Distillation job, the details about the statuses of the sub-tasks of the customization job. </p>"
         },
         "creationTime":{
           "shape":"Timestamp",
@@ -5443,6 +5465,17 @@
       "min":1,
       "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9\\+\\-\\.])*"
     },
+    "JobStatusDetails":{
+      "type":"string",
+      "enum":[
+        "InProgress",
+        "Completed",
+        "Stopping",
+        "Stopped",
+        "Failed",
+        "NotStarted"
+      ]
+    },
     "KbInferenceConfig":{
       "type":"structure",
       "members":{
@@ -6624,6 +6657,10 @@
           "shape":"Timestamp",
           "documentation":"<p>Time that the customization job was last modified.</p>"
         },
+        "statusDetails":{
+          "shape":"StatusDetails",
+          "documentation":"<p>Details about the status of the data processing sub-task of the job.</p>"
+        },
         "creationTime":{
           "shape":"Timestamp",
           "documentation":"<p>Creation time of the custom model. </p>"
@@ -7720,6 +7757,24 @@
         "INCOMPATIBLE_ENDPOINT"
       ]
     },
+    "StatusDetails":{
+      "type":"structure",
+      "members":{
+        "validationDetails":{
+          "shape":"ValidationDetails",
+          "documentation":"<p>The status details for the validation sub-task of the job.</p>"
+        },
+        "dataProcessingDetails":{
+          "shape":"DataProcessingDetails",
+          "documentation":"<p>The status details for the data processing sub-task of the job.</p>"
+        },
+        "trainingDetails":{
+          "shape":"TrainingDetails",
+          "documentation":"<p>The status details for the training sub-task of the job.</p>"
+        }
+      },
+      "documentation":"<p>For a Distillation job, the status details for sub-tasks of the job. Possible statuses for each sub-task include the following:</p> <ul> <li> <p>NotStarted</p> </li> <li> <p>InProgress</p> </li> <li> <p>Completed</p> </li> <li> <p>Stopping</p> </li> <li> <p>Stopped</p> </li> <li> <p>Failed</p> </li> </ul>"
+    },
     "StopEvaluationJobRequest":{
       "type":"structure",
       "required":["jobIdentifier"],
@@ -7871,7 +7926,7 @@
     },
     "TeacherModelIdentifier":{
       "type":"string",
-      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})|(([0-9a-zA-Z][_-]?)+)"
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:((:foundation-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})|(([0-9a-zA-Z][_-]?)+)$)|([0-9]{12}:inference-profile/[a-zA-Z0-9-:.]+$)))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})"
     },
     "Temperature":{
       "type":"float",
@@ -7958,6 +8013,24 @@
         }
       },
       "documentation":"<p>S3 Location of the training data.</p>"
+    },
+    "TrainingDetails":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"JobStatusDetails",
+          "documentation":"<p>The status of the training sub-task of the job.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the training sub-task of the job.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The latest update to the training sub-task of the job.</p>"
+        }
+      },
+      "documentation":"<p>For a Distillation job, the status details for the training sub-task of the job.</p>"
     },
     "TrainingMetrics":{
       "type":"structure",
@@ -8145,6 +8218,24 @@
         }
       },
       "documentation":"<p>Array of up to 10 validators.</p>"
+    },
+    "ValidationDetails":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"JobStatusDetails",
+          "documentation":"<p>The status of the validation sub-task of the job.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the validation sub-task of the job.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The latest update to the validation sub-task of the job.</p>"
+        }
+      },
+      "documentation":"<p>For a Distillation job, the status details for the validation sub-task of the job.</p>"
     },
     "ValidationException":{
       "type":"structure",

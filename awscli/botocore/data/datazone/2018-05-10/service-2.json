@@ -16314,7 +16314,8 @@
         "DELEGATE_CREATE_ENVIRONMENT_PROFILE",
         "CREATE_ENVIRONMENT",
         "CREATE_ENVIRONMENT_FROM_BLUEPRINT",
-        "CREATE_PROJECT_FROM_PROJECT_PROFILE"
+        "CREATE_PROJECT_FROM_PROJECT_PROFILE",
+        "USE_ASSET_TYPE"
       ]
     },
     "MatchCriteria":{
@@ -17076,6 +17077,10 @@
         "overrideProjectOwners":{
           "shape":"OverrideProjectOwnersPolicyGrantDetail",
           "documentation":"<p>Specifies whether to override project owners.</p>"
+        },
+        "useAssetType":{
+          "shape":"UseAssetTypePolicyGrantDetail",
+          "documentation":"<p> Specifies the domain unit(s) whose projects can use this asset type while creating asset or asset revisions.</p>"
         }
       },
       "documentation":"<p>The details of the policy grant.</p>",
@@ -20551,7 +20556,8 @@
       "enum":[
         "DOMAIN_UNIT",
         "ENVIRONMENT_BLUEPRINT_CONFIGURATION",
-        "ENVIRONMENT_PROFILE"
+        "ENVIRONMENT_PROFILE",
+        "ASSET_TYPE"
       ]
     },
     "TaskId":{
@@ -22567,7 +22573,7 @@
         },
         "authorizedPrincipals":{
           "shape":"AuthorizedPrincipalIdentifiers",
-          "documentation":"<p>The authorized principals to be updated as part of the <code>UpdateSubscriptionTarget</code> action.</p>"
+          "documentation":"<p>The authorized principals to be updated as part of the <code>UpdateSubscriptionTarget</code> action. Updates are supported in batches of 5 at a time.</p>"
         },
         "createdAt":{
           "shape":"CreatedAt",
@@ -22677,6 +22683,16 @@
     },
     "UpdatedAt":{"type":"timestamp"},
     "UpdatedBy":{"type":"string"},
+    "UseAssetTypePolicyGrantDetail":{
+      "type":"structure",
+      "members":{
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the domain unit(s) whose projects can use this asset type while creating asset or asset revisions.</p>"
+    },
     "UserAssignment":{
       "type":"string",
       "enum":[

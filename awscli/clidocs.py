@@ -210,6 +210,7 @@ class CLIDocumentEventHandler:
             self._add_tagged_union_note(argument.argument_model, doc)
         if hasattr(argument, 'argument_model'):
             self._document_enums(argument.argument_model, doc)
+            self._document_constraints(argument.argument_model, doc)
             self._document_nested_structure(argument.argument_model, doc)
         doc.style.dedent()
         doc.style.new_paragraph()
@@ -296,6 +297,8 @@ class CLIDocumentEventHandler:
             doc.style.new_paragraph()
             doc.write('This parameter is required.')
 
+        self._document_enums(member_shape, doc)
+        self._document_constraints(member_shape, doc)
         doc.style.new_paragraph()
         member_type_name = member_shape.type_name
         if member_type_name == 'structure':
@@ -335,6 +338,23 @@ class CLIDocumentEventHandler:
         )
         doc.writeln(msg)
         doc.style.end_note()
+
+    def _document_constraints(self, model, doc):
+        """Documents parameter value constraints"""
+        if not hasattr(model, 'metadata'):
+            return
+        constraints = ['min', 'max', 'pattern']
+        if not any(
+            [constraint in model.metadata for constraint in constraints]
+        ):
+            return
+        doc.style.new_paragraph()
+        doc.write('Constraints:')
+        doc.style.start_ul()
+        for constraint in constraints:
+            if (val := model.metadata.get(constraint)) is not None:
+                doc.style.li(f'{constraint}: ``{val}``')
+        doc.style.end_ul()
 
 
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):
@@ -618,10 +638,6 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                 member, include_enum_values=False
             )
             doc.write('%s %s ...' % (example_type, example_type))
-            if isinstance(member, StringShape) and member.enum:
-                # If we have enum values, we can tell the user
-                # exactly what valid values they can provide.
-                self._write_valid_enums(doc, member.enum)
             doc.style.end_codeblock()
             doc.style.new_paragraph()
         elif cli_argument.cli_type_name not in SCALAR_TYPES:
@@ -631,13 +647,6 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             self._json_example(doc, argument_model, stack=[])
             doc.style.end_codeblock()
             doc.style.new_paragraph()
-
-    def _write_valid_enums(self, doc, enum_values):
-        doc.style.new_paragraph()
-        doc.write("Where valid values are:\n")
-        for value in enum_values:
-            doc.write("    %s\n" % value)
-        doc.write("\n")
 
     def doc_output(self, help_command, event_name, **kwargs):
         doc = help_command.doc

@@ -46,8 +46,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ValidationException"},
         {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Associate a protect configuration with a configuration set. This replaces the configuration sets current protect configuration. A configuration set can only be associated with one protect configuration at a time. A protect configuration can be associated with multiple configuration sets.</p>"
@@ -87,7 +87,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new event destination in a configuration set.</p> <p>An event destination is a location where you send message events. The event options are Amazon CloudWatch, Amazon Data Firehose, or Amazon SNS. For example, when a message is delivered successfully, you can send information about that event to an event destination, or send notifications to endpoints that are subscribed to an Amazon SNS topic.</p> <p>Each configuration set can contain between 0 and 5 event destinations. Each event destination can contain a reference to a single destination, such as a CloudWatch or Firehose destination.</p>"
+      "documentation":"<p>Creates a new event destination in a configuration set.</p> <p>An event destination is a location where you send message events. The event options are Amazon CloudWatch, Amazon Data Firehose, or Amazon SNS. For example, when a message is delivered successfully, you can send information about that event to an event destination, or send notifications to endpoints that are subscribed to an Amazon SNS topic. </p> <p>You can only create one event destination at a time. You must provide a value for a single event destination using either <code>CloudWatchLogsDestination</code>, <code>KinesisFirehoseDestination</code> or <code>SnsDestination</code>. If an event destination isn't provided then an exception is returned.</p> <p>Each configuration set can contain between 0 and 5 event destinations. Each event destination can contain a reference to a single destination, such as a CloudWatch or Firehose destination.</p>"
     },
     "CreateOptOutList":{
       "name":"CreateOptOutList",
@@ -139,6 +139,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Create a new protect configuration. By default all country rule sets for each capability are set to <code>ALLOW</code>. Update the country rule sets using <code>UpdateProtectConfigurationCountryRuleSet</code>. A protect configurations name is stored as a Tag with the key set to <code>Name</code> and value as the name of the protect configuration.</p>"
@@ -420,8 +421,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ValidationException"},
         {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Permanently delete the protect configuration. The protect configuration must have deletion protection disabled and must not be associated as the account default protect configuration or associated with a configuration set.</p>"
@@ -911,8 +912,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ValidationException"},
         {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Disassociate a protect configuration from a configuration set.</p>"
@@ -1106,7 +1107,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Create or update a RuleSetNumberOverride and associate it with a protect configuration.</p>"
+      "documentation":"<p>Create or update a phone number rule override and associate it with a protect configuration.</p>"
     },
     "PutRegistrationFieldValue":{
       "name":"PutRegistrationFieldValue",
@@ -1442,7 +1443,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Adds or overwrites only the specified tags for the specified resource. When you specify an existing tag key, the value is overwritten with the new value. Each resource can have a maximum of 50 tags. Each tag consists of a key and an optional value. Tag keys must be unique per resource. For more information about tags, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-tags.html\">Tags </a> in the <i>AWS End User Messaging SMS User Guide</i>.</p>"
+      "documentation":"<p>Adds or overwrites only the specified tags for the specified resource. When you specify an existing tag key, the value is overwritten with the new value. Each tag consists of a key and an optional value. Tag keys must be unique per resource. For more information about tags, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-tags.html\">Tags </a> in the <i>AWS End User Messaging SMS User Guide</i>.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -1547,7 +1548,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Update a country rule set to <code>ALLOW</code> or <code>BLOCK</code> messages to be sent to the specified destination counties. You can update one or multiple countries at a time. The updates are only applied to the specified NumberCapability type.</p>"
+      "documentation":"<p>Update a country rule set to <code>ALLOW</code>, <code>BLOCK</code>, <code>MONITOR</code>, or <code>FILTER</code> messages to be sent to the specified destination counties. You can update one or multiple countries at a time. The updates are only applied to the specified NumberCapability type.</p>"
     },
     "UpdateSenderId":{
       "name":"UpdateSenderId",
@@ -5422,7 +5423,7 @@
           "documentation":"<p>The time the rule will expire at. If <code>ExpirationTimestamp</code> is not set then the rule will not expire.</p>"
         }
       },
-      "documentation":"<p>Provides details on a RuleSetNumberOverride.</p>"
+      "documentation":"<p>Provides details on phone number rule overrides for a protect configuration.</p>"
     },
     "ProtectConfigurationRuleSetNumberOverrideFilterItem":{
       "type":"structure",
@@ -5464,7 +5465,9 @@
       "type":"string",
       "enum":[
         "ALLOW",
-        "BLOCK"
+        "BLOCK",
+        "MONITOR",
+        "FILTER"
       ]
     },
     "PutKeywordRequest":{
@@ -6616,7 +6619,7 @@
         },
         "MessageType":{
           "shape":"MessageType",
-          "documentation":"<p>The type of message. Valid values are TRANSACTIONAL for messages that are critical or time-sensitive and PROMOTIONAL for messages that aren't critical or time-sensitive.</p>"
+          "documentation":"<p>The type of message. Valid values are <code>TRANSACTIONAL</code> for messages that are critical or time-sensitive and <code>PROMOTIONAL</code> for messages that aren't critical or time-sensitive.</p>"
         },
         "NumberCapabilities":{
           "shape":"NumberCapabilityList",
@@ -6624,7 +6627,7 @@
         },
         "NumberType":{
           "shape":"RequestableNumberType",
-          "documentation":"<p>The type of phone number to request.</p>"
+          "documentation":"<p>The type of phone number to request.</p> <p>When you request a <code>SIMULATOR</code> phone number, you must set <b>MessageType</b> as <code>TRANSACTIONAL</code>. </p>"
         },
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
@@ -7007,7 +7010,7 @@
         },
         "MediaUrls":{
           "shape":"MediaUrlList",
-          "documentation":"<p>An array of URLs to each media file to send. </p> <p>The media files have to be stored in a publicly available S3 bucket. Supported media file formats are listed in <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/mms-limitations-character.html\">MMS file types, size and character limits</a>. For more information on creating an S3 bucket and managing objects, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html\">Creating a bucket</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html\">Uploading objects</a> in the S3 user guide.</p>"
+          "documentation":"<p>An array of URLs to each media file to send. </p> <p>The media files have to be stored in an S3 bucket. Supported media file formats are listed in <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/mms-limitations-character.html\">MMS file types, size and character limits</a>. For more information on creating an S3 bucket and managing objects, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html\">Creating a bucket</a>, <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html\">Uploading objects</a> in the <i>Amazon S3 User Guide</i>, and <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/send-mms-message.html#send-mms-message-bucket\">Setting up an Amazon S3 bucket for MMS files</a> in the <i>Amazon Web Services End User Messaging SMS User Guide</i>.</p>"
         },
         "ConfigurationSetName":{
           "shape":"ConfigurationSetNameOrArn",
@@ -7655,7 +7658,7 @@
         },
         "AssociationBehavior":{
           "shape":"RegistrationAssociationBehavior",
-          "documentation":"<p>The association behavior.</p> <ul> <li> <p> <code>ASSOCIATE_BEFORE_SUBMIT</code> The origination identity has to be supplied when creating a registration.</p> </li> <li> <p> <code>ASSOCIATE_ON_APPROVAL</code> This applies to all short code registrations. The short code will be automatically provisioned once the registration is approved.</p> </li> <li> <p> <code>ASSOCIATE_AFTER_COMPLETE</code> This applies to phone number registrations when you must complete a registration first, then associate one or more phone numbers later. For example 10DLC campaigns and long codes. </p> </li> </ul>"
+          "documentation":"<p>The association behavior.</p> <ul> <li> <p> <code>ASSOCIATE_BEFORE_SUBMIT</code> The origination identity has to be supplied when creating a registration.</p> </li> <li> <p> <code>ASSOCIATE_ON_APPROVAL</code> This applies to all sender ID registrations. The sender ID will be automatically provisioned once the registration is approved.</p> </li> <li> <p> <code>ASSOCIATE_AFTER_COMPLETE</code> This applies to phone number registrations when you must complete a registration first, then associate one or more phone numbers later. For example 10DLC campaigns and long codes. </p> </li> </ul>"
         },
         "DisassociationBehavior":{
           "shape":"RegistrationDisassociationBehavior",
@@ -8086,7 +8089,7 @@
         },
         "CountryRuleSetUpdates":{
           "shape":"ProtectConfigurationCountryRuleSet",
-          "documentation":"<p>A map of ProtectConfigurationCountryRuleSetInformation objects that contain the details for the requested NumberCapability. The Key is the two-letter ISO country code. For a list of supported ISO country codes, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-sms-by-country.html\">Supported countries and regions (SMS channel)</a> in the AWS End User Messaging SMS User Guide.</p>"
+          "documentation":"<p>A map of ProtectConfigurationCountryRuleSetInformation objects that contain the details for the requested NumberCapability. The Key is the two-letter ISO country code. For a list of supported ISO country codes, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-sms-by-country.html\">Supported countries and regions (SMS channel)</a> in the AWS End User Messaging SMS User Guide.</p> <p>For example, to set the United States as allowed and Canada as blocked, the <code>CountryRuleSetUpdates</code> would be formatted as: <code>\"CountryRuleSetUpdates\": { \"US\" : { \"ProtectStatus\": \"ALLOW\" } \"CA\" : { \"ProtectStatus\": \"BLOCK\" } }</code> </p>"
         }
       }
     },

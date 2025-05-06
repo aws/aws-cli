@@ -940,6 +940,26 @@
       "output":{"shape":"CreateLocalGatewayRouteTableVpcAssociationResult"},
       "documentation":"<p>Associates the specified VPC with the specified local gateway route table.</p>"
     },
+    "CreateLocalGatewayVirtualInterface":{
+      "name":"CreateLocalGatewayVirtualInterface",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateLocalGatewayVirtualInterfaceRequest"},
+      "output":{"shape":"CreateLocalGatewayVirtualInterfaceResult"},
+      "documentation":"<p>Create a virtual interface for a local gateway. </p>"
+    },
+    "CreateLocalGatewayVirtualInterfaceGroup":{
+      "name":"CreateLocalGatewayVirtualInterfaceGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateLocalGatewayVirtualInterfaceGroupRequest"},
+      "output":{"shape":"CreateLocalGatewayVirtualInterfaceGroupResult"},
+      "documentation":"<p>Create a local gateway virtual interface group.</p>"
+    },
     "CreateManagedPrefixList":{
       "name":"CreateManagedPrefixList",
       "http":{
@@ -1744,6 +1764,26 @@
       "output":{"shape":"DeleteLocalGatewayRouteTableVpcAssociationResult"},
       "documentation":"<p>Deletes the specified association between a VPC and local gateway route table.</p>"
     },
+    "DeleteLocalGatewayVirtualInterface":{
+      "name":"DeleteLocalGatewayVirtualInterface",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteLocalGatewayVirtualInterfaceRequest"},
+      "output":{"shape":"DeleteLocalGatewayVirtualInterfaceResult"},
+      "documentation":"<p>Deletes the specified local gateway virtual interface.</p>"
+    },
+    "DeleteLocalGatewayVirtualInterfaceGroup":{
+      "name":"DeleteLocalGatewayVirtualInterfaceGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteLocalGatewayVirtualInterfaceGroupRequest"},
+      "output":{"shape":"DeleteLocalGatewayVirtualInterfaceGroupResult"},
+      "documentation":"<p>Delete the specified local gateway interface group.</p>"
+    },
     "DeleteManagedPrefixList":{
       "name":"DeleteManagedPrefixList",
       "http":{
@@ -2457,7 +2497,7 @@
       },
       "input":{"shape":"DescribeCapacityBlockOfferingsRequest"},
       "output":{"shape":"DescribeCapacityBlockOfferingsResult"},
-      "documentation":"<p>Describes Capacity Block offerings available for purchase in the Amazon Web Services Region that you're currently using. With Capacity Blocks, you purchase a specific instance type for a period of time.</p> <p>To search for an available Capacity Block offering, you specify a reservation duration and instance count. You must select one of the following options.</p> <ul> <li> <p>For reservation durations<b> 1-day increments up 14 days and 7-day increments up to 182 days total</b> </p> </li> <li> <p>For instance count<b> 1, 2, 4, 8, 16, 32, or 64 instances</b> </p> </li> </ul>"
+      "documentation":"<p>Describes Capacity Block offerings available for purchase in the Amazon Web Services Region that you're currently using. With Capacity Blocks, you purchase a specific instance type for a period of time.</p> <p>To search for an available Capacity Block offering, you specify a reservation duration and instance count.</p>"
     },
     "DescribeCapacityReservationBillingRequests":{
       "name":"DescribeCapacityReservationBillingRequests",
@@ -3249,6 +3289,16 @@
       "output":{"shape":"DescribeNetworkInterfacesResult"},
       "documentation":"<p>Describes the specified network interfaces or all your network interfaces.</p> <p>If you have a large number of network interfaces, the operation fails unless you use pagination or one of the following filters: <code>group-id</code>, <code>mac-address</code>, <code>private-dns-name</code>, <code>private-ip-address</code>, <code>subnet-id</code>, or <code>vpc-id</code>.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important>"
     },
+    "DescribeOutpostLags":{
+      "name":"DescribeOutpostLags",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeOutpostLagsRequest"},
+      "output":{"shape":"DescribeOutpostLagsResult"},
+      "documentation":"<p>Describes the Outposts link aggregation groups (LAGs).</p>"
+    },
     "DescribePlacementGroups":{
       "name":"DescribePlacementGroups",
       "http":{
@@ -3448,6 +3498,16 @@
       "input":{"shape":"DescribeSecurityGroupsRequest"},
       "output":{"shape":"DescribeSecurityGroupsResult"},
       "documentation":"<p>Describes the specified security groups or all of your security groups.</p>"
+    },
+    "DescribeServiceLinkVirtualInterfaces":{
+      "name":"DescribeServiceLinkVirtualInterfaces",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeServiceLinkVirtualInterfacesRequest"},
+      "output":{"shape":"DescribeServiceLinkVirtualInterfacesResult"},
+      "documentation":"<p>Describes the Outpost service link virtual interfaces.</p>"
     },
     "DescribeSnapshotAttribute":{
       "name":"DescribeSnapshotAttribute",
@@ -6610,7 +6670,7 @@
       },
       "input":{"shape":"StopInstancesRequest"},
       "output":{"shape":"StopInstancesResult"},
-      "documentation":"<p>Stops an Amazon EBS-backed instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html\">Stop and start Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>You can use the Stop action to hibernate an instance if the instance is <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enabling-hibernation.html\">enabled for hibernation</a> and it meets the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/hibernating-prerequisites.html\">hibernation prerequisites</a>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Hibernate.html\">Hibernate your Amazon EC2 instance</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>We don't charge usage for a stopped instance, or data transfer fees; however, your root partition Amazon EBS volume remains and continues to persist your data, and you are charged for Amazon EBS volume usage. Every time you start your instance, Amazon EC2 charges a one-minute minimum for instance usage, and thereafter charges per second for instance usage.</p> <p>You can't stop or hibernate instance store-backed instances. You can't use the Stop action to hibernate Spot Instances, but you can specify that Amazon EC2 should hibernate Spot Instances when they are interrupted. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-interruptions.html#hibernate-spot-instances\">Hibernating interrupted Spot Instances</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>When you stop or hibernate an instance, we shut it down. You can restart your instance at any time. Before stopping or hibernating an instance, make sure it is in a state from which it can be restarted. Stopping an instance does not preserve data stored in RAM, but hibernating an instance does preserve data stored in RAM. If an instance cannot hibernate successfully, a normal shutdown occurs.</p> <p>Stopping and hibernating an instance is different to rebooting or terminating it. For example, when you stop or hibernate an instance, the root device and any other devices attached to the instance persist. When you terminate an instance, the root device and any other devices attached during the instance launch are automatically deleted. For more information about the differences between rebooting, stopping, hibernating, and terminating instances, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Instance lifecycle</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>When you stop an instance, we attempt to shut it down forcibly after a short while. If your instance appears stuck in the stopping state after a period of time, there may be an issue with the underlying host computer. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstancesStopping.html\">Troubleshoot stopping your instance</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Stops an Amazon EBS-backed instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html\">Stop and start Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>When you stop an instance, we shut it down. You can restart your instance at any time.</p> <p>You can use the Stop operation together with the Hibernate parameter to hibernate an instance if the instance is <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enabling-hibernation.html\">enabled for hibernation</a> and meets the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/hibernating-prerequisites.html\">hibernation prerequisites</a>. Stopping an instance doesn't preserve data stored in RAM, while hibernation does. If hibernation fails, a normal shutdown occurs. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Hibernate.html\">Hibernate your Amazon EC2 instance</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>If your instance appears stuck in the <code>stopping</code> state, there might be an issue with the underlying host computer. You can use the Stop operation together with the Force parameter to force stop your instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstancesStopping.html\">Troubleshoot Amazon EC2 instance stop issues</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Stopping and hibernating an instance differs from rebooting or terminating it. For example, a stopped or hibernated instance retains its root volume and any data volumes, unlike terminated instances where these volumes are automatically deleted. For more information about the differences between stopping, hibernating, rebooting, and terminating instances, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Amazon EC2 instance state changes</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>We don't charge for instance usage or data transfer fees when an instance is stopped. However, the root volume and any data volumes remain and continue to persist your data, and you're charged for volume usage. Every time you start your instance, Amazon EC2 charges a one-minute minimum for instance usage, followed by per-second billing.</p> <p>You can't stop or hibernate instance store-backed instances.</p>"
     },
     "TerminateClientVpnConnections":{
       "name":"TerminateClientVpnConnections",
@@ -6630,7 +6690,7 @@
       },
       "input":{"shape":"TerminateInstancesRequest"},
       "output":{"shape":"TerminateInstancesResult"},
-      "documentation":"<p>Shuts down the specified instances. This operation is idempotent; if you terminate an instance more than once, each call succeeds. </p> <p>If you specify multiple instances and the request fails (for example, because of a single incorrect instance ID), none of the instances are terminated.</p> <p>If you terminate multiple instances across multiple Availability Zones, and one or more of the specified instances are enabled for termination protection, the request fails with the following results:</p> <ul> <li> <p>The specified instances that are in the same Availability Zone as the protected instance are not terminated.</p> </li> <li> <p>The specified instances that are in different Availability Zones, where no other specified instances are protected, are successfully terminated.</p> </li> </ul> <p>For example, say you have the following instances:</p> <ul> <li> <p>Instance A: <code>us-east-1a</code>; Not protected</p> </li> <li> <p>Instance B: <code>us-east-1a</code>; Not protected</p> </li> <li> <p>Instance C: <code>us-east-1b</code>; Protected</p> </li> <li> <p>Instance D: <code>us-east-1b</code>; not protected</p> </li> </ul> <p>If you attempt to terminate all of these instances in the same request, the request reports failure with the following results:</p> <ul> <li> <p>Instance A and Instance B are successfully terminated because none of the specified instances in <code>us-east-1a</code> are enabled for termination protection.</p> </li> <li> <p>Instance C and Instance D fail to terminate because at least one of the specified instances in <code>us-east-1b</code> (Instance C) is enabled for termination protection.</p> </li> </ul> <p>Terminated instances remain visible after termination (for approximately one hour).</p> <p>By default, Amazon EC2 deletes all EBS volumes that were attached when the instance launched. Volumes attached after instance launch continue running.</p> <p>You can stop, start, and terminate EBS-backed instances. You can only terminate instance store-backed instances. What happens to an instance differs if you stop it or terminate it. For example, when you stop an instance, the root device and any other devices attached to the instance persist. When you terminate an instance, any attached EBS volumes with the <code>DeleteOnTermination</code> block device mapping parameter set to <code>true</code> are automatically deleted. For more information about the differences between stopping and terminating instances, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Instance lifecycle</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>For more information about troubleshooting, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstancesShuttingDown.html\">Troubleshooting terminating your instance</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Shuts down the specified instances. This operation is <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">idempotent</a>; if you terminate an instance more than once, each call succeeds.</p> <p>If you specify multiple instances and the request fails (for example, because of a single incorrect instance ID), none of the instances are terminated.</p> <p>If you terminate multiple instances across multiple Availability Zones, and one or more of the specified instances are enabled for termination protection, the request fails with the following results:</p> <ul> <li> <p>The specified instances that are in the same Availability Zone as the protected instance are not terminated.</p> </li> <li> <p>The specified instances that are in different Availability Zones, where no other specified instances are protected, are successfully terminated.</p> </li> </ul> <p>For example, say you have the following instances:</p> <ul> <li> <p>Instance A: <code>us-east-1a</code>; Not protected</p> </li> <li> <p>Instance B: <code>us-east-1a</code>; Not protected</p> </li> <li> <p>Instance C: <code>us-east-1b</code>; Protected</p> </li> <li> <p>Instance D: <code>us-east-1b</code>; not protected</p> </li> </ul> <p>If you attempt to terminate all of these instances in the same request, the request reports failure with the following results:</p> <ul> <li> <p>Instance A and Instance B are successfully terminated because none of the specified instances in <code>us-east-1a</code> are enabled for termination protection.</p> </li> <li> <p>Instance C and Instance D fail to terminate because at least one of the specified instances in <code>us-east-1b</code> (Instance C) is enabled for termination protection.</p> </li> </ul> <p>Terminated instances remain visible after termination (for approximately one hour).</p> <p>By default, Amazon EC2 deletes all EBS volumes that were attached when the instance launched. Volumes attached after instance launch continue running.</p> <p>You can stop, start, and terminate EBS-backed instances. You can only terminate instance store-backed instances. What happens to an instance differs if you stop or terminate it. For example, when you stop an instance, the root device and any other devices attached to the instance persist. When you terminate an instance, any attached EBS volumes with the <code>DeleteOnTermination</code> block device mapping parameter set to <code>true</code> are automatically deleted. For more information about the differences between stopping and terminating instances, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Amazon EC2 instance state changes</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>For information about troubleshooting, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstancesShuttingDown.html\">Troubleshooting terminating your instance</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "UnassignIpv6Addresses":{
       "name":"UnassignIpv6Addresses",
@@ -12093,21 +12153,21 @@
       "members":{
         "Enforced":{
           "shape":"Boolean",
-          "documentation":"<p>Enable or disable the client route enforcement feature.</p> <p>Valid values: <code>true | false</code> </p> <p>Default value: <code>false</code> </p>"
+          "documentation":"<p>Enable or disable Client Route Enforcement. The state can either be <code>true</code> (enabled) or <code>false</code> (disabled). The default is <code>false</code>.</p> <p>Valid values: <code>true | false</code> </p> <p>Default value: <code>false</code> </p>"
         }
       },
-      "documentation":"<p>Client route enforcement is a feature of the Client VPN service that helps enforce administrator defined routes on devices connected through the VPN. T his feature helps improve your security posture by ensuring that network traffic originating from a connected client is not inadvertently sent outside the VPN tunnel.</p> <p>Client route enforcement works by monitoring the route table of a connected device for routing policy changes to the VPN connection. If the feature detects any VPN routing policy modifications, it will automatically force an update to the route table, reverting it back to the expected route configurations.</p>"
+      "documentation":"<p>Client Route Enforcement is a feature of Client VPN that helps enforce administrator defined routes on devices connected through the VPN. This feature helps improve your security posture by ensuring that network traffic originating from a connected client is not inadvertently sent outside the VPN tunnel.</p> <p>Client Route Enforcement works by monitoring the route table of a connected device for routing policy changes to the VPN connection. If the feature detects any VPN routing policy modifications, it will automatically force an update to the route table, reverting it back to the expected route configurations.</p>"
     },
     "ClientRouteEnforcementResponseOptions":{
       "type":"structure",
       "members":{
         "Enforced":{
           "shape":"Boolean",
-          "documentation":"<p>Status of the client route enforcement feature.</p> <p>Valid values: <code>true | false</code> </p> <p>Default value: <code>false</code> </p>",
+          "documentation":"<p>Status of the client route enforcement feature, indicating whether Client Route Enforcement is <code>true</code> (enabled) or <code>false</code> (disabled).</p> <p>Valid values: <code>true | false</code> </p> <p>Default value: <code>false</code> </p>",
           "locationName":"enforced"
         }
       },
-      "documentation":"<p>The current status of client route enforcement. The state will either be <code>true</code> (enabled) or <code>false</code> (disabled).</p>"
+      "documentation":"<p>The current status of Client Route Enforcement. </p>"
     },
     "ClientSecretType":{
       "type":"string",
@@ -14665,6 +14725,10 @@
         "EnablePrivateGua":{
           "shape":"Boolean",
           "documentation":"<p>Enable this option to use your own GUA ranges as private IPv6 addresses. This option is disabled by default.</p>"
+        },
+        "MeteredAccount":{
+          "shape":"IpamMeteredAccount",
+          "documentation":"<p>A metered account is an Amazon Web Services account that is charged for active IP addresses managed in IPAM. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/ipam-enable-cost-distro.html\">Enable cost distribution</a> in the <i>Amazon VPC IPAM User Guide</i>.</p> <p>Possible values:</p> <ul> <li> <p> <code>ipam-owner</code> (default): The Amazon Web Services account which owns the IPAM is charged for all active IP addresses managed in IPAM.</p> </li> <li> <p> <code>resource-owner</code>: The Amazon Web Services account that owns the IP address is charged for the active IP address.</p> </li> </ul>"
         }
       }
     },
@@ -15032,6 +15096,102 @@
           "shape":"LocalGatewayRouteTableVpcAssociation",
           "documentation":"<p>Information about the association.</p>",
           "locationName":"localGatewayRouteTableVpcAssociation"
+        }
+      }
+    },
+    "CreateLocalGatewayVirtualInterfaceGroupRequest":{
+      "type":"structure",
+      "required":["LocalGatewayId"],
+      "members":{
+        "LocalGatewayId":{
+          "shape":"LocalGatewayId",
+          "documentation":"<p>The ID of the local gateway.</p>"
+        },
+        "LocalBgpAsn":{
+          "shape":"Integer",
+          "documentation":"<p>The Autonomous System Number(ASN) for the local Border Gateway Protocol (BGP).</p>"
+        },
+        "LocalBgpAsnExtended":{
+          "shape":"Long",
+          "documentation":"<p>The extended 32-bit ASN for the local BGP configuration.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the local gateway virtual interface group when the resource is being created.</p>",
+          "locationName":"TagSpecification"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "CreateLocalGatewayVirtualInterfaceGroupResult":{
+      "type":"structure",
+      "members":{
+        "LocalGatewayVirtualInterfaceGroup":{
+          "shape":"LocalGatewayVirtualInterfaceGroup",
+          "documentation":"<p>Information about the created local gateway virtual interface group.</p>",
+          "locationName":"localGatewayVirtualInterfaceGroup"
+        }
+      }
+    },
+    "CreateLocalGatewayVirtualInterfaceRequest":{
+      "type":"structure",
+      "required":[
+        "LocalGatewayVirtualInterfaceGroupId",
+        "OutpostLagId",
+        "Vlan",
+        "LocalAddress",
+        "PeerAddress"
+      ],
+      "members":{
+        "LocalGatewayVirtualInterfaceGroupId":{
+          "shape":"LocalGatewayVirtualInterfaceGroupId",
+          "documentation":"<p>The ID of the local gateway virtual interface group.</p>"
+        },
+        "OutpostLagId":{
+          "shape":"OutpostLagId",
+          "documentation":"<p>References the Link Aggregation Group (LAG) that connects the Outpost to on-premises network devices.</p>"
+        },
+        "Vlan":{
+          "shape":"Integer",
+          "documentation":"<p>The virtual local area network (VLAN) used for the local gateway virtual interface.</p>"
+        },
+        "LocalAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address assigned to the local gateway virtual interface on the Outpost side. Only IPv4 is supported.</p>"
+        },
+        "PeerAddress":{
+          "shape":"String",
+          "documentation":"<p>The peer IP address for the local gateway virtual interface. Only IPv4 is supported.</p>"
+        },
+        "PeerBgpAsn":{
+          "shape":"Integer",
+          "documentation":"<p>The Autonomous System Number (ASN) of the Border Gateway Protocol (BGP) peer.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to a resource when the local gateway virtual interface is being created. </p>",
+          "locationName":"TagSpecification"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "PeerBgpAsnExtended":{
+          "shape":"Long",
+          "documentation":"<p>The extended 32-bit ASN of the BGP peer for use with larger ASN values.</p>"
+        }
+      }
+    },
+    "CreateLocalGatewayVirtualInterfaceResult":{
+      "type":"structure",
+      "members":{
+        "LocalGatewayVirtualInterface":{
+          "shape":"LocalGatewayVirtualInterface",
+          "documentation":"<p>Information about the local gateway virtual interface.</p>",
+          "locationName":"localGatewayVirtualInterface"
         }
       }
     },
@@ -17737,7 +17897,7 @@
         },
         "PrivateDnsEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>(Interface endpoint) Indicates whether to associate a private hosted zone with the specified VPC. The private hosted zone contains a record set for the default public DNS name for the service for the Region (for example, <code>kinesis.us-east-1.amazonaws.com</code>), which resolves to the private IP addresses of the endpoint network interfaces in the VPC. This enables you to make requests to the default public DNS name for the service instead of the public DNS names that are automatically generated by the VPC endpoint service.</p> <p>To use a private hosted zone, you must set the following VPC attributes to <code>true</code>: <code>enableDnsHostnames</code> and <code>enableDnsSupport</code>. Use <a>ModifyVpcAttribute</a> to set the VPC attributes.</p> <p>Default: <code>true</code> </p>"
+          "documentation":"<p>(Interface endpoint) Indicates whether to associate a private hosted zone with the specified VPC. The private hosted zone contains a record set for the default public DNS name for the service for the Region (for example, <code>kinesis.us-east-1.amazonaws.com</code>), which resolves to the private IP addresses of the endpoint network interfaces in the VPC. This enables you to make requests to the default public DNS name for the service instead of the public DNS names that are automatically generated by the VPC endpoint service.</p> <p>To use a private hosted zone, you must set the following VPC attributes to <code>true</code>: <code>enableDnsHostnames</code> and <code>enableDnsSupport</code>. Use <a>ModifyVpcAttribute</a> to set the VPC attributes.</p>"
         },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
@@ -19173,6 +19333,54 @@
           "shape":"LocalGatewayRouteTableVpcAssociation",
           "documentation":"<p>Information about the association.</p>",
           "locationName":"localGatewayRouteTableVpcAssociation"
+        }
+      }
+    },
+    "DeleteLocalGatewayVirtualInterfaceGroupRequest":{
+      "type":"structure",
+      "required":["LocalGatewayVirtualInterfaceGroupId"],
+      "members":{
+        "LocalGatewayVirtualInterfaceGroupId":{
+          "shape":"LocalGatewayVirtualInterfaceGroupId",
+          "documentation":"<p>The ID of the local gateway virtual interface group to delete.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteLocalGatewayVirtualInterfaceGroupResult":{
+      "type":"structure",
+      "members":{
+        "LocalGatewayVirtualInterfaceGroup":{
+          "shape":"LocalGatewayVirtualInterfaceGroup",
+          "documentation":"<p>Information about the deleted local gateway virtual interface group.</p>",
+          "locationName":"localGatewayVirtualInterfaceGroup"
+        }
+      }
+    },
+    "DeleteLocalGatewayVirtualInterfaceRequest":{
+      "type":"structure",
+      "required":["LocalGatewayVirtualInterfaceId"],
+      "members":{
+        "LocalGatewayVirtualInterfaceId":{
+          "shape":"LocalGatewayVirtualInterfaceId",
+          "documentation":"<p>The ID of the local virtual interface to delete.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteLocalGatewayVirtualInterfaceResult":{
+      "type":"structure",
+      "members":{
+        "LocalGatewayVirtualInterface":{
+          "shape":"LocalGatewayVirtualInterface",
+          "documentation":"<p>Information about the deleted local gateway virtual interface.</p>",
+          "locationName":"localGatewayVirtualInterface"
         }
       }
     },
@@ -21121,7 +21329,7 @@
         },
         "InstanceCount":{
           "shape":"Integer",
-          "documentation":"<p>The number of instances for which to reserve capacity.</p>"
+          "documentation":"<p>The number of instances for which to reserve capacity. Each Capacity Block can have up to 64 instances, and you can have up to 256 instances across Capacity Blocks.</p>"
         },
         "StartDateRange":{
           "shape":"MillisecondDateTime",
@@ -21133,7 +21341,7 @@
         },
         "CapacityDurationHours":{
           "shape":"Integer",
-          "documentation":"<p>The number of hours for which to reserve Capacity Block.</p>"
+          "documentation":"<p>The reservation duration for the Capacity Block, in hours. You must specify the duration in 1-day increments up 14 days, and in 7-day increments up to 182 days.</p>"
         },
         "NextToken":{
           "shape":"String",
@@ -24807,6 +25015,48 @@
         }
       }
     },
+    "DescribeOutpostLagsRequest":{
+      "type":"structure",
+      "members":{
+        "OutpostLagIds":{
+          "shape":"OutpostLagIdSet",
+          "documentation":"<p>The IDs of the Outpost LAGs.</p>",
+          "locationName":"OutpostLagId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters to use for narrowing down the request. The following filters are supported:</p> <ul> <li> <p> <code>service-link-virtual-interface-id</code> - The ID of the service link virtual interface.</p> </li> <li> <p> <code>service-link-virtual-interface-arn</code> - The ARN of the service link virtual interface.</p> </li> <li> <p> <code>outpost-id</code> - The Outpost ID.</p> </li> <li> <p> <code>outpost-arn</code> - The Outpost ARN.</p> </li> <li> <p> <code>owner-id</code> - The ID of the Amazon Web Services account that owns the service link virtual interface.</p> </li> <li> <p> <code>vlan</code> - The ID of the address pool.</p> </li> <li> <p> <code>local-address</code> - The local address.</p> </li> <li> <p> <code>peer-address</code> - The peer address.</p> </li> <li> <p> <code>peer-bgp-asn</code> - The peer BGP ASN.</p> </li> <li> <p> <code>outpost-lag-id</code> - The Outpost LAG ID.</p> </li> <li> <p> <code>configuration-state</code> - The configuration state of the service link virtual interface.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"OutpostLagMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeOutpostLagsResult":{
+      "type":"structure",
+      "members":{
+        "OutpostLags":{
+          "shape":"OutpostLagSet",
+          "documentation":"<p>The Outpost LAGs.</p>",
+          "locationName":"outpostLagSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribePlacementGroupsRequest":{
       "type":"structure",
       "members":{
@@ -25694,6 +25944,48 @@
           "shape":"SecurityGroupList",
           "documentation":"<p>Information about the security groups.</p>",
           "locationName":"securityGroupInfo"
+        }
+      }
+    },
+    "DescribeServiceLinkVirtualInterfacesRequest":{
+      "type":"structure",
+      "members":{
+        "ServiceLinkVirtualInterfaceIds":{
+          "shape":"ServiceLinkVirtualInterfaceIdSet",
+          "documentation":"<p>The IDs of the service link virtual interfaces.</p>",
+          "locationName":"ServiceLinkVirtualInterfaceId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters to use for narrowing down the request. The following filters are supported:</p> <ul> <li> <p> <code>outpost-lag-id</code> - The ID of the Outpost LAG.</p> </li> <li> <p> <code>outpost-arn</code> - The Outpost ARN.</p> </li> <li> <p> <code>owner-id</code> - The ID of the Amazon Web Services account that owns the service link virtual interface.</p> </li> <li> <p> <code>state</code> - The state of the Outpost LAG.</p> </li> <li> <p> <code>vlan</code> - The ID of the address pool.</p> </li> <li> <p> <code>service-link-virtual-interface-id</code> - The ID of the service link virtual interface.</p> </li> <li> <p> <code>local-gateway-virtual-interface-id</code> - The ID of the local gateway virtual interface.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"ServiceLinkMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeServiceLinkVirtualInterfacesResult":{
+      "type":"structure",
+      "members":{
+        "ServiceLinkVirtualInterfaces":{
+          "shape":"ServiceLinkVirtualInterfaceSet",
+          "documentation":"<p>Describes the service link virtual interfaces.</p>",
+          "locationName":"serviceLinkVirtualInterfaceSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
         }
       }
     },
@@ -32561,7 +32853,7 @@
       "members":{
         "Encrypted":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the encryption state of an EBS volume is changed while being restored from a backing snapshot. The effect of setting the encryption state to <code>true</code> depends on the volume origin (new or from a snapshot), starting encryption state, ownership, and whether encryption by default is enabled. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-encryption.html\">Amazon EBS encryption</a> in the <i>Amazon EBS User Guide</i>.</p> <p>In no case can you remove encryption from an encrypted volume.</p> <p>Encrypted volumes can only be attached to instances that support Amazon EBS encryption. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-encryption-requirements.html#ebs-encryption_supported_instances\">Supported instance types</a>.</p> <p>This parameter is not returned by .</p> <p>For and , whether you can include this parameter, and the allowed values differ depending on the type of block device mapping you are creating.</p> <ul> <li> <p>If you are creating a block device mapping for a <b>new (empty) volume</b>, you can include this parameter, and specify either <code>true</code> for an encrypted volume, or <code>false</code> for an unencrypted volume. If you omit this parameter, it defaults to <code>false</code> (unencrypted).</p> </li> <li> <p>If you are creating a block device mapping from an <b>existing encrypted or unencrypted snapshot</b>, you must omit this parameter. If you include this parameter, the request will fail, regardless of the value that you specify.</p> </li> <li> <p>If you are creating a block device mapping from an <b>existing unencrypted volume</b>, you can include this parameter, but you must specify <code>false</code>. If you specify <code>true</code>, the request will fail. In this case, we recommend that you omit the parameter.</p> </li> <li> <p>If you are creating a block device mapping from an <b>existing encrypted volume</b>, you can include this parameter, and specify either <code>true</code> or <code>false</code>. However, if you specify <code>false</code>, the parameter is ignored and the block device mapping is always encrypted. In this case, we recommend that you omit the parameter.</p> </li> </ul>"
+          "documentation":"<p>Indicates whether the encryption state of an EBS volume is changed while being restored from a backing snapshot. The effect of setting the encryption state to <code>true</code> depends on the volume origin (new or from a snapshot), starting encryption state, ownership, and whether encryption by default is enabled. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-encryption.html\">Amazon EBS encryption</a> in the <i>Amazon EBS User Guide</i>.</p> <p>In no case can you remove encryption from an encrypted volume.</p> <p>Encrypted volumes can only be attached to instances that support Amazon EBS encryption. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-encryption-requirements.html#ebs-encryption_supported_instances\">Supported instance types</a>.</p> <p>This parameter is not returned by <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeImageAttribute\">DescribeImageAttribute</a>.</p> <p>For <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage\">CreateImage</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RegisterImage\">RegisterImage</a>, whether you can include this parameter, and the allowed values differ depending on the type of block device mapping you are creating.</p> <ul> <li> <p>If you are creating a block device mapping for a <b>new (empty) volume</b>, you can include this parameter, and specify either <code>true</code> for an encrypted volume, or <code>false</code> for an unencrypted volume. If you omit this parameter, it defaults to <code>false</code> (unencrypted).</p> </li> <li> <p>If you are creating a block device mapping from an <b>existing encrypted or unencrypted snapshot</b>, you must omit this parameter. If you include this parameter, the request will fail, regardless of the value that you specify.</p> </li> <li> <p>If you are creating a block device mapping from an <b>existing unencrypted volume</b>, you can include this parameter, but you must specify <code>false</code>. If you specify <code>true</code>, the request will fail. In this case, we recommend that you omit the parameter.</p> </li> <li> <p>If you are creating a block device mapping from an <b>existing encrypted volume</b>, you can include this parameter, and specify either <code>true</code> or <code>false</code>. However, if you specify <code>false</code>, the parameter is ignored and the block device mapping is always encrypted. In this case, we recommend that you omit the parameter.</p> </li> </ul>"
         },
         "DeleteOnTermination":{
           "shape":"Boolean",
@@ -32775,7 +33067,7 @@
           "documentation":"<p>The attributes for the instance types. When you specify instance attributes, Amazon EC2 will identify instance types with those attributes.</p> <note> <p>If you specify <code>InstanceRequirements</code>, you can't specify <code>InstanceType</code>.</p> </note>"
         },
         "ImageId":{
-          "shape":"String",
+          "shape":"ImageId",
           "documentation":"<p>The ID of the AMI in the format <code>ami-17characters00000</code>.</p> <p>Alternatively, you can specify a Systems Manager parameter, using one of the following formats. The Systems Manager parameter will resolve to an AMI ID on launch.</p> <p>To reference a public parameter:</p> <ul> <li> <p> <code>resolve:ssm:<i>public-parameter</i> </code> </p> </li> </ul> <p>To reference a parameter stored in the same account:</p> <ul> <li> <p> <code>resolve:ssm:<i>parameter-name</i> </code> </p> </li> <li> <p> <code>resolve:ssm:<i>parameter-name:version-number</i> </code> </p> </li> <li> <p> <code>resolve:ssm:<i>parameter-name:label</i> </code> </p> </li> </ul> <p>To reference a parameter shared from another Amazon Web Services account:</p> <ul> <li> <p> <code>resolve:ssm:<i>parameter-ARN</i> </code> </p> </li> <li> <p> <code>resolve:ssm:<i>parameter-ARN:version-number</i> </code> </p> </li> <li> <p> <code>resolve:ssm:<i>parameter-ARN:label</i> </code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-launch-template.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon EC2 User Guide</i>.</p> <note> <p>This parameter is only available for fleets of type <code>instant</code>. For fleets of type <code>maintain</code> and <code>request</code>, you must specify the AMI ID in the launch template.</p> </note>"
         }
       },
@@ -39259,7 +39551,7 @@
         },
         "AcceleratorTypes":{
           "shape":"AcceleratorTypeSet",
-          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
+          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> <li> <p>For instance types with Inference accelerators, specify <code>inference</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
           "locationName":"acceleratorTypeSet"
         },
         "AcceleratorCount":{
@@ -39382,7 +39674,7 @@
         },
         "AcceleratorTypes":{
           "shape":"AcceleratorTypeSet",
-          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
+          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> <li> <p>For instance types with Inference accelerators, specify <code>inference</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
           "locationName":"AcceleratorType"
         },
         "AcceleratorCount":{
@@ -41231,6 +41523,11 @@
           "shape":"Boolean",
           "documentation":"<p>Enable this option to use your own GUA ranges as private IPv6 addresses. This option is disabled by default.</p>",
           "locationName":"enablePrivateGua"
+        },
+        "MeteredAccount":{
+          "shape":"IpamMeteredAccount",
+          "documentation":"<p>A metered account is an Amazon Web Services account that is charged for active IP addresses managed in IPAM. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/ipam-enable-cost-distro.html\">Enable cost distribution</a> in the <i>Amazon VPC IPAM User Guide</i>.</p> <p>Possible values:</p> <ul> <li> <p> <code>ipam-owner</code> (default): The Amazon Web Services account which owns the IPAM is charged for all active IP addresses managed in IPAM.</p> </li> <li> <p> <code>resource-owner</code>: The Amazon Web Services account that owns the IP address is charged for the active IP address.</p> </li> </ul>",
+          "locationName":"meteredAccount"
         }
       },
       "documentation":"<p>IPAM is a VPC feature that you can use to automate your IP address management workflows including assigning, tracking, troubleshooting, and auditing IP addresses across Amazon Web Services Regions and accounts throughout your Amazon Web Services Organization. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/what-is-it-ipam.html\">What is IPAM?</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
@@ -41699,6 +41996,13 @@
       "type":"integer",
       "max":1000,
       "min":5
+    },
+    "IpamMeteredAccount":{
+      "type":"string",
+      "enum":[
+        "ipam-owner",
+        "resource-owner"
+      ]
     },
     "IpamNetmaskLength":{
       "type":"integer",
@@ -44995,6 +45299,21 @@
           "documentation":"<p>The ID of the local gateway.</p>",
           "locationName":"localGatewayId"
         },
+        "LocalGatewayVirtualInterfaceGroupId":{
+          "shape":"LocalGatewayVirtualInterfaceGroupId",
+          "documentation":"<p>The ID of the local gateway virtual interface group.</p>",
+          "locationName":"localGatewayVirtualInterfaceGroupId"
+        },
+        "LocalGatewayVirtualInterfaceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the local gateway virtual interface.</p>",
+          "locationName":"localGatewayVirtualInterfaceArn"
+        },
+        "OutpostLagId":{
+          "shape":"String",
+          "documentation":"<p>The Outpost LAG ID.</p>",
+          "locationName":"outpostLagId"
+        },
         "Vlan":{
           "shape":"Integer",
           "documentation":"<p>The ID of the VLAN.</p>",
@@ -45020,6 +45339,11 @@
           "documentation":"<p>The peer BGP ASN.</p>",
           "locationName":"peerBgpAsn"
         },
+        "PeerBgpAsnExtended":{
+          "shape":"Long",
+          "documentation":"<p>The extended 32-bit ASN of the BGP peer for use with larger ASN values.</p>",
+          "locationName":"peerBgpAsnExtended"
+        },
         "OwnerId":{
           "shape":"String",
           "documentation":"<p>The ID of the Amazon Web Services account that owns the local gateway virtual interface.</p>",
@@ -45029,9 +45353,23 @@
           "shape":"TagList",
           "documentation":"<p>The tags assigned to the virtual interface.</p>",
           "locationName":"tagSet"
+        },
+        "ConfigurationState":{
+          "shape":"LocalGatewayVirtualInterfaceConfigurationState",
+          "documentation":"<p>The current state of the local gateway virtual interface.</p>",
+          "locationName":"configurationState"
         }
       },
       "documentation":"<p>Describes a local gateway virtual interface.</p>"
+    },
+    "LocalGatewayVirtualInterfaceConfigurationState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "available",
+        "deleting",
+        "deleted"
+      ]
     },
     "LocalGatewayVirtualInterfaceGroup":{
       "type":"structure",
@@ -45056,13 +45394,43 @@
           "documentation":"<p>The ID of the Amazon Web Services account that owns the local gateway virtual interface group.</p>",
           "locationName":"ownerId"
         },
+        "LocalBgpAsn":{
+          "shape":"Integer",
+          "documentation":"<p>The Autonomous System Number(ASN) for the local Border Gateway Protocol (BGP).</p>",
+          "locationName":"localBgpAsn"
+        },
+        "LocalBgpAsnExtended":{
+          "shape":"Long",
+          "documentation":"<p>The extended 32-bit ASN for the local BGP configuration.</p>",
+          "locationName":"localBgpAsnExtended"
+        },
+        "LocalGatewayVirtualInterfaceGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the local gateway virtual interface group.</p>",
+          "locationName":"localGatewayVirtualInterfaceGroupArn"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags assigned to the virtual interface group.</p>",
           "locationName":"tagSet"
+        },
+        "ConfigurationState":{
+          "shape":"LocalGatewayVirtualInterfaceGroupConfigurationState",
+          "documentation":"<p>The current state of the local gateway virtual interface group.</p>",
+          "locationName":"configurationState"
         }
       },
       "documentation":"<p>Describes a local gateway virtual interface group.</p>"
+    },
+    "LocalGatewayVirtualInterfaceGroupConfigurationState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "incomplete",
+        "available",
+        "deleting",
+        "deleted"
+      ]
     },
     "LocalGatewayVirtualInterfaceGroupId":{"type":"string"},
     "LocalGatewayVirtualInterfaceGroupIdSet":{
@@ -46727,6 +47095,10 @@
         "EnablePrivateGua":{
           "shape":"Boolean",
           "documentation":"<p>Enable this option to use your own GUA ranges as private IPv6 addresses. This option is disabled by default.</p>"
+        },
+        "MeteredAccount":{
+          "shape":"IpamMeteredAccount",
+          "documentation":"<p>A metered account is an Amazon Web Services account that is charged for active IP addresses managed in IPAM. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/ipam-enable-cost-distro.html\">Enable cost distribution</a> in the <i>Amazon VPC IPAM User Guide</i>.</p> <p>Possible values:</p> <ul> <li> <p> <code>ipam-owner</code> (default): The Amazon Web Services account which owns the IPAM is charged for all active IP addresses managed in IPAM.</p> </li> <li> <p> <code>resource-owner</code>: The Amazon Web Services account that owns the IP address is charged for the active IP address.</p> </li> </ul>"
         }
       }
     },
@@ -50735,6 +51107,67 @@
       "type":"string",
       "pattern":"^arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:outpost/op-[a-f0-9]{17}$"
     },
+    "OutpostLag":{
+      "type":"structure",
+      "members":{
+        "OutpostArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the Outpost LAG.</p>",
+          "locationName":"outpostArn"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Outpost LAG owner.</p>",
+          "locationName":"ownerId"
+        },
+        "State":{
+          "shape":"String",
+          "documentation":"<p>The current state of the Outpost LAG.</p>",
+          "locationName":"state"
+        },
+        "OutpostLagId":{
+          "shape":"OutpostLagId",
+          "documentation":"<p>The ID of the Outpost LAG.</p>",
+          "locationName":"outpostLagId"
+        },
+        "LocalGatewayVirtualInterfaceIds":{
+          "shape":"LocalGatewayVirtualInterfaceIdSet",
+          "documentation":"<p>The IDs of the local gateway virtual interfaces associated with the Outpost LAG.</p>",
+          "locationName":"localGatewayVirtualInterfaceIdSet"
+        },
+        "ServiceLinkVirtualInterfaceIds":{
+          "shape":"ServiceLinkVirtualInterfaceIdSet",
+          "documentation":"<p>The service link virtual interface IDs associated with the Outpost LAG.</p>",
+          "locationName":"serviceLinkVirtualInterfaceIdSet"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the Outpost LAG.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes an Outpost link aggregation group (LAG).</p>"
+    },
+    "OutpostLagId":{"type":"string"},
+    "OutpostLagIdSet":{
+      "type":"list",
+      "member":{
+        "shape":"OutpostLagId",
+        "locationName":"item"
+      }
+    },
+    "OutpostLagMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "OutpostLagSet":{
+      "type":"list",
+      "member":{
+        "shape":"OutpostLag",
+        "locationName":"item"
+      }
+    },
     "OwnerStringList":{
       "type":"list",
       "member":{
@@ -51149,7 +51582,7 @@
       "members":{
         "InstanceFamily":{
           "shape":"String",
-          "documentation":"<p>The instance family to use as a baseline reference.</p> <note> <p>Ensure that you specify the correct value for the instance family. The instance family is everything before the period (<code>.</code>) in the instance type name. For example, in the instance type <code>c6i.large</code>, the instance family is <code>c6i</code>, not <code>c6</code>. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/instancetypes/instance-type-names.html\">Amazon EC2 instance type naming conventions</a> in <i>Amazon EC2 Instance Types</i>.</p> </note> <p>The following instance families are <i>not supported</i> for performance protection:</p> <ul> <li> <p> <code>c1</code> </p> </li> <li> <p> <code>g3</code> | <code>g3s</code> </p> </li> <li> <p> <code>hpc7g</code> </p> </li> <li> <p> <code>m1</code> | <code>m2</code> </p> </li> <li> <p> <code>mac1</code> | <code>mac2</code> | <code>mac2-m1ultra</code> | <code>mac2-m2</code> | <code>mac2-m2pro</code> </p> </li> <li> <p> <code>p3dn</code> | <code>p4d</code> | <code>p5</code> </p> </li> <li> <p> <code>t1</code> </p> </li> <li> <p> <code>u-12tb1</code> | <code>u-18tb1</code> | <code>u-24tb1</code> | <code>u-3tb1</code> | <code>u-6tb1</code> | <code>u-9tb1</code> | <code>u7i-12tb</code> | <code>u7in-16tb</code> | <code>u7in-24tb</code> | <code>u7in-32tb</code> </p> </li> </ul> <p>If you enable performance protection by specifying a supported instance family, the returned instance types will exclude the above unsupported instance families.</p> <p>If you specify an unsupported instance family as a value for baseline performance, the API returns an empty response for and an exception for , , , and .</p>",
+          "documentation":"<p>The instance family to use as a baseline reference.</p> <note> <p>Ensure that you specify the correct value for the instance family. The instance family is everything before the period (<code>.</code>) in the instance type name. For example, in the instance type <code>c6i.large</code>, the instance family is <code>c6i</code>, not <code>c6</code>. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/instancetypes/instance-type-names.html\">Amazon EC2 instance type naming conventions</a> in <i>Amazon EC2 Instance Types</i>.</p> </note> <p>The following instance families are <i>not supported</i> for performance protection:</p> <ul> <li> <p> <code>c1</code> </p> </li> <li> <p> <code>g3</code> | <code>g3s</code> </p> </li> <li> <p> <code>hpc7g</code> </p> </li> <li> <p> <code>m1</code> | <code>m2</code> </p> </li> <li> <p> <code>mac1</code> | <code>mac2</code> | <code>mac2-m1ultra</code> | <code>mac2-m2</code> | <code>mac2-m2pro</code> </p> </li> <li> <p> <code>p3dn</code> | <code>p4d</code> | <code>p5</code> </p> </li> <li> <p> <code>t1</code> </p> </li> <li> <p> <code>u-12tb1</code> | <code>u-18tb1</code> | <code>u-24tb1</code> | <code>u-3tb1</code> | <code>u-6tb1</code> | <code>u-9tb1</code> | <code>u7i-12tb</code> | <code>u7in-16tb</code> | <code>u7in-24tb</code> | <code>u7in-32tb</code> </p> </li> </ul> <p>If you enable performance protection by specifying a supported instance family, the returned instance types will exclude the above unsupported instance families.</p> <p>If you specify an unsupported instance family as a value for baseline performance, the API returns an empty response for <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetInstanceTypesFromInstanceRequirements\">GetInstanceTypesFromInstanceRequirements</a> and an exception for <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateFleet\">CreateFleet</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotFleet\">RequestSpotFleet</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyFleet\">ModifyFleet</a>, and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifySpotFleetRequest\">ModifySpotFleetRequest</a>.</p>",
           "locationName":"instanceFamily"
         }
       },
@@ -51160,7 +51593,7 @@
       "members":{
         "InstanceFamily":{
           "shape":"String",
-          "documentation":"<p>The instance family to use as a baseline reference.</p> <note> <p>Ensure that you specify the correct value for the instance family. The instance family is everything before the period (<code>.</code>) in the instance type name. For example, in the instance type <code>c6i.large</code>, the instance family is <code>c6i</code>, not <code>c6</code>. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/instancetypes/instance-type-names.html\">Amazon EC2 instance type naming conventions</a> in <i>Amazon EC2 Instance Types</i>.</p> </note> <p>The following instance families are <i>not supported</i> for performance protection:</p> <ul> <li> <p> <code>c1</code> </p> </li> <li> <p> <code>g3</code> | <code>g3s</code> </p> </li> <li> <p> <code>hpc7g</code> </p> </li> <li> <p> <code>m1</code> | <code>m2</code> </p> </li> <li> <p> <code>mac1</code> | <code>mac2</code> | <code>mac2-m1ultra</code> | <code>mac2-m2</code> | <code>mac2-m2pro</code> </p> </li> <li> <p> <code>p3dn</code> | <code>p4d</code> | <code>p5</code> </p> </li> <li> <p> <code>t1</code> </p> </li> <li> <p> <code>u-12tb1</code> | <code>u-18tb1</code> | <code>u-24tb1</code> | <code>u-3tb1</code> | <code>u-6tb1</code> | <code>u-9tb1</code> | <code>u7i-12tb</code> | <code>u7in-16tb</code> | <code>u7in-24tb</code> | <code>u7in-32tb</code> </p> </li> </ul> <p>If you enable performance protection by specifying a supported instance family, the returned instance types will exclude the above unsupported instance families.</p> <p>If you specify an unsupported instance family as a value for baseline performance, the API returns an empty response for and an exception for , , , and .</p>"
+          "documentation":"<p>The instance family to use as a baseline reference.</p> <note> <p>Ensure that you specify the correct value for the instance family. The instance family is everything before the period (<code>.</code>) in the instance type name. For example, in the instance type <code>c6i.large</code>, the instance family is <code>c6i</code>, not <code>c6</code>. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/instancetypes/instance-type-names.html\">Amazon EC2 instance type naming conventions</a> in <i>Amazon EC2 Instance Types</i>.</p> </note> <p>The following instance families are <i>not supported</i> for performance protection:</p> <ul> <li> <p> <code>c1</code> </p> </li> <li> <p> <code>g3</code> | <code>g3s</code> </p> </li> <li> <p> <code>hpc7g</code> </p> </li> <li> <p> <code>m1</code> | <code>m2</code> </p> </li> <li> <p> <code>mac1</code> | <code>mac2</code> | <code>mac2-m1ultra</code> | <code>mac2-m2</code> | <code>mac2-m2pro</code> </p> </li> <li> <p> <code>p3dn</code> | <code>p4d</code> | <code>p5</code> </p> </li> <li> <p> <code>t1</code> </p> </li> <li> <p> <code>u-12tb1</code> | <code>u-18tb1</code> | <code>u-24tb1</code> | <code>u-3tb1</code> | <code>u-6tb1</code> | <code>u-9tb1</code> | <code>u7i-12tb</code> | <code>u7in-16tb</code> | <code>u7in-24tb</code> | <code>u7in-32tb</code> </p> </li> </ul> <p>If you enable performance protection by specifying a supported instance family, the returned instance types will exclude the above unsupported instance families.</p> <p>If you specify an unsupported instance family as a value for baseline performance, the API returns an empty response for <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetInstanceTypesFromInstanceRequirements\">GetInstanceTypesFromInstanceRequirements</a> and an exception for <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateFleet\">CreateFleet</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotFleet\">RequestSpotFleet</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyFleet\">ModifyFleet</a>, and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifySpotFleetRequest\">ModifySpotFleetRequest</a>.</p>"
         }
       },
       "documentation":"<p>Specify an instance family to use as the baseline reference for CPU performance. All instance types that match your specified attributes will be compared against the CPU performance of the referenced instance family, regardless of CPU manufacturer or architecture.</p> <note> <p>Currently, only one instance family can be specified in the list.</p> </note>"
@@ -55214,6 +55647,7 @@
         "network-insights-path",
         "network-insights-access-scope",
         "network-insights-access-scope-analysis",
+        "outpost-lag",
         "placement-group",
         "prefix-list",
         "replace-root-volume-task",
@@ -55221,6 +55655,7 @@
         "route-table",
         "security-group",
         "security-group-rule",
+        "service-link-virtual-interface",
         "snapshot",
         "spot-fleet-request",
         "spot-instances-request",
@@ -58372,6 +58807,101 @@
         "locationName":"item"
       }
     },
+    "ServiceLinkMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "ServiceLinkVirtualInterface":{
+      "type":"structure",
+      "members":{
+        "ServiceLinkVirtualInterfaceId":{
+          "shape":"ServiceLinkVirtualInterfaceId",
+          "documentation":"<p>The ID of the service link virtual interface.</p>",
+          "locationName":"serviceLinkVirtualInterfaceId"
+        },
+        "ServiceLinkVirtualInterfaceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) for the service link virtual interface. </p>",
+          "locationName":"serviceLinkVirtualInterfaceArn"
+        },
+        "OutpostId":{
+          "shape":"String",
+          "documentation":"<p>The Outpost ID for the service link virtual interface.</p>",
+          "locationName":"outpostId"
+        },
+        "OutpostArn":{
+          "shape":"String",
+          "documentation":"<p>The Outpost Amazon Resource Number (ARN) for the service link virtual interface.</p>",
+          "locationName":"outpostArn"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the service link virtual interface..</p>",
+          "locationName":"ownerId"
+        },
+        "LocalAddress":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 address assigned to the local gateway virtual interface on the Outpost side.</p>",
+          "locationName":"localAddress"
+        },
+        "PeerAddress":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 peer address for the service link virtual interface.</p>",
+          "locationName":"peerAddress"
+        },
+        "PeerBgpAsn":{
+          "shape":"Long",
+          "documentation":"<p>The ASN for the Border Gateway Protocol (BGP) associated with the service link virtual interface.</p>",
+          "locationName":"peerBgpAsn"
+        },
+        "Vlan":{
+          "shape":"Integer",
+          "documentation":"<p>The virtual local area network for the service link virtual interface.</p>",
+          "locationName":"vlan"
+        },
+        "OutpostLagId":{
+          "shape":"OutpostLagId",
+          "documentation":"<p>The link aggregation group (LAG) ID for the service link virtual interface.</p>",
+          "locationName":"outpostLagId"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the service link virtual interface.</p>",
+          "locationName":"tagSet"
+        },
+        "ConfigurationState":{
+          "shape":"ServiceLinkVirtualInterfaceConfigurationState",
+          "documentation":"<p>The current state of the service link virtual interface.</p>",
+          "locationName":"configurationState"
+        }
+      },
+      "documentation":"<p>Describes the service link virtual interfaces that establish connectivity between Amazon Web Services Outpost and on-premises networks.</p>"
+    },
+    "ServiceLinkVirtualInterfaceConfigurationState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "available",
+        "deleting",
+        "deleted"
+      ]
+    },
+    "ServiceLinkVirtualInterfaceId":{"type":"string"},
+    "ServiceLinkVirtualInterfaceIdSet":{
+      "type":"list",
+      "member":{
+        "shape":"ServiceLinkVirtualInterfaceId",
+        "locationName":"item"
+      }
+    },
+    "ServiceLinkVirtualInterfaceSet":{
+      "type":"list",
+      "member":{
+        "shape":"ServiceLinkVirtualInterface",
+        "locationName":"item"
+      }
+    },
     "ServiceManaged":{
       "type":"string",
       "enum":[
@@ -60092,7 +60622,7 @@
         },
         "Force":{
           "shape":"Boolean",
-          "documentation":"<p>Forces the instances to stop. The instances do not have an opportunity to flush file system caches or file system metadata. If you use this option, you must perform file system check and repair procedures. This option is not recommended for Windows instances.</p> <p>Default: <code>false</code> </p>",
+          "documentation":"<p>Forces the instance to stop. The instance will first attempt a graceful shutdown, which includes flushing file system caches and metadata. If the graceful shutdown fails to complete within the timeout period, the instance shuts down forcibly without flushing the file system caches and metadata.</p> <p>After using this option, you must perform file system check and repair procedures. This option is not recommended for Windows instances. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstancesStopping.html\">Troubleshoot Amazon EC2 instance stop issues</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Default: <code>false</code> </p>",
           "locationName":"force"
         }
       }

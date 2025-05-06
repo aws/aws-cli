@@ -248,21 +248,23 @@ class CLIDocumentEventHandler:
         """Recursively documents parameters in nested structures"""
         member_type_name = getattr(model, 'type_name', None)
         if member_type_name == 'structure':
+            required_members = model.metadata.get('required', [])
             for member_name, member_shape in model.members.items():
+                is_required = member_name in required_members
                 self._doc_member(
-                    doc, member_name, member_shape, stack=[model.name]
+                    doc, member_name, member_shape, stack=[model.name], required=is_required
                 )
         elif member_type_name == 'list':
-            self._doc_member(doc, '', model.member, stack=[model.name])
+            self._doc_member(doc, '', model.member, stack=[model.name], required=False)
         elif member_type_name == 'map':
             key_shape = model.key
             key_name = key_shape.serialization.get('name', 'key')
-            self._doc_member(doc, key_name, key_shape, stack=[model.name])
+            self._doc_member(doc, key_name, key_shape, stack=[model.name], required=False)
             value_shape = model.value
             value_name = value_shape.serialization.get('name', 'value')
-            self._doc_member(doc, value_name, value_shape, stack=[model.name])
+            self._doc_member(doc, value_name, value_shape, stack=[model.name], required=False)
 
-    def _doc_member(self, doc, member_name, member_shape, stack):
+    def _doc_member(self, doc, member_name, member_shape, stack, required=False):
         if member_shape.name in stack:
             # Document the recursion once, otherwise just
             # note the fact that it's recursive and return.
@@ -272,11 +274,11 @@ class CLIDocumentEventHandler:
                 return
         stack.append(member_shape.name)
         try:
-            self._do_doc_member(doc, member_name, member_shape, stack)
+            self._do_doc_member(doc, member_name, member_shape, stack, required)
         finally:
             stack.pop()
 
-    def _do_doc_member(self, doc, member_name, member_shape, stack):
+    def _do_doc_member(self, doc, member_name, member_shape, stack, required=False):
         docs = member_shape.documentation
         type_name = self._get_argument_type_name(
             member_shape, member_shape.type_name
@@ -290,22 +292,29 @@ class CLIDocumentEventHandler:
         doc.include_doc_string(docs)
         if is_tagged_union_type(member_shape):
             self._add_tagged_union_note(member_shape, doc)
+
+        if required:
+            doc.style.new_paragraph()
+            doc.write('This parameter is required.')
+
         self._document_enums(member_shape, doc)
         self._document_constraints(member_shape, doc)
         doc.style.new_paragraph()
         member_type_name = member_shape.type_name
         if member_type_name == 'structure':
+            required_members = member_shape.metadata.get('required', [])
             for sub_name, sub_shape in member_shape.members.items():
-                self._doc_member(doc, sub_name, sub_shape, stack)
+                sub_required = sub_name in required_members
+                self._doc_member(doc, sub_name, sub_shape, stack, required=sub_required)
         elif member_type_name == 'map':
             key_shape = member_shape.key
             key_name = key_shape.serialization.get('name', 'key')
-            self._doc_member(doc, key_name, key_shape, stack)
+            self._doc_member(doc, key_name, key_shape, stack, required=False)
             value_shape = member_shape.value
             value_name = value_shape.serialization.get('name', 'value')
-            self._doc_member(doc, value_name, value_shape, stack)
+            self._doc_member(doc, value_name, value_shape, stack, required=False)
         elif member_type_name == 'list':
-            self._doc_member(doc, '', member_shape.member, stack)
+            self._doc_member(doc, '', member_shape.member, stack, required=False)
         doc.style.dedent()
         doc.style.new_paragraph()
 

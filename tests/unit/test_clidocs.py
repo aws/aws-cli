@@ -499,6 +499,36 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         rendered = help_command.doc.getvalue().decode('utf-8')
         self.assertRegex(rendered, r'FooBar[\s\S]*Tagged Union')
 
+    def test_documents_required_parameters(self):
+        """Tests that required parameters are correctly documented."""
+        shape_map = {
+            'ParentStructure': {
+                'type': 'structure',
+                'required': ['RequiredParameter'],
+                'members': {
+                    'RequiredParameter': {'shape': 'StringMember'},
+                    'OptionalParameter': {'shape': 'StringMember'},
+                }
+            },
+            'StringMember': {'type': 'string'},
+        }
+
+        resolver = ShapeResolver(shape_map)
+        parent_shape = StructureShape(
+            'ParentStructure',
+            shape_map['ParentStructure'],
+            resolver
+        )
+
+        rendered = self.get_help_docs_for_argument(parent_shape)
+
+        required_index = rendered.find('RequiredParameter -> (string)')
+        optional_index = rendered.find('OptionalParameter -> (string)')
+
+        self.assertIn('This parameter is required', rendered[required_index:optional_index])
+        optional_text = rendered[optional_index:]
+        self.assertNotIn('This parameter is required', optional_text)
+
     def test_documents_constraints(self):
         shape = {'type': 'string', 'min': 0, 'max': 10, 'pattern': '.*'}
         shape = StringShape('ConstrainedArg', shape)

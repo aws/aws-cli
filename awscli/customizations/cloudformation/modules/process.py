@@ -222,6 +222,8 @@ def process_module_section(
     foreach_modules = process_foreach(template, parent_module)
     parent_module.foreach_modules = foreach_modules
 
+    print("After process_foreach foreach_modules", foreach_modules)
+
     # Process each Module node separately after processing Maps
     modules = template[MODULES]
     for k, v in modules.items():
@@ -588,6 +590,7 @@ class Module:
             if SUB in v.d:
                 self.resolve_output_sub(v.d[SUB], v.p, v.k)
             elif GETATT in v.d:
+                print("About to call resolve_output_getatt from process_module_outputs")
                 self.resolve_output_getatt(v.d[GETATT], v.p, v.k)
             # Refs can't point to module outputs since we need Module.Output
 
@@ -686,7 +689,7 @@ class Module:
         !GetAtt ModuleName[Identifier].OutputName.
 
         We can !GetAtt ModuleName[*].OutputName to get a list of all
-        output value for a module that was in a foreach.
+        output values for a module that was in a foreach.
 
         These can also be references to Parameters that are maps.
 
@@ -709,8 +712,14 @@ class Module:
         else:
             foreach_modules = self.foreach_modules
 
+        print("resolve_output_getatt")
+        print("  foreach_modules:", foreach_modules)
+
         name = v[0]
         prop_name = v[1]
+
+        print("  name:", name)
+        print("  prop_name:", prop_name)
 
         index = -1
         if "[]" in name:
@@ -718,9 +727,14 @@ class Module:
             raise exceptions.InvalidModuleError(msg=msg)
 
         # Handle ModuleName.* the same as ModuleName[*]
-        if ".*" in name:
-            # Convert ModuleName.* to ModuleName[*] format
-            base_name = name.split(".*")[0]
+        # This is passed in like [Storage, *.BucketArn]
+        if "*." in prop_name:
+            base_name = name
+            prop_name = prop_name.replace("*.", "")
+
+
+            print(f"  *. base_name: {base_name}, prop_name: {prop_name}")
+
             if base_name in foreach_modules:
                 self.resolve_output_getatt_foreach(
                     foreach_modules, base_name, prop_name
@@ -752,14 +766,13 @@ class Module:
 
             name = module_name
             
-            # Directly resolve to the correct bucket for dot notation
+            # Directly resolve to the correct resource for dot notation
             if name in foreach_modules:
                 # Find the array index for the identifier
                 if isinstance(identifier, str):
                     for i, k in enumerate(foreach_modules[name]):
                         if identifier == k:
-                            # Create a direct reference to the specific bucket
-                            d[n] = {GETATT: [f"{name}{i}Bucket", prop_name]}
+                            d[n] = {GETATT: [f"{name}{i}", prop_name]}
                             return True
             
             # Continue with normal processing if we couldn't directly resolve
@@ -960,50 +973,40 @@ class Module:
 
     def resolve_output_getatt_foreach(self, foreach_modules, name, prop_name):
         "Resolve GetAtts that reference all Outputs from a foreach module"
+
+        print("resolve_output_getatt_foreach")
+        print("  name:", name)
+        print("  prop_name:", prop_name)
+
         num_items = len(foreach_modules[name])
         dd = [None] * num_items
         
-        # Create lists for both BucketName and BucketArn properties
-        for output_prop in [prop_name, "BucketArn"]:
-            bracket_key = name + "[*]." + output_prop
-            dot_key = name + ".*." + output_prop
-            
-            if bracket_key not in foreach_modules:
-                foreach_modules[bracket_key] = []
-            if dot_key not in foreach_modules:
-                foreach_modules[dot_key] = []
+        # Create lists for the requested property
+        bracket_key = name + "[*]." + prop_name
+        dot_key = name + ".*." + prop_name
+        
+        if bracket_key not in foreach_modules:
+            foreach_modules[bracket_key] = []
+        if dot_key not in foreach_modules:
+            foreach_modules[dot_key] = []
         
         for i in range(num_items):
             # Resolve the item as if it was a normal getatt
             vv = [f"{name}{i}", prop_name]
+            print("About to call resolve_output_getatt from resolve_output_getatt_foreach")
             resolved = self.resolve_output_getatt(vv, dd, i)
             if resolved:
                 # Don't set anything here, just remember it so
                 # we can go back and fix the entire getatt later
                 item_val = dd[i]
-                # Use a key like "Content.Arn"
-                bracket_key = name + "[*]." + prop_name
-                dot_key = name + ".*." + prop_name
                 
                 if item_val not in foreach_modules[bracket_key]:
                     # Don't double add. We already replaced refs in
                     # modules, so it shows up twice.
                     foreach_modules[bracket_key].append(item_val)
                     foreach_modules[dot_key].append(item_val)
-                
-                # Also add BucketArn for each bucket
-                arn_item_val = {"Fn::GetAtt": [f"{name}{i}Bucket", "Arn"]}
-                bracket_key_arn = name + "[*].BucketArn"
-                dot_key_arn = name + ".*.BucketArn"
-                
-                if bracket_key_arn not in foreach_modules:
-                    foreach_modules[bracket_key_arn] = []
-                if dot_key_arn not in foreach_modules:
-                    foreach_modules[dot_key_arn] = []
-                
-                if arn_item_val not in foreach_modules[bracket_key_arn]:
-                    foreach_modules[bracket_key_arn].append(arn_item_val)
-                    foreach_modules[dot_key_arn].append(arn_item_val)
+
+                    print("Added to foreach_modules", bracket_key)
 
     def validate_overrides(self):
         "Make sure resources referenced by overrides actually exist"

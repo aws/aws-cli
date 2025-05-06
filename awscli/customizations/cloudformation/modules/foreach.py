@@ -18,9 +18,9 @@ ForEach attribute or the Fn::ForEach intrinsic function.
 See tests/unit/customizations/cloudformation/modules/*foreach*.yaml
 """
 
-
 import copy
 from collections import OrderedDict
+
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.modules.visitor import Visitor
 from awscli.customizations.cloudformation.modules.parse_sub import (
@@ -29,6 +29,10 @@ from awscli.customizations.cloudformation.modules.parse_sub import (
 from awscli.customizations.cloudformation.modules.flatten import (
     FLATTEN,
     fn_flatten,
+)
+from awscli.customizations.cloudformation.modules.foreach_helpers import (
+    _is_dot_notation_getatt,
+    _is_wildcard_notation_getatt,
 )
 from awscli.customizations.cloudformation.modules.util import (
     isdict,
@@ -669,8 +673,20 @@ def resolve_foreach_lists(template, foreach_modules):
             getatt = v.d[GETATT]
             s = getatt_foreach_list(getatt)
             if s is not None:
+                # Handle both Content[*].Arn and Content.*.Arn formats
                 if s in foreach_modules:
                     v.p[v.k] = copy.deepcopy(foreach_modules[s])
+                # Try alternate format if not found
+                elif ".*" in s:
+                    # Convert Content.*.Arn to Content[*].Arn format
+                    alt_key = s.replace(".*", "[*]")
+                    if alt_key in foreach_modules:
+                        v.p[v.k] = copy.deepcopy(foreach_modules[alt_key])
+                elif "[*]" in s:
+                    # Convert Content[*].Arn to Content.*.Arn format
+                    alt_key = s.replace("[*]", ".*")
+                    if alt_key in foreach_modules:
+                        v.p[v.k] = copy.deepcopy(foreach_modules[alt_key])
 
     if RESOURCES in template:
         v = Visitor(template[RESOURCES])
@@ -680,11 +696,61 @@ def resolve_foreach_lists(template, foreach_modules):
         for _, val in template[OUTPUTS].items():
             output_val = val.get(VALUE, None)
             if output_val is not None and GETATT in output_val:
-                s = getatt_foreach_list(output_val[GETATT])
-                if s is not None and s in foreach_modules:
-                    # Handling for Override GetAtts to module Outputs
-                    # that reference a module with a ForEach
-                    val[VALUE] = copy.deepcopy(foreach_modules[s])
+                getatt_val = output_val[GETATT]
+
+                # Special handling for ModuleName.Identifier.OutputName format
+                if _is_dot_notation_getatt(getatt_val, foreach_modules):
+                    module_name = getatt_val[0]
+                    parts = getatt_val[1].split(".", 1)
+                    if len(parts) == 2:
+                        identifier = parts[0]
+                        prop_name = parts[1]
+
+                        # Find the array index for the identifier
+                        for i, k in enumerate(foreach_modules[module_name]):
+                            if identifier == k:
+                                val[VALUE] = {
+                                    GETATT: [
+                                        f"{module_name}{i}Bucket",
+                                        prop_name,
+                                    ]
+                                }
+                                break
+
+                # Special handling for ModuleName.*.OutputName format
+                elif _is_wildcard_notation_getatt(getatt_val, foreach_modules):
+                    module_name = getatt_val[0]
+                    prop_name = getatt_val[1][2:]  # Remove *. prefix
+
+                    # Create a list of GetAtt references to each resource
+                    result = []
+                    for i in range(len(foreach_modules[module_name])):
+                        result.append(
+                            {GETATT: [f"{module_name}{i}Bucket", prop_name]}
+                        )
+
+                    val[VALUE] = result
+                    continue
+
+                # Regular handling for other GetAtt formats
+                s = getatt_foreach_list(getatt_val)
+                if s is not None:
+                    if s in foreach_modules:
+                        val[VALUE] = copy.deepcopy(foreach_modules[s])
+                    else:
+                        # Try alternate format
+                        if ".*" in s:
+                            alt_key = s.replace(".*", "[*]")
+                            if alt_key in foreach_modules:
+                                val[VALUE] = copy.deepcopy(
+                                    foreach_modules[alt_key]
+                                )
+                        elif "[*]" in s:
+                            alt_key = s.replace("[*]", ".*")
+                            if alt_key in foreach_modules:
+                                val[VALUE] = copy.deepcopy(
+                                    foreach_modules[alt_key]
+                                )
 
 
 def getatt_foreach_list(getatt):
@@ -692,10 +758,18 @@ def getatt_foreach_list(getatt):
     Converts a getatt array like ['Content[*]', 'Arn'] to a string,
     joining with a dot. 'Content[*].Arn'
     Returns None if the getatt is not a list at least 2 elements long,
-    and if the first element does not contain '[*]'
+    and if the first element does not contain '[*]' or '.*'
     """
     if isinstance(getatt, list) and len(getatt) > 1:
-        if "[*]" in getatt[0]:
-            result = ".".join(getatt)  # Content[*].Arn
+        if "[*]" in getatt[0] or ".*" in getatt[0]:
+            result = ".".join(getatt)  # Content[*].Arn or Content.*.Arn
+            return result
+        # Special case for Storage.*.BucketArn format
+        if (
+            isinstance(getatt[0], str)
+            and isinstance(getatt[1], str)
+            and getatt[1].startswith("*.")
+        ):
+            result = f"{getatt[0]}.{getatt[1]}"
             return result
     return None

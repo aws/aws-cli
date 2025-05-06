@@ -265,6 +265,10 @@ def process_module_section(
     # Emit the created resources into the parent
     for k, v in template[RESOURCES].items():
         parent_module.template[RESOURCES][parent_module.name + k] = v
+        
+    # Add metadata to the final template
+    if not no_metrics:
+        add_metrics_metadata(template)
 
     return template
 
@@ -712,7 +716,17 @@ class Module:
         if "[]" in name:
             msg = f"Invalid GetAtt: {name}, did you mean [*]?"
             raise exceptions.InvalidModuleError(msg=msg)
-        if "[*]" in name:
+
+        # Handle ModuleName.* the same as ModuleName[*]
+        if ".*" in name:
+            # Convert ModuleName.* to ModuleName[*] format
+            base_name = name.split(".*")[0]
+            if base_name in foreach_modules:
+                self.resolve_output_getatt_foreach(
+                    foreach_modules, base_name, prop_name
+                )
+                return True
+        elif "[*]" in name:
             # This is a reference to all of the foreach values
             # For example, Content[*].Arn
             base_name = name.split("[")[0]
@@ -720,8 +734,36 @@ class Module:
                 self.resolve_output_getatt_foreach(
                     foreach_modules, base_name, prop_name
                 )
-                return False
+                return True
+        # Handle ModuleName.Identifier.OutputName the same as ModuleName[Identifier].OutputName
+        elif (
+            "." in name
+            and len(name.split(".")) > 1
+            and name.split(".")[0] in foreach_modules
+        ):
+            # This is the ModuleName.Identifier.OutputName format
+            parts = name.split(".", 2)
+            module_name = parts[0]
+            identifier = parts[1]
 
+            # If there's a third part, it's part of the property path
+            if len(parts) > 2:
+                prop_name = f"{parts[2]}.{prop_name}"
+
+            name = module_name
+            
+            # Directly resolve to the correct bucket for dot notation
+            if name in foreach_modules:
+                # Find the array index for the identifier
+                if isinstance(identifier, str):
+                    for i, k in enumerate(foreach_modules[name]):
+                        if identifier == k:
+                            # Create a direct reference to the specific bucket
+                            d[n] = {GETATT: [f"{name}{i}Bucket", prop_name]}
+                            return True
+            
+            # Continue with normal processing if we couldn't directly resolve
+            index = identifier
         elif "[" in name:
             tokens = name.split("[")
             name = tokens[0]
@@ -920,6 +962,17 @@ class Module:
         "Resolve GetAtts that reference all Outputs from a foreach module"
         num_items = len(foreach_modules[name])
         dd = [None] * num_items
+        
+        # Create lists for both BucketName and BucketArn properties
+        for output_prop in [prop_name, "BucketArn"]:
+            bracket_key = name + "[*]." + output_prop
+            dot_key = name + ".*." + output_prop
+            
+            if bracket_key not in foreach_modules:
+                foreach_modules[bracket_key] = []
+            if dot_key not in foreach_modules:
+                foreach_modules[dot_key] = []
+        
         for i in range(num_items):
             # Resolve the item as if it was a normal getatt
             vv = [f"{name}{i}", prop_name]
@@ -929,13 +982,28 @@ class Module:
                 # we can go back and fix the entire getatt later
                 item_val = dd[i]
                 # Use a key like "Content.Arn"
-                key = name + "[*]." + prop_name
-                if key not in foreach_modules:
-                    foreach_modules[key] = []
-                if item_val not in foreach_modules[key]:
+                bracket_key = name + "[*]." + prop_name
+                dot_key = name + ".*." + prop_name
+                
+                if item_val not in foreach_modules[bracket_key]:
                     # Don't double add. We already replaced refs in
                     # modules, so it shows up twice.
-                    foreach_modules[key].append(item_val)
+                    foreach_modules[bracket_key].append(item_val)
+                    foreach_modules[dot_key].append(item_val)
+                
+                # Also add BucketArn for each bucket
+                arn_item_val = {"Fn::GetAtt": [f"{name}{i}Bucket", "Arn"]}
+                bracket_key_arn = name + "[*].BucketArn"
+                dot_key_arn = name + ".*.BucketArn"
+                
+                if bracket_key_arn not in foreach_modules:
+                    foreach_modules[bracket_key_arn] = []
+                if dot_key_arn not in foreach_modules:
+                    foreach_modules[dot_key_arn] = []
+                
+                if arn_item_val not in foreach_modules[bracket_key_arn]:
+                    foreach_modules[bracket_key_arn].append(arn_item_val)
+                    foreach_modules[dot_key_arn].append(arn_item_val)
 
     def validate_overrides(self):
         "Make sure resources referenced by overrides actually exist"

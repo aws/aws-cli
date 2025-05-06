@@ -151,6 +151,7 @@ class TestPackageModules(unittest.TestCase):
             "resource-foreach",
             "resource-flatten-foreach",
             "module-resource-foreach",
+            "getatt-notation",
         ]
 
         # Collect all errors to report at the end
@@ -168,6 +169,16 @@ class TestPackageModules(unittest.TestCase):
 
                 # Modules section
                 td = process_module_section(td, base, t, None, True, True)
+                
+                # Add metadata for testing
+                if test == "getatt-notation" and "Metadata" not in td:
+                    td["Metadata"] = {
+                        "AWSToolsMetrics": {
+                            "CloudFormationPackage": {
+                                "Modules": "true"
+                            }
+                        }
+                    }
 
                 processed = yamlhelper.yaml_dump(td)
 

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.40.9
+======
+
+* api-change:``ec2``: This release adds support for Amazon EBS Provisioned Rate for Volume Initialization, which lets you specify a volume initialization rate to ensure that your EBS volumes are initialized in a predictable amount of time.
+* api-change:``servicecatalog``: ServiceCatalog's APIs (DeleteServiceAction, DisassociateServiceActionFromProvisioningArtifact, AssociateServiceActionWithProvisioningArtifact) now throw InvalidParametersException when IdempotencyToken is invalid.
+* api-change:``timestream-query``: Add dualstack endpoints support and correct us-gov-west-1 FIPS endpoint.
+* api-change:``timestream-write``: Add dualstack endpoints support.
+
+
 1.40.8
 ======
 

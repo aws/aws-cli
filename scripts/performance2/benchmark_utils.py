@@ -1,13 +1,9 @@
-import datetime
+from typing import Generator, List, Tuple
+
 import json
 import math
-import random
-import string
 import sys
 import time
-import uuid
-import traceback
-import numpy as np
 
 import psutil
 
@@ -18,9 +14,6 @@ from awscli.botocore.awsrequest import AWSResponse
 from unittest import mock
 from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
 from awscli.compat import BytesIO
-from botocore.config import Config
-
-from botocore.session import get_session
 
 
 class StubbedHTTPClient:
@@ -63,8 +56,7 @@ class BenchmarkSuite:
     #   The main alternative would be for suites to control the control flow of executing the CLI command, with all function calls in a single statement (or equivalent)
     #   This would look more like the pseudocodes defined on the cbor docs, for example, with a yield between each sequence.
 
-    # or if we don't want
-    def before_suite(self, args):
+    def get_test_cases(self, args):
         # return [sequence_generator]
         # each generator generates args.num_iterations times
         raise NotImplementedError()
@@ -81,16 +73,6 @@ class BenchmarkSuite:
     def provide_sequence_results(self):
         raise NotImplementedError()
 
-    def after_suite(self):
-        pass
-
-# for each sequence generator
-#   for each case (call to sequence generator)
-#       call begin_iteration
-#       run benchmark on the case
-#       call suite.collect_results with (case, results)
-
-#
 
 # cloudwatch / secrets
 # generators mostly the same, except it tracks iteration with its own loop above a yield
@@ -163,11 +145,12 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
             'AWS_DEFAULT_REGION': 'us-west-2',
         }
 
-    def before_suite(self, args):
-        self._client = StubbedHTTPClient()
-        self._benchmark_results.clear()
+    def get_test_cases(self, args):
         definitions = json.load(open(args.benchmark_definitions, 'r'))
-        return [(definition for _ in range(args.num_iterations)) for definition in definitions]
+        def generator(definition):
+            for iteration in range(args.num_iterations):
+                yield definition
+        return [generator(definition) for definition in definitions]
 
     def begin_iteration(self, case, workspace_path, assets_path, iteration):
         env = case.get('environment', {})
@@ -229,7 +212,7 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
         self._env_patch.stop()
 
     def provide_sequence_results(self):
-        values = self._benchmark_results.values()
+        values = list(self._benchmark_results.values())
         self._benchmark_results.clear()
         return values
 
@@ -382,6 +365,7 @@ class ProcessBenchmarker:
 
 
 class BenchmarkHarness(object):
+    BENCHMARK_SUITES = [JSONStubbedBenchmarkSuite]
     """
     Orchestrates running benchmarks in isolated, configurable environments defined
     via a specified JSON file.
@@ -497,6 +481,10 @@ class BenchmarkHarness(object):
             # that would support the use case when a specific format is needed (e.g. cbor benchmarks)
             # this would mean consume_case_results gets the raw results
             # and provide_sequence_results calls (internal) summary on each metrics data in the sequence
+
+            # LEANING TOWARDS NO. should be easy to override the summarizer when needed
+            # for one-off investigations/goals. but benchmark_utils must maintain a
+            # contract in its output format
             summary = self._summarizer.summarize(samples)
             summary['total_time'] = (
                 metrics_f['end_time'] - metrics_f['start_time']
@@ -512,32 +500,34 @@ class BenchmarkHarness(object):
             os.makedirs(result_dir, 0o777)
         return summary
 
-    def run_benchmarks(self, suite: BenchmarkSuite, args):
+    def get_test_suites(self, args):
+        return [suite() for suite in BenchmarkHarness.BENCHMARK_SUITES]
+
+    def run_benchmarks(self, cases: List[Tuple[BenchmarkSuite, Generator[dict, None, None]]], args):
         """
-        Orchestrates benchmarking via the benchmark definitions in
-        the arguments.
+        Orchestrates benchmarking via the supplied list of test case
+        generators.
         """
         summaries = {'results': []}
         result_dir = args.result_dir
         process_benchmarker = ProcessBenchmarker()
-        # --- BEFORE-SUITE (resource creation, retrieve/return sequence generators, ...)
+
+        # --- BEGIN-SUITE (resource creation, retrieve/return sequence generators, ...)
         # optionally, files per iteration could be created here all at once (e.g. for caching reasons)
         # but it is preferred to be done per-iteration to minimize the life of files
-        # on the disk to the time that they're needed/used by the application
-        sequence_generators = suite.before_suite(args)
+        # on the disk to the time that they're needed/used by the application, and to
+        # not rely on shared state between tests
+        # .. temporarily removed begin-suite to discourage sharing state between tests
         if os.path.exists(result_dir):
             shutil.rmtree(result_dir)
         os.makedirs(result_dir, 0o777)
-
         try:
-            for seq_generator in sequence_generators:
+            for (suite, case) in cases:
                 # --- BEFORE-ITERATION / BEGIN-SUITE (setup/reset state for generating each iteration call. including the result object(s))
-                benchmark_results = {}
-
                 for idx in range(args.num_iterations):
                     # --- BEGIN-ITERATION (generate plethora/sequence using iteration-specific information, generate resources
                     # to be used this iteration and to be cleaned up at end of iteration, apply client stubs as needed, patch env)
-                    for test_case in seq_generator:
+                    for cmd in case:
                         # BEGIN-ITERATION and END-ITERATION. two options:
                         # 1) Have them both called here. So this function owns the logic for calling the suite functions,
                         # and run_isolated_benchmark can focus on running the benchmark itself.
@@ -554,100 +544,53 @@ class BenchmarkHarness(object):
                         # Next, do we want a function that gets called to cleanup in the case
                         # there was an exception? Currently, that's end_iteration whether there
                         # was an exception. Maybe we can pass exception information to end_iteration.
-
                         # TODO NEXT: finalize these architecture changes. and TODOs
-                        suite.consume_case_results(test_case, self._run_isolated_benchmark(
+                        suite.consume_case_results(cmd, self._run_isolated_benchmark(
                             result_dir,
                             idx,
-                            test_case,
+                            cmd,
                             suite,
                             process_benchmarker,
                             args,
                         ))
-
-
                 # --- PROVIDE-SEQUENCE-RESULTS (add/transform results from each case in the sequence/plethora)
-                if args.service and (args.service == 'secrets' or args.service == 'echo' or args.service == 'cloudwatch'):
-                    # for each caseresult, map to a list (size  # metrics) containing one output per metric
-                    for ((service, case, protocol, dimension), metrics) in benchmark_results.items():
-                        # Serialization time (ms)
-                        serialization_measures = np.array([metric['serialization_time'] for metric in metrics if metric['serialization_time'] is not None], dtype=np.float64)
-                        deserialization_measures = np.array([metric['deserialization_time'] for metric in metrics if metric['deserialization_time'] is not None], dtype=np.float64)
-                        req_payload_measures = np.array([metric['request_payload_size'] for metric in metrics if metric['request_payload_size'] is not None], dtype=np.float64)
-                        res_payload_measures = np.array([metric['response_payload_size'] for metric in metrics if metric['response_payload_size'] is not None], dtype=np.float64)
-                        req_time_measures = np.array([metric['total_request_time'] for metric in metrics if metric['total_request_time'] is not None], dtype=np.float64)
-                        serialization_case_result = {
-                            'service': service,
-                            'test_case': case,
-                            'protocol': protocol,
-                            'dimension_value': dimension,
-                            'metric': 'Serialization time (ms)',
-                            'p50': np.percentile(serialization_measures, 50) * 1000,
-                            'p90': np.percentile(serialization_measures, 90) * 1000,
-                            'max': np.max(serialization_measures) * 1000,
-                        }
+                summaries['results'].extend(suite.provide_sequence_results())
 
-                        # Deserialization time (ms)
-                        deserialization_case_result = {
-                            'service': service,
-                            'test_case': case,
-                            'protocol': protocol,
-                            'dimension_value': dimension,
-                            'metric': 'Deserialization time (ms)',
-                            'p50': np.percentile(deserialization_measures, 50) * 1000,
-                            'p90': np.percentile(deserialization_measures, 90) * 1000,
-                            'max': np.max(deserialization_measures) * 1000,
-                        }
-                        # Request payload size (bytes)
-                        req_payload_case_result = {
-                            'service': service,
-                            'test_case': case,
-                            'protocol': protocol,
-                            'dimension_value': dimension,
-                            'metric': 'Request payload size (bytes)',
-                            'p50': np.percentile(req_payload_measures, 50),
-                            'p90': np.percentile(req_payload_measures, 90),
-                            'max': np.max(req_payload_measures),
-                        }
-                        # Response payload size (bytes)
-                        res_payload_case_result = {
-                            'service': service,
-                            'test_case': case,
-                            'protocol': protocol,
-                            'dimension_value': dimension,
-                            'metric': 'Response payload size (bytes)',
-                            'p50': np.percentile(res_payload_measures, 50),
-                            'p90': np.percentile(res_payload_measures, 90),
-                            'max': np.max(res_payload_measures),
-                        }
-                        summaries['results'] += [serialization_case_result, deserialization_case_result, req_payload_case_result, res_payload_case_result]
-                        if args.service == 'secrets' or args.service == 'cloudwatch':
-                            summaries['results'].append({
-                                'service': service,
-                                'test_case': case,
-                                'protocol': protocol,
-                                'dimension_value': dimension,
-                                'metric': 'Total request time (ms)',
-                                'p50': np.percentile(req_time_measures, 50) * 1000,
-                                'p90': np.percentile(req_time_measures, 90) * 1000,
-                                'max': np.max(req_time_measures) * 1000,
-                            })
-                        # print('END CODE PUSH RESULTS FOR')
-                        # TODO Total request time (ms) for secrets and cloudwatch
-                    # summaries['results'] += benchmark_results.values()
-                # summaries['results'].append(benchmark_result)
-
-            # --- AFTER-SUITE (cleanup, resource deletion, ...)
-            if args.service and args.service == 'secrets':
-                # post-suite code: Clean up resources
-                for i in range(args.num_iterations):
-                    iteration = f"{i:0>3}"
-                    string_secret_name = f"TestSecret_{run_start_time}_{iteration}"
-                    binary_secret_name = f"TestBinarySecret_{run_start_time}_{iteration}"
-                    sm_cbor.delete_secret(SecretId=string_secret_name)
-                    sm_cbor.delete_secret(SecretId=binary_secret_name)
+            # --- END-SUITE (cleanup, resource deletion, ...)
+            # temporarily removed end-suite to disincentive sharing state between tests
         finally:
             # final cleanup
             shutil.rmtree(result_dir, ignore_errors=True)
         print(json.dumps(summaries, indent=2))
 
+
+    def run_benchmark_suite(self, suite: BenchmarkSuite, args):
+        """
+        Orchestrates benchmarking via the benchmark definitions in
+        the arguments.
+        """
+        # --- GET-TEST-CASES (retrieve case generators)
+        sequence_generators = suite.get_test_cases(args)
+        self.run_benchmarks(sequence_generators, args)
+
+
+# TODO IMPORTANT NEXT STEP:
+# 0. How can we integrate calling a case's begin and cleanup from its generator?
+#   other than unified dictionary language for creating env, etc., we want to execute
+#   arbitrary code like making remote aws resources. may want to use getattr on some
+#   function of the dict object, and have a setup function for each case that needs it
+#   then the suite becomes a lot more important, since it defines the setup and cleanup
+#   functions.
+
+# we do want to move towards case-first system here. i'm thinking a case class.
+# has a setup and cleanup function. and a generator property. suite does very little
+# work, just defines these cases. once they're defined, cases can be executed by the
+# harness without the creator suite, with the needed tasks below:
+
+# 1. Move the consume_case_results and provide_sequence_results into a separate class
+#       BenchmarkResultHandler. Use the implementations in JSON Suite as the "standard" one
+#       if org requires results in special format, or more complex storing of case results
+#       can override the class and use that as a drop-in
+# 2. Axe down the idea of suite entirely. Cases should be standalone 2 things:
+#       The function code for generating the definition, the begin-iteration code, and end-iteration code
+#       Then all the harness needs is the case definitions and the result handler.

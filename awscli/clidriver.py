@@ -1003,18 +1003,17 @@ class CLIOperationCaller(object):
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl,
         )
-        response, req_time = self._make_client_call(
+        response = self._make_client_call(
             client, operation_name, parameters, parsed_globals
         )
         self._display_response(operation_name, response, parsed_globals)
-        return 0, req_time
+        return 0
 
     def _make_client_call(
         self, client, operation_name, parameters, parsed_globals
     ):
         py_operation_name = xform_name(operation_name)
 
-        start_time = time.time()
         if client.can_paginate(py_operation_name) and parsed_globals.paginate:
             paginator = client.get_paginator(py_operation_name)
             response = paginator.paginate(**parameters)
@@ -1022,8 +1021,7 @@ class CLIOperationCaller(object):
             response = getattr(client, xform_name(operation_name))(
                 **parameters
             )
-        end_time = time.time()
-        return response, end_time - start_time
+        return response
 
     def _display_response(self, command_name, response, parsed_globals):
         output = parsed_globals.output

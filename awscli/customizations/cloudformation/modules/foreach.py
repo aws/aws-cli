@@ -22,6 +22,10 @@ import copy
 from collections import OrderedDict
 
 from awscli.customizations.cloudformation import exceptions
+from awscli.customizations.cloudformation.modules.resolve import (
+    find_ref,
+    resolve,
+)
 from awscli.customizations.cloudformation.modules.visitor import Visitor
 from awscli.customizations.cloudformation.modules.parse_sub import (
     is_sub_needed,
@@ -211,7 +215,7 @@ def _resolve_foreach_ref(config, k, parent_module):
 
     if isdict(fe):
         if REF in fe:
-            resolved = parent_module.find_ref(fe[REF])
+            resolved = find_ref(parent_module, fe[REF])
             if resolved is None:
                 msg = f"{k} has an invalid ForEach Ref: {fe}"
                 raise exceptions.InvalidModuleError(msg=msg)
@@ -220,7 +224,7 @@ def _resolve_foreach_ref(config, k, parent_module):
 
         if FLATTEN in fe:
 
-            parent_module.resolve(fe)
+            resolve(parent_module, fe)
 
             fn_flatten(config)
 

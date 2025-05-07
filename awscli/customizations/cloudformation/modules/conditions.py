@@ -40,6 +40,8 @@ from awscli.customizations.cloudformation.modules.names import (
 from awscli.customizations.cloudformation.modules.util import (
     isdict,
 )
+from awscli.customizations.cloudformation.modules import resolve
+
 
 LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.DEBUG)
@@ -56,7 +58,7 @@ def parse_conditions(m, module_dict):
         return
 
     def find_ref(v):
-        return m.find_ref(v)
+        return resolve.find_ref(m, v)
 
     for k, v in module_dict[CONDITIONS].items():
         m.conditions[k] = istrue(v, find_ref, m.conditions)

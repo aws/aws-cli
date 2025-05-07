@@ -22,6 +22,7 @@ the resolved value directly.
 
 import logging
 from awscli.customizations.cloudformation import exceptions
+from awscli.customizations.cloudformation.modules.resolve import resolve
 from awscli.customizations.cloudformation.modules.visitor import Visitor
 from awscli.customizations.cloudformation.modules.names import (
     RESOURCES,
@@ -93,7 +94,7 @@ def process_findmap_expressions(m, module_dict, mappings_to_emit):
         if FINDINMAP in v.d:
 
             # Try to resolve any Refs in the node
-            m.resolve(v.d)
+            resolve(m, v.d)
 
             if FINDINMAP not in v.d:
                 # If the node is resolved, it's no longer a FindInMap

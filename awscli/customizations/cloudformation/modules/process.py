@@ -15,7 +15,6 @@
 Basic module processing functions.
 """
 
-# pylint: disable=too-many-lines
 # pylint: disable=too-many-instance-attributes
 # pylint: disable=too-many-public-methods
 # pylint: disable=fixme
@@ -25,6 +24,12 @@ import logging
 import os
 
 from awscli.customizations.cloudformation import exceptions
+from awscli.customizations.cloudformation.modules.foreach import (
+    FOREACH_NAME_IS_I,
+    ORIGINAL_FOREACH_NAME,
+    process_foreach,
+    resolve_foreach_lists,
+)
 from awscli.customizations.cloudformation.modules.functions import (
     fn_merge,
     fn_select,
@@ -32,12 +37,8 @@ from awscli.customizations.cloudformation.modules.functions import (
     fn_join,
 )
 from awscli.customizations.cloudformation.modules.flatten import fn_flatten
-from awscli.customizations.cloudformation.modules.foreach import (
-    process_foreach,
-    resolve_foreach_lists,
-    getatt_foreach_list,
-    ORIGINAL_FOREACH_NAME,
-    FOREACH_NAME_IS_I,
+from awscli.customizations.cloudformation.modules.outputs import (
+    process_module_outputs,
 )
 from awscli.customizations.cloudformation.modules.read import (
     is_url,
@@ -58,11 +59,7 @@ from awscli.customizations.cloudformation.modules.constants import (
 from awscli.customizations.cloudformation.modules.merge import (
     merge_props,
 )
-from awscli.customizations.cloudformation.modules.parse_sub import (
-    parse_sub,
-    WordType,
-    is_sub_needed,
-)
+from awscli.customizations.cloudformation.modules.resolve import resolve
 from awscli.customizations.cloudformation.modules.visitor import Visitor
 from awscli.customizations.cloudformation.yamlhelper import (
     yaml_parse,
@@ -77,12 +74,8 @@ from awscli.customizations.cloudformation.modules.names import (
     UPDATEPOLICY,
     DELETIONPOLICY,
     UPDATEREPLACEPOLICY,
-    DEFAULT,
     NAME,
     SOURCE,
-    REF,
-    SUB,
-    GETATT,
     PARAMETERS,
     MODULES,
     OUTPUTS,
@@ -271,26 +264,6 @@ def process_module_section(
         add_metrics_metadata(template)
 
     return template
-
-
-def convert_resolved_sub_getatt(r):
-    """
-    Convert a part of a Sub that has a GetAtt.
-    """
-    resolved = ""
-    if r is not None:
-        if GETATT in r:
-            getatt = r[GETATT]
-            resolved = "${" + ".".join(getatt) + "}"
-        elif SUB in r:
-            resolved = r[SUB]
-        elif REF in r:
-            resolved = "${" + r[REF] + "}"
-        else:
-            # Handle scalar properties
-            resolved = r
-
-    return resolved
 
 
 class Module:
@@ -491,7 +464,7 @@ class Module:
                 self.process_resource(logical_id, resource)
 
             # Process the module's outputs by modifying the parent
-            self.process_module_outputs()
+            process_module_outputs(self)
 
         # Look for Fn::Invoke calling this module in the parent
         # Create a fresh copy of the module so that things
@@ -554,7 +527,7 @@ class Module:
                     msg = f"Fn::Invoke output not found in {self.name}: k"
                     raise exceptions.InvalidModuleError(msg=msg)
                 mo = copied_module.module_outputs[k]
-                copied_module.resolve(mo)
+                resolve(copied_module, mo)
                 retval.append(mo)
 
             if len(retval) == 1:
@@ -563,430 +536,6 @@ class Module:
             v.p[v.k] = retval
 
         Visitor(self.template).visit(vf)
-
-    def process_module_outputs(self):
-        """
-        Fix parent template Ref, GetAtt, and Sub that point to module outputs.
-
-        In the parent you can !GetAtt ModuleName.OutputName
-        This will be converted so that it's correct in the packaged template.
-
-        The parent can also refer to module Properties as a convenience,
-        so !GetAtt ModuleName.PropertyName will simply copy the
-        configured property value.
-
-        Recurse over all sections in the parent template looking for
-        GetAtts and Subs that reference a module Outputs value.
-
-        This function is running from the module, inspecting everything
-        in the partially resolved parent template.
-        """
-
-        def vf(v):
-            if not isdict(v.d) or v.p is None:
-                return
-            if SUB in v.d:
-                self.resolve_output_sub(v.d[SUB], v.p, v.k)
-            elif GETATT in v.d:
-                self.resolve_output_getatt(v.d[GETATT], v.p, v.k)
-            # Refs can't point to module outputs since we need Module.Output
-
-        sections = [RESOURCES, MODULES, OUTPUTS]
-        for section in sections:
-            if section not in self.template:
-                continue
-            Visitor(self.template[section]).visit(vf)
-
-    def resolve_output_sub_getatt(self, w):
-        """
-        Resolve a reference to a module in a Sub GetAtt word.
-
-        For example, the parent has
-
-        Modules:
-          A:
-            Properties:
-              Name: foo
-        Outputs:
-          B:
-            Value: !Sub ${A.MyName}
-
-        The module has:
-
-          Parameters:
-            Name:
-              Type: String
-          Resources:
-            X:
-              Properties:
-                Y: !Ref Name
-          Outputs:
-            MyName: !GetAtt X.Name
-
-        The resulting output:
-          B: !Sub ${AX.Name}
-
-        """
-
-        tokens = w.split(".", 1)
-        if len(tokens) < 2:
-            msg = f"GetAtt {w} has unexpected number of tokens"
-            raise exceptions.InvalidModuleError(msg=msg)
-
-        # !Sub ${Content.BucketArn} -> !Sub ${ContentBucket.Arn}
-
-        # Create a fake getatt and resolve it like normal
-        n = "fake"
-        d = {n: None}
-        self.resolve_output_getatt(tokens, d, n)
-        r = d[n]
-
-        resolved = convert_resolved_sub_getatt(r)
-        if not resolved:
-            resolved = "${" + w + "}"
-        return resolved
-
-    def resolve_output_sub(self, v, d, n):
-        "Resolve a Sub that refers to a module reference or property"
-        words = parse_sub(v, True)
-        sub = ""
-        for word in words:
-            if word.t == WordType.STR:
-                sub += word.w
-            elif word.t == WordType.AWS:
-                sub += "${AWS::" + word.w + "}"
-            elif word.t == WordType.REF:
-                # A ref to a module reference has to be a getatt
-                resolved = "${" + word.w + "}"
-                sub += resolved
-            elif word.t == WordType.GETATT:
-                resolved = self.resolve_output_sub_getatt(word.w)
-                if not isinstance(resolved, str):
-                    msg = (
-                        f"Sub expected a string in {self.name}, got {resolved}"
-                    )
-                    raise exceptions.InvalidModuleError(msg=msg)
-                sub += resolved
-
-        if is_sub_needed(sub):
-            d[n] = {SUB: sub}
-        else:
-            d[n] = sub
-
-    # pylint:disable=too-many-branches,too-many-locals,too-many-statements
-    # pylint:disable=too-many-return-statements
-    def resolve_output_getatt(self, v, d, n):
-        """
-        Resolve a GetAtt that refers to a module Output.
-
-        This might be a simple reference to an Output Value like
-        !Get ModuleName.OutputName.
-
-        It might be a reference to a module that was in a ForEach loop,
-        so we can !GetAtt ModuleName[0].OutputName or
-        !GetAtt ModuleName[Identifier].OutputName.
-
-        We can !GetAtt ModuleName[*].OutputName to get a list of all
-        output values for a module that was in a foreach.
-
-        These can also be references to Parameters that are maps.
-
-        :param v The value
-        :param d The dictionary
-        :param n The name of the node
-
-        This function sets d[n] and returns True if it resolved.
-        """
-
-        if not isinstance(v, list) or len(v) < 2:
-            msg = f"GetAtt {v} invalid"
-            raise exceptions.InvalidModuleError(msg=msg)
-
-        # For example, Content.Arn or Content[0].Arn
-
-        foreach_modules = None
-        if self.parent_module:
-            foreach_modules = self.parent_module.foreach_modules
-        else:
-            foreach_modules = self.foreach_modules
-
-        name = v[0]
-        prop_name = v[1]
-
-        index = -1
-        if "[]" in name:
-            msg = f"Invalid GetAtt: {name}, did you mean [*]?"
-            raise exceptions.InvalidModuleError(msg=msg)
-
-        # Handle ModuleName.* the same as ModuleName[*]
-        # This is passed in like [Storage, *.BucketArn]
-        if "*." in prop_name:
-            base_name = name
-            prop_name = prop_name.replace("*.", "")
-
-            if base_name in foreach_modules:
-                self.resolve_output_getatt_foreach(
-                    foreach_modules, base_name, prop_name
-                )
-                return True
-        elif "[*]" in name:
-            # This is a reference to all of the foreach values
-            # For example, Content[*].Arn
-            base_name = name.split("[")[0]
-            if base_name in foreach_modules:
-                self.resolve_output_getatt_foreach(
-                    foreach_modules, base_name, prop_name
-                )
-                return True
-        # Handle ModuleName.Identifier.OutputName the same as ModuleName[Identifier].OutputName
-        elif (
-            "." in prop_name
-            and len(prop_name.split(".")) > 1
-            and name in foreach_modules
-        ):
-            # This is the ModuleName.Identifier.OutputName format
-            parts = prop_name.split(".", 2)
-            identifier = parts[0]
-            prop_name = parts[1]
-
-            # If there's a third part, it's part of the property path
-            if len(parts) > 2:
-                prop_name = f"{parts[2]}.{prop_name}"
-
-            # Directly resolve to the correct resource for dot notation
-            if name in foreach_modules:
-                # Find the array index for the identifier
-                if isinstance(identifier, str):
-                    for i, k in enumerate(foreach_modules[name]):
-                        if identifier == k:
-                            d[n] = {GETATT: [f"{name}{i}", prop_name]}
-                            return True
-
-            # Continue with normal processing if we couldn't directly resolve
-            index = identifier
-        elif "[" in name:
-            tokens = name.split("[")
-            name = tokens[0]
-            num = tokens[1].replace("]", "")
-            if num.isdigit():
-                index = int(num)
-            else:
-                # Support Content[A].Arn, Content['A'].Arn
-                index = num.strip('"').strip("'")
-
-        # index might be a number like 0: Content[0].Arn
-        # or it might be a key like A: Content[A].Arn
-        # The name of the foreach module might be Content0 or ContentA,
-        # depending on if we used an Fn::ForEach identifier.
-
-        # Handle ForEach module references
-        if index != -1 and name in foreach_modules:
-            if isinstance(index, int):
-                name = f"{name}{index}"
-            else:
-                # Find the array index for the key
-                if not self.foreach_name_is_i:
-                    # If Fn::ForEach was used with an identifier for
-                    # the logical id, we need to use that instead of the index
-                    name = f"{name}{index}"
-                else:
-                    # The foreach name uses the array index
-                    for i, k in enumerate(foreach_modules[name]):
-                        if index == k:
-                            name = f"{name}{i}"
-
-        reffed_prop = None
-        if name == self.name:
-            if prop_name in self.module_outputs:
-                reffed_prop = self.module_outputs[prop_name]
-            elif prop_name in self.props:
-                reffed_prop = self.props[prop_name]
-
-        if reffed_prop is None:
-            return False
-
-        # Handle the case where the output value is a GetAtt to a resource with ForEach
-        if isinstance(reffed_prop, dict) and GETATT in reffed_prop:
-            getatt_ref = reffed_prop[GETATT]
-            if isinstance(getatt_ref, list) and len(getatt_ref) >= 2:
-                resource_name = getatt_ref[0]
-                property_path = getatt_ref[1]
-
-                # Check if this is a reference to a resource with ForEach using [*] syntax
-                if "[*]" in resource_name:
-                    base_name = resource_name.split("[")[0]
-                    # Check if we have resource identifiers from ForEach processing
-                    if (
-                        hasattr(self, "resource_identifiers")
-                        and base_name in self.resource_identifiers
-                    ):
-                        # Create a list of GetAtt references to each copied resource
-                        resource_list = []
-                        for i, _ in enumerate(
-                            self.resource_identifiers[base_name]
-                        ):
-                            resource_list.append(
-                                {
-                                    GETATT: [
-                                        f"{self.name}{base_name}{i}",
-                                        property_path,
-                                    ]
-                                }
-                            )
-                        d[n] = resource_list
-                        return True
-
-                # Check if this is a reference to a specific instance using [identifier] syntax
-                elif "[" in resource_name and "]" in resource_name:
-                    base_name = resource_name.split("[")[0]
-                    identifier = resource_name.split("[")[1].split("]")[0]
-
-                    if (
-                        hasattr(self, "resource_identifiers")
-                        and base_name in self.resource_identifiers
-                    ):
-                        keys = self.resource_identifiers[base_name]
-                        if identifier in keys:
-                            index = keys.index(identifier)
-                            d[n] = {
-                                GETATT: [
-                                    f"{self.name}{base_name}{index}",
-                                    property_path,
-                                ]
-                            }
-                            return True
-
-        if isinstance(reffed_prop, list):
-            for i, r in enumerate(reffed_prop):
-                self.replace_reffed_prop(r, reffed_prop, i)
-                d[n] = reffed_prop
-        else:
-            self.replace_reffed_prop(reffed_prop, d, n)
-
-        return True
-
-    def replace_reffed_prop(self, r, d, n):
-        """
-        Replace a reffed prop in an output getatt.
-
-        param r: The Ref, Sub, or GetAtt
-
-        Sets d[n].
-        """
-
-        if REF in r:
-            ref = r[REF]
-            found = self.find_ref(ref)
-            if found:
-                d[n] = found
-            else:
-                d[n] = {REF: self.name + ref}
-        elif GETATT in r:
-            getatt = r[GETATT]
-            if len(getatt) < 2:
-                msg = f"GetAtt {getatt} in {self.name} is invalid"
-                raise exceptions.InvalidModuleError(msg=msg)
-            s = getatt_foreach_list(getatt)
-            if s is not None and s in self.foreach_modules:
-                # Special handling for Overrides that GetAtt a module
-                # property, when that module has a ForEach attribute
-                if isinstance(self.foreach_modules[s], list):
-                    d[n] = copy.deepcopy(self.foreach_modules[s])
-                    for item in d[n]:
-                        if GETATT in item and len(item[GETATT]) > 0:
-                            item[GETATT][0] = self.name + item[GETATT][0]
-            else:
-                self.resolve_getatt(getatt, d, n)
-
-        elif SUB in r:
-            # Parse the Sub in the module reference
-            words = parse_sub(r[SUB], True)
-            sub = ""
-            for word in words:
-                if word.t == WordType.STR:
-                    sub += word.w
-                elif word.t == WordType.AWS:
-                    sub += "${AWS::" + word.w + "}"
-                elif word.t == WordType.REF:
-                    # This is a ref to a param or resource
-                    # If it's a resource, concatenante the name
-                    resolved = "${" + word.w + "}"
-                    if word.w in self.resources:
-                        resolved = "${" + self.name + word.w + "}"
-                    elif word.w in self.module_parameters:
-                        found = self.find_reffed_param(word.w)
-                        if found:
-                            resolved = found
-                    sub += resolved
-                elif word.t == WordType.GETATT:
-                    resolved = "${" + word.w + "}"
-                    tokens = word.w.split(".", 1)
-                    if len(tokens) < 2:
-                        msg = f"GetAtt {word.w} unexpected length"
-                        raise exceptions.InvalidModuleError(msg=msg)
-                    if tokens[0] in self.resources:
-                        resolved = "${" + self.name + word.w + "}"
-                    sub += resolved
-            if is_sub_needed(sub):
-                d[n] = {SUB: sub}
-            else:
-                d[n] = sub
-        elif isdict(r):
-            # An intrinsic like Join.. recurse
-            for rk, rv in r.copy().items():
-                self.replace_reffed_prop(rv, r, rk)
-                d[n] = r
-        elif isinstance(r, list):
-            for ri, rv in enumerate(r):
-                self.replace_reffed_prop(rv, r, ri)
-                d[n] = r
-        else:
-            # Handle scalars in Properties
-            d[n] = r
-
-    def find_reffed_param(self, w):
-        "Find a reffed parameter in an output sub"
-        resolved = None
-        found = self.find_ref(w)
-        if found:
-            resolved = found
-            if not isinstance(resolved, str):
-                if SUB in resolved:
-                    resolved = resolved[SUB]
-                else:
-                    msg = f"Expected str in {self.name}: {resolved}"
-                    raise exceptions.InvalidModuleError(msg=msg)
-        return resolved
-
-    def resolve_output_getatt_foreach(self, foreach_modules, name, prop_name):
-        "Resolve GetAtts that reference all Outputs from a foreach module"
-
-        num_items = len(foreach_modules[name])
-        dd = [None] * num_items
-
-        # Create lists for the requested property
-        bracket_key = name + "[*]." + prop_name
-        dot_key = name + ".*." + prop_name
-
-        if bracket_key not in foreach_modules:
-            foreach_modules[bracket_key] = []
-        if dot_key not in foreach_modules:
-            foreach_modules[dot_key] = []
-
-        for i in range(num_items):
-            # Resolve the item as if it was a normal getatt
-            vv = [f"{name}{i}", prop_name]
-            resolved = self.resolve_output_getatt(vv, dd, i)
-            if resolved:
-                # Don't set anything here, just remember it so
-                # we can go back and fix the entire getatt later
-                item_val = dd[i]
-
-                if item_val not in foreach_modules[bracket_key]:
-                    # Don't double add. We already replaced refs in
-                    # modules, so it shows up twice.
-                    foreach_modules[bracket_key].append(item_val)
-                    foreach_modules[dot_key].append(item_val)
 
     def validate_overrides(self):
         "Make sure resources referenced by overrides actually exist"
@@ -1019,7 +568,7 @@ class Module:
         # We need the container for the first iteration of the recursion
         container[RESOURCES] = self.resources
 
-        self.resolve(resource)
+        resolve(self, resource)
 
         self.template[RESOURCES][self.name + logical_id] = resource
 
@@ -1035,26 +584,6 @@ class Module:
             if SOURCE_MAP not in metadata:
                 # Don't overwrite child maps
                 metadata[SOURCE_MAP] = self.get_source_map(logical_id)
-
-    def resolve(self, resource):
-        "Resolve references in the resource"
-
-        # TODO: If we just called this at a high level at some
-        # point during processing, we probably wouldn't need to
-        # pass around the find_ref function. Nodes would already
-        # be resolved before processing.
-
-        def vf(v):
-            if not isdict(v.d) or v.p is None:
-                return
-            if REF in v.d:
-                self.resolve_ref(v.d[REF], v.p, v.k)
-            elif SUB in v.d:
-                self.resolve_sub(v.d[SUB], v.p, v.k)
-            elif GETATT in v.d:
-                self.resolve_getatt(v.d[GETATT], v.p, v.k)
-
-        Visitor(resource).visit(vf)
 
     def depends_on(self, logical_id, resource):
         """
@@ -1160,271 +689,3 @@ class Module:
         original = resource[attr_name]
         overrides = resource_overrides[attr_name]
         resource[attr_name] = merge_props(original, overrides)
-
-    def resolve_ref(self, v, d, n):
-        """
-        Look for the Ref in the parent template Properties if it matches
-        a module Parameter name. If it's not there, use the default if
-        there is one. If not, raise an error.
-
-        If there is no matching Parameter, look for a resource with that
-        name in this module and fix the logical id so it has the prefix.
-
-        Otherwise raise an exception.
-        """
-        if not isinstance(v, str):
-            msg = f"Ref should be a string: {v}"
-            raise exceptions.InvalidModuleError(msg=msg)
-
-        found = self.find_ref(v)
-        if found is not None:
-            d[n] = found
-        else:
-            if isinstance(v, str) and v.startswith("AWS::"):
-                pass  # return
-            # msg = (
-            #    f"Not found in {self.source}: {n}: {v}"
-            # )
-            # raise exceptions.InvalidModuleError(msg=msg)
-            #
-            # Ideally we would raise an exception here. But in the case
-            # of a sub-module referring to another sub-module in
-            # the Overrides section, the name has already been fixed,
-            # so we won't find it in this template or in parameters.
-            # This is identical to the possiblity that a module author
-            # might refer to something directly in the parent, without
-            # an input. The tradeoff is that we can't detect legit typos.
-            # We have to depend on cfn-lint on the final template.
-
-    def resolve_sub_ref(self, w):
-        "Resolve a ref inside of a Sub string"
-        resolved = "${" + w + "}"
-        found = self.find_ref(w)
-        if found is not None:
-            if isinstance(found, str):
-                resolved = found
-            else:
-                if REF in found:
-                    resolved = "${" + found[REF] + "}"
-                elif SUB in found:
-                    resolved = found[SUB]
-                elif GETATT in found:
-                    tokens = found[GETATT]
-                    if len(tokens) < 2:
-                        msg = (
-                            "Invalid Sub referencing a GetAtt. "
-                            + f"{w}: {found}"
-                        )
-                        raise exceptions.InvalidModuleError(msg=msg)
-
-                    resolved = "${" + ".".join(tokens) + "}"
-        return resolved
-
-    def resolve_sub_getatt(self, w):
-        "Resolve a GetAtt ('A.B') inside a Sub string"
-        tokens = w.split(".", 1)
-        if len(tokens) < 2:
-            msg = f"GetAtt {w} has unexpected number of tokens"
-            raise exceptions.InvalidModuleError(msg=msg)
-
-        # Create a fake getatt
-        n = "fake"
-        d = {n: None}
-        self.resolve_getatt(tokens, d, n)
-
-        resolved = convert_resolved_sub_getatt(d[n])
-        if not resolved:
-            resolved = "${" + w + "}"
-        return resolved
-
-    # pylint: disable=too-many-branches,unused-argument
-    def resolve_sub(self, v, d, n):
-        """
-        Parse the Sub string and break it into tokens.
-
-        If we can fully resolve it, we can replace it with a string.
-
-        Use the same logic as with resolve_ref.
-        """
-
-        words = parse_sub(v, True)
-        sub = ""
-        for word in words:
-            if word.t == WordType.STR:
-                sub += word.w
-            elif word.t == WordType.AWS:
-                sub += "${AWS::" + word.w + "}"
-            elif word.t == WordType.REF:
-                sub += self.resolve_sub_ref(word.w)
-            elif word.t == WordType.GETATT:
-                sub += self.resolve_sub_getatt(word.w)
-
-        need_sub = is_sub_needed(sub)
-        if need_sub:
-            d[n] = {SUB: sub}
-        else:
-            d[n] = sub
-
-    def resolve_getatt(self, v, d, n):
-        """
-        Resolve a GetAtt. All we do here is add the prefix.
-
-        !GetAtt Foo.Bar becomes !GetAtt ModuleNameFoo.Bar
-
-        Also handles GetAtts that reference Parameters that are maps:
-        !GetAtt Name[*] - Get the keys in the map
-        !GetAtt Name[Key] - Get the entire object for Key
-        !GetAtt Name[Key].Attribute - Get an attribute
-        """
-        if not isinstance(v, list):
-            msg = f"GetAtt {v} is not a list"
-            raise exceptions.InvalidModuleError(msg=msg)
-
-        if self.resolve_getatt_map_param(v, d, n):
-            return
-
-        # Standard resource GetAtt handling
-        # Make sure the logical id exists
-        exists = False
-        for resource in self.resources:
-            if resource == v[0]:
-                exists = True
-                break
-        if exists:
-            logical_id = self.name + v[0]
-            d[n] = {GETATT: [logical_id, v[1]]}
-
-    def resolve_getatt_map_param(self, v, d, n):
-        """
-        Try to resolve a GetAtt that refers to a Parameter that is a map.
-        """
-        name = v[0]
-
-        if not isinstance(name, str):
-            msg = f"name is not a string: {name}"
-            raise exceptions.InvalidModuleError(msg=msg)
-
-        prop_name = v[1] if len(v) > 1 else ""
-
-        # Check for map parameter access with [*] syntax
-        index = -1
-        if "[]" in name:
-            msg = f"Invalid GetAtt: {name}, did you mean [*]?"
-            raise exceptions.InvalidModuleError(msg=msg)
-        if "[*]" in name:
-
-            name = name.replace("[*]", "")
-
-            if name not in self.parent_module.foreach_modules:
-                # This is a reference to all values: Name[*]
-                # Check if it's a Map parameter
-                if name in self.props and isinstance(self.props[name], dict):
-                    map_value = self.props[name]
-
-                    # Handle !GetAtt MapName[*] - return list of keys
-                    if prop_name == "":
-                        d[n] = list(map_value.keys())
-                        return True
-
-                    # Handle !GetAtt MapName[*].AttributeName -
-                    # return a list of all values for that attribute
-                    result = []
-                    for key in map_value:
-                        if (
-                            isinstance(map_value[key], dict)
-                            and prop_name in map_value[key]
-                        ):
-                            result.append(map_value[key][prop_name])
-                    if result:
-                        d[n] = result
-                        # Also store in foreach_modules to make
-                        # it accessible to parent
-                        key_name = f"{name}[*].{prop_name}"
-                        self.parent_module.foreach_modules[key_name] = result
-
-                        # Also store with the module name for output references
-                        # This is needed for Map parameters accessed
-                        # via module outputs
-                        if self.name:
-                            module_output_key = f"{self.name}.{key_name}"
-                            self.parent_module.foreach_modules[
-                                module_output_key
-                            ] = result
-                        return True
-        elif "[" in name:
-            tokens = name.split("[")
-            name = tokens[0]
-            if tokens[1] != "]":
-                num = tokens[1].replace("]", "")
-                if num.isdigit():
-                    index = int(num)
-                else:
-                    # Support Name[A], Name['A']
-                    index = num.strip('"').strip("'")
-
-        # Check if this is a Map parameter access with a specific key
-        if name not in self.parent_module.foreach_modules:
-            if name in self.props and isinstance(self.props[name], dict):
-                map_value = self.props[name]
-
-                # Handle !GetAtt MapName[Key] -
-                # return entire object at that key
-                if (
-                    index != -1
-                    and isinstance(index, str)
-                    and index in map_value
-                ):
-
-                    if prop_name == "":
-                        d[n] = map_value[index]
-                        return True
-
-                    # Handle !GetAtt MapName[Key].Attribute -
-                    # return specific attribute
-                    if (
-                        isinstance(map_value[index], dict)
-                        and prop_name in map_value[index]
-                    ):
-                        d[n] = map_value[index][prop_name]
-                        return True
-
-        return False
-
-    def find_ref(self, name):
-        """
-        Find a Ref.
-
-        A Ref might be to a module Parameter with a matching parent
-        template Property, or a Parameter Default. It could also
-        be a reference to another resource in this module.
-
-        :param name The name to search for
-        :return The referenced element or None
-        """
-        if name in self.props:
-            if name not in self.module_parameters:
-                # The parent tried to set a property that doesn't exist
-                # in the Parameters section of this module
-                msg = f"{name} not found in module Parameters: {self.source}"
-                raise exceptions.InvalidModuleError(msg=msg)
-
-            p = self.props[name]
-            if isdict(p):
-                if self.parent_module.name != "" and REF in p:
-                    p = self.parent_module.find_ref(p[REF])
-            return p
-
-        if name in self.module_parameters:
-            param = self.module_parameters[name]
-            if DEFAULT in param:
-                # Use the default value of the Parameter
-                return param[DEFAULT]
-            msg = f"{name} does not have a Default and is not a Property"
-            raise exceptions.InvalidModuleError(msg=msg)
-
-        for logical_id in self.resources:
-            if name == logical_id:
-                # Simply rename local references to include the module name
-                return {REF: self.name + logical_id}
-
-        return None

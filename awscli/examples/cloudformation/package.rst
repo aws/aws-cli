@@ -17,19 +17,6 @@ The following is an example of a template with a ``Modules`` section::
             Metadata:
               OverrideMe: def
 
-A module configured as a Resource::
-
-    Resources:
-      Content:
-        Type: LocalModule
-        Source: ./module.yaml
-        Properties:
-          Name: foo
-        Overrides:
-          Bucket:
-            Metadata:
-              OverrideMe: def
-
 An example module::
     
     Parameters:

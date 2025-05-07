@@ -8041,7 +8041,7 @@
         },
         "LastSoftwareUpdateTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time of when the cluster was last updated.</p>"
+          "documentation":"<p>The time when the cluster was last updated.</p>"
         },
         "LifeCycleConfig":{
           "shape":"ClusterLifeCycleConfig",
@@ -8129,7 +8129,7 @@
         },
         "LastSoftwareUpdateTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time of when SageMaker last updated the software of the instances in the cluster.</p>"
+          "documentation":"<p>The time when SageMaker last updated the software of the instances in the cluster.</p>"
         },
         "InstanceStatus":{
           "shape":"ClusterInstanceStatusDetails",
@@ -18954,6 +18954,10 @@
         "AmazonQSettings":{
           "shape":"AmazonQSettings",
           "documentation":"<p>A collection of settings that configure the Amazon Q experience within the domain. The <code>AuthMode</code> that you use to create the domain must be <code>SSO</code>.</p>"
+        },
+        "UnifiedStudioSettings":{
+          "shape":"UnifiedStudioSettings",
+          "documentation":"<p>The settings that apply to an SageMaker AI domain when you use it in Amazon SageMaker Unified Studio.</p>"
         }
       },
       "documentation":"<p>A collection of settings that apply to the <code>SageMaker Domain</code>. These settings are specified through the <code>CreateDomain</code> API call.</p>"
@@ -18980,6 +18984,10 @@
         "AmazonQSettings":{
           "shape":"AmazonQSettings",
           "documentation":"<p>A collection of settings that configure the Amazon Q experience within the domain.</p>"
+        },
+        "UnifiedStudioSettings":{
+          "shape":"UnifiedStudioSettings",
+          "documentation":"<p>The settings that apply to an SageMaker AI domain when you use it in Amazon SageMaker Unified Studio.</p>"
         }
       },
       "documentation":"<p>A collection of <code>Domain</code> configuration settings to update.</p>"
@@ -35444,6 +35452,11 @@
       "min":5,
       "pattern":"^\\d{1,4}.\\d{1,4}.\\d{1,4}$"
     },
+    "RegionName":{
+      "type":"string",
+      "max":24,
+      "min":1
+    },
     "RegisterDevicesRequest":{
       "type":"structure",
       "required":[
@@ -36622,8 +36635,6 @@
     "SearchTrainingPlanOfferingsRequest":{
       "type":"structure",
       "required":[
-        "InstanceType",
-        "InstanceCount",
         "DurationHours",
         "TargetResources"
       ],
@@ -37322,6 +37333,10 @@
         "SpaceStorageSettings":{
           "shape":"SpaceStorageSettings",
           "documentation":"<p>The storage settings for a space.</p>"
+        },
+        "SpaceManagedResources":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>If you enable this option, SageMaker AI creates the following resources on your behalf when you create the space:</p> <ul> <li> <p>The user profile that possesses the space.</p> </li> <li> <p>The app that the space contains.</p> </li> </ul>"
         },
         "CustomFileSystems":{
           "shape":"CustomFileSystems",
@@ -40542,6 +40557,52 @@
       "type":"long",
       "max":4000000,
       "min":10000
+    },
+    "UnifiedStudioDomainId":{
+      "type":"string",
+      "pattern":"^dzd[-_][a-zA-Z0-9_-]{1,36}$"
+    },
+    "UnifiedStudioEnvironmentId":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "UnifiedStudioProjectId":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "UnifiedStudioSettings":{
+      "type":"structure",
+      "members":{
+        "StudioWebPortalAccess":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Sets whether you can access the domain in Amazon SageMaker Studio:</p> <dl> <dt>ENABLED</dt> <dd> <p>You can access the domain in Amazon SageMaker Studio. If you migrate the domain to Amazon SageMaker Unified Studio, you can access it in both studio interfaces.</p> </dd> <dt>DISABLED</dt> <dd> <p>You can't access the domain in Amazon SageMaker Studio. If you migrate the domain to Amazon SageMaker Unified Studio, you can access it only in that studio interface.</p> </dd> </dl> <p>To migrate a domain to Amazon SageMaker Unified Studio, you specify the UnifiedStudioSettings data type when you use the UpdateDomain action.</p>"
+        },
+        "DomainAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that has the Amazon SageMaker Unified Studio domain. The default value, if you don't specify an ID, is the ID of the account that has the Amazon SageMaker AI domain.</p>"
+        },
+        "DomainRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region where the domain is located in Amazon SageMaker Unified Studio. The default value, if you don't specify a Region, is the Region where the Amazon SageMaker AI domain is located.</p>"
+        },
+        "DomainId":{
+          "shape":"UnifiedStudioDomainId",
+          "documentation":"<p>The ID of the Amazon SageMaker Unified Studio domain associated with this domain.</p>"
+        },
+        "ProjectId":{
+          "shape":"UnifiedStudioProjectId",
+          "documentation":"<p>The ID of the Amazon SageMaker Unified Studio project that corresponds to the domain.</p>"
+        },
+        "EnvironmentId":{
+          "shape":"UnifiedStudioEnvironmentId",
+          "documentation":"<p>The ID of the environment that Amazon SageMaker Unified Studio associates with the domain.</p>"
+        },
+        "ProjectS3Path":{
+          "shape":"S3Uri",
+          "documentation":"<p>The location where Amazon S3 stores temporary execution data and other artifacts for the project that corresponds to the domain.</p>"
+        }
+      },
+      "documentation":"<p>The settings that apply to an Amazon SageMaker AI domain when you use it in Amazon SageMaker Unified Studio.</p>"
     },
     "UpdateActionRequest":{
       "type":"structure",

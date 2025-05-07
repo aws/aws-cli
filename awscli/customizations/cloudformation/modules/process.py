@@ -222,8 +222,6 @@ def process_module_section(
     foreach_modules = process_foreach(template, parent_module)
     parent_module.foreach_modules = foreach_modules
 
-    print("After process_foreach foreach_modules", foreach_modules)
-
     # Process each Module node separately after processing Maps
     modules = template[MODULES]
     for k, v in modules.items():
@@ -267,7 +265,7 @@ def process_module_section(
     # Emit the created resources into the parent
     for k, v in template[RESOURCES].items():
         parent_module.template[RESOURCES][parent_module.name + k] = v
-        
+
     # Add metadata to the final template
     if not no_metrics:
         add_metrics_metadata(template)
@@ -590,7 +588,6 @@ class Module:
             if SUB in v.d:
                 self.resolve_output_sub(v.d[SUB], v.p, v.k)
             elif GETATT in v.d:
-                print("About to call resolve_output_getatt from process_module_outputs")
                 self.resolve_output_getatt(v.d[GETATT], v.p, v.k)
             # Refs can't point to module outputs since we need Module.Output
 
@@ -677,6 +674,7 @@ class Module:
             d[n] = sub
 
     # pylint:disable=too-many-branches,too-many-locals,too-many-statements
+    # pylint:disable=too-many-return-statements
     def resolve_output_getatt(self, v, d, n):
         """
         Resolve a GetAtt that refers to a module Output.
@@ -712,14 +710,8 @@ class Module:
         else:
             foreach_modules = self.foreach_modules
 
-        print("resolve_output_getatt")
-        print("  foreach_modules:", foreach_modules)
-
         name = v[0]
         prop_name = v[1]
-
-        print("  name:", name)
-        print("  prop_name:", prop_name)
 
         index = -1
         if "[]" in name:
@@ -731,9 +723,6 @@ class Module:
         if "*." in prop_name:
             base_name = name
             prop_name = prop_name.replace("*.", "")
-
-
-            print(f"  *. base_name: {base_name}, prop_name: {prop_name}")
 
             if base_name in foreach_modules:
                 self.resolve_output_getatt_foreach(
@@ -751,21 +740,19 @@ class Module:
                 return True
         # Handle ModuleName.Identifier.OutputName the same as ModuleName[Identifier].OutputName
         elif (
-            "." in name
-            and len(name.split(".")) > 1
-            and name.split(".")[0] in foreach_modules
+            "." in prop_name
+            and len(prop_name.split(".")) > 1
+            and name in foreach_modules
         ):
             # This is the ModuleName.Identifier.OutputName format
-            parts = name.split(".", 2)
-            module_name = parts[0]
-            identifier = parts[1]
+            parts = prop_name.split(".", 2)
+            identifier = parts[0]
+            prop_name = parts[1]
 
             # If there's a third part, it's part of the property path
             if len(parts) > 2:
                 prop_name = f"{parts[2]}.{prop_name}"
 
-            name = module_name
-            
             # Directly resolve to the correct resource for dot notation
             if name in foreach_modules:
                 # Find the array index for the identifier
@@ -774,7 +761,7 @@ class Module:
                         if identifier == k:
                             d[n] = {GETATT: [f"{name}{i}", prop_name]}
                             return True
-            
+
             # Continue with normal processing if we couldn't directly resolve
             index = identifier
         elif "[" in name:
@@ -974,39 +961,32 @@ class Module:
     def resolve_output_getatt_foreach(self, foreach_modules, name, prop_name):
         "Resolve GetAtts that reference all Outputs from a foreach module"
 
-        print("resolve_output_getatt_foreach")
-        print("  name:", name)
-        print("  prop_name:", prop_name)
-
         num_items = len(foreach_modules[name])
         dd = [None] * num_items
-        
+
         # Create lists for the requested property
         bracket_key = name + "[*]." + prop_name
         dot_key = name + ".*." + prop_name
-        
+
         if bracket_key not in foreach_modules:
             foreach_modules[bracket_key] = []
         if dot_key not in foreach_modules:
             foreach_modules[dot_key] = []
-        
+
         for i in range(num_items):
             # Resolve the item as if it was a normal getatt
             vv = [f"{name}{i}", prop_name]
-            print("About to call resolve_output_getatt from resolve_output_getatt_foreach")
             resolved = self.resolve_output_getatt(vv, dd, i)
             if resolved:
                 # Don't set anything here, just remember it so
                 # we can go back and fix the entire getatt later
                 item_val = dd[i]
-                
+
                 if item_val not in foreach_modules[bracket_key]:
                     # Don't double add. We already replaced refs in
                     # modules, so it shows up twice.
                     foreach_modules[bracket_key].append(item_val)
                     foreach_modules[dot_key].append(item_val)
-
-                    print("Added to foreach_modules", bracket_key)
 
     def validate_overrides(self):
         "Make sure resources referenced by overrides actually exist"

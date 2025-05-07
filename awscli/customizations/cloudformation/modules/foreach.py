@@ -30,10 +30,6 @@ from awscli.customizations.cloudformation.modules.flatten import (
     FLATTEN,
     fn_flatten,
 )
-from awscli.customizations.cloudformation.modules.foreach_helpers import (
-    _is_dot_notation_getatt,
-    _is_wildcard_notation_getatt,
-)
 from awscli.customizations.cloudformation.modules.util import (
     isdict,
 )
@@ -662,31 +658,25 @@ def resolve_foreach_value(copied_module):
 
 def resolve_foreach_lists(template, foreach_modules):
     """
-    Resolve GetAtts like !GetAtt Content[*].Arn or 
+    Resolve GetAtts like !GetAtt Content[*].Arn or
     !GetAtt Content.*.Arn
 
     These are GetAtts that refer to each instance of
     a module's output. These are converted to lists.
     """
 
-    print("resolve_foreach_lists foreach_modules")
-    print(foreach_modules)
-
     def vf(v):
         if isdict(v.d) and GETATT in v.d and v.p is not None:
             getatt = v.d[GETATT]
             s = getatt_foreach_list(getatt)
             if s is not None:
-                print("  s:", s)
                 # Handle both Content[*].Arn and Content.*.Arn formats
                 if s in foreach_modules:
                     v.p[v.k] = copy.deepcopy(foreach_modules[s])
                 else:
                     # Convert Content.*.Arn to Content[*].Arn format
                     alt_key = s.replace(".*", "[*]")
-                    print("alt_key:", alt_key)
                     if alt_key in foreach_modules:
-                        print("alt key found")
                         v.p[v.k] = copy.deepcopy(foreach_modules[alt_key])
 
     sections = RESOURCES, OUTPUTS
@@ -694,7 +684,6 @@ def resolve_foreach_lists(template, foreach_modules):
         if section in template:
             v = Visitor(template[section])
             v.visit(vf)
-
 
 
 def getatt_foreach_list(getatt):

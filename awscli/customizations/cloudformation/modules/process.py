@@ -16,7 +16,6 @@ Basic module processing functions.
 """
 
 # pylint: disable=too-many-instance-attributes
-# pylint: disable=too-many-public-methods
 # pylint: disable=fixme
 
 import copy

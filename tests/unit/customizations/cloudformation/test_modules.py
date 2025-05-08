@@ -152,6 +152,7 @@ class TestPackageModules(unittest.TestCase):
             "resource-flatten-foreach",
             "module-resource-foreach",
             "getatt-notation",
+            "parameter-schema",
         ]
 
         # Collect all errors to report at the end
@@ -192,7 +193,7 @@ class TestPackageModules(unittest.TestCase):
                 errors.append(f"\n{test} failed with exception: {str(ex)}")
 
         # These tests should fail to package
-        bad_tests = ["badref"]
+        bad_tests = ["badref", "parameter-schema-invalid"]
         for test in bad_tests:
             try:
                 t, _ = read_source(f"{base}/{test}-template.yaml")

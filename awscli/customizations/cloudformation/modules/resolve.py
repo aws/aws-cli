@@ -315,6 +315,18 @@ def find_ref(module, name):
     :param name The name to search for
     :return The referenced element or None
     """
+    # Check if this is a dotted property reference (e.g., VpcConfig.CidrBlock)
+    if "." in name:
+        parts = name.split(".", 1)
+        obj_name = parts[0]
+        prop_name = parts[1]
+
+        # Find the object first
+        obj = find_ref(module, obj_name)
+        if obj is not None and isinstance(obj, dict) and prop_name in obj:
+            # Return the specific property from the object
+            return obj[prop_name]
+
     if name in module.props:
         if name not in module.module_parameters:
             # The parent tried to set a property that doesn't exist

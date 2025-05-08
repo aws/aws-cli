@@ -29,6 +29,11 @@ from awscli.customizations.cloudformation.modules.foreach import (
     process_foreach,
     resolve_foreach_lists,
 )
+from awscli.customizations.cloudformation.modules.validation import (
+    PARAMETER_SCHEMA,
+    validate_parameters,
+    apply_defaults,
+)
 from awscli.customizations.cloudformation.modules.functions import (
     fn_merge,
     fn_select,
@@ -398,6 +403,22 @@ class Module:
             replace_constants(constants, module_dict)
 
         self.process_transform(module_dict)
+
+        # Validate parameters against schema if present
+        if PARAMETER_SCHEMA in module_dict:
+            try:
+                validate_parameters(self.name, module_dict, self.props)
+                # Apply default values from schema
+                if self.props is not None:
+                    self.props = apply_defaults(
+                        module_dict[PARAMETER_SCHEMA], self.props
+                    )
+            except Exception as e:
+                msg = (
+                    f"Parameter validation failed for module {self.name}: {e}"
+                )
+                LOG.exception(msg)
+                raise exceptions.InvalidModuleError(msg=msg)
 
         if RESOURCES not in module_dict:
             # The module may only have sub modules in the Modules section

@@ -24,6 +24,7 @@ from docutils.writers import (
     html4css1,
     manpage,
 )
+from awscli import __version__ as _CLI_VERSION
 from awscli.argparser import ArgTableArgParser
 from awscli.argprocess import ParamShorthandParser
 from botocore.exceptions import ProfileNotFound
@@ -55,6 +56,9 @@ def get_renderer(help_output):
     Return the appropriate HelpRenderer implementation for the
     current platform.
     """
+    if help_output == "url":
+        return UrlHelpRenderer()
+    
     if platform.system() == 'Windows':
         return WindowsHelpRenderer()
     else:
@@ -152,6 +156,7 @@ class BrowserHelpRenderer:
         html_file.close()
 
         try:
+            print("Opening help file in the default browser.")
             return webbrowser.open_new_tab(f'file://{html_file.name}')
         except Exception:
             LOG.debug('Failed to open browser:', exc_info=True)
@@ -163,6 +168,42 @@ class BrowserHelpRenderer:
     def _popen(self, *args, **kwargs):
         return Popen(*args, **kwargs)
 
+
+class UrlHelpRenderer(PagingHelpRenderer):
+    """
+    Interface for a help renderer to a remote URL.
+
+    The renderer is responsible for displaying the help content on
+    a particular platform.
+
+    """
+
+    def __init__(self, output_stream=sys.stdout):
+        self.output_stream = output_stream
+
+    _DEFAULT_DOCUTILS_SETTINGS_OVERRIDES = {
+        # The default for line length limit in docutils is 10,000. However,
+        # currently in the documentation, it inlines all possible enums in
+        # the JSON syntax which exceeds this limit for some EC2 commands
+        # and prevents the manpages from being generated.
+        # This is a temporary fix to allow the manpages for these commands
+        # to be rendered. Long term, we should avoid enumerating over all
+        # enums inline for the JSON syntax snippets.
+        'line_length_limit': 50_000
+    }
+
+    def render(self, contents):
+        """
+        Each implementation of HelpRenderer must implement this
+        render method.
+        """
+        self._send_output_to_pager(contents)
+
+    def _convert_doc_content(self, contents):
+        return contents
+
+    def _popen(self, *args, **kwargs):
+        return Popen(*args, **kwargs)
 
 class PosixHelpRenderer(PagingHelpRenderer):
     """
@@ -347,6 +388,8 @@ class HelpCommand:
 
         self.renderer = get_renderer(help_output_format)
 
+        self._base_remote_url = f"https://awscli.amazonaws.com/v2/documentation/api/{_CLI_VERSION}"
+
     @property
     def event_class(self):
         """
@@ -397,7 +440,10 @@ class HelpCommand:
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
         docevents.generate_events(self.session, self)
-        self.renderer.render(self.doc.getvalue())
+        if self.session.get_config_variable('cli_help_output') == 'url':
+            self.renderer.render(self.url.encode())
+        else:
+            self.renderer.render(self.doc.getvalue())
         instance.unregister()
 
 
@@ -428,6 +474,10 @@ class ProviderHelpCommand(HelpCommand):
     @property
     def name(self):
         return 'aws'
+
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/index.html"
 
     @property
     def subcommand_table(self):
@@ -479,6 +529,9 @@ class ServiceHelpCommand(HelpCommand):
     def name(self):
         return self._name
 
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/reference/{self.name}/index.html"
 
 class OperationHelpCommand(HelpCommand):
     """Implements operation level help.
@@ -504,6 +557,10 @@ class OperationHelpCommand(HelpCommand):
     def name(self):
         return self._name
 
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/reference/{self.event_class.replace('.', '/')}.html"
+
 
 class TopicListerCommand(HelpCommand):
     EventHandlerClass = TopicListerDocumentEventHandler
@@ -518,6 +575,10 @@ class TopicListerCommand(HelpCommand):
     @property
     def name(self):
         return 'topics'
+
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/topic/index.html"
 
 
 class TopicHelpCommand(HelpCommand):
@@ -534,3 +595,7 @@ class TopicHelpCommand(HelpCommand):
     @property
     def name(self):
         return self._topic_name
+
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/topic/{self.name}.html"

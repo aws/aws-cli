@@ -16,6 +16,12 @@ from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
 from awscli.compat import BytesIO
 
 
+class Metric:
+    def __init__(self, description, unit, value):
+        self.description = description
+        self.unit = unit
+        self.value = value
+
 class StubbedHTTPClient:
     def _get_response(self, request):
         response = self._responses.pop(0)
@@ -199,13 +205,17 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
         # to achieve multi-command workflows / sequences. So we should pick which of the two
         # (list of commands of list of structs with 1 command each) is more robust.
 
-        if case['name'] not in self._benchmark_results:
-            self._benchmark_results[case['name']] = {
-                'name':  case['name'],
-                'dimensions': case.get('dimensions', []),
-                'measurements': [],
-            }
-        self._benchmark_results[case['name']]['measurements'].append(results)
+        for (metric, val) in results.items():
+            key = f'{case["name"]}.{metric}'
+            if key not in self._benchmark_results:
+                self._benchmark_results[key] = {
+                    'name': key,
+                    'description': val.description,
+                    'unit': val.unit,
+                    'dimensions': case.get('dimensions', []),
+                    'measurements': [],
+                }
+            self._benchmark_results[key]['measurements'].append(val.value)
 
     def end_iteration(self, iteration):
         self._client.tear_down()
@@ -266,14 +276,46 @@ class Summarizer:
         max_cpu = max(samples, key=self._get_cpu)['cpu']
         # format computed statistics
         metrics = {
-            'average_memory': self._sums['memory'] / len(samples),
-            'average_cpu': self._sums['cpu'] / len(samples),
-            'max_memory': max_memory,
-            'max_cpu': max_cpu,
-            'memory_p50': memory_p50,
-            'memory_p95': memory_p95,
-            'cpu_p50': cpu_p50,
-            'cpu_p95': cpu_p95,
+            'mean.run.memory': Metric(
+                'Mean memory usage of a single command execution.',
+                'Bytes',
+                self._sums['memory'] / len(samples)
+            ),
+            'mean.run.cpu': Metric(
+                'Mean CPU usage of a single command execution.',
+                'Percentage',
+                self._sums['cpu'] / len(samples)
+            ),
+            'peak.run.memory': Metric(
+                'Peak memory usage of a single command execution.',
+                'Bytes',
+                max_memory
+            ),
+            'peak.run.cpu': Metric(
+                'Peak CPU usage of a single command execution.',
+                'Percentage',
+                max_cpu
+            ),
+            'p50.run.memory': Metric(
+                'p50 memory usage of a single command execution.',
+                'Bytes',
+                memory_p50
+            ),
+            'p95.run.memory': Metric(
+                'p95 memory usage of a single command execution.',
+                'Bytes',
+                memory_p95
+            ),
+            'p50.run.cpu': Metric(
+                'p50 CPU usage of a single command execution.',
+                'Percentage',
+                cpu_p50
+            ),
+            'p95.run.cpu': Metric(
+                'p95 CPU usage of a single command execution.',
+                'Percentage',
+                cpu_p95
+            ),
         }
         # reset data state
         self._samples.clear()
@@ -485,13 +527,20 @@ class BenchmarkHarness(object):
             # LEANING TOWARDS NO. should be easy to override the summarizer when needed
             # for one-off investigations/goals. but benchmark_utils must maintain a
             # contract in its output format
+
             summary = self._summarizer.summarize(samples)
-            summary['total_time'] = (
-                metrics_f['end_time'] - metrics_f['start_time']
+            # TODO move the below internal metrics summarization into the summarizer by accepting
+            # extra internal-metric input ?
+            summary['run.time'] = Metric(
+                'Total running time of the Python process executing the CLI command.',
+                'Seconds',
+                metrics_f['end_time'] - metrics_f['start_time'],
             )
-            summary['first_client_invocation_time'] = (
-                metrics_f['first_client_invocation_time']
-                - metrics_f['start_time']
+            summary['pre.marshal.time'] = Metric(
+                'Elapsed time from the start of the Python process until just before the HTTP '
+                'request is created.',
+                'Seconds',
+                metrics_f['first_client_invocation_time'] - metrics_f['start_time']
             )
         finally:
             # --- END-ITERATION (cleanup of resources made in BEGIN-ITERATION, reset the result directory, ...)

@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.27.11
+=======
+
+* api-change:``codepipeline``: Add support for Secrets Manager and Plaintext environment variable types in Commands action
+* api-change:``sso-admin``: Update PutPermissionBoundaryToPermissionSet API's managedPolicyArn pattern to allow valid ARN only. Update ApplicationName to allow white spaces.
+* api-change:``ec2``: Launching the feature to support ENA queues offering flexibility to support multiple queues per Enhanced Network Interface (ENI)
+* enhancement:Python: Update bundled Python interpreter to 3.13.3
+* api-change:``cloudfront``: Doc-only update for CloudFront. These changes include customer-reported issues.
+* api-change:``guardduty``: Updated description of a data structure.
+* api-change:``glue``: This new release supports customizable RefreshInterval for all Saas ZETL integrations from 15 minutes to 6 days.
+
+
 2.27.10
 =======
 

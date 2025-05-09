@@ -1,0 +1,40 @@
+Parameters:
+  NetworkConfig:
+    Type: Object
+    Description: "Network configuration"
+    Default: {}
+
+ParameterSchema:
+  NetworkConfig:
+    Type: Object
+    Required: ["Vpc"]
+    Properties:
+      Vpc:
+        Type: Object
+        Required: ["CidrBlock"]
+        Properties:
+          CidrBlock:
+            Type: String
+            Pattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$"
+          EnableDnsSupport:
+            Type: Boolean
+            Default: true
+      Subnets:
+        Type: Array
+        Default: []
+        Items:
+          Type: Object
+          Required: ["CidrBlock", "AvailabilityZone"]
+          Properties:
+            CidrBlock:
+              Type: String
+              Pattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-9]|3[0-2]))$"
+            AvailabilityZone:
+              Type: String
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref NetworkConfig.Vpc.CidrBlock
+      EnableDnsSupport: !Ref NetworkConfig.Vpc.EnableDnsSupport

@@ -192,7 +192,9 @@ def read_source(source, s3_client=None):
     plus a dictionary with line numbers.
     """
     if not isinstance(source, str):
-        raise exceptions.InvalidModulePathError(source=source)
+        raise exceptions.InvalidModulePathError(
+            msg=f"The value of {source} is not a valid path to a local file"
+        )
 
     dotzip = ".zip"
 
@@ -221,15 +223,79 @@ def read_source(source, s3_client=None):
 
 def read_line_numbers(node, lines):
     """
-    Read resource line numbers from a yaml node,
-    using the logical id as the key.
+    Read line numbers from a yaml node for all top-level sections.
     """
     for n in node.value:
-        if n[0].value == "Resources":
+        section_name = n[0].value
+        lines[section_name] = n[0].start_mark.line + 1  # 1-based line numbers
+
+        # For Resources section, also track individual resource line numbers
+        if section_name == "Resources" and isinstance(n[1].value, list):
             resource_map = n[1].value
             for r in resource_map:
                 logical_id = r[0].value
-                lines[logical_id] = r[1].start_mark.line
+                lines[f"Resources.{logical_id}"] = r[1].start_mark.line + 1
+
+        # For ParameterSchema section, track parameter schema line numbers
+        if section_name == "ParameterSchema" and isinstance(n[1].value, list):
+            schema_map = n[1].value
+            for s in schema_map:
+                param_name = s[0].value
+                lines[f"ParameterSchema.{param_name}"] = (
+                    s[1].start_mark.line + 1
+                )
+
+        # For Parameters section, track parameter line numbers
+        if section_name == "Parameters" and isinstance(n[1].value, list):
+            param_map = n[1].value
+            for p in param_map:
+                param_name = p[0].value
+                lines[f"Parameters.{param_name}"] = p[1].start_mark.line + 1
+
+        # For Modules section, track module properties
+        if section_name == "Modules" and isinstance(n[1].value, list):
+            modules_map = n[1].value
+            _get_module_line_numbers(lines, modules_map)
+
+
+# pylint: disable=too-many-nested-blocks
+def _get_module_line_numbers(lines, modules_map):
+    """Get line numbers for the Modules section"""
+
+    for m in modules_map:
+        # Skip if this is not a proper module entry (could be a scalar or other type)
+        if not isinstance(m, list) or len(m) < 2:
+            continue
+
+        module_name = m[0].value
+        lines[f"Modules.{module_name}"] = m[1].start_mark.line + 1
+
+        # Track module properties
+        if isinstance(m[1].value, list):
+            for prop in m[1].value:
+                # Skip if this is not a proper property entry
+                if not isinstance(prop, list) or len(prop) < 2:
+                    continue
+
+                prop_name = prop[0].value
+                lines[f"Modules.{module_name}.{prop_name}"] = (
+                    prop[1].start_mark.line + 1
+                )
+
+                # Track Properties section within each module
+                if prop_name == "Properties" and isinstance(
+                    prop[1].value, list
+                ):
+                    for p in prop[1].value:
+                        # Skip if this is not a proper property entry
+                        if not isinstance(p, list) or len(p) < 2:
+                            continue
+
+                        prop_key = p[0].value
+                        val = p[1].start_mark.line + 1
+                        lines[
+                            f"Modules.{module_name}.Properties.{prop_key}"
+                        ] = val
 
 
 def get_packaged_module_path(template, p):

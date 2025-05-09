@@ -1,6 +1,7 @@
 "Tests for module support in the package command"
 
 # pylint: disable=fixme
+
 from awscli.testutils import unittest
 from awscli.customizations.cloudformation import yamlhelper
 from awscli.customizations.cloudformation import exceptions
@@ -99,7 +100,7 @@ class TestPackageModules(unittest.TestCase):
         merged = merge_props(original, overrides)
         self.assertEqual(merged, expect)
 
-    # pylint: disable=broad-exception-caught,too-many-locals
+    # pylint: disable=broad-exception-caught,too-many-locals,too-many-branches
     def test_main(self):
         "Run tests on sample templates that include local modules"
 
@@ -169,7 +170,9 @@ class TestPackageModules(unittest.TestCase):
                     replace_constants(constants, td)
 
                 # Modules section
-                td = process_module_section(td, base, t, None, True, True)
+                td = process_module_section(
+                    td, base, f"{base}/{test}-template.yaml", None, True, True
+                )
 
                 processed = yamlhelper.yaml_dump(td)
 
@@ -193,7 +196,20 @@ class TestPackageModules(unittest.TestCase):
                 errors.append(f"\n{test} failed with exception: {str(ex)}")
 
         # These tests should fail to package
-        bad_tests = ["badref", "parameter-schema-invalid"]
+        bad_tests = [
+            "badref",
+            "parameter-schema-invalid",
+            "invalid-output",
+            "invalid-parameter-schema",
+            "invalid-parameter-type",
+        ]
+
+        # Expected error messages for line number tests
+        line_number_errors = {
+            "invalid-output": "Output should have Value",
+            "invalid-parameter-schema": "Username",
+            "invalid-parameter-type": "Number",
+        }
         for test in bad_tests:
             try:
                 t, _ = read_source(f"{base}/{test}-template.yaml")
@@ -202,13 +218,26 @@ class TestPackageModules(unittest.TestCase):
                 constants = process_constants(td)
                 if constants is not None:
                     replace_constants(constants, td)
-                td = process_module_section(td, base, t, None, True, True)
+                td = process_module_section(
+                    td, base, f"{base}/{test}-template.yaml", None, True, True
+                )
 
                 # If we get here, the test didn't fail as expected
                 errors.append(f"\n{test} should have failed but didn't")
-            except exceptions.InvalidModuleError:
+            except exceptions.InvalidModuleError as ex:
                 # This is expected, so no error
-                pass
+                # For line number tests, check that the error message contains expected text
+                if test in line_number_errors:
+                    error_message = str(ex)
+                    if "at line" not in error_message:
+                        errors.append(
+                            f"\n{test} error doesn't contain line number: {error_message}"
+                        )
+                    if line_number_errors[test] not in error_message:
+                        errors.append(
+                            f"\n{test} error doesn't contain expected text "
+                            f"'{line_number_errors[test]}': {error_message}"
+                        )
             except Exception as ex:
                 # Wrong type of exception
                 errors.append(
@@ -258,7 +287,7 @@ class TestPackageModules(unittest.TestCase):
 
         base = "unit/customizations/cloudformation/modules"
         _, lines = read_source(f"{base}/example-module.yaml")
-        self.assertEqual(lines["Bucket"], 5)
+        self.assertEqual(lines["Resources.Bucket"], 6)
 
     def test_yaml_compare(self):
         """Test the YAML comparison function"""

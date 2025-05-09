@@ -33,6 +33,7 @@ from awscli.customizations.cloudformation.modules.validation import (
     PARAMETER_SCHEMA,
     validate_parameters,
     apply_defaults,
+    ParameterValidationError,
 )
 from awscli.customizations.cloudformation.modules.functions import (
     fn_merge,
@@ -115,6 +116,8 @@ def make_module(
     parent_module,
     s3_client,
     invoked=False,
+    parent_lines=None,
+    module_path=None,
 ):
     "Create an instance of a module based on a template and the module config"
     module_config = {}
@@ -151,6 +154,11 @@ def make_module(
     if FOREACH_NAME_IS_I in config:
         module_config[FOREACH_NAME_IS_I] = config[FOREACH_NAME_IS_I]
     module_config[NO_SOURCE_MAP] = no_source_map
+
+    # Add parent line numbers and module path
+    module_config["parent_lines"] = parent_lines
+    module_config["module_path"] = module_path
+
     return Module(template, module_config, parent_module, s3_client)
 
 
@@ -167,7 +175,8 @@ def add_metrics_metadata(template):
     metrics[CLOUDFORMATION_PACKAGE]["Modules"] = "true"
 
 
-# pylint:disable=too-many-arguments,too-many-positional-arguments
+# pylint: disable=too-many-arguments,too-many-positional-arguments
+# pylint: disable=too-many-branches
 def process_module_section(
     template,
     base_path,
@@ -197,6 +206,11 @@ def process_module_section(
             fn_flatten(template)
 
         return template
+
+    # Read parent template line numbers if path is a string
+    parent_lines = None
+    if isinstance(parent_path, str):
+        _, parent_lines = read_source(parent_path)
 
     if not isdict(template[MODULES]):
         msg = "Modules section is invalid"
@@ -231,6 +245,8 @@ def process_module_section(
             no_source_map,
             parent_module,
             s3_client,
+            parent_lines=parent_lines,
+            module_path=f"Modules.{k}",
         )
         template = module.process()
 
@@ -294,6 +310,10 @@ class Module:
         self.base_path = module_config.get(BASE_PATH, "")
         self.parent_path = module_config.get(PARENT_PATH, "")
         self.invoked = module_config.get(INVOKED, False)
+
+        # Parent template line numbers and module path
+        self.parent_lines = module_config.get("parent_lines")
+        self.module_path = module_config.get("module_path")
 
         # Default behavior for ForEach is to use array indexes
         self.foreach_name_is_i = True
@@ -407,18 +427,53 @@ class Module:
         # Validate parameters against schema if present
         if PARAMETER_SCHEMA in module_dict:
             try:
-                validate_parameters(self.name, module_dict, self.props)
+                validate_parameters(
+                    self.name,
+                    module_dict,
+                    self.props,
+                    self.lines,
+                    self.parent_lines,
+                    self.module_path,
+                )
                 # Apply default values from schema
                 if self.props is not None:
                     self.props = apply_defaults(
                         module_dict[PARAMETER_SCHEMA], self.props
                     )
+            except ParameterValidationError as e:
+                # Try to get line number for the parameter - prefer parent line number if available
+                line_number = None
+                if self.parent_lines and self.module_path and e.param_name:
+                    parent_prop_path = f"{self.module_path}.Properties.{e.param_name.split('.')[0]}"
+                    if parent_prop_path in self.parent_lines:
+                        line_number = self.parent_lines[parent_prop_path]
+
+                # Fall back to module line number if parent line number not available
+                if line_number is None:
+                    param_path = (
+                        f"ParameterSchema.{e.param_name.split('.')[0]}"
+                    )
+                    if param_path in self.lines:
+                        line_number = self.lines[param_path]
+
+                msg = f"Parameter validation failed: {e}"
+                raise exceptions.InvalidModuleError(
+                    msg=msg, line_number=line_number
+                )
             except Exception as e:
                 msg = (
                     f"Parameter validation failed for module {self.name}: {e}"
                 )
                 LOG.exception(msg)
-                raise exceptions.InvalidModuleError(msg=msg)
+
+                # Try to get line number for the ParameterSchema section
+                line_number = None
+                if "ParameterSchema" in self.lines:
+                    line_number = self.lines["ParameterSchema"]
+
+                raise exceptions.InvalidModuleError(
+                    msg=msg, line_number=line_number
+                )
 
         if RESOURCES not in module_dict:
             # The module may only have sub modules in the Modules section
@@ -437,8 +492,18 @@ class Module:
                 if VALUE in v:
                     self.module_outputs[k] = v[VALUE]
                 else:
+                    # Get line number for the output if available
+                    line_number = None
+                    output_path = f"Outputs.{k}"
+                    if output_path in self.lines:
+                        line_number = self.lines[output_path]
+                    elif "Outputs" in self.lines:
+                        line_number = self.lines["Outputs"]
+
                     msg = f"Output should have Value. {self.source}: {k}: {v}"
-                    raise exceptions.InvalidModuleError(msg=msg)
+                    raise exceptions.InvalidModuleError(
+                        msg=msg, line_number=line_number
+                    )
 
         try:
             # Process conditions before recursing
@@ -446,7 +511,15 @@ class Module:
         except Exception as e:
             msg = f"Failed to process conditions in {self.source}: {e}"
             LOG.exception(msg)
-            raise exceptions.InvalidModuleError(msg=msg)
+
+            # Try to get line number for the condition if possible
+            line_number = None
+            if "Conditions" in self.lines:
+                line_number = self.lines["Conditions"]
+
+            raise exceptions.InvalidModuleError(
+                msg=msg, line_number=line_number
+            )
 
         # Recurse on nested modules
         bp = os.path.dirname(self.source)

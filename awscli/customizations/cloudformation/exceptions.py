@@ -67,4 +67,12 @@ class InvalidModulePathError(CloudFormationCommandError):
     fmt = 'The value of {source} is not a valid path to a local file'
 
 class InvalidModuleError(CloudFormationCommandError):
-    fmt = 'Invalid module: {msg}'
+    fmt = 'Invalid module{line_info}: {msg}'
+    
+    def __init__(self, **kwargs):
+        # Add line information if available
+        if 'line_number' in kwargs:
+            kwargs['line_info'] = f" at line {kwargs['line_number']}"
+        else:
+            kwargs['line_info'] = ""
+        super().__init__(**kwargs)

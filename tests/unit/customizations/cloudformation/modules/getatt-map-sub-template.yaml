@@ -1,0 +1,22 @@
+Modules:
+  Database:
+    Source: ./getatt-map-sub-module.yaml
+    Properties:
+      ConfigMap:
+        environment:
+          Type: "Production"
+          TablePrefix: "prod"
+          BillingMode: "PROVISIONED"
+          ReadCapacity: 50
+          WriteCapacity: 25
+        dev:
+          Type: "Development"
+          TablePrefix: "dev"
+          BillingMode: "PAY_PER_REQUEST"
+          ReadCapacity: 5
+          WriteCapacity: 5
+Outputs:
+  TableNameWithSub:
+    Value: !Sub "The table name is ${Database.TableName}"
+  EnvironmentType:
+    Value: !GetAtt Database.EnvironmentType

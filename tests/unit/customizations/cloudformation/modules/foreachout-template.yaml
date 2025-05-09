@@ -1,0 +1,25 @@
+Modules:
+  OutputTest:
+    Source: ./foreach-output-module.yaml
+  OutputTest2:
+    Source: ./foreach-output-module.yaml
+  ListTest:
+    Source: ./foreach-list-module.yaml
+    Properties:
+      ListRef: 
+      - Arn1
+      - Arn2
+    Overrides:
+      Bar:
+        Properties:
+          OutputOverride: !GetAtt OutputTest.BArns
+  ListTest2:
+    Source: ./foreach-list-module.yaml
+    Properties:
+      ListRef: 
+      - Arn3
+      - Arn4
+    Overrides:
+      Bar:
+        Properties:
+          OutputOverride: !GetAtt OutputTest.BArns

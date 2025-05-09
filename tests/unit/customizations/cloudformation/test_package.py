@@ -52,7 +52,9 @@ class TestPackageCommand(unittest.TestCase):
                                     output_template_file="./oputput",
                                     use_json=False,
                                     force_upload=False,
-                                    metadata=None)
+                                    metadata=None,
+                                    no_source_map=True,
+                                    no_metrics=True)
         self.parsed_globals = FakeArgs(region="us-east-1", endpoint_url=None,
                                        verify_ssl=None)
         self.package_command = PackageCommand(self.session)

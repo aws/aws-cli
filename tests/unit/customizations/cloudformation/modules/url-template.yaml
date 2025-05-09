@@ -1,0 +1,19 @@
+Packages:
+  abc:
+    Source: https://github.com/aws/aws-cli/raw/3c491be90e9c146717e1aeb79dd21be98bfb022e/tests/unit/customizations/cloudformation/modules/package.zip
+Constants:
+  ModuleSource: https://raw.githubusercontent.com/aws/aws-cli/2f0143bab567386b930322b2b0e845740f7adfd0/tests/unit/customizations/cloudformation/modules
+Modules:
+  Content:
+    Source: !Sub ${Const::ModuleSource}/basic-module.yaml  
+    Properties:
+      Name: foo
+    Overrides:
+      Bucket:
+        Properties:
+          OverrideMe: def
+  TestPackage:
+    Source: $abc/zip-module.yaml
+Resources:
+  OtherResource:
+    Type: AWS::S3::Bucket

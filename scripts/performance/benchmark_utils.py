@@ -1,3 +1,5 @@
+from typing import Iterable, Tuple, List, Dict, Callable
+
 import json
 import math
 import sys
@@ -115,6 +117,57 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
             'AWS_CONFIG_FILE': config_path,
             'AWS_DEFAULT_REGION': 'us-west-2',
         }
+
+    # TODO for making test case definition more pythonic and good, I'm thinking of using decorators
+    # to create generators for the definition, setup, and cleanup functions, such as the following
+    # then, to get all test cases from a suite, you retrieve all the functions with the decorator
+
+    # def PerformanceTestCase(
+    #         self,
+    #         f,
+    #         setup=None,
+    #         cleanup=None
+    # ) -> Iterable[Tuple[List[Dict], Callable[[str, str, int], None], Callable[[int], None]]]:
+    #     # return generator
+    #     iterations = 5
+    #     for iteration in range(iterations):
+    #         yield f(iteration), setup, cleanup
+    #
+    # @PerformanceTestCase(setup=None, cleanup=None)
+    # def test_secretsmanager_binary_64(self, iteration):
+    #     return [
+    #         {
+    #              'name': 'Put string secret',
+    #              'service_id': 'secrets-manager',
+    #              'operation_name': 'PutSecretValue',
+    #              'command': [
+    #                  'secrets-manager', 'put-secret-value', '--secret-id', f'TestSecret_would_be_current_time_{iteration:0>3}',
+    #                  '--secret-string', 'would_be_rand_string',
+    #              ],
+    #              'environment': {
+    #                  'config': '[default]\nregion=us-west-2'
+    #              },
+    #         },
+    #         {
+    #              'name': 'Put binary secret',
+    #              'service_id': 'secrets-manager',
+    #              'operation_name': 'PutSecretValue',
+    #              'command': [
+    #                  'secrets-manager', 'put-secret-value', '--secret-id',
+    #                  f'TestBinarySecret_would_be_current_time_{iteration:0>3}',
+    #                  '--secret-binary', f'fileb://secret-value-{iteration}-64.json'
+    #              ],
+    #              'environment': {
+    #                  'config': '[default]\nregion=us-west-2',
+    #                  'file_literals': [
+    #                      {
+    #                          'name': f'secret-value-{iteration}-64.json',
+    #                          'binary-content': 'would_be_random_bytes'
+    #                      }
+    #                  ]
+    #              },
+    #          }
+    #     ]
 
     def get_test_cases(self, args):
         definitions = json.load(open(args.benchmark_definitions, 'r'))
@@ -542,7 +595,6 @@ class BenchmarkHarness:
         # but it is preferred to be done per-iteration to minimize the life of files
         # on the disk to the time that they're needed/used by the application, and to
         # not rely on shared state between tests
-        # .. temporarily removed begin-suite to discourage sharing state between tests
         if os.path.exists(result_dir):
             shutil.rmtree(result_dir)
         os.makedirs(result_dir, 0o777)
@@ -582,7 +634,6 @@ class BenchmarkHarness:
                 summaries['results'].extend(suite.provide_sequence_results())
 
             # --- END-SUITE (cleanup, resource deletion, ...)
-            # temporarily removed end-suite to disincentive sharing state between tests
         finally:
             # final cleanup
             shutil.rmtree(result_dir, ignore_errors=True)

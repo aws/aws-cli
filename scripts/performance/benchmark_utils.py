@@ -1,5 +1,3 @@
-from typing import Generator, List, Tuple
-
 import json
 import math
 import sys
@@ -573,7 +571,7 @@ class BenchmarkHarness:
     def get_test_suites(self, args):
         return [suite() for suite in BenchmarkHarness.BENCHMARK_SUITES]
 
-    def run_benchmarks(self, cases: List[Tuple[BenchmarkSuite, Generator[dict, None, None]]], args):
+    def run_benchmarks(self, cases, args):
         """
         Orchestrates benchmarking via the supplied list of test case
         generators.

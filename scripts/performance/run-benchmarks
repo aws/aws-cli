@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-from typing import List, Tuple, Generator, Dict
-
 import argparse
 import os
 
@@ -11,10 +9,10 @@ _BENCHMARK_DEFINITIONS = os.path.join(
 )
 
 def _chunk_test_cases(
-        test_cases: List[Tuple[BenchmarkSuite, Generator[Dict, None, None]]],
-        num_chunks: int,
-        chunk_id: int
-) -> List[Tuple[BenchmarkSuite, Generator[Dict, None, None]]]:
+        test_cases,
+        num_chunks,
+        chunk_id
+):
     chunks = [[] for _ in range(num_chunks)]
     while test_cases:
         for chunk in chunks:
@@ -91,7 +89,7 @@ def main():
             )
 
     test_suites = harness.get_test_suites(parsed_args)
-    test_cases: List[Tuple[BenchmarkSuite, Generator[Dict, None, None]]] = []
+    test_cases = []
     for suite in test_suites:
         for case in suite.get_test_cases(parsed_args):
             test_cases.append((suite, case))

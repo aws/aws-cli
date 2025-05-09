@@ -435,9 +435,14 @@ class Module:
                 # Prefer parent line number if available.
                 line_number = None
                 if self.parent_lines and e.param_name:
-                    prop_name = f"{e.param_name.split('.')[0]}"
+                    # Handle array indices in parameter names
+                    if "[" in e.param_name:
+                        base_param = e.param_name.split("[")[0]
+                    else:
+                        base_param = e.param_name.split(".")[0]
+
                     parent_prop_path = (
-                        f"Modules.{self.name}.Properties.{prop_name}"
+                        f"Modules.{self.name}.Properties.{base_param}"
                     )
 
                     if parent_prop_path in self.parent_lines:
@@ -446,15 +451,22 @@ class Module:
                 # Fall back to module line number if parent
                 # line number not available.
                 if line_number is None:
-                    param_path = (
-                        f"ParameterSchema.{e.param_name.split('.')[0]}"
-                    )
+                    if "[" in e.param_name:
+                        param_base = e.param_name.split("[")[0]
+                    else:
+                        param_base = e.param_name.split(".")[0]
+
+                    param_path = f"ParameterSchema.{param_base}"
                     if param_path in self.lines:
                         line_number = self.lines[param_path]
 
-                msg = f"Parameter validation failed: {e}"
+                # Update the line number in the original error
+                e.line_number = line_number
+
+                # Create a new error message
+                error_msg = str(e)
                 raise exceptions.InvalidModuleError(
-                    msg=msg, line_number=line_number
+                    msg=error_msg, line_number=line_number
                 )
             except Exception as e:
                 msg = (

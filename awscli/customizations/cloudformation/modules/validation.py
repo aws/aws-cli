@@ -63,6 +63,7 @@ class ParameterValidationError(exceptions.CloudFormationCommandError):
         self.param_name = param_name
         self.expected = expected
         self.received = received
+        self.line_number = line_number
 
         line_info = f" at line {line_number}" if line_number else ""
         message = (
@@ -373,9 +374,15 @@ class ParameterValidator:
                 item_path = f"{param_path}[{i}]"
 
                 # Get line number for array item if available from parent
-                item_line_number = self._get_array_item_line_number(
-                    param_path, line_number
-                )
+                item_line_number = line_number
+                if self.parent_lines and self.module_path:
+                    # For array items, try to get the line number of the parent array
+                    base_param = param_path.split("[")[0]
+                    parent_prop_path = (
+                        f"{self.module_path}.Properties.{base_param}"
+                    )
+                    if parent_prop_path in self.parent_lines:
+                        item_line_number = self.parent_lines[parent_prop_path]
 
                 self.validate_parameter(
                     item_path,

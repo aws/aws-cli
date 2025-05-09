@@ -1,15 +1,15 @@
 **To get resource metadata for a database**
 
-The following ``get-resource-metadata`` example gets the resource metadata for the database ``db-loadtest-0`` with the report ID ``report-0d99cc91c4422ee61``. The response shows that SQL digest statistics are enabled. ::
+The following ``get-resource-metadata`` example gets the resource metadata for the database ``db-abcdefg123456789``. The response shows that SQL digest statistics are enabled. ::
 
     aws pi get-resource-metadata \
         --service-type RDS \
-        --identifier db-loadtest-0
+        --identifier db-abcdefg123456789
 
 Output::
 
     {    
-        "Identifier": "db-loadtest-0",
+        "Identifier": "db-abcdefg123456789",
         "Features":{
             "SQL_DIGEST_STATISTICS":{
                 "Status": "ENABLED"

@@ -4,8 +4,7 @@ The following ``list-tags-for-resource`` example lists tags for a performance an
 
     aws pi list-tags-for-resource \
         --service-type RDS \
-        --resource-arn arn:aws:pi:us-west-2:123456789012:perf-reports/RDS/db-loadtest-0/report-0d99cc91c4422ee61 \
-        --region us-west-2
+        --resource-arn arn:aws:pi:us-west-2:123456789012:perf-reports/RDS/db-abcdefg123456789/report-0d99cc91c4422ee61
 
 Output::
 

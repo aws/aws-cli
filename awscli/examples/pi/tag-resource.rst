@@ -4,9 +4,8 @@ The following ``tag-resource`` example adds the tag key ``name`` with the tag va
 
     aws pi tag-resource \
         --service-type RDS \
-        --resource-arn arn:aws:pi:us-west-2:123456789012:perf-reports/RDS/db-loadtest-0/report-0d99cc91c4422ee61 \
-        --tags Key=name,Value=test-tag \
-        --region us-west-2
+        --resource-arn arn:aws:pi:us-west-2:123456789012:perf-reports/RDS/db-abcdefg123456789/report-0d99cc91c4422ee61 \
+        --tags Key=name,Value=test-tag
 
 This command produces no output.
 

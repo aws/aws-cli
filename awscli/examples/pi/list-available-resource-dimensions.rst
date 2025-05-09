@@ -1,10 +1,10 @@
 **To list the dimensions that can be queried for a metric type on a DB instance**
 
-The following ``list-available-resource-dimensions`` example lists the ``db.load`` metrics you can query for the database ``db-loadtest-0``. ::
+The following ``list-available-resource-dimensions`` example lists the ``db.load`` metrics you can query for the database ``db-abcdefg123456789``. ::
 
     aws pi list-available-resource-dimensions \
         --service-type RDS \
-        --identifier db-loadtest-0 \
+        --identifier db-abcdefg123456789 \
         --metrics db.load
 
 Output::

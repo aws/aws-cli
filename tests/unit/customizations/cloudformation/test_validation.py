@@ -17,15 +17,21 @@ Test module parameter validation.
 import unittest
 
 from awscli.customizations.cloudformation.modules.validation import (
-    validate_parameters,
-    validate_parameter,
-    validate_string,
-    validate_number,
-    validate_array,
-    validate_object,
-    apply_defaults,
+    ParameterValidator,
     ParameterValidationError,
 )
+
+
+# pylint: disable=too-few-public-methods
+class MockModule:
+    """Mock module for testing"""
+
+    def __init__(self, name, template):
+        self.name = name
+        self.original_module_dict = template
+        self.line_numbers = None
+        self.parent_lines = None
+        self.module_path = None
 
 
 class TestParameterValidation(unittest.TestCase):
@@ -36,8 +42,11 @@ class TestParameterValidation(unittest.TestCase):
         module_template = {"Parameters": {"Name": {"Type": "String"}}}
         properties = {"Name": "TestValue"}
 
+        module = MockModule("TestModule", module_template)
+        validator = ParameterValidator(module)
+
         # Should not raise any exceptions
-        validate_parameters("TestModule", module_template, properties)
+        validator.validate_parameters(properties)
 
     def test_validate_parameters_with_schema(self):
         """Test basic parameter validation with schema."""
@@ -49,8 +58,11 @@ class TestParameterValidation(unittest.TestCase):
         }
         properties = {"Name": "TestValue"}
 
+        module = MockModule("TestModule", module_template)
+        validator = ParameterValidator(module)
+
         # Should not raise any exceptions
-        validate_parameters("TestModule", module_template, properties)
+        validator.validate_parameters(properties)
 
     def test_validate_parameters_with_invalid_value(self):
         """Test validation with invalid parameter value."""
@@ -62,8 +74,11 @@ class TestParameterValidation(unittest.TestCase):
         }
         properties = {"Name": "Test"}  # Too short
 
+        module = MockModule("TestModule", module_template)
+        validator = ParameterValidator(module)
+
         with self.assertRaises(ParameterValidationError) as context:
-            validate_parameters("TestModule", module_template, properties)
+            validator.validate_parameters(properties)
 
         self.assertIn("minimum length 5", str(context.exception))
 
@@ -84,80 +99,105 @@ class TestParameterValidation(unittest.TestCase):
         }
         properties = {"Config": {}}  # Missing required Name property
 
+        module = MockModule("TestModule", module_template)
+        validator = ParameterValidator(module)
+
         with self.assertRaises(ParameterValidationError) as context:
-            validate_parameters("TestModule", module_template, properties)
+            validator.validate_parameters(properties)
 
         self.assertIn("required property 'Name'", str(context.exception))
 
     def test_validate_string(self):
         """Test string validation."""
+
+        module = MockModule("TestModule", None)
+        validator = ParameterValidator(module)
+
         # Valid string
-        validate_string(
-            "TestModule",
+        validator.validate_parameter(
             "TestParam",
-            {"MinLength": 3, "MaxLength": 10, "Pattern": "^Test"},
+            {
+                "Type": "String",
+                "MinLength": 3,
+                "MaxLength": 10,
+                "Pattern": "^Test",
+            },
             "TestValue",
         )
 
         # Invalid length
         with self.assertRaises(ParameterValidationError):
-            validate_string(
-                "TestModule", "TestParam", {"MinLength": 10}, "Test"
+            validator.validate_parameter(
+                "TestParam", {"Type": "String", "MinLength": 10}, "Test"
             )
 
         # Invalid pattern
         with self.assertRaises(ParameterValidationError):
-            validate_string(
-                "TestModule", "TestParam", {"Pattern": "^foo"}, "TestValue"
+            validator.validate_parameter(
+                "TestParam", {"Type": "String", "Pattern": "^foo"}, "TestValue"
             )
 
     def test_validate_number(self):
         """Test number validation."""
+
+        module = MockModule("TestModule", None)
+        validator = ParameterValidator(module)
+
         # Valid number
-        validate_number(
-            "TestModule", "TestParam", {"Minimum": 5, "Maximum": 10}, 7
+        validator.validate_parameter(
+            "TestParam", {"Type": "Number", "Minimum": 5, "Maximum": 10}, 7
         )
 
         # Invalid minimum
         with self.assertRaises(ParameterValidationError):
-            validate_number("TestModule", "TestParam", {"Minimum": 10}, 5)
+            validator.validate_parameter(
+                "TestParam", {"Type": "Number", "Minimum": 10}, 5
+            )
 
         # Invalid exclusive maximum
         with self.assertRaises(ParameterValidationError):
-            validate_number(
-                "TestModule", "TestParam", {"ExclusiveMaximum": 10}, 10
+            validator.validate_parameter(
+                "TestParam", {"Type": "Number", "ExclusiveMaximum": 10}, 10
             )
 
     def test_validate_array(self):
         """Test array validation."""
+
+        module = MockModule("TestModule", None)
+        validator = ParameterValidator(module)
+
         # Valid array
-        validate_array(
-            "TestModule",
+        validator.validate_parameter(
             "TestParam",
-            {"MinItems": 2, "MaxItems": 5},
+            {"Type": "Array", "MinItems": 2, "MaxItems": 5},
             [1, 2, 3],
         )
 
         # Invalid min items
         with self.assertRaises(ParameterValidationError):
-            validate_array("TestModule", "TestParam", {"MinItems": 5}, [1, 2])
+            validator.validate_parameter(
+                "TestParam", {"Type": "Array", "MinItems": 5}, [1, 2]
+            )
 
         # Invalid item type
         with self.assertRaises(ParameterValidationError):
-            validate_array(
-                "TestModule",
+            validator.validate_parameter(
                 "TestParam",
-                {"Items": {"Type": "String"}},
+                {"Type": "Array", "Items": {"Type": "String"}},
                 [1, 2, "test"],
             )
 
     def test_validate_object(self):
         """Test object validation."""
+
+        module = MockModule("TestModule", None)
+        validator = ParameterValidator(module)
+
         # Valid object
-        validate_object(
-            "TestModule",
+        validator.validate_parameter(
             "TestParam",
             {
+                "Type": "Object",
                 "Required": ["name"],
                 "Properties": {
                     "name": {"Type": "String"},
@@ -169,27 +209,29 @@ class TestParameterValidation(unittest.TestCase):
 
         # Missing required property
         with self.assertRaises(ParameterValidationError):
-            validate_object(
-                "TestModule",
+            validator.validate_parameter(
                 "TestParam",
-                {"Required": ["name", "age"]},
+                {"Type": "Object", "Required": ["name", "age"]},
                 {"name": "Test"},
             )
 
         # Invalid property type
         with self.assertRaises(ParameterValidationError):
-            validate_object(
-                "TestModule",
+            validator.validate_parameter(
                 "TestParam",
-                {"Properties": {"age": {"Type": "Number"}}},
+                {"Type": "Object", "Properties": {"age": {"Type": "Number"}}},
                 {"age": "thirty"},
             )
 
     def test_validate_enum(self):
         """Test enum validation."""
+
+        # Create a simple module-like object for testing
+        module = MockModule("TestModule", None)
+        validator = ParameterValidator(module)
+
         # Valid enum value
-        validate_parameter(
-            "TestModule",
+        validator.validate_parameter(
             "TestParam",
             {"Type": "String", "Enum": ["A", "B", "C"]},
             "B",
@@ -197,8 +239,7 @@ class TestParameterValidation(unittest.TestCase):
 
         # Invalid enum value
         with self.assertRaises(ParameterValidationError):
-            validate_parameter(
-                "TestModule",
+            validator.validate_parameter(
                 "TestParam",
                 {"Type": "String", "Enum": ["A", "B", "C"]},
                 "D",
@@ -217,19 +258,23 @@ class TestParameterValidation(unittest.TestCase):
             },
         }
 
+        module = MockModule("TestModule", {"ParameterSchema": schema})
+        validator = ParameterValidator(module)
+
         # Empty properties
-        result = apply_defaults(schema, {})
+        result = validator.apply_defaults({})
+
         self.assertEqual(result["Name"], "DefaultName")
 
         # Partial properties
-        result = apply_defaults(schema, {"Config": {}})
+        result = validator.apply_defaults({"Config": {}})
         self.assertEqual(result["Name"], "DefaultName")
         self.assertEqual(result["Config"]["Enabled"], True)
         self.assertEqual(result["Config"]["Count"], 5)
 
         # Override defaults
-        result = apply_defaults(
-            schema, {"Name": "CustomName", "Config": {"Count": 10}}
+        result = validator.apply_defaults(
+            {"Name": "CustomName", "Config": {"Count": 10}}
         )
         self.assertEqual(result["Name"], "CustomName")
         self.assertEqual(result["Config"]["Enabled"], True)
@@ -255,9 +300,11 @@ class TestParameterValidation(unittest.TestCase):
             },
         }
 
+        module = MockModule("TestModule", {"ParameterSchema": schema})
+        validator = ParameterValidator(module)
+
         # Valid nested structure
-        validate_parameter(
-            "TestModule",
+        validator.validate_parameter(
             "Config",
             schema,
             {
@@ -271,8 +318,7 @@ class TestParameterValidation(unittest.TestCase):
 
         # Invalid nested structure (missing required property)
         with self.assertRaises(ParameterValidationError):
-            validate_parameter(
-                "TestModule",
+            validator.validate_parameter(
                 "Config",
                 schema,
                 {

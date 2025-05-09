@@ -16,6 +16,7 @@ Basic module processing functions.
 """
 
 # pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-locals
 # pylint: disable=fixme
 
 import copy
@@ -31,8 +32,7 @@ from awscli.customizations.cloudformation.modules.foreach import (
 )
 from awscli.customizations.cloudformation.modules.validation import (
     PARAMETER_SCHEMA,
-    validate_parameters,
-    apply_defaults,
+    ParameterValidator,
     ParameterValidationError,
 )
 from awscli.customizations.cloudformation.modules.functions import (
@@ -116,15 +116,12 @@ def make_module(
     parent_module,
     s3_client,
     invoked=False,
-    parent_lines=None,
-    module_path=None,
 ):
     "Create an instance of a module based on a template and the module config"
     module_config = {}
     module_config[NAME] = name
     module_config[ORIGINAL_CONFIG] = copy.deepcopy(config)
     module_config[BASE_PATH] = base_path
-    module_config[PARENT_PATH] = parent_path
     module_config[INVOKED] = invoked
     if SOURCE not in config:
         msg = f"{name} missing {SOURCE}"
@@ -142,6 +139,11 @@ def make_module(
     else:
         module_config[SOURCE] = source_path
 
+    module_config[PARENT_PATH] = parent_path
+    if not parent_path or parent_path == "":
+        msg = "Module {name} at {source_path} has no parent_path"
+        raise exceptions.InvalidModuleError(msg=msg)
+
     if module_config[SOURCE] == parent_path:
         msg = f"Module {name} refers to itself: {parent_path}"
         raise exceptions.InvalidModuleError(msg=msg)
@@ -154,10 +156,6 @@ def make_module(
     if FOREACH_NAME_IS_I in config:
         module_config[FOREACH_NAME_IS_I] = config[FOREACH_NAME_IS_I]
     module_config[NO_SOURCE_MAP] = no_source_map
-
-    # Add parent line numbers and module path
-    module_config["parent_lines"] = parent_lines
-    module_config["module_path"] = module_path
 
     return Module(template, module_config, parent_module, s3_client)
 
@@ -207,11 +205,6 @@ def process_module_section(
 
         return template
 
-    # Read parent template line numbers if path is a string
-    parent_lines = None
-    if isinstance(parent_path, str):
-        _, parent_lines = read_source(parent_path)
-
     if not isdict(template[MODULES]):
         msg = "Modules section is invalid"
         raise exceptions.InvalidModuleError(msg=msg)
@@ -245,8 +238,6 @@ def process_module_section(
             no_source_map,
             parent_module,
             s3_client,
-            parent_lines=parent_lines,
-            module_path=f"Modules.{k}",
         )
         template = module.process()
 
@@ -309,11 +300,12 @@ class Module:
         self.original_config = module_config.get(ORIGINAL_CONFIG, {})
         self.base_path = module_config.get(BASE_PATH, "")
         self.parent_path = module_config.get(PARENT_PATH, "")
-        self.invoked = module_config.get(INVOKED, False)
 
-        # Parent template line numbers and module path
-        self.parent_lines = module_config.get("parent_lines")
-        self.module_path = module_config.get("module_path")
+        self.parent_lines = None
+        if self.parent_path and self.parent_path != "":
+            _, self.parent_lines = read_source(self.parent_path)
+
+        self.invoked = module_config.get(INVOKED, False)
 
         # Default behavior for ForEach is to use array indexes
         self.foreach_name_is_i = True
@@ -361,6 +353,7 @@ class Module:
 
         # Line numbers for resources
         self.lines = {}
+        self.line_numbers = None  # Added for ParameterValidator compatibility
         self.no_source_map = False
         if module_config.get(NO_SOURCE_MAP, False):
             self.no_source_map = True
@@ -390,6 +383,9 @@ class Module:
 
         content, lines = read_source(self.source, self.s3_client)
         self.lines = lines
+        self.line_numbers = (
+            lines  # Set line_numbers for ParameterValidator compatibility
+        )
 
         module_dict = yaml_parse(content)
         self.original_module_dict = copy.deepcopy(module_dict)
@@ -427,28 +423,28 @@ class Module:
         # Validate parameters against schema if present
         if PARAMETER_SCHEMA in module_dict:
             try:
-                validate_parameters(
-                    self.name,
-                    module_dict,
-                    self.props,
-                    self.lines,
-                    self.parent_lines,
-                    self.module_path,
-                )
+                # Create validator using the module instance directly
+                validator = ParameterValidator(self)
+                validator.validate_parameters(self.props)
+
                 # Apply default values from schema
                 if self.props is not None:
-                    self.props = apply_defaults(
-                        module_dict[PARAMETER_SCHEMA], self.props
-                    )
+                    self.props = validator.apply_defaults(self.props)
             except ParameterValidationError as e:
-                # Try to get line number for the parameter - prefer parent line number if available
+                # Try to get line number for the parameter.
+                # Prefer parent line number if available.
                 line_number = None
-                if self.parent_lines and self.module_path and e.param_name:
-                    parent_prop_path = f"{self.module_path}.Properties.{e.param_name.split('.')[0]}"
+                if self.parent_lines and e.param_name:
+                    prop_name = f"{e.param_name.split('.')[0]}"
+                    parent_prop_path = (
+                        f"Modules.{self.name}.Properties.{prop_name}"
+                    )
+
                     if parent_prop_path in self.parent_lines:
                         line_number = self.parent_lines[parent_prop_path]
 
-                # Fall back to module line number if parent line number not available
+                # Fall back to module line number if parent
+                # line number not available.
                 if line_number is None:
                     param_path = (
                         f"ParameterSchema.{e.param_name.split('.')[0]}"
@@ -543,7 +539,10 @@ class Module:
         self.validate_overrides()
 
         if not self.invoked:
-            # Process ForEach in resources before emitting them to the parent template
+
+            # Process ForEach in resources before emitting them to the parent
+            # template
+
             if RESOURCES in module_dict:
                 self.resource_identifiers = process_foreach(
                     module_dict, self.parent_module

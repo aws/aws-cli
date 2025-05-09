@@ -680,7 +680,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Lists log events from the specified log group. You can list all the log events or filter the results using one or more of the following:</p> <ul> <li> <p>A filter pattern</p> </li> <li> <p>A time range</p> </li> <li> <p>The log stream name, or a log stream name prefix that matches mutltiple log streams</p> </li> </ul> <p>You must have the <code>logs:FilterLogEvents</code> permission to perform this operation.</p> <p>You can specify the log group to search by using either <code>logGroupIdentifier</code> or <code>logGroupName</code>. You must include one of these two parameters, but you can't include both. </p> <p> <code>FilterLogEvents</code> is a paginated operation. Each page returned can contain up to 1 MB of log events or up to 10,000 log events. A returned page might only be partially full, or even empty. For example, if the result of a query would return 15,000 log events, the first page isn't guaranteed to have 10,000 log events even if they all fit into 1 MB.</p> <p>Partially full or empty pages don't necessarily mean that pagination is finished. If the results include a <code>nextToken</code>, there might be more log events available. You can return these additional log events by providing the nextToken in a subsequent <code>FilterLogEvents</code> operation. If the results don't include a <code>nextToken</code>, then pagination is finished. </p> <note> <p>If you set <code>startFromHead</code> to <code>true</code> and you don’t include <code>endTime</code> in your request, you can end up in a situation where the pagination doesn't terminate. This can happen when the new log events are being added to the target log streams faster than they are being read. This situation is a good use case for the CloudWatch Logs <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs_LiveTail.html\">Live Tail</a> feature.</p> </note> <p>The returned log events are sorted by event timestamp, the timestamp when the event was ingested by CloudWatch Logs, and the ID of the <code>PutLogEvents</code> request.</p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account and view data from the linked source accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>.</p> <note> <p>If you are using <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html\">log transformation</a>, the <code>FilterLogEvents</code> operation returns only the original versions of log events, before they were transformed. To view the transformed versions, you must use a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AnalyzingLogData.html\">CloudWatch Logs query.</a> </p> </note>"
+      "documentation":"<p>Lists log events from the specified log group. You can list all the log events or filter the results using one or more of the following:</p> <ul> <li> <p>A filter pattern</p> </li> <li> <p>A time range</p> </li> <li> <p>The log stream name, or a log stream name prefix that matches mutltiple log streams</p> </li> </ul> <p>You must have the <code>logs:FilterLogEvents</code> permission to perform this operation.</p> <p>You can specify the log group to search by using either <code>logGroupIdentifier</code> or <code>logGroupName</code>. You must include one of these two parameters, but you can't include both. </p> <p> <code>FilterLogEvents</code> is a paginated operation. Each page returned can contain up to 1 MB of log events or up to 10,000 log events. A returned page might only be partially full, or even empty. For example, if the result of a query would return 15,000 log events, the first page isn't guaranteed to have 10,000 log events even if they all fit into 1 MB.</p> <p>Partially full or empty pages don't necessarily mean that pagination is finished. If the results include a <code>nextToken</code>, there might be more log events available. You can return these additional log events by providing the nextToken in a subsequent <code>FilterLogEvents</code> operation. If the results don't include a <code>nextToken</code>, then pagination is finished. </p> <p>Specifying the <code>limit</code> parameter only guarantees that a single page doesn't return more log events than the specified limit, but it might return fewer events than the limit. This is the expected API behavior.</p> <p>The returned log events are sorted by event timestamp, the timestamp when the event was ingested by CloudWatch Logs, and the ID of the <code>PutLogEvents</code> request.</p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account and view data from the linked source accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>.</p> <note> <p>If you are using <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html\">log transformation</a>, the <code>FilterLogEvents</code> operation returns only the original versions of log events, before they were transformed. To view the transformed versions, you must use a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AnalyzingLogData.html\">CloudWatch Logs query.</a> </p> </note>"
     },
     "GetDataProtectionPolicy":{
       "name":"GetDataProtectionPolicy",
@@ -2383,7 +2383,7 @@
     },
     "Delimiter":{
       "type":"string",
-      "max":1,
+      "max":2,
       "min":1
     },
     "Deliveries":{
@@ -3882,14 +3882,14 @@
         },
         "match":{
           "shape":"GrokMatch",
-          "documentation":"<p>The grok pattern to match against the log event. For a list of supported grok patterns, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#Grok-Patterns\">Supported grok patterns</a>.</p>"
+          "documentation":"<p>The grok pattern to match against the log event. For a list of supported grok patterns, see <a href=\"https://docs.aws.amazon.com/mazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation-Processors.html#Grok-Patterns\">Supported grok patterns</a>.</p>"
         }
       },
       "documentation":"<p>This processor uses pattern matching to parse and structure unstructured data. This processor can also extract fields from log messages.</p> <p>For more information about this processor including examples, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#CloudWatch-Logs-Transformation-Grok\"> grok</a> in the <i>CloudWatch Logs User Guide</i>.</p>"
     },
     "GrokMatch":{
       "type":"string",
-      "max":128,
+      "max":512,
       "min":1
     },
     "Histogram":{
@@ -4278,7 +4278,7 @@
           "documentation":"<p>If you set <code>flatten</code> to <code>true</code>, use <code>flattenedElement</code> to specify which element, <code>first</code> or <code>last</code>, to keep. </p> <p>You must specify this parameter if <code>flatten</code> is <code>true</code> </p>"
         }
       },
-      "documentation":"<p>This processor takes a list of objects that contain key fields, and converts them into a map of target keys.</p> <p>For more information about this processor including examples, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#CloudWatch-Logs-Transformation-listToMap\"> listToMap</a> in the <i>CloudWatch Logs User Guide</i>.</p>"
+      "documentation":"<p>This processor takes a list of objects that contain key fields, and converts them into a map of target keys.</p> <p>For more information about this processor including examples, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation-Processors.html#CloudWatch-Logs-Transformation-listToMap\"> listToMap</a> in the <i>CloudWatch Logs User Guide</i>.</p>"
     },
     "LiveTailSessionLogEvent":{
       "type":"structure",
@@ -6315,6 +6315,11 @@
       },
       "documentation":"<p>Use this processor to split a field into an array of strings using a delimiting character.</p> <p>For more information about this processor including examples, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#CloudWatch-Logs-Transformation-splitString\"> splitString</a> in the <i>CloudWatch Logs User Guide</i>.</p>"
     },
+    "SplitStringDelimiter":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
     "SplitStringEntries":{
       "type":"list",
       "member":{"shape":"SplitStringEntry"},
@@ -6333,7 +6338,7 @@
           "documentation":"<p>The key of the field to split.</p>"
         },
         "delimiter":{
-          "shape":"Delimiter",
+          "shape":"SplitStringDelimiter",
           "documentation":"<p>The separator characters to split the string entry on.</p>"
         }
       },

@@ -623,6 +623,14 @@
           "shape":"UUID",
           "documentation":"<p>A unique ID that identifies this canary run.</p>"
         },
+        "ScheduledRunId":{
+          "shape":"UUID",
+          "documentation":"<p>The ID of the scheduled canary run.</p>"
+        },
+        "RetryAttempt":{
+          "shape":"RetryAttempt",
+          "documentation":"<p>The count in number of the retry attempt.</p>"
+        },
         "Name":{
           "shape":"CanaryName",
           "documentation":"<p>The name of the canary.</p>"
@@ -729,6 +737,10 @@
         "Completed":{
           "shape":"Timestamp",
           "documentation":"<p>The end time of the run.</p>"
+        },
+        "MetricTimestampForRunAndRetries":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the metrics will be generated for this run or retries.</p>"
         }
       },
       "documentation":"<p>This structure contains the start and end times of a single canary run.</p>"
@@ -748,6 +760,10 @@
         "DurationInSeconds":{
           "shape":"MaxOneYearInSeconds",
           "documentation":"<p>How long, in seconds, for the canary to continue making regular runs according to the schedule in the <code>Expression</code> value. If you specify 0, the canary continues making runs until you stop it. If you omit this field, the default of 0 is used.</p>"
+        },
+        "RetryConfig":{
+          "shape":"RetryConfigInput",
+          "documentation":"<p>A structure that contains the retry configuration for a canary</p>"
         }
       },
       "documentation":"<p>This structure specifies how often a canary is to make runs and the date and time when it should stop making runs.</p>"
@@ -762,6 +778,10 @@
         "DurationInSeconds":{
           "shape":"MaxOneYearInSeconds",
           "documentation":"<p>How long, in seconds, for the canary to continue making regular runs after it was created. The runs are performed according to the schedule in the <code>Expression</code> value.</p>"
+        },
+        "RetryConfig":{
+          "shape":"RetryConfigOutput",
+          "documentation":"<p>A structure that contains the retry configuration for a canary</p>"
         }
       },
       "documentation":"<p>How long, in seconds, for the canary to continue making regular runs according to the schedule in the <code>Expression</code> value.</p>"
@@ -806,11 +826,11 @@
         },
         "StateReason":{
           "shape":"String",
-          "documentation":"<p>If the canary has insufficient permissions to run, this field provides more details.</p>"
+          "documentation":"<p>If the canary creation or update failed, this field provides details on the failure.</p>"
         },
         "StateReasonCode":{
           "shape":"CanaryStateReasonCode",
-          "documentation":"<p>If the canary cannot run or has failed, this field displays the reason.</p>"
+          "documentation":"<p>If the canary creation or update failed, this field displays the reason code.</p>"
         }
       },
       "documentation":"<p>A structure that contains the current state of the canary.</p>"
@@ -1189,7 +1209,7 @@
         },
         "NextToken":{
           "shape":"Token",
-          "documentation":"<p>A token that indicates that there is more data available. You can use this token in a subsequent <code>GetCanaryRuns</code> operation to retrieve the next set of results.</p>"
+          "documentation":"<p>A token that indicates that there is more data available. You can use this token in a subsequent <code>GetCanaryRuns</code> operation to retrieve the next set of results.</p> <note> <p>When auto retry is enabled for the canary, the first subsequent retry is suffixed with *1 indicating its the first retry and the next subsequent try is suffixed with *2.</p> </note>"
         },
         "MaxResults":{
           "shape":"MaxSize100",
@@ -1464,6 +1484,11 @@
       "max":31622400,
       "min":0
     },
+    "MaxRetries":{
+      "type":"integer",
+      "max":2,
+      "min":0
+    },
     "MaxSize100":{
       "type":"integer",
       "max":100,
@@ -1535,6 +1560,32 @@
     "ResourceToTag":{
       "type":"string",
       "enum":["lambda-function"]
+    },
+    "RetryAttempt":{
+      "type":"integer",
+      "max":2,
+      "min":1
+    },
+    "RetryConfigInput":{
+      "type":"structure",
+      "required":["MaxRetries"],
+      "members":{
+        "MaxRetries":{
+          "shape":"MaxRetries",
+          "documentation":"<p>The maximum number of retries. The value must be less than or equal to 2.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about the canary's retry configuration.</p> <note> <p>The default account level concurrent execution limit from Lambda is 1000. When you have more than 1000 canaries, it's possible there are more than 1000 Lambda invocations due to retries and the console might hang. For more information on the Lambda execution limit, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-concurrency.html#:~:text=As%20your%20functions%20receive%20more,functions%20in%20an%20AWS%20Region\">Understanding Lambda function scaling</a>.</p> </note> <note> <p>For canary with <code>MaxRetries = 2</code>, you need to set the <code>CanaryRunConfigInput.TimeoutInSeconds</code> to less than 600 seconds to avoid validation errors.</p> </note>"
+    },
+    "RetryConfigOutput":{
+      "type":"structure",
+      "members":{
+        "MaxRetries":{
+          "shape":"MaxRetries",
+          "documentation":"<p>The maximum number of retries. The value must be less than or equal to 2.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about the canary's retry configuration.</p>"
     },
     "RoleArn":{
       "type":"string",

@@ -255,7 +255,6 @@ def test_get_requires_for_build_wheel(config_settings, repo_root):
         "python-dateutil",
         "jmespath",
         "urllib3",
-        "zipp",
     ]
     assert len(expected_requirements) == len(requirements)
     for expected_requirement in expected_requirements:

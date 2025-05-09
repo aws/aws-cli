@@ -348,7 +348,7 @@
         {"shape":"ClientException"},
         {"shape":"ServerException"}
       ],
-      "documentation":"<p>Submits an Batch job from a job definition. Parameters that are specified during <a>SubmitJob</a> override parameters defined in the job definition. vCPU and memory requirements that are specified in the <code>resourceRequirements</code> objects in the job definition are the exception. They can't be overridden this way using the <code>memory</code> and <code>vcpus</code> parameters. Rather, you must specify updates to job definition parameters in a <code>resourceRequirements</code> object that's included in the <code>containerOverrides</code> parameter.</p> <note> <p>Job queues with a scheduling policy are limited to 500 active fair share identifiers at a time. </p> </note> <important> <p>Jobs that run on Fargate resources can't be guaranteed to run for more than 14 days. This is because, after 14 days, Fargate resources might become unavailable and job might be terminated.</p> </important>"
+      "documentation":"<p>Submits an Batch job from a job definition. Parameters that are specified during <a>SubmitJob</a> override parameters defined in the job definition. vCPU and memory requirements that are specified in the <code>resourceRequirements</code> objects in the job definition are the exception. They can't be overridden this way using the <code>memory</code> and <code>vcpus</code> parameters. Rather, you must specify updates to job definition parameters in a <code>resourceRequirements</code> object that's included in the <code>containerOverrides</code> parameter.</p> <note> <p>Job queues with a scheduling policy are limited to 500 active share identifiers at a time. </p> </note> <important> <p>Jobs that run on Fargate resources can't be guaranteed to run for more than 14 days. This is because, after 14 days, Fargate resources might become unavailable and job might be terminated.</p> </important>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -860,7 +860,7 @@
         },
         "tags":{
           "shape":"TagsMap",
-          "documentation":"<p>Key-value pair tags to be applied to Amazon EC2 resources that are launched in the compute environment. For Batch, these take the form of <code>\"String1\": \"String2\"</code>, where <code>String1</code> is the tag key and <code>String2</code> is the tag value-for example, <code>{ \"Name\": \"Batch Instance - C4OnDemand\" }</code>. This is helpful for recognizing your Batch instances in the Amazon EC2 console. Updating these tags requires an infrastructure update to the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>. These tags aren't seen when using the Batch <code>ListTagsForResource</code> API operation.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
+          "documentation":"<p>Key-value pair tags to be applied to Amazon EC2 resources that are launched in the compute environment. For Batch, these take the form of <code>\"String1\": \"String2\"</code>, where <code>String1</code> is the tag key and <code>String2</code> is the tag value (for example, <code>{ \"Name\": \"Batch Instance - C4OnDemand\" }</code>). This is helpful for recognizing your Batch instances in the Amazon EC2 console. Updating these tags requires an infrastructure update to the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>. These tags aren't seen when using the Batch <code>ListTagsForResource</code> API operation.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
         },
         "placementGroup":{
           "shape":"String",
@@ -926,7 +926,7 @@
         },
         "tags":{
           "shape":"TagsMap",
-          "documentation":"<p>Key-value pair tags to be applied to Amazon EC2 resources that are launched in the compute environment. For Batch, these take the form of <code>\"String1\": \"String2\"</code>, where <code>String1</code> is the tag key and <code>String2</code> is the tag value-for example, <code>{ \"Name\": \"Batch Instance - C4OnDemand\" }</code>. This is helpful for recognizing your Batch instances in the Amazon EC2 console. These tags aren't seen when using the Batch <code>ListTagsForResource</code> API operation.</p> <p>When updating a compute environment, changing this setting requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
+          "documentation":"<p>Key-value pair tags to be applied to Amazon EC2 resources that are launched in the compute environment. For Batch, these take the form of <code>\"String1\": \"String2\"</code>, where <code>String1</code> is the tag key and <code>String2</code> is the tag value (for example, <code>{ \"Name\": \"Batch Instance - C4OnDemand\" }</code>). This is helpful for recognizing your Batch instances in the Amazon EC2 console. These tags aren't seen when using the Batch <code>ListTagsForResource</code> API operation.</p> <p>When updating a compute environment, changing this setting requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
         },
         "placementGroup":{
           "shape":"String",
@@ -1139,6 +1139,10 @@
         "repositoryCredentials":{
           "shape":"RepositoryCredentials",
           "documentation":"<p>The private repository authentication credentials to use.</p>"
+        },
+        "enableExecuteCommand":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines whether execute command functionality is turned on for this task. If <code>true</code>, execute command functionality is turned on all the containers in the task.</p>"
         }
       },
       "documentation":"<p>An object that represents the details of a container that's part of a job.</p>"
@@ -1264,6 +1268,10 @@
           "shape":"FargatePlatformConfiguration",
           "documentation":"<p>The platform configuration for jobs that are running on Fargate resources. Jobs that are running on Amazon EC2 resources must not specify this parameter.</p>"
         },
+        "enableExecuteCommand":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines whether execute command functionality is turned on for this task. If <code>true</code>, execute command functionality is turned on all the containers in the task.</p>"
+        },
         "ephemeralStorage":{
           "shape":"EphemeralStorage",
           "documentation":"<p>The amount of ephemeral storage to allocate for the task. This parameter is used to expand the total amount of ephemeral storage available, beyond the default amount, for tasks hosted on Fargate.</p>"
@@ -1314,7 +1322,7 @@
         },
         "unmanagedvCpus":{
           "shape":"Integer",
-          "documentation":"<p>The maximum number of vCPUs for an unmanaged compute environment. This parameter is only used for fair share scheduling to reserve vCPU capacity for new share identifiers. If this parameter isn't provided for a fair share job queue, no vCPU capacity is reserved.</p> <note> <p>This parameter is only supported when the <code>type</code> parameter is set to <code>UNMANAGED</code>.</p> </note>"
+          "documentation":"<p>The maximum number of vCPUs for an unmanaged compute environment. This parameter is only used for fair-share scheduling to reserve vCPU capacity for new share identifiers. If this parameter isn't provided for a fair-share job queue, no vCPU capacity is reserved.</p> <note> <p>This parameter is only supported when the <code>type</code> parameter is set to <code>UNMANAGED</code>.</p> </note>"
         },
         "computeResources":{
           "shape":"ComputeResource",
@@ -1409,7 +1417,7 @@
         },
         "schedulingPolicyArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the fair share scheduling policy. Job queues that don't have a scheduling policy are scheduled in a first-in, first-out (FIFO) model. After a job queue has a scheduling policy, it can be replaced but can't be removed.</p> <p>The format is <code>aws:<i>Partition</i>:batch:<i>Region</i>:<i>Account</i>:scheduling-policy/<i>Name</i> </code>.</p> <p>An example is <code>aws:aws:batch:us-west-2:123456789012:scheduling-policy/MySchedulingPolicy</code>.</p> <p>A job queue without a scheduling policy is scheduled as a FIFO job queue and can't have a scheduling policy added. Jobs queues with a scheduling policy can have a maximum of 500 active fair share identifiers. When the limit has been reached, submissions of any jobs that add a new fair share identifier fail.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the fair-share scheduling policy. Job queues that don't have a fair-share scheduling policy are scheduled in a first-in, first-out (FIFO) model. After a job queue has a fair-share scheduling policy, it can be replaced but can't be removed.</p> <p>The format is <code>aws:<i>Partition</i>:batch:<i>Region</i>:<i>Account</i>:scheduling-policy/<i>Name</i> </code>.</p> <p>An example is <code>aws:aws:batch:us-west-2:123456789012:scheduling-policy/MySchedulingPolicy</code>.</p> <p>A job queue without a fair-share scheduling policy is scheduled as a FIFO job queue and can't have a fair-share scheduling policy added. Jobs queues with a fair-share scheduling policy can have a maximum of 500 active share identifiers. When the limit has been reached, submissions of any jobs that add a new share identifier fail.</p>"
         },
         "priority":{
           "shape":"Integer",
@@ -1453,11 +1461,11 @@
       "members":{
         "name":{
           "shape":"String",
-          "documentation":"<p>The name of the scheduling policy. It can be up to 128 letters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
+          "documentation":"<p>The name of the fair-share scheduling policy. It can be up to 128 letters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
         },
         "fairsharePolicy":{
           "shape":"FairsharePolicy",
-          "documentation":"<p>The fair share policy of the scheduling policy.</p>"
+          "documentation":"<p>The fair-share scheduling policy details.</p>"
         },
         "tags":{
           "shape":"TagrisTagsMap",
@@ -1947,6 +1955,10 @@
         "volumes":{
           "shape":"Volumes",
           "documentation":"<p>A list of data volumes used in a job.</p>"
+        },
+        "enableExecuteCommand":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines whether execute command functionality is turned on for this task. If <code>true</code>, execute command functionality is turned on all the containers in the task.</p>"
         }
       },
       "documentation":"<p>The details of a task definition that describes the container and volume definitions of an Amazon ECS task.</p>"
@@ -1994,6 +2006,10 @@
         "volumes":{
           "shape":"Volumes",
           "documentation":"<p>A list of volumes that are associated with the job.</p>"
+        },
+        "enableExecuteCommand":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines whether execute command functionality is turned on for this task. If <code>true</code>, execute command functionality is turned on all the containers in the task.</p>"
         }
       },
       "documentation":"<p>The properties for a task definition that describes the container and volume definitions of an Amazon ECS task. You can specify which Docker images to use, the required resources, and other configurations related to launching the task definition through an Amazon ECS service or task.</p>"
@@ -2485,7 +2501,7 @@
         },
         "initContainers":{
           "shape":"EksContainerOverrideList",
-          "documentation":"<p>The overrides for the <code>initContainers</code> defined in the Amazon EKS pod. These containers run before application containers, always runs to completion, and must complete successfully before the next container starts. These containers are registered with the Amazon EKS Connector agent and persists the registration information in the Kubernetes backend data store. For more information, see <a href=\"https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\">Init Containers</a> in the <i>Kubernetes documentation</i>.</p>"
+          "documentation":"<p>The overrides for the <code>initContainers</code> defined in the Amazon EKS pod. These containers run before application containers, always run to completion, and must complete successfully before the next container starts. These containers are registered with the Amazon EKS Connector agent and persists the registration information in the Kubernetes backend data store. For more information, see <a href=\"https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\">Init Containers</a> in the <i>Kubernetes documentation</i>.</p>"
         },
         "metadata":{
           "shape":"EksMetadata",
@@ -2622,18 +2638,18 @@
       "members":{
         "shareDecaySeconds":{
           "shape":"Integer",
-          "documentation":"<p>The amount of time (in seconds) to use to calculate a fair share percentage for each fair share identifier in use. A value of zero (0) indicates the default minimum time window (600 seconds). The maximum supported value is 604800 (1 week).</p> <p>The decay allows for more recently run jobs to have more weight than jobs that ran earlier. Consider adjusting this number if you have jobs that (on average) run longer than ten minutes, or a large difference in job count or job run times between share identifiers, and the allocation of resources doesn’t meet your needs.</p>"
+          "documentation":"<p>The amount of time (in seconds) to use to calculate a fair-share percentage for each share identifier in use. A value of zero (0) indicates the default minimum time window (600 seconds). The maximum supported value is 604800 (1 week).</p> <p>The decay allows for more recently run jobs to have more weight than jobs that ran earlier. Consider adjusting this number if you have jobs that (on average) run longer than ten minutes, or a large difference in job count or job run times between share identifiers, and the allocation of resources doesn't meet your needs.</p>"
         },
         "computeReservation":{
           "shape":"Integer",
-          "documentation":"<p>A value used to reserve some of the available maximum vCPU for fair share identifiers that aren't already used.</p> <p>The reserved ratio is <code>(<i>computeReservation</i>/100)^<i>ActiveFairShares</i> </code> where <code> <i>ActiveFairShares</i> </code> is the number of active fair share identifiers.</p> <p>For example, a <code>computeReservation</code> value of 50 indicates that Batch reserves 50% of the maximum available vCPU if there's only one fair share identifier. It reserves 25% if there are two fair share identifiers. It reserves 12.5% if there are three fair share identifiers. A <code>computeReservation</code> value of 25 indicates that Batch should reserve 25% of the maximum available vCPU if there's only one fair share identifier, 6.25% if there are two fair share identifiers, and 1.56% if there are three fair share identifiers.</p> <p>The minimum value is 0 and the maximum value is 99.</p>"
+          "documentation":"<p>A value used to reserve some of the available maximum vCPU for share identifiers that aren't already used.</p> <p>The reserved ratio is <code>(<i>computeReservation</i>/100)^<i>ActiveFairShares</i> </code> where <code> <i>ActiveFairShares</i> </code> is the number of active share identifiers.</p> <p>For example, a <code>computeReservation</code> value of 50 indicates that Batch reserves 50% of the maximum available vCPU if there's only one share identifier. It reserves 25% if there are two share identifiers. It reserves 12.5% if there are three share identifiers. A <code>computeReservation</code> value of 25 indicates that Batch should reserve 25% of the maximum available vCPU if there's only one share identifier, 6.25% if there are two fair share identifiers, and 1.56% if there are three share identifiers.</p> <p>The minimum value is 0 and the maximum value is 99.</p>"
         },
         "shareDistribution":{
           "shape":"ShareAttributesList",
-          "documentation":"<p>An array of <code>SharedIdentifier</code> objects that contain the weights for the fair share identifiers for the fair share policy. Fair share identifiers that aren't included have a default weight of <code>1.0</code>.</p>"
+          "documentation":"<p>An array of <code>SharedIdentifier</code> objects that contain the weights for the share identifiers for the fair-share policy. Share identifiers that aren't included have a default weight of <code>1.0</code>.</p>"
         }
       },
-      "documentation":"<p>The fair share policy for a scheduling policy.</p>"
+      "documentation":"<p>The fair-share scheduling policy details.</p>"
     },
     "FargatePlatformConfiguration":{
       "type":"structure",
@@ -2645,13 +2661,40 @@
       },
       "documentation":"<p>The platform configuration for jobs that are running on Fargate resources. Jobs that run on Amazon EC2 resources must not specify this parameter.</p>"
     },
+    "FirelensConfiguration":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"FirelensConfigurationType",
+          "documentation":"<p>The log router to use. The valid values are <code>fluentd</code> or <code>fluentbit</code>.</p>"
+        },
+        "options":{
+          "shape":"FirelensConfigurationOptionsMap",
+          "documentation":"<p>The options to use when configuring the log router. This field is optional and can be used to specify a custom configuration file or to add additional metadata, such as the task, task definition, cluster, and container instance details to the log event. If specified, the syntax to use is <code>\"options\":{\"enable-ecs-log-metadata\":\"true|false\",\"config-file-type:\"s3|file\",\"config-file-value\":\"arn:aws:s3:::mybucket/fluent.conf|filepath\"}</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html#firelens-taskdef\">Creating a task definition that uses a FireLens configuration</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>The FireLens configuration for the container. This is used to specify and configure a log router for container logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html\">Custom log</a> routing in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+    },
+    "FirelensConfigurationOptionsMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
+    "FirelensConfigurationType":{
+      "type":"string",
+      "enum":[
+        "fluentd",
+        "fluentbit"
+      ]
+    },
     "Float":{"type":"float"},
     "FrontOfQueueDetail":{
       "type":"structure",
       "members":{
         "jobs":{
           "shape":"FrontOfQueueJobSummaryList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the first 100 <code>RUNNABLE</code> jobs in a named job queue. For first-in-first-out (FIFO) job queues, jobs are ordered based on their submission time. For fair share scheduling (FSS) job queues, jobs are ordered based on their job priority and share usage.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the first 100 <code>RUNNABLE</code> jobs in a named job queue. For first-in-first-out (FIFO) job queues, jobs are ordered based on their submission time. For fair-share scheduling (FSS) job queues, jobs are ordered based on their job priority and share usage.</p>"
         },
         "lastUpdatedAt":{
           "shape":"Long",
@@ -2693,7 +2736,7 @@
       "members":{
         "frontOfQueue":{
           "shape":"FrontOfQueueDetail",
-          "documentation":"<p>The list of the first 100 <code>RUNNABLE</code> jobs in each job queue. For first-in-first-out (FIFO) job queues, jobs are ordered based on their submission time. For fair share scheduling (FSS) job queues, jobs are ordered based on their job priority and share usage.</p>"
+          "documentation":"<p>The list of the first 100 <code>RUNNABLE</code> jobs in each job queue. For first-in-first-out (FIFO) job queues, jobs are ordered based on their submission time. For fair-share scheduling (FSS) job queues, jobs are ordered based on their job priority and share usage.</p>"
         }
       }
     },
@@ -2782,7 +2825,7 @@
         },
         "schedulingPriority":{
           "shape":"Integer",
-          "documentation":"<p>The scheduling priority of the job definition. This only affects jobs in job queues with a fair share policy. Jobs with a higher scheduling priority are scheduled before jobs with a lower scheduling priority.</p>"
+          "documentation":"<p>The scheduling priority of the job definition. This only affects jobs in job queues with a fair-share policy. Jobs with a higher scheduling priority are scheduled before jobs with a lower scheduling priority.</p>"
         },
         "parameters":{
           "shape":"ParametersMap",
@@ -2901,7 +2944,7 @@
         },
         "schedulingPriority":{
           "shape":"Integer",
-          "documentation":"<p>The scheduling policy of the job definition. This only affects jobs in job queues with a fair share policy. Jobs with a higher scheduling priority are scheduled before jobs with a lower scheduling priority.</p>"
+          "documentation":"<p>The scheduling policy of the job definition. This only affects jobs in job queues with a fair-share policy. Jobs with a higher scheduling priority are scheduled before jobs with a lower scheduling priority.</p>"
         },
         "attempts":{
           "shape":"AttemptDetails",
@@ -3290,7 +3333,7 @@
         },
         "maxSwap":{
           "shape":"Integer",
-          "documentation":"<p>The total amount of swap memory (in MiB) a container can use. This parameter is translated to the <code>--memory-swap</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a> where the value is the sum of the container memory plus the <code>maxSwap</code> value. For more information, see <a href=\"https://docs.docker.com/config/containers/resource_constraints/#--memory-swap-details\"> <code>--memory-swap</code> details</a> in the Docker documentation.</p> <p>If a <code>maxSwap</code> value of <code>0</code> is specified, the container doesn't use swap. Accepted values are <code>0</code> or any positive integer. If the <code>maxSwap</code> parameter is omitted, the container doesn't use the swap configuration for the container instance that it's running on. A <code>maxSwap</code> value must be set for the <code>swappiness</code> parameter to be used.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't provide it for these jobs.</p> </note>"
+          "documentation":"<p>The total amount of swap memory (in MiB) a container can use. This parameter is translated to the <code>--memory-swap</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a> where the value is the sum of the container memory plus the <code>maxSwap</code> value. For more information, see <a href=\"https://docs.docker.com/config/containers/resource_constraints/#--memory-swap-details\"> <code>--memory-swap</code> details</a> in the Docker documentation.</p> <p>If a <code>maxSwap</code> value of <code>0</code> is specified, the container doesn't use swap. Accepted values are <code>0</code> or any positive integer. If the <code>maxSwap</code> parameter is omitted, the container doesn't use the swap configuration for the container instance on which it runs. A <code>maxSwap</code> value must be set for the <code>swappiness</code> parameter to be used.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't provide it for these jobs.</p> </note>"
         },
         "swappiness":{
           "shape":"Integer",
@@ -3576,7 +3619,7 @@
       "members":{
         "logDriver":{
           "shape":"LogDriver",
-          "documentation":"<p>The log driver to use for the container. The valid values that are listed for this parameter are log drivers that the Amazon ECS container agent can communicate with by default.</p> <p>The supported log drivers are <code>awslogs</code>, <code>fluentd</code>, <code>gelf</code>, <code>json-file</code>, <code>journald</code>, <code>logentries</code>, <code>syslog</code>, and <code>splunk</code>.</p> <note> <p>Jobs that are running on Fargate resources are restricted to the <code>awslogs</code> and <code>splunk</code> log drivers.</p> </note> <dl> <dt>awslogs</dt> <dd> <p>Specifies the Amazon CloudWatch Logs logging driver. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using_awslogs.html\">Using the awslogs log driver</a> in the <i>Batch User Guide</i> and <a href=\"https://docs.docker.com/config/containers/logging/awslogs/\">Amazon CloudWatch Logs logging driver</a> in the Docker documentation.</p> </dd> <dt>fluentd</dt> <dd> <p>Specifies the Fluentd logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/fluentd/\">Fluentd logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>gelf</dt> <dd> <p>Specifies the Graylog Extended Format (GELF) logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/gelf/\">Graylog Extended Format logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>journald</dt> <dd> <p>Specifies the journald logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/journald/\">Journald logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>json-file</dt> <dd> <p>Specifies the JSON file logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/json-file/\">JSON File logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>splunk</dt> <dd> <p>Specifies the Splunk logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/splunk/\">Splunk logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>syslog</dt> <dd> <p>Specifies the syslog logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/syslog/\">Syslog logging driver</a> in the <i>Docker documentation</i>.</p> </dd> </dl> <note> <p>If you have a custom driver that's not listed earlier that you want to work with the Amazon ECS container agent, you can fork the Amazon ECS container agent project that's <a href=\"https://github.com/aws/amazon-ecs-agent\">available on GitHub</a> and customize it to work with that driver. We encourage you to submit pull requests for changes that you want to have included. However, Amazon Web Services doesn't currently support running modified copies of this software.</p> </note> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: <code>sudo docker version | grep \"Server API version\"</code> </p>"
+          "documentation":"<p>The log driver to use for the container. The valid values that are listed for this parameter are log drivers that the Amazon ECS container agent can communicate with by default.</p> <p>The supported log drivers are <code>awslogs</code>, <code>fluentd</code>, <code>gelf</code>, <code>json-file</code>, <code>journald</code>, <code>logentries</code>, <code>syslog</code>, and <code>splunk</code>.</p> <note> <p>Jobs that are running on Fargate resources are restricted to the <code>awslogs</code> and <code>splunk</code> log drivers.</p> </note> <dl> <dt>awsfirelens</dt> <dd> <p>Specifies the firelens logging driver. For more information on configuring Firelens, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html\">Send Amazon ECS logs to an Amazon Web Services service or Amazon Web Services Partner</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </dd> <dt>awslogs</dt> <dd> <p>Specifies the Amazon CloudWatch Logs logging driver. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using_awslogs.html\">Using the awslogs log driver</a> in the <i>Batch User Guide</i> and <a href=\"https://docs.docker.com/config/containers/logging/awslogs/\">Amazon CloudWatch Logs logging driver</a> in the Docker documentation.</p> </dd> <dt>fluentd</dt> <dd> <p>Specifies the Fluentd logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/fluentd/\">Fluentd logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>gelf</dt> <dd> <p>Specifies the Graylog Extended Format (GELF) logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/gelf/\">Graylog Extended Format logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>journald</dt> <dd> <p>Specifies the journald logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/journald/\">Journald logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>json-file</dt> <dd> <p>Specifies the JSON file logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/json-file/\">JSON File logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>splunk</dt> <dd> <p>Specifies the Splunk logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/splunk/\">Splunk logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>syslog</dt> <dd> <p>Specifies the syslog logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/syslog/\">Syslog logging driver</a> in the <i>Docker documentation</i>.</p> </dd> </dl> <note> <p>If you have a custom driver that's not listed earlier that you want to work with the Amazon ECS container agent, you can fork the Amazon ECS container agent project that's <a href=\"https://github.com/aws/amazon-ecs-agent\">available on GitHub</a> and customize it to work with that driver. We encourage you to submit pull requests for changes that you want to have included. However, Amazon Web Services doesn't currently support running modified copies of this software.</p> </note> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: <code>sudo docker version | grep \"Server API version\"</code> </p>"
         },
         "options":{
           "shape":"LogConfigurationOptionsMap",
@@ -3603,7 +3646,8 @@
         "gelf",
         "fluentd",
         "awslogs",
-        "splunk"
+        "splunk",
+        "awsfirelens"
       ]
     },
     "Long":{"type":"long"},
@@ -3849,7 +3893,7 @@
         },
         "schedulingPriority":{
           "shape":"Integer",
-          "documentation":"<p>The scheduling priority for jobs that are submitted with this job definition. This only affects jobs in job queues with a fair share policy. Jobs with a higher scheduling priority are scheduled before jobs with a lower scheduling priority.</p> <p>The minimum supported value is 0 and the maximum supported value is 9999.</p>"
+          "documentation":"<p>The scheduling priority for jobs that are submitted with this job definition. This only affects jobs in job queues with a fair-share policy. Jobs with a higher scheduling priority are scheduled before jobs with a lower scheduling priority.</p> <p>The minimum supported value is 0 and the maximum supported value is 9999.</p>"
         },
         "containerProperties":{
           "shape":"ContainerProperties",
@@ -4001,7 +4045,7 @@
       "members":{
         "name":{
           "shape":"String",
-          "documentation":"<p>The name of the scheduling policy.</p>"
+          "documentation":"<p>The name of the fair-share scheduling policy.</p>"
         },
         "arn":{
           "shape":"String",
@@ -4009,11 +4053,11 @@
         },
         "fairsharePolicy":{
           "shape":"FairsharePolicy",
-          "documentation":"<p>The fair share policy for the scheduling policy.</p>"
+          "documentation":"<p>The fair-share scheduling policy details.</p>"
         },
         "tags":{
           "shape":"TagrisTagsMap",
-          "documentation":"<p>The tags that you apply to the scheduling policy to categorize and organize your resources. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in <i>Amazon Web Services General Reference</i>.</p>"
+          "documentation":"<p>The tags that you apply to the fair-share scheduling policy to categorize and organize your resources. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in <i>Amazon Web Services General Reference</i>.</p>"
         }
       },
       "documentation":"<p>An object that represents a scheduling policy.</p>"
@@ -4075,14 +4119,14 @@
       "members":{
         "shareIdentifier":{
           "shape":"String",
-          "documentation":"<p>A fair share identifier or fair share identifier prefix. If the string ends with an asterisk (*), this entry specifies the weight factor to use for fair share identifiers that start with that prefix. The list of fair share identifiers in a fair share policy can't overlap. For example, you can't have one that specifies a <code>shareIdentifier</code> of <code>UserA*</code> and another that specifies a <code>shareIdentifier</code> of <code>UserA-1</code>.</p> <p>There can be no more than 500 fair share identifiers active in a job queue.</p> <p>The string is limited to 255 alphanumeric characters, and can be followed by an asterisk (*).</p>"
+          "documentation":"<p>A share identifier or share identifier prefix. If the string ends with an asterisk (*), this entry specifies the weight factor to use for share identifiers that start with that prefix. The list of share identifiers in a fair-share policy can't overlap. For example, you can't have one that specifies a <code>shareIdentifier</code> of <code>UserA*</code> and another that specifies a <code>shareIdentifier</code> of <code>UserA-1</code>.</p> <p>There can be no more than 500 share identifiers active in a job queue.</p> <p>The string is limited to 255 alphanumeric characters, and can be followed by an asterisk (*).</p>"
         },
         "weightFactor":{
           "shape":"Float",
-          "documentation":"<p>The weight factor for the fair share identifier. The default value is 1.0. A lower value has a higher priority for compute resources. For example, jobs that use a share identifier with a weight factor of 0.125 (1/8) get 8 times the compute resources of jobs that use a share identifier with a weight factor of 1.</p> <p>The smallest supported value is 0.0001, and the largest supported value is 999.9999.</p>"
+          "documentation":"<p>The weight factor for the share identifier. The default value is 1.0. A lower value has a higher priority for compute resources. For example, jobs that use a share identifier with a weight factor of 0.125 (1/8) get 8 times the compute resources of jobs that use a share identifier with a weight factor of 1.</p> <p>The smallest supported value is 0.0001, and the largest supported value is 999.9999.</p>"
         }
       },
-      "documentation":"<p>Specifies the weights for the fair share identifiers for the fair share policy. Fair share identifiers that aren't included have a default weight of <code>1.0</code>.</p>"
+      "documentation":"<p>Specifies the weights for the share identifiers for the fair-share policy. Share identifiers that aren't included have a default weight of <code>1.0</code>.</p>"
     },
     "ShareAttributesList":{
       "type":"list",
@@ -4111,11 +4155,11 @@
         },
         "shareIdentifier":{
           "shape":"String",
-          "documentation":"<p>The share identifier for the job. Don't specify this parameter if the job queue doesn't have a scheduling policy. If the job queue has a scheduling policy, then this parameter must be specified.</p> <p>This string is limited to 255 alphanumeric characters, and can be followed by an asterisk (*).</p>"
+          "documentation":"<p>The share identifier for the job. Don't specify this parameter if the job queue doesn't have a fair-share scheduling policy. If the job queue has a fair-share scheduling policy, then this parameter must be specified.</p> <p>This string is limited to 255 alphanumeric characters, and can be followed by an asterisk (*).</p>"
         },
         "schedulingPriorityOverride":{
           "shape":"Integer",
-          "documentation":"<p>The scheduling priority for the job. This only affects jobs in job queues with a fair share policy. Jobs with a higher scheduling priority are scheduled before jobs with a lower scheduling priority. This overrides any scheduling priority in the job definition and works only within a single share identifier.</p> <p>The minimum supported value is 0 and the maximum supported value is 9999.</p>"
+          "documentation":"<p>The scheduling priority for the job. This only affects jobs in job queues with a fair-share policy. Jobs with a higher scheduling priority are scheduled before jobs with a lower scheduling priority. This overrides any scheduling priority in the job definition and works only within a single share identifier.</p> <p>The minimum supported value is 0 and the maximum supported value is 9999.</p>"
         },
         "arrayProperties":{
           "shape":"ArrayProperties",
@@ -4282,6 +4326,10 @@
           "shape":"Boolean",
           "documentation":"<p>If the essential parameter of a container is marked as <code>true</code>, and that container fails or stops for any reason, all other containers that are part of the task are stopped. If the <code>essential</code> parameter of a container is marked as false, its failure doesn't affect the rest of the containers in a task. If this parameter is omitted, a container is assumed to be essential.</p> <p>All jobs must have at least one essential container. If you have an application that's composed of multiple containers, group containers that are used for a common purpose into components, and separate the different components into multiple task definitions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/application_architecture.html\">Application Architecture</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
         },
+        "firelensConfiguration":{
+          "shape":"FirelensConfiguration",
+          "documentation":"<p>The FireLens configuration for the container. This is used to specify and configure a log router for container logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html\">Custom log</a> routing in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+        },
         "image":{
           "shape":"String",
           "documentation":"<p>The image used to start a container. This string is passed directly to the Docker daemon. By default, images in the Docker Hub registry are available. Other repositories are specified with either <code>repository-url/image:tag</code> or <code>repository-url/image@digest</code>. Up to 255 letters (uppercase and lowercase), numbers, hyphens, underscores, colons, periods, forward slashes, and number signs are allowed. This parameter maps to <code>Image</code> in the <a href=\"https://docs.docker.com/engine/api/v1.35/#operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.35/\">Docker Remote API</a> and the <code>IMAGE</code> parameter of the <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\"> <i>docker run</i> </a>.</p>"
@@ -4390,6 +4438,10 @@
         "essential":{
           "shape":"Boolean",
           "documentation":"<p>If the essential parameter of a container is marked as <code>true</code>, and that container fails or stops for any reason, all other containers that are part of the task are stopped. If the <code>essential</code> parameter of a container is marked as false, its failure doesn't affect the rest of the containers in a task. If this parameter is omitted, a container is assumed to be essential.</p> <p>All jobs must have at least one essential container. If you have an application that's composed of multiple containers, group containers that are used for a common purpose into components, and separate the different components into multiple task definitions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/application_architecture.html\">Application Architecture</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+        },
+        "firelensConfiguration":{
+          "shape":"FirelensConfiguration",
+          "documentation":"<p>The FireLens configuration for the container. This is used to specify and configure a log router for container logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html\">Custom log</a> routing in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
         },
         "image":{
           "shape":"String",
@@ -4569,7 +4621,7 @@
         },
         "unmanagedvCpus":{
           "shape":"Integer",
-          "documentation":"<p>The maximum number of vCPUs expected to be used for an unmanaged compute environment. Don't specify this parameter for a managed compute environment. This parameter is only used for fair share scheduling to reserve vCPU capacity for new share identifiers. If this parameter isn't provided for a fair share job queue, no vCPU capacity is reserved.</p>"
+          "documentation":"<p>The maximum number of vCPUs expected to be used for an unmanaged compute environment. Don't specify this parameter for a managed compute environment. This parameter is only used for fair-share scheduling to reserve vCPU capacity for new share identifiers. If this parameter isn't provided for a fair-share job queue, no vCPU capacity is reserved.</p>"
         },
         "computeResources":{
           "shape":"ComputeResourceUpdate",
@@ -4661,7 +4713,7 @@
         },
         "schedulingPolicyArn":{
           "shape":"String",
-          "documentation":"<p>Amazon Resource Name (ARN) of the fair share scheduling policy. Once a job queue is created, the fair share scheduling policy can be replaced but not removed. The format is <code>aws:<i>Partition</i>:batch:<i>Region</i>:<i>Account</i>:scheduling-policy/<i>Name</i> </code>. For example, <code>aws:aws:batch:us-west-2:123456789012:scheduling-policy/MySchedulingPolicy</code>.</p>"
+          "documentation":"<p>Amazon Resource Name (ARN) of the fair-share scheduling policy. Once a job queue is created, the fair-share scheduling policy can be replaced but not removed. The format is <code>aws:<i>Partition</i>:batch:<i>Region</i>:<i>Account</i>:scheduling-policy/<i>Name</i> </code>. For example, <code>aws:aws:batch:us-west-2:123456789012:scheduling-policy/MySchedulingPolicy</code>.</p>"
         },
         "priority":{
           "shape":"Integer",
@@ -4703,7 +4755,7 @@
           "documentation":"<p>Specifies the job timeout (in minutes) when the compute environment infrastructure is updated. The default value is 30.</p>"
         }
       },
-      "documentation":"<p>Specifies the infrastructure update policy for the compute environment. For more information about infrastructure updates, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p>"
+      "documentation":"<p>Specifies the infrastructure update policy for the Amazon EC2 compute environment. For more information about infrastructure updates, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p>"
     },
     "UpdateSchedulingPolicyRequest":{
       "type":"structure",
@@ -4715,7 +4767,7 @@
         },
         "fairsharePolicy":{
           "shape":"FairsharePolicy",
-          "documentation":"<p>The fair share policy.</p>"
+          "documentation":"<p>The fair-share policy scheduling details.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>UpdateSchedulingPolicy</code>.</p>"

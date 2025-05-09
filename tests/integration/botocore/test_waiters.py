@@ -10,12 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import pytest
-
-from tests import unittest, random_chars
-
 import botocore.session
+import pytest
 from botocore.exceptions import WaiterError
+
+from tests import random_chars, unittest
 
 
 @pytest.mark.slow
@@ -25,14 +24,18 @@ class TestWaiterForDynamoDB(unittest.TestCase):
         self.client = self.session.create_client('dynamodb', 'us-west-2')
 
     def test_create_table_and_wait(self):
-        table_name = 'botocoretest-%s' % random_chars(10)
+        table_name = f'botocoretest-{random_chars(10)}'
         self.client.create_table(
             TableName=table_name,
-            ProvisionedThroughput={"ReadCapacityUnits": 5,
-                                   "WriteCapacityUnits": 5},
+            ProvisionedThroughput={
+                "ReadCapacityUnits": 5,
+                "WriteCapacityUnits": 5,
+            },
             KeySchema=[{"AttributeName": "foo", "KeyType": "HASH"}],
-            AttributeDefinitions=[{"AttributeName": "foo",
-                                   "AttributeType": "S"}])
+            AttributeDefinitions=[
+                {"AttributeName": "foo", "AttributeType": "S"}
+            ],
+        )
         self.addCleanup(self.client.delete_table, TableName=table_name)
         waiter = self.client.get_waiter('table_exists')
         waiter.wait(TableName=table_name)
@@ -56,7 +59,8 @@ class TestMatchersWithErrors(unittest.TestCase):
     def setUp(self):
         self.session = botocore.session.get_session()
         self.client = self.session.create_client(
-            'ec2', region_name='us-west-2')
+            'ec2', region_name='us-west-2'
+        )
 
     def test_dont_search_on_error_responses(self):
         """Test that InstanceExists can handle a nonexistent instance."""

@@ -1575,6 +1575,10 @@
           "shape":"IngressPointName",
           "documentation":"<p>A user friendly name for an ingress endpoint resource.</p>"
         },
+        "NetworkConfiguration":{
+          "shape":"NetworkConfiguration",
+          "documentation":"<p>Specifies the network configuration for the ingress point. This allows you to create an IPv4-only, Dual-Stack, or PrivateLink type of ingress point. If not specified, the default network type is IPv4-only. </p>"
+        },
         "RuleSetId":{
           "shape":"RuleSetId",
           "documentation":"<p>The identifier of an existing rule set that you attach to an ingress endpoint resource.</p>"
@@ -2464,6 +2468,10 @@
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of when the ingress endpoint was last updated.</p>"
         },
+        "NetworkConfiguration":{
+          "shape":"NetworkConfiguration",
+          "documentation":"<p>The network configuration for the ingress point.</p>"
+        },
         "RuleSetId":{
           "shape":"RuleSetId",
           "documentation":"<p>The identifier of a rule set resource associated with the ingress endpoint.</p>"
@@ -2898,6 +2906,44 @@
       },
       "documentation":"<p>The union type representing the allowed types for the left hand side of an IP condition.</p>"
     },
+    "IngressIpv6Attribute":{
+      "type":"string",
+      "enum":["SENDER_IPV6"]
+    },
+    "IngressIpv6Expression":{
+      "type":"structure",
+      "required":[
+        "Evaluate",
+        "Operator",
+        "Values"
+      ],
+      "members":{
+        "Evaluate":{
+          "shape":"IngressIpv6ToEvaluate",
+          "documentation":"<p>The left hand side argument of an IPv6 condition expression.</p>"
+        },
+        "Operator":{
+          "shape":"IngressIpOperator",
+          "documentation":"<p>The matching operator for an IPv6 condition expression.</p>"
+        },
+        "Values":{
+          "shape":"Ipv6Cidrs",
+          "documentation":"<p>The right hand side argument of an IPv6 condition expression.</p>"
+        }
+      },
+      "documentation":"<p>The union type representing the allowed types for the left hand side of an IPv6 condition.</p>"
+    },
+    "IngressIpv6ToEvaluate":{
+      "type":"structure",
+      "members":{
+        "Attribute":{
+          "shape":"IngressIpv6Attribute",
+          "documentation":"<p>An enum type representing the allowed attribute types for an IPv6 condition.</p>"
+        }
+      },
+      "documentation":"<p>The structure for an IPv6 based condition matching on the incoming mail.</p>",
+      "union":true
+    },
     "IngressIsInAddressList":{
       "type":"structure",
       "required":[
@@ -3145,6 +3191,13 @@
       "type":"integer",
       "box":true
     },
+    "IpType":{
+      "type":"string",
+      "enum":[
+        "IPV4",
+        "DUAL_STACK"
+      ]
+    },
     "Ipv4Cidr":{
       "type":"string",
       "pattern":"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/([0-9]|[12][0-9]|3[0-2])$"
@@ -3152,6 +3205,16 @@
     "Ipv4Cidrs":{
       "type":"list",
       "member":{"shape":"Ipv4Cidr"}
+    },
+    "Ipv6Cidr":{
+      "type":"string",
+      "max":49,
+      "min":0,
+      "pattern":"^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))\\/(12[0-8]|1[0-1][0-9]|[1-9][0-9]|[0-9])$"
+    },
+    "Ipv6Cidrs":{
+      "type":"list",
+      "member":{"shape":"Ipv6Cidr"}
     },
     "JobId":{
       "type":"string",
@@ -3645,6 +3708,21 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9:_/+=,@.#-]+$"
     },
+    "NetworkConfiguration":{
+      "type":"structure",
+      "members":{
+        "PrivateNetworkConfiguration":{
+          "shape":"PrivateNetworkConfiguration",
+          "documentation":"<p>Specifies the network configuration for the private ingress point.</p>"
+        },
+        "PublicNetworkConfiguration":{
+          "shape":"PublicNetworkConfiguration",
+          "documentation":"<p>Specifies the network configuration for the public ingress point.</p>"
+        }
+      },
+      "documentation":"<p>The network type (IPv4-only, Dual-Stack, PrivateLink) of the ingress endpoint resource.</p>",
+      "union":true
+    },
     "NoAuthentication":{
       "type":"structure",
       "members":{
@@ -3672,6 +3750,10 @@
         "IpExpression":{
           "shape":"IngressIpv4Expression",
           "documentation":"<p>This represents an IP based condition matching on the incoming mail. It performs the operation configured in 'Operator' and evaluates the 'Protocol' object against the 'Value'.</p>"
+        },
+        "Ipv6Expression":{
+          "shape":"IngressIpv6Expression",
+          "documentation":"<p>This represents an IPv6 based condition matching on the incoming mail. It performs the operation configured in 'Operator' and evaluates the 'Protocol' object against the 'Value'.</p>"
         },
         "StringExpression":{
           "shape":"IngressStringExpression",
@@ -3715,6 +3797,28 @@
     "PreSignedUrl":{
       "type":"string",
       "sensitive":true
+    },
+    "PrivateNetworkConfiguration":{
+      "type":"structure",
+      "required":["VpcEndpointId"],
+      "members":{
+        "VpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The identifier of the VPC endpoint to associate with this private ingress point.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the network configuration for the private ingress point.</p>"
+    },
+    "PublicNetworkConfiguration":{
+      "type":"structure",
+      "required":["IpType"],
+      "members":{
+        "IpType":{
+          "shape":"IpType",
+          "documentation":"<p>The IP address type for the public ingress point. Valid values are IPV4 and DUAL_STACK.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the network configuration for the public ingress point.</p>"
     },
     "QBusinessApplicationId":{
       "type":"string",
@@ -4221,9 +4325,9 @@
     },
     "RuleIpStringValue":{
       "type":"string",
-      "max":18,
+      "max":43,
       "min":1,
-      "pattern":"^(([0-9]|.|/)*)$"
+      "pattern":"^(([0-9]|.|:|/)*)$"
     },
     "RuleIpToEvaluate":{
       "type":"structure",
@@ -5140,6 +5244,10 @@
       },
       "documentation":"<p>The request validation has failed. For details, see the accompanying error message.</p>",
       "exception":true
+    },
+    "VpcEndpointId":{
+      "type":"string",
+      "pattern":"^vpce-[a-zA-Z0-9]{17}$"
     }
   },
   "documentation":"<p><fullname>Amazon SES Mail Manager API</fullname> <p>The Amazon SES Mail Manager API contains operations and data types that comprise the Mail Manager feature of <a href=\"http://aws.amazon.com/ses\">Amazon Simple Email Service (SES)</a>.</p> <p>Mail Manager is a set of Amazon SES email gateway features designed to help you strengthen your organization's email infrastructure, simplify email workflow management, and streamline email compliance control. To learn more, see the <a href=\"https://docs.aws.amazon.com/ses/latest/dg/eb.html\">Mail Manager chapter</a> in the <i>Amazon SES Developer Guide</i>.</p></p>"

@@ -11,19 +11,19 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import collections
+import logging
 import sys
 import time
-import logging
+from datetime import datetime
+
 import botocore
-import collections
 
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.artifact_exporter import (
     mktempfile,
     parse_s3_url,
 )
-
-from datetime import datetime
 
 LOG = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ ChangeSetResult = collections.namedtuple(
 )
 
 
-class Deployer(object):
+class Deployer:
     def __init__(
         self,
         cloudformation_client,
@@ -68,10 +68,8 @@ class Deployer(object):
             # the exception msg to understand the nature of this exception.
             msg = str(e)
 
-            if "Stack with id {0} does not exist".format(stack_name) in msg:
-                LOG.debug(
-                    "Stack with id {0} does not exist".format(stack_name)
-                )
+            if f"Stack with id {stack_name} does not exist" in msg:
+                LOG.debug(f"Stack with id {stack_name} does not exist")
                 return False
             else:
                 # We don't know anything about this exception. Don't handle
@@ -101,7 +99,7 @@ class Deployer(object):
         """
 
         now = datetime.utcnow().isoformat()
-        description = "Created by AWS CLI at {0} UTC".format(now)
+        description = f"Created by AWS CLI at {now} UTC"
 
         # Each changeset will get a unique name based on time
         changeset_name = self.changeset_prefix + str(int(time.time()))
@@ -208,8 +206,8 @@ class Deployer(object):
                 raise exceptions.ChangeEmptyError(stack_name=stack_name)
 
             raise RuntimeError(
-                "Failed to create the changeset: {0} "
-                "Status: {1}. Reason: {2}".format(ex, status, reason)
+                f"Failed to create the changeset: {ex} "
+                f"Status: {status}. Reason: {reason}"
             )
 
     def execute_changeset(
@@ -239,9 +237,7 @@ class Deployer(object):
         elif changeset_type == "UPDATE":
             waiter = self._client.get_waiter("stack_update_complete")
         else:
-            raise RuntimeError(
-                "Invalid changeset type {0}".format(changeset_type)
-            )
+            raise RuntimeError(f"Invalid changeset type {changeset_type}")
 
         # Poll every 30 seconds. Polling too frequently risks hitting rate limits
         # on CloudFormation's DescribeStacks API

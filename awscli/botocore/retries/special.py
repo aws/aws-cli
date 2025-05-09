@@ -5,6 +5,7 @@ retry handler.  They don't make sense as part of the standard mode retry
 module.  Ideally we should be able to remove this module.
 
 """
+
 import logging
 from binascii import crc32
 
@@ -16,7 +17,6 @@ logger = logging.getLogger(__name__)
 # TODO: This is an ideal candidate for the retryable trait once that's
 # available.
 class RetryIDPCommunicationError(BaseRetryableChecker):
-
     _SERVICE_NAME = 'sts'
 
     def is_retryable(self, context):
@@ -28,7 +28,6 @@ class RetryIDPCommunicationError(BaseRetryableChecker):
 
 
 class RetryDDBChecksumError(BaseRetryableChecker):
-
     _CHECKSUM_HEADER = 'x-amz-crc32'
     _SERVICE_NAME = 'dynamodb'
 
@@ -41,8 +40,12 @@ class RetryDDBChecksumError(BaseRetryableChecker):
         checksum = context.http_response.headers.get(self._CHECKSUM_HEADER)
         if checksum is None:
             return False
-        actual_crc32 = crc32(context.http_response.content) & 0xffffffff
+        actual_crc32 = crc32(context.http_response.content) & 0xFFFFFFFF
         if actual_crc32 != int(checksum):
-            logger.debug("DynamoDB crc32 checksum does not match, "
-                         "expected: %s, actual: %s", checksum, actual_crc32)
+            logger.debug(
+                "DynamoDB crc32 checksum does not match, "
+                "expected: %s, actual: %s",
+                checksum,
+                actual_crc32,
+            )
             return True

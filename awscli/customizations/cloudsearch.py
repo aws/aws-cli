@@ -13,9 +13,10 @@
 
 import logging
 
-from awscli.customizations.flatten import FlattenArguments, SEP
-from awscli.customizations.exceptions import ParamValidationError
 from botocore.compat import OrderedDict
+
+from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.flatten import SEP, FlattenArguments
 
 LOG = logging.getLogger(__name__)
 

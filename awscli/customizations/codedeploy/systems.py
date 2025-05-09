@@ -41,7 +41,7 @@ class System:
 class Windows(System):
     CONFIG_DIR = r'C:\ProgramData\Amazon\CodeDeploy'
     CONFIG_FILE = 'conf.onpremises.yml'
-    CONFIG_PATH = r'{0}\{1}'.format(CONFIG_DIR, CONFIG_FILE)
+    CONFIG_PATH = rf'{CONFIG_DIR}\{CONFIG_FILE}'
     INSTALLER = 'codedeploy-agent.msi'
 
     def validate_administrator(self):
@@ -71,7 +71,7 @@ class Windows(System):
         )
         if process.returncode != 0 and not_found not in error:
             raise RuntimeError(
-                'Failed to stop the AWS CodeDeploy Agent:\n{0}'.format(error)
+                f'Failed to stop the AWS CodeDeploy Agent:\n{error}'
             )
 
         response = self.s3.get_object(Bucket=params.bucket, Key=params.key)
@@ -80,7 +80,7 @@ class Windows(System):
 
         subprocess.check_call(
             [
-                r'.\{0}'.format(self.INSTALLER),
+                rf'.\{self.INSTALLER}',
                 '/quiet',
                 '/l',
                 r'.\codedeploy-agent-install-log.txt',
@@ -134,7 +134,7 @@ class Windows(System):
             self._remove_agent()
         elif not_found not in error:
             raise RuntimeError(
-                'Failed to stop the AWS CodeDeploy Agent:\n{0}'.format(error)
+                f'Failed to stop the AWS CodeDeploy Agent:\n{error}'
             )
 
     def _remove_agent(self):
@@ -154,16 +154,14 @@ class Windows(System):
         (output, error) = process.communicate()
         if process.returncode != 0:
             raise RuntimeError(
-                'Failed to uninstall the AWS CodeDeploy Agent:\n{0}'.format(
-                    error
-                )
+                f'Failed to uninstall the AWS CodeDeploy Agent:\n{error}'
             )
 
 
 class Linux(System):
     CONFIG_DIR = '/etc/codedeploy-agent/conf'
     CONFIG_FILE = DEFAULT_CONFIG_FILE
-    CONFIG_PATH = '{0}/{1}'.format(CONFIG_DIR, CONFIG_FILE)
+    CONFIG_PATH = f'{CONFIG_DIR}/{CONFIG_FILE}'
     INSTALLER = 'install'
 
     def validate_administrator(self):
@@ -181,7 +179,7 @@ class Linux(System):
         with open(self.INSTALLER, 'wb') as f:
             f.write(response['Body'].read())
 
-        subprocess.check_call(['chmod', '+x', './{0}'.format(self.INSTALLER)])
+        subprocess.check_call(['chmod', '+x', f'./{self.INSTALLER}'])
 
         credentials = self.session.get_credentials()
         environment = os.environ.copy()
@@ -190,9 +188,7 @@ class Linux(System):
         environment['AWS_SECRET_ACCESS_KEY'] = credentials.secret_key
         if credentials.token is not None:
             environment['AWS_SESSION_TOKEN'] = credentials.token
-        subprocess.check_call(
-            ['./{0}'.format(self.INSTALLER), 'auto'], env=environment
-        )
+        subprocess.check_call([f'./{self.INSTALLER}', 'auto'], env=environment)
 
     def uninstall(self, params):
         process = self._stop_agent(params)
@@ -214,7 +210,7 @@ class Linux(System):
         (output, error) = process.communicate()
         if process.returncode != 0 and params.not_found_msg not in error:
             raise RuntimeError(
-                'Failed to stop the AWS CodeDeploy Agent:\n{0}'.format(error)
+                f'Failed to stop the AWS CodeDeploy Agent:\n{error}'
             )
         return process
 

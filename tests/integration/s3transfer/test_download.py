@@ -17,6 +17,7 @@ import time
 from concurrent.futures import CancelledError
 
 from s3transfer.manager import TransferConfig
+
 from tests import (
     NonSeekableWriter,
     RecordingSubscriber,
@@ -98,7 +99,7 @@ class TestDownload(BaseTransferManagerIntegTest):
                     future.cancel()
                     raise RuntimeError(
                         "Download transfer did not start after waiting for "
-                        "%s seconds." % timeout
+                        f"{timeout} seconds."
                     )
                 # Raise an exception which should cause the preceding
                 # download to cancel and exit quickly
@@ -115,9 +116,7 @@ class TestDownload(BaseTransferManagerIntegTest):
         self.assertLess(
             actual_time_to_exit,
             max_allowed_exit_time,
-            "Failed to exit under {}. Instead exited in {}.".format(
-                max_allowed_exit_time, actual_time_to_exit
-            ),
+            f"Failed to exit under {max_allowed_exit_time}. Instead exited in {actual_time_to_exit}.",
         )
 
         # Make sure the future was cancelled because of the KeyboardInterrupt
@@ -126,7 +125,7 @@ class TestDownload(BaseTransferManagerIntegTest):
 
         # Make sure the actual file and the temporary do not exist
         # by globbing for the file and any of its extensions
-        possible_matches = glob.glob('%s*' % download_path)
+        possible_matches = glob.glob(f'{download_path}*')
         self.assertEqual(possible_matches, [])
 
     @skip_if_using_serial_implementation(
@@ -174,9 +173,7 @@ class TestDownload(BaseTransferManagerIntegTest):
         self.assertLess(
             end_time - start_time,
             max_allowed_exit_time,
-            "Failed to exit under {}. Instead exited in {}.".format(
-                max_allowed_exit_time, end_time - start_time
-            ),
+            f"Failed to exit under {max_allowed_exit_time}. Instead exited in {end_time - start_time}.",
         )
 
         # Make sure at least one of the futures got cancelled
@@ -186,7 +183,7 @@ class TestDownload(BaseTransferManagerIntegTest):
 
         # For the transfer that did get cancelled, make sure the temporary
         # file got removed.
-        possible_matches = glob.glob('%s*' % future.meta.call_args.fileobj)
+        possible_matches = glob.glob(f'{future.meta.call_args.fileobj}*')
         self.assertEqual(possible_matches, [])
 
     def test_progress_subscribers_on_download(self):
@@ -284,5 +281,5 @@ class TestDownload(BaseTransferManagerIntegTest):
         except Exception as e:
             self.fail(
                 'Should have been able to download to /dev/null but received '
-                'following exception %s' % e
+                f'following exception {e}'
             )

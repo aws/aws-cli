@@ -12,11 +12,13 @@
 # language governing permissions and limitations under the License.
 
 
-from awscli.customizations.emr import applicationutils
-from awscli.customizations.emr import argumentschema
-from awscli.customizations.emr import constants
-from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import helptext
+from awscli.customizations.emr import (
+    applicationutils,
+    argumentschema,
+    constants,
+    emrutils,
+    helptext,
+)
 from awscli.customizations.emr.command import Command
 from awscli.customizations.exceptions import ParamValidationError
 

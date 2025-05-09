@@ -16,7 +16,7 @@ def register_ec2_page_size_injector(event_emitter):
     EC2PageSizeInjector().register(event_emitter)
 
 
-class EC2PageSizeInjector(object):
+class EC2PageSizeInjector:
     # Operations to auto-paginate and their specific whitelists.
     # Format:
     #    Key:   Operation

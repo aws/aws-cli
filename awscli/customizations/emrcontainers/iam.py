@@ -14,7 +14,7 @@
 import json
 
 
-class IAM(object):
+class IAM:
     def __init__(self, iam_client):
         self.iam_client = iam_client
 

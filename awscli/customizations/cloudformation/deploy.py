@@ -13,21 +13,19 @@
 
 import functools
 import json
+import logging
 import os
 import sys
-import logging
 
 from botocore.client import Config
 
-from awscli.compat import compat_open
-from awscli.customizations.exceptions import ParamValidationError
+from awscli.compat import compat_open, get_stdout_text_writer
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.deployer import Deployer
-from awscli.customizations.s3uploader import S3Uploader
 from awscli.customizations.cloudformation.yamlhelper import yaml_parse
-
 from awscli.customizations.commands import BasicCommand
-from awscli.compat import get_stdout_text_writer
+from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.s3uploader import S3Uploader
 from awscli.utils import write_exception
 
 LOG = logging.getLogger(__name__)

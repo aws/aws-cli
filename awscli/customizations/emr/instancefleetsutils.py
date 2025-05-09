@@ -11,8 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.emr import constants
-from awscli.customizations.emr import exceptions
+from awscli.customizations.emr import constants, exceptions
 
 
 def validate_and_build_instance_fleets(parsed_instance_fleets):

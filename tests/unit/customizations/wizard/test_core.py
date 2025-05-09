@@ -1348,7 +1348,7 @@ class TestTemplateStep(unittest.TestCase):
             'type': 'template',
             'value': """{foo}
             {%if   {allow} == False    %}
-not allow foo 
+not allow foo
             {% endif %}
    {%if   {allow} == True    %}
 allow foo

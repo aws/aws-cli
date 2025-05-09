@@ -61,4 +61,3 @@ coll = COLLECT(aws_exe,
                strip=False,
                upx=True,
                name='aws')
-

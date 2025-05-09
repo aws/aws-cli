@@ -32,53 +32,77 @@ class BaseParamsDocumenter(ShapeDocumenter):
         """
         history = []
         self.traverse_and_document_shape(
-            section=section, shape=shape, history=history,
-            name=None, include=include, exclude=exclude)
+            section=section,
+            shape=shape,
+            history=history,
+            name=None,
+            include=include,
+            exclude=exclude,
+        )
 
     def document_recursive_shape(self, section, shape, **kwargs):
         self._add_member_documentation(section, shape, **kwargs)
 
-    def document_shape_default(self, section, shape, history, include=None,
-                               exclude=None, **kwargs):
+    def document_shape_default(
+        self, section, shape, history, include=None, exclude=None, **kwargs
+    ):
         self._add_member_documentation(section, shape, **kwargs)
 
-    def document_shape_type_list(self, section, shape, history, include=None,
-                                 exclude=None, **kwargs):
+    def document_shape_type_list(
+        self, section, shape, history, include=None, exclude=None, **kwargs
+    ):
         self._add_member_documentation(section, shape, **kwargs)
         param_shape = shape.member
         param_section = section.add_new_section(
-            param_shape.name, context={'shape': shape.member.name})
+            param_shape.name, context={'shape': shape.member.name}
+        )
         self._start_nested_param(param_section)
         self.traverse_and_document_shape(
-            section=param_section, shape=param_shape,
-            history=history, name=None)
+            section=param_section,
+            shape=param_shape,
+            history=history,
+            name=None,
+        )
         section = section.add_new_section('end-list')
         self._end_nested_param(section)
 
-    def document_shape_type_map(self, section, shape, history, include=None,
-                                exclude=None, **kwargs):
+    def document_shape_type_map(
+        self, section, shape, history, include=None, exclude=None, **kwargs
+    ):
         self._add_member_documentation(section, shape, **kwargs)
 
         key_section = section.add_new_section(
-            'key', context={'shape': shape.key.name})
+            'key', context={'shape': shape.key.name}
+        )
         self._start_nested_param(key_section)
         self._add_member_documentation(key_section, shape.key)
 
         param_section = section.add_new_section(
-            shape.value.name, context={'shape': shape.value.name})
+            shape.value.name, context={'shape': shape.value.name}
+        )
         param_section.style.indent()
         self._start_nested_param(param_section)
         self.traverse_and_document_shape(
-            section=param_section, shape=shape.value,
-            history=history, name=None)
+            section=param_section,
+            shape=shape.value,
+            history=history,
+            name=None,
+        )
 
         end_section = section.add_new_section('end-map')
         self._end_nested_param(end_section)
         self._end_nested_param(end_section)
 
-    def document_shape_type_structure(self, section, shape, history,
-                                      include=None, exclude=None,
-                                      name=None, **kwargs):
+    def document_shape_type_structure(
+        self,
+        section,
+        shape,
+        history,
+        include=None,
+        exclude=None,
+        name=None,
+        **kwargs,
+    ):
         members = self._add_members_to_shape(shape.members, include)
         self._add_member_documentation(section, shape, name=name)
         for param in members:
@@ -86,11 +110,15 @@ class BaseParamsDocumenter(ShapeDocumenter):
                 continue
             param_shape = members[param]
             param_section = section.add_new_section(
-                param, context={'shape': param_shape.name})
+                param, context={'shape': param_shape.name}
+            )
             self._start_nested_param(param_section)
             self.traverse_and_document_shape(
-                section=param_section, shape=param_shape,
-                history=history, name=param)
+                section=param_section,
+                shape=param_shape,
+                history=history,
+                name=param,
+            )
         section = section.add_new_section('end-structure')
         self._end_nested_param(section)
 
@@ -134,7 +162,7 @@ class ResponseParamsDocumenter(BaseParamsDocumenter):
         name_section = section.add_new_section('param-name')
         name_section.write('- ')
         if name is not None:
-            name_section.style.bold('%s ' % name)
+            name_section.style.bold(f'{name} ')
         type_section = section.add_new_section('param-type')
         self._document_non_top_level_param_type(type_section, shape)
 
@@ -156,18 +184,21 @@ class ResponseParamsDocumenter(BaseParamsDocumenter):
                     '    as follows'
                 )
                 tagged_union_members_str = ', '.join(
-                    ['``%s``' % key for key in shape.members.keys()]
+                    [f'``{key}``' for key in shape.members.keys()]
                 )
-                unknown_code_example = ('\'SDK_UNKNOWN_MEMBER\': '
-                                        '{\'name\': \'UnknownMemberName\'}')
+                unknown_code_example = (
+                    '\'SDK_UNKNOWN_MEMBER\': '
+                    '{\'name\': \'UnknownMemberName\'}'
+                )
                 tagged_union_docs.write(note % (tagged_union_members_str))
                 example = section.add_new_section('param-unknown-example')
                 example.style.codeblock(unknown_code_example)
             documentation_section.include_doc_string(shape.documentation)
         section.style.new_paragraph()
 
-    def document_shape_type_event_stream(self, section, shape, history,
-                                         **kwargs):
+    def document_shape_type_event_stream(
+        self, section, shape, history, **kwargs
+    ):
         self.document_shape_type_structure(section, shape, history, **kwargs)
 
 
@@ -176,8 +207,9 @@ class RequestParamsDocumenter(BaseParamsDocumenter):
 
     EVENT_NAME = 'request-params'
 
-    def document_shape_type_structure(self, section, shape, history,
-                                      include=None, exclude=None, **kwargs):
+    def document_shape_type_structure(
+        self, section, shape, history, include=None, exclude=None, **kwargs
+    ):
         if len(history) > 1:
             self._add_member_documentation(section, shape, **kwargs)
             section.style.indent()
@@ -187,36 +219,47 @@ class RequestParamsDocumenter(BaseParamsDocumenter):
                 continue
             param_shape = members[param]
             param_section = section.add_new_section(
-                param, context={'shape': param_shape.name})
+                param, context={'shape': param_shape.name}
+            )
             param_section.style.new_line()
             is_required = param in shape.required_members
             self.traverse_and_document_shape(
-                section=param_section, shape=param_shape,
-                history=history, name=param, is_required=is_required)
+                section=param_section,
+                shape=param_shape,
+                history=history,
+                name=param,
+                is_required=is_required,
+            )
         section = section.add_new_section('end-structure')
         if len(history) > 1:
             section.style.dedent()
         section.style.new_line()
 
-    def _add_member_documentation(self, section, shape, name=None,
-                                  is_top_level_param=False, is_required=False,
-                                  **kwargs):
+    def _add_member_documentation(
+        self,
+        section,
+        shape,
+        name=None,
+        is_top_level_param=False,
+        is_required=False,
+        **kwargs,
+    ):
         py_type = self._get_special_py_type_name(shape)
         if py_type is None:
             py_type = py_type_name(shape.type_name)
         if is_top_level_param:
             type_section = section.add_new_section('param-type')
-            type_section.write(':type %s: %s' % (name, py_type))
+            type_section.write(f':type {name}: {py_type}')
             end_type_section = type_section.add_new_section('end-param-type')
             end_type_section.style.new_line()
             name_section = section.add_new_section('param-name')
-            name_section.write(':param %s: ' % name)
+            name_section.write(f':param {name}: ')
 
         else:
             name_section = section.add_new_section('param-name')
             name_section.write('- ')
             if name is not None:
-                name_section.style.bold('%s ' % name)
+                name_section.style.bold(f'{name} ')
             type_section = section.add_new_section('param-type')
             self._document_non_top_level_param_type(type_section, shape)
 
@@ -226,7 +269,8 @@ class RequestParamsDocumenter(BaseParamsDocumenter):
             is_required_section.style.bold('[REQUIRED] ')
         if shape.documentation:
             documentation_section = section.add_new_section(
-                'param-documentation')
+                'param-documentation'
+            )
             documentation_section.style.indent()
             if getattr(shape, 'is_tagged_union', False):
                 tagged_union_docs = section.add_new_section(
@@ -238,7 +282,7 @@ class RequestParamsDocumenter(BaseParamsDocumenter):
                     '    following top level keys can be set: %s. '
                 )
                 tagged_union_members_str = ', '.join(
-                    ['``%s``' % key for key in shape.members.keys()]
+                    [f'``{key}``' for key in shape.members.keys()]
                 )
                 tagged_union_docs.write(note % (tagged_union_members_str))
             documentation_section.include_doc_string(shape.documentation)

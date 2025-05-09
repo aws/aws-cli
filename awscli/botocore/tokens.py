@@ -19,8 +19,6 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 import dateutil.parser
-from dateutil.tz import tzutc
-
 from botocore import UNSIGNED
 from botocore.compat import total_seconds
 from botocore.config import Config
@@ -30,6 +28,7 @@ from botocore.exceptions import (
     TokenRetrievalError,
 )
 from botocore.utils import CachedProperty, JSONFileCache, SSOTokenLoader
+from dateutil.tz import tzutc
 
 logger = logging.getLogger(__name__)
 

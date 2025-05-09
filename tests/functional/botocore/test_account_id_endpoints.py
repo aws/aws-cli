@@ -12,9 +12,9 @@
 # language governing permissions and limitations under the License.
 
 import pytest
-
 from botocore.config import Config
 from botocore.exceptions import EndpointResolutionError
+
 from tests import ClientHTTPStubber, patch_load_service_model
 
 FAKE_RULESET = {

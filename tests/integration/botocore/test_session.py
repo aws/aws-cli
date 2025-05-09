@@ -10,9 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import unittest
-
 import botocore.session
+
+from tests import unittest
 
 
 class TestCanChangeParsing(unittest.TestCase):
@@ -29,8 +29,10 @@ class TestCanChangeParsing(unittest.TestCase):
         s3 = self.session.create_client('s3', 'us-west-2')
         parsed = s3.list_buckets()
         dates = [bucket['CreationDate'] for bucket in parsed['Buckets']]
-        self.assertTrue(all(isinstance(date, str) for date in dates),
-                        "Expected all str types but instead got: %s" % dates)
+        self.assertTrue(
+            all(isinstance(date, str) for date in dates),
+            f"Expected all str types but instead got: {dates}",
+        )
 
     def test_maps_service_name_when_overriden(self):
         ses = self.session.get_service_model('ses')

@@ -15,16 +15,16 @@ import json
 import logging
 
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.emrcontainers.base36 import Base36
 from awscli.customizations.emrcontainers.constants import (
-    TRUST_POLICY_STATEMENT_FORMAT,
     TRUST_POLICY_STATEMENT_ALREADY_EXISTS,
+    TRUST_POLICY_STATEMENT_FORMAT,
     TRUST_POLICY_UPDATE_SUCCESSFUL,
 )
-from awscli.customizations.emrcontainers.base36 import Base36
 from awscli.customizations.emrcontainers.eks import EKS
 from awscli.customizations.emrcontainers.iam import IAM
-from awscli.customizations.utils import uni_print, get_policy_arn_suffix
 from awscli.customizations.emrcontainers.utils import get_region
+from awscli.customizations.utils import get_policy_arn_suffix, uni_print
 
 LOG = logging.getLogger(__name__)
 

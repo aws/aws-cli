@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 
 
-from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import helptext
+from awscli.customizations.emr import emrutils, helptext
 from awscli.customizations.emr.command import Command
 
 

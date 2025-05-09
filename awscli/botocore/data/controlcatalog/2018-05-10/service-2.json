@@ -240,6 +240,15 @@
         "REGIONAL"
       ]
     },
+    "ControlSeverity":{
+      "type":"string",
+      "enum":[
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
     "ControlSummary":{
       "type":"structure",
       "required":[
@@ -259,6 +268,22 @@
         "Description":{
           "shape":"String",
           "documentation":"<p>A description of the control, as it may appear in the console. Describes the functionality of the control.</p>"
+        },
+        "Behavior":{
+          "shape":"ControlBehavior",
+          "documentation":"<p>An enumerated type, with the following possible values:</p>"
+        },
+        "Severity":{
+          "shape":"ControlSeverity",
+          "documentation":"<p>An enumerated type, with the following possible values:</p>"
+        },
+        "Implementation":{
+          "shape":"ImplementationSummary",
+          "documentation":"<p>An object of type <code>ImplementationSummary</code> that describes how the control is implemented.</p>"
+        },
+        "CreateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that notes the time when the control was released (start of its life) as a governance capability in Amazon Web Services.</p>"
         }
       },
       "documentation":"<p>Overview of information about a control.</p>"
@@ -364,6 +389,10 @@
           "shape":"ControlBehavior",
           "documentation":"<p>A term that identifies the control's functional behavior. One of <code>Preventive</code>, <code>Detective</code>, <code>Proactive</code> </p>"
         },
+        "Severity":{
+          "shape":"ControlSeverity",
+          "documentation":"<p>An enumerated type, with the following possible values:</p>"
+        },
         "RegionConfiguration":{"shape":"RegionConfiguration"},
         "Implementation":{
           "shape":"ImplementationDetails",
@@ -372,6 +401,10 @@
         "Parameters":{
           "shape":"ControlParameters",
           "documentation":"<p>Returns an array of <code>ControlParameter</code> objects that specify the parameters a control supports. An empty list is returned for controls that don’t support parameters. </p>"
+        },
+        "CreateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that notes the time when the control was released (start of its life) as a governance capability in Amazon Web Services.</p>"
         }
       }
     },
@@ -382,9 +415,34 @@
         "Type":{
           "shape":"ImplementationType",
           "documentation":"<p>A string that describes a control's implementation type.</p>"
+        },
+        "Identifier":{
+          "shape":"ImplementationIdentifier",
+          "documentation":"<p>A service-specific identifier for the control, assigned by the service that implemented the control. For example, this identifier could be an Amazon Web Services Config Rule ID or a Security Hub Control ID.</p>"
         }
       },
       "documentation":"<p>An object that describes the implementation type for a control.</p> <p>Our <code>ImplementationDetails</code> <code>Type</code> format has three required segments:</p> <ul> <li> <p> <code>SERVICE-PROVIDER::SERVICE-NAME::RESOURCE-NAME</code> </p> </li> </ul> <p>For example, <code>AWS::Config::ConfigRule</code> <b>or</b> <code>AWS::SecurityHub::SecurityControl</code> resources have the format with three required segments.</p> <p>Our <code>ImplementationDetails</code> <code>Type</code> format has an optional fourth segment, which is present for applicable implementation types. The format is as follows: </p> <ul> <li> <p> <code>SERVICE-PROVIDER::SERVICE-NAME::RESOURCE-NAME::RESOURCE-TYPE-DESCRIPTION</code> </p> </li> </ul> <p>For example, <code>AWS::Organizations::Policy::SERVICE_CONTROL_POLICY</code> <b>or</b> <code>AWS::CloudFormation::Type::HOOK</code> have the format with four segments.</p> <p>Although the format is similar, the values for the <code>Type</code> field do not match any Amazon Web Services CloudFormation values.</p>"
+    },
+    "ImplementationIdentifier":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-z0-9-]+"
+    },
+    "ImplementationSummary":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"ImplementationType",
+          "documentation":"<p>A string that represents the Amazon Web Services service that implements this control. For example, a value of <code>AWS::Config::ConfigRule</code> indicates that the control is implemented by Amazon Web Services Config, and <code>AWS::SecurityHub::SecurityControl</code> indicates implementation by Amazon Web Services Security Hub.</p>"
+        },
+        "Identifier":{
+          "shape":"ImplementationIdentifier",
+          "documentation":"<p>The identifier originally assigned by the Amazon Web Services service that implements the control. For example, <code>CODEPIPELINE_DEPLOYMENT_COUNT_CHECK</code>.</p>"
+        }
+      },
+      "documentation":"<p>A summary of how the control is implemented, including the Amazon Web Services service that enforces the control and its service-specific identifier. For example, the value of this field could indicate that the control is implemented as an Amazon Web Services Config Rule or an Amazon Web Services Security Hub control.</p>"
     },
     "ImplementationType":{
       "type":"string",

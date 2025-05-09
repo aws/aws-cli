@@ -20,7 +20,6 @@ from s3transfer.subscribers import BaseSubscriber
 
 from awscli.customizations.s3 import utils
 
-
 LOGGER = logging.getLogger(__name__)
 
 
@@ -189,7 +188,7 @@ class DirectoryCreatorSubscriber(BaseSubscriber):
                 )
 
 
-class CopyPropsSubscriberFactory(object):
+class CopyPropsSubscriberFactory:
     def __init__(self, client, transfer_config, cli_params):
         self._client = client
         self._transfer_config = transfer_config

@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-
 from botocore.auth import BearerAuth
 from botocore.awsrequest import AWSRequest
 from botocore.exceptions import NoAuthTokenError

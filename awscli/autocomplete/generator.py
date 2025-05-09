@@ -14,10 +14,10 @@
 
 import os
 
+from awscli import clidriver
+from awscli.autocomplete import db
 from awscli.autocomplete.local import indexer
 from awscli.autocomplete.serverside.indexer import APICallIndexer
-from awscli.autocomplete import db
-from awscli import clidriver
 
 
 def generate_index(filename):
@@ -56,7 +56,7 @@ def _do_generate_index(filename):
         db_connection.close()
 
 
-class IndexGenerator(object):
+class IndexGenerator:
     """Generates auto completion index.
 
     This will generate an auto completion index for all the low level

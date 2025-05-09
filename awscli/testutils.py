@@ -20,37 +20,33 @@ advantage of all the testing utilities we provide.
 
 """
 
-import os
-import sys
+import binascii
+import contextlib
 import copy
-import shutil
-import time
 import json
 import logging
-import tempfile
-import platform
-import contextlib
-import binascii
 import math
-from pprint import pformat
-from subprocess import Popen, PIPE
-from unittest import mock
+import os
+import platform
+import shutil
+import sys
+import tempfile
+import time
 import unittest
+from pprint import pformat
+from subprocess import PIPE, Popen
+from unittest import mock
 
-from awscli.compat import BytesIO, StringIO
-
-from ruamel.yaml import YAML
-
-from botocore.session import Session
-from botocore.exceptions import ClientError
-from botocore.exceptions import WaiterError
 import botocore.loaders
 from botocore.awsrequest import AWSResponse
+from botocore.exceptions import ClientError, WaiterError
+from botocore.session import Session
+from ruamel.yaml import YAML
 
 import awscli.clidriver
-from awscli.plugin import load_plugins
 from awscli.clidriver import CLIDriver
-
+from awscli.compat import BytesIO, StringIO
+from awscli.plugin import load_plugins
 
 _LOADER = botocore.loaders.Loader()
 INTEG_LOG = logging.getLogger('awscli.tests.integration')
@@ -334,7 +330,7 @@ class BaseAWSHelpOutputTest(BaseCLIDriverTest):
             previous = index
 
 
-class CapturedRenderer(object):
+class CapturedRenderer:
     def __init__(self):
         self.rendered_contents = ''
 
@@ -342,7 +338,7 @@ class CapturedRenderer(object):
         self.rendered_contents = contents.decode('utf-8')
 
 
-class CapturedOutput(object):
+class CapturedOutput:
     def __init__(self, stdout, stderr):
         self.stdout = stdout
         self.stderr = stderr
@@ -570,7 +566,7 @@ class BaseCLIWireResponseTest(unittest.TestCase):
         return stdout, stderr, rc
 
 
-class FileCreator(object):
+class FileCreator:
     def __init__(self):
         self.rootdir = tempfile.mkdtemp()
 
@@ -643,7 +639,7 @@ class ProcessTerminatedError(Exception):
     pass
 
 
-class Result(object):
+class Result:
     def __init__(self, rc, stdout, stderr, memory_usage=None):
         self.rc = rc
         self.stdout = stdout
@@ -1038,7 +1034,7 @@ class StringIOWithFileNo(StringIO):
         return 0
 
 
-class EventCaptureHandler(object):
+class EventCaptureHandler:
     def __init__(self, handler=None):
         self._handler = handler
         self._called = False
@@ -1057,7 +1053,7 @@ class ConsistencyWaiterException(Exception):
     pass
 
 
-class ConsistencyWaiter(object):
+class ConsistencyWaiter:
     """
     A waiter class for some check to reach a consistent state.
 

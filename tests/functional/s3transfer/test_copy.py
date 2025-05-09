@@ -12,9 +12,9 @@
 # language governing permissions and limitations under the License.
 from botocore.exceptions import ClientError
 from botocore.stub import Stubber
-
 from s3transfer.manager import TransferConfig, TransferManager
 from s3transfer.utils import MIN_UPLOAD_CHUNKSIZE
+
 from tests import BaseGeneralInterfaceTest, FileSizeProvider
 
 
@@ -84,7 +84,6 @@ class BaseCopyTest(BaseGeneralInterfaceTest):
         expected_create_mpu_params=None,
         expected_complete_mpu_params=None,
     ):
-
         # Add all responses needed to do the copy of the object.
         # Should account for both ranged and nonranged downloads.
         stubbed_responses = self.create_stubbed_responses()[1:]
@@ -97,9 +96,9 @@ class BaseCopyTest(BaseGeneralInterfaceTest):
 
         # Add the expected create multipart upload params.
         if expected_create_mpu_params:
-            stubbed_responses[0][
-                'expected_params'
-            ] = expected_create_mpu_params
+            stubbed_responses[0]['expected_params'] = (
+                expected_create_mpu_params
+            )
 
         # Add any expected copy parameters.
         if expected_copy_params:
@@ -111,9 +110,9 @@ class BaseCopyTest(BaseGeneralInterfaceTest):
 
         # Add the expected complete multipart upload params.
         if expected_complete_mpu_params:
-            stubbed_responses[-1][
-                'expected_params'
-            ] = expected_complete_mpu_params
+            stubbed_responses[-1]['expected_params'] = (
+                expected_complete_mpu_params
+            )
 
         # Add the responses to the stubber.
         for stubbed_response in stubbed_responses:
@@ -353,7 +352,7 @@ class TestMultipartCopy(BaseCopyTest):
         ]
 
     def add_get_head_response_with_default_expected_params(
-            self, extra_expected_params=None
+        self, extra_expected_params=None
     ):
         expected_params = {
             'Bucket': 'mysourcebucket',
@@ -366,7 +365,7 @@ class TestMultipartCopy(BaseCopyTest):
         self.stubber.add_response(**response)
 
     def add_create_multipart_response_with_default_expected_params(
-            self, extra_expected_params=None
+        self, extra_expected_params=None
     ):
         expected_params = {'Bucket': self.bucket, 'Key': self.key}
         if extra_expected_params:
@@ -376,7 +375,7 @@ class TestMultipartCopy(BaseCopyTest):
         self.stubber.add_response(**response)
 
     def add_upload_part_copy_responses_with_default_expected_params(
-            self, extra_expected_params=None
+        self, extra_expected_params=None
     ):
         ranges = [
             'bytes=0-5242879',
@@ -397,10 +396,10 @@ class TestMultipartCopy(BaseCopyTest):
             if extra_expected_params:
                 if 'ChecksumAlgorithm' in extra_expected_params:
                     name = extra_expected_params['ChecksumAlgorithm']
-                    checksum_member = 'Checksum%s' % name.upper()
+                    checksum_member = f'Checksum{name.upper()}'
                     response = upload_part_response['service_response']
                     response['CopyPartResult'][checksum_member] = 'sum%s==' % (
-                            i + 1
+                        i + 1
                     )
                 else:
                     expected_params.update(extra_expected_params)
@@ -409,7 +408,7 @@ class TestMultipartCopy(BaseCopyTest):
             self.stubber.add_response(**upload_part_response)
 
     def add_complete_multipart_response_with_default_expected_params(
-            self, extra_expected_params=None
+        self, extra_expected_params=None
     ):
         expected_params = {
             'Bucket': self.bucket,
@@ -497,7 +496,6 @@ class TestMultipartCopy(BaseCopyTest):
     def _add_params_to_expected_params(
         self, add_copy_kwargs, operation_types, new_params
     ):
-
         expected_params_to_update = []
         for operation_type in operation_types:
             add_copy_kwargs_key = 'expected_' + operation_type + '_params'

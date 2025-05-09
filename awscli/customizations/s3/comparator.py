@@ -11,13 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-from awscli.compat import advance_iterator
 
+from awscli.compat import advance_iterator
 
 LOG = logging.getLogger(__name__)
 
 
-class Comparator(object):
+class Comparator:
     """
     This class performs all of the comparisons behind the sync operation
     """

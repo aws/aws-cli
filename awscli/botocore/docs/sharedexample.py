@@ -17,9 +17,10 @@ from botocore.docs.utils import escape_controls
 from botocore.utils import parse_timestamp
 
 
-class SharedExampleDocumenter(object):
-    def document_shared_example(self, example, prefix, section,
-                                operation_model):
+class SharedExampleDocumenter:
+    def document_shared_example(
+        self, example, prefix, section, operation_model
+    ):
         """Documents a single shared example based on its definition.
 
         :param example: The model of the example
@@ -33,8 +34,9 @@ class SharedExampleDocumenter(object):
         section.style.new_paragraph()
         section.write(example.get('description'))
         section.style.new_line()
-        self.document_input(section, example, prefix,
-                            operation_model.input_shape)
+        self.document_input(
+            section, example, prefix, operation_model.input_shape
+        )
         self.document_output(section, example, operation_model.output_shape)
 
     def document_input(self, section, example, prefix, shape):
@@ -96,19 +98,20 @@ class SharedExampleDocumenter(object):
         else:
             self._document_str(section, value, path)
 
-    def _document_dict(self, section, value, comments, path, shape,
-                       top_level=False):
+    def _document_dict(
+        self, section, value, comments, path, shape, top_level=False
+    ):
         dict_section = section.add_new_section('dict-value')
         self._start_nested_value(dict_section, '{')
         for key, val in value.items():
-            path.append('.%s' % key)
+            path.append(f'.{key}')
             item_section = dict_section.add_new_section(key)
             item_section.style.new_line()
             item_comment = self._get_comment(path, comments)
             if item_comment:
                 item_section.write(item_comment)
                 item_section.style.new_line()
-            item_section.write("'%s': " % key)
+            item_section.write(f"'{key}': ")
 
             # Shape could be none if there is no output besides ResponseMetadata
             item_shape = None
@@ -128,7 +131,7 @@ class SharedExampleDocumenter(object):
         param_section = section.add_new_section('param-values')
         self._start_nested_value(param_section, '(')
         for key, val in value.items():
-            path.append('.%s' % key)
+            path.append(f'.{key}')
             item_section = param_section.add_new_section(key)
             item_section.style.new_line()
             item_comment = self._get_comment(path, comments)
@@ -153,7 +156,7 @@ class SharedExampleDocumenter(object):
         for index, val in enumerate(value):
             item_section = list_section.add_new_section(index)
             item_section.style.new_line()
-            path.append('[%s]' % index)
+            path.append(f'[{index}]')
             item_comment = self._get_comment(path, comments)
             if item_comment:
                 item_section.write(item_comment)
@@ -167,17 +170,17 @@ class SharedExampleDocumenter(object):
         # We do the string conversion because this might accept a type that
         # we don't specifically address.
         safe_value = escape_controls(value)
-        section.write(u"'%s'," % str(safe_value))
+        section.write(f"'{str(safe_value)}',")
 
     def _document_number(self, section, value, path):
-        section.write("%s," % str(value))
+        section.write(f"{str(value)},")
 
     def _document_datetime(self, section, value, path):
         datetime_tuple = parse_timestamp(value).timetuple()
         datetime_str = str(datetime_tuple[0])
         for i in range(1, len(datetime_tuple)):
             datetime_str += ", " + str(datetime_tuple[i])
-        section.write("datetime(%s)," % datetime_str)
+        section.write(f"datetime({datetime_str}),")
 
     def _get_comment(self, path, comments):
         key = re.sub(r'^\.', '', ''.join(path))
@@ -198,8 +201,9 @@ class SharedExampleDocumenter(object):
         section.write(end)
 
 
-def document_shared_examples(section, operation_model, example_prefix,
-                             shared_examples):
+def document_shared_examples(
+    section, operation_model, example_prefix, shared_examples
+):
     """Documents the shared examples
 
     :param section: The section to write to.
@@ -219,5 +223,5 @@ def document_shared_examples(section, operation_model, example_prefix,
             example=example,
             section=container_section.add_new_section(example['id']),
             prefix=example_prefix,
-            operation_model=operation_model
+            operation_model=operation_model,
         )

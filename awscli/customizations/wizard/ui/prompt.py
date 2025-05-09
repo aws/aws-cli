@@ -12,23 +12,23 @@
 # language governing permissions and limitations under the License.
 from prompt_toolkit.application import get_app
 from prompt_toolkit.buffer import Buffer
+from prompt_toolkit.completion import PathCompleter
 from prompt_toolkit.document import Document
 from prompt_toolkit.filters import Condition
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout.containers import (
-    Window,
-    VSplit,
-    Dimension,
     ConditionalContainer,
-    FloatContainer,
+    Dimension,
     Float,
+    FloatContainer,
+    ScrollOffsets,
+    VSplit,
+    Window,
 )
 from prompt_toolkit.layout.controls import BufferControl
 from prompt_toolkit.layout.margins import ScrollbarMargin
-from prompt_toolkit.layout.containers import ScrollOffsets
 from prompt_toolkit.layout.menus import CompletionsMenu
-from prompt_toolkit.completion import PathCompleter
 
 from awscli.customizations.wizard.ui.selectmenu import (
     CollapsableSelectionMenuControl,

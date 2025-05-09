@@ -10,22 +10,19 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
-import re
-import sys
-import shlex
+import contextlib
 import glob
 import json
+import os
+import re
+import shlex
 import shutil
 import subprocess
+import sys
 import venv
-import contextlib
-from typing import List, Dict, Any, Optional, Callable
+from typing import Any, Callable, Dict, List, Optional
 
-from constants import ROOT_DIR
-from constants import IS_WINDOWS
-from constants import BOOTSTRAP_REQUIREMENTS
-
+from constants import BOOTSTRAP_REQUIREMENTS, IS_WINDOWS, ROOT_DIR
 
 PACKAGE_NAME = re.compile(r"(?P<name>[A-Za-z][A-Za-z0-9_\.\-]+)(?P<rest>.+)")
 CONSTRAINT = re.compile(r"(?P<comparison>[=\<\>]+)(?P<version>.+)")
@@ -180,7 +177,7 @@ def get_install_requires():
         r"dependencies = \[([\s\S]+?)\]", re.MULTILINE
     )
     extract_dependencies_re = re.compile(r'"(.+)"')
-    with open(ROOT_DIR / "pyproject.toml", "r") as f:
+    with open(ROOT_DIR / "pyproject.toml") as f:
         data = f.read()
     raw_dependencies = dependency_block_re.findall(data)[0]
     dependencies = extract_dependencies_re.findall(raw_dependencies)
@@ -189,7 +186,7 @@ def get_install_requires():
 
 def get_flit_core_unmet_exception():
     in_venv = sys.prefix != sys.base_prefix
-    with open(BOOTSTRAP_REQUIREMENTS, 'r') as f:
+    with open(BOOTSTRAP_REQUIREMENTS) as f:
         flit_core_req = [l for l in f.read().split('\n') if 'flit_core' in l]
     return UnmetDependenciesException(
         [('flit_core', None, list(parse_requirements(flit_core_req))[0])],
@@ -218,7 +215,7 @@ class Utils:
         os.symlink(src, dst)
 
     def read_file_lines(self, path: str) -> List[str]:
-        return open(path, "r").readlines()
+        return open(path).readlines()
 
     def write_file(self, path: str, content: str):
         with open(path, "w") as f:

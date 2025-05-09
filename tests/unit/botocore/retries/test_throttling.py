@@ -1,15 +1,18 @@
+from botocore.retries import throttling
+
 from tests import unittest
 
 
-from botocore.retries import throttling
-
-
 class TestCubicCalculator(unittest.TestCase):
-    def create_cubic_calculator(self, starting_max_rate=10, beta=0.7,
-                                scale_constant=0.4):
-        return throttling.CubicCalculator(starting_max_rate=starting_max_rate,
-                                          scale_constant=scale_constant,
-                                          start_time=0, beta=beta)
+    def create_cubic_calculator(
+        self, starting_max_rate=10, beta=0.7, scale_constant=0.4
+    ):
+        return throttling.CubicCalculator(
+            starting_max_rate=starting_max_rate,
+            scale_constant=scale_constant,
+            start_time=0,
+            beta=beta,
+        )
 
     # For these tests, rather than duplicate the formulas in the tests,
     # I want to check against a fixed set of inputs with by-hand verified
@@ -39,9 +42,11 @@ class TestCubicCalculator(unittest.TestCase):
         self.assertAlmostEqual(cubic.success_received(timestamp=start_k), 10.0)
         # And once we pass start_k, we'll be above w_max.
         self.assertGreaterEqual(
-            cubic.success_received(start_k * 1.1), start_w_max)
+            cubic.success_received(start_k * 1.1), start_w_max
+        )
         self.assertGreaterEqual(
-            cubic.success_received(start_k * 2.0), start_w_max)
+            cubic.success_received(start_k * 2.0), start_w_max
+        )
 
     def test_error_response_decreases_rate_by_beta(self):
         # This is the default value here so we're just being explicit.
@@ -49,16 +54,17 @@ class TestCubicCalculator(unittest.TestCase):
 
         # So let's say we made it up to 8 TPS before we were throttled.
         rate_when_throttled = 8
-        new_rate = cubic.error_received(current_rate=rate_when_throttled,
-                                        timestamp=1)
+        new_rate = cubic.error_received(
+            current_rate=rate_when_throttled, timestamp=1
+        )
         self.assertAlmostEqual(new_rate, rate_when_throttled * 0.7)
 
         new_params = cubic.get_params_snapshot()
         self.assertEqual(
             new_params,
-            throttling.CubicParams(w_max=rate_when_throttled,
-                                   k=1.8171205928321397,
-                                   last_fail=1)
+            throttling.CubicParams(
+                w_max=rate_when_throttled, k=1.8171205928321397, last_fail=1
+            ),
         )
 
     def test_t_0_should_match_beta_decrease(self):

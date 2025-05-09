@@ -27,8 +27,8 @@ cloudwatch put-metric-data operation:
 import decimal
 
 from awscli.arguments import CustomArgument
-from awscli.utils import split_on_commas
 from awscli.customizations.utils import validate_mutually_exclusive_handler
+from awscli.utils import split_on_commas
 
 
 def register_put_metric_data(event_handler):

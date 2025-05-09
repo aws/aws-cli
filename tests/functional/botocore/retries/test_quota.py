@@ -1,9 +1,10 @@
 import random
-import time
 import threading
-from tests import unittest
+import time
 
 from botocore.retries import quota
+
+from tests import unittest
 
 
 class TestRetryQuota(unittest.TestCase):

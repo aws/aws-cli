@@ -10,9 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.exceptions import ProfileNotFound
-from botocore.exceptions import UnknownCredentialError
 from botocore.credentials import JSONFileCache
+from botocore.exceptions import ProfileNotFound, UnknownCredentialError
 
 from awscli.customizations.sso.login import LoginCommand
 from awscli.customizations.sso.logout import LogoutCommand

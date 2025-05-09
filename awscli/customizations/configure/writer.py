@@ -16,7 +16,7 @@ import re
 from . import SectionNotFoundError
 
 
-class ConfigFileWriter(object):
+class ConfigFileWriter:
     SECTION_REGEX = re.compile(r'^\s*\[(?P<header>[^]]+)\]')
     OPTION_REGEX = re.compile(
         r'(?P<option>[^:=][^:=]*)'
@@ -56,7 +56,7 @@ class ConfigFileWriter(object):
             self._create_file(config_filename)
             self._write_new_section(section_name, new_values, config_filename)
             return
-        with open(config_filename, 'r') as f:
+        with open(config_filename) as f:
             contents = f.readlines()
         # We can only update a single section at a time so we first need
         # to find the section in question

@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-
 from botocore.session import get_session
 
 _H2_REQUIRED = object()
@@ -20,7 +19,10 @@ _KNOWN_SERVICES = {
     'qbusiness': ['Chat'],
     'kinesis': ['SubscribeToShard'],
     'lexv2-runtime': ['StartConversation'],
+     # Added only to keep a record of this feature being incompatible
+     'bedrock-runtime': ['InvokeModelWithBidirectionalStream'],
 }
+
 
 def _all_test_cases():
     session = get_session()
@@ -32,7 +34,9 @@ def _all_test_cases():
 
     for service in services:
         service_model = session.get_service_model(service)
-        h2_config = service_model.metadata.get('protocolSettings', {}).get('h2')
+        h2_config = service_model.metadata.get('protocolSettings', {}).get(
+            'h2'
+        )
         if h2_config == 'required':
             h2_services.append(service)
         elif h2_config == 'eventstream':
@@ -51,7 +55,7 @@ H2_SERVICES, H2_OPERATIONS = _all_test_cases()
 @pytest.mark.parametrize("h2_service", H2_SERVICES)
 def test_all_uses_of_h2_are_known(h2_service):
     # Validates that a service that requires HTTP 2 for all operations is known
-    message = 'Found unknown HTTP 2 service: %s' % h2_service
+    message = f'Found unknown HTTP 2 service: {h2_service}'
     assert _KNOWN_SERVICES.get(h2_service) is _H2_REQUIRED, message
 
 
@@ -60,5 +64,5 @@ def test_all_uses_of_h2_are_known(h2_service):
 def test_all_h2_operations_are_known(h2_service, operation):
     # Validates that an operation that requires HTTP 2 is known
     known_operations = _KNOWN_SERVICES.get(h2_service, [])
-    message = 'Found unknown HTTP 2 operation: %s.%s' % (h2_service, operation)
+    message = f'Found unknown HTTP 2 operation: {h2_service}.{operation}'
     assert operation in known_operations, message

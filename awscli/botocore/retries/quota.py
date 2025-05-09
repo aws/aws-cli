@@ -1,11 +1,9 @@
-"""Retry quota implementation.
+"""Retry quota implementation."""
 
-
-"""
 import threading
 
 
-class RetryQuota(object):
+class RetryQuota:
     INITIAL_CAPACITY = 500
 
     def __init__(self, initial_capacity=INITIAL_CAPACITY, lock=None):
@@ -47,8 +45,7 @@ class RetryQuota(object):
             return
         with self._lock:
             amount = min(
-                self._max_capacity - self._available_capacity,
-                capacity_amount
+                self._max_capacity - self._available_capacity, capacity_amount
             )
             self._available_capacity += amount
 

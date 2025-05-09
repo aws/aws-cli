@@ -10,18 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from __future__ import unicode_literals
 from prompt_toolkit import Application
 from prompt_toolkit.application import get_app
 from prompt_toolkit.buffer import Buffer
-from prompt_toolkit.utils import get_cwidth
-from prompt_toolkit.layout import Layout, FloatContainer, Float
-from prompt_toolkit.layout.controls import UIControl, UIContent
-from prompt_toolkit.layout.screen import Point
-from prompt_toolkit.layout.dimension import Dimension
 from prompt_toolkit.key_binding.key_bindings import KeyBindings
-from prompt_toolkit.layout.margins import ScrollbarMargin
+from prompt_toolkit.layout import Float, FloatContainer, Layout
 from prompt_toolkit.layout.containers import ScrollOffsets, Window
+from prompt_toolkit.layout.controls import UIContent, UIControl
+from prompt_toolkit.layout.dimension import Dimension
+from prompt_toolkit.layout.margins import ScrollbarMargin
+from prompt_toolkit.layout.screen import Point
+from prompt_toolkit.utils import get_cwidth
 
 
 def select_menu(items, display_format=None, max_height=10):

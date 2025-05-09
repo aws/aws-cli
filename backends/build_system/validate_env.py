@@ -10,18 +10,20 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import importlib.metadata
 import re
 import sys
 from pathlib import Path
-import importlib.metadata
 
 from constants import (
     BOOTSTRAP_REQUIREMENTS,
     PORTABLE_EXE_REQUIREMENTS,
 )
-from utils import get_install_requires, parse_requirements
-from utils import UnmetDependenciesException
-
+from utils import (
+    UnmetDependenciesException,
+    get_install_requires,
+    parse_requirements,
+)
 
 ROOT = Path(__file__).parents[2]
 PYPROJECT = ROOT / "pyproject.toml"
@@ -47,7 +49,7 @@ def _get_requires_list(target_artifact):
 
 
 def _parse_pyproject_requirements():
-    with open(PYPROJECT, 'r') as f:
+    with open(PYPROJECT) as f:
         data = f.read()
     raw_dependencies = BUILD_REQS_RE.findall(data)[0]
     dependencies = EXTRACT_DEPENDENCIES_RE.findall(raw_dependencies)
@@ -56,7 +58,7 @@ def _parse_pyproject_requirements():
 
 def _parse_requirements(requirements_file):
     requirements = []
-    with open(requirements_file, "r") as f:
+    with open(requirements_file) as f:
         for line in f.readlines():
             if not line.startswith(("-r", "#")):
                 requirements.append(line.strip())
@@ -74,8 +76,15 @@ def _get_unmet_dependencies(requirements):
         try:
             actual_version = importlib.metadata.version(project_name)
         except importlib.metadata.PackageNotFoundError:
-            unmet.append((project_name, None, requirement))
-            continue
+            try:
+                # Packages built from source may have directory names
+                # that replace "." with "_".
+                actual_version = importlib.metadata.version(
+                    project_name.replace(".", "_")
+                )
+            except importlib.metadata.PackageNotFoundError:
+                unmet.append((project_name, None, requirement))
+                continue
         if not requirement.is_in_range(actual_version):
             unmet.append((project_name, actual_version, requirement))
     return unmet

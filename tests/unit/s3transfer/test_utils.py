@@ -21,7 +21,6 @@ import time
 from io import BytesIO, StringIO
 
 import pytest
-
 from s3transfer.futures import TransferFuture, TransferMeta
 from s3transfer.utils import (
     MAX_PARTS,
@@ -46,6 +45,7 @@ from s3transfer.utils import (
     random_file_extension,
     set_default_checksum_algorithm,
 )
+
 from tests import NonSeekableWriter, RecordingSubscriber, mock, unittest
 
 
@@ -282,7 +282,7 @@ class TestOSUtils(BaseUtilsTest):
         try:
             OSUtils().remove_file(non_existent_file)
         except OSError as e:
-            self.fail('OSError should have been caught: %s' % e)
+            self.fail(f'OSError should have been caught: {e}')
 
     def test_remove_file_proxies_remove_file(self):
         OSUtils().remove_file(self.filename)
@@ -306,7 +306,7 @@ class TestOSUtils(BaseUtilsTest):
         filename = 'myfile'
         self.assertIsNotNone(
             re.match(
-                r'%s\.[0-9A-Fa-f]{8}$' % filename,
+                rf'{filename}\.[0-9A-Fa-f]{{8}}$',
                 OSUtils().get_temp_filename(filename),
             )
         )
@@ -329,7 +329,7 @@ class TestOSUtils(BaseUtilsTest):
 
     @mock.patch('s3transfer.utils.fallocate')
     def test_allocate_with_io_error(self, mock_fallocate):
-        mock_fallocate.side_effect = IOError()
+        mock_fallocate.side_effect = OSError()
         with self.assertRaises(IOError):
             OSUtils().allocate(self.filename, 1)
         self.assertFalse(os.path.exists(self.filename))
@@ -1149,8 +1149,8 @@ class TestAdjustChunksize(unittest.TestCase):
         self.adjuster = ChunksizeAdjuster()
 
     def test_valid_chunksize(self):
-        chunksize = 7 * (1024 ** 2)
-        file_size = 8 * (1024 ** 2)
+        chunksize = 7 * (1024**2)
+        file_size = 8 * (1024**2)
         new_size = self.adjuster.adjust_chunksize(chunksize, file_size)
         self.assertEqual(new_size, chunksize)
 
@@ -1167,17 +1167,17 @@ class TestAdjustChunksize(unittest.TestCase):
         self.assertEqual(new_size, MAX_SINGLE_UPLOAD_SIZE)
 
     def test_chunksize_too_small(self):
-        chunksize = 7 * (1024 ** 2)
-        file_size = 5 * (1024 ** 4)
+        chunksize = 7 * (1024**2)
+        file_size = 5 * (1024**4)
         # If we try to upload a 5TB file, we'll need to use 896MB part
         # sizes.
         new_size = self.adjuster.adjust_chunksize(chunksize, file_size)
-        self.assertEqual(new_size, 896 * (1024 ** 2))
+        self.assertEqual(new_size, 896 * (1024**2))
         num_parts = file_size / new_size
         self.assertLessEqual(num_parts, MAX_PARTS)
 
     def test_unknown_file_size_with_valid_chunksize(self):
-        chunksize = 7 * (1024 ** 2)
+        chunksize = 7 * (1024**2)
         new_size = self.adjuster.adjust_chunksize(chunksize)
         self.assertEqual(new_size, chunksize)
 
@@ -1218,10 +1218,10 @@ class TestS3Defaults:
             ),
             (
                 "mytestbucket",
-                 {"Some": "Setting"},
-                 {"ChecksumAlgorithm": "CRC64NVME", "Some": "Setting"},
-             ),
-             (
+                {"Some": "Setting"},
+                {"ChecksumAlgorithm": "CRC64NVME", "Some": "Setting"},
+            ),
+            (
                 "mytestbucket",
                 {"ChecksumAlgorithm": "sha256"},
                 {"ChecksumAlgorithm": "sha256"},

@@ -1,5 +1,5 @@
-import logging
 import copy
+import logging
 import os
 
 from botocore import model
@@ -10,19 +10,19 @@ import awscli
 from awscli.argparser import ArgTableArgParser, SubCommandArgParser
 from awscli.argprocess import unpack_argument, unpack_cli_arg
 from awscli.arguments import CustomArgument, create_argument_model_from_schema
+from awscli.bcdoc import docevents
 from awscli.clidocs import OperationDocumentEventHandler
 from awscli.commands import CLICommand
-from awscli.bcdoc import docevents
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.help import HelpCommand
 from awscli.schema import SchemaTransformer
 from awscli.utils import add_command_lineage_to_user_agent_extra
-from awscli.customizations.exceptions import ParamValidationError
 
 LOG = logging.getLogger(__name__)
 _open = open
 
 
-class _FromFile(object):
+class _FromFile:
     def __init__(self, *paths, **kwargs):
         """
         ``**kwargs`` can contain a ``root_module`` argument

@@ -679,6 +679,12 @@
       "min":1,
       "pattern":"^(\\w+)$"
     },
+    "AssetIdInput":{
+      "type":"string",
+      "max":10,
+      "min":10,
+      "pattern":"\\d{10}"
+    },
     "AssetIdList":{
       "type":"list",
       "member":{"shape":"AssetId"}
@@ -688,7 +694,7 @@
       "members":{
         "AssetId":{
           "shape":"AssetId",
-          "documentation":"<p> The ID of the asset. </p>"
+          "documentation":"<p> The ID of the asset. An Outpost asset can be a single server within an Outposts rack or an Outposts server configuration.</p>"
         },
         "RackId":{
           "shape":"RackId",
@@ -722,7 +728,7 @@
         },
         "AssetId":{
           "shape":"AssetId",
-          "documentation":"<p>The ID of the asset.</p>"
+          "documentation":"<p>The ID of the asset. An Outpost asset can be a single server within an Outposts rack or an Outposts server configuration.</p>"
         },
         "AccountId":{"shape":"AccountId"},
         "AwsServiceName":{
@@ -951,6 +957,10 @@
         "OrderId":{
           "shape":"OrderId",
           "documentation":"<p>The ID of the Amazon Web Services Outposts order of the host associated with the capacity task.</p>"
+        },
+        "AssetId":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the asset. An Outpost asset can be a single server within an Outposts rack or an Outposts server configuration.</p>"
         },
         "CapacityTaskStatus":{
           "shape":"CapacityTaskStatus",
@@ -1382,6 +1392,10 @@
           "shape":"OrderId",
           "documentation":"<p>ID of the Amazon Web Services Outposts order associated with the specified capacity task.</p>"
         },
+        "AssetId":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the Outpost asset. An Outpost asset can be a single server within an Outposts rack or an Outposts server configuration.</p>"
+        },
         "RequestedInstancePools":{
           "shape":"RequestedInstancePools",
           "documentation":"<p>List of instance pools requested in the capacity task.</p>"
@@ -1396,7 +1410,7 @@
         },
         "CapacityTaskStatus":{
           "shape":"CapacityTaskStatus",
-          "documentation":"<p>Status of the capacity task.</p> <p>A capacity task can have one of the following statuses:</p> <ul> <li> <p> <code>REQUESTED</code> - The capacity task was created and is awaiting the next step by Amazon Web Services Outposts.</p> </li> <li> <p> <code>IN_PROGRESS</code> - The capacity task is running and cannot be cancelled.</p> </li> <li> <p> <code>WAITING_FOR_EVACUATION</code> - The capacity task requires capacity to run. You must stop the recommended EC2 running instances to free up capacity for the task to run.</p> </li> </ul>"
+          "documentation":"<p>Status of the capacity task.</p> <p>A capacity task can have one of the following statuses:</p> <ul> <li> <p> <code>REQUESTED</code> - The capacity task was created and is awaiting the next step by Amazon Web Services Outposts.</p> </li> <li> <p> <code>IN_PROGRESS</code> - The capacity task is running and cannot be cancelled.</p> </li> <li> <p> <code>FAILED</code> - The capacity task could not be completed.</p> </li> <li> <p> <code>COMPLETED</code> - The capacity task has completed successfully.</p> </li> <li> <p> <code>WAITING_FOR_EVACUATION</code> - The capacity task requires capacity to run. You must stop the recommended EC2 running instances to free up capacity for the task to run.</p> </li> <li> <p> <code>CANCELLATION_IN_PROGRESS</code> - The capacity task has been cancelled and is in the process of cleaning up resources.</p> </li> <li> <p> <code>CANCELLED</code> - The capacity task is cancelled.</p> </li> </ul>"
         },
         "Failed":{
           "shape":"CapacityTaskFailure",
@@ -1551,6 +1565,12 @@
           "documentation":"<p>The ID for the Amazon Web Services Outposts order.</p>",
           "location":"querystring",
           "locationName":"OrderId"
+        },
+        "AssetId":{
+          "shape":"AssetIdInput",
+          "documentation":"<p>The ID of the Outpost asset. An Outpost asset can be a single server within an Outposts rack or an Outposts server configuration.</p>",
+          "location":"querystring",
+          "locationName":"AssetId"
         },
         "MaxResults":{
           "shape":"MaxResults1000",
@@ -1787,7 +1807,7 @@
       "members":{
         "AssetId":{
           "shape":"AssetId",
-          "documentation":"<p> The ID of the asset. </p>"
+          "documentation":"<p> The ID of the asset. An Outpost asset can be a single server within an Outposts rack or an Outposts server configuration.</p>"
         },
         "MacAddressList":{
           "shape":"MacAddressList",
@@ -2714,6 +2734,10 @@
           "shape":"OrderId",
           "documentation":"<p>The ID of the Amazon Web Services Outposts order associated with the specified capacity task.</p>"
         },
+        "AssetId":{
+          "shape":"AssetIdInput",
+          "documentation":"<p>The ID of the Outpost asset. An Outpost asset can be a single server within an Outposts rack or an Outposts server configuration.</p>"
+        },
         "InstancePools":{
           "shape":"RequestedInstancePools",
           "documentation":"<p>The instance pools specified in the capacity task.</p>"
@@ -2746,6 +2770,10 @@
         "OrderId":{
           "shape":"OrderId",
           "documentation":"<p>ID of the Amazon Web Services Outposts order of the host associated with the capacity task.</p>"
+        },
+        "AssetId":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the asset. An Outpost asset can be a single server within an Outposts rack or an Outposts server configuration.</p>"
         },
         "RequestedInstancePools":{
           "shape":"RequestedInstancePools",
@@ -2799,7 +2827,7 @@
         },
         "AssetId":{
           "shape":"AssetId",
-          "documentation":"<p> The ID of the Outpost server. </p>"
+          "documentation":"<p> The ID of the Outpost server.</p>"
         },
         "ClientPublicKey":{
           "shape":"WireGuardPublicKey",

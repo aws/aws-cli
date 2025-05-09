@@ -11,11 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import datetime
-import pytest
-
-from dateutil.tz import tzutc
 
 import botocore.auth
+import pytest
+from dateutil.tz import tzutc
+
 from tests import FreezeTime
 
 HOSTNAME = "peccy.dsql.us-east-1.on.aws"

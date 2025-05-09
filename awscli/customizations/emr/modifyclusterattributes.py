@@ -11,9 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import exceptions
-from awscli.customizations.emr import helptext
+from awscli.customizations.emr import emrutils, exceptions, helptext
 from awscli.customizations.emr.command import Command
 
 

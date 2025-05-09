@@ -50,43 +50,40 @@ can set the BOTOCORE_TEST_ID env var with the ``suite_id:test_id`` syntax.
     BOTOCORE_TEST_ID=5:1 pytest tests/unit/test_protocols.py
 
 """
+
 import base64
-import os
 import copy
+import os
+from base64 import b64decode
 from enum import Enum
 
-from base64 import b64decode
-from dateutil.tz import tzutc
-
 import pytest
-
-from botocore.awsrequest import HeadersDict
-from botocore.compat import json, OrderedDict, urlsplit
+from botocore.awsrequest import HeadersDict, prepare_request_dict
+from botocore.compat import OrderedDict, json, urlsplit
 from botocore.eventstream import EventStream
-from botocore.model import ServiceModel, OperationModel
+from botocore.model import NoShapeFoundError, OperationModel, ServiceModel
+from botocore.parsers import (
+    EC2QueryParser,
+    JSONParser,
+    QueryParser,
+    RestJSONParser,
+    RestXMLParser,
+    RpcV2CBORParser,
+)
 from botocore.serialize import (
     EC2Serializer,
-    QuerySerializer,
     JSONSerializer,
+    QuerySerializer,
     RestJSONSerializer,
     RestXMLSerializer,
     RpcV2CBORSerializer,
 )
-from botocore.parsers import (
-    QueryParser,
-    JSONParser,
-    RestJSONParser,
-    RestXMLParser,
-    EC2QueryParser,
-    RpcV2CBORParser,
-)
 from botocore.utils import parse_timestamp, percent_encode_sequence
-from botocore.awsrequest import prepare_request_dict
-from botocore.model import NoShapeFoundError
+from dateutil.tz import tzutc
 
 TEST_DIR = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
-    'protocols')
+    os.path.dirname(os.path.abspath(__file__)), 'protocols'
+)
 NOT_SPECIFIED = object()
 PROTOCOL_SERIALIZERS = {
     'ec2': EC2Serializer,
@@ -104,9 +101,7 @@ PROTOCOL_PARSERS = {
     'rest-xml': RestXMLParser,
     'smithy-rpc-v2-cbor': RpcV2CBORParser,
 }
-PROTOCOL_TEST_BLACKLIST = [
-    'Idempotency token auto fill'
-]
+PROTOCOL_TEST_BLACKLIST = ['Idempotency token auto fill']
 IGNORE_LIST_FILENAME = "protocol-tests-ignore-list.json"
 
 
@@ -148,8 +143,7 @@ def _compliance_tests(test_type=None):
 
 
 @pytest.mark.parametrize(
-    "json_description, case, basename",
-    _compliance_tests(TestType.INPUT)
+    "json_description, case, basename", _compliance_tests(TestType.INPUT)
 )
 def test_input_compliance(json_description, case, basename):
     service_description = copy.deepcopy(json_description)
@@ -161,7 +155,7 @@ def test_input_compliance(json_description, case, basename):
     try:
         protocol_serializer = PROTOCOL_SERIALIZERS[protocol_type]
     except KeyError:
-        raise RuntimeError("Unknown protocol: %s" % protocol_type)
+        raise RuntimeError(f"Unknown protocol: {protocol_type}")
     serializer = protocol_serializer()
     serializer.MAP_TYPE = OrderedDict
     operation_model = OperationModel(case['given'], model)
@@ -179,8 +173,10 @@ def test_input_compliance(json_description, case, basename):
 
 def _assert_request_body_is_bytes(body):
     if not isinstance(body, bytes):
-        raise AssertionError("Expected body to be serialized as type "
-                             "bytes(), instead got: %s" % type(body))
+        raise AssertionError(
+            "Expected body to be serialized as type "
+            f"bytes(), instead got: {type(body)}"
+        )
 
 
 def _assert_endpoints_equal(actual, expected, endpoint):
@@ -191,16 +187,16 @@ def _assert_endpoints_equal(actual, expected, endpoint):
     assert_equal(actual_host, expected['host'], 'Host')
 
 
-class MockRawResponse(object):
+class MockRawResponse:
     def __init__(self, data):
         self._data = b64decode(data)
 
     def stream(self):
         yield self._data
 
+
 @pytest.mark.parametrize(
-    "json_description, case, basename",
-    _compliance_tests(TestType.OUTPUT)
+    "json_description, case, basename", _compliance_tests(TestType.OUTPUT)
 )
 def test_output_compliance(json_description, case, basename):
     service_description = copy.deepcopy(json_description)
@@ -214,7 +210,8 @@ def test_output_compliance(json_description, case, basename):
         operation_model = OperationModel(case['given'], model)
         protocol = model.metadata['protocol']
         parser = PROTOCOL_PARSERS[protocol](
-            timestamp_parser=_compliance_timestamp_parser)
+            timestamp_parser=_compliance_timestamp_parser
+        )
         # We load the json as utf-8, but the response parser is at the
         # botocore boundary, so it expects to work with bytes.
         # If a test case doesn't define a response body, set it to `None`.
@@ -262,11 +259,16 @@ def test_output_compliance(json_description, case, basename):
         parsed = _fixup_parsed_result(parsed)
     except Exception as e:
         msg = (
-            "\nFailed to run test  : %s\n"
-            "Protocol            : %s\n"
-            "Description         : %s (%s:%s)\n" % (
-                e, model.metadata['protocol'],
-                case['description'], case['suite_id'], case['test_id']))
+            "\nFailed to run test  : {}\n"
+            "Protocol            : {}\n"
+            "Description         : {} ({}:{})\n".format(
+                e,
+                model.metadata['protocol'],
+                case['description'],
+                case['suite_id'],
+                case['test_id'],
+            )
+        )
         raise AssertionError(msg)
     try:
         if 'error' in case:
@@ -281,8 +283,9 @@ def test_output_compliance(json_description, case, basename):
             expected_result = case['result']
         assert_equal(parsed, expected_result, "Body")
     except Exception as e:
-        _output_failure_message(model.metadata['protocol'],
-                                case, parsed, expected_result, e)
+        _output_failure_message(
+            model.metadata['protocol'], case, parsed, expected_result, e
+        )
 
 
 def _fixup_parsed_result(parsed):
@@ -373,39 +376,52 @@ def _compliance_timestamp_parser(value):
 
 
 def _output_failure_message(
-    protocol_type, case, actual_parsed,
-    expected_result, error
+    protocol_type, case, actual_parsed, expected_result, error
 ):
     j = _try_json_dump
     error_message = (
-        "\nDescription           : %s (%s:%s)\n"
-        "Protocol:             : %s\n"
-        "Given                 : %s\n"
-        "Response              : %s\n"
-        "Expected serialization: %s\n"
-        "Actual serialization  : %s\n"
-        "Assertion message     : %s\n" % (
-            case['description'], case['suite_id'],
-            case['test_id'], protocol_type,
-            j(case['given']), j(case['response']),
-            j(expected_result), j(actual_parsed), error))
+        "\nDescription           : {} ({}:{})\n"
+        "Protocol:             : {}\n"
+        "Given                 : {}\n"
+        "Response              : {}\n"
+        "Expected serialization: {}\n"
+        "Actual serialization  : {}\n"
+        "Assertion message     : {}\n".format(
+            case['description'],
+            case['suite_id'],
+            case['test_id'],
+            protocol_type,
+            j(case['given']),
+            j(case['response']),
+            j(expected_result),
+            j(actual_parsed),
+            error,
+        )
+    )
     raise AssertionError(error_message)
 
 
 def _input_failure_message(protocol_type, case, actual_request, error):
     j = _try_json_dump
     error_message = (
-        "\nDescription           : %s (%s:%s)\n"
-        "Protocol:             : %s\n"
-        "Given                 : %s\n"
-        "Params                : %s\n"
-        "Expected serialization: %s\n"
-        "Actual serialization  : %s\n"
-        "Assertion message     : %s\n" % (
-            case['description'], case['suite_id'],
-            case['test_id'], protocol_type,
-            j(case['given']), j(case['params']),
-            j(case['serialized']), j(actual_request), error))
+        "\nDescription           : {} ({}:{})\n"
+        "Protocol:             : {}\n"
+        "Given                 : {}\n"
+        "Params                : {}\n"
+        "Expected serialization: {}\n"
+        "Actual serialization  : {}\n"
+        "Assertion message     : {}\n".format(
+            case['description'],
+            case['suite_id'],
+            case['test_id'],
+            protocol_type,
+            j(case['given']),
+            j(case['params']),
+            j(case['serialized']),
+            j(actual_request),
+            error,
+        )
+    )
     raise AssertionError(error_message)
 
 
@@ -423,13 +439,9 @@ def assert_equal(first, second, prefix):
         assert first == second
     except Exception:
         try:
-            better = "%s (actual != expected)\n%s !=\n%s" % (
-                prefix,
-                json.dumps(first, indent=2),
-                json.dumps(second, indent=2))
+            better = f"{prefix} (actual != expected)\n{json.dumps(first, indent=2)} !=\n{json.dumps(second, indent=2)}"
         except (ValueError, TypeError):
-            better = "%s (actual != expected)\n%s !=\n%s" % (
-                prefix, first, second)
+            better = f"{prefix} (actual != expected)\n{first} !=\n{second}"
         raise AssertionError(better)
 
 
@@ -445,9 +457,9 @@ def _serialize_request_description(request_dict):
             # test runner we need to handle the case where the url_path
             # already has query params.
             if '?' not in request_dict['url_path']:
-                request_dict['url_path'] += '?%s' % encoded
+                request_dict['url_path'] += f'?{encoded}'
             else:
-                request_dict['url_path'] += '&%s' % encoded
+                request_dict['url_path'] += f'&{encoded}'
 
 
 def _assert_requests_equal(actual, expected, protocol):
@@ -543,9 +555,11 @@ def _get_suite_test_id():
             suite_id = int(split[0])
     except TypeError:
         # Same exception, just give a better error message.
-        raise TypeError("Invalid format for BOTOCORE_TEST_ID, should be "
-                        "suite_id[:test_id], and both values should be "
-                        "integers.")
+        raise TypeError(
+            "Invalid format for BOTOCORE_TEST_ID, should be "
+            "suite_id[:test_id], and both values should be "
+            "integers."
+        )
     return suite_id, test_id
 
 

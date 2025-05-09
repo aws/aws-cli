@@ -10,14 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import sys
 import struct
+import sys
 import unicodedata
 
 import colorama
 
 from awscli.utils import is_a_tty
-
 
 # `autoreset` allows us to not have to sent reset sequences for every
 # string. `strip` lets us preserve color when redirecting.
@@ -44,8 +43,8 @@ def get_text_length(text):
 def determine_terminal_width(default_width=80):
     # If we can't detect the terminal width, the default_width is returned.
     try:
-        from termios import TIOCGWINSZ
         from fcntl import ioctl
+        from termios import TIOCGWINSZ
     except ImportError:
         return default_width
     try:
@@ -138,7 +137,7 @@ def convert_to_vertical_table(sections):
             sections[i] = new_section
 
 
-class IndentedStream(object):
+class IndentedStream:
     def __init__(
         self, stream, indent_level, left_indent_char='|', right_indent_char='|'
     ):
@@ -160,7 +159,7 @@ class IndentedStream(object):
         return getattr(self._stream, attr)
 
 
-class Styler(object):
+class Styler:
     def style_title(self, text):
         return text
 
@@ -204,7 +203,7 @@ class ColorizedStyler(Styler):
         )
 
 
-class MultiTable(object):
+class MultiTable:
     def __init__(
         self,
         terminal_width=None,
@@ -381,7 +380,7 @@ class MultiTable(object):
         self._write_line_break(stream, widths)
 
 
-class Section(object):
+class Section:
     def __init__(self):
         self.title = ''
         self.headers = []

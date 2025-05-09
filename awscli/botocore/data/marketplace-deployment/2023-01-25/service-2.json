@@ -5,11 +5,13 @@
     "endpointPrefix":"deployment-marketplace",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS Marketplace Deployment Service",
     "serviceId":"Marketplace Deployment",
     "signatureVersion":"v4",
     "signingName":"aws-marketplace",
-    "uid":"marketplace-deployment-2023-01-25"
+    "uid":"marketplace-deployment-2023-01-25",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "ListTagsForResource":{
@@ -153,7 +155,7 @@
           "documentation":"<p>The text to encrypt and store in the secret.</p>"
         }
       },
-      "documentation":"<p>The shape containing the requested deployment parameter name and secretString.</p>"
+      "documentation":"<p>The shape containing the requested deployment parameter name and secretString.</p> <note> <p>To support AWS CloudFormation dynamic references to this resource using Quick Launch, this value must match a parameter defined in the CloudFormation templated provided to buyers.</p> </note>"
     },
     "DeploymentParameterName":{
       "type":"string",
@@ -215,13 +217,13 @@
         },
         "catalog":{
           "shape":"Catalog",
-          "documentation":"<p>The catalog related to the request. Fixed value: <code>AWS Marketplace</code> </p>",
+          "documentation":"<p>The catalog related to the request. Fixed value: <code>AWSMarketplace</code> </p>",
           "location":"uri",
           "locationName":"catalog"
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token for deployment parameters. A unique identifier for the new version.</p>",
+          "documentation":"<p>The idempotency token for deployment parameters. A unique identifier for the new version.</p> <note> <p>This field is not required if you're calling using an AWS SDK. Otherwise, a <code>clientToken</code> must be provided with the request.</p> </note>",
           "idempotencyToken":true
         },
         "deploymentParameter":{
@@ -429,5 +431,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>The AWS Marketplace Deployment Service supports the Quick Launch experience, which is a deployment option for software as a service (SaaS) products. Quick Launch simplifies and reduces the time, resources, and steps required to configure, deploy, and launch a products. The AWS Marketplace Deployment Service provides sellers with a secure method for passing deployment parameters (for example, API keys and external IDs) to buyers during the Quick Launch experience.</p>"
+  "documentation":"<p>The AWS Marketplace Deployment Service supports the Quick Launch experience, which is a deployment option for software as a service (SaaS) products. Quick Launch simplifies and reduces the time, resources, and steps required to configure, deploy, and launch a products. The AWS Marketplace Deployment Service provides sellers with a secure method for passing deployment parameters, such as API keys and external IDs, to buyers during the Quick Launch experience.</p>"
 }

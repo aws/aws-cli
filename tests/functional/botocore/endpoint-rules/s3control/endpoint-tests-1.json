@@ -455,27 +455,7 @@
         {
             "documentation": "gov cloud with fips@cn-north-1",
             "expect": {
-                "endpoint": {
-                    "headers": {
-                        "x-amz-account-id": [
-                            "123456789012"
-                        ],
-                        "x-amz-outpost-id": [
-                            "op-01234567890123456"
-                        ]
-                    },
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "s3-outposts",
-                                "signingRegion": "cn-north-1",
-                                "disableDoubleEncoding": true
-                            }
-                        ]
-                    },
-                    "url": "https://s3-outposts-fips.cn-north-1.amazonaws.com.cn"
-                }
+                "error": "Partition does not support FIPS"
             },
             "operationInputs": [
                 {
@@ -2740,17 +2720,6 @@
             "expect": {
                 "error": "AccountId must only contain a-z, A-Z, 0-9 and `-`."
             },
-            "operationInputs": [
-                {
-                    "builtInParams": {
-                        "AWS::Region": "us-east-1"
-                    },
-                    "operationName": "ListRegionalBuckets",
-                    "operationParams": {
-                        "AccountId": "/?invalid&not-host*label"
-                    }
-                }
-            ],
             "params": {
                 "AccountId": "/?invalid&not-host*label",
                 "Region": "us-east-1",
@@ -2896,18 +2865,6 @@
             "expect": {
                 "error": "AccountId must only contain a-z, A-Z, 0-9 and `-`."
             },
-            "operationInputs": [
-                {
-                    "builtInParams": {
-                        "AWS::Region": "us-east-1",
-                        "SDK::Endpoint": "https://beta.example.com"
-                    },
-                    "operationName": "ListRegionalBuckets",
-                    "operationParams": {
-                        "AccountId": "/?invalid&not-host*label"
-                    }
-                }
-            ],
             "params": {
                 "Region": "us-east-1",
                 "Endpoint": "https://beta.example.com",
@@ -3044,18 +3001,6 @@
             "expect": {
                 "error": "AccountId must only contain a-z, A-Z, 0-9 and `-`."
             },
-            "operationInputs": [
-                {
-                    "builtInParams": {
-                        "AWS::Region": "us-east-2"
-                    },
-                    "operationName": "ListRegionalBuckets",
-                    "operationParams": {
-                        "OutpostId": "op-123",
-                        "AccountId": "/?invalid&not-host*label"
-                    }
-                }
-            ],
             "params": {
                 "AccountId": "/?invalid&not-host*label",
                 "OutpostId": "op-123",
@@ -3249,12 +3194,12 @@
                     "operationName": "ListRegionalBuckets",
                     "operationParams": {
                         "OutpostId": "op-123",
-                        "AccountId": "0123456789012"
+                        "AccountId": "012345678912"
                     }
                 }
             ],
             "params": {
-                "AccountId": "0123456789012",
+                "AccountId": "012345678912",
                 "OutpostId": "op-123",
                 "Region": "cn-north-1",
                 "RequiresAccountId": true,
@@ -3275,12 +3220,12 @@
                     "operationName": "ListRegionalBuckets",
                     "operationParams": {
                         "OutpostId": "?outpost/invalid+",
-                        "AccountId": "0123456789012"
+                        "AccountId": "012345678912"
                     }
                 }
             ],
             "params": {
-                "AccountId": "0123456789012",
+                "AccountId": "012345678912",
                 "OutpostId": "?outpost/invalid+",
                 "Region": "us-west-1",
                 "RequiresAccountId": true,
@@ -3291,11 +3236,11 @@
         {
             "documentation": "bucket ARN with mismatched accountId",
             "expect": {
-                "error": "Invalid ARN: the accountId specified in the ARN (`999999`) does not match the parameter (`0123456789012`)"
+                "error": "Invalid ARN: the accountId specified in the ARN (`999999`) does not match the parameter (`012345678912`)"
             },
             "params": {
                 "Bucket": "arn:aws:s3-outposts:us-west-2:999999:outpost:op-01234567890123456:bucket:mybucket",
-                "AccountId": "0123456789012",
+                "AccountId": "012345678912",
                 "Region": "us-west-2",
                 "RequiresAccountId": true,
                 "UseDualStack": false,
@@ -3771,6 +3716,817 @@
                 "Endpoint": "https://10.0.1.12:433",
                 "UseFIPS": false,
                 "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "Access Point APIs on express bucket routed to s3express-control",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ]
+                    },
+                    "url": "https://s3express-control.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "CreateAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "Bucket": "mybucket--abcd-ab1--x-s3",
+                        "AccountId": "871317572157",
+                        "Scope": {
+                            "Prefixes": [],
+                            "Permissions": []
+                        }
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "GetAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "DeleteAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "PutAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157",
+                        "Scope": {
+                            "Prefixes": [],
+                            "Permissions": []
+                        }
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "GetAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "DeleteAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "PutAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157",
+                        "Policy": "my-policy"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "GetAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "DeleteAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "GetAccessPointPolicyStatus",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                }
+            ],
+            "params": {
+                "AccountId": "871317572157",
+                "AccessPointName": "myaccesspoint--abcd-ab1--xa-s3",
+                "Region": "us-east-1",
+                "RequiresAccountId": true,
+                "UseDualStack": false,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "Access Point APIs on express bucket routed to s3express-control for List",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ]
+                    },
+                    "url": "https://s3express-control.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "ListAccessPointsForDirectoryBuckets",
+                    "operationParams": {
+                        "DirectoryBucket": "mybucket--abcd-ab1--x-s3",
+                        "AccountId": "871317572157"
+                    }
+                }
+            ],
+            "params": {
+                "AccountId": "871317572157",
+                "Region": "us-east-1",
+                "UseS3ExpressControlEndpoint": true,
+                "RequiresAccountId": true,
+                "UseDualStack": false,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "Access Point APIs on express bucket routed to s3express-control for FIPS",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ]
+                    },
+                    "url": "https://s3express-control-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "CreateAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "Bucket": "mybucket--abcd-ab1--x-s3",
+                        "AccountId": "871317572157",
+                        "Scope": {
+                            "Prefixes": [],
+                            "Permissions": []
+                        }
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "GetAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "DeleteAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "PutAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157",
+                        "Scope": {
+                            "Prefixes": [],
+                            "Permissions": []
+                        }
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "GetAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "DeleteAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "PutAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157",
+                        "Policy": "my-policy"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "GetAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "DeleteAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "GetAccessPointPolicyStatus",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                }
+            ],
+            "params": {
+                "AccountId": "871317572157",
+                "AccessPointName": "myaccesspoint--abcd-ab1--xa-s3",
+                "Region": "us-east-1",
+                "RequiresAccountId": true,
+                "UseDualStack": false,
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "Access Point APIs on express bucket routed to s3express-control for FIPS for List",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ]
+                    },
+                    "url": "https://s3express-control-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "ListAccessPointsForDirectoryBuckets",
+                    "operationParams": {
+                        "DirectoryBucket": "mybucket--abcd-ab1--x-s3",
+                        "AccountId": "871317572157"
+                    }
+                }
+            ],
+            "params": {
+                "AccountId": "871317572157",
+                "Region": "us-east-1",
+                "UseS3ExpressControlEndpoint": true,
+                "RequiresAccountId": true,
+                "UseDualStack": false,
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "Access Point APIs on express bucket routed to s3express-control for china region",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "cn-north-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ]
+                    },
+                    "url": "https://s3express-control.cn-north-1.amazonaws.com.cn"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1"
+                    },
+                    "operationName": "CreateAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "Bucket": "mybucket--abcd-ab1--x-s3",
+                        "AccountId": "871317572157",
+                        "Scope": {
+                            "Prefixes": [],
+                            "Permissions": []
+                        }
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1"
+                    },
+                    "operationName": "GetAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1"
+                    },
+                    "operationName": "DeleteAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1"
+                    },
+                    "operationName": "PutAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157",
+                        "Scope": {
+                            "Prefixes": [],
+                            "Permissions": []
+                        }
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1"
+                    },
+                    "operationName": "GetAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1"
+                    },
+                    "operationName": "DeleteAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1"
+                    },
+                    "operationName": "PutAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157",
+                        "Policy": "my-policy"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1"
+                    },
+                    "operationName": "GetAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1"
+                    },
+                    "operationName": "DeleteAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1"
+                    },
+                    "operationName": "GetAccessPointPolicyStatus",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                }
+            ],
+            "params": {
+                "AccessPointName": "myaccesspoint--abcd-ab1--xa-s3",
+                "AccountId": "871317572157",
+                "Region": "cn-north-1",
+                "RequiresAccountId": true,
+                "UseDualStack": false,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "Access Point APIs on express bucket routed to s3express-control for china region for List",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "cn-north-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ]
+                    },
+                    "url": "https://s3express-control.cn-north-1.amazonaws.com.cn"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1"
+                    },
+                    "operationName": "ListAccessPointsForDirectoryBuckets",
+                    "operationParams": {
+                        "DirectoryBucket": "mybucket--abcd-ab1--x-s3",
+                        "AccountId": "871317572157"
+                    }
+                }
+            ],
+            "params": {
+                "AccountId": "871317572157",
+                "Region": "cn-north-1",
+                "UseS3ExpressControlEndpoint": true,
+                "RequiresAccountId": true,
+                "UseDualStack": false,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "Error when Access Point APIs on express bucket routed to s3express-control for china and FIPS",
+            "expect": {
+                "error": "Partition does not support FIPS"
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "CreateAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "Bucket": "mybucket--abcd-ab1--x-s3",
+                        "AccountId": "871317572157",
+                        "Scope": {
+                            "Prefixes": [],
+                            "Permissions": []
+                        }
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "GetAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "DeleteAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "ListAccessPointsForDirectoryBuckets",
+                    "operationParams": {
+                        "DirectoryBucket": "mybucket--abcd-ab1--x-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "PutAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157",
+                        "Scope": {
+                            "Prefixes": [],
+                            "Permissions": []
+                        }
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "GetAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "DeleteAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "PutAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157",
+                        "Policy": "my-policy"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "GetAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "DeleteAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "GetAccessPointPolicyStatus",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                }
+            ],
+            "params": {
+                "AccountId": "871317572157",
+                "Region": "cn-north-1",
+                "RequiresAccountId": true,
+                "UseDualStack": false,
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "Error Access Point APIs on express bucket routed to s3express-control invalid zone",
+            "expect": {
+                "error": "Unrecognized S3Express Access Point name format."
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "CreateAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint-garbage-zone--xa-s3",
+                        "Bucket": "mybucket-garbage-zone-garbage-zone",
+                        "AccountId": "871317572157",
+                        "Scope": {
+                            "Prefixes": [],
+                            "Permissions": []
+                        }
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "GetAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint-garbage-zone--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "DeleteAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint-garbage-zone--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "PutAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint-garbage-zone--xa-s3",
+                        "AccountId": "871317572157",
+                        "Scope": {
+                            "Prefixes": [],
+                            "Permissions": []
+                        }
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "GetAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint-garbage-zone--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "DeleteAccessPointScope",
+                    "operationParams": {
+                        "Name": "myaccesspoint-garbage-zone--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "PutAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint-garbage-zone--xa-s3",
+                        "AccountId": "871317572157",
+                        "Policy": "my-policy"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "GetAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint-garbage-zone--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "DeleteAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint-garbage-zone--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "GetAccessPointPolicyStatus",
+                    "operationParams": {
+                        "Name": "myaccesspoint-garbage-zone--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                }
+            ],
+            "params": {
+                "AccessPointName": "myaccesspoint-garbage-zone--xa-s3",
+                "AccountId": "871317572157",
+                "Region": "us-east-1",
+                "RequiresAccountId": true,
+                "UseDualStack": false,
+                "UseFIPS": false
             }
         }
     ],

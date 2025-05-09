@@ -33,14 +33,13 @@ class BaseSubscriber:
             subscriber_method = getattr(cls, 'on_' + subscriber_type)
             if not callable(subscriber_method):
                 raise InvalidSubscriberMethodError(
-                    'Subscriber method %s must be callable.'
-                    % subscriber_method
+                    f'Subscriber method {subscriber_method} must be callable.'
                 )
 
             if not accepts_kwargs(subscriber_method):
                 raise InvalidSubscriberMethodError(
-                    'Subscriber method %s must accept keyword '
-                    'arguments (**kwargs)' % subscriber_method
+                    f'Subscriber method {subscriber_method} must accept keyword '
+                    'arguments (**kwargs)'
                 )
 
     def on_queued(self, future, **kwargs):

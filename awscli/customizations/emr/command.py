@@ -12,11 +12,9 @@
 # language governing permissions and limitations under the License.
 
 import logging
+
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.emr import config
-from awscli.customizations.emr import configutils
-from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import exceptions
+from awscli.customizations.emr import config, configutils, emrutils, exceptions
 
 LOG = logging.getLogger(__name__)
 
@@ -35,7 +33,7 @@ class Command(BasicCommand):
     )
 
     def supports_arg(self, name):
-        return any((x['name'] == name for x in self.ARG_TABLE))
+        return any(x['name'] == name for x in self.ARG_TABLE)
 
     def _run_main(self, parsed_args, parsed_globals):
         self._apply_configs(

@@ -24,20 +24,21 @@ class LazyLoadedDocstring(str):
     help(). Note that all docstring classes **must** subclass from
     this class. It cannot be used directly as a docstring.
     """
+
     def __init__(self, *args, **kwargs):
         """
         The args and kwargs are the same as the underlying document
         generation function. These just get proxied to the underlying
         function.
         """
-        super(LazyLoadedDocstring, self).__init__()
+        super().__init__()
         self._gen_args = args
         self._gen_kwargs = kwargs
         self._docstring = None
 
     def __new__(cls, *args, **kwargs):
         # Needed in order to sub class from str with args and kwargs
-        return super(LazyLoadedDocstring, cls).__new__(cls)
+        return super().__new__(cls)
 
     def _write_docstring(self, *args, **kwargs):
         raise NotImplementedError(
@@ -76,8 +77,8 @@ class LazyLoadedDocstring(str):
         # Call the document method function with the args and kwargs
         # passed to the class.
         self._write_docstring(
-            docstring_structure, *self._gen_args,
-            **self._gen_kwargs)
+            docstring_structure, *self._gen_args, **self._gen_kwargs
+        )
         return docstring_structure.flush_structure().decode('utf-8')
 
 

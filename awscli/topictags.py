@@ -19,12 +19,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import os
 import json
+import os
+
 import docutils.core
 
 
-class TopicTagDB(object):
+class TopicTagDB:
     """This class acts like a database for the tags of all available topics.
 
     A tag is an element in a topic reStructured text file that contains
@@ -127,7 +128,7 @@ class TopicTagDB(object):
 
     def load_json_index(self):
         """Loads a JSON file into the tag dictionary."""
-        with open(self.index_file, 'r') as f:
+        with open(self.index_file) as f:
             self._tag_dictionary = json.load(f)
 
     def save_to_json_index(self):
@@ -162,7 +163,7 @@ class TopicTagDB(object):
         :param topic_files: A list of paths to topics to scan into memory.
         """
         for topic_file in topic_files:
-            with open(topic_file, 'r') as f:
+            with open(topic_file) as f:
                 # Parse out the name of the topic
                 topic_name = self._find_topic_name(topic_file)
                 # Add the topic to the dictionary if it does not exist

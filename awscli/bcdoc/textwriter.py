@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 
 Custom docutils writer for plain text.

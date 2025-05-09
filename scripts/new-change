@@ -36,21 +36,20 @@ You can then use the ``scripts/render-change`` to generate the
 CHANGELOG.rst file.
 
 """
-import os
-import re
-import sys
-import json
-import string
-import random
-import tempfile
-import subprocess
-import argparse
 
+import argparse
+import json
+import os
+import random
+import re
+import string
+import subprocess
+import sys
+import tempfile
 
 VALID_CHARS = set(string.ascii_letters + string.digits)
 CHANGES_DIR = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    '.changes'
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.changes'
 )
 TEMPLATE = """\
 # Type should be one of: feature, bugfix, enhancement, api-change
@@ -90,7 +89,8 @@ def new_changelog_entry(args):
         parsed_values = get_values_from_editor(args)
     if has_empty_values(parsed_values):
         sys.stderr.write(
-            "Empty changelog values received, skipping entry creation.\n")
+            "Empty changelog values received, skipping entry creation.\n"
+        )
         return 1
     replace_issue_references(parsed_values, args.repo)
     write_new_change(parsed_values)
@@ -98,9 +98,11 @@ def new_changelog_entry(args):
 
 
 def has_empty_values(parsed_values):
-    return not (parsed_values.get('type') and
-                parsed_values.get('category') and
-                parsed_values.get('description'))
+    return not (
+        parsed_values.get('type')
+        and parsed_values.get('category')
+        and parsed_values.get('description')
+    )
 
 
 def all_values_provided(args):
@@ -131,9 +133,11 @@ def replace_issue_references(parsed, repo_name):
 
     def linkify(match):
         number = match.group()[1:]
-        return (
-            '`%s <https://github.com/%s/issues/%s>`__' % (
-                match.group(), repo_name, number))
+        return '`%s <https://github.com/%s/issues/%s>`__' % (
+            match.group(),
+            repo_name,
+            number,
+        )
 
     new_description = re.sub('#\d+', linkify, description)
     parsed['description'] = new_description
@@ -151,13 +155,15 @@ def write_new_change(parsed_values):
     category = parsed_values['category']
     short_summary = ''.join(filter(lambda x: x in VALID_CHARS, category))
     filename = '{type_name}-{summary}'.format(
-        type_name=parsed_values['type'],
-        summary=short_summary)
+        type_name=parsed_values['type'], summary=short_summary
+    )
     possible_filename = os.path.join(
-        dirname, '%s-%s.json' % (filename, str(random.randint(1, 100000))))
+        dirname, '%s-%s.json' % (filename, str(random.randint(1, 100000)))
+    )
     while os.path.isfile(possible_filename):
         possible_filename = os.path.join(
-            dirname, '%s-%s.json' % (filename, str(random.randint(1, 100000))))
+            dirname, '%s-%s.json' % (filename, str(random.randint(1, 100000)))
+        )
     with open(possible_filename, 'w') as f:
         f.write(json.dumps(parsed_values, indent=2) + "\n")
 
@@ -198,15 +204,21 @@ def parse_filled_in_contents(contents):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--type', dest='change_type',
-                        default='', choices=('bugfix', 'feature',
-                                             'enhancement', 'api-change'))
-    parser.add_argument('-c', '--category', dest='category',
-                        default='')
-    parser.add_argument('-d', '--description', dest='description',
-                        default='')
-    parser.add_argument('-r', '--repo', default='aws/aws-cli',
-                        help='Optional repo name, e.g: aws/aws-cli')
+    parser.add_argument(
+        '-t',
+        '--type',
+        dest='change_type',
+        default='',
+        choices=('bugfix', 'feature', 'enhancement', 'api-change'),
+    )
+    parser.add_argument('-c', '--category', dest='category', default='')
+    parser.add_argument('-d', '--description', dest='description', default='')
+    parser.add_argument(
+        '-r',
+        '--repo',
+        default='aws/aws-cli',
+        help='Optional repo name, e.g: aws/aws-cli',
+    )
     args = parser.parse_args()
     sys.exit(new_changelog_entry(args))
 

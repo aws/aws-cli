@@ -10,24 +10,27 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
 import os
 import sys
-import logging
 
-from botocore.history import get_global_history_recorder
 from botocore.exceptions import ProfileNotFound
+from botocore.history import get_global_history_recorder
 
 from awscli.compat import sqlite3
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.history.constants import HISTORY_FILENAME_ENV_VAR
-from awscli.customizations.history.constants import DEFAULT_HISTORY_FILENAME
-from awscli.customizations.history.db import DatabaseConnection
-from awscli.customizations.history.db import DatabaseRecordWriter
-from awscli.customizations.history.db import RecordBuilder
-from awscli.customizations.history.db import DatabaseHistoryHandler
-from awscli.customizations.history.show import ShowCommand
+from awscli.customizations.history.constants import (
+    DEFAULT_HISTORY_FILENAME,
+    HISTORY_FILENAME_ENV_VAR,
+)
+from awscli.customizations.history.db import (
+    DatabaseConnection,
+    DatabaseHistoryHandler,
+    DatabaseRecordWriter,
+    RecordBuilder,
+)
 from awscli.customizations.history.list import ListCommand
-
+from awscli.customizations.history.show import ShowCommand
 
 LOG = logging.getLogger(__name__)
 HISTORY_RECORDER = get_global_history_recorder()

@@ -14,11 +14,11 @@ import gzip
 import io
 import sys
 
-import pytest
-
 import botocore
+import pytest
 from botocore.compress import COMPRESSION_MAPPING, maybe_compress_request
 from botocore.config import Config
+
 from tests import mock
 
 

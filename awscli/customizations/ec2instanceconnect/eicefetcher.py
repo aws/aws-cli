@@ -13,8 +13,8 @@
 import logging
 
 from awscli.customizations.exceptions import (
-    ParamValidationError,
     ConfigurationError,
+    ParamValidationError,
 )
 
 logger = logging.getLogger(__name__)

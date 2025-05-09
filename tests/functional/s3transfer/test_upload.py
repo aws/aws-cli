@@ -21,10 +21,10 @@ from botocore.client import Config
 from botocore.exceptions import ClientError
 from botocore.httpchecksum import DEFAULT_CHECKSUM_ALGORITHM
 from botocore.stub import ANY
-
 from s3transfer.manager import TransferConfig, TransferManager
 from s3transfer.upload import UploadSubmissionTask
 from s3transfer.utils import ChunksizeAdjuster
+
 from tests import (
     BaseGeneralInterfaceTest,
     NonSeekableReader,
@@ -94,7 +94,7 @@ class BaseUploadTest(BaseGeneralInterfaceTest):
                 data=params['Body'],
             )
             self.client.meta.events.emit(
-                'request-created.s3.%s' % model.name,
+                f'request-created.s3.{model.name}',
                 request=request,
                 operation_name=model.name,
             )
@@ -468,7 +468,7 @@ class TestMultipartUpload(BaseUploadTest):
     ):
         if bucket is None:
             bucket = self.bucket
-        
+
         num_parts = 3
         parts = []
         for part_num in range(1, num_parts + 1):

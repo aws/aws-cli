@@ -37,6 +37,7 @@ The input to the serializers should be text (str/unicode), not bytes,
 with the exception of blob types.  Those are assumed to be binary,
 and if a str/unicode type is passed in, it will be encoded as utf-8.
 """
+
 import base64
 import calendar
 import datetime
@@ -70,7 +71,7 @@ def create_serializer(protocol_name, include_validation=True):
     return serializer
 
 
-class Serializer(object):
+class Serializer:
     DEFAULT_METHOD = 'POST'
     # Clients can change this to a different MutableMapping
     # (i.e OrderedDict) if they want.  This is used in the
@@ -126,7 +127,7 @@ class Serializer(object):
             'method': self.DEFAULT_METHOD,
             'headers': {},
             # An empty body is represented as an empty byte string.
-            'body': b''
+            'body': b'',
         }
         return serialized
 
@@ -152,8 +153,7 @@ class Serializer(object):
             timestamp_format = self.TIMESTAMP_FORMAT
         timestamp_format = timestamp_format.lower()
         datetime_obj = parse_to_aware_datetime(value)
-        converter = getattr(
-            self, '_timestamp_%s' % timestamp_format)
+        converter = getattr(self, f'_timestamp_{timestamp_format}')
         final_value = converter(datetime_obj)
         return final_value
 
@@ -168,8 +168,7 @@ class Serializer(object):
         # via the default encoding.
         if isinstance(value, str):
             value = value.encode(self.DEFAULT_ENCODING)
-        return base64.b64encode(value).strip().decode(
-            self.DEFAULT_ENCODING)
+        return base64.b64encode(value).strip().decode(self.DEFAULT_ENCODING)
 
     def _expand_host_prefix(self, parameters, operation_model):
         operation_endpoint = operation_model.endpoint
@@ -182,7 +181,8 @@ class Serializer(object):
         host_prefix_expression = operation_endpoint['hostPrefix']
         input_members = operation_model.input_shape.members
         host_labels = [
-            member for member, shape in input_members.items()
+            member
+            for member, shape in input_members.items()
             if shape.serialization.get('hostLabel')
         ]
         format_kwargs = dict((name, parameters[name]) for name in host_labels)
@@ -191,14 +191,14 @@ class Serializer(object):
 
 
 class QuerySerializer(Serializer):
-
     TIMESTAMP_FORMAT = 'iso8601'
 
     def serialize_to_request(self, parameters, operation_model):
         shape = operation_model.input_shape
         serialized = self._create_default_request()
-        serialized['method'] = operation_model.http.get('method',
-                                                        self.DEFAULT_METHOD)
+        serialized['method'] = operation_model.http.get(
+            'method', self.DEFAULT_METHOD
+        )
         serialized['headers'] = {
             'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
         }
@@ -225,8 +225,11 @@ class QuerySerializer(Serializer):
         #        input.
         # prefix: The incrementally built up prefix for the serialized
         #         key (i.e Foo.bar.members.1).
-        method = getattr(self, '_serialize_type_%s' % shape.type_name,
-                         self._default_serialize)
+        method = getattr(
+            self,
+            f'_serialize_type_{shape.type_name}',
+            self._default_serialize,
+        )
         method(serialized, value, shape, prefix=prefix)
 
     def _serialize_type_structure(self, serialized, value, shape, prefix=''):
@@ -235,7 +238,7 @@ class QuerySerializer(Serializer):
             member_shape = members[key]
             member_prefix = self._get_serialized_name(member_shape, key)
             if prefix:
-                member_prefix = '%s.%s' % (prefix, member_prefix)
+                member_prefix = f'{prefix}.{member_prefix}'
             self._serialize(serialized, value, member_shape, member_prefix)
 
     def _serialize_type_list(self, serialized, value, shape, prefix=''):
@@ -251,9 +254,9 @@ class QuerySerializer(Serializer):
                 list_prefix = '.'.join(prefix.split('.')[:-1] + [name])
         else:
             list_name = shape.member.serialization.get('name', 'member')
-            list_prefix = '%s.%s' % (prefix, list_name)
+            list_prefix = f'{prefix}.{list_name}'
         for i, element in enumerate(value, 1):
-            element_prefix = '%s.%s' % (list_prefix, i)
+            element_prefix = f'{list_prefix}.{i}'
             element_shape = shape.member
             self._serialize(serialized, element, element_shape, element_prefix)
 
@@ -261,7 +264,7 @@ class QuerySerializer(Serializer):
         if self._is_shape_flattened(shape):
             full_prefix = prefix
         else:
-            full_prefix = '%s.entry' % prefix
+            full_prefix = f'{prefix}.entry'
         template = full_prefix + '.{i}.{suffix}'
         key_shape = shape.key
         value_shape = shape.value
@@ -279,7 +282,8 @@ class QuerySerializer(Serializer):
 
     def _serialize_type_timestamp(self, serialized, value, shape, prefix=''):
         serialized[prefix] = self._convert_timestamp_to_str(
-            value, shape.serialization.get('timestampFormat'))
+            value, shape.serialization.get('timestampFormat')
+        )
 
     def _serialize_type_boolean(self, serialized, value, shape, prefix=''):
         if value:
@@ -319,7 +323,7 @@ class EC2Serializer(QuerySerializer):
 
     def _serialize_type_list(self, serialized, value, shape, prefix=''):
         for i, element in enumerate(value, 1):
-            element_prefix = '%s.%s' % (prefix, i)
+            element_prefix = f'{prefix}.{i}'
             element_shape = shape.member
             self._serialize(serialized, element, element_shape, element_prefix)
 
@@ -328,15 +332,18 @@ class JSONSerializer(Serializer):
     TIMESTAMP_FORMAT = 'unixtimestamp'
 
     def serialize_to_request(self, parameters, operation_model):
-        target = '%s.%s' % (operation_model.metadata['targetPrefix'],
-                            operation_model.name)
+        target = '{}.{}'.format(
+            operation_model.metadata['targetPrefix'],
+            operation_model.name,
+        )
         json_version = operation_model.metadata['jsonVersion']
         serialized = self._create_default_request()
-        serialized['method'] = operation_model.http.get('method',
-                                                        self.DEFAULT_METHOD)
+        serialized['method'] = operation_model.http.get(
+            'method', self.DEFAULT_METHOD
+        )
         serialized['headers'] = {
             'X-Amz-Target': target,
-            'Content-Type': 'application/x-amz-json-%s' % json_version,
+            'Content-Type': f'application/x-amz-json-{json_version}',
         }
         body = self.MAP_TYPE()
         input_shape = operation_model.input_shape
@@ -351,8 +358,11 @@ class JSONSerializer(Serializer):
         return serialized
 
     def _serialize(self, serialized, value, shape, key=None):
-        method = getattr(self, '_serialize_type_%s' % shape.type_name,
-                         self._default_serialize)
+        method = getattr(
+            self,
+            f'_serialize_type_{shape.type_name}',
+            self._default_serialize,
+        )
         method(serialized, value, shape, key)
 
     def _serialize_type_structure(self, serialized, value, shape, key):
@@ -373,7 +383,9 @@ class JSONSerializer(Serializer):
                 member_shape = members[member_key]
                 if 'name' in member_shape.serialization:
                     member_key = member_shape.serialization['name']
-                self._serialize(serialized, member_value, member_shape, member_key)
+                self._serialize(
+                    serialized, member_value, member_shape, member_key
+                )
 
     def _serialize_type_map(self, serialized, value, shape, key):
         map_obj = self.MAP_TYPE()
@@ -398,7 +410,8 @@ class JSONSerializer(Serializer):
 
     def _serialize_type_timestamp(self, serialized, value, shape, key):
         serialized[key] = self._convert_timestamp_to_str(
-            value, shape.serialization.get('timestampFormat'))
+            value, shape.serialization.get('timestampFormat')
+        )
 
     def _serialize_type_blob(self, serialized, value, shape, key):
         serialized[key] = self._get_base64(value)
@@ -656,6 +669,7 @@ class BaseRestSerializer(Serializer):
     Subclasses must implement the ``_serialize_body_params`` method.
 
     """
+
     QUERY_STRING_TIMESTAMP_FORMAT = 'iso8601'
     HEADER_TIMESTAMP_FORMAT = 'rfc822'
     # This is a list of known values for the "location" key in the
@@ -665,8 +679,9 @@ class BaseRestSerializer(Serializer):
 
     def serialize_to_request(self, parameters, operation_model):
         serialized = self._create_default_request()
-        serialized['method'] = operation_model.http.get('method',
-                                                        self.DEFAULT_METHOD)
+        serialized['method'] = operation_model.http.get(
+            'method', self.DEFAULT_METHOD
+        )
         shape = operation_model.input_shape
         if shape is None:
             serialized['url_path'] = operation_model.http['requestUri']
@@ -692,11 +707,12 @@ class BaseRestSerializer(Serializer):
             if param_value is None:
                 # Don't serialize any parameter with a None value.
                 continue
-            self._partition_parameters(partitioned, param_name, param_value,
-                                       shape_members)
+            self._partition_parameters(
+                partitioned, param_name, param_value, shape_members
+            )
         serialized['url_path'] = self._render_uri_template(
-            operation_model.http['requestUri'],
-            partitioned['uri_path_kwargs'])
+            operation_model.http['requestUri'], partitioned['uri_path_kwargs']
+        )
 
         if 'authPath' in operation_model.http:
             serialized['auth_path'] = self._render_uri_template(
@@ -709,8 +725,9 @@ class BaseRestSerializer(Serializer):
         serialized['query_string'] = partitioned['query_string_kwargs']
         if partitioned['headers']:
             serialized['headers'] = partitioned['headers']
-        self._serialize_payload(partitioned, parameters,
-                                serialized, shape, shape_members)
+        self._serialize_payload(
+            partitioned, parameters, serialized, shape, shape_members
+        )
         self._serialize_content_type(serialized, shape, shape_members)
 
         host_prefix = self._expand_host_prefix(parameters, operation_model)
@@ -730,14 +747,17 @@ class BaseRestSerializer(Serializer):
         for template_param in re.findall(r'{(.*?)}', uri_template):
             if template_param.endswith('+'):
                 encoded_params[template_param] = percent_encode(
-                    params[template_param[:-1]], safe='/~')
+                    params[template_param[:-1]], safe='/~'
+                )
             else:
                 encoded_params[template_param] = percent_encode(
-                    params[template_param])
+                    params[template_param]
+                )
         return uri_template.format(**encoded_params)
 
-    def _serialize_payload(self, partitioned, parameters,
-                           serialized, shape, shape_members):
+    def _serialize_payload(
+        self, partitioned, parameters, serialized, shape, shape_members
+    ):
         # partitioned - The user input params partitioned by location.
         # parameters - The user input params.
         # serialized - The final serialized request dict.
@@ -756,13 +776,14 @@ class BaseRestSerializer(Serializer):
             body_params = parameters.get(payload_member)
             if body_params is not None:
                 serialized['body'] = self._serialize_body_params(
-                    body_params,
-                    shape_members[payload_member])
+                    body_params, shape_members[payload_member]
+                )
             else:
                 serialized['body'] = self._serialize_empty_body()
         elif partitioned['body_kwargs']:
             serialized['body'] = self._serialize_body_params(
-                partitioned['body_kwargs'], shape)
+                partitioned['body_kwargs'], shape
+            )
         elif self._requires_empty_body(shape):
             serialized['body'] = self._serialize_empty_body()
 
@@ -786,18 +807,19 @@ class BaseRestSerializer(Serializer):
 
     def _has_streaming_payload(self, payload, shape_members):
         """Determine if payload is streaming (a blob or string)."""
-        return (
-            payload is not None and
-            shape_members[payload].type_name in ['blob', 'string']
-        )
+        return payload is not None and shape_members[payload].type_name in [
+            'blob',
+            'string',
+        ]
 
     def _encode_payload(self, body):
         if isinstance(body, str):
             return body.encode(self.DEFAULT_ENCODING)
         return body
 
-    def _partition_parameters(self, partitioned, param_name,
-                              param_value, shape_members):
+    def _partition_parameters(
+        self, partitioned, param_name, param_value, shape_members
+    ):
         # This takes the user provided input parameter (``param``)
         # and figures out where they go in the request dict.
         # Some params are HTTP headers, some are used in the URI, some
@@ -811,15 +833,18 @@ class BaseRestSerializer(Serializer):
             if isinstance(param_value, dict):
                 partitioned['query_string_kwargs'].update(param_value)
             elif isinstance(param_value, bool):
-                partitioned['query_string_kwargs'][
-                    key_name] = str(param_value).lower()
+                partitioned['query_string_kwargs'][key_name] = str(
+                    param_value
+                ).lower()
             elif member.type_name == 'timestamp':
                 timestamp_format = member.serialization.get(
-                    'timestampFormat', self.QUERY_STRING_TIMESTAMP_FORMAT)
-                partitioned['query_string_kwargs'][
-                    key_name] = self._convert_timestamp_to_str(
+                    'timestampFormat', self.QUERY_STRING_TIMESTAMP_FORMAT
+                )
+                partitioned['query_string_kwargs'][key_name] = (
+                    self._convert_timestamp_to_str(
                         param_value, timestamp_format
                     )
+                )
             else:
                 partitioned['query_string_kwargs'][key_name] = param_value
         elif location == 'header':
@@ -837,9 +862,9 @@ class BaseRestSerializer(Serializer):
             # creating multiple header key/val pairs.  The key
             # name to use for each header is the header_prefix (``key_name``)
             # plus the key provided by the user.
-            self._do_serialize_header_map(header_prefix,
-                                          partitioned['headers'],
-                                          param_value)
+            self._do_serialize_header_map(
+                header_prefix, partitioned['headers'], param_value
+            )
         else:
             partitioned['body_kwargs'][param_name] = param_value
 
@@ -856,12 +881,14 @@ class BaseRestSerializer(Serializer):
             datetime_obj = parse_to_aware_datetime(value)
             timestamp = calendar.timegm(datetime_obj.utctimetuple())
             timestamp_format = shape.serialization.get(
-                'timestampFormat', self.HEADER_TIMESTAMP_FORMAT)
+                'timestampFormat', self.HEADER_TIMESTAMP_FORMAT
+            )
             return self._convert_timestamp_to_str(timestamp, timestamp_format)
         elif shape.type_name == 'list':
             converted_value = [
                 self._convert_header_value(shape.member, v)
-                for v in value if v is not None
+                for v in value
+                if v is not None
             ]
             return ",".join(converted_value)
         elif is_json_value_header(shape):
@@ -909,7 +936,6 @@ class BaseRpcV2Serializer(Serializer):
 
 
 class RestJSONSerializer(BaseRestSerializer, JSONSerializer):
-
     def _serialize_empty_body(self):
         return b'{}'
 
@@ -952,8 +978,11 @@ class RestXMLSerializer(BaseRestSerializer):
         return ElementTree.tostring(real_root, encoding=self.DEFAULT_ENCODING)
 
     def _serialize(self, shape, params, xmlnode, name):
-        method = getattr(self, '_serialize_type_%s' % shape.type_name,
-                         self._default_serialize)
+        method = getattr(
+            self,
+            f'_serialize_type_{shape.type_name}',
+            self._default_serialize,
+        )
         method(xmlnode, params, shape, name)
 
     def _serialize_type_structure(self, xmlnode, params, shape, name):
@@ -963,7 +992,7 @@ class RestXMLSerializer(BaseRestSerializer):
             namespace_metadata = shape.serialization['xmlNamespace']
             attribute_name = 'xmlns'
             if namespace_metadata.get('prefix'):
-                attribute_name += ':%s' % namespace_metadata['prefix']
+                attribute_name += ':{}'.format(namespace_metadata['prefix'])
             structure_node.attrib[attribute_name] = namespace_metadata['uri']
         for key, value in params.items():
             member_shape = shape.members[key]
@@ -1007,8 +1036,9 @@ class RestXMLSerializer(BaseRestSerializer):
         for key, value in params.items():
             entry_node = ElementTree.SubElement(node, 'entry')
             key_name = self._get_serialized_name(shape.key, default_name='key')
-            val_name = self._get_serialized_name(shape.value,
-                                                 default_name='value')
+            val_name = self._get_serialized_name(
+                shape.value, default_name='value'
+            )
             self._serialize(shape.key, key, entry_node, key_name)
             self._serialize(shape.value, value, entry_node, val_name)
 
@@ -1030,7 +1060,8 @@ class RestXMLSerializer(BaseRestSerializer):
     def _serialize_type_timestamp(self, xmlnode, params, shape, name):
         node = ElementTree.SubElement(xmlnode, name)
         node.text = self._convert_timestamp_to_str(
-            params, shape.serialization.get('timestampFormat'))
+            params, shape.serialization.get('timestampFormat')
+        )
 
     def _default_serialize(self, xmlnode, params, shape, name):
         node = ElementTree.SubElement(xmlnode, name)

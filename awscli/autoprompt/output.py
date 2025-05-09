@@ -11,16 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import argparse
-import logging
 import io
+import logging
 import re
 
 import jmespath
 from botocore.utils import ArgumentGenerator
 
-from awscli.formatter import get_formatter
 from awscli.autocomplete.local.fetcher import CliDriverFetcher
-
+from awscli.formatter import get_formatter
 
 LOG = logging.getLogger(__name__)
 

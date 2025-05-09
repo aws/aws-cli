@@ -11,19 +11,23 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import tempfile
 import shutil
-from tests import unittest, mock
+import tempfile
 
-from botocore.exceptions import (ConnectionClosedError, HTTPClientError,
-                                InvalidIMDSEndpointError)
+from botocore.exceptions import (
+    ConnectionClosedError,
+    HTTPClientError,
+    InvalidIMDSEndpointError,
+)
 from botocore.utils import FileWebIdentityTokenLoader, InstanceMetadataFetcher
 from urllib3.exceptions import LocationParseError
+
+from tests import mock, unittest
 
 
 class TestFileWebIdentityTokenLoader(unittest.TestCase):
     def setUp(self):
-        super(TestFileWebIdentityTokenLoader, self).setUp()
+        super().setUp()
         self.tempdir = tempfile.mkdtemp()
         self.token = 'totally.a.token'
         self.token_file = os.path.join(self.tempdir, 'token.jwt')
@@ -31,7 +35,7 @@ class TestFileWebIdentityTokenLoader(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.tempdir)
-        super(TestFileWebIdentityTokenLoader, self).tearDown()
+        super().tearDown()
 
     def write_token(self, token, path=None):
         if path is None:
@@ -47,17 +51,23 @@ class TestFileWebIdentityTokenLoader(unittest.TestCase):
 
 class TestInstanceMetadataFetcher(unittest.TestCase):
     def test_catch_retryable_http_errors(self):
-        with mock.patch('botocore.httpsession.URLLib3Session.send') as send_mock:
+        with mock.patch(
+            'botocore.httpsession.URLLib3Session.send'
+        ) as send_mock:
             fetcher = InstanceMetadataFetcher()
             send_mock.side_effect = ConnectionClosedError(endpoint_url="foo")
             creds = fetcher.retrieve_iam_role_credentials()
         self.assertEqual(send_mock.call_count, 2)
         for call_instance in send_mock.call_args_list:
-            self.assertTrue(call_instance[0][0].url.startswith(fetcher.get_base_url()))
+            self.assertTrue(
+                call_instance[0][0].url.startswith(fetcher.get_base_url())
+            )
         self.assertEqual(creds, {})
 
     def test_catch_invalid_imds_error(self):
-        with mock.patch('botocore.httpsession.URLLib3Session.send') as send_mock:
+        with mock.patch(
+            'botocore.httpsession.URLLib3Session.send'
+        ) as send_mock:
             fetcher = InstanceMetadataFetcher()
             e = LocationParseError(location="foo")
             send_mock.side_effect = HTTPClientError(error=e)

@@ -11,8 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from dateutil import tz, parser
 from datetime import timedelta
+
+from dateutil import parser, tz
 
 DATE_FORMAT = "%Y%m%dT%H%M%SZ"
 

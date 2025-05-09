@@ -7,9 +7,8 @@ import os
 from scripts.performance.benchmark_utils import BenchmarkHarness, BenchmarkSuite
 
 _BENCHMARK_DEFINITIONS = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        'benchmarks.json'
-    )
+    os.path.dirname(os.path.abspath(__file__)), 'benchmarks.json'
+)
 
 def _chunk_test_cases(
         test_cases: List[Tuple[BenchmarkSuite, Generator[Dict, None, None]]],
@@ -28,13 +27,16 @@ def main():
     harness = BenchmarkHarness()
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--benchmark-definitions', default=_BENCHMARK_DEFINITIONS,
-        help=('The JSON file defining the commands to benchmark.')
+        '--benchmark-definitions',
+        default=_BENCHMARK_DEFINITIONS,
+        help=('The JSON file defining the commands to benchmark.'),
     )
     parser.add_argument(
-        '-o', '--result-dir', default=f'{os.getcwd()}/results',
+        '-o',
+        '--result-dir',
+        default=f'{os.getcwd()}/results',
         help='The directory to output performance results to. Existing '
-             'results will be deleted.'
+        'results will be deleted.',
     )
     parser.add_argument(
         '--data-interval',
@@ -47,6 +49,11 @@ def main():
         default=1,
         type=int,
         help='The number of iterations to repeat the benchmark for.',
+    )
+    parser.add_argument(
+        '--debug-dir',
+        default=None,
+        help='If supplied, writes the output of the child process for each benchmark to a file in this directory.',
     )
     parser.add_argument(
         "--num-chunks",

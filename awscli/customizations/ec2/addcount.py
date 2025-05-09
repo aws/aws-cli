@@ -16,7 +16,6 @@ from botocore import model
 
 from awscli.arguments import BaseCLIArgument
 
-
 logger = logging.getLogger(__name__)
 
 

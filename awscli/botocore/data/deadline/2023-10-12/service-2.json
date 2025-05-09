@@ -2499,7 +2499,6 @@
     "AssignedTaskRunSessionActionDefinition":{
       "type":"structure",
       "required":[
-        "taskId",
         "stepId",
         "parameters"
       ],
@@ -3525,7 +3524,7 @@
         },
         "priority":{
           "shape":"JobPriority",
-          "documentation":"<p>The priority of the job on a scale of 0 to 100. The highest priority (first scheduled) is 100. When two jobs have the same priority, the oldest job is scheduled first.</p>"
+          "documentation":"<p>The priority of the job. The highest priority (first scheduled) is 100. When two jobs have the same priority, the oldest job is scheduled first.</p>"
         },
         "parameters":{
           "shape":"JobParameters",
@@ -3765,7 +3764,7 @@
         },
         "priority":{
           "shape":"Priority",
-          "documentation":"<p>Sets the priority of the environments in the queue from 0 to 10,000, where 0 is the highest priority. If two environments share the same priority value, the environment created first takes higher priority.</p>"
+          "documentation":"<p>Sets the priority of the environments in the queue from 0 to 10,000, where 0 is the highest priority (activated first and deactivated last). If two environments share the same priority value, the environment created first takes higher priority.</p>"
         },
         "templateType":{
           "shape":"EnvironmentTemplateType",
@@ -4984,8 +4983,7 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"[0-9A-Za-z ]*",
-      "sensitive":true
+      "pattern":"[0-9A-Za-z ]*"
     },
     "FileSystemLocationType":{
       "type":"string",
@@ -6254,7 +6252,7 @@
         },
         "processExitCode":{
           "shape":"ProcessExitCode",
-          "documentation":"<p>The exit code to exit the session.</p>"
+          "documentation":"<p>The process exit code. The default Deadline Cloud worker agent converts unsigned 32-bit exit codes to signed 32-bit exit codes.</p>"
         },
         "progressMessage":{
           "shape":"SessionActionProgressMessage",
@@ -7296,9 +7294,14 @@
     },
     "JobParameters":{
       "type":"map",
-      "key":{"shape":"String"},
+      "key":{"shape":"JobParametersKeyString"},
       "value":{"shape":"JobParameter"},
       "sensitive":true
+    },
+    "JobParametersKeyString":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "JobPriority":{
       "type":"integer",
@@ -10201,9 +10204,20 @@
         "searchTerm":{
           "shape":"SearchTerm",
           "documentation":"<p>The term to search for.</p>"
+        },
+        "matchType":{
+          "shape":"SearchTermMatchingType",
+          "documentation":"<p>Specifies how Deadline Cloud matches your search term in the results. If you don't specify a <code>matchType</code> the default is <code>FUZZY_MATCH</code>.</p> <ul> <li> <p> <code>FUZZY_MATCH</code> - Matches if a portion of the search term is found in the result.</p> </li> <li> <p> <code>CONTAINS</code> - Matches if the exact search term is contained in the result.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Searches for a particular search term.</p>"
+    },
+    "SearchTermMatchingType":{
+      "type":"string",
+      "enum":[
+        "FUZZY_MATCH",
+        "CONTAINS"
+      ]
     },
     "SearchWorkersRequest":{
       "type":"structure",
@@ -11408,7 +11422,6 @@
     "TaskRunSessionActionDefinition":{
       "type":"structure",
       "required":[
-        "taskId",
         "stepId",
         "parameters"
       ],
@@ -11430,10 +11443,7 @@
     },
     "TaskRunSessionActionDefinitionSummary":{
       "type":"structure",
-      "required":[
-        "taskId",
-        "stepId"
-      ],
+      "required":["stepId"],
       "members":{
         "taskId":{
           "shape":"TaskId",
@@ -12506,7 +12516,7 @@
         },
         "processExitCode":{
           "shape":"ProcessExitCode",
-          "documentation":"<p>The process exit code.</p>"
+          "documentation":"<p>The process exit code. The default Deadline Cloud worker agent converts unsigned 32-bit exit codes to signed 32-bit exit codes.</p>"
         },
         "progressMessage":{
           "shape":"SessionActionProgressMessage",

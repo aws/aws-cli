@@ -557,9 +557,7 @@ class UploadSubmissionTask(SubmissionTask):
             if upload_manager_cls.is_compatible(fileobj):
                 return upload_manager_cls
         raise RuntimeError(
-            'Input {} of type: {} is not supported.'.format(
-                fileobj, type(fileobj)
-            )
+            f'Input {fileobj} of type: {type(fileobj)} is not supported.'
         )
 
     def _submit(
@@ -691,7 +689,7 @@ class UploadSubmissionTask(SubmissionTask):
                     'client': client,
                     'bucket': call_args.bucket,
                     'key': call_args.key,
-                    'extra_args':create_multipart_extra_args,
+                    'extra_args': create_multipart_extra_args,
                 },
             ),
         )
@@ -830,7 +828,7 @@ class UploadPartTask(Task):
                 UploadId=upload_id,
                 PartNumber=part_number,
                 Body=body,
-                **extra_args
+                **extra_args,
             )
         etag = response['ETag']
         part_metadata = {'ETag': etag, 'PartNumber': part_number}

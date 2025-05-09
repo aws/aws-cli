@@ -1050,7 +1050,7 @@
         "shape":"ListStacksOutput",
         "resultWrapper":"ListStacksResult"
       },
-      "documentation":"<p>Returns the summary information for stacks whose status matches the specified StackStatusFilter. Summary information for stacks that have been deleted is kept for 90 days after the stack is deleted. If no StackStatusFilter is specified, summary information for all stacks is returned (including existing stacks and stacks that have been deleted).</p>"
+      "documentation":"<p>Returns the summary information for stacks whose status matches the specified <code>StackStatusFilter</code>. Summary information for stacks that have been deleted is kept for 90 days after the stack is deleted. If no <code>StackStatusFilter</code> is specified, summary information for all stacks is returned (including existing stacks and stacks that have been deleted).</p>"
     },
     "ListTypeRegistrations":{
       "name":"ListTypeRegistrations",
@@ -1370,7 +1370,7 @@
         {"shape":"InvalidOperationException"},
         {"shape":"StackInstanceNotFoundException"}
       ],
-      "documentation":"<p>Updates the stack set, and associated stack instances in the specified accounts and Amazon Web Services Regions.</p> <p>Even if the stack set operation created by updating the stack set fails (completely or partially, below or above a specified failure tolerance), the stack set is updated with your changes. Subsequent <a>CreateStackInstances</a> calls on the specified stack set use the updated stack set.</p>"
+      "documentation":"<p>Updates the stack set and associated stack instances in the specified accounts and Amazon Web Services Regions.</p> <p>Even if the stack set operation created by updating the stack set fails (completely or partially, below or above a specified failure tolerance), the stack set is updated with your changes. Subsequent <a>CreateStackInstances</a> calls on the specified stack set use the updated stack set.</p>"
     },
     "UpdateTerminationProtection":{
       "name":"UpdateTerminationProtection",
@@ -2340,11 +2340,11 @@
         },
         "AdministrationRoleARN":{
           "shape":"RoleARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to use to create this stack set.</p> <p>Specify an IAM role only if you are using customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs.html\">Prerequisites for using StackSets</a> in the <i>CloudFormation User Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to use to create this stack set.</p> <p>Specify an IAM role only if you are using customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html\">Grant self-managed permissions</a> in the <i>CloudFormation User Guide</i>.</p> <p>Valid only if the permissions model is <code>SELF_MANAGED</code>.</p>"
         },
         "ExecutionRoleName":{
           "shape":"ExecutionRoleName",
-          "documentation":"<p>The name of the IAM execution role to use to create the stack set. If you do not specify an execution role, CloudFormation uses the <code>AWSCloudFormationStackSetExecutionRole</code> role for the stack set operation.</p> <p>Specify an IAM role only if you are using customized execution roles to control which stack resources users and groups can include in their stack sets.</p>"
+          "documentation":"<p>The name of the IAM execution role to use to create the stack set. If you do not specify an execution role, CloudFormation uses the <code>AWSCloudFormationStackSetExecutionRole</code> role for the stack set operation.</p> <p>Specify an IAM role only if you are using customized execution roles to control which stack resources users and groups can include in their stack sets.</p> <p>Valid only if the permissions model is <code>SELF_MANAGED</code>.</p>"
         },
         "PermissionModel":{
           "shape":"PermissionModels",
@@ -2352,11 +2352,11 @@
         },
         "AutoDeployment":{
           "shape":"AutoDeployment",
-          "documentation":"<p>Describes whether StackSets automatically deploys to Organizations accounts that are added to the target organization or organizational unit (OU). Specify only if <code>PermissionModel</code> is <code>SERVICE_MANAGED</code>.</p>"
+          "documentation":"<p>Describes whether StackSets automatically deploys to Organizations accounts that are added to the target organization or organizational unit (OU). For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-manage-auto-deployment.html\">Manage automatic deployments for CloudFormation StackSets that use service-managed permissions</a> in the <i>CloudFormation User Guide</i>.</p> <p>Required if the permissions model is <code>SERVICE_MANAGED</code>. (Not used with self-managed permissions.)</p>"
         },
         "CallAs":{
           "shape":"CallAs",
-          "documentation":"<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization's management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>To create a stack set with service-managed permissions while signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>To create a stack set with service-managed permissions while signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated admin in the management account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html\">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul> <p>Stack sets with service-managed permissions are created in the management account, including stack sets that are created by delegated administrators.</p>"
+          "documentation":"<p>Specifies whether you are acting as an account administrator in the organization's management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>To create a stack set with service-managed permissions while signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>To create a stack set with service-managed permissions while signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated admin in the management account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html\">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul> <p>Stack sets with service-managed permissions are created in the management account, including stack sets that are created by delegated administrators.</p> <p>Valid only if the permissions model is <code>SERVICE_MANAGED</code>.</p>"
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
@@ -2933,7 +2933,7 @@
         },
         "Status":{
           "shape":"ResourceScanStatus",
-          "documentation":"<p>Status of the resource scan.</p> <dl> <dt> INPROGRESS </dt> <dd> <p>The resource scan is still in progress.</p> </dd> <dt> COMPLETE </dt> <dd> <p>The resource scan is complete.</p> </dd> <dt> EXPIRED </dt> <dd> <p>The resource scan has expired.</p> </dd> <dt> FAILED </dt> <dd> <p>The resource scan has failed.</p> </dd> </dl>"
+          "documentation":"<p>Status of the resource scan.</p> <dl> <dt> IN_PROGRESS </dt> <dd> <p>The resource scan is still in progress.</p> </dd> <dt> COMPLETE </dt> <dd> <p>The resource scan is complete.</p> </dd> <dt> EXPIRED </dt> <dd> <p>The resource scan has expired.</p> </dd> <dt> FAILED </dt> <dd> <p>The resource scan has failed.</p> </dd> </dl>"
         },
         "StatusReason":{
           "shape":"ResourceScanStatusReason",
@@ -2961,7 +2961,11 @@
         },
         "ResourcesRead":{
           "shape":"ResourcesRead",
-          "documentation":"<p>The number of resources that were read. This is only available for scans with a <code>Status</code> set to <code>COMPLETE</code>, <code>EXPIRED</code>, or <code>FAILED </code>.</p> <note> <p>This field may be 0 if the resource scan failed with a <code>ResourceScanLimitExceededException</code>.</p> </note>"
+          "documentation":"<p>The number of resources that were read. This is only available for scans with a <code>Status</code> set to <code>COMPLETE</code>, <code>EXPIRED</code>, or <code>FAILED</code>.</p> <note> <p>This field may be 0 if the resource scan failed with a <code>ResourceScanLimitExceededException</code>.</p> </note>"
+        },
+        "ScanFilters":{
+          "shape":"ScanFilters",
+          "documentation":"<p>The scan filters that were used.</p>"
         }
       }
     },
@@ -3019,7 +3023,7 @@
       "members":{
         "StackName":{
           "shape":"StackName",
-          "documentation":"<p>The name or the unique stack ID that's associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>"
+          "documentation":"<p>The name or the unique stack ID that's associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3165,11 +3169,11 @@
       "members":{
         "StackName":{
           "shape":"StackName",
-          "documentation":"<p>The name or the unique stack ID that's associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>"
+          "documentation":"<p>The name or the unique stack ID that's associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul>"
         },
         "LogicalResourceId":{
           "shape":"LogicalResourceId",
-          "documentation":"<p>The logical name of the resource as specified in the template.</p> <p>Default: There is no default value.</p>"
+          "documentation":"<p>The logical name of the resource as specified in the template.</p>"
         }
       },
       "documentation":"<p>The input for <a>DescribeStackResource</a> action.</p>"
@@ -3189,15 +3193,15 @@
       "members":{
         "StackName":{
           "shape":"StackName",
-          "documentation":"<p>The name or the unique stack ID that is associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p> <p>Required: Conditional. If you don't specify <code>StackName</code>, you must specify <code>PhysicalResourceId</code>.</p>"
+          "documentation":"<p>The name or the unique stack ID that is associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Required: Conditional. If you don't specify <code>StackName</code>, you must specify <code>PhysicalResourceId</code>.</p>"
         },
         "LogicalResourceId":{
           "shape":"LogicalResourceId",
-          "documentation":"<p>The logical name of the resource as specified in the template.</p> <p>Default: There is no default value.</p>"
+          "documentation":"<p>The logical name of the resource as specified in the template.</p>"
         },
         "PhysicalResourceId":{
           "shape":"PhysicalResourceId",
-          "documentation":"<p>The name or unique identifier that corresponds to a physical instance ID of a resource supported by CloudFormation.</p> <p>For example, for an Amazon Elastic Compute Cloud (EC2) instance, <code>PhysicalResourceId</code> corresponds to the <code>InstanceId</code>. You can pass the EC2 <code>InstanceId</code> to <code>DescribeStackResources</code> to find which stack the instance belongs to and what other resources are part of the stack.</p> <p>Required: Conditional. If you don't specify <code>PhysicalResourceId</code>, you must specify <code>StackName</code>.</p> <p>Default: There is no default value.</p>"
+          "documentation":"<p>The name or unique identifier that corresponds to a physical instance ID of a resource supported by CloudFormation.</p> <p>For example, for an Amazon Elastic Compute Cloud (EC2) instance, <code>PhysicalResourceId</code> corresponds to the <code>InstanceId</code>. You can pass the EC2 <code>InstanceId</code> to <code>DescribeStackResources</code> to find which stack the instance belongs to and what other resources are part of the stack.</p> <p>Required: Conditional. If you don't specify <code>PhysicalResourceId</code>, you must specify <code>StackName</code>.</p>"
         }
       },
       "documentation":"<p>The input for <a>DescribeStackResources</a> action.</p>"
@@ -3270,7 +3274,7 @@
       "members":{
         "StackName":{
           "shape":"StackName",
-          "documentation":"<note> <p>If you don't pass a parameter to <code>StackName</code>, the API returns a response that describes all resources in the account, which can impact performance. This requires <code>ListStacks</code> and <code>DescribeStacks</code> permissions.</p> <p>Consider using the <a>ListStacks</a> API if you're not passing a parameter to <code>StackName</code>.</p> <p>The IAM policy below can be added to IAM policies when you want to limit resource-level permissions and avoid returning a response when no parameter is sent in the request:</p> <p>{ \"Version\": \"2012-10-17\", \"Statement\": [{ \"Effect\": \"Deny\", \"Action\": \"cloudformation:DescribeStacks\", \"NotResource\": \"arn:aws:cloudformation:*:*:stack/*/*\" }] }</p> </note> <p>The name or the unique stack ID that's associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>"
+          "documentation":"<note> <p>If you don't pass a parameter to <code>StackName</code>, the API returns a response that describes all resources in the account, which can impact performance. This requires <code>ListStacks</code> and <code>DescribeStacks</code> permissions.</p> <p>Consider using the <a>ListStacks</a> API if you're not passing a parameter to <code>StackName</code>.</p> <p>The IAM policy below can be added to IAM policies when you want to limit resource-level permissions and avoid returning a response when no parameter is sent in the request:</p> <p>{ \"Version\": \"2012-10-17\", \"Statement\": [{ \"Effect\": \"Deny\", \"Action\": \"cloudformation:DescribeStacks\", \"NotResource\": \"arn:aws:cloudformation:*:*:stack/*/*\" }] }</p> </note> <p>The name or the unique stack ID that's associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3832,7 +3836,7 @@
       "members":{
         "StackName":{
           "shape":"StackName",
-          "documentation":"<p>The name or the unique stack ID that's associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>"
+          "documentation":"<p>The name or the unique stack ID that's associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul>"
         },
         "ChangeSetName":{
           "shape":"ChangeSetNameOrId",
@@ -4474,6 +4478,10 @@
         "MaxResults":{
           "shape":"ResourceScannerMaxResults",
           "documentation":"<p> If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can use for the <code>NextToken</code> parameter to get the next set of results. The default value is 10. The maximum value is 100.</p>"
+        },
+        "ScanTypeFilter":{
+          "shape":"ScanType",
+          "documentation":"<p>The scan type that you want to get summary information about. The default is <code>FULL</code>.</p>"
         }
       }
     },
@@ -4662,7 +4670,7 @@
       "members":{
         "StackName":{
           "shape":"StackName",
-          "documentation":"<p>The name or the unique stack ID that is associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>"
+          "documentation":"<p>The name or the unique stack ID that is associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -5992,7 +6000,7 @@
         },
         "Status":{
           "shape":"ResourceScanStatus",
-          "documentation":"<p>Status of the resource scan.</p> <dl> <dt> INPROGRESS </dt> <dd> <p>The resource scan is still in progress.</p> </dd> <dt> COMPLETE </dt> <dd> <p>The resource scan is complete.</p> </dd> <dt> EXPIRED </dt> <dd> <p>The resource scan has expired.</p> </dd> <dt> FAILED </dt> <dd> <p>The resource scan has failed.</p> </dd> </dl>"
+          "documentation":"<p>Status of the resource scan.</p> <dl> <dt> IN_PROGRESS </dt> <dd> <p>The resource scan is still in progress.</p> </dd> <dt> COMPLETE </dt> <dd> <p>The resource scan is complete.</p> </dd> <dt> EXPIRED </dt> <dd> <p>The resource scan has expired.</p> </dd> <dt> FAILED </dt> <dd> <p>The resource scan has failed.</p> </dd> </dl>"
         },
         "StatusReason":{
           "shape":"ResourceScanStatusReason",
@@ -6009,6 +6017,10 @@
         "PercentageCompleted":{
           "shape":"PercentageCompleted",
           "documentation":"<p>The percentage of the resource scan that has been completed.</p>"
+        },
+        "ScanType":{
+          "shape":"ScanType",
+          "documentation":"<p>The scan type that has been completed.</p>"
         }
       },
       "documentation":"<p>A summary of the resource scan. This is returned by the <code>ListResourceScan</code> API action.</p>"
@@ -6128,6 +6140,16 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "ResourceTypeFilter":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "ResourceTypeFilters":{
+      "type":"list",
+      "member":{"shape":"ResourceTypeFilter"},
+      "max":100
     },
     "ResourceTypePrefix":{"type":"string"},
     "ResourceTypes":{
@@ -6258,6 +6280,29 @@
       "type":"string",
       "max":4096,
       "min":1
+    },
+    "ScanFilter":{
+      "type":"structure",
+      "members":{
+        "Types":{
+          "shape":"ResourceTypeFilters",
+          "documentation":"<p>An array of strings where each string represents an Amazon Web Services resource type you want to scan. Each string defines the resource type using the format <code>AWS::ServiceName::ResourceType</code>, for example, <code>AWS::DynamoDB::Table</code>. For the full list of supported resource types, see the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-supported-resources.html\">Resource type support</a> table in the <i>CloudFormation User Guide</i>.</p> <p>To scan all resource types within a service, you can use a wildcard, represented by an asterisk (<code>*</code>). You can place a asterisk at only the end of the string, for example, <code>AWS::S3::*</code>.</p>"
+        }
+      },
+      "documentation":"<p>A filter that is used to specify which resource types to scan.</p>"
+    },
+    "ScanFilters":{
+      "type":"list",
+      "member":{"shape":"ScanFilter"},
+      "max":1,
+      "min":1
+    },
+    "ScanType":{
+      "type":"string",
+      "enum":[
+        "FULL",
+        "PARTIAL"
+      ]
     },
     "ScannedResource":{
       "type":"structure",
@@ -6963,12 +7008,12 @@
     },
     "StackPolicyDuringUpdateURL":{
       "type":"string",
-      "max":1350,
+      "max":5120,
       "min":1
     },
     "StackPolicyURL":{
       "type":"string",
-      "max":1350,
+      "max":5120,
       "min":1
     },
     "StackRefactorAction":{
@@ -7661,7 +7706,7 @@
         },
         "RegionOrder":{
           "shape":"RegionList",
-          "documentation":"<p>The order of the Regions where you want to perform the stack operation.</p> <note> <p> <code>RegionOrder</code> isn't followed if <code>AutoDeployment</code> is enabled.</p> </note>"
+          "documentation":"<p>The order of the Regions where you want to perform the stack operation.</p>"
         },
         "FailureToleranceCount":{
           "shape":"FailureToleranceCount",
@@ -7684,7 +7729,7 @@
           "documentation":"<p>Specifies how the concurrency level behaves during the operation execution.</p> <ul> <li> <p> <code>STRICT_FAILURE_TOLERANCE</code>: This option dynamically lowers the concurrency level to ensure the number of failed accounts never exceeds the value of <code>FailureToleranceCount</code> +1. The initial actual concurrency is set to the lower of either the value of the <code>MaxConcurrentCount</code>, or the value of <code>FailureToleranceCount</code> +1. The actual concurrency is then reduced proportionally by the number of failures. This is the default behavior.</p> <p>If failure tolerance or Maximum concurrent accounts are set to percentages, the behavior is similar.</p> </li> <li> <p> <code>SOFT_FAILURE_TOLERANCE</code>: This option decouples <code>FailureToleranceCount</code> from the actual concurrency. This allows stack set operations to run at the concurrency level set by the <code>MaxConcurrentCount</code> value, or <code>MaxConcurrentPercentage</code>, regardless of the number of failures.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>The user-specified preferences for how CloudFormation performs a stack set operation.</p> <p>For more information about maximum concurrent accounts and failure tolerance, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html#stackset-ops-options\">Stack set operation options</a>.</p>"
+      "documentation":"<p>The user-specified preferences for how CloudFormation performs a stack set operation.</p> <p>For more information about maximum concurrent accounts and failure tolerance, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html#stackset-ops-options\">Stack set operation options</a>.</p> <note> <p> <code>StackSetOperationPreferences</code> don't apply to <code>AutoDeployment</code>, even if it's enabled.</p> </note>"
     },
     "StackSetOperationResultStatus":{
       "type":"string",
@@ -7965,6 +8010,10 @@
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
           "documentation":"<p>A unique identifier for this <code>StartResourceScan</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to start a new resource scan.</p>"
+        },
+        "ScanFilters":{
+          "shape":"ScanFilters",
+          "documentation":"<p>The scan filters to use.</p>"
         }
       }
     },
@@ -8185,7 +8234,7 @@
     },
     "TemplateURL":{
       "type":"string",
-      "max":1024,
+      "max":5120,
       "min":1
     },
     "TestTypeInput":{
@@ -8768,11 +8817,11 @@
         },
         "AdministrationRoleARN":{
           "shape":"RoleARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to use to update this stack set.</p> <p>Specify an IAM role only if you are using customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs.html\">Prerequisites for using CloudFormation StackSets</a> in the <i>CloudFormation User Guide</i>.</p> <p>If you specified a customized administrator role when you created the stack set, you must specify a customized administrator role, even if it is the same customized administrator role used with this stack set previously.</p>"
+          "documentation":"<p>[Self-managed permissions] The Amazon Resource Name (ARN) of the IAM role to use to update this stack set.</p> <p>Specify an IAM role only if you are using customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html\">Grant self-managed permissions</a> in the <i>CloudFormation User Guide</i>.</p> <p>If you specified a customized administrator role when you created the stack set, you must specify a customized administrator role, even if it is the same customized administrator role used with this stack set previously.</p>"
         },
         "ExecutionRoleName":{
           "shape":"ExecutionRoleName",
-          "documentation":"<p>The name of the IAM execution role to use to update the stack set. If you do not specify an execution role, CloudFormation uses the <code>AWSCloudFormationStackSetExecutionRole</code> role for the stack set operation.</p> <p>Specify an IAM role only if you are using customized execution roles to control which stack resources users and groups can include in their stack sets.</p> <p>If you specify a customized execution role, CloudFormation uses that role to update the stack. If you do not specify a customized execution role, CloudFormation performs the update using the role previously associated with the stack set, so long as you have permissions to perform operations on the stack set.</p>"
+          "documentation":"<p>[Self-managed permissions] The name of the IAM execution role to use to update the stack set. If you do not specify an execution role, CloudFormation uses the <code>AWSCloudFormationStackSetExecutionRole</code> role for the stack set operation.</p> <p>Specify an IAM role only if you are using customized execution roles to control which stack resources users and groups can include in their stack sets.</p> <p>If you specify a customized execution role, CloudFormation uses that role to update the stack. If you do not specify a customized execution role, CloudFormation performs the update using the role previously associated with the stack set, so long as you have permissions to perform operations on the stack set.</p>"
         },
         "DeploymentTargets":{
           "shape":"DeploymentTargets",
@@ -8784,7 +8833,7 @@
         },
         "AutoDeployment":{
           "shape":"AutoDeployment",
-          "documentation":"<p>[Service-managed permissions] Describes whether StackSets automatically deploys to Organizations accounts that are added to a target organization or organizational unit (OU).</p> <p>If you specify <code>AutoDeployment</code>, don't specify <code>DeploymentTargets</code> or <code>Regions</code>.</p>"
+          "documentation":"<p>[Service-managed permissions] Describes whether StackSets automatically deploys to Organizations accounts that are added to a target organization or organizational unit (OU). For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-manage-auto-deployment.html\">Manage automatic deployments for CloudFormation StackSets that use service-managed permissions</a> in the <i>CloudFormation User Guide</i>.</p> <p>If you specify <code>AutoDeployment</code>, don't specify <code>DeploymentTargets</code> or <code>Regions</code>.</p>"
         },
         "OperationId":{
           "shape":"ClientRequestToken",

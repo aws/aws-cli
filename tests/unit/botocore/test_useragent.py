@@ -15,7 +15,6 @@ import platform
 import unittest
 
 import pytest
-
 from botocore import __version__ as botocore_version
 from botocore.config import Config
 from botocore.context import get_context

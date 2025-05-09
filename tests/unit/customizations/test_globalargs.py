@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 
-from botocore.session import get_session
 from botocore import UNSIGNED
+from botocore.session import get_session
 
 from awscli.customizations import globalargs
 from awscli.customizations.exceptions import ParamValidationError
@@ -133,10 +133,13 @@ class TestGlobalArgsCustomization(unittest.TestCase):
     def test_no_sign_request_if_option_specified(self):
         args = FakeParsedArgs(sign_request=False)
         session = mock.Mock()
-        with mock.patch('awscli.customizations.globalargs._update_default_client_config') as mock_update:
+        with mock.patch(
+            'awscli.customizations.globalargs._update_default_client_config'
+        ) as mock_update:
             globalargs.no_sign_request(args, session)
-            mock_update.assert_called_once_with(session, 'signature_version', UNSIGNED
-        )
+            mock_update.assert_called_once_with(
+                session, 'signature_version', UNSIGNED
+            )
 
     def test_request_signed_by_default(self):
         args = FakeParsedArgs(sign_request=True)

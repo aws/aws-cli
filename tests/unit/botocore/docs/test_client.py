@@ -10,21 +10,19 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from botocore.docs.client import ClientDocumenter, ClientExceptionsDocumenter
+
 from tests.unit.botocore.docs import BaseDocsTest
-from botocore.docs.client import ClientDocumenter
-from botocore.docs.client import ClientExceptionsDocumenter
 
 
 class TestClientDocumenter(BaseDocsTest):
     def setUp(self):
-        super(TestClientDocumenter, self).setUp()
+        super().setUp()
         exception_shape = {
             'SomeException': {
                 'exception': True,
                 'type': 'structure',
-                'members': {
-                    'Message': {'shape': 'String'}
-                },
+                'members': {'Message': {'shape': 'String'}},
             }
         }
         self.add_shape(exception_shape)
@@ -35,43 +33,45 @@ class TestClientDocumenter(BaseDocsTest):
 
     def test_document_client(self):
         self.client_documenter.document_client(self.doc_structure)
-        self.assert_contains_lines_in_order([
-            '======',
-            'Client',
-            '======',
-            '.. py:class:: MyService.Client',
-            '  A low-level client representing AWS MyService',
-            '  AWS MyService Description',
-            '    client = session.create_client(\'myservice\')',
-            '  These are the available methods:',
-            '  *   :py:meth:`~MyService.Client.can_paginate`',
-            '  *   :py:meth:`~MyService.Client.get_paginator`',
-            '  *   :py:meth:`~MyService.Client.get_waiter`',
-            '  *   :py:meth:`~MyService.Client.sample_operation`',
-            '  .. py:method:: can_paginate(operation_name)',
-            '  .. py:method:: get_paginator(operation_name)',
-            '  .. py:method:: get_waiter(waiter_name)',
-            '  .. py:method:: sample_operation(**kwargs)',
-            '    **Request Syntax**',
-            '    ::',
-            '      response = client.sample_operation(',
-            '          Biz=\'string\'',
-            '      )',
-            '    :type Biz: string',
-            '    :param Biz:',
-            '    :rtype: dict',
-            '    :returns:',
-            '      **Response Syntax**',
-            '      ::',
-            '        {',
-            '            \'Biz\': \'string\'',
-            '        }',
-            '      **Response Structure**',
-            '      - *(dict) --*',
-            '        - **Biz** *(string) --*',
-            '**Exceptions**',
-            '*     :py:class:`MyService.Client.exceptions.SomeException`',
-        ])
+        self.assert_contains_lines_in_order(
+            [
+                '======',
+                'Client',
+                '======',
+                '.. py:class:: MyService.Client',
+                '  A low-level client representing AWS MyService',
+                '  AWS MyService Description',
+                '    client = session.create_client(\'myservice\')',
+                '  These are the available methods:',
+                '  *   :py:meth:`~MyService.Client.can_paginate`',
+                '  *   :py:meth:`~MyService.Client.get_paginator`',
+                '  *   :py:meth:`~MyService.Client.get_waiter`',
+                '  *   :py:meth:`~MyService.Client.sample_operation`',
+                '  .. py:method:: can_paginate(operation_name)',
+                '  .. py:method:: get_paginator(operation_name)',
+                '  .. py:method:: get_waiter(waiter_name)',
+                '  .. py:method:: sample_operation(**kwargs)',
+                '    **Request Syntax**',
+                '    ::',
+                '      response = client.sample_operation(',
+                '          Biz=\'string\'',
+                '      )',
+                '    :type Biz: string',
+                '    :param Biz:',
+                '    :rtype: dict',
+                '    :returns:',
+                '      **Response Syntax**',
+                '      ::',
+                '        {',
+                '            \'Biz\': \'string\'',
+                '        }',
+                '      **Response Structure**',
+                '      - *(dict) --*',
+                '        - **Biz** *(string) --*',
+                '**Exceptions**',
+                '*     :py:class:`MyService.Client.exceptions.SomeException`',
+            ]
+        )
 
 
 class TestClientExceptionsDocumenter(BaseDocsTest):
@@ -82,50 +82,52 @@ class TestClientExceptionsDocumenter(BaseDocsTest):
     def test_no_modeled_exceptions(self):
         self.setup_documenter()
         self.exceptions_documenter.document_exceptions(self.doc_structure)
-        self.assert_contains_lines_in_order([
-            '=================',
-            'Client Exceptions',
-            '=================',
-            'Client exceptions are available',
-            'This client has no modeled exception classes.',
-        ])
+        self.assert_contains_lines_in_order(
+            [
+                '=================',
+                'Client Exceptions',
+                '=================',
+                'Client exceptions are available',
+                'This client has no modeled exception classes.',
+            ]
+        )
 
     def test_modeled_exceptions(self):
         exception_shape = {
             'SomeException': {
                 'exception': True,
                 'type': 'structure',
-                'members': {
-                    'Message': {'shape': 'String'}
-                },
+                'members': {'Message': {'shape': 'String'}},
             }
         }
         self.add_shape(exception_shape)
         self.setup_documenter()
         self.exceptions_documenter.document_exceptions(self.doc_structure)
-        self.assert_contains_lines_in_order([
-            '=================',
-            'Client Exceptions',
-            '=================',
-            'Client exceptions are available',
-            'The available client exceptions are:',
-            '* :py:class:`MyService.Client.exceptions.SomeException`',
-            '.. py:class:: MyService.Client.exceptions.SomeException',
-            '**Example** ::',
-            'except client.exceptions.SomeException as e:',
-            '.. py:attribute:: response',
-            '**Syntax**',
-            '{',
-            "'Message': 'string',",
-            "'Error': {",
-            "'Code': 'string',",
-            "'Message': 'string'",
-            '}',
-            '}',
-            '**Structure**',
-            '- *(dict) --*',
-            '- **Message** *(string) --* ',
-            '- **Error** *(dict) --* ',
-            '- **Code** *(string) --* ',
-            '- **Message** *(string) --* ',
-        ])
+        self.assert_contains_lines_in_order(
+            [
+                '=================',
+                'Client Exceptions',
+                '=================',
+                'Client exceptions are available',
+                'The available client exceptions are:',
+                '* :py:class:`MyService.Client.exceptions.SomeException`',
+                '.. py:class:: MyService.Client.exceptions.SomeException',
+                '**Example** ::',
+                'except client.exceptions.SomeException as e:',
+                '.. py:attribute:: response',
+                '**Syntax**',
+                '{',
+                "'Message': 'string',",
+                "'Error': {",
+                "'Code': 'string',",
+                "'Message': 'string'",
+                '}',
+                '}',
+                '**Structure**',
+                '- *(dict) --*',
+                '- **Message** *(string) --* ',
+                '- **Error** *(dict) --* ',
+                '- **Code** *(string) --* ',
+                '- **Message** *(string) --* ',
+            ]
+        )

@@ -13,7 +13,6 @@
 import re
 
 import pytest
-
 from botocore.session import get_session
 
 BLOCKLIST = []
@@ -23,11 +22,13 @@ BLOCKLIST = []
 # blacklist above to be given an exception.
 VALID_NAME_REGEX = re.compile(
     (
-        '[a-z]'           # Starts with a letter
-        '[a-z0-9]*'       # Followed by any number of letters or digits
+        '[a-z]'  # Starts with a letter
+        '[a-z0-9]*'  # Followed by any number of letters or digits
         '(-[a-z0-9]+)*$'  # Dashes are allowed as long as they aren't
-                          # consecutive or at the end
-    ), re.M)
+        # consecutive or at the end
+    ),
+    re.M,
+)
 VALID_NAME_EXPLANATION = (
     'Service names must be made up entirely of lowercase alphanumeric '
     'characters and dashes. The name must start with a letter and may not end '

@@ -10,15 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.customizations.wizard.ui.layout import WizardLayoutFactory
+from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.wizard import core, ui
 from awscli.customizations.wizard.app import (
-    WizardAppRunner,
     WizardApp,
-    WizardValues,
+    WizardAppRunner,
     WizardTraverser,
+    WizardValues,
 )
-from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.wizard.ui.layout import WizardLayoutFactory
 
 
 def create_default_executor(api_invoker, shared_config):

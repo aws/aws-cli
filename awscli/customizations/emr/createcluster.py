@@ -13,23 +13,25 @@
 
 import re
 
-from awscli.customizations.exceptions import ParamValidationError
-from awscli.customizations.commands import BasicCommand
-from awscli.customizations.emr import applicationutils
-from awscli.customizations.emr import argumentschema
-from awscli.customizations.emr import constants
-from awscli.customizations.emr import emrfsutils
-from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import exceptions
-from awscli.customizations.emr import hbaseutils
-from awscli.customizations.emr import helptext
-from awscli.customizations.emr import instancegroupsutils
-from awscli.customizations.emr import instancefleetsutils
-from awscli.customizations.emr import steputils
-from awscli.customizations.emr.command import Command
-from awscli.customizations.emr.constants import EC2_ROLE_NAME
-from awscli.customizations.emr.constants import EMR_ROLE_NAME
 from botocore.compat import json
+
+from awscli.customizations.commands import BasicCommand
+from awscli.customizations.emr import (
+    applicationutils,
+    argumentschema,
+    constants,
+    emrfsutils,
+    emrutils,
+    exceptions,
+    hbaseutils,
+    helptext,
+    instancefleetsutils,
+    instancegroupsutils,
+    steputils,
+)
+from awscli.customizations.emr.command import Command
+from awscli.customizations.emr.constants import EC2_ROLE_NAME, EMR_ROLE_NAME
+from awscli.customizations.exceptions import ParamValidationError
 
 
 class CreateCluster(Command):

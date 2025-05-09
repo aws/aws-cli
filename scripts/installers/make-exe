@@ -4,21 +4,22 @@
 This exe can then be wrapped in a platform specific installer for each
 supported platform.
 """
+
 import argparse
 import json
 import os
-import sys
 import shutil
+import sys
 from distutils.dir_util import copy_tree
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from utils import run, tmp_dir, update_metadata, save_to_zip, remove_dist_info
 from install_deps import install_packages
+from utils import remove_dist_info, run, save_to_zip, tmp_dir, update_metadata
 
-
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
-    os.path.abspath(__file__))))
+ROOT = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)
 EXE_DIR = os.path.join(ROOT, 'exe')
 PYINSTALLER_DIR = os.path.join(EXE_DIR, 'pyinstaller')
 ASSETS_DIR = os.path.join(EXE_DIR, 'assets')
@@ -42,12 +43,14 @@ def do_make_exe(workdir, exe_zipfile, ac_index):
     aws_exe_build = pyinstaller('aws.spec')
     if ac_index:
         full_internal_ac_index_path = os.path.join(
-            aws_exe_build, AC_INDEX_INTERNAL_PATH)
+            aws_exe_build, AC_INDEX_INTERNAL_PATH
+        )
         copy_file(ac_index, full_internal_ac_index_path)
     copy_directory(aws_exe_build, output_exe_dist_dir)
     aws_complete_exe_build = pyinstaller('aws_completer.spec')
-    update_metadata(aws_complete_exe_build,
-                    distribution_source=DISTRIBUTION_SOURCE)
+    update_metadata(
+        aws_complete_exe_build, distribution_source=DISTRIBUTION_SOURCE
+    )
     copy_directory_contents_into(aws_complete_exe_build, output_exe_dist_dir)
     copy_directory_contents_into(ASSETS_DIR, exe_dir)
     remove_dist_info(workdir)
@@ -63,8 +66,7 @@ def delete_existing_exe_build():
 def pyinstaller(specfile):
     aws_spec_path = os.path.join(PYINSTALLER_DIR, specfile)
     print(run('pyinstaller %s' % (aws_spec_path), cwd=PYINSTALLER_DIR))
-    return os.path.join(
-        PYINSTALLER_DIR, 'dist', os.path.splitext(specfile)[0])
+    return os.path.join(PYINSTALLER_DIR, 'dist', os.path.splitext(specfile)[0])
 
 
 def copy_directory(src, dst):
@@ -101,7 +103,7 @@ def main():
             'The name of the file to save the exe zip. By default, '
             'this will be saved in "dist/%s" directory in the root of the '
             'awscli.' % DEFAULT_OUTPUT_ZIP
-        )
+        ),
     )
     parser.add_argument(
         '--no-cleanup',
@@ -124,16 +126,13 @@ def main():
     parser.add_argument(
         '--ac-index-path',
         default=None,
-        help=(
-            'Path to ac.index file to include in the exe.'
-        )
+        help=('Path to ac.index file to include in the exe.'),
     )
     args = parser.parse_args()
 
     output = os.path.abspath(args.output)
     if args.src_dir:
-        print(
-            'Installing dependencies from local directory: %s' % args.src_dir)
+        print(f'Installing dependencies from local directory: {args.src_dir}')
         install_packages(args.src_dir)
     else:
         run('pip install -r requirements-dev-lock.txt')

@@ -140,8 +140,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"LimitExceededException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates an Amazon QuickSight brand.</p>"
@@ -369,7 +369,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"ResourceUnavailableException"}
       ],
-      "documentation":"<p>(Enterprise edition only) Creates a new namespace for you to use with Amazon QuickSight.</p> <p>A namespace allows you to isolate the Amazon QuickSight users and groups that are registered for that namespace. Users that access the namespace can share assets only with other users or groups in the same namespace. They can't see users and groups in other namespaces. You can create a namespace after your Amazon Web Services account is subscribed to Amazon QuickSight. The namespace must be unique within the Amazon Web Services account. By default, there is a limit of 100 namespaces per Amazon Web Services account. To increase your limit, create a ticket with Amazon Web Services Support. </p>"
+      "documentation":"<p>(Enterprise edition only) Creates a new namespace for you to use with Amazon QuickSight.</p> <p>A namespace allows you to isolate the Amazon QuickSight users and groups that are registered for that namespace. Users that access the namespace can share assets only with other users or groups in the same namespace. They can't see users and groups in other namespaces. You can create a namespace after your Amazon Web Services account is subscribed to Amazon QuickSight. The namespace must be unique within the Amazon Web Services account. By default, there is a limit of 100 namespaces per Amazon Web Services account. To increase your limit, create a ticket with Amazon Web ServicesSupport. </p>"
     },
     "CreateRefreshSchedule":{
       "name":"CreateRefreshSchedule",
@@ -622,8 +622,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes an Amazon QuickSight brand.</p>",
@@ -642,8 +642,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a brand assignment.</p>",
@@ -1285,8 +1285,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Describes a brand.</p>"
@@ -1304,8 +1304,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Describes a brand assignment.</p>"
@@ -1323,8 +1323,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Describes the published version of the brand.</p>"
@@ -2794,7 +2794,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Predicts existing visuals or generates new visuals to answer a given query.</p>"
+      "documentation":"<p>Predicts existing visuals or generates new visuals to answer a given query.</p> <p>This API uses <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/trustedidentitypropagation.html\">trusted identity propagation</a> to ensure that an end user is authenticated and receives the embed URL that is specific to that user. The IAM Identity Center application that the user has logged into needs to have <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/trustedidentitypropagation-using-customermanagedapps-specify-trusted-apps.html\">trusted Identity Propagation enabled for Amazon QuickSight</a> with the scope value set to <code>quicksight:read</code>. Before you use this action, make sure that you have configured the relevant Amazon QuickSight resource and permissions.</p> <p>We recommend enabling the <code>QSearchStatus</code> API to unlock the full potential of <code>PredictQnA</code>. When <code>QSearchStatus</code> is enabled, it first checks the specified dashboard for any existing visuals that match the question. If no matching visuals are found, <code>PredictQnA</code> uses generative Q&amp;A to provide an answer. To update the <code>QSearchStatus</code>, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_UpdateQuickSightQSearchConfiguration.html\">UpdateQuickSightQSearchConfiguration</a>.</p>"
     },
     "PutDataSetRefreshProperties":{
       "name":"PutDataSetRefreshProperties",
@@ -3207,8 +3207,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates a brand.</p>",
@@ -3227,8 +3227,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates a brand assignment.</p>",
@@ -3247,8 +3247,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates the published version of a brand.</p>",
@@ -4241,6 +4241,38 @@
       },
       "documentation":"<p>The parameters for OpenSearch.</p>"
     },
+    "AmazonQInQuickSightConsoleConfigurations":{
+      "type":"structure",
+      "members":{
+        "DataQnA":{
+          "shape":"DataQnAConfigurations",
+          "documentation":"<p>Adds generative Q&amp;A capabilitiees to an embedded Amazon QuickSight console.</p>"
+        },
+        "GenerativeAuthoring":{
+          "shape":"GenerativeAuthoringConfigurations",
+          "documentation":"<p>Adds the generative BI authoring experience to an embedded Amazon QuickSight console.</p>"
+        },
+        "ExecutiveSummary":{
+          "shape":"ExecutiveSummaryConfigurations",
+          "documentation":"<p>Adds the executive summaries feature to an embedded Amazon QuickSight console.</p>"
+        },
+        "DataStories":{
+          "shape":"DataStoriesConfigurations",
+          "documentation":"<p>Adds the data stories feature to an embedded Amazon QuickSight console.</p>"
+        }
+      },
+      "documentation":"<p>A collection of Amazon Q feature configurations in an embedded Amazon QuickSight console.</p>"
+    },
+    "AmazonQInQuickSightDashboardConfigurations":{
+      "type":"structure",
+      "members":{
+        "ExecutiveSummary":{
+          "shape":"ExecutiveSummaryConfigurations",
+          "documentation":"<p>A generated executive summary of an embedded Amazon QuickSight dashboard.</p>"
+        }
+      },
+      "documentation":"<p>A collection of Amazon Q feature configurations in an embedded Amazon QuickSight dashboard.</p>"
+    },
     "Analysis":{
       "type":"structure",
       "members":{
@@ -4882,7 +4914,10 @@
     },
     "AssetBundleExportJobDataSetPropertyToOverride":{
       "type":"string",
-      "enum":["Name"]
+      "enum":[
+        "Name",
+        "RefreshFailureEmailAlertStatus"
+      ]
     },
     "AssetBundleExportJobDataSetPropertyToOverrideList":{
       "type":"list",
@@ -5360,7 +5395,8 @@
         "Name":{
           "shape":"ResourceName",
           "documentation":"<p>A new name for the dataset.</p>"
-        }
+        },
+        "DataSetRefreshProperties":{"shape":"DataSetRefreshProperties"}
       },
       "documentation":"<p>The override parameters for a single dataset that is being imported.</p>"
     },
@@ -6048,6 +6084,18 @@
         "WeekStart":{
           "shape":"DayOfTheWeek",
           "documentation":"<p>Determines the week start day for an analysis.</p>"
+        },
+        "QBusinessInsightsStatus":{
+          "shape":"QBusinessInsightsStatus",
+          "documentation":"<p>Determines whether insight summaries from Amazon Q Business are allowed in Dashboard Q&amp;A.</p>"
+        },
+        "ExcludedDataSetArns":{
+          "shape":"DataSetArnsList",
+          "documentation":"<p>A list of dataset ARNS to exclude from Dashboard Q&amp;A.</p>"
+        },
+        "CustomActionDefaults":{
+          "shape":"VisualCustomActionDefaults",
+          "documentation":"<p>A list of visual custom actions for the analysis.</p>"
         }
       },
       "documentation":"<p>An array of analysis level configurations.</p>"
@@ -9259,6 +9307,10 @@
         "PerformanceConfiguration":{
           "shape":"PerformanceConfiguration",
           "documentation":"<p>The configuration for the performance optimization of the dataset that contains a <code>UniqueKey</code> configuration.</p>"
+        },
+        "UseAs":{
+          "shape":"DataSetUseAs",
+          "documentation":"<p>The usage of the dataset. <code>RLS_RULES</code> must be specified for RLS permission datasets.</p>"
         }
       }
     },
@@ -10943,6 +10995,10 @@
         "DataPointTooltipOption":{
           "shape":"DataPointTooltipOption",
           "documentation":"<p>The data point tool tip options of a dashboard.</p>"
+        },
+        "DataQAEnabledOption":{
+          "shape":"DataQAEnabledOption",
+          "documentation":"<p>Adds Q&amp;A capabilities to an Amazon QuickSight dashboard. If no topic is linked, Dashboard Q&amp;A uses the data values that are rendered on the dashboard. End users can use Dashboard Q&amp;A to ask for different slices of the data that they see on the dashboard. If a topic is linked, Topic Q&amp;A is used.</p>"
         }
       },
       "documentation":"<p>Dashboard publish options.</p>"
@@ -11566,6 +11622,27 @@
       },
       "documentation":"<p>The data point tooltip options.</p>"
     },
+    "DataQAEnabledOption":{
+      "type":"structure",
+      "members":{
+        "AvailabilityStatus":{
+          "shape":"DashboardBehavior",
+          "documentation":"<p>The status of the Data Q&amp;A option on the dashboard.</p>"
+        }
+      },
+      "documentation":"<p>Adds Q&amp;A capabilities to a dashboard. If no topic is linked, Dashboard Q&amp;A uses the data values that are rendered on the dashboard. End users can use Dashboard Q&amp;A to ask for different slices of the data that they see on the dashboard. If a topic is linked, Topic Q&amp;A is enabled.</p>"
+    },
+    "DataQnAConfigurations":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>The generative Q&amp;A settings of an embedded Amazon QuickSight console.</p>"
+        }
+      },
+      "documentation":"<p>The generative Q&amp;A settings of an embedded Amazon QuickSight console.</p>"
+    },
     "DataSet":{
       "type":"structure",
       "members":{
@@ -11640,6 +11717,10 @@
         "PerformanceConfiguration":{
           "shape":"PerformanceConfiguration",
           "documentation":"<p>The performance optimization configuration of a dataset.</p>"
+        },
+        "UseAs":{
+          "shape":"DataSetUseAs",
+          "documentation":"<p>The usage of the dataset.</p>"
         }
       },
       "documentation":"<p>Dataset.</p>"
@@ -11755,11 +11836,14 @@
     },
     "DataSetRefreshProperties":{
       "type":"structure",
-      "required":["RefreshConfiguration"],
       "members":{
         "RefreshConfiguration":{
           "shape":"RefreshConfiguration",
           "documentation":"<p>The refresh configuration for a dataset.</p>"
+        },
+        "FailureConfiguration":{
+          "shape":"RefreshFailureConfiguration",
+          "documentation":"<p>The failure configuration for a dataset.</p>"
         }
       },
       "documentation":"<p>The refresh properties of a dataset.</p>"
@@ -11846,6 +11930,10 @@
         "ColumnLevelPermissionRulesApplied":{
           "shape":"Boolean",
           "documentation":"<p>A value that indicates if the dataset has column level permission configured.</p>"
+        },
+        "UseAs":{
+          "shape":"DataSetUseAs",
+          "documentation":"<p>The usage of the dataset.</p>"
         }
       },
       "documentation":"<p>Dataset summary.</p>"
@@ -11867,6 +11955,10 @@
         }
       },
       "documentation":"<p>The usage configuration to apply to child datasets that reference this dataset as a source.</p>"
+    },
+    "DataSetUseAs":{
+      "type":"string",
+      "enum":["RLS_RULES"]
     },
     "DataSource":{
       "type":"structure",
@@ -12197,6 +12289,17 @@
         "TRINO",
         "BIGQUERY"
       ]
+    },
+    "DataStoriesConfigurations":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>The data story settings of an embedded Amazon QuickSight console.</p>"
+        }
+      },
+      "documentation":"<p>The data story settings of an embedded Amazon QuickSight console.</p>"
     },
     "Database":{
       "type":"string",
@@ -17264,6 +17367,17 @@
       },
       "documentation":"<p>The exclude period of <code>TimeRangeFilter</code> or <code>RelativeDatesFilter</code>.</p>"
     },
+    "ExecutiveSummaryConfigurations":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>The executive summary settings of an embedded Amazon QuickSight console or dashboard.</p>"
+        }
+      },
+      "documentation":"<p>The executive summary settings of an embedded Amazon QuickSight console or dashboard.</p>"
+    },
     "ExplicitHierarchy":{
       "type":"structure",
       "required":[
@@ -17354,7 +17468,7 @@
         },
         "SenderFault":{
           "shape":"Boolean",
-          "documentation":"<p>A boolean that indicates whether a <code>FailedKeyRegistrationEntry</code> resulted from user error. If the value of this property is <code>True</code>, the error was caused by user error. If the value of this property is <code>False</code>, the error occurred on the backend. If your job continues fail and with a <code>False</code> <code>SenderFault</code> value, contact Amazon Web Services Support.</p>"
+          "documentation":"<p>A boolean that indicates whether a <code>FailedKeyRegistrationEntry</code> resulted from user error. If the value of this property is <code>True</code>, the error was caused by user error. If the value of this property is <code>False</code>, the error occurred on the backend. If your job continues fail and with a <code>False</code> <code>SenderFault</code> value, contact Amazon Web ServicesSupport.</p>"
         }
       },
       "documentation":"<p>An entry that appears when a <code>KeyRegistration</code> update to Amazon QuickSight fails.</p>"
@@ -19289,6 +19403,17 @@
         "ANSWER_RETRIEVED",
         "ANSWER_DOWNGRADE"
       ]
+    },
+    "GenerativeAuthoringConfigurations":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>The generative BI authoring settings of an embedded Amazon QuickSight console.</p>"
+        }
+      },
+      "documentation":"<p>The generative BI authoring settings of an embedded Amazon QuickSight console.</p>"
     },
     "GeoSpatialColumnGroup":{
       "type":"structure",
@@ -25561,6 +25686,10 @@
         "Database":{
           "shape":"Database",
           "documentation":"<p>The database.</p>"
+        },
+        "UseServiceName":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether the <code>Database</code> uses a service name or an SID. If this value is left blank, the default value is <code>SID</code>. If this value is set to <code>false</code>, the value is <code>SID</code>.</p>"
         }
       },
       "documentation":"<p>The parameters for Oracle.</p>"
@@ -27380,6 +27509,13 @@
       "member":{"shape":"QAResult"}
     },
     "QAUrl":{"type":"string"},
+    "QBusinessInsightsStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "QSearchStatus":{
       "type":"string",
       "enum":[
@@ -27697,6 +27833,17 @@
       },
       "documentation":"<p>The parameters for Amazon RDS.</p>"
     },
+    "RecentSnapshotsConfigurations":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>The recent snapshots configuration for an embedded Amazon QuickSight dashboard.</p>"
+        }
+      },
+      "documentation":"<p>The recent snapshots configuration for an embedded Amazon QuickSight dashboard.</p>"
+    },
     "RecoveryWindowInDays":{
       "type":"long",
       "max":30,
@@ -27956,6 +28103,33 @@
       },
       "documentation":"<p>The refresh configuration of a dataset.</p>"
     },
+    "RefreshFailureAlertStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "RefreshFailureConfiguration":{
+      "type":"structure",
+      "members":{
+        "EmailAlert":{
+          "shape":"RefreshFailureEmailAlert",
+          "documentation":"<p>The email alert configuration for a dataset refresh failure.</p>"
+        }
+      },
+      "documentation":"<p>The failure configuration of a dataset.</p>"
+    },
+    "RefreshFailureEmailAlert":{
+      "type":"structure",
+      "members":{
+        "AlertStatus":{
+          "shape":"RefreshFailureAlertStatus",
+          "documentation":"<p>The status value that determines if email alerts are sent.</p>"
+        }
+      },
+      "documentation":"<p>The configuration settings for the email alerts that are sent when a dataset refresh fails.</p>"
+    },
     "RefreshFrequency":{
       "type":"structure",
       "required":["Interval"],
@@ -28142,6 +28316,22 @@
         "SharedView":{
           "shape":"SharedViewConfigurations",
           "documentation":"<p>The shared view settings of an embedded dashboard.</p>"
+        },
+        "AmazonQInQuickSight":{
+          "shape":"AmazonQInQuickSightConsoleConfigurations",
+          "documentation":"<p>The Amazon Q configurations of an embedded Amazon QuickSight console.</p>"
+        },
+        "Schedules":{
+          "shape":"SchedulesConfigurations",
+          "documentation":"<p>The schedules configuration for an embedded Amazon QuickSight dashboard.</p>"
+        },
+        "RecentSnapshots":{
+          "shape":"RecentSnapshotsConfigurations",
+          "documentation":"<p>The recent snapshots configuration for an embedded Amazon QuickSight dashboard.</p>"
+        },
+        "ThresholdAlerts":{
+          "shape":"ThresholdAlertsConfigurations",
+          "documentation":"<p>The threshold alerts configuration for an embedded Amazon QuickSight dashboard.</p>"
         }
       },
       "documentation":"<p>The feature configurations of an embedded Amazon QuickSight console.</p>"
@@ -28175,6 +28365,22 @@
         "Bookmarks":{
           "shape":"BookmarksConfigurations",
           "documentation":"<p>The bookmarks configuration for an embedded dashboard in Amazon QuickSight.</p>"
+        },
+        "AmazonQInQuickSight":{
+          "shape":"AmazonQInQuickSightDashboardConfigurations",
+          "documentation":"<p>The Amazon Q configurations of an embedded Amazon QuickSight dashboard.</p>"
+        },
+        "Schedules":{
+          "shape":"SchedulesConfigurations",
+          "documentation":"<p>The schedules configuration for an embedded Amazon QuickSight dashboard.</p>"
+        },
+        "RecentSnapshots":{
+          "shape":"RecentSnapshotsConfigurations",
+          "documentation":"<p>The recent snapshots configuration for an Amazon QuickSight embedded dashboard</p>"
+        },
+        "ThresholdAlerts":{
+          "shape":"ThresholdAlertsConfigurations",
+          "documentation":"<p>The threshold alerts configuration for an Amazon QuickSight embedded dashboard.</p>"
         }
       },
       "documentation":"<p>The feature configuration for an embedded dashboard.</p>"
@@ -29142,6 +29348,17 @@
       },
       "documentation":"<p>The refresh on entity for weekly or monthly schedules.</p>"
     },
+    "SchedulesConfigurations":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>The schedules configuration for an embedded Amazon QuickSight dashboard.</p>"
+        }
+      },
+      "documentation":"<p>The schedules configuration for an embedded Amazon QuickSight dashboard.</p>"
+    },
     "ScrollBarOptions":{
       "type":"structure",
       "members":{
@@ -30094,6 +30311,10 @@
         "ContentType":{
           "shape":"SheetContentType",
           "documentation":"<p>The layout content type of the sheet. Choose one of the following options:</p> <ul> <li> <p> <code>PAGINATED</code>: Creates a sheet for a paginated report.</p> </li> <li> <p> <code>INTERACTIVE</code>: Creates a sheet for an interactive dashboard.</p> </li> </ul>"
+        },
+        "CustomActionDefaults":{
+          "shape":"VisualCustomActionDefaults",
+          "documentation":"<p>A list of visual custom actions for the sheet.</p>"
         }
       },
       "documentation":"<p>A sheet is an object that contains a set of visuals that are viewed together on one page in a paginated report. Every analysis and dashboard must contain at least one sheet.</p>"
@@ -31903,6 +32124,10 @@
         "PinnedFieldOptions":{
           "shape":"TablePinnedFieldOptions",
           "documentation":"<p>The settings for the pinned columns of a table visual.</p>"
+        },
+        "TransposedTableOptions":{
+          "shape":"TransposedTableOptionList",
+          "documentation":"<p>The <code>TableOptions</code> of a transposed table.</p>"
         }
       },
       "documentation":"<p>The field options of a table visual.</p>"
@@ -32867,6 +33092,17 @@
         }
       },
       "documentation":"<p>The options that determine the thousands separator configuration.</p>"
+    },
+    "ThresholdAlertsConfigurations":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>The threshold alerts configuration for an embedded Amazon QuickSight dashboard.</p>"
+        }
+      },
+      "documentation":"<p>The threshold alerts configuration for an embedded Amazon QuickSight dashboard.</p>"
     },
     "ThrottlingException":{
       "type":"structure",
@@ -34436,6 +34672,44 @@
       "member":{"shape":"TransformOperation"},
       "max":2048,
       "min":1
+    },
+    "TransposedColumnIndex":{
+      "type":"integer",
+      "documentation":"<p>The integer value of a column index in the transposed table.</p>",
+      "max":9999,
+      "min":0
+    },
+    "TransposedColumnType":{
+      "type":"string",
+      "enum":[
+        "ROW_HEADER_COLUMN",
+        "VALUE_COLUMN"
+      ]
+    },
+    "TransposedTableOption":{
+      "type":"structure",
+      "required":["ColumnType"],
+      "members":{
+        "ColumnIndex":{
+          "shape":"TransposedColumnIndex",
+          "documentation":"<p>The index of a columns in a transposed table. The index range is 0-9999.</p>"
+        },
+        "ColumnWidth":{
+          "shape":"PixelLength",
+          "documentation":"<p>The width of a column in a transposed table.</p>"
+        },
+        "ColumnType":{
+          "shape":"TransposedColumnType",
+          "documentation":"<p>The column type of the column in a transposed table. Choose one of the following options:</p> <ul> <li> <p> <code>ROW_HEADER_COLUMN</code>: Refers to the leftmost column of the row header in the transposed table.</p> </li> <li> <p> <code>VALUE_COLUMN</code>: Refers to all value columns in the transposed table.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The column option of the transposed table.</p>"
+    },
+    "TransposedTableOptionList":{
+      "type":"list",
+      "member":{"shape":"TransposedTableOption"},
+      "documentation":"<p>A list of <code>TransposedTableOption</code> configurations.</p>",
+      "max":10001
     },
     "TreeMapAggregatedFieldWells":{
       "type":"structure",
@@ -37658,6 +37932,16 @@
       },
       "documentation":"<p>A custom action defined on a visual.</p>"
     },
+    "VisualCustomActionDefaults":{
+      "type":"structure",
+      "members":{
+        "highlightOperation":{
+          "shape":"VisualHighlightOperation",
+          "documentation":"<p>A list of highlight operations available for visuals in an analysis or sheet.</p>"
+        }
+      },
+      "documentation":"<p>A list of custom actions applied to visuals in an analysis or sheet.</p>"
+    },
     "VisualCustomActionList":{
       "type":"list",
       "member":{"shape":"VisualCustomAction"},
@@ -37701,6 +37985,25 @@
       "enum":[
         "DATA_POINT_CLICK",
         "DATA_POINT_MENU"
+      ]
+    },
+    "VisualHighlightOperation":{
+      "type":"structure",
+      "required":["Trigger"],
+      "members":{
+        "Trigger":{
+          "shape":"VisualHighlightTrigger",
+          "documentation":"<p>Specifies whether a highlight operation is initiated by a click or hover, or whether it's disabled.</p>"
+        }
+      },
+      "documentation":"<p>Defines what initiates a highlight operation on a visual, such as a click or hover.</p>"
+    },
+    "VisualHighlightTrigger":{
+      "type":"string",
+      "enum":[
+        "DATA_POINT_CLICK",
+        "DATA_POINT_HOVER",
+        "NONE"
       ]
     },
     "VisualInteractionOptions":{

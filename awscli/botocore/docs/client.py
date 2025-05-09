@@ -24,7 +24,7 @@ from botocore.docs.sharedexample import document_shared_examples
 from botocore.docs.utils import DocumentedShape, get_official_service_name
 
 
-class ClientDocumenter(object):
+class ClientDocumenter:
     def __init__(self, client, shared_examples=None):
         self._client = client
         self._shared_examples = shared_examples
@@ -50,11 +50,15 @@ class ClientDocumenter(object):
         section = section.add_new_section('intro')
         # Write out the top level description for the client.
         official_service_name = get_official_service_name(
-            self._client.meta.service_model)
+            self._client.meta.service_model
+        )
         section.write(
-            'A low-level client representing %s' % official_service_name)
+            f'A low-level client representing {official_service_name}'
+        )
         section.style.new_line()
-        section.include_doc_string(self._client.meta.service_model.documentation)
+        section.include_doc_string(
+            self._client.meta.service_model.documentation
+        )
 
         # Write out the client example instantiation.
         self._add_client_creation_example(section)
@@ -65,19 +69,18 @@ class ClientDocumenter(object):
         section.style.new_line()
         class_name = self._client.__class__.__name__
         for method_name in sorted(client_methods):
-            section.style.li(':py:meth:`~%s.Client.%s`' % (
-                class_name, method_name))
+            section.style.li(f':py:meth:`~{class_name}.Client.{method_name}`')
 
     def _add_class_signature(self, section):
         section.style.start_sphinx_py_class(
-            class_name='%s.Client' % self._client.__class__.__name__)
+            class_name=f'{self._client.__class__.__name__}.Client'
+        )
 
     def _add_client_creation_example(self, section):
         section.style.start_codeblock()
         section.style.new_line()
         section.write(
-            'client = session.create_client(\'{service}\')'.format(
-                service=self._service_name)
+            f'client = session.create_client(\'{self._service_name}\')'
         )
         section.style.end_codeblock()
 
@@ -85,7 +88,8 @@ class ClientDocumenter(object):
         section = section.add_new_section('methods')
         for method_name in sorted(client_methods):
             self._add_client_method(
-                section, method_name, client_methods[method_name])
+                section, method_name, client_methods[method_name]
+            )
 
     def _add_client_method(self, section, method_name, method):
         section = section.add_new_section(method_name)
@@ -107,17 +111,19 @@ class ClientDocumenter(object):
         error_section.style.new_line()
         client_name = self._client.__class__.__name__
         for error in operation_model.error_shapes:
-            class_name = '%s.Client.exceptions.%s' % (client_name, error.name)
-            error_section.style.li(':py:class:`%s`' % class_name)
+            class_name = f'{client_name}.Client.exceptions.{error.name}'
+            error_section.style.li(f':py:class:`{class_name}`')
 
     def _add_model_driven_method(self, section, method_name):
         service_model = self._client.meta.service_model
         operation_name = self._client.meta.method_to_api_mapping[method_name]
         operation_model = service_model.operation_model(operation_name)
 
-        example_prefix = 'response = client.%s' % method_name
+        example_prefix = f'response = client.{method_name}'
         document_model_driven_method(
-            section, method_name, operation_model,
+            section,
+            method_name,
+            operation_model,
             event_emitter=self._client.meta.events,
             method_description=operation_model.documentation,
             example_prefix=example_prefix,
@@ -131,10 +137,11 @@ class ClientDocumenter(object):
         shared_examples = self._shared_examples.get(operation_name)
         if shared_examples:
             document_shared_examples(
-                section, operation_model, example_prefix, shared_examples)
+                section, operation_model, example_prefix, shared_examples
+            )
 
 
-class ClientExceptionsDocumenter(object):
+class ClientExceptionsDocumenter:
     _USER_GUIDE_LINK = (
         'https://boto3.amazonaws.com/'
         'v1/documentation/api/latest/guide/error-handling.html'
@@ -142,26 +149,32 @@ class ClientExceptionsDocumenter(object):
     _GENERIC_ERROR_SHAPE = DocumentedShape(
         name='Error',
         type_name='structure',
-        documentation=(
-            'Normalized access to common exception attributes.'
+        documentation=('Normalized access to common exception attributes.'),
+        members=OrderedDict(
+            [
+                (
+                    'Code',
+                    DocumentedShape(
+                        name='Code',
+                        type_name='string',
+                        documentation=(
+                            'An identifier specifying the exception type.'
+                        ),
+                    ),
+                ),
+                (
+                    'Message',
+                    DocumentedShape(
+                        name='Message',
+                        type_name='string',
+                        documentation=(
+                            'A descriptive message explaining why the exception '
+                            'occured.'
+                        ),
+                    ),
+                ),
+            ]
         ),
-        members=OrderedDict([
-            ('Code', DocumentedShape(
-                name='Code',
-                type_name='string',
-                documentation=(
-                    'An identifier specifying the exception type.'
-                ),
-            )),
-            ('Message', DocumentedShape(
-                name='Message',
-                type_name='string',
-                documentation=(
-                    'A descriptive message explaining why the exception '
-                    'occured.'
-                ),
-            )),
-        ]),
     )
 
     def __init__(self, client):
@@ -194,7 +207,7 @@ class ClientExceptionsDocumenter(object):
 
     def _exception_class_name(self, shape):
         cls_name = self._client.__class__.__name__
-        return '%s.Client.exceptions.%s' % (cls_name, shape.name)
+        return f'{cls_name}.Client.exceptions.{shape.name}'
 
     def _add_exceptions_list(self, section):
         error_shapes = self._client.meta.service_model.error_shapes
@@ -208,7 +221,7 @@ class ClientExceptionsDocumenter(object):
         section.style.new_line()
         for shape in error_shapes:
             class_name = self._exception_class_name(shape)
-            section.style.li(':py:class:`%s`' % class_name)
+            section.style.li(f':py:class:`{class_name}`')
 
     def _add_exception_classes(self, section):
         for shape in self._client.meta.service_model.error_shapes:
@@ -239,7 +252,7 @@ class ClientExceptionsDocumenter(object):
         section.write('...')
         section.style.dedent()
         section.style.new_line()
-        section.write('except client.exceptions.%s as e:' % shape.name)
+        section.write(f'except client.exceptions.{shape.name} as e:')
         section.style.indent()
         section.style.new_line()
         section.write('print(e.response)')
@@ -275,7 +288,9 @@ class ClientExceptionsDocumenter(object):
             event_emitter=self._client.meta.events,
         )
         documenter.document_example(
-            example_section, shape, include=[self._GENERIC_ERROR_SHAPE],
+            example_section,
+            shape,
+            include=[self._GENERIC_ERROR_SHAPE],
         )
 
     def _add_response_params(self, section, shape):
@@ -289,5 +304,7 @@ class ClientExceptionsDocumenter(object):
             event_emitter=self._client.meta.events,
         )
         documenter.document_params(
-            params_section, shape, include=[self._GENERIC_ERROR_SHAPE],
+            params_section,
+            shape,
+            include=[self._GENERIC_ERROR_SHAPE],
         )

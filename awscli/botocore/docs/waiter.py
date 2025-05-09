@@ -17,7 +17,7 @@ from botocore.docs.utils import DocumentedShape
 from botocore.utils import get_service_module_name
 
 
-class WaiterDocumenter(object):
+class WaiterDocumenter:
     def __init__(self, client, service_waiter_model):
         self._client = client
         self._service_name = self._client.meta.service_model.service_name
@@ -33,21 +33,21 @@ class WaiterDocumenter(object):
         section.writeln('The available waiters are:')
         for waiter_name in self._service_waiter_model.waiter_names:
             section.style.li(
-                ':py:class:`%s.Waiter.%s`' % (
-                    self._client.__class__.__name__, waiter_name))
+                f':py:class:`{self._client.__class__.__name__}.Waiter.{waiter_name}`'
+            )
             self._add_single_waiter(section, waiter_name)
 
     def _add_single_waiter(self, section, waiter_name):
         section = section.add_new_section(waiter_name)
         section.style.start_sphinx_py_class(
-            class_name='%s.Waiter.%s' % (
-                self._client.__class__.__name__, waiter_name))
+            class_name=f'{self._client.__class__.__name__}.Waiter.{waiter_name}'
+        )
 
         # Add example on how to instantiate waiter.
         section.style.start_codeblock()
         section.style.new_line()
         section.write(
-            'waiter = client.get_waiter(\'%s\')' % xform_name(waiter_name)
+            f'waiter = client.get_waiter(\'{xform_name(waiter_name)}\')'
         )
         section.style.end_codeblock()
 
@@ -58,13 +58,18 @@ class WaiterDocumenter(object):
             waiter_name=waiter_name,
             event_emitter=self._client.meta.events,
             service_model=self._client.meta.service_model,
-            service_waiter_model=self._service_waiter_model
+            service_waiter_model=self._service_waiter_model,
         )
 
 
-def document_wait_method(section, waiter_name, event_emitter,
-                         service_model, service_waiter_model,
-                         include_signature=True):
+def document_wait_method(
+    section,
+    waiter_name,
+    event_emitter,
+    service_model,
+    service_waiter_model,
+    include_signature=True,
+):
     """Documents a the wait method of a waiter
 
     :param section: The section to write to
@@ -81,47 +86,54 @@ def document_wait_method(section, waiter_name, event_emitter,
         It is useful for generating docstrings.
     """
     waiter_model = service_waiter_model.get_waiter(waiter_name)
-    operation_model = service_model.operation_model(
-        waiter_model.operation)
+    operation_model = service_model.operation_model(waiter_model.operation)
 
     waiter_config_members = OrderedDict()
 
     waiter_config_members['Delay'] = DocumentedShape(
-        name='Delay', type_name='integer',
+        name='Delay',
+        type_name='integer',
         documentation=(
             '<p>The amount of time in seconds to wait between '
-            'attempts. Default: {0}</p>'.format(waiter_model.delay)))
+            f'attempts. Default: {waiter_model.delay}</p>'
+        ),
+    )
 
     waiter_config_members['MaxAttempts'] = DocumentedShape(
-        name='MaxAttempts', type_name='integer',
+        name='MaxAttempts',
+        type_name='integer',
         documentation=(
             '<p>The maximum number of attempts to be made. '
-            'Default: {0}</p>'.format(waiter_model.max_attempts)))
+            f'Default: {waiter_model.max_attempts}</p>'
+        ),
+    )
 
     botocore_waiter_params = [
         DocumentedShape(
-            name='WaiterConfig', type_name='structure',
+            name='WaiterConfig',
+            type_name='structure',
             documentation=(
                 '<p>A dictionary that provides parameters to control '
-                'waiting behavior.</p>'),
-            members=waiter_config_members)
+                'waiting behavior.</p>'
+            ),
+            members=waiter_config_members,
+        )
     ]
 
     wait_description = (
-        'Polls :py:meth:`{0}.Client.{1}` every {2} '
+        f'Polls :py:meth:`{get_service_module_name(service_model)}.Client.{xform_name(waiter_model.operation)}` every {waiter_model.delay} '
         'seconds until a successful state is reached. An error is '
-        'returned after {3} failed checks.'.format(
-            get_service_module_name(service_model),
-            xform_name(waiter_model.operation),
-            waiter_model.delay, waiter_model.max_attempts)
+        f'returned after {waiter_model.max_attempts} failed checks.'
     )
 
     document_model_driven_method(
-        section, 'wait', operation_model,
+        section,
+        'wait',
+        operation_model,
         event_emitter=event_emitter,
         method_description=wait_description,
         example_prefix='waiter.wait',
         include_input=botocore_waiter_params,
         document_output=False,
-        include_signature=include_signature
+        include_signature=include_signature,
     )

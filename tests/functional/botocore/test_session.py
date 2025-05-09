@@ -10,10 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import mock, unittest, temporary_file
-
 import botocore.session
 from botocore.exceptions import ProfileNotFound
+
+from tests import mock, temporary_file, unittest
 
 
 class TestSession(unittest.TestCase):
@@ -39,14 +39,15 @@ class TestSession(unittest.TestCase):
     def test_env_var_precedence_for_region(self):
         self.environ['AWS_REGION'] = 'from_aws_region'
         self.environ['AWS_DEFAULT_REGION'] = 'from_aws_default_region'
-        self.assertEqual(self.session.get_config_variable('region'),
-                         'from_aws_region')
+        self.assertEqual(
+            self.session.get_config_variable('region'), 'from_aws_region'
+        )
 
     def test_credentials_with_profile_precedence(self):
         self.environ['AWS_PROFILE'] = 'from_env_var'
-        self.session.set_config_variable('profile',  'from_session_instance')
+        self.session.set_config_variable('profile', 'from_session_instance')
         try:
-            creds = self.session.get_credentials()
+            self.session.get_credentials()
         except ProfileNotFound as e:
             self.assertNotIn('from_env_var', str(e))
             self.assertIn('from_session_instance', str(e))
@@ -69,8 +70,9 @@ class TestSession(unittest.TestCase):
                 'aws_secret_access_key=shared_creds_sak\n'
             )
             f.flush()
-            self.session.set_config_variable('profile',
-                                             'from_session_instance')
+            self.session.set_config_variable(
+                'profile', 'from_session_instance'
+            )
             creds = self.session.get_credentials()
             self.assertEqual(creds.access_key, 'shared_creds_akid')
             self.assertEqual(creds.secret_key, 'shared_creds_sak')
@@ -88,9 +90,7 @@ class TestSession(unittest.TestCase):
             # (env vars, set when creating a session, etc.) that profile
             # must exist.  So we need to create an empty profile
             # matching the value from AWS_PROFILE.
-            f.write(
-                '[myprofile]\n'
-            )
+            f.write('[myprofile]\n')
             f.flush()
             self.environ['AWS_ACCESS_KEY_ID'] = 'env_var_akid'
             self.environ['AWS_SECRET_ACCESS_KEY'] = 'env_var_sak'

@@ -22,10 +22,9 @@ aws ses send-email --subject SUBJECT --from FROM_EMAIL
 
 """
 
-from awscli.customizations import utils
 from awscli.arguments import CustomArgument
+from awscli.customizations import utils
 from awscli.customizations.utils import validate_mutually_exclusive_handler
-
 
 TO_HELP = (
     'The email addresses of the primary recipients.  '

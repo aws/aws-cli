@@ -12,12 +12,12 @@
 # language governing permissions and limitations under the License.
 from datetime import datetime
 
-from tests import mock, BaseSessionTest, ClientHTTPStubber
+from tests import BaseSessionTest, ClientHTTPStubber, mock
 
 
 class TestLex(BaseSessionTest):
     def setUp(self):
-        super(TestLex, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client('lex-runtime', self.region)
         self.http_stubber = ClientHTTPStubber(self.client)
@@ -28,7 +28,7 @@ class TestLex(BaseSessionTest):
             'botAlias': 'bar',
             'userId': 'baz',
             'contentType': 'application/octet-stream',
-            'inputStream': b''
+            'inputStream': b'',
         }
 
         timestamp = datetime(2017, 3, 22, 0, 0)
@@ -60,7 +60,6 @@ class TestLex(BaseSessionTest):
 
 
 class TestLexV2(BaseSessionTest):
-
     def test_start_conversation(self):
         """StartConversation operation removed due to h2 requirement"""
         lexv2 = self.session.create_client('lexv2-runtime', 'us-west-2')

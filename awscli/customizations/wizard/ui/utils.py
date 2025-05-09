@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
-from prompt_toolkit.layout.containers import Window, Dimension
+from prompt_toolkit.layout.containers import Dimension, Window
 from prompt_toolkit.layout.controls import BufferControl
 
 

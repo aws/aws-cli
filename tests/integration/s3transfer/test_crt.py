@@ -16,9 +16,9 @@ import os
 from uuid import uuid4
 
 from botocore.exceptions import ClientError
-
 from s3transfer.subscribers import BaseSubscriber
 from s3transfer.utils import OSUtils
+
 from tests import (
     HAS_CRT,
     NonSeekableReader,
@@ -29,9 +29,8 @@ from tests import (
 from tests.integration.s3transfer import BaseTransferManagerIntegTest
 
 if HAS_CRT:
-    from awscrt.exceptions import AwsCrtError
-
     import s3transfer.crt
+    from awscrt.exceptions import AwsCrtError
 
 
 class RecordingSubscriber(BaseSubscriber):
@@ -511,6 +510,6 @@ class TestCRTS3Transfers(BaseTransferManagerIntegTest):
             future.result()
             self.assertEqual(err.name, 'AWS_ERROR_S3_CANCELED')
 
-        possible_matches = glob.glob('%s*' % download_path)
+        possible_matches = glob.glob(f'{download_path}*')
         self.assertEqual(possible_matches, [])
         self._assert_subscribers_called()

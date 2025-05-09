@@ -48,7 +48,7 @@ GitHub issues are triaged regularly to determine that they are correctly
 categorized and express a real and relevant problem or request. An answer is
 provided as soon as possible to acknowledge or resolve the issue. Feature
 requests are reviewed for general suitability and uniqueness. Users can vote for
-features via "reactions" on the issue. 
+features via "reactions" on the issue.
 
 #### Implementation stage
 
@@ -62,7 +62,7 @@ is provided to the contributor to improve the proposed change.
 Pull requests are selected for review opportunistically when the maintainers
 have decided that a change or feature should be incorporated. When a feature is
 selected for review it is added to an internal queue. This queue manages the
-prioritization of these features but is not visible to the community. 
+prioritization of these features but is not visible to the community.
 
 Pull requests are subjected to automated tests and checks which provide
 preliminary feedback. Once a pull request passes all automated tests and checks,
@@ -252,7 +252,7 @@ following criteria in descending order of importance:
 A maintainer must select the issue from the queue with the current highest
 priority. The prioritization of issues in the queue is reviewed on a regular
 cadence and is ultimately decided based on the maintainers' discretion. See the
-[rationale](#rationale-reprioritize) for further discussion. 
+[rationale](#rationale-reprioritize) for further discussion.
 
 ### Review stage
 
@@ -305,7 +305,7 @@ contribution. The ready for review lane is the prioritization queue, and issues
 will be ordered in decreasing priority from top to bottom.
 
 [Figure 2](#figure-2) demonstrates an example project with contributions in
-various stages of completion. 
+various stages of completion.
 
 
 ## Managing the existing backlog
@@ -361,7 +361,7 @@ Pull requests are often made for problems that only affect the contributor or a
 small portion of the user base. An issue provides a mechanism to gather
 quantitative feedback in the form of "upvotes" through GitHub reactions to
 estimate the impact of the issue on the community.
- 
+
 We intend for issues to be a way to improve contributor confidence in both their
 contributions and the overall process. Draft pull requests can be used to
 demonstrate a potential implementation and get community feedback or interest
@@ -478,7 +478,7 @@ include (but are not limited to):
    also affect the behavior in other SDKs and must thus be made in coordination
    with internal teams.
 
-### Preliminary review criteria 
+### Preliminary review criteria
 
 The maintainers will use a set of criteria to move a pull request from the
 implementation to the ready for review stage, which may include (but are not

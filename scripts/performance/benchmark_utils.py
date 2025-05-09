@@ -4,7 +4,6 @@ import json
 import math
 import sys
 import time
-
 import psutil
 
 import os
@@ -406,7 +405,7 @@ class ProcessBenchmarker:
         return samples
 
 
-class BenchmarkHarness(object):
+class BenchmarkHarness:
     BENCHMARK_SUITES = [JSONStubbedBenchmarkSuite]
     """
     Orchestrates running benchmarks in isolated, configurable environments defined
@@ -481,9 +480,31 @@ class BenchmarkHarness(object):
                 with open(child_output_path, 'w') as out, open(
                     child_err_path, 'w'
                 ) as err:
-                    # redirect standard output of the child process to a file
-                    os.dup2(out.fileno(), sys.stdout.fileno())
-                    os.dup2(err.fileno(), sys.stderr.fileno())
+                    if not args.debug_dir:
+                        # redirect standard output of the child process to a file
+                        os.dup2(out.fileno(), sys.stdout.fileno())
+                        os.dup2(err.fileno(), sys.stderr.fileno())
+                    else:
+                        with open(
+                            os.path.abspath(
+                                os.path.join(
+                                    args.debug_dir,
+                                    f'{benchmark["name"]}-{iteration}.txt',
+                                )
+                            ),
+                            'w',
+                        ) as f:
+                            with open(
+                                os.path.abspath(
+                                    os.path.join(
+                                        args.debug_dir,
+                                        f'{benchmark["name"]}-{iteration}-err.txt',
+                                    )
+                                ),
+                                'w',
+                            ) as f_err:
+                                os.dup2(f.fileno(), sys.stdout.fileno())
+                                os.dup2(f_err.fileno(), sys.stderr.fileno())
                     # execute command on child process
                     self._run_command_with_metric_hooks(
                         benchmark['command'], metrics_path, benchmark.get('service_id', ''), benchmark.get('operation_name', '')

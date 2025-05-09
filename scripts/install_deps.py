@@ -1,6 +1,6 @@
 import os
 
-from utils import cd, bin_path, run, virtualenv_enabled
+from utils import bin_path, cd, run, virtualenv_enabled
 
 INSTALL_ARGS = (
     "--no-build-isolation --no-cache-dir --no-index --prefer-binary "

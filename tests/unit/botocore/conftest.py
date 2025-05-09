@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 
 import pytest
-
 from botocore.context import ClientContext, reset_context, set_context
 
 

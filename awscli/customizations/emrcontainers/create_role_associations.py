@@ -11,18 +11,21 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import logging, json, sys
+import json
+import logging
+import sys
+
 import botocore
 
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.emrcontainers.base36 import Base36
 from awscli.customizations.emrcontainers.constants import (
     SERVICE_ACCOUNT_NAMING,
     ServiceAccount,
 )
-from awscli.customizations.emrcontainers.base36 import Base36
 from awscli.customizations.emrcontainers.eks import EKS
-from awscli.customizations.utils import uni_print, get_policy_arn_suffix
 from awscli.customizations.emrcontainers.utils import get_region
+from awscli.customizations.utils import get_policy_arn_suffix, uni_print
 
 LOG = logging.getLogger(__name__)
 

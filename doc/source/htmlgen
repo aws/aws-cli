@@ -1,8 +1,9 @@
 #!/usr/bin/env python
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
+
 import awscli.clidriver
 from awscli.help import PagingHelpRenderer
 
@@ -12,7 +13,6 @@ TOPIC_PATH = 'topic'
 
 
 class FileRenderer(PagingHelpRenderer):
-
     def __init__(self, file_path):
         self._file_path = file_path
 
@@ -23,8 +23,7 @@ class FileRenderer(PagingHelpRenderer):
 
 
 def do_operation(driver, service_path, operation_name, operation_command):
-    file_path = os.path.join(service_path,
-                             operation_name + '.rst')
+    file_path = os.path.join(service_path, operation_name + '.rst')
     help_command = operation_command.create_help_command()
     if help_command is None:
         # Do not document anything that does not have a help command.
@@ -34,8 +33,9 @@ def do_operation(driver, service_path, operation_name, operation_command):
     help_command(None, None)
 
 
-def do_service(driver, ref_path, service_name, service_command,
-               is_top_level_service=True):
+def do_service(
+    driver, ref_path, service_name, service_command, is_top_level_service=True
+):
     if is_top_level_service:
         print('...%s' % service_name)
     service_path = os.path.join(ref_path, service_name)
@@ -57,20 +57,23 @@ def do_service(driver, ref_path, service_name, service_command,
         # If the operation command has a subcommand table with commands
         # in it, treat it as a service command as opposed to an operation
         # command.
-        if (len(subcommand_table) > 0):
-            do_service(driver, service_path, operation_name,
-                       operation_command, False)
+        if len(subcommand_table) > 0:
+            do_service(
+                driver, service_path, operation_name, operation_command, False
+            )
         else:
-            do_operation(driver, service_path, operation_name,
-                         operation_command)
+            do_operation(
+                driver, service_path, operation_name, operation_command
+            )
+
 
 def do_topic(driver, topic_path, topic_help_command):
     print('...%s' % topic_help_command.name)
-    file_path = os.path.join(topic_path,
-                             topic_help_command.name + '.rst')
+    file_path = os.path.join(topic_path, topic_help_command.name + '.rst')
     topic_help_command.doc.target = 'html'
     topic_help_command.renderer = FileRenderer(file_path)
     topic_help_command(None, None)
+
 
 def do_provider(driver):
     help_command = driver.create_help_command()
@@ -79,8 +82,9 @@ def do_provider(driver):
     help_command(None, None)
 
     topic_help_command = help_command.subcommand_table['topics']
-    topic_help_command.renderer = FileRenderer(os.path.join(TOPIC_PATH,
-                                                            'index.rst'))
+    topic_help_command.renderer = FileRenderer(
+        os.path.join(TOPIC_PATH, 'index.rst')
+    )
     topic_help_command.doc.target = 'html'
     help_command(['topics'], None)
     topics = help_command.subcommand_table
@@ -118,20 +122,22 @@ def build_service_list(tut_path, ref_path, driver):
     for full_name, service_name in l:
         service_ref_path = os.path.join(ref_path, service_name)
         service_ref_path = os.path.join(service_ref_path, 'index')
-        fp.write('* :doc:`%s <..%s%s>`\n' % (full_name,
-                                             os.path.sep,
-                                             service_ref_path))
+        fp.write(f'* :doc:`{full_name} <..{os.path.sep}{service_ref_path}>`\n')
     fp.write('\n')
     fp.close()
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--service',
-                        help='Name of service, or else all services')
-    parser.add_argument('-o', '--operations',
-                        help='Name of operations, or else all operations',
-                        nargs='*')
+    parser.add_argument(
+        '-s', '--service', help='Name of service, or else all services'
+    )
+    parser.add_argument(
+        '-o',
+        '--operations',
+        help='Name of operations, or else all operations',
+        nargs='*',
+    )
     args = parser.parse_args()
     driver = awscli.clidriver.create_clidriver()
     if not os.path.isdir(REF_PATH):

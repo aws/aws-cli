@@ -13,10 +13,9 @@
 
 import logging
 
-from awscli.customizations.emr import exceptions
-from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import constants
 from botocore.exceptions import WaiterError
+
+from awscli.customizations.emr import constants, emrutils, exceptions
 
 LOG = logging.getLogger(__name__)
 

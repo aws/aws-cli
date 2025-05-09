@@ -1,17 +1,20 @@
 import time
-from tests import mock, unittest
 
 from botocore.awsrequest import AWSRequest
 from botocore.client import ClientMeta
-from botocore.hooks import HierarchicalEmitter
-from botocore.model import ServiceModel
-from botocore.exceptions import ConnectionError
-from botocore.handlers import inject_api_version_header_if_needed
 from botocore.discovery import (
-    EndpointDiscoveryManager, EndpointDiscoveryHandler,
-    EndpointDiscoveryRequired, EndpointDiscoveryRefreshFailed,
+    EndpointDiscoveryHandler,
+    EndpointDiscoveryManager,
+    EndpointDiscoveryRefreshFailed,
+    EndpointDiscoveryRequired,
     block_endpoint_discovery_required_operations,
 )
+from botocore.exceptions import ConnectionError
+from botocore.handlers import inject_api_version_header_if_needed
+from botocore.hooks import HierarchicalEmitter
+from botocore.model import ServiceModel
+
+from tests import mock, unittest
 
 
 class BaseEndpointDiscoveryTest(unittest.TestCase):
@@ -28,48 +31,36 @@ class BaseEndpointDiscoveryTest(unittest.TestCase):
                 'serviceFullName': 'AwsFooService',
                 'signatureVersion': 'v4',
                 'signingName': 'awsfooservice',
-                'targetPrefix': 'awsfooservice'
+                'targetPrefix': 'awsfooservice',
             },
             'operations': {
                 'DescribeEndpoints': {
                     'name': 'DescribeEndpoints',
-                    'http': {
-                        'method': 'POST',
-                        'requestUri': '/'
-                    },
+                    'http': {'method': 'POST', 'requestUri': '/'},
                     'input': {'shape': 'DescribeEndpointsRequest'},
                     'output': {'shape': 'DescribeEndpointsResponse'},
-                    'endpointoperation': True
+                    'endpointoperation': True,
                 },
                 'TestDiscoveryRequired': {
                     'name': 'TestDiscoveryRequired',
-                    'http': {
-                        'method': 'POST',
-                        'requestUri': '/'
-                    },
+                    'http': {'method': 'POST', 'requestUri': '/'},
                     'input': {'shape': 'TestDiscoveryIdsRequest'},
                     'output': {'shape': 'EmptyStruct'},
-                    'endpointdiscovery': {'required': True}
+                    'endpointdiscovery': {'required': True},
                 },
                 'TestDiscoveryOptional': {
                     'name': 'TestDiscoveryOptional',
-                    'http': {
-                        'method': 'POST',
-                        'requestUri': '/'
-                    },
+                    'http': {'method': 'POST', 'requestUri': '/'},
                     'input': {'shape': 'TestDiscoveryIdsRequest'},
                     'output': {'shape': 'EmptyStruct'},
-                    'endpointdiscovery': {}
+                    'endpointdiscovery': {},
                 },
                 'TestDiscovery': {
                     'name': 'TestDiscovery',
-                    'http': {
-                        'method': 'POST',
-                        'requestUri': '/'
-                    },
+                    'http': {'method': 'POST', 'requestUri': '/'},
                     'input': {'shape': 'EmptyStruct'},
                     'output': {'shape': 'EmptyStruct'},
-                    'endpointdiscovery': {}
+                    'endpointdiscovery': {},
                 },
             },
             'shapes': {
@@ -78,35 +69,27 @@ class BaseEndpointDiscoveryTest(unittest.TestCase):
                     'type': 'structure',
                     'members': {
                         'Operation': {'shape': 'String'},
-                        'Identifiers': {'shape': 'Identifiers'}
-                    }
+                        'Identifiers': {'shape': 'Identifiers'},
+                    },
                 },
                 'DescribeEndpointsResponse': {
                     'type': 'structure',
                     'required': ['Endpoints'],
-                    'members': {
-                        'Endpoints': {'shape': 'Endpoints'}
-                    }
+                    'members': {'Endpoints': {'shape': 'Endpoints'}},
                 },
                 'Endpoint': {
                     'type': 'structure',
-                    'required': [
-                        'Address',
-                        'CachePeriodInMinutes'
-                    ],
+                    'required': ['Address', 'CachePeriodInMinutes'],
                     'members': {
                         'Address': {'shape': 'String'},
-                        'CachePeriodInMinutes': {'shape': 'Long'}
-                    }
+                        'CachePeriodInMinutes': {'shape': 'Long'},
+                    },
                 },
-                'Endpoints': {
-                    'type': 'list',
-                    'member': {'shape': 'Endpoint'}
-                },
+                'Endpoints': {'type': 'list', 'member': {'shape': 'Endpoint'}},
                 'Identifiers': {
                     'type': 'map',
                     'key': {'shape': 'String'},
-                    'value': {'shape': 'String'}
+                    'value': {'shape': 'String'},
                 },
                 'Long': {'type': 'long'},
                 'String': {'type': 'string'},
@@ -119,13 +102,10 @@ class BaseEndpointDiscoveryTest(unittest.TestCase):
                             'endpointdiscoveryid': True,
                         },
                         'Baz': {'shape': 'String'},
-                        'Nested': {'shape': 'Nested'}
-                    }
+                        'Nested': {'shape': 'Nested'},
+                    },
                 },
-                'EmptyStruct': {
-                    'type': 'structure',
-                    'members': {}
-                },
+                'EmptyStruct': {'type': 'structure', 'members': {}},
                 'Nested': {
                     'type': 'structure',
                     'required': 'Bar',
@@ -134,15 +114,15 @@ class BaseEndpointDiscoveryTest(unittest.TestCase):
                             'shape': 'String',
                             'endpointdiscoveryid': True,
                         }
-                    }
-                }
-            }
+                    },
+                },
+            },
         }
 
 
 class TestEndpointDiscoveryManager(BaseEndpointDiscoveryTest):
     def setUp(self):
-        super(TestEndpointDiscoveryManager, self).setUp()
+        super().setUp()
         self.construct_manager()
 
     def construct_manager(self, cache=None, time=None, side_effect=None):
@@ -151,12 +131,16 @@ class TestEndpointDiscoveryManager(BaseEndpointDiscoveryTest):
         self.meta.service_model = self.service_model
         self.client = mock.Mock()
         if side_effect is None:
-            side_effect = [{
-                'Endpoints': [{
-                    'Address': 'new.com',
-                    'CachePeriodInMinutes': 2,
-                }]
-            }]
+            side_effect = [
+                {
+                    'Endpoints': [
+                        {
+                            'Address': 'new.com',
+                            'CachePeriodInMinutes': 2,
+                        }
+                    ]
+                }
+            ]
         self.client.describe_endpoints.side_effect = side_effect
         self.client.meta = self.meta
         self.manager = EndpointDiscoveryManager(
@@ -167,8 +151,9 @@ class TestEndpointDiscoveryManager(BaseEndpointDiscoveryTest):
         model = self.service_model.operation_model('DescribeEndpoints')
         params = {'headers': {}}
         inject_api_version_header_if_needed(model, params)
-        self.assertEqual(params['headers'].get('x-amz-api-version'),
-                         '2018-08-31')
+        self.assertEqual(
+            params['headers'].get('x-amz-api-version'), '2018-08-31'
+        )
 
     def test_no_inject_api_version_if_not_endpoint_operation(self):
         model = self.service_model.operation_model('TestDiscoveryRequired')
@@ -177,10 +162,7 @@ class TestEndpointDiscoveryManager(BaseEndpointDiscoveryTest):
         self.assertNotIn('x-amz-api-version', params['headers'])
 
     def test_gather_identifiers(self):
-        params = {
-            'Foo': 'value1',
-            'Nested': {'Bar': 'value2'}
-        }
+        params = {'Foo': 'value1', 'Nested': {'Bar': 'value2'}}
         operation = self.service_model.operation_model('TestDiscoveryRequired')
         ids = self.manager.gather_identifiers(operation, params)
         self.assertEqual(ids, {'Foo': 'value1', 'Bar': 'value2'})
@@ -269,6 +251,7 @@ class TestEndpointDiscoveryManager(BaseEndpointDiscoveryTest):
     def test_describe_endpoint_cache_expiration(self):
         def _time():
             return float(0)
+
         cache = {}
         self.construct_manager(cache=cache, time=_time)
         self.manager.describe_endpoint(
@@ -280,9 +263,7 @@ class TestEndpointDiscoveryManager(BaseEndpointDiscoveryTest):
 
     def test_delete_endpoints_present(self):
         key = ()
-        cache = {
-            key: [{'Address': 'old.com', 'Expiration': 0}]
-        }
+        cache = {key: [{'Address': 'old.com', 'Expiration': 0}]}
         self.construct_manager(cache=cache)
         kwargs = {
             'Identifiers': {},
@@ -314,9 +295,7 @@ class TestEndpointDiscoveryManager(BaseEndpointDiscoveryTest):
 
     def test_describe_endpoint_optional_fails_stale_cache(self):
         key = ()
-        cache = {
-            key: [{'Address': 'old.com', 'Expiration': 0}]
-        }
+        cache = {key: [{'Address': 'old.com', 'Expiration': 0}]}
         side_effect = [ConnectionError(error=None)] * 2
         self.construct_manager(cache=cache, side_effect=side_effect)
         kwargs = {'Operation': 'TestDiscoveryOptional'}
@@ -341,9 +320,7 @@ class TestEndpointDiscoveryManager(BaseEndpointDiscoveryTest):
 
     def test_describe_endpoint_required_fails_stale_cache(self):
         key = ()
-        cache = {
-            key: [{'Address': 'old.com', 'Expiration': 0}]
-        }
+        cache = {key: [{'Address': 'old.com', 'Expiration': 0}]}
         side_effect = [ConnectionError(error=None)] * 2
         self.construct_manager(cache=cache, side_effect=side_effect)
         kwargs = {'Operation': 'TestDiscoveryRequired'}
@@ -357,10 +334,14 @@ class TestEndpointDiscoveryManager(BaseEndpointDiscoveryTest):
     def test_describe_endpoint_required_force_refresh_success(self):
         side_effect = [
             ConnectionError(error=None),
-            {'Endpoints': [{
-                'Address': 'new.com',
-                'CachePeriodInMinutes': 2,
-            }]},
+            {
+                'Endpoints': [
+                    {
+                        'Address': 'new.com',
+                        'CachePeriodInMinutes': 2,
+                    }
+                ]
+            },
         ]
         self.construct_manager(side_effect=side_effect)
         kwargs = {'Operation': 'TestDiscoveryRequired'}
@@ -377,10 +358,14 @@ class TestEndpointDiscoveryManager(BaseEndpointDiscoveryTest):
         fake_time.side_effect = [0, 100, 200]
         side_effect = [
             ConnectionError(error=None),
-            {'Endpoints': [{
-                'Address': 'new.com',
-                'CachePeriodInMinutes': 2,
-            }]},
+            {
+                'Endpoints': [
+                    {
+                        'Address': 'new.com',
+                        'CachePeriodInMinutes': 2,
+                    }
+                ]
+            },
         ]
         self.construct_manager(side_effect=side_effect, time=fake_time)
         kwargs = {'Operation': 'TestDiscoveryOptional'}
@@ -394,7 +379,7 @@ class TestEndpointDiscoveryManager(BaseEndpointDiscoveryTest):
 
 class TestEndpointDiscoveryHandler(BaseEndpointDiscoveryTest):
     def setUp(self):
-        super(TestEndpointDiscoveryHandler, self).setUp()
+        super().setUp()
         self.manager = mock.Mock(spec=EndpointDiscoveryManager)
         self.handler = EndpointDiscoveryHandler(self.manager)
         self.service_model = ServiceModel(self.service_description)
@@ -414,9 +399,7 @@ class TestEndpointDiscoveryHandler(BaseEndpointDiscoveryTest):
 
     def test_discover_endpoint(self):
         request = AWSRequest()
-        request.context = {
-            'discovery': {'identifiers': {}}
-        }
+        request.context = {'discovery': {'identifiers': {}}}
         self.manager.describe_endpoint.return_value = 'https://new.foo'
         self.handler.discover_endpoint(request, 'TestOperation')
         self.assertEqual(request.url, 'https://new.foo')
@@ -426,9 +409,7 @@ class TestEndpointDiscoveryHandler(BaseEndpointDiscoveryTest):
 
     def test_discover_endpoint_fails(self):
         request = AWSRequest()
-        request.context = {
-            'discovery': {'identifiers': {}}
-        }
+        request.context = {'discovery': {'identifiers': {}}}
         request.url = 'old.com'
         self.manager.describe_endpoint.return_value = None
         self.handler.discover_endpoint(request, 'TestOperation')
@@ -439,9 +420,7 @@ class TestEndpointDiscoveryHandler(BaseEndpointDiscoveryTest):
 
     def test_discover_endpoint_no_protocol(self):
         request = AWSRequest()
-        request.context = {
-            'discovery': {'identifiers': {}}
-        }
+        request.context = {'discovery': {'identifiers': {}}}
         self.manager.describe_endpoint.return_value = 'new.foo'
         self.handler.discover_endpoint(request, 'TestOperation')
         self.assertEqual(request.url, 'https://new.foo')
@@ -457,14 +436,8 @@ class TestEndpointDiscoveryHandler(BaseEndpointDiscoveryTest):
 
     def test_gather_identifiers(self):
         context = {}
-        params = {
-            'Foo': 'value1',
-            'Nested': {'Bar': 'value2'}
-        }
-        ids = {
-            'Foo': 'value1',
-            'Bar': 'value2'
-        }
+        params = {'Foo': 'value1', 'Nested': {'Bar': 'value2'}}
+        ids = {'Foo': 'value1', 'Bar': 'value2'}
         model = self.service_model.operation_model('TestDiscoveryRequired')
         self.manager.gather_identifiers.return_value = ids
         self.handler.gather_identifiers(params, model, context)
@@ -492,28 +465,20 @@ class TestEndpointDiscoveryHandler(BaseEndpointDiscoveryTest):
         self.assertIsNone(retry)
 
     def test_does_not_retry_other_errors(self):
-        parsed_response = {
-            'ResponseMetadata': {'HTTPStatusCode': 200}
-        }
+        parsed_response = {'ResponseMetadata': {'HTTPStatusCode': 200}}
         response = (None, parsed_response)
         retry = self.handler.handle_retries(None, response, None)
         self.assertIsNone(retry)
 
     def test_does_not_retry_if_no_context(self):
         request_dict = {'context': {}}
-        parsed_response = {
-            'ResponseMetadata': {'HTTPStatusCode': 421}
-        }
+        parsed_response = {'ResponseMetadata': {'HTTPStatusCode': 421}}
         response = (None, parsed_response)
         retry = self.handler.handle_retries(request_dict, response, None)
         self.assertIsNone(retry)
 
     def _assert_retries(self, parsed_response):
-        request_dict = {
-            'context': {
-                'discovery': {'identifiers': {}}
-            }
-        }
+        request_dict = {'context': {'discovery': {'identifiers': {}}}}
         response = (None, parsed_response)
         model = self.service_model.operation_model('TestDiscoveryOptional')
         retry = self.handler.handle_retries(request_dict, response, model)
@@ -523,9 +488,7 @@ class TestEndpointDiscoveryHandler(BaseEndpointDiscoveryTest):
         )
 
     def test_retries_421_status_code(self):
-        parsed_response = {
-            'ResponseMetadata': {'HTTPStatusCode': 421}
-        }
+        parsed_response = {'ResponseMetadata': {'HTTPStatusCode': 421}}
         self._assert_retries(parsed_response)
 
     def test_retries_invalid_endpoint_exception(self):

@@ -56,12 +56,17 @@ def type_check(valid_types):
         def _type_check(param, errors, name):
             if not isinstance(param, valid_types):
                 valid_type_names = [str(t) for t in valid_types]
-                errors.report(name, 'invalid type', param=param,
-                              valid_types=valid_type_names)
+                errors.report(
+                    name,
+                    'invalid type',
+                    param=param,
+                    valid_types=valid_type_names,
+                )
                 return False
             return True
 
         return _on_passes_type_check
+
     return _create_type_check_guard
 
 
@@ -82,7 +87,7 @@ def range_check(name, value, shape, error_type, errors):
         errors.report(name, error_type, param=value, min_allowed=min_allowed)
 
 
-class ValidationErrors(object):
+class ValidationErrors:
     def __init__(self):
         self._errors = []
 
@@ -101,45 +106,71 @@ class ValidationErrors(object):
         error_type, name, additional = error
         name = self._get_name(name)
         if error_type == 'missing required field':
-            return 'Missing required parameter in %s: "%s"' % (
-                name, additional['required_name'])
+            return 'Missing required parameter in {}: "{}"'.format(
+                name,
+                additional['required_name'],
+            )
         elif error_type == 'unknown field':
-            return 'Unknown parameter in %s: "%s", must be one of: %s' % (
-                name, additional['unknown_param'],
-                ', '.join(additional['valid_names']))
+            return 'Unknown parameter in {}: "{}", must be one of: {}'.format(
+                name,
+                additional['unknown_param'],
+                ', '.join(additional['valid_names']),
+            )
         elif error_type == 'invalid type':
-            return 'Invalid type for parameter %s, value: %s, type: %s, ' \
-                   'valid types: %s' % (name, additional['param'],
-                                        str(type(additional['param'])),
-                                        ', '.join(additional['valid_types']))
+            return (
+                'Invalid type for parameter {}, value: {}, type: {}, '
+                'valid types: {}'.format(
+                    name,
+                    additional['param'],
+                    str(type(additional['param'])),
+                    ', '.join(additional['valid_types']),
+                )
+            )
         elif error_type == 'invalid range':
             min_allowed = additional['min_allowed']
-            return ('Invalid value for parameter %s, value: %s, '
-                    'valid min value: %s' % (name, additional['param'],
-                                             min_allowed))
+            return (
+                'Invalid value for parameter {}, value: {}, '
+                'valid min value: {}'.format(
+                    name, additional['param'], min_allowed
+                )
+            )
         elif error_type == 'invalid length':
             min_allowed = additional['min_allowed']
-            return ('Invalid length for parameter %s, value: %s, '
-                    'valid min length: %s' % (name, additional['param'],
-                                              min_allowed))
+            return (
+                'Invalid length for parameter {}, value: {}, '
+                'valid min length: {}'.format(
+                    name, additional['param'], min_allowed
+                )
+            )
         elif error_type == 'unable to encode to json':
-            return 'Invalid parameter %s must be json serializable: %s' \
-                % (name, additional['type_error'])
+            return 'Invalid parameter {} must be json serializable: {}'.format(
+                name,
+                additional['type_error'],
+            )
         elif error_type == 'invalid type for document':
-            return 'Invalid type for document parameter %s, value: %s, type: %s, ' \
-                   'valid types: %s' % (name, additional['param'],
-                                        str(type(additional['param'])),
-                                        ', '.join(additional['valid_types']))
+            return (
+                'Invalid type for document parameter {}, value: {}, type: {}, '
+                'valid types: {}'.format(
+                    name,
+                    additional['param'],
+                    str(type(additional['param'])),
+                    ', '.join(additional['valid_types']),
+                )
+            )
         elif error_type == 'more than one input':
-            return 'Invalid number of parameters set for tagged union structure' \
-                    ' %s. Can only set one of the following keys: %s.' % (
-                        name, '. '.join(additional['members'])
-                    )
+            return (
+                'Invalid number of parameters set for tagged union structure'
+                ' {}. Can only set one of the following keys: {}.'.format(
+                    name, '. '.join(additional['members'])
+                )
+            )
         elif error_type == 'empty input':
-            return 'Must set one of the following keys for tagged union' \
-                    'structure %s: %s.' % (
-                        name, '. '.join(additional['members'])
-                    )
+            return (
+                'Must set one of the following keys for tagged union'
+                'structure {}: {}.'.format(
+                    name, '. '.join(additional['members'])
+                )
+            )
 
     def _get_name(self, name):
         if not name:
@@ -153,7 +184,7 @@ class ValidationErrors(object):
         self._errors.append((reason, name, kwargs))
 
 
-class ParamValidator(object):
+class ParamValidator:
     """Validates parameters against a shape model."""
 
     def validate(self, params, shape):
@@ -185,8 +216,9 @@ class ParamValidator(object):
         if special_validator:
             special_validator(params, shape, errors, name)
         else:
-            getattr(self, '_validate_%s' % shape.type_name)(
-                params, shape, errors, name)
+            getattr(self, f'_validate_{shape.type_name}')(
+                params, shape, errors, name
+            )
 
     def _validate_jsonvalue_string(self, params, shape, errors, name):
         # Check to see if a value marked as a jsonvalue can be dumped to
@@ -205,15 +237,19 @@ class ParamValidator(object):
                 self._validate_document(params[key], shape, errors, key)
         elif isinstance(params, list):
             for index, entity in enumerate(params):
-                self._validate_document(entity, shape, errors,
-                                        '%s[%d]' % (name, index))
+                self._validate_document(
+                    entity, shape, errors, '%s[%d]' % (name, index)
+                )
         elif not isinstance(params, (str, int, bool, float)):
             valid_types = (str, int, bool, float, list, dict)
             valid_type_names = [str(t) for t in valid_types]
-            errors.report(name, 'invalid type for document',
-                          param=params,
-                          param_type=type(params),
-                          valid_types=valid_type_names)
+            errors.report(
+                name,
+                'invalid type for document',
+                param=params,
+                param_type=type(params),
+                valid_types=valid_type_names,
+            )
 
     @type_check(valid_types=(dict,))
     def _validate_structure(self, params, shape, errors, name):
@@ -228,21 +264,33 @@ class ParamValidator(object):
         # Validate required fields.
         for required_member in shape.metadata.get('required', []):
             if required_member not in params:
-                errors.report(name, 'missing required field',
-                              required_name=required_member, user_params=params)
+                errors.report(
+                    name,
+                    'missing required field',
+                    required_name=required_member,
+                    user_params=params,
+                )
         members = shape.members
         known_params = []
         # Validate known params.
         for param in params:
             if param not in members:
-                errors.report(name, 'unknown field', unknown_param=param,
-                              valid_names=list(members))
+                errors.report(
+                    name,
+                    'unknown field',
+                    unknown_param=param,
+                    valid_names=list(members),
+                )
             else:
                 known_params.append(param)
         # Validate structure members.
         for param in known_params:
-            self._validate(params[param], shape.members[param],
-                           errors, '%s.%s' % (name, param))
+            self._validate(
+                params[param],
+                shape.members[param],
+                errors,
+                f'{name}.{param}',
+            )
 
     @type_check(valid_types=(str,))
     def _validate_string(self, param, shape, errors, name):
@@ -261,16 +309,15 @@ class ParamValidator(object):
         member_shape = shape.member
         range_check(name, len(param), shape, 'invalid length', errors)
         for i, item in enumerate(param):
-            self._validate(item, member_shape, errors, '%s[%s]' % (name, i))
+            self._validate(item, member_shape, errors, f'{name}[{i}]')
 
     @type_check(valid_types=(dict,))
     def _validate_map(self, param, shape, errors, name):
         key_shape = shape.key
         value_shape = shape.value
         for key, value in param.items():
-            self._validate(key, key_shape, errors, "%s (key: %s)"
-                           % (name, key))
-            self._validate(value, value_shape, errors, '%s.%s' % (name, key))
+            self._validate(key, key_shape, errors, f"{name} (key: {key})")
+            self._validate(value, value_shape, errors, f'{name}.{key}')
 
     @type_check(valid_types=(int,))
     def _validate_integer(self, param, shape, errors, name):
@@ -283,9 +330,12 @@ class ParamValidator(object):
             # File like objects are also allowed for blob types.
             return
         else:
-            errors.report(name, 'invalid type', param=param,
-                          valid_types=[str(bytes), str(bytearray),
-                                       'file-like object'])
+            errors.report(
+                name,
+                'invalid type',
+                param=param,
+                valid_types=[str(bytes), str(bytearray), 'file-like object'],
+            )
 
     @type_check(valid_types=(bool,))
     def _validate_boolean(self, param, shape, errors, name):
@@ -308,8 +358,9 @@ class ParamValidator(object):
         is_valid_type = self._type_check_datetime(param)
         if not is_valid_type:
             valid_type_names = [str(datetime), 'timestamp-string']
-            errors.report(name, 'invalid type', param=param,
-                          valid_types=valid_type_names)
+            errors.report(
+                name, 'invalid type', param=param, valid_types=valid_type_names
+            )
 
     def _type_check_datetime(self, value):
         try:
@@ -321,7 +372,7 @@ class ParamValidator(object):
             return False
 
 
-class ParamValidationDecorator(object):
+class ParamValidationDecorator:
     def __init__(self, param_validator, serializer):
         self._param_validator = param_validator
         self._serializer = serializer
@@ -329,9 +380,11 @@ class ParamValidationDecorator(object):
     def serialize_to_request(self, parameters, operation_model):
         input_shape = operation_model.input_shape
         if input_shape is not None:
-            report = self._param_validator.validate(parameters,
-                                                    operation_model.input_shape)
+            report = self._param_validator.validate(
+                parameters, operation_model.input_shape
+            )
             if report.has_errors():
                 raise ParamValidationError(report=report.generate_report())
-        return self._serializer.serialize_to_request(parameters,
-                                                     operation_model)
+        return self._serializer.serialize_to_request(
+            parameters, operation_model
+        )

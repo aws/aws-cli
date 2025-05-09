@@ -1,13 +1,13 @@
 import contextlib
+import glob
 import json
 import os
 import platform
 import shutil
-import sys
 import subprocess
+import sys
 import tempfile
 import zipfile
-import glob
 
 
 class BadRCError(Exception):

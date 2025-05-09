@@ -13,10 +13,9 @@
 import os
 import re
 
-from awscli.autocomplete.completer import BaseCompleter
-from awscli.autocomplete.completer import CompletionResult
-from awscli.autocomplete.filters import startswith_filter
 from awscli.autocomplete import LazyClientCreator
+from awscli.autocomplete.completer import BaseCompleter, CompletionResult
+from awscli.autocomplete.filters import startswith_filter
 
 
 def strip_html_tags_and_newlines(text):

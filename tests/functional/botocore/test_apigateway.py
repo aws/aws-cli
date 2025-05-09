@@ -15,10 +15,9 @@ from tests import BaseSessionTest, ClientHTTPStubber
 
 class TestApiGateway(BaseSessionTest):
     def setUp(self):
-        super(TestApiGateway, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
-        self.client = self.session.create_client(
-            'apigateway', self.region)
+        self.client = self.session.create_client('apigateway', self.region)
         self.http_stubber = ClientHTTPStubber(self.client)
 
     def test_get_export(self):
@@ -26,7 +25,7 @@ class TestApiGateway(BaseSessionTest):
             'restApiId': 'foo',
             'stageName': 'bar',
             'exportType': 'swagger',
-            'accepts': 'application/yaml'
+            'accepts': 'application/yaml',
         }
 
         self.http_stubber.add_response(body=b'{}')
@@ -34,13 +33,15 @@ class TestApiGateway(BaseSessionTest):
             self.client.get_export(**params)
             request = self.http_stubber.requests[0]
             self.assertEqual(request.method, 'GET')
-            self.assertEqual(request.headers.get('Accept'), b'application/yaml')
+            self.assertEqual(
+                request.headers.get('Accept'), b'application/yaml'
+            )
 
     def test_defaults_accept(self):
         params = {
             'restApiId': 'foo',
             'stageName': 'bar',
-            'exportType': 'swagger'
+            'exportType': 'swagger',
         }
 
         self.http_stubber.add_response(body=b'{}')
@@ -48,4 +49,6 @@ class TestApiGateway(BaseSessionTest):
             self.client.get_export(**params)
             request = self.http_stubber.requests[0]
             self.assertEqual(request.method, 'GET')
-            self.assertEqual(request.headers.get('Accept'), b'application/json')
+            self.assertEqual(
+                request.headers.get('Accept'), b'application/json'
+            )

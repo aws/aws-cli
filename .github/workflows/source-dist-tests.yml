@@ -13,20 +13,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # pinning specific versions of 3.9 and 3.10 until we upgrade to PyInstaller 6
-        python-version: ["3.8", "3.9.20", "3.10.15", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
         # macOS pinned to 13 due to 14+ defaulting to arm64 hardware
         os: [ubuntu-latest, macOS-13, windows-latest]
-        exclude: # setup-python doesn't build for Windows, and these are source-only
-          - os: windows-latest
-            python-version: "3.9.20"
-          - os: windows-latest
-            python-version: "3.10.15"
-        include: # but add back earlier patch versions for Windows
-          - os: windows-latest
-            python-version: "3.9"
-          - os: windows-latest
-            python-version: "3.10"
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}

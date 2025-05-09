@@ -11,10 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.emr import constants
-from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import hbaseutils
-from awscli.customizations.emr import helptext
+from awscli.customizations.emr import constants, emrutils, hbaseutils, helptext
 from awscli.customizations.emr.command import Command
 from awscli.customizations.exceptions import ParamValidationError
 

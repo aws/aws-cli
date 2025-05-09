@@ -305,7 +305,7 @@
         {"shape":"ServiceNotFoundException"},
         {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>Describes one or more of your service deployments.</p> <p>A service deployment happens when you release a software update for the service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-deployments.html\">Amazon ECS service deployments</a>.</p>"
+      "documentation":"<p>Describes one or more of your service deployments.</p> <p>A service deployment happens when you release a software update for the service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-deployment.html\">View service history using Amazon ECS service deployments</a>.</p>"
     },
     "DescribeServiceRevisions":{
       "name":"DescribeServiceRevisions",
@@ -731,7 +731,7 @@
         {"shape":"BlockedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Starts a new task using the specified task definition.</p> <note> <p>On March 21, 2024, a change was made to resolve the task definition revision before authorization. When a task definition revision is not specified, authorization will occur using the latest revision of a task definition.</p> </note> <note> <p>Amazon Elastic Inference (EI) is no longer available to customers.</p> </note> <p>You can allow Amazon ECS to place tasks for you, or you can customize how Amazon ECS places tasks using placement constraints and placement strategies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html\">Scheduling Tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Alternatively, you can use <code>StartTask</code> to use your own scheduler or place tasks manually on specific container instances.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when creating or updating a service. For more infomation, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>The Amazon ECS API follows an eventual consistency model. This is because of the distributed nature of the system supporting the API. This means that the result of an API command you run that affects your Amazon ECS resources might not be immediately visible to all subsequent commands you run. Keep this in mind when you carry out an API command that immediately follows a previous API command.</p> <p>To manage eventual consistency, you can do the following:</p> <ul> <li> <p>Confirm the state of the resource before you run a command to modify it. Run the DescribeTasks command using an exponential backoff algorithm to ensure that you allow enough time for the previous command to propagate through the system. To do this, run the DescribeTasks command repeatedly, starting with a couple of seconds of wait time and increasing gradually up to five minutes of wait time.</p> </li> <li> <p>Add wait time between subsequent commands, even if the DescribeTasks command returns an accurate response. Apply an exponential backoff algorithm starting with a couple of seconds of wait time, and increase gradually up to about five minutes of wait time.</p> </li> </ul>"
+      "documentation":"<p>Starts a new task using the specified task definition.</p> <note> <p>On March 21, 2024, a change was made to resolve the task definition revision before authorization. When a task definition revision is not specified, authorization will occur using the latest revision of a task definition.</p> </note> <note> <p>Amazon Elastic Inference (EI) is no longer available to customers.</p> </note> <p>You can allow Amazon ECS to place tasks for you, or you can customize how Amazon ECS places tasks using placement constraints and placement strategies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html\">Scheduling Tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Alternatively, you can use <code>StartTask</code> to use your own scheduler or place tasks manually on specific container instances.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when creating or updating a service. For more infomation, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>The Amazon ECS API follows an eventual consistency model. This is because of the distributed nature of the system supporting the API. This means that the result of an API command you run that affects your Amazon ECS resources might not be immediately visible to all subsequent commands you run. Keep this in mind when you carry out an API command that immediately follows a previous API command.</p> <p>To manage eventual consistency, you can do the following:</p> <ul> <li> <p>Confirm the state of the resource before you run a command to modify it. Run the DescribeTasks command using an exponential backoff algorithm to ensure that you allow enough time for the previous command to propagate through the system. To do this, run the DescribeTasks command repeatedly, starting with a couple of seconds of wait time and increasing gradually up to five minutes of wait time.</p> </li> <li> <p>Add wait time between subsequent commands, even if the DescribeTasks command returns an accurate response. Apply an exponential backoff algorithm starting with a couple of seconds of wait time, and increase gradually up to about five minutes of wait time.</p> </li> </ul> <p>If you get a <code>ConflictException</code> error, the <code>RunTask</code> request could not be processed due to conflicts. The provided <code>clientToken</code> is already in use with a different <code>RunTask</code> request. The <code>resourceIds</code> are the existing task ARNs which are already associated with the <code>clientToken</code>. </p> <p>To fix this issue:</p> <ul> <li> <p>Run <code>RunTask</code> with a unique <code>clientToken</code>.</p> </li> <li> <p>Run <code>RunTask</code> with the <code>clientToken</code> and the original set of parameters</p> </li> </ul>"
     },
     "StartTask":{
       "name":"StartTask",
@@ -749,6 +749,25 @@
         {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Starts a new task from the specified task definition on the specified container instance or instances.</p> <note> <p>On March 21, 2024, a change was made to resolve the task definition revision before authorization. When a task definition revision is not specified, authorization will occur using the latest revision of a task definition.</p> </note> <note> <p>Amazon Elastic Inference (EI) is no longer available to customers.</p> </note> <p>Alternatively, you can use<code>RunTask</code> to place tasks for you. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html\">Scheduling Tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when creating or updating a service. For more infomation, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+    },
+    "StopServiceDeployment":{
+      "name":"StopServiceDeployment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopServiceDeploymentRequest"},
+      "output":{"shape":"StopServiceDeploymentResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceDeploymentNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Stops an ongoing service deployment.</p> <note> <p>StopServiceDeployment isn't currently supported.</p> </note>"
     },
     "StopTask":{
       "name":"StopTask",
@@ -1018,8 +1037,7 @@
   "shapes":{
     "AccessDeniedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You don't have authorization to perform the requested action.</p>",
       "exception":true
     },
@@ -1126,8 +1144,7 @@
     },
     "AttributeLimitExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can apply up to 10 custom attributes for each resource. You can view the attributes of a resource with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListAttributes.html\">ListAttributes</a>. You can remove existing attributes on a resource with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeleteAttributes.html\">DeleteAttributes</a>.</p>",
       "exception":true
     },
@@ -1204,8 +1221,7 @@
     },
     "BlockedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Your Amazon Web Services account was blocked. For more information, contact <a href=\"http://aws.amazon.com/contact-us/\"> Amazon Web ServicesSupport</a>.</p>",
       "exception":true
     },
@@ -1419,22 +1435,19 @@
     },
     "ClusterContainsContainerInstancesException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't delete a cluster that has registered container instances. First, deregister the container instances before you can delete the cluster. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeregisterContainerInstance.html\">DeregisterContainerInstance</a>.</p>",
       "exception":true
     },
     "ClusterContainsServicesException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't delete a cluster that contains services. First, update the service to reduce its desired task count to 0, and then delete the service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a> and <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeleteService.html\">DeleteService</a>.</p>",
       "exception":true
     },
     "ClusterContainsTasksException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't delete a cluster that has active tasks.</p>",
       "exception":true
     },
@@ -1454,8 +1467,7 @@
     },
     "ClusterNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified cluster wasn't found. You can view your available clusters with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListClusters.html\">ListClusters</a>. Amazon ECS clusters are Region specific.</p>",
       "exception":true
     },
@@ -1526,7 +1538,7 @@
           "documentation":"<p>The existing task ARNs which are already associated with the <code>clientToken</code>.</p>"
         }
       },
-      "documentation":"<p>The <code>RunTask</code> request could not be processed due to conflicts. The provided <code>clientToken</code> is already in use with a different <code>RunTask</code> request. The <code>resourceIds</code> are the existing task ARNs which are already associated with the <code>clientToken</code>. </p> <p>To fix this issue:</p> <ul> <li> <p>Run <code>RunTask</code> with a unique <code>clientToken</code>.</p> </li> <li> <p>Run <code>RunTask</code> with the <code>clientToken</code> and the original set of parameters</p> </li> </ul>",
+      "documentation":"<p>The request could not be processed because of conflict in the current state of the resource. </p>",
       "exception":true
     },
     "Connectivity":{
@@ -3637,8 +3649,7 @@
     },
     "InvalidParameterException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified parameter isn't valid. Review the available parameters for the API request.</p> <p>For more information about service event errors, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-event-messages-list.html\">Amazon ECS service event messages</a>. </p>",
       "exception":true
     },
@@ -3688,8 +3699,7 @@
     },
     "LimitExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The limit for the resource was exceeded.</p>",
       "exception":true
     },
@@ -4169,7 +4179,7 @@
         },
         "options":{
           "shape":"LogConfigurationOptionsMap",
-          "documentation":"<p>The configuration options to send to the log driver.</p> <p>The options you can specify depend on the log driver. Some of the options you can specify when you use the <code>awslogs</code> log driver to route logs to Amazon CloudWatch include the following:</p> <dl> <dt>awslogs-create-group</dt> <dd> <p>Required: No</p> <p>Specify whether you want the log group to be created automatically. If this option isn't specified, it defaults to <code>false</code>.</p> <note> <p>Your IAM policy must include the <code>logs:CreateLogGroup</code> permission before you attempt to use <code>awslogs-create-group</code>.</p> </note> </dd> <dt>awslogs-region</dt> <dd> <p>Required: Yes</p> <p>Specify the Amazon Web Services Region that the <code>awslogs</code> log driver is to send your Docker logs to. You can choose to send all of your logs from clusters in different Regions to a single region in CloudWatch Logs. This is so that they're all visible in one location. Otherwise, you can separate them by Region for more granularity. Make sure that the specified log group exists in the Region that you specify with this option.</p> </dd> <dt>awslogs-group</dt> <dd> <p>Required: Yes</p> <p>Make sure to specify a log group that the <code>awslogs</code> log driver sends its log streams to.</p> </dd> <dt>awslogs-stream-prefix</dt> <dd> <p>Required: Yes, when using the Fargate launch type.Optional for the EC2 launch type, required for the Fargate launch type.</p> <p>Use the <code>awslogs-stream-prefix</code> option to associate a log stream with the specified prefix, the container name, and the ID of the Amazon ECS task that the container belongs to. If you specify a prefix with this option, then the log stream takes the format <code>prefix-name/container-name/ecs-task-id</code>.</p> <p>If you don't specify a prefix with this option, then the log stream is named after the container ID that's assigned by the Docker daemon on the container instance. Because it's difficult to trace logs back to the container that sent them with just the Docker container ID (which is only available on the container instance), we recommend that you specify a prefix with this option.</p> <p>For Amazon ECS services, you can use the service name as the prefix. Doing so, you can trace log streams to the service that the container belongs to, the name of the container that sent them, and the ID of the task that the container belongs to.</p> <p>You must specify a stream-prefix for your logs to have your logs appear in the Log pane when using the Amazon ECS console.</p> </dd> <dt>awslogs-datetime-format</dt> <dd> <p>Required: No</p> <p>This option defines a multiline start pattern in Python <code>strftime</code> format. A log message consists of a line that matches the pattern and any following lines that don’t match the pattern. The matched line is the delimiter between log messages.</p> <p>One example of a use case for using this format is for parsing output such as a stack dump, which might otherwise be logged in multiple entries. The correct pattern allows it to be captured in a single entry.</p> <p>For more information, see <a href=\"https://docs.docker.com/config/containers/logging/awslogs/#awslogs-datetime-format\">awslogs-datetime-format</a>.</p> <p>You cannot configure both the <code>awslogs-datetime-format</code> and <code>awslogs-multiline-pattern</code> options.</p> <note> <p>Multiline logging performs regular expression parsing and matching of all log messages. This might have a negative impact on logging performance.</p> </note> </dd> <dt>awslogs-multiline-pattern</dt> <dd> <p>Required: No</p> <p>This option defines a multiline start pattern that uses a regular expression. A log message consists of a line that matches the pattern and any following lines that don’t match the pattern. The matched line is the delimiter between log messages.</p> <p>For more information, see <a href=\"https://docs.docker.com/config/containers/logging/awslogs/#awslogs-multiline-pattern\">awslogs-multiline-pattern</a>.</p> <p>This option is ignored if <code>awslogs-datetime-format</code> is also configured.</p> <p>You cannot configure both the <code>awslogs-datetime-format</code> and <code>awslogs-multiline-pattern</code> options.</p> <note> <p>Multiline logging performs regular expression parsing and matching of all log messages. This might have a negative impact on logging performance.</p> </note> </dd> <dt>mode</dt> <dd> <p>Required: No</p> <p>Valid values: <code>non-blocking</code> | <code>blocking</code> </p> <p>This option defines the delivery mode of log messages from the container to CloudWatch Logs. The delivery mode you choose affects application availability when the flow of logs from container to CloudWatch is interrupted.</p> <p>If you use the <code>blocking</code> mode and the flow of logs to CloudWatch is interrupted, calls from container code to write to the <code>stdout</code> and <code>stderr</code> streams will block. The logging thread of the application will block as a result. This may cause the application to become unresponsive and lead to container healthcheck failure. </p> <p>If you use the <code>non-blocking</code> mode, the container's logs are instead stored in an in-memory intermediate buffer configured with the <code>max-buffer-size</code> option. This prevents the application from becoming unresponsive when logs cannot be sent to CloudWatch. We recommend using this mode if you want to ensure service availability and are okay with some log loss. For more information, see <a href=\"http://aws.amazon.com/blogs/containers/preventing-log-loss-with-non-blocking-mode-in-the-awslogs-container-log-driver/\">Preventing log loss with non-blocking mode in the <code>awslogs</code> container log driver</a>.</p> </dd> <dt>max-buffer-size</dt> <dd> <p>Required: No</p> <p>Default value: <code>1m</code> </p> <p>When <code>non-blocking</code> mode is used, the <code>max-buffer-size</code> log option controls the size of the buffer that's used for intermediate message storage. Make sure to specify an adequate buffer size based on your application. When the buffer fills up, further logs cannot be stored. Logs that cannot be stored are lost. </p> </dd> </dl> <p>To route logs using the <code>splunk</code> log router, you need to specify a <code>splunk-token</code> and a <code>splunk-url</code>.</p> <p>When you use the <code>awsfirelens</code> log router to route logs to an Amazon Web Services Service or Amazon Web Services Partner Network destination for log storage and analytics, you can set the <code>log-driver-buffer-limit</code> option to limit the number of events that are buffered in memory, before being sent to the log router container. It can help to resolve potential log loss issue because high throughput might result in memory running out for the buffer inside of Docker.</p> <p>Other options you can specify when using <code>awsfirelens</code> to route logs depend on the destination. When you export logs to Amazon Data Firehose, you can specify the Amazon Web Services Region with <code>region</code> and a name for the log stream with <code>delivery_stream</code>.</p> <p>When you export logs to Amazon Kinesis Data Streams, you can specify an Amazon Web Services Region with <code>region</code> and a data stream name with <code>stream</code>.</p> <p> When you export logs to Amazon OpenSearch Service, you can specify options like <code>Name</code>, <code>Host</code> (OpenSearch Service endpoint without protocol), <code>Port</code>, <code>Index</code>, <code>Type</code>, <code>Aws_auth</code>, <code>Aws_region</code>, <code>Suppress_Type_Name</code>, and <code>tls</code>. For more information, see <a href=\"http://aws.amazon.com/blogs/containers/under-the-hood-firelens-for-amazon-ecs-tasks/\">Under the hood: FireLens for Amazon ECS Tasks</a>.</p> <p>When you export logs to Amazon S3, you can specify the bucket using the <code>bucket</code> option. You can also specify <code>region</code>, <code>total_file_size</code>, <code>upload_timeout</code>, and <code>use_put_object</code> as options.</p> <p>This parameter requires version 1.19 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: <code>sudo docker version --format '{{.Server.APIVersion}}'</code> </p>"
+          "documentation":"<p>The configuration options to send to the log driver.</p> <p>The options you can specify depend on the log driver. Some of the options you can specify when you use the <code>awslogs</code> log driver to route logs to Amazon CloudWatch include the following:</p> <dl> <dt>awslogs-create-group</dt> <dd> <p>Required: No</p> <p>Specify whether you want the log group to be created automatically. If this option isn't specified, it defaults to <code>false</code>.</p> <note> <p>Your IAM policy must include the <code>logs:CreateLogGroup</code> permission before you attempt to use <code>awslogs-create-group</code>.</p> </note> </dd> <dt>awslogs-region</dt> <dd> <p>Required: Yes</p> <p>Specify the Amazon Web Services Region that the <code>awslogs</code> log driver is to send your Docker logs to. You can choose to send all of your logs from clusters in different Regions to a single region in CloudWatch Logs. This is so that they're all visible in one location. Otherwise, you can separate them by Region for more granularity. Make sure that the specified log group exists in the Region that you specify with this option.</p> </dd> <dt>awslogs-group</dt> <dd> <p>Required: Yes</p> <p>Make sure to specify a log group that the <code>awslogs</code> log driver sends its log streams to.</p> </dd> <dt>awslogs-stream-prefix</dt> <dd> <p>Required: Yes, when using Fargate.Optional when using EC2.</p> <p>Use the <code>awslogs-stream-prefix</code> option to associate a log stream with the specified prefix, the container name, and the ID of the Amazon ECS task that the container belongs to. If you specify a prefix with this option, then the log stream takes the format <code>prefix-name/container-name/ecs-task-id</code>.</p> <p>If you don't specify a prefix with this option, then the log stream is named after the container ID that's assigned by the Docker daemon on the container instance. Because it's difficult to trace logs back to the container that sent them with just the Docker container ID (which is only available on the container instance), we recommend that you specify a prefix with this option.</p> <p>For Amazon ECS services, you can use the service name as the prefix. Doing so, you can trace log streams to the service that the container belongs to, the name of the container that sent them, and the ID of the task that the container belongs to.</p> <p>You must specify a stream-prefix for your logs to have your logs appear in the Log pane when using the Amazon ECS console.</p> </dd> <dt>awslogs-datetime-format</dt> <dd> <p>Required: No</p> <p>This option defines a multiline start pattern in Python <code>strftime</code> format. A log message consists of a line that matches the pattern and any following lines that don’t match the pattern. The matched line is the delimiter between log messages.</p> <p>One example of a use case for using this format is for parsing output such as a stack dump, which might otherwise be logged in multiple entries. The correct pattern allows it to be captured in a single entry.</p> <p>For more information, see <a href=\"https://docs.docker.com/config/containers/logging/awslogs/#awslogs-datetime-format\">awslogs-datetime-format</a>.</p> <p>You cannot configure both the <code>awslogs-datetime-format</code> and <code>awslogs-multiline-pattern</code> options.</p> <note> <p>Multiline logging performs regular expression parsing and matching of all log messages. This might have a negative impact on logging performance.</p> </note> </dd> <dt>awslogs-multiline-pattern</dt> <dd> <p>Required: No</p> <p>This option defines a multiline start pattern that uses a regular expression. A log message consists of a line that matches the pattern and any following lines that don’t match the pattern. The matched line is the delimiter between log messages.</p> <p>For more information, see <a href=\"https://docs.docker.com/config/containers/logging/awslogs/#awslogs-multiline-pattern\">awslogs-multiline-pattern</a>.</p> <p>This option is ignored if <code>awslogs-datetime-format</code> is also configured.</p> <p>You cannot configure both the <code>awslogs-datetime-format</code> and <code>awslogs-multiline-pattern</code> options.</p> <note> <p>Multiline logging performs regular expression parsing and matching of all log messages. This might have a negative impact on logging performance.</p> </note> </dd> </dl> <p>The following options apply to all supported log drivers.</p> <dl> <dt>mode</dt> <dd> <p>Required: No</p> <p>Valid values: <code>non-blocking</code> | <code>blocking</code> </p> <p>This option defines the delivery mode of log messages from the container to the log driver specified using <code>logDriver</code>. The delivery mode you choose affects application availability when the flow of logs from container is interrupted.</p> <p>If you use the <code>blocking</code> mode and the flow of logs is interrupted, calls from container code to write to the <code>stdout</code> and <code>stderr</code> streams will block. The logging thread of the application will block as a result. This may cause the application to become unresponsive and lead to container healthcheck failure. </p> <p>If you use the <code>non-blocking</code> mode, the container's logs are instead stored in an in-memory intermediate buffer configured with the <code>max-buffer-size</code> option. This prevents the application from becoming unresponsive when logs cannot be sent. We recommend using this mode if you want to ensure service availability and are okay with some log loss. For more information, see <a href=\"http://aws.amazon.com/blogs/containers/preventing-log-loss-with-non-blocking-mode-in-the-awslogs-container-log-driver/\">Preventing log loss with non-blocking mode in the <code>awslogs</code> container log driver</a>.</p> <p>You can set a default <code>mode</code> for all containers in a specific Amazon Web Services Region by using the <code>defaultLogDriverMode</code> account setting. If you don't specify the <code>mode</code> option or configure the account setting, Amazon ECS will default to the <code>blocking</code> mode. For more information about the account setting, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-account-settings.html#default-log-driver-mode\">Default log driver mode</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </dd> <dt>max-buffer-size</dt> <dd> <p>Required: No</p> <p>Default value: <code>1m</code> </p> <p>When <code>non-blocking</code> mode is used, the <code>max-buffer-size</code> log option controls the size of the buffer that's used for intermediate message storage. Make sure to specify an adequate buffer size based on your application. When the buffer fills up, further logs cannot be stored. Logs that cannot be stored are lost. </p> </dd> </dl> <p>To route logs using the <code>splunk</code> log router, you need to specify a <code>splunk-token</code> and a <code>splunk-url</code>.</p> <p>When you use the <code>awsfirelens</code> log router to route logs to an Amazon Web Services Service or Amazon Web Services Partner Network destination for log storage and analytics, you can set the <code>log-driver-buffer-limit</code> option to limit the number of events that are buffered in memory, before being sent to the log router container. It can help to resolve potential log loss issue because high throughput might result in memory running out for the buffer inside of Docker.</p> <p>Other options you can specify when using <code>awsfirelens</code> to route logs depend on the destination. When you export logs to Amazon Data Firehose, you can specify the Amazon Web Services Region with <code>region</code> and a name for the log stream with <code>delivery_stream</code>.</p> <p>When you export logs to Amazon Kinesis Data Streams, you can specify an Amazon Web Services Region with <code>region</code> and a data stream name with <code>stream</code>.</p> <p> When you export logs to Amazon OpenSearch Service, you can specify options like <code>Name</code>, <code>Host</code> (OpenSearch Service endpoint without protocol), <code>Port</code>, <code>Index</code>, <code>Type</code>, <code>Aws_auth</code>, <code>Aws_region</code>, <code>Suppress_Type_Name</code>, and <code>tls</code>. For more information, see <a href=\"http://aws.amazon.com/blogs/containers/under-the-hood-firelens-for-amazon-ecs-tasks/\">Under the hood: FireLens for Amazon ECS Tasks</a>.</p> <p>When you export logs to Amazon S3, you can specify the bucket using the <code>bucket</code> option. You can also specify <code>region</code>, <code>total_file_size</code>, <code>upload_timeout</code>, and <code>use_put_object</code> as options.</p> <p>This parameter requires version 1.19 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: <code>sudo docker version --format '{{.Server.APIVersion}}'</code> </p>"
         },
         "secretOptions":{
           "shape":"SecretList",
@@ -4336,8 +4346,7 @@
     },
     "MissingVersionException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Amazon ECS can't determine the current version of the Amazon ECS container agent on the container instance and doesn't have enough information to proceed with an update. This could be because the agent running on the container instance is a previous or custom version that doesn't use our version information.</p>",
       "exception":true
     },
@@ -4365,8 +4374,7 @@
     },
     "NamespaceNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified namespace wasn't found.</p>",
       "exception":true
     },
@@ -4447,8 +4455,7 @@
     },
     "NoUpdateAvailableException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There's no update available for this Amazon ECS container agent. This might be because the agent is already running the latest version or because it's so old that there's no update path to the current version.</p>",
       "exception":true
     },
@@ -4551,15 +4558,13 @@
     },
     "PlatformTaskDefinitionIncompatibilityException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified platform version doesn't satisfy the required capabilities of the task definition.</p>",
       "exception":true
     },
     "PlatformUnknownException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified platform version doesn't exist.</p>",
       "exception":true
     },
@@ -4669,7 +4674,7 @@
       "members":{
         "name":{
           "shape":"SettingName",
-          "documentation":"<p>The resource name for which to modify the account setting.</p> <p>The following are the valid values for the account setting name.</p> <ul> <li> <p> <code>serviceLongArnFormat</code> - When modified, the Amazon Resource Name (ARN) and resource ID format of the resource type for a specified user, role, or the root user for an account is affected. The opt-in and opt-out account setting must be set for each Amazon ECS resource separately. The ARN and resource ID format of a resource is defined by the opt-in status of the user or role that created the resource. You must turn on this setting to use Amazon ECS features such as resource tagging.</p> </li> <li> <p> <code>taskLongArnFormat</code> - When modified, the Amazon Resource Name (ARN) and resource ID format of the resource type for a specified user, role, or the root user for an account is affected. The opt-in and opt-out account setting must be set for each Amazon ECS resource separately. The ARN and resource ID format of a resource is defined by the opt-in status of the user or role that created the resource. You must turn on this setting to use Amazon ECS features such as resource tagging.</p> </li> <li> <p> <code>containerInstanceLongArnFormat</code> - When modified, the Amazon Resource Name (ARN) and resource ID format of the resource type for a specified user, role, or the root user for an account is affected. The opt-in and opt-out account setting must be set for each Amazon ECS resource separately. The ARN and resource ID format of a resource is defined by the opt-in status of the user or role that created the resource. You must turn on this setting to use Amazon ECS features such as resource tagging.</p> </li> <li> <p> <code>awsvpcTrunking</code> - When modified, the elastic network interface (ENI) limit for any new container instances that support the feature is changed. If <code>awsvpcTrunking</code> is turned on, any new container instances that support the feature are launched have the increased ENI limits available to them. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/container-instance-eni.html\">Elastic Network Interface Trunking</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>containerInsights</code> - Container Insights with enhanced observability provides all the Container Insights metrics, plus additional task and container metrics. This version supports enhanced observability for Amazon ECS clusters using the Amazon EC2 and Fargate launch types. After you configure Container Insights with enhanced observability on Amazon ECS, Container Insights auto-collects detailed infrastructure telemetry from the cluster level down to the container level in your environment and displays these critical performance data in curated dashboards removing the heavy lifting in observability set-up. </p> <p>To use Container Insights with enhanced observability, set the <code>containerInsights</code> account setting to <code>enhanced</code>.</p> <p>To use Container Insights, set the <code>containerInsights</code> account setting to <code>enabled</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html\">Monitor Amazon ECS containers using Container Insights with enhanced observability</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>dualStackIPv6</code> - When turned on, when using a VPC in dual stack mode, your tasks using the <code>awsvpc</code> network mode can have an IPv6 address assigned. For more information on using IPv6 with tasks launched on Amazon EC2 instances, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking-awsvpc.html#task-networking-vpc-dual-stack\">Using a VPC in dual-stack mode</a>. For more information on using IPv6 with tasks launched on Fargate, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-task-networking.html#fargate-task-networking-vpc-dual-stack\">Using a VPC in dual-stack mode</a>.</p> </li> <li> <p> <code>fargateFIPSMode</code> - If you specify <code>fargateFIPSMode</code>, Fargate FIPS 140 compliance is affected.</p> </li> <li> <p> <code>fargateTaskRetirementWaitPeriod</code> - When Amazon Web Services determines that a security or infrastructure update is needed for an Amazon ECS task hosted on Fargate, the tasks need to be stopped and new tasks launched to replace them. Use <code>fargateTaskRetirementWaitPeriod</code> to configure the wait time to retire a Fargate task. For information about the Fargate tasks maintenance, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-maintenance.html\">Amazon Web Services Fargate task maintenance</a> in the <i>Amazon ECS Developer Guide</i>.</p> </li> <li> <p> <code>tagResourceAuthorization</code> - Amazon ECS is introducing tagging authorization for resource creation. Users must have permissions for actions that create the resource, such as <code>ecsCreateCluster</code>. If tags are specified when you create a resource, Amazon Web Services performs additional authorization to verify if users or roles have permissions to create tags. Therefore, you must grant explicit permissions to use the <code>ecs:TagResource</code> action. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/supported-iam-actions-tagging.html\">Grant permission to tag resources on creation</a> in the <i>Amazon ECS Developer Guide</i>.</p> </li> <li> <p> <code>guardDutyActivate</code> - The <code>guardDutyActivate</code> parameter is read-only in Amazon ECS and indicates whether Amazon ECS Runtime Monitoring is enabled or disabled by your security administrator in your Amazon ECS account. Amazon GuardDuty controls this account setting on your behalf. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-guard-duty-integration.html\">Protecting Amazon ECS workloads with Amazon ECS Runtime Monitoring</a>.</p> </li> </ul>"
+          "documentation":"<p>The resource name for which to modify the account setting.</p> <p>The following are the valid values for the account setting name.</p> <ul> <li> <p> <code>serviceLongArnFormat</code> - When modified, the Amazon Resource Name (ARN) and resource ID format of the resource type for a specified user, role, or the root user for an account is affected. The opt-in and opt-out account setting must be set for each Amazon ECS resource separately. The ARN and resource ID format of a resource is defined by the opt-in status of the user or role that created the resource. You must turn on this setting to use Amazon ECS features such as resource tagging.</p> </li> <li> <p> <code>taskLongArnFormat</code> - When modified, the Amazon Resource Name (ARN) and resource ID format of the resource type for a specified user, role, or the root user for an account is affected. The opt-in and opt-out account setting must be set for each Amazon ECS resource separately. The ARN and resource ID format of a resource is defined by the opt-in status of the user or role that created the resource. You must turn on this setting to use Amazon ECS features such as resource tagging.</p> </li> <li> <p> <code>containerInstanceLongArnFormat</code> - When modified, the Amazon Resource Name (ARN) and resource ID format of the resource type for a specified user, role, or the root user for an account is affected. The opt-in and opt-out account setting must be set for each Amazon ECS resource separately. The ARN and resource ID format of a resource is defined by the opt-in status of the user or role that created the resource. You must turn on this setting to use Amazon ECS features such as resource tagging.</p> </li> <li> <p> <code>awsvpcTrunking</code> - When modified, the elastic network interface (ENI) limit for any new container instances that support the feature is changed. If <code>awsvpcTrunking</code> is turned on, any new container instances that support the feature are launched have the increased ENI limits available to them. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/container-instance-eni.html\">Elastic Network Interface Trunking</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>containerInsights</code> - Container Insights with enhanced observability provides all the Container Insights metrics, plus additional task and container metrics. This version supports enhanced observability for Amazon ECS clusters using the Amazon EC2 and Fargate launch types. After you configure Container Insights with enhanced observability on Amazon ECS, Container Insights auto-collects detailed infrastructure telemetry from the cluster level down to the container level in your environment and displays these critical performance data in curated dashboards removing the heavy lifting in observability set-up. </p> <p>To use Container Insights with enhanced observability, set the <code>containerInsights</code> account setting to <code>enhanced</code>.</p> <p>To use Container Insights, set the <code>containerInsights</code> account setting to <code>enabled</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html\">Monitor Amazon ECS containers using Container Insights with enhanced observability</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>dualStackIPv6</code> - When turned on, when using a VPC in dual stack mode, your tasks using the <code>awsvpc</code> network mode can have an IPv6 address assigned. For more information on using IPv6 with tasks launched on Amazon EC2 instances, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking-awsvpc.html#task-networking-vpc-dual-stack\">Using a VPC in dual-stack mode</a>. For more information on using IPv6 with tasks launched on Fargate, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-task-networking.html#fargate-task-networking-vpc-dual-stack\">Using a VPC in dual-stack mode</a>.</p> </li> <li> <p> <code>fargateFIPSMode</code> - If you specify <code>fargateFIPSMode</code>, Fargate FIPS 140 compliance is affected.</p> </li> <li> <p> <code>fargateTaskRetirementWaitPeriod</code> - When Amazon Web Services determines that a security or infrastructure update is needed for an Amazon ECS task hosted on Fargate, the tasks need to be stopped and new tasks launched to replace them. Use <code>fargateTaskRetirementWaitPeriod</code> to configure the wait time to retire a Fargate task. For information about the Fargate tasks maintenance, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-maintenance.html\">Amazon Web Services Fargate task maintenance</a> in the <i>Amazon ECS Developer Guide</i>.</p> </li> <li> <p> <code>tagResourceAuthorization</code> - Amazon ECS is introducing tagging authorization for resource creation. Users must have permissions for actions that create the resource, such as <code>ecsCreateCluster</code>. If tags are specified when you create a resource, Amazon Web Services performs additional authorization to verify if users or roles have permissions to create tags. Therefore, you must grant explicit permissions to use the <code>ecs:TagResource</code> action. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/supported-iam-actions-tagging.html\">Grant permission to tag resources on creation</a> in the <i>Amazon ECS Developer Guide</i>.</p> </li> <li> <p> <code>defaultLogDriverMode</code> -Amazon ECS supports setting a default delivery mode of log messages from a container to the <code>logDriver</code> that you specify in the container's <code>logConfiguration</code>. The delivery mode affects application stability when the flow of logs from the container to the log driver is interrupted. The <code>defaultLogDriverMode</code> setting supports two values: <code>blocking</code> and <code>non-blocking</code>. If you don't specify a delivery mode in your container definition's <code>logConfiguration</code>, the mode you specify using this account setting will be used as the default. For more information about log delivery modes, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html\">LogConfiguration</a>.</p> </li> <li> <p> <code>guardDutyActivate</code> - The <code>guardDutyActivate</code> parameter is read-only in Amazon ECS and indicates whether Amazon ECS Runtime Monitoring is enabled or disabled by your security administrator in your Amazon ECS account. Amazon GuardDuty controls this account setting on your behalf. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-guard-duty-integration.html\">Protecting Amazon ECS workloads with Amazon ECS Runtime Monitoring</a>.</p> </li> </ul>"
         },
         "value":{
           "shape":"String",
@@ -4695,7 +4700,7 @@
       "members":{
         "name":{
           "shape":"SettingName",
-          "documentation":"<p>The Amazon ECS account setting name to modify.</p> <p>The following are the valid values for the account setting name.</p> <ul> <li> <p> <code>serviceLongArnFormat</code> - When modified, the Amazon Resource Name (ARN) and resource ID format of the resource type for a specified user, role, or the root user for an account is affected. The opt-in and opt-out account setting must be set for each Amazon ECS resource separately. The ARN and resource ID format of a resource is defined by the opt-in status of the user or role that created the resource. You must turn on this setting to use Amazon ECS features such as resource tagging.</p> </li> <li> <p> <code>taskLongArnFormat</code> - When modified, the Amazon Resource Name (ARN) and resource ID format of the resource type for a specified user, role, or the root user for an account is affected. The opt-in and opt-out account setting must be set for each Amazon ECS resource separately. The ARN and resource ID format of a resource is defined by the opt-in status of the user or role that created the resource. You must turn on this setting to use Amazon ECS features such as resource tagging.</p> </li> <li> <p> <code>fargateFIPSMode</code> - When turned on, you can run Fargate workloads in a manner that is compliant with Federal Information Processing Standard (FIPS-140). For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-fips-compliance.html\">Fargate Federal Information Processing Standard (FIPS-140)</a>.</p> </li> <li> <p> <code>containerInstanceLongArnFormat</code> - When modified, the Amazon Resource Name (ARN) and resource ID format of the resource type for a specified user, role, or the root user for an account is affected. The opt-in and opt-out account setting must be set for each Amazon ECS resource separately. The ARN and resource ID format of a resource is defined by the opt-in status of the user or role that created the resource. You must turn on this setting to use Amazon ECS features such as resource tagging.</p> </li> <li> <p> <code>awsvpcTrunking</code> - When modified, the elastic network interface (ENI) limit for any new container instances that support the feature is changed. If <code>awsvpcTrunking</code> is turned on, any new container instances that support the feature are launched have the increased ENI limits available to them. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/container-instance-eni.html\">Elastic Network Interface Trunking</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>containerInsights</code> - Container Insights with enhanced observability provides all the Container Insights metrics, plus additional task and container metrics. This version supports enhanced observability for Amazon ECS clusters using the Amazon EC2 and Fargate launch types. After you configure Container Insights with enhanced observability on Amazon ECS, Container Insights auto-collects detailed infrastructure telemetry from the cluster level down to the container level in your environment and displays these critical performance data in curated dashboards removing the heavy lifting in observability set-up. </p> <p>To use Container Insights with enhanced observability, set the <code>containerInsights</code> account setting to <code>enhanced</code>.</p> <p>To use Container Insights, set the <code>containerInsights</code> account setting to <code>enabled</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html\">Monitor Amazon ECS containers using Container Insights with enhanced observability</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>dualStackIPv6</code> - When turned on, when using a VPC in dual stack mode, your tasks using the <code>awsvpc</code> network mode can have an IPv6 address assigned. For more information on using IPv6 with tasks launched on Amazon EC2 instances, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking-awsvpc.html#task-networking-vpc-dual-stack\">Using a VPC in dual-stack mode</a>. For more information on using IPv6 with tasks launched on Fargate, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-task-networking.html#fargate-task-networking-vpc-dual-stack\">Using a VPC in dual-stack mode</a>.</p> </li> <li> <p> <code>fargateTaskRetirementWaitPeriod</code> - When Amazon Web Services determines that a security or infrastructure update is needed for an Amazon ECS task hosted on Fargate, the tasks need to be stopped and new tasks launched to replace them. Use <code>fargateTaskRetirementWaitPeriod</code> to configure the wait time to retire a Fargate task. For information about the Fargate tasks maintenance, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-maintenance.html\">Amazon Web Services Fargate task maintenance</a> in the <i>Amazon ECS Developer Guide</i>.</p> </li> <li> <p> <code>tagResourceAuthorization</code> - Amazon ECS is introducing tagging authorization for resource creation. Users must have permissions for actions that create the resource, such as <code>ecsCreateCluster</code>. If tags are specified when you create a resource, Amazon Web Services performs additional authorization to verify if users or roles have permissions to create tags. Therefore, you must grant explicit permissions to use the <code>ecs:TagResource</code> action. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/supported-iam-actions-tagging.html\">Grant permission to tag resources on creation</a> in the <i>Amazon ECS Developer Guide</i>.</p> </li> <li> <p> <code>guardDutyActivate</code> - The <code>guardDutyActivate</code> parameter is read-only in Amazon ECS and indicates whether Amazon ECS Runtime Monitoring is enabled or disabled by your security administrator in your Amazon ECS account. Amazon GuardDuty controls this account setting on your behalf. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-guard-duty-integration.html\">Protecting Amazon ECS workloads with Amazon ECS Runtime Monitoring</a>.</p> </li> </ul>"
+          "documentation":"<p>The Amazon ECS account setting name to modify.</p> <p>The following are the valid values for the account setting name.</p> <ul> <li> <p> <code>serviceLongArnFormat</code> - When modified, the Amazon Resource Name (ARN) and resource ID format of the resource type for a specified user, role, or the root user for an account is affected. The opt-in and opt-out account setting must be set for each Amazon ECS resource separately. The ARN and resource ID format of a resource is defined by the opt-in status of the user or role that created the resource. You must turn on this setting to use Amazon ECS features such as resource tagging.</p> </li> <li> <p> <code>taskLongArnFormat</code> - When modified, the Amazon Resource Name (ARN) and resource ID format of the resource type for a specified user, role, or the root user for an account is affected. The opt-in and opt-out account setting must be set for each Amazon ECS resource separately. The ARN and resource ID format of a resource is defined by the opt-in status of the user or role that created the resource. You must turn on this setting to use Amazon ECS features such as resource tagging.</p> </li> <li> <p> <code>containerInstanceLongArnFormat</code> - When modified, the Amazon Resource Name (ARN) and resource ID format of the resource type for a specified user, role, or the root user for an account is affected. The opt-in and opt-out account setting must be set for each Amazon ECS resource separately. The ARN and resource ID format of a resource is defined by the opt-in status of the user or role that created the resource. You must turn on this setting to use Amazon ECS features such as resource tagging.</p> </li> <li> <p> <code>awsvpcTrunking</code> - When modified, the elastic network interface (ENI) limit for any new container instances that support the feature is changed. If <code>awsvpcTrunking</code> is turned on, any new container instances that support the feature are launched have the increased ENI limits available to them. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/container-instance-eni.html\">Elastic Network Interface Trunking</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>containerInsights</code> - Container Insights with enhanced observability provides all the Container Insights metrics, plus additional task and container metrics. This version supports enhanced observability for Amazon ECS clusters using the Amazon EC2 and Fargate launch types. After you configure Container Insights with enhanced observability on Amazon ECS, Container Insights auto-collects detailed infrastructure telemetry from the cluster level down to the container level in your environment and displays these critical performance data in curated dashboards removing the heavy lifting in observability set-up. </p> <p>To use Container Insights with enhanced observability, set the <code>containerInsights</code> account setting to <code>enhanced</code>.</p> <p>To use Container Insights, set the <code>containerInsights</code> account setting to <code>enabled</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html\">Monitor Amazon ECS containers using Container Insights with enhanced observability</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>dualStackIPv6</code> - When turned on, when using a VPC in dual stack mode, your tasks using the <code>awsvpc</code> network mode can have an IPv6 address assigned. For more information on using IPv6 with tasks launched on Amazon EC2 instances, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking-awsvpc.html#task-networking-vpc-dual-stack\">Using a VPC in dual-stack mode</a>. For more information on using IPv6 with tasks launched on Fargate, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-task-networking.html#fargate-task-networking-vpc-dual-stack\">Using a VPC in dual-stack mode</a>.</p> </li> <li> <p> <code>fargateTaskRetirementWaitPeriod</code> - When Amazon Web Services determines that a security or infrastructure update is needed for an Amazon ECS task hosted on Fargate, the tasks need to be stopped and new tasks launched to replace them. Use <code>fargateTaskRetirementWaitPeriod</code> to configure the wait time to retire a Fargate task. For information about the Fargate tasks maintenance, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-maintenance.html\">Amazon Web Services Fargate task maintenance</a> in the <i>Amazon ECS Developer Guide</i>.</p> </li> <li> <p> <code>tagResourceAuthorization</code> - Amazon ECS is introducing tagging authorization for resource creation. Users must have permissions for actions that create the resource, such as <code>ecsCreateCluster</code>. If tags are specified when you create a resource, Amazon Web Services performs additional authorization to verify if users or roles have permissions to create tags. Therefore, you must grant explicit permissions to use the <code>ecs:TagResource</code> action. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/supported-iam-actions-tagging.html\">Grant permission to tag resources on creation</a> in the <i>Amazon ECS Developer Guide</i>.</p> </li> <li> <p> <code>defaultLogDriverMode</code> - Amazon ECS supports setting a default delivery mode of log messages from a container to the <code>logDriver</code> that you specify in the container's <code>logConfiguration</code>. The delivery mode affects application stability when the flow of logs from the container to the log driver is interrupted. The <code>defaultLogDriverMode</code> setting supports two values: <code>blocking</code> and <code>non-blocking</code>. If you don't specify a delivery mode in your container definition's <code>logConfiguration</code>, the mode you specify using this account setting will be used as the default. For more information about log delivery modes, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html\">LogConfiguration</a>.</p> </li> <li> <p> <code>guardDutyActivate</code> - The <code>guardDutyActivate</code> parameter is read-only in Amazon ECS and indicates whether Amazon ECS Runtime Monitoring is enabled or disabled by your security administrator in your Amazon ECS account. Amazon GuardDuty controls this account setting on your behalf. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-guard-duty-integration.html\">Protecting Amazon ECS workloads with Amazon ECS Runtime Monitoring</a>.</p> </li> </ul>"
         },
         "value":{
           "shape":"String",
@@ -4861,7 +4866,7 @@
         },
         "cpu":{
           "shape":"String",
-          "documentation":"<p>The number of CPU units used by the task. It can be expressed as an integer using CPU units (for example, <code>1024</code>) or as a string using vCPUs (for example, <code>1 vCPU</code> or <code>1 vcpu</code>) in a task definition. String values are converted to an integer indicating the CPU units when the task definition is registered.</p> <note> <p>Task-level CPU and memory parameters are ignored for Windows containers. We recommend specifying container-level resources for Windows containers.</p> </note> <p>If you're using the EC2 launch type or external launch type, this field is optional. Supported values are between <code>128</code> CPU units (<code>0.125</code> vCPUs) and <code>196608</code> CPU units (<code>192</code> vCPUs). If you do not specify a value, the parameter is ignored.</p> <p>If you're using the Fargate launch type, this field is required and you must use one of the following values, which determines your range of supported values for the <code>memory</code> parameter:</p> <p>The CPU units cannot be less than 1 vCPU when you use Windows containers on Fargate.</p> <ul> <li> <p>256 (.25 vCPU) - Available <code>memory</code> values: 512 (0.5 GB), 1024 (1 GB), 2048 (2 GB)</p> </li> <li> <p>512 (.5 vCPU) - Available <code>memory</code> values: 1024 (1 GB), 2048 (2 GB), 3072 (3 GB), 4096 (4 GB)</p> </li> <li> <p>1024 (1 vCPU) - Available <code>memory</code> values: 2048 (2 GB), 3072 (3 GB), 4096 (4 GB), 5120 (5 GB), 6144 (6 GB), 7168 (7 GB), 8192 (8 GB)</p> </li> <li> <p>2048 (2 vCPU) - Available <code>memory</code> values: 4096 (4 GB) and 16384 (16 GB) in increments of 1024 (1 GB)</p> </li> <li> <p>4096 (4 vCPU) - Available <code>memory</code> values: 8192 (8 GB) and 30720 (30 GB) in increments of 1024 (1 GB)</p> </li> <li> <p>8192 (8 vCPU) - Available <code>memory</code> values: 16 GB and 60 GB in 4 GB increments</p> <p>This option requires Linux platform <code>1.4.0</code> or later.</p> </li> <li> <p>16384 (16vCPU) - Available <code>memory</code> values: 32GB and 120 GB in 8 GB increments</p> <p>This option requires Linux platform <code>1.4.0</code> or later.</p> </li> </ul>"
+          "documentation":"<p>The number of CPU units used by the task. It can be expressed as an integer using CPU units (for example, <code>1024</code>) or as a string using vCPUs (for example, <code>1 vCPU</code> or <code>1 vcpu</code>) in a task definition. String values are converted to an integer indicating the CPU units when the task definition is registered.</p> <note> <p>Task-level CPU and memory parameters are ignored for Windows containers. We recommend specifying container-level resources for Windows containers.</p> </note> <p>If you're using the EC2 launch type or external launch type, this field is optional. Supported values are between <code>128</code> CPU units (<code>0.125</code> vCPUs) and <code>196608</code> CPU units (<code>192</code> vCPUs). If you do not specify a value, the parameter is ignored.</p> <p>This field is required for Fargate. For information about the valid values, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size\">Task size</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
         },
         "memory":{
           "shape":"String",
@@ -4965,15 +4970,13 @@
     },
     "ResourceInUseException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified resource is in-use and can't be removed.</p>",
       "exception":true
     },
     "ResourceNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified resource wasn't found.</p>",
       "exception":true
     },
@@ -5023,7 +5026,7 @@
         },
         "serviceRevisionArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the service revision deployed as part of the rollback.</p> <p>When the type is <code>GPU</code>, the value is the number of physical <code>GPUs</code> the Amazon ECS container agent reserves for the container. The number of GPUs that's reserved for all containers in a task can't exceed the number of available GPUs on the container instance that the task is launched on.</p> <p>When the type is <code>InferenceAccelerator</code>, the <code>value</code> matches the <code>deviceName</code> for an <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_InferenceAccelerator.html\">InferenceAccelerator</a> specified in a task definition.</p>"
+          "documentation":"<p>The ARN of the service revision deployed as part of the rollback.</p>"
         }
       },
       "documentation":"<p>Information about the service deployment rollback.</p>"
@@ -5038,7 +5041,7 @@
         },
         "cluster":{
           "shape":"String",
-          "documentation":"<p>The short name or full Amazon Resource Name (ARN) of the cluster to run your task on. If you do not specify a cluster, the default cluster is assumed.</p>"
+          "documentation":"<p>The short name or full Amazon Resource Name (ARN) of the cluster to run your task on. If you do not specify a cluster, the default cluster is assumed.</p> <p>Each account receives a default cluster the first time you use the service, but you may also create other clusters.</p>"
         },
         "count":{
           "shape":"BoxedInteger",
@@ -5608,6 +5611,12 @@
       },
       "documentation":"<p>Information about the circuit breaker used to determine when a service deployment has failed.</p> <p>The deployment circuit breaker is the rolling update mechanism that determines if the tasks reach a steady state. The deployment circuit breaker has an option that will automatically roll back a failed deployment to the last cpompleted service revision. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-circuit-breaker.html\">How the Amazon ECS deployment circuit breaker detects failures</a> in the<i> Amazon ECS Developer Guide</i>.</p>"
     },
+    "ServiceDeploymentNotFoundException":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The service deploy ARN that you specified in the <code>StopServiceDeployment</code> doesn't exist. You can use <code>ListServiceDeployments</code> to retrieve the service deployment ARNs.</p>",
+      "exception":true
+    },
     "ServiceDeploymentRollbackMonitorsStatus":{
       "type":"string",
       "enum":[
@@ -5625,6 +5634,7 @@
         "STOPPED",
         "STOP_REQUESTED",
         "IN_PROGRESS",
+        "ROLLBACK_REQUESTED",
         "ROLLBACK_IN_PROGRESS",
         "ROLLBACK_SUCCESSFUL",
         "ROLLBACK_FAILED"
@@ -5721,15 +5731,13 @@
     },
     "ServiceNotActiveException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified service isn't active. You can't update a service that's inactive. If you have previously deleted a service, you can re-create it with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateService.html\">CreateService</a>.</p>",
       "exception":true
     },
     "ServiceNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified service wasn't found. You can view your available services with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListServices.html\">ListServices</a>. Amazon ECS services are cluster specific and Region specific.</p>",
       "exception":true
     },
@@ -5932,7 +5940,8 @@
         "fargateFIPSMode",
         "tagResourceAuthorization",
         "fargateTaskRetirementWaitPeriod",
-        "guardDutyActivate"
+        "guardDutyActivate",
+        "defaultLogDriverMode"
       ]
     },
     "SettingType":{
@@ -6037,6 +6046,36 @@
     "Statistics":{
       "type":"list",
       "member":{"shape":"KeyValuePair"}
+    },
+    "StopServiceDeploymentRequest":{
+      "type":"structure",
+      "required":["serviceDeploymentArn"],
+      "members":{
+        "serviceDeploymentArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the service deployment that you want to stop.</p>"
+        },
+        "stopType":{
+          "shape":"StopServiceDeploymentStopType",
+          "documentation":"<p>How you want Amazon ECS to stop the service. </p> <p>The ROLLBACK and ABORT stopType aren't supported.</p>"
+        }
+      }
+    },
+    "StopServiceDeploymentResponse":{
+      "type":"structure",
+      "members":{
+        "serviceDeploymentArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the stopped service deployment.</p>"
+        }
+      }
+    },
+    "StopServiceDeploymentStopType":{
+      "type":"string",
+      "enum":[
+        "ABORT",
+        "ROLLBACK"
+      ]
     },
     "StopTaskRequest":{
       "type":"structure",
@@ -6259,8 +6298,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -6276,15 +6314,13 @@
     },
     "TargetNotConnectedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The execute command cannot run. This error can be caused by any of the following configuration issues:</p> <ul> <li> <p>Incorrect IAM permissions</p> </li> <li> <p>The SSM agent is not installed or is not running</p> </li> <li> <p> There is an interface Amazon VPC endpoint for Amazon ECS, but there is not one for Systems Manager Session Manager</p> </li> </ul> <p>For information about how to troubleshoot the issues, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html\">Troubleshooting issues with ECS Exec</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>",
       "exception":true
     },
     "TargetNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified target wasn't found. You can view your available container instances with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListContainerInstances.html\">ListContainerInstances</a>. Amazon ECS container instances are cluster-specific and Region-specific.</p>",
       "exception":true
     },
@@ -6333,7 +6369,7 @@
         },
         "cpu":{
           "shape":"String",
-          "documentation":"<p>The number of CPU units used by the task as expressed in a task definition. It can be expressed as an integer using CPU units (for example, <code>1024</code>). It can also be expressed as a string using vCPUs (for example, <code>1 vCPU</code> or <code>1 vcpu</code>). String values are converted to an integer that indicates the CPU units when the task definition is registered.</p> <p>If you're using the EC2 launch type or the external launch type, this field is optional. Supported values are between <code>128</code> CPU units (<code>0.125</code> vCPUs) and <code>196608</code> CPU units (<code>192</code> vCPUs). If you do not specify a value, the parameter is ignored.</p> <p>If you're using the Fargate launch type, this field is required. You must use one of the following values. These values determine the range of supported values for the <code>memory</code> parameter:</p> <p>The CPU units cannot be less than 1 vCPU when you use Windows containers on Fargate.</p> <ul> <li> <p>256 (.25 vCPU) - Available <code>memory</code> values: 512 (0.5 GB), 1024 (1 GB), 2048 (2 GB)</p> </li> <li> <p>512 (.5 vCPU) - Available <code>memory</code> values: 1024 (1 GB), 2048 (2 GB), 3072 (3 GB), 4096 (4 GB)</p> </li> <li> <p>1024 (1 vCPU) - Available <code>memory</code> values: 2048 (2 GB), 3072 (3 GB), 4096 (4 GB), 5120 (5 GB), 6144 (6 GB), 7168 (7 GB), 8192 (8 GB)</p> </li> <li> <p>2048 (2 vCPU) - Available <code>memory</code> values: 4096 (4 GB) and 16384 (16 GB) in increments of 1024 (1 GB)</p> </li> <li> <p>4096 (4 vCPU) - Available <code>memory</code> values: 8192 (8 GB) and 30720 (30 GB) in increments of 1024 (1 GB)</p> </li> <li> <p>8192 (8 vCPU) - Available <code>memory</code> values: 16 GB and 60 GB in 4 GB increments</p> <p>This option requires Linux platform <code>1.4.0</code> or later.</p> </li> <li> <p>16384 (16vCPU) - Available <code>memory</code> values: 32GB and 120 GB in 8 GB increments</p> <p>This option requires Linux platform <code>1.4.0</code> or later.</p> </li> </ul>"
+          "documentation":"<p>The number of CPU units used by the task as expressed in a task definition. It can be expressed as an integer using CPU units (for example, <code>1024</code>). It can also be expressed as a string using vCPUs (for example, <code>1 vCPU</code> or <code>1 vcpu</code>). String values are converted to an integer that indicates the CPU units when the task definition is registered.</p> <p>If you're using the EC2 launch type or the external launch type, this field is optional. Supported values are between <code>128</code> CPU units (<code>0.125</code> vCPUs) and <code>196608</code> CPU units (<code>192</code> vCPUs). If you do not specify a value, the parameter is ignored.</p> <p>This field is required for Fargate. For information about the valid values, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size\">Task size</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -6507,7 +6543,7 @@
         },
         "cpu":{
           "shape":"String",
-          "documentation":"<p>The number of <code>cpu</code> units used by the task. If you use the EC2 launch type, this field is optional. Any value can be used. If you use the Fargate launch type, this field is required. You must use one of the following values. The value that you choose determines your range of valid values for the <code>memory</code> parameter.</p> <p>If you're using the EC2 launch type or the external launch type, this field is optional. Supported values are between <code>128</code> CPU units (<code>0.125</code> vCPUs) and <code>196608</code> CPU units (<code>192</code> vCPUs). The CPU units cannot be less than 1 vCPU when you use Windows containers on Fargate.</p> <ul> <li> <p>256 (.25 vCPU) - Available <code>memory</code> values: 512 (0.5 GB), 1024 (1 GB), 2048 (2 GB)</p> </li> <li> <p>512 (.5 vCPU) - Available <code>memory</code> values: 1024 (1 GB), 2048 (2 GB), 3072 (3 GB), 4096 (4 GB)</p> </li> <li> <p>1024 (1 vCPU) - Available <code>memory</code> values: 2048 (2 GB), 3072 (3 GB), 4096 (4 GB), 5120 (5 GB), 6144 (6 GB), 7168 (7 GB), 8192 (8 GB)</p> </li> <li> <p>2048 (2 vCPU) - Available <code>memory</code> values: 4096 (4 GB) and 16384 (16 GB) in increments of 1024 (1 GB)</p> </li> <li> <p>4096 (4 vCPU) - Available <code>memory</code> values: 8192 (8 GB) and 30720 (30 GB) in increments of 1024 (1 GB)</p> </li> <li> <p>8192 (8 vCPU) - Available <code>memory</code> values: 16 GB and 60 GB in 4 GB increments</p> <p>This option requires Linux platform <code>1.4.0</code> or later.</p> </li> <li> <p>16384 (16vCPU) - Available <code>memory</code> values: 32GB and 120 GB in 8 GB increments</p> <p>This option requires Linux platform <code>1.4.0</code> or later.</p> </li> </ul>"
+          "documentation":"<p>The number of <code>cpu</code> units used by the task. If you use the EC2 launch type, this field is optional. Any value can be used. If you use the Fargate launch type, this field is required. You must use one of the following values. The value that you choose determines your range of valid values for the <code>memory</code> parameter.</p> <p>If you're using the EC2 launch type or the external launch type, this field is optional. Supported values are between <code>128</code> CPU units (<code>0.125</code> vCPUs) and <code>196608</code> CPU units (<code>192</code> vCPUs). </p> <p>This field is required for Fargate. For information about the valid values, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size\">Task size</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
         },
         "memory":{
           "shape":"String",
@@ -6845,8 +6881,7 @@
     },
     "TaskSetNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified task set wasn't found. You can view your available task sets with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeTaskSets.html\">DescribeTaskSets</a>. Task sets are specific to each cluster, service and Region.</p>",
       "exception":true
     },
@@ -6985,8 +7020,7 @@
     },
     "UnsupportedFeatureException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified task isn't supported in this Region.</p>",
       "exception":true
     },
@@ -7009,8 +7043,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateCapacityProviderRequest":{
       "type":"structure",
@@ -7154,8 +7187,7 @@
     },
     "UpdateInProgressException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There's already a current Amazon ECS container agent update in progress on the container instance that's specified. If the container agent becomes disconnected while it's in a transitional stage, such as <code>PENDING</code> or <code>STAGING</code>, the update process can get stuck in that state. However, when the agent reconnects, it resumes where it stopped previously.</p>",
       "exception":true
     },

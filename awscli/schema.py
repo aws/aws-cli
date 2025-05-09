@@ -17,7 +17,7 @@ class ParameterRequiredError(ValueError):
     pass
 
 
-class SchemaTransformer(object):
+class SchemaTransformer:
     """
     Transforms a custom argument parameter schema into an internal
     model representation so that it can be treated like a normal
@@ -163,7 +163,7 @@ class SchemaTransformer(object):
         return self.JSON_SCHEMA_TO_AWS_TYPES.get(type_name, type_name)
 
 
-class ShapeNameGenerator(object):
+class ShapeNameGenerator:
     def __init__(self):
         self._name_cache = defaultdict(int)
 

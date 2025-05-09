@@ -4,7 +4,6 @@ import re
 from pathlib import Path
 from subprocess import run
 
-
 ROOT = Path(__file__).parents[2]
 DOCKERFILE_PATH = ROOT / "scripts" / "regenerate-configure" / "Dockerfile"
 IMAGE_RE = re.compile(r"sha256:(?P<image>.*?)\s")
@@ -49,7 +48,7 @@ def _extract_configure_file(container_id):
     dst = f"{ROOT}/configure"
     result = _docker(["cp", src, dst])
     _assert_success(result)
-    print(f"Replaced configure file")
+    print("Replaced configure file")
 
 
 def _cleanup_image_and_container(image, container_id):
@@ -84,7 +83,4 @@ if __name__ == "__main__":
         help="Do not clean up docker image and container. Useful for debugging.",
     )
     args = parser.parse_args()
-    main(
-        not args.no_cleanup,
-        args.dockerfile_path
-    )
+    main(not args.no_cleanup, args.dockerfile_path)

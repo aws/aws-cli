@@ -5,12 +5,14 @@
     "endpointPrefix":"cases",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"ConnectCases",
     "serviceFullName":"Amazon Connect Cases",
     "serviceId":"ConnectCases",
     "signatureVersion":"v4",
     "signingName":"cases",
-    "uid":"connectcases-2022-10-03"
+    "uid":"connectcases-2022-10-03",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "BatchGetCaseRule":{
@@ -86,7 +88,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <p>The following fields are required when creating a case:</p> <pre><code> &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;customer_id&lt;/code&gt; - You must provide the full customer profile ARN in this format: &lt;code&gt;arn:aws:profile:your_AWS_Region:your_AWS_account ID:domains/your_profiles_domain_name/profiles/profile_ID&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;title&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; </code></pre>",
+      "documentation":"<note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <p>The following fields are required when creating a case:</p> <ul> <li> <p> <code>customer_id</code> - You must provide the full customer profile ARN in this format: <code>arn:aws:profile:your_AWS_Region:your_AWS_account ID:domains/your_profiles_domain_name/profiles/profile_ID</code> </p> </li> <li> <p> <code>title</code> </p> </li> </ul>",
       "idempotent":true
     },
     "CreateCaseRule":{
@@ -127,7 +129,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a domain, which is a container for all case data, such as cases, fields, templates and layouts. Each Amazon Connect instance can be associated with only one Cases domain.</p> <important> <p>This will not associate your connect instance to Cases domain. Instead, use the Amazon Connect <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateIntegrationAssociation.html\">CreateIntegrationAssociation</a> API. You need specific IAM permissions to successfully associate the Cases domain. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/required-permissions-iam-cases.html#onboard-cases-iam\">Onboard to Cases</a>.</p> <pre><code> &lt;/important&gt; </code></pre>",
+      "documentation":"<p>Creates a domain, which is a container for all case data, such as cases, fields, templates and layouts. Each Amazon Connect instance can be associated with only one Cases domain.</p> <important> <p>This will not associate your connect instance to Cases domain. Instead, use the Amazon Connect <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateIntegrationAssociation.html\">CreateIntegrationAssociation</a> API. You need specific IAM permissions to successfully associate the Cases domain. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/required-permissions-iam-cases.html#onboard-cases-iam\">Onboard to Cases</a>.</p> </important>",
       "idempotent":true
     },
     "CreateField":{
@@ -248,7 +250,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes a Cases domain.</p> <pre><code> &lt;note&gt; &lt;p&gt;After deleting your domain you must disassociate the deleted domain from your Amazon Connect instance with another API call before being able to use Cases again with this Amazon Connect instance. See &lt;a href=&quot;https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteIntegrationAssociation.html&quot;&gt;DeleteIntegrationAssociation&lt;/a&gt;.&lt;/p&gt; &lt;/note&gt; </code></pre>",
+      "documentation":"<p>Deletes a Cases domain.</p> <note> <p>After deleting your domain you must disassociate the deleted domain from your Amazon Connect instance with another API call before being able to use Cases again with this Amazon Connect instance. See <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteIntegrationAssociation.html\">DeleteIntegrationAssociation</a>.</p> </note>",
       "idempotent":true
     },
     "DeleteField":{
@@ -289,7 +291,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes a layout from a cases template. You can delete up to 100 layouts per domain.</p> <pre><code> &lt;p&gt;After a layout is deleted:&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt;You can still retrieve the layout by calling &lt;code&gt;GetLayout&lt;/code&gt;.&lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;You cannot update a deleted layout by calling &lt;code&gt;UpdateLayout&lt;/code&gt;; it throws a &lt;code&gt;ValidationException&lt;/code&gt;.&lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;Deleted layouts are not included in the &lt;code&gt;ListLayouts&lt;/code&gt; response.&lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; </code></pre>",
+      "documentation":"<p>Deletes a layout from a cases template. You can delete up to 100 layouts per domain.</p> <p>After a layout is deleted:</p> <ul> <li> <p>You can still retrieve the layout by calling <code>GetLayout</code>.</p> </li> <li> <p>You cannot update a deleted layout by calling <code>UpdateLayout</code>; it throws a <code>ValidationException</code>.</p> </li> <li> <p>Deleted layouts are not included in the <code>ListLayouts</code> response.</p> </li> </ul>",
       "idempotent":true
     },
     "DeleteTemplate":{
@@ -309,7 +311,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes a cases template. You can delete up to 100 templates per domain.</p> <pre><code> &lt;p&gt;After a cases template is deleted:&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt;You can still retrieve the template by calling &lt;code&gt;GetTemplate&lt;/code&gt;.&lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;You cannot update the template. &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;You cannot create a case by using the deleted template.&lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;Deleted templates are not included in the &lt;code&gt;ListTemplates&lt;/code&gt; response.&lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; </code></pre>",
+      "documentation":"<p>Deletes a cases template. You can delete up to 100 templates per domain.</p> <p>After a cases template is deleted:</p> <ul> <li> <p>You can still retrieve the template by calling <code>GetTemplate</code>.</p> </li> <li> <p>You cannot update the template. </p> </li> <li> <p>You cannot create a case by using the deleted template.</p> </li> <li> <p>Deleted templates are not included in the <code>ListTemplates</code> response.</p> </li> </ul>",
       "idempotent":true
     },
     "GetCase":{
@@ -578,7 +580,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Adds case event publishing configuration. For a complete list of fields you can add to the event message, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-fields.html\">Create case fields</a> in the <i>Amazon Connect Administrator Guide</i> </p>"
     },
@@ -2241,7 +2244,7 @@
     },
     "FieldValueUnionStringValueString":{
       "type":"string",
-      "max":1500,
+      "max":3000,
       "min":0
     },
     "FileArn":{
@@ -3249,6 +3252,10 @@
         "file":{
           "shape":"FileContent",
           "documentation":"<p>Represents the content of a File to be returned to agents.</p>"
+        },
+        "sla":{
+          "shape":"SlaContent",
+          "documentation":"<p>Represents the content of an SLA to be returned to agents.</p>"
         }
       },
       "documentation":"<p>Represents the content of a particular type of related item.</p>",
@@ -3284,6 +3291,10 @@
         "file":{
           "shape":"FileContent",
           "documentation":"<p>A file of related items.</p>"
+        },
+        "sla":{
+          "shape":"SlaInputContent",
+          "documentation":"<p>Represents the content of an SLA to be created.</p>"
         }
       },
       "documentation":"<p>Represents the content of a related item to be created.</p>",
@@ -3294,7 +3305,8 @@
       "enum":[
         "Contact",
         "Comment",
-        "File"
+        "File",
+        "Sla"
       ]
     },
     "RelatedItemTypeFilter":{
@@ -3311,6 +3323,10 @@
         "file":{
           "shape":"FileFilter",
           "documentation":"<p>A filter for related items of this type of <code>File</code>.</p>"
+        },
+        "sla":{
+          "shape":"SlaFilter",
+          "documentation":"<p> Filter for related items of type <code>SLA</code>.</p>"
         }
       },
       "documentation":"<p>The list of types of related items and their parameters to use for filtering.</p>",
@@ -3624,6 +3640,147 @@
       },
       "exception":true
     },
+    "SlaCompletionTime":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "SlaConfiguration":{
+      "type":"structure",
+      "required":[
+        "name",
+        "status",
+        "targetTime",
+        "type"
+      ],
+      "members":{
+        "completionTime":{
+          "shape":"SlaCompletionTime",
+          "documentation":"<p>Time at which an SLA was completed.</p>"
+        },
+        "fieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>Unique identifier of a field.</p>"
+        },
+        "name":{
+          "shape":"SlaName",
+          "documentation":"<p>Name of an SLA.</p>"
+        },
+        "status":{
+          "shape":"SlaStatus",
+          "documentation":"<p>Status of an SLA.</p>"
+        },
+        "targetFieldValues":{
+          "shape":"SlaFieldValueUnionList",
+          "documentation":"<p>Represents a list of target field values for the fieldId specified in SlaConfiguration.</p>"
+        },
+        "targetTime":{
+          "shape":"SlaTargetTime",
+          "documentation":"<p>Target time by which an SLA should be completed.</p>"
+        },
+        "type":{
+          "shape":"SlaType",
+          "documentation":"<p>Type of SLA.</p>"
+        }
+      },
+      "documentation":"<p>Represents an SLA configuration.</p>"
+    },
+    "SlaContent":{
+      "type":"structure",
+      "required":["slaConfiguration"],
+      "members":{
+        "slaConfiguration":{
+          "shape":"SlaConfiguration",
+          "documentation":"<p>Represents an SLA configuration.</p>"
+        }
+      },
+      "documentation":"<p>Represents the content of an SLA to be returned to agents.</p>"
+    },
+    "SlaFieldValueUnionList":{
+      "type":"list",
+      "member":{"shape":"FieldValueUnion"},
+      "max":1,
+      "min":1
+    },
+    "SlaFilter":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"SlaName",
+          "documentation":"<p>Name of an SLA.</p>"
+        },
+        "status":{
+          "shape":"SlaStatus",
+          "documentation":"<p>Status of an SLA.</p>"
+        }
+      },
+      "documentation":"<p>A filter for related items of type <code>SLA</code>.</p>"
+    },
+    "SlaInputConfiguration":{
+      "type":"structure",
+      "required":[
+        "name",
+        "targetSlaMinutes",
+        "type"
+      ],
+      "members":{
+        "fieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>Unique identifier of a field.</p>"
+        },
+        "name":{
+          "shape":"SlaName",
+          "documentation":"<p>Name of an SLA.</p>"
+        },
+        "targetFieldValues":{
+          "shape":"SlaFieldValueUnionList",
+          "documentation":"<p>Represents a list of target field values for the fieldId specified in SlaInputConfiguration. The SLA is considered met if any one of these target field values matches the actual field value.</p>"
+        },
+        "targetSlaMinutes":{
+          "shape":"TargetSlaMinutes",
+          "documentation":"<p>Target duration in minutes within which an SLA should be completed.</p>"
+        },
+        "type":{
+          "shape":"SlaType",
+          "documentation":"<p>Type of SLA.</p>"
+        }
+      },
+      "documentation":"<p>Represents the input configuration of an SLA being created.</p>"
+    },
+    "SlaInputContent":{
+      "type":"structure",
+      "members":{
+        "slaInputConfiguration":{
+          "shape":"SlaInputConfiguration",
+          "documentation":"<p>Represents an input SLA configuration.</p>"
+        }
+      },
+      "documentation":"<p>Represents the content of an SLA.</p>",
+      "union":true
+    },
+    "SlaName":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "pattern":"^.*[\\S]$",
+      "sensitive":true
+    },
+    "SlaStatus":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "Overdue",
+        "Met",
+        "NotMet"
+      ]
+    },
+    "SlaTargetTime":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "SlaType":{
+      "type":"string",
+      "enum":["CaseField"]
+    },
     "Sort":{
       "type":"structure",
       "required":[
@@ -3678,6 +3835,12 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"String"}
+    },
+    "TargetSlaMinutes":{
+      "type":"long",
+      "box":true,
+      "max":129600,
+      "min":1
     },
     "TemplateArn":{
       "type":"string",

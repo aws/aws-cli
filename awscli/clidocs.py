@@ -13,6 +13,7 @@
 import logging
 import os
 import re
+
 from botocore import xform_name
 from botocore.model import StringShape
 from botocore.utils import is_json_value_header
@@ -24,9 +25,9 @@ from awscli.topictags import TopicTagDB
 from awscli.utils import (
     find_service_and_method_in_event_name,
     is_document_type,
-    operation_uses_document_types,
     is_streaming_blob_type,
     is_tagged_union_type,
+    operation_uses_document_types,
 )
 
 LOG = logging.getLogger(__name__)
@@ -39,7 +40,7 @@ GLOBAL_OPTIONS_SYNOPSIS_FILE = os.path.join(
 )
 
 
-class CLIDocumentEventHandler(object):
+class CLIDocumentEventHandler:
     def __init__(self, help_command):
         self.help_command = help_command
         self.register(help_command.session, help_command.event_class)
@@ -756,7 +757,7 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
         doc.style.new_paragraph()
 
     def _remove_tags_from_content(self, filename):
-        with open(filename, 'r') as f:
+        with open(filename) as f:
             lines = f.readlines()
 
         content_begin_index = 0

@@ -12,14 +12,14 @@ interface for those not familiar with the python
 ecosystem.
 
 """
+
 import os
-import sys
-import subprocess
 import shutil
+import subprocess
+import sys
 import tempfile
 import zipfile
 from contextlib import contextmanager
-
 
 EXTRA_RUNTIME_DEPS = [
     # Use an up to date virtualenv/pip/setuptools on > 2.6.
@@ -36,7 +36,8 @@ PIP_DOWNLOAD_ARGS = '--no-binary :all:'
 # we're distributing a copy that works on all supported platforms.
 CONSTRAINTS_FILE = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
-    'assets', 'constraints-bundled.txt'
+    'assets',
+    'constraints-bundled.txt',
 )
 
 
@@ -56,13 +57,15 @@ def cd(dirname):
 
 def run(cmd):
     sys.stdout.write("Running cmd: %s\n" % cmd)
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
+    p = subprocess.Popen(
+        cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     stdout, stderr = p.communicate()
     rc = p.wait()
     if p.returncode != 0:
-        raise BadRCError("Bad rc (%s) for cmd '%s': %s" % (
-            rc, cmd, stderr + stdout))
+        raise BadRCError(
+            "Bad rc (%s) for cmd '%s': %s" % (rc, cmd, stderr + stdout)
+        )
     return stdout
 
 
@@ -80,17 +83,19 @@ def create_scratch_dir():
 def download_package_tarballs(dirname, packages):
     with cd(dirname):
         for package, package_version in packages:
-            run('%s -m pip download %s==%s %s' % (
-                sys.executable, package, package_version, PIP_DOWNLOAD_ARGS
-            ))
+            run(
+                '%s -m pip download %s==%s %s'
+                % (sys.executable, package, package_version, PIP_DOWNLOAD_ARGS)
+            )
 
 
 def download_cli_deps(scratch_dir):
-    awscli_dir = os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__)))
+    awscli_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     with cd(scratch_dir):
-        run('pip download -c %s %s %s' % (
-            CONSTRAINTS_FILE, PIP_DOWNLOAD_ARGS, awscli_dir))
+        run(
+            'pip download -c %s %s %s'
+            % (CONSTRAINTS_FILE, PIP_DOWNLOAD_ARGS, awscli_dir)
+        )
 
 
 def _remove_cli_zip(scratch_dir):
@@ -100,20 +105,21 @@ def _remove_cli_zip(scratch_dir):
 
 
 def add_cli_sdist(scratch_dir):
-    awscli_dir = os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__)))
+    awscli_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     if os.path.exists(os.path.join(awscli_dir, 'dist')):
         shutil.rmtree(os.path.join(awscli_dir, 'dist'))
     with cd(awscli_dir):
         run('%s setup.py sdist' % sys.executable)
         filename = os.listdir('dist')[0]
-        shutil.move(os.path.join('dist', filename),
-                    os.path.join(scratch_dir, filename))
+        shutil.move(
+            os.path.join('dist', filename), os.path.join(scratch_dir, filename)
+        )
 
 
 def create_bootstrap_script(scratch_dir):
     install_script = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), 'install')
+        os.path.dirname(os.path.abspath(__file__)), 'install'
+    )
     shutil.copy(install_script, os.path.join(scratch_dir, 'install'))
 
 
@@ -135,11 +141,13 @@ def zip_dir(scratch_dir):
 def verify_preconditions():
     # The pip version looks like:
     # 'pip 1.4.1 from ....'
-    pip_version = run(
-        '%s -m pip --version' % sys.executable).strip().split()[1]
+    pip_version = (
+        run('%s -m pip --version' % sys.executable).strip().split()[1]
+    )
     # Virtualenv version just has the version string: '1.14.5\n'
     virtualenv_version = run(
-        '%s -m virtualenv --version' % sys.executable).strip()
+        '%s -m virtualenv --version' % sys.executable
+    ).strip()
     _min_version_required('9.0.1', pip_version, 'pip')
     _min_version_required('15.1.0', virtualenv_version, 'virtualenv')
 
@@ -152,8 +160,10 @@ def _min_version_required(min_version, actual_version, name):
     for min_version_part, actual_version_part in zip(min_split, actual_split):
         if int(actual_version_part) >= int(min_version_part):
             return
-    raise ValueError("%s requires at least version %s, but version %s was "
-                     "found." % (name, min_version, actual_version))
+    raise ValueError(
+        "%s requires at least version %s, but version %s was "
+        "found." % (name, min_version, actual_version)
+    )
 
 
 def main():

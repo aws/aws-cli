@@ -780,8 +780,8 @@
     "CapabilityHealth":{
       "type":"string",
       "enum":[
-        "UNHEALTHY",
-        "HEALTHY"
+        "HEALTHY",
+        "UNHEALTHY"
       ]
     },
     "CapabilityHealthReason":{
@@ -876,15 +876,20 @@
       "max":20,
       "min":1
     },
-    "ConfigArn":{"type":"string"},
+    "ConfigArn":{
+      "type":"string",
+      "max":424,
+      "min":82,
+      "pattern":"^arn:aws:groundstation:[-a-z0-9]{1,50}:[0-9]{12}:config/[a-z0-9]+(-[a-z0-9]+){0,4}/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(/.{1,256})?$"
+    },
     "ConfigCapabilityType":{
       "type":"string",
       "enum":[
         "antenna-downlink",
         "antenna-downlink-demod-decode",
-        "antenna-uplink",
-        "dataflow-endpoint",
         "tracking",
+        "dataflow-endpoint",
+        "antenna-uplink",
         "uplink-echo",
         "s3-recording"
       ]
@@ -1082,19 +1087,19 @@
     "ContactStatus":{
       "type":"string",
       "enum":[
-        "AVAILABLE",
-        "AWS_CANCELLED",
-        "AWS_FAILED",
-        "CANCELLED",
-        "CANCELLING",
-        "COMPLETED",
-        "FAILED",
+        "SCHEDULING",
         "FAILED_TO_SCHEDULE",
+        "SCHEDULED",
+        "CANCELLED",
+        "AWS_CANCELLED",
+        "PREPASS",
         "PASS",
         "POSTPASS",
-        "PREPASS",
-        "SCHEDULED",
-        "SCHEDULING"
+        "COMPLETED",
+        "FAILED",
+        "AVAILABLE",
+        "CANCELLING",
+        "AWS_FAILED"
       ]
     },
     "CreateConfigRequest":{
@@ -1133,7 +1138,7 @@
         },
         "endpointDetails":{
           "shape":"EndpointDetailsList",
-          "documentation":"<p>Endpoint details of each endpoint in the dataflow endpoint group.</p>"
+          "documentation":"<p>Endpoint details of each endpoint in the dataflow endpoint group. <pre><code> All dataflow endpoints within a single dataflow endpoint group must be of the same type. You cannot mix &lt;a href=&quot;https://docs.aws.amazon.com/ground-station/latest/APIReference/API_AwsGroundStationAgentEndpoint.html&quot;&gt; AWS Ground Station Agent endpoints&lt;/a&gt; with &lt;a href=&quot;https://docs.aws.amazon.com/ground-station/latest/APIReference/API_DataflowEndpoint.html&quot;&gt;Dataflow endpoints&lt;/a&gt; in the same group. If your use case requires both types of endpoints, you must create separate dataflow endpoint groups for each type. &lt;/p&gt; </code></pre>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -1234,9 +1239,9 @@
     "Criticality":{
       "type":"string",
       "enum":[
+        "REQUIRED",
         "PREFERRED",
-        "REMOVED",
-        "REQUIRED"
+        "REMOVED"
       ]
     },
     "CustomerEphemerisPriority":{
@@ -1306,7 +1311,12 @@
       },
       "documentation":"<p>Information about the dataflow endpoint <code>Config</code>.</p>"
     },
-    "DataflowEndpointGroupArn":{"type":"string"},
+    "DataflowEndpointGroupArn":{
+      "type":"string",
+      "max":146,
+      "min":97,
+      "pattern":"^arn:aws:groundstation:[-a-z0-9]{1,50}:[0-9]{12}:dataflow-endpoint-group/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
     "DataflowEndpointGroupDurationInSeconds":{
       "type":"integer",
       "box":true,
@@ -2288,13 +2298,13 @@
       "type":"string",
       "max":8192,
       "min":2,
-      "pattern":"^[{}\\[\\]:.,\"0-9A-z\\-_\\s]{2,8192}$"
+      "pattern":"^[{}\\[\\]:.,\"0-9A-Za-z\\-_\\s]{2,8192}$"
     },
     "KeyAliasArn":{
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"^arn:aws[a-zA-Z-]{0,16}:kms:[a-z]{2}(-[a-z]{1,16}){1,3}-\\d{1}:\\d{12}:((alias/[a-zA-Z0-9:/_-]{1,256}))$"
+      "pattern":"^arn:aws[a-zA-Z-]{0,16}:kms:[-a-z0-9]{1,50}:[0-9]{12}:((alias/[a-zA-Z0-9:/_-]{1,256}))$"
     },
     "KeyAliasName":{
       "type":"string",
@@ -2319,7 +2329,7 @@
           "documentation":"<p>KMS Key Arn.</p>"
         }
       },
-      "documentation":"<p>AWS Key Management Service (KMS) Key.</p>",
+      "documentation":"<p>KMS key info.</p>",
       "union":true
     },
     "ListConfigsRequest":{
@@ -2623,7 +2633,12 @@
       "type":"long",
       "box":true
     },
-    "MissionProfileArn":{"type":"string"},
+    "MissionProfileArn":{
+      "type":"string",
+      "max":138,
+      "min":89,
+      "pattern":"^arn:aws:groundstation:[-a-z0-9]{1,50}:[0-9]{12}:mission-profile/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
     "MissionProfileIdResponse":{
       "type":"structure",
       "members":{
@@ -2684,7 +2699,7 @@
       "type":"integer",
       "box":true,
       "max":100,
-      "min":0
+      "min":1
     },
     "PaginationToken":{
       "type":"string",
@@ -2695,9 +2710,9 @@
     "Polarization":{
       "type":"string",
       "enum":[
+        "RIGHT_HAND",
         "LEFT_HAND",
-        "NONE",
-        "RIGHT_HAND"
+        "NONE"
       ]
     },
     "PositiveDurationInSeconds":{
@@ -2759,6 +2774,10 @@
         "discoveryData":{
           "shape":"DiscoveryData",
           "documentation":"<p>Data for associating an agent with the capabilities it is managing.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags assigned to an <code>Agent</code>.</p>"
         }
       }
     },
@@ -3389,8 +3408,8 @@
     },
     "Uuid":{
       "type":"string",
-      "max":128,
-      "min":1,
+      "max":36,
+      "min":36,
       "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
     },
     "VersionString":{
@@ -3416,7 +3435,12 @@
       "max":99999,
       "min":0
     },
-    "satelliteArn":{"type":"string"}
+    "satelliteArn":{
+      "type":"string",
+      "max":132,
+      "min":82,
+      "pattern":"^arn:aws:groundstation:([-a-z0-9]{1,50})?:[0-9]{12}:satellite/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    }
   },
   "documentation":"<p>Welcome to the AWS Ground Station API Reference. AWS Ground Station is a fully managed service that enables you to control satellite communications, downlink and process satellite data, and scale your satellite operations efficiently and cost-effectively without having to build or manage your own ground station infrastructure.</p>"
 }

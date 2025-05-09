@@ -16,7 +16,6 @@ import re
 import threading
 
 from botocore.useragent import register_feature_id
-
 from s3transfer.bandwidth import BandwidthLimiter, LeakyBucket
 from s3transfer.constants import (
     ALLOWED_DOWNLOAD_ARGS,
@@ -156,8 +155,8 @@ class TransferConfig:
         for attr, attr_val in self.__dict__.items():
             if attr_val is not None and attr_val <= 0:
                 raise ValueError(
-                    'Provided parameter %s of value %s must be greater than '
-                    '0.' % (attr, attr_val)
+                    f'Provided parameter {attr} of value {attr_val} must be greater than '
+                    '0.'
                 )
 
 
@@ -192,12 +191,12 @@ class TransferManager:
     ]
 
     ALLOWED_UPLOAD_ARGS = (
-            _ALLOWED_SHARED_ARGS
-            + [
-                'ChecksumType',
-                'MpuObjectSize',
-            ]
-            + FULL_OBJECT_CHECKSUM_ARGS
+        _ALLOWED_SHARED_ARGS
+        + [
+            'ChecksumType',
+            'MpuObjectSize',
+        ]
+        + FULL_OBJECT_CHECKSUM_ARGS
     )
 
     ALLOWED_COPY_ARGS = _ALLOWED_SHARED_ARGS + [
@@ -504,16 +503,16 @@ class TransferManager:
                 match = pattern.match(bucket)
                 if match:
                     raise ValueError(
-                        'TransferManager methods do not support %s '
-                        'resource. Use direct client calls instead.' % resource
+                        f'TransferManager methods do not support {resource} '
+                        'resource. Use direct client calls instead.'
                     )
 
     def _validate_all_known_args(self, actual, allowed):
         for kwarg in actual:
             if kwarg not in allowed:
                 raise ValueError(
-                    "Invalid extra_args key '%s', "
-                    "must be one of: %s" % (kwarg, ', '.join(allowed))
+                    "Invalid extra_args key '{}', "
+                    "must be one of: {}".format(kwarg, ', '.join(allowed))
                 )
 
     def _add_operation_defaults(self, extra_args):

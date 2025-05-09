@@ -14,7 +14,6 @@
 import json
 from datetime import datetime, timedelta
 
-from awscli.formatter import get_formatter
 from awscli.arguments import CustomArgument
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.datapipeline import translator
@@ -25,7 +24,7 @@ from awscli.customizations.datapipeline.listrunsformatter import (
     ListRunsFormatter,
 )
 from awscli.customizations.exceptions import ParamValidationError
-
+from awscli.formatter import get_formatter
 
 DEFINITION_HELP_TEXT = """\
 The JSON pipeline definition.  If the pipeline definition
@@ -191,7 +190,7 @@ def convert_described_objects(api_describe_objects, sort_key_func=None):
     return converted
 
 
-class QueryArgBuilder(object):
+class QueryArgBuilder:
     """
     Convert CLI arguments to Query arguments used by QueryObject.
     """

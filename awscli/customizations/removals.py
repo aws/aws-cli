@@ -73,6 +73,7 @@ def register_removals(event_handler):
     cmd_remover.remove(
         on_event='building-command-table.bedrock-runtime',
         remove_commands=[
+            'invoke-model-with-bidirectional-stream',
             'invoke-model-with-response-stream',
             'converse-stream',
         ],
@@ -96,7 +97,7 @@ def register_removals(event_handler):
     )
 
 
-class CommandRemover(object):
+class CommandRemover:
     def __init__(self, events):
         self._events = events
 

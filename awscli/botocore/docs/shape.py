@@ -19,23 +19,29 @@
 from botocore.utils import is_json_value_header
 
 
-class ShapeDocumenter(object):
+class ShapeDocumenter:
     EVENT_NAME = ''
 
-    def __init__(self, service_id, operation_name, event_emitter,
-                 context=None):
+    def __init__(
+        self, service_id, operation_name, event_emitter, context=None
+    ):
         self._service_id = service_id
         self._operation_name = operation_name
         self._event_emitter = event_emitter
         self._context = context
         if context is None:
-            self._context = {
-                'special_shape_types': {}
-            }
+            self._context = {'special_shape_types': {}}
 
-    def traverse_and_document_shape(self, section, shape, history,
-                                    include=None, exclude=None, name=None,
-                                    is_required=False):
+    def traverse_and_document_shape(
+        self,
+        section,
+        shape,
+        history,
+        include=None,
+        exclude=None,
+        name=None,
+        is_required=False,
+    ):
         """Traverses and documents a shape
 
         Will take a self class and call its appropriate methods as a shape
@@ -65,29 +71,34 @@ class ShapeDocumenter(object):
             self.document_recursive_shape(section, shape, name=name)
         else:
             history.append(shape.name)
-            is_top_level_param = (len(history) == 2)
+            is_top_level_param = len(history) == 2
             if hasattr(shape, 'is_document_type') and shape.is_document_type:
                 param_type = 'document'
-            getattr(self, 'document_shape_type_%s' % param_type,
-                    self.document_shape_default)(
-                        section, shape, history=history, name=name,
-                        include=include, exclude=exclude,
-                        is_top_level_param=is_top_level_param,
-                        is_required=is_required)
+            getattr(
+                self,
+                f'document_shape_type_{param_type}',
+                self.document_shape_default,
+            )(
+                section,
+                shape,
+                history=history,
+                name=name,
+                include=include,
+                exclude=exclude,
+                is_top_level_param=is_top_level_param,
+                is_required=is_required,
+            )
             if is_top_level_param:
                 self._event_emitter.emit(
-                    'docs.%s.%s.%s.%s' % (self.EVENT_NAME,
-                                          self._service_id,
-                                          self._operation_name,
-                                          name),
-                    section=section)
-            at_overlying_method_section = (len(history) == 1)
+                    f'docs.{self.EVENT_NAME}.{self._service_id}.{self._operation_name}.{name}',
+                    section=section,
+                )
+            at_overlying_method_section = len(history) == 1
             if at_overlying_method_section:
                 self._event_emitter.emit(
-                    'docs.%s.%s.%s.complete-section' % (self.EVENT_NAME,
-                                                        self._service_id,
-                                                        self._operation_name),
-                    section=section)
+                    f'docs.{self.EVENT_NAME}.{self._service_id}.{self._operation_name}.complete-section',
+                    section=section,
+                )
             history.pop()
 
     def _get_special_py_default(self, shape):
@@ -116,7 +127,8 @@ class ShapeDocumenter(object):
         if hasattr(shape, 'is_document_type') and shape.is_document_type:
             return special_type_map['document_type']
         for special_type, marked_shape in self._context[
-                'special_shape_types'].items():
+            'special_shape_types'
+        ].items():
             if special_type in special_type_map:
                 if shape == marked_shape:
                     return special_type_map[special_type]

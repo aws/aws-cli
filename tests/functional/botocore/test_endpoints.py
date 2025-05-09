@@ -11,10 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-
 from botocore.session import get_session
 from botocore.utils import CLIENT_NAME_TO_HYPHENIZED_SERVICE_ID_OVERRIDES
-
 
 ENDPOINT_PREFIX_OVERRIDE = {
     # entry in endpoints.json -> actual endpoint prefix.
@@ -82,11 +80,13 @@ def _computed_endpoint_prefixes():
         # Check for an override where we know that an entry
         # in the endpoints.json actually maps to a different endpoint
         # prefix.
-        endpoint_prefix = ENDPOINT_PREFIX_OVERRIDE.get(endpoint_prefix,
-                                                       endpoint_prefix)
+        endpoint_prefix = ENDPOINT_PREFIX_OVERRIDE.get(
+            endpoint_prefix, endpoint_prefix
+        )
         yield endpoint_prefix
 
 
+@pytest.mark.validates_models
 @pytest.mark.parametrize("endpoint_prefix", _computed_endpoint_prefixes())
 def test_endpoint_matches_service(known_endpoint_prefixes, endpoint_prefix):
     # We need to cross check all computed endpoints against our
@@ -103,6 +103,7 @@ def _available_services():
     return sorted(loader.list_available_services('service-2'))
 
 
+@pytest.mark.validates_models
 @pytest.mark.parametrize("service_name", _available_services())
 def test_client_name_matches_hyphenized_service_id(service_name):
     """Generates tests for each service to verify that the computed service

@@ -10,11 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import sys
+from base64 import b64decode
+
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import create_client_from_parsed_globals
-
-from base64 import b64decode
-import sys
 
 
 def register_ecr_public_commands(cli):

@@ -1,8 +1,8 @@
 from contextlib import contextmanager
 
+from botocore.history import BaseHistoryHandler, get_global_history_recorder
+
 from tests import BaseSessionTest, ClientHTTPStubber
-from botocore.history import BaseHistoryHandler
-from botocore.history import get_global_history_recorder
 
 
 class RecordingHandler(BaseHistoryHandler):
@@ -14,26 +14,25 @@ class RecordingHandler(BaseHistoryHandler):
 
 
 class TestRecordStatementsInjections(BaseSessionTest):
-
     def setUp(self):
-        super(TestRecordStatementsInjections, self).setUp()
+        super().setUp()
         self.client = self.session.create_client('s3', 'us-west-2')
         self.http_stubber = ClientHTTPStubber(self.client)
         self.s3_response_body = (
-            '<ListAllMyBucketsResult '
-            '    xmlns="http://s3.amazonaws.com/doc/2006-03-01/">'
-            '  <Owner>'
-            '    <ID>d41d8cd98f00b204e9800998ecf8427e</ID>'
-            '    <DisplayName>foo</DisplayName>'
-            '  </Owner>'
-            '  <Buckets>'
-            '    <Bucket>'
-            '      <Name>bar</Name>'
-            '      <CreationDate>1912-06-23T22:57:02.000Z</CreationDate>'
-            '    </Bucket>'
-            '  </Buckets>'
-            '</ListAllMyBucketsResult>'
-        ).encode('utf-8')
+            b'<ListAllMyBucketsResult '
+            b'    xmlns="http://s3.amazonaws.com/doc/2006-03-01/">'
+            b'  <Owner>'
+            b'    <ID>d41d8cd98f00b204e9800998ecf8427e</ID>'
+            b'    <DisplayName>foo</DisplayName>'
+            b'  </Owner>'
+            b'  <Buckets>'
+            b'    <Bucket>'
+            b'      <Name>bar</Name>'
+            b'      <CreationDate>1912-06-23T22:57:02.000Z</CreationDate>'
+            b'    </Bucket>'
+            b'  </Buckets>'
+            b'</ListAllMyBucketsResult>'
+        )
         self.recording_handler = RecordingHandler()
         history_recorder = get_global_history_recorder()
         history_recorder.enable()
@@ -41,8 +40,7 @@ class TestRecordStatementsInjections(BaseSessionTest):
 
     def _get_all_events_of_type(self, event_type):
         recorded_calls = self.recording_handler.recorded_calls
-        matching = [call for call in recorded_calls
-                    if call[0] == event_type]
+        matching = [call for call in recorded_calls if call[0] == event_type]
         return matching
 
     def test_does_record_api_call(self):
@@ -54,11 +52,10 @@ class TestRecordStatementsInjections(BaseSessionTest):
         self.assertEqual(len(api_call_events), 1)
         event = api_call_events[0]
         event_type, payload, source = event
-        self.assertEqual(payload, {
-                'operation': u'ListBuckets',
-                'params': {},
-                'service': 's3'
-        })
+        self.assertEqual(
+            payload,
+            {'operation': 'ListBuckets', 'params': {}, 'service': 's3'},
+        )
         self.assertEqual(source, 'BOTOCORE')
 
     def test_does_record_http_request(self):
@@ -72,13 +69,17 @@ class TestRecordStatementsInjections(BaseSessionTest):
         event_type, payload, source = event
 
         method = payload['method']
-        self.assertEqual(method, u'GET')
+        self.assertEqual(method, 'GET')
 
         # The header values vary too much per request to verify them here.
         # Instead just check the presense of each expected header.
         headers = payload['headers']
-        for expected_header in ['Authorization', 'User-Agent', 'X-Amz-Date',
-                                'X-Amz-Content-SHA256']:
+        for expected_header in [
+            'Authorization',
+            'User-Agent',
+            'X-Amz-Date',
+            'X-Amz-Content-SHA256',
+        ]:
             self.assertIn(expected_header, headers)
 
         body = payload['body']
@@ -102,13 +103,15 @@ class TestRecordStatementsInjections(BaseSessionTest):
         event = http_response_events[0]
         event_type, payload, source = event
 
-        self.assertEqual(payload, {
+        self.assertEqual(
+            payload,
+            {
                 'status_code': 200,
                 'headers': {},
                 'streaming': False,
                 'body': self.s3_response_body,
-                'context': {'operation_name': 'ListBuckets'}
-            }
+                'context': {'operation_name': 'ListBuckets'},
+            },
         )
         self.assertEqual(source, 'BOTOCORE')
 
@@ -118,7 +121,8 @@ class TestRecordStatementsInjections(BaseSessionTest):
             self.client.list_buckets()
 
         parsed_response_events = self._get_all_events_of_type(
-            'PARSED_RESPONSE')
+            'PARSED_RESPONSE'
+        )
         self.assertEqual(len(parsed_response_events), 1)
         event = parsed_response_events[0]
         event_type, payload, source = event
@@ -128,10 +132,10 @@ class TestRecordStatementsInjections(BaseSessionTest):
         # assert the interesting bits since mock can only assert if the args
         # all match exactly.
         owner = payload['Owner']
-        self.assertEqual(owner, {
-            'DisplayName': 'foo',
-            'ID': 'd41d8cd98f00b204e9800998ecf8427e'
-        })
+        self.assertEqual(
+            owner,
+            {'DisplayName': 'foo', 'ID': 'd41d8cd98f00b204e9800998ecf8427e'},
+        )
 
         buckets = payload['Buckets']
         self.assertEqual(len(buckets), 1)
@@ -139,8 +143,7 @@ class TestRecordStatementsInjections(BaseSessionTest):
         self.assertEqual(bucket['Name'], 'bar')
 
         metadata = payload['ResponseMetadata']
-        self.assertEqual(metadata, {
-            'HTTPHeaders': {},
-            'HTTPStatusCode': 200,
-            'RetryAttempts': 0
-        })
+        self.assertEqual(
+            metadata,
+            {'HTTPHeaders': {}, 'HTTPStatusCode': 200, 'RetryAttempts': 0},
+        )

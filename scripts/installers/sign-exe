@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 """Script to sign exe bundle"""
+
 import argparse
 import os
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from utils import run, BadRCError
+from utils import BadRCError, run
 
-
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
-    os.path.abspath(__file__))))
+ROOT = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)
 EXE_ZIP_NAME = 'awscli-exe.zip'
 SIGNATURE_FILENAME = EXE_ZIP_NAME + '.sig'
 
@@ -28,9 +29,7 @@ def _verify_gpg_installed():
 
 
 def _sign_exe_zip(exe_zipfile, signature_filename, key_name):
-    options = [
-        '--yes', '--output', signature_filename
-    ]
+    options = ['--yes', '--output', signature_filename]
     if key_name:
         options.extend(['--local-user', key_name])
     options = ' '.join(options)
@@ -45,7 +44,7 @@ def main():
         help=(
             'The output signature file. By default, this will be '
             '"dist/%s" in the root of the awscli.' % SIGNATURE_FILENAME
-        )
+        ),
     )
     parser.add_argument(
         '--exe',
@@ -53,7 +52,7 @@ def main():
         help=(
             'The exe zip to sign. By default, this will be the'
             '"dist/%s" zipfile in the root of the awscli.' % EXE_ZIP_NAME
-        )
+        ),
     )
     parser.add_argument(
         '--key-name',
@@ -61,7 +60,7 @@ def main():
             'The name of the key to use for signing. This corresponds to the '
             '--local-user option when running gpg. By default, the key used '
             'is your default private key in gpg.'
-        )
+        ),
     )
     args = parser.parse_args()
     sign_exe(args.exe, args.output, args.key_name)
@@ -69,4 +68,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

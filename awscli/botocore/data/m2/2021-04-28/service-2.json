@@ -53,6 +53,27 @@
       "documentation":"<p>Creates a new application with given parameters. Requires an existing runtime environment and application definition file.</p>",
       "idempotent":true
     },
+    "CreateDataSetExportTask":{
+      "name":"CreateDataSetExportTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/applications/{applicationId}/dataset-export-task",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateDataSetExportTaskRequest"},
+      "output":{"shape":"CreateDataSetExportTaskResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Starts a data set export task for a specific application.</p>",
+      "idempotent":true
+    },
     "CreateDataSetImportTask":{
       "name":"CreateDataSetImportTask",
       "http":{
@@ -247,6 +268,24 @@
       ],
       "documentation":"<p>Gets the details of a specific data set.</p>"
     },
+    "GetDataSetExportTask":{
+      "name":"GetDataSetExportTask",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{applicationId}/dataset-export-tasks/{taskId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDataSetExportTaskRequest"},
+      "output":{"shape":"GetDataSetExportTaskResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets the status of a data set import task initiated with the <a>CreateDataSetExportTask</a> operation.</p>"
+    },
     "GetDataSetImportTask":{
       "name":"GetDataSetImportTask",
       "http":{
@@ -405,6 +444,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists all the job steps for a JCL file to restart a batch job. This is only applicable for Micro Focus engine with versions 8.0.6 and above.</p>"
+    },
+    "ListDataSetExportHistory":{
+      "name":"ListDataSetExportHistory",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{applicationId}/dataset-export-tasks",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDataSetExportHistoryRequest"},
+      "output":{"shape":"ListDataSetExportHistoryResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the data set exports for the specified application.</p>"
     },
     "ListDataSetImportHistory":{
       "name":"ListDataSetImportHistory",
@@ -1114,6 +1171,44 @@
         }
       }
     },
+    "CreateDataSetExportTaskRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "exportConfig"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"Identifier",
+          "documentation":"<p>The unique identifier of the application for which you want to export data sets.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure the idempotency of the request to create a data set export. The service generates the clientToken when the API call is triggered. The token expires after one hour, so if you retry the API within this timeframe with the same clientToken, you will get the same response. The service also handles deleting the clientToken after it expires.</p>",
+          "idempotencyToken":true
+        },
+        "exportConfig":{
+          "shape":"DataSetExportConfig",
+          "documentation":"<p>The data set export task configuration.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KMSKeyId",
+          "documentation":"<p>The identifier of a customer managed key.</p>"
+        }
+      }
+    },
+    "CreateDataSetExportTaskResponse":{
+      "type":"structure",
+      "required":["taskId"],
+      "members":{
+        "taskId":{
+          "shape":"Identifier",
+          "documentation":"<p>The task identifier. This operation is asynchronous. Use this identifier with the <a>GetDataSetExportTask</a> operation to obtain the status of this task.</p>"
+        }
+      }
+    },
     "CreateDataSetImportTaskRequest":{
       "type":"structure",
       "required":[
@@ -1298,6 +1393,109 @@
         }
       },
       "documentation":"<p>Defines a data set.</p>"
+    },
+    "DataSetExportConfig":{
+      "type":"structure",
+      "members":{
+        "dataSets":{
+          "shape":"DataSetExportList",
+          "documentation":"<p>The data sets.</p>"
+        },
+        "s3Location":{
+          "shape":"String",
+          "documentation":"<p>The Amazon S3 location of the data sets.</p>"
+        }
+      },
+      "documentation":"<p>Identifies one or more data sets you want to import with the <a>CreateDataSetExportTask</a> operation.</p>",
+      "union":true
+    },
+    "DataSetExportItem":{
+      "type":"structure",
+      "required":[
+        "datasetName",
+        "externalLocation"
+      ],
+      "members":{
+        "datasetName":{
+          "shape":"String200",
+          "documentation":"<p>The data set.</p>"
+        },
+        "externalLocation":{
+          "shape":"ExternalLocation",
+          "documentation":"<p>The location of the data set.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a specific data set to export from an external location.</p>"
+    },
+    "DataSetExportList":{
+      "type":"list",
+      "member":{"shape":"DataSetExportItem"},
+      "max":1024,
+      "min":1
+    },
+    "DataSetExportSummary":{
+      "type":"structure",
+      "required":[
+        "failed",
+        "inProgress",
+        "pending",
+        "succeeded",
+        "total"
+      ],
+      "members":{
+        "failed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of data set exports that have failed.</p>"
+        },
+        "inProgress":{
+          "shape":"Integer",
+          "documentation":"<p>The number of data set exports that are in progress.</p>"
+        },
+        "pending":{
+          "shape":"Integer",
+          "documentation":"<p>The number of data set exports that are pending.</p>"
+        },
+        "succeeded":{
+          "shape":"Integer",
+          "documentation":"<p>The number of data set exports that have succeeded.</p>"
+        },
+        "total":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of data set exports.</p>"
+        }
+      },
+      "documentation":"<p>Represents a summary of data set exports.</p>"
+    },
+    "DataSetExportTask":{
+      "type":"structure",
+      "required":[
+        "status",
+        "summary",
+        "taskId"
+      ],
+      "members":{
+        "status":{
+          "shape":"DataSetTaskLifecycle",
+          "documentation":"<p>The status of the data set export task.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>If dataset exports failed, the failure reason will show here.</p>"
+        },
+        "summary":{
+          "shape":"DataSetExportSummary",
+          "documentation":"<p>A summary of the data set export task.</p>"
+        },
+        "taskId":{
+          "shape":"Identifier",
+          "documentation":"<p>The identifier of the data set export task.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a data set export task.</p>"
+    },
+    "DataSetExportTaskList":{
+      "type":"list",
+      "member":{"shape":"DataSetExportTask"}
     },
     "DataSetImportConfig":{
       "type":"structure",
@@ -2196,6 +2394,56 @@
         }
       }
     },
+    "GetDataSetExportTaskRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "taskId"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"Identifier",
+          "documentation":"<p>The application identifier.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "taskId":{
+          "shape":"Identifier",
+          "documentation":"<p>The task identifier returned by the <a>CreateDataSetExportTask</a> operation.</p>",
+          "location":"uri",
+          "locationName":"taskId"
+        }
+      }
+    },
+    "GetDataSetExportTaskResponse":{
+      "type":"structure",
+      "required":[
+        "status",
+        "taskId"
+      ],
+      "members":{
+        "kmsKeyArn":{
+          "shape":"String",
+          "documentation":"<p>The identifier of a customer managed key used for exported data set encryption.</p>"
+        },
+        "status":{
+          "shape":"DataSetTaskLifecycle",
+          "documentation":"<p>The status of the task.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>If dataset export failed, the failure reason will show here.</p>"
+        },
+        "summary":{
+          "shape":"DataSetExportSummary",
+          "documentation":"<p>A summary of the status of the task.</p>"
+        },
+        "taskId":{
+          "shape":"Identifier",
+          "documentation":"<p>The task identifier.</p>"
+        }
+      }
+    },
     "GetDataSetImportTaskRequest":{
       "type":"structure",
       "required":[
@@ -2498,6 +2746,19 @@
           "shape":"Integer",
           "documentation":"<p>The number of a procedure step.</p>"
         },
+        "stepCheckpoint":{
+          "shape":"Integer",
+          "documentation":"<p>A registered step-level checkpoint identifier that can be used for restarting an Amazon Web Services Blu Age application batch job.</p>",
+          "box":true
+        },
+        "stepCheckpointStatus":{
+          "shape":"String",
+          "documentation":"<p>The step-level checkpoint status for an Amazon Web Services Blu Age application batch job.</p>"
+        },
+        "stepCheckpointTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The step-level checkpoint status for an Amazon Web Services Blu Age application batch job.</p>"
+        },
         "stepCondCode":{
           "shape":"String",
           "documentation":"<p>The condition code of a step.</p>"
@@ -2529,6 +2790,16 @@
           "shape":"String",
           "documentation":"<p>The step name that a batch job was restarted from.</p>"
         },
+        "skip":{
+          "shape":"Boolean",
+          "documentation":"<p>The step-level checkpoint timestamp (creation or last modification) for an Amazon Web Services Blu Age application batch job.</p>",
+          "box":true
+        },
+        "stepCheckpoint":{
+          "shape":"Integer",
+          "documentation":"<p>Skip selected step and issue a restart from immediate successor step for an Amazon Web Services Blu Age application batch job.</p>",
+          "box":true
+        },
         "toProcStep":{
           "shape":"String",
           "documentation":"<p>The procedure step name that a batch job was restarted to.</p>"
@@ -2539,6 +2810,12 @@
         }
       },
       "documentation":"<p>Provides step/procedure step information for a restart batch job operation.</p>"
+    },
+    "KMSKeyId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9:/_-]+$"
     },
     "ListApplicationVersionsRequest":{
       "type":"structure",
@@ -2766,6 +3043,44 @@
         "batchJobSteps":{
           "shape":"BatchJobStepList",
           "documentation":"<p>Returns all the batch job steps and related information for a batch job that previously ran.</p>"
+        }
+      }
+    },
+    "ListDataSetExportHistoryRequest":{
+      "type":"structure",
+      "required":["applicationId"],
+      "members":{
+        "applicationId":{
+          "shape":"Identifier",
+          "documentation":"<p>The unique identifier of the application.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of objects to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token returned from a previous call to this operation. This specifies the next item to return. To return to the beginning of the list, exclude this parameter.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListDataSetExportHistoryResponse":{
+      "type":"structure",
+      "required":["dataSetExportTasks"],
+      "members":{
+        "dataSetExportTasks":{
+          "shape":"DataSetExportTaskList",
+          "documentation":"<p>The data set export tasks.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are more items to return, this contains a token that is passed to a subsequent call to this operation to retrieve the next set of items.</p>"
         }
       }
     },

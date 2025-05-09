@@ -40,8 +40,8 @@ exists, then a usage error will be printed.
 """
 
 import os
-from ruamel.yaml import YAML
 
+from ruamel.yaml import YAML
 
 WIZARD_SPEC_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
@@ -53,7 +53,7 @@ class WizardNotExistError(Exception):
     pass
 
 
-class WizardLoader(object):
+class WizardLoader:
     def __init__(self, spec_dir=None):
         if spec_dir is None:
             spec_dir = WIZARD_SPEC_DIR
@@ -88,7 +88,7 @@ class WizardLoader(object):
         try:
             with open(filename) as f:
                 return self._load_yaml(f.read())
-        except (OSError, IOError):
+        except OSError:
             raise WizardNotExistError(
                 "Wizard does not exist for command "
                 "'%s', name: '%s'" % (command_name, wizard_name)

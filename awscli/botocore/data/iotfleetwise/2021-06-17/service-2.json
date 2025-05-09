@@ -1038,7 +1038,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p> Updates a vehicle. </p>"
+      "documentation":"<p> Updates a vehicle.</p> <important> <p>Access to certain Amazon Web Services IoT FleetWise features is currently gated. For more information, see <a href=\"https://docs.aws.amazon.com/iot-fleetwise/latest/developerguide/fleetwise-regions.html\">Amazon Web Services Region and feature availability</a> in the <i>Amazon Web Services IoT FleetWise Developer Guide</i>.</p> </important>"
     }
   },
   "shapes":{
@@ -1059,7 +1059,7 @@
       ],
       "members":{
         "fullyQualifiedName":{
-          "shape":"string",
+          "shape":"ActuatorFullyQualifiedNameString",
           "documentation":"<p>The fully qualified name of the actuator. For example, the fully qualified name of an actuator might be <code>Vehicle.Front.Left.Door.Lock</code>.</p>"
         },
         "dataType":{
@@ -1107,6 +1107,12 @@
       },
       "documentation":"<p>A signal that represents a vehicle device such as the engine, heater, and door locks. Data from an actuator reports the state of a certain vehicle device.</p> <note> <p> Updating actuator data can change the state of a device. For example, you can turn on or off the heater by updating its actuator data.</p> </note>"
     },
+    "ActuatorFullyQualifiedNameString":{
+      "type":"string",
+      "max":150,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.]+"
+    },
     "AmazonResourceName":{
       "type":"string",
       "max":1011,
@@ -1143,7 +1149,7 @@
       ],
       "members":{
         "fullyQualifiedName":{
-          "shape":"string",
+          "shape":"AttributeFullyQualifiedNameString",
           "documentation":"<p>The fully qualified name of the attribute. For example, the fully qualified name of an attribute might be <code>Vehicle.Body.Engine.Type</code>.</p>"
         },
         "dataType":{
@@ -1190,6 +1196,12 @@
         }
       },
       "documentation":"<p>A signal that represents static information about the vehicle, such as engine type or manufacturing date.</p>"
+    },
+    "AttributeFullyQualifiedNameString":{
+      "type":"string",
+      "max":150,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.]+"
     },
     "BatchCreateVehicleRequest":{
       "type":"structure",
@@ -1242,7 +1254,7 @@
       "required":["fullyQualifiedName"],
       "members":{
         "fullyQualifiedName":{
-          "shape":"string",
+          "shape":"BranchFullyQualifiedNameString",
           "documentation":"<p>The fully qualified name of the branch. For example, the fully qualified name of a branch might be <code>Vehicle.Body.Engine</code>.</p>"
         },
         "description":{
@@ -1259,6 +1271,12 @@
         }
       },
       "documentation":"<p>A group of signals that are defined in a hierarchical structure.</p>"
+    },
+    "BranchFullyQualifiedNameString":{
+      "type":"string",
+      "max":150,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.]+"
     },
     "CampaignStatus":{
       "type":"string",
@@ -1355,7 +1373,8 @@
     "CanInterfaceName":{
       "type":"string",
       "max":100,
-      "min":1
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.]+"
     },
     "CanSignal":{
       "type":"structure",
@@ -1411,7 +1430,8 @@
     "CanSignalName":{
       "type":"string",
       "max":100,
-      "min":1
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.]+"
     },
     "CloudWatchLogDeliveryOptions":{
       "type":"structure",
@@ -1632,7 +1652,7 @@
           "documentation":"<p>A brief description of the decoder manifest. </p>"
         },
         "modelManifestArn":{
-          "shape":"arn",
+          "shape":"CreateDecoderManifestRequestModelManifestArnString",
           "documentation":"<p> The Amazon Resource Name (ARN) of the vehicle model (model manifest). </p>"
         },
         "signalDecoders":{
@@ -1652,6 +1672,10 @@
           "documentation":"<p>Metadata that can be used to manage the decoder manifest.</p>"
         }
       }
+    },
+    "CreateDecoderManifestRequestModelManifestArnString":{
+      "type":"string",
+      "pattern":"arn:aws:iotfleetwise:[a-z0-9-]+:[0-9]{12}:model-manifest/[a-zA-Z\\d\\-_:]{1,100}"
     },
     "CreateDecoderManifestResponse":{
       "type":"structure",
@@ -1729,7 +1753,7 @@
           "documentation":"<p> A brief description of the vehicle model. </p>"
         },
         "nodes":{
-          "shape":"listOfStrings",
+          "shape":"CreateModelManifestRequestNodesList",
           "documentation":"<p> A list of nodes, which are a general abstraction of signals. </p>"
         },
         "signalCatalogArn":{
@@ -1741,6 +1765,12 @@
           "documentation":"<p>Metadata that can be used to manage the vehicle model.</p>"
         }
       }
+    },
+    "CreateModelManifestRequestNodesList":{
+      "type":"list",
+      "member":{"shape":"string"},
+      "max":500,
+      "min":0
     },
     "CreateModelManifestResponse":{
       "type":"structure",
@@ -2025,7 +2055,7 @@
       ],
       "members":{
         "fullyQualifiedName":{
-          "shape":"string",
+          "shape":"CustomPropertyFullyQualifiedNameString",
           "documentation":"<p>The fully qualified name of the custom property. For example, the fully qualified name of a custom property might be <code>ComplexDataTypes.VehicleDataTypes.SVMCamera.FPS</code>.</p>"
         },
         "dataType":{
@@ -2055,12 +2085,18 @@
       },
       "documentation":"<p>Represents a member of the complex data structure. The data type of the property can be either primitive or another <code>struct</code>.</p>"
     },
+    "CustomPropertyFullyQualifiedNameString":{
+      "type":"string",
+      "max":150,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.]+"
+    },
     "CustomStruct":{
       "type":"structure",
       "required":["fullyQualifiedName"],
       "members":{
         "fullyQualifiedName":{
-          "shape":"string",
+          "shape":"CustomStructFullyQualifiedNameString",
           "documentation":"<p>The fully qualified name of the custom structure. For example, the fully qualified name of a custom structure might be <code>ComplexDataTypes.VehicleDataTypes.SVMCamera</code>.</p>"
         },
         "description":{
@@ -2077,6 +2113,12 @@
         }
       },
       "documentation":"<p>The custom structure represents a complex or higher-order data structure.</p>"
+    },
+    "CustomStructFullyQualifiedNameString":{
+      "type":"string",
+      "max":150,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.]+"
     },
     "DataDestinationConfig":{
       "type":"structure",
@@ -2538,7 +2580,8 @@
     "FullyQualifiedName":{
       "type":"string",
       "max":150,
-      "min":1
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.]+"
     },
     "GetCampaignRequest":{
       "type":"structure",
@@ -3174,7 +3217,8 @@
     "InterfaceId":{
       "type":"string",
       "max":50,
-      "min":1
+      "min":1,
+      "pattern":"[-a-zA-Z0-9_.]+"
     },
     "InterfaceIds":{
       "type":"list",
@@ -4109,7 +4153,8 @@
     "ObdInterfaceName":{
       "type":"string",
       "max":100,
-      "min":1
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.]+"
     },
     "ObdSignal":{
       "type":"structure",
@@ -4211,12 +4256,14 @@
     "ProtocolName":{
       "type":"string",
       "max":50,
-      "min":1
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.]+"
     },
     "ProtocolVersion":{
       "type":"string",
       "max":50,
-      "min":1
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.]+"
     },
     "PutEncryptionConfigurationRequest":{
       "type":"structure",
@@ -4445,7 +4492,7 @@
       ],
       "members":{
         "fullyQualifiedName":{
-          "shape":"string",
+          "shape":"SensorFullyQualifiedNameString",
           "documentation":"<p>The fully qualified name of the sensor. For example, the fully qualified name of a sensor might be <code>Vehicle.Body.Engine.Battery</code>.</p>"
         },
         "dataType":{
@@ -4486,6 +4533,12 @@
         }
       },
       "documentation":"<p>An input component that reports the environmental condition of a vehicle.</p> <note> <p>You can collect data about fluid levels, temperatures, vibrations, or battery voltage from sensors.</p> </note>"
+    },
+    "SensorFullyQualifiedNameString":{
+      "type":"string",
+      "max":150,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.]+"
     },
     "SignalCatalogSummary":{
       "type":"structure",
@@ -5527,6 +5580,10 @@
         "stateTemplatesToRemove":{
           "shape":"StateTemplateAssociationIdentifiers",
           "documentation":"<p>Remove state templates from the vehicle.</p>"
+        },
+        "stateTemplatesToUpdate":{
+          "shape":"StateTemplateAssociations",
+          "documentation":"<p>Change the <code>stateTemplateUpdateStrategy</code> of state templates already associated with the vehicle.</p>"
         }
       }
     },
@@ -5561,9 +5618,13 @@
         "stateTemplatesToRemove":{
           "shape":"StateTemplateAssociationIdentifiers",
           "documentation":"<p>Remove existing state template associations from the vehicle.</p>"
+        },
+        "stateTemplatesToUpdate":{
+          "shape":"StateTemplateAssociations",
+          "documentation":"<p>Change the <code>stateTemplateUpdateStrategy</code> of state templates already associated with the vehicle.</p>"
         }
       },
-      "documentation":"<p>Information about the vehicle to update.</p>"
+      "documentation":"<p>Information about the vehicle to update.</p> <important> <p>Access to certain Amazon Web Services IoT FleetWise features is currently gated. For more information, see <a href=\"https://docs.aws.amazon.com/iot-fleetwise/latest/developerguide/fleetwise-regions.html\">Amazon Web Services Region and feature availability</a> in the <i>Amazon Web Services IoT FleetWise Developer Guide</i>.</p> </important>"
     },
     "UpdateVehicleResponse":{
       "type":"structure",
@@ -5900,17 +5961,20 @@
     },
     "nonNegativeInteger":{
       "type":"integer",
+      "max":2147483647,
       "min":0
     },
     "number":{"type":"integer"},
     "positiveInteger":{
       "type":"integer",
       "box":true,
+      "max":2147483647,
       "min":1
     },
     "positiveLong":{
       "type":"long",
       "box":true,
+      "max":9223372036854775807,
       "min":1
     },
     "priority":{
@@ -5931,7 +5995,7 @@
     "statusStr":{
       "type":"string",
       "max":20,
-      "min":7,
+      "min":1,
       "pattern":"[A-Z_]*"
     },
     "string":{"type":"string"},

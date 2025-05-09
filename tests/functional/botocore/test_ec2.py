@@ -12,10 +12,11 @@
 # language governing permissions and limitations under the License.
 import datetime
 
-from tests import mock, unittest, ClientHTTPStubber, BaseSessionTest
-from botocore.compat import parse_qs, urlparse
-from botocore.stub import Stubber, ANY
 import botocore.session
+from botocore.compat import parse_qs, urlparse
+from botocore.stub import ANY, Stubber
+
+from tests import BaseSessionTest, ClientHTTPStubber, mock, unittest
 
 
 class TestIdempotencyToken(unittest.TestCase):
@@ -23,8 +24,7 @@ class TestIdempotencyToken(unittest.TestCase):
         self.function_name = 'purchase_scheduled_instances'
         self.region = 'us-west-2'
         self.session = botocore.session.get_session()
-        self.client = self.session.create_client(
-            'ec2', self.region)
+        self.client = self.session.create_client('ec2', self.region)
         self.stubber = Stubber(self.client)
         self.service_response = {}
         self.params_seen = []
@@ -33,7 +33,8 @@ class TestIdempotencyToken(unittest.TestCase):
         self.client.meta.events.register_first(
             'before-call.*.*',
             self.collect_params,
-            unique_id='TestIdempotencyToken')
+            unique_id='TestIdempotencyToken',
+        )
 
     def collect_params(self, model, params, *args, **kwargs):
         self.params_seen.extend(params['body'].keys())
@@ -41,40 +42,46 @@ class TestIdempotencyToken(unittest.TestCase):
     def test_provided_idempotency_token(self):
         expected_params = {
             'PurchaseRequests': [
-                {'PurchaseToken': 'foo',
-                 'InstanceCount': 123}],
-            'ClientToken': ANY
+                {'PurchaseToken': 'foo', 'InstanceCount': 123}
+            ],
+            'ClientToken': ANY,
         }
         self.stubber.add_response(
-            self.function_name, self.service_response, expected_params)
+            self.function_name, self.service_response, expected_params
+        )
 
         with self.stubber:
             self.client.purchase_scheduled_instances(
-                PurchaseRequests=[{'PurchaseToken': 'foo',
-                                   'InstanceCount': 123}],
-                ClientToken='foobar')
+                PurchaseRequests=[
+                    {'PurchaseToken': 'foo', 'InstanceCount': 123}
+                ],
+                ClientToken='foobar',
+            )
             self.assertIn('ClientToken', self.params_seen)
 
     def test_insert_idempotency_token(self):
         expected_params = {
             'PurchaseRequests': [
-                {'PurchaseToken': 'foo',
-                 'InstanceCount': 123}],
+                {'PurchaseToken': 'foo', 'InstanceCount': 123}
+            ],
         }
 
         self.stubber.add_response(
-            self.function_name, self.service_response, expected_params)
+            self.function_name, self.service_response, expected_params
+        )
 
         with self.stubber:
             self.client.purchase_scheduled_instances(
-                PurchaseRequests=[{'PurchaseToken': 'foo',
-                                   'InstanceCount': 123}])
+                PurchaseRequests=[
+                    {'PurchaseToken': 'foo', 'InstanceCount': 123}
+                ]
+            )
             self.assertIn('ClientToken', self.params_seen)
 
 
 class TestCopySnapshotCustomization(BaseSessionTest):
     def setUp(self):
-        super(TestCopySnapshotCustomization, self).setUp()
+        super().setUp()
         self.session = botocore.session.get_session()
         self.client = self.session.create_client('ec2', 'us-east-1')
         self.http_stubber = ClientHTTPStubber(self.client)
@@ -87,14 +94,15 @@ class TestCopySnapshotCustomization(BaseSessionTest):
         )
         self.now = datetime.datetime(2011, 9, 9, 23, 36)
         self.datetime_patch = mock.patch.object(
-            botocore.auth.datetime, 'datetime',
-            mock.Mock(wraps=datetime.datetime)
+            botocore.auth.datetime,
+            'datetime',
+            mock.Mock(wraps=datetime.datetime),
         )
         self.mocked_datetime = self.datetime_patch.start()
         self.mocked_datetime.utcnow.return_value = self.now
 
     def tearDown(self):
-        super(TestCopySnapshotCustomization, self).tearDown()
+        super().tearDown()
         self.datetime_patch.stop()
 
     def add_copy_snapshot_response(self, snapshot_id):

@@ -11,19 +11,18 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import base64
-import botocore
 import json
 import os
 import sys
-
 from datetime import datetime, timedelta
-from botocore.signers import RequestSigner
-from botocore.model import ServiceId
 
-from awscli.formatter import get_formatter
+import botocore
+from botocore.model import ServiceId
+from botocore.signers import RequestSigner
+
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.utils import uni_print
-from awscli.customizations.utils import validate_mutually_exclusive
+from awscli.customizations.utils import uni_print, validate_mutually_exclusive
+from awscli.formatter import get_formatter
 
 AUTH_SERVICE = "sts"
 AUTH_COMMAND = "GetCallerIdentity"
@@ -219,7 +218,7 @@ class GetTokenCommand(BasicCommand):
             return fallback_api_version
 
 
-class TokenGenerator(object):
+class TokenGenerator:
     def __init__(self, sts_client):
         self._sts_client = sts_client
 
@@ -240,7 +239,7 @@ class TokenGenerator(object):
         )
 
 
-class STSClientFactory(object):
+class STSClientFactory:
     def __init__(self, session):
         self._session = session
 

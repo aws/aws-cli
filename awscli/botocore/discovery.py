@@ -27,12 +27,14 @@ class EndpointDiscoveryException(BotoCoreError):
 
 
 class EndpointDiscoveryRequired(EndpointDiscoveryException):
-    """ Endpoint Discovery is disabled but is required for this operation. """
+    """Endpoint Discovery is disabled but is required for this operation."""
+
     fmt = 'Endpoint Discovery is not enabled but this operation requires it.'
 
 
 class EndpointDiscoveryRefreshFailed(EndpointDiscoveryException):
-    """ Endpoint Discovery failed to the refresh the known endpoints. """
+    """Endpoint Discovery failed to the refresh the known endpoints."""
+
     fmt = 'Endpoint Discovery failed to refresh the required endpoints.'
 
 
@@ -42,7 +44,7 @@ def block_endpoint_discovery_required_operations(model, **kwargs):
         raise EndpointDiscoveryRequired()
 
 
-class EndpointDiscoveryModel(object):
+class EndpointDiscoveryModel:
     def __init__(self, service_model):
         self._service_model = service_model
 
@@ -61,7 +63,9 @@ class EndpointDiscoveryModel(object):
 
     def discovery_required_for(self, operation_name):
         try:
-            operation_model = self._service_model.operation_model(operation_name)
+            operation_model = self._service_model.operation_model(
+                operation_name
+            )
             return operation_model.endpoint_discovery.get('required', False)
         except OperationNotFoundError:
             return False
@@ -85,13 +89,17 @@ class EndpointDiscoveryModel(object):
         for member_name, member_shape in shape.members.items():
             if member_shape.metadata.get('endpointdiscoveryid'):
                 ids[member_name] = params[member_name]
-            elif member_shape.type_name == 'structure' and member_name in params:
+            elif (
+                member_shape.type_name == 'structure' and member_name in params
+            ):
                 self._gather_ids(member_shape, params[member_name], ids)
         return ids
 
 
-class EndpointDiscoveryManager(object):
-    def __init__(self, client, cache=None, current_time=None, always_discover=True):
+class EndpointDiscoveryManager:
+    def __init__(
+        self, client, cache=None, current_time=None, always_discover=True
+    ):
         if cache is None:
             cache = {}
         self._cache = cache
@@ -177,8 +185,7 @@ class EndpointDiscoveryManager(object):
         if not self._always_discover and not discovery_required:
             # Discovery set to only run on required operations
             logger.debug(
-                'Optional discovery disabled. Skipping discovery for Operation: %s'
-                % operation
+                f'Optional discovery disabled. Skipping discovery for Operation: {operation}'
             )
             return None
 
@@ -214,18 +221,18 @@ class EndpointDiscoveryManager(object):
         return None
 
 
-class EndpointDiscoveryHandler(object):
+class EndpointDiscoveryHandler:
     def __init__(self, manager):
         self._manager = manager
 
     def register(self, events, service_id):
         events.register(
-            'before-parameter-build.%s' % service_id, self.gather_identifiers
+            f'before-parameter-build.{service_id}', self.gather_identifiers
         )
         events.register_first(
-            'request-created.%s' % service_id, self.discover_endpoint
+            f'request-created.{service_id}', self.discover_endpoint
         )
-        events.register('needs-retry.%s' % service_id, self.handle_retries)
+        events.register(f'needs-retry.{service_id}', self.handle_retries)
 
     def gather_identifiers(self, params, model, context, **kwargs):
         endpoint_discovery = model.endpoint_discovery

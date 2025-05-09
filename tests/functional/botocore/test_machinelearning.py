@@ -15,10 +15,11 @@ from tests import BaseSessionTest, ClientHTTPStubber
 
 class TestMachineLearning(BaseSessionTest):
     def setUp(self):
-        super(TestMachineLearning, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
         self.client = self.session.create_client(
-            'machinelearning', self.region)
+            'machinelearning', self.region
+        )
         self.http_stubber = ClientHTTPStubber(self.client)
 
     def test_predict(self):
@@ -28,7 +29,7 @@ class TestMachineLearning(BaseSessionTest):
             self.client.predict(
                 MLModelId='ml-foo',
                 Record={'Foo': 'Bar'},
-                PredictEndpoint=custom_endpoint
+                PredictEndpoint=custom_endpoint,
             )
             sent_request = self.http_stubber.requests[0]
             self.assertEqual(sent_request.url, custom_endpoint)

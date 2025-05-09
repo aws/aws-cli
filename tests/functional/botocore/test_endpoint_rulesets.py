@@ -16,7 +16,6 @@ from functools import lru_cache
 from pathlib import Path
 
 import pytest
-
 from botocore import xform_name
 from botocore.config import Config
 from botocore.endpoint_provider import EndpointProvider
@@ -27,6 +26,7 @@ from botocore.exceptions import (
 )
 from botocore.loaders import Loader
 from botocore.parsers import ResponseParserError
+
 from tests import ClientHTTPStubber
 
 ENDPOINT_TESTDATA_DIR = Path(__file__).parent / 'endpoint-rules'
@@ -48,7 +48,7 @@ def partitions():
     return LOADER.load_data('partitions')
 
 
-@lru_cache()
+@lru_cache
 def get_endpoint_tests_for_service(service_name):
     file_path = ENDPOINT_TESTDATA_DIR / service_name / 'endpoint-tests-1.json'
     if not file_path.is_file():
@@ -170,11 +170,6 @@ def iter_e2e_test_cases_that_produce(endpoints=False, errors=False):
             expected_object = test['expect']
             if endpoints and 'endpoint' in expected_object:
                 expected_endpoint = expected_object['endpoint']
-                expected_props = expected_endpoint.get('properties', {})
-                expected_authschemes = [
-                    auth_scheme['name']
-                    for auth_scheme in expected_props.get('authSchemes', [])
-                ]
                 yield pytest.param(
                     service_name,
                     op_name,

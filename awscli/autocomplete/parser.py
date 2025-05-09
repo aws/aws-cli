@@ -13,7 +13,7 @@
 WORD_BOUNDARY = ''
 
 
-class ParsedResult(object):
+class ParsedResult:
     def __init__(
         self,
         current_command=None,
@@ -96,7 +96,7 @@ class ParsedResult(object):
         return self.__dict__ == other.__dict__
 
 
-class ParseState(object):
+class ParseState:
     def __init__(self):
         self._current_command = None
         self.current_param = None
@@ -123,7 +123,7 @@ class ParseState(object):
         return self._lineage + [self.current_command]
 
 
-class CLIParser(object):
+class CLIParser:
     """Parses AWS CLI command.
 
     This is different from the parser used when actually invoking CLI commands

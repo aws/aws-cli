@@ -13,18 +13,18 @@
 from decimal import Decimal
 
 import awscli.customizations.dynamodb.ast as ast
+
 from .exceptions import (
     EmptyExpressionError,
+    InvalidLiteralValueError,
     UnexpectedTokenError,
     UnknownExpressionError,
-    InvalidLiteralValueError,
 )
-
 from .lexer import Lexer
 from .types import Binary
 
 
-class Parser(object):
+class Parser:
     COMPARATORS = ['eq', 'ne', 'lt', 'lte', 'gt', 'gte']
 
     def __init__(self, lexer=None):

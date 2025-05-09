@@ -13,15 +13,15 @@
 from awscli.customizations import utils
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3.subcommands import (
-    ListCommand,
-    WebsiteCommand,
     CpCommand,
+    ListCommand,
+    MbCommand,
     MvCommand,
+    PresignCommand,
+    RbCommand,
     RmCommand,
     SyncCommand,
-    MbCommand,
-    RbCommand,
-    PresignCommand,
+    WebsiteCommand,
 )
 from awscli.customizations.s3.syncstrategy.register import (
     register_sync_strategies,

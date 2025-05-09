@@ -16,20 +16,20 @@ This module implements endpoint resolution, including resolving endpoints for a
 given service and region and resolving the available endpoints for a service
 in a specific AWS partition.
 """
+
 import copy
 import logging
 import re
 from enum import Enum
 
 import jmespath
-
 from botocore import UNSIGNED, xform_name
 from botocore.auth import AUTH_TYPE_MAPS
 from botocore.endpoint_provider import EndpointProvider
 from botocore.exceptions import (
     EndpointProviderError,
-    InvalidEndpointConfigurationError,
     EndpointVariantError,
+    InvalidEndpointConfigurationError,
     InvalidHostLabelError,
     NoRegionError,
     ParamValidationError,
@@ -44,12 +44,13 @@ from botocore.exceptions import (
 from botocore.utils import ensure_boolean, instance_cache
 
 LOG = logging.getLogger(__name__)
-DEFAULT_URI_TEMPLATE = '{service}.{region}.{dnsSuffix}' # noqa
+DEFAULT_URI_TEMPLATE = '{service}.{region}.{dnsSuffix}'  # noqa
 DEFAULT_SERVICE_DATA = {'endpoints': {}}
 
 
-class BaseEndpointResolver(object):
+class BaseEndpointResolver:
     """Resolves regions and endpoints. Must be subclassed."""
+
     def construct_endpoint(self, service_name, region_name=None):
         """Resolves an endpoint for a service and region combination.
 
@@ -86,8 +87,9 @@ class BaseEndpointResolver(object):
         """
         raise NotImplementedError
 
-    def get_available_endpoints(self, service_name, partition_name='aws',
-                                allow_non_regional=False):
+    def get_available_endpoints(
+        self, service_name, partition_name='aws', allow_non_regional=False
+    ):
         """Lists the endpoint names of a particular partition.
 
         :type service_name: string
@@ -141,9 +143,13 @@ class EndpointResolver(BaseEndpointResolver):
             result.append(partition['partition'])
         return result
 
-    def get_available_endpoints(self, service_name, partition_name='aws',
-                                allow_non_regional=False,
-                                endpoint_variant_tags=None):
+    def get_available_endpoints(
+        self,
+        service_name,
+        partition_name='aws',
+        allow_non_regional=False,
+        endpoint_variant_tags=None,
+    ):
         result = []
         for partition in self._endpoint_data['partitions']:
             if partition['partition'] != partition_name:
@@ -157,8 +163,8 @@ class EndpointResolver(BaseEndpointResolver):
                 # Only regional endpoints can be modeled with variants
                 if endpoint_variant_tags and is_regional_endpoint:
                     variant_data = self._retrieve_variant_data(
-                        service_endpoints[endpoint_name],
-                        endpoint_variant_tags)
+                        service_endpoints[endpoint_name], endpoint_variant_tags
+                    )
                     if variant_data:
                         result.append(endpoint_name)
                 elif allow_non_regional or is_regional_endpoint:
@@ -166,15 +172,14 @@ class EndpointResolver(BaseEndpointResolver):
         return result
 
     def get_partition_dns_suffix(
-        self,
-        partition_name,
-        endpoint_variant_tags=None
+        self, partition_name, endpoint_variant_tags=None
     ):
         for partition in self._endpoint_data['partitions']:
             if partition['partition'] == partition_name:
                 if endpoint_variant_tags:
                     variant = self._retrieve_variant_data(
-                        partition.get('defaults'), endpoint_variant_tags)
+                        partition.get('defaults'), endpoint_variant_tags
+                    )
                     if variant and 'dnsSuffix' in variant:
                         return variant['dnsSuffix']
                 else:
@@ -187,7 +192,7 @@ class EndpointResolver(BaseEndpointResolver):
         region_name=None,
         partition_name=None,
         use_dualstack_endpoint=False,
-        use_fips_endpoint=False
+        use_fips_endpoint=False,
     ):
         if (
             service_name == 's3'
@@ -204,9 +209,12 @@ class EndpointResolver(BaseEndpointResolver):
 
             if valid_partition is not None:
                 result = self._endpoint_for_partition(
-                    valid_partition, service_name,
-                    region_name, use_dualstack_endpoint, use_fips_endpoint,
-                    True
+                    valid_partition,
+                    service_name,
+                    region_name,
+                    use_dualstack_endpoint,
+                    use_fips_endpoint,
+                    True,
                 )
                 return result
             return None
@@ -214,12 +222,16 @@ class EndpointResolver(BaseEndpointResolver):
         # Iterate over each partition until a match is found.
         for partition in self._endpoint_data['partitions']:
             if use_dualstack_endpoint and (
-                    partition['partition'] in
-                    self._UNSUPPORTED_DUALSTACK_PARTITIONS):
+                partition['partition']
+                in self._UNSUPPORTED_DUALSTACK_PARTITIONS
+            ):
                 continue
             result = self._endpoint_for_partition(
-                partition, service_name, region_name, use_dualstack_endpoint,
-                use_fips_endpoint
+                partition,
+                service_name,
+                region_name,
+                use_dualstack_endpoint,
+                use_fips_endpoint,
             )
             if result:
                 return result
@@ -233,19 +245,30 @@ class EndpointResolver(BaseEndpointResolver):
             error_msg='No partition found for provided region_name.',
         )
 
-    def _endpoint_for_partition(self, partition, service_name, region_name,
-                                use_dualstack_endpoint, use_fips_endpoint,
-                                force_partition=False):
+    def _endpoint_for_partition(
+        self,
+        partition,
+        service_name,
+        region_name,
+        use_dualstack_endpoint,
+        use_fips_endpoint,
+        force_partition=False,
+    ):
         partition_name = partition["partition"]
-        if (use_dualstack_endpoint and
-                partition_name in self._UNSUPPORTED_DUALSTACK_PARTITIONS):
-            error_msg = ("Dualstack endpoints are currently not supported"
-                         " for %s partition" % partition_name)
+        if (
+            use_dualstack_endpoint
+            and partition_name in self._UNSUPPORTED_DUALSTACK_PARTITIONS
+        ):
+            error_msg = (
+                "Dualstack endpoints are currently not supported"
+                f" for {partition_name} partition"
+            )
             raise EndpointVariantError(tags=['dualstack'], error_msg=error_msg)
 
         # Get the service from the partition, or an empty template.
         service_data = partition['services'].get(
-            service_name, DEFAULT_SERVICE_DATA)
+            service_name, DEFAULT_SERVICE_DATA
+        )
         # Use the partition endpoint if no region is supplied.
         if region_name is None:
             if 'partitionEndpoint' in service_data:
@@ -272,12 +295,19 @@ class EndpointResolver(BaseEndpointResolver):
             partition_endpoint = service_data.get('partitionEndpoint')
             is_regionalized = service_data.get('isRegionalized', True)
             if partition_endpoint and not is_regionalized:
-                LOG.debug('Using partition endpoint for %s, %s: %s',
-                          service_name, region_name, partition_endpoint)
+                LOG.debug(
+                    'Using partition endpoint for %s, %s: %s',
+                    service_name,
+                    region_name,
+                    partition_endpoint,
+                )
                 resolve_kwargs['endpoint_name'] = partition_endpoint
                 return self._resolve(**resolve_kwargs)
-            LOG.debug('Creating a regex based endpoint for %s, %s',
-                      service_name, region_name)
+            LOG.debug(
+                'Creating a regex based endpoint for %s, %s',
+                service_name,
+                region_name,
+            )
             return self._resolve(**resolve_kwargs)
 
     def _region_match(self, partition, region_name):
@@ -302,40 +332,44 @@ class EndpointResolver(BaseEndpointResolver):
             tags.append('fips')
         return tags
 
-    def _resolve_variant(self, tags, endpoint_data, service_defaults,
-                         partition_defaults):
+    def _resolve_variant(
+        self, tags, endpoint_data, service_defaults, partition_defaults
+    ):
         result = {}
-        for variants in [endpoint_data, service_defaults,
-                         partition_defaults]:
+        for variants in [endpoint_data, service_defaults, partition_defaults]:
             variant = self._retrieve_variant_data(variants, tags)
             if variant:
                 self._merge_keys(variant, result)
         return result
 
-    def _resolve(self, partition, service_name, service_data, endpoint_name,
-                 use_dualstack_endpoint, use_fips_endpoint):
-        endpoint_data = service_data.get('endpoints', {}).get(endpoint_name, {})
+    def _resolve(
+        self,
+        partition,
+        service_name,
+        service_data,
+        endpoint_name,
+        use_dualstack_endpoint,
+        use_fips_endpoint,
+    ):
+        endpoint_data = service_data.get('endpoints', {}).get(
+            endpoint_name, {}
+        )
 
         if endpoint_data.get('deprecated'):
             LOG.warning(
-                'Client is configured with the deprecated endpoint: %s' % (
-                    endpoint_name
-                )
+                f'Client is configured with the deprecated endpoint: {endpoint_name}'
             )
 
         service_defaults = service_data.get('defaults', {})
         partition_defaults = partition.get('defaults', {})
-        tags = self._create_tag_list(use_dualstack_endpoint,
-                                     use_fips_endpoint)
+        tags = self._create_tag_list(use_dualstack_endpoint, use_fips_endpoint)
 
         if tags:
-            result = self._resolve_variant(tags, endpoint_data,
-                                           service_defaults,
-                                           partition_defaults)
+            result = self._resolve_variant(
+                tags, endpoint_data, service_defaults, partition_defaults
+            )
             if result == {}:
-                error_msg = ("Endpoint does not exist for %s in region %s" % (
-                    service_name, endpoint_name
-                ))
+                error_msg = f"Endpoint does not exist for {service_name} in region {endpoint_name}"
                 raise EndpointVariantError(tags=tags, error_msg=error_msg)
             self._merge_keys(endpoint_data, result)
         else:
@@ -353,13 +387,20 @@ class EndpointResolver(BaseEndpointResolver):
         self._merge_keys(partition_defaults, result)
 
         result['hostname'] = self._expand_template(
-            partition, result['hostname'], service_name, endpoint_name,
-            result['dnsSuffix']
+            partition,
+            result['hostname'],
+            service_name,
+            endpoint_name,
+            result['dnsSuffix'],
         )
         if 'sslCommonName' in result:
             result['sslCommonName'] = self._expand_template(
-                partition, result['sslCommonName'], service_name,
-                endpoint_name, result['dnsSuffix'])
+                partition,
+                result['sslCommonName'],
+                service_name,
+                endpoint_name,
+                result['dnsSuffix'],
+            )
 
         return result
 
@@ -368,11 +409,12 @@ class EndpointResolver(BaseEndpointResolver):
             if key not in result:
                 result[key] = from_data[key]
 
-    def _expand_template(self, partition, template, service_name,
-                         endpoint_name, dnsSuffix):
+    def _expand_template(
+        self, partition, template, service_name, endpoint_name, dnsSuffix
+    ):
         return template.format(
-            service=service_name, region=endpoint_name,
-            dnsSuffix=dnsSuffix)
+            service=service_name, region=endpoint_name, dnsSuffix=dnsSuffix
+        )
 
 
 class EndpointResolverBuiltins(str, Enum):
@@ -408,6 +450,7 @@ class EndpointResolverBuiltins(str, Enum):
     ACCOUNT_ID = "AWS::Auth::AccountId"
     # Whether an endpoint should include an account ID (str)
     ACCOUNT_ID_ENDPOINT_MODE = "AWS::Auth::AccountIdEndpointMode"
+
 
 class EndpointRulesetResolver:
     """Resolves endpoints using a service's endpoint ruleset"""
@@ -453,7 +496,7 @@ class EndpointRulesetResolver:
             operation_model, call_args, request_context
         )
         LOG.debug(
-            'Calling endpoint provider with parameters: %s' % provider_params
+            f'Calling endpoint provider with parameters: {provider_params}'
         )
         try:
             provider_result = self._provider.resolve_endpoint(
@@ -467,7 +510,7 @@ class EndpointRulesetResolver:
                 raise
             else:
                 raise botocore_exception from ex
-        LOG.debug('Endpoint provider result: %s' % provider_result.url)
+        LOG.debug(f'Endpoint provider result: {provider_result.url}')
 
         # The endpoint provider does not support non-secure transport.
         if not self._use_ssl and provider_result.url.startswith('https://'):
@@ -524,7 +567,8 @@ class EndpointRulesetResolver:
         self, param_name, operation_model, call_args
     ):
         static = self._resolve_param_as_static_context_param(
-            param_name, operation_model,
+            param_name,
+            operation_model,
         )
         if static is not None:
             return static
@@ -609,7 +653,7 @@ class EndpointRulesetResolver:
         customized_builtins = copy.copy(self._builtins)
         # Handlers are expected to modify the builtins dict in place.
         self._event_emitter.emit(
-            'before-endpoint-resolution.%s' % service_id,
+            f'before-endpoint-resolution.{service_id}',
             builtins=customized_builtins,
             model=operation_model,
             params=call_args,

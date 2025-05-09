@@ -24,11 +24,10 @@ import textwrap
 
 from botocore.exceptions import ClientError
 
-from awscli.compat import urlopen, ensure_text_type
+from awscli.compat import ensure_text_type, urlopen
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.utils import create_client_from_parsed_globals
 from awscli.customizations.exceptions import ParamValidationError
-
+from awscli.customizations.utils import create_client_from_parsed_globals
 
 LOG = logging.getLogger(__name__)
 

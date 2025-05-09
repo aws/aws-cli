@@ -1,6 +1,5 @@
 from PyInstaller.utils import hooks
 
-
 hiddenimports = [
     'docutils',
     'urllib',

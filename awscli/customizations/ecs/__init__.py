@@ -12,8 +12,10 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations.ecs.deploy import ECSDeploy
-from awscli.customizations.ecs.executecommand import ECSExecuteCommand
-from awscli.customizations.ecs.executecommand import ExecuteCommandCaller
+from awscli.customizations.ecs.executecommand import (
+    ECSExecuteCommand,
+    ExecuteCommandCaller,
+)
 
 
 def initialize(cli):

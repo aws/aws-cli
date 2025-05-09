@@ -10,29 +10,24 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import logging
+import os
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
 
-from awscli.customizations.commands import BasicCommand
-from awscli.customizations.exceptions import (
-    ParamValidationError,
-    ConfigurationError,
-)
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
-from cryptography.hazmat.primitives.serialization import (
-    PublicFormat,
-    Encoding,
-    PrivateFormat,
-    NoEncryption,
-)
+from awscrt.crypto import ED25519, ED25519ExportFormat
+
 from awscli.compat import compat_shell_quote
+from awscli.customizations.commands import BasicCommand
 from awscli.customizations.ec2instanceconnect.eicefetcher import (
     InstanceConnectEndpointRequestFetcher,
+)
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
 )
 
 logger = logging.getLogger(__name__)
@@ -146,7 +141,7 @@ class SshCommand(BasicCommand):
     DESCRIPTION = 'Connect to your EC2 instance using your OpenSSH client.'
 
     def __init__(self, session, key_manager=None):
-        super(SshCommand, self).__init__(session)
+        super().__init__(session)
         self._key_manager = (
             KeyManager() if (key_manager is None) else key_manager
         )
@@ -447,19 +442,29 @@ class SshCommand(BasicCommand):
 class KeyManager:
     def generate_key(self):
         logger.debug('Generate Ed25519 Key')
-        return Ed25519PrivateKey.generate()
+        return ED25519.new_generate()
+
+    def _get_public_key(self, private_key):
+        public_key_bytes = ED25519.export_public_key(
+            private_key, export_format=ED25519ExportFormat.OPENSSH_B64
+        )
+        return f"ssh-ed25519 {public_key_bytes.decode()}"
 
     def get_public_key(self, private_key):
-        return private_key.public_key().public_bytes(
-            encoding=Encoding.OpenSSH, format=PublicFormat.OpenSSH
+        return self._get_public_key(private_key)
+
+    def _get_private_pem(self, private_key):
+        private_key_bytes = ED25519.export_private_key(
+            private_key, export_format=ED25519ExportFormat.OPENSSH_B64
         )
+        return (
+            '-----BEGIN OPENSSH PRIVATE KEY-----\n'
+            f'{private_key_bytes.decode()}\n'
+            '-----END OPENSSH PRIVATE KEY-----\n'
+        ).encode()
 
     def get_private_pem(self, private_key):
-        return private_key.private_bytes(
-            encoding=Encoding.PEM,
-            format=PrivateFormat.OpenSSH,
-            encryption_algorithm=NoEncryption(),
-        )
+        return self._get_private_pem(private_key=private_key)
 
     def upload_public_key(
         self, ec2_instance_connect_client, instance_id, os_user, public_key
@@ -468,5 +473,5 @@ class KeyManager:
         ec2_instance_connect_client.send_ssh_public_key(
             InstanceId=instance_id,
             InstanceOSUser=os_user,
-            SSHPublicKey=public_key.decode(),
+            SSHPublicKey=public_key,
         )

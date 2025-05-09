@@ -31,7 +31,10 @@ Output::
                                 "arn:aws:ivs:arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
                             ],
                             "recordingConfiguration": {
-                                "format": "HLS"
+                                "format": "HLS",
+                                "hlsConfiguration": {
+                                    "targetSegmentDurationSeconds": 2
+                                }
                             },
                             "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE",
                         }
@@ -52,7 +55,8 @@ Output::
                     "gridGap": 2,
                     "omitStoppedVideo": false,
                     "videoAspectRatio": "VIDEO",
-                    "videoFillMode": ""                }
+                    "videoFillMode": ""
+                }
             },
             "stageArn": "arn:aws:ivs:ap-northeast-1:123456789012:stage/defgABCDabcd",
             "startTime": "2023-10-16T23:24:00+00:00",
@@ -61,7 +65,7 @@ Output::
         }
     }
 
-For more information, see `Composite Recording (Real-Time Streaming) <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `IVS Composite Recording | Real-Time Streaming <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon IVS Real-Time Streaming User Guide*.
 
 **Example 2: To get a composition with PiP layout**
 
@@ -96,7 +100,10 @@ Output::
                                 "arn:aws:ivs:arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
                             ],
                             "recordingConfiguration": {
-                                "format": "HLS"
+                                "format": "HLS",
+                                "hlsConfiguration": {
+                                    "targetSegmentDurationSeconds": 2
+                                }
                             },
                             "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE"
                         }
@@ -130,7 +137,7 @@ Output::
         }
     }
 
-For more information, see `Composite Recording (Real-Time Streaming) <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `IVS Composite Recording | Real-Time Streaming <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon IVS Real-Time Streaming User Guide*.
 
 **Example 3: To get a composition with thumbnail recording enabled**
 
@@ -165,7 +172,10 @@ Output::
                                 "arn:aws:ivs:arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/ABabCDcdEFef"
                             ],
                             "recordingConfiguration": {
-                                "format": "HLS"
+                                "format": "HLS",
+                                "hlsConfiguration": {
+                                    "targetSegmentDurationSeconds": 2
+                                }
                             },
                             "storageConfigurationArn": "arn:arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/FefABabCDcdE",
                             "thumbnailConfigurations": [
@@ -203,4 +213,4 @@ Output::
         }
     }
 
-For more information, see `Composite Recording (Real-Time Streaming) <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `IVS Composite Recording | Real-Time Streaming <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon IVS Real-Time Streaming User Guide*.

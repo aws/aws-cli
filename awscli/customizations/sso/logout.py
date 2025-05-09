@@ -17,9 +17,7 @@ import os
 from botocore.exceptions import ClientError
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.sso.utils import SSO_TOKEN_DIR
-from awscli.customizations.sso.utils import AWS_CREDS_CACHE_DIR
-
+from awscli.customizations.sso.utils import AWS_CREDS_CACHE_DIR, SSO_TOKEN_DIR
 
 LOG = logging.getLogger(__name__)
 
@@ -42,7 +40,7 @@ class LogoutCommand(BasicCommand):
         return 0
 
 
-class BaseCredentialSweeper(object):
+class BaseCredentialSweeper:
     def delete_credentials(self, creds_dir):
         if not os.path.isdir(creds_dir):
             return
@@ -61,7 +59,7 @@ class BaseCredentialSweeper(object):
 
     def _get_json_contents(self, filename):
         try:
-            with open(filename, 'r') as f:
+            with open(filename) as f:
                 return json.load(f)
         except Exception:
             # We do not want to include the traceback in the exception

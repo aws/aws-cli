@@ -13,8 +13,8 @@
 import collections
 import itertools
 import json
-import os
 import logging
+import os
 import re
 
 import colorama
@@ -23,31 +23,28 @@ from botocore.config import Config
 from botocore.configprovider import ConstantProvider
 from botocore.exceptions import ProfileNotFound
 from botocore.utils import is_valid_endpoint_url
-
 from prompt_toolkit import prompt as ptk_prompt
 from prompt_toolkit.application import get_app
 from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.styles import Style
-from prompt_toolkit.validation import Validator
-from prompt_toolkit.validation import ValidationError
+from prompt_toolkit.validation import ValidationError, Validator
 
-from awscli.customizations.utils import uni_print
 from awscli.customizations.configure import (
-    profile_to_section,
     get_section_header,
+    profile_to_section,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
-from awscli.customizations.wizard.ui.selectmenu import select_menu
 from awscli.customizations.sso.utils import (
-    do_sso_login,
-    parse_sso_registration_scopes,
-    PrintOnlyHandler,
     LOGIN_ARGS,
     BaseSSOCommand,
+    PrintOnlyHandler,
+    do_sso_login,
+    parse_sso_registration_scopes,
 )
+from awscli.customizations.utils import uni_print
+from awscli.customizations.wizard.ui.selectmenu import select_menu
 from awscli.formatter import CLI_OUTPUT_FORMATS
-
 
 logger = logging.getLogger(__name__)
 
@@ -110,7 +107,7 @@ class ScopesValidator(ValidatorWithDefault):
         return True
 
 
-class PTKPrompt(object):
+class PTKPrompt:
     _DEFAULT_PROMPT_FORMAT = '{prompt_text} [{current_value}]: '
 
     def __init__(self, prompter=None):
@@ -463,7 +460,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             sso_account_id = self._handle_single_account(accounts)
         else:
             sso_account_id = self._handle_multiple_accounts(accounts)
-        uni_print('Using the account ID {}\n'.format(sso_account_id))
+        uni_print(f'Using the account ID {sso_account_id}\n')
         self._new_profile_config_values['sso_account_id'] = sso_account_id
         return sso_account_id
 
@@ -496,7 +493,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             sso_role_name = self._handle_single_role(roles)
         else:
             sso_role_name = self._handle_multiple_roles(roles)
-        uni_print('Using the role name "{}"\n'.format(sso_role_name))
+        uni_print(f'Using the role name "{sso_role_name}"\n')
         self._new_profile_config_values['sso_role_name'] = sso_role_name
         return sso_role_name
 
@@ -682,7 +679,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             sso_role_name = self._prompt_for_role(
                 sso, sso_token, sso_account_id
             )
-        except sso.exceptions.UnauthorizedException as e:
+        except sso.exceptions.UnauthorizedException:
             uni_print(
                 'Unable to list AWS accounts and/or roles. '
                 'Skipping configuring AWS credential provider for profile.\n'

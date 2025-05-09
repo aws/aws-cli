@@ -16,12 +16,12 @@ import os
 import shutil
 import sys
 
-from awscli.customizations.commands import BasicCommand
 from awscli.customizations.codedeploy.utils import (
+    validate_instance,
     validate_region,
     validate_s3_location,
-    validate_instance,
 )
+from awscli.customizations.commands import BasicCommand
 
 
 class Install(BasicCommand):
@@ -77,11 +77,11 @@ class Install(BasicCommand):
             sys.stdout.flush()
             sys.stderr.write(
                 'ERROR\n'
-                '{0}\n'
+                f'{e}\n'
                 'Install the AWS CodeDeploy Agent on the on-premises instance '
                 'by following the instructions in "Configure Existing '
                 'On-Premises Instances by Using AWS CodeDeploy" in the AWS '
-                'CodeDeploy User Guide.\n'.format(e)
+                'CodeDeploy User Guide.\n'
             )
             return 255
         return 0
@@ -100,9 +100,9 @@ class Install(BasicCommand):
     def _validate_agent_installer(self, params):
         validate_s3_location(params, 'agent_installer')
         if 'bucket' not in params:
-            params.bucket = 'aws-codedeploy-{0}'.format(params.region)
+            params.bucket = f'aws-codedeploy-{params.region}'
         if 'key' not in params:
-            params.key = 'latest/{0}'.format(params.system.INSTALLER)
+            params.key = f'latest/{params.system.INSTALLER}'
             params.installer = params.system.INSTALLER
         else:
             start = params.key.rfind('/') + 1

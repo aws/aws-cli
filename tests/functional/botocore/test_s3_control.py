@@ -10,20 +10,20 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import unittest, mock, BaseSessionTest, create_session
-
-from botocore.config import Config
 from botocore.awsrequest import AWSResponse
+from botocore.config import Config
+
+from tests import BaseSessionTest, create_session, mock, unittest
 
 
 class S3ControlOperationTest(BaseSessionTest):
     def setUp(self):
-        super(S3ControlOperationTest, self).setUp()
+        super().setUp()
         self.region = 'us-west-2'
-        self.client = self.session.create_client(
-            's3control', self.region)
+        self.client = self.session.create_client('s3control', self.region)
         self.session_send_patch = mock.patch(
-            'botocore.endpoint.Endpoint._send')
+            'botocore.endpoint.Endpoint._send'
+        )
         self.http_session_send_mock = self.session_send_patch.start()
         self.http_response = mock.Mock(spec=AWSResponse)
         self.http_response.status_code = 200
@@ -40,8 +40,11 @@ class S3ControlOperationTest(BaseSessionTest):
         self.assertEqual(self.http_session_send_mock.call_count, 1)
         request = self.http_session_send_mock.call_args_list[0][0][0]
 
-        self.assertTrue(request.url.startswith(
-            'https://123.s3-control.us-west-2.amazonaws.com'))
+        self.assertTrue(
+            request.url.startswith(
+                'https://123.s3-control.us-west-2.amazonaws.com'
+            )
+        )
 
     def test_does_not_remove_account_id_from_headers(self):
         self.client.get_public_access_block(AccountId='123')
@@ -54,13 +57,16 @@ class S3ControlOperationTest(BaseSessionTest):
         # Re-create the client with the use_dualstack_endpoint configuration
         # option set to True.
         self.client = self.session.create_client(
-            's3control', self.region, config=Config(
-                s3={'use_dualstack_endpoint': True}
-            )
+            's3control',
+            self.region,
+            config=Config(s3={'use_dualstack_endpoint': True}),
         )
         self.client.get_public_access_block(AccountId='123')
 
         self.assertEqual(self.http_session_send_mock.call_count, 1)
         request = self.http_session_send_mock.call_args_list[0][0][0]
-        self.assertTrue(request.url.startswith(
-            'https://123.s3-control.dualstack.us-west-2.amazonaws.com'))
+        self.assertTrue(
+            request.url.startswith(
+                'https://123.s3-control.dualstack.us-west-2.amazonaws.com'
+            )
+        )

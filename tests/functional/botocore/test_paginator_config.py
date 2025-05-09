@@ -12,16 +12,22 @@
 # language governing permissions and limitations under the License.
 import string
 
-import pytest
+import botocore.session
 import jmespath
+import pytest
 from jmespath.exceptions import JMESPathError
 
-import botocore.session
-
-
 KNOWN_PAGE_KEYS = set(
-    ['input_token', 'py_input_token', 'output_token', 'result_key',
-     'limit_key', 'more_results', 'non_aggregate_keys'])
+    [
+        'input_token',
+        'py_input_token',
+        'output_token',
+        'result_key',
+        'limit_key',
+        'more_results',
+        'non_aggregate_keys',
+    ]
+)
 MEMBER_NAME_CHARS = set(string.ascii_letters + string.digits)
 # The goal here should be to remove all of these by updating the paginators
 # to reference all the extra output keys. Nothing should ever be added to this
@@ -130,20 +136,14 @@ def _pagination_configs():
     services = loader.list_available_services('paginators-1')
     for service_name in services:
         service_model = session.get_service_model(service_name)
-        page_config = loader.load_service_model(service_name,
-                                                'paginators-1')
+        page_config = loader.load_service_model(service_name, 'paginators-1')
         for op_name, single_config in page_config['pagination'].items():
-            yield (
-                op_name,
-                single_config,
-                service_model
-            )
+            yield (op_name, single_config, service_model)
 
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize(
-    "operation_name, page_config, service_model",
-    _pagination_configs()
+    "operation_name, page_config, service_model", _pagination_configs()
 )
 def test_lint_pagination_configs(operation_name, page_config, service_model):
     _validate_known_pagination_keys(page_config)
@@ -157,29 +157,35 @@ def test_lint_pagination_configs(operation_name, page_config, service_model):
 def _validate_known_pagination_keys(page_config):
     for key in page_config:
         if key not in KNOWN_PAGE_KEYS:
-            raise AssertionError("Unknown key '%s' in pagination config: %s"
-                                 % (key, page_config))
+            raise AssertionError(
+                f"Unknown key '{key}' in pagination config: {page_config}"
+            )
 
 
 def _valiate_result_key_exists(page_config):
     if 'result_key' not in page_config:
-        raise AssertionError("Required key 'result_key' is missing "
-                             "from pagination config: %s" % page_config)
+        raise AssertionError(
+            "Required key 'result_key' is missing "
+            f"from pagination config: {page_config}"
+        )
 
 
 def _validate_referenced_operation_exists(operation_name, service_model):
     if operation_name not in service_model.operation_names:
-        raise AssertionError("Pagination config refers to operation that "
-                             "does not exist: %s" % operation_name)
+        raise AssertionError(
+            "Pagination config refers to operation that "
+            f"does not exist: {operation_name}"
+        )
 
 
 def _validate_operation_has_output(operation_name, service_model):
     op_model = service_model.operation_model(operation_name)
     output = op_model.output_shape
     if output is None or not output.members:
-        raise AssertionError("Pagination config refers to operation "
-                             "that does not have any output: %s"
-                             % operation_name)
+        raise AssertionError(
+            "Pagination config refers to operation "
+            f"that does not have any output: {operation_name}"
+        )
 
 
 def _validate_input_keys_match(operation_name, page_config, service_model):
@@ -187,19 +193,26 @@ def _validate_input_keys_match(operation_name, page_config, service_model):
     if not isinstance(input_tokens, list):
         input_tokens = [input_tokens]
     valid_input_names = service_model.operation_model(
-        operation_name).input_shape.members
+        operation_name
+    ).input_shape.members
     for token in input_tokens:
         if token not in valid_input_names:
-            raise AssertionError("input_token '%s' refers to a non existent "
-                                 "input member for operation: %s"
-                                 % (token, operation_name))
+            raise AssertionError(
+                f"input_token '{token}' refers to a non existent "
+                f"input member for operation: {operation_name}"
+            )
     if 'limit_key' in page_config:
         limit_key = page_config['limit_key']
         if limit_key not in valid_input_names:
-            raise AssertionError("limit_key '%s' refers to a non existent "
-                                 "input member for operation: %s, valid keys: "
-                                 "%s" % (limit_key, operation_name,
-                                         ', '.join(list(valid_input_names))))
+            raise AssertionError(
+                "limit_key '{}' refers to a non existent "
+                "input member for operation: {}, valid keys: "
+                "{}".format(
+                    limit_key,
+                    operation_name,
+                    ', '.join(list(valid_input_names)),
+                )
+            )
 
 
 def _validate_output_keys_match(operation_name, page_config, service_model):
@@ -217,30 +230,31 @@ def _validate_output_keys_match(operation_name, page_config, service_model):
             _validate_jmespath_compiles(output_key)
         else:
             if output_key not in output_members:
-                raise AssertionError("Pagination key '%s' refers to an output "
-                                     "member that does not exist: %s" % (
-                                         key_name, output_key))
+                raise AssertionError(
+                    f"Pagination key '{key_name}' refers to an output "
+                    f"member that does not exist: {output_key}"
+                )
             output_members.remove(output_key)
 
     for member in list(output_members):
-        key = "%s.%s.%s" % (service_model.service_name,
-                            operation_name,
-                            member)
+        key = f"{service_model.service_name}.{operation_name}.{member}"
         if key in KNOWN_EXTRA_OUTPUT_KEYS:
             output_members.remove(member)
 
     if output_members:
         for member in output_members:
-            key = "%s.%s.%s" % (service_model.service_name,
-                                operation_name,
-                                member)
+            key = f"{service_model.service_name}.{operation_name}.{member}"
             with open('/tmp/blah', 'a') as f:
-                f.write("'%s',\n" % key)
-        raise AssertionError("There are member names in the output shape of "
-                             "%s that are not accounted for in the pagination "
-                             "config for service %s: %s" % (
-                                 operation_name, service_model.service_name,
-                                 ', '.join(output_members)))
+                f.write(f"'{key}',\n")
+        raise AssertionError(
+            "There are member names in the output shape of "
+            "{} that are not accounted for in the pagination "
+            "config for service {}: {}".format(
+                operation_name,
+                service_model.service_name,
+                ', '.join(output_members),
+            )
+        )
 
 
 def _looks_like_jmespath(expression):
@@ -253,9 +267,10 @@ def _validate_jmespath_compiles(expression):
     try:
         jmespath.compile(expression)
     except JMESPathError as e:
-        raise AssertionError("Invalid JMESPath expression used "
-                             "in pagination config: %s\nerror: %s"
-                             % (expression, e))
+        raise AssertionError(
+            "Invalid JMESPath expression used "
+            f"in pagination config: {expression}\nerror: {e}"
+        )
 
 
 def _get_all_page_output_keys(page_config):

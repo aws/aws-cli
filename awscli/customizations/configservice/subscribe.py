@@ -14,9 +14,8 @@ import json
 import sys
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.utils import s3_bucket_exists
 from awscli.customizations.s3.utils import find_bucket_key
-
+from awscli.customizations.utils import s3_bucket_exists
 
 S3_BUCKET = {
     'name': 's3-bucket',
@@ -150,7 +149,7 @@ class SubscribeCommand(BasicCommand):
         )
 
 
-class S3BucketHelper(object):
+class S3BucketHelper:
     def __init__(self, s3_client):
         self._s3_client = s3_client
 
@@ -176,7 +175,7 @@ class S3BucketHelper(object):
         self._s3_client.create_bucket(**params)
 
 
-class SNSTopicHelper(object):
+class SNSTopicHelper:
     def __init__(self, sns_client):
         self._sns_client = sns_client
 

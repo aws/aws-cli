@@ -16,23 +16,29 @@ from tests.functional.botocore.docs import BaseDocsFunctionalTest
 class TestEc2Docs(BaseDocsFunctionalTest):
     def test_documents_encoding_of_user_data(self):
         docs = self.get_parameter_documentation_from_service(
-            'ec2', 'run_instances', 'UserData')
+            'ec2', 'run_instances', 'UserData'
+        )
         self.assertIn('base64 encoded automatically', docs.decode('utf-8'))
 
     def test_copy_snapshot_presigned_url_is_autopopulated(self):
         self.assert_is_documented_as_autopopulated_param(
             service_name='ec2',
             method_name='copy_snapshot',
-            param_name='PresignedUrl')
+            param_name='PresignedUrl',
+        )
 
     def test_copy_snapshot_destination_region_is_autopopulated(self):
         self.assert_is_documented_as_autopopulated_param(
             service_name='ec2',
             method_name='copy_snapshot',
-            param_name='DestinationRegion')
+            param_name='DestinationRegion',
+        )
 
     def test_idempotency_documented(self):
-        content = self.get_docstring_for_method('ec2', 'purchase_scheduled_instances')
+        content = self.get_docstring_for_method(
+            'ec2', 'purchase_scheduled_instances'
+        )
         # Client token should have had idempotentcy autopopulated doc appended
-        self.assert_contains_line('This field is autopopulated if not provided',
-                                  content)
+        self.assert_contains_line(
+            'This field is autopopulated if not provided', content
+        )

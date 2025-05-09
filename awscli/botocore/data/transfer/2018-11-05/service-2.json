@@ -578,7 +578,7 @@
         {"shape":"InternalServiceError"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Imports the signing and encryption certificates that you need to create local (AS2) profiles and partner profiles.</p>"
+      "documentation":"<p>Imports the signing and encryption certificates that you need to create local (AS2) profiles and partner profiles.</p> <p>You can import both the certificate and its chain in the <code>Certificate</code> parameter.</p> <note> <p>If you use the <code>Certificate</code> parameter to upload both the certificate and its chain, don't use the <code>CertificateChain</code> parameter.</p> </note>"
     },
     "ImportHostKey":{
       "name":"ImportHostKey",
@@ -899,6 +899,40 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Begins a file transfer between local Amazon Web Services storage and a remote AS2 or SFTP server.</p> <ul> <li> <p>For an AS2 connector, you specify the <code>ConnectorId</code> and one or more <code>SendFilePaths</code> to identify the files you want to transfer.</p> </li> <li> <p>For an SFTP connector, the file transfer can be either outbound or inbound. In both cases, you specify the <code>ConnectorId</code>. Depending on the direction of the transfer, you also specify the following items:</p> <ul> <li> <p>If you are transferring file from a partner's SFTP server to Amazon Web Services storage, you specify one or more <code>RetrieveFilePaths</code> to identify the files you want to transfer, and a <code>LocalDirectoryPath</code> to specify the destination folder.</p> </li> <li> <p>If you are transferring file to a partner's SFTP server from Amazon Web Services storage, you specify one or more <code>SendFilePaths</code> to identify the files you want to transfer, and a <code>RemoteDirectoryPath</code> to specify the destination folder.</p> </li> </ul> </li> </ul>"
+    },
+    "StartRemoteDelete":{
+      "name":"StartRemoteDelete",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartRemoteDeleteRequest"},
+      "output":{"shape":"StartRemoteDeleteResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes a file or directory on the remote SFTP server.</p>"
+    },
+    "StartRemoteMove":{
+      "name":"StartRemoteMove",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartRemoteMoveRequest"},
+      "output":{"shape":"StartRemoteMoveResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Moves or renames a file or directory on the remote SFTP server.</p>"
     },
     "StartServer":{
       "name":"StartServer",
@@ -1239,7 +1273,7 @@
         },
         "MdnResponse":{
           "shape":"MdnResponse",
-          "documentation":"<p>Used for outbound requests (from an Transfer Family server to a partner AS2 server) to determine whether the partner response for transfers is synchronous or asynchronous. Specify either of the following values:</p> <ul> <li> <p> <code>SYNC</code>: The system expects a synchronous MDN response, confirming that the file was transferred successfully (or not).</p> </li> <li> <p> <code>NONE</code>: Specifies that no MDN response is required.</p> </li> </ul>"
+          "documentation":"<p>Used for outbound requests (from an Transfer Family connector to a partner AS2 server) to determine whether the partner response for transfers is synchronous or asynchronous. Specify either of the following values:</p> <ul> <li> <p> <code>SYNC</code>: The system expects a synchronous MDN response, confirming that the file was transferred successfully (or not).</p> </li> <li> <p> <code>NONE</code>: Specifies that no MDN response is required.</p> </li> </ul>"
         },
         "BasicAuthSecretId":{
           "shape":"As2ConnectorSecretId",
@@ -1656,7 +1690,7 @@
         },
         "LoggingRole":{
           "shape":"NullableRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "PostAuthenticationLoginBanner":{
           "shape":"PostAuthenticationLoginBanner",
@@ -1779,11 +1813,11 @@
       "members":{
         "IdentityProviderDetails":{
           "shape":"WebAppIdentityProviderDetails",
-          "documentation":"<p>You can provide a structure that contains the details for the identity provider to use with your web app.</p>"
+          "documentation":"<p>You can provide a structure that contains the details for the identity provider to use with your web app.</p> <p>For more details about this parameter, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/webapp-identity-center.html\">Configure your identity provider for Transfer Family web apps</a>.</p>"
         },
         "AccessEndpoint":{
           "shape":"WebAppAccessEndpoint",
-          "documentation":"<p>The <code>AccessEndpoint</code> is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value.</p>"
+          "documentation":"<p>The <code>AccessEndpoint</code> is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value.</p> <p>Before you enter a custom URL for this parameter, follow the steps described in <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/webapp-customize.html\">Update your access endpoint with a custom URL</a>.</p>"
         },
         "WebAppUnits":{
           "shape":"WebAppUnits",
@@ -1792,6 +1826,10 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Key-value pairs that can be used to group and search for web apps.</p>"
+        },
+        "WebAppEndpointPolicy":{
+          "shape":"WebAppEndpointPolicy",
+          "documentation":"<p> Setting for the type of endpoint policy for the web app. The default value is <code>STANDARD</code>. </p> <p>If you are creating the web app in an Amazon Web Services GovCloud (US) Region, you can set this parameter to <code>FIPS</code>.</p>"
         }
       }
     },
@@ -2012,6 +2050,12 @@
           "documentation":"<p>The identifier of the host key that you are deleting.</p>"
         }
       }
+    },
+    "DeleteId":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[0-9a-zA-Z./-]+"
     },
     "DeleteProfileRequest":{
       "type":"structure",
@@ -2540,7 +2584,7 @@
         },
         "Status":{
           "shape":"CertificateStatusType",
-          "documentation":"<p>Currently, the only available status is <code>ACTIVE</code>: all other values are reserved for future use.</p>"
+          "documentation":"<p>A certificate's status can be either <code>ACTIVE</code> or <code>INACTIVE</code>.</p> <p>You can set <code>ActiveDate</code> and <code>InactiveDate</code> in the <code>UpdateCertificate</code> call. If you set values for these parameters, those values are used to determine whether the certificate has a status of <code>ACTIVE</code> or <code>INACTIVE</code>.</p> <p>If you don't set values for <code>ActiveDate</code> and <code>InactiveDate</code>, we use the <code>NotBefore</code> and <code>NotAfter</code> date as specified on the X509 certificate to determine when a certificate is active and when it is inactive.</p>"
         },
         "Certificate":{
           "shape":"CertificateBodyType",
@@ -2552,11 +2596,11 @@
         },
         "ActiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes active.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes active. If you do not specify a value, <code>ActiveDate</code> takes the same value as <code>NotBeforeDate</code>, which is specified by the CA. </p>"
         },
         "InactiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes inactive.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes inactive. If you do not specify a value, <code>InactiveDate</code> takes the same value as <code>NotAfterDate</code>, which is specified by the CA.</p>"
         },
         "Serial":{
           "shape":"CertSerial",
@@ -2836,7 +2880,7 @@
         },
         "LoggingRole":{
           "shape":"NullableRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "PostAuthenticationLoginBanner":{
           "shape":"PostAuthenticationLoginBanner",
@@ -2923,7 +2967,7 @@
         },
         "SshPublicKeys":{
           "shape":"SshPublicKeys",
-          "documentation":"<p>Specifies the public key portion of the Secure Shell (SSH) keys stored for the described user.</p>"
+          "documentation":"<p>Specifies the public key portion of the Secure Shell (SSH) keys stored for the described user.</p> <note> <p>To delete the public key body, set its value to zero keys, as shown here:</p> <p> <code>SshPublicKeys: []</code> </p> </note>"
         },
         "Tags":{
           "shape":"Tags",
@@ -2970,6 +3014,10 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Key-value pairs that can be used to group and search for web apps. Tags are metadata attached to web apps for any purpose.</p>"
+        },
+        "WebAppEndpointPolicy":{
+          "shape":"WebAppEndpointPolicy",
+          "documentation":"<p> Setting for the type of endpoint policy for the web app. The default value is <code>STANDARD</code>. </p> <p>If your web app was created in an Amazon Web Services GovCloud (US) Region, the value of this parameter can be <code>FIPS</code>, which indicates the web app endpoint is FIPS-compliant.</p>"
         }
       },
       "documentation":"<p>A structure that describes the parameters for the web app, as identified by the <code>WebAppId</code>.</p>"
@@ -2999,7 +3047,7 @@
         },
         "FaviconFile":{
           "shape":"WebAppFaviconFile",
-          "documentation":"<p>Returns a icon file data string (in base64 encoding).</p>"
+          "documentation":"<p>Returns an icon file data string (in base64 encoding).</p>"
         }
       },
       "documentation":"<p>A structure that contains the customization fields for the web app. You can provide a title, logo, and icon to customize the appearance of your web app.</p>"
@@ -3418,7 +3466,7 @@
         },
         "Certificate":{
           "shape":"CertificateBodyType",
-          "documentation":"<ul> <li> <p>For the CLI, provide a file path for a certificate in URI format. For example, <code>--certificate file://encryption-cert.pem</code>. Alternatively, you can provide the raw content.</p> </li> <li> <p>For the SDK, specify the raw content of a certificate file. For example, <code>--certificate \"`cat encryption-cert.pem`\"</code>.</p> </li> </ul>"
+          "documentation":"<ul> <li> <p>For the CLI, provide a file path for a certificate in URI format. For example, <code>--certificate file://encryption-cert.pem</code>. Alternatively, you can provide the raw content.</p> </li> <li> <p>For the SDK, specify the raw content of a certificate file. For example, <code>--certificate \"`cat encryption-cert.pem`\"</code>.</p> </li> </ul> <note> <p>You can provide both the certificate and its chain in this parameter, without needing to use the <code>CertificateChain</code> parameter. If you use this parameter for both the certificate and its chain, do not use the <code>CertificateChain</code> parameter.</p> </note>"
         },
         "CertificateChain":{
           "shape":"CertificateChainType",
@@ -3426,15 +3474,15 @@
         },
         "PrivateKey":{
           "shape":"PrivateKeyType",
-          "documentation":"<ul> <li> <p>For the CLI, provide a file path for a private key in URI format.For example, <code>--private-key file://encryption-key.pem</code>. Alternatively, you can provide the raw content of the private key file.</p> </li> <li> <p>For the SDK, specify the raw content of a private key file. For example, <code>--private-key \"`cat encryption-key.pem`\"</code> </p> </li> </ul>"
+          "documentation":"<ul> <li> <p>For the CLI, provide a file path for a private key in URI format. For example, <code>--private-key file://encryption-key.pem</code>. Alternatively, you can provide the raw content of the private key file.</p> </li> <li> <p>For the SDK, specify the raw content of a private key file. For example, <code>--private-key \"`cat encryption-key.pem`\"</code> </p> </li> </ul>"
         },
         "ActiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes active.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes active. If you do not specify a value, <code>ActiveDate</code> takes the same value as <code>NotBeforeDate</code>, which is specified by the CA. </p>"
         },
         "InactiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes inactive.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes inactive. If you do not specify a value, <code>InactiveDate</code> takes the same value as <code>NotAfterDate</code>, which is specified by the CA.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -4125,11 +4173,11 @@
         },
         "ActiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes active.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes active. If you do not specify a value, <code>ActiveDate</code> takes the same value as <code>NotBeforeDate</code>, which is specified by the CA. </p>"
         },
         "InactiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes inactive.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes inactive. If you do not specify a value, <code>InactiveDate</code> takes the same value as <code>NotAfterDate</code>, which is specified by the CA.</p>"
         },
         "Type":{
           "shape":"CertificateType",
@@ -4277,7 +4325,7 @@
         },
         "LoggingRole":{
           "shape":"Role",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "ServerId":{
           "shape":"ServerId",
@@ -4402,7 +4450,7 @@
       "members":{
         "LoggingRole":{
           "shape":"Role",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "LogGroupName":{
           "shape":"LogGroupName",
@@ -4429,6 +4477,12 @@
         "FILE",
         "DIRECTORY"
       ]
+    },
+    "MaxConcurrentConnections":{
+      "type":"integer",
+      "documentation":"<p>The number of concurrent connections that the connector will create to the remote server.</p>",
+      "box":true,
+      "min":1
     },
     "MaxItems":{
       "type":"integer",
@@ -4466,6 +4520,12 @@
       "max":1024,
       "min":1,
       "pattern":"[\\p{Print}\\p{Blank}]+"
+    },
+    "MoveId":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[0-9a-zA-Z./-]+"
     },
     "NextToken":{
       "type":"string",
@@ -4925,14 +4985,33 @@
       "members":{
         "UserSecretId":{
           "shape":"SecretId",
-          "documentation":"<p>The identifier for the secret (in Amazon Web Services Secrets Manager) that contains the SFTP user's private key, password, or both. The identifier must be the Amazon Resource Name (ARN) of the secret.</p>"
+          "documentation":"<p>The identifier for the secret (in Amazon Web Services Secrets Manager) that contains the SFTP user's private key, password, or both. The identifier must be the Amazon Resource Name (ARN) of the secret.</p> <note> <ul> <li> <p>Required when creating an SFTP connector</p> </li> <li> <p>Optional when updating an existing SFTP connector</p> </li> </ul> </note>"
         },
         "TrustedHostKeys":{
           "shape":"SftpConnectorTrustedHostKeyList",
-          "documentation":"<p>The public portion of the host key, or keys, that are used to identify the external server to which you are connecting. You can use the <code>ssh-keyscan</code> command against the SFTP server to retrieve the necessary key.</p> <p>The three standard SSH public key format elements are <code>&lt;key type&gt;</code>, <code>&lt;body base64&gt;</code>, and an optional <code>&lt;comment&gt;</code>, with spaces between each element. Specify only the <code>&lt;key type&gt;</code> and <code>&lt;body base64&gt;</code>: do not enter the <code>&lt;comment&gt;</code> portion of the key.</p> <p>For the trusted host key, Transfer Family accepts RSA and ECDSA keys.</p> <ul> <li> <p>For RSA keys, the <code>&lt;key type&gt;</code> string is <code>ssh-rsa</code>.</p> </li> <li> <p>For ECDSA keys, the <code>&lt;key type&gt;</code> string is either <code>ecdsa-sha2-nistp256</code>, <code>ecdsa-sha2-nistp384</code>, or <code>ecdsa-sha2-nistp521</code>, depending on the size of the key you generated.</p> </li> </ul> <p>Run this command to retrieve the SFTP server host key, where your SFTP server name is <code>ftp.host.com</code>.</p> <p> <code>ssh-keyscan ftp.host.com</code> </p> <p>This prints the public host key to standard output.</p> <p> <code>ftp.host.com ssh-rsa AAAAB3Nza...&lt;long-string-for-public-key</code> </p> <p>Copy and paste this string into the <code>TrustedHostKeys</code> field for the <code>create-connector</code> command or into the <b>Trusted host keys</b> field in the console.</p>"
+          "documentation":"<p>The public portion of the host key, or keys, that are used to identify the external server to which you are connecting. You can use the <code>ssh-keyscan</code> command against the SFTP server to retrieve the necessary key.</p> <note> <p> <code>TrustedHostKeys</code> is optional for <code>CreateConnector</code>. If not provided, you can use <code>TestConnection</code> to retrieve the server host key during the initial connection attempt, and subsequently update the connector with the observed host key.</p> </note> <p>The three standard SSH public key format elements are <code>&lt;key type&gt;</code>, <code>&lt;body base64&gt;</code>, and an optional <code>&lt;comment&gt;</code>, with spaces between each element. Specify only the <code>&lt;key type&gt;</code> and <code>&lt;body base64&gt;</code>: do not enter the <code>&lt;comment&gt;</code> portion of the key.</p> <p>For the trusted host key, Transfer Family accepts RSA and ECDSA keys.</p> <ul> <li> <p>For RSA keys, the <code>&lt;key type&gt;</code> string is <code>ssh-rsa</code>.</p> </li> <li> <p>For ECDSA keys, the <code>&lt;key type&gt;</code> string is either <code>ecdsa-sha2-nistp256</code>, <code>ecdsa-sha2-nistp384</code>, or <code>ecdsa-sha2-nistp521</code>, depending on the size of the key you generated.</p> </li> </ul> <p>Run this command to retrieve the SFTP server host key, where your SFTP server name is <code>ftp.host.com</code>.</p> <p> <code>ssh-keyscan ftp.host.com</code> </p> <p>This prints the public host key to standard output.</p> <p> <code>ftp.host.com ssh-rsa AAAAB3Nza...&lt;long-string-for-public-key</code> </p> <p>Copy and paste this string into the <code>TrustedHostKeys</code> field for the <code>create-connector</code> command or into the <b>Trusted host keys</b> field in the console.</p>"
+        },
+        "MaxConcurrentConnections":{
+          "shape":"MaxConcurrentConnections",
+          "documentation":"<p>Specify the number of concurrent connections that your connector creates to the remote server. The default value is <code>5</code> (this is also the maximum value allowed).</p> <p>This parameter specifies the number of active connections that your connector can establish with the remote server at the same time. Increasing this value can enhance connector performance when transferring large file batches by enabling parallel operations.</p>"
         }
       },
-      "documentation":"<p>Contains the details for an SFTP connector object. The connector object is used for transferring files to and from a partner's SFTP server.</p> <note> <p>Because the <code>SftpConnectorConfig</code> data type is used for both creating and updating SFTP connectors, its parameters, <code>TrustedHostKeys</code> and <code>UserSecretId</code> are marked as not required. This is a bit misleading, as they are not required when you are updating an existing SFTP connector, but <i>are required</i> when you are creating a new SFTP connector.</p> </note>"
+      "documentation":"<p>Contains the details for an SFTP connector object. The connector object is used for transferring files to and from a partner's SFTP server.</p>"
+    },
+    "SftpConnectorConnectionDetails":{
+      "type":"structure",
+      "members":{
+        "HostKey":{
+          "shape":"SftpConnectorHostKey",
+          "documentation":"<p>The SSH public key of the remote SFTP server. This is returned during the initial connection attempt when you call <code>TestConnection</code>. It allows you to retrieve the valid server host key to update the connector when you are unable to obtain it in advance.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details for an SFTP connector connection.</p>"
+    },
+    "SftpConnectorHostKey":{
+      "type":"string",
+      "max":2048,
+      "min":1
     },
     "SftpConnectorTrustedHostKey":{
       "type":"string",
@@ -4943,7 +5022,7 @@
       "type":"list",
       "member":{"shape":"SftpConnectorTrustedHostKey"},
       "max":10,
-      "min":1
+      "min":0
     },
     "SigningAlg":{
       "type":"string",
@@ -5088,6 +5167,65 @@
         "TransferId":{
           "shape":"TransferId",
           "documentation":"<p>Returns the unique identifier for the file transfer.</p>"
+        }
+      }
+    },
+    "StartRemoteDeleteRequest":{
+      "type":"structure",
+      "required":[
+        "ConnectorId",
+        "DeletePath"
+      ],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique identifier for the connector.</p>"
+        },
+        "DeletePath":{
+          "shape":"FilePath",
+          "documentation":"<p>The absolute path of the file or directory to delete. You can only specify one path per call to this operation.</p>"
+        }
+      }
+    },
+    "StartRemoteDeleteResponse":{
+      "type":"structure",
+      "required":["DeleteId"],
+      "members":{
+        "DeleteId":{
+          "shape":"DeleteId",
+          "documentation":"<p>Returns a unique identifier for the delete operation.</p>"
+        }
+      }
+    },
+    "StartRemoteMoveRequest":{
+      "type":"structure",
+      "required":[
+        "ConnectorId",
+        "SourcePath",
+        "TargetPath"
+      ],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique identifier for the connector.</p>"
+        },
+        "SourcePath":{
+          "shape":"FilePath",
+          "documentation":"<p>The absolute path of the file or directory to move or rename. You can only specify one path per call to this operation.</p>"
+        },
+        "TargetPath":{
+          "shape":"FilePath",
+          "documentation":"<p>The absolute path for the target of the move/rename operation.</p>"
+        }
+      }
+    },
+    "StartRemoteMoveResponse":{
+      "type":"structure",
+      "required":["MoveId"],
+      "members":{
+        "MoveId":{
+          "shape":"MoveId",
+          "documentation":"<p>Returns a unique identifier for the move/rename operation.</p>"
         }
       }
     },
@@ -5240,6 +5378,10 @@
         "StatusMessage":{
           "shape":"Message",
           "documentation":"<p>Returns <code>Connection succeeded</code> if the test is successful. Or, returns a descriptive error message if the test fails. The following list provides troubleshooting details, depending on the error message that you receive.</p> <ul> <li> <p>Verify that your secret name aligns with the one in Transfer Role permissions.</p> </li> <li> <p>Verify the server URL in the connector configuration , and verify that the login credentials work successfully outside of the connector.</p> </li> <li> <p>Verify that the secret exists and is formatted correctly.</p> </li> <li> <p>Verify that the trusted host key in the connector configuration matches the <code>ssh-keyscan</code> output.</p> </li> </ul>"
+        },
+        "SftpConnectionDetails":{
+          "shape":"SftpConnectorConnectionDetails",
+          "documentation":"<p>Structure that contains the SFTP connector host key.</p>"
         }
       }
     },
@@ -5473,11 +5615,11 @@
         },
         "ActiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes active.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes active. If you do not specify a value, <code>ActiveDate</code> takes the same value as <code>NotBeforeDate</code>, which is specified by the CA. </p>"
         },
         "InactiveDate":{
           "shape":"CertDate",
-          "documentation":"<p>An optional date that specifies when the certificate becomes inactive.</p>"
+          "documentation":"<p>An optional date that specifies when the certificate becomes inactive. If you do not specify a value, <code>InactiveDate</code> takes the same value as <code>NotAfterDate</code>, which is specified by the CA.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -5632,7 +5774,7 @@
         },
         "LoggingRole":{
           "shape":"NullableRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFS events. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "PostAuthenticationLoginBanner":{
           "shape":"PostAuthenticationLoginBanner",
@@ -5755,7 +5897,7 @@
         },
         "FaviconFile":{
           "shape":"WebAppFaviconFile",
-          "documentation":"<p>Specify icon file data string (in base64 encoding).</p>"
+          "documentation":"<p>Specify an icon file data string (in base64 encoding).</p>"
         }
       }
     },
@@ -5881,6 +6023,13 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "WebAppEndpointPolicy":{
+      "type":"string",
+      "enum":[
+        "FIPS",
+        "STANDARD"
+      ]
     },
     "WebAppFaviconFile":{
       "type":"blob",

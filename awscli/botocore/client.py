@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 import functools
 import logging
-import time
 
 from botocore import UNSIGNED, waiter, xform_name
 from botocore.args import ClientArgsCreator
@@ -775,12 +774,8 @@ class BaseClient(object):
             headers=None,
             set_user_agent_header=True,
     ):
-        start_time = time.time()
         request_dict = self._serializer.serialize_to_request(
             api_params, operation_model)
-        if context is not None:
-            end_time = time.time()
-            context['serialize_time'] = end_time - start_time
         if not self._client_config.inject_host_prefix:
             request_dict.pop('host_prefix', None)
         if headers is not None:

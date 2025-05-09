@@ -17,8 +17,6 @@ import sys
 import copy
 import logging
 import re
-import time
-import traceback
 
 import distro
 import botocore.session
@@ -187,18 +185,14 @@ class AWSCLIEntryPoint:
 
     def main(self, args):
         try:
-            # print('begin main')
             rc = self._do_main(args)
         except BaseException as e:
             LOG.debug("Exception caught in AWSCLIEntryPoint", exc_info=True)
-            print((traceback.format_exc()))
             return self._error_handler.handle_exception(
                 e,
                 stdout=get_stdout_text_writer(),
                 stderr=get_stderr_text_writer(),
             )
-        except Exception as e:
-            print((traceback.format_exc()))
 
         HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')
         return rc
@@ -231,7 +225,6 @@ class AWSCLIEntryPoint:
                 driver = create_clidriver(args)
                 rc = self._run_driver(driver, args, prompt_mode='partial')
         else:
-            # print('about to run driver')
             rc = self._run_driver(driver, args, prompt_mode='off')
         return rc
 
@@ -1013,7 +1006,6 @@ class CLIOperationCaller(object):
         self, client, operation_name, parameters, parsed_globals
     ):
         py_operation_name = xform_name(operation_name)
-
         if client.can_paginate(py_operation_name) and parsed_globals.paginate:
             paginator = client.get_paginator(py_operation_name)
             response = paginator.paginate(**parameters)

@@ -99,7 +99,6 @@ class JSONFormatter(FullyBufferedFormatter):
         # the response will be an empty string.  We don't want to print
         # that out to the user but other "falsey" values like an empty
         # dictionary should be printed.
-        # print(f'response: {response}')
         if response != {}:
             json.dump(
                 response,

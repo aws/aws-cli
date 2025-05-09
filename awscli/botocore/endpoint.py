@@ -165,7 +165,6 @@ class Endpoint(object):
         # (http_response, parsed_dict).
         # If an exception occurs then the success_response is None.
         # If no exception occurs then exception is None.
-        # print('BEGIN ENDPOINT GET RESPONSE')
         success_response, exception = self._do_get_response(
             request, operation_model, context)
         kwargs_to_emit = {
@@ -180,30 +179,9 @@ class Endpoint(object):
             kwargs_to_emit['response_dict'] = convert_to_response_dict(
                 http_response, operation_model)
         service_id = operation_model.service_model.service_id.hyphenize()
-        # print('SERVICE ID OBTAINED')
-        if success_response is not None and success_response[1] is not None and 'ResponseMetadata' in success_response[1] and success_response[1]['ResponseMetadata'] is not None and context is not None:
-            if context is not None and 'serialize_time' in context:
-                success_response[1]['ResponseMetadata']['SerializeTiming'] = context[
-                    'serialize_time'
-                ]
-            if context is not None and 'deserialize_time' in context:
-                success_response[1]['ResponseMetadata']['DeserializeTiming'] = context[
-                    'deserialize_time'
-                ]
-            # print('HALF IF')
-            if 'Content-Length' in request.headers:
-                success_response[1]['ResponseMetadata']['RequestPayloadSize'] = (
-                    request.headers['Content-Length']
-                )
-            if 'Content-Length' in http_response.headers:
-                success_response[1]['ResponseMetadata']['ResponsePayloadSize'] = (
-                    http_response.headers
-                )['Content-Length']
-        # print('ABOUT TO EMIT')
         self._event_emitter.emit(
             'response-received.%s.%s' % (
                 service_id, operation_model.name), **kwargs_to_emit)
-        # print('FINISHED EMITT')
         return success_response, exception
 
     def _do_get_response(self, request, operation_model, context):
@@ -248,12 +226,8 @@ class Endpoint(object):
             customized_response_dict=customized_response_dict,
         )
         parser = self._response_parser_factory.create_parser(protocol)
-        start_time = time.time()
         parsed_response = parser.parse(
             response_dict, operation_model.output_shape)
-        end_time = time.time()
-        if context is not None:
-            context['deserialize_time'] = end_time - start_time
         parsed_response.update(customized_response_dict)
         # Do a second parsing pass to pick up on any modeled error fields
         # NOTE: Ideally, we would push this down into the parser classes but

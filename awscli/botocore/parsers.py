@@ -790,6 +790,7 @@ class BaseCBORParser(ResponseParser):
         # The lowest order 5 bits of the initial byte tells us more information about
         # how the bytes should be parsed that will be used
         additional_info = initial_byte & 0b00011111
+
         if major_type in self.major_type_to_parsing_method_map:
             method = self.major_type_to_parsing_method_map[major_type]
             return method(stream, additional_info)

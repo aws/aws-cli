@@ -1,12 +1,11 @@
 **To get a performance analysis report**
 
-The following ``get-perforamnce-analysis-report`` example gets the performance analysis report for the database ``db-loadtest-0`` with the report ID ``report-0d99cc91c4422ee61``. The response provides the report status, ID, time details, and insights. ::
+The following ``get-performance-analysis-report`` example gets the performance analysis report for the database ``db-abcdefg123456789`` with the report ID ``report-0d99cc91c4422ee61``. The response provides the report status, ID, time details, and insights. ::
 
     aws pi get-performance-analysis-report \
         --service-type RDS \
-        --identifier db-loadtest-0 \
-        --analysis-report-id report-0d99cc91c4422ee61 \
-        --region us-west-2
+        --identifier db-abcdefg123456789 \
+        --analysis-report-id report-0d99cc91c4422ee61
 
 Output::
 
@@ -14,7 +13,7 @@ Output::
         "AnalysisReport": {
             "Status": "Succeeded",
             "ServiceType": "RDS",
-            "Identifier": "db-loadtest-0",
+            "Identifier": "db-abcdefg123456789",
             "StartTime": 1680583486.584,
             "AnalysisReportId": "report-0d99cc91c4422ee61",
             "EndTime": 1680587086.584,

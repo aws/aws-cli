@@ -1,12 +1,11 @@
 **To delete a performance analysis report**
 
-The following ``delete-perforamnce-analysis-report`` example deletes the performance analysis report with the report ID ``report-0d99cc91c4422ee61``. ::
+The following ``delete-performance-analysis-report`` example deletes the performance analysis report with the report ID ``report-0d99cc91c4422ee61``. ::
 
     aws pi delete-performance-analysis-report \
         --service-type RDS \
-        --identifier db-loadtest-0 \
-        --analysis-report-id report-0d99cc91c4422ee61 \
-        --region us-west-2
+        --identifier db-abcdefg123456789 \
+        --analysis-report-id report-0d99cc91c4422ee61
 
 This command produces no output.
 

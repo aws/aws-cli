@@ -1,13 +1,12 @@
 **To create a performance analysis report**
 
-The following ``create-perforamnce-analysis-report`` example creates a performance analysis report with the start time ``1682969503`` and end time ``1682979503`` for the database ``db-loadtest-0``. ::
+The following ``create-performance-analysis-report`` example creates a performance analysis report with the start time ``1682969503`` and end time ``1682979503`` for the database ``db-abcdefg123456789``. ::
 
     aws pi create-performance-analysis-report \
         --service-type RDS \
-        --identifier db-loadtest-0 \
+        --identifier db-abcdefg123456789 \
         --start-time 1682969503 \
-        --end-time 1682979503 \
-        --region us-west-2
+        --end-time 1682979503
 
 Output::
 

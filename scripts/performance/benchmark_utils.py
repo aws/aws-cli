@@ -47,18 +47,6 @@ class StubbedHTTPClient:
 
 
 class BenchmarkSuite:
-    # TODO Q: How can we migrate from using sequence generators to something cleaner / more Pythonic
-    # In itself, it is a complex requirement:
-    #   Benchmark 1+ commands each iteration, and flowing the results back to the harness
-
-    # Either the suite calls it or the harness calls it:
-    # If harness calls it:
-    #   Right now we have the suite return an ordered list of functions so the harness knows what order to call it in.
-    #   This is as good as it gets because alternatives would have to do weird things like decorators to track each function order (then you can't reorder functions which is weird!)
-
-    #   The main alternative would be for suites to control the control flow of executing the CLI command, with all function calls in a single statement (or equivalent)
-    #   This would look more like the pseudocodes defined on the cbor docs, for example, with a yield between each sequence.
-
     def get_test_cases(self, args):
         # return [sequence_generator]
         # each generator generates args.num_iterations times
@@ -77,17 +65,6 @@ class BenchmarkSuite:
         raise NotImplementedError()
 
 
-# cloudwatch / secrets
-# generators mostly the same, except it tracks iteration with its own loop above a yield
-# stores protocol, dimension in dimensions list of the case
-# stores test case in name
-
-# in collect_results, pull the protocol, dimension, and test_case from the case
-# use these store results in instance state, with dimension,protocol,test_case as key
-
-# for EchoService,
-# - Create EchoServiceSuite, override / recreate stubbed client to send request as response
-#
 class JSONStubbedBenchmarkSuite(BenchmarkSuite):
     def __init__(self):
         self._client = StubbedHTTPClient()
@@ -117,15 +94,6 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
             file_path = os.path.join(dir_path, f'{i}')
             self._create_file_with_size(file_path, size)
 
-    # TODO Q: do we want to abstract the stubbing code into parent
-    # StubbedBenchmarkSuite ? leaning towards not at the moment
-    # only observed 2 stub cases: json and echo. echo needed to define its
-    # own stubbed client logic, doesn't fit the pattern of a stack of responses
-    # known ahead-of-time.
-
-    # maybe stubbedclient would be abstract, each suite can override the base impl
-    # as needed. echo would override get response to return request. most suites
-    # would use add response
     def _stub_responses(self, responses, client: StubbedHTTPClient):
         """
         Stubs the supplied HTTP client using the response instructions in the supplied
@@ -168,8 +136,6 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
             'os.environ', self._get_env_vars(config_path)
         )
         self._env_patch.start()
-        # TODO Q: we're patching HTTP client & environment but not files.
-        # pros and cons
         if "files" in env:
             for file_def in env['files']:
                 path = os.path.join(workspace_path, file_def['name'])
@@ -193,15 +159,6 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
                     f.write(content)
 
     def consume_case_results(self, case, results):
-        # TODO when adding support for multi-command sequences to JSON,
-        # the commands will become cases and each json object becomes sequences,
-        # and each command will need a name/suffix to key it separately in the results
-        # but for now, we can just key using the sequence name since it's 1:1 to commands
-
-        # HOWEVER, when implementing secretsmanager, we used two structs (one command each)
-        # to achieve multi-command workflows / sequences. So we should pick which of the two
-        # (list of commands of list of structs with 1 command each) is more robust.
-
         for (metric, val) in results.items():
             key = f'{case["name"]}.{metric}'
             if key not in self._benchmark_results:
@@ -263,7 +220,7 @@ class Summarizer:
     def _finalize_processed_data_for_file(self, samples):
         # compute percentiles
         self._samples.sort(key=self._get_memory)
-        # TODO replace with numpy calls ?
+        # TODO replace with numpy calls
         memory_p50 = self._compute_metric_percentile(50, 'memory')
         memory_p95 = self._compute_metric_percentile(95, 'memory')
         self._samples.sort(key=self._get_cpu)
@@ -640,25 +597,3 @@ class BenchmarkHarness:
         # --- GET-TEST-CASES (retrieve case generators)
         sequence_generators = suite.get_test_cases(args)
         self.run_benchmarks(sequence_generators, args)
-
-
-# TODO IMPORTANT NEXT STEP:
-# 0. How can we integrate calling a case's begin and cleanup from its generator?
-#   other than unified dictionary language for creating env, etc., we want to execute
-#   arbitrary code like making remote aws resources. may want to use getattr on some
-#   function of the dict object, and have a setup function for each case that needs it
-#   then the suite becomes a lot more important, since it defines the setup and cleanup
-#   functions.
-
-# we do want to move towards case-first system here. i'm thinking a case class.
-# has a setup and cleanup function. and a generator property. suite does very little
-# work, just defines these cases. once they're defined, cases can be executed by the
-# harness without the creator suite, with the needed tasks below:
-
-# 1. Move the consume_case_results and provide_sequence_results into a separate class
-#       BenchmarkResultHandler. Use the implementations in JSON Suite as the "standard" one
-#       if org requires results in special format, or more complex storing of case results
-#       can override the class and use that as a drop-in
-# 2. Axe down the idea of suite entirely. Cases should be standalone 2 things:
-#       The function code for generating the definition, the begin-iteration code, and end-iteration code
-#       Then all the harness needs is the case definitions and the result handler.

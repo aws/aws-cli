@@ -4528,6 +4528,420 @@
                 "UseDualStack": false,
                 "UseFIPS": false
             }
+        },
+        {
+            "documentation": "Access Point APIs on express bucket routed to custom endpoint if provided",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ]
+                    },
+                    "url": "https://my-endpoint.express-control.s3.aws.dev"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev"
+                    },
+                    "operationName": "CreateAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "Bucket": "mybucket--abcd-ab1--x-s3",
+                        "AccountId": "871317572157",
+                        "Scope": {
+                            "Prefixes": [],
+                            "Permissions": []
+                        }
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev"
+                    },
+                    "operationName": "GetAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev"
+                    },
+                    "operationName": "DeleteAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev"
+                    },
+                    "operationName": "PutAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157",
+                        "Policy": "my-policy"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev"
+                    },
+                    "operationName": "GetAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev"
+                    },
+                    "operationName": "DeleteAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev"
+                    },
+                    "operationName": "GetAccessPointPolicyStatus",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                }
+            ],
+            "params": {
+                "AccountId": "871317572157",
+                "AccessPointName": "myaccesspoint--abcd-ab1--xa-s3",
+                "Endpoint": "https://my-endpoint.express-control.s3.aws.dev",
+                "Region": "us-east-1",
+                "RequiresAccountId": true,
+                "UseDualStack": false,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "Access Point APIs on express bucket routed to custom endpoint if provided for List",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ]
+                    },
+                    "url": "https://my-endpoint.express-control.s3.aws.dev"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev"
+                    },
+                    "operationName": "ListAccessPointsForDirectoryBuckets",
+                    "operationParams": {
+                        "DirectoryBucket": "mybucket--abcd-ab1--x-s3",
+                        "AccountId": "871317572157"
+                    }
+                }
+            ],
+            "params": {
+                "AccountId": "871317572157",
+                "Region": "us-east-1",
+                "UseS3ExpressControlEndpoint": true,
+                "Endpoint": "https://my-endpoint.express-control.s3.aws.dev",
+                "RequiresAccountId": true,
+                "UseDualStack": false,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "Error on Access Point APIs on express bucket for dual stack",
+            "expect": {
+                "error": "S3Express does not support Dual-stack."
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "CreateAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "Bucket": "mybucket--abcd-ab1--x-s3",
+                        "AccountId": "871317572157",
+                        "Scope": {
+                            "Prefixes": [],
+                            "Permissions": []
+                        }
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "GetAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "DeleteAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "PutAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157",
+                        "Policy": "my-policy"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "GetAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "DeleteAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "GetAccessPointPolicyStatus",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                }
+            ],
+            "params": {
+                "AccountId": "871317572157",
+                "AccessPointName": "myaccesspoint--abcd-ab1--xa-s3",
+                "Region": "us-east-1",
+                "RequiresAccountId": true,
+                "UseDualStack": true,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "Error Access Point APIs on express bucket for dual stack for List",
+            "expect": {
+                "error": "S3Express does not support Dual-stack."
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "ListAccessPointsForDirectoryBuckets",
+                    "operationParams": {
+                        "DirectoryBucket": "mybucket--abcd-ab1--x-s3",
+                        "AccountId": "871317572157"
+                    }
+                }
+            ],
+            "params": {
+                "AccountId": "871317572157",
+                "Region": "us-east-1",
+                "UseS3ExpressControlEndpoint": true,
+                "RequiresAccountId": true,
+                "UseDualStack": true,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "Error on Access Point APIs on express bucket for custom endpoint and dual stack",
+            "expect": {
+                "error": "Invalid Configuration: DualStack and custom endpoint are not supported"
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "CreateAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "Bucket": "mybucket--abcd-ab1--x-s3",
+                        "AccountId": "871317572157",
+                        "Scope": {
+                            "Prefixes": [],
+                            "Permissions": []
+                        }
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "GetAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "DeleteAccessPoint",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "PutAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157",
+                        "Policy": "my-policy"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "GetAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "DeleteAccessPointPolicy",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                },
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "GetAccessPointPolicyStatus",
+                    "operationParams": {
+                        "Name": "myaccesspoint--abcd-ab1--xa-s3",
+                        "AccountId": "871317572157"
+                    }
+                }
+            ],
+            "params": {
+                "AccountId": "871317572157",
+                "AccessPointName": "myaccesspoint--abcd-ab1--xa-s3",
+                "Endpoint": "https://my-endpoint.express-control.s3.aws.dev",
+                "Region": "us-east-1",
+                "RequiresAccountId": true,
+                "UseDualStack": true,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "Error Access Point APIs on express bucket for custom endpoint and dual stack for List",
+            "expect": {
+                "error": "Invalid Configuration: DualStack and custom endpoint are not supported"
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "SDK::Endpoint": "https://my-endpoint.express-control.s3.aws.dev",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "ListAccessPointsForDirectoryBuckets",
+                    "operationParams": {
+                        "DirectoryBucket": "mybucket--abcd-ab1--x-s3",
+                        "AccountId": "871317572157"
+                    }
+                }
+            ],
+            "params": {
+                "AccountId": "871317572157",
+                "Region": "us-east-1",
+                "UseS3ExpressControlEndpoint": true,
+                "Endpoint": "https://my-endpoint.express-control.s3.aws.dev",
+                "RequiresAccountId": true,
+                "UseDualStack": true,
+                "UseFIPS": false
+            }
         }
     ],
     "version": "1.0"

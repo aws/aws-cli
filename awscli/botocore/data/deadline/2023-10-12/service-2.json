@@ -498,7 +498,7 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Creates a worker. A worker tells your instance how much processing power (vCPU), and memory (GiB) you’ll need to assemble the digital assets held within a particular instance. You can specify certain instance types to use, or let the worker know which instances types to exclude.</p>",
+      "documentation":"<p>Creates a worker. A worker tells your instance how much processing power (vCPU), and memory (GiB) you’ll need to assemble the digital assets held within a particular instance. You can specify certain instance types to use, or let the worker know which instances types to exclude.</p> <p>Deadline Cloud limits the number of workers to less than or equal to the fleet's maximum worker count. The service maintains eventual consistency for the worker count. If you make multiple rapid calls to <code>CreateWorker</code> before the field updates, you might exceed your fleet's maximum worker count. For example, if your <code>maxWorkerCount</code> is 10 and you currently have 9 workers, making two quick <code>CreateWorker</code> calls might successfully create 2 workers instead of 1, resulting in 11 total workers.</p>",
       "endpoint":{"hostPrefix":"scheduling."},
       "idempotent":true
     },
@@ -3465,7 +3465,7 @@
         },
         "maxWorkerCount":{
           "shape":"MinZeroMaxInteger",
-          "documentation":"<p>The maximum number of workers for the fleet.</p>"
+          "documentation":"<p>The maximum number of workers for the fleet.</p> <p>Deadline Cloud limits the number of workers to less than or equal to the fleet's maximum worker count. The service maintains eventual consistency for the worker count. If you make multiple rapid calls to <code>CreateWorker</code> before the field updates, you might exceed your fleet's maximum worker count. For example, if your <code>maxWorkerCount</code> is 10 and you currently have 9 workers, making two quick <code>CreateWorker</code> calls might successfully create 2 workers instead of 1, resulting in 11 total workers.</p>"
         },
         "configuration":{
           "shape":"FleetConfiguration",
@@ -3474,6 +3474,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Each tag consists of a tag key and a tag value. Tag keys and values are both required, but tag values can be empty strings.</p>"
+        },
+        "hostConfiguration":{
+          "shape":"HostConfiguration",
+          "documentation":"<p>Provides a script that runs as a worker is starting up that you can use to provide additional configuration for workers in your fleet.</p>"
         }
       }
     },
@@ -5480,6 +5484,10 @@
           "shape":"FleetConfiguration",
           "documentation":"<p>The configuration setting for the fleet.</p>"
         },
+        "hostConfiguration":{
+          "shape":"HostConfiguration",
+          "documentation":"<p>The script that runs as a worker is starting up that you can use to provide additional configuration for workers in your fleet.</p>"
+        },
         "capabilities":{
           "shape":"FleetCapabilities",
           "documentation":"<p>Outlines what the fleet is capable of for minimums, maximums, and naming, in addition to attribute names and values.</p>"
@@ -6844,6 +6852,33 @@
           "documentation":"<p>The user or system that updated this resource.</p>"
         }
       }
+    },
+    "HostConfiguration":{
+      "type":"structure",
+      "required":["scriptBody"],
+      "members":{
+        "scriptBody":{
+          "shape":"HostConfigurationScript",
+          "documentation":"<p>The text of the script that runs as a worker is starting up that you can use to provide additional configuration for workers in your fleet. The script runs after a worker enters the <code>STARTING</code> state and before the worker processes tasks.</p> <p>For more information about using the script, see <a href=\"https://docs.aws.amazon.com/deadline-cloud/latest/developerguide/smf-admin.html\">Run scripts as an administrator to configure workers</a> in the <i>Deadline Cloud Developer Guide</i>. </p> <important> <p>The script runs as an administrative user (<code>sudo root</code> on Linux, as an Administrator on Windows). </p> </important>"
+        },
+        "scriptTimeoutSeconds":{
+          "shape":"HostConfigurationScriptTimeoutSeconds",
+          "documentation":"<p>The maximum time that the host configuration can run. If the timeout expires, the worker enters the <code>NOT RESPONDING</code> state and shuts down. You are charged for the time that the worker is running the host configuration script.</p> <note> <p>You should configure your fleet for a maximum of one worker while testing your host configuration script to avoid starting additional workers.</p> </note> <p>The default is 300 seconds (5 minutes).</p>"
+        }
+      },
+      "documentation":"<p>Provides a script that runs as a worker is starting up that you can use to provide additional configuration for workers in your fleet. </p> <p>To remove a script from a fleet, use the <a href=\"https://docs.aws.amazon.com/deadline-cloud/latest/APIReference/API_UpdateFleet.html\">UpdateFleet</a> operation with the <code>hostConfiguration</code> <code>scriptBody</code> parameter set to an empty string (\"\").</p>"
+    },
+    "HostConfigurationScript":{
+      "type":"string",
+      "max":15000,
+      "min":0,
+      "sensitive":true
+    },
+    "HostConfigurationScriptTimeoutSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":3600,
+      "min":300
     },
     "HostName":{
       "type":"string",
@@ -9940,7 +9975,7 @@
           "documentation":"<p>The operators to include in the search.</p>"
         }
       },
-      "documentation":"<p>The filter expression, <code>AND</code> or <code>OR</code>, to use when searching among a group of search strings in a resource. <p>You can use two groupings per search each within parenthesis <code>()</code>.</p></p>"
+      "documentation":"<p>The filter expression, <code>AND</code> or <code>OR</code>, to use when searching among a group of search strings in a resource. You can use two groupings per search each within parenthesis <code>()</code>.</p>"
     },
     "SearchJobsRequest":{
       "type":"structure",
@@ -9962,7 +9997,7 @@
         },
         "filterExpressions":{
           "shape":"SearchGroupedFilterExpressions",
-          "documentation":"<p>The filter expression, <code>AND</code> or <code>OR</code>, to use when searching among a group of search strings in a resource. <p>You can use two groupings per search each within parenthesis <code>()</code>.</p></p>"
+          "documentation":"<p>The filter expression, <code>AND</code> or <code>OR</code>, to use when searching among a group of search strings in a resource. You can use two groupings per search each within parenthesis <code>()</code>.</p>"
         },
         "sortExpressions":{
           "shape":"SearchSortExpressions",
@@ -10066,7 +10101,7 @@
         },
         "filterExpressions":{
           "shape":"SearchGroupedFilterExpressions",
-          "documentation":"<p>The filter expression, <code>AND</code> or <code>OR</code>, to use when searching among a group of search strings in a resource. <p>You can use two groupings per search each within parenthesis <code>()</code>.</p></p>"
+          "documentation":"<p>The filter expression, <code>AND</code> or <code>OR</code>, to use when searching among a group of search strings in a resource. You can use two groupings per search each within parenthesis <code>()</code>.</p>"
         },
         "sortExpressions":{
           "shape":"SearchSortExpressions",
@@ -10145,7 +10180,7 @@
         },
         "filterExpressions":{
           "shape":"SearchGroupedFilterExpressions",
-          "documentation":"<p>The filter expression, <code>AND</code> or <code>OR</code>, to use when searching among a group of search strings in a resource. <p>You can use two groupings per search each within parenthesis <code>()</code>.</p></p>"
+          "documentation":"<p>The filter expression, <code>AND</code> or <code>OR</code>, to use when searching among a group of search strings in a resource. You can use two groupings per search each within parenthesis <code>()</code>.</p>"
         },
         "sortExpressions":{
           "shape":"SearchSortExpressions",
@@ -10247,7 +10282,7 @@
         },
         "filterExpressions":{
           "shape":"SearchGroupedFilterExpressions",
-          "documentation":"<p>The filter expression, <code>AND</code> or <code>OR</code>, to use when searching among a group of search strings in a resource. <p>You can use two groupings per search each within parenthesis <code>()</code>.</p></p>"
+          "documentation":"<p>The filter expression, <code>AND</code> or <code>OR</code>, to use when searching among a group of search strings in a resource. You can use two groupings per search each within parenthesis <code>()</code>.</p>"
         },
         "sortExpressions":{
           "shape":"SearchSortExpressions",
@@ -10445,7 +10480,8 @@
       "type":"string",
       "enum":[
         "SERVICE_QUOTA_EXCEEDED_EXCEPTION",
-        "KMS_KEY_LIMIT_EXCEEDED"
+        "KMS_KEY_LIMIT_EXCEEDED",
+        "DEPENDENCY_LIMIT_EXCEEDED"
       ]
     },
     "SessionActionDefinition":{
@@ -11828,11 +11864,15 @@
         },
         "maxWorkerCount":{
           "shape":"MinZeroMaxInteger",
-          "documentation":"<p>The maximum number of workers in the fleet.</p>"
+          "documentation":"<p>The maximum number of workers in the fleet.</p> <p>Deadline Cloud limits the number of workers to less than or equal to the fleet's maximum worker count. The service maintains eventual consistency for the worker count. If you make multiple rapid calls to <code>CreateWorker</code> before the field updates, you might exceed your fleet's maximum worker count. For example, if your <code>maxWorkerCount</code> is 10 and you currently have 9 workers, making two quick <code>CreateWorker</code> calls might successfully create 2 workers instead of 1, resulting in 11 total workers.</p>"
         },
         "configuration":{
           "shape":"FleetConfiguration",
           "documentation":"<p>The fleet configuration to update.</p>"
+        },
+        "hostConfiguration":{
+          "shape":"HostConfiguration",
+          "documentation":"<p>Provides a script that runs as a worker is starting up that you can use to provide additional configuration for workers in your fleet.</p>"
         }
       }
     },
@@ -12451,6 +12491,10 @@
         "log":{
           "shape":"LogConfiguration",
           "documentation":"<p>The worker log to update.</p>"
+        },
+        "hostConfiguration":{
+          "shape":"HostConfiguration",
+          "documentation":"<p>The script that runs as a worker is starting up that you can use to provide additional configuration for workers in your fleet.</p>"
         }
       }
     },

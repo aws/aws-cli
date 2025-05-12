@@ -16157,6 +16157,11 @@
           "shape": "__listOfSrtOutputDestinationSettings",
           "locationName": "srtSettings",
           "documentation": "SRT settings for an SRT output; one destination for each redundant encoder."
+        },
+        "LogicalInterfaceNames": {
+          "shape": "__listOf__string",
+          "locationName": "logicalInterfaceNames",
+          "documentation": "Optional assignment of an output to a logical interface on the Node. Only applies to on premises channels."
         }
       },
       "documentation": "Placeholder documentation for OutputDestination"
@@ -25821,6 +25826,16 @@
           "shape": "TimecodeBurninSettings",
           "locationName": "timecodeBurninSettings",
           "documentation": "Configures the timecode burn-in feature. If you enable this feature, the timecode will become part of the video."
+        },
+        "Bitrate": {
+          "shape": "__integerMin50000Max8000000",
+          "locationName": "bitrate",
+          "documentation": "Average bitrate in bits/second. Required when the rate control mode is CBR. Not used for QVBR."
+        },
+        "RateControlMode": {
+          "shape": "Av1RateControlMode",
+          "locationName": "rateControlMode",
+          "documentation": "Rate control mode.\n\nQVBR: Quality will match the specified quality level except when it is constrained by the\nmaximum bitrate.  Recommended if you or your viewers pay for bandwidth.\n\nCBR: Quality varies, depending on the video complexity. Recommended only if you distribute\nyour assets to devices that cannot handle variable bitrates."
         }
       },
       "documentation": "Av1 Settings",
@@ -29254,6 +29269,14 @@
         "shape": "CmafIngestCaptionLanguageMapping"
       },
       "documentation": "Placeholder documentation for __listOfCmafIngestCaptionLanguageMapping"
+    },
+    "Av1RateControlMode": {
+      "type": "string",
+      "documentation": "Av1 Rate Control Mode",
+      "enum": [
+        "CBR",
+        "QVBR"
+      ]
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

@@ -25,12 +25,12 @@
       "errors":[
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates a cluster in Amazon Aurora DSQL.</p>"
+      "documentation":"<p>This operation creates a cluster in Amazon Aurora DSQL. You need the following permissions to use this operation.</p> <p>Permission to create a cluster.</p> <dl> <dt>dsql:CreateCluster</dt> <dd> <p>Resources: arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/*</p> </dd> </dl> <p> Permission to add tags to a resource.</p> <dl> <dt>dsql:TagResource</dt> <dd> <p>Resources: arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/*</p> </dd> </dl> <p>Permission to configure multi-region properties for a cluster.</p> <dl> <dt>dsql:PutMultiRegionProperties</dt> <dd> <p>Resources: arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/*</p> </dd> </dl> <p>When specifying multiRegionProperties.clusters.</p> <dl> <dt>dsql:AddPeerCluster</dt> <dd> <p>Permission to add peer clusters.</p> <p>Resources:</p> <ul> <li> <p>Local cluster: arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/*</p> </li> <li> <p>Each peer cluster: exact ARN of each specified peer cluster</p> </li> </ul> </dd> </dl> <p>When specifying multiRegionProperties.witnessRegion.</p> <dl> <dt>dsql:PutWitnessRegion</dt> <dd> <p>Permission to set a witness region.</p> <p>Resources: arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/*</p> <p>Condition Keys: <code>dsql:WitnessRegion</code> (matching the specified witness region)</p> <note> <p>This permission is checked both in the cluster Region and in the witness Region.</p> </note> </dd> </dl> <important> <p> <b>Important Notes for Multi-Region Operations</b> </p> <ul> <li> <p>The witness region specified in <code>multiRegionProperties.witnessRegion</code> cannot be the same as the cluster's Region.</p> </li> <li> <p>When updating clusters with peer relationships, permissions are checked for both adding and removing peers.</p> </li> </ul> </important>"
     },
     "CreateMultiRegionClusters":{
       "name":"CreateMultiRegionClusters",
@@ -49,7 +49,10 @@
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates multi-Region clusters in Amazon Aurora DSQL. Multi-Region clusters require a linked Region list, which is an array of the Regions in which you want to create linked clusters. Multi-Region clusters require a witness Region, which participates in quorum in failure scenarios.</p>"
+      "documentation":"<p>Creates multi-Region clusters in Amazon Aurora DSQL. Multi-Region clusters require a linked Region list, which is an array of the Regions in which you want to create linked clusters. Multi-Region clusters require a witness Region, which participates in quorum in failure scenarios.</p>",
+      "deprecated":true,
+      "deprecatedMessage":"The CreateMultiRegionClusters API is deprecated. Use the CreateCluster API with multi-Region properties to create a multi-Region cluster.",
+      "deprecatedSince":"5/13/2025"
     },
     "DeleteCluster":{
       "name":"DeleteCluster",
@@ -88,6 +91,9 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Deletes a multi-Region cluster in Amazon Aurora DSQL.</p>",
+      "deprecated":true,
+      "deprecatedMessage":"The DeleteMultiRegionClusters API is deprecated. To delete a multi-Region cluster, use the DeleteCluster API instead.",
+      "deprecatedSince":"5/13/2025",
       "idempotent":true
     },
     "GetCluster":{
@@ -210,13 +216,13 @@
       "output":{"shape":"UpdateClusterOutput"},
       "errors":[
         {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Updates a cluster.</p>"
+      "documentation":"<p>Updates a cluster.</p> <p> <b>Example IAM Policy for Multi-Region Operations</b> </p> <p>The following IAM policy grants permissions for multi-Region operations.</p> <p>The <code>dsql:RemovePeerCluster</code> permission uses a wildcard ARN pattern to simplify permission management during updates.</p> <important> <p> <b>Important Notes for Multi-Region Operations</b> </p> <ul> <li> <p>The witness region specified in <code>multiRegionProperties.witnessRegion</code> cannot be the same as the cluster's Region.</p> </li> <li> <p>When updating clusters with peer relationships, permissions are checked for both adding and removing peers.</p> </li> <li> <p>The <code>dsql:RemovePeerCluster</code> permission uses a wildcard ARN pattern to simplify permission management during updates.</p> </li> </ul> </important>"
     }
   },
   "shapes":{
@@ -235,57 +241,65 @@
     },
     "Arn":{
       "type":"string",
-      "documentation":"<p>Amazon Resource Name</p>",
+      "documentation":"<p>Amazon Resource Name.</p>",
       "max":1011,
       "min":1,
       "pattern":"arn:.+"
     },
     "ClientToken":{
       "type":"string",
-      "documentation":"<p>Idempotency Token</p>",
+      "documentation":"<p>Idempotency token so a request is only processed once.</p>",
       "max":128,
       "min":1,
       "pattern":"[!-~]+"
     },
     "ClusterArn":{
       "type":"string",
-      "documentation":"<p>Cluster ARN</p>"
+      "documentation":"<p>The Amazon Resource Name of the cluster.</p>",
+      "pattern":"arn:aws(-[^:]+)?:dsql:[a-z0-9-]{1,20}:[0-9]{12}:cluster/[a-z0-9]{26}"
     },
     "ClusterArnList":{
       "type":"list",
       "member":{"shape":"ClusterArn"},
-      "documentation":"<p>List of cluster arns</p>"
+      "documentation":"<p>A list of the Amazon Resource Names of the cluster.</p>"
     },
     "ClusterCreationTime":{
       "type":"timestamp",
-      "documentation":"<p>Timestamp when the Cluster was created</p>"
+      "documentation":"<p>The timestamp when the cluster was created.</p>"
     },
     "ClusterId":{
       "type":"string",
-      "documentation":"<p>The ID of the cluster</p>",
+      "documentation":"<p>The ID of the cluster.</p>",
       "pattern":"[a-z0-9]{26}"
     },
     "ClusterList":{
       "type":"list",
       "member":{"shape":"ClusterSummary"},
-      "documentation":"<p>List of clusters</p>"
+      "documentation":"<p>The list of clusters.</p>"
     },
     "ClusterPropertyMap":{
       "type":"map",
       "key":{"shape":"Region"},
       "value":{"shape":"LinkedClusterProperties"},
-      "documentation":"<p>Properties for each linked cluster</p>"
+      "documentation":"<p>A map of properties for a cluster.</p>",
+      "deprecated":true,
+      "deprecatedMessage":"The CreateMultiRegionClusters API is deprecated. To create a multi-Region cluster, use the CreateCluster API with multi-Region properties instead.",
+      "deprecatedSince":"5/13/2025"
     },
     "ClusterStatus":{
       "type":"string",
-      "documentation":"<p>Cluster Status</p>",
+      "documentation":"<p>The current status of a cluster.</p>",
       "enum":[
         "CREATING",
         "ACTIVE",
+        "IDLE",
+        "INACTIVE",
         "UPDATING",
         "DELETING",
         "DELETED",
-        "FAILED"
+        "FAILED",
+        "PENDING_SETUP",
+        "PENDING_DELETE"
       ]
     },
     "ClusterSummary":{
@@ -342,6 +356,10 @@
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries with the same client token return the result from the original successful request and they have no additional effect.</p> <p>If you don't specify a client token, the Amazon Web Services SDK automatically generates one.</p>",
           "idempotencyToken":true
+        },
+        "multiRegionProperties":{
+          "shape":"MultiRegionProperties",
+          "documentation":"<p>The configuration settings when creating a multi-Region cluster, including the witness region and linked cluster properties.</p>"
         }
       }
     },
@@ -371,12 +389,16 @@
           "shape":"ClusterCreationTime",
           "documentation":"<p>The time of when created the cluster.</p>"
         },
+        "multiRegionProperties":{
+          "shape":"MultiRegionProperties",
+          "documentation":"<p>The multi-Region cluster configuration details that were set during cluster creation</p>"
+        },
         "deletionProtectionEnabled":{
           "shape":"DeletionProtectionEnabled",
           "documentation":"<p>Whether deletion protection is enabled on this cluster.</p>"
         }
       },
-      "documentation":"<p>Output Mixin</p>"
+      "documentation":"<p>The output of a created cluster.</p>"
     },
     "CreateMultiRegionClustersInput":{
       "type":"structure",
@@ -461,10 +483,13 @@
         },
         "deletionProtectionEnabled":{
           "shape":"DeletionProtectionEnabled",
-          "documentation":"<p>Specifies whether deletion protection was enabled on the cluster.</p>"
+          "documentation":"<p>Specifies whether deletion protection was enabled on the cluster.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"The deletionProtectionEnabled field is deprecated in the DeleteCluster API. To check deletion protection status, use the GetCluster API instead.",
+          "deprecatedSince":"5/13/2025"
         }
       },
-      "documentation":"<p>Output Mixin</p>"
+      "documentation":"<p>The output from a deleted cluster.</p>"
     },
     "DeleteMultiRegionClustersInput":{
       "type":"structure",
@@ -487,7 +512,7 @@
     },
     "DeletionProtectionEnabled":{
       "type":"boolean",
-      "documentation":"<p>Deletion Protection</p>",
+      "documentation":"<p>Indicates whether deletion protection is enabled for a cluster.</p>",
       "box":true
     },
     "GetClusterInput":{
@@ -528,20 +553,31 @@
           "shape":"ClusterCreationTime",
           "documentation":"<p>The time of when the cluster was created.</p>"
         },
+        "witnessRegion":{
+          "shape":"Region",
+          "documentation":"<p>The witness Region of the cluster. Applicable only for multi-Region clusters.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"The witnessRegion field is deprecated. To see the witnessRegion, use multiRegionProperties.witnessRegion instead.",
+          "deprecatedSince":"5/13/2025"
+        },
+        "linkedClusterArns":{
+          "shape":"ClusterArnList",
+          "documentation":"<p>The ARNs of the clusters linked to the retrieved cluster.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"The linkedClusterArns field is deprecated. To see the peered cluster Arns, use multiRegionProperties.cluster instead.",
+          "deprecatedSince":"5/13/2025"
+        },
         "deletionProtectionEnabled":{
           "shape":"DeletionProtectionEnabled",
           "documentation":"<p>Whether deletion protection is enabled in this cluster.</p>"
         },
-        "witnessRegion":{
-          "shape":"Region",
-          "documentation":"<p>The witness Region of the cluster. Applicable only for multi-Region clusters.</p>"
+        "multiRegionProperties":{
+          "shape":"MultiRegionProperties",
+          "documentation":"<p>Returns the current multi-Region cluster configuration, including witness region and linked cluster information.</p>"
         },
-        "linkedClusterArns":{
-          "shape":"ClusterArnList",
-          "documentation":"<p>The ARNs of the clusters linked to the retrieved cluster.</p>"
-        }
+        "tags":{"shape":"TagMap"}
       },
-      "documentation":"<p>Output Mixin</p>"
+      "documentation":"<p>The output of a cluster.</p>"
     },
     "GetVpcEndpointServiceNameInput":{
       "type":"structure",
@@ -599,7 +635,10 @@
           "documentation":"<p>A map of key and value pairs the linked cluster is tagged with.</p>"
         }
       },
-      "documentation":"<p>Properties of linked clusters.</p>"
+      "documentation":"<p>Properties of linked clusters.</p>",
+      "deprecated":true,
+      "deprecatedMessage":"The CreateMultiRegionClusters API is deprecated. To create a multi-Region cluster, use the CreateCluster API with multi-Region properties instead.",
+      "deprecatedSince":"5/13/2025"
     },
     "ListClustersInput":{
       "type":"structure",
@@ -655,25 +694,42 @@
     },
     "MaxResults":{
       "type":"integer",
-      "documentation":"<p>Max results that will be returned per page</p>",
+      "documentation":"<p>Max results that will be returned per page.</p>",
       "box":true,
       "max":100,
       "min":1
     },
+    "MultiRegionProperties":{
+      "type":"structure",
+      "members":{
+        "witnessRegion":{
+          "shape":"Region",
+          "documentation":"<p>The that serves as the witness region for a multi-Region cluster. The witness region helps maintain cluster consistency and quorum.</p>"
+        },
+        "clusters":{
+          "shape":"ClusterArnList",
+          "documentation":"<p>The set of linked clusters that form the multi-Region cluster configuration. Each linked cluster represents a database instance in a different Region.</p>"
+        }
+      },
+      "documentation":"<p>Defines the structure for multi-Region cluster configurations, containing the witness region and linked cluster settings.</p>"
+    },
     "NextToken":{
       "type":"string",
-      "documentation":"<p>Opaque token used to retrieve next page</p>"
+      "documentation":"<p>Token used to retrieve next page.</p>"
     },
     "Region":{
       "type":"string",
-      "documentation":"<p>AWS Region name (e.g.: 'us-east-1')</p>",
-      "max":20,
+      "documentation":"<p> Region name.</p>",
+      "max":50,
       "min":0
     },
     "RegionList":{
       "type":"list",
       "member":{"shape":"Region"},
-      "documentation":"<p>List of regions</p>"
+      "documentation":"<p>List of Regions.</p>",
+      "deprecated":true,
+      "deprecatedMessage":"The CreateMultiRegionClusters API is deprecated. Use the CreateCluster API with multi-Region properties to create a multi-Region cluster.",
+      "deprecatedSince":"5/13/2025"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -686,11 +742,11 @@
         "message":{"shape":"String"},
         "resourceId":{
           "shape":"String",
-          "documentation":"<p>Hypothetical identifier of the resource which does not exist</p>"
+          "documentation":"<p>The resource ID could not be found.</p>"
         },
         "resourceType":{
           "shape":"String",
-          "documentation":"<p>Hypothetical type of the resource which does not exist</p>"
+          "documentation":"<p>The resource type could not be found.</p>"
         }
       },
       "documentation":"<p>The resource could not be found.</p>",
@@ -702,7 +758,7 @@
     },
     "ServiceName":{
       "type":"string",
-      "documentation":"<p>VPC Endpoint Service name for a Cluster</p>",
+      "documentation":"<p>The name of the VPC endpoint service that provides access to your cluster. Use this endpoint to establish a private connection between your VPC and the cluster.</p>",
       "max":128,
       "min":1,
       "pattern":"com\\.amazonaws\\.[a-z0-9-]+\\.dsql-[a-f0-9]{6}"
@@ -719,23 +775,23 @@
       "members":{
         "message":{
           "shape":"String",
-          "documentation":"<p>Description of the error</p>"
+          "documentation":"<p>The service exception for exceeding a quota.</p>"
         },
         "resourceId":{
           "shape":"String",
-          "documentation":"<p>Identifier of the resource affected</p>"
+          "documentation":"<p>The resource ID exceeds a quota.</p>"
         },
         "resourceType":{
           "shape":"String",
-          "documentation":"<p>Type of the resource affected</p>"
+          "documentation":"<p>The resource type exceeds a quota.</p>"
         },
         "serviceCode":{
           "shape":"String",
-          "documentation":"<p>Service Quotas requirement to identify originating service</p>"
+          "documentation":"<p>The request exceeds a service quota.</p>"
         },
         "quotaCode":{
           "shape":"String",
-          "documentation":"<p>Service Quotas requirement to identify originating quota</p>"
+          "documentation":"<p>The service exceeds a quota.</p>"
         }
       },
       "documentation":"<p>The service limit was exceeded.</p>",
@@ -748,7 +804,7 @@
     "String":{"type":"string"},
     "TagKey":{
       "type":"string",
-      "documentation":"<p>Unique tag key, maximum 128 Unicode characters in UTF-8</p>",
+      "documentation":"<p>Unique tag key, maximum 128 Unicode characters in UTF-8.</p>",
       "max":128,
       "min":1,
       "pattern":"[a-zA-Z0-9_.:/=+\\-@ ]*"
@@ -756,7 +812,7 @@
     "TagKeyList":{
       "type":"list",
       "member":{"shape":"TagKey"},
-      "documentation":"<p>List of tag keys</p>",
+      "documentation":"<p>List of tag keys.</p>",
       "max":200,
       "min":0
     },
@@ -764,7 +820,7 @@
       "type":"map",
       "key":{"shape":"TagKey"},
       "value":{"shape":"TagValue"},
-      "documentation":"<p>Map of tags</p>",
+      "documentation":"<p>Map of tags.</p>",
       "max":200,
       "min":0
     },
@@ -789,7 +845,7 @@
     },
     "TagValue":{
       "type":"string",
-      "documentation":"<p>Tag value, maximum 256 Unicode characters in UTF-8</p>",
+      "documentation":"<p>Tag value, maximum 256 Unicode characters in UTF-8.</p>",
       "max":256,
       "min":0,
       "pattern":"[a-zA-Z0-9_.:/=+\\-@ ]*"
@@ -800,19 +856,19 @@
       "members":{
         "message":{
           "shape":"String",
-          "documentation":"<p>Description of the error</p>"
+          "documentation":"<p>The message that the request was denied due to request throttling.</p>"
         },
         "serviceCode":{
           "shape":"String",
-          "documentation":"<p>Service Quotas requirement to identify originating service</p>"
+          "documentation":"<p>The request exceeds a service quota.</p>"
         },
         "quotaCode":{
           "shape":"String",
-          "documentation":"<p>Service Quotas requirement to identify originating quota</p>"
+          "documentation":"<p>The request exceeds a request rate quota.</p>"
         },
         "retryAfterSeconds":{
           "shape":"Integer",
-          "documentation":"<p>Advice to clients on when the call can be safely retried</p>",
+          "documentation":"<p>The request exceeds a request rate quota. Retry after seconds.</p>",
           "location":"header",
           "locationName":"Retry-After"
         }
@@ -864,6 +920,10 @@
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully. The subsequent retries with the same client token return the result from the original successful request and they have no additional effect.</p> <p>If you don't specify a client token, the Amazon Web Services SDK automatically generates one.</p>",
           "idempotencyToken":true
+        },
+        "multiRegionProperties":{
+          "shape":"MultiRegionProperties",
+          "documentation":"<p>The new multi-Region cluster configuration settings to be applied during an update operation.</p>"
         }
       }
     },
@@ -893,20 +953,29 @@
           "shape":"ClusterCreationTime",
           "documentation":"<p>The time of when the cluster was created.</p>"
         },
-        "deletionProtectionEnabled":{
-          "shape":"DeletionProtectionEnabled",
-          "documentation":"<p>Whether deletion protection is enabled for the updated cluster.</p>"
-        },
         "witnessRegion":{
           "shape":"Region",
-          "documentation":"<p>The Region that receives all data you write to linked clusters.</p>"
+          "documentation":"<p>The Region that receives all data you write to linked clusters.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"The witnessRegion field is deprecated in the UpdateCluster API. To check witnessRegion, use the GetCluster API instead.",
+          "deprecatedSince":"5/13/2025"
         },
         "linkedClusterArns":{
           "shape":"ClusterArnList",
-          "documentation":"<p>The ARNs of the clusters linked to the updated cluster. Applicable only for multi-Region clusters.</p>"
+          "documentation":"<p>The ARNs of the clusters linked to the updated cluster. Applicable only for multi-Region clusters.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"The linkedClusterArns field is deprecated in the UpdateCluster API. To check peer cluster, use the GetCluster API instead.",
+          "deprecatedSince":"5/13/2025"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"DeletionProtectionEnabled",
+          "documentation":"<p>Whether deletion protection is enabled for the updated cluster.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"The deletionProtectionEnabled field is deprecated in the UpdateCluster API. To check deletion protection status, use the GetCluster API instead.",
+          "deprecatedSince":"5/13/2025"
         }
       },
-      "documentation":"<p>Output Mixin</p>"
+      "documentation":"<p>The details of the cluster after it has been updated.</p>"
     },
     "ValidationException":{
       "type":"structure",
@@ -916,8 +985,14 @@
       ],
       "members":{
         "message":{"shape":"String"},
-        "reason":{"shape":"ValidationExceptionReason"},
-        "fieldList":{"shape":"ValidationExceptionFieldList"}
+        "reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The reason for the validation exception.</p>"
+        },
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>A list of fields that didn't validate.</p>"
+        }
       },
       "documentation":"<p>The input failed to satisfy the constraints specified by an Amazon Web Services service.</p>",
       "error":{
@@ -947,11 +1022,11 @@
     "ValidationExceptionFieldList":{
       "type":"list",
       "member":{"shape":"ValidationExceptionField"},
-      "documentation":"<p>List of fields that caused the error</p>"
+      "documentation":"<p>A list of fields that didn't validate.</p>"
     },
     "ValidationExceptionReason":{
       "type":"string",
-      "documentation":"<p>Reason the request failed validation</p>",
+      "documentation":"<p>The reason for the validation exception.</p>",
       "enum":[
         "unknownOperation",
         "cannotParse",
@@ -961,5 +1036,5 @@
       ]
     }
   },
-  "documentation":"<p>This is an interface reference for Amazon Aurora DSQL. It contains documentation for one of the programming or command line interfaces you can use to manage Amazon Aurora DSQL.</p> <p>Amazon Aurora DSQL is a serverless, distributed SQL database suitable for workloads of any size. Aurora DSQL is available in both single-Region and multi-Region configurations, so your clusters and databases are always available even if an Availability Zone or an Amazon Web Services Region are unavailable. Aurora DSQL lets you focus on using your data to acquire new insights for your business and customers.</p>"
+  "documentation":"<p>This is an interface reference for Amazon Aurora DSQL. It contains documentation for one of the programming or command line interfaces you can use to manage Amazon Aurora DSQL.</p> <p>Amazon Aurora DSQL is a serverless, distributed SQL database suitable for workloads of any size. is available in both single-Region and multi-Region configurations, so your clusters and databases are always available even if an Availability Zone or an Amazon Web Services Region are unavailable. lets you focus on using your data to acquire new insights for your business and customers.</p>"
 }

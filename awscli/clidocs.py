@@ -180,6 +180,14 @@ class CLIDocumentEventHandler:
     def doc_option(self, arg_name, help_command, **kwargs):
         doc = help_command.doc
         argument = help_command.arg_table[arg_name]
+        if (
+            argument.required
+            or getattr(argument, '_DOCUMENT_AS_REQUIRED', False)
+        ):
+            required_field = ' [required]'
+        else:
+            required_field = ''
+
         if argument.group_name in self._arg_groups:
             if argument.group_name in self._documented_arg_groups:
                 # This arg is already documented so we can move on.
@@ -194,14 +202,16 @@ class CLIDocumentEventHandler:
         else:
             name = '``%s``' % argument.cli_name
         doc.write(
-            '%s (%s)\n'
+            '%s (%s)%s\n'
             % (
                 name,
                 self._get_argument_type_name(
                     argument.argument_model, argument.cli_type_name
                 ),
+                required_field
             )
         )
+
         doc.style.indent()
         doc.include_doc_string(argument.documentation)
         if is_streaming_blob_type(argument.argument_model):
@@ -283,19 +293,22 @@ class CLIDocumentEventHandler:
         type_name = self._get_argument_type_name(
             member_shape, member_shape.type_name
         )
+
         if member_name:
-            doc.write('%s -> (%s)' % (member_name, type_name))
+            tmp = f'{member_name} -> ({type_name})'
         else:
-            doc.write('(%s)' % type_name)
+            tmp = f'({type_name})'
+
+        if required:
+            tmp += ' [required]'
+        
+        doc.write(tmp)
+
         doc.style.indent()
         doc.style.new_paragraph()
         doc.include_doc_string(docs)
         if is_tagged_union_type(member_shape):
             self._add_tagged_union_note(member_shape, doc)
-
-        if required:
-            doc.style.new_paragraph()
-            doc.write('This parameter is required.')
 
         self._document_enums(member_shape, doc)
         self._document_constraints(member_shape, doc)

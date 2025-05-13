@@ -24,6 +24,7 @@ from docutils.writers import (
     html4css1,
     manpage,
 )
+from awscli import __version__ as _CLI_VERSION
 from awscli.argparser import ArgTableArgParser
 from awscli.argprocess import ParamShorthandParser
 from botocore.exceptions import ProfileNotFound
@@ -55,6 +56,9 @@ def get_renderer(help_output):
     Return the appropriate HelpRenderer implementation for the
     current platform.
     """
+    if help_output == "url":
+        return UrlHelpRenderer()
+    
     if platform.system() == 'Windows':
         return WindowsHelpRenderer()
     else:
@@ -152,6 +156,7 @@ class BrowserHelpRenderer:
         html_file.close()
 
         try:
+            print("Opening help file in the default browser.")
             return webbrowser.open_new_tab(f'file://{html_file.name}')
         except Exception:
             LOG.debug('Failed to open browser:', exc_info=True)
@@ -346,6 +351,11 @@ class HelpCommand:
             help_output_format = None
 
         self.renderer = get_renderer(help_output_format)
+<<<<<<< HEAD
+=======
+
+        self._base_remote_url = f"https://awscli.amazonaws.com/v2/documentation/api/{_CLI_VERSION}"
+>>>>>>> kdaily/html-help-pages
 
     @property
     def event_class(self):
@@ -397,7 +407,10 @@ class HelpCommand:
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
         docevents.generate_events(self.session, self)
-        self.renderer.render(self.doc.getvalue())
+        if self.session.get_config_variable('cli_help_output') == 'url':
+            self.renderer.render(self.url.encode())
+        else:
+            self.renderer.render(self.doc.getvalue())
         instance.unregister()
 
 
@@ -428,6 +441,10 @@ class ProviderHelpCommand(HelpCommand):
     @property
     def name(self):
         return 'aws'
+
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/index.html"
 
     @property
     def subcommand_table(self):
@@ -479,6 +496,9 @@ class ServiceHelpCommand(HelpCommand):
     def name(self):
         return self._name
 
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/reference/{self.name}/index.html"
 
 class OperationHelpCommand(HelpCommand):
     """Implements operation level help.
@@ -504,6 +524,10 @@ class OperationHelpCommand(HelpCommand):
     def name(self):
         return self._name
 
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/reference/{self.event_class.replace('.', '/')}.html"
+
 
 class TopicListerCommand(HelpCommand):
     EventHandlerClass = TopicListerDocumentEventHandler
@@ -518,6 +542,10 @@ class TopicListerCommand(HelpCommand):
     @property
     def name(self):
         return 'topics'
+
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/topic/index.html"
 
 
 class TopicHelpCommand(HelpCommand):
@@ -534,3 +562,7 @@ class TopicHelpCommand(HelpCommand):
     @property
     def name(self):
         return self._topic_name
+
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/topic/{self.name}.html"

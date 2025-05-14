@@ -351,11 +351,8 @@ class HelpCommand:
             help_output_format = None
 
         self.renderer = get_renderer(help_output_format)
-<<<<<<< HEAD
-=======
 
         self._base_remote_url = f"https://awscli.amazonaws.com/v2/documentation/api/{_CLI_VERSION}"
->>>>>>> kdaily/html-help-pages
 
     @property
     def event_class(self):

@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock 
+from awscli.testutils import mock
 from awscli.testutils import unittest
 from awscli.customizations.s3.filegenerator import FileStat
 from awscli.customizations.s3.fileinfo import FileInfo
@@ -27,7 +27,8 @@ class TestFileInfoBuilder(unittest.TestCase):
                           size='size', last_update='last_update',
                           src_type='src_type', dest_type='dest_type',
                           operation_name='operation_name',
-                          response_data='associated_response_data')]
+                          response_data='associated_response_data',
+                          etag='etag',)]
         file_infos = info_setter.call(files)
         for file_info in file_infos:
             attributes = file_info.__dict__.keys()

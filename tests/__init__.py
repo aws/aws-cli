@@ -92,6 +92,7 @@ from tests.utils.s3transfer import (
     StreamWithError,
     RecordingSubscriber,
     FileSizeProvider,
+    ETagProvider,
     RecordingOSUtils,
     RecordingExecutor,
     TransferCoordinatorWithInterrupt,

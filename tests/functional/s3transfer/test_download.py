@@ -25,6 +25,7 @@ from s3transfer.manager import TransferConfig, TransferManager
 
 from tests import (
     BaseGeneralInterfaceTest,
+    ETagProvider,
     FileSizeProvider,
     NonSeekableWriter,
     RecordingOSUtils,
@@ -294,16 +295,20 @@ class BaseDownloadTest(BaseGeneralInterfaceTest):
         ]
         self.assertEqual(-3, progress_byte_amts[1])
 
-    def test_can_provide_file_size(self):
-        self.add_head_object_response()
+    def test_can_provide_file_size_and_etag(self):
         self.add_successful_get_object_responses()
 
         call_kwargs = self.create_call_kwargs()
-        call_kwargs['subscribers'] = [FileSizeProvider(len(self.content))]
+        call_kwargs['subscribers'] = [
+            FileSizeProvider(len(self.content)),
+            ETagProvider(self.etag),
+        ]
 
         future = self.manager.download(**call_kwargs)
         future.result()
 
+        # The HeadObject should have not happened and should have been able
+        # to successfully download the file.
         self.stubber.assert_no_pending_responses()
         with open(self.filename, 'rb') as f:
             self.assertEqual(self.content, f.read())

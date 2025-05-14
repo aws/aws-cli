@@ -54,7 +54,7 @@ def get_endpoint_tests_for_service(service_name):
     if not file_path.is_file():
         raise FileNotFoundError(
             f'Cannot find endpoint tests file for "{service_name}" at '
-            'path {file_path}'
+            f'path {file_path}'
         )
     with file_path.open('r') as f:
         return json.load(f)

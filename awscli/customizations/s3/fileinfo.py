@@ -54,6 +54,7 @@ class FileInfo:
         source_client=None,
         is_stream=False,
         associated_response_data=None,
+        etag=None,
     ):
         self.src = src
         self.src_type = src_type
@@ -71,6 +72,7 @@ class FileInfo:
         self.source_client = source_client
         self.is_stream = is_stream
         self.associated_response_data = associated_response_data
+        self.etag = etag
 
     def is_glacier_compatible(self):
         """Determines if a file info object is glacier compatible

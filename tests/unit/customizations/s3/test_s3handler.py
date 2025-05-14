@@ -43,6 +43,7 @@ from awscli.customizations.s3.subscribers import (
     DeleteSourceFileSubscriber,
     DeleteSourceObjectSubscriber,
     DirectoryCreatorSubscriber,
+    ProvideETagSubscriber,
     ProvideLastModifiedTimeSubscriber,
     ProvideSizeSubscriber,
     ProvideUploadContentTypeSubscriber,
@@ -344,6 +345,7 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         # Make sure the subscriber applied are of the correct type and order
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             QueuedResultSubscriber,
             ProvideUploadContentTypeSubscriber,
             ProgressResultSubscriber,
@@ -381,6 +383,7 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         )
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             QueuedResultSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,
@@ -400,6 +403,7 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         upload_call_kwargs = self.transfer_manager.upload.call_args[1]
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             QueuedResultSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,
@@ -455,6 +459,7 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.transfer_request_submitter.submit(fileinfo)
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             QueuedResultSubscriber,
             ProvideUploadContentTypeSubscriber,
             DeleteSourceFileSubscriber,
@@ -515,6 +520,7 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         # Make sure the subscriber applied are of the correct type and order
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             QueuedResultSubscriber,
             DirectoryCreatorSubscriber,
             ProvideLastModifiedTimeSubscriber,
@@ -659,6 +665,7 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.transfer_request_submitter.submit(fileinfo)
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             QueuedResultSubscriber,
             DirectoryCreatorSubscriber,
             ProvideLastModifiedTimeSubscriber,
@@ -712,6 +719,7 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         # Make sure the subscriber applied are of the correct type and order
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             QueuedResultSubscriber,
             SetMetadataDirectivePropsSubscriber,
             SetTagsSubscriber,
@@ -752,6 +760,7 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         )
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             QueuedResultSubscriber,
             SetMetadataDirectivePropsSubscriber,
             SetTagsSubscriber,
@@ -775,6 +784,7 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         copy_call_kwargs = self.transfer_manager.copy.call_args[1]
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             QueuedResultSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,
@@ -900,6 +910,7 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.transfer_request_submitter.submit(fileinfo)
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             QueuedResultSubscriber,
             SetMetadataDirectivePropsSubscriber,
             SetTagsSubscriber,
@@ -947,6 +958,7 @@ class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(upload_call_kwargs['extra_args'], {})
 
         ref_subscribers = [
+            ProvideETagSubscriber,
             QueuedResultSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,
@@ -967,6 +979,7 @@ class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
 
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             QueuedResultSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,
@@ -1036,6 +1049,7 @@ class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(download_call_kwargs['extra_args'], {})
 
         ref_subscribers = [
+            ProvideETagSubscriber,
             QueuedResultSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,
@@ -1109,6 +1123,7 @@ class TestDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(delete_call_kwargs['extra_args'], {})
 
         ref_subscribers = [
+            ProvideETagSubscriber,
             QueuedResultSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,

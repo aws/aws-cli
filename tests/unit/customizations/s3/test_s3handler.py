@@ -46,6 +46,7 @@ from awscli.customizations.s3.utils import NonSeekableStream
 from awscli.customizations.s3.utils import StdoutBytesWriter
 from awscli.customizations.s3.utils import WarningResult
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
+from awscli.customizations.s3.utils import ProvideETagSubscriber
 from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
@@ -442,6 +443,7 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         # Make sure the subscriber applied are of the correct type and order
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             DirectoryCreatorSubscriber,
             ProvideLastModifiedTimeSubscriber,
             DownloadResultSubscriber
@@ -579,6 +581,7 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.transfer_request_submitter.submit(fileinfo)
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             DirectoryCreatorSubscriber,
             ProvideLastModifiedTimeSubscriber,
             DeleteSourceObjectSubscriber,

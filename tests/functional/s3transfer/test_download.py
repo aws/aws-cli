@@ -20,7 +20,7 @@ from io import BytesIO
 
 from botocore.exceptions import ClientError
 from s3transfer.compat import SOCKET_ERROR
-from s3transfer.exceptions import RetriesExceededError
+from s3transfer.exceptions import RetriesExceededError, S3DownloadFailedError
 from s3transfer.manager import TransferConfig, TransferManager
 
 from tests import (
@@ -48,6 +48,7 @@ class BaseDownloadTest(BaseGeneralInterfaceTest):
         # Initialize some default arguments
         self.bucket = 'mybucket'
         self.key = 'mykey'
+        self.etag = 'myetag'
         self.extra_args = {}
         self.subscribers = []
 
@@ -84,7 +85,10 @@ class BaseDownloadTest(BaseGeneralInterfaceTest):
         return [
             {
                 'method': 'head_object',
-                'service_response': {'ContentLength': len(self.content)},
+                'service_response': {
+                    'ContentLength': len(self.content),
+                    'ETag': self.etag,
+                },
             },
             {
                 'method': 'get_object',
@@ -291,6 +295,7 @@ class BaseDownloadTest(BaseGeneralInterfaceTest):
         self.assertEqual(-3, progress_byte_amts[1])
 
     def test_can_provide_file_size(self):
+        self.add_head_object_response()
         self.add_successful_get_object_responses()
 
         call_kwargs = self.create_call_kwargs()
@@ -299,8 +304,6 @@ class BaseDownloadTest(BaseGeneralInterfaceTest):
         future = self.manager.download(**call_kwargs)
         future.result()
 
-        # The HeadObject should have not happened and should have been able
-        # to successfully download the file.
         self.stubber.assert_no_pending_responses()
         with open(self.filename, 'rb') as f:
             self.assertEqual(self.content, f.read())
@@ -469,7 +472,10 @@ class TestRangedDownload(BaseDownloadTest):
         return [
             {
                 'method': 'head_object',
-                'service_response': {'ContentLength': len(self.content)},
+                'service_response': {
+                    'ContentLength': len(self.content),
+                    'ETag': self.etag,
+                },
             },
             {
                 'method': 'get_object',
@@ -502,7 +508,7 @@ class TestRangedDownload(BaseDownloadTest):
         expected_ranges = ['bytes=0-3', 'bytes=4-7', 'bytes=8-']
         self.add_head_object_response(expected_params)
         self.add_successful_get_object_responses(
-            expected_params, expected_ranges
+            {**expected_params, 'IfMatch': self.etag}, expected_ranges
         )
 
         future = self.manager.download(
@@ -523,6 +529,76 @@ class TestRangedDownload(BaseDownloadTest):
         }
         expected_ranges = ['bytes=0-3', 'bytes=4-7', 'bytes=8-']
         self.add_head_object_response(expected_params)
+        self.add_successful_get_object_responses(
+            {**expected_params, 'IfMatch': self.etag}, expected_ranges
+        )
+
+        future = self.manager.download(
+            self.bucket, self.key, self.filename, self.extra_args
+        )
+        future.result()
+
+        # Ensure that the contents are correct
+        with open(self.filename, 'rb') as f:
+            self.assertEqual(self.content, f.read())
+
+    def test_download_raises_if_etag_validation_fails(self):
+        expected_params = {
+            'Bucket': self.bucket,
+            'Key': self.key,
+        }
+        expected_ranges = ['bytes=0-3', 'bytes=4-7']
+        self.add_head_object_response(expected_params)
+
+        # Add successful GetObject responses for the first 2 requests.
+        for i, stubbed_response in enumerate(
+            self.create_stubbed_responses()[1:3]
+        ):
+            stubbed_response['expected_params'] = copy.deepcopy(
+                {**expected_params, 'IfMatch': self.etag}
+            )
+            stubbed_response['expected_params']['Range'] = expected_ranges[i]
+            self.stubber.add_response(**stubbed_response)
+
+        # Simulate ETag validation failure by adding a
+        # client error for the last GetObject request.
+        self.stubber.add_client_error(
+            method='get_object',
+            service_error_code='PreconditionFailed',
+            service_message=(
+                'At least one of the pre-conditions you specified did not hold'
+            ),
+            http_status_code=412,
+        )
+
+        future = self.manager.download(
+            self.bucket, self.key, self.filename, self.extra_args
+        )
+        with self.assertRaises(S3DownloadFailedError) as e:
+            future.result()
+        self.assertIn('did not match expected ETag', str(e.exception))
+
+        # Ensure no data is written to disk.
+        self.assertFalse(os.path.exists(self.filename))
+
+    def test_download_without_etag(self):
+        expected_params = {
+            'Bucket': self.bucket,
+            'Key': self.key,
+        }
+        expected_ranges = ['bytes=0-3', 'bytes=4-7', 'bytes=8-']
+
+        # Stub HeadObject response with no ETag
+        head_object_response = {
+            'method': 'head_object',
+            'service_response': {
+                'ContentLength': len(self.content),
+            },
+            'expected_params': expected_params,
+        }
+        self.stubber.add_response(**head_object_response)
+
+        # This asserts that IfMatch isn't in the GetObject requests.
         self.add_successful_get_object_responses(
             expected_params, expected_ranges
         )

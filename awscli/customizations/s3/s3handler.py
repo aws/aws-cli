@@ -39,6 +39,7 @@ from awscli.customizations.s3.results import CommandResultRecorder
 from awscli.customizations.s3.utils import RequestParamsMapper
 from awscli.customizations.s3.utils import StdoutBytesWriter
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
+from awscli.customizations.s3.utils import ProvideETagSubscriber
 from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
@@ -395,6 +396,7 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
         subscribers.append(ProvideSizeSubscriber(fileinfo.size))
+        subscribers.append(ProvideETagSubscriber(fileinfo.etag))
         subscribers.append(DirectoryCreatorSubscriber())
         subscribers.append(ProvideLastModifiedTimeSubscriber(
             fileinfo.last_update, self._result_queue))

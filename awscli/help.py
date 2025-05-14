@@ -57,7 +57,7 @@ def get_renderer(help_output):
     current platform.
     """
     if help_output == "url":
-        return UrlHelpRenderer()
+        return PagingHelpRenderer()
     
     if platform.system() == 'Windows':
         return WindowsHelpRenderer()

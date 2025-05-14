@@ -1,0 +1,23 @@
+Parameters:
+  X:
+    Type: Object
+  Y:
+    Type: Object
+  XX:
+    Type: List
+  YY:
+    Type: List
+Resources:
+  Bar:
+    Type: A::B::C
+    Properties:
+      Merged:
+        Fn::Merge:
+        - !Ref X
+        - !Ref Y
+      Lists:
+        Fn::Merge:
+        - !Ref XX
+        - !Ref YY
+        - !Ref YY
+

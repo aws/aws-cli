@@ -1,0 +1,18 @@
+Parameters:
+  SimpleMap:
+    Type: Map
+  ComplexMap:
+    Type: Map
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !GetAtt SimpleMap[default].Name
+      Tags:
+        - Key: "Environment"
+          Value: !GetAtt ComplexMap[prod].Environment
+Outputs:
+  BucketName:
+    Value: !GetAtt Bucket.BucketName
+  MapKeyOutput:
+    Value: !GetAtt SimpleMap[*].Name

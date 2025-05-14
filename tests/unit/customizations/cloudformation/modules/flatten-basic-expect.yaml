@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  # Test 1: Basic flattening of a list
+  BasicList:
+    Type: AWS::CloudFormation::Module
+    Properties:
+      FlattenedList: [1, 2, 3, 4, 5]
+  
+  # Test 2: Flattening a nested list
+  NestedList:
+    Type: AWS::CloudFormation::Module
+    Properties:
+      FlattenedNestedList: [1, 2, 3, 4, 5]
+  
+  # Test 3: Flattening with direct property access
+  DirectPropertyAccess:
+    Type: AWS::CloudFormation::Module
+    Properties:
+      FlattenedProperties: ["admin", "developer", "reader"]
+  
+  # Test 4: Transform with simple template
+  SimpleTransform:
+    Type: AWS::CloudFormation::Module
+    Properties:
+      TransformedItems:
+        - Environment: "dev"
+          ServiceName: "service1"
+        - Environment: "prod"
+          ServiceName: "service1"    
+        - Environment: "dev"
+          ServiceName: "service2"
+          
+  # Test 5: Transform with multiple variable combinations
+  MultiVarTransform:
+    Type: AWS::CloudFormation::Module
+    Properties:
+      MultiVarItems:
+        - AppName: "app"
+          Environment: "dev"
+          Region: "us-east-1"
+          ResourceName: "app-dev-us-east-1"
+        - AppName: "app"
+          Environment: "prod"
+          Region: "us-east-1"
+          ResourceName: "app-prod-us-east-1"
+        - AppName: "app"
+          Environment: "dev"
+          Region: "us-west-2"
+          ResourceName: "app-dev-us-west-2"
+        - AppName: "app"
+          Environment: "prod"
+          Region: "us-west-2"
+          ResourceName: "app-prod-us-west-2"

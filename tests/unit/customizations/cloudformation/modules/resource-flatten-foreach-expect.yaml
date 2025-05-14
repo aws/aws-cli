@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  SecurityRules:
+    Type: Map
+    Default:
+      WebServer:
+        name: web
+        port: 80
+        protocol: tcp
+        allowed_cidrs: [simple1, simple2]
+      Database:
+        name: db
+        port: 3306
+        protocol: tcp
+        allowed_cidrs: [simple3]
+
+Resources:
+  SecurityGroup0:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for web
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: simple1
+  
+  SecurityGroup1:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for web
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: simple2
+  
+  SecurityGroup2:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for db
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: simple3
+
+Outputs:
+  WebSecurityGroupId:
+    Description: "Web security group ID"
+    Value: !GetAtt SecurityGroup0.GroupId
+  
+  AllSecurityGroupIds:
+    Description: "All security group IDs"
+    Value:
+      - !GetAtt SecurityGroup0.GroupId
+      - !GetAtt SecurityGroup1.GroupId
+      - !GetAtt SecurityGroup2.GroupId

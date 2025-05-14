@@ -1,0 +1,54 @@
+Resources:
+  A:
+    Type: D::E::F
+    Properties:
+      Object:
+        Arn:
+          Fn::Sub: ${ContentBucket.Arn}
+        ArnGetAtt:
+          Fn::GetAtt:
+          - ContentBucket
+          - Arn
+        GetAttToSubList:
+        - Fn::Sub: ${ContentBucket.Arn}
+        - Fn::Sub: ${ContentBucket2.Arn}
+        - abc-foo
+        Join:
+          Fn::Join:
+          - '-'
+          - - Fn::GetAtt:
+              - ContentBucket
+              - BucketName
+            - Fn::GetAtt:
+              - ContentBucket
+              - Arn
+  ContentBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: foo
+  ContentBucket2:
+    Type: AWS::S3::Bucket
+  AnotherModuleFoo:
+    Type: A::B::C
+    Properties:
+      AName:
+        Fn::Sub: another-${ContentBucket.Arn}
+      TestOverrideList:
+      - Fn::Sub: ${ContentBucket.Arn}
+      - Fn::Sub: ${ContentBucket2.Arn}
+      - abc-foo
+Outputs:
+  ExampleOutput:
+    Value:
+      Fn::GetAtt:
+      - ContentBucket
+      - Arn
+  ExampleSub:
+    Value:
+      Fn::Sub: ${ContentBucket.Arn}
+  ExampleGetSub:
+    Value:
+      Fn::Sub: ${ContentBucket.Arn}
+  ExampleRef:
+    Value:
+      Ref: ContentBucket

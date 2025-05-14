@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  TestResource:
+    Type: AWS::CloudFormation::Module
+    Properties:
+      TransformedItems:
+        Fn::Flatten:
+          Source:
+            assignment1:
+              principal_name: "Admins"
+              principal_type: "GROUP"
+              permission_sets: ["AdministratorAccess", "ReadOnlyAccess"]
+              account_ids: ["123456789012", "210987654321"]
+          Transform:
+            Template:
+              PrincipalName: "$item.principal_name"
+              PrincipalType: "$item.principal_type"
+              PermissionSet: "$pset"
+              AccountId: "$account"
+            Variables:
+              pset: "$item.permission_sets[*]"
+              account: "$item.account_ids[*]"

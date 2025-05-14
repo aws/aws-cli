@@ -39,13 +39,13 @@ class TestImportexport(BaseSessionTest):
             b"</CancelJobOutput>"
         )
 
-        # Confirm we've ignored the model signatureVersion and chosen v4
-        assert client.meta.config.signature_version == "v4"
+        # Note that client.meta.config.signature_version still returns "v2"
+        # since the "choose-signer" hook doesn't run until later
         with stubber:
             stubber.add_response(body=importexport_response)
             client.cancel_job(JobId="12345")
 
-        # Validate we actually signed with sigv4
+        # So validate we actually signed with sigv4
         auth_header = stubber.requests[0].headers.get('Authorization', '')
         assert auth_header.startswith(b"AWS4-HMAC-SHA256")
         assert b"aws4_request" in auth_header

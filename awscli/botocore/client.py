@@ -62,18 +62,6 @@ from botocore.utils import (
     get_service_module_name,
 )
 
-_LEGACY_SIGNATURE_VERSIONS = frozenset(
-    (
-        'v2',
-        'v3',
-        'v3https',
-        'v4',
-        's3',
-        's3v4',
-    )
-)
-
-
 logger = logging.getLogger(__name__)
 history_recorder = get_global_history_recorder()
 
@@ -174,6 +162,7 @@ class ClientCreator:
         self._register_s3_events(service_client, client_config, scoped_config)
         self._register_s3express_events(client=service_client)
         self._register_s3_control_events(service_client)
+        self._register_importexport_events(client=service_client)
         self._register_endpoint_discovery(
             service_client, endpoint_url, client_config
         )
@@ -331,6 +320,42 @@ class ClientCreator:
         if client.meta.service_model.service_name != 's3control':
             return
         S3ControlArnParamHandlerv2().register(client.meta.events)
+
+    def _register_importexport_events(
+        self,
+        client,
+        endpoint_bridge=None,
+        endpoint_url=None,
+        client_config=None,
+        scoped_config=None,
+    ):
+        if client.meta.service_model.service_name != 'importexport':
+            return
+        self._set_importexport_signature_version(
+            client.meta, client_config, scoped_config
+        )
+
+    def _set_importexport_signature_version(
+        self, client_meta, client_config, scoped_config
+    ):
+        # This will return the manually configured signature version, or None
+        # if none was manually set. If a customer manually sets the signature
+        # version, we always want to use what they set.
+        configured_signature_version = _get_configured_signature_version(
+            'importexport', client_config, scoped_config
+        )
+        if configured_signature_version is not None:
+            return
+
+        # importexport has a modeled signatureVersion of v2, but we
+        # previously switched to v4 via endpoint.json before endpoint rulesets.
+        # Override the model's signatureVersion for backwards compatability.
+        client_meta.events.register(
+            'choose-signer.importexport', self._default_signer_to_sigv4
+        )
+
+    def _default_signer_to_sigv4(self, signature_version, **kwargs):
+        return 'v4'
 
     def _get_client_args(
         self,
@@ -669,27 +694,28 @@ class ClientEndpointBridge:
         if configured_version is not None:
             return configured_version
 
-        potential_versions = resolved.get('signatureVersions', [])
-        if (
-            self.service_signature_version is not None
-            and self.service_signature_version
-            not in _LEGACY_SIGNATURE_VERSIONS
-        ):
-            # Prefer the service model as most specific
-            # source of truth for new signature versions.
-            potential_versions = [self.service_signature_version]
+        # These have since added the "auth" key to the service model
+        # with "aws.auth#sigv4", but preserve existing behavior from
+        # when we preferred endpoints.json over the service models
+        if service_name in ('s3', 's3-control'):
+            return 's3v4'
 
-        # Pick a signature version from the endpoint metadata if present.
-        if 'signatureVersions' in resolved:
-            if service_name == 's3':
-                return 's3v4'
+        if self.service_signature_version is not None:
+            # Prefer the service model
+            potential_versions = [self.service_signature_version]
+        else:
+            # Fall back to endpoints.json to preserve existing behavior, which
+            # may be useful for users who have custom service models
+            potential_versions = resolved.get('signatureVersions', [])
+            # This was added for the V2 -> V4 transition,
+            # for services that added V4 after V2 in endpoints.json
             if 'v4' in potential_versions:
                 return 'v4'
-            # Now just iterate over the signature versions in order until we
-            # find the first one that is known to Botocore.
-            for known in potential_versions:
-                if known in AUTH_TYPE_MAPS:
-                    return known
+        # Now just iterate over the signature versions in order until we
+        # find the first one that is known to Botocore.
+        for known in potential_versions:
+            if known in AUTH_TYPE_MAPS:
+                return known
         raise UnknownSignatureVersionError(
             signature_version=potential_versions
         )

@@ -14,8 +14,9 @@ import heapq
 import logging
 import threading
 
+from botocore.exceptions import ClientError
 from s3transfer.compat import seekable
-from s3transfer.exceptions import RetriesExceededError
+from s3transfer.exceptions import RetriesExceededError, S3DownloadFailedError
 from s3transfer.futures import IN_MEMORY_DOWNLOAD_TAG
 from s3transfer.tasks import SubmissionTask, Task
 from s3transfer.utils import (
@@ -346,14 +347,18 @@ class DownloadSubmissionTask(SubmissionTask):
         :param bandwidth_limiter: The bandwidth limiter to use when
             downloading streams
         """
+        response = client.head_object(
+            Bucket=transfer_future.meta.call_args.bucket,
+            Key=transfer_future.meta.call_args.key,
+            **transfer_future.meta.call_args.extra_args,
+        )
+        # Provide an etag to ensure a stored object is not modified
+        # during a multipart download.
+        transfer_future.meta.provide_object_etag(response.get('ETag'))
+
         if transfer_future.meta.size is None:
             # If a size was not provided figure out the size for the
             # user.
-            response = client.head_object(
-                Bucket=transfer_future.meta.call_args.bucket,
-                Key=transfer_future.meta.call_args.key,
-                **transfer_future.meta.call_args.extra_args,
-            )
             transfer_future.meta.provide_transfer_size(
                 response['ContentLength']
             )
@@ -479,9 +484,12 @@ class DownloadSubmissionTask(SubmissionTask):
                 part_size, i, num_parts
             )
 
-            # Inject the Range parameter to the parameters to be passed in
-            # as extra args
-            extra_args = {'Range': range_parameter}
+            # Inject extra parameters to be passed in as extra args
+            extra_args = {
+                'Range': range_parameter,
+            }
+            if transfer_future.meta.etag is not None:
+                extra_args['IfMatch'] = transfer_future.meta.etag
             extra_args.update(call_args.extra_args)
             finalize_download_invoker.increment()
             # Submit the ranged downloads
@@ -593,6 +601,15 @@ class GetObjectTask(Task):
                     else:
                         return
                 return
+            except ClientError as e:
+                error_code = e.response.get('Error', {}).get('Code')
+                if error_code == "PreconditionFailed":
+                    raise S3DownloadFailedError(
+                        f'Contents of stored object "{key}" in bucket '
+                        f'"{bucket}" did not match expected ETag.'
+                    )
+                else:
+                    raise
             except S3_RETRYABLE_DOWNLOAD_ERRORS as e:
                 logger.debug(
                     "Retrying exception caught (%s), "

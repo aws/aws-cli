@@ -525,9 +525,9 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         required_index = rendered.find('RequiredParameter -> (string)')
         optional_index = rendered.find('OptionalParameter -> (string)')
 
-        self.assertIn('This parameter is required', rendered[required_index:optional_index])
+        self.assertIn('[required]', rendered[required_index:optional_index])
         optional_text = rendered[optional_index:]
-        self.assertNotIn('This parameter is required', optional_text)
+        self.assertNotIn('[required]', optional_text)
 
     def test_documents_constraints(self):
         shape = {'type': 'string', 'min': 0, 'max': 10, 'pattern': '.*'}

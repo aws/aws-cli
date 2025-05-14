@@ -2,9 +2,11 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2020-07-20",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"sso",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"SSO Admin",
     "serviceFullName":"AWS Single Sign-On Admin",
     "serviceId":"SSO Admin",
@@ -88,7 +90,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates an application in IAM Identity Center for the given application provider.</p>"
+      "documentation":"<p>Creates an OAuth 2.0 customer managed application in IAM Identity Center for the given application provider.</p> <note> <p>This API does not support creating SAML 2.0 customer managed applications or Amazon Web Services managed applications. To learn how to create an Amazon Web Services managed application, see the application user guide. You can create a SAML 2.0 customer managed application in the Amazon Web Services Management Console only. See <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/customermanagedapps-saml2-setup.html\">Setting up customer managed SAML 2.0 applications</a>. For more information on these application types, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/awsapps.html\">Amazon Web Services managed applications</a>.</p> </note>"
     },
     "CreateApplicationAssignment":{
       "name":"CreateApplicationAssignment",
@@ -771,7 +773,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves a list of the IAM Identity Center associated Amazon Web Services accounts that the principal has access to.</p>"
+      "documentation":"<p>Retrieves a list of the IAM Identity Center associated Amazon Web Services accounts that the principal has access to. This action must be called from the management account containing your organization instance of IAM Identity Center. This action is not valid for account instances of IAM Identity Center.</p>"
     },
     "ListAccountsForProvisionedPermissionSet":{
       "name":"ListAccountsForProvisionedPermissionSet",
@@ -839,7 +841,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists the applications to which a specified principal is assigned.</p>"
+      "documentation":"<p>Lists the applications to which a specified principal is assigned. You must provide a filter when calling this action from a member account against your organization instance of IAM Identity Center. A filter is not required when called from the management account against an organization instance of IAM Identity Center, or from a member account against an account instance of IAM Identity Center in the same account.</p>"
     },
     "ListApplicationAuthenticationMethods":{
       "name":"ListApplicationAuthenticationMethods",
@@ -905,7 +907,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists all applications associated with the instance of IAM Identity Center. When listing applications for an instance in the management account, member accounts must use the <code>applicationAccount</code> parameter to filter the list to only applications created from that account.</p>"
+      "documentation":"<p>Lists all applications associated with the instance of IAM Identity Center. When listing applications for an organization instance in the management account, member accounts must use the <code>applicationAccount</code> parameter to filter the list to only applications created from that account. When listing applications for an account instance in the same member account, a filter is not required.</p>"
     },
     "ListCustomerManagedPolicyReferencesInPermissionSet":{
       "name":"ListCustomerManagedPolicyReferencesInPermissionSet",
@@ -1129,7 +1131,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Adds a grant to an application.</p>",
+      "documentation":"<p>Creates a configuration for an application to use grants. Conceptually grants are authorization to request actions related to tokens. This configuration will be used when parties are requesting and receiving tokens during the trusted identity propagation process. For more information on the IAM Identity Center supported grant workflows, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/customermanagedapps-saml2-oauth2.html\">SAML 2.0 and OAuth 2.0</a>.</p> <p>A grant is created between your applications and Identity Center instance which enables an application to use specified mechanisms to obtain tokens. These tokens are used by your applications to gain access to Amazon Web Services resources on behalf of users. The following elements are within these exchanges:</p> <ul> <li> <p> <b>Requester</b> - The application requesting access to Amazon Web Services resources.</p> </li> <li> <p> <b>Subject</b> - Typically the user that is requesting access to Amazon Web Services resources.</p> </li> <li> <p> <b>Grant</b> - Conceptually, a grant is authorization to access Amazon Web Services resources. These grants authorize token generation for authenticating access to the requester and for the request to make requests on behalf of the subjects. There are four types of grants:</p> <ul> <li> <p> <b>AuthorizationCode</b> - Allows an application to request authorization through a series of user-agent redirects.</p> </li> <li> <p> <b>JWT bearer </b> - Authorizes an application to exchange a JSON Web Token that came from an external identity provider. To learn more, see <a href=\"https://datatracker.ietf.org/doc/html/rfc6749\">RFC 6479</a>.</p> </li> <li> <p> <b>Refresh token</b> - Enables application to request new access tokens to replace expiring or expired access tokens.</p> </li> <li> <p> <b>Exchange token</b> - A grant that requests tokens from the authorization server by providing a ‘subject’ token with access scope authorizing trusted identity propagation to this application. To learn more, see <a href=\"https://datatracker.ietf.org/doc/html/rfc8693\">RFC 8693</a>.</p> </li> </ul> </li> <li> <p> <b>Authorization server</b> - IAM Identity Center requests tokens.</p> </li> </ul> <p>User credentials are never shared directly within these exchanges. Instead, applications use grants to request access tokens from IAM Identity Center. For more information, see <a href=\"https://datatracker.ietf.org/doc/html/rfc6749\">RFC 6479</a>.</p> <p class=\"title\"> <b>Use cases</b> </p> <ul> <li> <p>Connecting to custom applications.</p> </li> <li> <p>Configuring an Amazon Web Services service to make calls to another Amazon Web Services services using JWT tokens.</p> </li> </ul>",
       "idempotent":true
     },
     "PutInlinePolicyToPermissionSet":{
@@ -1319,7 +1321,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@]+$"
+      "pattern":"[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@]+"
     },
     "AccessControlAttributeList":{
       "type":"list",
@@ -1342,7 +1344,7 @@
       "type":"string",
       "max":256,
       "min":0,
-      "pattern":"^[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@\\[\\]\\{\\}\\$\\\\\"]*$"
+      "pattern":"[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@\\[\\]\\{\\}\\$\\\\\"]*"
     },
     "AccessControlAttributeValueSourceList":{
       "type":"list",
@@ -1370,13 +1372,13 @@
           "shape":"PermissionSetArn",
           "documentation":"<p>The ARN of the permission set. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
-        "PrincipalId":{
-          "shape":"PrincipalId",
-          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
-        },
         "PrincipalType":{
           "shape":"PrincipalType",
           "documentation":"<p>The entity type for which the assignment will be created.</p>"
+        },
+        "PrincipalId":{
+          "shape":"PrincipalId",
+          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
         }
       },
       "documentation":"<p>The assignment that indicates a principal's limited access to a specified Amazon Web Services account with a specified permission set.</p> <note> <p>The term <i>principal</i> here refers to a user or group that is defined in IAM Identity Center.</p> </note>"
@@ -1414,33 +1416,17 @@
     "AccountAssignmentOperationStatus":{
       "type":"structure",
       "members":{
-        "CreatedDate":{
-          "shape":"Date",
-          "documentation":"<p>The date that the permission set was created.</p>"
-        },
-        "FailureReason":{
-          "shape":"Reason",
-          "documentation":"<p>The message that contains an error or exception in case of an operation failure.</p>"
-        },
-        "PermissionSetArn":{
-          "shape":"PermissionSetArn",
-          "documentation":"<p>The ARN of the permission set. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
-        },
-        "PrincipalId":{
-          "shape":"PrincipalId",
-          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
-        },
-        "PrincipalType":{
-          "shape":"PrincipalType",
-          "documentation":"<p>The entity type for which the assignment will be created.</p>"
+        "Status":{
+          "shape":"StatusValues",
+          "documentation":"<p>The status of the permission set provisioning process.</p>"
         },
         "RequestId":{
           "shape":"UUId",
           "documentation":"<p>The identifier for tracking the request operation that is generated by the universally unique identifier (UUID) workflow.</p>"
         },
-        "Status":{
-          "shape":"StatusValues",
-          "documentation":"<p>The status of the permission set provisioning process.</p>"
+        "FailureReason":{
+          "shape":"Reason",
+          "documentation":"<p>The message that contains an error or exception in case of an operation failure.</p>"
         },
         "TargetId":{
           "shape":"TargetId",
@@ -1449,6 +1435,22 @@
         "TargetType":{
           "shape":"TargetType",
           "documentation":"<p>The entity type for which the assignment will be created.</p>"
+        },
+        "PermissionSetArn":{
+          "shape":"PermissionSetArn",
+          "documentation":"<p>The ARN of the permission set. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "PrincipalType":{
+          "shape":"PrincipalType",
+          "documentation":"<p>The entity type for which the assignment will be created.</p>"
+        },
+        "PrincipalId":{
+          "shape":"PrincipalId",
+          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
+        },
+        "CreatedDate":{
+          "shape":"Date",
+          "documentation":"<p>The date that the permission set was created.</p>"
         }
       },
       "documentation":"<p>The status of the creation or deletion operation of an assignment that a principal needs to access an account.</p>"
@@ -1460,17 +1462,17 @@
     "AccountAssignmentOperationStatusMetadata":{
       "type":"structure",
       "members":{
-        "CreatedDate":{
-          "shape":"Date",
-          "documentation":"<p>The date that the permission set was created.</p>"
+        "Status":{
+          "shape":"StatusValues",
+          "documentation":"<p>The status of the permission set provisioning process.</p>"
         },
         "RequestId":{
           "shape":"UUId",
           "documentation":"<p>The identifier for tracking the request operation that is generated by the universally unique identifier (UUID) workflow.</p>"
         },
-        "Status":{
-          "shape":"StatusValues",
-          "documentation":"<p>The status of the permission set provisioning process.</p>"
+        "CreatedDate":{
+          "shape":"Date",
+          "documentation":"<p>The date that the permission set was created.</p>"
         }
       },
       "documentation":"<p>Provides information about the <a>AccountAssignment</a> creation request.</p>"
@@ -1479,7 +1481,7 @@
       "type":"string",
       "max":12,
       "min":12,
-      "pattern":"^\\d{12}$"
+      "pattern":"\\d{12}"
     },
     "AccountList":{
       "type":"list",
@@ -1494,10 +1496,6 @@
     "Application":{
       "type":"structure",
       "members":{
-        "ApplicationAccount":{
-          "shape":"AccountId",
-          "documentation":"<p>The Amazon Web Services account ID number of the application.</p>"
-        },
         "ApplicationArn":{
           "shape":"ApplicationArn",
           "documentation":"<p>The ARN of the application.</p>"
@@ -1506,29 +1504,33 @@
           "shape":"ApplicationProviderArn",
           "documentation":"<p>The ARN of the application provider for this application.</p>"
         },
-        "CreatedDate":{
-          "shape":"Date",
-          "documentation":"<p>The date and time when the application was originally created.</p>"
+        "Name":{
+          "shape":"NameType",
+          "documentation":"<p>The name of the application.</p>"
         },
-        "Description":{
-          "shape":"Description",
-          "documentation":"<p>The description of the application.</p>"
+        "ApplicationAccount":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID number of the application.</p>"
         },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the instance of IAM Identity Center that is configured with this application.</p>"
         },
-        "Name":{
-          "shape":"NameType",
-          "documentation":"<p>The name of the application.</p>"
+        "Status":{
+          "shape":"ApplicationStatus",
+          "documentation":"<p>The current status of the application in this instance of IAM Identity Center.</p>"
         },
         "PortalOptions":{
           "shape":"PortalOptions",
           "documentation":"<p>A structure that describes the options for the access portal associated with this application.</p>"
         },
-        "Status":{
-          "shape":"ApplicationStatus",
-          "documentation":"<p>The current status of the application in this instance of IAM Identity Center.</p>"
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the application.</p>"
+        },
+        "CreatedDate":{
+          "shape":"Date",
+          "documentation":"<p>The date and time when the application was originally created.</p>"
         }
       },
       "documentation":"<p>A structure that describes an application that uses IAM Identity Center for access management.</p>"
@@ -1537,7 +1539,7 @@
       "type":"string",
       "max":1224,
       "min":10,
-      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}$"
+      "pattern":"arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}"
     },
     "ApplicationAssignment":{
       "type":"structure",
@@ -1594,6 +1596,12 @@
       "max":50,
       "min":0
     },
+    "ApplicationNameType":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[\\S\\s]*"
+    },
     "ApplicationProvider":{
       "type":"structure",
       "required":["ApplicationProviderArn"],
@@ -1602,13 +1610,13 @@
           "shape":"ApplicationProviderArn",
           "documentation":"<p>The ARN of the application provider.</p>"
         },
-        "DisplayData":{
-          "shape":"DisplayData",
-          "documentation":"<p>A structure that describes how IAM Identity Center represents the application provider in the portal.</p>"
-        },
         "FederationProtocol":{
           "shape":"FederationProtocol",
           "documentation":"<p>The protocol that the application provider uses to perform federation.</p>"
+        },
+        "DisplayData":{
+          "shape":"DisplayData",
+          "documentation":"<p>A structure that describes how IAM Identity Center represents the application provider in the portal.</p>"
         },
         "ResourceServerConfig":{
           "shape":"ResourceServerConfig",
@@ -1621,7 +1629,7 @@
       "type":"string",
       "max":1224,
       "min":10,
-      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::aws:applicationProvider/[a-zA-Z0-9-/]+$"
+      "pattern":"arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::aws:applicationProvider/[a-zA-Z0-9-/]+"
     },
     "ApplicationProviderList":{
       "type":"list",
@@ -1638,7 +1646,7 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"^http(s)?:\\/\\/[-a-zA-Z0-9+&@#\\/%?=~_|!:,.;]*[-a-zA-Z0-9+&bb@#\\/%?=~_|]$"
+      "pattern":"http(s)?:\\/\\/[-a-zA-Z0-9+&@#\\/%?=~_|!:,.;]*[-a-zA-Z0-9+&bb@#\\/%?=~_|]"
     },
     "ApplicationVisibility":{
       "type":"string",
@@ -1654,15 +1662,11 @@
     "AttachCustomerManagedPolicyReferenceToPermissionSetRequest":{
       "type":"structure",
       "required":[
-        "CustomerManagedPolicyReference",
         "InstanceArn",
-        "PermissionSetArn"
+        "PermissionSetArn",
+        "CustomerManagedPolicyReference"
       ],
       "members":{
-        "CustomerManagedPolicyReference":{
-          "shape":"CustomerManagedPolicyReference",
-          "documentation":"<p>Specifies the name and path of a customer managed policy. You must have an IAM policy that matches the name and path in each Amazon Web Services account where you want to deploy your permission set.</p>"
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. </p>"
@@ -1670,6 +1674,10 @@
         "PermissionSetArn":{
           "shape":"PermissionSetArn",
           "documentation":"<p>The ARN of the <code>PermissionSet</code>.</p>"
+        },
+        "CustomerManagedPolicyReference":{
+          "shape":"CustomerManagedPolicyReference",
+          "documentation":"<p>Specifies the name and path of a customer managed policy. You must have an IAM policy that matches the name and path in each Amazon Web Services account where you want to deploy your permission set.</p>"
         }
       }
     },
@@ -1682,21 +1690,21 @@
       "type":"structure",
       "required":[
         "InstanceArn",
-        "ManagedPolicyArn",
-        "PermissionSetArn"
+        "PermissionSetArn",
+        "ManagedPolicyArn"
       ],
       "members":{
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
-        "ManagedPolicyArn":{
-          "shape":"ManagedPolicyArn",
-          "documentation":"<p>The Amazon Web Services managed policy ARN to be attached to a permission set.</p>"
-        },
         "PermissionSetArn":{
           "shape":"PermissionSetArn",
           "documentation":"<p>The ARN of the <a>PermissionSet</a> that the managed policy should be attached to.</p>"
+        },
+        "ManagedPolicyArn":{
+          "shape":"ManagedPolicyArn",
+          "documentation":"<p>The Amazon Web Services managed policy ARN to be attached to a permission set.</p>"
         }
       }
     },
@@ -1708,16 +1716,16 @@
     "AttachedManagedPolicy":{
       "type":"structure",
       "members":{
-        "Arn":{
-          "shape":"ManagedPolicyArn",
-          "documentation":"<p>The ARN of the Amazon Web Services managed policy. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
-        },
         "Name":{
           "shape":"Name",
           "documentation":"<p>The name of the Amazon Web Services managed policy.</p>"
+        },
+        "Arn":{
+          "shape":"ManagedPolicyArn",
+          "documentation":"<p>The ARN of the Amazon Web Services managed policy. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       },
-      "documentation":"<p>A structure that stores the details of the Amazon Web Services managed policy.</p>"
+      "documentation":"<p>A structure that stores a list of managed policy ARNs that describe the associated Amazon Web Services managed policy.</p>"
     },
     "AttachedManagedPolicyList":{
       "type":"list",
@@ -1737,13 +1745,13 @@
     "AuthenticationMethodItem":{
       "type":"structure",
       "members":{
-        "AuthenticationMethod":{
-          "shape":"AuthenticationMethod",
-          "documentation":"<p>A structure that describes an authentication method. The contents of this structure is determined by the <code>AuthenticationMethodType</code>.</p>"
-        },
         "AuthenticationMethodType":{
           "shape":"AuthenticationMethodType",
           "documentation":"<p>The type of authentication that is used by this method.</p>"
+        },
+        "AuthenticationMethod":{
+          "shape":"AuthenticationMethod",
+          "documentation":"<p>A structure that describes an authentication method. The contents of this structure is determined by the <code>AuthenticationMethodType</code>.</p>"
         }
       },
       "documentation":"<p>A structure that describes an authentication method and its type.</p>"
@@ -1761,7 +1769,7 @@
       "members":{
         "RedirectUris":{
           "shape":"RedirectUris",
-          "documentation":"<p>A list of URIs that are valid locations to redirect a user's browser after the user is authorized.</p>"
+          "documentation":"<p>A list of URIs that are valid locations to redirect a user's browser after the user is authorized.</p> <note> <p>RedirectUris is required when the grant type is <code>authorization_code</code>.</p> </note>"
         }
       },
       "documentation":"<p>A structure that defines configuration settings for an application that supports the OAuth 2.0 Authorization Code Grant.</p>"
@@ -1769,13 +1777,13 @@
     "AuthorizedTokenIssuer":{
       "type":"structure",
       "members":{
-        "AuthorizedAudiences":{
-          "shape":"TokenIssuerAudiences",
-          "documentation":"<p>An array list of authorized audiences, or applications, that can consume the tokens generated by the associated trusted token issuer.</p>"
-        },
         "TrustedTokenIssuerArn":{
           "shape":"TrustedTokenIssuerArn",
           "documentation":"<p>The ARN of the trusted token issuer.</p>"
+        },
+        "AuthorizedAudiences":{
+          "shape":"TokenIssuerAudiences",
+          "documentation":"<p>An array list of authorized audiences, or applications, that can consume the tokens generated by the associated trusted token issuer.</p>"
         }
       },
       "documentation":"<p>A structure that describes a trusted token issuer and associates it with a set of authorized audiences.</p>"
@@ -1790,13 +1798,13 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"^\\p{L}+(?:(\\.|\\_)\\p{L}+){0,2}$"
+      "pattern":"\\p{L}+(?:(\\.|\\_)\\p{L}+){0,2}"
     },
     "ClientToken":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[!-~]+$"
+      "pattern":"[!-~]+"
     },
     "ConflictException":{
       "type":"structure",
@@ -1811,28 +1819,16 @@
       "type":"structure",
       "required":[
         "InstanceArn",
-        "PermissionSetArn",
-        "PrincipalId",
-        "PrincipalType",
         "TargetId",
-        "TargetType"
+        "TargetType",
+        "PermissionSetArn",
+        "PrincipalType",
+        "PrincipalId"
       ],
       "members":{
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
-        },
-        "PermissionSetArn":{
-          "shape":"PermissionSetArn",
-          "documentation":"<p>The ARN of the permission set that the admin wants to grant the principal access to.</p>"
-        },
-        "PrincipalId":{
-          "shape":"PrincipalId",
-          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
-        },
-        "PrincipalType":{
-          "shape":"PrincipalType",
-          "documentation":"<p>The entity type for which the assignment will be created.</p>"
         },
         "TargetId":{
           "shape":"TargetId",
@@ -1841,6 +1837,18 @@
         "TargetType":{
           "shape":"TargetType",
           "documentation":"<p>The entity type for which the assignment will be created.</p>"
+        },
+        "PermissionSetArn":{
+          "shape":"PermissionSetArn",
+          "documentation":"<p>The ARN of the permission set that the admin wants to grant the principal access to.</p>"
+        },
+        "PrincipalType":{
+          "shape":"PrincipalType",
+          "documentation":"<p>The entity type for which the assignment will be created.</p>"
+        },
+        "PrincipalId":{
+          "shape":"PrincipalId",
+          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
         }
       }
     },
@@ -1863,11 +1871,11 @@
       "members":{
         "ApplicationArn":{
           "shape":"ApplicationArn",
-          "documentation":"<p>The ARN of the application provider under which the operation will run.</p>"
+          "documentation":"<p>The ARN of the application for which the assignment is created.</p>"
         },
         "PrincipalId":{
           "shape":"PrincipalId",
-          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
+          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
         },
         "PrincipalType":{
           "shape":"PrincipalType",
@@ -1883,43 +1891,43 @@
     "CreateApplicationRequest":{
       "type":"structure",
       "required":[
-        "ApplicationProviderArn",
         "InstanceArn",
+        "ApplicationProviderArn",
         "Name"
       ],
       "members":{
+        "InstanceArn":{
+          "shape":"InstanceArn",
+          "documentation":"<p>The ARN of the instance of IAM Identity Center under which the operation will run. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
         "ApplicationProviderArn":{
           "shape":"ApplicationProviderArn",
           "documentation":"<p>The ARN of the application provider under which the operation will run.</p>"
         },
-        "ClientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Specifies a unique, case-sensitive ID that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p> <p>If you retry the operation with the same <code>ClientToken</code>, but with different parameters, the retry fails with an <code>IdempotentParameterMismatch</code> error.</p>",
-          "idempotencyToken":true
+        "Name":{
+          "shape":"ApplicationNameType",
+          "documentation":"<p>The name of the .</p>"
         },
         "Description":{
           "shape":"Description",
           "documentation":"<p>The description of the .</p>"
         },
-        "InstanceArn":{
-          "shape":"InstanceArn",
-          "documentation":"<p>The ARN of the instance of IAM Identity Center under which the operation will run. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
-        },
-        "Name":{
-          "shape":"NameType",
-          "documentation":"<p>The name of the .</p>"
-        },
         "PortalOptions":{
           "shape":"PortalOptions",
           "documentation":"<p>A structure that describes the options for the portal associated with an application.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Specifies tags to be attached to the application.</p>"
         },
         "Status":{
           "shape":"ApplicationStatus",
           "documentation":"<p>Specifies whether the application is enabled or disabled.</p>"
         },
-        "Tags":{
-          "shape":"TagList",
-          "documentation":"<p>Specifies tags to be attached to the application.</p>"
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Specifies a unique, case-sensitive ID that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p> <p>If you retry the operation with the same <code>ClientToken</code>, but with different parameters, the retry fails with an <code>IdempotentParameterMismatch</code> error.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -1935,17 +1943,17 @@
     "CreateInstanceAccessControlAttributeConfigurationRequest":{
       "type":"structure",
       "required":[
-        "InstanceAccessControlAttributeConfiguration",
-        "InstanceArn"
+        "InstanceArn",
+        "InstanceAccessControlAttributeConfiguration"
       ],
       "members":{
-        "InstanceAccessControlAttributeConfiguration":{
-          "shape":"InstanceAccessControlAttributeConfiguration",
-          "documentation":"<p>Specifies the IAM Identity Center identity store attributes to add to your ABAC configuration. When using an external identity provider as an identity source, you can pass attributes through the SAML assertion. Doing so provides an alternative to configuring attributes from the IAM Identity Center identity store. If a SAML assertion passes any of these attributes, IAM Identity Center will replace the attribute value with the value from the IAM Identity Center identity store.</p>"
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed.</p>"
+        },
+        "InstanceAccessControlAttributeConfiguration":{
+          "shape":"InstanceAccessControlAttributeConfiguration",
+          "documentation":"<p>Specifies the IAM Identity Center identity store attributes to add to your ABAC configuration. When using an external identity provider as an identity source, you can pass attributes through the SAML assertion. Doing so provides an alternative to configuring attributes from the IAM Identity Center identity store. If a SAML assertion passes any of these attributes, IAM Identity Center will replace the attribute value with the value from the IAM Identity Center identity store.</p>"
         }
       }
     },
@@ -1957,14 +1965,14 @@
     "CreateInstanceRequest":{
       "type":"structure",
       "members":{
+        "Name":{
+          "shape":"NameType",
+          "documentation":"<p>The name of the instance of IAM Identity Center.</p>"
+        },
         "ClientToken":{
           "shape":"ClientToken",
           "documentation":"<p>Specifies a unique, case-sensitive ID that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p> <p>If you retry the operation with the same <code>ClientToken</code>, but with different parameters, the retry fails with an <code>IdempotentParameterMismatch</code> error.</p>",
           "idempotencyToken":true
-        },
-        "Name":{
-          "shape":"NameType",
-          "documentation":"<p>The name of the instance of IAM Identity Center.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -1984,10 +1992,14 @@
     "CreatePermissionSetRequest":{
       "type":"structure",
       "required":[
-        "InstanceArn",
-        "Name"
+        "Name",
+        "InstanceArn"
       ],
       "members":{
+        "Name":{
+          "shape":"PermissionSetName",
+          "documentation":"<p>The name of the <a>PermissionSet</a>.</p>"
+        },
         "Description":{
           "shape":"PermissionSetDescription",
           "documentation":"<p>The description of the <a>PermissionSet</a>.</p>"
@@ -1996,17 +2008,13 @@
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
-        "Name":{
-          "shape":"PermissionSetName",
-          "documentation":"<p>The name of the <a>PermissionSet</a>.</p>"
+        "SessionDuration":{
+          "shape":"Duration",
+          "documentation":"<p>The length of time that the application user sessions are valid in the ISO-8601 standard.</p>"
         },
         "RelayState":{
           "shape":"RelayState",
           "documentation":"<p>Used to redirect users within the application during the federation authentication process.</p>"
-        },
-        "SessionDuration":{
-          "shape":"Duration",
-          "documentation":"<p>The length of time that the application user sessions are valid in the ISO-8601 standard.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -2028,15 +2036,10 @@
       "required":[
         "InstanceArn",
         "Name",
-        "TrustedTokenIssuerConfiguration",
-        "TrustedTokenIssuerType"
+        "TrustedTokenIssuerType",
+        "TrustedTokenIssuerConfiguration"
       ],
       "members":{
-        "ClientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Specifies a unique, case-sensitive ID that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p> <p>If you retry the operation with the same <code>ClientToken</code>, but with different parameters, the retry fails with an <code>IdempotentParameterMismatch</code> error.</p>",
-          "idempotencyToken":true
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>Specifies the ARN of the instance of IAM Identity Center to contain the new trusted token issuer configuration.</p>"
@@ -2045,17 +2048,22 @@
           "shape":"TrustedTokenIssuerName",
           "documentation":"<p>Specifies the name of the new trusted token issuer configuration.</p>"
         },
-        "Tags":{
-          "shape":"TagList",
-          "documentation":"<p>Specifies tags to be attached to the new trusted token issuer configuration.</p>"
+        "TrustedTokenIssuerType":{
+          "shape":"TrustedTokenIssuerType",
+          "documentation":"<p>Specifies the type of the new trusted token issuer.</p>"
         },
         "TrustedTokenIssuerConfiguration":{
           "shape":"TrustedTokenIssuerConfiguration",
           "documentation":"<p>Specifies settings that apply to the new trusted token issuer configuration. The settings that are available depend on what <code>TrustedTokenIssuerType</code> you specify.</p>"
         },
-        "TrustedTokenIssuerType":{
-          "shape":"TrustedTokenIssuerType",
-          "documentation":"<p>Specifies the type of the new trusted token issuer.</p>"
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Specifies a unique, case-sensitive ID that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p> <p>If you retry the operation with the same <code>ClientToken</code>, but with different parameters, the retry fails with an <code>IdempotentParameterMismatch</code> error.</p>",
+          "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Specifies tags to be attached to the new trusted token issuer configuration.</p>"
         }
       }
     },
@@ -2092,28 +2100,16 @@
       "type":"structure",
       "required":[
         "InstanceArn",
-        "PermissionSetArn",
-        "PrincipalId",
-        "PrincipalType",
         "TargetId",
-        "TargetType"
+        "TargetType",
+        "PermissionSetArn",
+        "PrincipalType",
+        "PrincipalId"
       ],
       "members":{
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
-        },
-        "PermissionSetArn":{
-          "shape":"PermissionSetArn",
-          "documentation":"<p>The ARN of the permission set that will be used to remove access.</p>"
-        },
-        "PrincipalId":{
-          "shape":"PrincipalId",
-          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
-        },
-        "PrincipalType":{
-          "shape":"PrincipalType",
-          "documentation":"<p>The entity type for which the assignment will be deleted.</p>"
         },
         "TargetId":{
           "shape":"TargetId",
@@ -2122,6 +2118,18 @@
         "TargetType":{
           "shape":"TargetType",
           "documentation":"<p>The entity type for which the assignment will be deleted.</p>"
+        },
+        "PermissionSetArn":{
+          "shape":"PermissionSetArn",
+          "documentation":"<p>The ARN of the permission set that will be used to remove access.</p>"
+        },
+        "PrincipalType":{
+          "shape":"PrincipalType",
+          "documentation":"<p>The entity type for which the assignment will be deleted.</p>"
+        },
+        "PrincipalId":{
+          "shape":"PrincipalId",
+          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
         }
       }
     },
@@ -2165,7 +2173,7 @@
         },
         "PrincipalId":{
           "shape":"PrincipalId",
-          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
+          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
         },
         "PrincipalType":{
           "shape":"PrincipalType",
@@ -2341,17 +2349,17 @@
     "DescribeAccountAssignmentCreationStatusRequest":{
       "type":"structure",
       "required":[
-        "AccountAssignmentCreationRequestId",
-        "InstanceArn"
+        "InstanceArn",
+        "AccountAssignmentCreationRequestId"
       ],
       "members":{
-        "AccountAssignmentCreationRequestId":{
-          "shape":"UUId",
-          "documentation":"<p>The identifier that is used to track the request operation progress.</p>"
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "AccountAssignmentCreationRequestId":{
+          "shape":"UUId",
+          "documentation":"<p>The identifier that is used to track the request operation progress.</p>"
         }
       }
     },
@@ -2367,17 +2375,17 @@
     "DescribeAccountAssignmentDeletionStatusRequest":{
       "type":"structure",
       "required":[
-        "AccountAssignmentDeletionRequestId",
-        "InstanceArn"
+        "InstanceArn",
+        "AccountAssignmentDeletionRequestId"
       ],
       "members":{
-        "AccountAssignmentDeletionRequestId":{
-          "shape":"UUId",
-          "documentation":"<p>The identifier that is used to track the request operation progress.</p>"
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "AccountAssignmentDeletionRequestId":{
+          "shape":"UUId",
+          "documentation":"<p>The identifier that is used to track the request operation progress.</p>"
         }
       }
     },
@@ -2404,7 +2412,7 @@
         },
         "PrincipalId":{
           "shape":"PrincipalId",
-          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
+          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
         },
         "PrincipalType":{
           "shape":"PrincipalType",
@@ -2415,17 +2423,17 @@
     "DescribeApplicationAssignmentResponse":{
       "type":"structure",
       "members":{
-        "ApplicationArn":{
-          "shape":"ApplicationArn",
-          "documentation":"<p>Specifies the ARN of the application. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
-        },
-        "PrincipalId":{
-          "shape":"PrincipalId",
-          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
-        },
         "PrincipalType":{
           "shape":"PrincipalType",
           "documentation":"<p>The entity type for which the assignment will be created.</p>"
+        },
+        "PrincipalId":{
+          "shape":"PrincipalId",
+          "documentation":"<p>An identifier for an object in IAM Identity Center, such as a user or group. PrincipalIds are GUIDs (For example, f81d4fae-7dec-11d0-a765-00a0c91e6bf6). For more information about PrincipalIds in IAM Identity Center, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">IAM Identity Center Identity Store API Reference</a>.</p>"
+        },
+        "ApplicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>Specifies the ARN of the application. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       }
     },
@@ -2447,13 +2455,13 @@
           "shape":"ApplicationProviderArn",
           "documentation":"<p>The ARN of the application provider.</p>"
         },
-        "DisplayData":{
-          "shape":"DisplayData",
-          "documentation":"<p>A structure with details about the display data for the application provider.</p>"
-        },
         "FederationProtocol":{
           "shape":"FederationProtocol",
           "documentation":"<p>The protocol used to federate to the application provider.</p>"
+        },
+        "DisplayData":{
+          "shape":"DisplayData",
+          "documentation":"<p>A structure with details about the display data for the application provider.</p>"
         },
         "ResourceServerConfig":{
           "shape":"ResourceServerConfig",
@@ -2474,10 +2482,6 @@
     "DescribeApplicationResponse":{
       "type":"structure",
       "members":{
-        "ApplicationAccount":{
-          "shape":"AccountId",
-          "documentation":"<p>The account ID.</p>"
-        },
         "ApplicationArn":{
           "shape":"ApplicationArn",
           "documentation":"<p>Specifies the ARN of the application.</p>"
@@ -2486,29 +2490,33 @@
           "shape":"ApplicationProviderArn",
           "documentation":"<p>The ARN of the application provider under which the operation will run.</p>"
         },
-        "CreatedDate":{
-          "shape":"Date",
-          "documentation":"<p>The date the application was created.</p>"
+        "Name":{
+          "shape":"NameType",
+          "documentation":"<p>The application name.</p>"
         },
-        "Description":{
-          "shape":"Description",
-          "documentation":"<p>The description of the .</p>"
+        "ApplicationAccount":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID.</p>"
         },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center application under which the operation will run. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
-        "Name":{
-          "shape":"NameType",
-          "documentation":"<p>The application name.</p>"
+        "Status":{
+          "shape":"ApplicationStatus",
+          "documentation":"<p>Specifies whether the application is enabled or disabled.</p>"
         },
         "PortalOptions":{
           "shape":"PortalOptions",
           "documentation":"<p>A structure that describes the options for the portal associated with an application.</p>"
         },
-        "Status":{
-          "shape":"ApplicationStatus",
-          "documentation":"<p>Specifies whether the application is enabled or disabled.</p>"
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the .</p>"
+        },
+        "CreatedDate":{
+          "shape":"Date",
+          "documentation":"<p>The date the application was created.</p>"
         }
       }
     },
@@ -2525,10 +2533,6 @@
     "DescribeInstanceAccessControlAttributeConfigurationResponse":{
       "type":"structure",
       "members":{
-        "InstanceAccessControlAttributeConfiguration":{
-          "shape":"InstanceAccessControlAttributeConfiguration",
-          "documentation":"<p>Gets the list of IAM Identity Center identity store attributes that have been added to your ABAC configuration.</p>"
-        },
         "Status":{
           "shape":"InstanceAccessControlAttributeConfigurationStatus",
           "documentation":"<p>The status of the attribute configuration process.</p>"
@@ -2536,6 +2540,10 @@
         "StatusReason":{
           "shape":"InstanceAccessControlAttributeConfigurationStatusReason",
           "documentation":"<p>Provides more details about the current status of the specified attribute.</p>"
+        },
+        "InstanceAccessControlAttributeConfiguration":{
+          "shape":"InstanceAccessControlAttributeConfiguration",
+          "documentation":"<p>Gets the list of IAM Identity Center identity store attributes that have been added to your ABAC configuration.</p>"
         }
       }
     },
@@ -2552,25 +2560,25 @@
     "DescribeInstanceResponse":{
       "type":"structure",
       "members":{
-        "CreatedDate":{
-          "shape":"Date",
-          "documentation":"<p>The date the instance was created.</p>"
+        "InstanceArn":{
+          "shape":"InstanceArn",
+          "documentation":"<p>The ARN of the instance of IAM Identity Center under which the operation will run. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
         "IdentityStoreId":{
           "shape":"Id",
           "documentation":"<p>The identifier of the identity store that is connected to the instance of IAM Identity Center.</p>"
         },
-        "InstanceArn":{
-          "shape":"InstanceArn",
-          "documentation":"<p>The ARN of the instance of IAM Identity Center under which the operation will run. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        "OwnerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The identifier of the Amazon Web Services account for which the instance was created.</p>"
         },
         "Name":{
           "shape":"NameType",
           "documentation":"<p>Specifies the instance name.</p>"
         },
-        "OwnerAccountId":{
-          "shape":"AccountId",
-          "documentation":"<p>The identifier of the Amazon Web Services account for which the instance was created.</p>"
+        "CreatedDate":{
+          "shape":"Date",
+          "documentation":"<p>The date the instance was created.</p>"
         },
         "Status":{
           "shape":"InstanceStatus",
@@ -2643,21 +2651,21 @@
     "DescribeTrustedTokenIssuerResponse":{
       "type":"structure",
       "members":{
-        "Name":{
-          "shape":"TrustedTokenIssuerName",
-          "documentation":"<p>The name of the trusted token issuer configuration.</p>"
-        },
         "TrustedTokenIssuerArn":{
           "shape":"TrustedTokenIssuerArn",
           "documentation":"<p>The ARN of the trusted token issuer configuration.</p>"
         },
-        "TrustedTokenIssuerConfiguration":{
-          "shape":"TrustedTokenIssuerConfiguration",
-          "documentation":"<p>A structure the describes the settings that apply of this trusted token issuer.</p>"
+        "Name":{
+          "shape":"TrustedTokenIssuerName",
+          "documentation":"<p>The name of the trusted token issuer configuration.</p>"
         },
         "TrustedTokenIssuerType":{
           "shape":"TrustedTokenIssuerType",
           "documentation":"<p>The type of the trusted token issuer.</p>"
+        },
+        "TrustedTokenIssuerConfiguration":{
+          "shape":"TrustedTokenIssuerConfiguration",
+          "documentation":"<p>A structure the describes the settings that apply of this trusted token issuer.</p>"
         }
       }
     },
@@ -2669,15 +2677,11 @@
     "DetachCustomerManagedPolicyReferenceFromPermissionSetRequest":{
       "type":"structure",
       "required":[
-        "CustomerManagedPolicyReference",
         "InstanceArn",
-        "PermissionSetArn"
+        "PermissionSetArn",
+        "CustomerManagedPolicyReference"
       ],
       "members":{
-        "CustomerManagedPolicyReference":{
-          "shape":"CustomerManagedPolicyReference",
-          "documentation":"<p>Specifies the name and path of a customer managed policy. You must have an IAM policy that matches the name and path in each Amazon Web Services account where you want to deploy your permission set.</p>"
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. </p>"
@@ -2685,6 +2689,10 @@
         "PermissionSetArn":{
           "shape":"PermissionSetArn",
           "documentation":"<p>The ARN of the <code>PermissionSet</code>.</p>"
+        },
+        "CustomerManagedPolicyReference":{
+          "shape":"CustomerManagedPolicyReference",
+          "documentation":"<p>Specifies the name and path of a customer managed policy. You must have an IAM policy that matches the name and path in each Amazon Web Services account where you want to deploy your permission set.</p>"
         }
       }
     },
@@ -2697,21 +2705,21 @@
       "type":"structure",
       "required":[
         "InstanceArn",
-        "ManagedPolicyArn",
-        "PermissionSetArn"
+        "PermissionSetArn",
+        "ManagedPolicyArn"
       ],
       "members":{
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
-        "ManagedPolicyArn":{
-          "shape":"ManagedPolicyArn",
-          "documentation":"<p>The Amazon Web Services managed policy ARN to be detached from a permission set.</p>"
-        },
         "PermissionSetArn":{
           "shape":"PermissionSetArn",
           "documentation":"<p>The ARN of the <a>PermissionSet</a> from which the policy should be detached.</p>"
+        },
+        "ManagedPolicyArn":{
+          "shape":"ManagedPolicyArn",
+          "documentation":"<p>The Amazon Web Services managed policy ARN to be detached from a permission set.</p>"
         }
       }
     },
@@ -2723,10 +2731,6 @@
     "DisplayData":{
       "type":"structure",
       "members":{
-        "Description":{
-          "shape":"Description",
-          "documentation":"<p>The description of the application provider that appears in the portal.</p>"
-        },
         "DisplayName":{
           "shape":"Name",
           "documentation":"<p>The name of the application provider that appears in the portal.</p>"
@@ -2734,6 +2738,10 @@
         "IconUrl":{
           "shape":"IconUrl",
           "documentation":"<p>A URL that points to an icon that represents the application provider.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the application provider that appears in the portal.</p>"
         }
       },
       "documentation":"<p>A structure that describes how the portal represents an application provider.</p>"
@@ -2742,7 +2750,7 @@
       "type":"string",
       "max":100,
       "min":1,
-      "pattern":"^(-?)P(?=\\d|T\\d)(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)([DW]))?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?)?$"
+      "pattern":"(-?)P(?=\\d|T\\d)(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)([DW]))?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?)?"
     },
     "FederationProtocol":{
       "type":"string",
@@ -2772,13 +2780,13 @@
       "type":"structure",
       "required":["Scope"],
       "members":{
-        "AuthorizedTargets":{
-          "shape":"ScopeTargets",
-          "documentation":"<p>An array of authorized targets associated with this access scope.</p>"
-        },
         "Scope":{
           "shape":"Scope",
           "documentation":"<p>The name of the access scope that can be used with the authorized targets.</p>"
+        },
+        "AuthorizedTargets":{
+          "shape":"ScopeTargets",
+          "documentation":"<p>An array of authorized targets associated with this access scope.</p>"
         }
       }
     },
@@ -2933,17 +2941,17 @@
     "GrantItem":{
       "type":"structure",
       "required":[
-        "Grant",
-        "GrantType"
+        "GrantType",
+        "Grant"
       ],
       "members":{
-        "Grant":{
-          "shape":"Grant",
-          "documentation":"<p>The configuration structure for the selected grant.</p>"
-        },
         "GrantType":{
           "shape":"GrantType",
           "documentation":"<p>The type of the selected grant.</p>"
+        },
+        "Grant":{
+          "shape":"Grant",
+          "documentation":"<p>The configuration structure for the selected grant.</p>"
         }
       },
       "documentation":"<p>A structure that defines a single grant and its configuration.</p>"
@@ -2976,13 +2984,13 @@
       "type":"string",
       "max":768,
       "min":1,
-      "pattern":"^(http|https):\\/\\/.*$"
+      "pattern":"(http|https):\\/\\/.*"
     },
     "Id":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[a-zA-Z0-9-]*$"
+      "pattern":"[a-zA-Z0-9-]*"
     },
     "InstanceAccessControlAttributeConfiguration":{
       "type":"structure",
@@ -3008,7 +3016,7 @@
       "type":"string",
       "max":1224,
       "min":10,
-      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$"
+      "pattern":"arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}"
     },
     "InstanceList":{
       "type":"list",
@@ -3019,25 +3027,25 @@
     "InstanceMetadata":{
       "type":"structure",
       "members":{
-        "CreatedDate":{
-          "shape":"Date",
-          "documentation":"<p>The date and time that the Identity Center instance was created.</p>"
+        "InstanceArn":{
+          "shape":"InstanceArn",
+          "documentation":"<p>The ARN of the Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
         "IdentityStoreId":{
           "shape":"Id",
           "documentation":"<p>The identifier of the identity store that is connected to the Identity Center instance.</p>"
         },
-        "InstanceArn":{
-          "shape":"InstanceArn",
-          "documentation":"<p>The ARN of the Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        "OwnerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID number of the owner of the Identity Center instance.</p>"
         },
         "Name":{
           "shape":"NameType",
           "documentation":"<p>The name of the Identity Center instance.</p>"
         },
-        "OwnerAccountId":{
-          "shape":"AccountId",
-          "documentation":"<p>The Amazon Web Services account ID number of the owner of the Identity Center instance.</p>"
+        "CreatedDate":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the Identity Center instance was created.</p>"
         },
         "Status":{
           "shape":"InstanceStatus",
@@ -3068,7 +3076,7 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"^\\p{L}+(?:\\.\\p{L}+){0,2}$"
+      "pattern":"\\p{L}+(?:\\.\\p{L}+){0,2}"
     },
     "JwksRetrievalOption":{
       "type":"string",
@@ -3079,19 +3087,15 @@
       "members":{
         "AuthorizedTokenIssuers":{
           "shape":"AuthorizedTokenIssuers",
-          "documentation":"<p>A list of allowed token issuers trusted by the Identity Center instances for this application.</p>"
+          "documentation":"<p>A list of allowed token issuers trusted by the Identity Center instances for this application.</p> <note> <p> <code>AuthorizedTokenIssuers</code> is required when the grant type is <code>JwtBearerGrant</code>.</p> </note>"
         }
       },
-      "documentation":"<p>A structure that defines configuration settings for an application that supports the JWT Bearer Token Authorization Grant.</p>"
+      "documentation":"<p>A structure that defines configuration settings for an application that supports the JWT Bearer Token Authorization Grant. The <code>AuthorizedAudience</code> field is the aud claim. For more information, see <a href=\"https://datatracker.ietf.org/doc/html/rfc7523\">RFC 7523</a>.</p>"
     },
     "ListAccountAssignmentCreationStatusRequest":{
       "type":"structure",
       "required":["InstanceArn"],
       "members":{
-        "Filter":{
-          "shape":"OperationStatusFilter",
-          "documentation":"<p>Filters results based on the passed attribute value.</p>"
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
@@ -3103,6 +3107,10 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
+        },
+        "Filter":{
+          "shape":"OperationStatusFilter",
+          "documentation":"<p>Filters results based on the passed attribute value.</p>"
         }
       }
     },
@@ -3123,10 +3131,6 @@
       "type":"structure",
       "required":["InstanceArn"],
       "members":{
-        "Filter":{
-          "shape":"OperationStatusFilter",
-          "documentation":"<p>Filters results based on the passed attribute value.</p>"
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
@@ -3138,6 +3142,10 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
+        },
+        "Filter":{
+          "shape":"OperationStatusFilter",
+          "documentation":"<p>Filters results based on the passed attribute value.</p>"
         }
       }
     },
@@ -3172,21 +3180,9 @@
         "PrincipalType"
       ],
       "members":{
-        "Filter":{
-          "shape":"ListAccountAssignmentsFilter",
-          "documentation":"<p>Specifies an Amazon Web Services account ID number. Results are filtered to only those that match this ID number.</p>"
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>Specifies the ARN of the instance of IAM Identity Center that contains the principal.</p>"
-        },
-        "MaxResults":{
-          "shape":"MaxResults",
-          "documentation":"<p>Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
-        },
-        "NextToken":{
-          "shape":"Token",
-          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
         },
         "PrincipalId":{
           "shape":"PrincipalId",
@@ -3195,6 +3191,18 @@
         "PrincipalType":{
           "shape":"PrincipalType",
           "documentation":"<p>Specifies the type of the principal.</p>"
+        },
+        "Filter":{
+          "shape":"ListAccountAssignmentsFilter",
+          "documentation":"<p>Specifies an Amazon Web Services account ID number. Results are filtered to only those that match this ID number.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
         }
       }
     },
@@ -3214,18 +3222,22 @@
     "ListAccountAssignmentsRequest":{
       "type":"structure",
       "required":[
-        "AccountId",
         "InstanceArn",
+        "AccountId",
         "PermissionSetArn"
       ],
       "members":{
+        "InstanceArn":{
+          "shape":"InstanceArn",
+          "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
         "AccountId":{
           "shape":"TargetId",
           "documentation":"<p>The identifier of the Amazon Web Services account from which to list the assignments.</p>"
         },
-        "InstanceArn":{
-          "shape":"InstanceArn",
-          "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        "PermissionSetArn":{
+          "shape":"PermissionSetArn",
+          "documentation":"<p>The ARN of the permission set from which to list assignments.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -3234,10 +3246,6 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
-        },
-        "PermissionSetArn":{
-          "shape":"PermissionSetArn",
-          "documentation":"<p>The ARN of the permission set from which to list assignments.</p>"
         }
       }
     },
@@ -3265,14 +3273,6 @@
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
-        "MaxResults":{
-          "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to display for the <a>PermissionSet</a>.</p>"
-        },
-        "NextToken":{
-          "shape":"Token",
-          "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
-        },
         "PermissionSetArn":{
           "shape":"PermissionSetArn",
           "documentation":"<p>The ARN of the <a>PermissionSet</a> from which the associated Amazon Web Services accounts will be listed.</p>"
@@ -3280,6 +3280,14 @@
         "ProvisioningStatus":{
           "shape":"ProvisioningStatus",
           "documentation":"<p>The permission set provisioning status for an Amazon Web Services account.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to display for the <a>PermissionSet</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
         }
       }
     },
@@ -3324,13 +3332,13 @@
       "type":"structure",
       "required":["Scopes"],
       "members":{
-        "NextToken":{
-          "shape":"Token",
-          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
-        },
         "Scopes":{
           "shape":"Scopes",
           "documentation":"<p>An array list of access scopes and their authorized targets that are associated with the application.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
         }
       }
     },
@@ -3352,21 +3360,9 @@
         "PrincipalType"
       ],
       "members":{
-        "Filter":{
-          "shape":"ListApplicationAssignmentsFilter",
-          "documentation":"<p>Filters the output to include only assignments associated with the application that has the specified ARN.</p>"
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>Specifies the instance of IAM Identity Center that contains principal and applications.</p>"
-        },
-        "MaxResults":{
-          "shape":"MaxResults",
-          "documentation":"<p>Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
-        },
-        "NextToken":{
-          "shape":"Token",
-          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
         },
         "PrincipalId":{
           "shape":"PrincipalId",
@@ -3375,6 +3371,18 @@
         "PrincipalType":{
           "shape":"PrincipalType",
           "documentation":"<p>Specifies the type of the principal for which you want to retrieve its assignments.</p>"
+        },
+        "Filter":{
+          "shape":"ListApplicationAssignmentsFilter",
+          "documentation":"<p>Filters the output to include only assignments associated with the application that has the specified ARN.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
         }
       }
     },
@@ -3521,10 +3529,6 @@
       "type":"structure",
       "required":["InstanceArn"],
       "members":{
-        "Filter":{
-          "shape":"ListApplicationsFilter",
-          "documentation":"<p>Filters response results. </p>"
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center application under which the operation will run. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
@@ -3536,6 +3540,10 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>NextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>NextToken</code> response to request the next page of results.</p>"
+        },
+        "Filter":{
+          "shape":"ListApplicationsFilter",
+          "documentation":"<p>Filters response results. </p>"
         }
       }
     },
@@ -3563,6 +3571,10 @@
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. </p>"
         },
+        "PermissionSetArn":{
+          "shape":"PermissionSetArn",
+          "documentation":"<p>The ARN of the <code>PermissionSet</code>. </p>"
+        },
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to display for the list call.</p>"
@@ -3570,10 +3582,6 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
-        },
-        "PermissionSetArn":{
-          "shape":"PermissionSetArn",
-          "documentation":"<p>The ARN of the <code>PermissionSet</code>. </p>"
         }
       }
     },
@@ -3627,6 +3635,10 @@
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
+        "PermissionSetArn":{
+          "shape":"PermissionSetArn",
+          "documentation":"<p>The ARN of the <a>PermissionSet</a> whose managed policies will be listed.</p>"
+        },
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to display for the <a>PermissionSet</a>.</p>"
@@ -3634,10 +3646,6 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
-        },
-        "PermissionSetArn":{
-          "shape":"PermissionSetArn",
-          "documentation":"<p>The ARN of the <a>PermissionSet</a> whose managed policies will be listed.</p>"
         }
       }
     },
@@ -3658,10 +3666,6 @@
       "type":"structure",
       "required":["InstanceArn"],
       "members":{
-        "Filter":{
-          "shape":"OperationStatusFilter",
-          "documentation":"<p>Filters results based on the passed attribute value.</p>"
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
@@ -3673,36 +3677,44 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
+        },
+        "Filter":{
+          "shape":"OperationStatusFilter",
+          "documentation":"<p>Filters results based on the passed attribute value.</p>"
         }
       }
     },
     "ListPermissionSetProvisioningStatusResponse":{
       "type":"structure",
       "members":{
-        "NextToken":{
-          "shape":"Token",
-          "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
-        },
         "PermissionSetsProvisioningStatus":{
           "shape":"PermissionSetProvisioningStatusList",
           "documentation":"<p>The status object for the permission set provisioning operation.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
         }
       }
     },
     "ListPermissionSetsProvisionedToAccountRequest":{
       "type":"structure",
       "required":[
-        "AccountId",
-        "InstanceArn"
+        "InstanceArn",
+        "AccountId"
       ],
       "members":{
+        "InstanceArn":{
+          "shape":"InstanceArn",
+          "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
         "AccountId":{
           "shape":"AccountId",
           "documentation":"<p>The identifier of the Amazon Web Services account from which to list the assignments.</p>"
         },
-        "InstanceArn":{
-          "shape":"InstanceArn",
-          "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        "ProvisioningStatus":{
+          "shape":"ProvisioningStatus",
+          "documentation":"<p>The status object for the permission set provisioning operation.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -3711,10 +3723,6 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
-        },
-        "ProvisioningStatus":{
-          "shape":"ProvisioningStatus",
-          "documentation":"<p>The status object for the permission set provisioning operation.</p>"
         }
       }
     },
@@ -3739,26 +3747,26 @@
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
-        "MaxResults":{
-          "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to display for the assignment.</p>"
-        },
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to display for the assignment.</p>"
         }
       }
     },
     "ListPermissionSetsResponse":{
       "type":"structure",
       "members":{
-        "NextToken":{
-          "shape":"Token",
-          "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
-        },
         "PermissionSets":{
           "shape":"PermissionSetList",
           "documentation":"<p>Defines the level of access on an Amazon Web Services account.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
         }
       }
     },
@@ -3770,26 +3778,26 @@
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
-        "NextToken":{
-          "shape":"Token",
-          "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
-        },
         "ResourceArn":{
           "shape":"TaggableResourceArn",
           "documentation":"<p>The ARN of the resource with the tags to be listed.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
         }
       }
     },
     "ListTagsForResourceResponse":{
       "type":"structure",
       "members":{
-        "NextToken":{
-          "shape":"Token",
-          "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
-        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A set of key-value pairs that are used to manage the resource.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token for the list API. Initially the value is null. Use the output of previous API calls to make subsequent calls.</p>"
         }
       }
     },
@@ -3814,13 +3822,13 @@
     "ListTrustedTokenIssuersResponse":{
       "type":"structure",
       "members":{
-        "NextToken":{
-          "shape":"Token",
-          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
-        },
         "TrustedTokenIssuers":{
           "shape":"TrustedTokenIssuerList",
           "documentation":"<p>An array list of the trusted token issuer configurations.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
         }
       }
     },
@@ -3828,19 +3836,19 @@
       "type":"string",
       "max":2048,
       "min":20,
-      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):iam::aws:policy/[\\p{L}\\p{M}\\p{Z}\\p{S}\\p{N}\\p{P}]+$"
+      "pattern":"arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):iam::aws:policy((/[A-Za-z0-9\\.,\\+@=_-]+)*)/([A-Za-z0-9\\.,\\+=@_-]+)"
     },
     "ManagedPolicyName":{
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^[\\w+=,.@-]+$"
+      "pattern":"[\\w+=,.@-]+"
     },
     "ManagedPolicyPath":{
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"^((/[A-Za-z0-9\\.,\\+@=_-]+)*)/$"
+      "pattern":"((/[A-Za-z0-9\\.,\\+@=_-]+)*)/"
     },
     "MaxResults":{
       "type":"integer",
@@ -3857,17 +3865,21 @@
       "type":"string",
       "max":255,
       "min":0,
-      "pattern":"^[\\w+=,.@-]+$"
+      "pattern":"[\\w+=,.@-]+"
     },
     "OidcJwtConfiguration":{
       "type":"structure",
       "required":[
+        "IssuerUrl",
         "ClaimAttributePath",
         "IdentityStoreAttributePath",
-        "IssuerUrl",
         "JwksRetrievalOption"
       ],
       "members":{
+        "IssuerUrl":{
+          "shape":"TrustedTokenIssuerUrl",
+          "documentation":"<p>The URL that IAM Identity Center uses for OpenID Discovery. OpenID Discovery is used to obtain the information required to verify the tokens that the trusted token issuer generates.</p>"
+        },
         "ClaimAttributePath":{
           "shape":"ClaimAttributePath",
           "documentation":"<p>The path of the source attribute in the JWT from the trusted token issuer. The attribute mapped by this JMESPath expression is compared against the attribute mapped by <code>IdentityStoreAttributePath</code> when a trusted token issuer token is exchanged for an IAM Identity Center token.</p>"
@@ -3875,10 +3887,6 @@
         "IdentityStoreAttributePath":{
           "shape":"JMESPath",
           "documentation":"<p>The path of the destination attribute in a JWT from IAM Identity Center. The attribute mapped by this JMESPath expression is compared against the attribute mapped by <code>ClaimAttributePath</code> when a trusted token issuer token is exchanged for an IAM Identity Center token. </p>"
-        },
-        "IssuerUrl":{
-          "shape":"TrustedTokenIssuerUrl",
-          "documentation":"<p>The URL that IAM Identity Center uses for OpenID Discovery. OpenID Discovery is used to obtain the information required to verify the tokens that the trusted token issuer generates.</p>"
         },
         "JwksRetrievalOption":{
           "shape":"JwksRetrievalOption",
@@ -3918,14 +3926,6 @@
     "PermissionSet":{
       "type":"structure",
       "members":{
-        "CreatedDate":{
-          "shape":"Date",
-          "documentation":"<p>The date that the permission set was created.</p>"
-        },
-        "Description":{
-          "shape":"PermissionSetDescription",
-          "documentation":"<p>The description of the <a>PermissionSet</a>.</p>"
-        },
         "Name":{
           "shape":"PermissionSetName",
           "documentation":"<p>The name of the permission set.</p>"
@@ -3934,13 +3934,21 @@
           "shape":"PermissionSetArn",
           "documentation":"<p>The ARN of the permission set. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
-        "RelayState":{
-          "shape":"RelayState",
-          "documentation":"<p>Used to redirect users within the application during the federation authentication process.</p>"
+        "Description":{
+          "shape":"PermissionSetDescription",
+          "documentation":"<p>The description of the <a>PermissionSet</a>.</p>"
+        },
+        "CreatedDate":{
+          "shape":"Date",
+          "documentation":"<p>The date that the permission set was created.</p>"
         },
         "SessionDuration":{
           "shape":"Duration",
           "documentation":"<p>The length of time that the application user sessions are valid for in the ISO-8601 standard.</p>"
+        },
+        "RelayState":{
+          "shape":"RelayState",
+          "documentation":"<p>Used to redirect users within the application during the federation authentication process.</p>"
         }
       },
       "documentation":"<p>An entity that contains IAM policies.</p>"
@@ -3949,13 +3957,13 @@
       "type":"string",
       "max":1224,
       "min":10,
-      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::permissionSet/(sso)?ins-[a-zA-Z0-9-.]{16}/ps-[a-zA-Z0-9-./]{16}$"
+      "pattern":"arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::permissionSet/(sso)?ins-[a-zA-Z0-9-.]{16}/ps-[a-zA-Z0-9-./]{16}"
     },
     "PermissionSetDescription":{
       "type":"string",
       "max":700,
       "min":1,
-      "pattern":"^[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]*$"
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]*"
     },
     "PermissionSetList":{
       "type":"list",
@@ -3965,40 +3973,40 @@
       "type":"string",
       "max":32,
       "min":1,
-      "pattern":"^[\\w+=,.@-]+$"
+      "pattern":"[\\w+=,.@-]+"
     },
     "PermissionSetPolicyDocument":{
       "type":"string",
       "max":32768,
       "min":1,
-      "pattern":"^[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+$"
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"
     },
     "PermissionSetProvisioningStatus":{
       "type":"structure",
       "members":{
-        "AccountId":{
-          "shape":"AccountId",
-          "documentation":"<p>The identifier of the Amazon Web Services account from which to list the assignments.</p>"
-        },
-        "CreatedDate":{
-          "shape":"Date",
-          "documentation":"<p>The date that the permission set was created.</p>"
-        },
-        "FailureReason":{
-          "shape":"Reason",
-          "documentation":"<p>The message that contains an error or exception in case of an operation failure.</p>"
-        },
-        "PermissionSetArn":{
-          "shape":"PermissionSetArn",
-          "documentation":"<p>The ARN of the permission set that is being provisioned. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        "Status":{
+          "shape":"StatusValues",
+          "documentation":"<p>The status of the permission set provisioning process.</p>"
         },
         "RequestId":{
           "shape":"UUId",
           "documentation":"<p>The identifier for tracking the request operation that is generated by the universally unique identifier (UUID) workflow.</p>"
         },
-        "Status":{
-          "shape":"StatusValues",
-          "documentation":"<p>The status of the permission set provisioning process.</p>"
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The identifier of the Amazon Web Services account from which to list the assignments.</p>"
+        },
+        "PermissionSetArn":{
+          "shape":"PermissionSetArn",
+          "documentation":"<p>The ARN of the permission set that is being provisioned. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "FailureReason":{
+          "shape":"Reason",
+          "documentation":"<p>The message that contains an error or exception in case of an operation failure.</p>"
+        },
+        "CreatedDate":{
+          "shape":"Date",
+          "documentation":"<p>The date that the permission set was created.</p>"
         }
       },
       "documentation":"<p>A structure that is used to provide the status of the provisioning operation for a specified permission set.</p>"
@@ -4010,17 +4018,17 @@
     "PermissionSetProvisioningStatusMetadata":{
       "type":"structure",
       "members":{
-        "CreatedDate":{
-          "shape":"Date",
-          "documentation":"<p>The date that the permission set was created.</p>"
+        "Status":{
+          "shape":"StatusValues",
+          "documentation":"<p>The status of the permission set provisioning process.</p>"
         },
         "RequestId":{
           "shape":"UUId",
           "documentation":"<p>The identifier for tracking the request operation that is generated by the universally unique identifier (UUID) workflow.</p>"
         },
-        "Status":{
-          "shape":"StatusValues",
-          "documentation":"<p>The status of the permission set provisioning process.</p>"
+        "CreatedDate":{
+          "shape":"Date",
+          "documentation":"<p>The date that the permission set was created.</p>"
         }
       },
       "documentation":"<p>Provides information about the permission set provisioning status.</p>"
@@ -4057,7 +4065,7 @@
       "type":"string",
       "max":47,
       "min":1,
-      "pattern":"^([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$"
+      "pattern":"([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}"
     },
     "PrincipalType":{
       "type":"string",
@@ -4118,21 +4126,21 @@
     "PutApplicationAccessScopeRequest":{
       "type":"structure",
       "required":[
-        "ApplicationArn",
-        "Scope"
+        "Scope",
+        "ApplicationArn"
       ],
       "members":{
-        "ApplicationArn":{
-          "shape":"ApplicationArn",
-          "documentation":"<p>Specifies the ARN of the application with the access scope with the targets to add or update.</p>"
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies the name of the access scope to be associated with the specified targets.</p>"
         },
         "AuthorizedTargets":{
           "shape":"ScopeTargets",
           "documentation":"<p>Specifies an array list of ARNs that represent the authorized targets for this access scope.</p>"
         },
-        "Scope":{
-          "shape":"Scope",
-          "documentation":"<p>Specifies the name of the access scope to be associated with the specified targets.</p>"
+        "ApplicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>Specifies the ARN of the application with the access scope with the targets to add or update.</p>"
         }
       }
     },
@@ -4162,21 +4170,21 @@
       "type":"structure",
       "required":[
         "ApplicationArn",
-        "AuthenticationMethod",
-        "AuthenticationMethodType"
+        "AuthenticationMethodType",
+        "AuthenticationMethod"
       ],
       "members":{
         "ApplicationArn":{
           "shape":"ApplicationArn",
           "documentation":"<p>Specifies the ARN of the application with the authentication method to add or update.</p>"
         },
-        "AuthenticationMethod":{
-          "shape":"AuthenticationMethod",
-          "documentation":"<p>Specifies a structure that describes the authentication method to add or update. The structure type you provide is determined by the <code>AuthenticationMethodType</code> parameter.</p>"
-        },
         "AuthenticationMethodType":{
           "shape":"AuthenticationMethodType",
           "documentation":"<p>Specifies the type of the authentication method that you want to add or update.</p>"
+        },
+        "AuthenticationMethod":{
+          "shape":"AuthenticationMethod",
+          "documentation":"<p>Specifies a structure that describes the authentication method to add or update. The structure type you provide is determined by the <code>AuthenticationMethodType</code> parameter.</p>"
         }
       }
     },
@@ -4184,36 +4192,32 @@
       "type":"structure",
       "required":[
         "ApplicationArn",
-        "Grant",
-        "GrantType"
+        "GrantType",
+        "Grant"
       ],
       "members":{
         "ApplicationArn":{
           "shape":"ApplicationArn",
           "documentation":"<p>Specifies the ARN of the application to update.</p>"
         },
-        "Grant":{
-          "shape":"Grant",
-          "documentation":"<p>Specifies a structure that describes the grant to update.</p>"
-        },
         "GrantType":{
           "shape":"GrantType",
           "documentation":"<p>Specifies the type of grant to update.</p>"
+        },
+        "Grant":{
+          "shape":"Grant",
+          "documentation":"<p>Specifies a structure that describes the grant to update.</p>"
         }
       }
     },
     "PutInlinePolicyToPermissionSetRequest":{
       "type":"structure",
       "required":[
-        "InlinePolicy",
         "InstanceArn",
-        "PermissionSetArn"
+        "PermissionSetArn",
+        "InlinePolicy"
       ],
       "members":{
-        "InlinePolicy":{
-          "shape":"PermissionSetPolicyDocument",
-          "documentation":"<p>The inline policy to attach to a <a>PermissionSet</a>.</p>"
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
@@ -4221,6 +4225,10 @@
         "PermissionSetArn":{
           "shape":"PermissionSetArn",
           "documentation":"<p>The ARN of the permission set.</p>"
+        },
+        "InlinePolicy":{
+          "shape":"PermissionSetPolicyDocument",
+          "documentation":"<p>The inline policy to attach to a <a>PermissionSet</a>.</p>"
         }
       }
     },
@@ -4258,7 +4266,7 @@
     },
     "Reason":{
       "type":"string",
-      "pattern":"^[\\p{L}\\p{M}\\p{Z}\\p{S}\\p{N}\\p{P}]*$"
+      "pattern":"[\\p{L}\\p{M}\\p{Z}\\p{S}\\p{N}\\p{P}]*"
     },
     "RedirectUris":{
       "type":"list",
@@ -4270,13 +4278,13 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>A structure that defines configuration settings for an application that supports the OAuth 2.0 Refresh Token Grant.</p>"
+      "documentation":"<p>A structure that defines configuration settings for an application that supports the OAuth 2.0 Refresh Token Grant. For more, see <a href=\"https://datatracker.ietf.org/doc/html/rfc6749#section-1.5\">RFC 6749</a>.</p>"
     },
     "RelayState":{
       "type":"string",
       "max":240,
       "min":1,
-      "pattern":"^[a-zA-Z0-9&$@#\\\\\\/%?=~\\-_'\"|!:,.;*+\\[\\]\\ \\(\\)\\{\\}]+$"
+      "pattern":"[a-zA-Z0-9&$@#\\\\\\/%?=~\\-_'\"|!:,.;*+\\[\\]\\ \\(\\)\\{\\}]+"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -4301,18 +4309,18 @@
       "type":"string",
       "max":80,
       "min":1,
-      "pattern":"^[^:=\\-\\.\\s][0-9a-zA-Z_:\\-\\.]+$"
+      "pattern":"[^:=\\-\\.\\s][0-9a-zA-Z_:\\-\\.]+"
     },
     "ResourceServerScopeDetails":{
       "type":"structure",
       "members":{
-        "DetailedTitle":{
-          "shape":"Description",
-          "documentation":"<p>The title of an access scope for a resource server.</p>"
-        },
         "LongDescription":{
           "shape":"Description",
           "documentation":"<p>The description of an access scope for a resource server.</p>"
+        },
+        "DetailedTitle":{
+          "shape":"Description",
+          "documentation":"<p>The title of an access scope for a resource server.</p>"
         }
       },
       "documentation":"<p>A structure that describes details for an IAM Identity Center access scope that is associated with a resource server.</p>"
@@ -4324,19 +4332,19 @@
     },
     "Scope":{
       "type":"string",
-      "pattern":"^([A-Za-z0-9_]{1,50})(:[A-Za-z0-9_]{1,50}){0,1}(:[A-Za-z0-9_]{1,50}){0,1}$"
+      "pattern":"([A-Za-z0-9_]{1,50})(:[A-Za-z0-9_]{1,50}){0,1}(:[A-Za-z0-9_]{1,50}){0,1}"
     },
     "ScopeDetails":{
       "type":"structure",
       "required":["Scope"],
       "members":{
-        "AuthorizedTargets":{
-          "shape":"ScopeTargets",
-          "documentation":"<p>An array list of ARNs of applications.</p>"
-        },
         "Scope":{
           "shape":"Scope",
           "documentation":"<p>The name of the access scope.</p>"
+        },
+        "AuthorizedTargets":{
+          "shape":"ScopeTargets",
+          "documentation":"<p>An array list of ARNs of applications.</p>"
         }
       },
       "documentation":"<p>A structure that describes an IAM Identity Center access scope and its authorized targets.</p>"
@@ -4345,7 +4353,7 @@
       "type":"string",
       "max":100,
       "min":1,
-      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::(\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}|:instance/(sso)?ins-[a-zA-Z0-9-.]{16})$"
+      "pattern":"arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::(\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}|:instance/(sso)?ins-[a-zA-Z0-9-.]{16})"
     },
     "ScopeTargets":{
       "type":"list",
@@ -4372,13 +4380,13 @@
       "type":"structure",
       "required":["Origin"],
       "members":{
-        "ApplicationUrl":{
-          "shape":"ApplicationUrl",
-          "documentation":"<p>The URL that accepts authentication requests for an application. This is a required parameter if the <code>Origin</code> parameter is <code>APPLICATION</code>.</p>"
-        },
         "Origin":{
           "shape":"SignInOrigin",
           "documentation":"<p>This determines how IAM Identity Center navigates the user to the target application. It can be one of the following values:</p> <ul> <li> <p> <code>APPLICATION</code>: IAM Identity Center redirects the customer to the configured <code>ApplicationUrl</code>.</p> </li> <li> <p> <code>IDENTITY_CENTER</code>: IAM Identity Center uses SAML identity-provider initiated authentication to sign the customer directly into a SAML-based application.</p> </li> </ul>"
+        },
+        "ApplicationUrl":{
+          "shape":"ApplicationUrl",
+          "documentation":"<p>The URL that accepts authentication requests for an application. This is a required parameter if the <code>Origin</code> parameter is <code>APPLICATION</code>.</p>"
         }
       },
       "documentation":"<p>A structure that describes the sign-in options for an application portal.</p>"
@@ -4420,7 +4428,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
     },
     "TagKeyList":{
       "type":"list",
@@ -4464,19 +4472,19 @@
       "type":"string",
       "max":256,
       "min":0,
-      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
     },
     "TaggableResourceArn":{
       "type":"string",
       "max":2048,
       "min":10,
-      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::((:instance/(sso)?ins-[a-zA-Z0-9-.]{16})|(:permissionSet/(sso)?ins-[a-zA-Z0-9-.]{16}/ps-[a-zA-Z0-9-./]{16})|(\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16})|(\\d{12}:trustedTokenIssuer/(sso)?ins-[a-zA-Z0-9-.]{16}/tti-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}))$"
+      "pattern":"arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::((:instance/(sso)?ins-[a-zA-Z0-9-.]{16})|(:permissionSet/(sso)?ins-[a-zA-Z0-9-.]{16}/ps-[a-zA-Z0-9-./]{16})|(\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16})|(\\d{12}:trustedTokenIssuer/(sso)?ins-[a-zA-Z0-9-.]{16}/tti-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}))"
     },
     "TargetId":{
       "type":"string",
       "max":12,
       "min":12,
-      "pattern":"^\\d{12}$"
+      "pattern":"\\d{12}"
     },
     "TargetType":{
       "type":"string",
@@ -4495,13 +4503,13 @@
       "type":"string",
       "max":2048,
       "min":0,
-      "pattern":"^[-a-zA-Z0-9+=/_]*$"
+      "pattern":"[-a-zA-Z0-9+=/_]*"
     },
     "TokenExchangeGrant":{
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>A structure that defines configuration settings for an application that supports the OAuth 2.0 Token Exchange Grant.</p>"
+      "documentation":"<p>A structure that defines configuration settings for an application that supports the OAuth 2.0 Token Exchange Grant. For more information, see <a href=\"https://datatracker.ietf.org/doc/html/rfc8693\">RFC 8693</a>.</p>"
     },
     "TokenIssuerAudience":{
       "type":"string",
@@ -4518,7 +4526,7 @@
       "type":"string",
       "max":1224,
       "min":10,
-      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::\\d{12}:trustedTokenIssuer/(sso)?ins-[a-zA-Z0-9-.]{16}/tti-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+      "pattern":"arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::\\d{12}:trustedTokenIssuer/(sso)?ins-[a-zA-Z0-9-.]{16}/tti-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
     },
     "TrustedTokenIssuerConfiguration":{
       "type":"structure",
@@ -4538,13 +4546,13 @@
     "TrustedTokenIssuerMetadata":{
       "type":"structure",
       "members":{
-        "Name":{
-          "shape":"TrustedTokenIssuerName",
-          "documentation":"<p>The name of the trusted token issuer configuration in the instance of IAM Identity Center.</p>"
-        },
         "TrustedTokenIssuerArn":{
           "shape":"TrustedTokenIssuerArn",
           "documentation":"<p>The ARN of the trusted token issuer configuration in the instance of IAM Identity Center.</p>"
+        },
+        "Name":{
+          "shape":"TrustedTokenIssuerName",
+          "documentation":"<p>The name of the trusted token issuer configuration in the instance of IAM Identity Center.</p>"
         },
         "TrustedTokenIssuerType":{
           "shape":"TrustedTokenIssuerType",
@@ -4557,7 +4565,7 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"^[\\w+=,.@-]+$"
+      "pattern":"[\\w+=,.@-]+"
     },
     "TrustedTokenIssuerType":{
       "type":"string",
@@ -4578,14 +4586,14 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"^https?:\\/\\/[-a-zA-Z0-9+&@\\/%=~_|!:,.;]*[-a-zA-Z0-9+&@\\/%=~_|]$"
+      "pattern":"https?:\\/\\/[-a-zA-Z0-9+&@\\/%=~_|!:,.;]*[-a-zA-Z0-9+&@\\/%=~_|]"
     },
     "URI":{"type":"string"},
     "UUId":{
       "type":"string",
       "max":36,
       "min":36,
-      "pattern":"^\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b$"
+      "pattern":"\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b"
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -4628,21 +4636,21 @@
           "shape":"ApplicationArn",
           "documentation":"<p>Specifies the ARN of the application. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
+        "Name":{
+          "shape":"ApplicationNameType",
+          "documentation":"<p>Specifies the updated name for the application.</p>"
+        },
         "Description":{
           "shape":"Description",
           "documentation":"<p>The description of the .</p>"
         },
-        "Name":{
-          "shape":"NameType",
-          "documentation":"<p>Specifies the updated name for the application.</p>"
+        "Status":{
+          "shape":"ApplicationStatus",
+          "documentation":"<p>Specifies whether the application is enabled or disabled.</p>"
         },
         "PortalOptions":{
           "shape":"UpdateApplicationPortalOptions",
           "documentation":"<p>A structure that describes the options for the portal associated with an application.</p>"
-        },
-        "Status":{
-          "shape":"ApplicationStatus",
-          "documentation":"<p>Specifies whether the application is enabled or disabled.</p>"
         }
       }
     },
@@ -4654,17 +4662,17 @@
     "UpdateInstanceAccessControlAttributeConfigurationRequest":{
       "type":"structure",
       "required":[
-        "InstanceAccessControlAttributeConfiguration",
-        "InstanceArn"
+        "InstanceArn",
+        "InstanceAccessControlAttributeConfiguration"
       ],
       "members":{
-        "InstanceAccessControlAttributeConfiguration":{
-          "shape":"InstanceAccessControlAttributeConfiguration",
-          "documentation":"<p>Updates the attributes for your ABAC configuration.</p>"
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed.</p>"
+        },
+        "InstanceAccessControlAttributeConfiguration":{
+          "shape":"InstanceAccessControlAttributeConfiguration",
+          "documentation":"<p>Updates the attributes for your ABAC configuration.</p>"
         }
       }
     },
@@ -4676,17 +4684,17 @@
     "UpdateInstanceRequest":{
       "type":"structure",
       "required":[
-        "InstanceArn",
-        "Name"
+        "Name",
+        "InstanceArn"
       ],
       "members":{
-        "InstanceArn":{
-          "shape":"InstanceArn",
-          "documentation":"<p>The ARN of the instance of IAM Identity Center under which the operation will run. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
-        },
         "Name":{
           "shape":"NameType",
           "documentation":"<p>Updates the instance name.</p>"
+        },
+        "InstanceArn":{
+          "shape":"InstanceArn",
+          "documentation":"<p>The ARN of the instance of IAM Identity Center under which the operation will run. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       }
     },
@@ -4702,10 +4710,6 @@
         "PermissionSetArn"
       ],
       "members":{
-        "Description":{
-          "shape":"PermissionSetDescription",
-          "documentation":"<p>The description of the <a>PermissionSet</a>.</p>"
-        },
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance under which the operation will be executed. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
@@ -4714,13 +4718,17 @@
           "shape":"PermissionSetArn",
           "documentation":"<p>The ARN of the permission set.</p>"
         },
-        "RelayState":{
-          "shape":"RelayState",
-          "documentation":"<p>Used to redirect users within the application during the federation authentication process.</p>"
+        "Description":{
+          "shape":"PermissionSetDescription",
+          "documentation":"<p>The description of the <a>PermissionSet</a>.</p>"
         },
         "SessionDuration":{
           "shape":"Duration",
           "documentation":"<p>The length of time that the application user sessions are valid for in the ISO-8601 standard.</p>"
+        },
+        "RelayState":{
+          "shape":"RelayState",
+          "documentation":"<p>Used to redirect users within the application during the federation authentication process.</p>"
         }
       }
     },
@@ -4733,13 +4741,13 @@
       "type":"structure",
       "required":["TrustedTokenIssuerArn"],
       "members":{
-        "Name":{
-          "shape":"TrustedTokenIssuerName",
-          "documentation":"<p>Specifies the updated name to be applied to the trusted token issuer configuration.</p>"
-        },
         "TrustedTokenIssuerArn":{
           "shape":"TrustedTokenIssuerArn",
           "documentation":"<p>Specifies the ARN of the trusted token issuer configuration that you want to update.</p>"
+        },
+        "Name":{
+          "shape":"TrustedTokenIssuerName",
+          "documentation":"<p>Specifies the updated name to be applied to the trusted token issuer configuration.</p>"
         },
         "TrustedTokenIssuerConfiguration":{
           "shape":"TrustedTokenIssuerUpdateConfiguration",
@@ -4762,5 +4770,5 @@
     },
     "ValidationExceptionMessage":{"type":"string"}
   },
-  "documentation":"<p>IAM Identity Center (successor to Single Sign-On) helps you securely create, or connect, your workforce identities and manage their access centrally across Amazon Web Services accounts and applications. IAM Identity Center is the recommended approach for workforce authentication and authorization in Amazon Web Services, for organizations of any size and type.</p> <note> <p>IAM Identity Center uses the <code>sso</code> and <code>identitystore</code> API namespaces.</p> </note> <p>This reference guide provides information on single sign-on operations which could be used for access management of Amazon Web Services accounts. For information about IAM Identity Center features, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html\">IAM Identity Center User Guide</a>.</p> <p>Many operations in the IAM Identity Center APIs rely on identifiers for users and groups, known as principals. For more information about how to work with principals and principal IDs in IAM Identity Center, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">Identity Store API Reference</a>.</p> <note> <p>Amazon Web Services provides SDKs that consist of libraries and sample code for various programming languages and platforms (Java, Ruby, .Net, iOS, Android, and more). The SDKs provide a convenient way to create programmatic access to IAM Identity Center and other Amazon Web Services services. For more information about the Amazon Web Services SDKs, including how to download and install them, see <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>.</p> </note>"
+  "documentation":"<p>IAM Identity Center is the Amazon Web Services solution for connecting your workforce users to Amazon Web Services managed applications and other Amazon Web Services resources. You can connect your existing identity provider and synchronize users and groups from your directory, or create and manage your users directly in IAM Identity Center. You can then use IAM Identity Center for either or both of the following:</p> <ul> <li> <p>User access to applications</p> </li> <li> <p>User access to Amazon Web Services accounts</p> </li> </ul> <p>This guide provides information about single sign-on operations that you can use for access to applications and Amazon Web Services accounts. For information about IAM Identity Center features, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html\">IAM Identity Center User Guide</a>.</p> <note> <p>IAM Identity Center uses the <code>sso</code> and <code>identitystore</code> API namespaces.</p> </note> <p>Many API operations for IAM Identity Center rely on identifiers for users and groups, known as principals. For more information about how to work with principals and principal IDs in IAM Identity Center, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">Identity Store API Reference</a>.</p> <note> <p>Amazon Web Services provides SDKs that consist of libraries and sample code for various programming languages and platforms (Java, Ruby, .Net, iOS, Android, and more). The SDKs provide a convenient way to create programmatic access to IAM Identity Center and other Amazon Web Services services. For more information about the Amazon Web Services SDKs, including how to download and install them, see <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>.</p> </note>"
 }

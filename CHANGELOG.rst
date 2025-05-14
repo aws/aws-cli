@@ -2,6 +2,70 @@
 CHANGELOG
 =========
 
+2.27.14
+=======
+
+* api-change:``bedrock-agent-runtime``: Changes for enhanced metadata in trace
+* api-change:``dsql``: CreateMultiRegionClusters and DeleteMultiRegionClusters APIs marked as deprecated. Introduced new multi-Region clusters creation experience through multiRegionProperties parameter in CreateCluster API.
+* api-change:``bedrock``: Enable cross-Region inference for Amazon Bedrock Guardrails by using the crossRegionConfig parameter when calling the CreateGuardrail or UpdateGuardrail operation.
+* api-change:``controltower``: AWS Control Tower now reports the inheritance drift status for EnabledBaselines through the GetEnabledBaseline and ListEnabledBaselines APIs. You can now filter EnabledBaselines by their enablement and drift status using the ListEnabledBaselines API to view accounts and OUs that require attention.
+* api-change:``ecs``: This release extends functionality for Amazon EBS volumes attached to Amazon ECS tasks by adding support for the new EBS volumeInitializationRate parameter in ECS RunTask/StartTask/CreateService/UpdateService APIs.
+* api-change:``license-manager``: Add Tagging feature to resources in the Managed Entitlements service. License and Grant resources can now be tagged.
+
+
+2.27.13
+=======
+
+* api-change:``supplychain``: Launch new AWS Supply Chain public APIs for DataIntegrationEvent, DataIntegrationFlowExecution and DatasetNamespace. Also add more capabilities to existing public APIs to support direct dataset event publish, data deduplication in DataIntegrationFlow, partition specification of custom datasets.
+* api-change:``sagemaker``: No API changes from previous release. This release migrated the model to Smithy keeping all features unchanged.
+* api-change:``iam``: Updating the endpoint list for the Identity and access management (IAM) service
+* api-change:``deadline``: AWS Deadline Cloud service-managed fleets now support configuration scripts. Configuration scripts make it easy to install additional software, like plugins and packages, onto a worker.
+* api-change:``ec2``: EC2 - Adding support for AvailabilityZoneId
+* api-change:``medialive``: Add support to the AV1 rate control mode
+* api-change:``s3control``: Updates to support S3 Express zonal endpoints for directory buckets in AWS CLI
+* api-change:``mediatailor``: Documenting that EnabledLoggingStrategies is always present in responses of PlaybackConfiguration read operations.
+
+
+2.27.12
+=======
+
+* api-change:``athena``: Minor API documentation updates
+* api-change:``logs``: We are pleased to announce limit increases to our grok processor logs transformation feature. Now you can define 20 Grok patterns in their configurations, with an expanded total pattern matching limit of 512 characters.
+* api-change:``synthetics``: Add support to retry a canary automatically after schedule run failures. Users can enable this feature by configuring the RetryConfig field when calling the CreateCanary or UpdateCanary API. Also includes changes in GetCanary and GetCanaryRuns to support retrieving retry configurations.
+* api-change:``workspaces``: Remove parameter EnableWorkDocs from WorkSpacesServiceModel due to end of support of Amazon WorkDocs service.
+
+
+2.27.11
+=======
+
+* api-change:``codepipeline``: Add support for Secrets Manager and Plaintext environment variable types in Commands action
+* api-change:``sso-admin``: Update PutPermissionBoundaryToPermissionSet API's managedPolicyArn pattern to allow valid ARN only. Update ApplicationName to allow white spaces.
+* api-change:``ec2``: Launching the feature to support ENA queues offering flexibility to support multiple queues per Enhanced Network Interface (ENI)
+* enhancement:Python: Update bundled Python interpreter to 3.13.3
+* api-change:``cloudfront``: Doc-only update for CloudFront. These changes include customer-reported issues.
+* api-change:``guardduty``: Updated description of a data structure.
+* api-change:``glue``: This new release supports customizable RefreshInterval for all Saas ZETL integrations from 15 minutes to 6 days.
+
+
+2.27.10
+=======
+
+* api-change:``ec2``: This release adds API support for Path Component Exclusion (Filter Out ARN) for Reachability Analyzer
+* api-change:``sagemaker``: SageMaker AI Studio users can now migrate to SageMaker Unified Studio, which offers a unified web-based development experience that integrates AWS data, analytics, artificial intelligence (AI), and machine learning (ML) services, as well as additional tools and resource
+* api-change:``imagebuilder``: Updated the CreateImageRecipeRequest ParentImage description to include all valid values as updated with the SSM Parameters project.
+* api-change:``medialive``: Enables Updating Anywhere Settings on a MediaLive Anywhere Channel.
+* api-change:``synthetics``: Add support to test a canary update by invoking a dry run of a canary. This behavior can be used via the new StartCanaryDryRun API along with new fields in UpdateCanary to apply dry run changes. Also includes changes in GetCanary and GetCanaryRuns to support retrieving dry run configurations.
+
+
+2.27.9
+======
+
+* api-change:``servicecatalog``: ServiceCatalog's APIs (DeleteServiceAction, DisassociateServiceActionFromProvisioningArtifact, AssociateServiceActionWithProvisioningArtifact) now throw InvalidParametersException when IdempotencyToken is invalid.
+* api-change:``timestream-write``: Add dualstack endpoints support.
+* api-change:``ec2``: This release adds support for Amazon EBS Provisioned Rate for Volume Initialization, which lets you specify a volume initialization rate to ensure that your EBS volumes are initialized in a predictable amount of time.
+* api-change:``timestream-query``: Add dualstack endpoints support and correct us-gov-west-1 FIPS endpoint.
+
+
 2.27.8
 ======
 

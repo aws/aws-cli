@@ -98,7 +98,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Creates (registers) a data catalog with the specified name and properties. Catalogs created are visible to all users of the same Amazon Web Services account.</p> <p>This API operation creates the following resources.</p> <ul> <li> <p>CFN Stack Name with a maximum length of 128 characters and prefix <code>athenafederatedcatalog-CATALOG_NAME_SANITIZED</code> with length 23 characters.</p> </li> <li> <p>Lambda Function Name with a maximum length of 64 characters and prefix <code>athenafederatedcatalog_CATALOG_NAME_SANITIZED</code> with length 23 characters.</p> </li> <li> <p>Glue Connection Name with a maximum length of 255 characters and a prefix <code>athenafederatedcatalog_CATALOG_NAME_SANITIZED</code> with length 23 characters. </p> </li> </ul>"
+      "documentation":"<p>Creates (registers) a data catalog with the specified name and properties. Catalogs created are visible to all users of the same Amazon Web Services account.</p> <p>For a <code>FEDERATED</code> catalog, this API operation creates the following resources.</p> <ul> <li> <p>CFN Stack Name with a maximum length of 128 characters and prefix <code>athenafederatedcatalog-CATALOG_NAME_SANITIZED</code> with length 23 characters.</p> </li> <li> <p>Lambda Function Name with a maximum length of 64 characters and prefix <code>athenafederatedcatalog_CATALOG_NAME_SANITIZED</code> with length 23 characters.</p> </li> <li> <p>Glue Connection Name with a maximum length of 255 characters and a prefix <code>athenafederatedcatalog_CATALOG_NAME_SANITIZED</code> with length 23 characters. </p> </li> </ul>"
     },
     "CreateNamedQuery":{
       "name":"CreateNamedQuery",
@@ -1307,8 +1307,7 @@
     },
     "CancelCapacityReservationOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CapacityAllocation":{
       "type":"structure",
@@ -1592,8 +1591,7 @@
     },
     "CreateCapacityReservationOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CreateDataCatalogInput":{
       "type":"structure",
@@ -1608,7 +1606,7 @@
         },
         "Type":{
           "shape":"DataCatalogType",
-          "documentation":"<p>The type of data catalog to create: <code>LAMBDA</code> for a federated catalog, <code>GLUE</code> for an Glue Data Catalog, and <code>HIVE</code> for an external Apache Hive metastore. <code>FEDERATED</code> is a federated catalog for which Athena creates the connection and the Lambda function for you based on the parameters that you pass.</p>"
+          "documentation":"<p>The type of data catalog to create: <code>LAMBDA</code> for a federated catalog, <code>GLUE</code> for an Glue Data Catalog, and <code>HIVE</code> for an external Apache Hive metastore. <code>FEDERATED</code> is a federated catalog for which Athena creates the connection and the Lambda function for you based on the parameters that you pass.</p> <p>For <code>FEDERATED</code> type, we do not support IAM identity center.</p>"
         },
         "Description":{
           "shape":"DescriptionString",
@@ -1732,8 +1730,7 @@
     },
     "CreatePreparedStatementOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CreatePresignedNotebookUrlRequest":{
       "type":"structure",
@@ -1791,8 +1788,7 @@
     },
     "CreateWorkGroupOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CustomerContentEncryptionConfiguration":{
       "type":"structure",
@@ -1953,8 +1949,7 @@
     },
     "DeleteCapacityReservationOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDataCatalogInput":{
       "type":"structure",
@@ -1989,8 +1984,7 @@
     },
     "DeleteNamedQueryOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteNotebookInput":{
       "type":"structure",
@@ -2004,8 +1998,7 @@
     },
     "DeleteNotebookOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletePreparedStatementInput":{
       "type":"structure",
@@ -2026,8 +2019,7 @@
     },
     "DeletePreparedStatementOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteWorkGroupInput":{
       "type":"structure",
@@ -2045,8 +2037,7 @@
     },
     "DeleteWorkGroupOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescriptionString":{
       "type":"string",
@@ -3639,8 +3630,7 @@
     },
     "PutCapacityAssignmentConfigurationOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "QueryExecution":{
       "type":"structure",
@@ -3655,7 +3645,7 @@
         },
         "StatementType":{
           "shape":"StatementType",
-          "documentation":"<p>The type of query statement that was run. <code>DDL</code> indicates DDL query statements. <code>DML</code> indicates DML (Data Manipulation Language) query statements, such as <code>CREATE TABLE AS SELECT</code>. <code>UTILITY</code> indicates query statements other than DDL and DML, such as <code>SHOW CREATE TABLE</code>, or <code>DESCRIBE TABLE</code>.</p>"
+          "documentation":"<p>The type of query statement that was run. <code>DDL</code> indicates DDL query statements. <code>DML</code> indicates DML (Data Manipulation Language) query statements, such as <code>CREATE TABLE AS SELECT</code>. <code>UTILITY</code> indicates query statements other than DDL and DML, such as <code>SHOW CREATE TABLE</code>, <code>EXPLAIN</code>, <code>DESCRIBE</code>, or <code>SHOW TABLES</code>.</p>"
         },
         "ResultConfiguration":{
           "shape":"ResultConfiguration",
@@ -4276,7 +4266,7 @@
           "shape":"CalculationConfiguration",
           "documentation":"<p>Contains configuration information for the calculation.</p>",
           "deprecated":true,
-          "deprecatedMessage":"Kepler Post GA Tasks : https://sim.amazon.com/issues/ATHENA-39828"
+          "deprecatedMessage":"Structure is deprecated."
         },
         "CodeBlock":{
           "shape":"CodeBlock",
@@ -4437,8 +4427,7 @@
     },
     "StopQueryExecutionOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "String":{"type":"string"},
     "StringList":{
@@ -4538,8 +4527,7 @@
     },
     "TagResourceOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -4681,8 +4669,7 @@
     },
     "UntagResourceOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateCapacityReservationInput":{
       "type":"structure",
@@ -4703,8 +4690,7 @@
     },
     "UpdateCapacityReservationOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateDataCatalogInput":{
       "type":"structure",
@@ -4733,8 +4719,7 @@
     },
     "UpdateDataCatalogOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateNamedQueryInput":{
       "type":"structure",
@@ -4764,8 +4749,7 @@
     },
     "UpdateNamedQueryOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateNotebookInput":{
       "type":"structure",
@@ -4820,13 +4804,11 @@
     },
     "UpdateNotebookMetadataOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateNotebookOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdatePreparedStatementInput":{
       "type":"structure",
@@ -4856,8 +4838,7 @@
     },
     "UpdatePreparedStatementOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateWorkGroupInput":{
       "type":"structure",
@@ -4883,8 +4864,7 @@
     },
     "UpdateWorkGroupOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "WorkGroup":{
       "type":"structure",

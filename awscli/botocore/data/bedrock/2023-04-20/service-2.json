@@ -1521,6 +1521,10 @@
           "shape":"GuardrailContextualGroundingPolicyConfig",
           "documentation":"<p>The contextual grounding policy configuration used to create a guardrail.</p>"
         },
+        "crossRegionConfig":{
+          "shape":"GuardrailCrossRegionConfig",
+          "documentation":"<p>The system-defined guardrail profile that you're using with your guardrail. Guardrail profiles define the destination Amazon Web Services Regions where guardrail inference requests can be automatically routed.</p> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-cross-region.html\">Amazon Bedrock User Guide</a>.</p>"
+        },
         "blockedInputMessaging":{
           "shape":"GuardrailBlockedMessaging",
           "documentation":"<p>The message to return when the guardrail blocks a prompt.</p>"
@@ -3397,6 +3401,10 @@
           "shape":"GuardrailContextualGroundingPolicy",
           "documentation":"<p>The contextual grounding policy used in the guardrail.</p>"
         },
+        "crossRegionDetails":{
+          "shape":"GuardrailCrossRegionDetails",
+          "documentation":"<p>Details about the system-defined guardrail profile that you're using with your guardrail, including the guardrail profile ID and Amazon Resource Name (ARN).</p>"
+        },
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time at which the guardrail was created.</p>"
@@ -4367,6 +4375,49 @@
       },
       "documentation":"<p>The policy configuration details for the guardrails contextual grounding policy.</p>"
     },
+    "GuardrailCrossRegionConfig":{
+      "type":"structure",
+      "required":["guardrailProfileIdentifier"],
+      "members":{
+        "guardrailProfileIdentifier":{
+          "shape":"GuardrailCrossRegionGuardrailProfileIdentifier",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the guardrail profile that your guardrail is using. Guardrail profile availability depends on your current Amazon Web Services Region. For more information, see the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-cross-region-support.html\">Amazon Bedrock User Guide</a>.</p>"
+        }
+      },
+      "documentation":"<p>The system-defined guardrail profile that you're using with your guardrail. Guardrail profiles define the destination Amazon Web Services Regions where guardrail inference requests can be automatically routed. Using guardrail profiles helps maintain guardrail performance and reliability when demand increases.</p> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-cross-region.html\">Amazon Bedrock User Guide</a>.</p>"
+    },
+    "GuardrailCrossRegionDetails":{
+      "type":"structure",
+      "members":{
+        "guardrailProfileId":{
+          "shape":"GuardrailCrossRegionGuardrailProfileId",
+          "documentation":"<p>The ID of the guardrail profile that your guardrail is using. Profile availability depends on your current Amazon Web Services Region. For more information, see the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-cross-region-support.html\">Amazon Bedrock User Guide</a>.</p>"
+        },
+        "guardrailProfileArn":{
+          "shape":"GuardrailCrossRegionGuardrailProfileArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the guardrail profile that you're using with your guardrail.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the system-defined guardrail profile that you're using with your guardrail for cross-Region inference.</p> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-cross-region.html\">Amazon Bedrock User Guide</a>.</p>"
+    },
+    "GuardrailCrossRegionGuardrailProfileArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail-profile/[a-z0-9-]+[.]{1}guardrail[.]{1}v[0-9:]+"
+    },
+    "GuardrailCrossRegionGuardrailProfileId":{
+      "type":"string",
+      "max":30,
+      "min":15,
+      "pattern":"[a-z0-9-]+[.]{1}guardrail[.]{1}v[0-9:]+"
+    },
+    "GuardrailCrossRegionGuardrailProfileIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":15,
+      "pattern":"[a-z0-9-]+[.]{1}guardrail[.]{1}v[0-9:]+|arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail-profile/[a-z0-9-]+[.]{1}guardrail[.]{1}v[0-9:]+"
+    },
     "GuardrailDescription":{
       "type":"string",
       "max":200,
@@ -4851,6 +4902,10 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time at which the guardrail was last updated.</p>"
+        },
+        "crossRegionDetails":{
+          "shape":"GuardrailCrossRegionDetails",
+          "documentation":"<p>Details about the system-defined guardrail profile that you're using with your guardrail, including the guardrail profile ID and Amazon Resource Name (ARN).</p>"
         }
       },
       "documentation":"<p>Contains details about a guardrail.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListGuardrails.html#API_ListGuardrails_ResponseSyntax\">ListGuardrails response body</a> </p> </li> </ul>"
@@ -8106,6 +8161,10 @@
         "contextualGroundingPolicyConfig":{
           "shape":"GuardrailContextualGroundingPolicyConfig",
           "documentation":"<p>The contextual grounding policy configuration used to update a guardrail.</p>"
+        },
+        "crossRegionConfig":{
+          "shape":"GuardrailCrossRegionConfig",
+          "documentation":"<p>The system-defined guardrail profile that you're using with your guardrail. Guardrail profiles define the destination Amazon Web Services Regions where guardrail inference requests can be automatically routed.</p> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-cross-region.html\">Amazon Bedrock User Guide</a>.</p>"
         },
         "blockedInputMessaging":{
           "shape":"GuardrailBlockedMessaging",

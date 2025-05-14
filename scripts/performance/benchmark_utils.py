@@ -122,16 +122,25 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
     # to create generators for the definition, setup, and cleanup functions, such as the following
     # then, to get all test cases from a suite, you retrieve all the functions with the decorator
 
+    # TODO next, would be nice for setup to yield an object which becomes accessible to f
+    # e.g. newly created resource ARN. worst case, can mode; after pytest fixtures.
+    # after yield cleanup code, so setup_cleanup just 1 function.
+    # however, since we don't have a use case for this lets put this in a wishlist doc
+
     # def PerformanceTestCase(
-    #         self,
-    #         f,
     #         setup=None,
     #         cleanup=None
     # ) -> Iterable[Tuple[List[Dict], Callable[[str, str, int], None], Callable[[int], None]]]:
-    #     # return generator
-    #     iterations = 5
-    #     for iteration in range(iterations):
-    #         yield f(iteration), setup, cleanup
+    #     def perf_test_case_decorator(f):
+    #       @wraps(f) # from functools
+    #       def wrapper(**args, **kwargs):
+    #           while True:
+    #               sequence = f(args, kwargs)
+    #               yield sequence
+    #       wrapper.setup = setup
+    #       wrapper.cleanup = cleanup
+    #       return wrapper
+    #     return perf_test_case_decorator
     #
     # @PerformanceTestCase(setup=None, cleanup=None)
     # def test_secretsmanager_binary_64(self, iteration):

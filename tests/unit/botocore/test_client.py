@@ -2108,6 +2108,18 @@ class TestClientEndpointBridge(unittest.TestCase):
         with self.assertRaises(UnknownSignatureVersionError):
             bridge.resolve('test', 'us-west-2')
 
+    def test_prefers_signature_version_from_service_model(self):
+        resolver = mock.Mock()
+        resolver.construct_endpoint.return_value = {
+            'partition': 'aws',
+            'hostname': 'test',
+            'endpointName': 'us-west-2',
+            'signatureVersions': ['v2'],
+        }
+        bridge = ClientEndpointBridge(resolver, service_signature_version='v4')
+        resolved = bridge.resolve('test', 'us-west-2')
+        self.assertEqual('v4', resolved['signature_version'])
+
     def test_uses_service_name_as_signing_name(self):
         resolver = mock.Mock()
         resolver.construct_endpoint.return_value = {

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.27.15
+=======
+
+* api-change:``logs``: This release adds a new API "ListLogGroups" and an improvement in API "DescribeLogGroups"
+* api-change:``firehose``: This release adds catalogARN support for s3 tables multi-catalog catalogARNs.
+* api-change:``mediaconvert``: This update enables cropping for video overlays and adds a new STL to Teletext upconversion toggle to preserve styling.
+* api-change:``cognito-idp``: Add exceptions to WebAuthn operations.
+
+
 2.27.14
 =======
 

@@ -57,7 +57,7 @@ def get_renderer(help_output):
     current platform.
     """
     if help_output == "url":
-        return UrlHelpRenderer()
+        return PagingHelpRenderer()
     
     if platform.system() == 'Windows':
         return WindowsHelpRenderer()
@@ -168,42 +168,6 @@ class BrowserHelpRenderer:
     def _popen(self, *args, **kwargs):
         return Popen(*args, **kwargs)
 
-
-class UrlHelpRenderer(PagingHelpRenderer):
-    """
-    Interface for a help renderer to a remote URL.
-
-    The renderer is responsible for displaying the help content on
-    a particular platform.
-
-    """
-
-    def __init__(self, output_stream=sys.stdout):
-        self.output_stream = output_stream
-
-    _DEFAULT_DOCUTILS_SETTINGS_OVERRIDES = {
-        # The default for line length limit in docutils is 10,000. However,
-        # currently in the documentation, it inlines all possible enums in
-        # the JSON syntax which exceeds this limit for some EC2 commands
-        # and prevents the manpages from being generated.
-        # This is a temporary fix to allow the manpages for these commands
-        # to be rendered. Long term, we should avoid enumerating over all
-        # enums inline for the JSON syntax snippets.
-        'line_length_limit': 50_000
-    }
-
-    def render(self, contents):
-        """
-        Each implementation of HelpRenderer must implement this
-        render method.
-        """
-        self._send_output_to_pager(contents)
-
-    def _convert_doc_content(self, contents):
-        return contents
-
-    def _popen(self, *args, **kwargs):
-        return Popen(*args, **kwargs)
 
 class PosixHelpRenderer(PagingHelpRenderer):
     """

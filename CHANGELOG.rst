@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.40.15
+=======
+
+* api-change:``cognito-idp``: Add exceptions to WebAuthn operations.
+* api-change:``firehose``: This release adds catalogARN support for s3 tables multi-catalog catalogARNs.
+* api-change:``logs``: This release adds a new API "ListLogGroups" and an improvement in API "DescribeLogGroups"
+* api-change:``mediaconvert``: This update enables cropping for video overlays and adds a new STL to Teletext upconversion toggle to preserve styling.
+
+
 1.40.14
 =======
 

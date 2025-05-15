@@ -2668,6 +2668,10 @@
         "TimeoutSettings":{
           "shape":"TimeoutSettings",
           "documentation":"<p>Indicates the timeout settings of the pool.</p>"
+        },
+        "RunningMode":{
+          "shape":"PoolsRunningMode",
+          "documentation":"<p>The running mode for the pool.</p>"
         }
       }
     },
@@ -4992,6 +4996,13 @@
       "type":"list",
       "member":{"shape":"PendingCreateStandbyWorkspacesRequest"}
     },
+    "PoolsRunningMode":{
+      "type":"string",
+      "enum":[
+        "AUTO_STOP",
+        "ALWAYS_ON"
+      ]
+    },
     "Protocol":{
       "type":"string",
       "enum":[
@@ -6001,6 +6012,10 @@
         "TimeoutSettings":{
           "shape":"TimeoutSettings",
           "documentation":"<p>Indicates the timeout settings of the specified pool.</p>"
+        },
+        "RunningMode":{
+          "shape":"PoolsRunningMode",
+          "documentation":"<p>The desired running mode for the pool. The running mode can only be updated when the pool is in a stopped state.</p>"
         }
       }
     },
@@ -6708,7 +6723,10 @@
         "MultipleUserProfiles",
         "StagedAppxPackage",
         "UnsupportedOsUpgrade",
-        "InsufficientRearmCount"
+        "InsufficientRearmCount",
+        "ProtocolOSIncompatibility",
+        "MemoryIntegrityIncompatibility",
+        "RestrictedDriveLetterInUse"
       ]
     },
     "WorkspaceImageId":{
@@ -6969,7 +6987,8 @@
         "State",
         "CreatedAt",
         "BundleId",
-        "DirectoryId"
+        "DirectoryId",
+        "RunningMode"
       ],
       "members":{
         "PoolId":{
@@ -6986,7 +7005,7 @@
         },
         "PoolName":{
           "shape":"WorkspacesPoolName",
-          "documentation":"<p>The name of the pool,</p>"
+          "documentation":"<p>The name of the pool.</p>"
         },
         "Description":{
           "shape":"UpdateDescription",
@@ -7019,6 +7038,10 @@
         "TimeoutSettings":{
           "shape":"TimeoutSettings",
           "documentation":"<p>The amount of time that a pool session remains active after users disconnect. If they try to reconnect to the pool session after a disconnection or network interruption within this time interval, they are connected to their previous session. Otherwise, they are connected to a new session with a new pool instance.</p>"
+        },
+        "RunningMode":{
+          "shape":"PoolsRunningMode",
+          "documentation":"<p>The running mode of the pool.</p>"
         }
       },
       "documentation":"<p>Describes a pool of WorkSpaces.</p>"

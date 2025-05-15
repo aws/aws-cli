@@ -349,7 +349,7 @@ class DownloadSubmissionTask(SubmissionTask):
         """
         if (
             transfer_future.meta.size is None
-            and transfer_future.meta.etag is None
+            or transfer_future.meta.etag is None
         ):
             response = client.head_object(
                 Bucket=transfer_future.meta.call_args.bucket,

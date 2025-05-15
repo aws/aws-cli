@@ -30,6 +30,8 @@ from botocore.utils import (
     resolve_imds_endpoint_mode,
 )
 
+from awscli import __version__ as _CLI_VERSION
+
 from awscli.compat import (
     StringIO,
     get_popen_kwargs_for_pager_cmd,

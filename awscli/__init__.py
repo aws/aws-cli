@@ -104,3 +104,5 @@ class TopLevelImportAliasFinder(importlib.abc.MetaPathFinder):
 
 
 TopLevelImportAliasFinder.add_alias_finder(sys.meta_path)
+
+_DEFAULT_BASE_REMOTE_URL = f"https://awscli.amazonaws.com/v2/documentation/api/{__version__}"   # noqa

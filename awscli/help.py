@@ -24,7 +24,9 @@ from docutils.writers import (
     html4css1,
     manpage,
 )
-from awscli import __version__ as _CLI_VERSION
+from awscli import (
+    _DEFAULT_BASE_REMOTE_URL,
+)
 from awscli.argparser import ArgTableArgParser
 from awscli.argprocess import ParamShorthandParser
 from botocore.exceptions import ProfileNotFound
@@ -42,6 +44,10 @@ from awscli.topictags import TopicTagDB
 from awscli.utils import ignore_ctrl_c
 
 LOG = logging.getLogger('awscli.help')
+
+REF_PATH = 'reference'
+TUT_PATH = 'tutorial'
+TOPIC_PATH = 'topic'
 
 
 class ExecutableNotFoundError(Exception):
@@ -359,7 +365,7 @@ class HelpCommand:
     EventHandler class used by this HelpCommand.
     """
 
-    def __init__(self, session, obj, command_table, arg_table):
+    def __init__(self, session, obj, command_table, arg_table, base_remote_url=None):
         self.session = session
         self.obj = obj
         if command_table is None:
@@ -371,6 +377,10 @@ class HelpCommand:
         self._subcommand_table = {}
         self._related_items = []
         self.doc = ReSTDocument(target='man')
+        if base_remote_url is None:
+            base_remote_url = _DEFAULT_BASE_REMOTE_URL
+        self._base_remote_url = base_remote_url
+
         try:
             self._help_output_format = self.session.get_config_variable("cli_help_output")
         except ProfileNotFound:
@@ -378,7 +388,6 @@ class HelpCommand:
 
         self.renderer = get_renderer(self._help_output_format)
 
-        self._base_remote_url = f"https://awscli.amazonaws.com/v2/documentation/api/{_CLI_VERSION}"
 
     @property
     def event_class(self):
@@ -447,9 +456,9 @@ class ProviderHelpCommand(HelpCommand):
     EventHandlerClass = ProviderDocumentEventHandler
 
     def __init__(
-        self, session, command_table, arg_table, description, synopsis, usage
+        self, session, command_table, arg_table, description, synopsis, usage, base_remote_url=None
     ):
-        HelpCommand.__init__(self, session, None, command_table, arg_table)
+        HelpCommand.__init__(self, session, None, command_table, arg_table, base_remote_url)
         self.description = description
         self.synopsis = synopsis
         self.help_usage = usage
@@ -503,10 +512,10 @@ class ServiceHelpCommand(HelpCommand):
     EventHandlerClass = ServiceDocumentEventHandler
 
     def __init__(
-        self, session, obj, command_table, arg_table, name, event_class
+        self, session, obj, command_table, arg_table, name, event_class, base_remote_url=None
     ):
         super(ServiceHelpCommand, self).__init__(
-            session, obj, command_table, arg_table
+            session, obj, command_table, arg_table, base_remote_url
         )
         self._name = name
         self._event_class = event_class
@@ -521,7 +530,7 @@ class ServiceHelpCommand(HelpCommand):
 
     @property
     def url(self):
-        return f"{self._base_remote_url}/reference/{self.name}/index.html"
+        return f"{self._base_remote_url}/{REF_PATH}/{self.name}/index.html"
 
 class OperationHelpCommand(HelpCommand):
     """Implements operation level help.
@@ -568,7 +577,7 @@ class TopicListerCommand(HelpCommand):
 
     @property
     def url(self):
-        return f"{self._base_remote_url}/topic/index.html"
+        return f"{self._base_remote_url}/{TOPIC_PATH}/index.html"
 
 
 class TopicHelpCommand(HelpCommand):
@@ -588,4 +597,4 @@ class TopicHelpCommand(HelpCommand):
 
     @property
     def url(self):
-        return f"{self._base_remote_url}/topic/{self.name}.html"
+        return f"{self._base_remote_url}/{TOPIC_PATH}/{self.name}.html"

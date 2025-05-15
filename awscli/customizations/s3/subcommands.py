@@ -16,6 +16,7 @@ import sys
 
 from botocore.client import Config
 from botocore.utils import is_s3express_bucket, ensure_boolean
+from botocore.exceptions import ClientError
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
@@ -905,6 +906,14 @@ class RbCommand(S3Command):
         try:
             self.client.delete_bucket(Bucket=bucket)
             uni_print("remove_bucket: %s\n" % bucket)
+            return 0
+        except ClientError as e:
+            error_code = e.response["Error"]["Code"]
+            if error_code == "NoSuchBucket":
+                uni_print(
+                "warning: bucket %s does not exist\n" % bucket,
+                sys.stderr
+            )
             return 0
         except Exception as e:
             uni_print(

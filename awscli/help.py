@@ -60,13 +60,15 @@ def get_renderer(help_output):
         return PagingHelpRenderer()
     
     if platform.system() == 'Windows':
+        if help_output == "browser":
+            return WindowsBrowserHelpRenderer()
         return WindowsHelpRenderer()
     else:
         if help_output == "browser":
             return PosixBrowserHelpRenderer()
         return PosixHelpRenderer()
 
-class PagingHelpRenderer:
+class HelpRenderer:
     """
     Interface for a help renderer.
 
@@ -77,6 +79,35 @@ class PagingHelpRenderer:
 
     def __init__(self, output_stream=sys.stdout):
         self.output_stream = output_stream
+
+    def render(self, contents):
+        """
+        Each implementation of HelpRenderer must implement this
+        render method.
+        """
+        converted_content = self._convert_doc_content(contents)
+        self._send_output_to_destination(converted_content)
+
+    def _send_output_to_destination(self, output):
+        """
+        Each implementation of HelpRenderer must implement this
+        method.
+        """
+        raise NotImplementedError
+
+
+    def _popen(self, *args, **kwargs):
+        return Popen(*args, **kwargs)
+
+    def _convert_doc_content(self, contents):
+        return contents
+
+
+class PagingHelpRenderer(HelpRenderer):
+    """Interface for a help renderer.
+
+    This sends output to the pager.
+    """
 
     PAGER = None
     _DEFAULT_DOCUTILS_SETTINGS_OVERRIDES = {
@@ -98,13 +129,8 @@ class PagingHelpRenderer:
             pager = os.environ['PAGER']
         return shlex.split(pager)
 
-    def render(self, contents):
-        """
-        Each implementation of HelpRenderer must implement this
-        render method.
-        """
-        converted_content = self._convert_doc_content(contents)
-        self._send_output_to_pager(converted_content)
+    def _send_output_to_destination(self, output):
+        self._send_output_to_pager(output)
 
     def _send_output_to_pager(self, output):
         cmdline = self.get_pager_cmdline()
@@ -112,14 +138,8 @@ class PagingHelpRenderer:
         p = self._popen(cmdline, stdin=PIPE)
         p.communicate(input=output)
 
-    def _popen(self, *args, **kwargs):
-        return Popen(*args, **kwargs)
 
-    def _convert_doc_content(self, contents):
-        return contents
-
-
-class BrowserHelpRenderer:
+class BrowserHelpRenderer(HelpRenderer):
     """
     Interface for a help renderer to a web browser.
 
@@ -142,13 +162,8 @@ class BrowserHelpRenderer:
         'line_length_limit': 50_000
     }
 
-    def render(self, contents):
-        """
-        Each implementation of HelpRenderer must implement this
-        render method.
-        """
-        converted_content = self._convert_doc_content(contents)
-        self._send_output_to_browser(converted_content)
+    def _send_output_to_destination(self, output):
+        self._send_output_to_browser(output)
 
     def _send_output_to_browser(self, output):
         html_file = tempfile.NamedTemporaryFile("wb", delete=False)
@@ -160,13 +175,6 @@ class BrowserHelpRenderer:
             return webbrowser.open_new_tab(f'file://{html_file.name}')
         except Exception:
             LOG.debug('Failed to open browser:', exc_info=True)
-
-
-    def _convert_doc_content(self, contents):
-        return contents
-
-    def _popen(self, *args, **kwargs):
-        return Popen(*args, **kwargs)
 
 
 class PosixHelpRenderer(PagingHelpRenderer):
@@ -233,7 +241,7 @@ class PosixHelpRenderer(PagingHelpRenderer):
 
 class PosixBrowserHelpRenderer(BrowserHelpRenderer):
     """
-    Render help content on a Posix-like system.  This includes
+    Render help content in a browser on a Posix-like system.  This includes
     Linux and MacOS X.
     """
 
@@ -273,6 +281,24 @@ class WindowsHelpRenderer(PagingHelpRenderer):
     """Render help content on a Windows platform."""
 
     PAGER = 'more'
+
+    def _convert_doc_content(self, contents):
+        text_output = publish_string(
+            contents,
+            writer=TextWriter(),
+            settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
+        )
+        return text_output
+
+    def _popen(self, *args, **kwargs):
+        # Also set the shell value to True.  To get any of the
+        # piping to a pager to work, we need to use shell=True.
+        kwargs['shell'] = True
+        return Popen(*args, **kwargs)
+
+
+class WindowsBrowserHelpRenderer(BrowserHelpRenderer):
+    """Render help content in the browser on a Windows platform."""
 
     def _convert_doc_content(self, contents):
         text_output = publish_string(
@@ -346,11 +372,11 @@ class HelpCommand:
         self._related_items = []
         self.doc = ReSTDocument(target='man')
         try:
-            help_output_format = self.session.get_config_variable("cli_help_output")
+            self._help_output_format = self.session.get_config_variable("cli_help_output")
         except ProfileNotFound:
-            help_output_format = None
+            self._help_output_format = None
 
-        self.renderer = get_renderer(help_output_format)
+        self.renderer = get_renderer(self._help_output_format)
 
         self._base_remote_url = f"https://awscli.amazonaws.com/v2/documentation/api/{_CLI_VERSION}"
 
@@ -404,7 +430,7 @@ class HelpCommand:
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
         docevents.generate_events(self.session, self)
-        if self.session.get_config_variable('cli_help_output') == 'url':
+        if self._help_output_format == 'url':
             self.renderer.render(self.url.encode())
         else:
             self.renderer.render(self.doc.getvalue())

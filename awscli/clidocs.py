@@ -309,14 +309,14 @@ class CLIDocumentEventHandler:
         )
 
         if member_name:
-            tmp = f'{member_name} -> ({type_name})'
+            parameter_string = f'{member_name} -> ({type_name})'
         else:
-            tmp = f'({type_name})'
+            parameter_string = f'({type_name})'
 
         if required:
-            tmp += ' [required]'
+            parameter_string += ' [required]'
 
-        doc.write(tmp)
+        doc.write(parameter_string)
 
         doc.style.indent()
         doc.style.new_paragraph()

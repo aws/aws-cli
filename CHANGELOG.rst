@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.27.17
+=======
+
+* api-change:``glue``: Changes include (1) Excel as S3 Source type and XML and Tableau's Hyper as S3 Sink types, (2) targeted number of partitions parameter in S3 sinks and (3) new compression types in CSV/JSON and Parquet S3 sinks.
+* api-change:``ecs``: This is an Amazon ECs documentation only release to support the change of the container exit "reason" field from 255 characters to 1024 characters.
+* api-change:``service-quotas``: This release introduces CreateSupportCase operation to SDK.
+* api-change:``bedrock-data-automation``: Add support for VIDEO modality to BlueprintType enum.
+* api-change:``codepipeline``: CodePipeline now supports new API ListDeployActionExecutionTargets that lists the deployment target details for deploy action executions.
+* api-change:``neptune``: This release adds Global Cluster Switchover capability which enables you to change your global cluster's primary AWS Region, the region that serves writes, while preserving the replication between all regions in the global cluster.
+* api-change:``bedrock-data-automation-runtime``: Add AssetProcessingConfiguration for video segment to InputConfiguration
+* api-change:``emr``: Added APIs for managing Application UIs: Access Persistent (serverless) UIs via CreatePersistentAppUI DescribePersistentAppUI & GetPersistentAppUIPresignedURL, and Cluster-based UIs through GetOnClusterAppUIPresignedURL. Supports Yarn, Spark History, and TEZ interfaces.
+
+
 2.27.16
 =======
 

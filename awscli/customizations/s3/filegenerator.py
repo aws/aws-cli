@@ -108,6 +108,7 @@ class FileStat:
         dest_type=None,
         operation_name=None,
         response_data=None,
+        etag=None,
     ):
         self.src = src
         self.dest = dest
@@ -118,6 +119,7 @@ class FileStat:
         self.dest_type = dest_type
         self.operation_name = operation_name
         self.response_data = response_data
+        self.etag = etag
 
 
 class FileGenerator:
@@ -177,6 +179,7 @@ class FileGenerator:
         src_type = file_stat_kwargs['src_type']
         file_stat_kwargs['size'] = extra_information['Size']
         file_stat_kwargs['last_update'] = extra_information['LastModified']
+        file_stat_kwargs['etag'] = extra_information.get('ETag')
 
         # S3 objects require the response data retrieved from HeadObject
         # and ListObject
@@ -401,4 +404,5 @@ class FileGenerator:
         response['Size'] = int(response.pop('ContentLength'))
         last_update = parse(response['LastModified'])
         response['LastModified'] = last_update.astimezone(tzlocal())
+        response['ETag'] = response.pop('ETag', None)
         return s3_path, response

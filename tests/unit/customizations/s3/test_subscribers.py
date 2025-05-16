@@ -12,10 +12,12 @@
 # language governing permissions and limitations under the License.
 import datetime
 import errno
+import logging
 import os
 import shutil
 import tempfile
 
+import pytest
 from dateutil.tz import tzlocal
 from s3transfer.crt import CRTTransferFuture, CRTTransferMeta
 from s3transfer.futures import TransferFuture, TransferMeta
@@ -33,6 +35,7 @@ from awscli.customizations.s3.subscribers import (
     DeleteSourceObjectSubscriber,
     DirectoryCreatorSubscriber,
     OnDoneFilteredSubscriber,
+    ProvideETagSubscriber,
     ProvideLastModifiedTimeSubscriber,
     ProvideSizeSubscriber,
     ProvideUploadContentTypeSubscriber,
@@ -72,6 +75,30 @@ class TestProvideSizeSubscriber(unittest.TestCase):
                 'Subscriber should not have used provide_transfer_size '
                 'method because it is not available'
             )
+
+
+class TestProvideEtagSubscriber:
+    def test_etag_set(self):
+        transfer_meta = TransferMeta()
+        transfer_future = mock.Mock(spec=TransferFuture)
+        transfer_future.meta = transfer_meta
+        etag = 'myetag'
+
+        transfer_meta.provide_object_etag('oldetag')
+        subscriber = ProvideETagSubscriber(etag)
+        subscriber.on_queued(transfer_future)
+        assert transfer_meta.etag == etag
+
+    def test_does_not_try_to_set_etag_on_crt_transfer_future(self, caplog):
+        caplog.set_level(logging.DEBUG)
+        crt_transfer_future = mock.Mock(spec=CRTTransferFuture)
+        crt_transfer_future.meta = CRTTransferMeta()
+
+        subscriber = ProvideETagSubscriber('myetag')
+        subscriber.on_queued(crt_transfer_future)
+        assert not hasattr(crt_transfer_future.meta, 'etag')
+
+        assert "Not providing object ETag." in caplog.text
 
 
 class OnDoneFilteredRecordingSubscriber(OnDoneFilteredSubscriber):

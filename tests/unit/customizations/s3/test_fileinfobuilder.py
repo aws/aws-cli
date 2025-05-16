@@ -35,6 +35,7 @@ class TestFileInfoBuilder(unittest.TestCase):
                 dest_type='dest_type',
                 operation_name='operation_name',
                 response_data='associated_response_data',
+                etag='etag',
             )
         ]
         file_infos = info_setter.call(files)

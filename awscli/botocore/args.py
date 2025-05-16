@@ -47,10 +47,10 @@ VALID_RESPONSE_CHECKSUM_VALIDATION_CONFIG = (
 )
 
 PRIORITY_ORDERED_SUPPORTED_PROTOCOLS = (
-    'smithy-rpc-v2-cbor',
     'json',
     'rest-json',
     'rest-xml',
+    'smithy-rpc-v2-cbor',
     'query',
     'ec2',
 )

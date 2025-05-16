@@ -24,8 +24,8 @@
       "input":{"shape":"GetDataAutomationStatusRequest"},
       "output":{"shape":"GetDataAutomationStatusResponse"},
       "errors":[
-        {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
@@ -42,8 +42,8 @@
       "output":{"shape":"InvokeDataAutomationAsyncResponse"},
       "errors":[
         {"shape":"ServiceQuotaExceededException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
@@ -59,11 +59,11 @@
       "input":{"shape":"ListTagsForResourceRequest"},
       "output":{"shape":"ListTagsForResourceResponse"},
       "errors":[
-        {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>List tags for an Amazon Bedrock Data Automation resource</p>"
     },
@@ -77,11 +77,11 @@
       "output":{"shape":"TagResourceResponse"},
       "errors":[
         {"shape":"ServiceQuotaExceededException"},
-        {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Tag an Amazon Bedrock Data Automation resource</p>"
     },
@@ -94,11 +94,11 @@
       "input":{"shape":"UntagResourceRequest"},
       "output":{"shape":"UntagResourceResponse"},
       "errors":[
-        {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Untag an Amazon Bedrock Data Automation resource</p>"
     }
@@ -111,6 +111,16 @@
       },
       "documentation":"<p>This exception will be thrown when customer does not have access to API.</p>",
       "exception":true
+    },
+    "AssetProcessingConfiguration":{
+      "type":"structure",
+      "members":{
+        "video":{
+          "shape":"VideoAssetProcessingConfiguration",
+          "documentation":"<p>Video asset processing configuration</p>"
+        }
+      },
+      "documentation":"<p>Config containing asset processing related knobs for all modalities</p>"
     },
     "AutomationJobStatus":{
       "type":"string",
@@ -309,6 +319,10 @@
         "s3Uri":{
           "shape":"S3Uri",
           "documentation":"<p>S3 uri.</p>"
+        },
+        "assetProcessingConfiguration":{
+          "shape":"AssetProcessingConfiguration",
+          "documentation":"<p>Asset processing configuration</p>"
         }
       },
       "documentation":"<p>Input configuration.</p>"
@@ -528,6 +542,34 @@
       "documentation":"<p>This exception will be thrown when customer reached API TPS limit.</p>",
       "exception":true
     },
+    "TimestampSegment":{
+      "type":"structure",
+      "required":[
+        "startTimeMillis",
+        "endTimeMillis"
+      ],
+      "members":{
+        "startTimeMillis":{
+          "shape":"TimestampSegmentStartTimeMillisLong",
+          "documentation":"<p>Start timestamp in milliseconds</p>"
+        },
+        "endTimeMillis":{
+          "shape":"TimestampSegmentEndTimeMillisLong",
+          "documentation":"<p>End timestamp in milliseconds</p>"
+        }
+      },
+      "documentation":"<p>Timestamp segment</p>"
+    },
+    "TimestampSegmentEndTimeMillisLong":{
+      "type":"long",
+      "box":true,
+      "min":300000
+    },
+    "TimestampSegmentStartTimeMillisLong":{
+      "type":"long",
+      "box":true,
+      "min":0
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -551,6 +593,27 @@
       },
       "documentation":"<p>This exception will be thrown when customer provided invalid parameters.</p>",
       "exception":true
+    },
+    "VideoAssetProcessingConfiguration":{
+      "type":"structure",
+      "members":{
+        "segmentConfiguration":{
+          "shape":"VideoSegmentConfiguration",
+          "documentation":"<p>Delimits the segment of the input that will be processed</p>"
+        }
+      },
+      "documentation":"<p>Video asset processing configuration</p>"
+    },
+    "VideoSegmentConfiguration":{
+      "type":"structure",
+      "members":{
+        "timestampSegment":{
+          "shape":"TimestampSegment",
+          "documentation":"<p>Timestamp segment</p>"
+        }
+      },
+      "documentation":"<p>Delimits the segment of the input that will be processed</p>",
+      "union":true
     }
   },
   "documentation":"<p>Amazon Bedrock Data Automation Runtime</p>"

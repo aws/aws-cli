@@ -6589,6 +6589,10 @@
           "shape":"S3CsvSource",
           "documentation":"<p>Specifies a command-separated value (CSV) data store stored in Amazon S3.</p>"
         },
+        "S3ExcelSource":{
+          "shape":"S3ExcelSource",
+          "documentation":"<p>Defines configuration parameters for reading Excel files from Amazon S3.</p>"
+        },
         "S3JsonSource":{
           "shape":"S3JsonSource",
           "documentation":"<p>Specifies a JSON data store stored in Amazon S3.</p>"
@@ -6629,9 +6633,17 @@
           "shape":"S3GlueParquetTarget",
           "documentation":"<p>Specifies a data target that writes to Amazon S3 in Apache Parquet columnar storage.</p>"
         },
+        "S3HyperDirectTarget":{
+          "shape":"S3HyperDirectTarget",
+          "documentation":"<p>Defines configuration parameters for writing data to Amazon S3 using HyperDirect optimization.</p>"
+        },
         "S3DirectTarget":{
           "shape":"S3DirectTarget",
           "documentation":"<p>Specifies a data target that writes to Amazon S3.</p>"
+        },
+        "S3IcebergDirectTarget":{
+          "shape":"S3IcebergDirectTarget",
+          "documentation":"<p>Defines configuration parameters for writing data to Amazon S3 as an Apache Iceberg table.</p>"
         },
         "ApplyMapping":{
           "shape":"ApplyMapping",
@@ -16428,6 +16440,10 @@
       "type":"list",
       "member":{"shape":"HudiTarget"}
     },
+    "HyperTargetCompressionType":{
+      "type":"string",
+      "enum":["uncompressed"]
+    },
     "IAMRoleArn":{
       "type":"string",
       "pattern":"^arn:aws(-(cn|us-gov|iso(-[bef])?))?:iam::[0-9]{12}:role/.+"
@@ -16578,6 +16594,15 @@
         }
       },
       "documentation":"<p>Specifies an Apache Iceberg data source where Iceberg tables are stored in Amazon S3.</p>"
+    },
+    "IcebergTargetCompressionType":{
+      "type":"string",
+      "enum":[
+        "gzip",
+        "lzo",
+        "uncompressed",
+        "snappy"
+      ]
     },
     "IcebergTargetList":{
       "type":"list",
@@ -19755,6 +19780,7 @@
       "type":"string",
       "box":true
     },
+    "NumberTargetPartitionsString":{"type":"string"},
     "OAuth2ClientApplication":{
       "type":"structure",
       "members":{
@@ -20199,6 +20225,8 @@
         "snappy",
         "lzo",
         "gzip",
+        "brotli",
+        "lz4",
         "uncompressed",
         "none"
       ]
@@ -21914,6 +21942,10 @@
           "shape":"DeltaTargetCompressionType",
           "documentation":"<p>Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are <code>\"gzip\"</code> and <code>\"bzip\"</code>).</p>"
         },
+        "NumberTargetPartitions":{
+          "shape":"NumberTargetPartitionsString",
+          "documentation":"<p>Specifies the number of target partitions for distributing Delta Lake dataset files across Amazon S3.</p>"
+        },
         "Format":{
           "shape":"TargetFormat",
           "documentation":"<p>Specifies the data output format for the target.</p>"
@@ -22010,6 +22042,10 @@
           "shape":"EnclosedInStringProperty",
           "documentation":"<p>Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are <code>\"gzip\"</code> and <code>\"bzip\"</code>).</p>"
         },
+        "NumberTargetPartitions":{
+          "shape":"NumberTargetPartitionsString",
+          "documentation":"<p>Specifies the number of target partitions when writing data directly to Amazon S3.</p>"
+        },
         "Format":{
           "shape":"TargetFormat",
           "documentation":"<p>Specifies the data output format for the target.</p>"
@@ -22047,6 +22083,68 @@
         "SSE-S3"
       ]
     },
+    "S3ExcelSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Paths"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the S3 Excel data source.</p>"
+        },
+        "Paths":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>The S3 paths where the Excel files are located.</p>"
+        },
+        "CompressionType":{
+          "shape":"ParquetCompressionType",
+          "documentation":"<p>The compression format used for the Excel files.</p>"
+        },
+        "Exclusions":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>Patterns to exclude specific files or paths from processing.</p>"
+        },
+        "GroupSize":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Defines the size of file groups for batch processing.</p>"
+        },
+        "GroupFiles":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies how files should be grouped for processing.</p>"
+        },
+        "Recurse":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether to recursively process subdirectories.</p>"
+        },
+        "MaxBand":{
+          "shape":"BoxedNonNegativeInt",
+          "documentation":"<p>The maximum number of processing bands to use.</p>"
+        },
+        "MaxFilesInBand":{
+          "shape":"BoxedNonNegativeInt",
+          "documentation":"<p>The maximum number of files to process in each band.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"S3DirectSourceAdditionalOptions",
+          "documentation":"<p>Additional configuration options for S3 direct source processing.</p>"
+        },
+        "NumberRows":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The number of rows to process from each Excel file.</p>"
+        },
+        "SkipFooter":{
+          "shape":"BoxedNonNegativeInt",
+          "documentation":"<p>The number of rows to skip at the end of each Excel file.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>The AWS Glue schemas to apply to the processed data.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an S3 Excel data source.</p>"
+    },
     "S3GlueParquetTarget":{
       "type":"structure",
       "required":[
@@ -22074,6 +22172,10 @@
         "Compression":{
           "shape":"ParquetCompressionType",
           "documentation":"<p>Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are <code>\"gzip\"</code> and <code>\"bzip\"</code>).</p>"
+        },
+        "NumberTargetPartitions":{
+          "shape":"NumberTargetPartitionsString",
+          "documentation":"<p>Specifies the number of target partitions for Parquet files when writing to Amazon S3 using AWS Glue.</p>"
         },
         "SchemaChangePolicy":{
           "shape":"DirectSchemaChangePolicy",
@@ -22150,6 +22252,10 @@
           "shape":"HudiTargetCompressionType",
           "documentation":"<p>Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are <code>\"gzip\"</code> and <code>\"bzip\"</code>).</p>"
         },
+        "NumberTargetPartitions":{
+          "shape":"NumberTargetPartitionsString",
+          "documentation":"<p>Specifies the number of target partitions for distributing Hudi dataset files across Amazon S3.</p>"
+        },
         "PartitionKeys":{
           "shape":"GlueStudioPathList",
           "documentation":"<p>Specifies native partitioning using a sequence of keys.</p>"
@@ -22198,6 +22304,90 @@
         }
       },
       "documentation":"<p>Specifies a Hudi data source stored in Amazon S3.</p>"
+    },
+    "S3HyperDirectTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Path"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The unique identifier for the HyperDirect target node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>Specifies the input source for the HyperDirect target.</p>"
+        },
+        "PartitionKeys":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>Defines the partitioning strategy for the output data.</p>"
+        },
+        "Path":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The S3 location where the output data will be written.</p>"
+        },
+        "Compression":{
+          "shape":"HyperTargetCompressionType",
+          "documentation":"<p>The compression type to apply to the output data.</p>"
+        },
+        "SchemaChangePolicy":{
+          "shape":"DirectSchemaChangePolicy",
+          "documentation":"<p>Defines how schema changes are handled during write operations.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a HyperDirect data target that writes to Amazon S3.</p>"
+    },
+    "S3IcebergDirectTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Path",
+        "Format",
+        "Compression"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>Specifies the unique identifier for the Iceberg target node in your data pipeline.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>Defines the single input source that provides data to this Iceberg target.</p>"
+        },
+        "PartitionKeys":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>Specifies the columns used to partition the Iceberg table data in S3.</p>"
+        },
+        "Path":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Defines the S3 location where the Iceberg table data will be stored.</p>"
+        },
+        "Format":{
+          "shape":"TargetFormat",
+          "documentation":"<p>Specifies the file format used for storing Iceberg table data (e.g., Parquet, ORC).</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Provides additional configuration options for customizing the Iceberg table behavior.</p>"
+        },
+        "SchemaChangePolicy":{
+          "shape":"DirectSchemaChangePolicy",
+          "documentation":"<p>Defines how schema changes are handled when writing data to the Iceberg table.</p>"
+        },
+        "Compression":{
+          "shape":"IcebergTargetCompressionType",
+          "documentation":"<p>Specifies the compression codec used for Iceberg table files in S3.</p>"
+        },
+        "NumberTargetPartitions":{
+          "shape":"NumberTargetPartitionsString",
+          "documentation":"<p>Sets the number of target partitions for distributing Iceberg table files across S3.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a target that writes to an Iceberg data source in Amazon S3.</p>"
     },
     "S3JsonSource":{
       "type":"structure",
@@ -24877,7 +25067,10 @@
         "orc",
         "parquet",
         "hudi",
-        "delta"
+        "delta",
+        "iceberg",
+        "hyper",
+        "xml"
       ]
     },
     "TargetProcessingProperties":{

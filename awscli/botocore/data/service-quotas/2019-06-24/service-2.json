@@ -34,6 +34,26 @@
       ],
       "documentation":"<p>Associates your quota request template with your organization. When a new Amazon Web Services account is created in your organization, the quota increase requests in the template are automatically applied to the account. You can add a quota increase request for any adjustable quota to your template.</p>"
     },
+    "CreateSupportCase":{
+      "name":"CreateSupportCase",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateSupportCaseRequest"},
+      "output":{"shape":"CreateSupportCaseResponse"},
+      "errors":[
+        {"shape":"DependencyAccessDeniedException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"NoSuchResourceException"},
+        {"shape":"IllegalArgumentException"},
+        {"shape":"InvalidResourceStateException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Creates a Support case for an existing quota increase request. This call only creates a Support case if the request has a <code>Pending</code> status. </p>"
+    },
     "DeleteServiceQuotaIncreaseRequestFromTemplate":{
       "name":"DeleteServiceQuotaIncreaseRequestFromTemplate",
       "http":{
@@ -406,19 +426,31 @@
     },
     "AssociateServiceQuotaTemplateRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AssociateServiceQuotaTemplateResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AwsRegion":{
       "type":"string",
       "max":64,
       "min":1,
       "pattern":"[a-zA-Z][a-zA-Z0-9-]{1,128}"
+    },
+    "CreateSupportCaseRequest":{
+      "type":"structure",
+      "required":["RequestId"],
+      "members":{
+        "RequestId":{
+          "shape":"RequestId",
+          "documentation":"<p>The ID of the pending quota increase request for which you want to open a Support case. </p>"
+        }
+      }
+    },
+    "CreateSupportCaseResponse":{
+      "type":"structure",
+      "members":{}
     },
     "CustomerServiceEngagementId":{"type":"string"},
     "DateTime":{"type":"timestamp"},
@@ -446,8 +478,7 @@
     },
     "DeleteServiceQuotaIncreaseRequestFromTemplateResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DependencyAccessDeniedException":{
       "type":"structure",
@@ -459,13 +490,11 @@
     },
     "DisassociateServiceQuotaTemplateRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisassociateServiceQuotaTemplateResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "ErrorCode":{
       "type":"string",
@@ -520,8 +549,7 @@
     },
     "GetAssociationForServiceQuotaTemplateRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetAssociationForServiceQuotaTemplateResponse":{
       "type":"structure",
@@ -1428,8 +1456,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -1480,8 +1507,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     }
   },
   "documentation":"<p>With Service Quotas, you can view and manage your quotas easily as your Amazon Web Services workloads grow. Quotas, also referred to as limits, are the maximum number of resources that you can create in your Amazon Web Services account. For more information, see the <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/\">Service Quotas User Guide</a>.</p> <p>You need Amazon Web Services CLI version 2.13.20 or higher to view and manage resource-level quotas such as <code>Instances per domain</code> for Amazon OpenSearch Service.</p>"

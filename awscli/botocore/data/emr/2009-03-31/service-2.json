@@ -83,6 +83,20 @@
       ],
       "documentation":"<p>Cancels a pending step or steps in a running cluster. Available only in Amazon EMR versions 4.8.0 and later, excluding version 5.0.0. A maximum of 256 steps are allowed in each CancelSteps request. CancelSteps is idempotent but asynchronous; it does not guarantee that a step will be canceled, even if the request is successfully submitted. When you use Amazon EMR releases 5.28.0 and later, you can cancel steps that are in a <code>PENDING</code> or <code>RUNNING</code> state. In earlier versions of Amazon EMR, you can only cancel steps that are in a <code>PENDING</code> state. </p>"
     },
+    "CreatePersistentAppUI":{
+      "name":"CreatePersistentAppUI",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreatePersistentAppUIInput"},
+      "output":{"shape":"CreatePersistentAppUIOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>Creates a persistent application user interface.</p>"
+    },
     "CreateSecurityConfiguration":{
       "name":"CreateSecurityConfiguration",
       "http":{
@@ -206,6 +220,20 @@
       ],
       "documentation":"<p>Provides details of a notebook execution.</p>"
     },
+    "DescribePersistentAppUI":{
+      "name":"DescribePersistentAppUI",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribePersistentAppUIInput"},
+      "output":{"shape":"DescribePersistentAppUIOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>Describes a persistent application user interface.</p>"
+    },
     "DescribeReleaseLabel":{
       "name":"DescribeReleaseLabel",
       "http":{
@@ -309,6 +337,34 @@
       "input":{"shape":"GetManagedScalingPolicyInput"},
       "output":{"shape":"GetManagedScalingPolicyOutput"},
       "documentation":"<p>Fetches the attached managed scaling policy for an Amazon EMR cluster. </p>"
+    },
+    "GetOnClusterAppUIPresignedURL":{
+      "name":"GetOnClusterAppUIPresignedURL",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetOnClusterAppUIPresignedURLInput"},
+      "output":{"shape":"GetOnClusterAppUIPresignedURLOutput"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>The presigned URL properties for the cluster's application user interface.</p>"
+    },
+    "GetPersistentAppUIPresignedURL":{
+      "name":"GetPersistentAppUIPresignedURL",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetPersistentAppUIPresignedURLInput"},
+      "output":{"shape":"GetPersistentAppUIPresignedURLOutput"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>The presigned URL properties for the cluster's application user interface.</p>"
     },
     "GetStudioSessionMapping":{
       "name":"GetStudioSessionMapping",
@@ -1553,6 +1609,45 @@
       "type":"list",
       "member":{"shape":"Configuration"}
     },
+    "CreatePersistentAppUIInput":{
+      "type":"structure",
+      "required":["TargetResourceArn"],
+      "members":{
+        "TargetResourceArn":{
+          "shape":"ArnType",
+          "documentation":"<p>The unique Amazon Resource Name (ARN) of the target resource.</p>"
+        },
+        "EMRContainersConfig":{
+          "shape":"EMRContainersConfig",
+          "documentation":"<p>The EMR containers configuration.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags for the persistent application user interface.</p>"
+        },
+        "XReferer":{
+          "shape":"String",
+          "documentation":"<p>The cross reference for the persistent application user interface.</p>"
+        },
+        "ProfilerType":{
+          "shape":"ProfilerType",
+          "documentation":"<p>The profiler type for the persistent application user interface. Valid values are SHS, TEZUI, or YTS.</p>"
+        }
+      }
+    },
+    "CreatePersistentAppUIOutput":{
+      "type":"structure",
+      "members":{
+        "PersistentAppUIId":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>The persistent application user interface identifier.</p>"
+        },
+        "RuntimeRoleEnabledCluster":{
+          "shape":"Boolean",
+          "documentation":"<p>Represents if the EMR on EC2 cluster that the persisent application user interface is created for is a runtime role enabled cluster or not.</p>"
+        }
+      }
+    },
     "CreateSecurityConfigurationInput":{
       "type":"structure",
       "required":[
@@ -1847,6 +1942,25 @@
         }
       }
     },
+    "DescribePersistentAppUIInput":{
+      "type":"structure",
+      "required":["PersistentAppUIId"],
+      "members":{
+        "PersistentAppUIId":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>The identifier for the persistent application user interface.</p>"
+        }
+      }
+    },
+    "DescribePersistentAppUIOutput":{
+      "type":"structure",
+      "members":{
+        "PersistentAppUI":{
+          "shape":"PersistentAppUI",
+          "documentation":"<p>The persistent application user interface.</p>"
+        }
+      }
+    },
     "DescribeReleaseLabelInput":{
       "type":"structure",
       "members":{
@@ -1966,6 +2080,16 @@
     "EC2InstanceIdsToTerminateList":{
       "type":"list",
       "member":{"shape":"InstanceId"}
+    },
+    "EMRContainersConfig":{
+      "type":"structure",
+      "members":{
+        "JobRunId":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>The Job run ID for the container configuration.</p>"
+        }
+      },
+      "documentation":"<p>The EMR container configuration.</p>"
     },
     "EbsBlockDevice":{
       "type":"structure",
@@ -2253,6 +2377,84 @@
         "ManagedScalingPolicy":{
           "shape":"ManagedScalingPolicy",
           "documentation":"<p>Specifies the managed scaling policy that is attached to an Amazon EMR cluster. </p>"
+        }
+      }
+    },
+    "GetOnClusterAppUIPresignedURLInput":{
+      "type":"structure",
+      "required":["ClusterId"],
+      "members":{
+        "ClusterId":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>The cluster ID associated with the cluster's application user interface presigned URL.</p>"
+        },
+        "OnClusterAppUIType":{
+          "shape":"OnClusterAppUIType",
+          "documentation":"<p>The application UI type associated with the cluster's application user interface presigned URL.</p>"
+        },
+        "ApplicationId":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>The application ID associated with the cluster's application user interface presigned URL.</p>"
+        },
+        "DryRun":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Determines if the user interface presigned URL is for a dry run.</p>"
+        },
+        "ExecutionRoleArn":{
+          "shape":"ArnType",
+          "documentation":"<p>The execution role ARN associated with the cluster's application user interface presigned URL.</p>"
+        }
+      }
+    },
+    "GetOnClusterAppUIPresignedURLOutput":{
+      "type":"structure",
+      "members":{
+        "PresignedURLReady":{
+          "shape":"Boolean",
+          "documentation":"<p>Used to determine if the presigned URL is ready.</p>"
+        },
+        "PresignedURL":{
+          "shape":"XmlString",
+          "documentation":"<p>The cluster's generated presigned URL.</p>"
+        }
+      }
+    },
+    "GetPersistentAppUIPresignedURLInput":{
+      "type":"structure",
+      "required":["PersistentAppUIId"],
+      "members":{
+        "PersistentAppUIId":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>The persistent application user interface ID associated with the presigned URL.</p>"
+        },
+        "PersistentAppUIType":{
+          "shape":"PersistentAppUIType",
+          "documentation":"<p>The persistent application user interface type associated with the presigned URL.</p>"
+        },
+        "ApplicationId":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>The application ID associated with the presigned URL.</p>"
+        },
+        "AuthProxyCall":{
+          "shape":"BooleanObject",
+          "documentation":"<p>A boolean that represents if the caller is an authentication proxy call.</p>"
+        },
+        "ExecutionRoleArn":{
+          "shape":"ArnType",
+          "documentation":"<p>The execution role ARN associated with the presigned URL.</p>"
+        }
+      }
+    },
+    "GetPersistentAppUIPresignedURLOutput":{
+      "type":"structure",
+      "members":{
+        "PresignedURLReady":{
+          "shape":"Boolean",
+          "documentation":"<p>Used to determine if the presigned URL is ready.</p>"
+        },
+        "PresignedURL":{
+          "shape":"XmlString",
+          "documentation":"<p>The returned presigned URL.</p>"
         }
       }
     },
@@ -4220,6 +4422,17 @@
       "type":"list",
       "member":{"shape":"OSRelease"}
     },
+    "OnClusterAppUIType":{
+      "type":"string",
+      "enum":[
+        "SparkHistoryServer",
+        "YarnTimelineService",
+        "TezUI",
+        "ApplicationMaster",
+        "JobHistoryServer",
+        "ResourceManager"
+      ]
+    },
     "OnDemandCapacityReservationOptions":{
       "type":"structure",
       "members":{
@@ -4323,6 +4536,56 @@
       },
       "documentation":"<p>The Amazon S3 location that stores the notebook execution output.</p>"
     },
+    "PersistentAppUI":{
+      "type":"structure",
+      "members":{
+        "PersistentAppUIId":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>The identifier for the persistent application user interface object.</p>"
+        },
+        "PersistentAppUITypeList":{
+          "shape":"PersistentAppUITypeList",
+          "documentation":"<p>The type list for the persistent application user interface object. Valid values include SHS, YTS, or TEZ.</p>"
+        },
+        "PersistentAppUIStatus":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>The status for the persistent application user interface object.</p>"
+        },
+        "AuthorId":{
+          "shape":"XmlStringMaxLen256",
+          "documentation":"<p>The author ID for the persistent application user interface object.</p>"
+        },
+        "CreationTime":{
+          "shape":"Date",
+          "documentation":"<p>The creation date and time for the persistent application user interface object.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Date",
+          "documentation":"<p>The date and time the persistent application user interface object was last changed.</p>"
+        },
+        "LastStateChangeReason":{
+          "shape":"XmlString",
+          "documentation":"<p>The reason the persistent application user interface object was last changed.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A collection of tags for the persistent application user interface object.</p>"
+        }
+      },
+      "documentation":"<p>Holds persistent application user interface information. Applications installed on the Amazon EMR cluster publish user interfaces as web sites to monitor cluster activity.</p>"
+    },
+    "PersistentAppUIType":{
+      "type":"string",
+      "enum":[
+        "SHS",
+        "TEZ",
+        "YTS"
+      ]
+    },
+    "PersistentAppUITypeList":{
+      "type":"list",
+      "member":{"shape":"PersistentAppUIType"}
+    },
     "PlacementGroupConfig":{
       "type":"structure",
       "required":["InstanceRole"],
@@ -4388,6 +4651,14 @@
     "PortRanges":{
       "type":"list",
       "member":{"shape":"PortRange"}
+    },
+    "ProfilerType":{
+      "type":"string",
+      "enum":[
+        "SHS",
+        "TEZUI",
+        "YTS"
+      ]
     },
     "PutAutoScalingPolicyInput":{
       "type":"structure",

@@ -285,6 +285,22 @@
       ],
       "documentation":"<p>Gets a summary of all CodePipeline action types associated with your account.</p>"
     },
+    "ListDeployActionExecutionTargets":{
+      "name":"ListDeployActionExecutionTargets",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDeployActionExecutionTargetsInput"},
+      "output":{"shape":"ListDeployActionExecutionTargetsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"PipelineNotFoundException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"ActionExecutionNotFoundException"}
+      ],
+      "documentation":"<p>Lists the targets for the deploy action.</p>"
+    },
     "ListPipelineExecutions":{
       "name":"ListPipelineExecutions",
       "http":{
@@ -1107,6 +1123,14 @@
         }
       },
       "documentation":"<p>Input information used for an action execution.</p>"
+    },
+    "ActionExecutionNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"Message"}
+      },
+      "documentation":"<p>The action execution was not found.</p>",
+      "exception":true
     },
     "ActionExecutionOutput":{
       "type":"structure",
@@ -2094,6 +2118,84 @@
     "DeleteWebhookOutput":{
       "type":"structure",
       "members":{}
+    },
+    "DeployActionExecutionTarget":{
+      "type":"structure",
+      "members":{
+        "targetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the target for the deploy action.</p>"
+        },
+        "targetType":{
+          "shape":"String",
+          "documentation":"<p>The type of target for the deploy action.</p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The status of the deploy action.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time for the deploy action.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time for the deploy action.</p>"
+        },
+        "events":{
+          "shape":"DeployTargetEventList",
+          "documentation":"<p>The lifecycle events for the deploy action.</p>"
+        }
+      },
+      "documentation":"<p>The target for the deploy action.</p>"
+    },
+    "DeployActionExecutionTargetList":{
+      "type":"list",
+      "member":{"shape":"DeployActionExecutionTarget"}
+    },
+    "DeployTargetEvent":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the event for the deploy action.</p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The status of the event for the deploy action.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time for the event for the deploy action.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time for the event for the deploy action.</p>"
+        },
+        "context":{
+          "shape":"DeployTargetEventContext",
+          "documentation":"<p>The context for the event for the deploy action.</p>"
+        }
+      },
+      "documentation":"<p>A lifecycle event for the deploy action.</p>"
+    },
+    "DeployTargetEventContext":{
+      "type":"structure",
+      "members":{
+        "ssmCommandId":{
+          "shape":"String",
+          "documentation":"<p>The command ID for the event for the deploy action.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The context message for the event for the deploy action.</p>"
+        }
+      },
+      "documentation":"<p>The context for the event for the deploy action.</p>"
+    },
+    "DeployTargetEventList":{
+      "type":"list",
+      "member":{"shape":"DeployTargetEvent"}
     },
     "DeregisterWebhookWithThirdPartyInput":{
       "type":"structure",
@@ -3088,6 +3190,45 @@
         }
       },
       "documentation":"<p>Represents the output of a <code>ListActionTypes</code> action.</p>"
+    },
+    "ListDeployActionExecutionTargetsInput":{
+      "type":"structure",
+      "required":["actionExecutionId"],
+      "members":{
+        "pipelineName":{
+          "shape":"PipelineName",
+          "documentation":"<p>The name of the pipeline with the deploy action.</p>"
+        },
+        "actionExecutionId":{
+          "shape":"ActionExecutionId",
+          "documentation":"<p>The execution ID for the deploy action.</p>"
+        },
+        "filters":{
+          "shape":"TargetFilterList",
+          "documentation":"<p>Filters the targets for a specified deploy action.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned nextToken value.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>An identifier that was returned from the previous list action types call, which can be used to return the next set of action types in the list.</p>"
+        }
+      }
+    },
+    "ListDeployActionExecutionTargetsOutput":{
+      "type":"structure",
+      "members":{
+        "targets":{
+          "shape":"DeployActionExecutionTargetList",
+          "documentation":"<p>The targets for the deploy action.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>An identifier that was returned from the previous list action types call, which can be used to return the next set of action types in the list.</p>"
+        }
+      }
     },
     "ListPipelineExecutionsInput":{
       "type":"structure",
@@ -5308,6 +5449,36 @@
       "type":"string",
       "max":256,
       "min":0
+    },
+    "TargetFilter":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"TargetFilterName",
+          "documentation":"<p>The name on which to filter.</p>"
+        },
+        "values":{
+          "shape":"TargetFilterValueList",
+          "documentation":"<p>The values on which to filter.</p>"
+        }
+      },
+      "documentation":"<p>Filters the list of targets.</p>"
+    },
+    "TargetFilterList":{
+      "type":"list",
+      "member":{"shape":"TargetFilter"}
+    },
+    "TargetFilterName":{
+      "type":"string",
+      "enum":["TARGET_STATUS"]
+    },
+    "TargetFilterValue":{
+      "type":"string",
+      "min":1
+    },
+    "TargetFilterValueList":{
+      "type":"list",
+      "member":{"shape":"TargetFilterValue"}
     },
     "ThirdPartyJob":{
       "type":"structure",

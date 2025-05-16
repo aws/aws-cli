@@ -1261,6 +1261,25 @@
         {"shape":"InvalidDBInstanceStateFault"}
       ],
       "documentation":"<p>Stops an Amazon Neptune DB cluster. When you stop a DB cluster, Neptune retains the DB cluster's metadata, including its endpoints and DB parameter groups.</p> <p>Neptune also retains the transaction logs so you can do a point-in-time restore if necessary.</p>"
+    },
+    "SwitchoverGlobalCluster":{
+      "name":"SwitchoverGlobalCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SwitchoverGlobalClusterMessage"},
+      "output":{
+        "shape":"SwitchoverGlobalClusterResult",
+        "resultWrapper":"SwitchoverGlobalClusterResult"
+      },
+      "errors":[
+        {"shape":"GlobalClusterNotFoundFault"},
+        {"shape":"InvalidGlobalClusterStateFault"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"DBClusterNotFoundFault"}
+      ],
+      "documentation":"<p>Switches over the specified secondary DB cluster to be the new primary DB cluster in the global database cluster. Switchover operations were previously called \"managed planned failovers.\"</p> <p>Promotes the specified secondary cluster to assume full read/write capabilities and demotes the current primary cluster to a secondary (read-only) cluster, maintaining the original replication topology. All secondary clusters are synchronized with the primary at the beginning of the process so the new primary continues operations for the global database without losing any data. Your database is unavailable for a short time while the primary and selected secondary clusters are assuming their new roles.</p> <note> <p>This operation is intended for controlled environments, for operations such as \"regional rotation\" or to fall back to the original primary after a global database failover.</p> </note>"
     }
   },
   "shapes":{
@@ -1369,8 +1388,7 @@
     },
     "AuthorizationNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Specified CIDRIP or EC2 security group is not authorized for the specified DB security group.</p> <p>Neptune may not also be authorized via IAM to perform necessary actions on your behalf.</p>",
       "error":{
         "code":"AuthorizationNotFound",
@@ -1408,8 +1426,7 @@
     "BooleanOptional":{"type":"boolean"},
     "CertificateNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <i>CertificateIdentifier</i> does not refer to an existing certificate.</p>",
       "error":{
         "code":"CertificateNotFound",
@@ -1471,7 +1488,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>The storage type for the DB cluster.</p>"
+          "documentation":"<p>The pending change in storage type for the DB cluster.   Valid Values:</p> <ul> <li> <p> <b> <code>standard</code> </b>   –   ( <i>the default</i> ) Configures cost-effective database storage for applications with moderate to small I/O usage.</p> </li> <li> <p> <b> <code>iopt1</code> </b>   –   Enables <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/storage-types.html#provisioned-iops-storage\">I/O-Optimized storage</a> that's designed to meet the needs of I/O-intensive graph workloads that require predictable pricing with low I/O latency and consistent I/O throughput.</p> <p>Neptune I/O-Optimized storage is only available starting with engine release 1.3.0.0.</p> </li> </ul>"
         },
         "AllocatedStorage":{
           "shape":"IntegerOptional",
@@ -1479,7 +1496,7 @@
         },
         "Iops":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The Provisioned IOPS (I/O operations per second) value. This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
+          "documentation":"<p>The Provisioned IOPS (I/O operations per second) value. This setting is only for Multi-AZ DB clusters.</p>"
         }
       },
       "documentation":"<p>This data type is used as a response element in the <code>ModifyDBCluster</code> operation and contains changes that will be applied during the next maintenance window.</p>"
@@ -1716,7 +1733,7 @@
         },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>The version number of the database engine to use for the new DB cluster.</p> <p>Example: <code>1.0.2.1</code> </p>"
+          "documentation":"<p>The version number of the database engine to use for the new DB cluster.</p> <p>Example: <code>1.2.1.0</code> </p>"
         },
         "Port":{
           "shape":"IntegerOptional",
@@ -1784,7 +1801,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <code>standard | iopt1</code> </p> </li> </ul> <p>Default:</p> <ul> <li> <p> <code>standard</code> </p> </li> </ul> <note> <p>When you create a Neptune cluster with the storage type set to <code>iopt1</code>, the storage type is returned in the response. The storage type isn't returned when you set it to <code>standard</code>.</p> </note>"
+          "documentation":"<p>The storage type for the new DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <b> <code>standard</code> </b>   –   ( <i>the default</i> ) Configures cost-effective database storage for applications with moderate to small I/O usage. When set to <code>standard</code>, the storage type is not returned in the response.</p> </li> <li> <p> <b> <code>iopt1</code> </b>   –   Enables <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/storage-types.html#provisioned-iops-storage\">I/O-Optimized storage</a> that's designed to meet the needs of I/O-intensive graph workloads that require predictable pricing with low I/O latency and consistent I/O throughput.</p> <p>Neptune I/O-Optimized storage is only available starting with engine release 1.3.0.0.</p> </li> </ul>"
         }
       }
     },
@@ -1969,7 +1986,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type to be associated with the DB instance.</p> <p>Not applicable. Storage is managed by the DB Cluster.</p>"
+          "documentation":"<p>Not applicable. In Neptune the storage type is managed at the DB Cluster level.</p>"
         },
         "TdeCredentialArn":{
           "shape":"String",
@@ -2367,7 +2384,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>The storage type associated with the DB cluster.</p>"
+          "documentation":"<p>The storage type used by the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <b> <code>standard</code> </b>   –   ( <i>the default</i> ) Provides cost-effective database storage for applications with moderate to small I/O usage.</p> </li> <li> <p> <b> <code>iopt1</code> </b>   –   Enables <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/storage-types.html#provisioned-iops-storage\">I/O-Optimized storage</a> that's designed to meet the needs of I/O-intensive graph workloads that require predictable pricing with low I/O latency and consistent I/O throughput.</p> <p>Neptune I/O-Optimized storage is only available starting with engine release 1.3.0.0.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon Neptune DB cluster.</p> <p>This data type is used as a response element in the <a>DescribeDBClusters</a>.</p>",
@@ -2375,8 +2392,7 @@
     },
     "DBClusterAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>User already has a DB cluster with the given identifier.</p>",
       "error":{
         "code":"DBClusterAlreadyExistsFault",
@@ -2433,8 +2449,7 @@
     },
     "DBClusterEndpointAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified custom endpoint cannot be created because it already exists.</p>",
       "error":{
         "code":"DBClusterEndpointAlreadyExistsFault",
@@ -2455,7 +2470,7 @@
       "members":{
         "Marker":{
           "shape":"String",
-          "documentation":"<p> An optional pagination token provided by a previous <code>DescribeDBClusterEndpoints</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. </p>"
+          "documentation":"<p> n optional pagination token provided by a previous <code>DescribeDBClusterEndpoints</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
         },
         "DBClusterEndpoints":{
           "shape":"DBClusterEndpointList",
@@ -2465,8 +2480,7 @@
     },
     "DBClusterEndpointNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified custom endpoint doesn't exist.</p>",
       "error":{
         "code":"DBClusterEndpointNotFoundFault",
@@ -2477,8 +2491,7 @@
     },
     "DBClusterEndpointQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The cluster already has the maximum number of custom endpoints.</p>",
       "error":{
         "code":"DBClusterEndpointQuotaExceededFault",
@@ -2539,8 +2552,7 @@
     },
     "DBClusterNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <i>DBClusterIdentifier</i> does not refer to an existing DB cluster.</p>",
       "error":{
         "code":"DBClusterNotFoundFault",
@@ -2624,8 +2636,7 @@
     },
     "DBClusterParameterGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <i>DBClusterParameterGroupName</i> does not refer to an existing DB Cluster parameter group.</p>",
       "error":{
         "code":"DBClusterParameterGroupNotFound",
@@ -2649,8 +2660,7 @@
     },
     "DBClusterQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>User attempted to create a new DB cluster and the user has already reached the maximum allowed DB cluster quota.</p>",
       "error":{
         "code":"DBClusterQuotaExceededFault",
@@ -2679,8 +2689,7 @@
     },
     "DBClusterRoleAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified IAM role Amazon Resource Name (ARN) is already associated with the specified DB cluster.</p>",
       "error":{
         "code":"DBClusterRoleAlreadyExists",
@@ -2691,8 +2700,7 @@
     },
     "DBClusterRoleNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified IAM role Amazon Resource Name (ARN) is not associated with the specified DB cluster.</p>",
       "error":{
         "code":"DBClusterRoleNotFound",
@@ -2703,8 +2711,7 @@
     },
     "DBClusterRoleQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You have exceeded the maximum number of IAM roles that can be associated with the specified DB cluster.</p>",
       "error":{
         "code":"DBClusterRoleQuotaExceeded",
@@ -2813,8 +2820,7 @@
     },
     "DBClusterSnapshotAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>User already has a DB cluster snapshot with the given identifier.</p>",
       "error":{
         "code":"DBClusterSnapshotAlreadyExistsFault",
@@ -2881,8 +2887,7 @@
     },
     "DBClusterSnapshotNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <i>DBClusterSnapshotIdentifier</i> does not refer to an existing DB cluster snapshot.</p>",
       "error":{
         "code":"DBClusterSnapshotNotFoundFault",
@@ -3103,7 +3108,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type associated with DB instance.</p>"
+          "documentation":"<p>Specifies the storage type associated with the DB instance.</p>"
         },
         "TdeCredentialArn":{
           "shape":"String",
@@ -3191,8 +3196,7 @@
     },
     "DBInstanceAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>User already has a DB instance with the given identifier.</p>",
       "error":{
         "code":"DBInstanceAlreadyExists",
@@ -3223,8 +3227,7 @@
     },
     "DBInstanceNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <i>DBInstanceIdentifier</i> does not refer to an existing DB instance.</p>",
       "error":{
         "code":"DBInstanceNotFound",
@@ -3287,8 +3290,7 @@
     },
     "DBParameterGroupAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A DB parameter group with the same name exists.</p>",
       "error":{
         "code":"DBParameterGroupAlreadyExists",
@@ -3328,8 +3330,7 @@
     },
     "DBParameterGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <i>DBParameterGroupName</i> does not refer to an existing DB parameter group.</p>",
       "error":{
         "code":"DBParameterGroupNotFound",
@@ -3340,8 +3341,7 @@
     },
     "DBParameterGroupQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Request would result in user exceeding the allowed number of DB parameter groups.</p>",
       "error":{
         "code":"DBParameterGroupQuotaExceeded",
@@ -3414,8 +3414,7 @@
     },
     "DBSecurityGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <i>DBSecurityGroupName</i> does not refer to an existing DB security group.</p>",
       "error":{
         "code":"DBSecurityGroupNotFound",
@@ -3426,8 +3425,7 @@
     },
     "DBSnapshotAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <i>DBSnapshotIdentifier</i> is already used by an existing snapshot.</p>",
       "error":{
         "code":"DBSnapshotAlreadyExists",
@@ -3438,8 +3436,7 @@
     },
     "DBSnapshotNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <i>DBSnapshotIdentifier</i> does not refer to an existing DB snapshot.</p>",
       "error":{
         "code":"DBSnapshotNotFound",
@@ -3481,8 +3478,7 @@
     },
     "DBSubnetGroupAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <i>DBSubnetGroupName</i> is already used by an existing DB subnet group.</p>",
       "error":{
         "code":"DBSubnetGroupAlreadyExists",
@@ -3493,8 +3489,7 @@
     },
     "DBSubnetGroupDoesNotCoverEnoughAZs":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Subnets in the DB subnet group should cover at least two Availability Zones unless there is only one Availability Zone.</p>",
       "error":{
         "code":"DBSubnetGroupDoesNotCoverEnoughAZs",
@@ -3518,8 +3513,7 @@
     },
     "DBSubnetGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <i>DBSubnetGroupName</i> does not refer to an existing DB subnet group.</p>",
       "error":{
         "code":"DBSubnetGroupNotFoundFault",
@@ -3530,8 +3524,7 @@
     },
     "DBSubnetGroupQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Request would result in user exceeding the allowed number of DB subnet groups.</p>",
       "error":{
         "code":"DBSubnetGroupQuotaExceeded",
@@ -3549,8 +3542,7 @@
     },
     "DBSubnetQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Request would result in user exceeding the allowed number of subnets in a DB subnet groups.</p>",
       "error":{
         "code":"DBSubnetQuotaExceededFault",
@@ -3561,8 +3553,7 @@
     },
     "DBUpgradeDependencyFailureFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB upgrade failed because a resource the DB depends on could not be modified.</p>",
       "error":{
         "code":"DBUpgradeDependencyFailure",
@@ -3770,11 +3761,11 @@
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so you can retrieve the remaining results. </p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>"
+          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so you can retrieve the remaining results.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>"
         },
         "Marker":{
           "shape":"String",
-          "documentation":"<p> An optional pagination token provided by a previous <code>DescribeDBClusterEndpoints</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. </p>"
+          "documentation":"<p>An optional pagination token provided by a previous <code>DescribeDBClusterEndpoints</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
         }
       }
     },
@@ -4283,8 +4274,7 @@
     },
     "DomainNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <i>Domain</i> does not refer to an existing Active Directory Domain.</p>",
       "error":{
         "code":"DomainNotFoundFault",
@@ -4477,8 +4467,7 @@
     },
     "EventSubscriptionQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You have exceeded the number of events you can subscribe to.</p>",
       "error":{
         "code":"EventSubscriptionQuotaExceeded",
@@ -4553,6 +4542,14 @@
         "TargetDbClusterIdentifier":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the secondary Neptune DB cluster that you want to promote to primary for the global database.</p>"
+        },
+        "AllowDataLoss":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to allow data loss for this global database cluster operation. Allowing data loss triggers a global failover operation.</p> <p>If you don't specify <code>AllowDataLoss</code>, the global database cluster operation defaults to a switchover.</p> <p>Constraints:Can't be specified together with the <code>Switchover</code> parameter.</p>"
+        },
+        "Switchover":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to switch over this global database cluster.</p> <p>Constraints:Can't be specified together with the <code>AllowDataLoss</code> parameter.</p>"
         }
       }
     },
@@ -4561,6 +4558,37 @@
       "members":{
         "GlobalCluster":{"shape":"GlobalCluster"}
       }
+    },
+    "FailoverState":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"FailoverStatus",
+          "documentation":"<p>The current status of the global cluster. Possible values are as follows:</p> <ul> <li> <p>pending &#x96; The service received a request to switch over or fail over the global cluster. The global cluster's primary DB cluster and the specified secondary DB cluster are being verified before the operation starts.</p> </li> <li> <p>failing-over &#x96; Neptune is promoting the chosen secondary Neptune DB cluster to become the new primary DB cluster to fail over the global cluster.</p> </li> <li> <p>cancelling &#x96; The request to switch over or fail over the global cluster was cancelled and the primary Neptune DB cluster and the selected secondary Neptune DB cluster are returning to their previous states.</p> </li> <li> <p>switching-over &#x96; This status covers the range of Neptune internal operations that take place during the switchover process, such as demoting the primary Neptune DB cluster, promoting the secondary Neptune DB cluster, and synchronizing replicas.</p> </li> </ul>"
+        },
+        "FromDbClusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Neptune DB cluster that is currently being demoted, and which is associated with this state.</p>"
+        },
+        "ToDbClusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Neptune DB cluster that is currently being promoted, and which is associated with this state.</p>"
+        },
+        "IsDataLossAllowed":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the operation is a global switchover or a global failover. If data loss is allowed, then the operation is a global failover. Otherwise, it's a switchover.</p>"
+        }
+      },
+      "documentation":"<p>Contains the state of scheduled or in-process operations on a global cluster (Neptune global database). This data type is empty unless a switchover or failover operation is scheduled or is in progress on the Neptune global database.</p>",
+      "wrapper":true
+    },
+    "FailoverStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "failing-over",
+        "cancelling"
+      ]
     },
     "Filter":{
       "type":"structure",
@@ -4632,6 +4660,10 @@
         "GlobalClusterMembers":{
           "shape":"GlobalClusterMemberList",
           "documentation":"<p>A list of cluster ARNs and instance ARNs for all the DB clusters that are part of the global database.</p>"
+        },
+        "FailoverState":{
+          "shape":"FailoverState",
+          "documentation":"<p>A data object containing all properties for the current state of an in-process or pending switchover or failover process for this global cluster (Neptune global database). This object is empty unless the <code>SwitchoverGlobalCluster</code> or <code>FailoverGlobalCluster</code> operation was called on this global cluster.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon Neptune global database.</p> <p>This data type is used as a response element for the <a>CreateGlobalCluster</a>, <a>DescribeGlobalClusters</a>, <a>ModifyGlobalCluster</a>, <a>DeleteGlobalCluster</a>, <a>FailoverGlobalCluster</a>, and <a>RemoveFromGlobalCluster</a> actions.</p>",
@@ -4639,8 +4671,7 @@
     },
     "GlobalClusterAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The <code>GlobalClusterIdentifier</code> already exists. Choose a new global database identifier (unique name) to create a new global database cluster.</p>",
       "error":{
         "code":"GlobalClusterAlreadyExistsFault",
@@ -4690,8 +4721,7 @@
     },
     "GlobalClusterNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The <code>GlobalClusterIdentifier</code> doesn't refer to an existing global database cluster. </p>",
       "error":{
         "code":"GlobalClusterNotFoundFault",
@@ -4702,8 +4732,7 @@
     },
     "GlobalClusterQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The number of global database clusters for this account is already at the maximum allowed.</p>",
       "error":{
         "code":"GlobalClusterQuotaExceededFault",
@@ -4727,8 +4756,7 @@
     },
     "InstanceQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Request would result in user exceeding the allowed number of DB instances.</p>",
       "error":{
         "code":"InstanceQuotaExceeded",
@@ -4739,8 +4767,7 @@
     },
     "InsufficientDBClusterCapacityFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB cluster does not have enough capacity for the current operation.</p>",
       "error":{
         "code":"InsufficientDBClusterCapacityFault",
@@ -4751,8 +4778,7 @@
     },
     "InsufficientDBInstanceCapacityFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Specified DB instance class is not available in the specified Availability Zone.</p>",
       "error":{
         "code":"InsufficientDBInstanceCapacity",
@@ -4763,8 +4789,7 @@
     },
     "InsufficientStorageClusterCapacityFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There is insufficient storage available for the current action. You may be able to resolve this error by updating your subnet group to use different Availability Zones that have more storage available.</p>",
       "error":{
         "code":"InsufficientStorageClusterCapacity",
@@ -4777,8 +4802,7 @@
     "IntegerOptional":{"type":"integer"},
     "InvalidDBClusterEndpointStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested operation cannot be performed on the endpoint while the endpoint is in this state.</p>",
       "error":{
         "code":"InvalidDBClusterEndpointStateFault",
@@ -4789,8 +4813,7 @@
     },
     "InvalidDBClusterSnapshotStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The supplied value is not a valid DB cluster snapshot state.</p>",
       "error":{
         "code":"InvalidDBClusterSnapshotStateFault",
@@ -4801,8 +4824,7 @@
     },
     "InvalidDBClusterStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB cluster is not in a valid state.</p>",
       "error":{
         "code":"InvalidDBClusterStateFault",
@@ -4813,8 +4835,7 @@
     },
     "InvalidDBInstanceStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified DB instance is not in the <i>available</i> state.</p>",
       "error":{
         "code":"InvalidDBInstanceState",
@@ -4825,8 +4846,7 @@
     },
     "InvalidDBParameterGroupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB parameter group is in use or is in an invalid state. If you are attempting to delete the parameter group, you cannot delete it when the parameter group is in this state.</p>",
       "error":{
         "code":"InvalidDBParameterGroupState",
@@ -4837,8 +4857,7 @@
     },
     "InvalidDBSecurityGroupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The state of the DB security group does not allow deletion.</p>",
       "error":{
         "code":"InvalidDBSecurityGroupState",
@@ -4849,8 +4868,7 @@
     },
     "InvalidDBSnapshotStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The state of the DB snapshot does not allow deletion.</p>",
       "error":{
         "code":"InvalidDBSnapshotState",
@@ -4861,8 +4879,7 @@
     },
     "InvalidDBSubnetGroupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB subnet group cannot be deleted because it is in use.</p>",
       "error":{
         "code":"InvalidDBSubnetGroupStateFault",
@@ -4873,8 +4890,7 @@
     },
     "InvalidDBSubnetStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB subnet is not in the <i>available</i> state.</p>",
       "error":{
         "code":"InvalidDBSubnetStateFault",
@@ -4885,8 +4901,7 @@
     },
     "InvalidEventSubscriptionStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The event subscription is in an invalid state.</p>",
       "error":{
         "code":"InvalidEventSubscriptionState",
@@ -4897,8 +4912,7 @@
     },
     "InvalidGlobalClusterStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The global cluster is in an invalid state and can't perform the requested operation. </p>",
       "error":{
         "code":"InvalidGlobalClusterStateFault",
@@ -4909,8 +4923,7 @@
     },
     "InvalidRestoreFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Cannot restore from vpc backup to non-vpc DB instance.</p>",
       "error":{
         "code":"InvalidRestoreFault",
@@ -4921,8 +4934,7 @@
     },
     "InvalidSubnet":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested subnet is invalid, or multiple subnets were requested that are not all in a common VPC.</p>",
       "error":{
         "code":"InvalidSubnet",
@@ -4933,8 +4945,7 @@
     },
     "InvalidVPCNetworkStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>DB subnet group does not cover all Availability Zones after it is created because users' change.</p>",
       "error":{
         "code":"InvalidVPCNetworkStateFault",
@@ -4945,8 +4956,7 @@
     },
     "KMSKeyNotAccessibleFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Error accessing KMS key.</p>",
       "error":{
         "code":"KMSKeyNotAccessibleFault",
@@ -5127,7 +5137,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <code>standard | iopt1</code> </p> </li> </ul> <p>Default:</p> <ul> <li> <p> <code>standard</code> </p> </li> </ul>"
+          "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <b> <code>standard</code> </b>   –   ( <i>the default</i> ) Configures cost-effective database storage for applications with moderate to small I/O usage.</p> </li> <li> <p> <b> <code>iopt1</code> </b>   –   Enables <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/storage-types.html#provisioned-iops-storage\">I/O-Optimized storage</a> that's designed to meet the needs of I/O-intensive graph workloads that require predictable pricing with low I/O latency and consistent I/O throughput.</p> <p>Neptune I/O-Optimized storage is only available starting with engine release 1.3.0.0.</p> </li> </ul>"
         }
       }
     },
@@ -5271,7 +5281,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Not supported.</p>"
+          "documentation":"<p>Not applicable. In Neptune the storage type is managed at the DB Cluster level.</p>"
         },
         "TdeCredentialArn":{
           "shape":"String",
@@ -5477,8 +5487,7 @@
     },
     "OptionGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The designated option group could not be found.</p>",
       "error":{
         "code":"OptionGroupNotFoundFault",
@@ -5528,7 +5537,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Indicates the storage type for a DB instance.</p>"
+          "documentation":"<p>Not applicable. In Neptune the storage type is managed at the DB Cluster level.</p>"
         },
         "SupportsIops":{
           "shape":"Boolean",
@@ -5767,7 +5776,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type to be associated with the DB instance.</p>"
+          "documentation":"<p>Not applicable. In Neptune the storage type is managed at the DB Cluster level.</p>"
         },
         "CACertificateIdentifier":{
           "shape":"String",
@@ -5802,8 +5811,7 @@
     },
     "ProvisionedIopsNotAvailableInAZFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Provisioned IOPS not available in the specified Availability Zone.</p>",
       "error":{
         "code":"ProvisionedIopsNotAvailableInAZFault",
@@ -6004,8 +6012,7 @@
     },
     "ResourceNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified resource ID was not found.</p>",
       "error":{
         "code":"ResourceNotFoundFault",
@@ -6206,8 +6213,7 @@
     },
     "SNSInvalidTopicFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The SNS topic is invalid.</p>",
       "error":{
         "code":"SNSInvalidTopic",
@@ -6218,8 +6224,7 @@
     },
     "SNSNoAuthorizationFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There is no SNS authorization.</p>",
       "error":{
         "code":"SNSNoAuthorization",
@@ -6230,8 +6235,7 @@
     },
     "SNSTopicArnNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The ARN of the SNS topic could not be found.</p>",
       "error":{
         "code":"SNSTopicArnNotFound",
@@ -6274,8 +6278,7 @@
     },
     "SharedSnapshotQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You have exceeded the maximum number of accounts that you can share a manual DB snapshot with.</p>",
       "error":{
         "code":"SharedSnapshotQuotaExceeded",
@@ -6286,8 +6289,7 @@
     },
     "SnapshotQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Request would result in user exceeding the allowed number of DB snapshots.</p>",
       "error":{
         "code":"SnapshotQuotaExceeded",
@@ -6305,8 +6307,7 @@
     },
     "SourceNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The source could not be found.</p>",
       "error":{
         "code":"SourceNotFound",
@@ -6360,8 +6361,7 @@
     },
     "StorageQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Request would result in user exceeding the allowed amount of storage available across all DB instances.</p>",
       "error":{
         "code":"StorageQuotaExceeded",
@@ -6372,8 +6372,7 @@
     },
     "StorageTypeNotSupportedFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <i>StorageType</i> specified cannot be associated with the DB Instance.</p>",
       "error":{
         "code":"StorageTypeNotSupported",
@@ -6407,8 +6406,7 @@
     },
     "SubnetAlreadyInUse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The DB subnet is already in use in the Availability Zone.</p>",
       "error":{
         "code":"SubnetAlreadyInUse",
@@ -6433,8 +6431,7 @@
     },
     "SubscriptionAlreadyExistFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This subscription already exists.</p>",
       "error":{
         "code":"SubscriptionAlreadyExist",
@@ -6445,8 +6442,7 @@
     },
     "SubscriptionCategoryNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The designated subscription category could not be found.</p>",
       "error":{
         "code":"SubscriptionCategoryNotFound",
@@ -6457,8 +6453,7 @@
     },
     "SubscriptionNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The designated subscription could not be found.</p>",
       "error":{
         "code":"SubscriptionNotFound",
@@ -6479,6 +6474,29 @@
       "member":{
         "shape":"Timezone",
         "locationName":"Timezone"
+      }
+    },
+    "SwitchoverGlobalClusterMessage":{
+      "type":"structure",
+      "required":[
+        "GlobalClusterIdentifier",
+        "TargetDbClusterIdentifier"
+      ],
+      "members":{
+        "GlobalClusterIdentifier":{
+          "shape":"GlobalClusterIdentifier",
+          "documentation":"<p>The identifier of the global database cluster to switch over. This parameter isn't case-sensitive.</p> <p>Constraints: Must match the identifier of an existing global database cluster.</p>"
+        },
+        "TargetDbClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the secondary Neptune DB cluster that you want to promote to primary for the global database.</p>"
+        }
+      }
+    },
+    "SwitchoverGlobalClusterResult":{
+      "type":"structure",
+      "members":{
+        "GlobalCluster":{"shape":"GlobalCluster"}
       }
     },
     "TStamp":{"type":"timestamp"},
@@ -6568,22 +6586,22 @@
       "members":{
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>The valid storage types for your DB instance. For example, gp2, io1.</p>"
+          "documentation":"<p>Not applicable. In Neptune the storage type is managed at the DB Cluster level.</p>"
         },
         "StorageSize":{
           "shape":"RangeList",
-          "documentation":"<p>The valid range of storage in gibibytes. For example, 100 to 16384.</p>"
+          "documentation":"<p>Not applicable. In Neptune the storage type is managed at the DB Cluster level.</p>"
         },
         "ProvisionedIops":{
           "shape":"RangeList",
-          "documentation":"<p>The valid range of provisioned IOPS. For example, 1000-20000.</p>"
+          "documentation":"<p>Not applicable. In Neptune the storage type is managed at the DB Cluster level.</p>"
         },
         "IopsToStorageRatio":{
           "shape":"DoubleRangeList",
-          "documentation":"<p>The valid range of Provisioned IOPS to gibibytes of storage multiplier. For example, 3-10, which means that provisioned IOPS can be between 3 and 10 times storage.</p>"
+          "documentation":"<p>Not applicable. In Neptune the storage type is managed at the DB Cluster level.</p>"
         }
       },
-      "documentation":"<p>Information about valid modifications that you can make to your DB instance.</p> <p>Contains the result of a successful call to the <a>DescribeValidDBInstanceModifications</a> action.</p>"
+      "documentation":"<p>Not applicable. In Neptune the storage type is managed at the DB Cluster level.</p>"
     },
     "ValidStorageOptionsList":{
       "type":"list",

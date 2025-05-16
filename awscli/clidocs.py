@@ -114,7 +114,7 @@ class CLIDocumentEventHandler:
                 doc.write(' . ')
                 full_cmd_list.append(cmd)
                 full_cmd_name = ' '.join(full_cmd_list)
-                doc.write(':ref:`%s <cli:%s>`' % (cmd, full_cmd_name))
+                doc.write(f':ref:`{cmd} <cli:{full_cmd_name}>`')
             doc.write(' ]')
 
     def doc_title(self, help_command, **kwargs):
@@ -123,7 +123,7 @@ class CLIDocumentEventHandler:
         reference = help_command.event_class.replace('.', ' ')
         if reference != 'aws':
             reference = 'aws ' + reference
-        doc.writeln('.. _cli:%s:' % reference)
+        doc.writeln(f'.. _cli:{reference}:')
         doc.style.h1(help_command.name)
 
     def doc_description(self, help_command, **kwargs):
@@ -137,7 +137,7 @@ class CLIDocumentEventHandler:
         doc = help_command.doc
         doc.style.h2('Synopsis')
         doc.style.start_codeblock()
-        doc.writeln('%s' % help_command.name)
+        doc.writeln(f'{help_command.name}')
 
     def doc_synopsis_option(self, arg_name, help_command, **kwargs):
         doc = help_command.doc
@@ -151,15 +151,15 @@ class CLIDocumentEventHandler:
             )
             self._documented_arg_groups.append(argument.group_name)
         elif argument.cli_name.startswith('--'):
-            option_str = '%s <value>' % argument.cli_name
+            option_str = f'{argument.cli_name} <value>'
         else:
-            option_str = '<%s>' % argument.cli_name
+            option_str = f'<{argument.cli_name}>'
         if not (
             argument.required
             or getattr(argument, '_DOCUMENT_AS_REQUIRED', False)
         ):
-            option_str = '[%s]' % option_str
-        doc.writeln('%s' % option_str)
+            option_str = f'[{option_str}]'
+        doc.writeln(f'{option_str}')
 
     def doc_synopsis_end(self, help_command, **kwargs):
         doc = help_command.doc
@@ -180,28 +180,32 @@ class CLIDocumentEventHandler:
     def doc_option(self, arg_name, help_command, **kwargs):
         doc = help_command.doc
         argument = help_command.arg_table[arg_name]
+        if argument.required or getattr(
+            argument, '_DOCUMENT_AS_REQUIRED', False
+        ):
+            required_field = ' [required]'
+        else:
+            required_field = ''
+
         if argument.group_name in self._arg_groups:
             if argument.group_name in self._documented_arg_groups:
                 # This arg is already documented so we can move on.
                 return
             name = ' | '.join(
                 [
-                    '``%s``' % a.cli_name
+                    f'``{a.cli_name}``'
                     for a in self._arg_groups[argument.group_name]
                 ]
             )
             self._documented_arg_groups.append(argument.group_name)
         else:
-            name = '``%s``' % argument.cli_name
+            name = f'``{argument.cli_name}``'
         doc.write(
-            '%s (%s)\n'
-            % (
-                name,
-                self._get_argument_type_name(
-                    argument.argument_model, argument.cli_type_name
-                ),
-            )
+            f'{name} '
+            f'({self._get_argument_type_name(argument.argument_model, argument.cli_type_name)})'
+            f'{required_field}\n'
         )
+
         doc.style.indent()
         doc.include_doc_string(argument.documentation)
         if is_streaming_blob_type(argument.argument_model):
@@ -229,7 +233,7 @@ class CLIDocumentEventHandler:
         doc = help_command.doc
         doc.write('* ')
         doc.style.sphinx_reference_label(
-            label='cli:%s' % related_item, text=related_item
+            label=f'cli:{related_item}', text=related_item
         )
         doc.write('\n')
 
@@ -241,7 +245,7 @@ class CLIDocumentEventHandler:
                 doc.write('Possible values:')
                 doc.style.start_ul()
                 for enum in model.enum:
-                    doc.style.li('``%s``' % enum)
+                    doc.style.li(f'``{enum}``')
                 doc.style.end_ul()
 
     def _document_nested_structure(self, model, doc):
@@ -252,19 +256,35 @@ class CLIDocumentEventHandler:
             for member_name, member_shape in model.members.items():
                 is_required = member_name in required_members
                 self._doc_member(
-                    doc, member_name, member_shape, stack=[model.name], required=is_required
+                    doc,
+                    member_name,
+                    member_shape,
+                    stack=[model.name],
+                    required=is_required,
                 )
         elif member_type_name == 'list':
-            self._doc_member(doc, '', model.member, stack=[model.name], required=False)
+            self._doc_member(
+                doc, '', model.member, stack=[model.name], required=False
+            )
         elif member_type_name == 'map':
             key_shape = model.key
             key_name = key_shape.serialization.get('name', 'key')
-            self._doc_member(doc, key_name, key_shape, stack=[model.name], required=False)
+            self._doc_member(
+                doc, key_name, key_shape, stack=[model.name], required=False
+            )
             value_shape = model.value
             value_name = value_shape.serialization.get('name', 'value')
-            self._doc_member(doc, value_name, value_shape, stack=[model.name], required=False)
+            self._doc_member(
+                doc,
+                value_name,
+                value_shape,
+                stack=[model.name],
+                required=False,
+            )
 
-    def _doc_member(self, doc, member_name, member_shape, stack, required=False):
+    def _doc_member(
+        self, doc, member_name, member_shape, stack, required=False
+    ):
         if member_shape.name in stack:
             # Document the recursion once, otherwise just
             # note the fact that it's recursive and return.
@@ -274,28 +294,35 @@ class CLIDocumentEventHandler:
                 return
         stack.append(member_shape.name)
         try:
-            self._do_doc_member(doc, member_name, member_shape, stack, required)
+            self._do_doc_member(
+                doc, member_name, member_shape, stack, required
+            )
         finally:
             stack.pop()
 
-    def _do_doc_member(self, doc, member_name, member_shape, stack, required=False):
+    def _do_doc_member(
+        self, doc, member_name, member_shape, stack, required=False
+    ):
         docs = member_shape.documentation
         type_name = self._get_argument_type_name(
             member_shape, member_shape.type_name
         )
+
         if member_name:
-            doc.write('%s -> (%s)' % (member_name, type_name))
+            parameter_string = f'{member_name} -> ({type_name})'
         else:
-            doc.write('(%s)' % type_name)
+            parameter_string = f'({type_name})'
+
+        if required:
+            parameter_string += ' [required]'
+
+        doc.write(parameter_string)
+
         doc.style.indent()
         doc.style.new_paragraph()
         doc.include_doc_string(docs)
         if is_tagged_union_type(member_shape):
             self._add_tagged_union_note(member_shape, doc)
-
-        if required:
-            doc.style.new_paragraph()
-            doc.write('This parameter is required.')
 
         self._document_enums(member_shape, doc)
         self._document_constraints(member_shape, doc)
@@ -305,16 +332,22 @@ class CLIDocumentEventHandler:
             required_members = member_shape.metadata.get('required', [])
             for sub_name, sub_shape in member_shape.members.items():
                 sub_required = sub_name in required_members
-                self._doc_member(doc, sub_name, sub_shape, stack, required=sub_required)
+                self._doc_member(
+                    doc, sub_name, sub_shape, stack, required=sub_required
+                )
         elif member_type_name == 'map':
             key_shape = member_shape.key
             key_name = key_shape.serialization.get('name', 'key')
             self._doc_member(doc, key_name, key_shape, stack, required=False)
             value_shape = member_shape.value
             value_name = value_shape.serialization.get('name', 'value')
-            self._doc_member(doc, value_name, value_shape, stack, required=False)
+            self._doc_member(
+                doc, value_name, value_shape, stack, required=False
+            )
         elif member_type_name == 'list':
-            self._doc_member(doc, '', member_shape.member, stack, required=False)
+            self._doc_member(
+                doc, '', member_shape.member, stack, required=False
+            )
         doc.style.dedent()
         doc.style.new_paragraph()
 
@@ -387,7 +420,7 @@ class ProviderDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_subitem(self, command_name, help_command, **kwargs):
         doc = help_command.doc
-        file_name = '%s/index' % command_name
+        file_name = f'{command_name}/index'
         doc.style.tocitem(command_name, file_name=file_name)
 
 
@@ -438,7 +471,7 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
         # direct the subitem to the command's index because
         # it has more subcommands to be documented.
         if len(subcommand_table) > 0:
-            file_name = '%s/index' % command_name
+            file_name = f'{command_name}/index'
             doc.style.tocitem(command_name, file_name=file_name)
         else:
             doc.style.tocitem(command_name)
@@ -467,11 +500,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             return
         doc.style.new_paragraph()
         doc.write("See also: ")
-        link = '%s/%s/%s' % (
-            self.AWS_DOC_BASE,
-            service_uid,
-            operation_model.name,
-        )
+        link = f'{self.AWS_DOC_BASE}/{service_uid}/{operation_model.name}'
         doc.style.external_link(title="AWS API Documentation", link=link)
         doc.writeln('')
 
@@ -479,12 +508,12 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         if operation_uses_document_types(help_command.obj):
             help_command.doc.style.new_paragraph()
             help_command.doc.writeln(
-                '``%s`` uses document type values. Document types follow the '
+                f'``{help_command.name}`` uses document type values. Document types follow the '
                 'JSON data model where valid values are: strings, numbers, '
                 'booleans, null, arrays, and objects. For command input, '
                 'options and nested parameters that are labeled with the type '
                 '``document`` must be provided as JSON. Shorthand syntax does '
-                'not support document types.' % help_command.name
+                'not support document types.'
             )
 
     def _json_example_value_name(
@@ -495,13 +524,13 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         if isinstance(argument_model, StringShape):
             if argument_model.enum and include_enum_values:
                 choices = argument_model.enum
-                return '|'.join(['"%s"' % c for c in choices])
+                return '|'.join([f'"{c}"' for c in choices])
             else:
                 return '"string"'
         elif argument_model.type_name == 'boolean':
             return 'true|false'
         else:
-            return '%s' % argument_model.type_name
+            return f'{argument_model.type_name}'
 
     def _json_example(self, doc, argument_model, stack):
         if argument_model.name in stack:
@@ -522,8 +551,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.write('[')
             if argument_model.member.type_name in SCALAR_TYPES:
                 doc.write(
-                    '%s, ...'
-                    % self._json_example_value_name(argument_model.member)
+                    f'{self._json_example_value_name(argument_model.member)}, ...'
                 )
             else:
                 doc.style.indent()
@@ -538,7 +566,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.write('{')
             doc.style.indent()
             key_string = self._json_example_value_name(argument_model.key)
-            doc.write('%s: ' % key_string)
+            doc.write(f'{key_string}: ')
             if argument_model.value.type_name in SCALAR_TYPES:
                 doc.write(self._json_example_value_name(argument_model.value))
             else:
@@ -568,20 +596,16 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             member_type_name = member_model.type_name
             if member_type_name in SCALAR_TYPES:
                 doc.write(
-                    '"%s": %s'
-                    % (
-                        member_name,
-                        self._json_example_value_name(member_model),
-                    )
+                    f'"{member_name}": {self._json_example_value_name(member_model)}'
                 )
             elif member_type_name == 'structure':
-                doc.write('"%s": ' % member_name)
+                doc.write(f'"{member_name}": ')
                 self._json_example(doc, member_model, stack)
             elif member_type_name == 'map':
-                doc.write('"%s": ' % member_name)
+                doc.write(f'"{member_name}": ')
                 self._json_example(doc, member_model, stack)
             elif member_type_name == 'list':
-                doc.write('"%s": ' % member_name)
+                doc.write(f'"{member_name}": ')
                 self._json_example(doc, member_model, stack)
             if i < len(members) - 1:
                 doc.write(',')
@@ -637,7 +661,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             example_type = self._json_example_value_name(
                 member, include_enum_values=False
             )
-            doc.write('%s %s ...' % (example_type, example_type))
+            doc.write(f'{example_type} {example_type} ...')
             doc.style.end_codeblock()
             doc.style.new_paragraph()
         elif cli_argument.cli_type_name not in SCALAR_TYPES:
@@ -687,7 +711,7 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
         doc = help_command.doc
         doc.style.new_paragraph()
         doc.style.link_target_definition(
-            refname='cli:aws help %s' % self.help_command.name, link=''
+            refname=f'cli:aws help {self.help_command.name}', link=''
         )
         doc.style.h1('AWS CLI Topic Guide')
 
@@ -732,9 +756,9 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
                 )
                 doc.write('* ')
                 doc.style.sphinx_reference_label(
-                    label='cli:aws help %s' % topic_name, text=topic_name
+                    label=f'cli:aws help {topic_name}', text=topic_name
                 )
-                doc.write(': %s\n' % description)
+                doc.write(f': {description}\n')
         # Add a hidden toctree to make sure everything is connected in
         # the document.
         doc.style.hidden_toctree()
@@ -758,7 +782,7 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
         doc = help_command.doc
         doc.style.new_paragraph()
         doc.style.link_target_definition(
-            refname='cli:aws help %s' % self.help_command.name, link=''
+            refname=f'cli:aws help {self.help_command.name}', link=''
         )
         title = self._topic_tag_db.get_tag_single_value(
             help_command.name, 'title'

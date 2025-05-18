@@ -33,7 +33,8 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
     def head_object_response(self, **override_kwargs):
         response = {
             'ContentLength': 100,
-            'LastModified': '00:00:00Z'
+            'LastModified': '00:00:00Z',
+            'ETag': '"foo-1"'
         }
         response.update(override_kwargs)
         return response
@@ -45,7 +46,8 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
                 {
                     'Key': key,
                     'LastModified': '00:00:00Z',
-                    'Size': 100
+                    'Size': 100,
+                    'ETag': '"foo-1"',
                 }
             )
 

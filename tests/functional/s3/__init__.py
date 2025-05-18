@@ -70,14 +70,23 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
         )
 
     def head_object_response(self, **override_kwargs):
-        response = {'ContentLength': 100, 'LastModified': '00:00:00Z'}
+        response = {
+            'ContentLength': 100,
+            'LastModified': '00:00:00Z',
+            'ETag': '"foo-1"',
+        }
         response.update(override_kwargs)
         return response
 
     def list_objects_response(self, keys, **override_kwargs):
         contents = []
         for key in keys:
-            content = {'Key': key, 'LastModified': '00:00:00Z', 'Size': 100}
+            content = {
+                'Key': key,
+                'LastModified': '00:00:00Z',
+                'Size': 100,
+                'ETag': '"foo-1"',
+            }
             if override_kwargs:
                 content.update(override_kwargs)
             contents.append(content)

@@ -30,29 +30,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>This operation creates a cluster in Amazon Aurora DSQL. You need the following permissions to use this operation.</p> <p>Permission to create a cluster.</p> <dl> <dt>dsql:CreateCluster</dt> <dd> <p>Resources: arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/*</p> </dd> </dl> <p> Permission to add tags to a resource.</p> <dl> <dt>dsql:TagResource</dt> <dd> <p>Resources: arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/*</p> </dd> </dl> <p>Permission to configure multi-region properties for a cluster.</p> <dl> <dt>dsql:PutMultiRegionProperties</dt> <dd> <p>Resources: arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/*</p> </dd> </dl> <p>When specifying multiRegionProperties.clusters.</p> <dl> <dt>dsql:AddPeerCluster</dt> <dd> <p>Permission to add peer clusters.</p> <p>Resources:</p> <ul> <li> <p>Local cluster: arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/*</p> </li> <li> <p>Each peer cluster: exact ARN of each specified peer cluster</p> </li> </ul> </dd> </dl> <p>When specifying multiRegionProperties.witnessRegion.</p> <dl> <dt>dsql:PutWitnessRegion</dt> <dd> <p>Permission to set a witness region.</p> <p>Resources: arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/*</p> <p>Condition Keys: <code>dsql:WitnessRegion</code> (matching the specified witness region)</p> <note> <p>This permission is checked both in the cluster Region and in the witness Region.</p> </note> </dd> </dl> <important> <p> <b>Important Notes for Multi-Region Operations</b> </p> <ul> <li> <p>The witness region specified in <code>multiRegionProperties.witnessRegion</code> cannot be the same as the cluster's Region.</p> </li> <li> <p>When updating clusters with peer relationships, permissions are checked for both adding and removing peers.</p> </li> </ul> </important>"
-    },
-    "CreateMultiRegionClusters":{
-      "name":"CreateMultiRegionClusters",
-      "http":{
-        "method":"POST",
-        "requestUri":"/multi-region-clusters",
-        "responseCode":200
-      },
-      "input":{"shape":"CreateMultiRegionClustersInput"},
-      "output":{"shape":"CreateMultiRegionClustersOutput"},
-      "errors":[
-        {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"},
-        {"shape":"ValidationException"},
-        {"shape":"InternalServerException"},
-        {"shape":"ConflictException"}
-      ],
-      "documentation":"<p>Creates multi-Region clusters in Amazon Aurora DSQL. Multi-Region clusters require a linked Region list, which is an array of the Regions in which you want to create linked clusters. Multi-Region clusters require a witness Region, which participates in quorum in failure scenarios.</p>",
-      "deprecated":true,
-      "deprecatedMessage":"The CreateMultiRegionClusters API is deprecated. Use the CreateCluster API with multi-Region properties to create a multi-Region cluster.",
-      "deprecatedSince":"5/13/2025"
+      "documentation":"<p>The CreateCluster API allows you to create both single-region clusters and multi-Region clusters. With the addition of the <i>multiRegionProperties</i> parameter, you can create a cluster with witness Region support and establish peer relationships with clusters in other Regions during creation.</p> <note> <p>Creating multi-Region clusters requires additional IAM permissions beyond those needed for single-Region clusters, as detailed in the <b>Required permissions</b> section below.</p> </note> <p> <b>Required permissions</b> </p> <dl> <dt>dsql:CreateCluster</dt> <dd> <p>Required to create a cluster.</p> <p>Resources: <code>arn:aws:dsql:region:account-id:cluster/*</code> </p> </dd> <dt>dsql:TagResource</dt> <dd> <p>Permission to add tags to a resource.</p> <p>Resources: <code>arn:aws:dsql:region:account-id:cluster/*</code> </p> </dd> <dt>dsql:PutMultiRegionProperties</dt> <dd> <p>Permission to configure multi-region properties for a cluster.</p> <p>Resources: <code>arn:aws:dsql:region:account-id:cluster/*</code> </p> </dd> <dt>dsql:AddPeerCluster</dt> <dd> <p>When specifying <code>multiRegionProperties.clusters</code>, permission to add peer clusters.</p> <p>Resources:</p> <ul> <li> <p>Local cluster: <code>arn:aws:dsql:region:account-id:cluster/*</code> </p> </li> <li> <p>Each peer cluster: exact ARN of each specified peer cluster</p> </li> </ul> </dd> <dt>dsql:PutWitnessRegion</dt> <dd> <p>When specifying <code>multiRegionProperties.witnessRegion</code>, permission to set a witness Region. This permission is checked both in the cluster Region and in the witness Region.</p> <p>Resources: <code>arn:aws:dsql:region:account-id:cluster/*</code> </p> <p>Condition Keys: <code>dsql:WitnessRegion</code> (matching the specified witness region)</p> </dd> </dl> <important> <ul> <li> <p>The witness Region specified in <code>multiRegionProperties.witnessRegion</code> cannot be the same as the cluster's Region.</p> </li> </ul> </important>"
     },
     "DeleteCluster":{
       "name":"DeleteCluster",
@@ -72,28 +50,6 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Deletes a cluster in Amazon Aurora DSQL.</p>",
-      "idempotent":true
-    },
-    "DeleteMultiRegionClusters":{
-      "name":"DeleteMultiRegionClusters",
-      "http":{
-        "method":"DELETE",
-        "requestUri":"/multi-region-clusters",
-        "responseCode":200
-      },
-      "input":{"shape":"DeleteMultiRegionClustersInput"},
-      "errors":[
-        {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"},
-        {"shape":"ValidationException"},
-        {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"ConflictException"}
-      ],
-      "documentation":"<p>Deletes a multi-Region cluster in Amazon Aurora DSQL.</p>",
-      "deprecated":true,
-      "deprecatedMessage":"The DeleteMultiRegionClusters API is deprecated. To delete a multi-Region cluster, use the DeleteCluster API instead.",
-      "deprecatedSince":"5/13/2025",
       "idempotent":true
     },
     "GetCluster":{
@@ -222,7 +178,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Updates a cluster.</p> <p> <b>Example IAM Policy for Multi-Region Operations</b> </p> <p>The following IAM policy grants permissions for multi-Region operations.</p> <p>The <code>dsql:RemovePeerCluster</code> permission uses a wildcard ARN pattern to simplify permission management during updates.</p> <important> <p> <b>Important Notes for Multi-Region Operations</b> </p> <ul> <li> <p>The witness region specified in <code>multiRegionProperties.witnessRegion</code> cannot be the same as the cluster's Region.</p> </li> <li> <p>When updating clusters with peer relationships, permissions are checked for both adding and removing peers.</p> </li> <li> <p>The <code>dsql:RemovePeerCluster</code> permission uses a wildcard ARN pattern to simplify permission management during updates.</p> </li> </ul> </important>"
+      "documentation":"<p>The <i>UpdateCluster</i> API allows you to modify both single-Region and multi-Region cluster configurations. With the <i>multiRegionProperties</i> parameter, you can add or modify witness Region support and manage peer relationships with clusters in other Regions.</p> <note> <p>Note that updating multi-region clusters requires additional IAM permissions beyond those needed for standard cluster updates, as detailed in the Permissions section.</p> </note> <p> <b>Required permissions</b> </p> <dl> <dt>dsql:UpdateCluster</dt> <dd> <p>Permission to update a DSQL cluster.</p> <p>Resources: <code>arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/<i>cluster-id</i> </code> </p> </dd> </dl> <dl> <dt>dsql:PutMultiRegionProperties</dt> <dd> <p>Permission to configure multi-Region properties for a cluster.</p> <p>Resources: <code>arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/<i>cluster-id</i> </code> </p> </dd> </dl> <dl> <dt>dsql:GetCluster</dt> <dd> <p>Permission to retrieve cluster information.</p> <p>Resources: <code>arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/<i>cluster-id</i> </code> </p> </dd> <dt>dsql:AddPeerCluster</dt> <dd> <p>Permission to add peer clusters.</p> <p>Resources:</p> <ul> <li> <p>Local cluster: <code>arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/<i>cluster-id</i> </code> </p> </li> <li> <p>Each peer cluster: exact ARN of each specified peer cluster</p> </li> </ul> </dd> <dt>dsql:RemovePeerCluster</dt> <dd> <p>Permission to remove peer clusters. The <i>dsql:RemovePeerCluster</i> permission uses a wildcard ARN pattern to simplify permission management during updates.</p> <p>Resources: <code>arn:aws:dsql:*:<i>account-id</i>:cluster/*</code> </p> </dd> </dl> <dl> <dt>dsql:PutWitnessRegion</dt> <dd> <p>Permission to set a witness Region.</p> <p>Resources: <code>arn:aws:dsql:<i>region</i>:<i>account-id</i>:cluster/<i>cluster-id</i> </code> </p> <p>Condition Keys: dsql:WitnessRegion (matching the specified witness Region)</p> <p> <b>This permission is checked both in the cluster Region and in the witness Region.</b> </p> </dd> </dl> <important> <ul> <li> <p>The witness region specified in <code>multiRegionProperties.witnessRegion</code> cannot be the same as the cluster's Region.</p> </li> <li> <p>When updating clusters with peer relationships, permissions are checked for both adding and removing peers.</p> </li> <li> <p>The <code>dsql:RemovePeerCluster</code> permission uses a wildcard ARN pattern to simplify permission management during updates.</p> </li> </ul> </important>"
     }
   },
   "shapes":{
@@ -276,15 +232,6 @@
       "type":"list",
       "member":{"shape":"ClusterSummary"},
       "documentation":"<p>The list of clusters.</p>"
-    },
-    "ClusterPropertyMap":{
-      "type":"map",
-      "key":{"shape":"Region"},
-      "value":{"shape":"LinkedClusterProperties"},
-      "documentation":"<p>A map of properties for a cluster.</p>",
-      "deprecated":true,
-      "deprecatedMessage":"The CreateMultiRegionClusters API is deprecated. To create a multi-Region cluster, use the CreateCluster API with multi-Region properties instead.",
-      "deprecatedSince":"5/13/2025"
     },
     "ClusterStatus":{
       "type":"string",
@@ -400,42 +347,6 @@
       },
       "documentation":"<p>The output of a created cluster.</p>"
     },
-    "CreateMultiRegionClustersInput":{
-      "type":"structure",
-      "required":[
-        "linkedRegionList",
-        "witnessRegion"
-      ],
-      "members":{
-        "linkedRegionList":{
-          "shape":"RegionList",
-          "documentation":"<p>An array of the Regions in which you want to create additional clusters.</p>"
-        },
-        "clusterProperties":{
-          "shape":"ClusterPropertyMap",
-          "documentation":"<p>A mapping of properties to use when creating linked clusters.</p>"
-        },
-        "witnessRegion":{
-          "shape":"Region",
-          "documentation":"<p>The witness Region of multi-Region clusters.</p>"
-        },
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully. The subsequent retries with the same client token return the result from the original successful request and they have no additional effect.</p> <p>If you don't specify a client token, the Amazon Web Services SDK automatically generates one.</p>",
-          "idempotencyToken":true
-        }
-      }
-    },
-    "CreateMultiRegionClustersOutput":{
-      "type":"structure",
-      "required":["linkedClusterArns"],
-      "members":{
-        "linkedClusterArns":{
-          "shape":"ClusterArnList",
-          "documentation":"<p>An array that contains the ARNs of all linked clusters.</p>"
-        }
-      }
-    },
     "DeleteClusterInput":{
       "type":"structure",
       "required":["identifier"],
@@ -461,8 +372,7 @@
         "identifier",
         "arn",
         "status",
-        "creationTime",
-        "deletionProtectionEnabled"
+        "creationTime"
       ],
       "members":{
         "identifier":{
@@ -480,35 +390,9 @@
         "creationTime":{
           "shape":"ClusterCreationTime",
           "documentation":"<p>The time of when the cluster was created.</p>"
-        },
-        "deletionProtectionEnabled":{
-          "shape":"DeletionProtectionEnabled",
-          "documentation":"<p>Specifies whether deletion protection was enabled on the cluster.</p>",
-          "deprecated":true,
-          "deprecatedMessage":"The deletionProtectionEnabled field is deprecated in the DeleteCluster API. To check deletion protection status, use the GetCluster API instead.",
-          "deprecatedSince":"5/13/2025"
         }
       },
       "documentation":"<p>The output from a deleted cluster.</p>"
-    },
-    "DeleteMultiRegionClustersInput":{
-      "type":"structure",
-      "required":["linkedClusterArns"],
-      "members":{
-        "linkedClusterArns":{
-          "shape":"ClusterArnList",
-          "documentation":"<p>The ARNs of the clusters linked to the cluster you want to delete. also deletes these clusters as part of the operation.</p>",
-          "location":"querystring",
-          "locationName":"linked-cluster-arns"
-        },
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully. The subsequent retries with the same client token return the result from the original successful request and they have no additional effect.</p> <p>If you don't specify a client token, the Amazon Web Services SDK automatically generates one.</p>",
-          "idempotencyToken":true,
-          "location":"querystring",
-          "locationName":"client-token"
-        }
-      }
     },
     "DeletionProtectionEnabled":{
       "type":"boolean",
@@ -552,20 +436,6 @@
         "creationTime":{
           "shape":"ClusterCreationTime",
           "documentation":"<p>The time of when the cluster was created.</p>"
-        },
-        "witnessRegion":{
-          "shape":"Region",
-          "documentation":"<p>The witness Region of the cluster. Applicable only for multi-Region clusters.</p>",
-          "deprecated":true,
-          "deprecatedMessage":"The witnessRegion field is deprecated. To see the witnessRegion, use multiRegionProperties.witnessRegion instead.",
-          "deprecatedSince":"5/13/2025"
-        },
-        "linkedClusterArns":{
-          "shape":"ClusterArnList",
-          "documentation":"<p>The ARNs of the clusters linked to the retrieved cluster.</p>",
-          "deprecated":true,
-          "deprecatedMessage":"The linkedClusterArns field is deprecated. To see the peered cluster Arns, use multiRegionProperties.cluster instead.",
-          "deprecatedSince":"5/13/2025"
         },
         "deletionProtectionEnabled":{
           "shape":"DeletionProtectionEnabled",
@@ -622,23 +492,6 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
-    },
-    "LinkedClusterProperties":{
-      "type":"structure",
-      "members":{
-        "deletionProtectionEnabled":{
-          "shape":"DeletionProtectionEnabled",
-          "documentation":"<p>Whether deletion protection is enabled.</p>"
-        },
-        "tags":{
-          "shape":"TagMap",
-          "documentation":"<p>A map of key and value pairs the linked cluster is tagged with.</p>"
-        }
-      },
-      "documentation":"<p>Properties of linked clusters.</p>",
-      "deprecated":true,
-      "deprecatedMessage":"The CreateMultiRegionClusters API is deprecated. To create a multi-Region cluster, use the CreateCluster API with multi-Region properties instead.",
-      "deprecatedSince":"5/13/2025"
     },
     "ListClustersInput":{
       "type":"structure",
@@ -722,14 +575,6 @@
       "documentation":"<p> Region name.</p>",
       "max":50,
       "min":0
-    },
-    "RegionList":{
-      "type":"list",
-      "member":{"shape":"Region"},
-      "documentation":"<p>List of Regions.</p>",
-      "deprecated":true,
-      "deprecatedMessage":"The CreateMultiRegionClusters API is deprecated. Use the CreateCluster API with multi-Region properties to create a multi-Region cluster.",
-      "deprecatedSince":"5/13/2025"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -933,8 +778,7 @@
         "identifier",
         "arn",
         "status",
-        "creationTime",
-        "deletionProtectionEnabled"
+        "creationTime"
       ],
       "members":{
         "identifier":{
@@ -952,27 +796,6 @@
         "creationTime":{
           "shape":"ClusterCreationTime",
           "documentation":"<p>The time of when the cluster was created.</p>"
-        },
-        "witnessRegion":{
-          "shape":"Region",
-          "documentation":"<p>The Region that receives all data you write to linked clusters.</p>",
-          "deprecated":true,
-          "deprecatedMessage":"The witnessRegion field is deprecated in the UpdateCluster API. To check witnessRegion, use the GetCluster API instead.",
-          "deprecatedSince":"5/13/2025"
-        },
-        "linkedClusterArns":{
-          "shape":"ClusterArnList",
-          "documentation":"<p>The ARNs of the clusters linked to the updated cluster. Applicable only for multi-Region clusters.</p>",
-          "deprecated":true,
-          "deprecatedMessage":"The linkedClusterArns field is deprecated in the UpdateCluster API. To check peer cluster, use the GetCluster API instead.",
-          "deprecatedSince":"5/13/2025"
-        },
-        "deletionProtectionEnabled":{
-          "shape":"DeletionProtectionEnabled",
-          "documentation":"<p>Whether deletion protection is enabled for the updated cluster.</p>",
-          "deprecated":true,
-          "deprecatedMessage":"The deletionProtectionEnabled field is deprecated in the UpdateCluster API. To check deletion protection status, use the GetCluster API instead.",
-          "deprecatedSince":"5/13/2025"
         }
       },
       "documentation":"<p>The details of the cluster after it has been updated.</p>"

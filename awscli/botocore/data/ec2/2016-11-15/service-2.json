@@ -720,6 +720,16 @@
       "output":{"shape":"CreateDefaultVpcResult"},
       "documentation":"<p>Creates a default VPC with a size <code>/16</code> IPv4 CIDR block and a default subnet in each Availability Zone. For more information about the components of a default VPC, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/default-vpc.html\">Default VPCs</a> in the <i>Amazon VPC User Guide</i>. You cannot specify the components of the default VPC yourself.</p> <p>If you deleted your previous default VPC, you can create a default VPC. You cannot have more than one default VPC per Region.</p>"
     },
+    "CreateDelegateMacVolumeOwnershipTask":{
+      "name":"CreateDelegateMacVolumeOwnershipTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateDelegateMacVolumeOwnershipTaskRequest"},
+      "output":{"shape":"CreateDelegateMacVolumeOwnershipTaskResult"},
+      "documentation":"<p>Delegates ownership of the Amazon EBS root volume for an Apple silicon Mac instance to an administrative user.</p>"
+    },
     "CreateDhcpOptions":{
       "name":"CreateDhcpOptions",
       "http":{
@@ -959,6 +969,16 @@
       "input":{"shape":"CreateLocalGatewayVirtualInterfaceGroupRequest"},
       "output":{"shape":"CreateLocalGatewayVirtualInterfaceGroupResult"},
       "documentation":"<p>Create a local gateway virtual interface group.</p>"
+    },
+    "CreateMacSystemIntegrityProtectionModificationTask":{
+      "name":"CreateMacSystemIntegrityProtectionModificationTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateMacSystemIntegrityProtectionModificationTaskRequest"},
+      "output":{"shape":"CreateMacSystemIntegrityProtectionModificationTaskResult"},
+      "documentation":"<p>Creates a System Integrity Protection (SIP) modification task to configure the SIP settings for an x86 Mac instance or Apple silicon Mac instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/mac-sip-settings.html#mac-sip-configure\"> Configure SIP for Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>When you configure the SIP settings for your instance, you can either enable or disable all SIP settings, or you can specify a custom SIP configuration that selectively enables or disables specific SIP settings.</p> <note> <p>If you implement a custom configuration, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/mac-sip-settings.html#mac-sip-check-settings\"> connect to the instance and verify the settings</a> to ensure that your requirements are properly implemented and functioning as intended.</p> <p>SIP configurations might change with macOS updates. We recommend that you review custom SIP settings after any macOS version upgrade to ensure continued compatibility and proper functionality of your security configurations.</p> </note> <p>To enable or disable all SIP settings, use the <b>MacSystemIntegrityProtectionStatus</b> parameter only. For example, to enable all SIP settings, specify the following:</p> <ul> <li> <p> <code>MacSystemIntegrityProtectionStatus=enabled</code> </p> </li> </ul> <p>To specify a custom configuration that selectively enables or disables specific SIP settings, use the <b>MacSystemIntegrityProtectionStatus</b> parameter to enable or disable all SIP settings, and then use the <b>MacSystemIntegrityProtectionConfiguration</b> parameter to specify exceptions. In this case, the exceptions you specify for <b>MacSystemIntegrityProtectionConfiguration</b> override the value you specify for <b>MacSystemIntegrityProtectionStatus</b>. For example, to enable all SIP settings, except <code>NvramProtections</code>, specify the following:</p> <ul> <li> <p> <code>MacSystemIntegrityProtectionStatus=enabled</code> </p> </li> <li> <p> <code>MacSystemIntegrityProtectionConfigurationRequest \"NvramProtections=disabled\"</code> </p> </li> </ul>"
     },
     "CreateManagedPrefixList":{
       "name":"CreateManagedPrefixList",
@@ -2847,7 +2867,7 @@
       },
       "input":{"shape":"DescribeImagesRequest"},
       "output":{"shape":"DescribeImagesResult"},
-      "documentation":"<p>Describes the specified images (AMIs, AKIs, and ARIs) available to you or all of the images available to you.</p> <p>The images available to you include public images, private images that you own, and private images owned by other Amazon Web Services accounts for which you have explicit launch permissions.</p> <p>Recently deregistered images appear in the returned results for a short interval and then return empty results. After all instances that reference a deregistered AMI are terminated, specifying the ID of the image will eventually return an error indicating that the AMI ID cannot be found.</p> <p>When Allowed AMIs is set to <code>enabled</code>, only allowed images are returned in the results, with the <code>imageAllowed</code> field set to <code>true</code> for each image. In <code>audit-mode</code>, the <code>imageAllowed</code> field is set to <code>true</code> for images that meet the account's Allowed AMIs criteria, and <code>false</code> for images that don't meet the criteria. For more information, see <a>EnableAllowedImagesSettings</a>.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
+      "documentation":"<p>Describes the specified images (AMIs, AKIs, and ARIs) available to you or all of the images available to you.</p> <p>The images available to you include public images, private images that you own, and private images owned by other Amazon Web Services accounts for which you have explicit launch permissions.</p> <p>Recently deregistered images appear in the returned results for a short interval and then return empty results. After all instances that reference a deregistered AMI are terminated, specifying the ID of the image will eventually return an error indicating that the AMI ID cannot be found.</p> <p>When Allowed AMIs is set to <code>enabled</code>, only allowed images are returned in the results, with the <code>imageAllowed</code> field set to <code>true</code> for each image. In <code>audit-mode</code>, the <code>imageAllowed</code> field is set to <code>true</code> for images that meet the account's Allowed AMIs criteria, and <code>false</code> for images that don't meet the criteria. For more information, see <a>EnableAllowedImagesSettings</a>.</p> <p>The Amazon EC2 API follows an eventual consistency model. This means that the result of an API command you run that creates or modifies resources might not be immediately available to all subsequent commands you run. For guidance on how to manage eventual consistency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the Amazon EC2 API</a> in the <i>Amazon EC2 Developer Guide</i>.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
     },
     "DescribeImportImageTasks":{
       "name":"DescribeImportImageTasks",
@@ -3179,6 +3199,16 @@
       "output":{"shape":"DescribeMacHostsResult"},
       "documentation":"<p>Describes the specified EC2 Mac Dedicated Host or all of your EC2 Mac Dedicated Hosts.</p>"
     },
+    "DescribeMacModificationTasks":{
+      "name":"DescribeMacModificationTasks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMacModificationTasksRequest"},
+      "output":{"shape":"DescribeMacModificationTasksResult"},
+      "documentation":"<p>Describes a System Integrity Protection (SIP) modification task or volume ownership delegation task for an Amazon EC2 Mac instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/mac-sip-settings.html#mac-sip-configure\">Configure SIP for Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
     "DescribeManagedPrefixLists":{
       "name":"DescribeManagedPrefixLists",
       "http":{
@@ -3297,7 +3327,7 @@
       },
       "input":{"shape":"DescribeOutpostLagsRequest"},
       "output":{"shape":"DescribeOutpostLagsResult"},
-      "documentation":"<p>Describes the Outposts link aggregation groups (LAGs).</p>"
+      "documentation":"<p>Describes the Outposts link aggregation groups (LAGs).</p> <note> <p>LAGs are only available for second-generation Outposts racks at this time.</p> </note>"
     },
     "DescribePlacementGroups":{
       "name":"DescribePlacementGroups",
@@ -13210,7 +13240,7 @@
         },
         "SnapshotCopyCompletionDurationMinutes":{
           "shape":"Long",
-          "documentation":"<p>Specify a completion duration, in 15 minute increments, to initiate a time-based AMI copy. The specified completion duration applies to each of the snapshots associated with the AMI. Each snapshot associated with the AMI will be completed within the specified completion duration, regardless of their size.</p> <p>If you do not specify a value, the AMI copy operation is completed on a best-effort basis.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/time-based-copies.html\"> Time-based copies</a>.</p>"
+          "documentation":"<p>Specify a completion duration, in 15 minute increments, to initiate a time-based AMI copy. The specified completion duration applies to each of the snapshots associated with the AMI. Each snapshot associated with the AMI will be completed within the specified completion duration, with copy throughput automatically adjusted for each snapshot based on its size to meet the timing target.</p> <p>If you do not specify a value, the AMI copy operation is completed on a best-effort basis.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/time-based-copies.html\"> Time-based copies</a>.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -14009,6 +14039,47 @@
           "shape":"Vpc",
           "documentation":"<p>Information about the VPC.</p>",
           "locationName":"vpc"
+        }
+      }
+    },
+    "CreateDelegateMacVolumeOwnershipTaskRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "MacCredentials"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring Idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The ID of the Amazon EC2 Mac instance.</p>"
+        },
+        "MacCredentials":{
+          "shape":"SensitiveMacCredentials",
+          "documentation":"<p>Specifies the following credentials:</p> <ul> <li> <p> <b>Internal disk administrative user</b> </p> <ul> <li> <p> <b>Username</b> - Only the default administrative user (<code>aws-managed-user</code>) is supported and it is used by default. You can't specify a different administrative user.</p> </li> <li> <p> <b>Password</b> - If you did not change the default password for <code>aws-managed-user</code>, specify the default password, which is <i>blank</i>. Otherwise, specify your password.</p> </li> </ul> </li> <li> <p> <b>Amazon EBS root volume administrative user</b> </p> <ul> <li> <p> <b>Username</b> - If you did not change the default administrative user, specify <code>ec2-user</code>. Otherwise, specify the username for your administrative user.</p> </li> <li> <p> <b>Password</b> - Specify the password for the administrative user.</p> </li> </ul> </li> </ul> <p>The credentials must be specified in the following JSON format:</p> <p> <code>{ \"internalDiskPassword\":\"<i>internal-disk-admin_password</i>\", \"rootVolumeUsername\":\"<i>root-volume-admin_username</i>\", \"rootVolumepassword\":\"<i>root-volume-admin_password</i>\" }</code> </p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to assign to the volume ownership delegation task.</p>",
+          "locationName":"TagSpecification"
+        }
+      }
+    },
+    "CreateDelegateMacVolumeOwnershipTaskResult":{
+      "type":"structure",
+      "members":{
+        "MacModificationTask":{
+          "shape":"MacModificationTask",
+          "documentation":"<p>Information about the volume ownership delegation task.</p>",
+          "locationName":"macModificationTask"
         }
       }
     },
@@ -15209,6 +15280,55 @@
           "shape":"LocalGatewayVirtualInterface",
           "documentation":"<p>Information about the local gateway virtual interface.</p>",
           "locationName":"localGatewayVirtualInterface"
+        }
+      }
+    },
+    "CreateMacSystemIntegrityProtectionModificationTaskRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "MacSystemIntegrityProtectionStatus"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring Idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The ID of the Amazon EC2 Mac instance.</p>"
+        },
+        "MacCredentials":{
+          "shape":"SensitiveMacCredentials",
+          "documentation":"<p> <b>[Apple silicon Mac instances only]</b> Specifies the following credentials:</p> <ul> <li> <p> <b>Internal disk administrative user</b> </p> <ul> <li> <p> <b>Username</b> - Only the default administrative user (<code>aws-managed-user</code>) is supported and it is used by default. You can't specify a different administrative user.</p> </li> <li> <p> <b>Password</b> - If you did not change the default password for <code>aws-managed-user</code>, specify the default password, which is <i>blank</i>. Otherwise, specify your password.</p> </li> </ul> </li> <li> <p> <b>Amazon EBS root volume administrative user</b> </p> <ul> <li> <p> <b>Username</b> - If you did not change the default administrative user, specify <code>ec2-user</code>. Otherwise, specify the username for your administrative user.</p> </li> <li> <p> <b>Password</b> - Specify the password for the administrative user.</p> </li> </ul> </li> </ul> <p>The credentials must be specified in the following JSON format:</p> <p> <code>{ \"internalDiskPassword\":\"<i>internal-disk-admin_password</i>\", \"rootVolumeUsername\":\"<i>root-volume-admin_username</i>\", \"rootVolumepassword\":\"<i>root-volume-admin_password</i>\" }</code> </p>"
+        },
+        "MacSystemIntegrityProtectionConfiguration":{
+          "shape":"MacSystemIntegrityProtectionConfigurationRequest",
+          "documentation":"<p>Specifies the overrides to selectively enable or disable individual SIP settings. The individual settings you specify here override the overall SIP status you specify for <b>MacSystemIntegrityProtectionStatus</b>.</p>"
+        },
+        "MacSystemIntegrityProtectionStatus":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Specifies the overall SIP status for the instance. To enable all SIP settings, specify <code>enabled</code>. To disable all SIP settings, specify <code>disabled</code>.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>Specifies tags to apply to the SIP modification task.</p>",
+          "locationName":"TagSpecification"
+        }
+      }
+    },
+    "CreateMacSystemIntegrityProtectionModificationTaskResult":{
+      "type":"structure",
+      "members":{
+        "MacModificationTask":{
+          "shape":"MacModificationTask",
+          "documentation":"<p>Information about the SIP modification task.</p>",
+          "locationName":"macModificationTask"
         }
       }
     },
@@ -24507,6 +24627,53 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>The token to use to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeMacModificationTasksMaxResults":{
+      "type":"integer",
+      "max":500,
+      "min":1
+    },
+    "DescribeMacModificationTasksRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>Specifies one or more filters for the request:</p> <ul> <li> <p> <code>instance-id</code> - The ID of the instance for which the task was created.</p> </li> <li> <p> <code>task-state</code> - The state of the task (<code>successful</code> | <code>failed</code> | <code>in-progress</code> | <code>pending</code>).</p> </li> <li> <p> <code>mac-system-integrity-protection-configuration.sip-status</code> - The overall SIP state requested in the task (<code>enabled</code> | <code>disabled</code>).</p> </li> <li> <p> <code>start-time</code> - The date and time the task was created.</p> </li> <li> <p> <code>task-type</code> - The type of task (<code>sip-modification</code> | <code>volume-ownership-delegation</code>).</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MacModificationTaskIds":{
+          "shape":"MacModificationTaskIdList",
+          "documentation":"<p>The ID of task.</p>",
+          "locationName":"MacModificationTaskId"
+        },
+        "MaxResults":{
+          "shape":"DescribeMacModificationTasksMaxResults",
+          "documentation":"<p>The maximum number of results to return for the request in a single page. The remaining results can be seen by sending another request with the returned <code>nextToken</code> value. This value can be between 5 and 500. If <code>maxResults</code> is given a larger value than 500, you receive an error.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "DescribeMacModificationTasksResult":{
+      "type":"structure",
+      "members":{
+        "MacModificationTasks":{
+          "shape":"MacModificationTaskList",
+          "documentation":"<p>Information about the tasks.</p>",
+          "locationName":"macModificationTaskSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
           "locationName":"nextToken"
         }
       }
@@ -45751,12 +45918,171 @@
         "locationName":"item"
       }
     },
+    "MacModificationTask":{
+      "type":"structure",
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The ID of the Amazon EC2 Mac instance.</p>",
+          "locationName":"instanceId"
+        },
+        "MacModificationTaskId":{
+          "shape":"MacModificationTaskId",
+          "documentation":"<p>The ID of task.</p>",
+          "locationName":"macModificationTaskId"
+        },
+        "MacSystemIntegrityProtectionConfig":{
+          "shape":"MacSystemIntegrityProtectionConfiguration",
+          "documentation":"<p>[SIP modification tasks only] Information about the SIP configuration.</p>",
+          "locationName":"macSystemIntegrityProtectionConfig"
+        },
+        "StartTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time the task was created, in the UTC timezone (<code>YYYY-MM-DDThh:mm:ss.sssZ</code>).</p>",
+          "locationName":"startTime"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the task.</p>",
+          "locationName":"tagSet"
+        },
+        "TaskState":{
+          "shape":"MacModificationTaskState",
+          "documentation":"<p>The state of the task.</p>",
+          "locationName":"taskState"
+        },
+        "TaskType":{
+          "shape":"MacModificationTaskType",
+          "documentation":"<p>The type of task.</p>",
+          "locationName":"taskType"
+        }
+      },
+      "documentation":"<p>Information about a System Integrity Protection (SIP) modification task or volume ownership delegation task for an Amazon EC2 Mac instance.</p>"
+    },
+    "MacModificationTaskId":{"type":"string"},
+    "MacModificationTaskIdList":{
+      "type":"list",
+      "member":{
+        "shape":"MacModificationTaskId",
+        "locationName":"item"
+      }
+    },
+    "MacModificationTaskList":{
+      "type":"list",
+      "member":{
+        "shape":"MacModificationTask",
+        "locationName":"item"
+      }
+    },
+    "MacModificationTaskState":{
+      "type":"string",
+      "enum":[
+        "successful",
+        "failed",
+        "in-progress",
+        "pending"
+      ]
+    },
+    "MacModificationTaskType":{
+      "type":"string",
+      "enum":[
+        "sip-modification",
+        "volume-ownership-delegation"
+      ]
+    },
     "MacOSVersionStringList":{
       "type":"list",
       "member":{
         "shape":"String",
         "locationName":"item"
       }
+    },
+    "MacSystemIntegrityProtectionConfiguration":{
+      "type":"structure",
+      "members":{
+        "AppleInternal":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Indicates whether Apple Internal was enabled or disabled by the task.</p>",
+          "locationName":"appleInternal"
+        },
+        "BaseSystem":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Indicates whether Base System was enabled or disabled by the task.</p>",
+          "locationName":"baseSystem"
+        },
+        "DebuggingRestrictions":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Indicates whether Debugging Restrictions was enabled or disabled by the task.</p>",
+          "locationName":"debuggingRestrictions"
+        },
+        "DTraceRestrictions":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Indicates whether Dtrace Restrictions was enabled or disabled by the task.</p>",
+          "locationName":"dTraceRestrictions"
+        },
+        "FilesystemProtections":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Indicates whether Filesystem Protections was enabled or disabled by the task.</p>",
+          "locationName":"filesystemProtections"
+        },
+        "KextSigning":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Indicates whether Kext Signing was enabled or disabled by the task.</p>",
+          "locationName":"kextSigning"
+        },
+        "NvramProtections":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Indicates whether NVRAM Protections was enabled or disabled by the task.</p>",
+          "locationName":"nvramProtections"
+        },
+        "Status":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Indicates SIP was enabled or disabled by the task.</p>",
+          "locationName":"status"
+        }
+      },
+      "documentation":"<p>Describes the configuration for a System Integrity Protection (SIP) modification task.</p>"
+    },
+    "MacSystemIntegrityProtectionConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "AppleInternal":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Enables or disables Apple Internal.</p>"
+        },
+        "BaseSystem":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Enables or disables Base System.</p>"
+        },
+        "DebuggingRestrictions":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Enables or disables Debugging Restrictions.</p>"
+        },
+        "DTraceRestrictions":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Enables or disables Dtrace Restrictions.</p>"
+        },
+        "FilesystemProtections":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Enables or disables Filesystem Protections.</p>"
+        },
+        "KextSigning":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Enables or disables Kext Signing.</p>"
+        },
+        "NvramProtections":{
+          "shape":"MacSystemIntegrityProtectionSettingStatus",
+          "documentation":"<p>Enables or disables Nvram Protections.</p>"
+        }
+      },
+      "documentation":"<p>Describes a custom configuration for a System Integrity Protection (SIP) modification task.</p>"
+    },
+    "MacSystemIntegrityProtectionSettingStatus":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "disabled"
+      ]
     },
     "MaintenanceDetails":{
       "type":"structure",
@@ -55826,7 +56152,8 @@
         "ipam-resource-discovery-association",
         "instance-connect-endpoint",
         "verified-access-endpoint-target",
-        "ipam-external-resource-verification-token"
+        "ipam-external-resource-verification-token",
+        "mac-modification-task"
       ]
     },
     "ResponseError":{
@@ -58728,6 +59055,10 @@
           "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
         }
       }
+    },
+    "SensitiveMacCredentials":{
+      "type":"string",
+      "sensitive":true
     },
     "SensitiveUrl":{
       "type":"string",

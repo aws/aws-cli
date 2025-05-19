@@ -986,6 +986,30 @@
         "UtcTiming":{
           "shape":"DashUtcTiming",
           "documentation":"<p>Determines the type of UTC timing included in the DASH Media Presentation Description (MPD).</p>"
+        },
+        "Profiles":{
+          "shape":"DashProfiles",
+          "documentation":"<p>The profile that the output is compliant with.</p>"
+        },
+        "BaseUrls":{
+          "shape":"DashBaseUrls",
+          "documentation":"<p>The base URLs to use for retrieving segments.</p>"
+        },
+        "ProgramInformation":{
+          "shape":"DashProgramInformation",
+          "documentation":"<p>Details about the content that you want MediaPackage to pass through in the manifest to the playback device.</p>"
+        },
+        "DvbSettings":{
+          "shape":"DashDvbSettings",
+          "documentation":"<p>For endpoints that use the DVB-DASH profile only. The font download and error reporting information that you want MediaPackage to pass through to the manifest.</p>"
+        },
+        "Compactness":{
+          "shape":"DashCompactness",
+          "documentation":"<p>The layout of the DASH manifest that MediaPackage produces. <code>STANDARD</code> indicates a default manifest, which is compacted. <code>NONE</code> indicates a full manifest.</p> <p>For information about compactness, see <a href=\"https://docs.aws.amazon.com/mediapackage/latest/userguide/compacted.html\">DASH manifest compactness</a> in the <i>Elemental MediaPackage v2 User Guide</i>.</p>"
+        },
+        "SubtitleConfiguration":{
+          "shape":"DashSubtitleConfiguration",
+          "documentation":"<p>The configuration for DASH subtitles.</p>"
         }
       },
       "documentation":"<p>Create a DASH manifest configuration.</p>"
@@ -1404,12 +1428,150 @@
         }
       }
     },
+    "DashBaseUrl":{
+      "type":"structure",
+      "required":["Url"],
+      "members":{
+        "Url":{
+          "shape":"DashBaseUrlUrlString",
+          "documentation":"<p>A source location for segments.</p>"
+        },
+        "ServiceLocation":{
+          "shape":"DashBaseUrlServiceLocationString",
+          "documentation":"<p>The name of the source location.</p>"
+        },
+        "DvbPriority":{
+          "shape":"DashBaseUrlDvbPriorityInteger",
+          "documentation":"<p>For use with DVB-DASH profiles only. The priority of this location for servings segments. The lower the number, the higher the priority.</p>"
+        },
+        "DvbWeight":{
+          "shape":"DashBaseUrlDvbWeightInteger",
+          "documentation":"<p>For use with DVB-DASH profiles only. The weighting for source locations that have the same priority. </p>"
+        }
+      },
+      "documentation":"<p>The base URLs to use for retrieving segments. You can specify multiple locations and indicate the priority and weight for when each should be used, for use in mutli-CDN workflows.</p>"
+    },
+    "DashBaseUrlDvbPriorityInteger":{
+      "type":"integer",
+      "box":true,
+      "max":15000,
+      "min":1
+    },
+    "DashBaseUrlDvbWeightInteger":{
+      "type":"integer",
+      "box":true,
+      "max":15000,
+      "min":1
+    },
+    "DashBaseUrlServiceLocationString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "DashBaseUrlUrlString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "DashBaseUrls":{
+      "type":"list",
+      "member":{"shape":"DashBaseUrl"},
+      "max":20,
+      "min":0
+    },
+    "DashCompactness":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "NONE"
+      ]
+    },
     "DashDrmSignaling":{
       "type":"string",
       "enum":[
         "INDIVIDUAL",
         "REFERENCED"
       ]
+    },
+    "DashDvbErrorMetrics":{
+      "type":"list",
+      "member":{"shape":"DashDvbMetricsReporting"},
+      "max":20,
+      "min":0
+    },
+    "DashDvbFontDownload":{
+      "type":"structure",
+      "members":{
+        "Url":{
+          "shape":"DashDvbFontDownloadUrlString",
+          "documentation":"<p>The URL for downloading fonts for subtitles.</p>"
+        },
+        "MimeType":{
+          "shape":"DashDvbFontDownloadMimeTypeString",
+          "documentation":"<p>The <code>mimeType</code> of the resource that's at the font download URL.</p> <p>For information about font MIME types, see the <a href=\"https://dvb.org/wp-content/uploads/2021/06/A168r4_MPEG-DASH-Profile-for-Transport-of-ISO-BMFF-Based-DVB-Services_Draft-ts_103-285-v140_November_2021.pdf\">MPEG-DASH Profile for Transport of ISO BMFF Based DVB Services over IP Based Networks</a> document. </p>"
+        },
+        "FontFamily":{
+          "shape":"DashDvbFontDownloadFontFamilyString",
+          "documentation":"<p>The <code>fontFamily</code> name for subtitles, as described in <a href=\"https://tech.ebu.ch/publications/tech3380\">EBU-TT-D Subtitling Distribution Format</a>. </p>"
+        }
+      },
+      "documentation":"<p>For use with DVB-DASH profiles only. The settings for font downloads that you want Elemental MediaPackage to pass through to the manifest.</p>"
+    },
+    "DashDvbFontDownloadFontFamilyString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "DashDvbFontDownloadMimeTypeString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_/-]*[a-zA-Z0-9]"
+    },
+    "DashDvbFontDownloadUrlString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "DashDvbMetricsReporting":{
+      "type":"structure",
+      "required":["ReportingUrl"],
+      "members":{
+        "ReportingUrl":{
+          "shape":"DashDvbMetricsReportingReportingUrlString",
+          "documentation":"<p>The URL where playback devices send error reports.</p>"
+        },
+        "Probability":{
+          "shape":"DashDvbMetricsReportingProbabilityInteger",
+          "documentation":"<p>The number of playback devices per 1000 that will send error reports to the reporting URL. This represents the probability that a playback device will be a reporting player for this session.</p>"
+        }
+      },
+      "documentation":"<p>For use with DVB-DASH profiles only. The settings for error reporting from the playback device that you want Elemental MediaPackage to pass through to the manifest.</p>"
+    },
+    "DashDvbMetricsReportingProbabilityInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "DashDvbMetricsReportingReportingUrlString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "DashDvbSettings":{
+      "type":"structure",
+      "members":{
+        "FontDownload":{
+          "shape":"DashDvbFontDownload",
+          "documentation":"<p>Subtitle font settings.</p>"
+        },
+        "ErrorMetrics":{
+          "shape":"DashDvbErrorMetrics",
+          "documentation":"<p>Playback device error reporting settings.</p>"
+        }
+      },
+      "documentation":"<p>For endpoints that use the DVB-DASH profile only. The font download and error reporting information that you want MediaPackage to pass through to the manifest.</p>"
     },
     "DashPeriodTrigger":{
       "type":"string",
@@ -1427,9 +1589,99 @@
       "max":100,
       "min":0
     },
+    "DashProfile":{
+      "type":"string",
+      "enum":["DVB_DASH"]
+    },
+    "DashProfiles":{
+      "type":"list",
+      "member":{"shape":"DashProfile"},
+      "max":5,
+      "min":0
+    },
+    "DashProgramInformation":{
+      "type":"structure",
+      "members":{
+        "Title":{
+          "shape":"DashProgramInformationTitleString",
+          "documentation":"<p>The title for the manifest.</p>"
+        },
+        "Source":{
+          "shape":"DashProgramInformationSourceString",
+          "documentation":"<p>Information about the content provider.</p>"
+        },
+        "Copyright":{
+          "shape":"DashProgramInformationCopyrightString",
+          "documentation":"<p>A copyright statement about the content.</p>"
+        },
+        "LanguageCode":{
+          "shape":"DashProgramInformationLanguageCodeString",
+          "documentation":"<p>The language code for this manifest.</p>"
+        },
+        "MoreInformationUrl":{
+          "shape":"DashProgramInformationMoreInformationUrlString",
+          "documentation":"<p>An absolute URL that contains more information about this content.</p>"
+        }
+      },
+      "documentation":"<p>Details about the content that you want MediaPackage to pass through in the manifest to the playback device.</p>"
+    },
+    "DashProgramInformationCopyrightString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "DashProgramInformationLanguageCodeString":{
+      "type":"string",
+      "max":5,
+      "min":2,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]"
+    },
+    "DashProgramInformationMoreInformationUrlString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "DashProgramInformationSourceString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "DashProgramInformationTitleString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "DashSegmentTemplateFormat":{
       "type":"string",
       "enum":["NUMBER_WITH_TIMELINE"]
+    },
+    "DashSubtitleConfiguration":{
+      "type":"structure",
+      "members":{
+        "TtmlConfiguration":{
+          "shape":"DashTtmlConfiguration",
+          "documentation":"<p>Settings for TTML subtitles.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for DASH subtitles.</p>"
+    },
+    "DashTtmlConfiguration":{
+      "type":"structure",
+      "required":["TtmlProfile"],
+      "members":{
+        "TtmlProfile":{
+          "shape":"DashTtmlProfile",
+          "documentation":"<p>The profile that MediaPackage uses when signaling subtitles in the manifest. <code>IMSC</code> is the default profile. <code>EBU-TT-D</code> produces subtitles that are compliant with the EBU-TT-D TTML profile. MediaPackage passes through subtitle styles to the manifest. For more information about EBU-TT-D subtitles, see <a href=\"https://tech.ebu.ch/publications/tech3380\">EBU-TT-D Subtitling Distribution Format</a>.</p>"
+        }
+      },
+      "documentation":"<p>The settings for TTML subtitles.</p>"
+    },
+    "DashTtmlProfile":{
+      "type":"string",
+      "enum":[
+        "IMSC_1",
+        "EBU_TT_D_101"
+      ]
     },
     "DashUtcTiming":{
       "type":"structure",
@@ -1988,6 +2240,30 @@
         "UtcTiming":{
           "shape":"DashUtcTiming",
           "documentation":"<p>Determines the type of UTC timing included in the DASH Media Presentation Description (MPD).</p>"
+        },
+        "Profiles":{
+          "shape":"DashProfiles",
+          "documentation":"<p>The profile that the output is compliant with.</p>"
+        },
+        "BaseUrls":{
+          "shape":"DashBaseUrls",
+          "documentation":"<p>The base URL to use for retrieving segments.</p>"
+        },
+        "ProgramInformation":{
+          "shape":"DashProgramInformation",
+          "documentation":"<p>Details about the content that you want MediaPackage to pass through in the manifest to the playback device.</p>"
+        },
+        "DvbSettings":{
+          "shape":"DashDvbSettings",
+          "documentation":"<p>For endpoints that use the DVB-DASH profile only. The font download and error reporting information that you want MediaPackage to pass through to the manifest.</p>"
+        },
+        "Compactness":{
+          "shape":"DashCompactness",
+          "documentation":"<p>The layout of the DASH manifest that MediaPackage produces. <code>STANDARD</code> indicates a default manifest, which is compacted. <code>NONE</code> indicates a full manifest.</p>"
+        },
+        "SubtitleConfiguration":{
+          "shape":"DashSubtitleConfiguration",
+          "documentation":"<p>The configuration for DASH subtitles.</p>"
         }
       },
       "documentation":"<p>Retrieve the DASH manifest configuration.</p>"
@@ -3855,7 +4131,11 @@
         "CLIP_START_TIME_WITH_START_OR_END",
         "START_TAG_TIME_OFFSET_INVALID",
         "ONLY_CMAF_INPUT_TYPE_ALLOW_MQCS_INPUT_SWITCHING",
-        "ONLY_CMAF_INPUT_TYPE_ALLOW_MQCS_OUTPUT_CONFIGURATION"
+        "ONLY_CMAF_INPUT_TYPE_ALLOW_MQCS_OUTPUT_CONFIGURATION",
+        "INCOMPATIBLE_DASH_PROFILE_DVB_DASH_CONFIGURATION",
+        "DASH_DVB_ATTRIBUTES_WITHOUT_DVB_DASH_PROFILE",
+        "INCOMPATIBLE_DASH_COMPACTNESS_CONFIGURATION",
+        "INCOMPATIBLE_XML_ENCODING"
       ]
     }
   },

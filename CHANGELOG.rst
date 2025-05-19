@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.27.18
+=======
+
+* api-change:``dsql``: CreateMultiRegionCluster and DeleteMultiRegionCluster APIs removed
+* api-change:``ec2``: This release includes new APIs for System Integrity Protection (SIP) configuration and automated root volume ownership delegation for EC2 Mac instances.
+* api-change:``mediapackagev2``: This release adds support for DVB-DASH, EBU-TT-D subtitle format, and non-compacted manifests for DASH in MediaPackage v2 Origin Endpoints.
+
+
 2.27.17
 =======
 

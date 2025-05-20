@@ -7924,13 +7924,33 @@
           "shape":"ConnectionType",
           "documentation":"<p>The name of the connection type.</p>"
         },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The human-readable name for the connection type that is displayed in the Glue console.</p>"
+        },
+        "Vendor":{
+          "shape":"Vendor",
+          "documentation":"<p>The name of the vendor or provider that created or maintains this connection type.</p>"
+        },
         "Description":{
           "shape":"Description",
           "documentation":"<p>A description of the connection type.</p>"
         },
+        "Categories":{
+          "shape":"ListOfString",
+          "documentation":"<p>A list of categories that this connection type belongs to. Categories help users filter and find appropriate connection types based on their use cases.</p>"
+        },
         "Capabilities":{
           "shape":"Capabilities",
           "documentation":"<p>The supported authentication types, data interface types (compute environments), and data operations of the connector.</p>"
+        },
+        "LogoUrl":{
+          "shape":"UrlString",
+          "documentation":"<p>The URL of the logo associated with a connection type.</p>"
+        },
+        "ConnectionTypeVariants":{
+          "shape":"ConnectionTypeVariantList",
+          "documentation":"<p>A list of variants available for this connection type. Different variants may provide specialized configurations for specific use cases or implementations of the same general connection type.</p>"
         }
       },
       "documentation":"<p>Brief information about a supported connection type returned by the <code>ListConnectionTypes</code> API.</p>"
@@ -7938,6 +7958,32 @@
     "ConnectionTypeList":{
       "type":"list",
       "member":{"shape":"ConnectionTypeBrief"}
+    },
+    "ConnectionTypeVariant":{
+      "type":"structure",
+      "members":{
+        "ConnectionTypeVariantName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The unique identifier for the connection type variant. This name is used internally to identify the specific variant of a connection type. </p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The human-readable name for the connection type variant that is displayed in the Glue console.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A detailed description of the connection type variant, including its purpose, use cases, and any specific configuration requirements.</p>"
+        },
+        "LogoUrl":{
+          "shape":"UrlString",
+          "documentation":"<p>The URL of the logo associated with a connection type variant.</p>"
+        }
+      },
+      "documentation":"<p>Represents a variant of a connection type in Glue Data Catalog. Connection type variants provide specific configurations and behaviors for different implementations of the same general connection type.</p>"
+    },
+    "ConnectionTypeVariantList":{
+      "type":"list",
+      "member":{"shape":"ConnectionTypeVariant"}
     },
     "ConnectionsList":{
       "type":"structure",
@@ -12240,6 +12286,11 @@
         }
       },
       "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+    },
+    "DisplayName":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "Double":{"type":"double"},
     "DoubleColumnStatisticsData":{
@@ -26891,6 +26942,7 @@
       "documentation":"<p>The options to configure an upsert operation when writing to a Redshift target .</p>"
     },
     "UriString":{"type":"string"},
+    "UrlString":{"type":"string"},
     "UsageProfileDefinition":{
       "type":"structure",
       "members":{
@@ -27020,6 +27072,11 @@
     "ValueStringList":{
       "type":"list",
       "member":{"shape":"ValueString"}
+    },
+    "Vendor":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "VersionId":{"type":"long"},
     "VersionLongNumber":{

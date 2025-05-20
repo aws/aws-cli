@@ -425,6 +425,23 @@
       ],
       "documentation":"<p>Retrieves CIS scan result details.</p>"
     },
+    "GetClustersForImage":{
+      "name":"GetClustersForImage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cluster/get",
+        "responseCode":200
+      },
+      "input":{"shape":"GetClustersForImageRequest"},
+      "output":{"shape":"GetClustersForImageResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a list of clusters and metadata associated with an image.</p>"
+    },
     "GetConfiguration":{
       "name":"GetConfiguration",
       "http":{
@@ -1535,6 +1552,14 @@
           "shape":"StringFilterList",
           "documentation":"<p>The image tags.</p>"
         },
+        "inUseCount":{
+          "shape":"NumberFilterList",
+          "documentation":"<p>The number of Amazon ECS tasks or Amazon EKS pods where the Amazon ECR container image is in use.</p>"
+        },
+        "lastInUseAt":{
+          "shape":"DateFilterList",
+          "documentation":"<p>The last time an Amazon ECR image was used in an Amazon ECS task or Amazon EKS pod.</p>"
+        },
         "repositories":{
           "shape":"StringFilterList",
           "documentation":"<p>The container repositories.</p>"
@@ -1573,6 +1598,14 @@
         "imageTags":{
           "shape":"StringList",
           "documentation":"<p>The container image stags.</p>"
+        },
+        "inUseCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of Amazon ECS tasks or Amazon EKS pods where the Amazon ECR container image is in use.</p>"
+        },
+        "lastInUseAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The last time an Amazon ECR image was used in an Amazon ECS task or Amazon EKS pod.</p>"
         },
         "repository":{
           "shape":"String",
@@ -1613,6 +1646,14 @@
           "shape":"ImageTagList",
           "documentation":"<p>The image tags attached to the Amazon ECR container image.</p>"
         },
+        "inUseCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of Amazon ECS tasks or Amazon EKS pods where the Amazon ECR container image is in use.</p>"
+        },
+        "lastInUseAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The last time an Amazon ECR image was used in an Amazon ECS task or Amazon EKS pod.</p>"
+        },
         "platform":{
           "shape":"Platform",
           "documentation":"<p>The platform of the Amazon ECR container image.</p>"
@@ -1639,6 +1680,87 @@
         "HIGH",
         "ALL"
       ]
+    },
+    "AwsEcsMetadataDetails":{
+      "type":"structure",
+      "required":[
+        "detailsGroup",
+        "taskDefinitionArn"
+      ],
+      "members":{
+        "detailsGroup":{
+          "shape":"AwsEcsMetadataDetailsDetailsGroupString",
+          "documentation":"<p>The details group information for a task in a cluster.</p>"
+        },
+        "taskDefinitionArn":{
+          "shape":"AwsEcsMetadataDetailsTaskDefinitionArnString",
+          "documentation":"<p>The task definition ARN.</p>"
+        }
+      },
+      "documentation":"<p>Metadata about tasks where an image was in use.</p>"
+    },
+    "AwsEcsMetadataDetailsDetailsGroupString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "AwsEcsMetadataDetailsTaskDefinitionArnString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "AwsEksMetadataDetails":{
+      "type":"structure",
+      "members":{
+        "namespace":{
+          "shape":"AwsEksMetadataDetailsNamespaceString",
+          "documentation":"<p>The namespace for an Amazon EKS cluster.</p>"
+        },
+        "workloadInfoList":{
+          "shape":"AwsEksWorkloadInfoList",
+          "documentation":"<p>The list of workloads.</p>"
+        }
+      },
+      "documentation":"<p>The metadata for an Amazon EKS pod where an Amazon ECR image is in use.</p>"
+    },
+    "AwsEksMetadataDetailsNamespaceString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "AwsEksWorkloadInfo":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type"
+      ],
+      "members":{
+        "name":{
+          "shape":"AwsEksWorkloadInfoNameString",
+          "documentation":"<p>The name of the workload.</p>"
+        },
+        "type":{
+          "shape":"AwsEksWorkloadInfoTypeString",
+          "documentation":"<p>The workload type.</p>"
+        }
+      },
+      "documentation":"<p>Information about the workload.</p>"
+    },
+    "AwsEksWorkloadInfoList":{
+      "type":"list",
+      "member":{"shape":"AwsEksWorkloadInfo"},
+      "max":100,
+      "min":0
+    },
+    "AwsEksWorkloadInfoNameString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "AwsEksWorkloadInfoTypeString":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "AwsLambdaFunctionDetails":{
       "type":"structure",
@@ -2749,6 +2871,92 @@
       "max":64,
       "min":1
     },
+    "ClusterDetails":{
+      "type":"structure",
+      "required":[
+        "clusterMetadata",
+        "lastInUse"
+      ],
+      "members":{
+        "clusterMetadata":{"shape":"ClusterMetadata"},
+        "lastInUse":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last timestamp when Amazon Inspector recorded the image in use in the task or pod in the cluster.</p>"
+        },
+        "runningUnitCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of tasks or pods where an image was running on the cluster.</p>"
+        },
+        "stoppedUnitCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of tasks or pods where an image was stopped on the cluster in the last 24 hours.</p>"
+        }
+      },
+      "documentation":"<p>Details about the task or pod in the cluster.</p>"
+    },
+    "ClusterForImageFilterCriteria":{
+      "type":"structure",
+      "required":["resourceId"],
+      "members":{
+        "resourceId":{
+          "shape":"ClusterForImageFilterCriteriaResourceIdString",
+          "documentation":"<p>The resource Id to be used in the filter criteria.</p>"
+        }
+      },
+      "documentation":"<p>The filter criteria to be used.</p>"
+    },
+    "ClusterForImageFilterCriteriaResourceIdString":{
+      "type":"string",
+      "pattern":"^arn:.*:ecr:.*:\\d{12}:repository\\/(?:[a-z0-9]+(?:[._-][a-z0-9]+)*\\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*(\\/sha256:[a-z0-9]{64})?$"
+    },
+    "ClusterInformation":{
+      "type":"structure",
+      "required":["clusterArn"],
+      "members":{
+        "clusterArn":{
+          "shape":"ClusterInformationClusterArnString",
+          "documentation":"<p>The cluster ARN.</p>"
+        },
+        "clusterDetails":{
+          "shape":"ClusterInformationClusterDetailsList",
+          "documentation":"<p>Details about the cluster.</p>"
+        }
+      },
+      "documentation":"<p>Information about the cluster.</p>"
+    },
+    "ClusterInformationClusterArnString":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^arn:aws(?:-[a-z0-9-]+)?:(?:ecs|eks):[a-z0-9-]+:[0-9]{12}:cluster/[a-zA-Z0-9_-]+$"
+    },
+    "ClusterInformationClusterDetailsList":{
+      "type":"list",
+      "member":{"shape":"ClusterDetails"},
+      "max":100,
+      "min":1
+    },
+    "ClusterInformationList":{
+      "type":"list",
+      "member":{"shape":"ClusterInformation"},
+      "max":100,
+      "min":1
+    },
+    "ClusterMetadata":{
+      "type":"structure",
+      "members":{
+        "awsEcsMetadataDetails":{
+          "shape":"AwsEcsMetadataDetails",
+          "documentation":"<p>The details for an Amazon ECS cluster in the cluster metadata.</p>"
+        },
+        "awsEksMetadataDetails":{
+          "shape":"AwsEksMetadataDetails",
+          "documentation":"<p>The details for an Amazon EKS cluster in the cluster metadata.</p>"
+        }
+      },
+      "documentation":"<p>The metadata for a cluster.</p>",
+      "union":true
+    },
     "CodeFilePath":{
       "type":"structure",
       "required":[
@@ -3013,6 +3221,14 @@
           "shape":"CoverageMapFilterList",
           "documentation":"<p>The Amazon EC2 instance tags to filter on.</p>"
         },
+        "ecrImageInUseCount":{
+          "shape":"CoverageNumberFilterList",
+          "documentation":"<p>The number of Amazon ECR images in use.</p>"
+        },
+        "ecrImageLastInUseAt":{
+          "shape":"CoverageDateFilterList",
+          "documentation":"<p>The Amazon ECR image that was last in use.</p>"
+        },
         "ecrImageTags":{
           "shape":"CoverageStringFilterList",
           "documentation":"<p>The Amazon ECR image tags to filter on.</p>"
@@ -3097,6 +3313,26 @@
     "CoverageMapFilterList":{
       "type":"list",
       "member":{"shape":"CoverageMapFilter"},
+      "max":10,
+      "min":1
+    },
+    "CoverageNumberFilter":{
+      "type":"structure",
+      "members":{
+        "lowerInclusive":{
+          "shape":"Long",
+          "documentation":"<p>The lower inclusive for the coverage number.</p>"
+        },
+        "upperInclusive":{
+          "shape":"Long",
+          "documentation":"<p>The upper inclusive for the coverage number.&gt;</p>"
+        }
+      },
+      "documentation":"<p>The coverage number to be used in the filter.</p>"
+    },
+    "CoverageNumberFilterList":{
+      "type":"list",
+      "member":{"shape":"CoverageNumberFilter"},
       "max":10,
       "min":1
     },
@@ -3929,6 +4165,10 @@
           "shape":"EcrPullDateRescanDuration",
           "documentation":"<p>The rescan duration configured for image pull date.</p>"
         },
+        "pullDateRescanMode":{
+          "shape":"EcrPullDateRescanMode",
+          "documentation":"<p>The pull date for the re-scan mode.</p>"
+        },
         "rescanDuration":{
           "shape":"EcrRescanDuration",
           "documentation":"<p>The rescan duration configured for image push date.</p>"
@@ -3953,6 +4193,14 @@
           "shape":"DateTimeTimestamp",
           "documentation":"<p>The date an image was last pulled at.</p>"
         },
+        "inUseCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of Amazon ECS tasks or Amazon EKS pods where the Amazon ECR container image is in use.</p>"
+        },
+        "lastInUseAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The last time an Amazon ECR image was used in an Amazon ECS task or Amazon EKS pod.</p>"
+        },
         "tags":{
           "shape":"TagList",
           "documentation":"<p>Tags associated with the Amazon ECR image metadata.</p>"
@@ -3968,6 +4216,13 @@
         "DAYS_60",
         "DAYS_90",
         "DAYS_180"
+      ]
+    },
+    "EcrPullDateRescanMode":{
+      "type":"string",
+      "enum":[
+        "LAST_PULL_DATE",
+        "LAST_IN_USE_AT"
       ]
     },
     "EcrRepositoryMetadata":{
@@ -4001,6 +4256,10 @@
         "pullDateRescanDuration":{
           "shape":"EcrPullDateRescanDuration",
           "documentation":"<p>The rescan duration configured for image pull date.</p>"
+        },
+        "pullDateRescanMode":{
+          "shape":"EcrPullDateRescanMode",
+          "documentation":"<p>The pull date for the re-scan mode.</p>"
         },
         "rescanDuration":{
           "shape":"EcrRescanDuration",
@@ -4407,6 +4666,14 @@
         "ecrImageHash":{
           "shape":"StringFilterList",
           "documentation":"<p>Details of the Amazon ECR image hashes used to filter findings.</p>"
+        },
+        "ecrImageInUseCount":{
+          "shape":"NumberFilterList",
+          "documentation":"<p>Filter criteria indicating when details for an Amazon ECR image include when an Amazon ECR image is in use.</p>"
+        },
+        "ecrImageLastInUseAt":{
+          "shape":"DateFilterList",
+          "documentation":"<p>Filter criteria indicating when an Amazon ECR image was last used in an Amazon ECS cluster task or Amazon EKS cluster pod.</p>"
         },
         "ecrImagePushedAt":{
           "shape":"DateFilterList",
@@ -5045,6 +5312,49 @@
         "scanResultDetails":{
           "shape":"CisScanResultDetailsList",
           "documentation":"<p>The scan result details.</p>"
+        }
+      }
+    },
+    "GetClustersForImageNextToken":{
+      "type":"string",
+      "max":3000,
+      "min":1
+    },
+    "GetClustersForImageRequest":{
+      "type":"structure",
+      "required":["filter"],
+      "members":{
+        "filter":{
+          "shape":"ClusterForImageFilterCriteria",
+          "documentation":"<p>The resource Id for the Amazon ECR image.</p>"
+        },
+        "maxResults":{
+          "shape":"GetClustersForImageRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to be returned in a single page of results.</p>"
+        },
+        "nextToken":{
+          "shape":"GetClustersForImageNextToken",
+          "documentation":"<p>The pagination token from a previous request used to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "GetClustersForImageRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "GetClustersForImageResponse":{
+      "type":"structure",
+      "required":["cluster"],
+      "members":{
+        "cluster":{
+          "shape":"ClusterInformationList",
+          "documentation":"<p>A unit of work inside of a cluster, which can include metadata about the cluster.</p>"
+        },
+        "nextToken":{
+          "shape":"GetClustersForImageNextToken",
+          "documentation":"<p>The pagination token from a previous request used to retrieve the next page of results.</p>"
         }
       }
     },
@@ -7291,7 +7601,8 @@
         "DEEP_INSPECTION_COLLECTION_TIME_LIMIT_EXCEEDED",
         "DEEP_INSPECTION_NO_INVENTORY",
         "AGENTLESS_INSTANCE_STORAGE_LIMIT_EXCEEDED",
-        "AGENTLESS_INSTANCE_COLLECTION_TIME_LIMIT_EXCEEDED"
+        "AGENTLESS_INSTANCE_COLLECTION_TIME_LIMIT_EXCEEDED",
+        "PENDING_REVIVAL_SCAN"
       ]
     },
     "ScanType":{

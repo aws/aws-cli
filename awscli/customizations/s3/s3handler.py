@@ -37,6 +37,7 @@ from awscli.customizations.s3.subscribers import (
     DeleteSourceFileSubscriber,
     DeleteSourceObjectSubscriber,
     DirectoryCreatorSubscriber,
+    ProvideETagSubscriber,
     ProvideLastModifiedTimeSubscriber,
     ProvideSizeSubscriber,
     ProvideUploadContentTypeSubscriber,
@@ -243,6 +244,7 @@ class BaseTransferRequestSubmitter:
         subscribers = []
         result_subscriber_kwargs = self._get_result_subscriber_kwargs(fileinfo)
         self._add_provide_size_subscriber(subscribers, fileinfo)
+        subscribers.append(ProvideETagSubscriber(fileinfo.etag))
         subscribers.append(QueuedResultSubscriber(**result_subscriber_kwargs))
         self._add_additional_subscribers(subscribers, fileinfo)
         subscribers.extend(

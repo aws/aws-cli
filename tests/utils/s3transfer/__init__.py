@@ -154,6 +154,14 @@ class FileSizeProvider:
         future.meta.provide_transfer_size(self.file_size)
 
 
+class ETagProvider:
+    def __init__(self, etag):
+        self.etag = etag
+
+    def on_queued(self, future, **kwargs):
+        future.meta.provide_object_etag(self.etag)
+
+
 class FileCreator:
     def __init__(self):
         self.rootdir = tempfile.mkdtemp()

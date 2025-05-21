@@ -261,7 +261,11 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_operations_used_in_download_file(self):
         self.parsed_responses = [
-            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {
+                "ContentLength": "100",
+                "LastModified": "00:00:00Z",
+                'ETag': '"foo-1"',
+            },
             {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
         ]
         cmdline = '%s s3://bucket/key.txt %s' % (
@@ -468,7 +472,11 @@ class TestCPCommand(BaseCPCommandTest):
         full_path = self.files.create_file('foo.txt', '')
         cmdline = '%s s3://bucket/key.txt %s' % (self.prefix, full_path)
         self.parsed_responses = [
-            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {
+                "ContentLength": "100",
+                "LastModified": "00:00:00Z",
+                "ETag": '"foo-1"',
+            },
             {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
         ]
         with mock.patch('os.utime') as mock_utime:
@@ -486,6 +494,7 @@ class TestCPCommand(BaseCPCommandTest):
                         'LastModified': '00:00:00Z',
                         'StorageClass': 'GLACIER',
                         'Size': 100,
+                        'ETag': '"foo-1"',
                     },
                 ],
                 'CommonPrefixes': [],
@@ -1326,12 +1335,14 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
                     'mykey',
                     Range=mock.ANY,
                     RequestPayer='requester',
+                    IfMatch='"foo-1"',
                 ),
                 self.get_object_request(
                     'mybucket',
                     'mykey',
                     Range=mock.ANY,
                     RequestPayer='requester',
+                    IfMatch='"foo-1"',
                 ),
             ]
         )

@@ -78,6 +78,27 @@ class ProvideSizeSubscriber(BaseSubscriber):
             )
 
 
+class ProvideETagSubscriber(BaseSubscriber):
+    """
+    A subscriber which provides the object ETag before it's queued.
+    """
+
+    def __init__(self, etag):
+        self.etag = etag
+
+    def on_queued(self, future, **kwargs):
+        # The CRT transfer client does not support providing an expected
+        # ETag of an object. So only provide it if it is available.
+        if hasattr(future.meta, 'provide_object_etag'):
+            future.meta.provide_object_etag(self.etag)
+        else:
+            LOGGER.debug(
+                'Not providing object ETag. Future: %s does not offer'
+                'the capability to notify the ETag of an object',
+                future,
+            )
+
+
 class DeleteSourceSubscriber(OnDoneFilteredSubscriber):
     """A subscriber which deletes the source of the transfer."""
 

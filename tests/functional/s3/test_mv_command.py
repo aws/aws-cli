@@ -81,7 +81,11 @@ class TestMvCommand(BaseS3TransferCommandTest):
 
         self.parsed_responses = [
             # Response for HeadObject
-            {"ContentLength": 100, "LastModified": "00:00:00Z"},
+            {
+                "ContentLength": 100,
+                "LastModified": "00:00:00Z",
+                "ETag": '"foo-1"',
+            },
             # Response for GetObject
             {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
             # Response for DeleteObject

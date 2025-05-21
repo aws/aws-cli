@@ -649,6 +649,17 @@ class ProvideSizeSubscriber(BaseSubscriber):
         future.meta.provide_transfer_size(self.size)
 
 
+class ProvideETagSubscriber(BaseSubscriber):
+    """
+    A subscriber which provides the object ETag before it's queued.
+    """
+    def __init__(self, etag):
+        self.etag = etag
+
+    def on_queued(self, future, **kwargs):
+        future.meta.provide_object_etag(self.etag)
+
+
 # TODO: Eventually port this down to the BaseSubscriber or a new subscriber
 # class in s3transfer. The functionality is very convenient but may need
 # some further design decisions to make it a feature in s3transfer.

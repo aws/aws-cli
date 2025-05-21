@@ -35,7 +35,7 @@ from awscli.customizations.s3.utils import (
     StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
     create_warning, human_readable_size, human_readable_to_bytes,
     set_file_utime, SetFileUtimeError, RequestParamsMapper, StdoutBytesWriter,
-    ProvideSizeSubscriber, OnDoneFilteredSubscriber,
+    ProvideSizeSubscriber, ProvideETagSubscriber, OnDoneFilteredSubscriber,
     ProvideUploadContentTypeSubscriber, ProvideCopyContentTypeSubscriber,
     ProvideLastModifiedTimeSubscriber, DirectoryCreatorSubscriber,
     DeleteSourceObjectSubscriber, DeleteSourceFileSubscriber,
@@ -792,6 +792,19 @@ class TestProvideSizeSubscriber(unittest.TestCase):
         subscriber = ProvideSizeSubscriber(10)
         subscriber.on_queued(self.transfer_future)
         self.assertEqual(self.transfer_meta.size, 10)
+
+
+class TestProvideEtagSubscriber:
+    def test_etag_set(self):
+        transfer_meta = TransferMeta()
+        transfer_future = mock.Mock(spec=TransferFuture)
+        transfer_future.meta = transfer_meta
+        etag = 'myetag'
+
+        transfer_meta.provide_object_etag('oldetag')
+        subscriber = ProvideETagSubscriber(etag)
+        subscriber.on_queued(transfer_future)
+        assert transfer_meta.etag == etag
 
 
 class OnDoneFilteredRecordingSubscriber(OnDoneFilteredSubscriber):

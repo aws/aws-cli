@@ -33,6 +33,7 @@ from botocore.context import start_as_current_context
 from botocore.history import get_global_history_recorder
 
 from awscli import __version__
+from awscli.agentmode import AgentModeDriver
 from awscli.alias import AliasCommandInjector, AliasLoader
 from awscli.argparser import (
     ArgTableArgParser,
@@ -231,7 +232,11 @@ class AWSCLIEntryPoint:
                 driver = create_clidriver(args)
                 rc = self._run_driver(driver, args, prompt_mode='partial')
         else:
-            rc = self._run_driver(driver, args, prompt_mode='off')
+            agent_mode_driver = AgentModeDriver(driver)
+            if agent_mode_driver.should_enter_agent_mode(args):
+                rc = agent_mode_driver.enter_agent_mode(args)
+            else:
+                rc = self._run_driver(driver, args, prompt_mode='off')
         return rc
 
 

@@ -16,3 +16,4 @@
 [--no-cli-pager]
 [--cli-auto-prompt]
 [--no-cli-auto-prompt]
+[--agent-mode]

@@ -162,6 +162,42 @@
       ],
       "documentation":"<p>Gets the sessions stored in the memory of the agent.</p>"
     },
+    "GetExecutionFlowSnapshot":{
+      "name":"GetExecutionFlowSnapshot",
+      "http":{
+        "method":"GET",
+        "requestUri":"/flows/{flowIdentifier}/aliases/{flowAliasIdentifier}/executions/{executionIdentifier}/flowsnapshot",
+        "responseCode":200
+      },
+      "input":{"shape":"GetExecutionFlowSnapshotRequest"},
+      "output":{"shape":"GetExecutionFlowSnapshotResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the flow definition snapshot used for an asynchronous execution. The snapshot represents the flow metadata and definition as it existed at the time the asynchronous execution was started. Note that even if the flow is edited after an execution starts, the snapshot connected to the execution remains unchanged.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>"
+    },
+    "GetFlowExecution":{
+      "name":"GetFlowExecution",
+      "http":{
+        "method":"GET",
+        "requestUri":"/flows/{flowIdentifier}/aliases/{flowAliasIdentifier}/executions/{executionIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFlowExecutionRequest"},
+      "output":{"shape":"GetFlowExecutionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves details about a specific asynchronous execution of a flow, including its status, start and end times, and any errors that occurred during execution.</p>"
+    },
     "GetInvocationStep":{
       "name":"GetInvocationStep",
       "http":{
@@ -264,6 +300,42 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p> Invokes an inline Amazon Bedrock agent using the configurations you provide with the request. </p> <ul> <li> <p>Specify the following fields for security purposes.</p> <ul> <li> <p>(Optional) <code>customerEncryptionKeyArn</code> – The Amazon Resource Name (ARN) of a KMS key to encrypt the creation of the agent.</p> </li> <li> <p>(Optional) <code>idleSessionTTLinSeconds</code> – Specify the number of seconds for which the agent should maintain session information. After this time expires, the subsequent <code>InvokeInlineAgent</code> request begins a new session.</p> </li> </ul> </li> <li> <p>To override the default prompt behavior for agent orchestration and to use advanced prompts, include a <code>promptOverrideConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html\">Advanced prompts</a>.</p> </li> <li> <p>The agent instructions will not be honored if your agent has only one knowledge base, uses default prompts, has no action group, and user input is disabled.</p> </li> </ul> <note> </note>"
+    },
+    "ListFlowExecutionEvents":{
+      "name":"ListFlowExecutionEvents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/flows/{flowIdentifier}/aliases/{flowAliasIdentifier}/executions/{executionIdentifier}/events",
+        "responseCode":200
+      },
+      "input":{"shape":"ListFlowExecutionEventsRequest"},
+      "output":{"shape":"ListFlowExecutionEventsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists events that occurred during an asynchronous execution of a flow. Events provide detailed information about the execution progress, including node inputs and outputs, flow inputs and outputs, condition results, and failure events.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>"
+    },
+    "ListFlowExecutions":{
+      "name":"ListFlowExecutions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/flows/{flowIdentifier}/executions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListFlowExecutionsRequest"},
+      "output":{"shape":"ListFlowExecutionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all asynchronous executions for a flow. Results can be paginated and include summary information about each execution, such as status, start and end times, and the execution's Amazon Resource Name (ARN).</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>"
     },
     "ListInvocationSteps":{
       "name":"ListInvocationSteps",
@@ -463,6 +535,49 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Queries a knowledge base and generates responses based on the retrieved results, with output in streaming format.</p> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>InvokeModelWithResponseStream</code>.</p> </note> <p>This operation requires permission for the <code> bedrock:RetrieveAndGenerate</code> action.</p>"
+    },
+    "StartFlowExecution":{
+      "name":"StartFlowExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/flows/{flowIdentifier}/aliases/{flowAliasIdentifier}/executions",
+        "responseCode":200
+      },
+      "input":{"shape":"StartFlowExecutionRequest"},
+      "output":{"shape":"StartFlowExecutionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"DependencyFailedException"},
+        {"shape":"BadGatewayException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Starts an asynchronous execution of an Amazon Bedrock flow. Unlike synchronous flows that run until completion or time out after five minutes, you can run asynchronous flows for longer durations. Asynchronous flows also yield control so that your application can perform other tasks.</p> <p>This operation returns an Amazon Resource Name (ARN) that you can use to track and manage your flow's async execution.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>"
+    },
+    "StopFlowExecution":{
+      "name":"StopFlowExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/flows/{flowIdentifier}/aliases/{flowAliasIdentifier}/executions/{executionIdentifier}/stop",
+        "responseCode":200
+      },
+      "input":{"shape":"StopFlowExecutionRequest"},
+      "output":{"shape":"StopFlowExecutionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"DependencyFailedException"},
+        {"shape":"BadGatewayException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Stops an Amazon Bedrock flow's asynchronous execution. This operation prevents further processing of the flow and changes the execution status to <code>Aborted</code>.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1325,6 +1440,30 @@
       "type":"list",
       "member":{"shape":"Collaborator"}
     },
+    "ConditionResultEvent":{
+      "type":"structure",
+      "required":[
+        "nodeName",
+        "satisfiedConditions",
+        "timestamp"
+      ],
+      "members":{
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the condition node that evaluated the conditions.</p>"
+        },
+        "satisfiedConditions":{
+          "shape":"SatisfiedConditions",
+          "documentation":"<p>A list of conditions that were satisfied during the evaluation.</p>"
+        },
+        "timestamp":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the condition evaluation occurred.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a condition evaluation result during an async execution. This event is generated when a condition node in the flow evaluates its conditions.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
+      "sensitive":true
+    },
     "ConfirmationState":{
       "type":"string",
       "enum":[
@@ -1921,11 +2060,253 @@
         "INPUT_REQUIRED"
       ]
     },
+    "FlowErrorCode":{
+      "type":"string",
+      "enum":[
+        "VALIDATION",
+        "INTERNAL_SERVER",
+        "NODE_EXECUTION_FAILED"
+      ]
+    },
+    "FlowExecutionContent":{
+      "type":"structure",
+      "members":{
+        "document":{
+          "shape":"Document",
+          "documentation":"<p>The document content of the field, which can contain text or structured data.</p>"
+        }
+      },
+      "documentation":"<p>Contains the content of an async execution input or output field.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
+      "sensitive":true,
+      "union":true
+    },
+    "FlowExecutionError":{
+      "type":"structure",
+      "members":{
+        "error":{
+          "shape":"FlowExecutionErrorType",
+          "documentation":"<p>The error code for the type of error that occurred.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A descriptive message that provides details about the error.</p>"
+        },
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the node in the flow where the error occurred (if applicable).</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an error that occurred during an async execution.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>"
+    },
+    "FlowExecutionErrorType":{
+      "type":"string",
+      "enum":["ExecutionTimedOut"]
+    },
+    "FlowExecutionErrors":{
+      "type":"list",
+      "member":{"shape":"FlowExecutionError"}
+    },
+    "FlowExecutionEvent":{
+      "type":"structure",
+      "members":{
+        "conditionResultEvent":{
+          "shape":"ConditionResultEvent",
+          "documentation":"<p>Contains information about a condition evaluation result during the async execution. This event is generated when a condition node in the flow evaluates its conditions.</p>"
+        },
+        "flowFailureEvent":{
+          "shape":"FlowFailureEvent",
+          "documentation":"<p>Contains information about a failure that occurred at the flow level during execution.</p>"
+        },
+        "flowInputEvent":{
+          "shape":"FlowExecutionInputEvent",
+          "documentation":"<p>Contains information about the inputs provided to the flow at the start of execution.</p>"
+        },
+        "flowOutputEvent":{
+          "shape":"FlowExecutionOutputEvent",
+          "documentation":"<p>Contains information about the outputs produced by the flow at the end of execution.</p>"
+        },
+        "nodeFailureEvent":{
+          "shape":"NodeFailureEvent",
+          "documentation":"<p>Contains information about a failure that occurred at a specific node during execution.</p>"
+        },
+        "nodeInputEvent":{
+          "shape":"NodeInputEvent",
+          "documentation":"<p>Contains information about the inputs provided to a specific node during execution.</p>"
+        },
+        "nodeOutputEvent":{
+          "shape":"NodeOutputEvent",
+          "documentation":"<p>Contains information about the outputs produced by a specific node during execution.</p>"
+        }
+      },
+      "documentation":"<p>Represents an event that occurred during an async execution. This is a union type that can contain one of several event types, such as node input and output events; flow input and output events; condition node result events, or failure events.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
+      "union":true
+    },
+    "FlowExecutionEventType":{
+      "type":"string",
+      "enum":[
+        "Node",
+        "Flow"
+      ]
+    },
+    "FlowExecutionEvents":{
+      "type":"list",
+      "member":{"shape":"FlowExecutionEvent"},
+      "max":10,
+      "min":0
+    },
     "FlowExecutionId":{
       "type":"string",
       "max":100,
       "min":2,
       "pattern":"^[0-9a-zA-Z._:-]+$"
+    },
+    "FlowExecutionIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^[a-zA-Z0-9-]{1,36}$|^(arn:aws:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:flow/[0-9a-zA-Z]{10}/alias/[0-9a-zA-Z]{10}/execution/[a-zA-Z0-9-]{1,36})$"
+    },
+    "FlowExecutionInputEvent":{
+      "type":"structure",
+      "required":[
+        "fields",
+        "nodeName",
+        "timestamp"
+      ],
+      "members":{
+        "fields":{
+          "shape":"FlowInputFields",
+          "documentation":"<p>A list of input fields provided to the flow.</p>"
+        },
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the node that receives the inputs.</p>"
+        },
+        "timestamp":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the inputs are provided.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the inputs provided to the flow at the start of async execution.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
+      "sensitive":true
+    },
+    "FlowExecutionName":{
+      "type":"string",
+      "max":36,
+      "min":0,
+      "pattern":"^[a-zA-Z0-9-]{1,36}$"
+    },
+    "FlowExecutionOutputEvent":{
+      "type":"structure",
+      "required":[
+        "fields",
+        "nodeName",
+        "timestamp"
+      ],
+      "members":{
+        "fields":{
+          "shape":"FlowOutputFields",
+          "documentation":"<p>A list of output fields produced by the flow.</p>"
+        },
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the node that produces the outputs.</p>"
+        },
+        "timestamp":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the outputs are produced.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the outputs produced by the flow during an async execution.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
+      "sensitive":true
+    },
+    "FlowExecutionRoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/(service-role/)?.+$"
+    },
+    "FlowExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "Running",
+        "Succeeded",
+        "Failed",
+        "TimedOut",
+        "Aborted"
+      ]
+    },
+    "FlowExecutionSummaries":{
+      "type":"list",
+      "member":{"shape":"FlowExecutionSummary"},
+      "max":10,
+      "min":0
+    },
+    "FlowExecutionSummary":{
+      "type":"structure",
+      "required":[
+        "createdAt",
+        "executionArn",
+        "flowAliasIdentifier",
+        "flowIdentifier",
+        "flowVersion",
+        "status"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the async execution was created.</p>"
+        },
+        "endedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the async execution ended. This field is only populated when the execution has completed, failed, timed out, or been aborted.</p>"
+        },
+        "executionArn":{
+          "shape":"FlowExecutionIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the async execution.</p>"
+        },
+        "flowAliasIdentifier":{
+          "shape":"FlowAliasIdentifier",
+          "documentation":"<p>The unique identifier of the flow alias used for the execution.</p>"
+        },
+        "flowIdentifier":{
+          "shape":"FlowIdentifier",
+          "documentation":"<p>The unique identifier of the flow.</p>"
+        },
+        "flowVersion":{
+          "shape":"Version",
+          "documentation":"<p>The version of the flow used for the execution.</p>"
+        },
+        "status":{
+          "shape":"FlowExecutionStatus",
+          "documentation":"<p>The current status of the async execution.</p> <p>Async executions time out after 24 hours.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a flow's async execution, including its status, timestamps, and identifiers.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>"
+    },
+    "FlowFailureEvent":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorMessage",
+        "timestamp"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"FlowErrorCode",
+          "documentation":"<p>The error code that identifies the type of failure that occurred.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>A descriptive message that provides details about the failure.</p>"
+        },
+        "timestamp":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the failure occurred.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a failure that occurred at the flow level during an async execution.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
+      "sensitive":true
     },
     "FlowIdentifier":{
       "type":"string",
@@ -1970,6 +2351,31 @@
       "documentation":"<p>Contains information about an input into the flow.</p>",
       "sensitive":true,
       "union":true
+    },
+    "FlowInputField":{
+      "type":"structure",
+      "required":[
+        "content",
+        "name"
+      ],
+      "members":{
+        "content":{
+          "shape":"FlowExecutionContent",
+          "documentation":"<p>The content of the input field, which can contain text or structured data.</p>"
+        },
+        "name":{
+          "shape":"NodeInputName",
+          "documentation":"<p>The name of the input field as defined in the flow's input schema.</p>"
+        }
+      },
+      "documentation":"<p>Represents an input field provided to a flow during an async execution.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
+      "sensitive":true
+    },
+    "FlowInputFields":{
+      "type":"list",
+      "member":{"shape":"FlowInputField"},
+      "max":5,
+      "min":1
     },
     "FlowInputs":{
       "type":"list",
@@ -2048,6 +2454,31 @@
       "documentation":"<p>Contains information about an output from prompt flow invoction.</p>",
       "event":true,
       "sensitive":true
+    },
+    "FlowOutputField":{
+      "type":"structure",
+      "required":[
+        "content",
+        "name"
+      ],
+      "members":{
+        "content":{
+          "shape":"FlowExecutionContent",
+          "documentation":"<p>The content of the output field, which can contain text or structured data.</p>"
+        },
+        "name":{
+          "shape":"NodeOutputName",
+          "documentation":"<p>The name of the output field as defined in the flow's output schema.</p>"
+        }
+      },
+      "documentation":"<p>Represents an output field produced by a flow during an async execution.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
+      "sensitive":true
+    },
+    "FlowOutputFields":{
+      "type":"list",
+      "member":{"shape":"FlowOutputField"},
+      "max":5,
+      "min":1
     },
     "FlowResponseStream":{
       "type":"structure",
@@ -2615,6 +3046,143 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>If the total number of results is greater than the maxItems value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        }
+      }
+    },
+    "GetExecutionFlowSnapshotRequest":{
+      "type":"structure",
+      "required":[
+        "executionIdentifier",
+        "flowAliasIdentifier",
+        "flowIdentifier"
+      ],
+      "members":{
+        "executionIdentifier":{
+          "shape":"FlowExecutionIdentifier",
+          "documentation":"<p>The unique identifier of the async execution.</p>",
+          "location":"uri",
+          "locationName":"executionIdentifier"
+        },
+        "flowAliasIdentifier":{
+          "shape":"FlowAliasIdentifier",
+          "documentation":"<p>The unique identifier of the flow alias used for the async execution.</p>",
+          "location":"uri",
+          "locationName":"flowAliasIdentifier"
+        },
+        "flowIdentifier":{
+          "shape":"FlowIdentifier",
+          "documentation":"<p>The unique identifier of the flow.</p>",
+          "location":"uri",
+          "locationName":"flowIdentifier"
+        }
+      }
+    },
+    "GetExecutionFlowSnapshotResponse":{
+      "type":"structure",
+      "required":[
+        "definition",
+        "executionRoleArn",
+        "flowAliasIdentifier",
+        "flowIdentifier",
+        "flowVersion"
+      ],
+      "members":{
+        "customerEncryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed KMS key that's used to encrypt the flow snapshot.</p>"
+        },
+        "definition":{
+          "shape":"String",
+          "documentation":"<p>The flow definition used for the async execution, including the nodes, connections, and configuration at the time when the execution started.</p> <p>The definition returns as a string that follows the structure of a <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_FlowDefinition.html\">FlowDefinition</a> object.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"FlowExecutionRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role that's used by the async execution.</p>"
+        },
+        "flowAliasIdentifier":{
+          "shape":"FlowAliasIdentifier",
+          "documentation":"<p>The unique identifier of the flow alias used for the async execution.</p>"
+        },
+        "flowIdentifier":{
+          "shape":"FlowIdentifier",
+          "documentation":"<p>The unique identifier of the flow.</p>"
+        },
+        "flowVersion":{
+          "shape":"Version",
+          "documentation":"<p>The version of the flow used for the async execution.</p>"
+        }
+      }
+    },
+    "GetFlowExecutionRequest":{
+      "type":"structure",
+      "required":[
+        "executionIdentifier",
+        "flowAliasIdentifier",
+        "flowIdentifier"
+      ],
+      "members":{
+        "executionIdentifier":{
+          "shape":"FlowExecutionIdentifier",
+          "documentation":"<p>The unique identifier of the async execution to retrieve.</p>",
+          "location":"uri",
+          "locationName":"executionIdentifier"
+        },
+        "flowAliasIdentifier":{
+          "shape":"FlowAliasIdentifier",
+          "documentation":"<p>The unique identifier of the flow alias used for the execution.</p>",
+          "location":"uri",
+          "locationName":"flowAliasIdentifier"
+        },
+        "flowIdentifier":{
+          "shape":"FlowIdentifier",
+          "documentation":"<p>The unique identifier of the flow.</p>",
+          "location":"uri",
+          "locationName":"flowIdentifier"
+        }
+      }
+    },
+    "GetFlowExecutionResponse":{
+      "type":"structure",
+      "required":[
+        "executionArn",
+        "flowAliasIdentifier",
+        "flowIdentifier",
+        "flowVersion",
+        "startedAt",
+        "status"
+      ],
+      "members":{
+        "endedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the async execution ended. This field is only populated when the execution has completed, failed, timed out, or been aborted.</p>"
+        },
+        "errors":{
+          "shape":"FlowExecutionErrors",
+          "documentation":"<p>A list of errors that occurred during the async execution. Each error includes an error code, message, and the node where the error occurred, if applicable.</p>"
+        },
+        "executionArn":{
+          "shape":"FlowExecutionIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the async execution.</p>"
+        },
+        "flowAliasIdentifier":{
+          "shape":"FlowAliasIdentifier",
+          "documentation":"<p>The unique identifier of the flow alias used for the execution.</p>"
+        },
+        "flowIdentifier":{
+          "shape":"FlowIdentifier",
+          "documentation":"<p>The unique identifier of the flow.</p>"
+        },
+        "flowVersion":{
+          "shape":"Version",
+          "documentation":"<p>The version of the flow used for the execution.</p>"
+        },
+        "startedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the async execution started.</p>"
+        },
+        "status":{
+          "shape":"FlowExecutionStatus",
+          "documentation":"<p>The current status of the async execution.</p> <p>Async executions time out after 24 hours.</p>"
         }
       }
     },
@@ -4204,6 +4772,111 @@
       "min":0,
       "pattern":"^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$"
     },
+    "ListFlowExecutionEventsRequest":{
+      "type":"structure",
+      "required":[
+        "eventType",
+        "executionIdentifier",
+        "flowAliasIdentifier",
+        "flowIdentifier"
+      ],
+      "members":{
+        "eventType":{
+          "shape":"FlowExecutionEventType",
+          "documentation":"<p>The type of events to retrieve. Specify <code>Node</code> for node-level events or <code>Flow</code> for flow-level events.</p>",
+          "location":"querystring",
+          "locationName":"eventType"
+        },
+        "executionIdentifier":{
+          "shape":"FlowExecutionIdentifier",
+          "documentation":"<p>The unique identifier of the async execution.</p>",
+          "location":"uri",
+          "locationName":"executionIdentifier"
+        },
+        "flowAliasIdentifier":{
+          "shape":"FlowAliasIdentifier",
+          "documentation":"<p>The unique identifier of the flow alias used for the execution.</p>",
+          "location":"uri",
+          "locationName":"flowAliasIdentifier"
+        },
+        "flowIdentifier":{
+          "shape":"FlowIdentifier",
+          "documentation":"<p>The unique identifier of the flow.</p>",
+          "location":"uri",
+          "locationName":"flowIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of events to return in a single response. If more events exist than the specified maxResults value, a token is included in the response so that the remaining results can be retrieved.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to retrieve the next set of results. This value is returned in the response if more results are available.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListFlowExecutionEventsResponse":{
+      "type":"structure",
+      "required":["flowExecutionEvents"],
+      "members":{
+        "flowExecutionEvents":{
+          "shape":"FlowExecutionEvents",
+          "documentation":"<p>A list of events that occurred during the async execution. Events can include node inputs and outputs, flow inputs and outputs, condition results, and failure events.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to retrieve the next set of results. This value is returned if more results are available.</p>"
+        }
+      }
+    },
+    "ListFlowExecutionsRequest":{
+      "type":"structure",
+      "required":["flowIdentifier"],
+      "members":{
+        "flowAliasIdentifier":{
+          "shape":"FlowAliasIdentifier",
+          "documentation":"<p>The unique identifier of the flow alias to list executions for.</p>",
+          "location":"querystring",
+          "locationName":"flowAliasIdentifier"
+        },
+        "flowIdentifier":{
+          "shape":"FlowIdentifier",
+          "documentation":"<p>The unique identifier of the flow to list executions for.</p>",
+          "location":"uri",
+          "locationName":"flowIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of async executions to return in a single response. If more executions exist than the specified maxResults value, a token is included in the response so that the remaining results can be retrieved.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to retrieve the next set of results. This value is returned in the response if more results are available.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListFlowExecutionsResponse":{
+      "type":"structure",
+      "required":["flowExecutionSummaries"],
+      "members":{
+        "flowExecutionSummaries":{
+          "shape":"FlowExecutionSummaries",
+          "documentation":"<p>A list of async execution summaries. Each summary includes the execution ARN, flow identifier, flow alias identifier, flow version, status, and timestamps.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to retrieve the next set of results. This value is returned if more results are available.</p>"
+        }
+      }
+    },
     "ListInvocationStepsRequest":{
       "type":"structure",
       "required":["sessionIdentifier"],
@@ -4441,7 +5114,7 @@
         },
         "endTime":{
           "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>In the final response, <code>endTime</code> is the end time time of the agent invocation operation.</p>"
+          "documentation":"<p>In the final response, <code>endTime</code> is the end time of the agent invocation operation.</p>"
         },
         "operationTotalTimeMs":{
           "shape":"Long",
@@ -4599,6 +5272,105 @@
       "min":1,
       "pattern":"^\\S*$"
     },
+    "NodeErrorCode":{
+      "type":"string",
+      "enum":[
+        "VALIDATION",
+        "DEPENDENCY_FAILED",
+        "BAD_GATEWAY",
+        "INTERNAL_SERVER"
+      ]
+    },
+    "NodeExecutionContent":{
+      "type":"structure",
+      "members":{
+        "document":{
+          "shape":"Document",
+          "documentation":"<p>The document content of the field, which can contain text or structured data.</p>"
+        }
+      },
+      "documentation":"<p>Contains the content of a flow node's input or output field for an async execution.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
+      "sensitive":true,
+      "union":true
+    },
+    "NodeFailureEvent":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorMessage",
+        "nodeName",
+        "timestamp"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"NodeErrorCode",
+          "documentation":"<p>The error code that identifies the type of failure that occurred at the node.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>A descriptive message that provides details about the node failure.</p>"
+        },
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the node where the failure occurred.</p>"
+        },
+        "timestamp":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the node failure occurred.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a failure that occurred at a specific node during a flow's async execution.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
+      "sensitive":true
+    },
+    "NodeInputEvent":{
+      "type":"structure",
+      "required":[
+        "fields",
+        "nodeName",
+        "timestamp"
+      ],
+      "members":{
+        "fields":{
+          "shape":"NodeInputFields",
+          "documentation":"<p>A list of input fields provided to the node.</p>"
+        },
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the node that received the inputs.</p>"
+        },
+        "timestamp":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the inputs were provided to the node.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the inputs provided to a specific node during a flow's async execution.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
+      "sensitive":true
+    },
+    "NodeInputField":{
+      "type":"structure",
+      "required":[
+        "content",
+        "name"
+      ],
+      "members":{
+        "content":{
+          "shape":"NodeExecutionContent",
+          "documentation":"<p>The content of the input field, which can contain text or structured data.</p>"
+        },
+        "name":{
+          "shape":"NodeInputName",
+          "documentation":"<p>The name of the input field as defined in the node's input schema.</p>"
+        }
+      },
+      "documentation":"<p>Represents an input field provided to a node during a flow's async execution.</p>",
+      "sensitive":true
+    },
+    "NodeInputFields":{
+      "type":"list",
+      "member":{"shape":"NodeInputField"},
+      "max":5,
+      "min":1
+    },
     "NodeInputName":{
       "type":"string",
       "pattern":"^[a-zA-Z]([_]?[0-9a-zA-Z]){0,99}$"
@@ -4606,6 +5378,55 @@
     "NodeName":{
       "type":"string",
       "pattern":"^[a-zA-Z]([_]?[0-9a-zA-Z]){0,99}$"
+    },
+    "NodeOutputEvent":{
+      "type":"structure",
+      "required":[
+        "fields",
+        "nodeName",
+        "timestamp"
+      ],
+      "members":{
+        "fields":{
+          "shape":"NodeOutputFields",
+          "documentation":"<p>A list of output fields produced by the node.</p>"
+        },
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the node that produced the outputs.</p>"
+        },
+        "timestamp":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the outputs were produced by the node.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the outputs produced by a specific node during a flow's async execution.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
+      "sensitive":true
+    },
+    "NodeOutputField":{
+      "type":"structure",
+      "required":[
+        "content",
+        "name"
+      ],
+      "members":{
+        "content":{
+          "shape":"NodeExecutionContent",
+          "documentation":"<p>The content of the output field, which can contain text or structured data.</p>"
+        },
+        "name":{
+          "shape":"NodeOutputName",
+          "documentation":"<p>The name of the output field as defined in the node's output schema.</p>"
+        }
+      },
+      "documentation":"<p>Represents an output field produced by a node during a flow's async execution.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
+      "sensitive":true
+    },
+    "NodeOutputFields":{
+      "type":"list",
+      "member":{"shape":"NodeOutputField"},
+      "max":2,
+      "min":1
     },
     "NodeOutputName":{
       "type":"string",
@@ -6463,6 +7284,24 @@
       "min":1,
       "pattern":"^s3://[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]/.{1,1024}$"
     },
+    "SatisfiedCondition":{
+      "type":"structure",
+      "required":["conditionName"],
+      "members":{
+        "conditionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the condition that was satisfied.</p>"
+        }
+      },
+      "documentation":"<p>Represents a condition that was satisfied during a condition node evaluation in a flow's async execution.</p> <note> <p>Asynchronous flows is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
+      "sensitive":true
+    },
+    "SatisfiedConditions":{
+      "type":"list",
+      "member":{"shape":"SatisfiedCondition"},
+      "max":5,
+      "min":1
+    },
     "SearchType":{
       "type":"string",
       "enum":[
@@ -6635,6 +7474,91 @@
       "type":"integer",
       "box":true,
       "min":0
+    },
+    "StartFlowExecutionRequest":{
+      "type":"structure",
+      "required":[
+        "flowAliasIdentifier",
+        "flowIdentifier",
+        "inputs"
+      ],
+      "members":{
+        "flowAliasIdentifier":{
+          "shape":"FlowAliasIdentifier",
+          "documentation":"<p>The unique identifier of the flow alias to use for the async execution.</p>",
+          "location":"uri",
+          "locationName":"flowAliasIdentifier"
+        },
+        "flowExecutionName":{
+          "shape":"FlowExecutionName",
+          "documentation":"<p>The unique name for the async execution. If you don't provide one, a system-generated name is used.</p>"
+        },
+        "flowIdentifier":{
+          "shape":"FlowIdentifier",
+          "documentation":"<p>The unique identifier of the flow to execute.</p>",
+          "location":"uri",
+          "locationName":"flowIdentifier"
+        },
+        "inputs":{
+          "shape":"FlowInputs",
+          "documentation":"<p>The input data required for the async execution. This must match the input schema defined in the flow.</p>"
+        },
+        "modelPerformanceConfiguration":{
+          "shape":"ModelPerformanceConfiguration",
+          "documentation":"<p>The performance settings for the foundation model used in the async execution.</p>"
+        }
+      }
+    },
+    "StartFlowExecutionResponse":{
+      "type":"structure",
+      "members":{
+        "executionArn":{
+          "shape":"FlowExecutionIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the async execution.</p>"
+        }
+      }
+    },
+    "StopFlowExecutionRequest":{
+      "type":"structure",
+      "required":[
+        "executionIdentifier",
+        "flowAliasIdentifier",
+        "flowIdentifier"
+      ],
+      "members":{
+        "executionIdentifier":{
+          "shape":"FlowExecutionIdentifier",
+          "documentation":"<p>The unique identifier of the async execution to stop.</p>",
+          "location":"uri",
+          "locationName":"executionIdentifier"
+        },
+        "flowAliasIdentifier":{
+          "shape":"FlowAliasIdentifier",
+          "documentation":"<p>The unique identifier of the flow alias used for the execution.</p>",
+          "location":"uri",
+          "locationName":"flowAliasIdentifier"
+        },
+        "flowIdentifier":{
+          "shape":"FlowIdentifier",
+          "documentation":"<p>The unique identifier of the flow.</p>",
+          "location":"uri",
+          "locationName":"flowIdentifier"
+        }
+      }
+    },
+    "StopFlowExecutionResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "executionArn":{
+          "shape":"FlowExecutionIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the async execution that was stopped.</p>"
+        },
+        "status":{
+          "shape":"FlowExecutionStatus",
+          "documentation":"<p>The updated status of the async execution after the stop request. This will typically be ABORTED if the execution was successfully stopped.</p>"
+        }
+      }
     },
     "StopSequences":{
       "type":"list",
@@ -7129,6 +8053,12 @@
     "Verb":{
       "type":"string",
       "sensitive":true
+    },
+    "Version":{
+      "type":"string",
+      "max":5,
+      "min":1,
+      "pattern":"^(DRAFT|[0-9]{0,4}[1-9][0-9]{0,4})$"
     }
   },
   "documentation":"<p>Contains APIs related to model invocation and querying of knowledge bases.</p>"

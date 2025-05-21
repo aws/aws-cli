@@ -4312,7 +4312,7 @@
         "requestUri":"/"
       },
       "input":{"shape":"DisassociateAddressRequest"},
-      "documentation":"<p>Disassociates an Elastic IP address from the instance or network interface it's associated with.</p> <p>This is an idempotent operation. If you perform the operation more than once, Amazon EC2 doesn't return an error.</p>"
+      "documentation":"<p>Disassociates an Elastic IP address from the instance or network interface it's associated with.</p> <p>This is an idempotent operation. If you perform the operation more than once, Amazon EC2 doesn't return an error.</p> <p>An address cannot be disassociated if the all of the following conditions are met:</p> <ul> <li> <p>Network interface has a <code>publicDualStackDnsName</code> publicDnsName</p> </li> <li> <p>Public IPv4 address is the primary public IPv4 address</p> </li> <li> <p>Network interface only has one remaining public IPv4 address</p> </li> </ul>"
     },
     "DisassociateCapacityReservationBillingOwner":{
       "name":"DisassociateCapacityReservationBillingOwner",
@@ -5706,6 +5706,16 @@
       "output":{"shape":"ModifyPrivateDnsNameOptionsResult"},
       "documentation":"<p>Modifies the options for instance hostnames for the specified instance.</p>"
     },
+    "ModifyPublicIpDnsNameOptions":{
+      "name":"ModifyPublicIpDnsNameOptions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyPublicIpDnsNameOptionsRequest"},
+      "output":{"shape":"ModifyPublicIpDnsNameOptionsResult"},
+      "documentation":"<p>Modify public hostname options for a network interface. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-naming.html\">EC2 instance hostnames, DNS names, and domains</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
     "ModifyReservedInstances":{
       "name":"ModifyReservedInstances",
       "http":{
@@ -6720,7 +6730,7 @@
       },
       "input":{"shape":"TerminateInstancesRequest"},
       "output":{"shape":"TerminateInstancesResult"},
-      "documentation":"<p>Shuts down the specified instances. This operation is <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">idempotent</a>; if you terminate an instance more than once, each call succeeds.</p> <p>If you specify multiple instances and the request fails (for example, because of a single incorrect instance ID), none of the instances are terminated.</p> <p>If you terminate multiple instances across multiple Availability Zones, and one or more of the specified instances are enabled for termination protection, the request fails with the following results:</p> <ul> <li> <p>The specified instances that are in the same Availability Zone as the protected instance are not terminated.</p> </li> <li> <p>The specified instances that are in different Availability Zones, where no other specified instances are protected, are successfully terminated.</p> </li> </ul> <p>For example, say you have the following instances:</p> <ul> <li> <p>Instance A: <code>us-east-1a</code>; Not protected</p> </li> <li> <p>Instance B: <code>us-east-1a</code>; Not protected</p> </li> <li> <p>Instance C: <code>us-east-1b</code>; Protected</p> </li> <li> <p>Instance D: <code>us-east-1b</code>; not protected</p> </li> </ul> <p>If you attempt to terminate all of these instances in the same request, the request reports failure with the following results:</p> <ul> <li> <p>Instance A and Instance B are successfully terminated because none of the specified instances in <code>us-east-1a</code> are enabled for termination protection.</p> </li> <li> <p>Instance C and Instance D fail to terminate because at least one of the specified instances in <code>us-east-1b</code> (Instance C) is enabled for termination protection.</p> </li> </ul> <p>Terminated instances remain visible after termination (for approximately one hour).</p> <p>By default, Amazon EC2 deletes all EBS volumes that were attached when the instance launched. Volumes attached after instance launch continue running.</p> <p>You can stop, start, and terminate EBS-backed instances. You can only terminate instance store-backed instances. What happens to an instance differs if you stop or terminate it. For example, when you stop an instance, the root device and any other devices attached to the instance persist. When you terminate an instance, any attached EBS volumes with the <code>DeleteOnTermination</code> block device mapping parameter set to <code>true</code> are automatically deleted. For more information about the differences between stopping and terminating instances, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Amazon EC2 instance state changes</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>For information about troubleshooting, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstancesShuttingDown.html\">Troubleshooting terminating your instance</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Shuts down the specified instances. This operation is <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">idempotent</a>; if you terminate an instance more than once, each call succeeds.</p> <p>If you specify multiple instances and the request fails (for example, because of a single incorrect instance ID), none of the instances are terminated.</p> <p>If you terminate multiple instances across multiple Availability Zones, and one or more of the specified instances are enabled for termination protection, the request fails with the following results:</p> <ul> <li> <p>The specified instances that are in the same Availability Zone as the protected instance are not terminated.</p> </li> <li> <p>The specified instances that are in different Availability Zones, where no other specified instances are protected, are successfully terminated.</p> </li> </ul> <p>For example, say you have the following instances:</p> <ul> <li> <p>Instance A: <code>us-east-1a</code>; Not protected</p> </li> <li> <p>Instance B: <code>us-east-1a</code>; Not protected</p> </li> <li> <p>Instance C: <code>us-east-1b</code>; Protected</p> </li> <li> <p>Instance D: <code>us-east-1b</code>; not protected</p> </li> </ul> <p>If you attempt to terminate all of these instances in the same request, the request reports failure with the following results:</p> <ul> <li> <p>Instance A and Instance B are successfully terminated because none of the specified instances in <code>us-east-1a</code> are enabled for termination protection.</p> </li> <li> <p>Instance C and Instance D fail to terminate because at least one of the specified instances in <code>us-east-1b</code> (Instance C) is enabled for termination protection.</p> </li> </ul> <p>Terminated instances remain visible after termination (for approximately one hour).</p> <p>By default, Amazon EC2 deletes all EBS volumes that were attached when the instance launched. Volumes attached after instance launch continue running.</p> <p>You can stop, start, and terminate EBS-backed instances. You can only terminate instance store-backed instances. What happens to an instance differs if you stop or terminate it. For example, when you stop an instance, the root device and any other devices attached to the instance persist. When you terminate an instance, any attached EBS volumes with the <code>DeleteOnTermination</code> block device mapping parameter set to <code>true</code> are automatically deleted. For more information about the differences between stopping and terminating instances, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Instance lifecycle</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>For more information about troubleshooting, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstancesShuttingDown.html\">Troubleshooting terminating your instance</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "UnassignIpv6Addresses":{
       "name":"UnassignIpv6Addresses",
@@ -47877,6 +47887,37 @@
         }
       }
     },
+    "ModifyPublicIpDnsNameOptionsRequest":{
+      "type":"structure",
+      "required":[
+        "NetworkInterfaceId",
+        "HostnameType"
+      ],
+      "members":{
+        "NetworkInterfaceId":{
+          "shape":"NetworkInterfaceId",
+          "documentation":"<p>A network interface ID.</p>"
+        },
+        "HostnameType":{
+          "shape":"PublicIpDnsOption",
+          "documentation":"<p>The public hostname type. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-naming.html\">EC2 instance hostnames, DNS names, and domains</a> in the <i>Amazon EC2 User Guide</i>.</p> <ul> <li> <p> <code>public-dual-stack-dns-name</code>: A dual-stack public hostname for a network interface. Requests from within the VPC resolve to both the private IPv4 address and the IPv6 Global Unicast Address of the network interface. Requests from the internet resolve to both the public IPv4 and the IPv6 GUA address of the network interface.</p> </li> <li> <p> <code>public-ipv4-dns-name</code>: An IPv4-enabled public hostname for a network interface. Requests from within the VPC resolve to the private primary IPv4 address of the network interface. Requests from the internet resolve to the public IPv4 address of the network interface.</p> </li> <li> <p> <code>public-ipv6-dns-name</code>: An IPv6-enabled public hostname for a network interface. Requests from within the VPC or from the internet resolve to the IPv6 GUA of the network interface. </p> </li> </ul>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ModifyPublicIpDnsNameOptionsResult":{
+      "type":"structure",
+      "members":{
+        "Successful":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether or not the request was successful.</p>",
+          "locationName":"successful"
+        }
+      }
+    },
     "ModifyReservedInstancesRequest":{
       "type":"structure",
       "required":[
@@ -50793,8 +50834,18 @@
         },
         "PrivateDnsName":{
           "shape":"String",
-          "documentation":"<p>The private DNS name.</p>",
+          "documentation":"<p>The private hostname. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-naming.html\">EC2 instance hostnames, DNS names, and domains</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"privateDnsName"
+        },
+        "PublicDnsName":{
+          "shape":"String",
+          "documentation":"<p>A public hostname. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-naming.html\">EC2 instance hostnames, DNS names, and domains</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"publicDnsName"
+        },
+        "PublicIpDnsNameOptions":{
+          "shape":"PublicIpDnsNameOptions",
+          "documentation":"<p>Public hostname type options. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-naming.html\">EC2 instance hostnames, DNS names, and domains</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"publicIpDnsNameOptions"
         },
         "PrivateIpAddress":{
           "shape":"String",
@@ -51067,6 +51118,11 @@
           "shape":"String",
           "documentation":"<p>The IPv6 address.</p>",
           "locationName":"ipv6Address"
+        },
+        "PublicIpv6DnsName":{
+          "shape":"String",
+          "documentation":"<p>An IPv6-enabled public hostname for a network interface. Requests from within the VPC or from the internet resolve to the IPv6 GUA of the network interface. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-naming.html\">EC2 instance hostnames, DNS names, and domains</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"publicIpv6DnsName"
         },
         "IsPrimaryIpv6":{
           "shape":"Boolean",
@@ -53290,6 +53346,40 @@
       "documentation":"<p>The status of an updated pointer (PTR) record for an Elastic IP address.</p>"
     },
     "PublicIpAddress":{"type":"string"},
+    "PublicIpDnsNameOptions":{
+      "type":"structure",
+      "members":{
+        "DnsHostnameType":{
+          "shape":"String",
+          "documentation":"<p>The public hostname type. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-naming.html\">EC2 instance hostnames, DNS names, and domains</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"dnsHostnameType"
+        },
+        "PublicIpv4DnsName":{
+          "shape":"String",
+          "documentation":"<p>An IPv4-enabled public hostname for a network interface. Requests from within the VPC resolve to the private primary IPv4 address of the network interface. Requests from the internet resolve to the public IPv4 address of the network interface.</p>",
+          "locationName":"publicIpv4DnsName"
+        },
+        "PublicIpv6DnsName":{
+          "shape":"String",
+          "documentation":"<p>An IPv6-enabled public hostname for a network interface. Requests from within the VPC or from the internet resolve to the IPv6 GUA of the network interface.</p>",
+          "locationName":"publicIpv6DnsName"
+        },
+        "PublicDualStackDnsName":{
+          "shape":"String",
+          "documentation":"<p>A dual-stack public hostname for a network interface. Requests from within the VPC resolve to both the private IPv4 address and the IPv6 Global Unicast Address of the network interface. Requests from the internet resolve to both the public IPv4 and the IPv6 GUA address of the network interface.</p>",
+          "locationName":"publicDualStackDnsName"
+        }
+      },
+      "documentation":"<p>Public hostname type options. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-naming.html\">EC2 instance hostnames, DNS names, and domains</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "PublicIpDnsOption":{
+      "type":"string",
+      "enum":[
+        "public-dual-stack-dns-name",
+        "public-ipv4-dns-name",
+        "public-ipv6-dns-name"
+      ]
+    },
     "PublicIpStringList":{
       "type":"list",
       "member":{

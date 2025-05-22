@@ -1,0 +1,30 @@
+Modules:
+  MapTest:
+    Source: ./getatt-map-module.yaml
+    Properties:
+      SimpleMap:
+        default:
+          Name: "default-bucket"
+          Region: "us-east-1"
+        dev:
+          Name: "dev-bucket"
+          Region: "us-west-2"
+        prod:
+          Name: "prod-bucket"
+          Region: "us-east-1"
+      ComplexMap:
+        dev:
+          Environment: "Development"
+          Tags:
+            - Key: "Stage"
+              Value: "Dev"
+        prod:
+          Environment: "Production"
+          Tags:
+            - Key: "Stage"
+              Value: "Prod"
+Outputs:
+  BucketName:
+    Value: !GetAtt MapTest.BucketName
+  SimpleMapName:
+    Value: !GetAtt MapTest.MapKeyOutput

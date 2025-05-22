@@ -1,0 +1,85 @@
+Parameters:
+
+  TableName:
+    Type: String
+  
+  LambdaRoleName:
+    Type: String
+    Default: ""
+
+  HasLambda:
+    Type: Boolean
+    Default: false
+
+Conditions:
+  IfLambdaRoleIsSet:
+    Fn::Equals:
+      - !Ref HasLambda
+      - true 
+
+  Nested:
+    Fn::And:
+      - Condition: IfLambdaRoleIsSet
+      - Fn::Equals:
+        - 1
+        - 1
+
+Modules:
+  HideMe:
+    Condition: IfLambdaRoleIsSet
+    Source: conditional-module2.yaml 
+
+Resources:
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      TableName: !Sub ${TableName}
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  TestResourceConditional:
+    Type: A::B::C
+    Properties:
+      Show:
+        Fn::If:
+        - IfLambdaRoleIsSet
+        - Foo
+        - !Ref AWS::NoValue
+      Hide:
+        Fn::If:
+        - IfLambdaRoleIsSet
+        - !Ref AWS::NoValue
+        - Foo
+      ShowA:
+        Fn::If:
+        - IfLambdaRoleIsSet
+        - A
+        - B
+
+  LambdaPolicy:
+    Type: AWS::IAM::RolePolicy
+    Condition: IfLambdaRoleIsSet
+    Metadata:
+      Comment: This resource is created only if the LambdaRoleArn is set
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - dynamodb:BatchGetItem
+              - dynamodb:GetItem
+              - dynamodb:Query
+              - dynamodb:Scan
+              - dynamodb:BatchWriteItem
+              - dynamodb:PutItem
+              - dynamodb:UpdateItem
+            Effect: Allow
+            Resource: 
+              - !GetAtt Table.Arn
+      PolicyName: !Sub ${TableName}-policy
+      RoleName: !Ref LambdaRoleName
+

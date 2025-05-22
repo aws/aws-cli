@@ -25,11 +25,24 @@ from contextlib import contextmanager
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
     yaml_parse
+from awscli.customizations.cloudformation.modules.process import (
+    process_module_section
+)
+from awscli.customizations.cloudformation.modules.constants import (
+    process_constants, 
+    replace_constants
+)
+from awscli.customizations.cloudformation.modules.read import (
+    is_s3_url,
+    parse_s3_url,
+)
 import jmespath
 
 
 LOG = logging.getLogger(__name__)
 
+MODULES = "Modules"
+RESOURCES = "Resources"
 
 def is_path_value_valid(path):
     return isinstance(path, str)
@@ -40,14 +53,6 @@ def make_abs_path(directory, path):
         return os.path.normpath(os.path.join(directory, path))
     else:
         return path
-
-
-def is_s3_url(url):
-    try:
-        parse_s3_url(url)
-        return True
-    except ValueError:
-        return False
 
 
 def is_local_folder(path):
@@ -62,38 +67,6 @@ def is_zip_file(path):
     return (
         is_path_value_valid(path) and
         zipfile.is_zipfile(path))
-
-
-def parse_s3_url(url,
-                 bucket_name_property="Bucket",
-                 object_key_property="Key",
-                 version_property=None):
-
-    if isinstance(url, str) \
-            and url.startswith("s3://"):
-
-        # Python < 2.7.10 don't parse query parameters from URI with custom
-        # scheme such as s3://blah/blah. As a workaround, remove scheme
-        # altogether to trigger the parser "s3://foo/bar?v=1" =>"//foo/bar?v=1"
-        parsed = urlparse.urlparse(url[3:])
-        query = urlparse.parse_qs(parsed.query)
-
-        if parsed.netloc and parsed.path:
-            result = dict()
-            result[bucket_name_property] = parsed.netloc
-            result[object_key_property] = parsed.path.lstrip('/')
-
-            # If there is a query string that has a single versionId field,
-            # set the object version and return
-            if version_property is not None \
-                    and 'versionId' in query \
-                    and len(query['versionId']) == 1:
-                result[version_property] = query['versionId'][0]
-
-            return result
-
-    raise ValueError("URL given to the parse method is not a valid S3 url "
-                     "{0}".format(url))
 
 
 def upload_local_artifacts(resource_id, resource_dict, property_name,
@@ -139,6 +112,9 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
 
     local_path = make_abs_path(parent_dir, local_path)
 
+    if uploader is None:
+        raise exceptions.PackageBucketRequiredError()
+
     # Or, pointing to a folder. Zip the folder and upload
     if is_local_folder(local_path):
         return zip_and_upload(local_path, uploader)
@@ -154,6 +130,8 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
 
 
 def zip_and_upload(local_path, uploader):
+    if uploader is None:
+        raise exceptions.PackageBucketRequiredError()
     with zip_folder(local_path) as zipfile:
             return uploader.upload_with_dedup(zipfile)
 
@@ -472,6 +450,9 @@ class CloudFormationStackResource(Resource):
 
         exported_template_str = yaml_dump(exported_template_dict)
 
+        if self.uploader is None:
+            raise exceptions.PackageBucketRequiredError()
+
         with mktempfile() as temporary_file:
             temporary_file.write(exported_template_str)
             temporary_file.flush()
@@ -558,6 +539,9 @@ def include_transform_export_handler(template_dict, uploader, parent_dir):
         return template_dict
 
     # We are confident at this point that `include_location` is a string containing the local path
+    if uploader is None:
+        raise exceptions.PackageBucketRequiredError()
+
     abs_include_location = os.path.join(parent_dir, include_location)
     if is_local_file(abs_include_location):
         template_dict["Parameters"]["Location"] = uploader.upload_with_dedup(abs_include_location)
@@ -582,7 +566,9 @@ class Template(object):
 
     def __init__(self, template_path, parent_dir, uploader,
                  resources_to_export=RESOURCES_EXPORT_LIST,
-                 metadata_to_export=METADATA_EXPORT_LIST):
+                 metadata_to_export=METADATA_EXPORT_LIST,
+                 no_source_map=False, no_metrics=False, 
+                 s3_client=None):
         """
         Reads the template and makes it ready for export
         """
@@ -591,8 +577,8 @@ class Template(object):
             raise ValueError("parent_dir parameter must be "
                              "an absolute path to a folder {0}"
                              .format(parent_dir))
-
         abs_template_path = make_abs_path(parent_dir, template_path)
+        self.module_parent_path = abs_template_path
         template_dir = os.path.dirname(abs_template_path)
 
         with open(abs_template_path, "r") as handle:
@@ -603,6 +589,9 @@ class Template(object):
         self.resources_to_export = resources_to_export
         self.metadata_to_export = metadata_to_export
         self.uploader = uploader
+        self.no_metrics = no_metrics
+        self.no_source_map = no_source_map
+        self.s3_client = s3_client
 
     def export_global_artifacts(self, template_dict):
         """
@@ -646,19 +635,44 @@ class Template(object):
     def export(self):
         """
         Exports the local artifacts referenced by the given template to an
-        s3 bucket.
+        s3 bucket, and/or packages a template with module.
 
-        :return: The template with references to artifacts that have been
-        exported to s3.
+        :return: The modified template (which is altered in place)
         """
-        self.template_dict = self.export_metadata(self.template_dict)
 
-        if "Resources" not in self.template_dict:
-            return self.template_dict
+        # Process constants
+        try:
+            constants = process_constants(self.template_dict)
+            if constants is not None:
+                replace_constants(constants, self.template_dict)
+        except Exception as e:
+            msg=f"Failed to process Constants section: {e}"
+            LOG.exception(msg)
+            raise exceptions.InvalidModuleError(msg=msg)
+
+        # Process modules
+        try:
+            self.template_dict = process_module_section(
+                    self.template_dict, 
+                    self.template_dir,
+                    self.module_parent_path, 
+                    None, 
+                    self.no_metrics, 
+                    self.no_source_map, 
+                    self.s3_client)
+        except Exception as e:
+            msg=f"Failed to process Modules section: {e}"
+            LOG.exception(msg)
+            raise exceptions.InvalidModuleError(msg=msg)
+
+        self.template_dict = self.export_metadata(self.template_dict)
 
         self.template_dict = self.export_global_artifacts(self.template_dict)
 
-        self.export_resources(self.template_dict["Resources"])
+        if RESOURCES not in self.template_dict:
+            return self.template_dict
+
+        self.export_resources(self.template_dict[RESOURCES])
 
         return self.template_dict
 

@@ -1,0 +1,23 @@
+Parameters:
+  Name:
+    Type: String
+  SubName:
+    Type: String
+Resources:
+  Bucket1:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${Name}
+      X: !Sub "${SubName}"
+      Y:
+        - !Sub noparent0-${SubName}
+        - !Sub noparent1-${SubName}
+      Z:
+        - !Ref SubName
+        - !Ref Bucket2
+        - ZZ:
+            ZZZ:
+              ZZZZ: !Sub "${SubName}"
+  Bucket2:
+    Type: AWS::S3::Bucket
+

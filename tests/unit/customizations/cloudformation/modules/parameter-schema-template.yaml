@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Template that uses a module with parameter schema validation'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: Dev
+    AllowedValues:
+      - Dev
+      - Test
+      - Prod
+
+Modules:
+  NetworkModule:
+    Source: ./parameter-schema-module.yaml
+    Properties:
+      VpcConfig:
+        CidrBlock: 10.0.0.0/16
+        EnableDnsSupport: true
+        Tags:
+          - Key: Environment
+            Value: !Ref Environment
+          - Key: Name
+            Value: MainVPC
+      Subnets:
+        - CidrBlock: 10.0.0.0/24
+          AvailabilityZone: us-east-1a
+          Type: Public
+        - CidrBlock: 10.0.1.0/24
+          AvailabilityZone: us-east-1b
+          Type: Public

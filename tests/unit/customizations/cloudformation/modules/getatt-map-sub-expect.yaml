@@ -1,0 +1,14 @@
+Resources:
+  DatabaseDynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: prod-users
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 50
+        WriteCapacityUnits: 25
+Outputs:
+  TableNameWithSub:
+    Value: !Sub "The table name is ${DatabaseDynamoDBTable.TableName}"
+  EnvironmentType:
+    Value: Production

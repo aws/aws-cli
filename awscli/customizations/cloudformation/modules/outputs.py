@@ -52,10 +52,6 @@ def process_module_outputs(module):
     In the parent you can !GetAtt ModuleName.OutputName
     This will be converted so that it's correct in the packaged template.
 
-    The parent can also refer to module Properties as a convenience,
-    so !GetAtt ModuleName.PropertyName will simply copy the
-    configured property value.
-
     Recurse over all sections in the parent template looking for
     GetAtts and Subs that reference a module Outputs value.
 

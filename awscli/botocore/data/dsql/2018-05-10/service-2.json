@@ -295,6 +295,10 @@
           "shape":"DeletionProtectionEnabled",
           "documentation":"<p>If enabled, you can't delete your cluster. You must first disable this property before you can delete your cluster.</p>"
         },
+        "kmsEncryptionKey":{
+          "shape":"KmsEncryptionKey",
+          "documentation":"<p>The KMS key that encrypts and protects the data on your cluster. You can specify the ARN, ID, or alias of an existing key or have Amazon Web Services create a default key for you.</p>"
+        },
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>A map of key and value pairs to use to tag your cluster.</p>"
@@ -339,6 +343,10 @@
         "multiRegionProperties":{
           "shape":"MultiRegionProperties",
           "documentation":"<p>The multi-Region cluster configuration details that were set during cluster creation</p>"
+        },
+        "encryptionDetails":{
+          "shape":"EncryptionDetails",
+          "documentation":"<p>The encryption configuration for the cluster that was specified during the creation process, including the KMS key identifier and encryption state.</p>"
         },
         "deletionProtectionEnabled":{
           "shape":"DeletionProtectionEnabled",
@@ -399,6 +407,44 @@
       "documentation":"<p>Indicates whether deletion protection is enabled for a cluster.</p>",
       "box":true
     },
+    "EncryptionDetails":{
+      "type":"structure",
+      "required":[
+        "encryptionType",
+        "encryptionStatus"
+      ],
+      "members":{
+        "encryptionType":{
+          "shape":"EncryptionType",
+          "documentation":"<p>The type of encryption that protects the data on your cluster.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key that encrypts data in the cluster.</p>"
+        },
+        "encryptionStatus":{
+          "shape":"EncryptionStatus",
+          "documentation":"<p>The status of encryption for the cluster.</p>"
+        }
+      },
+      "documentation":"<p>Configuration details about encryption for the cluster including the KMS key ARN, encryption type, and encryption status.</p>"
+    },
+    "EncryptionStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "UPDATING",
+        "KMS_KEY_INACCESSIBLE",
+        "ENABLING"
+      ]
+    },
+    "EncryptionType":{
+      "type":"string",
+      "enum":[
+        "AWS_OWNED_KMS_KEY",
+        "CUSTOMER_MANAGED_KMS_KEY"
+      ]
+    },
     "GetClusterInput":{
       "type":"structure",
       "required":["identifier"],
@@ -445,7 +491,11 @@
           "shape":"MultiRegionProperties",
           "documentation":"<p>Returns the current multi-Region cluster configuration, including witness region and linked cluster information.</p>"
         },
-        "tags":{"shape":"TagMap"}
+        "tags":{"shape":"TagMap"},
+        "encryptionDetails":{
+          "shape":"EncryptionDetails",
+          "documentation":"<p>The current encryption configuration details for the cluster.</p>"
+        }
       },
       "documentation":"<p>The output of a cluster.</p>"
     },
@@ -493,6 +543,13 @@
       "fault":true,
       "retryable":{"throttling":false}
     },
+    "KmsEncryptionKey":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[a-zA-Z0-9:/_-]+"
+    },
+    "KmsKeyArn":{"type":"string"},
     "ListClustersInput":{
       "type":"structure",
       "members":{
@@ -760,6 +817,10 @@
         "deletionProtectionEnabled":{
           "shape":"DeletionProtectionEnabled",
           "documentation":"<p>Specifies whether to enable deletion protection in your cluster.</p>"
+        },
+        "kmsEncryptionKey":{
+          "shape":"KmsEncryptionKey",
+          "documentation":"<p>The KMS key that encrypts and protects the data on your cluster. You can specify the ARN, ID, or alias of an existing key or have Amazon Web Services create a default key for you.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",

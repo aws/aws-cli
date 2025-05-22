@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.27.21
+=======
+
+* api-change:``dsql``: Features: support for customer managed encryption keys
+* api-change:``glue``: This release supports additional ConversionSpec parameter as part of IntegrationPartition Structure in CreateIntegrationTableProperty API. This parameter is referred to apply appropriate column transformation for columns that are used for timestamp based partitioning
+* bugfix:s3transfer: Validate ETag of stored object during multipart downloads
+* api-change:``auditmanager``: With this release, the AssessmentControl description field has been deprecated, as of May 19, 2025. Additionally, the UpdateAssessment API can now return a ServiceQuotaExceededException when applicable service quotas are exceeded.
+* api-change:``amp``: Add QueryLoggingConfiguration APIs for Amazon Managed Prometheus
+
+
 2.27.20
 =======
 

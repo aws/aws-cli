@@ -75,6 +75,7 @@ from awscli.logger import (
     set_stream_logger,
 )
 from awscli.plugin import load_plugins
+from awscli.telemetry import add_session_id_component_to_user_agent_extra
 from awscli.utils import (
     IMDSRegionProvider,
     OutputStreamFactory,
@@ -176,6 +177,7 @@ def _set_user_agent_for_session(session):
     session.user_agent_version = __version__
     _add_distribution_source_to_user_agent(session)
     _add_linux_distribution_to_user_agent(session)
+    add_session_id_component_to_user_agent_extra(session)
 
 
 def no_pager_handler(session, parsed_args, **kwargs):

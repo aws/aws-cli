@@ -299,7 +299,7 @@ class Summarizer:
             ),
             'mean.run.cpu': Metric(
                 'Mean CPU usage of a single command execution.',
-                'Percentage',
+                'Percent',
                 self._sums['cpu'] / len(samples)
             ),
             'peak.run.memory': Metric(
@@ -309,7 +309,7 @@ class Summarizer:
             ),
             'peak.run.cpu': Metric(
                 'Peak CPU usage of a single command execution.',
-                'Percentage',
+                'Percent',
                 max_cpu
             ),
             'p50.run.memory': Metric(
@@ -324,12 +324,12 @@ class Summarizer:
             ),
             'p50.run.cpu': Metric(
                 'p50 CPU usage of a single command execution.',
-                'Percentage',
+                'Percent',
                 cpu_p50
             ),
             'p95.run.cpu': Metric(
                 'p95 CPU usage of a single command execution.',
-                'Percentage',
+                'Percent',
                 cpu_p95
             ),
         }

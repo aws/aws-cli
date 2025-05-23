@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.40.22
+=======
+
+* api-change:``ec2``: This release adds support for the C7i-flex, M7i-flex, I7i, I7ie, I8g, P6-b200, Trn2, C8gd, M8gd and R8gd instances
+* api-change:``security-ir``: Update PrincipalId pattern documentation to reflect what user should receive back from the API call
+
+
 1.40.21
 =======
 

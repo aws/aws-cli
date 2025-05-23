@@ -46,10 +46,6 @@ def utils():
         ),
         ("docutils>=0.10,<0.16", Requirement("docutils", ">=0.10", "<0.16")),
         (
-            "cryptography>=3.3.2,<37.0.0",
-            Requirement("cryptography", ">=3.3.2", "<37.0.0"),
-        ),
-        (
             "ruamel.yaml>=0.15.0,<=0.17.21",
             Requirement("ruamel.yaml", ">=0.15.0", "<=0.17.21"),
         ),

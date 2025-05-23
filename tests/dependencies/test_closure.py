@@ -162,14 +162,11 @@ class TestDependencyClosure:
     def test_expected_runtime_dependencies(self, awscli_package):
         expected_dependencies = {
             "awscrt",
-            "cffi",
             "colorama",
-            "cryptography",
             "distro",
             "docutils",
             "jmespath",
             "prompt-toolkit",
-            "pycparser",
             "python-dateutil",
             "ruamel.yaml",
             "ruamel.yaml.clib",
@@ -187,8 +184,6 @@ class TestDependencyClosure:
 
     def test_expected_unbounded_runtime_dependencies(self, awscli_package):
         expected_unbounded_dependencies = {
-            "cffi",  # Transitive dependency from cryptography
-            "pycparser",  # Transitive dependency from cffi
             "six",  # Transitive dependency from python-dateutil
             "wcwidth",  # Transitive dependency from prompt-toolkit
         }

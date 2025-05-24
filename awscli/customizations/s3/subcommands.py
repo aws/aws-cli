@@ -1113,19 +1113,7 @@ class CommandArchitecture(object):
         elif self.cmd == 'cp' and self.parameters['is_stream']:
             command_dict = {'setup': [stream_file_info],
                             's3_handler': [s3_transfer_handler]}
-        elif self.cmd == 'cp':
-            command_dict = {'setup': [files],
-                            'file_generator': [file_generator],
-                            'filters': [create_filter(self.parameters)],
-                            'file_info_builder': [file_info_builder],
-                            's3_handler': [s3_transfer_handler]}
-        elif self.cmd == 'rm':
-            command_dict = {'setup': [files],
-                            'file_generator': [file_generator],
-                            'filters': [create_filter(self.parameters)],
-                            'file_info_builder': [file_info_builder],
-                            's3_handler': [s3_transfer_handler]}
-        elif self.cmd == 'mv':
+        elif self.cmd in ['cp', 'rm', 'mv']:
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
                             'filters': [create_filter(self.parameters)],

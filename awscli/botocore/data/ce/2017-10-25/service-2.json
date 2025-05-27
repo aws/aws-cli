@@ -204,6 +204,22 @@
       ],
       "documentation":"<p>Retrieves cost and usage metrics for your account. You can specify which cost and usage-related metric that you want the request to return. For example, you can specify <code>BlendedCosts</code> or <code>UsageQuantity</code>. You can also filter and group your data by various dimensions, such as <code>SERVICE</code> or <code>AZ</code>, in a specific time range. For a complete list of valid dimensions, see the <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_GetDimensionValues.html\">GetDimensionValues</a> operation. Management account in an organization in Organizations have access to all member accounts.</p> <p>For information about filter limitations, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-limits.html\">Quotas and restrictions</a> in the <i>Billing and Cost Management User Guide</i>.</p>"
     },
+    "GetCostAndUsageComparisons":{
+      "name":"GetCostAndUsageComparisons",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCostAndUsageComparisonsRequest"},
+      "output":{"shape":"GetCostAndUsageComparisonsResponse"},
+      "errors":[
+        {"shape":"DataUnavailableException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves cost and usage comparisons for your account between two periods within the last 13 months. If you have enabled multi-year data at monthly granularity, you can go back up to 38 months.</p>"
+    },
     "GetCostAndUsageWithResources":{
       "name":"GetCostAndUsageWithResources",
       "http":{
@@ -239,6 +255,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves an array of Cost Category names and values incurred cost.</p> <note> <p>If some Cost Category names and values are not associated with any cost, they will not be returned by this API.</p> </note>"
+    },
+    "GetCostComparisonDrivers":{
+      "name":"GetCostComparisonDrivers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCostComparisonDriversRequest"},
+      "output":{"shape":"GetCostComparisonDriversResponse"},
+      "errors":[
+        {"shape":"DataUnavailableException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves key factors driving cost changes between two time periods within the last 13 months, such as usage changes, discount changes, and commitment-based savings. If you have enabled multi-year data at monthly granularity, you can go back up to 38 months.</p>"
     },
     "GetCostForecast":{
       "name":"GetCostForecast",
@@ -1023,6 +1055,33 @@
       },
       "documentation":"<p>The configuration for the commitment purchase analysis.</p>"
     },
+    "ComparisonMetricValue":{
+      "type":"structure",
+      "members":{
+        "BaselineTimePeriodAmount":{
+          "shape":"GenericString",
+          "documentation":"<p>The numeric value for the baseline time period measurement.</p>"
+        },
+        "ComparisonTimePeriodAmount":{
+          "shape":"GenericString",
+          "documentation":"<p>The numeric value for the comparison time period measurement.</p>"
+        },
+        "Difference":{
+          "shape":"GenericString",
+          "documentation":"<p>The calculated difference between <code>ComparisonTimePeriodAmount</code> and <code>BaselineTimePeriodAmount</code>.</p>"
+        },
+        "Unit":{
+          "shape":"GenericString",
+          "documentation":"<p>The unit of measurement applicable to all numeric values in this comparison.</p>"
+        }
+      },
+      "documentation":"<p>Contains cost or usage metric values for comparing two time periods. Each value includes amounts for the baseline and comparison time periods, their difference, and the unit of measurement.</p>"
+    },
+    "ComparisonMetrics":{
+      "type":"map",
+      "key":{"shape":"MetricName"},
+      "value":{"shape":"ComparisonMetricValue"}
+    },
     "Context":{
       "type":"string",
       "enum":[
@@ -1155,6 +1214,27 @@
     "CostAllocationTagsMaxResults":{
       "type":"integer",
       "max":1000,
+      "min":1
+    },
+    "CostAndUsageComparison":{
+      "type":"structure",
+      "members":{
+        "CostAndUsageSelector":{"shape":"Expression"},
+        "Metrics":{
+          "shape":"ComparisonMetrics",
+          "documentation":"<p>A mapping of metric names to their comparison values.</p>"
+        }
+      },
+      "documentation":"<p>Represents a comparison of cost and usage metrics between two time periods.</p>"
+    },
+    "CostAndUsageComparisons":{
+      "type":"list",
+      "member":{"shape":"CostAndUsageComparison"}
+    },
+    "CostAndUsageComparisonsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":2000,
       "min":1
     },
     "CostCategory":{
@@ -1443,6 +1523,53 @@
       "type":"list",
       "member":{"shape":"CostCategoryValue"}
     },
+    "CostComparisonDriver":{
+      "type":"structure",
+      "members":{
+        "CostSelector":{"shape":"Expression"},
+        "Metrics":{
+          "shape":"ComparisonMetrics",
+          "documentation":"<p>A mapping of metric names to their comparison values.</p>"
+        },
+        "CostDrivers":{
+          "shape":"CostDrivers",
+          "documentation":"<p>An array of cost drivers, each representing a cost difference between the baseline and comparison time periods. Each entry also includes a metric delta (for example, usage change) that contributed to the cost variance, along with the identifier and type of change.</p>"
+        }
+      },
+      "documentation":"<p>Represents a collection of cost drivers and their associated metrics for cost comparison analysis.</p>"
+    },
+    "CostComparisonDrivers":{
+      "type":"list",
+      "member":{"shape":"CostComparisonDriver"}
+    },
+    "CostComparisonDriversMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "CostDriver":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"GenericString",
+          "documentation":"<p>The category or classification of the cost driver.</p> <p>Values include: BUNDLED_DISCOUNT, CREDIT, OUT_OF_CYCLE_CHARGE, REFUND, RECURRING_RESERVATION_FEE, RESERVATION_USAGE, RI_VOLUME_DISCOUNT, SAVINGS_PLAN_USAGE, SAVINGS_PLAN_NEGATION, SAVINGS_PLAN_RECURRING_FEE, SUPPORT_FEE, TAX, UPFRONT_RESERVATION_FEE, USAGE_CHANGE, COMMITMENT</p>"
+        },
+        "Name":{
+          "shape":"GenericString",
+          "documentation":"<p>The specific identifier of the cost driver.</p>"
+        },
+        "Metrics":{
+          "shape":"ComparisonMetrics",
+          "documentation":"<p>A mapping of metric names to their comparison values, measuring the impact of this cost driver.</p>"
+        }
+      },
+      "documentation":"<p>Represents factors that contribute to cost variations between the baseline and comparison time periods, including the type of driver, an identifier of the driver, and associated metrics.</p>"
+    },
+    "CostDrivers":{
+      "type":"list",
+      "member":{"shape":"CostDriver"}
+    },
     "Coverage":{
       "type":"structure",
       "members":{
@@ -1717,8 +1844,7 @@
     },
     "DeleteAnomalyMonitorResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAnomalySubscriptionRequest":{
       "type":"structure",
@@ -1732,8 +1858,7 @@
     },
     "DeleteAnomalySubscriptionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteCostCategoryDefinitionRequest":{
       "type":"structure",
@@ -2444,6 +2569,63 @@
         }
       }
     },
+    "GetCostAndUsageComparisonsRequest":{
+      "type":"structure",
+      "required":[
+        "BaselineTimePeriod",
+        "ComparisonTimePeriod",
+        "MetricForComparison"
+      ],
+      "members":{
+        "BillingViewArn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a specific billing view. The ARN is used to specify which particular billing view you want to interact with or retrieve information from when making API calls related to Amazon Web Services Billing and Cost Management features. The BillingViewArn can be retrieved by calling the ListBillingViews API.</p>"
+        },
+        "BaselineTimePeriod":{
+          "shape":"DateInterval",
+          "documentation":"<p>The reference time period for comparison. This time period serves as the baseline against which other cost and usage data will be compared. The interval must start and end on the first day of a month, with a duration of exactly one month.</p>"
+        },
+        "ComparisonTimePeriod":{
+          "shape":"DateInterval",
+          "documentation":"<p>The comparison time period for analysis. This time period's cost and usage data will be compared against the baseline time period. The interval must start and end on the first day of a month, with a duration of exactly one month.</p>"
+        },
+        "MetricForComparison":{
+          "shape":"MetricName",
+          "documentation":"<p>The cost and usage metric to compare. Valid values are <code>AmortizedCost</code>, <code>BlendedCost</code>, <code>NetAmortizedCost</code>, <code>NetUnblendedCost</code>, <code>NormalizedUsageAmount</code>, <code>UnblendedCost</code>, and <code>UsageQuantity</code>.</p>"
+        },
+        "Filter":{"shape":"Expression"},
+        "GroupBy":{
+          "shape":"GroupDefinitions",
+          "documentation":"<p>You can group results using the attributes <code>DIMENSION</code>, <code>TAG</code>, and <code>COST_CATEGORY</code>. </p>"
+        },
+        "MaxResults":{
+          "shape":"CostAndUsageComparisonsMaxResults",
+          "documentation":"<p>The maximum number of results that are returned for the request.</p>",
+          "box":true
+        },
+        "NextPageToken":{
+          "shape":"NextPageToken",
+          "documentation":"<p>The token to retrieve the next set of paginated results.</p>"
+        }
+      }
+    },
+    "GetCostAndUsageComparisonsResponse":{
+      "type":"structure",
+      "members":{
+        "CostAndUsageComparisons":{
+          "shape":"CostAndUsageComparisons",
+          "documentation":"<p>An array of comparison results showing cost and usage metrics between <code>BaselineTimePeriod</code> and <code>ComparisonTimePeriod</code>.</p>"
+        },
+        "TotalCostAndUsage":{
+          "shape":"ComparisonMetrics",
+          "documentation":"<p>A summary of the total cost and usage, comparing amounts between <code>BaselineTimePeriod</code> and <code>ComparisonTimePeriod</code> and their differences. This total represents the aggregate total across all paginated results, if the response spans multiple pages.</p>"
+        },
+        "NextPageToken":{
+          "shape":"NextPageToken",
+          "documentation":"<p>The token to retrieve the next set of paginated results.</p>"
+        }
+      }
+    },
     "GetCostAndUsageRequest":{
       "type":"structure",
       "required":[
@@ -2617,6 +2799,59 @@
         "TotalSize":{
           "shape":"PageSize",
           "documentation":"<p>The total number of objects.</p>"
+        }
+      }
+    },
+    "GetCostComparisonDriversRequest":{
+      "type":"structure",
+      "required":[
+        "BaselineTimePeriod",
+        "ComparisonTimePeriod",
+        "MetricForComparison"
+      ],
+      "members":{
+        "BillingViewArn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a specific billing view. The ARN is used to specify which particular billing view you want to interact with or retrieve information from when making API calls related to Amazon Web Services Billing and Cost Management features. The BillingViewArn can be retrieved by calling the ListBillingViews API.</p>"
+        },
+        "BaselineTimePeriod":{
+          "shape":"DateInterval",
+          "documentation":"<p>The reference time period for comparison. This time period serves as the baseline against which other cost and usage data will be compared. The interval must start and end on the first day of a month, with a duration of exactly one month.</p>"
+        },
+        "ComparisonTimePeriod":{
+          "shape":"DateInterval",
+          "documentation":"<p>The comparison time period for analysis. This time period's cost and usage data will be compared against the baseline time period. The interval must start and end on the first day of a month, with a duration of exactly one month.</p>"
+        },
+        "MetricForComparison":{
+          "shape":"MetricName",
+          "documentation":"<p>The cost and usage metric to compare. Valid values are <code>AmortizedCost</code>, <code>BlendedCost</code>, <code>NetAmortizedCost</code>, <code>NetUnblendedCost</code>, <code>NormalizedUsageAmount</code>, <code>UnblendedCost</code>, and <code>UsageQuantity</code>.</p>"
+        },
+        "Filter":{"shape":"Expression"},
+        "GroupBy":{
+          "shape":"GroupDefinitions",
+          "documentation":"<p>You can group results using the attributes <code>DIMENSION</code>, <code>TAG</code>, and <code>COST_CATEGORY</code>. Note that <code>SERVICE</code> and <code>USAGE_TYPE</code> dimensions are automatically included in the cost comparison drivers analysis.</p>"
+        },
+        "MaxResults":{
+          "shape":"CostComparisonDriversMaxResults",
+          "documentation":"<p>The maximum number of results that are returned for the request.</p>",
+          "box":true
+        },
+        "NextPageToken":{
+          "shape":"NextPageToken",
+          "documentation":"<p>The token to retrieve the next set of paginated results.</p>"
+        }
+      }
+    },
+    "GetCostComparisonDriversResponse":{
+      "type":"structure",
+      "members":{
+        "CostComparisonDrivers":{
+          "shape":"CostComparisonDrivers",
+          "documentation":"<p>An array of comparison results showing factors that drive significant cost differences between <code>BaselineTimePeriod</code> and <code>ComparisonTimePeriod</code>.</p>"
+        },
+        "NextPageToken":{
+          "shape":"NextPageToken",
+          "documentation":"<p>The token to retrieve the next set of paginated results.</p>"
         }
       }
     },
@@ -5332,8 +5567,7 @@
     },
     "StartSavingsPlansPurchaseRecommendationGenerationRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StartSavingsPlansPurchaseRecommendationGenerationResponse":{
       "type":"structure",
@@ -5431,8 +5665,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValues":{
       "type":"structure",
@@ -5596,8 +5829,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UnusedHours":{"type":"string"},
     "UnusedUnits":{"type":"string"},

@@ -4731,6 +4731,16 @@
       "output":{"shape":"ExportVerifiedAccessInstanceClientConfigurationResult"},
       "documentation":"<p>Exports the client configuration for a Verified Access instance.</p>"
     },
+    "GetActiveVpnTunnelStatus":{
+      "name":"GetActiveVpnTunnelStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetActiveVpnTunnelStatusRequest"},
+      "output":{"shape":"GetActiveVpnTunnelStatusResult"},
+      "documentation":"<p>Returns the currently negotiated security parameters for an active VPN tunnel, including IKE version, DH groups, encryption algorithms, and integrity algorithms.</p>"
+    },
     "GetAllowedImagesSettings":{
       "name":"GetAllowedImagesSettings",
       "http":{
@@ -7331,6 +7341,57 @@
         "shape":"ActiveInstance",
         "locationName":"item"
       }
+    },
+    "ActiveVpnTunnelStatus":{
+      "type":"structure",
+      "members":{
+        "Phase1EncryptionAlgorithm":{
+          "shape":"String",
+          "documentation":"<p>The encryption algorithm negotiated in Phase 1 IKE negotiations.</p>",
+          "locationName":"phase1EncryptionAlgorithm"
+        },
+        "Phase2EncryptionAlgorithm":{
+          "shape":"String",
+          "documentation":"<p>The encryption algorithm negotiated in Phase 2 IKE negotiations.</p>",
+          "locationName":"phase2EncryptionAlgorithm"
+        },
+        "Phase1IntegrityAlgorithm":{
+          "shape":"String",
+          "documentation":"<p>The integrity algorithm negotiated in Phase 1 IKE negotiations.</p>",
+          "locationName":"phase1IntegrityAlgorithm"
+        },
+        "Phase2IntegrityAlgorithm":{
+          "shape":"String",
+          "documentation":"<p>The integrity algorithm negotiated in Phase 2 IKE negotiations.</p>",
+          "locationName":"phase2IntegrityAlgorithm"
+        },
+        "Phase1DHGroup":{
+          "shape":"Integer",
+          "documentation":"<p>The Diffie-Hellman group number being used in Phase 1 IKE negotiations.</p>",
+          "locationName":"phase1DHGroup"
+        },
+        "Phase2DHGroup":{
+          "shape":"Integer",
+          "documentation":"<p>The Diffie-Hellman group number being used in Phase 2 IKE negotiations.</p>",
+          "locationName":"phase2DHGroup"
+        },
+        "IkeVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the Internet Key Exchange (IKE) protocol being used.</p>",
+          "locationName":"ikeVersion"
+        },
+        "ProvisioningStatus":{
+          "shape":"VpnTunnelProvisioningStatus",
+          "documentation":"<p>The current provisioning status of the VPN tunnel.</p>",
+          "locationName":"provisioningStatus"
+        },
+        "ProvisioningStatusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current provisioning status.</p>",
+          "locationName":"provisioningStatusReason"
+        }
+      },
+      "documentation":"<p>Contains information about the current security configuration of an active VPN tunnel.</p>"
     },
     "ActivityStatus":{
       "type":"string",
@@ -18293,6 +18354,10 @@
           "shape":"TagSpecificationList",
           "documentation":"<p>The tags to apply to the VPN connection.</p>",
           "locationName":"TagSpecification"
+        },
+        "PreSharedKeyStorage":{
+          "shape":"String",
+          "documentation":"<p>Specifies the storage mode for the pre-shared key (PSK). Valid values are <code>Standard</code>\" (stored in the Site-to-Site VPN service) or <code>SecretsManager</code> (stored in Amazon Web Services Secrets Manager).</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -33795,6 +33860,37 @@
       "type":"string",
       "enum":["ipsec.1"]
     },
+    "GetActiveVpnTunnelStatusRequest":{
+      "type":"structure",
+      "required":[
+        "VpnConnectionId",
+        "VpnTunnelOutsideIpAddress"
+      ],
+      "members":{
+        "VpnConnectionId":{
+          "shape":"VpnConnectionId",
+          "documentation":"<p>The ID of the VPN connection for which to retrieve the active tunnel status.</p>"
+        },
+        "VpnTunnelOutsideIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The external IP address of the VPN tunnel for which to retrieve the active status.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request.</p>"
+        }
+      }
+    },
+    "GetActiveVpnTunnelStatusResult":{
+      "type":"structure",
+      "members":{
+        "ActiveVpnTunnelStatus":{
+          "shape":"ActiveVpnTunnelStatus",
+          "documentation":"<p>Information about the current security configuration of the VPN tunnel.</p>",
+          "locationName":"activeVpnTunnelStatus"
+        }
+      }
+    },
     "GetAllowedImagesSettingsRequest":{
       "type":"structure",
       "members":{
@@ -35912,6 +36008,10 @@
         "InternetKeyExchangeVersion":{
           "shape":"String",
           "documentation":"<p>The IKE version to be used in the sample configuration file for your customer gateway device. You can specify one of the following versions: <code>ikev1</code> or <code>ikev2</code>.</p>"
+        },
+        "SampleType":{
+          "shape":"String",
+          "documentation":"<p>The type of sample configuration to generate. Valid values are \"compatibility\" (includes IKEv1) or \"recommended\" (throws UnsupportedOperationException for IKEv1).</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -49670,6 +49770,10 @@
         "SkipTunnelReplacement":{
           "shape":"Boolean",
           "documentation":"<p>Choose whether or not to trigger immediate tunnel replacement. This is only applicable when turning on or off <code>EnableTunnelLifecycleControl</code>.</p> <p>Valid values: <code>True</code> | <code>False</code> </p>"
+        },
+        "PreSharedKeyStorage":{
+          "shape":"String",
+          "documentation":"<p>Specifies the storage mode for the pre-shared key (PSK). Valid values are <code>Standard</code> (stored in Site-to-Site VPN service) or <code>SecretsManager</code> (stored in Amazon Web Services Secrets Manager).</p>"
         }
       }
     },
@@ -67798,6 +67902,11 @@
           "documentation":"<p>Information about the VPN tunnel.</p>",
           "locationName":"vgwTelemetry"
         },
+        "PreSharedKeyArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Secrets Manager secret storing the pre-shared key(s) for the VPN connection.</p>",
+          "locationName":"preSharedKeyArn"
+        },
         "VpnConnectionId":{
           "shape":"String",
           "documentation":"<p>The ID of the VPN connection.</p>",
@@ -68212,6 +68321,14 @@
     "VpnTunnelOptionsSpecificationsList":{
       "type":"list",
       "member":{"shape":"VpnTunnelOptionsSpecification"}
+    },
+    "VpnTunnelProvisioningStatus":{
+      "type":"string",
+      "enum":[
+        "available",
+        "pending",
+        "failed"
+      ]
     },
     "WeekDay":{
       "type":"string",

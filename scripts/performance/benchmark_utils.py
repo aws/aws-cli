@@ -119,30 +119,46 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
         }
 
     # TODO for making test case definition more pythonic and good, I'm thinking of using decorators
-    # to create generators for the definition, setup, and cleanup functions, such as the following
+    # to create generators for the definition, name, definitions, setup, and cleanup functions, such as the following
     # then, to get all test cases from a suite, you retrieve all the functions with the decorator
 
+    # TODO how should we enable writing config file on a per-test basis using decorators?
+    # could add an optional config arg to the decorator, and in the harness
+    # do the write to the config based on this attr, or use [default] default
+    # wold involve moving this logic from the JSON suite to the general harness.
+    # this makes sense, since the existence of the config file is not
+    # test-specific. only the contents are.
+
     # TODO next, would be nice for setup to yield an object which becomes accessible to f
-    # e.g. newly created resource ARN. worst case, can mode; after pytest fixtures.
+    # e.g. newly created resource ARN. worst case, can model after pytest fixtures.
     # after yield cleanup code, so setup_cleanup just 1 function.
-    # however, since we don't have a use case for this lets put this in a wishlist doc
+    # however, since we don't have a use case for this lets put this in a wishlist doc.
+    # alt, we can just have setup return any object, and pass it to the function.
 
     # def PerformanceTestCase(
-    #         setup=None,
-    #         cleanup=None
-    # ) -> Iterable[Tuple[List[Dict], Callable[[str, str, int], None], Callable[[int], None]]]:
+    #         setup: Callable[[str, str, int], None] = None,
+    #         cleanup: Callable[[int], None]] = None,
+    # ) -> Iterable[List[Dict]]:
     #     def perf_test_case_decorator(f):
     #       @wraps(f) # from functools
     #       def wrapper(**args, **kwargs):
     #           while True:
     #               sequence = f(args, kwargs)
     #               yield sequence
+    #       wrapper.performance_test_case = True
     #       wrapper.setup = setup
     #       wrapper.cleanup = cleanup
     #       return wrapper
     #     return perf_test_case_decorator
     #
-    # @PerformanceTestCase(setup=None, cleanup=None)
+    # def _write_binary_secret(self, size, workspace_path, assets_path, iteration):
+    #   with open(os.path.join(workspace_path, f'secret-value-{iteration}-{size}.json', 'wb') as f:
+    #       pass
+    #
+    # @PerformanceTestCase(
+    #   setup=partial(self._write_binary_secret, size=64),
+    #   cleanup=None
+    # )
     # def test_secretsmanager_binary_64(self, iteration):
     #     return [
     #         {

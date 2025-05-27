@@ -78,8 +78,8 @@ def fn_select(d):
             sel = v.d[SELECT]
             if not isinstance(sel, list) or len(sel) != 2:
                 return
-            arr = sel[0]
-            idx = sel[1]
+            arr = sel[1]
+            idx = sel[0]
             if isinstance(idx, (dict, OrderedDict, list)):
                 return
             if not isinstance(arr, list):

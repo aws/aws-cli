@@ -211,14 +211,11 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
                     file_dir_def['file_size'],
                 )
         if "file_literals" in env:
-            # todo SWITCH from binary-content key to using mode (default w)
             for file_lit in env['file_literals']:
                 path = os.path.join(workspace_path, file_lit['name'])
-                mode, content = ('wb', file_lit['binary-content']) if 'binary-content' in file_lit else (
-                'w', file_lit['content'])
-                with open(path, mode) as f:
+                with open(path, file_lit.get('mode', 'w')) as f:
                     os.chmod(path, 0o777)
-                    f.write(content)
+                    f.write(file_lit['content'])
 
     def consume_case_results(self, case, results):
         for (metric, val) in results.items():

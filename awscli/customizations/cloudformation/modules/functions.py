@@ -41,22 +41,45 @@ from awscli.customizations.cloudformation.modules.names import (
 def fn_join(d):
     """
     Resolve Fn::Join where all items are scalars
+    Recursively processes nested Fn::Join operations
     """
+
+    def process_join(join_obj):
+        """
+        Process a Fn::Join object recursively
+        Returns the joined string if all items are scalars, otherwise returns None
+        """
+        if not isinstance(join_obj, list) or len(join_obj) != 2:
+            return None
+
+        delimiter = join_obj[0]
+        items = join_obj[1]
+
+        if not isinstance(items, list) or not is_scalar(delimiter):
+            return None
+
+        resolved_items = []
+        for item in items:
+            if is_scalar(item):
+                resolved_items.append(str(item))
+            elif isdict(item) and JOIN in item:
+                # Recursively process nested Fn::Join
+                nested_result = process_join(item[JOIN])
+                if nested_result is None:
+                    return None  # If any nested join can't be resolved, abort
+                resolved_items.append(nested_result)
+            else:
+                return None  # If any item is not a scalar or resolvable Fn::Join, abort
+
+        return delimiter.join(resolved_items)
 
     def vf(v):
         if not isdict(v.d) or JOIN not in v.d or v.p is None:
             return
-        j = v.d[JOIN]
-        if not isinstance(j, list) or len(j) != 2:
-            return
-        if not isinstance(j[1], list):
-            return
-        if is_scalar(j[0]):
-            for item in j[1]:
-                if not is_scalar(item):
-                    return
-            v.p[v.k] = j[0].join(j[1])
-            return
+
+        result = process_join(v.d[JOIN])
+        if result is not None:
+            v.p[v.k] = result
 
     Visitor(d).visit(vf)
 

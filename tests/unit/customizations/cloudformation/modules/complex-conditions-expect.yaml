@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Template to test complex nested conditions'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - test
+      - prod
+    Description: Environment type
+  
+  FeatureEnabled:
+    Type: String
+    Default: 'false'
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Description: Whether the feature is enabled
+  
+  RegionType:
+    Type: String
+    Default: us-east-1
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - eu-west-1
+    Description: Region type
+
+Resources:
+  ComplexConditionsDevOrTestBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "dev-test-bucket-${AWS::AccountId}"
+  
+  ComplexConditionsComplexCondition1Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "complex1-bucket-${AWS::AccountId}"
+  
+  ComplexConditionsComplexCondition3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "complex3-bucket-${AWS::AccountId}"
+  
+  ComplexConditionsComplexCondition4Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "complex4-bucket-${AWS::AccountId}"
+  
+  ComplexConditionsConditionalPropertiesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "conditional-props-${AWS::AccountId}"
+      VersioningConfiguration:
+        Status: "Suspended"
+      Tags:
+        - Key: Environment
+          Value: dev
+        - Key: CostCenter
+          Value: "Development"
+        - Key: FeatureFlag
+          Value: "No-Feature"
+
+Outputs:
+  ConditionResults:
+    Description: Results of all conditions for debugging
+    Value: "IsProd=false, IsTest=false, IsDev=true, IsFeatureEnabled=false, IsUSEast1=true, IsProdWithFeature=false, IsDevOrTest=true, IsNotProd=true, IsComplexCondition1=true, IsComplexCondition2=false, IsComplexCondition3=true, IsComplexCondition4=true, IsComplexCondition5=false"
+  
+  ResourceCreationSummary:
+    Description: Summary of which resources were created
+    Value: "No-ProdOnlyBucket, DevOrTestBucket, ComplexCondition1Bucket, No-ComplexCondition2Bucket, ComplexCondition3Bucket, ComplexCondition4Bucket, No-ComplexCondition5Bucket"

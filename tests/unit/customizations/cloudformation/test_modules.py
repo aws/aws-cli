@@ -154,6 +154,7 @@ class TestPackageModules(unittest.TestCase):
             "module-resource-foreach",
             "getatt-notation",
             "parameter-schema",
+            "cond-ref",
         ]
 
         # Collect all errors to report at the end

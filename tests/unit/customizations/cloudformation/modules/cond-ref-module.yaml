@@ -1,0 +1,33 @@
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+
+Conditions:
+  # Basic condition
+  IsProd:
+    Fn::Equals:
+      - !Ref Environment
+      - prod
+
+Resources:
+  # Resource with simple condition
+  ProdOnlyBucket:
+    Type: AWS::S3::Bucket
+    Condition: IsProd
+    Properties:
+      BucketName: !Sub "prod-only-bucket-${AWS::AccountId}"
+  
+  # Resource without condition
+  AlwaysCreatedBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "always-created-bucket-${AWS::AccountId}"
+
+Outputs:
+  ConditionResults:
+    Description: Results of all conditions for debugging
+    Value: !Join
+      - ", "
+      - - !Join ["=", ["IsProd", !If [IsProd, "true", "false"]]]
+  

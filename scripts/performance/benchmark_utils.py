@@ -5,6 +5,7 @@ import math
 import sys
 import time
 import psutil
+import numpy as np
 
 import os
 import shutil
@@ -268,8 +269,10 @@ class Summarizer:
             'cpu': 0.0,
         }
 
-    def summarize(self, samples):
-        """Processes benchmark data from a dictionary."""
+    def summarize(self, samples, worker_results):
+        """
+        Processes benchmark data from samples and the output of the benchmark worker.
+        """
         self._samples = samples
         self._validate_samples(samples)
         for idx, sample in enumerate(samples):
@@ -278,7 +281,7 @@ class Summarizer:
                 self._start_time = self._get_time(sample)
             self.process_data_sample(sample)
         self._end_time = self._get_time(samples[-1])
-        metrics = self._finalize_processed_data_for_file(samples)
+        metrics = self._finalize_processed_data_for_file(samples, worker_results)
         return metrics
 
     def _validate_samples(self, samples):
@@ -292,10 +295,9 @@ class Summarizer:
         self._add_to_sums('memory', sample['memory'])
         self._add_to_sums('cpu', sample['cpu'])
 
-    def _finalize_processed_data_for_file(self, samples):
+    def _finalize_processed_data_for_file(self, samples, worker_results):
         # compute percentiles
         self._samples.sort(key=self._get_memory)
-        # TODO replace with numpy calls
         memory_p50 = self._compute_metric_percentile(50, 'memory')
         memory_p95 = self._compute_metric_percentile(95, 'memory')
         self._samples.sort(key=self._get_cpu)
@@ -344,6 +346,17 @@ class Summarizer:
                 'p95 CPU usage of a single command execution.',
                 'Percent',
                 cpu_p95
+            ),
+            'run.time': Metric(
+                'Total running time of the Python process executing the CLI command.',
+                'Seconds',
+                worker_results['end_time'] - worker_results['start_time'],
+            ),
+            'pre.marshal.time': Metric(
+                'Elapsed time from the start of the Python process until just '
+                'before the HTTP request is created.',
+                'Seconds',
+                worker_results['first_client_invocation_time'] - worker_results['start_time']
             ),
         }
         # reset data state
@@ -557,12 +570,12 @@ class BenchmarkHarness:
                 raise RuntimeError(
                     'Child process execution failed: output file not found.'
                 )
-            metrics_f = json.load(open(metrics_path, 'r'))
+            worker_results = json.load(open(metrics_path, 'r'))
 
             # raise error if CLI execution unsuccessful.
             # this is different from the process return code checked above,
             # because the process can succeed while the CLI execution failed
-            if (rc := metrics_f['return_code']) != 0:
+            if (rc := worker_results['return_code']) != 0:
                 with open(child_err_path, 'r') as err:
                     raise RuntimeError(
                         f'CLI execution failed: return code {rc}.\n'
@@ -570,29 +583,7 @@ class BenchmarkHarness:
                     )
 
             # summarize benchmark results and process summary
-            # TODO Q: move the summarizer to the suites?
-            # that would support the use case when a specific format is needed (e.g. cbor benchmarks)
-            # this would mean consume_case_results gets the raw results
-            # and provide_sequence_results calls (internal) summary on each metrics data in the sequence
-
-            # LEANING TOWARDS NO. should be easy to override the summarizer when needed
-            # for one-off investigations/goals. but benchmark_utils must maintain a
-            # contract in its output format
-
-            summary = self._summarizer.summarize(samples)
-            # TODO move the below internal metrics summarization into the summarizer by accepting
-            # extra internal-metric input ?
-            summary['run.time'] = Metric(
-                'Total running time of the Python process executing the CLI command.',
-                'Seconds',
-                metrics_f['end_time'] - metrics_f['start_time'],
-            )
-            summary['pre.marshal.time'] = Metric(
-                'Elapsed time from the start of the Python process until just before the HTTP '
-                'request is created.',
-                'Seconds',
-                metrics_f['first_client_invocation_time'] - metrics_f['start_time']
-            )
+            summary = self._summarizer.summarize(samples, worker_results)
         finally:
             # --- END-ITERATION (cleanup of resources made in BEGIN-ITERATION, reset the result directory, ...)
             suite.end_iteration(iteration)

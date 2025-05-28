@@ -745,8 +745,7 @@
     },
     "GetPreferencesRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetPreferencesResponse":{
       "type":"structure",
@@ -758,6 +757,10 @@
         "memberAccountDiscountVisibility":{
           "shape":"MemberAccountDiscountVisibility",
           "documentation":"<p>Retrieves the status of the \"member account discount visibility\" preference.</p>"
+        },
+        "preferredCommitment":{
+          "shape":"PreferredCommitment",
+          "documentation":"<p>Retrieves the current preferences for how Reserved Instances and Savings Plans cost-saving opportunities are prioritized in terms of payment option and term length.</p>"
         }
       }
     },
@@ -1094,7 +1097,7 @@
         },
         "costCalculation":{"shape":"ReservedInstancesCostCalculation"}
       },
-      "documentation":"<p>The MemoryDB reserved instances recommendation details.</p> <note> <p>MemoryDB reserved instances are referred to as \"MemoryDB reserved nodes\" in customer-facing documentation.</p> </note>"
+      "documentation":"<p>The MemoryDB reserved instances recommendation details.</p> <note> <p>While the API reference uses \"MemoryDB reserved instances\", the user guide and other documentation refer to them as \"MemoryDB reserved nodes\", as the terms are used interchangeably.</p> </note>"
     },
     "MemoryDbReservedInstancesConfiguration":{
       "type":"structure",
@@ -1152,7 +1155,7 @@
           "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
         }
       },
-      "documentation":"<p>The MemoryDB reserved instances configuration used for recommendations.</p> <note> <p>MemoryDB reserved instances are referred to as \"MemoryDB reserved nodes\" in customer-facing documentation.</p> </note>"
+      "documentation":"<p>The MemoryDB reserved instances configuration used for recommendations.</p> <note> <p>While the API reference uses \"MemoryDB reserved instances\", the user guide and other documentation refer to them as \"MemoryDB reserved nodes\", as the terms are used interchangeably.</p> </note>"
     },
     "MixedInstanceConfiguration":{
       "type":"structure",
@@ -1256,6 +1259,28 @@
         }
       },
       "documentation":"<p>Defines how rows will be sorted in the response.</p>"
+    },
+    "PaymentOption":{
+      "type":"string",
+      "enum":[
+        "AllUpfront",
+        "PartialUpfront",
+        "NoUpfront"
+      ]
+    },
+    "PreferredCommitment":{
+      "type":"structure",
+      "members":{
+        "term":{
+          "shape":"Term",
+          "documentation":"<p>The preferred length of the commitment period. If the value is null, it will default to <code>ThreeYears</code> (highest savings) where applicable.</p>"
+        },
+        "paymentOption":{
+          "shape":"PaymentOption",
+          "documentation":"<p>The preferred upfront payment structure for commitments. If the value is null, it will default to <code>AllUpfront</code> (highest savings) where applicable.</p>"
+        }
+      },
+      "documentation":"<p>The preferred configuration for Reserved Instances and Savings Plans commitment-based discounts, consisting of a payment option and a commitment duration.</p>"
     },
     "PrimitiveBoolean":{"type":"boolean"},
     "RdsDbInstance":{
@@ -1936,6 +1961,13 @@
       "max":100,
       "min":1
     },
+    "Term":{
+      "type":"string",
+      "enum":[
+        "OneYear",
+        "ThreeYears"
+      ]
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -1978,6 +2010,10 @@
         "memberAccountDiscountVisibility":{
           "shape":"MemberAccountDiscountVisibility",
           "documentation":"<p>Sets the \"member account discount visibility\" preference.</p>"
+        },
+        "preferredCommitment":{
+          "shape":"PreferredCommitment",
+          "documentation":"<p>Sets the preferences for how Reserved Instances and Savings Plans cost-saving opportunities are prioritized in terms of payment option and term length.</p>"
         }
       }
     },
@@ -1991,6 +2027,10 @@
         "memberAccountDiscountVisibility":{
           "shape":"MemberAccountDiscountVisibility",
           "documentation":"<p>Shows the status of the \"member account discount visibility\" preference.</p>"
+        },
+        "preferredCommitment":{
+          "shape":"PreferredCommitment",
+          "documentation":"<p>Shows the updated preferences for how Reserved Instances and Savings Plans cost-saving opportunities are prioritized in terms of payment option and term length.</p>"
         }
       }
     },

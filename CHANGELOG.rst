@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.27.24
+=======
+
+* api-change:``events``: Allow for more than 2 characters for location codes in EventBridge ARNs
+* api-change:``cost-optimization-hub``: This release allows customers to modify their preferred commitment term and payment options.
+* api-change:``synthetics``: Add support to change ephemeral storage. Add a new field "TestResult" under CanaryRunStatus.
+* api-change:``ec2``: Enable the option to automatically delete underlying Amazon EBS snapshots when deregistering Amazon Machine Images (AMIs)
+* api-change:``network-firewall``: You can now use VPC endpoint associations to create multiple firewall endpoints for a single firewall.
+
+
 2.27.23
 =======
 

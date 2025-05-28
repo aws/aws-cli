@@ -1,11 +1,8 @@
-from typing import Iterable, Tuple, List, Dict, Callable
-
 import json
 import math
 import sys
 import time
 import psutil
-import numpy as np
 
 import os
 import shutil
@@ -21,6 +18,31 @@ class Metric:
         self.description = description
         self.unit = unit
         self.value = value
+
+class BenchmarkResultsProcessor:
+    def __init__(self):
+        self._summarizer = Summarizer()
+        self._benchmark_results = {}
+
+    def add_execution_results(self, case, samples, execution_results):
+        summarized_results = self._summarizer.summarize(samples, execution_results)
+        for (metric, val) in summarized_results.items():
+            key = f'{case["name"]}.{metric}'
+            if key not in self._benchmark_results:
+                self._benchmark_results[key] = {
+                    'name': key,
+                    'description': val.description,
+                    'unit': val.unit,
+                    'dimensions': case.get('dimensions', []),
+                    'measurements': [],
+                }
+            self._benchmark_results[key]['measurements'].append(val.value)
+
+    def get_processed_results(self):
+        return list(self._benchmark_results.values())
+
+    def reset(self):
+        self._benchmark_results.clear()
 
 class StubbedHTTPClient:
     def _get_response(self, request):
@@ -58,14 +80,8 @@ class BenchmarkSuite:
     def begin_iteration(self, case, workspace_path, assets_path, iteration):
         pass
 
-    def consume_case_results(self, case, results):
-        raise NotImplementedError()
-
     def end_iteration(self, iteration):
         pass
-
-    def provide_sequence_results(self):
-        raise NotImplementedError()
 
 
 class JSONStubbedBenchmarkSuite(BenchmarkSuite):
@@ -234,27 +250,9 @@ class JSONStubbedBenchmarkSuite(BenchmarkSuite):
                     os.chmod(path, 0o777)
                     f.write(file_lit['content'])
 
-    def consume_case_results(self, case, results):
-        for (metric, val) in results.items():
-            key = f'{case["name"]}.{metric}'
-            if key not in self._benchmark_results:
-                self._benchmark_results[key] = {
-                    'name': key,
-                    'description': val.description,
-                    'unit': val.unit,
-                    'dimensions': case.get('dimensions', []),
-                    'measurements': [],
-                }
-            self._benchmark_results[key]['measurements'].append(val.value)
-
     def end_iteration(self, iteration):
         self._client.tear_down()
         self._env_patch.stop()
-
-    def provide_sequence_results(self):
-        values = list(self._benchmark_results.values())
-        self._benchmark_results.clear()
-        return values
 
 
 class Summarizer:
@@ -386,7 +384,6 @@ class RawResponse(BytesIO):
     """
     A bytes-like streamable HTTP response representation.
     """
-
     def stream(self, **kwargs):
         contents = self.read()
         while contents:
@@ -450,14 +447,14 @@ class ProcessBenchmarker:
 
 class BenchmarkHarness:
     BENCHMARK_SUITES = [JSONStubbedBenchmarkSuite]
-    """
-    Orchestrates running benchmarks in isolated, configurable environments defined
-    via a specified JSON file.
-    """
-    def __init__(self):
-        self._summarizer = Summarizer()
 
-    def _run_command_with_metric_hooks(self, cmd, out_file, service_id, service_operation_name):
+    """
+    Orchestrates running benchmarks in isolated, configurable environments.
+    """
+    def __init__(self, results_processor=BenchmarkResultsProcessor()):
+        self._results_processor = results_processor
+
+    def _run_command_with_metric_hooks(self, cmd, out_file):
         """
         Runs a CLI command and logs CLI-specific metrics to a file.
         """
@@ -549,9 +546,7 @@ class BenchmarkHarness:
                                 os.dup2(f.fileno(), sys.stdout.fileno())
                                 os.dup2(f_err.fileno(), sys.stderr.fileno())
                     # execute command on child process
-                    self._run_command_with_metric_hooks(
-                        benchmark['command'], metrics_path, benchmark.get('service_id', ''), benchmark.get('operation_name', '')
-                    )
+                    self._run_command_with_metric_hooks(benchmark['command'], metrics_path)
                     # terminate the child process
                     os._exit(0)
 
@@ -583,13 +578,12 @@ class BenchmarkHarness:
                     )
 
             # summarize benchmark results and process summary
-            summary = self._summarizer.summarize(samples, worker_results)
+            return samples, worker_results
         finally:
             # --- END-ITERATION (cleanup of resources made in BEGIN-ITERATION, reset the result directory, ...)
             suite.end_iteration(iteration)
             shutil.rmtree(result_dir, ignore_errors=True)
             os.makedirs(result_dir, 0o777)
-        return summary
 
     def get_test_suites(self, args):
         return [suite() for suite in BenchmarkHarness.BENCHMARK_SUITES]
@@ -635,16 +629,22 @@ class BenchmarkHarness:
                         # there was an exception? Currently, that's end_iteration whether there
                         # was an exception. Maybe we can pass exception information to end_iteration.
                         # TODO NEXT: finalize these architecture changes. and TODOs
-                        suite.consume_case_results(cmd, self._run_isolated_benchmark(
+                        samples, execution_results = self._run_isolated_benchmark(
                             result_dir,
                             idx,
                             cmd,
                             suite,
                             process_benchmarker,
                             args,
-                        ))
+                        )
+                        self._results_processor.add_execution_results(
+                            cmd,
+                            samples,
+                            execution_results
+                        )
                 # --- PROVIDE-SEQUENCE-RESULTS (add/transform results from each case in the sequence/plethora)
-                summaries['results'].extend(suite.provide_sequence_results())
+                summaries['results'].extend(self._results_processor.get_processed_results())
+                self._results_processor.reset()
 
             # --- END-SUITE (cleanup, resource deletion, ...)
         finally:

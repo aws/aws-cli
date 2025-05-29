@@ -11,13 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import os
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 
 from awscli.customizations.q import inject_commands, register_q_commands
 from awscli.customizations.q.chat import ChatCommand
-from awscli.customizations.q.utils import Q_EXTENSION_PATH
+from awscli.customizations.q.utils import DEFAULT_EXTENSION_PATH
 from awscli.testutils import mock
 
 
@@ -35,17 +37,26 @@ class TestChatCommand:
         self.mock_subprocess = patch('subprocess.check_call').start()
         self.chat_command = ChatCommand(self.session)
 
-    @patch('pathlib.Path.is_file', return_value=True)
+    @patch(
+        'pathlib.Path.is_file',
+        side_effect=lambda p: p == DEFAULT_EXTENSION_PATH,
+    )
     def test_chat_subprocess_call(self, mock_is_file):
         self.chat_command._run_main([], None)
 
-        # Verify Q extension was called with correct argument
-        self.mock_subprocess.assert_called_once_with(Q_EXTENSION_PATH)
+        self.mock_subprocess.assert_called_once_with(DEFAULT_EXTENSION_PATH)
+
+    @patch.dict(os.environ, {'AWS_DATA_PATH': '/alt1'})
+    @patch('pathlib.Path.is_file', side_effect=lambda p: str(p) == '/alt1/q/q')
+    def test_chat_subprocess_call_alterative_data_path(self, mock_is_file):
+        self.chat_command._run_main([], None)
+
+        # Verify the alternative path was called
+        self.mock_subprocess.assert_called_once_with(Path('/alt1/q/q'))
 
     @patch('pathlib.Path.is_file', return_value=False)
     def test_chat_subprocess_not_called_when_no_file(self, mock_is_file):
-        # Execute the command and expect RuntimeError because
-        # the Q extension is not installed
+        # Expect RuntimeError because the Q extension is not installed
         with pytest.raises(RuntimeError):
             self.chat_command._run_main([], None)
 

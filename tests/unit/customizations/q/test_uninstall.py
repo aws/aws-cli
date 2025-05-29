@@ -11,11 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-
-from unittest.mock import patch
+import os
+from pathlib import Path
+from unittest.mock import call, patch
 
 from awscli.customizations.q.uninstall import UninstallCommand
-from awscli.customizations.q.utils import Q_EXTENSION_DIR
+from awscli.customizations.q.utils import EXTENSIONS_DIR, Q_DIRECTORY_NAME
 from awscli.testutils import mock
 
 
@@ -29,14 +30,25 @@ class TestUninstallCommand:
     def test_uninstall_not_installed(self, mock_is_file):
         self.uninstall_command._run_main([], None)
 
-        # Verify Q extension was called with correct argument
         self.mock_shutil_rmtree.assert_not_called()
 
     @patch('pathlib.Path.is_file', return_value=True)
     def test_uninstall_removes(self, mock_is_file):
         self.uninstall_command._run_main([], None)
 
-        # Verify Q extension was called with correct argument
-        self.mock_shutil_rmtree.assert_called_once_with(
-            Q_EXTENSION_DIR, ignore_errors=True
+        self.mock_shutil_rmtree.assert_called_with(
+            EXTENSIONS_DIR / Q_DIRECTORY_NAME, ignore_errors=True
+        )
+
+    @patch.dict(os.environ, {'AWS_DATA_PATH': '/alt1:/alt2'})
+    @patch('pathlib.Path.is_file', return_value=True)
+    def test_uninstall_removes_multiple_copies(self, mock_is_file):
+        self.uninstall_command._run_main([], None)
+
+        self.mock_shutil_rmtree.assert_has_calls(
+            [
+                call(Path('/alt1') / Q_DIRECTORY_NAME, ignore_errors=True),
+                call(Path('/alt2') / Q_DIRECTORY_NAME, ignore_errors=True),
+                call(EXTENSIONS_DIR / Q_DIRECTORY_NAME, ignore_errors=True),
+            ]
         )

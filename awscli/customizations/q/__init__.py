@@ -15,7 +15,6 @@ from awscli.customizations.commands import BasicCommand
 from awscli.customizations.q.chat import ChatCommand
 from awscli.customizations.q.uninstall import UninstallCommand
 from awscli.customizations.q.update import UpdateCommand
-from awscli.customizations.q.version import VersionCommand
 
 
 def register_q_commands(event_handlers):
@@ -38,7 +37,6 @@ class QCommand(BasicCommand):
     )
     SUBCOMMANDS = [
         {'name': 'chat', 'command_class': ChatCommand},
-        {'name': 'version', 'command_class': VersionCommand},
         {'name': 'update', 'command_class': UpdateCommand},
         {'name': 'uninstall', 'command_class': UninstallCommand},
     ]

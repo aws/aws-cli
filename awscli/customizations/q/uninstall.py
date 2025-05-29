@@ -16,7 +16,7 @@ import sys
 from pathlib import Path
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.q.utils import Q_EXTENSION_DIR, Q_EXTENSION_PATH
+from awscli.customizations.q.utils import _find_extension_paths
 
 
 class UninstallCommand(BasicCommand):
@@ -27,8 +27,13 @@ class UninstallCommand(BasicCommand):
         super().__init__(session)
 
     def _run_main(self, parsed_args, parsed_globals):
-        if not Path.is_file(Q_EXTENSION_PATH):
+        extension_paths = _find_extension_paths()
+
+        if not extension_paths:
             sys.stdout.write('The Q CLI extension is not installed.\n')
-        else:
-            shutil.rmtree(Q_EXTENSION_DIR, ignore_errors=True)
-            sys.stdout.write(f'Uninstalled {Q_EXTENSION_DIR}\n')
+            return
+
+        for path in extension_paths:
+            extension_path = Path(path).parent.absolute()
+            shutil.rmtree(extension_path, ignore_errors=True)
+            sys.stdout.write(f'Uninstalled {path}\n')

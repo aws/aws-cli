@@ -825,6 +825,10 @@
         "Source":{
           "shape":"UpdateSource",
           "documentation":"<p>The source of the last update to the environment. Includes internal processes by Amazon MWAA, such as an environment maintenance update.</p>"
+        },
+        "WorkerReplacementStrategy":{
+          "shape":"WorkerReplacementStrategy",
+          "documentation":"<p>The worker replacement strategy used in the last update of the environment.</p>"
         }
       },
       "documentation":"<p>Describes the status of the last update on the environment, and any errors that were encountered.</p>"
@@ -1375,17 +1379,49 @@
           "shape":"IamRoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the execution role in IAM that allows MWAA to access Amazon Web Services resources in your environment. For example, <code>arn:aws:iam::123456789:role/my-execution-role</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-create-role.html\">Amazon MWAA Execution role</a>.</p>"
         },
+        "AirflowConfigurationOptions":{
+          "shape":"AirflowConfigurationOptions",
+          "documentation":"<p>A list of key-value pairs containing the Apache Airflow configuration options you want to attach to your environment. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-env-variables.html\">Apache Airflow configuration options</a>.</p>"
+        },
         "AirflowVersion":{
           "shape":"AirflowVersion",
           "documentation":"<p>The Apache Airflow version for your environment. To upgrade your environment, specify a newer version of Apache Airflow supported by Amazon MWAA.</p> <p>Before you upgrade an environment, make sure your requirements, DAGs, plugins, and other resources used in your workflows are compatible with the new Apache Airflow version. For more information about updating your resources, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/upgrading-environment.html\">Upgrading an Amazon MWAA environment</a>.</p> <p>Valid values: <code>1.10.12</code>, <code>2.0.2</code>, <code>2.2.2</code>, <code>2.4.3</code>, <code>2.5.1</code>, <code>2.6.3</code>, <code>2.7.2</code>, <code>2.8.1</code>, <code>2.9.2</code>, <code>2.10.1</code>, and <code>2.10.3</code>.</p>"
         },
-        "SourceBucketArn":{
-          "shape":"S3BucketArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket where your DAG code and supporting files are stored. For example, <code>arn:aws:s3:::my-airflow-bucket-unique-name</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-s3-bucket.html\">Create an Amazon S3 bucket for Amazon MWAA</a>.</p>"
-        },
         "DagS3Path":{
           "shape":"RelativePath",
           "documentation":"<p>The relative path to the DAGs folder on your Amazon S3 bucket. For example, <code>dags</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-dag-folder.html\">Adding or updating DAGs</a>.</p>"
+        },
+        "EnvironmentClass":{
+          "shape":"EnvironmentClass",
+          "documentation":"<p>The environment class type. Valid values: <code>mw1.micro</code>, <code>mw1.small</code>, <code>mw1.medium</code>, <code>mw1.large</code>, <code>mw1.xlarge</code>, and <code>mw1.2xlarge</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/environment-class.html\">Amazon MWAA environment class</a>. </p>"
+        },
+        "LoggingConfiguration":{
+          "shape":"LoggingConfigurationInput",
+          "documentation":"<p>The Apache Airflow log types to send to CloudWatch Logs.</p>"
+        },
+        "MaxWorkers":{
+          "shape":"MaxWorkers",
+          "documentation":"<p>The maximum number of workers that you want to run in your environment. MWAA scales the number of Apache Airflow workers up to the number you specify in the <code>MaxWorkers</code> field. For example, <code>20</code>. When there are no more tasks running, and no more in the queue, MWAA disposes of the extra workers leaving the one worker that is included with your environment, or the number you specify in <code>MinWorkers</code>.</p>"
+        },
+        "MinWorkers":{
+          "shape":"MinWorkers",
+          "documentation":"<p>The minimum number of workers that you want to run in your environment. MWAA scales the number of Apache Airflow workers up to the number you specify in the <code>MaxWorkers</code> field. When there are no more tasks running, and no more in the queue, MWAA disposes of the extra workers leaving the worker count you specify in the <code>MinWorkers</code> field. For example, <code>2</code>.</p>"
+        },
+        "MaxWebservers":{
+          "shape":"MaxWebservers",
+          "documentation":"<p> The maximum number of web servers that you want to run in your environment. Amazon MWAA scales the number of Apache Airflow web servers up to the number you specify for <code>MaxWebservers</code> when you interact with your Apache Airflow environment using Apache Airflow REST API, or the Apache Airflow CLI. For example, in scenarios where your workload requires network calls to the Apache Airflow REST API with a high transaction-per-second (TPS) rate, Amazon MWAA will increase the number of web servers up to the number set in <code>MaxWebserers</code>. As TPS rates decrease Amazon MWAA disposes of the additional web servers, and scales down to the number set in <code>MinxWebserers</code>. </p> <p>Valid values: For environments larger than mw1.micro, accepts values from <code>2</code> to <code>5</code>. Defaults to <code>2</code> for all environment sizes except mw1.micro, which defaults to <code>1</code>.</p>"
+        },
+        "MinWebservers":{
+          "shape":"MinWebservers",
+          "documentation":"<p> The minimum number of web servers that you want to run in your environment. Amazon MWAA scales the number of Apache Airflow web servers up to the number you specify for <code>MaxWebservers</code> when you interact with your Apache Airflow environment using Apache Airflow REST API, or the Apache Airflow CLI. As the transaction-per-second rate, and the network load, decrease, Amazon MWAA disposes of the additional web servers, and scales down to the number set in <code>MinxWebserers</code>. </p> <p>Valid values: For environments larger than mw1.micro, accepts values from <code>2</code> to <code>5</code>. Defaults to <code>2</code> for all environment sizes except mw1.micro, which defaults to <code>1</code>.</p>"
+        },
+        "WorkerReplacementStrategy":{
+          "shape":"WorkerReplacementStrategy",
+          "documentation":"<p>The worker replacement strategy to use when updating the environment.</p> <p>You can select one of the following strategies:</p> <ul> <li> <p> <b>Forced -</b> Stops and replaces Apache Airflow workers without waiting for tasks to complete before an update.</p> </li> <li> <p> <b>Graceful -</b> Allows Apache Airflow workers to complete running tasks for up to 12 hours during an update before they're stopped and replaced.</p> </li> </ul>"
+        },
+        "NetworkConfiguration":{
+          "shape":"UpdateNetworkConfigurationInput",
+          "documentation":"<p>The VPC networking components used to secure and enable network traffic between the Amazon Web Services resources for your environment. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/networking-about.html\">About networking on Amazon MWAA</a>.</p>"
         },
         "PluginsS3Path":{
           "shape":"RelativePath",
@@ -1403,6 +1439,14 @@
           "shape":"S3ObjectVersion",
           "documentation":"<p>The version of the requirements.txt file on your Amazon S3 bucket. You must specify a version each time a <code>requirements.txt</code> file is updated. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/versioning-workflows.html\">How S3 Versioning works</a>.</p>"
         },
+        "Schedulers":{
+          "shape":"Schedulers",
+          "documentation":"<p>The number of Apache Airflow schedulers to run in your Amazon MWAA environment.</p>"
+        },
+        "SourceBucketArn":{
+          "shape":"S3BucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket where your DAG code and supporting files are stored. For example, <code>arn:aws:s3:::my-airflow-bucket-unique-name</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-s3-bucket.html\">Create an Amazon S3 bucket for Amazon MWAA</a>.</p>"
+        },
         "StartupScriptS3Path":{
           "shape":"RelativePath",
           "documentation":"<p>The relative path to the startup shell script in your Amazon S3 bucket. For example, <code>s3://mwaa-environment/startup.sh</code>.</p> <p> Amazon MWAA runs the script as your environment starts, and before running the Apache Airflow process. You can use this script to install dependencies, modify Apache Airflow configuration options, and set environment variables. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/using-startup-script.html\">Using a startup script</a>. </p>"
@@ -1411,49 +1455,13 @@
           "shape":"S3ObjectVersion",
           "documentation":"<p> The version of the startup shell script in your Amazon S3 bucket. You must specify the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/versioning-workflows.html\">version ID</a> that Amazon S3 assigns to the file every time you update the script. </p> <p> Version IDs are Unicode, UTF-8 encoded, URL-ready, opaque strings that are no more than 1,024 bytes long. The following is an example: </p> <p> <code>3sL4kqtJlcpXroDTDmJ+rmSpXd3dIbrHY+MTRCxf3vjVBH40Nr8X8gdRQBpUMLUo</code> </p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/using-startup-script.html\">Using a startup script</a>. </p>"
         },
-        "AirflowConfigurationOptions":{
-          "shape":"AirflowConfigurationOptions",
-          "documentation":"<p>A list of key-value pairs containing the Apache Airflow configuration options you want to attach to your environment. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-env-variables.html\">Apache Airflow configuration options</a>.</p>"
-        },
-        "EnvironmentClass":{
-          "shape":"EnvironmentClass",
-          "documentation":"<p>The environment class type. Valid values: <code>mw1.micro</code>, <code>mw1.small</code>, <code>mw1.medium</code>, <code>mw1.large</code>, <code>mw1.xlarge</code>, and <code>mw1.2xlarge</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/environment-class.html\">Amazon MWAA environment class</a>. </p>"
-        },
-        "MaxWorkers":{
-          "shape":"MaxWorkers",
-          "documentation":"<p>The maximum number of workers that you want to run in your environment. MWAA scales the number of Apache Airflow workers up to the number you specify in the <code>MaxWorkers</code> field. For example, <code>20</code>. When there are no more tasks running, and no more in the queue, MWAA disposes of the extra workers leaving the one worker that is included with your environment, or the number you specify in <code>MinWorkers</code>.</p>"
-        },
-        "NetworkConfiguration":{
-          "shape":"UpdateNetworkConfigurationInput",
-          "documentation":"<p>The VPC networking components used to secure and enable network traffic between the Amazon Web Services resources for your environment. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/networking-about.html\">About networking on Amazon MWAA</a>.</p>"
-        },
-        "LoggingConfiguration":{
-          "shape":"LoggingConfigurationInput",
-          "documentation":"<p>The Apache Airflow log types to send to CloudWatch Logs.</p>"
-        },
-        "WeeklyMaintenanceWindowStart":{
-          "shape":"WeeklyMaintenanceWindowStart",
-          "documentation":"<p>The day and time of the week in Coordinated Universal Time (UTC) 24-hour standard time to start weekly maintenance updates of your environment in the following format: <code>DAY:HH:MM</code>. For example: <code>TUE:03:30</code>. You can specify a start time in 30 minute increments only.</p>"
-        },
         "WebserverAccessMode":{
           "shape":"WebserverAccessMode",
           "documentation":"<p>The Apache Airflow <i>Web server</i> access mode. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-networking.html\">Apache Airflow access modes</a>.</p>"
         },
-        "MinWorkers":{
-          "shape":"MinWorkers",
-          "documentation":"<p>The minimum number of workers that you want to run in your environment. MWAA scales the number of Apache Airflow workers up to the number you specify in the <code>MaxWorkers</code> field. When there are no more tasks running, and no more in the queue, MWAA disposes of the extra workers leaving the worker count you specify in the <code>MinWorkers</code> field. For example, <code>2</code>.</p>"
-        },
-        "Schedulers":{
-          "shape":"Schedulers",
-          "documentation":"<p>The number of Apache Airflow schedulers to run in your Amazon MWAA environment.</p>"
-        },
-        "MinWebservers":{
-          "shape":"MinWebservers",
-          "documentation":"<p> The minimum number of web servers that you want to run in your environment. Amazon MWAA scales the number of Apache Airflow web servers up to the number you specify for <code>MaxWebservers</code> when you interact with your Apache Airflow environment using Apache Airflow REST API, or the Apache Airflow CLI. As the transaction-per-second rate, and the network load, decrease, Amazon MWAA disposes of the additional web servers, and scales down to the number set in <code>MinxWebserers</code>. </p> <p>Valid values: For environments larger than mw1.micro, accepts values from <code>2</code> to <code>5</code>. Defaults to <code>2</code> for all environment sizes except mw1.micro, which defaults to <code>1</code>.</p>"
-        },
-        "MaxWebservers":{
-          "shape":"MaxWebservers",
-          "documentation":"<p> The maximum number of web servers that you want to run in your environment. Amazon MWAA scales the number of Apache Airflow web servers up to the number you specify for <code>MaxWebservers</code> when you interact with your Apache Airflow environment using Apache Airflow REST API, or the Apache Airflow CLI. For example, in scenarios where your workload requires network calls to the Apache Airflow REST API with a high transaction-per-second (TPS) rate, Amazon MWAA will increase the number of web servers up to the number set in <code>MaxWebserers</code>. As TPS rates decrease Amazon MWAA disposes of the additional web servers, and scales down to the number set in <code>MinxWebserers</code>. </p> <p>Valid values: For environments larger than mw1.micro, accepts values from <code>2</code> to <code>5</code>. Defaults to <code>2</code> for all environment sizes except mw1.micro, which defaults to <code>1</code>.</p>"
+        "WeeklyMaintenanceWindowStart":{
+          "shape":"WeeklyMaintenanceWindowStart",
+          "documentation":"<p>The day and time of the week in Coordinated Universal Time (UTC) 24-hour standard time to start weekly maintenance updates of your environment in the following format: <code>DAY:HH:MM</code>. For example: <code>TUE:03:30</code>. You can specify a start time in 30 minute increments only.</p>"
         }
       }
     },
@@ -1541,6 +1549,13 @@
       "max":9,
       "min":1,
       "pattern":".*(MON|TUE|WED|THU|FRI|SAT|SUN):([01]\\d|2[0-3]):(00|30).*"
+    },
+    "WorkerReplacementStrategy":{
+      "type":"string",
+      "enum":[
+        "FORCED",
+        "GRACEFUL"
+      ]
     }
   },
   "documentation":"<p><fullname>Amazon Managed Workflows for Apache Airflow</fullname> <p>This section contains the Amazon Managed Workflows for Apache Airflow (MWAA) API reference documentation. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html\">What is Amazon MWAA?</a>.</p> <p> <b>Endpoints</b> </p> <ul> <li> <p> <code>api.airflow.{region}.amazonaws.com</code> - This endpoint is used for environment management.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateEnvironment.html\">CreateEnvironment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_DeleteEnvironment.html\">DeleteEnvironment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_GetEnvironment.html\">GetEnvironment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_ListEnvironments.html\">ListEnvironments</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_ListTagsForResource.html\">ListTagsForResource</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_TagResource.html\">TagResource</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_UntagResource.html\">UntagResource</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_UpdateEnvironment.html\">UpdateEnvironment</a> </p> </li> </ul> </li> <li> <p> <code>env.airflow.{region}.amazonaws.com</code> - This endpoint is used to operate the Airflow environment.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateCliToken.html \">CreateCliToken</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateWebLoginToken.html\">CreateWebLoginToken</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_InvokeRestApi.html\">InvokeRestApi</a> </p> </li> </ul> </li> </ul> <p> <b>Regions</b> </p> <p>For a list of supported regions, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/mwaa.html\">Amazon MWAA endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>.</p></p>"

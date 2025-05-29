@@ -459,6 +459,29 @@
       "documentation":"<p> Returns the specified dashboard. </p>",
       "idempotent":true
     },
+    "GetEventConfiguration":{
+      "name":"GetEventConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEventConfigurationRequest"},
+      "output":{"shape":"GetEventConfigurationResponse"},
+      "errors":[
+        {"shape":"CloudTrailARNInvalidException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"EventDataStoreARNInvalidException"},
+        {"shape":"EventDataStoreNotFoundException"},
+        {"shape":"InvalidEventDataStoreStatusException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidEventDataStoreCategoryException"},
+        {"shape":"NoManagementAccountSLRExistsException"},
+        {"shape":"InvalidParameterCombinationException"}
+      ],
+      "documentation":"<p>Retrieves the current event configuration settings for the specified event data store, including details about maximum event size and context key selectors configured for the event data store.</p>",
+      "idempotent":true
+    },
     "GetEventDataStore":{
       "name":"GetEventDataStore",
       "http":{
@@ -814,6 +837,35 @@
       "documentation":"<p>Looks up <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-concepts.html#cloudtrail-concepts-management-events\">management events</a> or <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-concepts.html#cloudtrail-concepts-insights-events\">CloudTrail Insights events</a> that are captured by CloudTrail. You can look up events that occurred in a Region within the last 90 days.</p> <note> <p> <code>LookupEvents</code> returns recent Insights events for trails that enable Insights. To view Insights events for an event data store, you can run queries on your Insights event data store, and you can also view the Lake dashboard for Insights.</p> </note> <p>Lookup supports the following attributes for management events:</p> <ul> <li> <p>Amazon Web Services access key</p> </li> <li> <p>Event ID</p> </li> <li> <p>Event name</p> </li> <li> <p>Event source</p> </li> <li> <p>Read only</p> </li> <li> <p>Resource name</p> </li> <li> <p>Resource type</p> </li> <li> <p>User name</p> </li> </ul> <p>Lookup supports the following attributes for Insights events:</p> <ul> <li> <p>Event ID</p> </li> <li> <p>Event name</p> </li> <li> <p>Event source</p> </li> </ul> <p>All attributes are optional. The default number of results returned is 50, with a maximum of 50 possible. The response includes a token that you can use to get the next page of results.</p> <important> <p>The rate of lookup requests is limited to two per second, per account, per Region. If this limit is exceeded, a throttling error occurs.</p> </important>",
       "idempotent":true
     },
+    "PutEventConfiguration":{
+      "name":"PutEventConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutEventConfigurationRequest"},
+      "output":{"shape":"PutEventConfigurationResponse"},
+      "errors":[
+        {"shape":"EventDataStoreARNInvalidException"},
+        {"shape":"EventDataStoreNotFoundException"},
+        {"shape":"InvalidEventDataStoreStatusException"},
+        {"shape":"InvalidEventDataStoreCategoryException"},
+        {"shape":"InactiveEventDataStoreException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"CloudTrailARNInvalidException"},
+        {"shape":"ConflictException"},
+        {"shape":"NotOrganizationMasterAccountException"},
+        {"shape":"NoManagementAccountSLRExistsException"},
+        {"shape":"InsufficientDependencyServiceAccessPermissionException"},
+        {"shape":"InsufficientIAMAccessPermissionException"}
+      ],
+      "documentation":"<p>Updates the event configuration settings for the specified event data store. You can update the maximum event size and context key selectors.</p>",
+      "idempotent":true
+    },
     "PutEventSelectors":{
       "name":"PutEventSelectors",
       "http":{
@@ -909,7 +961,8 @@
         {"shape":"OrganizationNotInAllFeaturesModeException"},
         {"shape":"OrganizationsNotInUseException"},
         {"shape":"UnsupportedOperationException"},
-        {"shape":"OperationNotPermittedException"}
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"InsufficientIAMAccessPermissionException"}
       ],
       "documentation":"<p>Registers an organization’s member account as the CloudTrail <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-delegated-administrator.html\">delegated administrator</a>.</p>",
       "idempotent":true
@@ -1019,7 +1072,8 @@
         {"shape":"UnsupportedOperationException"},
         {"shape":"NotOrganizationMasterAccountException"},
         {"shape":"NoManagementAccountSLRExistsException"},
-        {"shape":"InsufficientDependencyServiceAccessPermissionException"}
+        {"shape":"InsufficientDependencyServiceAccessPermissionException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Starts the ingestion of live events on an event data store specified as either an ARN or the ID portion of the ARN. To start ingestion, the event data store <code>Status</code> must be <code>STOPPED_INGESTION</code> and the <code>eventCategory</code> must be <code>Management</code>, <code>Data</code>, <code>NetworkActivity</code>, or <code>ConfigurationItem</code>.</p>"
     },
@@ -1118,7 +1172,8 @@
         {"shape":"UnsupportedOperationException"},
         {"shape":"NotOrganizationMasterAccountException"},
         {"shape":"NoManagementAccountSLRExistsException"},
-        {"shape":"InsufficientDependencyServiceAccessPermissionException"}
+        {"shape":"InsufficientDependencyServiceAccessPermissionException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Stops the ingestion of live events on an event data store specified as either an ARN or the ID portion of the ARN. To stop ingestion, the event data store <code>Status</code> must be <code>ENABLED</code> and the <code>eventCategory</code> must be <code>Management</code>, <code>Data</code>, <code>NetworkActivity</code>, or <code>ConfigurationItem</code>.</p>"
     },
@@ -1289,15 +1344,13 @@
   "shapes":{
     "AccessDeniedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> You do not have sufficient access to perform this action. </p>",
       "exception":true
     },
     "AccountHasOngoingImportException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> This exception is thrown when you start a new import and a previous import is still in progress. </p>",
       "exception":true
     },
@@ -1309,22 +1362,19 @@
     },
     "AccountNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the specified account is not found or not part of an organization.</p>",
       "exception":true
     },
     "AccountNotRegisteredException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the specified account is not registered as the CloudTrail delegated administrator.</p>",
       "exception":true
     },
     "AccountRegisteredException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the account is already registered as the CloudTrail delegated administrator.</p>",
       "exception":true
     },
@@ -1348,8 +1398,7 @@
     },
     "AddTagsResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Returns the objects or data if successful. Otherwise, returns an error.</p>"
     },
     "AdvancedEventSelector":{
@@ -1463,8 +1512,7 @@
     },
     "CannotDelegateManagementAccountException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the management account of an organization is registered as the CloudTrail delegated administrator.</p>",
       "exception":true
     },
@@ -1484,15 +1532,13 @@
     },
     "ChannelARNInvalidException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the specified value of <code>ChannelARN</code> is not valid.</p>",
       "exception":true
     },
     "ChannelAlreadyExistsException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> This exception is thrown when the provided channel already exists. </p>",
       "exception":true
     },
@@ -1504,15 +1550,13 @@
     },
     "ChannelExistsForEDSException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the specified event data store cannot yet be deleted because it is in use by a channel.</p>",
       "exception":true
     },
     "ChannelMaxLimitExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> This exception is thrown when the maximum number of channels limit is exceeded. </p>",
       "exception":true
     },
@@ -1524,8 +1568,7 @@
     },
     "ChannelNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when CloudTrail cannot find the specified channel.</p>",
       "exception":true
     },
@@ -1535,45 +1578,62 @@
     },
     "CloudTrailARNInvalidException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when an operation is called with an ARN that is not valid.</p> <p>The following is the format of a trail ARN: <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p> <p>The following is the format of an event data store ARN: <code>arn:aws:cloudtrail:us-east-2:123456789012:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE</code> </p> <p>The following is the format of a dashboard ARN: <code>arn:aws:cloudtrail:us-east-1:123456789012:dashboard/exampleDash</code> </p> <p>The following is the format of a channel ARN: <code>arn:aws:cloudtrail:us-east-2:123456789012:channel/01234567890</code> </p>",
       "exception":true
     },
     "CloudTrailAccessNotEnabledException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when trusted access has not been enabled between CloudTrail and Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_integrate_services.html#orgs_how-to-enable-disable-trusted-access\">How to enable or disable trusted access</a> in the <i>Organizations User Guide</i> and <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/creating-an-organizational-trail-prepare.html\">Prepare For Creating a Trail For Your Organization</a> in the <i>CloudTrail User Guide</i>.</p>",
       "exception":true
     },
     "CloudTrailInvalidClientTokenIdException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when a call results in the <code>InvalidClientTokenId</code> error code. This can occur when you are creating or updating a trail to send notifications to an Amazon SNS topic that is in a suspended Amazon Web Services account.</p>",
       "exception":true
     },
     "CloudWatchLogsDeliveryUnavailableException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Cannot set a CloudWatch Logs delivery for this Region.</p>",
       "exception":true
     },
     "ConcurrentModificationException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> You are trying to update a resource when another request is in progress. Allow sufficient wait time for the previous request to complete, then retry your request. </p>",
       "exception":true
     },
     "ConflictException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the specified resource is not ready for an operation. This can occur when you try to run an operation on a resource before CloudTrail has time to fully load the resource, or because another operation is modifying the resource. If this exception occurs, wait a few minutes, and then try the operation again.</p>",
       "exception":true
+    },
+    "ContextKeySelector":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Equals"
+      ],
+      "members":{
+        "Type":{
+          "shape":"Type",
+          "documentation":"<p>Specifies the type of the event record field in ContextKeySelector. Valid values include RequestContext, TagContext.</p>"
+        },
+        "Equals":{
+          "shape":"OperatorTargetList",
+          "documentation":"<p>A list of keys defined by Type to be included in CloudTrail enriched events. </p>"
+        }
+      },
+      "documentation":"<p>An object that contains information types to be included in CloudTrail enriched events.</p>"
+    },
+    "ContextKeySelectors":{
+      "type":"list",
+      "member":{"shape":"ContextKeySelector"},
+      "max":2
     },
     "CreateChannelRequest":{
       "type":"structure",
@@ -1954,8 +2014,7 @@
     "Date":{"type":"timestamp"},
     "DelegatedAdminAccountLimitExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the maximum number of CloudTrail delegated administrators is reached.</p>",
       "exception":true
     },
@@ -1971,8 +2030,7 @@
     },
     "DeleteChannelResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDashboardRequest":{
       "type":"structure",
@@ -1986,8 +2044,7 @@
     },
     "DeleteDashboardResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteEventDataStoreRequest":{
       "type":"structure",
@@ -2001,8 +2058,7 @@
     },
     "DeleteEventDataStoreResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteResourcePolicyRequest":{
       "type":"structure",
@@ -2016,8 +2072,7 @@
     },
     "DeleteResourcePolicyResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteTrailRequest":{
       "type":"structure",
@@ -2032,8 +2087,7 @@
     },
     "DeleteTrailResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Returns the objects or data listed below if successful. Otherwise, returns an error.</p>"
     },
     "DeliveryS3Uri":{
@@ -2068,8 +2122,7 @@
     },
     "DeregisterOrganizationDelegatedAdminResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Returns the following response if successful. Otherwise, returns an error.</p>"
     },
     "DescribeQueryRequest":{
@@ -2374,15 +2427,13 @@
     },
     "EventDataStoreARNInvalidException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified event data store ARN is not valid or does not map to an event data store in your account.</p>",
       "exception":true
     },
     "EventDataStoreAlreadyExistsException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An event data store with that name already exists.</p>",
       "exception":true
     },
@@ -2394,15 +2445,13 @@
     },
     "EventDataStoreFederationEnabledException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> You cannot delete the event data store because Lake query federation is enabled. To delete the event data store, run the <code>DisableFederation</code> operation to disable Lake query federation on the event data store. </p>",
       "exception":true
     },
     "EventDataStoreHasOngoingImportException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> This exception is thrown when you try to update or delete an event data store that currently has an import in progress. </p>",
       "exception":true
     },
@@ -2420,8 +2469,7 @@
     },
     "EventDataStoreMaxLimitExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Your account has used the maximum number of event data stores.</p>",
       "exception":true
     },
@@ -2433,8 +2481,7 @@
     },
     "EventDataStoreNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified event data store was not found.</p>",
       "exception":true
     },
@@ -2451,8 +2498,7 @@
     },
     "EventDataStoreTerminationProtectedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The event data store cannot be deleted because termination protection is enabled for it.</p>",
       "exception":true
     },
@@ -2555,8 +2601,7 @@
     },
     "GenerateResponseException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> This exception is thrown when a valid query could not be generated for the provided prompt. </p>",
       "exception":true
     },
@@ -2651,6 +2696,32 @@
         "TerminationProtectionEnabled":{
           "shape":"TerminationProtectionEnabled",
           "documentation":"<p> Indicates whether termination protection is enabled for the dashboard. </p>"
+        }
+      }
+    },
+    "GetEventConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "EventDataStore":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) or ID suffix of the ARN of the event data store for which you want to retrieve event configuration settings.</p>"
+        }
+      }
+    },
+    "GetEventConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "EventDataStoreArn":{
+          "shape":"EventDataStoreArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) or ID suffix of the ARN of the event data store for which the event configuration settings are returned.</p>"
+        },
+        "MaxEventSize":{
+          "shape":"MaxEventSize",
+          "documentation":"<p>The maximum allowed size for events stored in the specified event data store.</p>"
+        },
+        "ContextKeySelectors":{
+          "shape":"ContextKeySelectors",
+          "documentation":"<p>The list of context key selectors that are configured for the event data store.</p>"
         }
       }
     },
@@ -3068,8 +3139,7 @@
     },
     "ImportNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> The specified import was not found. </p>",
       "exception":true
     },
@@ -3152,15 +3222,13 @@
     },
     "InactiveEventDataStoreException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The event data store is inactive.</p>",
       "exception":true
     },
     "InactiveQueryException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified query cannot be canceled because it is in the <code>FINISHED</code>, <code>FAILED</code>, <code>TIMED_OUT</code>, or <code>CANCELLED</code> state.</p>",
       "exception":true
     },
@@ -3192,8 +3260,7 @@
     },
     "InsightNotEnabledException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>If you run <code>GetInsightSelectors</code> on a trail or event data store that does not have Insights events enabled, the operation throws the exception <code>InsightNotEnabledException</code>.</p>",
       "exception":true
     },
@@ -3246,234 +3313,207 @@
     },
     "InsufficientDependencyServiceAccessPermissionException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the IAM identity that is used to create the organization resource lacks one or more required permissions for creating an organization resource in a required service.</p>",
       "exception":true
     },
     "InsufficientEncryptionPolicyException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>For the <code>CreateTrail</code> <code>PutInsightSelectors</code>, <code>UpdateTrail</code>, <code>StartQuery</code>, and <code>StartImport</code> operations, this exception is thrown when the policy on the S3 bucket or KMS key does not have sufficient permissions for the operation.</p> <p>For all other operations, this exception is thrown when the policy for the KMS key does not have sufficient permissions for the operation.</p>",
+      "exception":true
+    },
+    "InsufficientIAMAccessPermissionException":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The task can't be completed because you are signed in with an account that lacks permissions to view or create a service-linked role. Sign in with an account that has the required permissions and then try again.</p>",
       "exception":true
     },
     "InsufficientS3BucketPolicyException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the policy on the S3 bucket is not sufficient.</p>",
       "exception":true
     },
     "InsufficientSnsTopicPolicyException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the policy on the Amazon SNS topic is not sufficient.</p>",
       "exception":true
     },
     "Integer":{"type":"integer"},
     "InvalidCloudWatchLogsLogGroupArnException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the provided CloudWatch Logs log group is not valid.</p>",
       "exception":true
     },
     "InvalidCloudWatchLogsRoleArnException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the provided role is not valid.</p>",
       "exception":true
     },
     "InvalidDateRangeException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A date range for the query was specified that is not valid. Be sure that the start time is chronologically before the end time. For more information about writing a query, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/query-create-edit-query.html\">Create or edit a query</a> in the <i>CloudTrail User Guide</i>.</p>",
       "exception":true
     },
     "InvalidEventCategoryException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Occurs if an event category that is not valid is specified as a value of <code>EventCategory</code>.</p>",
       "exception":true
     },
     "InvalidEventDataStoreCategoryException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when event categories of specified event data stores are not valid.</p>",
       "exception":true
     },
     "InvalidEventDataStoreStatusException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The event data store is not in a status that supports the operation.</p>",
       "exception":true
     },
     "InvalidEventSelectorsException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the <code>PutEventSelectors</code> operation is called with a number of event selectors, advanced event selectors, or data resources that is not valid. The combination of event selectors or advanced event selectors and data resources is not valid. A trail can have up to 5 event selectors. If a trail uses advanced event selectors, a maximum of 500 total values for all conditions in all advanced event selectors is allowed. A trail is limited to 250 data resources. These data resources can be distributed across event selectors, but the overall total cannot exceed 250.</p> <p>You can:</p> <ul> <li> <p>Specify a valid number of event selectors (1 to 5) for a trail.</p> </li> <li> <p>Specify a valid number of data resources (1 to 250) for an event selector. The limit of number of resources on an individual event selector is configurable up to 250. However, this upper limit is allowed only if the total number of data resources does not exceed 250 across all event selectors for a trail.</p> </li> <li> <p>Specify up to 500 values for all conditions in all advanced event selectors for a trail.</p> </li> <li> <p>Specify a valid value for a parameter. For example, specifying the <code>ReadWriteType</code> parameter with a value of <code>read-only</code> is not valid.</p> </li> </ul>",
       "exception":true
     },
     "InvalidHomeRegionException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when an operation is called on a trail from a Region other than the Region in which the trail was created.</p>",
       "exception":true
     },
     "InvalidImportSourceException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> This exception is thrown when the provided source S3 bucket is not valid for import. </p>",
       "exception":true
     },
     "InvalidInsightSelectorsException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>For <code>PutInsightSelectors</code>, this exception is thrown when the formatting or syntax of the <code>InsightSelectors</code> JSON statement is not valid, or the specified <code>InsightType</code> in the <code>InsightSelectors</code> statement is not valid. Valid values for <code>InsightType</code> are <code>ApiCallRateInsight</code> and <code>ApiErrorRateInsight</code>. To enable Insights on an event data store, the destination event data store specified by the <code>InsightsDestination</code> parameter must log Insights events and the source event data store specified by the <code>EventDataStore</code> parameter must log management events.</p> <p>For <code>UpdateEventDataStore</code>, this exception is thrown if Insights are enabled on the event data store and the updated advanced event selectors are not compatible with the configured <code>InsightSelectors</code>. If the <code>InsightSelectors</code> includes an <code>InsightType</code> of <code>ApiCallRateInsight</code>, the source event data store must log <code>write</code> management events. If the <code>InsightSelectors</code> includes an <code>InsightType</code> of <code>ApiErrorRateInsight</code>, the source event data store must log management events.</p>",
       "exception":true
     },
     "InvalidKmsKeyIdException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the KMS key ARN is not valid.</p>",
       "exception":true
     },
     "InvalidLookupAttributesException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Occurs when a lookup attribute is specified that is not valid.</p>",
       "exception":true
     },
     "InvalidMaxResultsException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown if the limit specified is not valid.</p>",
       "exception":true
     },
     "InvalidNextTokenException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A token that is not valid, or a token that was previously used in a request with different parameters. This exception is thrown if the token is not valid.</p>",
       "exception":true
     },
     "InvalidParameterCombinationException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the combination of parameters provided is not valid.</p>",
       "exception":true
     },
     "InvalidParameterException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request includes a parameter that is not valid.</p>",
       "exception":true
     },
     "InvalidQueryStatementException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The query that was submitted has validation errors, or uses incorrect syntax or unsupported keywords. For more information about writing a query, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/query-create-edit-query.html\">Create or edit a query</a> in the <i>CloudTrail User Guide</i>.</p>",
       "exception":true
     },
     "InvalidQueryStatusException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The query status is not valid for the operation.</p>",
       "exception":true
     },
     "InvalidS3BucketNameException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the provided S3 bucket name is not valid.</p>",
       "exception":true
     },
     "InvalidS3PrefixException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the provided S3 prefix is not valid.</p>",
       "exception":true
     },
     "InvalidSnsTopicNameException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the provided SNS topic name is not valid.</p>",
       "exception":true
     },
     "InvalidSourceException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the specified value of <code>Source</code> is not valid.</p>",
       "exception":true
     },
     "InvalidTagParameterException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the specified tag key or values are not valid. It can also occur if there are duplicate tags or too many tags on the resource.</p>",
       "exception":true
     },
     "InvalidTimeRangeException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Occurs if the timestamp values are not valid. Either the start time occurs after the end time, or the time range is outside the range of possible values.</p>",
       "exception":true
     },
     "InvalidTokenException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Reserved for future use.</p>",
       "exception":true
     },
     "InvalidTrailNameException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the provided trail name is not valid. Trail names must meet the following requirements:</p> <ul> <li> <p>Contain only ASCII letters (a-z, A-Z), numbers (0-9), periods (.), underscores (_), or dashes (-)</p> </li> <li> <p>Start with a letter or number, and end with a letter or number</p> </li> <li> <p>Be between 3 and 128 characters</p> </li> <li> <p>Have no adjacent periods, underscores or dashes. Names like <code>my-_namespace</code> and <code>my--namespace</code> are not valid.</p> </li> <li> <p>Not be in IP address format (for example, 192.168.5.4)</p> </li> </ul>",
       "exception":true
     },
     "KmsException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when there is an issue with the specified KMS key and the trail or event data store can't be updated.</p>",
       "exception":true
     },
     "KmsKeyDisabledException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is no longer in use.</p>",
       "deprecated":true,
       "exception":true
     },
     "KmsKeyNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the KMS key does not exist, when the S3 bucket and the KMS key are not in the same Region, or when the KMS key associated with the Amazon SNS topic either does not exist or is not in the same Region.</p>",
       "exception":true
     },
@@ -3871,7 +3911,7 @@
       "type":"string",
       "max":1024,
       "min":3,
-      "pattern":"^[a-zA-Z0-9._/\\-:]+$"
+      "pattern":"^[a-zA-Z0-9._/\\-:*]+$"
     },
     "Long":{"type":"long"},
     "LookupAttribute":{
@@ -3960,10 +4000,16 @@
     },
     "MaxConcurrentQueriesException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You are already running the maximum number of concurrent queries. The maximum number of concurrent queries is 10. Wait a minute for some queries to finish, and then run the query again.</p>",
       "exception":true
+    },
+    "MaxEventSize":{
+      "type":"string",
+      "enum":[
+        "Standard",
+        "Large"
+      ]
     },
     "MaxQueryResults":{
       "type":"integer",
@@ -3977,43 +4023,49 @@
     },
     "MaximumNumberOfTrailsExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the maximum number of trails is reached.</p>",
       "exception":true
     },
     "NextToken":{"type":"string"},
     "NoManagementAccountSLRExistsException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> This exception is thrown when the management account does not have a service-linked role. </p>",
       "exception":true
     },
     "NotOrganizationManagementAccountException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> This exception is thrown when the account making the request is not the organization's management account. </p>",
       "exception":true
     },
     "NotOrganizationMasterAccountException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the Amazon Web Services account making the request to create or update an organization trail or event data store is not the management account for an organization in Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/creating-an-organizational-trail-prepare.html\">Prepare For Creating a Trail For Your Organization</a> or <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-lake-organizations.html\">Organization event data stores</a>.</p>",
       "exception":true
     },
     "OperationNotPermittedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the requested operation is not permitted.</p>",
       "exception":true
     },
     "Operator":{
       "type":"list",
       "member":{"shape":"OperatorValue"},
+      "min":1
+    },
+    "OperatorTargetList":{
+      "type":"list",
+      "member":{"shape":"OperatorTargetListMember"},
+      "max":50,
+      "min":1
+    },
+    "OperatorTargetListMember":{
+      "type":"string",
+      "max":128,
       "min":1
     },
     "OperatorValue":{
@@ -4024,15 +4076,13 @@
     },
     "OrganizationNotInAllFeaturesModeException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when Organizations is not configured to support all features. All features must be enabled in Organizations to support creating an organization trail or event data store.</p>",
       "exception":true
     },
     "OrganizationsNotInUseException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the request is made from an Amazon Web Services account that is not a member of an organization. To make this request, sign in using the credentials of an account that belongs to an organization.</p>",
       "exception":true
     },
@@ -4108,6 +4158,44 @@
     "PublicKeyList":{
       "type":"list",
       "member":{"shape":"PublicKey"}
+    },
+    "PutEventConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "MaxEventSize",
+        "ContextKeySelectors"
+      ],
+      "members":{
+        "EventDataStore":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) or ID suffix of the ARN of the event data store for which you want to update event configuration settings.</p>"
+        },
+        "MaxEventSize":{
+          "shape":"MaxEventSize",
+          "documentation":"<p>The maximum allowed size for events to be stored in the specified event data store. If you are using context key selectors, MaxEventSize must be set to Large.</p>"
+        },
+        "ContextKeySelectors":{
+          "shape":"ContextKeySelectors",
+          "documentation":"<p>A list of context key selectors that will be included to provide enriched event data.</p>"
+        }
+      }
+    },
+    "PutEventConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "EventDataStoreArn":{
+          "shape":"EventDataStoreArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) or ID suffix of the ARN of the event data store for which the event configuration settings were updated.</p>"
+        },
+        "MaxEventSize":{
+          "shape":"MaxEventSize",
+          "documentation":"<p>The maximum allowed size for events stored in the specified event data store.</p>"
+        },
+        "ContextKeySelectors":{
+          "shape":"ContextKeySelectors",
+          "documentation":"<p>The list of context key selectors that are configured for the event data store.</p>"
+        }
+      }
     },
     "PutEventSelectorsRequest":{
       "type":"structure",
@@ -4251,8 +4339,7 @@
     },
     "QueryIdNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The query ID does not exist or does not map to a query.</p>",
       "exception":true
     },
@@ -4435,8 +4522,7 @@
     },
     "RegisterOrganizationDelegatedAdminResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Returns the following response if successful. Otherwise, returns an error.</p>"
     },
     "RemoveTagsRequest":{
@@ -4459,8 +4545,7 @@
     },
     "RemoveTagsResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Returns the objects or data listed below if successful. Otherwise, returns an error.</p>"
     },
     "RequestWidget":{
@@ -4505,8 +4590,7 @@
     },
     "ResourceARNNotValidException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> This exception is thrown when the provided resource does not exist, or the ARN format of the resource is not valid. </p> <p>The following is the format of an event data store ARN: <code>arn:aws:cloudtrail:us-east-2:123456789012:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE</code> </p> <p>The following is the format of a dashboard ARN: <code>arn:aws:cloudtrail:us-east-1:123456789012:dashboard/exampleDash</code> </p> <p>The following is the format of a channel ARN: <code>arn:aws:cloudtrail:us-east-2:123456789012:channel/01234567890</code> </p>",
       "exception":true
     },
@@ -4527,8 +4611,7 @@
     },
     "ResourceNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the specified resource is not found.</p>",
       "exception":true
     },
@@ -4539,15 +4622,13 @@
     },
     "ResourcePolicyNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> This exception is thrown when the specified resource policy is not found. </p>",
       "exception":true
     },
     "ResourcePolicyNotValidException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> This exception is thrown when the resouce-based policy has syntax errors, or contains a principal that is not valid. </p>",
       "exception":true
     },
@@ -4571,8 +4652,7 @@
     },
     "ResourceTypeNotSupportedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the specified resource type is not supported by CloudTrail.</p>",
       "exception":true
     },
@@ -4646,8 +4726,7 @@
     },
     "S3BucketDoesNotExistException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the specified S3 bucket does not exist.</p>",
       "exception":true
     },
@@ -4760,8 +4839,7 @@
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> This exception is thrown when the quota is exceeded. For information about CloudTrail quotas, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/ct.html#limits_cloudtrail\">Service quotas</a> in the <i>Amazon Web Services General Reference</i>. </p>",
       "exception":true
     },
@@ -4820,8 +4898,7 @@
     },
     "StartEventDataStoreIngestionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StartImportRequest":{
       "type":"structure",
@@ -4898,8 +4975,7 @@
     },
     "StartLoggingResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Returns the objects or data listed below if successful. Otherwise, returns an error.</p>"
     },
     "StartQueryRequest":{
@@ -4952,8 +5028,7 @@
     },
     "StopEventDataStoreIngestionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StopImportRequest":{
       "type":"structure",
@@ -5019,8 +5094,7 @@
     },
     "StopLoggingResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Returns the objects or data listed below if successful. Otherwise, returns an error.</p>"
     },
     "String":{"type":"string"},
@@ -5051,8 +5125,7 @@
     },
     "TagsLimitExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The number of tags per trail, event data store, dashboard, or channel has exceeded the permitted amount. Currently, the limit is 50.</p>",
       "exception":true
     },
@@ -5065,8 +5138,7 @@
     "TerminationProtectionEnabled":{"type":"boolean"},
     "ThrottlingException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> This exception is thrown when the request rate exceeds the limit. </p>",
       "exception":true
     },
@@ -5151,8 +5223,7 @@
     },
     "TrailAlreadyExistsException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the specified trail already exists.</p>",
       "exception":true
     },
@@ -5184,21 +5255,26 @@
     },
     "TrailNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the trail with the given name is not found.</p>",
       "exception":true
     },
     "TrailNotProvidedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is no longer in use.</p>",
       "exception":true
     },
     "Trails":{
       "type":"list",
       "member":{"shape":"TrailInfo"}
+    },
+    "Type":{
+      "type":"string",
+      "enum":[
+        "TagContext",
+        "RequestContext"
+      ]
     },
     "UUID":{
       "type":"string",
@@ -5208,8 +5284,7 @@
     },
     "UnsupportedOperationException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This exception is thrown when the requested operation is not supported.</p>",
       "exception":true
     },

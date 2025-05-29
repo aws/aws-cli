@@ -764,6 +764,10 @@
         "wafConfiguration":{
           "shape":"WafConfiguration",
           "documentation":"<p>Describes the Firewall configuration for the Amplify app. Firewall support enables you to protect your hosted applications with a direct integration with WAF.</p>"
+        },
+        "jobConfig":{
+          "shape":"JobConfig",
+          "documentation":"<p>The configuration details that apply to the jobs for an Amplify app.</p>"
         }
       },
       "documentation":"<p>Represents the different branches of a repository for building, deploying, and hosting an Amplify app. </p>"
@@ -1130,6 +1134,14 @@
       "member":{"shape":"Branch"},
       "max":255
     },
+    "BuildComputeType":{
+      "type":"string",
+      "enum":[
+        "STANDARD_8GB",
+        "LARGE_16GB",
+        "XLARGE_72GB"
+      ]
+    },
     "BuildSpec":{
       "type":"string",
       "documentation":"<p>The build specification (build spec) file for an Amplify app build. </p>",
@@ -1315,6 +1327,10 @@
         "autoBranchCreationConfig":{
           "shape":"AutoBranchCreationConfig",
           "documentation":"<p>The automated branch creation configuration for an Amplify app. </p>"
+        },
+        "jobConfig":{
+          "shape":"JobConfig",
+          "documentation":"<p>Describes the configuration details that apply to the jobs for an Amplify app.</p>"
         },
         "cacheConfig":{
           "shape":"CacheConfig",
@@ -2292,6 +2308,17 @@
       "type":"string",
       "max":1000
     },
+    "JobConfig":{
+      "type":"structure",
+      "required":["buildComputeType"],
+      "members":{
+        "buildComputeType":{
+          "shape":"BuildComputeType",
+          "documentation":"<p>Specifies the size of the build instance. Amplify supports three instance sizes: <code>STANDARD_8GB</code>, <code>LARGE_16GB</code>, and <code>XLARGE_72GB</code>. If you don't specify a value, Amplify uses the <code>STANDARD_8GB</code> default.</p> <p>The following list describes the CPU, memory, and storage capacity for each build instance type:</p> <dl> <dt>STANDARD_8GB</dt> <dd> <ul> <li> <p>vCPUs: 4</p> </li> <li> <p>Memory: 8 GiB</p> </li> <li> <p>Disk space: 128 GB</p> </li> </ul> </dd> <dt>LARGE_16GB</dt> <dd> <ul> <li> <p>vCPUs: 8</p> </li> <li> <p>Memory: 16 GiB</p> </li> <li> <p>Disk space: 128 GB</p> </li> </ul> </dd> <dt>XLARGE_72GB</dt> <dd> <ul> <li> <p>vCPUs: 36</p> </li> <li> <p>Memory: 72 GiB</p> </li> <li> <p>Disk space: 256 GB</p> </li> </ul> </dd> </dl>"
+        }
+      },
+      "documentation":"<p>Describes the configuration details that apply to the jobs for an Amplify app.</p> <p>Use <code>JobConfig</code> to apply configuration to jobs, such as customizing the build instance size when you create or update an Amplify app. For more information about customizable build instances, see <a href=\"https://docs.aws.amazon.com/amplify/latest/userguide/custom-build-instance.html\">Custom build instances</a> in the <i>Amplify User Guide</i>.</p>"
+    },
     "JobId":{
       "type":"string",
       "max":255,
@@ -3207,8 +3234,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The response for the tag resource request. </p>"
     },
     "TagValue":{
@@ -3276,8 +3302,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The response for the untag resource request. </p>"
     },
     "UpdateAppRequest":{
@@ -3365,6 +3390,10 @@
         "accessToken":{
           "shape":"AccessToken",
           "documentation":"<p>The personal access token for a GitHub repository for an Amplify app. The personal access token is used to authorize access to a GitHub repository using the Amplify GitHub App. The token is not stored.</p> <p>Use <code>accessToken</code> for GitHub repositories only. To authorize access to a repository provider such as Bitbucket or CodeCommit, use <code>oauthToken</code>.</p> <p>You must specify either <code>accessToken</code> or <code>oauthToken</code> when you update an app.</p> <p>Existing Amplify apps deployed from a GitHub repository using OAuth continue to work with CI/CD. However, we strongly recommend that you migrate these apps to use the GitHub App. For more information, see <a href=\"https://docs.aws.amazon.com/amplify/latest/userguide/setting-up-GitHub-access.html#migrating-to-github-app-auth\">Migrating an existing OAuth app to the Amplify GitHub App</a> in the <i>Amplify User Guide</i> .</p>"
+        },
+        "jobConfig":{
+          "shape":"JobConfig",
+          "documentation":"<p>Describes the configuration details that apply to the jobs for an Amplify app.</p>"
         },
         "cacheConfig":{
           "shape":"CacheConfig",

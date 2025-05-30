@@ -7023,6 +7023,10 @@
       },
       "documentation":"<p>The SageMaker Canvas application settings.</p>"
     },
+    "CapacityReservationPreference":{
+      "type":"string",
+      "enum":["capacity-reservations-only"]
+    },
     "CapacitySize":{
       "type":"structure",
       "required":[
@@ -19326,6 +19330,33 @@
       },
       "documentation":"<p>A collection of EBS storage settings that apply to both private and shared spaces.</p>"
     },
+    "Ec2CapacityReservation":{
+      "type":"structure",
+      "members":{
+        "Ec2CapacityReservationId":{
+          "shape":"Ec2CapacityReservationId",
+          "documentation":"<p>The unique identifier for an EC2 capacity reservation that's part of the ML capacity reservation.</p>"
+        },
+        "TotalInstanceCount":{
+          "shape":"TaskCount",
+          "documentation":"<p>The number of instances that you allocated to the EC2 capacity reservation.</p>"
+        },
+        "AvailableInstanceCount":{
+          "shape":"TaskCount",
+          "documentation":"<p>The number of instances that are currently available in the EC2 capacity reservation.</p>"
+        },
+        "UsedByCurrentEndpoint":{
+          "shape":"TaskCount",
+          "documentation":"<p>The number of instances from the EC2 capacity reservation that are being used by the endpoint.</p>"
+        }
+      },
+      "documentation":"<p>The EC2 capacity reservations that are shared to an ML capacity reservation.</p>"
+    },
+    "Ec2CapacityReservationId":{"type":"string"},
+    "Ec2CapacityReservationsList":{
+      "type":"list",
+      "member":{"shape":"Ec2CapacityReservation"}
+    },
     "Edge":{
       "type":"structure",
       "members":{
@@ -29342,6 +29373,12 @@
       "min":0,
       "pattern":"1|2"
     },
+    "MlReservationArn":{
+      "type":"string",
+      "max":258,
+      "min":20,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:ml-reservation/.*"
+    },
     "MlTools":{
       "type":"string",
       "enum":[
@@ -34305,6 +34342,10 @@
         "InferenceAmiVersion":{
           "shape":"ProductionVariantInferenceAmiVersion",
           "documentation":"<p>Specifies an option from a collection of preconfigured Amazon Machine Image (AMI) images. Each image is configured by Amazon Web Services with a set of software and driver versions. Amazon Web Services optimizes these configurations for different machine learning workloads.</p> <p>By selecting an AMI version, you can ensure that your inference environment is compatible with specific software requirements, such as CUDA driver versions, Linux kernel versions, or Amazon Web Services Neuron driver versions.</p> <p>The AMI version names, and their configurations, are the following:</p> <dl> <dt>al2-ami-sagemaker-inference-gpu-2</dt> <dd> <ul> <li> <p>Accelerator: GPU</p> </li> <li> <p>NVIDIA driver version: 535</p> </li> <li> <p>CUDA version: 12.2</p> </li> </ul> </dd> <dt>al2-ami-sagemaker-inference-gpu-2-1</dt> <dd> <ul> <li> <p>Accelerator: GPU</p> </li> <li> <p>NVIDIA driver version: 535</p> </li> <li> <p>CUDA version: 12.2</p> </li> <li> <p>NVIDIA Container Toolkit with disabled CUDA-compat mounting</p> </li> </ul> </dd> <dt>al2-ami-sagemaker-inference-gpu-3-1</dt> <dd> <ul> <li> <p>Accelerator: GPU</p> </li> <li> <p>NVIDIA driver version: 550</p> </li> <li> <p>CUDA version: 12.4</p> </li> <li> <p>NVIDIA Container Toolkit with disabled CUDA-compat mounting</p> </li> </ul> </dd> <dt>al2-ami-sagemaker-inference-neuron-2</dt> <dd> <ul> <li> <p>Accelerator: Inferentia2 and Trainium</p> </li> <li> <p>Neuron driver version: 2.19</p> </li> </ul> </dd> </dl>"
+        },
+        "CapacityReservationConfig":{
+          "shape":"ProductionVariantCapacityReservationConfig",
+          "documentation":"<p>Settings for the capacity reservation for the compute instances that SageMaker AI reserves for an endpoint. </p>"
         }
       },
       "documentation":"<p> Identifies a model that you want to host and the resources chosen to deploy for hosting it. If you are deploying multiple models, tell SageMaker how to distribute traffic among the models by specifying variant weights. For more information on production variants, check <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-ab-testing.html\"> Production variants</a>. </p>"
@@ -34319,6 +34360,50 @@
         "ml.eia2.large",
         "ml.eia2.xlarge"
       ]
+    },
+    "ProductionVariantCapacityReservationConfig":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationPreference":{
+          "shape":"CapacityReservationPreference",
+          "documentation":"<p>Options that you can choose for the capacity reservation. SageMaker AI supports the following options:</p> <dl> <dt>capacity-reservations-only</dt> <dd> <p>SageMaker AI launches instances only into an ML capacity reservation. If no capacity is available, the instances fail to launch.</p> </dd> </dl>"
+        },
+        "MlReservationArn":{
+          "shape":"MlReservationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the ML capacity reservation that SageMaker AI applies when it deploys the endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Settings for the capacity reservation for the compute instances that SageMaker AI reserves for an endpoint. </p>"
+    },
+    "ProductionVariantCapacityReservationSummary":{
+      "type":"structure",
+      "members":{
+        "MlReservationArn":{
+          "shape":"MlReservationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the ML capacity reservation that SageMaker AI applies when it deploys the endpoint.</p>"
+        },
+        "CapacityReservationPreference":{
+          "shape":"CapacityReservationPreference",
+          "documentation":"<p>The option that you chose for the capacity reservation. SageMaker AI supports the following options:</p> <dl> <dt>capacity-reservations-only</dt> <dd> <p>SageMaker AI launches instances only into an ML capacity reservation. If no capacity is available, the instances fail to launch.</p> </dd> </dl>"
+        },
+        "TotalInstanceCount":{
+          "shape":"TaskCount",
+          "documentation":"<p>The number of instances that you allocated to the ML capacity reservation.</p>"
+        },
+        "AvailableInstanceCount":{
+          "shape":"TaskCount",
+          "documentation":"<p>The number of instances that are currently available in the ML capacity reservation.</p>"
+        },
+        "UsedByCurrentEndpoint":{
+          "shape":"TaskCount",
+          "documentation":"<p>The number of instances from the ML capacity reservation that are being used by the endpoint.</p>"
+        },
+        "Ec2CapacityReservations":{
+          "shape":"Ec2CapacityReservationsList",
+          "documentation":"<p>The EC2 capacity reservations that are shared to this ML capacity reservation, if any.</p>"
+        }
+      },
+      "documentation":"<p>Details about an ML capacity reservation.</p>"
     },
     "ProductionVariantContainerStartupHealthCheckTimeoutInSeconds":{
       "type":"integer",
@@ -34732,6 +34817,10 @@
         "RoutingConfig":{
           "shape":"ProductionVariantRoutingConfig",
           "documentation":"<p>Settings that control how the endpoint routes incoming traffic to the instances that the endpoint hosts.</p>"
+        },
+        "CapacityReservationConfig":{
+          "shape":"ProductionVariantCapacityReservationSummary",
+          "documentation":"<p>Settings for the capacity reservation for the compute instances that SageMaker AI reserves for an endpoint. </p>"
         }
       },
       "documentation":"<p>Describes weight and capacities for a production variant associated with an endpoint. If you sent a request to the <code>UpdateEndpointWeightsAndCapacities</code> API and the endpoint status is <code>Updating</code>, you get different desired and current values. </p>"
@@ -41161,6 +41250,10 @@
         "ProjectS3Path":{
           "shape":"S3Uri",
           "documentation":"<p>The location where Amazon S3 stores temporary execution data and other artifacts for the project that corresponds to the domain.</p>"
+        },
+        "SingleSignOnApplicationArn":{
+          "shape":"SingleSignOnApplicationArn",
+          "documentation":"<p>The ARN of the application managed by SageMaker AI and SageMaker Unified Studio in the Amazon Web Services IAM Identity Center.</p>"
         }
       },
       "documentation":"<p>The settings that apply to an Amazon SageMaker AI domain when you use it in Amazon SageMaker Unified Studio.</p>"

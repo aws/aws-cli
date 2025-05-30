@@ -28,7 +28,6 @@ Output::
                 "WorkspaceSecurityGroupId": "sg-0d89e927e5645d7c5",
                 "State": "REGISTERED",
                 "WorkspaceCreationProperties": {
-                    "EnableWorkDocs": false,
                     "EnableInternetAccess": false,
                     "UserEnabledAsLocalAdministrator": true,
                     "EnableMaintenanceMode": true
@@ -55,4 +54,4 @@ Output::
         ]
     }
 
-For more information, see `Manage directories for WorkSpaces <https://docs.aws.amazon.com/workspaces/latest/adminguide/manage-workspaces-directory.html>`__ in the *Amazon WorkSpaces Administration Guide*.
+For more information, see `Manage directories for WorkSpaces Personal <https://docs.aws.amazon.com/workspaces/latest/adminguide/manage-workspaces-directory.html>`__ in the *Amazon WorkSpaces Administration Guide*.

@@ -81,7 +81,7 @@ class S3Uploader(object):
         """
         Uploads given file to S3
         :param file_name: Path to the file that will be uploaded
-        :param remote_path:  be uploaded
+        :param remote_path: Path where the file will be uploaded
         :return: VersionId of the latest upload
         """
 

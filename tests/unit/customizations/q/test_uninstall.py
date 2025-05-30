@@ -40,15 +40,15 @@ class TestUninstallCommand:
             EXTENSIONS_DIR / Q_DIRECTORY_NAME, ignore_errors=True
         )
 
-    @patch.dict(os.environ, {'AWS_DATA_PATH': '/alt1:/alt2'})
+    @patch.dict(os.environ, {'AWS_DATA_PATH': f'/alt1{os.pathsep}/alt2'})
     @patch('pathlib.Path.is_file', return_value=True)
     def test_uninstall_removes_multiple_copies(self, mock_is_file):
         self.uninstall_command._run_main([], None)
 
         self.mock_shutil_rmtree.assert_has_calls(
             [
-                call(Path('/alt1') / Q_DIRECTORY_NAME, ignore_errors=True),
-                call(Path('/alt2') / Q_DIRECTORY_NAME, ignore_errors=True),
+                call(Path(os.path.abspath('/alt1')) / Q_DIRECTORY_NAME, ignore_errors=True),
+                call(Path(os.path.abspath('/alt2')) / Q_DIRECTORY_NAME, ignore_errors=True),
                 call(EXTENSIONS_DIR / Q_DIRECTORY_NAME, ignore_errors=True),
             ]
         )

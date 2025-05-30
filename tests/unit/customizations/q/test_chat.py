@@ -41,17 +41,17 @@ class TestChatCommand:
         'pathlib.Path.is_file',
         side_effect=lambda p: p == DEFAULT_EXTENSION_PATH,
     )
-    def test_chat_subprocess_call(self, mock_is_file):
+    def test_chat_subprocess_call_default_path(self, mock_is_file):
         self.chat_command._run_main([], None)
 
         self.mock_subprocess.assert_called_once_with(DEFAULT_EXTENSION_PATH)
 
     @patch.dict(os.environ, {'AWS_DATA_PATH': '/alt1'})
-    @patch('pathlib.Path.is_file', side_effect=lambda p: str(p) == '/alt1/q/q')
+    @patch('pathlib.Path.is_file', return_value=True)
     def test_chat_subprocess_call_alterative_data_path(self, mock_is_file):
         self.chat_command._run_main([], None)
 
-        # Verify the alternative path was called
+        # Verify the alternative path took priority over DEFAULT_EXTENSION_PATH
         self.mock_subprocess.assert_called_once_with(Path('/alt1/q/q'))
 
     @patch('pathlib.Path.is_file', return_value=False)

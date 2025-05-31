@@ -1,0 +1,24 @@
+Parameters:
+  Foo:
+    Type: String
+Resources:
+  MyBucket1:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: foo
+      X:
+        Fn::Sub: ${Foo}
+      Y:
+      - Fn::Sub: noparent0-${Foo}
+      - Fn::Sub: noparent1-${Foo}
+      Z:
+      - Fn::Sub: ${Foo}
+      - Ref: MyBucket2
+      - ZZ:
+          ZZZ:
+            ZZZZ:
+              Fn::Sub: ${Foo}
+  MyBucket2:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: bar

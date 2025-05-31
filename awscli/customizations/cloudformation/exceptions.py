@@ -3,7 +3,10 @@ class CloudFormationCommandError(Exception):
     fmt = 'An unspecified error occurred'
 
     def __init__(self, **kwargs):
-        msg = self.fmt.format(**kwargs)
+        if 'message' in kwargs:
+            msg = kwargs['message']
+        else:
+            msg = self.fmt.format(**kwargs)
         Exception.__init__(self, msg)
         self.kwargs = kwargs
 
@@ -53,7 +56,23 @@ class DeployBucketRequiredError(CloudFormationCommandError):
          "via an S3 Bucket. Please add the --s3-bucket parameter to your "
          "command. The local template will be copied to that S3 bucket and "
          "then deployed.")
-
+        
+class PackageBucketRequiredError(CloudFormationCommandError):
+    fmt = "Add the --s3-bucket parameter to your command to upload artifacts to S3"
 
 class InvalidForEachIntrinsicFunctionError(CloudFormationCommandError):
     fmt = 'The value of {resource_id} has an invalid "Fn::ForEach::" format: Must be a list of three entries'
+
+class InvalidModulePathError(CloudFormationCommandError):
+    fmt = 'The value of {source} is not a valid path to a local file'
+
+class InvalidModuleError(CloudFormationCommandError):
+    fmt = 'Module parameter validation error{line_info}: {msg}'
+    
+    def __init__(self, **kwargs):
+        # Add line information if available
+        if 'line_number' in kwargs:
+            kwargs['line_info'] = f" at line {kwargs['line_number']}"
+        else:
+            kwargs['line_info'] = ""
+        super().__init__(**kwargs)

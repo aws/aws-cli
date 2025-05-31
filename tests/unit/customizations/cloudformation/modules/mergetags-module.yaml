@@ -1,0 +1,15 @@
+Parameters:
+  Tags:
+    Type: Array
+Constants:
+  FooTag:
+  - Key: Foo
+    Value: Bar
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      Tags:
+        Fn::Merge:
+          - !Ref Tags
+          - !Ref Const::FooTag 

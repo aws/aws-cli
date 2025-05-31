@@ -1,0 +1,205 @@
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+  
+  FeatureEnabled:
+    Type: String
+    Default: 'false'
+  
+  RegionType:
+    Type: String
+    Default: us-east-1
+
+Conditions:
+  # Basic conditions
+  IsProd:
+    Fn::Equals:
+      - !Ref Environment
+      - prod
+  
+  IsTest:
+    Fn::Equals:
+      - !Ref Environment
+      - test
+  
+  IsDev:
+    Fn::Equals:
+      - !Ref Environment
+      - dev
+  
+  IsFeatureEnabled:
+    Fn::Equals:
+      - !Ref FeatureEnabled
+      - 'true'
+  
+  IsUSEast1:
+    Fn::Equals:
+      - !Ref RegionType
+      - us-east-1
+  
+  # Nested conditions with AND
+  IsProdWithFeature:
+    Fn::And:
+      - Condition: IsProd
+      - Condition: IsFeatureEnabled
+  
+  # Nested conditions with OR
+  IsDevOrTest:
+    Fn::Or:
+      - Condition: IsDev
+      - Condition: IsTest
+  
+  # Nested conditions with NOT
+  IsNotProd:
+    Fn::Not:
+      - Condition: IsProd
+  
+  # Complex nested conditions - multiple levels
+  IsComplexCondition1:
+    Fn::And:
+      - Condition: IsNotProd
+      - Fn::Or:
+          - Condition: IsFeatureEnabled
+          - Condition: IsUSEast1
+  
+  # Complex nested conditions with Fn::If inside Fn::Equals
+  IsComplexCondition2:
+    Fn::Equals:
+      - Fn::If:
+          - IsFeatureEnabled
+          - prod
+          - dev
+      - !Ref Environment
+  
+  # Deeply nested conditions with multiple operators
+  IsComplexCondition3:
+    Fn::And:
+      - Fn::Not:
+          - Fn::And:
+              - Condition: IsProd
+              - Fn::Not:
+                  - Condition: IsFeatureEnabled
+      - Fn::Or:
+          - Condition: IsUSEast1
+          - Fn::And:
+              - Condition: IsDevOrTest
+              - Fn::Not:
+                  - Condition: IsUSEast1
+
+  # Condition with Fn::If that has nested Fn::Equals
+  IsComplexCondition4:
+    Fn::Equals:
+      - Fn::If:
+          - Fn::Equals:
+              - !Ref Environment
+              - prod
+          - "critical"
+          - "normal"
+      - "normal"
+
+  # Condition with multiple Fn::If nested inside each other
+  IsComplexCondition5:
+    Fn::Equals:
+      - Fn::If:
+          - IsFeatureEnabled
+          - Fn::If:
+              - IsProd
+              - "enterprise"
+              - "standard"
+          - "basic"
+      - "standard"
+
+Resources:
+  # Resources with simple conditions
+  ProdOnlyBucket:
+    Type: AWS::S3::Bucket
+    Condition: IsProd
+    Properties:
+      BucketName: !Sub "prod-only-bucket-${AWS::AccountId}"
+  
+  DevOrTestBucket:
+    Type: AWS::S3::Bucket
+    Condition: IsDevOrTest
+    Properties:
+      BucketName: !Sub "dev-test-bucket-${AWS::AccountId}"
+  
+  # Resources with complex conditions
+  ComplexCondition1Bucket:
+    Type: AWS::S3::Bucket
+    Condition: IsComplexCondition1
+    Properties:
+      BucketName: !Sub "complex1-bucket-${AWS::AccountId}"
+  
+  ComplexCondition2Bucket:
+    Type: AWS::S3::Bucket
+    Condition: IsComplexCondition2
+    Properties:
+      BucketName: !Sub "complex2-bucket-${AWS::AccountId}"
+  
+  ComplexCondition3Bucket:
+    Type: AWS::S3::Bucket
+    Condition: IsComplexCondition3
+    Properties:
+      BucketName: !Sub "complex3-bucket-${AWS::AccountId}"
+  
+  ComplexCondition4Bucket:
+    Type: AWS::S3::Bucket
+    Condition: IsComplexCondition4
+    Properties:
+      BucketName: !Sub "complex4-bucket-${AWS::AccountId}"
+  
+  ComplexCondition5Bucket:
+    Type: AWS::S3::Bucket
+    Condition: IsComplexCondition5
+    Properties:
+      BucketName: !Sub "complex5-bucket-${AWS::AccountId}"
+  
+  # Resource with conditional properties using Fn::If
+  ConditionalPropertiesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "conditional-props-${AWS::AccountId}"
+      VersioningConfiguration:
+        Status: !If [IsProd, "Enabled", "Suspended"]
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: CostCenter
+          Value: !If [IsProd, "Production", !If [IsTest, "Testing", "Development"]]
+        - Key: FeatureFlag
+          Value: !If 
+            - IsFeatureEnabled
+            - !If [IsProd, "Critical-Feature", "Standard-Feature"]
+            - "No-Feature"
+
+Outputs:
+  ConditionResults:
+    Description: Results of all conditions for debugging
+    Value: !Join
+      - ", "
+      - - !Join ["=", ["IsProd", !If [IsProd, "true", "false"]]]
+        - !Join ["=", ["IsTest", !If [IsTest, "true", "false"]]]
+        - !Join ["=", ["IsDev", !If [IsDev, "true", "false"]]]
+        - !Join ["=", ["IsFeatureEnabled", !If [IsFeatureEnabled, "true", "false"]]]
+        - !Join ["=", ["IsUSEast1", !If [IsUSEast1, "true", "false"]]]
+        - !Join ["=", ["IsProdWithFeature", !If [IsProdWithFeature, "true", "false"]]]
+        - !Join ["=", ["IsDevOrTest", !If [IsDevOrTest, "true", "false"]]]
+        - !Join ["=", ["IsNotProd", !If [IsNotProd, "true", "false"]]]
+        - !Join ["=", ["IsComplexCondition1", !If [IsComplexCondition1, "true", "false"]]]
+        - !Join ["=", ["IsComplexCondition2", !If [IsComplexCondition2, "true", "false"]]]
+        - !Join ["=", ["IsComplexCondition3", !If [IsComplexCondition3, "true", "false"]]]
+        - !Join ["=", ["IsComplexCondition4", !If [IsComplexCondition4, "true", "false"]]]
+        - !Join ["=", ["IsComplexCondition5", !If [IsComplexCondition5, "true", "false"]]]
+  
+  ResourceCreationSummary:
+    Description: Summary of which resources were created
+    Value: !Join
+      - ", "
+      - - !If [IsProd, "ProdOnlyBucket", "No-ProdOnlyBucket"]
+        - !If [IsDevOrTest, "DevOrTestBucket", "No-DevOrTestBucket"]
+        - !If [IsComplexCondition1, "ComplexCondition1Bucket", "No-ComplexCondition1Bucket"]
+        - !If [IsComplexCondition2, "ComplexCondition2Bucket", "No-ComplexCondition2Bucket"]
+        - !If [IsComplexCondition3, "ComplexCondition3Bucket", "No-ComplexCondition3Bucket"]
+        - !If [IsComplexCondition4, "ComplexCondition4Bucket", "No-ComplexCondition4Bucket"]
+        - !If [IsComplexCondition5, "ComplexCondition5Bucket", "No-ComplexCondition5Bucket"]

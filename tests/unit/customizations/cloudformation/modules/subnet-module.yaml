@@ -1,0 +1,80 @@
+Parameters:
+
+  AZSelection:
+    Type: Number
+
+  SubnetCidrBlock:
+    Type: String
+
+  VPCId:
+    Type: String
+
+  InternetGatewayId:
+    Type: String
+
+  IsPublic:
+    Type: String
+    Description: true for public, false for private
+
+Conditions:
+  IsPublic:
+    Fn::Equals:
+      - !Ref IsPublic
+      - true
+
+Resources:
+
+  Subnet:
+    Type: AWS::EC2::Subnet
+    Metadata:
+      guard:
+        SuppressedRules:
+          - SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED
+    Properties:
+      AvailabilityZone: !Select [!Ref AZSelection, Fn::GetAZs: !Ref "AWS::Region"]
+      CidrBlock: !Ref SubnetCidrBlock 
+      MapPublicIpOnLaunch: true
+      VpcId: !Ref VPCId
+
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPCId
+
+  RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref RouteTable
+      SubnetId: !Ref Subnet
+
+  DefaultRoute:
+    Type: AWS::EC2::Route
+    Metadata:
+      guard:
+        SuppressedRules:
+          - NO_UNRESTRICTED_ROUTE_TO_IGW
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: 
+        Fn::If: 
+          - IsPublic
+          - !Ref InternetGatewayId
+          - !Ref AWS::NoValue
+      NatGatewayId:
+        Fn::If: 
+          - IsPublic
+          - !Ref AWS::NoValue
+          - !Ref NATGateway
+      RouteTableId: !Ref RouteTable
+
+  EIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+
+  NATGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt EIP.AllocationId
+      SubnetId: !Ref Subnet
+

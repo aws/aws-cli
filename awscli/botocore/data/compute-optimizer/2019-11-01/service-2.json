@@ -213,7 +213,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p> Export optimization recommendations for your Amazon Relational Database Service (Amazon RDS). </p> <p>Recommendations are exported in a comma-separated values (CSV) file, and its metadata in a JavaScript Object Notation (JSON) file, to an existing Amazon Simple Storage Service (Amazon S3) bucket that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html\">Exporting Recommendations</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>You can have only one Amazon RDS export job in progress per Amazon Web Services Region.</p>"
+      "documentation":"<p> Export optimization recommendations for your Amazon Aurora and Amazon Relational Database Service (Amazon RDS) databases. </p> <p>Recommendations are exported in a comma-separated values (CSV) file, and its metadata in a JavaScript Object Notation (JSON) file, to an existing Amazon Simple Storage Service (Amazon S3) bucket that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html\">Exporting Recommendations</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>You can have only one Amazon Aurora or RDS export job in progress per Amazon Web Services Region.</p>"
     },
     "GetAutoScalingGroupRecommendations":{
       "name":"GetAutoScalingGroupRecommendations",
@@ -469,7 +469,7 @@
         {"shape":"MissingAuthenticationToken"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> Returns the projected metrics of Amazon RDS recommendations. </p>"
+      "documentation":"<p> Returns the projected metrics of Aurora and RDS database recommendations. </p>"
     },
     "GetRDSDatabaseRecommendations":{
       "name":"GetRDSDatabaseRecommendations",
@@ -489,7 +489,7 @@
         {"shape":"MissingAuthenticationToken"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> Returns Amazon RDS recommendations. </p> <p>Compute Optimizer generates recommendations for Amazon RDS that meet a specific set of requirements. For more information, see the <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/requirements.html\">Supported resources and requirements</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+      "documentation":"<p> Returns Amazon Aurora and RDS database recommendations. </p> <p>Compute Optimizer generates recommendations for Amazon Aurora and RDS databases that meet a specific set of requirements. For more information, see the <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/requirements.html\">Supported resources and requirements</a> in the <i>Compute Optimizer User Guide</i>.</p>"
     },
     "GetRecommendationPreferences":{
       "name":"GetRecommendationPreferences",
@@ -528,7 +528,7 @@
         {"shape":"MissingAuthenticationToken"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns the optimization findings for an account.</p> <p>It returns the number of:</p> <ul> <li> <p>Amazon EC2 instances in an account that are <code>Underprovisioned</code>, <code>Overprovisioned</code>, or <code>Optimized</code>.</p> </li> <li> <p>Auto Scaling groups in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> <li> <p>Amazon EBS volumes in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> <li> <p>Lambda functions in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> <li> <p>Amazon ECS services in an account that are <code>Underprovisioned</code>, <code>Overprovisioned</code>, or <code>Optimized</code>.</p> </li> </ul>"
+      "documentation":"<p>Returns the optimization findings for an account.</p> <p>It returns the number of:</p> <ul> <li> <p>Amazon EC2 instances in an account that are <code>Underprovisioned</code>, <code>Overprovisioned</code>, or <code>Optimized</code>.</p> </li> <li> <p>EC2Auto Scaling groups in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> <li> <p>Amazon EBS volumes in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> <li> <p>Lambda functions in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> <li> <p>Amazon ECS services in an account that are <code>Underprovisioned</code>, <code>Overprovisioned</code>, or <code>Optimized</code>.</p> </li> <li> <p>Commercial software licenses in an account that are <code>InsufficientMetrics</code>, <code>NotOptimized</code> or <code>Optimized</code>.</p> </li> <li> <p>Amazon Aurora and Amazon RDS databases in an account that are <code>Underprovisioned</code>, <code>Overprovisioned</code>, <code>Optimized</code>, or <code>NotOptimized</code>.</p> </li> </ul>"
     },
     "PutRecommendationPreferences":{
       "name":"PutRecommendationPreferences",
@@ -952,23 +952,23 @@
       "members":{
         "storageType":{
           "shape":"StorageType",
-          "documentation":"<p> The type of RDS storage. </p>"
+          "documentation":"<p> The type of DB storage. </p>"
         },
         "allocatedStorage":{
           "shape":"AllocatedStorage",
-          "documentation":"<p> The size of the RDS storage in gigabytes (GB). </p>"
+          "documentation":"<p> The size of the DB storage in gigabytes (GB). </p>"
         },
         "iops":{
           "shape":"NullableIOPS",
-          "documentation":"<p> The provisioned IOPs of the RDS storage. </p>"
+          "documentation":"<p> The provisioned IOPs of the DB storage. </p>"
         },
         "maxAllocatedStorage":{
           "shape":"NullableMaxAllocatedStorage",
-          "documentation":"<p> The maximum limit in gibibytes (GiB) to which Amazon RDS can automatically scale the storage of the RDS instance. </p>"
+          "documentation":"<p> The maximum limit in gibibytes (GiB) to which Amazon RDS can automatically scale the storage of the DB instance. </p>"
         },
         "storageThroughput":{
           "shape":"NullableStorageThroughput",
-          "documentation":"<p> The storage throughput of the RDS storage. </p>"
+          "documentation":"<p> The storage throughput of the DB storage. </p>"
         }
       },
       "documentation":"<p> The configuration of the recommended RDS storage. </p>"
@@ -996,8 +996,7 @@
     },
     "DeleteRecommendationPreferencesResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeRecommendationExportJobsRequest":{
       "type":"structure",
@@ -1877,11 +1876,11 @@
       "members":{
         "accountIds":{
           "shape":"AccountIds",
-          "documentation":"<p> The Amazon Web Services account IDs for the export Amazon RDS recommendations. </p> <p>If your account is the management account or the delegated administrator of an organization, use this parameter to specify the member account you want to export recommendations to.</p> <p>This parameter can't be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>If this parameter or the include member accounts parameter is omitted, the recommendations for member accounts aren't included in the export.</p> <p>You can specify multiple account IDs per request.</p>"
+          "documentation":"<p> The Amazon Web Services account IDs for the export Amazon Aurora and RDS database recommendations. </p> <p>If your account is the management account or the delegated administrator of an organization, use this parameter to specify the member account you want to export recommendations to.</p> <p>This parameter can't be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>If this parameter or the include member accounts parameter is omitted, the recommendations for member accounts aren't included in the export.</p> <p>You can specify multiple account IDs per request.</p>"
         },
         "filters":{
           "shape":"RDSDBRecommendationFilters",
-          "documentation":"<p> An array of objects to specify a filter that exports a more specific set of Amazon RDS recommendations. </p>"
+          "documentation":"<p> An array of objects to specify a filter that exports a more specific set of Amazon Aurora and RDS recommendations. </p>"
         },
         "fieldsToExport":{
           "shape":"ExportableRDSDBFields",
@@ -2216,15 +2215,20 @@
         "EngineVersion",
         "Idle",
         "MultiAZDBInstance",
+        "ClusterWriter",
         "CurrentDBInstanceClass",
         "CurrentStorageConfigurationStorageType",
         "CurrentStorageConfigurationAllocatedStorage",
         "CurrentStorageConfigurationMaxAllocatedStorage",
         "CurrentStorageConfigurationIOPS",
         "CurrentStorageConfigurationStorageThroughput",
+        "CurrentStorageEstimatedMonthlyVolumeIOPsCostVariation",
         "CurrentInstanceOnDemandHourlyPrice",
         "CurrentStorageOnDemandMonthlyPrice",
         "LookbackPeriodInDays",
+        "CurrentStorageEstimatedClusterInstanceOnDemandMonthlyCost",
+        "CurrentStorageEstimatedClusterStorageOnDemandMonthlyCost",
+        "CurrentStorageEstimatedClusterStorageIOOnDemandMonthlyCost",
         "CurrentInstancePerformanceRisk",
         "UtilizationMetricsCpuMaximum",
         "UtilizationMetricsMemoryMaximum",
@@ -2244,6 +2248,9 @@
         "UtilizationMetricsAuroraMemoryNumKillQueryTotalMaximum",
         "UtilizationMetricsReadIOPSEphemeralStorageMaximum",
         "UtilizationMetricsWriteIOPSEphemeralStorageMaximum",
+        "UtilizationMetricsVolumeBytesUsedAverage",
+        "UtilizationMetricsVolumeReadIOPsAverage",
+        "UtilizationMetricsVolumeWriteIOPsAverage",
         "InstanceFinding",
         "InstanceFindingReasonCodes",
         "StorageFinding",
@@ -2258,6 +2265,7 @@
         "StorageRecommendationOptionsIOPS",
         "StorageRecommendationOptionsStorageThroughput",
         "StorageRecommendationOptionsRank",
+        "StorageRecommendationOptionsEstimatedMonthlyVolumeIOPsCostVariation",
         "InstanceRecommendationOptionsInstanceOnDemandHourlyPrice",
         "InstanceRecommendationOptionsSavingsOpportunityPercentage",
         "InstanceRecommendationOptionsEstimatedMonthlySavingsCurrency",
@@ -2266,6 +2274,9 @@
         "InstanceRecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts",
         "InstanceRecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts",
         "StorageRecommendationOptionsOnDemandMonthlyPrice",
+        "StorageRecommendationOptionsEstimatedClusterInstanceOnDemandMonthlyCost",
+        "StorageRecommendationOptionsEstimatedClusterStorageOnDemandMonthlyCost",
+        "StorageRecommendationOptionsEstimatedClusterStorageIOOnDemandMonthlyCost",
         "StorageRecommendationOptionsSavingsOpportunityPercentage",
         "StorageRecommendationOptionsEstimatedMonthlySavingsCurrency",
         "StorageRecommendationOptionsEstimatedMonthlySavingsValue",
@@ -2737,8 +2748,7 @@
     },
     "GetEnrollmentStatusRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetEnrollmentStatusResponse":{
       "type":"structure",
@@ -2933,7 +2943,7 @@
       "members":{
         "resourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p> The ARN that identifies the Amazon RDS. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:rds:{region}:{accountId}:db:{resourceName}</code> </p>"
+          "documentation":"<p> The ARN that identifies the Amazon Aurora or RDS database. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:rds:{region}:{accountId}:db:{resourceName}</code> </p>"
         },
         "stat":{
           "shape":"MetricStatistic",
@@ -2968,23 +2978,23 @@
       "members":{
         "resourceArns":{
           "shape":"ResourceArns",
-          "documentation":"<p> The ARN that identifies the Amazon RDS. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:rds:{region}:{accountId}:db:{resourceName}</code> </p> <p> The following is the format of a DB Cluster ARN: </p> <p> <code>arn:aws:rds:{region}:{accountId}:cluster:{resourceName}</code> </p>"
+          "documentation":"<p> The ARN that identifies the Amazon Aurora or RDS database. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:rds:{region}:{accountId}:db:{resourceName}</code> </p> <p> The following is the format of a DB Cluster ARN: </p> <p> <code>arn:aws:rds:{region}:{accountId}:cluster:{resourceName}</code> </p>"
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p> The token to advance to the next page of Amazon RDS recommendations. </p>"
+          "documentation":"<p> The token to advance to the next page of Amazon Aurora and RDS database recommendations. </p>"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of Amazon RDS recommendations to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>"
+          "documentation":"<p>The maximum number of Amazon Aurora and RDS database recommendations to return with a single request.</p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>"
         },
         "filters":{
           "shape":"RDSDBRecommendationFilters",
-          "documentation":"<p> An array of objects to specify a filter that returns a more specific list of Amazon RDS recommendations. </p>"
+          "documentation":"<p> An array of objects to specify a filter that returns a more specific list of Amazon Aurora and RDS database recommendations. </p>"
         },
         "accountIds":{
           "shape":"AccountIds",
-          "documentation":"<p> Return the Amazon RDS recommendations to the specified Amazon Web Services account IDs. </p> <p>If your account is the management account or the delegated administrator of an organization, use this parameter to return the Amazon RDS recommendations to specific member accounts.</p> <p>You can only specify one account ID per request.</p>"
+          "documentation":"<p> Return the Amazon Aurora and RDS database recommendations to the specified Amazon Web Services account IDs. </p> <p>If your account is the management account or the delegated administrator of an organization, use this parameter to return the Amazon Aurora and RDS database recommendations to specific member accounts.</p> <p>You can only specify one account ID per request.</p>"
         },
         "recommendationPreferences":{"shape":"RecommendationPreferences"}
       }
@@ -2994,11 +3004,11 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p> The token to advance to the next page of Amazon RDS recommendations. </p>"
+          "documentation":"<p> The token to advance to the next page of Amazon Aurora and RDS database recommendations. </p>"
         },
         "rdsDBRecommendations":{
           "shape":"RDSDBRecommendations",
-          "documentation":"<p> An array of objects that describe the Amazon RDS recommendations. </p>"
+          "documentation":"<p> An array of objects that describe the Amazon Aurora and RDS database recommendations. </p>"
         },
         "errors":{
           "shape":"GetRecommendationErrors",
@@ -4431,8 +4441,7 @@
     },
     "PutRecommendationPreferencesResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RDSCurrentInstancePerformanceRisk":{
       "type":"string",
@@ -4448,27 +4457,27 @@
       "members":{
         "dbInstanceClass":{
           "shape":"DBInstanceClass",
-          "documentation":"<p> Describes the DB instance class recommendation option for your Amazon RDS instance. </p>"
+          "documentation":"<p> Describes the DB instance class recommendation option for your Amazon Aurora or RDS database. </p>"
         },
         "projectedUtilizationMetrics":{
           "shape":"RDSDBProjectedUtilizationMetrics",
-          "documentation":"<p> An array of objects that describe the projected utilization metrics of the RDS instance recommendation option. </p>"
+          "documentation":"<p> An array of objects that describe the projected utilization metrics of the DB instance recommendation option. </p>"
         },
         "performanceRisk":{
           "shape":"PerformanceRisk",
-          "documentation":"<p> The performance risk of the RDS instance recommendation option. </p>"
+          "documentation":"<p> The performance risk of the DB instance recommendation option. </p>"
         },
         "rank":{
           "shape":"Rank",
-          "documentation":"<p> The rank identifier of the RDS instance recommendation option. </p>"
+          "documentation":"<p> The rank identifier of the DB instance recommendation option. </p>"
         },
         "savingsOpportunity":{"shape":"SavingsOpportunity"},
         "savingsOpportunityAfterDiscounts":{
           "shape":"RDSInstanceSavingsOpportunityAfterDiscounts",
-          "documentation":"<p> Describes the savings opportunity for Amazon RDS recommendations or for the recommendation option. </p> <p>Savings opportunity represents the estimated monthly savings after applying Savings Plans discounts. You can achieve this by implementing a given Compute Optimizer recommendation.</p>"
+          "documentation":"<p> Describes the savings opportunity for Amazon Aurora and RDS database recommendations or for the recommendation option. </p> <p>Savings opportunity represents the estimated monthly savings after applying Savings Plans discounts. You can achieve this by implementing a given Compute Optimizer recommendation.</p>"
         }
       },
-      "documentation":"<p> Describes the recommendation options for an Amazon RDS instance. </p>"
+      "documentation":"<p> Describes the recommendation options for a DB instance. </p>"
     },
     "RDSDBInstanceRecommendationOptions":{
       "type":"list",
@@ -4494,7 +4503,10 @@
         "AuroraMemoryNumKillConnTotal",
         "AuroraMemoryNumKillQueryTotal",
         "ReadIOPSEphemeralStorage",
-        "WriteIOPSEphemeralStorage"
+        "WriteIOPSEphemeralStorage",
+        "VolumeReadIOPs",
+        "VolumeBytesUsed",
+        "VolumeWriteIOPs"
       ]
     },
     "RDSDBMetricStatistic":{
@@ -4514,15 +4526,15 @@
       "members":{
         "resourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p> The ARN of the current Amazon RDS. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:rds:{region}:{accountId}:db:{resourceName}</code> </p>"
+          "documentation":"<p> The ARN of the current Amazon Aurora or RDS database. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:rds:{region}:{accountId}:db:{resourceName}</code> </p>"
         },
         "accountId":{
           "shape":"AccountId",
-          "documentation":"<p> The Amazon Web Services account ID of the Amazon RDS. </p>"
+          "documentation":"<p> The Amazon Web Services account ID of the Amazon Aurora or RDS database. </p>"
         },
         "engine":{
           "shape":"Engine",
-          "documentation":"<p> The engine of the RDS instance. </p>"
+          "documentation":"<p> The engine of the DB instance. </p>"
         },
         "engineVersion":{
           "shape":"EngineVersion",
@@ -4534,11 +4546,11 @@
         },
         "currentDBInstanceClass":{
           "shape":"CurrentDBInstanceClass",
-          "documentation":"<p> The DB instance class of the current RDS instance. </p>"
+          "documentation":"<p> The DB instance class of the current Aurora or RDS DB instance. </p>"
         },
         "currentStorageConfiguration":{
           "shape":"DBStorageConfiguration",
-          "documentation":"<p> The configuration of the current RDS storage. </p>"
+          "documentation":"<p> The configuration of the current DB storage. </p>"
         },
         "dbClusterIdentifier":{
           "shape":"DBClusterIdentifier",
@@ -4546,72 +4558,76 @@
         },
         "idle":{
           "shape":"Idle",
-          "documentation":"<p> This indicates if the RDS instance is idle or not. </p>"
+          "documentation":"<p> This indicates if the DB instance is idle or not. </p>"
         },
         "instanceFinding":{
           "shape":"RDSInstanceFinding",
-          "documentation":"<p> The finding classification of an Amazon RDS instance. </p> <p>Findings for Amazon RDS instance include:</p> <ul> <li> <p> <b> <code>Underprovisioned</code> </b> — When Compute Optimizer detects that there’s not enough resource specifications, an Amazon RDS is considered under-provisioned.</p> </li> <li> <p> <b> <code>Overprovisioned</code> </b> — When Compute Optimizer detects that there’s excessive resource specifications, an Amazon RDS is considered over-provisioned.</p> </li> <li> <p> <b> <code>Optimized</code> </b> — When the specifications of your Amazon RDS instance meet the performance requirements of your workload, the service is considered optimized.</p> </li> </ul>"
+          "documentation":"<p> The finding classification of an Amazon Aurora and RDS DB instance. </p> <p>For more information about finding classifications, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/view-rds-recommendations.html#rds-recommendations-findings\"> Finding classifications for Aurora and RDS databases</a> in the <i>Compute Optimizer User Guide</i>.</p>"
         },
         "storageFinding":{
           "shape":"RDSStorageFinding",
-          "documentation":"<p> The finding classification of Amazon RDS storage. </p> <p>Findings for Amazon RDS instance include:</p> <ul> <li> <p> <b> <code>Underprovisioned</code> </b> — When Compute Optimizer detects that there’s not enough storage, an Amazon RDS is considered under-provisioned.</p> </li> <li> <p> <b> <code>Overprovisioned</code> </b> — When Compute Optimizer detects that there’s excessive storage, an Amazon RDS is considered over-provisioned.</p> </li> <li> <p> <b> <code>Optimized</code> </b> — When the storage of your Amazon RDS meet the performance requirements of your workload, the service is considered optimized.</p> </li> </ul>"
+          "documentation":"<p> The finding classification of Amazon RDS DB instance storage. </p> <p>For more information about finding classifications, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/view-rds-recommendations.html#rds-recommendations-findings\"> Finding classifications for Aurora and RDS databases</a> in the <i>Compute Optimizer User Guide</i>.</p>"
         },
         "instanceFindingReasonCodes":{
           "shape":"RDSInstanceFindingReasonCodes",
-          "documentation":"<p> The reason for the finding classification of an Amazon RDS instance. </p>"
+          "documentation":"<p> The reason for the finding classification of a DB instance. </p>"
         },
         "currentInstancePerformanceRisk":{
           "shape":"RDSCurrentInstancePerformanceRisk",
           "documentation":"<p>The performance risk for the current DB instance.</p>"
         },
+        "currentStorageEstimatedMonthlyVolumeIOPsCostVariation":{
+          "shape":"RDSEstimatedMonthlyVolumeIOPsCostVariation",
+          "documentation":"<p> The level of variation in monthly I/O costs for the current DB storage configuration. </p>"
+        },
         "storageFindingReasonCodes":{
           "shape":"RDSStorageFindingReasonCodes",
-          "documentation":"<p> The reason for the finding classification of Amazon RDS storage. </p>"
+          "documentation":"<p> The reason for the finding classification of RDS DB instance storage. </p>"
         },
         "instanceRecommendationOptions":{
           "shape":"RDSDBInstanceRecommendationOptions",
-          "documentation":"<p> An array of objects that describe the recommendation options for the Amazon RDS instance. </p>"
+          "documentation":"<p> An array of objects that describe the recommendation options for the RDS DB instance. </p>"
         },
         "storageRecommendationOptions":{
           "shape":"RDSDBStorageRecommendationOptions",
-          "documentation":"<p> An array of objects that describe the recommendation options for Amazon RDS storage. </p>"
+          "documentation":"<p> An array of objects that describe the recommendation options for DB instance storage. </p>"
         },
         "utilizationMetrics":{
           "shape":"RDSDBUtilizationMetrics",
-          "documentation":"<p> An array of objects that describe the utilization metrics of the Amazon RDS. </p>"
+          "documentation":"<p> An array of objects that describe the utilization metrics of the DB instance. </p>"
         },
         "effectiveRecommendationPreferences":{
           "shape":"RDSEffectiveRecommendationPreferences",
-          "documentation":"<p> Describes the effective recommendation preferences for Amazon RDS. </p>"
+          "documentation":"<p> Describes the effective recommendation preferences for DB instances. </p>"
         },
         "lookbackPeriodInDays":{
           "shape":"LookBackPeriodInDays",
-          "documentation":"<p> The number of days the Amazon RDS utilization metrics were analyzed. </p>"
+          "documentation":"<p> The number of days the DB instance utilization metrics were analyzed. </p>"
         },
         "lastRefreshTimestamp":{
           "shape":"LastRefreshTimestamp",
-          "documentation":"<p> The timestamp of when the Amazon RDS recommendation was last generated. </p>"
+          "documentation":"<p> The timestamp of when the DB instance recommendation was last generated. </p>"
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p> A list of tags assigned to your Amazon RDS recommendations. </p>"
+          "documentation":"<p> A list of tags assigned to your DB instance recommendations. </p>"
         }
       },
-      "documentation":"<p> Describes an Amazon RDS recommendation. </p>"
+      "documentation":"<p> Describes an Amazon Aurora and RDS database recommendation. </p>"
     },
     "RDSDBRecommendationFilter":{
       "type":"structure",
       "members":{
         "name":{
           "shape":"RDSDBRecommendationFilterName",
-          "documentation":"<p> The name of the filter. </p> <p> Specify <code>Finding</code> to return recommendations with a specific finding classification. </p> <p>You can filter your Amazon RDS recommendations by <code>tag:key</code> and <code>tag-key</code> tags.</p> <p>A <code>tag:key</code> is a key and value combination of a tag assigned to your Amazon RDS recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all Amazon RDS service recommendations that have a tag with the key of <code>Owner</code> and the value of <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> <p>A <code>tag-key</code> is the key of a tag assigned to your Amazon RDS recommendations. Use this filter to find all of your Amazon RDS recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your Amazon RDS service recommendations with a tag key value of <code>Owner</code> or without any tag keys assigned.</p>"
+          "documentation":"<p> The name of the filter. </p> <p> Specify <code>Finding</code> to return recommendations with a specific finding classification. </p> <p>You can filter your DB instance recommendations by <code>tag:key</code> and <code>tag-key</code> tags.</p> <p>A <code>tag:key</code> is a key and value combination of a tag assigned to your DB instance recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all DB instance recommendations that have a tag with the key of <code>Owner</code> and the value of <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> <p>A <code>tag-key</code> is the key of a tag assigned to your DB instance recommendations. Use this filter to find all of your DB instance recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your DB instance recommendations with a tag key value of <code>Owner</code> or without any tag keys assigned.</p>"
         },
         "values":{
           "shape":"FilterValues",
           "documentation":"<p> The value of the filter. </p>"
         }
       },
-      "documentation":"<p> Describes a filter that returns a more specific list of Amazon RDS recommendations. Use this filter with the <a>GetECSServiceRecommendations</a> action. </p>"
+      "documentation":"<p> Describes a filter that returns a more specific list of DB instance recommendations. Use this filter with the <a>GetECSServiceRecommendations</a> action. </p>"
     },
     "RDSDBRecommendationFilterName":{
       "type":"string",
@@ -4640,15 +4656,19 @@
         },
         "rank":{
           "shape":"Rank",
-          "documentation":"<p> The rank identifier of the RDS storage recommendation option. </p>"
+          "documentation":"<p> The rank identifier of the DB storage recommendation option. </p>"
         },
         "savingsOpportunity":{"shape":"SavingsOpportunity"},
         "savingsOpportunityAfterDiscounts":{
           "shape":"RDSStorageSavingsOpportunityAfterDiscounts",
-          "documentation":"<p> Describes the savings opportunity for Amazon RDS storage recommendations or for the recommendation option. </p> <p> Savings opportunity represents the estimated monthly savings after applying Savings Plans discounts. You can achieve this by implementing a given Compute Optimizer recommendation. </p>"
+          "documentation":"<p> Describes the savings opportunity for DB storage recommendations or for the recommendation option. </p> <p> Savings opportunity represents the estimated monthly savings after applying Savings Plans discounts. You can achieve this by implementing a given Compute Optimizer recommendation. </p>"
+        },
+        "estimatedMonthlyVolumeIOPsCostVariation":{
+          "shape":"RDSEstimatedMonthlyVolumeIOPsCostVariation",
+          "documentation":"<p> The projected level of variation in monthly I/O costs for the DB storage recommendation option. </p>"
         }
       },
-      "documentation":"<p> Describes the recommendation options for Amazon RDS storage. </p>"
+      "documentation":"<p> Describes the recommendation options for DB storage. </p>"
     },
     "RDSDBStorageRecommendationOptions":{
       "type":"list",
@@ -4670,7 +4690,7 @@
           "documentation":"<p> The value of the utilization metric. </p>"
         }
       },
-      "documentation":"<p> Describes the utilization metric of an Amazon RDS. </p> <p> To determine the performance difference between your current Amazon RDS and the recommended option, compare the utilization metric data of your service against its projected utilization metric data. </p>"
+      "documentation":"<p> Describes the utilization metric of an Amazon Aurora and RDS database. </p> <p> To determine the performance difference between your current DB instance and the recommended option, compare the utilization metric data of your service against its projected utilization metric data. </p>"
     },
     "RDSDBUtilizationMetrics":{
       "type":"list",
@@ -4692,7 +4712,7 @@
           "documentation":"<p> The values for the projected metric. </p>"
         }
       },
-      "documentation":"<p> Describes the projected metrics of an Amazon RDS recommendation option. </p> <p> To determine the performance difference between your current Amazon RDS and the recommended option, compare the metric data of your service against its projected metric data. </p>"
+      "documentation":"<p> Describes the projected metrics of an Amazon Aurora and RDS database recommendation option. </p> <p> To determine the performance difference between your current Amazon Aurora and RDS database and the recommended option, compare the metric data of your service against its projected metric data. </p>"
     },
     "RDSDatabaseProjectedMetrics":{
       "type":"list",
@@ -4703,18 +4723,18 @@
       "members":{
         "recommendedDBInstanceClass":{
           "shape":"RecommendedDBInstanceClass",
-          "documentation":"<p> The recommended DB instance class for the Amazon RDS. </p>"
+          "documentation":"<p> The recommended DB instance class for the Amazon Aurora or RDS database. </p>"
         },
         "rank":{
           "shape":"Rank",
-          "documentation":"<p> The rank identifier of the RDS instance recommendation option. </p>"
+          "documentation":"<p> The rank identifier of the Amazon Aurora or RDS DB instance recommendation option. </p>"
         },
         "projectedMetrics":{
           "shape":"RDSDatabaseProjectedMetrics",
           "documentation":"<p> An array of objects that describe the projected metric. </p>"
         }
       },
-      "documentation":"<p> Describes the projected metrics of an Amazon RDS recommendation option. </p> <p> To determine the performance difference between your current Amazon RDS and the recommended option, compare the metric data of your service against its projected metric data. </p>"
+      "documentation":"<p> Describes the projected metrics of an Amazon Aurora and RDS database recommendation option. </p> <p> To determine the performance difference between your current Amazon Aurora and RDS database and the recommended option, compare the metric data of your service against its projected metric data. </p>"
     },
     "RDSDatabaseRecommendedOptionProjectedMetrics":{
       "type":"list",
@@ -4725,7 +4745,7 @@
       "members":{
         "cpuVendorArchitectures":{
           "shape":"CpuVendorArchitectures",
-          "documentation":"<p> Describes the CPU vendor and architecture for Amazon RDS recommendations. </p>"
+          "documentation":"<p> Describes the CPU vendor and architecture for DB instance recommendations. </p>"
         },
         "enhancedInfrastructureMetrics":{
           "shape":"EnhancedInfrastructureMetrics",
@@ -4733,14 +4753,23 @@
         },
         "lookBackPeriod":{
           "shape":"LookBackPeriodPreference",
-          "documentation":"<p> The number of days the utilization metrics of the Amazon RDS are analyzed. </p>"
+          "documentation":"<p> The number of days the utilization metrics of the DB instance are analyzed. </p>"
         },
         "savingsEstimationMode":{
           "shape":"RDSSavingsEstimationMode",
-          "documentation":"<p> Describes the savings estimation mode preference applied for calculating savings opportunity for Amazon RDS. </p>"
+          "documentation":"<p> Describes the savings estimation mode preference applied for calculating savings opportunity for DB instances. </p>"
         }
       },
-      "documentation":"<p> Describes the effective recommendation preferences for Amazon RDS. </p>"
+      "documentation":"<p> Describes the effective recommendation preferences for Amazon Aurora and RDS databases. </p>"
+    },
+    "RDSEstimatedMonthlyVolumeIOPsCostVariation":{
+      "type":"string",
+      "enum":[
+        "None",
+        "Low",
+        "Medium",
+        "High"
+      ]
     },
     "RDSInstanceEstimatedMonthlySavings":{
       "type":"structure",
@@ -4751,10 +4780,10 @@
         },
         "value":{
           "shape":"Value",
-          "documentation":"<p> The value of the estimated monthly savings for Amazon RDS instances. </p>"
+          "documentation":"<p> The value of the estimated monthly savings for DB instances. </p>"
         }
       },
-      "documentation":"<p> Describes the estimated monthly savings possible for Amazon RDS instances by adopting Compute Optimizer recommendations. This is based on Amazon RDS pricing after applying Savings Plans discounts. </p>"
+      "documentation":"<p> Describes the estimated monthly savings possible for DB instances by adopting Compute Optimizer recommendations. This is based on DB instance pricing after applying Savings Plans discounts. </p>"
     },
     "RDSInstanceFinding":{
       "type":"string",
@@ -4792,24 +4821,24 @@
       "members":{
         "savingsOpportunityPercentage":{
           "shape":"SavingsOpportunityPercentage",
-          "documentation":"<p> The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer’s Amazon RDS instance recommendations. This includes any applicable Savings Plans discounts. </p>"
+          "documentation":"<p> The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer’s DB instance recommendations. This includes any applicable Savings Plans discounts. </p>"
         },
         "estimatedMonthlySavings":{
           "shape":"RDSInstanceEstimatedMonthlySavings",
-          "documentation":"<p> The estimated monthly savings possible by adopting Compute Optimizer’s Amazon RDS instance recommendations. This includes any applicable Savings Plans discounts. </p>"
+          "documentation":"<p> The estimated monthly savings possible by adopting Compute Optimizer’s DB instance recommendations. This includes any applicable Savings Plans discounts. </p>"
         }
       },
-      "documentation":"<p> Describes the savings opportunity for Amazon RDS instance recommendations after applying Savings Plans discounts. </p> <p> Savings opportunity represents the estimated monthly savings after applying Savings Plans discounts. You can achieve this by implementing a given Compute Optimizer recommendation. </p>"
+      "documentation":"<p> Describes the savings opportunity for DB instance recommendations after applying Savings Plans discounts. </p> <p> Savings opportunity represents the estimated monthly savings after applying Savings Plans discounts. You can achieve this by implementing a given Compute Optimizer recommendation. </p>"
     },
     "RDSSavingsEstimationMode":{
       "type":"structure",
       "members":{
         "source":{
           "shape":"RDSSavingsEstimationModeSource",
-          "documentation":"<p> Describes the source for calculating the savings opportunity for Amazon RDS. </p>"
+          "documentation":"<p> Describes the source for calculating the savings opportunity for DB instances. </p>"
         }
       },
-      "documentation":"<p> Describes the savings estimation mode used for calculating savings opportunity for Amazon RDS. </p>"
+      "documentation":"<p> Describes the savings estimation mode used for calculating savings opportunity for DB instances. </p>"
     },
     "RDSSavingsEstimationModeSource":{
       "type":"string",
@@ -4828,17 +4857,18 @@
         },
         "value":{
           "shape":"Value",
-          "documentation":"<p> The value of the estimated monthly savings for Amazon RDS storage. </p>"
+          "documentation":"<p> The value of the estimated monthly savings for DB instance storage. </p>"
         }
       },
-      "documentation":"<p> Describes the estimated monthly savings possible for Amazon RDS storage by adopting Compute Optimizer recommendations. This is based on Amazon RDS pricing after applying Savings Plans discounts. </p>"
+      "documentation":"<p> Describes the estimated monthly savings possible for DB instance storage by adopting Compute Optimizer recommendations. This is based on DB instance pricing after applying Savings Plans discounts. </p>"
     },
     "RDSStorageFinding":{
       "type":"string",
       "enum":[
         "Optimized",
         "Underprovisioned",
-        "Overprovisioned"
+        "Overprovisioned",
+        "NotOptimized"
       ]
     },
     "RDSStorageFindingReasonCode":{
@@ -4848,7 +4878,9 @@
         "EBSVolumeThroughputUnderprovisioned",
         "EBSVolumeIOPSOverprovisioned",
         "EBSVolumeThroughputOverprovisioned",
-        "NewGenerationStorageTypeAvailable"
+        "NewGenerationStorageTypeAvailable",
+        "DBClusterStorageOptionAvailable",
+        "DBClusterStorageSavingsAvailable"
       ]
     },
     "RDSStorageFindingReasonCodes":{
@@ -4860,11 +4892,11 @@
       "members":{
         "savingsOpportunityPercentage":{
           "shape":"SavingsOpportunityPercentage",
-          "documentation":"<p> The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer’s Amazon RDS storage recommendations. This includes any applicable Savings Plans discounts. </p>"
+          "documentation":"<p> The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer’s DB instance storage recommendations. This includes any applicable Savings Plans discounts. </p>"
         },
         "estimatedMonthlySavings":{
           "shape":"RDSStorageEstimatedMonthlySavings",
-          "documentation":"<p> The estimated monthly savings possible by adopting Compute Optimizer’s Amazon RDS storage recommendations. This includes any applicable Savings Plans discounts. </p>"
+          "documentation":"<p> The estimated monthly savings possible by adopting Compute Optimizer’s DB instance storage recommendations. This includes any applicable Savings Plans discounts. </p>"
         }
       },
       "documentation":"<p> Describes the savings opportunity for Amazon RDS storage recommendations after applying Savings Plans discounts. </p> <p> Savings opportunity represents the estimated monthly savings after applying Savings Plans discounts. You can achieve this by implementing a given Compute Optimizer recommendation. </p>"
@@ -5026,7 +5058,8 @@
         "EcsService",
         "License",
         "RdsDBInstance",
-        "RdsDBInstanceStorage"
+        "RdsDBInstanceStorage",
+        "AuroraDBClusterStorage"
       ]
     },
     "RecommendationSources":{
@@ -5123,6 +5156,7 @@
         "EcsService",
         "License",
         "RdsDBInstance",
+        "AuroraDBClusterStorage",
         "Idle"
       ]
     },

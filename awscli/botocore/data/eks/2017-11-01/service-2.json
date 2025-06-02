@@ -710,7 +710,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Returns a list of all insights checked for against the specified cluster. You can filter which insights are returned by category, associated Kubernetes version, and status.</p>"
+      "documentation":"<p>Returns a list of all insights checked for against the specified cluster. You can filter which insights are returned by category, associated Kubernetes version, and status. The default filter lists all categories and every status.</p> <p>The following lists the available categories:</p> <ul> <li> <p> <code>UPGRADE_READINESS</code>: Amazon EKS identifies issues that could impact your ability to upgrade to new versions of Kubernetes. These are called upgrade insights.</p> </li> <li> <p> <code>MISCONFIGURATION</code>: Amazon EKS identifies misconfiguration in your EKS Hybrid Nodes setup that could impair functionality of your cluster or workloads. These are called configuration insights.</p> </li> </ul>"
     },
     "ListNodegroups":{
       "name":"ListNodegroups",
@@ -1565,7 +1565,10 @@
     },
     "Category":{
       "type":"string",
-      "enum":["UPGRADE_READINESS"]
+      "enum":[
+        "UPGRADE_READINESS",
+        "MISCONFIGURATION"
+      ]
     },
     "CategoryList":{
       "type":"list",
@@ -2476,8 +2479,7 @@
     },
     "DeleteAccessEntryResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAddonRequest":{
       "type":"structure",
@@ -3195,8 +3197,7 @@
     },
     "DisassociateAccessPolicyResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisassociateIdentityProviderConfigRequest":{
       "type":"structure",
@@ -3742,7 +3743,7 @@
       "members":{
         "categories":{
           "shape":"CategoryList",
-          "documentation":"<p>The categories to use to filter insights.</p>"
+          "documentation":"<p>The categories to use to filter insights. The following lists the available categories:</p> <ul> <li> <p> <code>UPGRADE_READINESS</code>: Amazon EKS identifies issues that could impact your ability to upgrade to new versions of Kubernetes. These are called upgrade insights.</p> </li> <li> <p> <code>MISCONFIGURATION</code>: Amazon EKS identifies misconfiguration in your EKS Hybrid Nodes setup that could impair functionality of your cluster or workloads. These are called configuration insights.</p> </li> </ul>"
         },
         "kubernetesVersions":{
           "shape":"StringList",
@@ -5379,8 +5380,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -5474,8 +5474,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Update":{
       "type":"structure",

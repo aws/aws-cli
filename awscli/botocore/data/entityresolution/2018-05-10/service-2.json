@@ -222,6 +222,24 @@
       "documentation":"<p>Deletes the <code>SchemaMapping</code> with a given name. This operation will succeed even if a schema with the given name does not exist. This operation will fail if there is a <code>MatchingWorkflow</code> object that references the <code>SchemaMapping</code> in the workflow's <code>InputSourceConfig</code>.</p>",
       "idempotent":true
     },
+    "GenerateMatchId":{
+      "name":"GenerateMatchId",
+      "http":{
+        "method":"POST",
+        "requestUri":"/matchingworkflows/{workflowName}/generateMatches",
+        "responseCode":200
+      },
+      "input":{"shape":"GenerateMatchIdInput"},
+      "output":{"shape":"GenerateMatchIdOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Generates or retrieves Match IDs for records using a rule-based matching workflow. When you call this operation, it processes your records against the workflow's matching rules to identify potential matches. For existing records, it retrieves their Match IDs and associated rules. For records without matches, it generates new Match IDs. The operation saves results to Amazon S3. </p> <p>The processing type (<code>processingType</code>) you choose affects both the accuracy and response time of the operation. Additional charges apply for each API call, whether made through the Entity Resolution console or directly via the API. The rule-based matching workflow must exist and be active before calling this operation.</p>"
+    },
     "GetIdMappingJob":{
       "name":"GetIdMappingJob",
       "http":{
@@ -238,7 +256,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Gets the status, metrics, and errors (if there are any) that are associated with a job.</p>"
+      "documentation":"<p>Returns the status, metrics, and errors (if there are any) that are associated with a job.</p>"
     },
     "GetIdMappingWorkflow":{
       "name":"GetIdMappingWorkflow",
@@ -310,7 +328,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Gets the status, metrics, and errors (if there are any) that are associated with a job.</p>"
+      "documentation":"<p>Returns the status, metrics, and errors (if there are any) that are associated with a job.</p>"
     },
     "GetMatchingWorkflow":{
       "name":"GetMatchingWorkflow",
@@ -1412,6 +1430,83 @@
       },
       "exception":true
     },
+    "FailedRecord":{
+      "type":"structure",
+      "required":[
+        "inputSourceARN",
+        "uniqueId",
+        "errorMessage"
+      ],
+      "members":{
+        "inputSourceARN":{
+          "shape":"FailedRecordInputSourceARNString",
+          "documentation":"<p> The input source ARN of the record that didn't generate a Match ID.</p>"
+        },
+        "uniqueId":{
+          "shape":"String",
+          "documentation":"<p> The unique ID of the record that didn't generate a Match ID.</p>"
+        },
+        "errorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p> The error message for the record that didn't generate a Match ID.</p>"
+        }
+      },
+      "documentation":"<p>The record that didn't generate a Match ID.</p>"
+    },
+    "FailedRecordInputSourceARNString":{
+      "type":"string",
+      "pattern":"arn:(aws|aws-us-gov|aws-cn):entityresolution:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(idnamespace/[a-zA-Z_0-9-]{1,255})$|^arn:(aws|aws-us-gov|aws-cn):entityresolution:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(matchingworkflow/[a-zA-Z_0-9-]{1,255})$|^arn:(aws|aws-us-gov|aws-cn):glue:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(table/[a-zA-Z_0-9-]{1,255}/[a-zA-Z_0-9-]{1,255})"
+    },
+    "FailedRecordsList":{
+      "type":"list",
+      "member":{"shape":"FailedRecord"}
+    },
+    "GenerateMatchIdInput":{
+      "type":"structure",
+      "required":[
+        "workflowName",
+        "records"
+      ],
+      "members":{
+        "workflowName":{
+          "shape":"EntityName",
+          "documentation":"<p> The name of the rule-based matching workflow.</p>",
+          "location":"uri",
+          "locationName":"workflowName"
+        },
+        "records":{
+          "shape":"GenerateMatchIdInputRecordsList",
+          "documentation":"<p> The records to match.</p>"
+        },
+        "processingType":{
+          "shape":"ProcessingType",
+          "documentation":"<p>The processing mode that determines how Match IDs are generated and results are saved. Each mode provides different levels of accuracy, response time, and completeness of results.</p> <p>If not specified, defaults to <code>CONSISTENT</code>.</p> <p> <code>CONSISTENT</code>: Performs immediate lookup and matching against all existing records, with results saved synchronously. Provides highest accuracy but slower response time.</p> <p> <code>EVENTUAL</code> (shown as <i>Background</i> in the console): Performs initial match ID lookup or generation immediately, with record updates processed asynchronously in the background. Offers faster initial response time, with complete matching results available later in S3. </p> <p> <code>EVENTUAL_NO_LOOKUP</code> (shown as <i>Quick ID generation</i> in the console): Generates new match IDs without checking existing matches, with updates processed asynchronously. Provides fastest response time but should only be used for records known to be unique. </p>"
+        }
+      }
+    },
+    "GenerateMatchIdInputRecordsList":{
+      "type":"list",
+      "member":{"shape":"Record"},
+      "max":1,
+      "min":1
+    },
+    "GenerateMatchIdOutput":{
+      "type":"structure",
+      "required":[
+        "matchGroups",
+        "failedRecords"
+      ],
+      "members":{
+        "matchGroups":{
+          "shape":"MatchGroupsList",
+          "documentation":"<p> The match groups from the generated match ID.</p>"
+        },
+        "failedRecords":{
+          "shape":"FailedRecordsList",
+          "documentation":"<p> The records that didn't receive a generated Match ID.</p>"
+        }
+      }
+    },
     "GetIdMappingJobInput":{
       "type":"structure",
       "required":[
@@ -1664,7 +1759,7 @@
       "members":{
         "jobId":{
           "shape":"JobId",
-          "documentation":"<p>The ID of the job.</p>"
+          "documentation":"<p>The unique identifier of the matching job.</p>"
         },
         "status":{
           "shape":"JobStatus",
@@ -1921,7 +2016,7 @@
         },
         "mappedInputFields":{
           "shape":"SchemaInputAttributes",
-          "documentation":"<p>A list of <code>MappedInputFields</code>. Each <code>MappedInputField</code> corresponds to a column the source data table, and contains column name plus additional information Venice uses for matching.</p>"
+          "documentation":"<p>A list of <code>MappedInputFields</code>. Each <code>MappedInputField</code> corresponds to a column the source data table, and contains column name plus additional information Entity Resolution uses for matching.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -2754,12 +2849,65 @@
         }
       }
     },
+    "MatchGroup":{
+      "type":"structure",
+      "required":[
+        "records",
+        "matchId",
+        "matchRule"
+      ],
+      "members":{
+        "records":{
+          "shape":"MatchedRecordsList",
+          "documentation":"<p> The matched records.</p>"
+        },
+        "matchId":{
+          "shape":"String",
+          "documentation":"<p> The match ID.</p>"
+        },
+        "matchRule":{
+          "shape":"String",
+          "documentation":"<p> The match rule of the match group.</p>"
+        }
+      },
+      "documentation":"<p>The match group.</p>"
+    },
+    "MatchGroupsList":{
+      "type":"list",
+      "member":{"shape":"MatchGroup"}
+    },
     "MatchPurpose":{
       "type":"string",
       "enum":[
         "IDENTIFIER_GENERATION",
         "INDEXING"
       ]
+    },
+    "MatchedRecord":{
+      "type":"structure",
+      "required":[
+        "inputSourceARN",
+        "recordId"
+      ],
+      "members":{
+        "inputSourceARN":{
+          "shape":"MatchedRecordInputSourceARNString",
+          "documentation":"<p> The input source ARN of the matched record.</p>"
+        },
+        "recordId":{
+          "shape":"String",
+          "documentation":"<p> The record ID of the matched record.</p>"
+        }
+      },
+      "documentation":"<p> The matched record.</p>"
+    },
+    "MatchedRecordInputSourceARNString":{
+      "type":"string",
+      "pattern":"arn:(aws|aws-us-gov|aws-cn):entityresolution:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(idnamespace/[a-zA-Z_0-9-]{1,255})$|^arn:(aws|aws-us-gov|aws-cn):entityresolution:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(matchingworkflow/[a-zA-Z_0-9-]{1,255})$|^arn:(aws|aws-us-gov|aws-cn):glue:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(table/[a-zA-Z_0-9-]{1,255}/[a-zA-Z_0-9-]{1,255})"
+    },
+    "MatchedRecordsList":{
+      "type":"list",
+      "member":{"shape":"MatchedRecord"}
     },
     "MatchingWorkflowArn":{
       "type":"string",
@@ -2914,6 +3062,14 @@
       "max":36,
       "min":36,
       "pattern":"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+    },
+    "ProcessingType":{
+      "type":"string",
+      "enum":[
+        "CONSISTENT",
+        "EVENTUAL",
+        "EVENTUAL_NO_LOOKUP"
+      ]
     },
     "ProviderComponentSchema":{
       "type":"structure",
@@ -3141,6 +3297,29 @@
         }
       }
     },
+    "Record":{
+      "type":"structure",
+      "required":[
+        "inputSourceARN",
+        "uniqueId",
+        "recordAttributeMap"
+      ],
+      "members":{
+        "inputSourceARN":{
+          "shape":"RecordInputSourceARNString",
+          "documentation":"<p> The input source ARN of the record.</p>"
+        },
+        "uniqueId":{
+          "shape":"UniqueId",
+          "documentation":"<p> The unique ID of the record.</p>"
+        },
+        "recordAttributeMap":{
+          "shape":"RecordAttributeMapString255",
+          "documentation":"<p> The record's attribute map.</p>"
+        }
+      },
+      "documentation":"<p> The record.</p>"
+    },
     "RecordAttributeMap":{
       "type":"map",
       "key":{"shape":"RecordAttributeMapKeyString"},
@@ -3153,11 +3332,31 @@
       "min":0,
       "pattern":"[a-zA-Z_0-9- \\t]*"
     },
+    "RecordAttributeMapString255":{
+      "type":"map",
+      "key":{"shape":"RecordAttributeMapString255KeyString"},
+      "value":{"shape":"RecordAttributeMapString255ValueString"},
+      "sensitive":true
+    },
+    "RecordAttributeMapString255KeyString":{
+      "type":"string",
+      "max":255,
+      "min":0
+    },
+    "RecordAttributeMapString255ValueString":{
+      "type":"string",
+      "max":255,
+      "min":0
+    },
     "RecordAttributeMapValueString":{
       "type":"string",
       "max":255,
       "min":0,
       "pattern":"[a-zA-Z_0-9-./@ ()+\\t]*"
+    },
+    "RecordInputSourceARNString":{
+      "type":"string",
+      "pattern":"arn:(aws|aws-us-gov|aws-cn):entityresolution:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(idnamespace/[a-zA-Z_0-9-]{1,255})$|^arn:(aws|aws-us-gov|aws-cn):entityresolution:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(matchingworkflow/[a-zA-Z_0-9-]{1,255})$|^arn:(aws|aws-us-gov|aws-cn):glue:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(table/[a-zA-Z_0-9-]{1,255}/[a-zA-Z_0-9-]{1,255})"
     },
     "RecordMatchingModel":{
       "type":"string",
@@ -3561,6 +3760,12 @@
       "retryable":{"throttling":true}
     },
     "Timestamp":{"type":"timestamp"},
+    "UniqueId":{
+      "type":"string",
+      "max":38,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]*"
+    },
     "UniqueIdList":{
       "type":"list",
       "member":{"shape":"HeaderSafeUniqueId"}
@@ -3812,7 +4017,7 @@
         },
         "resolutionTechniques":{
           "shape":"ResolutionTechniques",
-          "documentation":"<p>An object which defines the <code>resolutionType</code> and the <code>ruleBasedProperties</code> </p>"
+          "documentation":"<p>An object which defines the <code>resolutionType</code> and the <code>ruleBasedProperties</code>.</p>"
         },
         "incrementalRunConfig":{
           "shape":"IncrementalRunConfig",

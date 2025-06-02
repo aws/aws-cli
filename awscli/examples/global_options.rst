@@ -96,3 +96,7 @@
   
   Disable automatically prompt for CLI input parameters.
   
+``--agent-mode`` (boolean)
+  
+  Enter agent mode, which can translate natural language to AWS CLI commands.
+  

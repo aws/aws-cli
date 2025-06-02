@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.40.27
+=======
+
+* api-change:``athena``: Add support for the managed query result in the workgroup APIs. The managed query result configuration enables users to store query results to Athena owned storage.
+* api-change:``backup``: You can now subscribe to Amazon SNS notifications and Amazon EventBridge events for backup indexing. You can now receive notifications when a backup index is created, deleted, or fails to create, enhancing your ability to monitor and track your backup operations.
+* api-change:``bedrock-agent``: This release adds the Agent Lifecycle Paused State feature to Amazon Bedrock agents. By using an agent's alias, you can temporarily suspend agent operations during maintenance, updates, or other situations.
+* api-change:``compute-optimizer``: This release enables AWS Compute Optimizer to analyze Amazon Aurora database clusters and generate Aurora I/O-Optimized recommendations.
+* api-change:``cost-optimization-hub``: Support recommendations for Aurora instance and Aurora cluster storage.
+* api-change:``ecs``: Updates Amazon ECS documentation to include note for upcoming default log driver mode change.
+* api-change:``eks``: Add support for filtering ListInsights API calls on MISCONFIGURATION insight category
+* api-change:``entityresolution``: Add support for generating match IDs in near real-time.
+* api-change:``pcs``: Introduces SUSPENDING and SUSPENDED states for clusters, compute node groups, and queues.
+* api-change:``synthetics``: Support for Java runtime handler pattern.
+
+
 1.40.26
 =======
 

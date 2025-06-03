@@ -358,6 +358,40 @@
       ],
       "documentation": "<p>Creates a RouteResponse for a Route.</p>"
     },
+    "CreateRoutingRule": {
+      "name": "CreateRoutingRule",
+      "documentation": "<p>Creates a RoutingRule</p>",
+      "http": {
+        "method": "POST",
+        "requestUri": "/v2/domainnames/{domainName}/routingrules",
+        "responseCode": 201
+      },
+      "input": {
+        "shape": "CreateRoutingRuleRequest"
+      },
+      "output": {
+        "shape": "CreateRoutingRuleResponse",
+        "documentation": "<p>The request has succeeded and has resulted in the creation of a resource.</p>"
+      },
+      "errors": [
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>The resource specified in the request was not found.</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "<p>The client is sending more than the allowed number of requests per unit of time.</p>"
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>One of the parameters in the request is invalid.</p>"
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "<p>The resource already exists.</p>"
+        }
+      ]
+    },
     "CreateStage": {
       "name": "CreateStage",
       "http": {
@@ -729,6 +763,33 @@
         }
       ],
       "documentation": "<p>Deletes the RouteSettings for a stage.</p>"
+    },
+    "DeleteRoutingRule": {
+      "name": "DeleteRoutingRule",
+      "documentation": "<p>Deletes a routing rule.</p>",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/v2/domainnames/{domainName}/routingrules/{routingRuleId}",
+        "responseCode": 204
+      },
+      "input": {
+        "shape": "DeleteRoutingRuleRequest"
+      },
+      "errors": [
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>The resource specified in the request was not found.</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "<p>The client is sending more than the allowed number of requests per unit of time.</p>"
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>One of the parameters in the request is invalid.</p>"
+        }
+      ],
+      "idempotent": true
     },
     "DeleteStage": {
       "name": "DeleteStage",
@@ -1419,6 +1480,66 @@
       ],
       "documentation": "<p>Gets the Routes for an API.</p>"
     },
+    "GetRoutingRule": {
+      "name": "GetRoutingRule",
+      "documentation": "<p>Gets a routing rule.</p>",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v2/domainnames/{domainName}/routingrules/{routingRuleId}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "GetRoutingRuleRequest"
+      },
+      "output": {
+        "shape": "GetRoutingRuleResponse",
+        "documentation": "<p>Success</p>"
+      },
+      "errors": [
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>The resource specified in the request was not found.</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "<p>The client is sending more than the allowed number of requests per unit of time.</p>"
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>One of the parameters in the request is invalid.</p>"
+        }
+      ]
+    },
+    "ListRoutingRules": {
+      "name": "ListRoutingRules",
+      "documentation": "<p>Lists routing rules.</p>",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v2/domainnames/{domainName}/routingrules",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListRoutingRulesRequest"
+      },
+      "output": {
+        "shape": "ListRoutingRulesResponse",
+        "documentation": "<p>Success</p>"
+      },
+      "errors": [
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>The resource specified in the request was not found.</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "<p>The client is sending more than the allowed number of requests per unit of time.</p>"
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>One of the parameters in the request is invalid.</p>"
+        }
+      ]
+    },
     "GetStage": {
       "name": "GetStage",
       "http": {
@@ -1594,6 +1715,41 @@
         }
       ],
       "documentation": "<p>Imports an API.</p>"
+    },
+    "PutRoutingRule": {
+      "name": "PutRoutingRule",
+      "documentation": "<p>Updates a routing rule.</p>",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/v2/domainnames/{domainName}/routingrules/{routingRuleId}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "PutRoutingRuleRequest"
+      },
+      "output": {
+        "shape": "PutRoutingRuleResponse",
+        "documentation": "<p>Success</p>"
+      },
+      "errors": [
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>The resource specified in the request was not found.</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "<p>The client is sending more than the allowed number of requests per unit of time.</p>"
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>One of the parameters in the request is invalid.</p>"
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "<p>The resource already exists.</p>"
+        }
+      ],
+      "idempotent": true
     },
     "ReimportApi": {
       "name": "ReimportApi",
@@ -3108,6 +3264,11 @@
           "locationName": "mutualTlsAuthentication",
           "documentation": "<p>The mutual TLS authentication configuration for a custom domain name.</p>"
         },
+        "RoutingMode": {
+          "shape": "RoutingMode",
+          "locationName": "routingMode",
+          "documentation": "<p>The routing mode.</p>"
+        },
         "Tags": {
           "shape": "Tags",
           "locationName": "tags",
@@ -3137,6 +3298,11 @@
           "locationName": "mutualTlsAuthentication",
           "documentation": "<p>The mutual TLS authentication configuration for a custom domain name.</p>"
         },
+        "RoutingMode": {
+          "shape": "RoutingMode",
+          "locationName": "routingMode",
+          "documentation": "<p>The routing mode.</p>"
+        },
         "Tags": {
           "shape": "Tags",
           "locationName": "tags",
@@ -3161,6 +3327,10 @@
           "locationName": "domainName",
           "documentation": "<p>The name of the DomainName resource.</p>"
         },
+        "DomainNameArn": {
+          "shape": "Arn",
+          "locationName": "domainNameArn"
+        },
         "DomainNameConfigurations": {
           "shape": "DomainNameConfigurations",
           "locationName": "domainNameConfigurations",
@@ -3170,6 +3340,11 @@
           "shape": "MutualTlsAuthentication",
           "locationName": "mutualTlsAuthentication",
           "documentation": "<p>The mutual TLS authentication configuration for a custom domain name.</p>"
+        },
+        "RoutingMode": {
+          "shape": "RoutingMode",
+          "locationName": "routingMode",
+          "documentation": "<p>The routing mode.</p>"
         },
         "Tags": {
           "shape": "Tags",
@@ -3999,6 +4174,74 @@
         }
       }
     },
+    "CreateRoutingRuleRequest": {
+      "type": "structure",
+      "members": {
+        "Actions": {
+          "shape": "__listOfRoutingRuleAction",
+          "locationName": "actions",
+          "documentation": "<p>Represents a routing rule action. The only supported action is invokeApi.</p>"
+        },
+        "Conditions": {
+          "shape": "__listOfRoutingRuleCondition",
+          "locationName": "conditions",
+          "documentation": "<p>Represents a condition. Conditions can contain up to two matchHeaders conditions and one matchBasePaths conditions. API Gateway evaluates header conditions and base path conditions together. You can only use AND between header and base path conditions.</p>"
+        },
+        "DomainName": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "domainName",
+          "documentation": "<p>The domain name.</p>"
+        },
+        "DomainNameId": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "domainNameId",
+          "documentation": "<p>The domain name ID.</p>"
+        },
+        "Priority": {
+          "shape": "RoutingRulePriority",
+          "locationName": "priority",
+          "documentation": "Represents the priority of the routing rule."
+        }
+      },
+      "required": [
+        "DomainName",
+        "Actions",
+        "Priority",
+        "Conditions"
+      ]
+    },
+    "CreateRoutingRuleResponse": {
+      "type": "structure",
+      "members": {
+        "Actions": {
+          "shape": "__listOfRoutingRuleAction",
+          "locationName": "actions",
+          "documentation": "<p>Represents a routing rule action. The only supported action is invokeApi.</p>"
+        },
+        "Conditions": {
+          "shape": "__listOfRoutingRuleCondition",
+          "locationName": "conditions",
+          "documentation": "<p>Represents a condition. Conditions can contain up to two matchHeaders conditions and one matchBasePaths conditions. API Gateway evaluates header conditions and base path conditions together. You can only use AND between header and base path conditions.</p>"
+        },
+        "Priority": {
+          "shape": "RoutingRulePriority",
+          "locationName": "priority",
+          "documentation": "<p>Represents the priority of the routing rule.<p>"
+        },
+        "RoutingRuleArn": {
+          "shape": "Arn",
+          "locationName": "routingRuleArn",
+          "documentation": "<p>The ARN of the domain name.<p>"
+        },
+        "RoutingRuleId": {
+          "shape": "Id",
+          "locationName": "routingRuleId",
+          "documentation": "<p>The routing rule ID.</p>"
+        }
+      }
+    },
     "CreateStageInput": {
       "type": "structure",
       "members": {
@@ -4610,6 +4853,33 @@
         "ApiId"
       ]
     },
+    "DeleteRoutingRuleRequest": {
+      "type": "structure",
+      "members": {
+        "DomainName": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "domainName",
+          "documentation": "<p>The domain name.</p>"
+        },
+        "DomainNameId": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "domainNameId",
+          "documentation": "<p>The domain name ID.</p>"
+        },
+        "RoutingRuleId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "routingRuleId",
+          "documentation": "<p>The routing rule ID.</p>"
+        }
+      },
+      "required": [
+        "RoutingRuleId",
+        "DomainName"
+      ]
+    },
     "DeleteStageRequest": {
       "type": "structure",
       "members": {
@@ -4647,8 +4917,7 @@
     },
     "DeleteVpcLinkResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "Deployment": {
       "type": "structure",
@@ -4724,6 +4993,10 @@
           "locationName": "domainName",
           "documentation": "<p>The name of the DomainName resource.</p>"
         },
+        "DomainNameArn": {
+          "shape": "Arn",
+          "locationName": "domainNameArn"
+        },
         "DomainNameConfigurations": {
           "shape": "DomainNameConfigurations",
           "locationName": "domainNameConfigurations",
@@ -4733,6 +5006,11 @@
           "shape": "MutualTlsAuthentication",
           "locationName": "mutualTlsAuthentication",
           "documentation": "<p>The mutual TLS authentication configuration for a custom domain name.</p>"
+        },
+        "RoutingMode": {
+          "shape": "RoutingMode",
+          "locationName": "routingMode",
+          "documentation": "<p>The routing mode.</p>"
         },
         "Tags": {
           "shape": "Tags",
@@ -5403,6 +5681,10 @@
           "locationName": "domainName",
           "documentation": "<p>The name of the DomainName resource.</p>"
         },
+        "DomainNameArn": {
+          "shape": "Arn",
+          "locationName": "domainNameArn"
+        },
         "DomainNameConfigurations": {
           "shape": "DomainNameConfigurations",
           "locationName": "domainNameConfigurations",
@@ -5412,6 +5694,11 @@
           "shape": "MutualTlsAuthentication",
           "locationName": "mutualTlsAuthentication",
           "documentation": "<p>The mutual TLS authentication configuration for a custom domain name.</p>"
+        },
+        "RoutingMode": {
+          "shape": "RoutingMode",
+          "locationName": "routingMode",
+          "documentation": "<p>The routing mode.</p>"
         },
         "Tags": {
           "shape": "Tags",
@@ -6088,6 +6375,109 @@
           "shape": "NextToken",
           "locationName": "nextToken",
           "documentation": "<p>The next page of elements from this collection. Not valid for the last element of the collection.</p>"
+        }
+      }
+    },
+    "GetRoutingRuleRequest": {
+      "type": "structure",
+      "members": {
+        "DomainName": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "domainName",
+          "documentation": "<p>The domain name.</p>"
+        },
+        "DomainNameId": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "domainNameId",
+          "documentation": "<p>The domain name ID.</p>"
+        },
+        "RoutingRuleId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "routingRuleId",
+          "documentation": "<p>The routing rule ID.</p>"
+        }
+      },
+      "required": [
+        "RoutingRuleId",
+        "DomainName"
+      ]
+    },
+    "GetRoutingRuleResponse": {
+      "type": "structure",
+      "members": {
+        "Actions": {
+          "shape": "__listOfRoutingRuleAction",
+          "locationName": "actions",
+          "documentation": "<p>The resulting action based on matching a routing rules condition. Only InvokeApi is supported.</p>"
+        },
+        "Conditions": {
+          "shape": "__listOfRoutingRuleCondition",
+          "locationName": "conditions",
+          "documentation": "<p>The conditions of the routing rule.</p>"
+        },
+        "Priority": {
+          "shape": "RoutingRulePriority",
+          "locationName": "priority",
+          "documentation": "<p>The order in which API Gateway evaluates a rule. Priority is evaluated from the lowest value to the highest value.</p>"
+        },
+        "RoutingRuleArn": {
+          "shape": "Arn",
+          "locationName": "routingRuleArn",
+          "documentation": "<p>The routing rule ARN.</p>"
+        },
+        "RoutingRuleId": {
+          "shape": "Id",
+          "locationName": "routingRuleId",
+          "documentation": "<p>The routing rule ID.</p>"
+        }
+      }
+    },
+    "ListRoutingRulesRequest": {
+      "type": "structure",
+      "members": {
+        "DomainName": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "domainName",
+          "documentation": "<p>The domain name.</p>"
+        },
+        "DomainNameId": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "domainNameId",
+          "documentation": "<p>The domain name ID.</p>"
+        },
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "<p>The maximum number of elements to be returned for this resource.</p>"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "<p>The next page of elements from this collection. Not valid for the last element of the collection.</p>"
+        }
+      },
+      "required": [
+        "DomainName"
+      ]
+    },
+    "ListRoutingRulesResponse": {
+      "type": "structure",
+      "members": {
+        "NextToken": {
+          "shape": "NextToken",
+          "locationName": "nextToken"
+        },
+        "RoutingRules": {
+          "shape": "__listOfRoutingRule",
+          "locationName": "routingRules",
+          "documentation": "<p>The routing rules.<p>"
         }
       }
     },
@@ -6890,6 +7280,81 @@
         "HTTP"
       ]
     },
+    "PutRoutingRuleRequest": {
+      "type": "structure",
+      "members": {
+        "Actions": {
+          "shape": "__listOfRoutingRuleAction",
+          "locationName": "actions",
+          "documentation": "<p>The routing rule action.</p>"
+        },
+        "Conditions": {
+          "shape": "__listOfRoutingRuleCondition",
+          "locationName": "conditions",
+          "documentation": "<p>The routing rule condition.</p>"
+        },
+        "DomainName": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "domainName",
+          "documentation": "<p>The domain name.</p>"
+        },
+        "DomainNameId": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "domainNameId",
+          "documentation": "<p>The domain name ID.</p>"
+        },
+        "Priority": {
+          "shape": "RoutingRulePriority",
+          "locationName": "priority",
+          "documentation": "<p>The routing rule priority.</p>"
+        },
+        "RoutingRuleId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "routingRuleId",
+          "documentation": "<p>The routing rule ID.</p>"
+        }
+      },
+      "required": [
+        "RoutingRuleId",
+        "DomainName",
+        "Actions",
+        "Priority",
+        "Conditions"
+      ]
+    },
+    "PutRoutingRuleResponse": {
+      "type": "structure",
+      "members": {
+        "Actions": {
+          "shape": "__listOfRoutingRuleAction",
+          "locationName": "actions",
+          "documentation": "<p>The routing rule action.</p>"
+        },
+        "Conditions": {
+          "shape": "__listOfRoutingRuleCondition",
+          "locationName": "conditions",
+          "documentation": "<p>The conditions of the routing rule.</p>"
+        },
+        "Priority": {
+          "shape": "RoutingRulePriority",
+          "locationName": "priority",
+          "documentation": "<p>The routing rule priority.</p>"
+        },
+        "RoutingRuleArn": {
+          "shape": "Arn",
+          "locationName": "routingRuleArn",
+          "documentation": "<p>The routing rule ARN.</p>"
+        },
+        "RoutingRuleId": {
+          "shape": "Id",
+          "locationName": "routingRuleId",
+          "documentation": "<p>The routing rule ID.</p>"
+        }
+      }
+    },
     "ReimportApiInput": {
       "type": "structure",
       "members": {
@@ -7238,6 +7703,190 @@
       },
       "documentation": "<p>Represents a collection of routes.</p>"
     },
+    "RoutingMode": {
+      "type": "string",
+      "enum": [
+        "API_MAPPING_ONLY",
+        "ROUTING_RULE_ONLY",
+        "ROUTING_RULE_THEN_API_MAPPING"
+      ]
+    },
+    "RoutingRule": {
+      "type": "structure",
+      "documentation": "<p>Represents a routing rule.</p>",
+      "members": {
+        "Actions": {
+          "shape": "__listOfRoutingRuleAction",
+          "locationName": "actions",
+          "documentation": "<p>The routing rule action.</p>"
+        },
+        "Conditions": {
+          "shape": "__listOfRoutingRuleCondition",
+          "locationName": "conditions",
+          "documentation": "<p>The routing rule condition.</p>"
+        },
+        "Priority": {
+          "shape": "RoutingRulePriority",
+          "locationName": "priority",
+          "documentation": "<p>The routing rule priority.</p>"
+        },
+        "RoutingRuleArn": {
+          "shape": "Arn",
+          "locationName": "routingRuleArn",
+          "documentation": "<p>The routing rule ARN.</p>"
+        },
+        "RoutingRuleId": {
+          "shape": "Id",
+          "locationName": "routingRuleId",
+          "documentation": "<p>The routing rule ID.</p>"
+        }
+      }
+    },
+    "RoutingRuleAction": {
+      "type": "structure",
+      "members": {
+        "InvokeApi": {
+          "shape": "RoutingRuleActionInvokeApi",
+          "locationName": "invokeApi"
+        }
+      },
+      "documentation": "<p>The routing rule action.</p>",
+      "required": [
+        "InvokeApi"
+      ]
+    },
+    "RoutingRuleActionInvokeApi": {
+      "type": "structure",
+      "members": {
+        "ApiId": {
+          "shape": "Id",
+          "locationName": "apiId"
+        },
+        "Stage": {
+          "shape": "StringWithLengthBetween1And128",
+          "locationName": "stage"
+        },
+        "StripBasePath": {
+          "shape": "__boolean",
+          "locationName": "stripBasePath",
+          "documentation": "<p>The strip base path setting.</p>"
+        }
+      },
+      "documentation": "<p>Represents an InvokeApi action.</p>",
+      "required": [
+        "Stage",
+        "ApiId"
+      ]
+    },
+    "RoutingRuleCondition": {
+      "type": "structure",
+      "documentation": "<p>Represents a routing rule condition.</p>",
+      "members": {
+        "MatchBasePaths": {
+          "shape": "RoutingRuleMatchBasePaths",
+          "locationName": "matchBasePaths",
+          "documentation": "<p>The base path to be matched.</p>"
+        },
+        "MatchHeaders": {
+          "shape": "RoutingRuleMatchHeaders",
+          "locationName": "matchHeaders",
+          "documentation": "<p>The headers to be matched.</p>"
+        }
+      }
+    },
+    "RoutingRuleInput": {
+      "type": "structure",
+      "members": {
+        "Actions": {
+          "shape": "__listOfRoutingRuleAction",
+          "locationName": "actions"
+        },
+        "Conditions": {
+          "shape": "__listOfRoutingRuleCondition",
+          "locationName": "conditions"
+        },
+        "Priority": {
+          "shape": "RoutingRulePriority",
+          "locationName": "priority"
+        }
+      },
+      "required": [
+        "Actions",
+        "Priority",
+        "Conditions"
+      ]
+    },
+    "RoutingRuleMatchBasePaths": {
+      "type": "structure",
+      "members": {
+        "AnyOf": {
+          "shape": "__listOfSelectionKey",
+          "locationName": "anyOf",
+          "documentation": "The string of the case sensitive base path to be matched."
+        }
+      },
+      "documentation": "<p>Represents a MatchBasePaths condition.</p>",
+      "required": [
+        "AnyOf"
+      ]
+    },
+    "RoutingRuleMatchHeaderValue": {
+      "type": "structure",
+      "documentation": "<p>Represents a MatchHeaderValue.</p>",
+      "members": {
+        "Header": {
+          "shape": "SelectionKey",
+          "locationName": "header"
+        },
+        "ValueGlob": {
+          "shape": "SelectionExpression",
+          "locationName": "valueGlob"
+        }
+      },
+      "required": [
+        "ValueGlob",
+        "Header"
+      ]
+    },
+    "RoutingRuleMatchHeaders": {
+      "type": "structure",
+      "documentation": "<p>Represents a MatchHeaders condition.</p>",
+      "members": {
+        "AnyOf": {
+          "shape": "__listOfRoutingRuleMatchHeaderValue",
+          "locationName": "anyOf",
+          "documentation": "<p>The header name and header value glob to be matched. The matchHeaders condition is matched if any of the header name and header value globs are matched.</p>"
+        }
+      },
+      "required": [
+        "AnyOf"
+      ]
+    },
+    "RoutingRulePriority": {
+      "type": "integer",
+      "min": 1,
+      "max": 1000000,
+      "documentation": "<p>The routing rule priority.</p>"
+    },
+    "MaxResults": {
+      "type": "integer",
+      "min": 1,
+      "max": 100
+    },
+    "RoutingRules": {
+      "type": "structure",
+      "documentation": "<p>A collection of routing rules.</p>",
+      "members": {
+        "NextToken": {
+          "shape": "NextToken",
+          "locationName": "nextToken"
+        },
+        "RoutingRules": {
+          "shape": "__listOfRoutingRule",
+          "locationName": "routingRules"
+        }
+      }
+    },
     "SecurityGroupIdList": {
       "type": "list",
       "documentation": "<p>A list of security group IDs for the VPC link.</p>",
@@ -7442,8 +8091,7 @@
     },
     "TagResourceResponse": {
       "type": "structure",
-      "members": {
-      }
+      "members": {}
     },
     "Tags": {
       "type": "map",
@@ -8127,6 +8775,11 @@
           "shape": "MutualTlsAuthenticationInput",
           "locationName": "mutualTlsAuthentication",
           "documentation": "<p>The mutual TLS authentication configuration for a custom domain name.</p>"
+        },
+        "RoutingMode": {
+          "shape": "RoutingMode",
+          "locationName": "routingMode",
+          "documentation": "<p>The routing mode.</p>"
         }
       },
       "documentation": "<p>Represents the input parameters for an UpdateDomainName request.</p>"
@@ -8149,6 +8802,11 @@
           "shape": "MutualTlsAuthenticationInput",
           "locationName": "mutualTlsAuthentication",
           "documentation": "<p>The mutual TLS authentication configuration for a custom domain name.</p>"
+        },
+        "RoutingMode": {
+          "shape": "RoutingMode",
+          "locationName": "routingMode",
+          "documentation": "<p>The routing mode.</p>"
         }
       },
       "documentation": "<p>Updates a DomainName.</p>",
@@ -8169,6 +8827,10 @@
           "locationName": "domainName",
           "documentation": "<p>The name of the DomainName resource.</p>"
         },
+        "DomainNameArn": {
+          "shape": "Arn",
+          "locationName": "domainNameArn"
+        },
         "DomainNameConfigurations": {
           "shape": "DomainNameConfigurations",
           "locationName": "domainNameConfigurations",
@@ -8178,6 +8840,11 @@
           "shape": "MutualTlsAuthentication",
           "locationName": "mutualTlsAuthentication",
           "documentation": "<p>The mutual TLS authentication configuration for a custom domain name.</p>"
+        },
+        "RoutingMode": {
+          "shape": "RoutingMode",
+          "locationName": "routingMode",
+          "documentation": "<p>The routing mode.</p>"
         },
         "Tags": {
           "shape": "Tags",
@@ -9446,6 +10113,36 @@
       "type": "list",
       "member": {
         "shape": "RouteResponse"
+      }
+    },
+    "__listOfRoutingRule": {
+      "type": "list",
+      "member": {
+        "shape": "RoutingRule"
+      }
+    },
+    "__listOfRoutingRuleAction": {
+      "type": "list",
+      "member": {
+        "shape": "RoutingRuleAction"
+      }
+    },
+    "__listOfRoutingRuleCondition": {
+      "type": "list",
+      "member": {
+        "shape": "RoutingRuleCondition"
+      }
+    },
+    "__listOfRoutingRuleMatchHeaderValue": {
+      "type": "list",
+      "member": {
+        "shape": "RoutingRuleMatchHeaderValue"
+      }
+    },
+    "__listOfSelectionKey": {
+      "type": "list",
+      "member": {
+        "shape": "SelectionKey"
       }
     },
     "__listOfStage": {

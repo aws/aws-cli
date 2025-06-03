@@ -544,6 +544,12 @@
           "documentation":"<p>The ID of the job run to cancel.</p>",
           "location":"uri",
           "locationName":"jobRunId"
+        },
+        "shutdownGracePeriodInSeconds":{
+          "shape":"ShutdownGracePeriodInSeconds",
+          "documentation":"<p>The duration (in seconds) to wait before forcefully terminating the job after cancellation is requested.</p>",
+          "location":"querystring",
+          "locationName":"shutdownGracePeriodInSeconds"
         }
       }
     },
@@ -817,14 +823,15 @@
     },
     "EntryPointArgument":{
       "type":"string",
-      "max":10280,
       "min":1,
       "pattern":".*\\S.*",
       "sensitive":true
     },
     "EntryPointArguments":{
       "type":"list",
-      "member":{"shape":"EntryPointArgument"}
+      "member":{"shape":"EntryPointArgument"},
+      "max":1024,
+      "min":0
     },
     "EntryPointPath":{
       "type":"string",
@@ -1890,6 +1897,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ShutdownGracePeriodInSeconds":{
+      "type":"integer",
+      "box":true
     },
     "SparkSubmit":{
       "type":"structure",

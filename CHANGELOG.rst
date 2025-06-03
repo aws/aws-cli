@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.27.28
+=======
+
+* api-change:``apigatewayv2``: Adds support to create routing rules and set the routing mode for a custom domain name.
+* api-change:``apigateway``: Adds support to set the routing mode for a custom domain name.
+* api-change:``emr-serverless``: AWS EMR Serverless: Adds a new option in the CancelJobRun API in EMR 7.9.0+, to cancel a job with grace period. This feature is enabled by default with a 120-second grace period for streaming jobs and is not enabled by default for batch jobs.
+
+
 2.27.27
 =======
 

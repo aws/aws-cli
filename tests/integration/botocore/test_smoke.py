@@ -41,7 +41,6 @@ SMOKE_TESTS = {
     'cloudformation': {'DescribeStacks': {}, 'ListStacks': {}},
     'cloudfront': {'ListDistributions': {}, 'ListStreamingDistributions': {}},
     'cloudhsmv2': {'DescribeBackups': {}},
-    'cloudsearch': {'DescribeDomains': {}, 'ListDomainNames': {}},
     'cloudtrail': {'DescribeTrails': {}},
     'cloudwatch': {'ListMetrics': {}},
     'codecommit': {'ListRepositories': {}},
@@ -74,13 +73,11 @@ SMOKE_TESTS = {
     # importexport tests are not run.
     #'importexport': {'ListJobs': {}},
     'importexport': {},
-    'inspector': {'DescribeCrossAccountAccessRole': {}},
     'iot': {'DescribeEndpoint': {}},
     'kinesis': {'ListStreams': {}},
     'kms': {'ListKeys': {}},
     'lambda': {'ListFunctions': {}},
     'logs': {'DescribeLogGroups': {}},
-    # 'opsworks': {'DescribeStacks': {}},
     'rds': {'DescribeDBInstances': {}},
     'redshift': {'DescribeClusters': {}},
     'route53': {'ListHostedZones': {}},
@@ -132,7 +129,6 @@ ERROR_TESTS = {
     },
     'cloudfront': {'GetDistribution': {'Id': 'fake-id'}},
     'cloudhsmv2': {'ListTags': {'ResourceId': 'fake-id'}},
-    'cloudsearch': {'DescribeIndexFields': {'DomainName': 'fakedomain'}},
     'cloudtrail': {'DeleteTrail': {'Name': 'fake-trail'}},
     'cloudwatch': {
         'SetAlarmState': {
@@ -175,7 +171,6 @@ ERROR_TESTS = {
     'kinesis': {'DescribeStream': {'StreamName': 'fake'}},
     'kms': {'GetKeyPolicy': {'KeyId': 'fake', 'PolicyName': 'fake'}},
     'lambda': {'Invoke': {'FunctionName': 'fake'}},
-    # 'opsworks': {'DescribeLayers': {'StackId': 'fake'}},
     'rds': {'DescribeDBInstances': {'DBInstanceIdentifier': 'fake'}},
     'redshift': {'DescribeClusters': {'ClusterIdentifier': 'fake'}},
     'route53': {'GetHostedZone': {'Id': 'fake'}},
@@ -209,7 +204,6 @@ REGION = 'us-east-1'
 REGION_OVERRIDES = {
     'devicefarm': 'us-west-2',
     'efs': 'us-west-2',
-    'inspector': 'us-west-2',
 }
 MAX_RETRIES = 8
 logger = logging.getLogger(__name__)

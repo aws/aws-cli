@@ -42,6 +42,8 @@ class TestPush(unittest.TestCase):
         self.args.s3_location = self.s3_location
         self.args.ignore_hidden_files = False
         self.args.no_ignore_hidden_files = False
+        self.args.preserve_symlinks = False
+        self.args.no_preserve_symlinks = False
         self.args.description = self.description
         self.args.source = self.source
 
@@ -135,6 +137,12 @@ class TestPush(unittest.TestCase):
         self.args.no_ignore_hidden_files = True
         with self.assertRaises(RuntimeError):
             self.push._validate_args(self.args)
+    
+    def test_validate_args_throws_on_preserve_and_no_preserve_symlinks(self):
+        self.args.preserve_symlinks = True
+        self.args.no_preserve_symlinks = True
+        with self.assertRaises(RuntimeError):
+            self.push._validate_args(self.args)
 
     def test_validate_args_default_description(self):
         self.args.description = None
@@ -208,7 +216,8 @@ class TestPush(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             with self.push._compress(
                     self.args.source,
-                    self.args.ignore_hidden_files):
+                    self.args.ignore_hidden_files,
+                    self.args.preserve_symlinks):
                 pass
 
     @mock.patch('zipfile.ZipFile')
@@ -224,7 +233,8 @@ class TestPush(unittest.TestCase):
         zf.return_value = self.zipfile_mock
         with self.push._compress(
                 self.args.source,
-                self.args.ignore_hidden_files):
+                self.args.ignore_hidden_files,
+                self.args.preserve_symlinks):
             zf.assert_called_with(mock.ANY, 'w', allowZip64=True)
             zf().write.assert_called_with(
                 '/tmp/appspec.yml',

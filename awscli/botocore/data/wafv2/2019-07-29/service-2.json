@@ -997,6 +997,11 @@
       "type":"integer",
       "min":0
     },
+    "ASN":{
+      "type":"long",
+      "max":4294967295,
+      "min":0
+    },
     "AWSManagedRulesACFPRuleSet":{
       "type":"structure",
       "required":[
@@ -1106,14 +1111,12 @@
     },
     "All":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Inspect all of the elements that WAF has parsed and extracted from the web request component that you've identified in your <a>FieldToMatch</a> specifications. </p> <p>This is used in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>\"All\": {}</code> </p>"
     },
     "AllQueryArguments":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Inspect all query arguments of the web request. </p> <p>This is used in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>\"AllQueryArguments\": {}</code> </p>"
     },
     "AllowAction":{
@@ -1137,6 +1140,27 @@
       },
       "documentation":"<p>A logical rule statement used to combine other rule statements with AND logic. You provide more than one <a>Statement</a> within the <code>AndStatement</code>. </p>"
     },
+    "AsnList":{
+      "type":"list",
+      "member":{"shape":"ASN"},
+      "max":100,
+      "min":1
+    },
+    "AsnMatchStatement":{
+      "type":"structure",
+      "required":["AsnList"],
+      "members":{
+        "AsnList":{
+          "shape":"AsnList",
+          "documentation":"<p>Contains one or more Autonomous System Numbers (ASNs). ASNs are unique identifiers assigned to large internet networks managed by organizations such as internet service providers, enterprises, universities, or government agencies. </p>"
+        },
+        "ForwardedIPConfig":{
+          "shape":"ForwardedIPConfig",
+          "documentation":"<p>The configuration for inspecting IP addresses to match against an ASN in an HTTP header that you specify, instead of using the IP address that's reported by the web request origin. Commonly, this is the X-Forwarded-For (XFF) header, but you can specify any header name. </p>"
+        }
+      },
+      "documentation":"<p>A rule statement that inspects web traffic based on the Autonomous System Number (ASN) associated with the request's IP address.</p> <p>For additional details, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-type-asn-match.html\">ASN match rule statement</a> in the <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html\">WAF Developer Guide</a>. </p>"
+    },
     "AssociateWebACLRequest":{
       "type":"structure",
       "required":[
@@ -1156,8 +1180,7 @@
     },
     "AssociateWebACLResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AssociatedResourceType":{
       "type":"string",
@@ -2105,8 +2128,7 @@
     },
     "DeleteAPIKeyResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteFirewallManagerRuleGroupsRequest":{
       "type":"structure",
@@ -2163,8 +2185,7 @@
     },
     "DeleteIPSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteLoggingConfigurationRequest":{
       "type":"structure",
@@ -2186,8 +2207,7 @@
     },
     "DeleteLoggingConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletePermissionPolicyRequest":{
       "type":"structure",
@@ -2201,8 +2221,7 @@
     },
     "DeletePermissionPolicyResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteRegexPatternSetRequest":{
       "type":"structure",
@@ -2233,8 +2252,7 @@
     },
     "DeleteRegexPatternSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteRuleGroupRequest":{
       "type":"structure",
@@ -2265,8 +2283,7 @@
     },
     "DeleteRuleGroupResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteWebACLRequest":{
       "type":"structure",
@@ -2297,8 +2314,7 @@
     },
     "DeleteWebACLResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeAllManagedProductsRequest":{
       "type":"structure",
@@ -2416,8 +2432,7 @@
     },
     "DisassociateWebACLResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DownloadUrl":{"type":"string"},
     "EmailField":{
@@ -2715,7 +2730,7 @@
           "documentation":"<p>The match status to assign to the web request if the request doesn't have a valid IP address in the specified position.</p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note> <p>You can specify the following fallback behaviors:</p> <ul> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>The configuration for inspecting IP addresses in an HTTP header that you specify, instead of using the IP address that's reported by the web request origin. Commonly, this is the X-Forwarded-For (XFF) header, but you can specify any header name. </p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note> <p>This configuration is used for <a>GeoMatchStatement</a> and <a>RateBasedStatement</a>. For <a>IPSetReferenceStatement</a>, use <a>IPSetForwardedIPConfig</a> instead. </p> <p>WAF only evaluates the first IP address found in the specified HTTP header. </p>"
+      "documentation":"<p>The configuration for inspecting IP addresses in an HTTP header that you specify, instead of using the IP address that's reported by the web request origin. Commonly, this is the X-Forwarded-For (XFF) header, but you can specify any header name. </p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note> <p>This configuration is used for <a>GeoMatchStatement</a>, <a>AsnMatchStatement</a>, and <a>RateBasedStatement</a>. For <a>IPSetReferenceStatement</a>, use <a>IPSetForwardedIPConfig</a> instead. </p> <p>WAF only evaluates the first IP address found in the specified HTTP header. </p>"
     },
     "ForwardedIPHeaderName":{
       "type":"string",
@@ -3243,7 +3258,7 @@
       "members":{
         "OversizeHandling":{
           "shape":"OversizeHandling",
-          "documentation":"<p>What WAF should do if the headers of the request are more numerous or larger than WAF can inspect. WAF does not support inspecting the entire contents of request headers when they exceed 8 KB (8192 bytes) or 200 total headers. The underlying host service forwards a maximum of 200 headers and at most 8 KB of header contents to WAF. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the available headers normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>"
+          "documentation":"<p>What WAF should do if the headers determined by your match scope are more numerous or larger than WAF can inspect. WAF does not support inspecting the entire contents of request headers when they exceed 8 KB (8192 bytes) or 200 total headers. The underlying host service forwards a maximum of 200 headers and at most 8 KB of header contents to WAF. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the available headers normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Inspect a string containing the list of the request's header names, ordered as they appear in the web request that WAF receives for inspection. WAF generates the string and then uses that as the field to match component in its inspection. WAF separates the header names in the string using colons and no added spaces, for example <code>host:user-agent:accept:authorization:referer</code>.</p>"
@@ -3267,7 +3282,7 @@
         },
         "OversizeHandling":{
           "shape":"OversizeHandling",
-          "documentation":"<p>What WAF should do if the headers of the request are more numerous or larger than WAF can inspect. WAF does not support inspecting the entire contents of request headers when they exceed 8 KB (8192 bytes) or 200 total headers. The underlying host service forwards a maximum of 200 headers and at most 8 KB of header contents to WAF. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the available headers normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>"
+          "documentation":"<p>What WAF should do if the headers determined by your match scope are more numerous or larger than WAF can inspect. WAF does not support inspecting the entire contents of request headers when they exceed 8 KB (8192 bytes) or 200 total headers. The underlying host service forwards a maximum of 200 headers and at most 8 KB of header contents to WAF. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the available headers normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Inspect all headers in the web request. You can specify the parts of the headers to inspect and you can narrow the set of headers to inspect by including or excluding specific keys.</p> <p>This is used to indicate the web request component to inspect, in the <a>FieldToMatch</a> specification. </p> <p>If you want to inspect just the value of a single header, use the <code>SingleHeader</code> <code>FieldToMatch</code> setting instead.</p> <p>Example JSON: <code>\"Headers\": { \"MatchPattern\": { \"All\": {} }, \"MatchScope\": \"KEY\", \"OversizeHandling\": \"MATCH\" }</code> </p>"
@@ -4346,8 +4361,7 @@
     },
     "Method":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Inspect the HTTP method of the web request. The method indicates the type of operation that the request is asking the origin to perform. </p> <p>This is used in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>\"Method\": {}</code> </p>"
     },
     "MetricName":{
@@ -4386,8 +4400,7 @@
     },
     "NoneAction":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Specifies that WAF should do nothing. This is used for the <code>OverrideAction</code> setting on a <a>Rule</a> when the rule uses a rule group reference statement. </p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p> <p>JSON specification: <code>\"None\": {}</code> </p>"
     },
     "NotStatement":{
@@ -4686,13 +4699,11 @@
     },
     "PutPermissionPolicyResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "QueryString":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Inspect the query string of the web request. This is the part of a URL that appears after a <code>?</code> character, if any.</p> <p>This is used in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>\"QueryString\": {}</code> </p>"
     },
     "RateBasedStatement":{
@@ -4784,6 +4795,10 @@
         "JA4Fingerprint":{
           "shape":"RateLimitJA4Fingerprint",
           "documentation":"<p>Use the request's JA4 fingerprint as an aggregate key. If you use a single JA4 fingerprint as your custom key, then each value fully defines an aggregation instance. </p>"
+        },
+        "ASN":{
+          "shape":"RateLimitAsn",
+          "documentation":"<p>Use an Autonomous System Number (ASN) derived from the request's originating or forwarded IP address as an aggregate key. Each distinct ASN contributes to the aggregation instance. </p>"
         }
       },
       "documentation":"<p>Specifies a single custom aggregate key for a rate-base rule. </p> <note> <p>Web requests that are missing any of the components specified in the aggregation keys are omitted from the rate-based rule evaluation and handling. </p> </note>"
@@ -4812,6 +4827,11 @@
       "max":2000000000,
       "min":10
     },
+    "RateLimitAsn":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Specifies an Autonomous System Number (ASN) derived from the request's originating or forwarded IP address as an aggregate key for a rate-based rule. Each distinct ASN contributes to the aggregation instance. If you use a single ASN as your custom key, then each ASN fully defines an aggregation instance. </p>"
+    },
     "RateLimitCookie":{
       "type":"structure",
       "required":[
@@ -4832,14 +4852,12 @@
     },
     "RateLimitForwardedIP":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Specifies the first IP address in an HTTP header as an aggregate key for a rate-based rule. Each distinct forwarded IP address contributes to the aggregation instance.</p> <p>This setting is used only in the <code>RateBasedStatementCustomKey</code> specification of a rate-based rule statement. When you specify an IP or forwarded IP in the custom key settings, you must also specify at least one other key to use. You can aggregate on only the forwarded IP address by specifying <code>FORWARDED_IP</code> in your rate-based statement's <code>AggregateKeyType</code>. </p> <p>This data type supports using the forwarded IP address in the web request aggregation for a rate-based rule, in <code>RateBasedStatementCustomKey</code>. The JSON specification for using the forwarded IP address doesn't explicitly use this data type. </p> <p>JSON specification: <code>\"ForwardedIP\": {}</code> </p> <p>When you use this specification, you must also configure the forwarded IP address in the rate-based statement's <code>ForwardedIPConfig</code>. </p>"
     },
     "RateLimitHTTPMethod":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Specifies the request's HTTP method as an aggregate key for a rate-based rule. Each distinct HTTP method contributes to the aggregation instance. If you use just the HTTP method as your custom key, then each method fully defines an aggregation instance. </p> <p>JSON specification: <code>\"RateLimitHTTPMethod\": {}</code> </p>"
     },
     "RateLimitHeader":{
@@ -4862,8 +4880,7 @@
     },
     "RateLimitIP":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Specifies the IP address in the web request as an aggregate key for a rate-based rule. Each distinct IP address contributes to the aggregation instance. </p> <p>This setting is used only in the <code>RateBasedStatementCustomKey</code> specification of a rate-based rule statement. To use this in the custom key settings, you must specify at least one other key to use, along with the IP address. To aggregate on only the IP address, in your rate-based statement's <code>AggregateKeyType</code>, specify <code>IP</code>.</p> <p>JSON specification: <code>\"RateLimitIP\": {}</code> </p>"
     },
     "RateLimitJA3Fingerprint":{
@@ -5823,6 +5840,10 @@
         "RegexMatchStatement":{
           "shape":"RegexMatchStatement",
           "documentation":"<p>A rule statement used to search web request components for a match against a single regular expression. </p>"
+        },
+        "AsnMatchStatement":{
+          "shape":"AsnMatchStatement",
+          "documentation":"<p>A rule statement that inspects web traffic based on the Autonomous System Number (ASN) associated with the request's IP address.</p> <p>For additional details, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-type-asn-match.html\">ASN match rule statement</a> in the <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html\">WAF Developer Guide</a>. </p>"
         }
       },
       "documentation":"<p>The processing guidance for a <a>Rule</a>, used by WAF to determine whether a web request matches the rule. </p> <p>For example specifications, see the examples section of <a>CreateWebACL</a>.</p>"
@@ -5910,8 +5931,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -6030,8 +6050,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateIPSetRequest":{
       "type":"structure",
@@ -6320,8 +6339,7 @@
     },
     "UriPath":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Inspect the path component of the URI of the web request. This is the part of the web request that identifies a resource. For example, <code>/images/daily-ad.jpg</code>.</p> <p>This is used in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>\"UriPath\": {}</code> </p>"
     },
     "UsernameField":{

@@ -257,8 +257,8 @@ the specified contents.
       - Each element is an object with the following keys:
         - `name` (string): Name of the file to create
         - `content` (string): The contents of the file.
-        - `mode` (string) **(optional)**: The write mode to use for writing the 
-file contents. 
+        - `mode` (string) **(optional)**: The write mode to use for writing the
+file contents.
           - Default: `w`
     - `files` (list) **(optional)**: Specifies the files that must be
 created before executing the benchmark. The files created will be filled with

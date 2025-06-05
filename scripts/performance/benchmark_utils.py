@@ -1,14 +1,17 @@
 import json
 import math
-import sys
-import time
-import psutil
 import os
 import shutil
+import sys
+import time
+
+import psutil
 
 from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
 from scripts.performance.tests import BaseBenchmarkSuite
-from scripts.performance.tests.simple_stubbed_tests import JSONStubbedBenchmarkSuite
+from scripts.performance.tests.simple_stubbed_tests import (
+    JSONStubbedBenchmarkSuite,
+)
 
 
 class Metric:
@@ -16,6 +19,7 @@ class Metric:
         self.description = description
         self.unit = unit
         self.value = value
+
 
 class BenchmarkResultsSerializer:
     """
@@ -30,8 +34,10 @@ class BenchmarkResultsSerializer:
         """
         Store a performance test case's execution result.
         """
-        summarized_results = self._summarizer.summarize(samples, execution_results)
-        for (metric, val) in summarized_results.items():
+        summarized_results = self._summarizer.summarize(
+            samples, execution_results
+        )
+        for metric, val in summarized_results.items():
             key = f'{case["name"]}.{metric}'
             if key not in self._benchmark_results:
                 self._benchmark_results[key] = {
@@ -83,7 +89,9 @@ class Summarizer:
                 self._start_time = self._get_time(sample)
             self.process_data_sample(sample)
         self._end_time = self._get_time(samples[-1])
-        metrics = self._finalize_processed_data_for_file(samples, worker_results)
+        metrics = self._finalize_processed_data_for_file(
+            samples, worker_results
+        )
         return metrics
 
     def _validate_samples(self, samples):
@@ -112,42 +120,42 @@ class Summarizer:
             'mean.run.memory': Metric(
                 'Mean memory usage of a single command execution.',
                 'Bytes',
-                self._sums['memory'] / len(samples)
+                self._sums['memory'] / len(samples),
             ),
             'mean.run.cpu': Metric(
                 'Mean CPU usage of a single command execution.',
                 'Percent',
-                self._sums['cpu'] / len(samples)
+                self._sums['cpu'] / len(samples),
             ),
             'peak.run.memory': Metric(
                 'Peak memory usage of a single command execution.',
                 'Bytes',
-                max_memory
+                max_memory,
             ),
             'peak.run.cpu': Metric(
                 'Peak CPU usage of a single command execution.',
                 'Percent',
-                max_cpu
+                max_cpu,
             ),
             'p50.run.memory': Metric(
                 'p50 memory usage of a single command execution.',
                 'Bytes',
-                memory_p50
+                memory_p50,
             ),
             'p95.run.memory': Metric(
                 'p95 memory usage of a single command execution.',
                 'Bytes',
-                memory_p95
+                memory_p95,
             ),
             'p50.run.cpu': Metric(
                 'p50 CPU usage of a single command execution.',
                 'Percent',
-                cpu_p50
+                cpu_p50,
             ),
             'p95.run.cpu': Metric(
                 'p95 CPU usage of a single command execution.',
                 'Percent',
-                cpu_p95
+                cpu_p95,
             ),
             'run.time': Metric(
                 'Total running time of the Python process executing the CLI command.',
@@ -158,7 +166,8 @@ class Summarizer:
                 'Elapsed time from the start of the Python process until just '
                 'before the HTTP request is created.',
                 'Seconds',
-                worker_results['first_client_invocation_time'] - worker_results['start_time']
+                worker_results['first_client_invocation_time']
+                - worker_results['start_time'],
             ),
         }
         # reset data state
@@ -189,6 +198,7 @@ class ProcessBenchmarker:
     Periodically samples CPU and memory usage of a process given its pid.
     These measurements are sampled until the process is no longer running.
     """
+
     def benchmark_process(self, pid, data_interval):
         parent_pid = os.getpid()
         try:
@@ -245,6 +255,7 @@ class BenchmarkHarness:
     """
     Orchestrates running benchmarks in isolated, configurable environments.
     """
+
     def __init__(self, results_processor=BenchmarkResultsSerializer()):
         self._results_processor = results_processor
 
@@ -285,7 +296,13 @@ class BenchmarkHarness:
             )
 
     def _run_isolated_benchmark(
-        self, result_dir, iteration, benchmark, suite, process_benchmarker, args
+        self,
+        result_dir,
+        iteration,
+        benchmark,
+        suite,
+        process_benchmarker,
+        args,
     ):
         """
         Runs a single iteration of one benchmark execution. Includes setting up
@@ -306,9 +323,10 @@ class BenchmarkHarness:
 
         try:
             if pid == 0:
-                with open(child_output_path, 'w') as out, open(
-                    child_err_path, 'w'
-                ) as err:
+                with (
+                    open(child_output_path, 'w') as out,
+                    open(child_err_path, 'w') as err,
+                ):
                     if not args.debug_dir:
                         # redirect standard output of the child process to a file
                         os.dup2(out.fileno(), sys.stdout.fileno())
@@ -335,7 +353,9 @@ class BenchmarkHarness:
                                 os.dup2(f.fileno(), sys.stdout.fileno())
                                 os.dup2(f_err.fileno(), sys.stderr.fileno())
                     # execute command on child process
-                    self._run_command_with_metric_hooks(benchmark['command'], metrics_path)
+                    self._run_command_with_metric_hooks(
+                        benchmark['command'], metrics_path
+                    )
                     # terminate the child process
                     os._exit(0)
 
@@ -345,22 +365,24 @@ class BenchmarkHarness:
             )
 
             # reap the child process and error on unsuccessful return codes
-            _, status = os.waitpid(pid,0)
+            _, status = os.waitpid(pid, 0)
             if status != 0:
-                raise RuntimeError(f'Child process execution failed: status code {status}')
+                raise RuntimeError(
+                    f'Child process execution failed: status code {status}'
+                )
 
             # load child-collected metrics
             if not os.path.exists(metrics_path):
                 raise RuntimeError(
                     'Child process execution failed: output file not found.'
                 )
-            worker_results = json.load(open(metrics_path, 'r'))
+            worker_results = json.load(open(metrics_path))
 
             # raise error if CLI execution unsuccessful.
             # this is different from the process return code checked above,
             # because the process can succeed while the CLI execution failed
             if (rc := worker_results['return_code']) != 0:
-                with open(child_err_path, 'r') as err:
+                with open(child_err_path) as err:
                     raise RuntimeError(
                         f'CLI execution failed: return code {rc}.\n'
                         f'Error: {err.read()}'
@@ -393,29 +415,30 @@ class BenchmarkHarness:
             shutil.rmtree(result_dir)
         os.makedirs(result_dir, 0o777)
         try:
-            for (suite, case) in cases:
+            for suite, case in cases:
                 for idx in range(args.num_iterations):
                     for cmd in case:
-                        samples, execution_results = self._run_isolated_benchmark(
-                            result_dir,
-                            idx,
-                            cmd,
-                            suite,
-                            process_benchmarker,
-                            args,
+                        samples, execution_results = (
+                            self._run_isolated_benchmark(
+                                result_dir,
+                                idx,
+                                cmd,
+                                suite,
+                                process_benchmarker,
+                                args,
+                            )
                         )
                         self._results_processor.add_execution_results(
-                            cmd,
-                            samples,
-                            execution_results
+                            cmd, samples, execution_results
                         )
-                summaries['results'].extend(self._results_processor.get_processed_results())
+                summaries['results'].extend(
+                    self._results_processor.get_processed_results()
+                )
                 self._results_processor.reset()
         finally:
             # final cleanup
             shutil.rmtree(result_dir, ignore_errors=True)
         print(json.dumps(summaries, indent=2))
-
 
     def run_benchmark_suite(self, suite: BaseBenchmarkSuite, args):
         """

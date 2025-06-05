@@ -1,6 +1,5 @@
 import json
 import os
-
 from unittest import mock
 
 from awscli.botocore.awsrequest import AWSResponse
@@ -12,6 +11,7 @@ class RawResponse(BytesIO):
     """
     A bytes-like streamable HTTP response representation.
     """
+
     def stream(self, **kwargs):
         contents = self.read()
         while contents:
@@ -97,10 +97,12 @@ class JSONStubbedBenchmarkSuite(BaseBenchmarkSuite):
         }
 
     def get_test_cases(self, args):
-        definitions = json.load(open(args.benchmark_definitions, 'r'))
+        definitions = json.load(open(args.benchmark_definitions))
+
         def generator(definition):
             for iteration in range(args.num_iterations):
                 yield definition
+
         return [generator(definition) for definition in definitions]
 
     def begin_iteration(self, case, workspace_path, assets_path, iteration):

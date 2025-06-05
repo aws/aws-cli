@@ -188,7 +188,7 @@ class ResultRecorder(BaseResultHandler):
         if not isinstance(result, BaseResult):
             raise ValueError(
                 'Any result using _get_ongoing_dict_key must subclass from '
-                'BaseResult. Provided result is of type: %s' % type(result)
+                f'BaseResult. Provided result is of type: {type(result)}'
             )
         key_parts = []
         for result_property in [result.transfer_type, result.src, result.dest]:
@@ -315,7 +315,9 @@ class ResultPrinter(BaseResultHandler):
     SRC_DEST_TRANSFER_LOCATION_FORMAT = '{src} to {dest}'
     SRC_TRANSFER_LOCATION_FORMAT = '{src}'
 
-    def __init__(self, result_recorder, out_file=None, error_file=None, frequency=None):
+    def __init__(
+        self, result_recorder, out_file=None, error_file=None, frequency=None
+    ):
         """Prints status of ongoing transfer
 
         :type result_recorder: ResultRecorder
@@ -353,7 +355,11 @@ class ResultPrinter(BaseResultHandler):
 
     def __call__(self, result):
         """Print the progress of the ongoing transfer based on a result"""
-        if self._first or (self._frequency is None) or (time.time() - self._now >= self._frequency):
+        if (
+            self._first
+            or (self._frequency is None)
+            or (time.time() - self._now >= self._frequency)
+        ):
             self._result_handler_map.get(type(result), self._print_noop)(
                 result=result
             )

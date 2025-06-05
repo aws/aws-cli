@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.27.30
+=======
+
+* api-change:``wafv2``: AWS WAF adds support for ASN-based traffic filtering and support for ASN-based rate limiting.
+* api-change:``kms``: AWS KMS announces the support for on-demand rotation of symmetric-encryption KMS keys with imported key material (EXTERNAL origin).
+* api-change:``cloudformation``: Add new warning type 'EXCLUDED_PROPERTIES'
+* api-change:``bcm-pricing-calculator``: Updating the minimum for List APIs to be 1 (instead of 0)
+
+
 2.27.29
 =======
 

@@ -62,16 +62,19 @@ def get_renderer(help_output):
     Return the appropriate HelpRenderer implementation for the
     current platform.
     """
-    if help_output == "url":
-        return PagingHelpRenderer()
     
     if platform.system() == 'Windows':
         if help_output == "browser":
             return WindowsBrowserHelpRenderer()
+        elif help_output == "url":
+            return WindowsPagingHelpRenderer()
         return WindowsHelpRenderer()
     else:
         if help_output == "browser":
             return PosixBrowserHelpRenderer()
+        if help_output == "url":
+            return PosixPagingHelpRenderer()
+
         return PosixHelpRenderer()
 
 class HelpRenderer:
@@ -172,7 +175,7 @@ class BrowserHelpRenderer(HelpRenderer):
         self._send_output_to_browser(output)
 
     def _send_output_to_browser(self, output):
-        html_file = tempfile.NamedTemporaryFile("wb", delete=False)
+        html_file = tempfile.NamedTemporaryFile("wb", suffix=".html", delete=False)
         html_file.write(output)
         html_file.close()
 
@@ -183,32 +186,13 @@ class BrowserHelpRenderer(HelpRenderer):
             LOG.debug('Failed to open browser:', exc_info=True)
 
 
-class PosixHelpRenderer(PagingHelpRenderer):
+class PosixPagingHelpRenderer(PagingHelpRenderer):
     """
     Render help content on a Posix-like system.  This includes
     Linux and MacOS X.
     """
 
     PAGER = 'less -R'
-
-    def _convert_doc_content(self, contents):
-        settings_overrides = self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES.copy()
-        settings_overrides["report_level"] = 3
-        man_contents = publish_string(
-            contents,
-            writer=manpage.Writer(),
-            settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
-        )
-        if self._exists_on_path('groff'):
-            cmdline = ['groff', '-m', 'man', '-T', 'ascii']
-        elif self._exists_on_path('mandoc'):
-            cmdline = ['mandoc', '-T', 'ascii']
-        else:
-            raise ExecutableNotFoundError('groff or mandoc')
-        LOG.debug("Running command: %s", cmdline)
-        p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        output = p3.communicate(input=man_contents)[0]
-        return output
 
     def _send_output_to_pager(self, output):
         cmdline = self.get_pager_cmdline()
@@ -244,6 +228,33 @@ class PosixHelpRenderer(PagingHelpRenderer):
                 for p in os.environ.get('PATH', '').split(os.pathsep)
             ]
         )
+
+
+class PosixHelpRenderer(PosixPagingHelpRenderer):
+    """
+    Render help content on a Posix-like system.  This includes
+    Linux and MacOS X.
+    """
+ 
+    def _convert_doc_content(self, contents):
+        settings_overrides = self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES.copy()
+        settings_overrides["report_level"] = 3
+        man_contents = publish_string(
+            contents,
+            writer=manpage.Writer(),
+            settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
+        )
+        if self._exists_on_path('groff'):
+            cmdline = ['groff', '-m', 'man', '-T', 'ascii']
+        elif self._exists_on_path('mandoc'):
+            cmdline = ['mandoc', '-T', 'ascii']
+        else:
+            raise ExecutableNotFoundError('groff or mandoc')
+        LOG.debug("Running command: %s", cmdline)
+        p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        output = p3.communicate(input=man_contents)[0]
+        return output
+
 
 class PosixBrowserHelpRenderer(BrowserHelpRenderer):
     """
@@ -282,11 +293,20 @@ class PosixBrowserHelpRenderer(BrowserHelpRenderer):
             ]
         )
 
-
-class WindowsHelpRenderer(PagingHelpRenderer):
+class WindowsPagingHelpRenderer(PagingHelpRenderer):
     """Render help content on a Windows platform."""
 
     PAGER = 'more'
+
+    def _popen(self, *args, **kwargs):
+        # Also set the shell value to True.  To get any of the
+        # piping to a pager to work, we need to use shell=True.
+        kwargs['shell'] = True
+        return Popen(*args, **kwargs)
+
+
+class WindowsHelpRenderer(WindowsPagingHelpRenderer):
+    """Render help content on a Windows platform."""
 
     def _convert_doc_content(self, contents):
         text_output = publish_string(
@@ -295,12 +315,6 @@ class WindowsHelpRenderer(PagingHelpRenderer):
             settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
         )
         return text_output
-
-    def _popen(self, *args, **kwargs):
-        # Also set the shell value to True.  To get any of the
-        # piping to a pager to work, we need to use shell=True.
-        kwargs['shell'] = True
-        return Popen(*args, **kwargs)
 
 
 class WindowsBrowserHelpRenderer(BrowserHelpRenderer):
@@ -313,12 +327,6 @@ class WindowsBrowserHelpRenderer(BrowserHelpRenderer):
             settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
         )
         return text_output
-
-    def _popen(self, *args, **kwargs):
-        # Also set the shell value to True.  To get any of the
-        # piping to a pager to work, we need to use shell=True.
-        kwargs['shell'] = True
-        return Popen(*args, **kwargs)
 
 
 class HelpCommand:

@@ -1812,7 +1812,7 @@
         {"shape":"DBInstanceNotReadyFault"},
         {"shape":"DBLogFileNotFoundFault"}
       ],
-      "documentation":"<p>Downloads all or a portion of the specified log file, up to 1 MB in size.</p> <p>This command doesn't apply to RDS Custom.</p>"
+      "documentation":"<p>Downloads all or a portion of the specified log file, up to 1 MB in size.</p> <p>This command doesn't apply to RDS Custom.</p> <note> <p>This operation uses resources on database instances. Because of this, we recommend publishing database logs to CloudWatch and then using the GetLogEvents operation. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogEvents.html\">GetLogEvents</a> in the <i>Amazon CloudWatch Logs API Reference</i>.</p> </note>"
     },
     "EnableHttpEndpoint":{
       "name":"EnableHttpEndpoint",
@@ -3750,7 +3750,7 @@
         },
         "ConnectionBorrowTimeout":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The number of seconds for a proxy to wait for a connection to become available in the connection pool. This setting only applies when the proxy has opened its maximum number of connections and all connections are busy with client sessions.</p> <p>Default: <code>120</code> </p> <p>Constraints:</p> <ul> <li> <p>Must be between 0 and 3600.</p> </li> </ul>"
+          "documentation":"<p>The number of seconds for a proxy to wait for a connection to become available in the connection pool. This setting only applies when the proxy has opened its maximum number of connections and all connections are busy with client sessions.</p> <p>Default: <code>120</code> </p> <p>Constraints:</p> <ul> <li> <p>Must be between 0 and 300.</p> </li> </ul>"
         },
         "SessionPinningFilters":{
           "shape":"StringList",
@@ -3758,7 +3758,7 @@
         },
         "InitQuery":{
           "shape":"String",
-          "documentation":"<p>Add an initialization query, or modify the current one. You can specify one or more SQL statements for the proxy to run when opening each new database connection. The setting is typically used with <code>SET</code> statements to make sure that each connection has identical settings. Make sure that the query you add is valid. To include multiple variables in a single <code>SET</code> statement, use comma separators.</p> <p>For example: <code>SET variable1=value1, variable2=value2</code> </p> <p>For multiple statements, use semicolons as the separator.</p> <p>Default: no initialization query</p>"
+          "documentation":"<p>Add an initialization query, or modify the current one. You can specify one or more SQL statements for the proxy to run when opening each new database connection. The setting is typically used with <code>SET</code> statements to make sure that each connection has identical settings. Make sure the query added here is valid. This is an optional field, so you can choose to leave it empty. For including multiple variables in a single SET statement, use a comma separator.</p> <p>For example: <code>SET variable1=value1, variable2=value2</code> </p> <p>Default: no initialization query</p>"
         }
       },
       "documentation":"<p>Specifies the settings that control the size and behavior of the connection pool associated with a <code>DBProxyTargetGroup</code>.</p>"
@@ -3784,7 +3784,7 @@
         },
         "InitQuery":{
           "shape":"String",
-          "documentation":"<p>One or more SQL statements for the proxy to run when opening each new database connection. Typically used with <code>SET</code> statements to make sure that each connection has identical settings such as time zone and character set. This setting is empty by default. For multiple statements, use semicolons as the separator. You can also include multiple variables in a single <code>SET</code> statement, such as <code>SET x=1, y=2</code>.</p>"
+          "documentation":"<p>One or more SQL statements for the proxy to run when opening each new database connection. The setting is typically used with <code>SET</code> statements to make sure that each connection has identical settings. The query added here must be valid. For including multiple variables in a single SET statement, use a comma separator. This is an optional field.</p> <p>For example: <code>SET variable1=value1, variable2=value2</code> </p>"
         }
       },
       "documentation":"<p>Displays the settings that control the size and behavior of the connection pool associated with a <code>DBProxyTarget</code>.</p>"
@@ -5084,7 +5084,7 @@
         },
         "ComputeRedundancy":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Specifies whether to create standby DB shard groups for the DB shard group. Valid values are the following:</p> <ul> <li> <p>0 - Creates a DB shard group without a standby DB shard group. This is the default value.</p> </li> <li> <p>1 - Creates a DB shard group with a standby DB shard group in a different Availability Zone (AZ).</p> </li> <li> <p>2 - Creates a DB shard group with two standby DB shard groups in two different AZs.</p> </li> </ul>"
+          "documentation":"<p>Specifies whether to create standby standby DB data access shard for the DB shard group. Valid values are the following:</p> <ul> <li> <p>0 - Creates a DB shard group without a standby DB data access shard. This is the default value.</p> </li> <li> <p>1 - Creates a DB shard group with a standby DB data access shard in a different Availability Zone (AZ).</p> </li> <li> <p>2 - Creates a DB shard group with two standby DB data access shard in two different AZs.</p> </li> </ul>"
         },
         "MaxACU":{
           "shape":"DoubleOptional",
@@ -5678,6 +5678,10 @@
           "documentation":"<p>The Active Directory Domain membership records associated with the DB cluster.</p>"
         },
         "TagList":{"shape":"TagList"},
+        "GlobalClusterIdentifier":{
+          "shape":"GlobalClusterIdentifier",
+          "documentation":"<p>Contains a user-supplied global database cluster identifier. This identifier is the unique key that identifies a global database cluster.</p>"
+        },
         "GlobalWriteForwardingStatus":{
           "shape":"WriteForwardingStatus",
           "documentation":"<p>The status of write forwarding for a secondary cluster in an Aurora global database.</p>"
@@ -8579,7 +8583,7 @@
         },
         "Subnets":{
           "shape":"SubnetList",
-          "documentation":"<p>Contains a list of <code>Subnet</code> elements.</p>"
+          "documentation":"<p>Contains a list of <code>Subnet</code> elements. The list of subnets shown here might not reflect the current state of your VPC. For the most up-to-date information, we recommend checking your VPC configuration directly.</p>"
         },
         "DBSubnetGroupArn":{
           "shape":"String",

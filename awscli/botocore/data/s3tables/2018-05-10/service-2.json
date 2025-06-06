@@ -49,7 +49,7 @@
         {"shape":"ConflictException"},
         {"shape":"BadRequestException"}
       ],
-      "documentation":"<p>Creates a new table associated with the given namespace in a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-create.html\">Creating an Amazon S3 table</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <ul> <li> <p>You must have the <code>s3tables:CreateTable</code> permission to use this operation. </p> </li> <li> <p>If you use this operation with the optional <code>metadata</code> request parameter you must have the <code>s3tables:PutTableData</code> permission. </p> </li> <li> <p>If you use this operation with the optional <code>encryptionConfiguration</code> request parameter you must have the <code>s3tables:PutTableEncryption</code> permission. </p> </li> </ul> <note> <p>Additionally, </p> </note> </dd> </dl>"
+      "documentation":"<p>Creates a new table associated with the given namespace in a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-create.html\">Creating an Amazon S3 table</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <ul> <li> <p>You must have the <code>s3tables:CreateTable</code> permission to use this operation. </p> </li> <li> <p>If you use this operation with the optional <code>metadata</code> request parameter you must have the <code>s3tables:PutTableData</code> permission. </p> </li> <li> <p>If you use this operation with the optional <code>encryptionConfiguration</code> request parameter you must have the <code>s3tables:PutTableEncryption</code> permission. </p> </li> </ul> <note> <p>Additionally, If you choose SSE-KMS encryption you must grant the S3 Tables maintenance principal access to your KMS key. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-kms-permissions.html\">Permissions requirements for S3 Tables SSE-KMS encryption</a>. </p> </note> </dd> </dl>"
     },
     "CreateTableBucket":{
       "name":"CreateTableBucket",
@@ -208,7 +208,7 @@
       "name":"GetTable",
       "http":{
         "method":"GET",
-        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}",
+        "requestUri":"/get-table",
         "responseCode":200
       },
       "input":{"shape":"GetTableRequest"},
@@ -471,7 +471,7 @@
         {"shape":"ConflictException"},
         {"shape":"BadRequestException"}
       ],
-      "documentation":"<p>Sets the encryption configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTableBucketEncryption</code> permission to use this operation.</p> <note> <p>If you choose SSE-KMS encryption you must grant the S3 Tables maintenance principal access to your KMS key. For more information, see <a href=\"AmazonS3/latest/userguide/s3-tables-kms-permissions.html\">Permissions requirements for S3 Tables SSE-KMS encryption</a> </p> </note> </dd> </dl>",
+      "documentation":"<p>Sets the encryption configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTableBucketEncryption</code> permission to use this operation.</p> <note> <p>If you choose SSE-KMS encryption you must grant the S3 Tables maintenance principal access to your KMS key. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-kms-permissions.html\">Permissions requirements for S3 Tables SSE-KMS encryption</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> </note> </dd> </dl>",
       "idempotent":true
     },
     "PutTableBucketMaintenanceConfiguration":{
@@ -1179,7 +1179,7 @@
         },
         "namespace":{
           "shape":"NamespaceName",
-          "documentation":"<p>The name of the namespace the table is associated with. <pre><code>&lt;/p&gt; </code></pre>",
+          "documentation":"<p>The name of the namespace the table is associated with. </p>",
           "location":"uri",
           "locationName":"namespace"
         },
@@ -1297,29 +1297,30 @@
     },
     "GetTableRequest":{
       "type":"structure",
-      "required":[
-        "tableBucketARN",
-        "namespace",
-        "name"
-      ],
       "members":{
         "tableBucketARN":{
           "shape":"TableBucketARN",
           "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket associated with the table.</p>",
-          "location":"uri",
+          "location":"querystring",
           "locationName":"tableBucketARN"
         },
         "namespace":{
           "shape":"NamespaceName",
           "documentation":"<p>The name of the namespace the table is associated with.</p>",
-          "location":"uri",
+          "location":"querystring",
           "locationName":"namespace"
         },
         "name":{
           "shape":"TableName",
           "documentation":"<p>The name of the table.</p>",
-          "location":"uri",
+          "location":"querystring",
           "locationName":"name"
+        },
+        "tableArn":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>",
+          "location":"querystring",
+          "locationName":"tableArn"
         }
       }
     },

@@ -33,7 +33,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Associates one or more faces with an existing UserID. Takes an array of <code>FaceIds</code>. Each <code>FaceId</code> that are present in the <code>FaceIds</code> list is associated with the provided UserID. The maximum number of total <code>FaceIds</code> per UserID is 100. </p> <p>The <code>UserMatchThreshold</code> parameter specifies the minimum user match confidence required for the face to be associated with a UserID that has at least one <code>FaceID</code> already associated. This ensures that the <code>FaceIds</code> are associated with the right UserID. The value ranges from 0-100 and default value is 75. </p> <p>If successful, an array of <code>AssociatedFace</code> objects containing the associated <code>FaceIds</code> is returned. If a given face is already associated with the given <code>UserID</code>, it will be ignored and will not be returned in the response. If a given face is already associated to a different <code>UserID</code>, isn't found in the collection, doesn’t meet the <code>UserMatchThreshold</code>, or there are already 100 faces associated with the <code>UserID</code>, it will be returned as part of an array of <code>UnsuccessfulFaceAssociations.</code> </p> <p>The <code>UserStatus</code> reflects the status of an operation which updates a UserID representation with a list of given faces. The <code>UserStatus</code> can be: </p> <ul> <li> <p>ACTIVE - All associations or disassociations of FaceID(s) for a UserID are complete.</p> </li> <li> <p>CREATED - A UserID has been created, but has no FaceID(s) associated with it.</p> </li> <li> <p>UPDATING - A UserID is being updated and there are current associations or disassociations of FaceID(s) taking place.</p> </li> </ul>"
+      "documentation":"<p>Associates one or more faces with an existing UserID. Takes an array of <code>FaceIds</code>. Each <code>FaceId</code> that are present in the <code>FaceIds</code> list is associated with the provided UserID. The number of FaceIds that can be used as input in a single request is limited to 100.</p> <p>Note that the total number of faces that can be associated with a single <code>UserID</code> is also limited to 100. Once a <code>UserID</code> has 100 faces associated with it, no additional faces can be added. If more API calls are made after the limit is reached, a <code>ServiceQuotaExceededException</code> will result.</p> <p>The <code>UserMatchThreshold</code> parameter specifies the minimum user match confidence required for the face to be associated with a UserID that has at least one <code>FaceID</code> already associated. This ensures that the <code>FaceIds</code> are associated with the right UserID. The value ranges from 0-100 and default value is 75. </p> <p>If successful, an array of <code>AssociatedFace</code> objects containing the associated <code>FaceIds</code> is returned. If a given face is already associated with the given <code>UserID</code>, it will be ignored and will not be returned in the response. If a given face is already associated to a different <code>UserID</code>, isn't found in the collection, doesn’t meet the <code>UserMatchThreshold</code>, or there are already 100 faces associated with the <code>UserID</code>, it will be returned as part of an array of <code>UnsuccessfulFaceAssociations.</code> </p> <p>The <code>UserStatus</code> reflects the status of an operation which updates a UserID representation with a list of given faces. The <code>UserStatus</code> can be: </p> <ul> <li> <p>ACTIVE - All associations or disassociations of FaceID(s) for a UserID are complete.</p> </li> <li> <p>CREATED - A UserID has been created, but has no FaceID(s) associated with it.</p> </li> <li> <p>UPDATING - A UserID is being updated and there are current associations or disassociations of FaceID(s) taking place.</p> </li> </ul>"
     },
     "CompareFaces":{
       "name":"CompareFaces",
@@ -479,7 +479,7 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"InvalidImageFormatException"}
       ],
-      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p>Detects custom labels in a supplied image by using an Amazon Rekognition Custom Labels model. </p> <p>You specify which version of a model version to use by using the <code>ProjectVersionArn</code> input parameter. </p> <p>You pass the input image as base64-encoded image bytes or as a reference to an image in an Amazon S3 bucket. If you use the AWS CLI to call Amazon Rekognition operations, passing image bytes is not supported. The image must be either a PNG or JPEG formatted file. </p> <p> For each object that the model version detects on an image, the API returns a (<code>CustomLabel</code>) object in an array (<code>CustomLabels</code>). Each <code>CustomLabel</code> object provides the label name (<code>Name</code>), the level of confidence that the image contains the object (<code>Confidence</code>), and object location information, if it exists, for the label on the image (<code>Geometry</code>). Note that for the <code>DetectCustomLabelsLabels</code> operation, <code>Polygons</code> are not returned in the <code>Geometry</code> section of the response.</p> <p>To filter labels that are returned, specify a value for <code>MinConfidence</code>. <code>DetectCustomLabelsLabels</code> only returns labels with a confidence that's higher than the specified value. The value of <code>MinConfidence</code> maps to the assumed threshold values created during training. For more information, see <i>Assumed threshold</i> in the Amazon Rekognition Custom Labels Developer Guide. Amazon Rekognition Custom Labels metrics expresses an assumed threshold as a floating point value between 0-1. The range of <code>MinConfidence</code> normalizes the threshold value to a percentage value (0-100). Confidence responses from <code>DetectCustomLabels</code> are also returned as a percentage. You can use <code>MinConfidence</code> to change the precision and recall or your model. For more information, see <i>Analyzing an image</i> in the Amazon Rekognition Custom Labels Developer Guide. </p> <p>If you don't specify a value for <code>MinConfidence</code>, <code>DetectCustomLabels</code> returns labels based on the assumed threshold of each label.</p> <p>This is a stateless API operation. That is, the operation does not persist any data.</p> <p>This operation requires permissions to perform the <code>rekognition:DetectCustomLabels</code> action. </p> <p>For more information, see <i>Analyzing an image</i> in the Amazon Rekognition Custom Labels Developer Guide. </p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p>Detects custom labels in a supplied image by using an Amazon Rekognition Custom Labels model. </p> <p>You specify which version of a model version to use by using the <code>ProjectVersionArn</code> input parameter. </p> <p>You pass the input image as base64-encoded image bytes or as a reference to an image in an Amazon S3 bucket. If you use the AWS CLI to call Amazon Rekognition operations, passing image bytes is not supported. The image must be either a PNG or JPEG formatted file. </p> <p> For each object that the model version detects on an image, the API returns a (<code>CustomLabel</code>) object in an array (<code>CustomLabels</code>). Each <code>CustomLabel</code> object provides the label name (<code>Name</code>), the level of confidence that the image contains the object (<code>Confidence</code>), and object location information, if it exists, for the label on the image (<code>Geometry</code>). </p> <p>To filter labels that are returned, specify a value for <code>MinConfidence</code>. <code>DetectCustomLabelsLabels</code> only returns labels with a confidence that's higher than the specified value. The value of <code>MinConfidence</code> maps to the assumed threshold values created during training. For more information, see <i>Assumed threshold</i> in the Amazon Rekognition Custom Labels Developer Guide. Amazon Rekognition Custom Labels metrics expresses an assumed threshold as a floating point value between 0-1. The range of <code>MinConfidence</code> normalizes the threshold value to a percentage value (0-100). Confidence responses from <code>DetectCustomLabels</code> are also returned as a percentage. You can use <code>MinConfidence</code> to change the precision and recall or your model. For more information, see <i>Analyzing an image</i> in the Amazon Rekognition Custom Labels Developer Guide. </p> <p>If you don't specify a value for <code>MinConfidence</code>, <code>DetectCustomLabels</code> returns labels based on the assumed threshold of each label.</p> <p>This is a stateless API operation. That is, the operation does not persist any data.</p> <p>This operation requires permissions to perform the <code>rekognition:DetectCustomLabels</code> action. </p> <p>For more information, see <i>Analyzing an image</i> in the Amazon Rekognition Custom Labels Developer Guide. </p>"
     },
     "DetectFaces":{
       "name":"DetectFaces",
@@ -789,7 +789,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Gets the path tracking results of a Amazon Rekognition Video analysis started by <a>StartPersonTracking</a>.</p> <p>The person path tracking operation is started by a call to <code>StartPersonTracking</code> which returns a job identifier (<code>JobId</code>). When the operation finishes, Amazon Rekognition Video publishes a completion status to the Amazon Simple Notification Service topic registered in the initial call to <code>StartPersonTracking</code>.</p> <p>To get the results of the person path tracking operation, first check that the status value published to the Amazon SNS topic is <code>SUCCEEDED</code>. If so, call <a>GetPersonTracking</a> and pass the job identifier (<code>JobId</code>) from the initial call to <code>StartPersonTracking</code>.</p> <p> <code>GetPersonTracking</code> returns an array, <code>Persons</code>, of tracked persons and the time(s) their paths were tracked in the video. </p> <note> <p> <code>GetPersonTracking</code> only returns the default facial attributes (<code>BoundingBox</code>, <code>Confidence</code>, <code>Landmarks</code>, <code>Pose</code>, and <code>Quality</code>). The other facial attributes listed in the <code>Face</code> object of the following response syntax are not returned. </p> <p>For more information, see FaceDetail in the Amazon Rekognition Developer Guide.</p> </note> <p>By default, the array is sorted by the time(s) a person's path is tracked in the video. You can sort by tracked persons by specifying <code>INDEX</code> for the <code>SortBy</code> input parameter.</p> <p>Use the <code>MaxResults</code> parameter to limit the number of items returned. If there are more results than specified in <code>MaxResults</code>, the value of <code>NextToken</code> in the operation response contains a pagination token for getting the next set of results. To get the next page of results, call <code>GetPersonTracking</code> and populate the <code>NextToken</code> request parameter with the token value returned from the previous call to <code>GetPersonTracking</code>.</p>"
+      "documentation":"<note> <p> <i>End of support notice:</i> On October 31, 2025, AWS will discontinue support for Amazon Rekognition People Pathing. After October 31, 2025, you will no longer be able to use the Rekognition People Pathing capability. For more information, visit this <a href=\"https://aws.amazon.com/blogs/machine-learning/transitioning-from-amazon-rekognition-people-pathing-exploring-other-alternatives/\">blog post</a>.</p> </note> <p>Gets the path tracking results of a Amazon Rekognition Video analysis started by <a>StartPersonTracking</a>.</p> <p>The person path tracking operation is started by a call to <code>StartPersonTracking</code> which returns a job identifier (<code>JobId</code>). When the operation finishes, Amazon Rekognition Video publishes a completion status to the Amazon Simple Notification Service topic registered in the initial call to <code>StartPersonTracking</code>.</p> <p>To get the results of the person path tracking operation, first check that the status value published to the Amazon SNS topic is <code>SUCCEEDED</code>. If so, call <a>GetPersonTracking</a> and pass the job identifier (<code>JobId</code>) from the initial call to <code>StartPersonTracking</code>.</p> <p> <code>GetPersonTracking</code> returns an array, <code>Persons</code>, of tracked persons and the time(s) their paths were tracked in the video. </p> <note> <p> <code>GetPersonTracking</code> only returns the default facial attributes (<code>BoundingBox</code>, <code>Confidence</code>, <code>Landmarks</code>, <code>Pose</code>, and <code>Quality</code>). The other facial attributes listed in the <code>Face</code> object of the following response syntax are not returned. </p> <p>For more information, see FaceDetail in the Amazon Rekognition Developer Guide.</p> </note> <p>By default, the array is sorted by the time(s) a person's path is tracked in the video. You can sort by tracked persons by specifying <code>INDEX</code> for the <code>SortBy</code> input parameter.</p> <p>Use the <code>MaxResults</code> parameter to limit the number of items returned. If there are more results than specified in <code>MaxResults</code>, the value of <code>NextToken</code> in the operation response contains a pagination token for getting the next set of results. To get the next page of results, call <code>GetPersonTracking</code> and populate the <code>NextToken</code> request parameter with the token value returned from the previous call to <code>GetPersonTracking</code>.</p>"
     },
     "GetSegmentDetection":{
       "name":"GetSegmentDetection",
@@ -1299,7 +1299,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Starts the asynchronous tracking of a person's path in a stored video.</p> <p>Amazon Rekognition Video can track the path of people in a video stored in an Amazon S3 bucket. Use <a>Video</a> to specify the bucket name and the filename of the video. <code>StartPersonTracking</code> returns a job identifier (<code>JobId</code>) which you use to get the results of the operation. When label detection is finished, Amazon Rekognition publishes a completion status to the Amazon Simple Notification Service topic that you specify in <code>NotificationChannel</code>. </p> <p>To get the results of the person detection operation, first check that the status value published to the Amazon SNS topic is <code>SUCCEEDED</code>. If so, call <a>GetPersonTracking</a> and pass the job identifier (<code>JobId</code>) from the initial call to <code>StartPersonTracking</code>.</p>",
+      "documentation":"<note> <p> <i>End of support notice:</i> On October 31, 2025, AWS will discontinue support for Amazon Rekognition People Pathing. After October 31, 2025, you will no longer be able to use the Rekognition People Pathing capability. For more information, visit this <a href=\"https://aws.amazon.com/blogs/machine-learning/transitioning-from-amazon-rekognition-people-pathing-exploring-other-alternatives/\">blog post</a>.</p> </note> <p>Starts the asynchronous tracking of a person's path in a stored video.</p> <p>Amazon Rekognition Video can track the path of people in a video stored in an Amazon S3 bucket. Use <a>Video</a> to specify the bucket name and the filename of the video. <code>StartPersonTracking</code> returns a job identifier (<code>JobId</code>) which you use to get the results of the operation. When label detection is finished, Amazon Rekognition publishes a completion status to the Amazon Simple Notification Service topic that you specify in <code>NotificationChannel</code>. </p> <p>To get the results of the person detection operation, first check that the status value published to the Amazon SNS topic is <code>SUCCEEDED</code>. If so, call <a>GetPersonTracking</a> and pass the job identifier (<code>JobId</code>) from the initial call to <code>StartPersonTracking</code>.</p>",
       "idempotent":true
     },
     "StartProjectVersion":{
@@ -1503,8 +1503,7 @@
   "shapes":{
     "AccessDeniedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You are not authorized to perform the action.</p>",
       "exception":true
     },
@@ -1831,6 +1830,50 @@
       "type":"list",
       "member":{"shape":"CelebrityRecognition"}
     },
+    "Challenge":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Version"
+      ],
+      "members":{
+        "Type":{
+          "shape":"ChallengeType",
+          "documentation":"<p>The type of the challenge being used for the Face Liveness session.</p>"
+        },
+        "Version":{
+          "shape":"Version",
+          "documentation":"<p>The version of the challenge being used for the Face Liveness session.</p>"
+        }
+      },
+      "documentation":"<p>Describes the type and version of the challenge being used for the Face Liveness session.</p>"
+    },
+    "ChallengePreference":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"ChallengeType",
+          "documentation":"<p>The types of challenges that have been selected for the Face Liveness session.</p>"
+        },
+        "Versions":{
+          "shape":"Versions",
+          "documentation":"<p>The version of the challenges that have been selected for the Face Liveness session.</p>"
+        }
+      },
+      "documentation":"<p>An ordered list of preferred challenge type and versions.</p>"
+    },
+    "ChallengePreferences":{
+      "type":"list",
+      "member":{"shape":"ChallengePreference"}
+    },
+    "ChallengeType":{
+      "type":"string",
+      "enum":[
+        "FaceMovementAndLightChallenge",
+        "FaceMovementChallenge"
+      ]
+    },
     "ClientRequestToken":{
       "type":"string",
       "max":64,
@@ -1973,8 +2016,7 @@
     },
     "ConflictException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> A User with the same Id already exists within the collection, or the update or deletion of the User caused an inconsistent state. ** </p>",
       "exception":true
     },
@@ -2249,6 +2291,10 @@
         "AuditImagesLimit":{
           "shape":"AuditImagesLimit",
           "documentation":"<p>Number of audit images to be returned back. Takes an integer between 0-4. Any integer less than 0 will return 0, any integer above 4 will return 4 images in the response. By default, it is set to 0. The limit is best effort and is based on the actual duration of the selfie-video.</p>"
+        },
+        "ChallengePreferences":{
+          "shape":"ChallengePreferences",
+          "documentation":"<p>Indicates preferred challenge types and versions for the Face Liveness session to be created.</p>"
         }
       },
       "documentation":"<p>A session settings object. It contains settings for the operation to be performed. It accepts arguments for OutputConfig and AuditImagesLimit.</p>"
@@ -2431,8 +2477,7 @@
     },
     "CreateUserResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CustomLabel":{
       "type":"structure",
@@ -2721,8 +2766,7 @@
     },
     "DeleteDatasetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteFacesRequest":{
       "type":"structure",
@@ -2777,8 +2821,7 @@
     },
     "DeleteProjectPolicyResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteProjectRequest":{
       "type":"structure",
@@ -2830,8 +2873,7 @@
     },
     "DeleteStreamProcessorResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteUserRequest":{
       "type":"structure",
@@ -2857,8 +2899,7 @@
     },
     "DeleteUserResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeCollectionRequest":{
       "type":"structure",
@@ -3483,8 +3524,7 @@
     },
     "DistributeDatasetEntriesResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DistributeDatasetMetadataList":{
       "type":"list",
@@ -3542,7 +3582,7 @@
           "documentation":"<p>Level of confidence in the determination.</p>"
         }
       },
-      "documentation":"<p>The emotions that appear to be expressed on the face, and the confidence level in the determination. The API is only making a determination of the physical appearance of a person's face. It is not a determination of the person’s internal emotional state and should not be used in such a way. For example, a person pretending to have a sad face might not be sad emotionally.</p>"
+      "documentation":"<p>The API returns a prediction of an emotion based on a person's facial expressions, along with the confidence level for the predicted emotion. It is not a determination of the person’s internal emotional state and should not be used in such a way. For example, a person pretending to have a sad face might not be sad emotionally. The API is not intended to be used, and you may not use it, in a manner that violates the EU Artificial Intelligence Act or any other applicable law.</p>"
     },
     "EmotionName":{
       "type":"string",
@@ -4211,6 +4251,10 @@
         "AuditImages":{
           "shape":"AuditImages",
           "documentation":"<p>A set of images from the Face Liveness video that can be used for audit purposes. It includes a bounding box of the face and the Base64-encoded bytes that return an image. If the CreateFaceLivenessSession request included an OutputConfig argument, the image will be uploaded to an S3Object specified in the output configuration. If no Amazon S3 bucket is defined, raw bytes are sent instead.</p>"
+        },
+        "Challenge":{
+          "shape":"Challenge",
+          "documentation":"<p>Contains information regarding the challenge type used for the Face Liveness check.</p>"
         }
       }
     },
@@ -4697,8 +4741,7 @@
     },
     "IdempotentParameterMismatchException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A <code>ClientRequestToken</code> input parameter was reused with an operation, but at least one of the other input parameters is different from the previous call to the operation.</p>",
       "exception":true
     },
@@ -4741,8 +4784,7 @@
     },
     "ImageTooLargeException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The input image size exceeds the allowed limit. If you are calling DetectProtectiveEquipment, the image size or resolution exceeds the allowed limit. For more information, see Guidelines and quotas in Amazon Rekognition in the Amazon Rekognition Developer Guide. </p>",
       "exception":true
     },
@@ -4832,51 +4874,44 @@
     },
     "InternalServerError":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Amazon Rekognition experienced a service issue. Try your call again.</p>",
       "exception":true,
       "fault":true
     },
     "InvalidImageFormatException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The provided image format is not supported. </p>",
       "exception":true
     },
     "InvalidManifestException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Indicates that a provided manifest file is empty or larger than the allowed limit.</p>",
       "exception":true
     },
     "InvalidPaginationTokenException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Pagination token in the request is not valid.</p>",
       "exception":true
     },
     "InvalidParameterException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Input parameter violated a constraint. Validate your parameter before calling the API operation again.</p>",
       "exception":true
     },
     "InvalidPolicyRevisionIdException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The supplied revision id for the project policy is invalid.</p>",
       "exception":true
     },
     "InvalidS3ObjectException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Amazon Rekognition is unable to access the S3 object specified in the request.</p>",
       "exception":true
     },
@@ -5149,8 +5184,7 @@
     },
     "LimitExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An Amazon Rekognition service limit was exceeded. For example, if you start too many jobs concurrently, subsequent calls to start operations (ex: <code>StartLabelDetection</code>) will raise a <code>LimitExceededException</code> exception (HTTP status code: 400) until the number of concurrently running jobs is below the Amazon Rekognition service limit. </p>",
       "exception":true
     },
@@ -5503,8 +5537,7 @@
     },
     "MalformedPolicyDocumentException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The format of the project policy document that you supplied to <code>PutProjectPolicy</code> is incorrect. </p>",
       "exception":true
     },
@@ -6319,8 +6352,7 @@
     },
     "ProvisionedThroughputExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The number of requests exceeded your throughput limit. If you want to increase this limit, contact Amazon Rekognition.</p>",
       "exception":true
     },
@@ -6444,8 +6476,7 @@
     },
     "ResourceAlreadyExistsException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A resource with the specified ID already exists.</p>",
       "exception":true
     },
@@ -6456,22 +6487,19 @@
     },
     "ResourceInUseException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified resource is already being used.</p>",
       "exception":true
     },
     "ResourceNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The resource specified in the request cannot be found.</p>",
       "exception":true
     },
     "ResourceNotReadyException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested resource isn't ready. For example, this exception occurs when you call <code>DetectCustomLabels</code> with a model version that isn't deployed. </p>",
       "exception":true
     },
@@ -6843,15 +6871,13 @@
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p/> <p>The size of the collection exceeds the allowed limit. For more information, see Guidelines and quotas in Amazon Rekognition in the Amazon Rekognition Developer Guide. </p>",
       "exception":true
     },
     "SessionNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Occurs when a given sessionId is not found.</p>",
       "exception":true
     },
@@ -7355,8 +7381,7 @@
     },
     "StopStreamProcessorResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StreamProcessingStartSelector":{
       "type":"structure",
@@ -7555,8 +7580,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -7683,8 +7707,7 @@
     },
     "ThrottlingException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Amazon Rekognition is temporarily unable to process the request. Try your call again.</p>",
       "exception":true,
       "fault":true
@@ -7906,8 +7929,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateDatasetEntriesRequest":{
       "type":"structure",
@@ -7928,8 +7950,7 @@
     },
     "UpdateDatasetEntriesResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateStreamProcessorRequest":{
       "type":"structure",
@@ -7959,8 +7980,7 @@
     },
     "UpdateStreamProcessorResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Url":{"type":"string"},
     "Urls":{
@@ -8038,6 +8058,12 @@
       },
       "documentation":"<p>Contains the Amazon S3 bucket location of the validation data for a model training job. </p> <p>The validation data includes error information for individual JSON Lines in the dataset. For more information, see <i>Debugging a Failed Model Training</i> in the Amazon Rekognition Custom Labels Developer Guide. </p> <p>You get the <code>ValidationData</code> object for the training dataset (<a>TrainingDataResult</a>) and the test dataset (<a>TestingDataResult</a>) by calling <a>DescribeProjectVersions</a>. </p> <p>The assets array contains a single <a>Asset</a> object. The <a>GroundTruthManifest</a> field of the Asset object contains the S3 bucket location of the validation data. </p>"
     },
+    "Version":{
+      "type":"string",
+      "max":11,
+      "min":5,
+      "pattern":"^(0|[1-9]\\d{0,2})\\.(0|[1-9]\\d{0,2})\\.(0|[1-9]\\d{0,2})$"
+    },
     "VersionDescription":{
       "type":"string",
       "max":255,
@@ -8055,6 +8081,20 @@
       "member":{"shape":"VersionName"},
       "max":10,
       "min":1
+    },
+    "Versions":{
+      "type":"structure",
+      "members":{
+        "Minimum":{
+          "shape":"Version",
+          "documentation":"<p>The desired minimum version for the challenge.</p>"
+        },
+        "Maximum":{
+          "shape":"Version",
+          "documentation":"<p>The desired maximum version for the challenge.</p>"
+        }
+      },
+      "documentation":"<p>Object specifying the acceptable range of challenge versions.</p>"
     },
     "Video":{
       "type":"structure",
@@ -8121,8 +8161,7 @@
     },
     "VideoTooLargeException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The file size or duration of the supplied media is too large. The maximum file size is 10GB. The maximum duration is 6 hours. </p>",
       "exception":true
     }

@@ -49,8 +49,8 @@ current working directory. The exception is ``AWS::ApiGateway::RestApi``;
 if you don't specify a ``BodyS3Location``, this command will not upload an artifact to S3.
 
 Before the command uploads artifacts, it checks if the artifacts are already
-present in the S3 bucket to prevent unnecessary uploads. The command uses MD5
-checksums to compare files. If the values match, the command doesn't upload the
-artifacts. Use the ``--force-upload flag`` to skip this check and always upload the
-artifacts.
+present in the S3 bucket to prevent unnecessary uploads. If the values match, the
+command doesn't upload the artifacts. Use the ``--force-upload flag`` to skip this
+check and always upload the artifacts. The command uses MD5 checksums to compare
+files by default. If MD5 is not available in the environment, a SHA256 checksum is used.
 

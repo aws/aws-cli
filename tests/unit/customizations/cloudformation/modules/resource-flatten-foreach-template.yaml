@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  SecurityRules:
+    Type: Map
+    Default:
+      WebServer:
+        name: web
+        port: 80
+        protocol: tcp
+        allowed_cidrs: [simple1, simple2]
+      Database:
+        name: db
+        port: 3306
+        protocol: tcp
+        allowed_cidrs: [simple3]
+
+Resources:
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    ForEach:
+      Fn::Flatten:
+        Source: !Ref SecurityRules
+        Transform:
+          Template:
+            Identifier: $item.name-$cidr
+            Name: $item.name
+            Port: $item.port
+            Protocol: $item.protocol
+            CidrIp: $cidr
+          Variables:
+            cidr: $item.allowed_cidrs[*]
+    Properties:
+      GroupDescription: !Sub "Security group for ${Value.Name}"
+      SecurityGroupIngress:
+        - IpProtocol: !Sub "${Value.Protocol}"
+          FromPort: !GetAtt $Value.Port
+          ToPort: !GetAtt $Value.Port
+          CidrIp: !Sub "${Value.CidrIp}"
+
+Outputs:
+  WebSecurityGroupId:
+    Description: "Web security group ID"
+    Value: !GetAtt SecurityGroup[web-simple1].GroupId
+  
+  AllSecurityGroupIds:
+    Description: "All security group IDs"
+    Value: !GetAtt SecurityGroup[*].GroupId

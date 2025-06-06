@@ -1,0 +1,69 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  # Test 1: Basic flattening of a list
+  BasicList:
+    Type: AWS::CloudFormation::Module
+    Properties:
+      FlattenedList:
+        Fn::Flatten: [1, 2, 3, 4, 5]
+  
+  # Test 2: Flattening a nested list
+  NestedList:
+    Type: AWS::CloudFormation::Module
+    Properties:
+      FlattenedNestedList:
+        Fn::Flatten:
+          Source: [[1, 2], [3, 4], [5]]
+          Pattern: "$[*][*]"
+  
+  # Test 3: Flattening with direct property access
+  DirectPropertyAccess:
+    Type: AWS::CloudFormation::Module
+    Properties:
+      FlattenedProperties:
+        Fn::Flatten:
+          Source:
+            users:
+              - name: "user1"
+                roles: ["admin", "developer"]
+              - name: "user2"
+                roles: ["reader"]
+          Pattern: "$.users[*].roles[*]"
+  
+  # Test 4: Transform with simple template
+  SimpleTransform:
+    Type: AWS::CloudFormation::Module
+    Properties:
+      TransformedItems:
+        Fn::Flatten:
+          Source:
+            - name: "service1"
+              environments: ["dev", "prod"]
+            - name: "service2"
+              environments: ["dev"]
+          Transform:
+            Template:
+              ServiceName: "$item.name"
+              Environment: "$env"
+            Variables:
+              env: "$item.environments[*]"
+  
+  # Test 5: Transform with multiple variable combinations
+  MultiVarTransform:
+    Type: AWS::CloudFormation::Module
+    Properties:
+      MultiVarItems:
+        Fn::Flatten:
+          Source:
+            - name: "app"
+              regions: ["us-east-1", "us-west-2"]
+              environments: ["dev", "prod"]
+          Transform:
+            Template:
+              AppName: "$item.name"
+              Region: "$region"
+              Environment: "$env"
+              ResourceName: "$item.name-$env-$region"
+            Variables:
+              region: "$item.regions[*]"
+              env: "$item.environments[*]"

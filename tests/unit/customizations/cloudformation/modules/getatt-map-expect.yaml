@@ -1,0 +1,19 @@
+Resources:
+  MapTestBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: default-bucket
+      Tags:
+        - Key: Environment
+          Value: Production
+Outputs:
+  BucketName:
+    Value: 
+      Fn::GetAtt:
+      - MapTestBucket
+      - BucketName
+  SimpleMapName:
+    Value: 
+      - default-bucket
+      - dev-bucket
+      - prod-bucket

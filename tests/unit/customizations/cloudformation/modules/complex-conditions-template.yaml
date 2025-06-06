@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Template to test complex nested conditions'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - test
+      - prod
+    Description: Environment type
+  
+  FeatureEnabled:
+    Type: String
+    Default: 'false'
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Description: Whether the feature is enabled
+  
+  RegionType:
+    Type: String
+    Default: us-east-1
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - eu-west-1
+    Description: Region type
+
+Modules:
+  ComplexConditions:
+    Source: ./complex-conditions-module.yaml
+    Properties:
+      Environment: !Ref Environment
+      FeatureEnabled: !Ref FeatureEnabled
+      RegionType: !Ref RegionType
+
+Outputs:
+  ConditionResults:
+    Description: Results of all conditions for debugging
+    Value: !GetAtt ComplexConditions.ConditionResults
+  
+  ResourceCreationSummary:
+    Description: Summary of which resources were created
+    Value: !GetAtt ComplexConditions.ResourceCreationSummary

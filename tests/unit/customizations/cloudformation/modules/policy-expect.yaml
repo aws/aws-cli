@@ -1,0 +1,16 @@
+Resources:
+  AccessPolicy:
+    Type: AWS::IAM::RolePolicy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Effect: ALLOW
+          Action: s3:List*
+          Resource:
+          - arn:aws:s3:::foo
+          - arn:aws:s3:::foo/*
+        - Effect: DENY
+          Action: s3:Put*
+          Resource: arn:aws:s3:::bar
+      PolicyName: my-policy
+      RoleName: foo

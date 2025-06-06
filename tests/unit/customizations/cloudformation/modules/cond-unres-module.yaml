@@ -1,0 +1,35 @@
+Parameters:
+  P:
+    Type: String
+
+Conditions:
+  IsRegionUsEast1:
+    Fn::Equals:
+    - Ref: AWS::Region
+    - us-east-1
+  IsPTrue:
+    Fn::Equals:
+      - !Ref P
+      - true
+
+Modules:
+  Sub:
+    Source: cond-unres-submodule.yaml
+    Properties:
+      P: !Ref P
+
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Condition: IsRegionUsEast1
+  A:
+    Type: A::B::C
+    Properties:
+      Name:
+        Fn::If:
+          - IsRegionUsEast1
+          - a-east
+          - a-not-east
+  C:
+    Type: D::E::F
+    Condition: IsPTrue

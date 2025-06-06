@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  Environments:
+    Type: CommaDelimitedList
+    Default: dev,test,prod
+
+Resources:
+  ServiceModuleBucket0:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-service-bucket-dev
+      Tags:
+        - Key: Environment
+          Value: dev
+  
+  ServiceModuleBucket1:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-service-bucket-test
+      Tags:
+        - Key: Environment
+          Value: test
+  
+  ServiceModuleBucket2:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-service-bucket-prod
+      Tags:
+        - Key: Environment
+          Value: prod
+
+Outputs:
+  AllBucketArns:
+    Description: "All bucket ARNs from the module"
+    Value:
+      - !GetAtt ServiceModuleBucket0.Arn
+      - !GetAtt ServiceModuleBucket1.Arn
+      - !GetAtt ServiceModuleBucket2.Arn
+  
+  DevBucketArn:
+    Description: "Dev bucket ARN from the module"
+    Value: !GetAtt ServiceModuleBucket0.Arn

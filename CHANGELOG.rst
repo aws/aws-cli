@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.27.31
+=======
+
+* api-change:``kms``: Remove unpopulated KeyMaterialId from Encrypt Response
+* api-change:``rds``: Include Global Cluster Identifier in DBCluster if the DBCluster is a Global Cluster Member.
+* api-change:``s3tables``: S3 Tables now supports getting details about a table via its table ARN.
+* api-change:``rekognition``: Adds support for defining an ordered preference list of different Rekognition Face Liveness challenge types when calling CreateFaceLivenessSession.
+* api-change:``bedrock-agent-runtime``: This release introduces the `PromptCreationConfigurations` input parameter, which includes fields to control prompt population for `InvokeAgent` or `InvokeInlineAgent` requests.
+* api-change:``route53``: Amazon Route 53 now supports the Asia Pacific (Taipei) Region (ap-east-2) for latency records, geoproximity records, and private DNS for Amazon VPCs in that region.
+
+
 2.27.30
 =======
 

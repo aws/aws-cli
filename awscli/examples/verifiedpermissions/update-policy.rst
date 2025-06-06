@@ -1,21 +1,22 @@
-**Example 1: To create a static policy**
+**To update a static policy**
 
-The following ``create-policy`` example creates a static policy with a policy scope that specifies both a principal and a resource. ::
+The following ``update-policy`` example modifies an existing static policy by updating its description and statement. ::
 
-    aws verifiedpermissions create-policy \
-        --definition file://definition.txt \
+    aws verifiedpermissions update-policy \
+        --policy-id SPEXAMPLEabcdefg111111 \
+        --definition file://updated-definition.txt \
         --policy-store-id PSEXAMPLEabcdefg111111
 
 The ``statement`` parameter takes a string representation of a JSON object. It contains embedded quotation marks (") within the outermost quotation mark pair. This requires you to convert the JSON to a string by preceding all embedded quotation marks with a backslash character ( \" ) and combining all lines into a single text line with no line breaks.
 
-Example strings can be displayed wrapped across multiple lines here for readability, but the operation requires the parameters be submitted as single line strings.
+You can display example strings wrapped across multiple lines for readability, but the operation requires the parameters to be submitted as single-line strings.
 
-Contents of file ``definition.txt``::
+Contents of file ``updated-definition.txt``::
 
     {
         "static": {
-            "description":  "Grant everyone of janeFriends UserGroup access to the vacationFolder Album",
-            "statement": "permit(principal in UserGroup::\"janeFriends\", action, resource in Album::\"vacationFolder\" );"
+            "description": "Updated policy to grant janeFriends UserGroup access to the vacationFolder Album with view action only",
+            "statement": "permit(principal in UserGroup::\"janeFriends\", action == Action::\"view\", resource in Album::\"vacationFolder\" );"
         }
     }
 
@@ -34,75 +35,6 @@ Output::
         "resource": {
             "entityId": "vacationFolder",
             "entityType": "Album"
-        }
-    }
-
-**Example 2: To create a static policy that grants access to a resource to everyone**
-
-The following ``create-policy`` example creates a static policy with a policy scope that specifies only a resource. ::
-
-    aws verifiedpermissions create-policy \
-        --definition file://definition2.txt \
-        --policy-store-id PSEXAMPLEabcdefg111111
-
-Contents of file ``definition2.txt``::
-
-    {
-        "static": {
-            "description":  "Grant everyone access to the publicFolder Album",
-            "statement": "permit(principal, action, resource in Album::\"publicFolder\");"
-        }
-    }
-
-Output::
-
-    {
-        "createdDate": "2023-06-12T20:39:44.975897+00:00",
-        "lastUpdatedDate": "2023-06-12T20:39:44.975897+00:00",
-        "policyId": "PbfR73F8oh5MMfr9uRtFDB",
-        "policyStoreId": "PSEXAMPLEabcdefg222222",
-        "policyType": "STATIC",
-        "resource": {
-            "entityId": "publicFolder",
-            "entityType": "Album"
-        }
-    }
-
-**Example 3: To create a template-linked policy that is associated with the specified template**
-
-The following ``create-policy`` example creates a template-linked policy using the specified policy template and associates the specified principal to use with the new template-linked policy. ::
-
-    aws verifiedpermissions create-policy \
-        --definition file://definition2.txt \
-        --policy-store-id PSEXAMPLEabcdefg111111
-
-Contents of definition3.txt::
-
-    {
-        "templateLinked": {
-            "policyTemplateId": "PTEXAMPLEabcdefg111111",
-            "principal": {
-                "entityType": "User",
-                "entityId": "alice"
-            }
-        }
-    }
-
-Output::
-
-    {
-        "createdDate": "2023-06-12T20:49:51.490211+00:00",
-        "lastUpdatedDate": "2023-06-12T20:49:51.490211+00:00",
-        "policyId": "TPEXAMPLEabcdefg111111",
-        "policyStoreId": "PSEXAMPLEabcdefg111111",
-        "policyType": "TEMPLATE_LINKED",
-        "principal": {
-            "entityId": "alice",
-            "entityType": "User"
-        },
-        "resource": {
-            "entityId": "VacationPhoto94.jpg",
-            "entityType": "Photo"
         }
     }
 

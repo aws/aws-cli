@@ -187,7 +187,7 @@ class Summarizer:
         return sample['memory']
 
     def _get_cpu(self, sample):
-        return sample['cpu']
+        return sample['cpu'] / 100
 
     def _add_to_sums(self, name, data_point):
         self._sums[name] += data_point

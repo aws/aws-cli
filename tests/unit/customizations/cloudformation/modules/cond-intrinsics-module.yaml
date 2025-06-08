@@ -1,0 +1,40 @@
+Parameters:
+  Foo:
+    Type: String
+
+Conditions:
+  Show0:
+    Fn::Equals:
+      - !Ref Foo
+      - bar
+  Show1:
+    Fn::And:
+      - Fn::Equals:
+        - !Ref Foo
+        - bar
+      - Condition: Show0
+  Show2:
+    Fn::Not:
+    - Fn::Or:
+        - Fn::Equals:
+          - !Ref Foo
+          - baz
+        - Fn::Equals:
+          - Fn::If:
+            - Fn::Equals:
+              - a
+              - a
+            - x
+            - y
+          - y
+
+Resources:
+  Bucket0:
+    Type: AWS::S3::Bucket
+    Condition: Show0
+  Bucket1:
+    Type: AWS::S3::Bucket
+    Condition: Show1
+  Bucket2:
+    Type: AWS::S3::Bucket
+    Condition: Show2

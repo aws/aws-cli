@@ -1,0 +1,16 @@
+Resources:
+  A:
+    Type: D::E::F
+    Properties:
+      X:
+        Fn::Join:
+        - '-'
+        - - Ref: ContentBucket
+          - Fn::GetAtt:
+            - ContentBucket
+            - Arn
+      Y: foo-xyz
+  ContentBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: foo

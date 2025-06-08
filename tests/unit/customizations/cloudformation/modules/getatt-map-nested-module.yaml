@@ -1,0 +1,14 @@
+Parameters:
+  NestedMap:
+    Type: Map
+Resources:
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Security group with rules from map"
+      SecurityGroupIngress:
+        - !GetAtt NestedMap[http].Ingress
+        - !GetAtt NestedMap[https].Ingress
+Outputs:
+  AllProtocols:
+    Value: !GetAtt NestedMap[*].Protocol

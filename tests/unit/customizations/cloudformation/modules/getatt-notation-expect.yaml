@@ -1,0 +1,50 @@
+Parameters:
+  BucketList:
+    Type: CommaDelimitedList
+    Default: A,B,C
+Outputs:
+  BucketNameA:
+    Value:
+      Fn::GetAtt:
+      - Storage0Bucket
+      - BucketName
+  BucketNameB:
+    Value:
+      Fn::GetAtt:
+      - Storage1Bucket
+      - BucketName
+  AllBucketNames:
+    Value:
+    - Fn::GetAtt:
+      - Storage0Bucket
+      - BucketName
+    - Fn::GetAtt:
+      - Storage1Bucket
+      - BucketName
+    - Fn::GetAtt:
+      - Storage2Bucket
+      - BucketName
+  AllBucketArns:
+    Value:
+    - Fn::GetAtt:
+      - Storage0Bucket
+      - Arn
+    - Fn::GetAtt:
+      - Storage1Bucket
+      - Arn
+    - Fn::GetAtt:
+      - Storage2Bucket
+      - Arn
+Resources:
+  Storage0Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: bucket-A
+  Storage1Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: bucket-B
+  Storage2Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: bucket-C

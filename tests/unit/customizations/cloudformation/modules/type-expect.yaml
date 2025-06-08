@@ -1,0 +1,16 @@
+Resources:
+  OtherResource:
+    Type: AWS::S3::Bucket
+  ContentBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: foo
+      OverrideMe: def
+      SubName: foo
+  ContentBucket2:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Fn::GetAtt:
+        - ContentBucket
+        - Something

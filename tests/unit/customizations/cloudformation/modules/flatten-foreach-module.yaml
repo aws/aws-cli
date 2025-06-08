@@ -1,0 +1,27 @@
+Parameters:
+  Name:
+    Type: String
+  ServiceName:
+    Type: String
+  ServiceType:
+    Type: String
+  InstanceNumber:
+    Type: String
+  Environment:
+    Type: String
+
+Resources:
+  Service:
+    Type: Test::Service::Instance
+    Properties:
+      Name: !Ref Name
+      ServiceName: !Ref ServiceName
+      ServiceType: !Ref ServiceType
+      InstanceNumber: !Ref InstanceNumber
+      Environment: !Ref Environment
+
+Outputs:
+  Endpoint:
+    Value: !Sub "https://${ServiceName}-${Environment}-${InstanceNumber}.example.com"
+  ServiceInfo:
+    Value: !Sub "${ServiceName} (${ServiceType}) - Instance ${InstanceNumber} in ${Environment}"

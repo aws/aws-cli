@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Template with invalid parameter values that should fail validation'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: Dev
+
+Modules:
+  NetworkModule:
+    Source: ./parameter-schema-module.yaml
+    Properties:
+      VpcConfig:
+        CidrBlock: 10.0.0.0/8  # Invalid CIDR block (mask too small)
+        EnableDnsSupport: "true"  # Should be boolean, not string
+      Subnets:
+        - CidrBlock: 10.0.0.0/24
+          AvailabilityZone: us-east-1a
+          # Missing required Type property

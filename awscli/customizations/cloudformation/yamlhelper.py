@@ -58,7 +58,7 @@ def _dict_representer(dumper, data):
     return dumper.represent_dict(data.items())
 
 
-def yaml_dump(dict_to_dump):
+def yaml_dump(dict_to_dump, default_style=None):
     """
     Dumps the dictionary as a YAML document
     :param dict_to_dump:
@@ -69,6 +69,7 @@ def yaml_dump(dict_to_dump):
         dict_to_dump,
         default_flow_style=False,
         Dumper=FlattenAliasDumper,
+        default_style=default_style
     )
 
 
@@ -79,10 +80,9 @@ def _dict_constructor(loader, node):
 
 
 class SafeLoaderWrapper(yaml.SafeLoader):
-    """Isolated safe loader to allow for customizations without global changes.
     """
-
-    pass
+    Isolated safe loader to allow for customizations without global changes.
+    """
 
 def yaml_parse(yamlstr):
     """Parse a yaml string"""
@@ -96,8 +96,17 @@ def yaml_parse(yamlstr):
         loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, 
                                _dict_constructor)
         loader.add_multi_constructor("!", intrinsics_multi_constructor)
+
         return yaml.load(yamlstr, loader)
 
+def yaml_compose(yamlstr):
+    """Returns a tree after parsing the string"""
+
+    loader = SafeLoaderWrapper
+    loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, 
+                           _dict_constructor)
+    loader.add_multi_constructor("!", intrinsics_multi_constructor)
+    return yaml.compose(yamlstr, loader)
 
 class FlattenAliasDumper(yaml.SafeDumper):
     def ignore_aliases(self, data):

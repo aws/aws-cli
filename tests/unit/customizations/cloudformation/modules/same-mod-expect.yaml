@@ -1,0 +1,29 @@
+Parameters:
+  X:
+    Type: String
+    Default: default-x
+Resources:
+  AABC:
+    Type: A::B::C
+    Properties:
+      Name:
+        Ref: X
+      SubName:
+        Fn::Sub: ${X}-name
+  ADEFHIJ:
+    Type: H::I::J
+    Properties:
+      Name:
+        Fn::Sub: ${X}-def
+      SubName:
+        Fn::Sub: ${X}-def-hij
+  BABC:
+    Type: A::B::C
+    Properties:
+      Name: x
+      SubName: x-name
+  BDEFHIJ:
+    Type: H::I::J
+    Properties:
+      Name: x-def
+      SubName: x-def-hij

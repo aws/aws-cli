@@ -1,0 +1,42 @@
+Modules:
+
+  Label:
+    Source: invoke-module.yaml
+    Properties:
+      Env: prod
+      App: myapp
+      Name: "?"
+
+  HIJProps:
+    Source: invoke-module-b.yaml
+    Properties:
+      X: x
+      Y: y
+      Z: z
+
+
+Resources:
+
+  A:
+    Type: D::E::F
+    Properties:
+      Name: 
+        Fn::Invoke:
+          - Label
+          - Name: test
+          - Id
+      Name2: !Invoke [Label, {Name: test2}, Id]
+      WithRegion: !Invoke [Label, {Name: test3, IncludeRegion: true}, Id]
+
+  B: 
+    Type: H::I::J
+    Properties: 
+      Fn::Invoke:
+        - HIJProps
+        - Y: yy
+        - Props
+
+  C:
+    Type: H::I::J
+    Properties: !Invoke [HIJProps, {Z: zz}, Props]
+

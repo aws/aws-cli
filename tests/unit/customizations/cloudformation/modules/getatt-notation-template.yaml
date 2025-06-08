@@ -1,0 +1,28 @@
+Parameters:
+  BucketList:
+    Type: CommaDelimitedList
+    Default: A,B,C
+
+Modules:
+  Storage:
+    Source: ./getatt-notation-module.yaml
+    ForEach: !Ref BucketList
+    Properties:
+      BucketName: !Sub bucket-$Identifier
+
+Outputs:
+  # Test ModuleName[Identifier].OutputName notation
+  BucketNameA:
+    Value: !GetAtt Storage[A].BucketName
+  
+  # Test ModuleName.Identifier.OutputName notation (should be equivalent)
+  BucketNameB:
+    Value: !GetAtt Storage.B.BucketName
+  
+  # Test ModuleName[*].OutputName notation
+  AllBucketNames:
+    Value: !GetAtt Storage[*].BucketName
+  
+  # Test ModuleName.*.OutputName notation (should be equivalent)
+  AllBucketArns:
+    Value: !GetAtt Storage.*.BucketArn

@@ -1,0 +1,32 @@
+Parameters:
+  List:
+    Type: CommaDelimitedList
+    Default: A,B,C
+
+Modules:
+  Content:
+    Source: ./foreach-module.yaml
+    ForEach: !Ref List
+    Properties:
+      Name: !Sub my-bucket-$Identifier
+  IndexTest:
+    Source: ./foreach-index-module.yaml
+    ForEach: !Ref List
+    Properties:
+      ContentRef: !GetAtt Content[$Index].Arn
+      NestedRef:
+        Obj: !GetAtt Content[$Index].Arn
+  ListTest:
+    Source: ./foreach-list-module.yaml
+    Properties:
+      ListRef: !GetAtt Content[*].Arn
+    Overrides:
+      Bar:
+        Properties:
+          ListOverride: !GetAtt Content[*].Arn
+
+Outputs:
+  TestSubArray:
+    Value: !Sub ${Content[0].Arn}
+  TestUsingKey:
+    Value: !Sub ${Content[A].Arn}

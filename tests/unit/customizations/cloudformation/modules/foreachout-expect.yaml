@@ -1,0 +1,45 @@
+Resources:
+  ListTest2Bar:
+    Type: A::B::C
+    Properties:
+      Refs:
+      - Arn3
+      - Arn4
+      ListOverride: aaa
+      OutputOverride:
+      - Fn::GetAtt:
+        - OutputTestB0Bucket
+        - Arn
+      - Fn::GetAtt:
+        - OutputTestB1Bucket
+        - Arn
+  ListTestBar:
+    Type: A::B::C
+    Properties:
+      Refs:
+      - Arn1
+      - Arn2
+      ListOverride: aaa
+      OutputOverride:
+      - Fn::GetAtt:
+        - OutputTestB0Bucket
+        - Arn
+      - Fn::GetAtt:
+        - OutputTestB1Bucket
+        - Arn
+  OutputTest2B0Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: b-x
+  OutputTest2B1Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: b-y
+  OutputTestB0Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: b-x
+  OutputTestB1Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: b-y

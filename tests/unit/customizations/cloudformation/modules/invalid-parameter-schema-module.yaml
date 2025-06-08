@@ -1,0 +1,31 @@
+Parameters:
+  UserConfig:
+    Type: Object
+    Description: "Configuration for user settings"
+    Default: {}
+
+ParameterSchema:
+  UserConfig:
+    Type: Object
+    Required: ["Username"]
+    Properties:
+      Username:
+        Type: String
+        MinLength: 3
+        MaxLength: 64
+      Email:
+        Type: String
+        Pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+      Settings:
+        Type: Object
+        Properties:
+          Theme:
+            Type: String
+            Default: "Light"
+            Enum: ["Light", "Dark", "System"]
+
+Resources:
+  User:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Sub "${UserConfig.Username}"

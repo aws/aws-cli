@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  Environments:
+    Type: CommaDelimitedList
+    Default: dev,test,prod
+
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    ForEach: !Ref Environments
+    Properties:
+      BucketName: !Sub "my-bucket-${Identifier}"
+      Tags:
+        - Key: Environment
+          Value: !Sub ${Identifier}
+
+Outputs:
+  BucketArns:
+    Description: "All bucket ARNs"
+    Value: !GetAtt Bucket[*].Arn
+  
+  DevBucketArn:
+    Description: "Dev bucket ARN"
+    Value: !GetAtt Bucket[dev].Arn

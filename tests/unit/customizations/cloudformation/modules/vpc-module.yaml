@@ -1,0 +1,60 @@
+Parameters:
+
+  CidrBlock:
+    Type: String
+
+  PrivateCidrBlocks:
+    Type: CommaDelimitedList
+
+  PublicCidrBlocks:
+    Type: CommaDelimitedList
+
+Modules:
+  PublicSubnet:
+    ForEach: !Ref PublicCidrBlocks
+    Source: ./subnet-module.yaml
+    Properties:
+      SubnetCidrBlock: $Identifier
+      AZSelection: $Index
+      VPCId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+      IsPublic: true
+    Overrides:
+      DefaultRoute:
+        DependsOn: GatewayAttachment
+
+  PrivateSubnet:
+    ForEach: !Ref PrivateCidrBlocks
+    Source: ./subnet-module.yaml
+    Properties:
+      SubnetCidrBlock: $Identifier
+      AZSelection: $Index
+      VPCId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+      IsPublic: false
+    Overrides:
+      DefaultRoute:
+        DependsOn: GatewayAttachment
+
+Resources:
+
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref CidrBlock 
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+  GatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
+
+
+

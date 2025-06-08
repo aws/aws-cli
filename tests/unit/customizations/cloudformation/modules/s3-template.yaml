@@ -1,0 +1,19 @@
+Packages:
+  abc:
+    Source: s3://ezbeard-awscli/modules/package.zip
+Constants:
+  ModuleSource: s3://ezbeard-awscli/modules
+Modules:
+  Content:
+    Source: !Sub ${Const::ModuleSource}/basic-module.yaml  
+    Properties:
+      Name: foo
+    Overrides:
+      Bucket:
+        Properties:
+          OverrideMe: def
+  TestPackage:
+    Source: $abc/zip-module.yaml
+Resources:
+  OtherResource:
+    Type: AWS::S3::Bucket

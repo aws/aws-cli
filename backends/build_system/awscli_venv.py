@@ -64,13 +64,16 @@ class AwsCliVenv:
 
     def _copy_parent_packages(self):
         for site_package in site.getsitepackages():
+            print(f"[DEBUG] Copying from: {site_package} → {self._site_packages()}")
             self._utils.copy_directory_contents_into(
                 site_package, self._site_packages()
             )
         parent_scripts = pathlib.Path(sys.executable).parents[0]
         for script in self._PARENT_SCRIPTS_TO_COPY:
             source = os.path.join(parent_scripts, script)
+            dest = os.path.join(self.bin_dir, script)
             if self._utils.path_exists(source):
+                print(f"[DEBUG] Copying script: {source} → {dest}")
                 self._utils.copy_file(
                     source, os.path.join(self.bin_dir, script)
                 )

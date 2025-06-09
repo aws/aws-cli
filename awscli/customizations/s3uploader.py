@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import hashlib
 import logging
 import threading
 import os
@@ -19,12 +18,23 @@ import sys
 
 import botocore
 import botocore.exceptions
+from botocore.compat import get_md5
 from s3transfer.manager import TransferManager
 from s3transfer.subscribers import BaseSubscriber
 
 from awscli.compat import collections_abc
 
 LOG = logging.getLogger(__name__)
+
+
+def _get_checksum():
+    hashlib_params = {"usedforsecurity": False}
+    try:
+        checksum = get_md5(**hashlib_params)
+    except botocore.exceptions.MD5UnavailableError:
+        import hashlib
+        checksum = hashlib.sha256(**hashlib_params)
+    return checksum
 
 
 class NoSuchBucketError(Exception):
@@ -128,7 +138,7 @@ class S3Uploader(object):
 
     def upload_with_dedup(self, file_name, extension=None):
         """
-        Makes and returns name of the S3 object based on the file's MD5 sum
+        Makes and returns name of the S3 object based on the file's checksum
 
         :param file_name: file to upload
         :param extension: String of file extension to append to the object
@@ -140,8 +150,8 @@ class S3Uploader(object):
         # and re-upload only if necessary. So the template points to same file
         # in multiple places, this will upload only once
 
-        filemd5 = self.file_checksum(file_name)
-        remote_path = filemd5
+        file_checksum = self.file_checksum(file_name)
+        remote_path = file_checksum
         if extension:
             remote_path = remote_path + "." + extension
 
@@ -172,7 +182,7 @@ class S3Uploader(object):
     def file_checksum(self, file_name):
 
         with open(file_name, "rb") as file_handle:
-            md5 = hashlib.md5()
+            checksum = _get_checksum()
             # Read file in chunks of 4096 bytes
             block_size = 4096
 
@@ -182,13 +192,13 @@ class S3Uploader(object):
 
             buf = file_handle.read(block_size)
             while len(buf) > 0:
-                md5.update(buf)
+                checksum.update(buf)
                 buf = file_handle.read(block_size)
 
             # Restore file cursor's position
             file_handle.seek(curpos)
 
-            return md5.hexdigest()
+            return checksum.hexdigest()
 
     def to_path_style_s3_url(self, key, version=None):
         """

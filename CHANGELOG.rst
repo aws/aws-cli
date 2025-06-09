@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.27.32
+=======
+
+* enhancement:``cloudformation``: High-level Cloudformation commands such as ``deploy`` and ``package`` will now fallback to SHA256 for checksumming if MD5 isn't present on the host
+* api-change:``ec2``: Release to support Elastic VMware Service (Amazon EVS) Subnet and Amazon EVS Network Interface Types.
+* api-change:``customer-profiles``: This release introduces capability of Profile Explorer, using correct ingestion timestamp & using historical data for computing calculated attributes, and new standard objects for T&H as part of Amazon Connect Customer Profiles service.
+* api-change:``efs``: Added support for Internet Protocol Version 6 (IPv6) on EFS Service APIs and mount targets.
+* api-change:``workspaces-thin-client``: Add ConflictException to UpdateEnvironment API
+* api-change:``ce``: Support dual-stack endpoints for ce api
+* api-change:``marketplace-catalog``: The ListEntities API now supports the EntityID, LastModifiedDate, ProductTitle, and Visibility filters for machine learning products. You can also sort using all of those filters.
+* api-change:``appsync``: Deprecate `atRestEncryptionEnabled` and `transitEncryptionEnabled` attributes in `CreateApiCache` action. Encryption is always enabled for new caches.
+
+
 2.27.31
 =======
 

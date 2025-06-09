@@ -348,6 +348,27 @@ class TestS3Uploader(unittest.TestCase):
         finally:
             shutil.rmtree(tempdir)
 
+    @mock.patch("awscli.customizations.s3uploader.get_md5")
+    def test_file_checksum_fips_fallback(self, get_md5_mock):
+        num_chars = 4096*5
+        data = ''.join(random.choice(string.ascii_uppercase)
+                       for _ in range(num_chars)).encode('utf-8')
+        checksum = hashlib.sha256(usedforsecurity=False)
+        checksum.update(data)
+        expected_checksum = checksum.hexdigest()
+
+        tempdir = tempfile.mkdtemp()
+        get_md5_mock.side_effect = botocore.exceptions.MD5UnavailableError()
+        try:
+            filename = os.path.join(tempdir, 'tempfile')
+            with open(filename, 'wb') as f:
+                f.write(data)
+
+            actual_checksum = self.s3uploader.file_checksum(filename)
+            self.assertEqual(expected_checksum, actual_checksum)
+        finally:
+            shutil.rmtree(tempdir)
+
     def test_make_url(self):
         path = "Hello/how/are/you"
         expected = f"s3://{self.bucket_name}/{path}"

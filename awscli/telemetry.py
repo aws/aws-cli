@@ -13,11 +13,11 @@
 import hashlib
 import io
 import os
-import socket
 import sqlite3
 import sys
 import threading
 import time
+import uuid
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
@@ -49,6 +49,17 @@ class CLISessionDatabaseConnection:
           timestamp INTEGER NOT NULL
         )
     """
+    _CREATE_HOST_ID_TABLE = """
+        CREATE TABLE IF NOT EXISTS host_id (
+          key INTEGER PRIMARY KEY,
+          id TEXT UNIQUE NOT NULL
+        )
+    """
+    _INSERT_HOST_ID = """
+        INSERT OR IGNORE INTO host_id (
+            key, id
+        ) VALUES (?, ?)
+    """
     _ENABLE_WAL = 'PRAGMA journal_mode=WAL'
 
     def __init__(self, connection=None):
@@ -69,11 +80,27 @@ class CLISessionDatabaseConnection:
             return sqlite3.Cursor(self._connection)
 
     def _ensure_database_setup(self):
-        self._create_record_table()
+        self._create_session_table()
+        self._create_host_id_table()
+        self._ensure_host_id()
         self._try_to_enable_wal()
 
-    def _create_record_table(self):
+    def _create_session_table(self):
         self.execute(self._CREATE_TABLE)
+
+    def _create_host_id_table(self):
+        self.execute(self._CREATE_HOST_ID_TABLE)
+
+    def _ensure_host_id(self):
+        self.execute(
+            self._INSERT_HOST_ID,
+            # Hardcode `0` as primary key to ensure
+            # there's only ever 1 host id in the table.
+            (
+                0,
+                str(uuid.uuid4()),
+            ),
+        )
 
     def _try_to_enable_wal(self):
         try:
@@ -111,6 +138,11 @@ class CLISessionDatabaseReader:
         FROM session
         WHERE key = ?
     """
+    _READ_HOST_ID = """
+        SELECT id
+        FROM host_id
+        WHERE key = 0
+    """
 
     def __init__(self, connection):
         self._connection = connection
@@ -121,6 +153,10 @@ class CLISessionDatabaseReader:
         if result is None:
             return
         return CLISessionData(*result)
+
+    def read_host_id(self):
+        cursor = self._connection.execute(self._READ_HOST_ID)
+        return cursor.fetchone()[0]
 
 
 class CLISessionDatabaseSweeper:
@@ -142,11 +178,11 @@ class CLISessionDatabaseSweeper:
 
 
 class CLISessionGenerator:
-    def generate_session_id(self, hostname, tty, timestamp):
-        return self._generate_md5_hash(hostname, tty, timestamp)
+    def generate_session_id(self, host_id, tty, timestamp):
+        return self._generate_md5_hash(host_id, tty, timestamp)
 
-    def generate_cache_key(self, hostname, tty):
-        return self._generate_md5_hash(hostname, tty)
+    def generate_cache_key(self, host_id, tty):
+        return self._generate_md5_hash(host_id, tty)
 
     def _generate_md5_hash(self, *args):
         str_to_hash = ""
@@ -167,12 +203,12 @@ class CLISessionOrchestrator:
 
     @cached_property
     def cache_key(self):
-        return self._generator.generate_cache_key(self._hostname, self._tty)
+        return self._generator.generate_cache_key(self._host_id, self._tty)
 
     @cached_property
     def _session_id(self):
         return self._generator.generate_session_id(
-            self._hostname, self._tty, self._timestamp
+            self._host_id, self._tty, self._timestamp
         )
 
     @cached_property
@@ -206,12 +242,12 @@ class CLISessionOrchestrator:
         except (OSError, io.UnsupportedOperation):
             # Standard input was redirected to a pseudofile.
             # This can happen when running tests on IDEs or
-            # running scripts with redirected input.
+            # running scripts with redirected input, etc.
             return
 
     @cached_property
-    def _hostname(self):
-        return socket.gethostname()
+    def _host_id(self):
+        return self._reader.read_host_id()
 
     @cached_property
     def _timestamp(self):

@@ -47,6 +47,14 @@ def session_conn():
             ) VALUES ('first_key', 'first_id', 5555555555)
         """
     )
+    # Overwrite host id with deterministic value for testing.
+    conn.execute(
+        """
+            INSERT OR REPLACE INTO host_id (
+                key, id
+            ) VALUES (0, 'my-hostname')
+        """
+    )
     return conn
 
 
@@ -93,11 +101,10 @@ class TestCLISessionDatabaseConnection:
             """
                 SELECT name
                 FROM sqlite_master
-                WHERE type='table'
-                AND name='session';
+                WHERE type='table';
             """
         )
-        assert cursor.fetchall() == [('session',)]
+        assert cursor.fetchall() == [('session',), ('host_id',)]
 
     def test_timeout_does_not_raise_exception(self, session_conn):
         class FakeConnection(sqlite3.Connection):
@@ -144,6 +151,10 @@ class TestCLISessionDatabaseReader:
         session_data = session_reader.read('bad_key')
         assert session_data is None
 
+    def test_read_host_id(self, session_reader):
+        host_id = session_reader.read_host_id()
+        assert host_id == 'my-hostname'
+
 
 class TestCLISessionDatabaseSweeper:
     def test_sweep(self, expired_data, session_reader, session_sweeper):
@@ -184,13 +195,11 @@ class TestCLISessionGenerator:
 @skip_if_windows
 @patch('sys.stdin')
 @patch('time.time', return_value=5555555555)
-@patch('socket.gethostname', return_value='my-hostname')
 @patch('os.ttyname', return_value='my-tty')
 class TestCLISessionOrchestrator:
     def test_session_id_gets_cached(
         self,
         patched_tty_name,
-        patched_hostname,
         patched_time,
         patched_stdin,
         session_sweeper,
@@ -212,7 +221,6 @@ class TestCLISessionOrchestrator:
     def test_cached_session_id_updated_if_expired(
         self,
         patched_tty_name,
-        patched_hostname,
         patched_time,
         patched_stdin,
         session_sweeper,
@@ -249,7 +257,6 @@ class TestCLISessionOrchestrator:
     def test_cached_session_id_not_updated_if_valid(
         self,
         patched_tty_name,
-        patched_hostname,
         patched_time,
         patched_stdin,
         session_sweeper,

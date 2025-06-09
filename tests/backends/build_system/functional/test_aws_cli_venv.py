@@ -142,7 +142,7 @@ class TestAwsCliVenv:
 
         prior_site_dir = set(os.listdir(site_package_path))
         cli_venv.bootstrap(
-            ArtifactType.SYSTEM_SANDBOX.value, download_deps=False
+            ArtifactType.SYSTEM_SANDBOX.value, download_deps=True
         )
         post_site_dir = set(os.listdir(site_package_path))
 
@@ -181,7 +181,7 @@ class TestAwsCliVenv:
 
         prior_site_dir = set(os.listdir(site_package_path))
         cli_venv.bootstrap(
-            ArtifactType.SYSTEM_SANDBOX.value, download_deps=False
+            ArtifactType.SYSTEM_SANDBOX.value, download_deps=True
         )
         post_site_dir = set(os.listdir(site_package_path))
 

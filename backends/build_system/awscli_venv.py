@@ -50,6 +50,7 @@ class AwsCliVenv:
     def bootstrap(
         self, artifact_type: ArtifactType, download_deps: bool = False
     ):
+        print(f"[BOOTSTRAP] Starting bootstrap. download_deps={download_deps}, artifact_type={artifact_type}")
         if download_deps:
             self._install_requirements(DOWNLOAD_DEPS_BOOTSTRAP_LOCK)
             if artifact_type == ArtifactType.PORTABLE_EXE.value:
@@ -57,6 +58,7 @@ class AwsCliVenv:
             else:
                 self._install_requirements(SYSTEM_SANDBOX_REQUIREMENTS_LOCK)
         else:
+            print("[WARN] download_deps=False: copying system packages — may be broken on Python >= 3.13.4")
             self._copy_parent_packages()
         self._install_awscli()
         self._update_metadata()
@@ -64,13 +66,16 @@ class AwsCliVenv:
 
     def _copy_parent_packages(self):
         for site_package in site.getsitepackages():
+            print(f"[DEBUG] Copying from: {site_package} → {self._site_packages()}")
             self._utils.copy_directory_contents_into(
                 site_package, self._site_packages()
             )
         parent_scripts = pathlib.Path(sys.executable).parents[0]
         for script in self._PARENT_SCRIPTS_TO_COPY:
             source = os.path.join(parent_scripts, script)
+            dest = os.path.join(self.bin_dir, script)
             if self._utils.path_exists(source):
+                print(f"[DEBUG] Copying script: {source} → {dest}")
                 self._utils.copy_file(
                     source, os.path.join(self.bin_dir, script)
                 )

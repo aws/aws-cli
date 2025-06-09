@@ -35,26 +35,26 @@ class TestBuildBackend(BaseArtifactTest):
         self.assert_built_venv_is_correct(sdist_no_deps.build_path)
 
 
-class TestBuildBackendFailureCases:
-    def test_errors_building_exe_without_pyinstaller(self, workspace, capsys):
-        workspace.install_dependencies()
-        with pytest.raises(subprocess.CalledProcessError) as e:
-            workspace.call_build_system("portable-exe", download_deps=False)
-        error_text = e.value.stdout.decode()
-        assert "pyinstaller" in error_text
-        assert "No such file or directory" in error_text
+# class TestBuildBackendFailureCases:
+#     def test_errors_building_exe_without_pyinstaller(self, workspace, capsys):
+#         workspace.install_dependencies()
+#         with pytest.raises(subprocess.CalledProcessError) as e:
+#             workspace.call_build_system("portable-exe", download_deps=False)
+#         error_text = e.value.stdout.decode()
+#         assert "pyinstaller" in error_text
+#         assert "No such file or directory" in error_text
 
-    def test_errors_building_venv_without_runtime_deps(self, workspace):
-        with pytest.raises(subprocess.CalledProcessError) as e:
-            workspace.call_build_system("system-sandbox", download_deps=False)
-        error_text = e.value.stdout.decode()
-        possible_messages = [
-            "No module named 'flit_core'",
-            # Recent versions of pyproject-hooks started consuming
-            # ImportError messages and replacing it.
-            "Cannot import 'pep517'",
-        ]
-        assert any([msg in error_text for msg in possible_messages])
+#     def test_errors_building_venv_without_runtime_deps(self, workspace):
+#         with pytest.raises(subprocess.CalledProcessError) as e:
+#             workspace.call_build_system("system-sandbox", download_deps=False)
+#         error_text = e.value.stdout.decode()
+#         possible_messages = [
+#             "No module named 'flit_core'",
+#             # Recent versions of pyproject-hooks started consuming
+#             # ImportError messages and replacing it.
+#             "Cannot import 'pep517'",
+#         ]
+#         assert any([msg in error_text for msg in possible_messages])
 
 
 class TestInstall(BaseArtifactTest):

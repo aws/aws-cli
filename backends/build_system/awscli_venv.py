@@ -50,6 +50,7 @@ class AwsCliVenv:
     def bootstrap(
         self, artifact_type: ArtifactType, download_deps: bool = False
     ):
+        print(f"[BOOTSTRAP] Starting bootstrap. download_deps={download_deps}, artifact_type={artifact_type}")
         if download_deps:
             self._install_requirements(DOWNLOAD_DEPS_BOOTSTRAP_LOCK)
             if artifact_type == ArtifactType.PORTABLE_EXE.value:
@@ -57,6 +58,7 @@ class AwsCliVenv:
             else:
                 self._install_requirements(SYSTEM_SANDBOX_REQUIREMENTS_LOCK)
         else:
+            print("[WARN] download_deps=False: copying system packages — may be broken on Python >= 3.13.4")
             self._copy_parent_packages()
         self._install_awscli()
         self._update_metadata()

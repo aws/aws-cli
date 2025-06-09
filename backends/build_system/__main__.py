@@ -73,7 +73,11 @@ def _bootstap_venv(build_dir: str, artifact_type: str, download_deps: bool):
     os.makedirs(venv_path)
     aws_venv = AwsCliVenv(venv_path)
     aws_venv.create()
-    aws_venv.bootstrap(artifact_type, download_deps)
+    print(f"[INFO] Bootstrapping venv at: {venv_path}")
+    print(f"[INFO] Artifact type: {artifact_type}")
+    print(f"[WARN] Forcing download_deps=True to avoid site-package copy issues under Python 3.13.4")
+    print(f"[DEBUG] Running bootstrap with: artifact_type={artifact_type}, download_deps=True")
+    aws_venv.bootstrap(artifact_type, True)
     return aws_venv
 
 

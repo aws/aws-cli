@@ -90,6 +90,9 @@ def _get_all_doc_examples():
     for root, _, filenames in os.walk(EXAMPLES_DIR):
         for filename in filenames:
             full_path = os.path.join(root, filename)
+            if filename.startswith('.'):
+                #Ignore hidden files as it starts with "."
+                continue
             if not filename.endswith('.rst'):
                 other_doc_examples.append(full_path)
                 continue

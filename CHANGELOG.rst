@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.40.33
+=======
+
+* api-change:``gameliftstreams``: Documentation updates for Amazon GameLift Streams to address formatting errors, correct resource ID examples, and update links to other guides
+
+
 1.40.32
 =======
 

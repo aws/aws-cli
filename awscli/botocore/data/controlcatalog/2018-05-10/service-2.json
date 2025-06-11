@@ -48,6 +48,23 @@
       ],
       "documentation":"<p>Returns a paginated list of common controls from the Amazon Web Services Control Catalog.</p> <p>You can apply an optional filter to see common controls that have a specific objective. If you don’t provide a filter, the operation returns all common controls. </p>"
     },
+    "ListControlMappings":{
+      "name":"ListControlMappings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-control-mappings",
+        "responseCode":200
+      },
+      "input":{"shape":"ListControlMappingsRequest"},
+      "output":{"shape":"ListControlMappingsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a paginated list of control mappings from the Control Catalog. Control mappings show relationships between controls and other entities, such as common controls or compliance frameworks.</p>"
+    },
     "ListControls":{
       "name":"ListControls",
       "http":{
@@ -63,7 +80,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a paginated list of all available controls in the Amazon Web Services Control Catalog library. Allows you to discover available controls. The list of controls is given as structures of type <i>controlSummary</i>. The ARN is returned in the global <i>controlcatalog</i> format, as shown in the examples.</p>"
+      "documentation":"<p>Returns a paginated list of all available controls in the Control Catalog library. Allows you to discover available controls. The list of controls is given as structures of type <i>controlSummary</i>. The ARN is returned in the global <i>controlcatalog</i> format, as shown in the examples.</p>"
     },
     "ListDomains":{
       "name":"ListDomains",
@@ -80,7 +97,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a paginated list of domains from the Amazon Web Services Control Catalog.</p>"
+      "documentation":"<p>Returns a paginated list of domains from the Control Catalog.</p>"
     },
     "ListObjectives":{
       "name":"ListObjectives",
@@ -97,7 +114,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a paginated list of objectives from the Amazon Web Services Control Catalog.</p> <p>You can apply an optional filter to see the objectives that belong to a specific domain. If you don’t provide a filter, the operation returns all objectives. </p>"
+      "documentation":"<p>Returns a paginated list of objectives from the Control Catalog.</p> <p>You can apply an optional filter to see the objectives that belong to a specific domain. If you don’t provide a filter, the operation returns all objectives. </p>"
     }
   },
   "shapes":{
@@ -147,15 +164,32 @@
       "min":41,
       "pattern":"arn:(aws(?:[-a-z]*)?):controlcatalog:::common-control/[0-9a-z]+"
     },
+    "CommonControlArnFilterList":{
+      "type":"list",
+      "member":{"shape":"CommonControlArn"},
+      "max":1,
+      "min":1
+    },
     "CommonControlFilter":{
       "type":"structure",
       "members":{
         "Objectives":{
           "shape":"ObjectiveResourceFilterList",
-          "documentation":"<p>The objective that's used as filter criteria.</p> <p>You can use this parameter to specify one objective ARN at a time. Passing multiple ARNs in the <code>CommonControlFilter</code> isn’t currently supported.</p>"
+          "documentation":"<p>The objective that's used as filter criteria.</p> <p>You can use this parameter to specify one objective ARN at a time. Passing multiple ARNs in the <code>CommonControlFilter</code> isn’t supported.</p>"
         }
       },
       "documentation":"<p>An optional filter that narrows the results to a specific objective.</p>"
+    },
+    "CommonControlMappingDetails":{
+      "type":"structure",
+      "required":["CommonControlArn"],
+      "members":{
+        "CommonControlArn":{
+          "shape":"CommonControlArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the common control in the mapping.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains details about a common control mapping. In particular, it returns the Amazon Resource Name (ARN) of the common control.</p>"
     },
     "CommonControlSummary":{
       "type":"structure",
@@ -204,11 +238,25 @@
       "type":"list",
       "member":{"shape":"CommonControlSummary"}
     },
+    "ControlAlias":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9](?:[a-zA-Z0-9_.-]{0,254}[a-zA-Z0-9])"
+    },
+    "ControlAliases":{
+      "type":"list",
+      "member":{"shape":"ControlAlias"}
+    },
     "ControlArn":{
       "type":"string",
       "max":2048,
       "min":34,
       "pattern":"arn:(aws(?:[-a-z]*)?):(controlcatalog|controltower):[a-zA-Z0-9-]*::control/[0-9a-zA-Z_\\-]+"
+    },
+    "ControlArnFilterList":{
+      "type":"list",
+      "member":{"shape":"ControlArn"},
+      "max":1,
+      "min":1
     },
     "ControlBehavior":{
       "type":"string",
@@ -217,6 +265,61 @@
         "PROACTIVE",
         "DETECTIVE"
       ]
+    },
+    "ControlFilter":{
+      "type":"structure",
+      "members":{
+        "Implementations":{
+          "shape":"ImplementationFilter",
+          "documentation":"<p>A filter that narrows the results to controls with specific implementation types or identifiers. This field allows you to find controls that are implemented by specific Amazon Web Services services or with specific service identifiers.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines filtering criteria for the ListControls operation. You can use this filter to narrow down the list of controls based on their implementation details.</p>"
+    },
+    "ControlMapping":{
+      "type":"structure",
+      "required":[
+        "ControlArn",
+        "MappingType",
+        "Mapping"
+      ],
+      "members":{
+        "ControlArn":{
+          "shape":"ControlArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the control in the mapping.</p>"
+        },
+        "MappingType":{
+          "shape":"MappingType",
+          "documentation":"<p>The type of mapping relationship between the control and other entities. Indicates whether the mapping is to a framework or common control.</p>"
+        },
+        "Mapping":{
+          "shape":"Mapping",
+          "documentation":"<p>The details of the mapping relationship, containing either framework or common control information.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about a control mapping, including the control ARN, mapping type, and mapping details.</p>"
+    },
+    "ControlMappingFilter":{
+      "type":"structure",
+      "members":{
+        "ControlArns":{
+          "shape":"ControlArnFilterList",
+          "documentation":"<p>A list of control ARNs to filter the mappings. When specified, only mappings associated with these controls are returned.</p>"
+        },
+        "CommonControlArns":{
+          "shape":"CommonControlArnFilterList",
+          "documentation":"<p>A list of common control ARNs to filter the mappings. When specified, only mappings associated with these common controls are returned.</p>"
+        },
+        "MappingTypes":{
+          "shape":"MappingTypeFilterList",
+          "documentation":"<p>A list of mapping types to filter the mappings. When specified, only mappings of these types are returned.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines filtering criteria for the ListControlMappings operation. You can use this filter to narrow down the list of control mappings based on control ARNs, common control ARNs, or mapping types.</p>"
+    },
+    "ControlMappings":{
+      "type":"list",
+      "member":{"shape":"ControlMapping"}
     },
     "ControlParameter":{
       "type":"structure",
@@ -261,6 +364,10 @@
           "shape":"ControlArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the control.</p>"
         },
+        "Aliases":{
+          "shape":"ControlAliases",
+          "documentation":"<p>A list of alternative identifiers for the control. These are human-readable designators, such as <code>SH.S3.1</code>. Several aliases can refer to the same control across different Amazon Web Services services or compliance frameworks.</p>"
+        },
         "Name":{
           "shape":"String",
           "documentation":"<p>The display name of the control.</p>"
@@ -284,6 +391,10 @@
         "CreateTime":{
           "shape":"Timestamp",
           "documentation":"<p>A timestamp that notes the time when the control was released (start of its life) as a governance capability in Amazon Web Services.</p>"
+        },
+        "GovernedResources":{
+          "shape":"GovernedResources",
+          "documentation":"<p>A list of Amazon Web Services resource types that are governed by this control. This information helps you understand which controls can govern certain types of resources, and conversely, which resources are affected when the control is implemented. The resources are represented as Amazon Web Services CloudFormation resource types. If <code>GovernedResources</code> cannot be represented by available CloudFormation resource types, it’s returned as an empty list.</p>"
         }
       },
       "documentation":"<p>Overview of information about a control.</p>"
@@ -353,6 +464,34 @@
       "type":"list",
       "member":{"shape":"DomainSummary"}
     },
+    "FrameworkItem":{
+      "type":"string",
+      "max":250,
+      "min":3
+    },
+    "FrameworkMappingDetails":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Item"
+      ],
+      "members":{
+        "Name":{
+          "shape":"FrameworkName",
+          "documentation":"<p>The name of the compliance framework that the control maps to.</p>"
+        },
+        "Item":{
+          "shape":"FrameworkItem",
+          "documentation":"<p>The specific item or requirement within the framework that the control maps to.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains details about a framework mapping, including the framework name and specific item within the framework that the control maps to.</p>"
+    },
+    "FrameworkName":{
+      "type":"string",
+      "max":250,
+      "min":3
+    },
     "GetControlRequest":{
       "type":"structure",
       "required":["ControlArn"],
@@ -376,6 +515,10 @@
         "Arn":{
           "shape":"ControlArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the control.</p>"
+        },
+        "Aliases":{
+          "shape":"ControlAliases",
+          "documentation":"<p>A list of alternative identifiers for the control. These are human-readable designators, such as <code>SH.S3.1</code>. Several aliases can refer to the same control across different Amazon Web Services services or compliance frameworks.</p>"
         },
         "Name":{
           "shape":"String",
@@ -405,8 +548,20 @@
         "CreateTime":{
           "shape":"Timestamp",
           "documentation":"<p>A timestamp that notes the time when the control was released (start of its life) as a governance capability in Amazon Web Services.</p>"
+        },
+        "GovernedResources":{
+          "shape":"GovernedResources",
+          "documentation":"<p>A list of Amazon Web Services resource types that are governed by this control. This information helps you understand which controls can govern certain types of resources, and conversely, which resources are affected when the control is implemented. The resources are represented as Amazon Web Services CloudFormation resource types. If <code>GovernedResources</code> cannot be represented by available CloudFormation resource types, it’s returned as an empty list.</p>"
         }
       }
+    },
+    "GovernedResource":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9]{2,64}::[A-Za-z0-9]{2,64}::[A-Za-z0-9]{2,64}"
+    },
+    "GovernedResources":{
+      "type":"list",
+      "member":{"shape":"GovernedResource"}
     },
     "ImplementationDetails":{
       "type":"structure",
@@ -423,11 +578,31 @@
       },
       "documentation":"<p>An object that describes the implementation type for a control.</p> <p>Our <code>ImplementationDetails</code> <code>Type</code> format has three required segments:</p> <ul> <li> <p> <code>SERVICE-PROVIDER::SERVICE-NAME::RESOURCE-NAME</code> </p> </li> </ul> <p>For example, <code>AWS::Config::ConfigRule</code> <b>or</b> <code>AWS::SecurityHub::SecurityControl</code> resources have the format with three required segments.</p> <p>Our <code>ImplementationDetails</code> <code>Type</code> format has an optional fourth segment, which is present for applicable implementation types. The format is as follows: </p> <ul> <li> <p> <code>SERVICE-PROVIDER::SERVICE-NAME::RESOURCE-NAME::RESOURCE-TYPE-DESCRIPTION</code> </p> </li> </ul> <p>For example, <code>AWS::Organizations::Policy::SERVICE_CONTROL_POLICY</code> <b>or</b> <code>AWS::CloudFormation::Type::HOOK</code> have the format with four segments.</p> <p>Although the format is similar, the values for the <code>Type</code> field do not match any Amazon Web Services CloudFormation values.</p>"
     },
+    "ImplementationFilter":{
+      "type":"structure",
+      "members":{
+        "Types":{
+          "shape":"ImplementationTypeFilterList",
+          "documentation":"<p>A list of implementation types that can serve as filters. For example, you can filter for controls implemented as Amazon Web Services Config Rules by specifying AWS::Config::ConfigRule as a type.</p>"
+        },
+        "Identifiers":{
+          "shape":"ImplementationIdentifierFilterList",
+          "documentation":"<p>A list of service-specific identifiers that can serve as filters. For example, you can filter for controls with specific Amazon Web Services Config Rule IDs or Security Hub Control IDs.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines filtering criteria for control implementations. You can use this filter to find controls that are implemented by specific Amazon Web Services services or with specific service identifiers.</p>"
+    },
     "ImplementationIdentifier":{
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[a-z0-9-]+"
+      "pattern":"[a-zA-Z0-9_\\.-]+"
+    },
+    "ImplementationIdentifierFilterList":{
+      "type":"list",
+      "member":{"shape":"ImplementationIdentifier"},
+      "max":1,
+      "min":1
     },
     "ImplementationSummary":{
       "type":"structure",
@@ -449,6 +624,12 @@
       "max":2048,
       "min":7,
       "pattern":"[A-Za-z0-9]+(::[A-Za-z0-9_]+){2,3}"
+    },
+    "ImplementationTypeFilterList":{
+      "type":"list",
+      "member":{"shape":"ImplementationType"},
+      "max":1,
+      "min":1
     },
     "InternalServerException":{
       "type":"structure",
@@ -478,7 +659,7 @@
         },
         "CommonControlFilter":{
           "shape":"CommonControlFilter",
-          "documentation":"<p>An optional filter that narrows the results to a specific objective.</p> <p>This filter allows you to specify one objective ARN at a time. Passing multiple ARNs in the <code>CommonControlFilter</code> isn’t currently supported.</p>"
+          "documentation":"<p>An optional filter that narrows the results to a specific objective.</p> <p>This filter allows you to specify one objective ARN at a time. Passing multiple ARNs in the <code>CommonControlFilter</code> isn’t supported.</p>"
         }
       }
     },
@@ -489,6 +670,41 @@
         "CommonControls":{
           "shape":"CommonControlSummaryList",
           "documentation":"<p>The list of common controls that the <code>ListCommonControls</code> API returns.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+        }
+      }
+    },
+    "ListControlMappingsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxListControlMappingsResults",
+          "documentation":"<p>The maximum number of results on a page or for an API request call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "Filter":{
+          "shape":"ControlMappingFilter",
+          "documentation":"<p>An optional filter that narrows the results to specific control mappings based on control ARNs, common control ARNs, or mapping types.</p>"
+        }
+      }
+    },
+    "ListControlMappingsResponse":{
+      "type":"structure",
+      "required":["ControlMappings"],
+      "members":{
+        "ControlMappings":{
+          "shape":"ControlMappings",
+          "documentation":"<p>The list of control mappings that the ListControlMappings API returns.</p>"
         },
         "NextToken":{
           "shape":"PaginationToken",
@@ -510,6 +726,10 @@
           "documentation":"<p>The maximum number of results on a page or for an API request call.</p>",
           "location":"querystring",
           "locationName":"maxResults"
+        },
+        "Filter":{
+          "shape":"ControlFilter",
+          "documentation":"<p>An optional filter that narrows the results to controls with specific implementation types or identifiers. If you don't provide a filter, the operation returns all available controls.</p>"
         }
       }
     },
@@ -575,7 +795,7 @@
         },
         "ObjectiveFilter":{
           "shape":"ObjectiveFilter",
-          "documentation":"<p>An optional filter that narrows the results to a specific domain.</p> <p>This filter allows you to specify one domain ARN at a time. Passing multiple ARNs in the <code>ObjectiveFilter</code> isn’t currently supported.</p>"
+          "documentation":"<p>An optional filter that narrows the results to a specific domain.</p> <p>This filter allows you to specify one domain ARN at a time. Passing multiple ARNs in the <code>ObjectiveFilter</code> isn’t supported.</p>"
         }
       }
     },
@@ -593,10 +813,44 @@
         }
       }
     },
+    "Mapping":{
+      "type":"structure",
+      "members":{
+        "Framework":{
+          "shape":"FrameworkMappingDetails",
+          "documentation":"<p>The framework mapping details when the mapping type relates to a compliance framework.</p>"
+        },
+        "CommonControl":{
+          "shape":"CommonControlMappingDetails",
+          "documentation":"<p>The common control mapping details when the mapping type relates to a common control.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the details of a mapping relationship, which can be either to a framework or to a common control.</p>",
+      "union":true
+    },
+    "MappingType":{
+      "type":"string",
+      "enum":[
+        "FRAMEWORK",
+        "COMMON_CONTROL"
+      ]
+    },
+    "MappingTypeFilterList":{
+      "type":"list",
+      "member":{"shape":"MappingType"},
+      "max":1,
+      "min":1
+    },
     "MaxListCommonControlsResults":{
       "type":"integer",
       "box":true,
       "max":100,
+      "min":1
+    },
+    "MaxListControlMappingsResults":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
       "min":1
     },
     "MaxListControlsResults":{
@@ -628,7 +882,7 @@
       "members":{
         "Domains":{
           "shape":"DomainResourceFilterList",
-          "documentation":"<p>The domain that's used as filter criteria.</p> <p>You can use this parameter to specify one domain ARN at a time. Passing multiple ARNs in the <code>ObjectiveFilter</code> isn’t currently supported.</p>"
+          "documentation":"<p>The domain that's used as filter criteria.</p> <p>You can use this parameter to specify one domain ARN at a time. Passing multiple ARNs in the <code>ObjectiveFilter</code> isn’t supported.</p>"
         }
       },
       "documentation":"<p>An optional filter that narrows the list of objectives to a specific domain.</p>"
@@ -711,7 +965,7 @@
           "documentation":"<p>Regions in which the control is available to be deployed.</p>"
         }
       },
-      "documentation":"<p>Returns information about the control, including the scope of the control, if enabled, and the Regions in which the control currently is available for deployment. For more information about scope, see <a href=\"https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/global-services.html\">Global services</a>.</p> <p>If you are applying controls through an Amazon Web Services Control Tower landing zone environment, remember that the values returned in the <code>RegionConfiguration</code> API operation are not related to the governed Regions in your landing zone. For example, if you are governing Regions <code>A</code>,<code>B</code>,and <code>C</code> while the control is available in Regions <code>A</code>, <code>B</code>, C<code>,</code> and <code>D</code>, you'd see a response with <code>DeployableRegions</code> of <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code> for a control with <code>REGIONAL</code> scope, even though you may not intend to deploy the control in Region <code>D</code>, because you do not govern it through your landing zone.</p>"
+      "documentation":"<p>Returns information about the control, including the scope of the control, if enabled, and the Regions in which the control is available for deployment. For more information about scope, see <a href=\"https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/global-services.html\">Global services</a>.</p> <p>If you are applying controls through an Amazon Web Services Control Tower landing zone environment, remember that the values returned in the <code>RegionConfiguration</code> API operation are not related to the governed Regions in your landing zone. For example, if you are governing Regions <code>A</code>,<code>B</code>,and <code>C</code> while the control is available in Regions <code>A</code>, <code>B</code>, C<code>,</code> and <code>D</code>, you'd see a response with <code>DeployableRegions</code> of <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code> for a control with <code>REGIONAL</code> scope, even though you may not intend to deploy the control in Region <code>D</code>, because you do not govern it through your landing zone.</p>"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -753,5 +1007,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>Welcome to the Amazon Web Services Control Catalog API reference. This guide is for developers who need detailed information about how to programmatically identify and filter the common controls and related metadata that are available to Amazon Web Services customers. This API reference provides descriptions, syntax, and usage examples for each of the actions and data types that are supported by Amazon Web Services Control Catalog. </p> <p>Use the following links to get started with the Amazon Web Services Control Catalog API:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/controlcatalog/latest/APIReference/API_Operations.html\">Actions</a>: An alphabetical list of all Control Catalog API operations.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controlcatalog/latest/APIReference/API_Types.html\">Data types</a>: An alphabetical list of all Control Catalog data types.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controlcatalog/latest/APIReference/CommonParameters.html\">Common parameters</a>: Parameters that all operations can use.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controlcatalog/latest/APIReference/CommonErrors.html\">Common errors</a>: Client and server errors that all operations can return.</p> </li> </ul>"
+  "documentation":"<p>Welcome to the Control Catalog API reference. This guide is for developers who need detailed information about how to programmatically identify and filter the common controls and related metadata that are available to Amazon Web Services customers. This API reference provides descriptions, syntax, and usage examples for each of the actions and data types that are supported by Control Catalog. </p> <p>Use the following links to get started with the Control Catalog API:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/controlcatalog/latest/APIReference/API_Operations.html\">Actions</a>: An alphabetical list of all Control Catalog API operations.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controlcatalog/latest/APIReference/API_Types.html\">Data types</a>: An alphabetical list of all Control Catalog data types.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controlcatalog/latest/APIReference/CommonParameters.html\">Common parameters</a>: Parameters that all operations can use.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controlcatalog/latest/APIReference/CommonErrors.html\">Common errors</a>: Client and server errors that all operations can return.</p> </li> </ul>"
 }

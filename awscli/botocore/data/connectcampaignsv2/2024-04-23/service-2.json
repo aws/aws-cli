@@ -231,6 +231,23 @@
       ],
       "documentation":"<p>Get the specific Connect instance config.</p>"
     },
+    "GetInstanceCommunicationLimits":{
+      "name":"GetInstanceCommunicationLimits",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/connect-instance/{connectInstanceId}/communication-limits",
+        "responseCode":200
+      },
+      "input":{"shape":"GetInstanceCommunicationLimitsRequest"},
+      "output":{"shape":"GetInstanceCommunicationLimitsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Get the instance communication limits.</p>"
+    },
     "GetInstanceOnboardingJobStatus":{
       "name":"GetInstanceOnboardingJobStatus",
       "http":{
@@ -336,6 +353,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Put or update the integration for the specified Amazon Connect instance.</p>",
+      "idempotent":true
+    },
+    "PutInstanceCommunicationLimits":{
+      "name":"PutInstanceCommunicationLimits",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v2/connect-instance/{connectInstanceId}/communication-limits",
+        "responseCode":200
+      },
+      "input":{"shape":"PutInstanceCommunicationLimitsRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Put the instance communication limits. This API is idempotent.</p>",
       "idempotent":true
     },
     "PutOutboundRequestBatch":{
@@ -900,7 +935,8 @@
     "CommunicationLimitsConfig":{
       "type":"structure",
       "members":{
-        "allChannelSubtypes":{"shape":"CommunicationLimits"}
+        "allChannelSubtypes":{"shape":"CommunicationLimits"},
+        "instanceLimitsHandling":{"shape":"InstanceLimitsHandling"}
       },
       "documentation":"<p>Communication limits config</p>"
     },
@@ -1415,6 +1451,25 @@
       },
       "documentation":"<p>The response for GetConnectInstanceConfig API.</p>"
     },
+    "GetInstanceCommunicationLimitsRequest":{
+      "type":"structure",
+      "required":["connectInstanceId"],
+      "members":{
+        "connectInstanceId":{
+          "shape":"InstanceId",
+          "location":"uri",
+          "locationName":"connectInstanceId"
+        }
+      },
+      "documentation":"<p>The request for GetInstanceCommunicationLimits API.</p>"
+    },
+    "GetInstanceCommunicationLimitsResponse":{
+      "type":"structure",
+      "members":{
+        "communicationLimitsConfig":{"shape":"InstanceCommunicationLimitsConfig"}
+      },
+      "documentation":"<p>The response for GetInstanceCommunicationLimits API.</p>"
+    },
     "GetInstanceOnboardingJobStatusRequest":{
       "type":"structure",
       "required":["connectInstanceId"],
@@ -1433,6 +1488,13 @@
         "connectInstanceOnboardingJobStatus":{"shape":"InstanceOnboardingJobStatus"}
       },
       "documentation":"<p>The response for GetInstanceOnboardingJobStatus API.</p>"
+    },
+    "InstanceCommunicationLimitsConfig":{
+      "type":"structure",
+      "members":{
+        "allChannelSubtypes":{"shape":"CommunicationLimits"}
+      },
+      "documentation":"<p>Instance Communication limits config</p>"
     },
     "InstanceConfig":{
       "type":"structure",
@@ -1471,6 +1533,14 @@
       "type":"string",
       "documentation":"<p>Operators for Connect instance identifier filter</p>",
       "enum":["Eq"]
+    },
+    "InstanceLimitsHandling":{
+      "type":"string",
+      "documentation":"<p>Instance limits handling</p>",
+      "enum":[
+        "OPT_IN",
+        "OPT_OUT"
+      ]
     },
     "InstanceOnboardingJobFailureCode":{
       "type":"string",
@@ -1839,6 +1909,22 @@
         "integrationConfig":{"shape":"IntegrationConfig"}
       },
       "documentation":"<p>The request for PutConnectInstanceIntegration API.</p>"
+    },
+    "PutInstanceCommunicationLimitsRequest":{
+      "type":"structure",
+      "required":[
+        "connectInstanceId",
+        "communicationLimitsConfig"
+      ],
+      "members":{
+        "connectInstanceId":{
+          "shape":"InstanceId",
+          "location":"uri",
+          "locationName":"connectInstanceId"
+        },
+        "communicationLimitsConfig":{"shape":"InstanceCommunicationLimitsConfig"}
+      },
+      "documentation":"<p>The request for PutInstanceCommunicationLimits API.</p>"
     },
     "PutOutboundRequestBatchRequest":{
       "type":"structure",

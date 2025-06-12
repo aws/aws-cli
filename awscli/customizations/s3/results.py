@@ -316,7 +316,7 @@ class ResultPrinter(BaseResultHandler):
     SRC_TRANSFER_LOCATION_FORMAT = '{src}'
 
     def __init__(
-        self, result_recorder, out_file=None, error_file=None, frequency=None
+        self, result_recorder, out_file=None, error_file=None, frequency=0
     ):
         """Prints status of ongoing transfer
 
@@ -357,7 +357,7 @@ class ResultPrinter(BaseResultHandler):
         """Print the progress of the ongoing transfer based on a result"""
         if (
             self._first
-            or (self._frequency is None)
+            or (self._frequency == 0)
             or (time.time() - self._now >= self._frequency)
         ):
             self._result_handler_map.get(type(result), self._print_noop)(

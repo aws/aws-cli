@@ -104,7 +104,10 @@ class S3TransferHandlerFactory:
         elif not self._cli_params.get('progress'):
             result_printer = NoProgressResultPrinter(result_recorder)
         else:
-            result_printer = ResultPrinter(result_recorder, frequency=5)
+            result_printer = ResultPrinter(
+                result_recorder,
+                frequency=self._cli_params.get('progress_frequency'),
+            )
         result_processor_handlers.append(result_printer)
 
 

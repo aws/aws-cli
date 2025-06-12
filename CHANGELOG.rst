@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.40.35
+=======
+
+* api-change:``apigateway``: Documentation updates for Amazon API Gateway
+* api-change:``apigatewayv2``: Documentation updates for Amazon API Gateway
+* api-change:``connectcampaignsv2``: Added PutInstanceCommunicationLimits and GetInstanceCommunicationLimits APIs
+* api-change:``ecs``: This Amazon ECS  release supports updating the capacityProviderStrategy parameter in update-service.
+* api-change:``emr-serverless``: This release adds support for retrieval of the optional executionIamPolicy field in the GetJobRun API response.
+* api-change:``iotfleetwise``: Add new status READY_FOR_CHECKIN used for vehicle synchronisation
+* api-change:``kms``: AWS KMS announces the support of ML-DSA key pairs that creates post-quantum safe digital signatures.
+* api-change:``pcs``: Fixed regex patterns for ARN fields.
+
+
 1.40.34
 =======
 

@@ -245,9 +245,9 @@ the keys below. Each key is required unless specified otherwise.
     - Example value: `["s3", "cp", "test_file", "s3://bucket/test_file", "--quiet"]`.
 - `dimensions` (list) **(optional)**: Used to specify additional dimensions for
 interpreting this metric.
-  - Each element in the list is an object with a single key-value pair.
-The key is the name of the dimension (e.g. `FileSize`), and the value
-is the value of the dimension (e.g. `32MB`).
+  - Each element in the list is an object with the following keys:
+    - `name` (string): Name of the dimensions
+    - `value` (string): Value of the dimension
 - `environment` (object) **(optional)**: Specifies settings for the environment to run
 the command in.
   - The environment object supports the following keys:
@@ -257,6 +257,9 @@ the specified contents.
       - Each element is an object with the following keys:
         - `name` (string): Name of the file to create
         - `content` (string): The contents of the file.
+        - `mode` (string) **(optional)**: The write mode to use for writing the
+file contents.
+          - Default: `w`
     - `files` (list) **(optional)**: Specifies the files that must be
 created before executing the benchmark. The files created will be filled with
 null bytes to achieve the specified size.

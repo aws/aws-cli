@@ -34,7 +34,8 @@ Output::
                 "recordingReconnectWindowSeconds": 0,
                 "hlsConfiguration": {
                     "targetSegmentDurationSeconds": 6
-                }
+                },
+                "recordParticipantReplicas": true
             },
             "endpoints": {
                 "events": "wss://global.events.live-video.net",
@@ -79,7 +80,8 @@ Output::
                 "recordingReconnectWindowSeconds": 100,
                 "hlsConfiguration": {
                     "targetSegmentDurationSeconds": 5
-                }
+                },
+                "recordParticipantReplicas": true
             },
             "endpoints": {
                 "events": "wss://global.events.live-video.net",
@@ -124,7 +126,8 @@ Output::
                 "recordingReconnectWindowSeconds": 0,
                 "hlsConfiguration": {
                     "targetSegmentDurationSeconds": 6
-                }
+                },
+                "recordParticipantReplicas": true
             },
             "endpoints": {
                 "events": "wss://global.events.live-video.net",

@@ -188,7 +188,7 @@ class ResultRecorder(BaseResultHandler):
         if not isinstance(result, BaseResult):
             raise ValueError(
                 'Any result using _get_ongoing_dict_key must subclass from '
-                'BaseResult. Provided result is of type: %s' % type(result)
+                f'BaseResult. Provided result is of type: {type(result)}'
             )
         key_parts = []
         for result_property in [result.transfer_type, result.src, result.dest]:
@@ -315,7 +315,9 @@ class ResultPrinter(BaseResultHandler):
     SRC_DEST_TRANSFER_LOCATION_FORMAT = '{src} to {dest}'
     SRC_TRANSFER_LOCATION_FORMAT = '{src}'
 
-    def __init__(self, result_recorder, out_file=None, error_file=None):
+    def __init__(
+        self, result_recorder, out_file=None, error_file=None, frequency=0
+    ):
         """Prints status of ongoing transfer
 
         :type result_recorder: ResultRecorder
@@ -331,6 +333,8 @@ class ResultPrinter(BaseResultHandler):
         """
         self._result_recorder = result_recorder
         self._out_file = out_file
+        self._frequency = frequency
+        self._first = True
         if self._out_file is None:
             self._out_file = sys.stdout
         self._error_file = error_file
@@ -347,12 +351,20 @@ class ResultPrinter(BaseResultHandler):
             DryRunResult: self._print_dry_run,
             FinalTotalSubmissionsResult: self._clear_progress_if_no_more_expected_transfers,
         }
+        self._now = time.time()
 
     def __call__(self, result):
         """Print the progress of the ongoing transfer based on a result"""
-        self._result_handler_map.get(type(result), self._print_noop)(
-            result=result
-        )
+        if (
+            self._first
+            or (self._frequency == 0)
+            or (time.time() - self._now >= self._frequency)
+        ):
+            self._result_handler_map.get(type(result), self._print_noop)(
+                result=result
+            )
+            self._now = time.time()
+            self._first = False
 
     def _print_noop(self, **kwargs):
         # If the result does not have a handler, then do nothing with it.

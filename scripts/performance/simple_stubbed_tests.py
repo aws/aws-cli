@@ -4,7 +4,7 @@ from unittest import mock
 
 from awscli.botocore.awsrequest import AWSResponse
 from awscli.compat import BytesIO
-from scripts.performance.tests import BaseBenchmarkSuite
+from scripts.performance import BaseBenchmarkSuite
 
 
 class RawResponse(BytesIO):

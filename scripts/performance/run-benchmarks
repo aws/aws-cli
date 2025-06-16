@@ -74,13 +74,7 @@ def main():
         ),
     )
     parsed_args = parser.parse_args()
-    if (
-        sum(
-            x is not None
-            for x in [parsed_args.num_chunks, parsed_args.chunk_id]
-        )
-        == 1
-    ):
+    if len([x for x in [parsed_args.num_chunks, parsed_args.chunk_id] if x is not None]) == 1:
         parser.error(
             "If --num-chunks or --chunk-id is specified, then both args must be specified."
         )

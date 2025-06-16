@@ -8,8 +8,8 @@ import time
 import psutil
 
 from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
-from scripts.performance.tests import BaseBenchmarkSuite
-from scripts.performance.tests.simple_stubbed_tests import (
+from scripts.performance import BaseBenchmarkSuite
+from scripts.performance.simple_stubbed_tests import (
     JSONStubbedBenchmarkSuite,
 )
 

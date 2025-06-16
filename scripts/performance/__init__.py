@@ -1,4 +1,13 @@
 class BaseBenchmarkSuite:
+    """
+    Base class for performance test suites. This class is used by
+    the performance test runner to gather, setup, and clean up
+    performance test cases. This class should be extended
+    to create performance test cases that can be run by the test runner.
+    """
+
+    def __init__(self):
+        self.name = self.__class__.__name__
     def get_test_cases(self, args):
         """
         Returns a list of performance test cases. Each element of the returned

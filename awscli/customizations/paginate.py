@@ -111,8 +111,8 @@ def add_paging_description(help_command, **kwargs):
             '``%s`` is a paginated operation. Multiple API calls may be issued '
             'in order to retrieve the entire data set of results. You can '
             'disable automatic pagination by providing the ``--no-paginate`` '
-            'argument. Disabling automatic pagination has the AWS CLI only call '
-            'once for the first page of command results.'
+            'argument. Disabling automatic pagination results in a single request '
+            'for the first page of results for the command.'
         )
         % help_command.name
     )

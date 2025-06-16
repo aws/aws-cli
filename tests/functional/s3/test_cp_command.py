@@ -989,6 +989,102 @@ class TestCPCommand(BaseCPCommandTest):
         }
         self.assertDictEqual(self.operations_called[1][1], expected_args)
 
+    def test_s3s3_cp_with_destination_sse_c(self):
+        """S3->S3 copy with an unencrypted source and encrypted destination"""
+        self.parsed_responses = [
+            {
+                "AcceptRanges": "bytes",
+                "LastModified": "Tue, 12 Jul 2016 21:26:07 GMT",
+                "ContentLength": 4,
+                "ETag": '"d3b07384d113edec49eaa6238ad5ff00"',
+                "Metadata": {},
+                "ContentType": "binary/octet-stream",
+            },
+            {
+                "AcceptRanges": "bytes",
+                "Metadata": {},
+                "ContentType": "binary/octet-stream",
+                "ContentLength": 4,
+                "ETag": '"d3b07384d113edec49eaa6238ad5ff00"',
+                "LastModified": "Tue, 12 Jul 2016 21:26:07 GMT",
+                "Body": BytesIO(b'foo\n'),
+            },
+            {},
+        ]
+        cmdline = (
+            '%s s3://bucket-one/key.txt s3://bucket/key.txt '
+            '--sse-c --sse-c-key foo' % self.prefix
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        expected_head_args = {
+            'Bucket': 'bucket-one',
+            'Key': 'key.txt',
+            # don't expect to see SSE-c params for the source
+        }
+        self.assertDictEqual(self.operations_called[0][1], expected_head_args)
+
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        expected_copy_args = {
+            'Key': 'key.txt',
+            'Bucket': 'bucket',
+            'CopySource': {'Bucket': 'bucket-one', 'Key': 'key.txt'},
+            'SSECustomerAlgorithm': 'AES256',
+            'SSECustomerKey': 'foo',
+        }
+        self.assertDictEqual(self.operations_called[1][1], expected_copy_args)
+
+    def test_s3s3_cp_with_different_sse_c_keys(self):
+        """S3->S3 copy with different SSE-C keys for source and destination"""
+        self.parsed_responses = [
+            {
+                "AcceptRanges": "bytes",
+                "LastModified": "Tue, 12 Jul 2016 21:26:07 GMT",
+                "ContentLength": 4,
+                "ETag": '"d3b07384d113edec49eaa6238ad5ff00"',
+                "Metadata": {},
+                "ContentType": "binary/octet-stream",
+            },
+            {
+                "AcceptRanges": "bytes",
+                "Metadata": {},
+                "ContentType": "binary/octet-stream",
+                "ContentLength": 4,
+                "ETag": '"d3b07384d113edec49eaa6238ad5ff00"',
+                "LastModified": "Tue, 12 Jul 2016 21:26:07 GMT",
+                "Body": BytesIO(b'foo\n'),
+            },
+            {},
+        ]
+        cmdline = (
+            '%s s3://bucket-one/key.txt s3://bucket/key.txt '
+            '--sse-c-copy-source --sse-c-copy-source-key foo --sse-c --sse-c-key bar'
+            % self.prefix
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        expected_head_args = {
+            'Bucket': 'bucket-one',
+            'Key': 'key.txt',
+            'SSECustomerAlgorithm': 'AES256',
+            'SSECustomerKey': 'foo',
+        }
+        self.assertDictEqual(self.operations_called[0][1], expected_head_args)
+
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        expected_copy_args = {
+            'Key': 'key.txt',
+            'Bucket': 'bucket',
+            'CopySource': {'Bucket': 'bucket-one', 'Key': 'key.txt'},
+            'SSECustomerAlgorithm': 'AES256',
+            'SSECustomerKey': 'bar',
+            'CopySourceSSECustomerAlgorithm': 'AES256',
+            'CopySourceSSECustomerKey': 'foo',
+        }
+        self.assertDictEqual(self.operations_called[1][1], expected_copy_args)
+
     # Note ideally the kms sse with a key id would be integration tests
     # However, you cannot delete kms keys so there would be no way to clean
     # up the tests

@@ -32,6 +32,27 @@
       ],
       "documentation":"<p>Deletes a batch of evaluation jobs. An evaluation job can only be deleted if it has following status <code>FAILED</code>, <code>COMPLETED</code>, and <code>STOPPED</code>. You can request up to 25 model evaluation jobs be deleted in a single request.</p>"
     },
+    "CreateCustomModel":{
+      "name":"CreateCustomModel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/custom-models/create-custom-model",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateCustomModelRequest"},
+      "output":{"shape":"CreateCustomModelResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a new custom model in Amazon Bedrock from an existing SageMaker AI-trained Amazon Nova model stored in an Amazon-managed Amazon S3 bucket. After the model is active, you can use it for inference.</p> <p>To use the model for inference, you must purchase Provisioned Throughput for it. You can't use On-demand inference with these custom models. For more information about Provisioned Throughput, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a>.</p> <p>The model appears in <code>ListCustomModels</code> with a <code>customizationType</code> of <code>imported</code>. To track the status of the new model, you use the <code>GetCustomModel</code> API operation. The model can be in the following states:</p> <ul> <li> <p> <code>Creating</code> - Initial state during validation and registration</p> </li> <li> <p> <code>Active</code> - Model is ready for use in inference</p> </li> <li> <p> <code>Failed</code> - Creation process encountered an error</p> </li> </ul> <p>For more information about creating custom models, including specific model requirements, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/create-custom-model-from-existing.html\">Import a SageMaker AI-trained Amazon Nova model</a> in the Amazon Bedrock User Guide. </p> <note> <p>You use the <code>CreateCustomModel</code> API to import only SageMaker AI-trained Amazon Nova models. To import open-source models, you use the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateModelImportJob.html\">CreateModelImportJob</a>. </p> </note> <p> <b>Related APIs</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetCustomModel.html\">GetCustomModel</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListCustomModels.html\">ListCustomModels</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_DeleteCustomModel.html\">DeleteCustomModel</a> </p> </li> </ul>"
+    },
     "CreateEvaluationJob":{
       "name":"CreateEvaluationJob",
       "http":{
@@ -452,7 +473,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Get the properties associated with a Amazon Bedrock custom model that you have created.For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
+      "documentation":"<p>Get the properties associated with a Amazon Bedrock custom model that you have created. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "GetEvaluationJob":{
       "name":"GetEvaluationJob",
@@ -1422,6 +1443,50 @@
       "type":"string",
       "pattern":".*[a-z]{1,20}/.{1,20}.*"
     },
+    "CreateCustomModelRequest":{
+      "type":"structure",
+      "required":[
+        "modelName",
+        "modelSourceConfig"
+      ],
+      "members":{
+        "modelName":{
+          "shape":"CustomModelName",
+          "documentation":"<p>A unique name for the custom model.</p>"
+        },
+        "modelSourceConfig":{
+          "shape":"ModelDataSource",
+          "documentation":"<p>The data source for the model. The Amazon S3 URI in the model source must be for the Amazon-managed Amazon S3 bucket containing your model artifacts. SageMaker AI creates this bucket when you run your first SageMaker AI training job.</p>"
+        },
+        "modelKmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed KMS key to encrypt the custom model. If you don't provide a KMS key, Amazon Bedrock uses an Amazon Web Services-managed KMS key to encrypt the model. </p> <p>If you provide a customer managed KMS key, your Amazon Bedrock service role must have permissions to use it. For more information see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/encryption-import-model.html\">Encryption of imported models</a>. </p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM service role that Amazon Bedrock assumes to perform tasks on your behalf. This role must have permissions to access the Amazon S3 bucket containing your model artifacts and the KMS key (if specified). For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-import-iam-role.html\">Setting up an IAM service role for importing models</a> in the Amazon Bedrock User Guide.</p>"
+        },
+        "modelTags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of key-value pairs to associate with the custom model resource. You can use these tags to organize and identify your resources.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging.html\">Tagging resources</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
+        },
+        "clientRequestToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateCustomModelResponse":{
+      "type":"structure",
+      "required":["modelArn"],
+      "members":{
+        "modelArn":{
+          "shape":"ModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the new custom model.</p>"
+        }
+      }
+    },
     "CreateEvaluationJobRequest":{
       "type":"structure",
       "required":[
@@ -2096,7 +2161,7 @@
       "type":"string",
       "max":1011,
       "min":20,
-      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}/[a-z0-9]{12}"
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:custom-model/(imported|[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}/[a-z0-9]{12})"
     },
     "CustomModelName":{
       "type":"string",
@@ -2141,6 +2206,10 @@
         "ownerAccountId":{
           "shape":"AccountId",
           "documentation":"<p>The unique identifier of the account that owns the model.</p>"
+        },
+        "modelStatus":{
+          "shape":"ModelStatus",
+          "documentation":"<p>The current status of the custom model. Possible values include:</p> <ul> <li> <p> <code>Creating</code> - The model is being created and validated.</p> </li> <li> <p> <code>Active</code> - The model has been successfully created and is ready for use.</p> </li> <li> <p> <code>Failed</code> - The model creation process failed.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Summary information for a custom model.</p>"
@@ -2183,7 +2252,8 @@
       "enum":[
         "FINE_TUNING",
         "CONTINUED_PRE_TRAINING",
-        "DISTILLATION"
+        "DISTILLATION",
+        "IMPORTED"
       ]
     },
     "DataProcessingDetails":{
@@ -3151,10 +3221,6 @@
       "required":[
         "modelArn",
         "modelName",
-        "jobArn",
-        "baseModelArn",
-        "trainingDataConfig",
-        "outputDataConfig",
         "creationTime"
       ],
       "members":{
@@ -3172,7 +3238,7 @@
         },
         "jobArn":{
           "shape":"ModelCustomizationJobArn",
-          "documentation":"<p>Job Amazon Resource Name (ARN) associated with this model.</p>"
+          "documentation":"<p>Job Amazon Resource Name (ARN) associated with this model. For models that you create with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateCustomModel.html\">CreateCustomModel</a> API operation, this is <code>NULL</code>.</p>"
         },
         "baseModelArn":{
           "shape":"ModelArn",
@@ -3217,6 +3283,14 @@
         "customizationConfig":{
           "shape":"CustomizationConfig",
           "documentation":"<p>The customization configuration for the custom model.</p>"
+        },
+        "modelStatus":{
+          "shape":"ModelStatus",
+          "documentation":"<p>The current status of the custom model. Possible values include:</p> <ul> <li> <p> <code>Creating</code> - The model is being created and validated.</p> </li> <li> <p> <code>Active</code> - The model has been successfully created and is ready for use.</p> </li> <li> <p> <code>Failed</code> - The model creation process failed. Check the <code>failureMessage</code> field for details.</p> </li> </ul>"
+        },
+        "failureMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>A failure message for any issues that occurred when creating the custom model. This is included for only a failed CreateCustomModel operation.</p>"
         }
       }
     },
@@ -3697,13 +3771,13 @@
           "shape":"ModelCustomizationJobStatus",
           "documentation":"<p>The status of the job. A successful job transitions from in-progress to completed when the output model is ready to use. If the job failed, the failure message contains information about why the job failed.</p>"
         },
-        "failureMessage":{
-          "shape":"ErrorMessage",
-          "documentation":"<p>Information about why the job failed.</p>"
-        },
         "statusDetails":{
           "shape":"StatusDetails",
           "documentation":"<p>For a Distillation job, the details about the statuses of the sub-tasks of the customization job. </p>"
+        },
+        "failureMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>Information about why the job failed.</p>"
         },
         "creationTime":{
           "shape":"Timestamp",
@@ -5706,6 +5780,12 @@
           "documentation":"<p>Return custom models depending on if the current account owns them (<code>true</code>) or if they were shared with the current account (<code>false</code>).</p>",
           "location":"querystring",
           "locationName":"isOwned"
+        },
+        "modelStatus":{
+          "shape":"ModelStatus",
+          "documentation":"<p>The status of them model to filter results by. Possible values include:</p> <ul> <li> <p> <code>Creating</code> - Include only models that are currently being created and validated.</p> </li> <li> <p> <code>Active</code> - Include only models that have been successfully created and are ready for use.</p> </li> <li> <p> <code>Failed</code> - Include only models where the creation process failed.</p> </li> </ul> <p>If you don't specify a status, the API returns models in all states.</p>",
+          "location":"querystring",
+          "locationName":"modelStatus"
         }
       }
     },
@@ -6565,7 +6645,7 @@
       "type":"string",
       "max":1011,
       "min":20,
-      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}(([:][a-z0-9-]{1,63}){0,2})?/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}))"
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/((imported)|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}))(([:][a-z0-9-]{1,63}){0,2})?/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}))"
     },
     "ModelCopyJobArn":{
       "type":"string",
@@ -6708,13 +6788,13 @@
           "shape":"ModelCustomizationJobStatus",
           "documentation":"<p>Status of the customization job. </p>"
         },
-        "lastModifiedTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>Time that the customization job was last modified.</p>"
-        },
         "statusDetails":{
           "shape":"StatusDetails",
           "documentation":"<p>Details about the status of the data processing sub-task of the job.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time that the customization job was last modified.</p>"
         },
         "creationTime":{
           "shape":"Timestamp",
@@ -6748,10 +6828,10 @@
       "members":{
         "s3DataSource":{
           "shape":"S3DataSource",
-          "documentation":"<p>The Amazon S3 data source of the imported model.</p>"
+          "documentation":"<p>The Amazon S3 data source of the model to import.</p>"
         }
       },
-      "documentation":"<p>Data source for the imported model.</p>",
+      "documentation":"<p>The data source of the model to import.</p>",
       "union":true
     },
     "ModelId":{
@@ -6764,7 +6844,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}(([:][a-z0-9-]{1,63}){0,2})?/[a-z0-9]{12})|(:foundation-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})))|(([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2}))|(([0-9a-zA-Z][_-]?)+)"
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/((imported)|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}))(([:][a-z0-9-]{1,63}){0,2})?/[a-z0-9]{12})|(:foundation-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})))|(([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2}))|(([0-9a-zA-Z][_-]?)+)"
     },
     "ModelImportJobArn":{
       "type":"string",
@@ -7041,6 +7121,14 @@
       "max":2048,
       "min":0,
       "pattern":".*arn:aws:sagemaker:.*:hub-content/SageMakerPublicHub/Model/.*"
+    },
+    "ModelStatus":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "Creating",
+        "Failed"
+      ]
     },
     "NonBlankString":{
       "type":"string",
@@ -7685,7 +7773,7 @@
           "documentation":"<p>The URI of the Amazon S3 data source.</p>"
         }
       },
-      "documentation":"<p>The Amazon S3 data source of the imported job.</p>"
+      "documentation":"<p>The Amazon S3 data source of the model to import. For the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateCustomModel.html\">CreateCustomModel</a> API operation, you must specify the Amazon S3 URI for the Amazon-managed Amazon S3 bucket containing your model artifacts. SageMaker AI creates this bucket when you run your first SageMaker AI training job.</p>"
     },
     "S3InputFormat":{
       "type":"string",
@@ -7962,7 +8050,7 @@
       "type":"string",
       "max":1011,
       "min":20,
-      "pattern":".*(^[a-zA-Z0-9][a-zA-Z0-9\\-]*$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:([0-9]{12}|)((:(fine-tuning-job|model-customization-job|custom-model)/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12})$)|(:guardrail/[a-z0-9]+$)|(:automated-reasoning-policy/[a-zA-Z0-9]+(:[a-zA-Z0-9]+)?$)|(:(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+$)|(:(provisioned-model|model-invocation-job|model-evaluation-job|evaluation-job|model-import-job|imported-model|async-invoke|provisioned-model-v2|provisioned-model-reservation|prompt-router)/[a-z0-9]{12}$))).*"
+      "pattern":".*(^[a-zA-Z0-9][a-zA-Z0-9\\-]*$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:custom-model/([a-z0-9-]{1,63}[.][a-z0-9-]{1,63}(([:][a-z0-9-]{1,63}){0,2})?|imported)/[a-z0-9]{12}$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:([0-9]{12}|)((:(fine-tuning-job|model-customization-job)/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12})$)|(:guardrail/[a-z0-9]+$)|(:automated-reasoning-policy/[a-zA-Z0-9]+(:[a-zA-Z0-9]+)?$)|(:(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+$)|(:(provisioned-model|model-invocation-job|model-evaluation-job|evaluation-job|model-import-job|imported-model|async-invoke|provisioned-model-v2|provisioned-model-reservation|prompt-router|custom-model-deployment)/[a-z0-9]{12}$))).*"
     },
     "TeacherModelConfig":{
       "type":"structure",

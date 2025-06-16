@@ -16,6 +16,41 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "AcceptNetworkFirewallTransitGatewayAttachment":{
+      "name":"AcceptNetworkFirewallTransitGatewayAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AcceptNetworkFirewallTransitGatewayAttachmentRequest"},
+      "output":{"shape":"AcceptNetworkFirewallTransitGatewayAttachmentResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Accepts a transit gateway attachment request for Network Firewall. When you accept the attachment request, Network Firewall creates the necessary routing components to enable traffic flow between the transit gateway and firewall endpoints.</p> <p>You must accept a transit gateway attachment to complete the creation of a transit gateway-attached firewall, unless auto-accept is enabled on the transit gateway. After acceptance, use <a>DescribeFirewall</a> to verify the firewall status.</p> <p>To reject an attachment instead of accepting it, use <a>RejectNetworkFirewallTransitGatewayAttachment</a>.</p> <note> <p>It can take several minutes for the attachment acceptance to complete and the firewall to become available.</p> </note>"
+    },
+    "AssociateAvailabilityZones":{
+      "name":"AssociateAvailabilityZones",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateAvailabilityZonesRequest"},
+      "output":{"shape":"AssociateAvailabilityZonesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidTokenException"},
+        {"shape":"InvalidOperationException"},
+        {"shape":"InsufficientCapacityException"}
+      ],
+      "documentation":"<p>Associates the specified Availability Zones with a transit gateway-attached firewall. For each Availability Zone, Network Firewall creates a firewall endpoint to process traffic. You can specify one or more Availability Zones where you want to deploy the firewall.</p> <p>After adding Availability Zones, you must update your transit gateway route tables to direct traffic through the new firewall endpoints. Use <a>DescribeFirewall</a> to monitor the status of the new endpoints.</p>"
+    },
     "AssociateFirewallPolicy":{
       "name":"AssociateFirewallPolicy",
       "http":{
@@ -176,6 +211,22 @@
         {"shape":"InvalidOperationException"}
       ],
       "documentation":"<p>Deletes the specified <a>FirewallPolicy</a>. </p>"
+    },
+    "DeleteNetworkFirewallTransitGatewayAttachment":{
+      "name":"DeleteNetworkFirewallTransitGatewayAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteNetworkFirewallTransitGatewayAttachmentRequest"},
+      "output":{"shape":"DeleteNetworkFirewallTransitGatewayAttachmentResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a transit gateway attachment from a Network Firewall. Either the firewall owner or the transit gateway owner can delete the attachment.</p> <important> <p>After you delete a transit gateway attachment, traffic will no longer flow through the firewall endpoints.</p> </important> <p>After you initiate the delete operation, use <a>DescribeFirewall</a> to monitor the deletion status.</p>"
     },
     "DeleteResourcePolicy":{
       "name":"DeleteResourcePolicy",
@@ -406,6 +457,24 @@
       ],
       "documentation":"<p>Returns the data object for the specified VPC endpoint association. </p>"
     },
+    "DisassociateAvailabilityZones":{
+      "name":"DisassociateAvailabilityZones",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateAvailabilityZonesRequest"},
+      "output":{"shape":"DisassociateAvailabilityZonesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidTokenException"},
+        {"shape":"InvalidOperationException"}
+      ],
+      "documentation":"<p>Removes the specified Availability Zone associations from a transit gateway-attached firewall. This removes the firewall endpoints from these Availability Zones and stops traffic filtering in those zones. Before removing an Availability Zone, ensure you've updated your transit gateway route tables to redirect traffic appropriately.</p> <note> <p>If <code>AvailabilityZoneChangeProtection</code> is enabled, you must first disable it using <a>UpdateAvailabilityZoneChangeProtection</a>.</p> </note> <p>To verify the status of your Availability Zone changes, use <a>DescribeFirewall</a>.</p>"
+    },
     "DisassociateSubnets":{
       "name":"DisassociateSubnets",
       "http":{
@@ -596,6 +665,22 @@
       ],
       "documentation":"<p>Creates or updates an IAM policy for your rule group, firewall policy, or firewall. Use this to share these resources between accounts. This operation works in conjunction with the Amazon Web Services Resource Access Manager (RAM) service to manage resource sharing for Network Firewall. </p> <p>For information about using sharing with Network Firewall resources, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/sharing.html\">Sharing Network Firewall resources</a> in the <i>Network Firewall Developer Guide</i>.</p> <p>Use this operation to create or update a resource policy for your Network Firewall rule group, firewall policy, or firewall. In the resource policy, you specify the accounts that you want to share the Network Firewall resource with and the operations that you want the accounts to be able to perform. </p> <p>When you add an account in the resource policy, you then run the following Resource Access Manager (RAM) operations to access and accept the shared resource. </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/ram/latest/APIReference/API_GetResourceShareInvitations.html\">GetResourceShareInvitations</a> - Returns the Amazon Resource Names (ARNs) of the resource share invitations. </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/ram/latest/APIReference/API_AcceptResourceShareInvitation.html\">AcceptResourceShareInvitation</a> - Accepts the share invitation for a specified resource share. </p> </li> </ul> <p>For additional information about resource sharing using RAM, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/what-is.html\">Resource Access Manager User Guide</a>.</p>"
     },
+    "RejectNetworkFirewallTransitGatewayAttachment":{
+      "name":"RejectNetworkFirewallTransitGatewayAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RejectNetworkFirewallTransitGatewayAttachmentRequest"},
+      "output":{"shape":"RejectNetworkFirewallTransitGatewayAttachmentResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Rejects a transit gateway attachment request for Network Firewall. When you reject the attachment request, Network Firewall cancels the creation of routing components between the transit gateway and firewall endpoints.</p> <p>Only the transit gateway owner can reject the attachment. After rejection, no traffic will flow through the firewall endpoints for this attachment.</p> <p>Use <a>DescribeFirewall</a> to monitor the rejection status. To accept the attachment instead of rejecting it, use <a>AcceptNetworkFirewallTransitGatewayAttachment</a>.</p> <note> <p>Once rejected, you cannot reverse this action. To establish connectivity, you must create a new transit gateway-attached firewall.</p> </note>"
+    },
     "StartAnalysisReport":{
       "name":"StartAnalysisReport",
       "http":{
@@ -675,6 +760,24 @@
         {"shape":"InvalidRequestException"}
       ],
       "documentation":"<p>Removes the tags with the specified keys from the specified resource. Tags are key:value pairs that you can use to categorize and manage your resources, for purposes like billing. For example, you might set the tag key to \"customer\" and the value to the customer name or ID. You can specify one or more tags to add to each Amazon Web Services resource, up to 50 tags for a resource.</p> <p>You can manage tags for the Amazon Web Services resources that you manage through Network Firewall: firewalls, firewall policies, and rule groups. </p>"
+    },
+    "UpdateAvailabilityZoneChangeProtection":{
+      "name":"UpdateAvailabilityZoneChangeProtection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateAvailabilityZoneChangeProtectionRequest"},
+      "output":{"shape":"UpdateAvailabilityZoneChangeProtectionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidTokenException"},
+        {"shape":"ResourceOwnerCheckException"}
+      ],
+      "documentation":"<p>Modifies the <code>AvailabilityZoneChangeProtection</code> setting for a transit gateway-attached firewall. When enabled, this setting prevents accidental changes to the firewall's Availability Zone configuration. This helps protect against disrupting traffic flow in production environments.</p> <p>When enabled, you must disable this protection before using <a>AssociateAvailabilityZones</a> or <a>DisassociateAvailabilityZones</a> to modify the firewall's Availability Zone configuration.</p>"
     },
     "UpdateFirewallAnalysisSettings":{
       "name":"UpdateFirewallAnalysisSettings",
@@ -852,12 +955,45 @@
     }
   },
   "shapes":{
+    "AWSAccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^\\d{12}$"
+    },
     "AZSyncState":{
       "type":"structure",
       "members":{
         "Attachment":{"shape":"Attachment"}
       },
       "documentation":"<p>The status of the firewall endpoint defined by a <code>VpcEndpointAssociation</code>. </p>"
+    },
+    "AcceptNetworkFirewallTransitGatewayAttachmentRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>Required. The unique identifier of the transit gateway attachment to accept. This ID is returned in the response when creating a transit gateway-attached firewall.</p>"
+        }
+      }
+    },
+    "AcceptNetworkFirewallTransitGatewayAttachmentResponse":{
+      "type":"structure",
+      "required":[
+        "TransitGatewayAttachmentId",
+        "TransitGatewayAttachmentStatus"
+      ],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The unique identifier of the transit gateway attachment that was accepted.</p>"
+        },
+        "TransitGatewayAttachmentStatus":{
+          "shape":"TransitGatewayAttachmentStatus",
+          "documentation":"<p>The current status of the transit gateway attachment. Valid values are:</p> <ul> <li> <p> <code>CREATING</code> - The attachment is being created</p> </li> <li> <p> <code>DELETING</code> - The attachment is being deleted</p> </li> <li> <p> <code>DELETED</code> - The attachment has been deleted</p> </li> <li> <p> <code>FAILED</code> - The attachment creation has failed and cannot be recovered</p> </li> <li> <p> <code>ERROR</code> - The attachment is in an error state that might be recoverable</p> </li> <li> <p> <code>READY</code> - The attachment is active and processing traffic</p> </li> <li> <p> <code>PENDING_ACCEPTANCE</code> - The attachment is waiting to be accepted</p> </li> <li> <p> <code>REJECTING</code> - The attachment is in the process of being rejected</p> </li> <li> <p> <code>REJECTED</code> - The attachment has been rejected</p> </li> </ul>"
+        }
+      }
     },
     "ActionDefinition":{
       "type":"structure",
@@ -990,6 +1126,49 @@
       },
       "documentation":"<p>The results of a <code>COMPLETED</code> analysis report generated with <a>StartAnalysisReport</a>.</p> <p>For an example of traffic analysis report results, see the response syntax of <a>GetAnalysisReportResults</a>.</p>"
     },
+    "AssociateAvailabilityZonesRequest":{
+      "type":"structure",
+      "required":["AvailabilityZoneMappings"],
+      "members":{
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>An optional token that you can use for optimistic locking. Network Firewall returns a token to your requests that access the firewall. The token marks the state of the firewall resource at the time of the request. </p> <p>To make an unconditional change to the firewall, omit the token in your update request. Without the token, Network Firewall performs your updates regardless of whether the firewall has changed since you last retrieved it.</p> <p>To make a conditional change to the firewall, provide the token in your update request. Network Firewall uses the token to ensure that the firewall hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the firewall again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        },
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "FirewallName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the firewall. You can't change the name of a firewall after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "AvailabilityZoneMappings":{
+          "shape":"AvailabilityZoneMappings",
+          "documentation":"<p>Required. The Availability Zones where you want to create firewall endpoints. You must specify at least one Availability Zone.</p>"
+        }
+      }
+    },
+    "AssociateAvailabilityZonesResponse":{
+      "type":"structure",
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "FirewallName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the firewall. You can't change the name of a firewall after you create it.</p>"
+        },
+        "AvailabilityZoneMappings":{
+          "shape":"AvailabilityZoneMappings",
+          "documentation":"<p>The Availability Zones where Network Firewall created firewall endpoints. Each mapping specifies an Availability Zone where the firewall processes traffic.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>An optional token that you can use for optimistic locking. Network Firewall returns a token to your requests that access the firewall. The token marks the state of the firewall resource at the time of the request. </p> <p>To make an unconditional change to the firewall, omit the token in your update request. Without the token, Network Firewall performs your updates regardless of whether the firewall has changed since you last retrieved it.</p> <p>To make a conditional change to the firewall, provide the token in your update request. Network Firewall uses the token to ensure that the firewall hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the firewall again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
     "AssociateFirewallPolicyRequest":{
       "type":"structure",
       "required":["FirewallPolicyArn"],
@@ -1103,6 +1282,7 @@
       },
       "documentation":"<p>The definition and status of the firewall endpoint for a single subnet. In each configured subnet, Network Firewall instantiates a firewall endpoint to handle network traffic. </p> <p>This data type is used for any firewall endpoint type: </p> <ul> <li> <p>For <code>Firewall.SubnetMappings</code>, this <code>Attachment</code> is part of the <code>FirewallStatus</code> sync states information. You define firewall subnets using <code>CreateFirewall</code> and <code>AssociateSubnets</code>. </p> </li> <li> <p>For <code>VpcEndpointAssociation</code>, this <code>Attachment</code> is part of the <code>VpcEndpointAssociationStatus</code> sync states information. You define these subnets using <code>CreateVpcEndpointAssociation</code>. </p> </li> </ul>"
     },
+    "AttachmentId":{"type":"string"},
     "AttachmentStatus":{
       "type":"string",
       "enum":[
@@ -1115,6 +1295,27 @@
       ]
     },
     "AvailabilityZone":{"type":"string"},
+    "AvailabilityZoneMapping":{
+      "type":"structure",
+      "required":["AvailabilityZone"],
+      "members":{
+        "AvailabilityZone":{
+          "shape":"AvailabilityZoneMappingString",
+          "documentation":"<p>The ID of the Availability Zone where the firewall endpoint is located. For example, <code>us-east-2a</code>. The Availability Zone must be in the same Region as the transit gateway.</p>"
+        }
+      },
+      "documentation":"<p>Defines the mapping between an Availability Zone and a firewall endpoint for a transit gateway-attached firewall. Each mapping represents where the firewall can process traffic. You use these mappings when calling <a>CreateFirewall</a>, <a>AssociateAvailabilityZones</a>, and <a>DisassociateAvailabilityZones</a>.</p> <p>To retrieve the current Availability Zone mappings for a firewall, use <a>DescribeFirewall</a>.</p>"
+    },
+    "AvailabilityZoneMappingString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"\\S+"
+    },
+    "AvailabilityZoneMappings":{
+      "type":"list",
+      "member":{"shape":"AvailabilityZoneMapping"}
+    },
     "AvailabilityZoneMetadata":{
       "type":"structure",
       "members":{
@@ -1298,6 +1499,18 @@
         "EnabledAnalysisTypes":{
           "shape":"EnabledAnalysisTypes",
           "documentation":"<p>An optional setting indicating the specific traffic analysis types to enable on the firewall. </p>"
+        },
+        "TransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>Required when creating a transit gateway-attached firewall. The unique identifier of the transit gateway to attach to this firewall. You can provide either a transit gateway from your account or one that has been shared with you through Resource Access Manager.</p> <important> <p>After creating the firewall, you cannot change the transit gateway association. To use a different transit gateway, you must create a new firewall.</p> </important> <p>For information about creating firewalls, see <a>CreateFirewall</a>. For specific guidance about transit gateway-attached firewalls, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/tgw-firewall-considerations.html\">Considerations for transit gateway-attached firewalls</a> in the <i>Network Firewall Developer Guide</i>.</p>"
+        },
+        "AvailabilityZoneMappings":{
+          "shape":"AvailabilityZoneMappings",
+          "documentation":"<p>Required. The Availability Zones where you want to create firewall endpoints for a transit gateway-attached firewall. You must specify at least one Availability Zone. Consider enabling the firewall in every Availability Zone where you have workloads to maintain Availability Zone independence.</p> <p>You can modify Availability Zones later using <a>AssociateAvailabilityZones</a> or <a>DisassociateAvailabilityZones</a>, but this may briefly disrupt traffic. The <code>AvailabilityZoneChangeProtection</code> setting controls whether you can make these modifications.</p>"
+        },
+        "AvailabilityZoneChangeProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Optional. A setting indicating whether the firewall is protected against changes to its Availability Zone configuration. When set to <code>TRUE</code>, you cannot add or remove Availability Zones without first disabling this protection using <a>UpdateAvailabilityZoneChangeProtection</a>.</p> <p>Default value: <code>FALSE</code> </p>"
         }
       }
     },
@@ -1533,6 +1746,33 @@
         "FirewallStatus":{"shape":"FirewallStatus"}
       }
     },
+    "DeleteNetworkFirewallTransitGatewayAttachmentRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>Required. The unique identifier of the transit gateway attachment to delete.</p>"
+        }
+      }
+    },
+    "DeleteNetworkFirewallTransitGatewayAttachmentResponse":{
+      "type":"structure",
+      "required":[
+        "TransitGatewayAttachmentId",
+        "TransitGatewayAttachmentStatus"
+      ],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the transit gateway attachment that was deleted.</p>"
+        },
+        "TransitGatewayAttachmentStatus":{
+          "shape":"TransitGatewayAttachmentStatus",
+          "documentation":"<p>The current status of the transit gateway attachment deletion process.</p> <p>Valid values are:</p> <ul> <li> <p> <code>CREATING</code> - The attachment is being created</p> </li> <li> <p> <code>DELETING</code> - The attachment is being deleted</p> </li> <li> <p> <code>DELETED</code> - The attachment has been deleted</p> </li> <li> <p> <code>FAILED</code> - The attachment creation has failed and cannot be recovered</p> </li> <li> <p> <code>ERROR</code> - The attachment is in an error state that might be recoverable</p> </li> <li> <p> <code>READY</code> - The attachment is active and processing traffic</p> </li> <li> <p> <code>PENDING_ACCEPTANCE</code> - The attachment is waiting to be accepted</p> </li> <li> <p> <code>REJECTING</code> - The attachment is in the process of being rejected</p> </li> <li> <p> <code>REJECTED</code> - The attachment has been rejected</p> </li> </ul>"
+        }
+      }
+    },
     "DeleteResourcePolicyRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -1651,6 +1891,10 @@
         "SupportedAvailabilityZones":{
           "shape":"SupportedAvailabilityZones",
           "documentation":"<p>The Availability Zones that the firewall currently supports. This includes all Availability Zones for which the firewall has a subnet defined. </p>"
+        },
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The unique identifier of the transit gateway attachment associated with this firewall. This field is only present for transit gateway-attached firewalls.</p>"
         }
       }
     },
@@ -1885,7 +2129,7 @@
         "StatefulRuleOptions":{"shape":"StatefulRuleOptions"},
         "LastModifiedTime":{
           "shape":"LastUpdateTime",
-          "documentation":"<p>The last time that the rule group was changed.</p>"
+          "documentation":"<p>A timestamp indicating when the rule group was last modified.</p>"
         }
       }
     },
@@ -2021,6 +2265,49 @@
       "member":{"shape":"Dimension"},
       "max":1,
       "min":1
+    },
+    "DisassociateAvailabilityZonesRequest":{
+      "type":"structure",
+      "required":["AvailabilityZoneMappings"],
+      "members":{
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>An optional token that you can use for optimistic locking. Network Firewall returns a token to your requests that access the firewall. The token marks the state of the firewall resource at the time of the request. </p> <p>To make an unconditional change to the firewall, omit the token in your update request. Without the token, Network Firewall performs your updates regardless of whether the firewall has changed since you last retrieved it.</p> <p>To make a conditional change to the firewall, provide the token in your update request. Network Firewall uses the token to ensure that the firewall hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the firewall again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        },
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "FirewallName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the firewall. You can't change the name of a firewall after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "AvailabilityZoneMappings":{
+          "shape":"AvailabilityZoneMappings",
+          "documentation":"<p>Required. The Availability Zones to remove from the firewall's configuration.</p>"
+        }
+      }
+    },
+    "DisassociateAvailabilityZonesResponse":{
+      "type":"structure",
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "FirewallName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the firewall. You can't change the name of a firewall after you create it.</p>"
+        },
+        "AvailabilityZoneMappings":{
+          "shape":"AvailabilityZoneMappings",
+          "documentation":"<p>The remaining Availability Zones where the firewall has endpoints after the disassociation.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>An optional token that you can use for optimistic locking. Network Firewall returns a token to your requests that access the firewall. The token marks the state of the firewall resource at the time of the request. </p> <p>To make an unconditional change to the firewall, omit the token in your update request. Without the token, Network Firewall performs your updates regardless of whether the firewall has changed since you last retrieved it.</p> <p>To make a conditional change to the firewall, provide the token in your update request. Network Firewall uses the token to ensure that the firewall hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the firewall again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
     },
     "DisassociateSubnetsRequest":{
       "type":"structure",
@@ -2167,6 +2454,22 @@
         "EnabledAnalysisTypes":{
           "shape":"EnabledAnalysisTypes",
           "documentation":"<p>An optional setting indicating the specific traffic analysis types to enable on the firewall. </p>"
+        },
+        "TransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>The unique identifier of the transit gateway associated with this firewall. This field is only present for transit gateway-attached firewalls.</p>"
+        },
+        "TransitGatewayOwnerAccountId":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The Amazon Web Services account ID that owns the transit gateway. This may be different from the firewall owner's account ID when using a shared transit gateway.</p>"
+        },
+        "AvailabilityZoneMappings":{
+          "shape":"AvailabilityZoneMappings",
+          "documentation":"<p>The Availability Zones where the firewall endpoints are created for a transit gateway-attached firewall. Each mapping specifies an Availability Zone where the firewall processes traffic.</p>"
+        },
+        "AvailabilityZoneChangeProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>A setting indicating whether the firewall is protected against changes to its Availability Zone configuration. When set to <code>TRUE</code>, you must first disable this protection before adding or removing Availability Zones.</p>"
         }
       },
       "documentation":"<p>A firewall defines the behavior of a firewall, the main VPC where the firewall is used, the Availability Zones where the firewall can be used, and one subnet to use for a firewall endpoint within each of the Availability Zones. The Availability Zones are defined implicitly in the subnet specifications.</p> <p>In addition to the firewall endpoints that you define in this <code>Firewall</code> specification, you can create firewall endpoints in <code>VpcEndpointAssociation</code> resources for any VPC, in any Availability Zone where the firewall is already in use. </p> <p>The status of the firewall, for example whether it's ready to filter network traffic, is provided in the corresponding <a>FirewallStatus</a>. You can retrieve both the firewall and firewall status by calling <a>DescribeFirewall</a>.</p>"
@@ -2181,6 +2484,10 @@
         "FirewallArn":{
           "shape":"ResourceArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The unique identifier of the transit gateway attachment associated with this firewall. This field is only present for transit gateway-attached firewalls.</p>"
         }
       },
       "documentation":"<p>High-level information about a firewall, returned by operations like create and describe. You can use the information provided in the metadata to retrieve and manage a firewall.</p>"
@@ -2326,6 +2633,10 @@
         "CapacityUsageSummary":{
           "shape":"CapacityUsageSummary",
           "documentation":"<p>Describes the capacity usage of the resources contained in a firewall's reference sets. Network Firewall calculates the capacity usage by taking an aggregated count of all of the resources used by all of the reference sets in a firewall.</p>"
+        },
+        "TransitGatewayAttachmentSyncState":{
+          "shape":"TransitGatewayAttachmentSyncState",
+          "documentation":"<p>The synchronization state of the transit gateway attachment. This indicates whether the firewall's transit gateway configuration is properly synchronized and operational. Use this to verify that your transit gateway configuration changes have been applied.</p>"
         }
       },
       "documentation":"<p>Detailed information about the current status of a <a>Firewall</a>. You can retrieve this for a firewall by calling <a>DescribeFirewall</a> and providing the firewall name and ARN.</p> <p>The firewall status indicates a combined status. It indicates whether all subnets are up-to-date with the latest firewall configurations, which is based on the sync states config values, and also whether all subnets have their endpoints fully enabled, based on their sync states attachment values. </p>"
@@ -3359,6 +3670,33 @@
       },
       "documentation":"<p>Contains a set of IP set references.</p>"
     },
+    "RejectNetworkFirewallTransitGatewayAttachmentRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>Required. The unique identifier of the transit gateway attachment to reject. This ID is returned in the response when creating a transit gateway-attached firewall.</p>"
+        }
+      }
+    },
+    "RejectNetworkFirewallTransitGatewayAttachmentResponse":{
+      "type":"structure",
+      "required":[
+        "TransitGatewayAttachmentId",
+        "TransitGatewayAttachmentStatus"
+      ],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The unique identifier of the transit gateway attachment that was rejected.</p>"
+        },
+        "TransitGatewayAttachmentStatus":{
+          "shape":"TransitGatewayAttachmentStatus",
+          "documentation":"<p>The current status of the transit gateway attachment. Valid values are:</p> <ul> <li> <p> <code>CREATING</code> - The attachment is being created</p> </li> <li> <p> <code>DELETING</code> - The attachment is being deleted</p> </li> <li> <p> <code>DELETED</code> - The attachment has been deleted</p> </li> <li> <p> <code>FAILED</code> - The attachment creation has failed and cannot be recovered</p> </li> <li> <p> <code>ERROR</code> - The attachment is in an error state that might be recoverable</p> </li> <li> <p> <code>READY</code> - The attachment is active and processing traffic</p> </li> <li> <p> <code>PENDING_ACCEPTANCE</code> - The attachment is waiting to be accepted</p> </li> <li> <p> <code>REJECTING</code> - The attachment is in the process of being rejected</p> </li> <li> <p> <code>REJECTED</code> - The attachment has been rejected</p> </li> </ul> <p>For information about troubleshooting endpoint failures, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/firewall-troubleshooting-endpoint-failures.html\">Troubleshooting firewall endpoint failures</a> in the <i>Network Firewall Developer Guide</i>.</p>"
+        }
+      }
+    },
     "ReportTime":{"type":"timestamp"},
     "ResourceArn":{
       "type":"string",
@@ -3538,7 +3876,7 @@
         },
         "SnsTopic":{
           "shape":"ResourceArn",
-          "documentation":"<p>The Amazon resource name (ARN) of the Amazon Simple Notification Service SNS topic that's used to record changes to the managed rule group. You can subscribe to the SNS topic to receive notifications when the managed rule group is modified, such as for new versions and for version expiration. For more information, see the <a href=\"https://docs.aws.amazon.com/sns/latest/dg/welcome.html\">Amazon Simple Notification Service Developer Guide.</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Simple Notification Service SNS topic that's used to record changes to the managed rule group. You can subscribe to the SNS topic to receive notifications when the managed rule group is modified, such as for new versions and for version expiration. For more information, see the <a href=\"https://docs.aws.amazon.com/sns/latest/dg/welcome.html\">Amazon Simple Notification Service Developer Guide.</a>.</p>"
         },
         "LastModifiedTime":{
           "shape":"LastUpdateTime",
@@ -3614,7 +3952,7 @@
           "documentation":"<p>A list of port ranges. </p>"
         }
       },
-      "documentation":"<p>Settings that are available for use in the rules in the <a>RuleGroup</a> where this is defined. </p>"
+      "documentation":"<p>Settings that are available for use in the rules in the <a>RuleGroup</a> where this is defined. See <a>CreateRuleGroup</a> or <a>UpdateRuleGroup</a> for usage.</p>"
     },
     "RulesSource":{
       "type":"structure",
@@ -3689,7 +4027,7 @@
         },
         "CertificateAuthorityArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the imported certificate authority (CA) certificate within Certificate Manager (ACM) to use for outbound SSL/TLS inspection.</p> <p>The following limitations apply:</p> <ul> <li> <p>You can use CA certificates that you imported into ACM, but you can't generate CA certificates with ACM.</p> </li> <li> <p>You can't use certificates issued by Private Certificate Authority.</p> </li> </ul> <p>For more information about configuring certificates for outbound inspection, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/tls-inspection-certificate-requirements.html\">Using SSL/TLS certificates with certificates with TLS inspection configurations</a> in the <i>Network Firewall Developer Guide</i>. </p> <p>For information about working with certificates in ACM, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/import-certificate.html\">Importing certificates</a> in the <i>Certificate Manager User Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the imported certificate authority (CA) certificate within Certificate Manager (ACM) to use for outbound SSL/TLS inspection.</p> <p>The following limitations apply:</p> <ul> <li> <p>You can use CA certificates that you imported into ACM, but you can't generate CA certificates with ACM.</p> </li> <li> <p>You can't use certificates issued by Private Certificate Authority.</p> </li> </ul> <p>For more information about configuring certificates for outbound inspection, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/tls-inspection-certificate-requirements.html\">Using SSL/TLS certificates with TLS inspection configurations</a> in the <i>Network Firewall Developer Guide</i>. </p> <p>For information about working with certificates in ACM, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/import-certificate.html\">Importing certificates</a> in the <i>Certificate Manager User Guide</i>.</p>"
         },
         "CheckCertificateRevocationStatus":{
           "shape":"CheckCertificateRevocationStatusActions",
@@ -3913,7 +4251,7 @@
       "members":{
         "RuleOrder":{
           "shape":"RuleOrder",
-          "documentation":"<p>Indicates how to manage the order of stateful rule evaluation for the policy. <code>STRICT_ORDER</code> is the default and recommended option. With <code>STRICT_ORDER</code>, provide your rules in the order that you want them to be evaluated. You can then choose one or more default actions for packets that don't match any rules. Choose <code>STRICT_ORDER</code> to have the stateful rules engine determine the evaluation order of your rules. The default action for this rule order is <code>PASS</code>, followed by <code>DROP</code>, <code>REJECT</code>, and <code>ALERT</code> actions. Stateful rules are provided to the rule engine as Suricata compatible strings, and Suricata evaluates them based on your settings. For more information, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/suricata-rule-evaluation-order.html\">Evaluation order for stateful rules</a> in the <i>Network Firewall Developer Guide</i>. </p>"
+          "documentation":"<p>Indicates how to manage the order of stateful rule evaluation for the policy. <code>STRICT_ORDER</code> is the recommended option, but <code>DEFAULT_ACTION_ORDER</code> is the default option. With <code>STRICT_ORDER</code>, provide your rules in the order that you want them to be evaluated. You can then choose one or more default actions for packets that don't match any rules. Choose <code>STRICT_ORDER</code> to have the stateful rules engine determine the evaluation order of your rules. The default action for this rule order is <code>PASS</code>, followed by <code>DROP</code>, <code>REJECT</code>, and <code>ALERT</code> actions. Stateful rules are provided to the rule engine as Suricata compatible strings, and Suricata evaluates them based on your settings. For more information, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/suricata-rule-evaluation-order.html\">Evaluation order for stateful rules</a> in the <i>Network Firewall Developer Guide</i>. </p>"
         },
         "StreamExceptionPolicy":{
           "shape":"StreamExceptionPolicy",
@@ -4021,7 +4359,9 @@
         "IKEV2",
         "TFTP",
         "NTP",
-        "DHCP"
+        "DHCP",
+        "HTTP2",
+        "QUIC"
       ]
     },
     "StatefulRules":{
@@ -4377,6 +4717,51 @@
       },
       "documentation":"<p>Contains metadata about an Certificate Manager certificate.</p>"
     },
+    "TransitGatewayAttachmentId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^tgw-attach-[0-9a-z]+$"
+    },
+    "TransitGatewayAttachmentStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "DELETING",
+        "DELETED",
+        "FAILED",
+        "ERROR",
+        "READY",
+        "PENDING_ACCEPTANCE",
+        "REJECTING",
+        "REJECTED"
+      ]
+    },
+    "TransitGatewayAttachmentSyncState":{
+      "type":"structure",
+      "members":{
+        "AttachmentId":{
+          "shape":"AttachmentId",
+          "documentation":"<p>The unique identifier of the transit gateway attachment.</p>"
+        },
+        "TransitGatewayAttachmentStatus":{
+          "shape":"TransitGatewayAttachmentStatus",
+          "documentation":"<p>The current status of the transit gateway attachment.</p> <p>Valid values are:</p> <ul> <li> <p> <code>CREATING</code> - The attachment is being created</p> </li> <li> <p> <code>DELETING</code> - The attachment is being deleted</p> </li> <li> <p> <code>DELETED</code> - The attachment has been deleted</p> </li> <li> <p> <code>FAILED</code> - The attachment creation has failed and cannot be recovered</p> </li> <li> <p> <code>ERROR</code> - The attachment is in an error state that might be recoverable</p> </li> <li> <p> <code>READY</code> - The attachment is active and processing traffic</p> </li> <li> <p> <code>PENDING_ACCEPTANCE</code> - The attachment is waiting to be accepted</p> </li> <li> <p> <code>REJECTING</code> - The attachment is in the process of being rejected</p> </li> <li> <p> <code>REJECTED</code> - The attachment has been rejected</p> </li> </ul>"
+        },
+        "StatusMessage":{
+          "shape":"TransitGatewayAttachmentSyncStateMessage",
+          "documentation":"<p>A message providing additional information about the current status, particularly useful when the transit gateway attachment is in a non-<code>READY</code> state.</p> <p>Valid values are:</p> <ul> <li> <p> <code>CREATING</code> - The attachment is being created</p> </li> <li> <p> <code>DELETING</code> - The attachment is being deleted</p> </li> <li> <p> <code>DELETED</code> - The attachment has been deleted</p> </li> <li> <p> <code>FAILED</code> - The attachment creation has failed and cannot be recovered</p> </li> <li> <p> <code>ERROR</code> - The attachment is in an error state that might be recoverable</p> </li> <li> <p> <code>READY</code> - The attachment is active and processing traffic</p> </li> <li> <p> <code>PENDING_ACCEPTANCE</code> - The attachment is waiting to be accepted</p> </li> <li> <p> <code>REJECTING</code> - The attachment is in the process of being rejected</p> </li> <li> <p> <code>REJECTED</code> - The attachment has been rejected</p> </li> </ul> <p>For information about troubleshooting endpoint failures, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/firewall-troubleshooting-endpoint-failures.html\">Troubleshooting firewall endpoint failures</a> in the <i>Network Firewall Developer Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the synchronization state of a transit gateway attachment, including its current status and any error messages. Network Firewall uses this to track the state of your transit gateway configuration changes.</p>"
+    },
+    "TransitGatewayAttachmentSyncStateMessage":{"type":"string"},
+    "TransitGatewayId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^tgw-[0-9a-z]+$"
+    },
     "UniqueSources":{
       "type":"structure",
       "members":{
@@ -4415,6 +4800,49 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{}
+    },
+    "UpdateAvailabilityZoneChangeProtectionRequest":{
+      "type":"structure",
+      "required":["AvailabilityZoneChangeProtection"],
+      "members":{
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>An optional token that you can use for optimistic locking. Network Firewall returns a token to your requests that access the firewall. The token marks the state of the firewall resource at the time of the request. </p> <p>To make an unconditional change to the firewall, omit the token in your update request. Without the token, Network Firewall performs your updates regardless of whether the firewall has changed since you last retrieved it.</p> <p>To make a conditional change to the firewall, provide the token in your update request. Network Firewall uses the token to ensure that the firewall hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the firewall again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        },
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "FirewallName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the firewall. You can't change the name of a firewall after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "AvailabilityZoneChangeProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>A setting indicating whether the firewall is protected against changes to the subnet associations. Use this setting to protect against accidentally modifying the subnet associations for a firewall that is in use. When you create a firewall, the operation initializes this setting to <code>TRUE</code>.</p>"
+        }
+      }
+    },
+    "UpdateAvailabilityZoneChangeProtectionResponse":{
+      "type":"structure",
+      "members":{
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>An optional token that you can use for optimistic locking. Network Firewall returns a token to your requests that access the firewall. The token marks the state of the firewall resource at the time of the request. </p> <p>To make an unconditional change to the firewall, omit the token in your update request. Without the token, Network Firewall performs your updates regardless of whether the firewall has changed since you last retrieved it.</p> <p>To make a conditional change to the firewall, provide the token in your update request. Network Firewall uses the token to ensure that the firewall hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the firewall again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        },
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "FirewallName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the firewall. You can't change the name of a firewall after you create it.</p>"
+        },
+        "AvailabilityZoneChangeProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>A setting indicating whether the firewall is protected against changes to the subnet associations. Use this setting to protect against accidentally modifying the subnet associations for a firewall that is in use. When you create a firewall, the operation initializes this setting to <code>TRUE</code>.</p>"
+        }
+      }
     },
     "UpdateFirewallAnalysisSettingsRequest":{
       "type":"structure",

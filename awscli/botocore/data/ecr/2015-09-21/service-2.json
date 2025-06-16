@@ -304,7 +304,7 @@
         {"shape":"RepositoryNotFoundException"},
         {"shape":"ImageNotFoundException"}
       ],
-      "documentation":"<p>Returns metadata about the images in a repository.</p> <note> <p>Beginning with Docker version 1.9, the Docker client compresses image layers before pushing them to a V2 Docker registry. The output of the <code>docker images</code> command shows the uncompressed image size, so it may return a larger image size than the image sizes returned by <a>DescribeImages</a>.</p> </note>"
+      "documentation":"<p>Returns metadata about the images in a repository.</p> <note> <p>Starting with Docker version 1.9, the Docker client compresses image layers before pushing them to a V2 Docker registry. The output of the <code>docker images</code> command shows the uncompressed image size. Therefore, Docker might return a larger image than the image shown in the Amazon Web Services Management Console.</p> </note> <important> <p>The new version of Amazon ECR <i>Basic Scanning</i> doesn't use the <a>ImageDetail$imageScanFindingsSummary</a> and <a>ImageDetail$imageScanStatus</a> attributes from the API response to return scan results. Use the <a>DescribeImageScanFindings</a> API instead. For more information about Amazon Web Services native basic scanning, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html\"> Scan images for software vulnerabilities in Amazon ECR</a>.</p> </important>"
     },
     "DescribePullThroughCacheRules":{
       "name":"DescribePullThroughCacheRules",
@@ -918,6 +918,14 @@
           "shape":"Date",
           "documentation":"<p>The date and time the Amazon ECR container image was pushed.</p>"
         },
+        "lastInUseAt":{
+          "shape":"Date",
+          "documentation":"<p>The most recent date and time a cluster was running the image.</p>"
+        },
+        "inUseCount":{
+          "shape":"InUseCount",
+          "documentation":"<p>The number of Amazon ECS or Amazon EKS clusters currently running the image.</p>"
+        },
         "registry":{
           "shape":"RegistryId",
           "documentation":"<p>The registry the Amazon ECR container image belongs to.</p>"
@@ -1135,7 +1143,7 @@
         },
         "upstreamRegistryUrl":{
           "shape":"Url",
-          "documentation":"<p>The registry URL of the upstream public registry to use as the source for the pull through cache rule. The following is the syntax to use for each supported upstream registry.</p> <ul> <li> <p>Amazon ECR (<code>ecr</code>) – <code>dkr.ecr.&lt;region&gt;.amazonaws.com</code> </p> </li> <li> <p>Amazon ECR Public (<code>ecr-public</code>) – <code>public.ecr.aws</code> </p> </li> <li> <p>Docker Hub (<code>docker-hub</code>) – <code>registry-1.docker.io</code> </p> </li> <li> <p>GitHub Container Registry (<code>github-container-registry</code>) – <code>ghcr.io</code> </p> </li> <li> <p>GitLab Container Registry (<code>gitlab-container-registry</code>) – <code>registry.gitlab.com</code> </p> </li> <li> <p>Kubernetes (<code>k8s</code>) – <code>registry.k8s.io</code> </p> </li> <li> <p>Microsoft Azure Container Registry (<code>azure-container-registry</code>) – <code>&lt;custom&gt;.azurecr.io</code> </p> </li> <li> <p>Quay (<code>quay</code>) – <code>quay.io</code> </p> </li> </ul>"
+          "documentation":"<p>The registry URL of the upstream public registry to use as the source for the pull through cache rule. The following is the syntax to use for each supported upstream registry.</p> <ul> <li> <p>Amazon ECR (<code>ecr</code>) – <code>&lt;accountId&gt;.dkr.ecr.&lt;region&gt;.amazonaws.com</code> </p> </li> <li> <p>Amazon ECR Public (<code>ecr-public</code>) – <code>public.ecr.aws</code> </p> </li> <li> <p>Docker Hub (<code>docker-hub</code>) – <code>registry-1.docker.io</code> </p> </li> <li> <p>GitHub Container Registry (<code>github-container-registry</code>) – <code>ghcr.io</code> </p> </li> <li> <p>GitLab Container Registry (<code>gitlab-container-registry</code>) – <code>registry.gitlab.com</code> </p> </li> <li> <p>Kubernetes (<code>k8s</code>) – <code>registry.k8s.io</code> </p> </li> <li> <p>Microsoft Azure Container Registry (<code>azure-container-registry</code>) – <code>&lt;custom&gt;.azurecr.io</code> </p> </li> <li> <p>Quay (<code>quay</code>) – <code>quay.io</code> </p> </li> </ul>"
         },
         "registryId":{
           "shape":"RegistryId",
@@ -1459,8 +1467,7 @@
     },
     "DeleteRegistryPolicyRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteRegistryPolicyResponse":{
       "type":"structure",
@@ -1729,8 +1736,7 @@
     },
     "DescribeRegistryRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeRegistryResponse":{
       "type":"structure",
@@ -2013,7 +2019,7 @@
       "members":{
         "authorizationData":{
           "shape":"AuthorizationDataList",
-          "documentation":"<p>A list of authorization token data objects that correspond to the <code>registryIds</code> values in the request.</p>"
+          "documentation":"<p>A list of authorization token data objects that correspond to the <code>registryIds</code> values in the request.</p> <note> <p>The size of the authorization token returned by Amazon ECR is not fixed. We recommend that you don't make assumptions about the maximum size.</p> </note>"
         }
       }
     },
@@ -2073,7 +2079,7 @@
         },
         "maxResults":{
           "shape":"LifecyclePreviewMaxResults",
-          "documentation":"<p>The maximum number of repository results returned by <code>GetLifecyclePolicyPreviewRequest</code> in&#x2028; paginated output. When this parameter is used, <code>GetLifecyclePolicyPreviewRequest</code> only returns&#x2028; <code>maxResults</code> results in a single page along with a <code>nextToken</code>&#x2028; response element. The remaining results of the initial request can be seen by sending&#x2028; another <code>GetLifecyclePolicyPreviewRequest</code> request with the returned <code>nextToken</code>&#x2028; value. This value can be between 1 and 1000. If this&#x2028; parameter is not used, then <code>GetLifecyclePolicyPreviewRequest</code> returns up to&#x2028; 100 results and a <code>nextToken</code> value, if&#x2028; applicable. This option cannot be used when you specify images with <code>imageIds</code>.</p>"
+          "documentation":"<p>The maximum number of repository results returned by <code>GetLifecyclePolicyPreviewRequest</code> in&#x2028; paginated output. When this parameter is used, <code>GetLifecyclePolicyPreviewRequest</code> only returns&#x2028; <code>maxResults</code> results in a single page along with a <code>nextToken</code>&#x2028; response element. The remaining results of the initial request can be seen by sending&#x2028; another <code>GetLifecyclePolicyPreviewRequest</code> request with the returned <code>nextToken</code>&#x2028; value. This value can be between 1 and 100. If this&#x2028; parameter is not used, then <code>GetLifecyclePolicyPreviewRequest</code> returns up to&#x2028;100 results and a <code>nextToken</code> value, if&#x2028; applicable. This option cannot be used when you specify images with <code>imageIds</code>.</p>"
         },
         "filter":{
           "shape":"LifecyclePolicyPreviewFilter",
@@ -2151,8 +2157,7 @@
     },
     "GetRegistryPolicyRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetRegistryPolicyResponse":{
       "type":"structure",
@@ -2169,8 +2174,7 @@
     },
     "GetRegistryScanningConfigurationRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetRegistryScanningConfigurationResponse":{
       "type":"structure",
@@ -2282,7 +2286,7 @@
         },
         "imageSizeInBytes":{
           "shape":"ImageSizeInBytes",
-          "documentation":"<p>The size, in bytes, of the image in the repository.</p> <p>If the image is a manifest list, this will be the max size of all manifests in the list.</p> <note> <p>Starting with Docker version 1.9, the Docker client compresses image layers before pushing them to a V2 Docker registry. The output of the <code>docker images</code> command shows the uncompressed image size. Therefore, Docker might return a larger image than the image sizes returned by <a>DescribeImages</a>.</p> </note>"
+          "documentation":"<p>The size, in bytes, of the image in the repository.</p> <p>If the image is a manifest list, this will be the max size of all manifests in the list.</p> <note> <p>Starting with Docker version 1.9, the Docker client compresses image layers before pushing them to a V2 Docker registry. The output of the <code>docker images</code> command shows the uncompressed image size. Therefore, Docker might return a larger image than the image shown in the Amazon Web Services Management Console.</p> </note>"
         },
         "imagePushedAt":{
           "shape":"PushTimestamp",
@@ -2551,6 +2555,10 @@
     "ImageTagsList":{
       "type":"list",
       "member":{"shape":"ImageTag"}
+    },
+    "InUseCount":{
+      "type":"long",
+      "min":0
     },
     "InitiateLayerUploadRequest":{
       "type":"structure",
@@ -3627,7 +3635,7 @@
         },
         "imageTagMutability":{
           "shape":"ImageTagMutability",
-          "documentation":"<p>The tag mutability setting for the repository. If this parameter is omitted, the default setting of MUTABLE will be used which will allow image tags to be overwritten. If IMMUTABLE is specified, all image tags within the repository will be immutable which will prevent them from being overwritten.</p>"
+          "documentation":"<p>The tag mutability setting for the repository. If this parameter is omitted, the default setting of <code>MUTABLE</code> will be used which will allow image tags to be overwritten. If <code>IMMUTABLE</code> is specified, all image tags within the repository will be immutable which will prevent them from being overwritten.</p>"
         },
         "repositoryPolicy":{
           "shape":"RepositoryPolicyText",
@@ -4129,8 +4137,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagStatus":{
       "type":"string",
@@ -4239,8 +4246,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdatePullThroughCacheRuleRequest":{
       "type":"structure",

@@ -15,17 +15,16 @@ import socket
 
 import botocore.config
 from botocore import UNSIGNED, args, exceptions
-from botocore.args import PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
 from botocore.client import ClientEndpointBridge
 from botocore.config import Config
 from botocore.configprovider import ConfigValueStore
 from botocore.credentials import Credentials
-from botocore.exceptions import UnsupportedServiceProtocolsError
 from botocore.hooks import HierarchicalEmitter
 from botocore.model import ServiceModel
 from botocore.parsers import PROTOCOL_PARSERS
 from botocore.serialize import SERIALIZERS
 from botocore.useragent import UserAgentString
+from botocore.utils import PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
 
 from tests import get_botocore_default_config_mapping, mock, unittest
 
@@ -71,6 +70,7 @@ class TestCreateClientArgs(unittest.TestCase):
         service_model.service_name = service_name
         service_model.endpoint_prefix = service_name
         service_model.protocol = 'query'
+        service_model.resolved_protocol = 'query'
         service_model.protocols = ['query']
         service_model.metadata = {
             'serviceFullName': 'MyService',
@@ -551,25 +551,6 @@ class TestCreateClientArgs(unittest.TestCase):
         )
         with self.assertRaises(exceptions.InvalidChecksumConfigError):
             self.call_get_client_args()
-
-    def test_protocol_resolution_without_protocols_trait(self):
-        del self.service_model.protocols
-        del self.service_model.metadata['protocols']
-        client_args = self.call_compute_client_args()
-        self.assertEqual(client_args['protocol'], 'query')
-
-    def test_protocol_resolution_picks_highest_supported(self):
-        self.service_model.protocol = 'query'
-        self.service_model.protocols = ['query', 'json']
-        client_args = self.call_compute_client_args()
-        self.assertEqual(client_args['protocol'], 'json')
-
-    def test_protocol_raises_error_for_unsupported_protocol(self):
-        self.service_model.protocols = ['wrongprotocol']
-        with self.assertRaisesRegex(
-            UnsupportedServiceProtocolsError, self.service_model.service_name
-        ):
-            self.call_compute_client_args()
 
     def test_account_id_endpoint_mode_set_on_config_store(self):
         self.config_store.set_config_variable(

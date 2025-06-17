@@ -163,6 +163,19 @@ class TestServiceModel(unittest.TestCase):
         )
         self.assertEqual(len(self.service_model.client_context_parameters), 0)
 
+    def test_protocol_resolution_without_protocols_trait(self):
+        self.assertIsNone(self.service_model.metadata.get('protocols'))
+        self.assertEqual(self.service_model.resolved_protocol, 'query')
+
+    def test_protocol_resolution_picks_highest_supported(self):
+        self.service_model.metadata['protocols'] = ['query', 'json']
+        self.assertEqual(self.service_model.resolved_protocol, 'json')
+
+    def test_protocol_raises_error_for_unsupported_protocol(self):
+        self.service_model.metadata['protocols'] = ['wrongprotocol']
+        with self.assertRaises(model.UnsupportedServiceProtocolsError):
+            self.service_model.resolved_protocol
+
 
 class TestOperationModelFromService(unittest.TestCase):
     def setUp(self):

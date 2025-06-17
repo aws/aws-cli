@@ -51,7 +51,7 @@ def _test_parsed_response(xmlfile, operation_model, expected):
         response['headers'] = loaded.pop('__headers__')
         response['body'] = json.dumps(loaded).encode('utf-8')
 
-    protocol = operation_model.service_model.protocol
+    protocol = operation_model.service_model.resolved_protocol
     parser_cls = parsers.PROTOCOL_PARSERS[protocol]
     parser = parser_cls(timestamp_parser=lambda x: x)
     parsed = parser.parse(response, operation_model.output_shape)

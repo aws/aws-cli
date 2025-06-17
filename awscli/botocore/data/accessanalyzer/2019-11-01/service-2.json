@@ -1125,6 +1125,10 @@
         "unusedAccess":{
           "shape":"UnusedAccessConfiguration",
           "documentation":"<p>Specifies the configuration of an unused access analyzer for an Amazon Web Services organization or account.</p>"
+        },
+        "internalAccess":{
+          "shape":"InternalAccessConfiguration",
+          "documentation":"<p>Specifies the configuration of an internal access analyzer for an Amazon Web Services organization or account. This configuration determines how the analyzer evaluates access within your Amazon Web Services environment.</p>"
         }
       },
       "documentation":"<p>Contains information about the configuration of an analyzer for an Amazon Web Services organization or account.</p>",
@@ -1187,7 +1191,7 @@
         },
         "configuration":{
           "shape":"AnalyzerConfiguration",
-          "documentation":"<p>Specifies whether the analyzer is an external access or unused access analyzer.</p>"
+          "documentation":"<p>Specifies if the analyzer is an external access, unused access, or internal access analyzer.</p>"
         }
       },
       "documentation":"<p>Contains information about the analyzer.</p>"
@@ -1609,7 +1613,7 @@
         },
         "type":{
           "shape":"Type",
-          "documentation":"<p>The type of analyzer to create. Only <code>ACCOUNT</code>, <code>ORGANIZATION</code>, <code>ACCOUNT_UNUSED_ACCESS</code>, and <code>ORGANIZATION_UNUSED_ACCESS</code> analyzers are supported. You can create only one analyzer per account per Region. You can create up to 5 analyzers per organization per Region.</p>"
+          "documentation":"<p>The type of analyzer to create. You can create only one analyzer per account per Region. You can create up to 5 analyzers per organization per Region.</p>"
         },
         "archiveRules":{
           "shape":"InlineArchiveRulesList",
@@ -1626,7 +1630,7 @@
         },
         "configuration":{
           "shape":"AnalyzerConfiguration",
-          "documentation":"<p>Specifies the configuration of the analyzer. If the analyzer is an unused access analyzer, the specified scope of unused access is used for the configuration.</p>"
+          "documentation":"<p>Specifies the configuration of the analyzer. If the analyzer is an unused access analyzer, the specified scope of unused access is used for the configuration. If the analyzer is an internal access analyzer, the specified internal access analysis rules are used for the configuration.</p>"
         }
       },
       "documentation":"<p>Creates an analyzer.</p>"
@@ -1841,7 +1845,7 @@
         },
         "resourceControlPolicyRestriction":{
           "shape":"ResourceControlPolicyRestriction",
-          "documentation":"<p>The type of restriction applied to the finding by the resource owner with an Organizations resource control policy (RCP).</p>"
+          "documentation":"<p>The type of restriction applied to the finding by the resource owner with an Organizations resource control policy (RCP).</p> <ul> <li> <p> <code>APPLICABLE</code>: There is an RCP present in the organization but IAM Access Analyzer does not include it in the evaluation of effective permissions. For example, if <code>s3:DeleteObject</code> is blocked by the RCP and the restriction is <code>APPLICABLE</code>, then <code>s3:DeleteObject</code> would still be included in the list of actions for the finding.</p> </li> <li> <p> <code>FAILED_TO_EVALUATE_RCP</code>: There was an error evaluating the RCP.</p> </li> <li> <p> <code>NOT_APPLICABLE</code>: There was no RCP present in the organization, or there was no RCP applicable to the resource. For example, the resource being analyzed is an Amazon RDS snapshot and there is an RCP in the organization, but the RCP only impacts Amazon S3 buckets.</p> </li> <li> <p> <code>APPLIED</code>: This restriction is not currently available for external access findings. </p> </li> </ul>"
         }
       },
       "documentation":"<p>Contains information about an external access finding.</p>"
@@ -1983,6 +1987,10 @@
     "FindingDetails":{
       "type":"structure",
       "members":{
+        "internalAccessDetails":{
+          "shape":"InternalAccessDetails",
+          "documentation":"<p>The details for an internal access analyzer finding. This contains information about access patterns identified within your Amazon Web Services organization or account.</p>"
+        },
         "externalAccessDetails":{
           "shape":"ExternalAccessDetails",
           "documentation":"<p>The details for an external access analyzer finding.</p>"
@@ -2199,7 +2207,7 @@
         },
         "findingType":{
           "shape":"FindingType",
-          "documentation":"<p>The type of the external access or unused access finding.</p>"
+          "documentation":"<p>The type of the access finding. For external access analyzers, the type is <code>ExternalAccess</code>. For unused access analyzers, the type can be <code>UnusedIAMRole</code>, <code>UnusedIAMUserAccessKey</code>, <code>UnusedIAMUserPassword</code>, or <code>UnusedPermission</code>. For internal access analyzers, the type is <code>InternalAccess</code>.</p>"
         }
       },
       "documentation":"<p>Contains information about a finding.</p>"
@@ -2211,7 +2219,8 @@
         "UnusedIAMRole",
         "UnusedIAMUserAccessKey",
         "UnusedIAMUserPassword",
-        "UnusedPermission"
+        "UnusedPermission",
+        "InternalAccess"
       ]
     },
     "FindingsList":{
@@ -2228,6 +2237,10 @@
         "externalAccessFindingsStatistics":{
           "shape":"ExternalAccessFindingsStatistics",
           "documentation":"<p>The aggregate statistics for an external access analyzer.</p>"
+        },
+        "internalAccessFindingsStatistics":{
+          "shape":"InternalAccessFindingsStatistics",
+          "documentation":"<p>The aggregate statistics for an internal access analyzer. This includes information about active, archived, and resolved findings related to internal access within your Amazon Web Services organization or account.</p>"
         },
         "unusedAccessFindingsStatistics":{
           "shape":"UnusedAccessFindingsStatistics",
@@ -2644,7 +2657,7 @@
         },
         "findingType":{
           "shape":"FindingType",
-          "documentation":"<p>The type of the finding. For external access analyzers, the type is <code>ExternalAccess</code>. For unused access analyzers, the type can be <code>UnusedIAMRole</code>, <code>UnusedIAMUserAccessKey</code>, <code>UnusedIAMUserPassword</code>, or <code>UnusedPermission</code>.</p>"
+          "documentation":"<p>The type of the finding. For external access analyzers, the type is <code>ExternalAccess</code>. For unused access analyzers, the type can be <code>UnusedIAMRole</code>, <code>UnusedIAMUserAccessKey</code>, <code>UnusedIAMUserPassword</code>, or <code>UnusedPermission</code>. For internal access analyzers, the type is <code>InternalAccess</code>.</p>"
         }
       }
     },
@@ -2749,6 +2762,142 @@
     "Integer":{
       "type":"integer",
       "box":true
+    },
+    "InternalAccessAnalysisRule":{
+      "type":"structure",
+      "members":{
+        "inclusions":{
+          "shape":"InternalAccessAnalysisRuleCriteriaList",
+          "documentation":"<p>A list of rules for the internal access analyzer containing criteria to include in analysis. Only resources that meet the rule criteria will generate findings.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about analysis rules for the internal access analyzer. Analysis rules determine which entities will generate findings based on the criteria you define when you create the rule.</p>"
+    },
+    "InternalAccessAnalysisRuleCriteria":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"AccountIdsList",
+          "documentation":"<p>A list of Amazon Web Services account IDs to apply to the internal access analysis rule criteria. Account IDs can only be applied to the analysis rule criteria for organization-level analyzers.</p>"
+        },
+        "resourceTypes":{
+          "shape":"ResourceTypeList",
+          "documentation":"<p>A list of resource types to apply to the internal access analysis rule criteria. The analyzer will only generate findings for resources of these types. These resource types are currently supported for internal access analyzers:</p> <ul> <li> <p> <code>AWS::S3::Bucket</code> </p> </li> <li> <p> <code>AWS::RDS::DBSnapshot</code> </p> </li> <li> <p> <code>AWS::RDS::DBClusterSnapshot</code> </p> </li> <li> <p> <code>AWS::S3Express::DirectoryBucket</code> </p> </li> <li> <p> <code>AWS::DynamoDB::Table</code> </p> </li> <li> <p> <code>AWS::DynamoDB::Stream</code> </p> </li> </ul>"
+        },
+        "resourceArns":{
+          "shape":"ResourceArnsList",
+          "documentation":"<p>A list of resource ARNs to apply to the internal access analysis rule criteria. The analyzer will only generate findings for resources that match these ARNs.</p>"
+        }
+      },
+      "documentation":"<p>The criteria for an analysis rule for an internal access analyzer.</p>"
+    },
+    "InternalAccessAnalysisRuleCriteriaList":{
+      "type":"list",
+      "member":{"shape":"InternalAccessAnalysisRuleCriteria"}
+    },
+    "InternalAccessConfiguration":{
+      "type":"structure",
+      "members":{
+        "analysisRule":{
+          "shape":"InternalAccessAnalysisRule",
+          "documentation":"<p>Contains information about analysis rules for the internal access analyzer. These rules determine which resources and access patterns will be analyzed.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the configuration of an internal access analyzer for an Amazon Web Services organization or account. This configuration determines how the analyzer evaluates internal access within your Amazon Web Services environment.</p>"
+    },
+    "InternalAccessDetails":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"ActionList",
+          "documentation":"<p>The action in the analyzed policy statement that has internal access permission to use.</p>"
+        },
+        "condition":{
+          "shape":"ConditionKeyMap",
+          "documentation":"<p>The condition in the analyzed policy statement that resulted in an internal access finding.</p>"
+        },
+        "principal":{
+          "shape":"PrincipalMap",
+          "documentation":"<p>The principal that has access to a resource within the internal environment.</p>"
+        },
+        "principalOwnerAccount":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID that owns the principal identified in the internal access finding.</p>"
+        },
+        "accessType":{
+          "shape":"InternalAccessType",
+          "documentation":"<p>The type of internal access identified in the finding. This indicates how the access is granted within your Amazon Web Services environment.</p>"
+        },
+        "principalType":{
+          "shape":"PrincipalType",
+          "documentation":"<p>The type of principal identified in the internal access finding, such as IAM role or IAM user.</p>"
+        },
+        "sources":{
+          "shape":"FindingSourceList",
+          "documentation":"<p>The sources of the internal access finding. This indicates how the access that generated the finding is granted within your Amazon Web Services environment.</p>"
+        },
+        "resourceControlPolicyRestriction":{
+          "shape":"ResourceControlPolicyRestriction",
+          "documentation":"<p>The type of restriction applied to the finding by the resource owner with an Organizations resource control policy (RCP).</p> <ul> <li> <p> <code>APPLICABLE</code>: There is an RCP present in the organization but IAM Access Analyzer does not include it in the evaluation of effective permissions. For example, if <code>s3:DeleteObject</code> is blocked by the RCP and the restriction is <code>APPLICABLE</code>, then <code>s3:DeleteObject</code> would still be included in the list of actions for the finding. Only applicable to internal access findings with the account as the zone of trust. </p> </li> <li> <p> <code>FAILED_TO_EVALUATE_RCP</code>: There was an error evaluating the RCP.</p> </li> <li> <p> <code>NOT_APPLICABLE</code>: There was no RCP present in the organization. For internal access findings with the account as the zone of trust, <code>NOT_APPLICABLE</code> could also indicate that there was no RCP applicable to the resource.</p> </li> <li> <p> <code>APPLIED</code>: An RCP is present in the organization and IAM Access Analyzer included it in the evaluation of effective permissions. For example, if <code>s3:DeleteObject</code> is blocked by the RCP and the restriction is <code>APPLIED</code>, then <code>s3:DeleteObject</code> would not be included in the list of actions for the finding. Only applicable to internal access findings with the organization as the zone of trust. </p> </li> </ul>"
+        },
+        "serviceControlPolicyRestriction":{
+          "shape":"ServiceControlPolicyRestriction",
+          "documentation":"<p>The type of restriction applied to the finding by an Organizations service control policy (SCP).</p> <ul> <li> <p> <code>APPLICABLE</code>: There is an SCP present in the organization but IAM Access Analyzer does not include it in the evaluation of effective permissions. Only applicable to internal access findings with the account as the zone of trust. </p> </li> <li> <p> <code>FAILED_TO_EVALUATE_SCP</code>: There was an error evaluating the SCP.</p> </li> <li> <p> <code>NOT_APPLICABLE</code>: There was no SCP present in the organization. For internal access findings with the account as the zone of trust, <code>NOT_APPLICABLE</code> could also indicate that there was no SCP applicable to the principal.</p> </li> <li> <p> <code>APPLIED</code>: An SCP is present in the organization and IAM Access Analyzer included it in the evaluation of effective permissions. Only applicable to internal access findings with the organization as the zone of trust. </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Contains information about an internal access finding. This includes details about the access that was identified within your Amazon Web Services organization or account.</p>"
+    },
+    "InternalAccessFindingsStatistics":{
+      "type":"structure",
+      "members":{
+        "resourceTypeStatistics":{
+          "shape":"InternalAccessResourceTypeStatisticsMap",
+          "documentation":"<p>The total number of active findings for each resource type of the specified internal access analyzer.</p>"
+        },
+        "totalActiveFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The number of active findings for the specified internal access analyzer.</p>"
+        },
+        "totalArchivedFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The number of archived findings for the specified internal access analyzer.</p>"
+        },
+        "totalResolvedFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The number of resolved findings for the specified internal access analyzer.</p>"
+        }
+      },
+      "documentation":"<p>Provides aggregate statistics about the findings for the specified internal access analyzer. This includes counts of active, archived, and resolved findings.</p>"
+    },
+    "InternalAccessResourceTypeDetails":{
+      "type":"structure",
+      "members":{
+        "totalActiveFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of active findings for the resource type in the internal access analyzer.</p>"
+        },
+        "totalResolvedFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of resolved findings for the resource type in the internal access analyzer.</p>"
+        },
+        "totalArchivedFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of archived findings for the resource type in the internal access analyzer.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the total number of active, archived, and resolved findings for a resource type of an internal access analyzer.</p>"
+    },
+    "InternalAccessResourceTypeStatisticsMap":{
+      "type":"map",
+      "key":{"shape":"ResourceType"},
+      "value":{"shape":"InternalAccessResourceTypeDetails"}
+    },
+    "InternalAccessType":{
+      "type":"string",
+      "enum":[
+        "INTRA_ACCOUNT",
+        "INTRA_ORG"
+      ]
     },
     "InternalServerException":{
       "type":"structure",
@@ -3480,6 +3629,13 @@
       "key":{"shape":"String"},
       "value":{"shape":"String"}
     },
+    "PrincipalType":{
+      "type":"string",
+      "enum":[
+        "IAM_ROLE",
+        "IAM_USER"
+      ]
+    },
     "RdsDbClusterSnapshotAccountId":{"type":"string"},
     "RdsDbClusterSnapshotAccountIdsList":{
       "type":"list",
@@ -3642,12 +3798,17 @@
       "type":"string",
       "pattern":"arn:[^:]*:[^:]*:[^:]*:[^:]*:.*"
     },
+    "ResourceArnsList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "ResourceControlPolicyRestriction":{
       "type":"string",
       "enum":[
         "APPLICABLE",
         "FAILED_TO_EVALUATE_RCP",
-        "NOT_APPLICABLE"
+        "NOT_APPLICABLE",
+        "APPLIED"
       ]
     },
     "ResourceNotFoundException":{
@@ -3710,6 +3871,10 @@
         }
       },
       "documentation":"<p>Contains information about the total number of active cross-account and public findings for a resource type of an external access analyzer.</p>"
+    },
+    "ResourceTypeList":{
+      "type":"list",
+      "member":{"shape":"ResourceType"}
     },
     "ResourceTypeStatisticsMap":{
       "type":"map",
@@ -3858,6 +4023,15 @@
     },
     "SecretsManagerSecretKmsId":{"type":"string"},
     "SecretsManagerSecretPolicy":{"type":"string"},
+    "ServiceControlPolicyRestriction":{
+      "type":"string",
+      "enum":[
+        "APPLICABLE",
+        "FAILED_TO_EVALUATE_SCP",
+        "NOT_APPLICABLE",
+        "APPLIED"
+      ]
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "required":[
@@ -4150,7 +4324,9 @@
         "ACCOUNT",
         "ORGANIZATION",
         "ACCOUNT_UNUSED_ACCESS",
-        "ORGANIZATION_UNUSED_ACCESS"
+        "ORGANIZATION_UNUSED_ACCESS",
+        "ACCOUNT_INTERNAL_ACCESS",
+        "ORGANIZATION_INTERNAL_ACCESS"
       ]
     },
     "UnprocessableEntityException":{

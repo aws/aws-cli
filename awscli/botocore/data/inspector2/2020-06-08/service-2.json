@@ -33,6 +33,44 @@
       ],
       "documentation":"<p>Associates an Amazon Web Services account with an Amazon Inspector delegated administrator. An HTTP 200 response indicates the association was successfully started, but doesn’t indicate whether it was completed. You can check if the association completed by using <a href=\"https://docs.aws.amazon.com/inspector/v2/APIReference/API_ListMembers.html\">ListMembers</a> for multiple accounts or <a href=\"https://docs.aws.amazon.com/inspector/v2/APIReference/API_GetMember.html\">GetMembers</a> for a single account.</p>"
     },
+    "BatchAssociateCodeSecurityScanConfiguration":{
+      "name":"BatchAssociateCodeSecurityScanConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/scan-configuration/batch/associate",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchAssociateCodeSecurityScanConfigurationRequest"},
+      "output":{"shape":"BatchAssociateCodeSecurityScanConfigurationResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Associates multiple code repositories with an Amazon Inspector code security scan configuration.</p>"
+    },
+    "BatchDisassociateCodeSecurityScanConfiguration":{
+      "name":"BatchDisassociateCodeSecurityScanConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/scan-configuration/batch/disassociate",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDisassociateCodeSecurityScanConfigurationRequest"},
+      "output":{"shape":"BatchDisassociateCodeSecurityScanConfigurationResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Disassociates multiple code repositories from an Amazon Inspector code security scan configuration.</p>"
+    },
     "BatchGetAccountStatus":{
       "name":"BatchGetAccountStatus",
       "http":{
@@ -190,6 +228,44 @@
       ],
       "documentation":"<p>Creates a CIS scan configuration.</p>"
     },
+    "CreateCodeSecurityIntegration":{
+      "name":"CreateCodeSecurityIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/integration/create",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateCodeSecurityIntegrationRequest"},
+      "output":{"shape":"CreateCodeSecurityIntegrationResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a code security integration with a source code repository provider.</p> <p>After calling the <code>CreateCodeSecurityIntegration</code> operation, you complete authentication and authorization with your provider. Next you call the <code>UpdateCodeSecurityIntegration</code> operation to provide the <code>details</code> to complete the integration setup</p>"
+    },
+    "CreateCodeSecurityScanConfiguration":{
+      "name":"CreateCodeSecurityScanConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/scan-configuration/create",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateCodeSecurityScanConfigurationRequest"},
+      "output":{"shape":"CreateCodeSecurityScanConfigurationResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a scan configuration for code security scanning.</p>"
+    },
     "CreateFilter":{
       "name":"CreateFilter",
       "http":{
@@ -263,6 +339,42 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a CIS scan configuration.</p>"
+    },
+    "DeleteCodeSecurityIntegration":{
+      "name":"DeleteCodeSecurityIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/integration/delete",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteCodeSecurityIntegrationRequest"},
+      "output":{"shape":"DeleteCodeSecurityIntegrationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a code security integration.</p>"
+    },
+    "DeleteCodeSecurityScanConfiguration":{
+      "name":"DeleteCodeSecurityScanConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/scan-configuration/delete",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteCodeSecurityScanConfigurationRequest"},
+      "output":{"shape":"DeleteCodeSecurityScanConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a code security scan configuration.</p>"
     },
     "DeleteFilter":{
       "name":"DeleteFilter",
@@ -441,6 +553,61 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns a list of clusters and metadata associated with an image.</p>"
+    },
+    "GetCodeSecurityIntegration":{
+      "name":"GetCodeSecurityIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/integration/get",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCodeSecurityIntegrationRequest"},
+      "output":{"shape":"GetCodeSecurityIntegrationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about a code security integration.</p>"
+    },
+    "GetCodeSecurityScan":{
+      "name":"GetCodeSecurityScan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/scan/get",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCodeSecurityScanRequest"},
+      "output":{"shape":"GetCodeSecurityScanResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about a specific code security scan.</p>"
+    },
+    "GetCodeSecurityScanConfiguration":{
+      "name":"GetCodeSecurityScanConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/scan-configuration/get",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCodeSecurityScanConfigurationRequest"},
+      "output":{"shape":"GetCodeSecurityScanConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about a code security scan configuration.</p>"
     },
     "GetConfiguration":{
       "name":"GetConfiguration",
@@ -650,6 +817,59 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns a CIS scan list.</p>"
+    },
+    "ListCodeSecurityIntegrations":{
+      "name":"ListCodeSecurityIntegrations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/integration/list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCodeSecurityIntegrationsRequest"},
+      "output":{"shape":"ListCodeSecurityIntegrationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all code security integrations in your account.</p>"
+    },
+    "ListCodeSecurityScanConfigurationAssociations":{
+      "name":"ListCodeSecurityScanConfigurationAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/scan-configuration/associations/list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCodeSecurityScanConfigurationAssociationsRequest"},
+      "output":{"shape":"ListCodeSecurityScanConfigurationAssociationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the associations between code repositories and Amazon Inspector code security scan configurations.</p>"
+    },
+    "ListCodeSecurityScanConfigurations":{
+      "name":"ListCodeSecurityScanConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/scan-configuration/list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCodeSecurityScanConfigurationsRequest"},
+      "output":{"shape":"ListCodeSecurityScanConfigurationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all code security scan configurations in your account.</p>"
     },
     "ListCoverage":{
       "name":"ListCoverage",
@@ -893,6 +1113,25 @@
       "documentation":"<p> Starts a CIS session. This API is used by the Amazon Inspector SSM plugin to communicate with the Amazon Inspector service. The Amazon Inspector SSM plugin calls this API to start a CIS scan session for the scan ID supplied by the service. </p>",
       "idempotent":true
     },
+    "StartCodeSecurityScan":{
+      "name":"StartCodeSecurityScan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/scan/start",
+        "responseCode":200
+      },
+      "input":{"shape":"StartCodeSecurityScanRequest"},
+      "output":{"shape":"StartCodeSecurityScanResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Initiates a code security scan on a specified repository.</p>"
+    },
     "StopCisSession":{
       "name":"StopCisSession",
       "http":{
@@ -965,6 +1204,44 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates a CIS scan configuration.</p>"
+    },
+    "UpdateCodeSecurityIntegration":{
+      "name":"UpdateCodeSecurityIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/integration/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateCodeSecurityIntegrationRequest"},
+      "output":{"shape":"UpdateCodeSecurityIntegrationResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an existing code security integration.</p> <p>After calling the <code>CreateCodeSecurityIntegration</code> operation, you complete authentication and authorization with your provider. Next you call the <code>UpdateCodeSecurityIntegration</code> operation to provide the <code>details</code> to complete the integration setup</p>"
+    },
+    "UpdateCodeSecurityScanConfiguration":{
+      "name":"UpdateCodeSecurityScanConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesecurity/scan-configuration/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateCodeSecurityScanConfigurationRequest"},
+      "output":{"shape":"UpdateCodeSecurityScanConfigurationResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an existing code security scan configuration.</p>"
     },
     "UpdateConfiguration":{
       "name":"UpdateConfiguration",
@@ -1079,7 +1356,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "documentation":"<p>You do not have sufficient access to perform this action.</p> <p> For <code>Enable</code>, you receive this error if you attempt to use a feature in an unsupported Amazon Web Services Region. </p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
@@ -1236,6 +1513,10 @@
           "shape":"AwsEcrContainerAggregation",
           "documentation":"<p>An object that contains details about an aggregation request based on Amazon ECR container images.</p>"
         },
+        "codeRepositoryAggregation":{
+          "shape":"CodeRepositoryAggregation",
+          "documentation":"<p>An object that contains details about an aggregation request based on code repositories.</p>"
+        },
         "ec2InstanceAggregation":{
           "shape":"Ec2InstanceAggregation",
           "documentation":"<p>An object that contains details about an aggregation request based on Amazon EC2 instances.</p>"
@@ -1295,6 +1576,10 @@
           "shape":"AwsEcrContainerAggregationResponse",
           "documentation":"<p>An object that contains details about an aggregation response based on Amazon ECR container images.</p>"
         },
+        "codeRepositoryAggregation":{
+          "shape":"CodeRepositoryAggregationResponse",
+          "documentation":"<p>An object that contains details about an aggregation response based on code repositories.</p>"
+        },
         "ec2InstanceAggregation":{
           "shape":"Ec2InstanceAggregationResponse",
           "documentation":"<p>An object that contains details about an aggregation response based on Amazon EC2 instances.</p>"
@@ -1348,7 +1633,8 @@
         "IMAGE_LAYER",
         "ACCOUNT",
         "AWS_LAMBDA_FUNCTION",
-        "LAMBDA_LAYER"
+        "LAMBDA_LAYER",
+        "CODE_REPOSITORY"
       ]
     },
     "AmiAggregation":{
@@ -1423,6 +1709,27 @@
       "max":1011,
       "min":1
     },
+    "AssociateConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "resource",
+        "scanConfigurationArn"
+      ],
+      "members":{
+        "resource":{"shape":"CodeSecurityResource"},
+        "scanConfigurationArn":{
+          "shape":"ScanConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scan configuration.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a request to associate a code repository with a scan configuration.</p>"
+    },
+    "AssociateConfigurationRequestList":{
+      "type":"list",
+      "member":{"shape":"AssociateConfigurationRequest"},
+      "max":25,
+      "min":1
+    },
     "AssociateMemberRequest":{
       "type":"structure",
       "required":["accountId"],
@@ -1442,6 +1749,21 @@
           "documentation":"<p>The Amazon Web Services account ID of the successfully associated member account.</p>"
         }
       }
+    },
+    "AssociationResultStatusCode":{
+      "type":"string",
+      "enum":[
+        "INTERNAL_ERROR",
+        "ACCESS_DENIED",
+        "SCAN_CONFIGURATION_NOT_FOUND",
+        "INVALID_INPUT",
+        "RESOURCE_NOT_FOUND",
+        "QUOTA_EXCEEDED"
+      ]
+    },
+    "AssociationResultStatusMessage":{
+      "type":"string",
+      "min":1
     },
     "AtigData":{
       "type":"structure",
@@ -1465,6 +1787,10 @@
       },
       "documentation":"<p>The Amazon Web Services Threat Intel Group (ATIG) details for a specific vulnerability.</p>"
     },
+    "AuthorizationUrl":{
+      "type":"string",
+      "sensitive":true
+    },
     "AutoEnable":{
       "type":"structure",
       "required":[
@@ -1472,6 +1798,10 @@
         "ecr"
       ],
       "members":{
+        "codeRepository":{
+          "shape":"Boolean",
+          "documentation":"<p>Represents whether code repository scans are automatically enabled for new members of your Amazon Inspector organization.</p>"
+        },
         "ec2":{
           "shape":"Boolean",
           "documentation":"<p>Represents whether Amazon EC2 scans are automatically enabled for new members of your Amazon Inspector organization.</p>"
@@ -1486,7 +1816,7 @@
         },
         "lambdaCode":{
           "shape":"Boolean",
-          "documentation":"<p>Represents whether Lambda code scans are automatically enabled for new members of your Amazon Inspector organization. <pre><code> &lt;/p&gt; </code></pre>"
+          "documentation":"<p>Represents whether Lambda code scans are automatically enabled for new members of your Amazon Inspector organization. </p>"
         }
       },
       "documentation":"<p>Represents which scan types are automatically enabled for new members of your Amazon Inspector organization.</p>"
@@ -1828,6 +2158,52 @@
       },
       "exception":true
     },
+    "BatchAssociateCodeSecurityScanConfigurationRequest":{
+      "type":"structure",
+      "required":["associateConfigurationRequests"],
+      "members":{
+        "associateConfigurationRequests":{
+          "shape":"AssociateConfigurationRequestList",
+          "documentation":"<p>A list of code repositories to associate with the specified scan configuration.</p>"
+        }
+      }
+    },
+    "BatchAssociateCodeSecurityScanConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "failedAssociations":{
+          "shape":"FailedAssociationResultList",
+          "documentation":"<p>Details of any code repositories that failed to be associated with the scan configuration.</p>"
+        },
+        "successfulAssociations":{
+          "shape":"SuccessfulAssociationResultList",
+          "documentation":"<p>Details of code repositories that were successfully associated with the scan configuration.</p>"
+        }
+      }
+    },
+    "BatchDisassociateCodeSecurityScanConfigurationRequest":{
+      "type":"structure",
+      "required":["disassociateConfigurationRequests"],
+      "members":{
+        "disassociateConfigurationRequests":{
+          "shape":"DisassociateConfigurationRequestList",
+          "documentation":"<p>A list of code repositories to disassociate from the specified scan configuration.</p>"
+        }
+      }
+    },
+    "BatchDisassociateCodeSecurityScanConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "failedAssociations":{
+          "shape":"FailedAssociationResultList",
+          "documentation":"<p>Details of any code repositories that failed to be disassociated from the scan configuration.</p>"
+        },
+        "successfulAssociations":{
+          "shape":"SuccessfulAssociationResultList",
+          "documentation":"<p>Details of code repositories that were successfully disassociated from the scan configuration.</p>"
+        }
+      }
+    },
     "BatchGetAccountStatusRequest":{
       "type":"structure",
       "members":{
@@ -1941,7 +2317,7 @@
       "members":{
         "accountIds":{
           "shape":"AccountIdSet",
-          "documentation":"<p>The unique identifiers for the Amazon Web Services accounts to retrieve Amazon Inspector deep inspection activation status for. <pre><code> &lt;/p&gt; </code></pre>"
+          "documentation":"<p>The unique identifiers for the Amazon Web Services accounts to retrieve Amazon Inspector deep inspection activation status for. </p>"
         }
       }
     },
@@ -1950,11 +2326,11 @@
       "members":{
         "accountIds":{
           "shape":"MemberAccountEc2DeepInspectionStatusStateList",
-          "documentation":"<p>An array of objects that provide details on the activation status of Amazon Inspector deep inspection for each of the requested accounts. <pre><code> &lt;/p&gt; </code></pre>"
+          "documentation":"<p>An array of objects that provide details on the activation status of Amazon Inspector deep inspection for each of the requested accounts. </p>"
         },
         "failedAccountIds":{
           "shape":"FailedMemberAccountEc2DeepInspectionStatusStateList",
-          "documentation":"<p>An array of objects that provide details on any accounts that failed to activate Amazon Inspector deep inspection and why. <pre><code> &lt;/p&gt; </code></pre>"
+          "documentation":"<p>An array of objects that provide details on any accounts that failed to activate Amazon Inspector deep inspection and why. </p>"
         }
       }
     },
@@ -3014,6 +3390,339 @@
       "max":20,
       "min":1
     },
+    "CodeRepositoryAggregation":{
+      "type":"structure",
+      "members":{
+        "projectNames":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The project names to include in the aggregation results.</p>"
+        },
+        "providerTypes":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The repository provider types to include in the aggregation results.</p>"
+        },
+        "resourceIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The resource IDs to include in the aggregation results.</p>"
+        },
+        "sortBy":{
+          "shape":"CodeRepositorySortBy",
+          "documentation":"<p>The value to sort results by in the code repository aggregation.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The order to sort results by (ascending or descending) in the code repository aggregation.</p>"
+        }
+      },
+      "documentation":"<p>The details that define an aggregation based on code repositories.</p>"
+    },
+    "CodeRepositoryAggregationResponse":{
+      "type":"structure",
+      "required":["projectNames"],
+      "members":{
+        "accountId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID associated with the code repository.</p>"
+        },
+        "exploitAvailableActiveFindingsCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of active findings that have an exploit available for the code repository.</p>"
+        },
+        "fixAvailableActiveFindingsCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of active findings that have a fix available for the code repository.</p>"
+        },
+        "projectNames":{
+          "shape":"String",
+          "documentation":"<p>The names of the projects associated with the code repository.</p>"
+        },
+        "providerType":{
+          "shape":"String",
+          "documentation":"<p>The type of repository provider for the code repository.</p>"
+        },
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The resource ID of the code repository.</p>"
+        },
+        "severityCounts":{"shape":"SeverityCounts"}
+      },
+      "documentation":"<p>A response that contains the results of a finding aggregation by code repository.</p>"
+    },
+    "CodeRepositoryDetails":{
+      "type":"structure",
+      "members":{
+        "integrationArn":{
+          "shape":"CodeRepositoryIntegrationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the code security integration associated with the repository.</p>"
+        },
+        "projectName":{
+          "shape":"CodeRepositoryProjectName",
+          "documentation":"<p>The name of the project in the code repository.</p>"
+        },
+        "providerType":{
+          "shape":"CodeRepositoryProviderType",
+          "documentation":"<p>The type of repository provider (such as GitHub, GitLab, etc.).</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a code repository associated with a finding.</p>"
+    },
+    "CodeRepositoryIntegrationArn":{
+      "type":"string",
+      "pattern":"^arn:(aws[a-zA-Z-]*)?:inspector2:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:codesecurity-integration\\/[a-f0-9-]{36}$"
+    },
+    "CodeRepositoryMetadata":{
+      "type":"structure",
+      "required":[
+        "projectName",
+        "providerType",
+        "providerTypeVisibility"
+      ],
+      "members":{
+        "integrationArn":{
+          "shape":"CodeRepositoryIntegrationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the code security integration associated with the repository.</p>"
+        },
+        "lastScannedCommitId":{
+          "shape":"CommitId",
+          "documentation":"<p>The ID of the last commit that was scanned in the repository.</p>"
+        },
+        "onDemandScan":{
+          "shape":"CodeRepositoryOnDemandScan",
+          "documentation":"<p>Information about on-demand scans performed on the repository.</p>"
+        },
+        "projectName":{
+          "shape":"CodeRepositoryMetadataProjectNameString",
+          "documentation":"<p>The name of the project in the code repository.</p>"
+        },
+        "providerType":{
+          "shape":"CodeRepositoryMetadataProviderTypeString",
+          "documentation":"<p>The type of repository provider (such as GitHub, GitLab, etc.).</p>"
+        },
+        "providerTypeVisibility":{
+          "shape":"CodeRepositoryMetadataProviderTypeVisibilityString",
+          "documentation":"<p>The visibility setting of the repository (public or private).</p>"
+        },
+        "scanConfiguration":{
+          "shape":"ProjectCodeSecurityScanConfiguration",
+          "documentation":"<p>The scan configuration settings applied to the code repository.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata information about a code repository that is being scanned by Amazon Inspector.</p>"
+    },
+    "CodeRepositoryMetadataProjectNameString":{
+      "type":"string",
+      "max":300,
+      "min":1
+    },
+    "CodeRepositoryMetadataProviderTypeString":{
+      "type":"string",
+      "max":300,
+      "min":1
+    },
+    "CodeRepositoryMetadataProviderTypeVisibilityString":{
+      "type":"string",
+      "max":300,
+      "min":1
+    },
+    "CodeRepositoryOnDemandScan":{
+      "type":"structure",
+      "members":{
+        "lastScanAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The timestamp when the last on-demand scan was performed.</p>"
+        },
+        "lastScannedCommitId":{
+          "shape":"CommitId",
+          "documentation":"<p>The ID of the last commit that was scanned during an on-demand scan.</p>"
+        },
+        "scanStatus":{"shape":"ScanStatus"}
+      },
+      "documentation":"<p>Contains information about on-demand scans performed on a code repository.</p>"
+    },
+    "CodeRepositoryProjectName":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "CodeRepositoryProviderType":{
+      "type":"string",
+      "enum":[
+        "GITHUB",
+        "GITLAB_SELF_MANAGED"
+      ]
+    },
+    "CodeRepositorySortBy":{
+      "type":"string",
+      "enum":[
+        "CRITICAL",
+        "HIGH",
+        "ALL"
+      ]
+    },
+    "CodeScanStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "SUCCESSFUL",
+        "FAILED",
+        "SKIPPED"
+      ]
+    },
+    "CodeSecurityClientToken":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[\\S]+$"
+    },
+    "CodeSecurityIntegrationArn":{
+      "type":"string",
+      "documentation":"<p>arn:aws:inspector2:<region>:<account-id>:codesecurity-integration/<uuid></p>",
+      "pattern":"^arn:(aws[a-zA-Z-]*)?:inspector2:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:codesecurity-integration/[a-f0-9-]{36}$"
+    },
+    "CodeSecurityIntegrationSummary":{
+      "type":"structure",
+      "required":[
+        "createdOn",
+        "integrationArn",
+        "lastUpdateOn",
+        "name",
+        "status",
+        "statusReason",
+        "type"
+      ],
+      "members":{
+        "createdOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the code security integration was created.</p>"
+        },
+        "integrationArn":{
+          "shape":"CodeSecurityIntegrationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the code security integration.</p>"
+        },
+        "lastUpdateOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the code security integration was last updated.</p>"
+        },
+        "name":{
+          "shape":"IntegrationName",
+          "documentation":"<p>The name of the code security integration.</p>"
+        },
+        "status":{
+          "shape":"IntegrationStatus",
+          "documentation":"<p>The current status of the code security integration.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current status of the code security integration.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with the code security integration.</p>"
+        },
+        "type":{
+          "shape":"IntegrationType",
+          "documentation":"<p>The type of repository provider for the integration.</p>"
+        }
+      },
+      "documentation":"<p>A summary of information about a code security integration.</p>"
+    },
+    "CodeSecurityResource":{
+      "type":"structure",
+      "members":{
+        "projectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The unique identifier of the project in the code repository.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a specific resource in a code repository that will be scanned.</p>",
+      "union":true
+    },
+    "CodeSecurityScanConfiguration":{
+      "type":"structure",
+      "required":["ruleSetCategories"],
+      "members":{
+        "continuousIntegrationScanConfiguration":{
+          "shape":"ContinuousIntegrationScanConfiguration",
+          "documentation":"<p>Configuration settings for continuous integration scans that run automatically when code changes are made.</p>"
+        },
+        "periodicScanConfiguration":{
+          "shape":"PeriodicScanConfiguration",
+          "documentation":"<p>Configuration settings for periodic scans that run on a scheduled basis.</p>"
+        },
+        "ruleSetCategories":{
+          "shape":"RuleSetCategories",
+          "documentation":"<p>The categories of security rules to be applied during the scan.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration settings for code security scans.</p>"
+    },
+    "CodeSecurityScanConfigurationAssociationSummaries":{
+      "type":"list",
+      "member":{"shape":"CodeSecurityScanConfigurationAssociationSummary"}
+    },
+    "CodeSecurityScanConfigurationAssociationSummary":{
+      "type":"structure",
+      "members":{
+        "resource":{"shape":"CodeSecurityResource"}
+      },
+      "documentation":"<p>A summary of an association between a code repository and a scan configuration.</p>"
+    },
+    "CodeSecurityScanConfigurationSummaries":{
+      "type":"list",
+      "member":{"shape":"CodeSecurityScanConfigurationSummary"}
+    },
+    "CodeSecurityScanConfigurationSummary":{
+      "type":"structure",
+      "required":[
+        "name",
+        "ownerAccountId",
+        "ruleSetCategories",
+        "scanConfigurationArn"
+      ],
+      "members":{
+        "continuousIntegrationScanSupportedEvents":{
+          "shape":"ContinuousIntegrationScanSupportedEvents",
+          "documentation":"<p>The repository events that trigger continuous integration scans.</p>"
+        },
+        "frequencyExpression":{
+          "shape":"FrequencyExpression",
+          "documentation":"<p>The schedule expression for periodic scans, in cron format.</p>"
+        },
+        "name":{
+          "shape":"ScanConfigurationName",
+          "documentation":"<p>The name of the scan configuration.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"OwnerId",
+          "documentation":"<p>The Amazon Web Services account ID that owns the scan configuration.</p>"
+        },
+        "periodicScanFrequency":{
+          "shape":"PeriodicScanFrequency",
+          "documentation":"<p>The frequency at which periodic scans are performed.</p>"
+        },
+        "ruleSetCategories":{
+          "shape":"RuleSetCategories",
+          "documentation":"<p>The categories of security rules applied during the scan.</p>"
+        },
+        "scanConfigurationArn":{
+          "shape":"ScanConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scan configuration.</p>"
+        },
+        "scopeSettings":{
+          "shape":"ScopeSettings",
+          "documentation":"<p>The scope settings that define which repositories will be scanned. If the <code>ScopeSetting</code> parameter is <code>ALL</code> the scan configuration applies to all existing and future projects imported into Amazon Inspector.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with the scan configuration.</p>"
+        }
+      },
+      "documentation":"<p>A summary of information about a code security scan configuration.</p>"
+    },
+    "CodeSecurityUuid":{
+      "type":"string",
+      "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
     "CodeSnippetError":{
       "type":"structure",
       "required":[
@@ -3124,6 +3833,12 @@
       },
       "documentation":"<p>Contains information on the code vulnerability identified in your Lambda function.</p>"
     },
+    "CommitId":{
+      "type":"string",
+      "max":40,
+      "min":0,
+      "pattern":"^([a-f0-9]{40})$"
+    },
     "Component":{"type":"string"},
     "ComponentArn":{"type":"string"},
     "ComponentType":{"type":"string"},
@@ -3145,6 +3860,13 @@
       },
       "documentation":"<p>A compute platform.</p>"
     },
+    "ConfigurationLevel":{
+      "type":"string",
+      "enum":[
+        "ORGANIZATION",
+        "ACCOUNT"
+      ]
+    },
     "ConflictException":{
       "type":"structure",
       "required":[
@@ -3163,12 +3885,36 @@
           "documentation":"<p>The type of the conflicting resource.</p>"
         }
       },
-      "documentation":"<p>A conflict occurred.</p>",
+      "documentation":"<p>A conflict occurred. This exception occurs when the same resource is being modified by concurrent requests.</p>",
       "error":{
         "httpStatusCode":409,
         "senderFault":true
       },
       "exception":true
+    },
+    "ContinuousIntegrationScanConfiguration":{
+      "type":"structure",
+      "required":["supportedEvents"],
+      "members":{
+        "supportedEvents":{
+          "shape":"ContinuousIntegrationScanSupportedEvents",
+          "documentation":"<p>The repository events that trigger continuous integration scans, such as pull requests or commits.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for continuous integration scans that run automatically when code changes are made.</p>"
+    },
+    "ContinuousIntegrationScanEvent":{
+      "type":"string",
+      "enum":[
+        "PULL_REQUEST",
+        "PUSH"
+      ]
+    },
+    "ContinuousIntegrationScanSupportedEvents":{
+      "type":"list",
+      "member":{"shape":"ContinuousIntegrationScanEvent"},
+      "max":2,
+      "min":1
     },
     "Counts":{
       "type":"structure",
@@ -3217,6 +3963,18 @@
           "shape":"CoverageStringFilterList",
           "documentation":"<p>An array of Amazon Web Services account IDs to return coverage statistics for.</p>"
         },
+        "codeRepositoryProjectName":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>Filter criteria for code repositories based on project name.</p>"
+        },
+        "codeRepositoryProviderType":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>Filter criteria for code repositories based on provider type (such as GitHub, GitLab, etc.).</p>"
+        },
+        "codeRepositoryProviderTypeVisibility":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>Filter criteria for code repositories based on visibility setting (public or private).</p>"
+        },
         "ec2InstanceTags":{
           "shape":"CoverageMapFilterList",
           "documentation":"<p>The Amazon EC2 instance tags to filter on.</p>"
@@ -3256,6 +4014,10 @@
         "lastScannedAt":{
           "shape":"CoverageDateFilterList",
           "documentation":"<p>Filters Amazon Web Services resources based on whether Amazon Inspector has checked them for vulnerabilities within the specified time range.</p>"
+        },
+        "lastScannedCommitId":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>Filter criteria for code repositories based on the ID of the last scanned commit.</p>"
         },
         "resourceId":{
           "shape":"CoverageStringFilterList",
@@ -3342,7 +4104,8 @@
         "AWS_EC2_INSTANCE",
         "AWS_ECR_CONTAINER_IMAGE",
         "AWS_ECR_REPOSITORY",
-        "AWS_LAMBDA_FUNCTION"
+        "AWS_LAMBDA_FUNCTION",
+        "CODE_REPOSITORY"
       ]
     },
     "CoverageStringComparison":{
@@ -3487,6 +4250,92 @@
       },
       "documentation":"<p>Creates CIS targets.</p>"
     },
+    "CreateCodeSecurityIntegrationRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type"
+      ],
+      "members":{
+        "details":{
+          "shape":"CreateIntegrationDetail",
+          "documentation":"<p>The integration details specific to the repository provider type.</p>"
+        },
+        "name":{
+          "shape":"IntegrationName",
+          "documentation":"<p>The name of the code security integration.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to apply to the code security integration.</p>"
+        },
+        "type":{
+          "shape":"IntegrationType",
+          "documentation":"<p>The type of repository provider for the integration.</p>"
+        }
+      }
+    },
+    "CreateCodeSecurityIntegrationResponse":{
+      "type":"structure",
+      "required":[
+        "integrationArn",
+        "status"
+      ],
+      "members":{
+        "authorizationUrl":{
+          "shape":"AuthorizationUrl",
+          "documentation":"<p>The URL used to authorize the integration with the repository provider.</p>"
+        },
+        "integrationArn":{
+          "shape":"CodeSecurityIntegrationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created code security integration.</p>"
+        },
+        "status":{
+          "shape":"IntegrationStatus",
+          "documentation":"<p>The current status of the code security integration.</p>"
+        }
+      }
+    },
+    "CreateCodeSecurityScanConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "configuration",
+        "level",
+        "name"
+      ],
+      "members":{
+        "configuration":{
+          "shape":"CodeSecurityScanConfiguration",
+          "documentation":"<p>The configuration settings for the code security scan.</p>"
+        },
+        "level":{
+          "shape":"ConfigurationLevel",
+          "documentation":"<p>The security level for the scan configuration.</p>"
+        },
+        "name":{
+          "shape":"ScanConfigurationName",
+          "documentation":"<p>The name of the scan configuration.</p>"
+        },
+        "scopeSettings":{
+          "shape":"ScopeSettings",
+          "documentation":"<p>The scope settings that define which repositories will be scanned. Include this parameter to create a default scan configuration. Otherwise Amazon Inspector creates a general scan configuration. </p> <p>A default scan configuration automatically applies to all existing and future projects imported into Amazon Inspector. Use the <code>BatchAssociateCodeSecurityScanConfiguration</code> operation to associate a general scan configuration with projects.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to apply to the scan configuration.</p>"
+        }
+      }
+    },
+    "CreateCodeSecurityScanConfigurationResponse":{
+      "type":"structure",
+      "required":["scanConfigurationArn"],
+      "members":{
+        "scanConfigurationArn":{
+          "shape":"ScanConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created scan configuration.</p>"
+        }
+      }
+    },
     "CreateFilterRequest":{
       "type":"structure",
       "required":[
@@ -3560,6 +4409,35 @@
           "documentation":"<p>The ID of the report.</p>"
         }
       }
+    },
+    "CreateGitLabSelfManagedIntegrationDetail":{
+      "type":"structure",
+      "required":[
+        "accessToken",
+        "instanceUrl"
+      ],
+      "members":{
+        "accessToken":{
+          "shape":"GitLabAccessToken",
+          "documentation":"<p>The personal access token used to authenticate with the self-managed GitLab instance.</p>"
+        },
+        "instanceUrl":{
+          "shape":"InstanceUrl",
+          "documentation":"<p>The URL of the self-managed GitLab instance.</p>"
+        }
+      },
+      "documentation":"<p>Contains details required to create an integration with a self-managed GitLab instance.</p>"
+    },
+    "CreateIntegrationDetail":{
+      "type":"structure",
+      "members":{
+        "gitlabSelfManaged":{
+          "shape":"CreateGitLabSelfManagedIntegrationDetail",
+          "documentation":"<p>Details specific to creating an integration with a self-managed GitLab instance.</p>"
+        }
+      },
+      "documentation":"<p>Contains details required to create a code security integration with a specific repository provider.</p>",
+      "union":true
     },
     "CreateSbomExportRequest":{
       "type":"structure",
@@ -3849,6 +4727,44 @@
         }
       }
     },
+    "DeleteCodeSecurityIntegrationRequest":{
+      "type":"structure",
+      "required":["integrationArn"],
+      "members":{
+        "integrationArn":{
+          "shape":"CodeSecurityIntegrationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the code security integration to delete.</p>"
+        }
+      }
+    },
+    "DeleteCodeSecurityIntegrationResponse":{
+      "type":"structure",
+      "members":{
+        "integrationArn":{
+          "shape":"CodeSecurityIntegrationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted code security integration.</p>"
+        }
+      }
+    },
+    "DeleteCodeSecurityScanConfigurationRequest":{
+      "type":"structure",
+      "required":["scanConfigurationArn"],
+      "members":{
+        "scanConfigurationArn":{
+          "shape":"ScanConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scan configuration to delete.</p>"
+        }
+      }
+    },
+    "DeleteCodeSecurityScanConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "scanConfigurationArn":{
+          "shape":"ScanConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted scan configuration.</p>"
+        }
+      }
+    },
     "DeleteFilterRequest":{
       "type":"structure",
       "required":["arn"],
@@ -3973,6 +4889,27 @@
           "documentation":"<p>Information on any accounts for which Amazon Inspector scans could not be disabled. Details are provided for each account.</p>"
         }
       }
+    },
+    "DisassociateConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "resource",
+        "scanConfigurationArn"
+      ],
+      "members":{
+        "resource":{"shape":"CodeSecurityResource"},
+        "scanConfigurationArn":{
+          "shape":"ScanConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scan configuration to disassociate from a code repository.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a request to disassociate a code repository from a scan configuration.</p>"
+    },
+    "DisassociateConfigurationRequestList":{
+      "type":"list",
+      "member":{"shape":"DisassociateConfigurationRequest"},
+      "max":25,
+      "min":1
     },
     "DisassociateMemberRequest":{
       "type":"structure",
@@ -4263,7 +5200,7 @@
         },
         "rescanDuration":{
           "shape":"EcrRescanDuration",
-          "documentation":"<p>The rescan duration configured for image push date. <pre><code> &lt;/p&gt; </code></pre>"
+          "documentation":"<p>The rescan duration configured for image push date. </p>"
         },
         "status":{
           "shape":"EcrRescanDurationStatus",
@@ -4519,6 +5456,29 @@
       "max":100,
       "min":0
     },
+    "FailedAssociationResult":{
+      "type":"structure",
+      "members":{
+        "resource":{"shape":"CodeSecurityResource"},
+        "scanConfigurationArn":{
+          "shape":"ScanConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scan configuration that failed to be associated or disassociated.</p>"
+        },
+        "statusCode":{
+          "shape":"AssociationResultStatusCode",
+          "documentation":"<p>The status code indicating why the association or disassociation failed.</p>"
+        },
+        "statusMessage":{
+          "shape":"AssociationResultStatusMessage",
+          "documentation":"<p>A message explaining why the association or disassociation failed.</p>"
+        }
+      },
+      "documentation":"<p>Details about a failed attempt to associate or disassociate a code repository with a scan configuration.</p>"
+    },
+    "FailedAssociationResultList":{
+      "type":"list",
+      "member":{"shape":"FailedAssociationResult"}
+    },
     "FailedMemberAccountEc2DeepInspectionStatusState":{
       "type":"structure",
       "required":["accountId"],
@@ -4626,6 +5586,14 @@
         "awsAccountId":{
           "shape":"StringFilterList",
           "documentation":"<p>Details of the Amazon Web Services account IDs used to filter findings.</p>"
+        },
+        "codeRepositoryProjectName":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for findings based on the project name in a code repository.</p>"
+        },
+        "codeRepositoryProviderType":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for findings based on the repository provider type (such as GitHub, GitLab, etc.).</p>"
         },
         "codeVulnerabilityDetectorName":{
           "shape":"StringFilterList",
@@ -5216,8 +6184,14 @@
         "EC2",
         "ECR",
         "LAMBDA",
-        "LAMBDA_CODE"
+        "LAMBDA_CODE",
+        "CODE_REPOSITORY"
       ]
+    },
+    "FrequencyExpression":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "FunctionName":{
       "type":"string",
@@ -5355,6 +6329,171 @@
         "nextToken":{
           "shape":"GetClustersForImageNextToken",
           "documentation":"<p>The pagination token from a previous request used to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "GetCodeSecurityIntegrationRequest":{
+      "type":"structure",
+      "required":["integrationArn"],
+      "members":{
+        "integrationArn":{
+          "shape":"CodeSecurityIntegrationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the code security integration to retrieve.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with the code security integration.</p>"
+        }
+      }
+    },
+    "GetCodeSecurityIntegrationResponse":{
+      "type":"structure",
+      "required":[
+        "createdOn",
+        "integrationArn",
+        "lastUpdateOn",
+        "name",
+        "status",
+        "statusReason",
+        "type"
+      ],
+      "members":{
+        "authorizationUrl":{
+          "shape":"AuthorizationUrl",
+          "documentation":"<p>The URL used to authorize the integration with the repository provider. This is only returned if reauthorization is required to fix a connection issue. Otherwise, it is null.</p>"
+        },
+        "createdOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the code security integration was created.</p>"
+        },
+        "integrationArn":{
+          "shape":"CodeSecurityIntegrationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the code security integration.</p>"
+        },
+        "lastUpdateOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the code security integration was last updated.</p>"
+        },
+        "name":{
+          "shape":"IntegrationName",
+          "documentation":"<p>The name of the code security integration.</p>"
+        },
+        "status":{
+          "shape":"IntegrationStatus",
+          "documentation":"<p>The current status of the code security integration.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current status of the code security integration.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with the code security integration.</p>"
+        },
+        "type":{
+          "shape":"IntegrationType",
+          "documentation":"<p>The type of repository provider for the integration.</p>"
+        }
+      }
+    },
+    "GetCodeSecurityScanConfigurationRequest":{
+      "type":"structure",
+      "required":["scanConfigurationArn"],
+      "members":{
+        "scanConfigurationArn":{
+          "shape":"ScanConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scan configuration to retrieve.</p>"
+        }
+      }
+    },
+    "GetCodeSecurityScanConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "configuration":{
+          "shape":"CodeSecurityScanConfiguration",
+          "documentation":"<p>The configuration settings for the code security scan.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the scan configuration was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the scan configuration was last updated.</p>"
+        },
+        "level":{
+          "shape":"ConfigurationLevel",
+          "documentation":"<p>The security level for the scan configuration.</p>"
+        },
+        "name":{
+          "shape":"ScanConfigurationName",
+          "documentation":"<p>The name of the scan configuration.</p>"
+        },
+        "scanConfigurationArn":{
+          "shape":"ScanConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scan configuration.</p>"
+        },
+        "scopeSettings":{
+          "shape":"ScopeSettings",
+          "documentation":"<p>The scope settings that define which repositories will be scanned. If the <code>ScopeSetting</code> parameter is <code>ALL</code> the scan configuration applies to all existing and future projects imported into Amazon Inspector.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with the scan configuration.</p>"
+        }
+      }
+    },
+    "GetCodeSecurityScanRequest":{
+      "type":"structure",
+      "required":[
+        "resource",
+        "scanId"
+      ],
+      "members":{
+        "resource":{
+          "shape":"CodeSecurityResource",
+          "documentation":"<p>The resource identifier for the code repository that was scanned.</p>"
+        },
+        "scanId":{
+          "shape":"CodeSecurityUuid",
+          "documentation":"<p>The unique identifier of the scan to retrieve.</p>"
+        }
+      }
+    },
+    "GetCodeSecurityScanResponse":{
+      "type":"structure",
+      "members":{
+        "accountId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID associated with the scan.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the scan was created.</p>"
+        },
+        "lastCommitId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the last commit that was scanned. This is only returned if the scan was successful or skipped.</p>"
+        },
+        "resource":{
+          "shape":"CodeSecurityResource",
+          "documentation":"<p>The resource identifier for the code repository that was scanned.</p>"
+        },
+        "scanId":{
+          "shape":"CodeSecurityUuid",
+          "documentation":"<p>The unique identifier of the scan.</p>"
+        },
+        "status":{
+          "shape":"CodeScanStatus",
+          "documentation":"<p>The current status of the scan.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current status of the scan.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the scan was last updated.</p>"
         }
       }
     },
@@ -5547,6 +6686,27 @@
         }
       }
     },
+    "GitHubAuthCode":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "sensitive":true
+    },
+    "GitHubInstallationId":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "GitLabAccessToken":{
+      "type":"string",
+      "sensitive":true
+    },
+    "GitLabAuthCode":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "sensitive":true
+    },
     "GroupKey":{
       "type":"string",
       "enum":[
@@ -5643,9 +6803,43 @@
       },
       "documentation":"<p>Information about the Amazon Inspector score given to a finding.</p>"
     },
+    "InstanceUrl":{
+      "type":"string",
+      "pattern":"^https://[-a-zA-Z0-9()@:%_+.~#?&//=]{1,1024}$",
+      "sensitive":true
+    },
     "Integer":{
       "type":"integer",
       "box":true
+    },
+    "IntegrationName":{
+      "type":"string",
+      "max":60,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9-_$:.]*$"
+    },
+    "IntegrationStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "IN_PROGRESS",
+        "ACTIVE",
+        "INACTIVE",
+        "DISABLING"
+      ]
+    },
+    "IntegrationSummaries":{
+      "type":"list",
+      "member":{"shape":"CodeSecurityIntegrationSummary"},
+      "max":100,
+      "min":0
+    },
+    "IntegrationType":{
+      "type":"string",
+      "enum":[
+        "GITLAB_SELF_MANAGED",
+        "GITHUB"
+      ]
     },
     "InternalServerException":{
       "type":"structure",
@@ -6178,6 +7372,119 @@
         "SCAN_START_DATE",
         "FAILED_CHECKS"
       ]
+    },
+    "ListCodeSecurityIntegrationsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListCodeSecurityIntegrationsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListCodeSecurityIntegrationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListCodeSecurityIntegrationsResponse":{
+      "type":"structure",
+      "members":{
+        "integrations":{
+          "shape":"IntegrationSummaries",
+          "documentation":"<p>A list of code security integration summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.</p>"
+        }
+      }
+    },
+    "ListCodeSecurityScanConfigurationAssociationsRequest":{
+      "type":"structure",
+      "required":["scanConfigurationArn"],
+      "members":{
+        "maxResults":{
+          "shape":"ListCodeSecurityScanConfigurationAssociationsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in the response. If your request would return more than the maximum the response will return a <code>nextToken</code> value, use this value when you call the action again to get the remaining results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the <code>NextToken</code> value returned from the previous request to continue listing results after the first page.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "scanConfigurationArn":{
+          "shape":"ScanConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scan configuration to list associations for.</p>"
+        }
+      }
+    },
+    "ListCodeSecurityScanConfigurationAssociationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListCodeSecurityScanConfigurationAssociationsResponse":{
+      "type":"structure",
+      "members":{
+        "associations":{
+          "shape":"CodeSecurityScanConfigurationAssociationSummaries",
+          "documentation":"<p>A list of associations between code repositories and scan configurations.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the <code>NextToken</code> value returned from the previous request to continue listing results after the first page.</p>"
+        }
+      }
+    },
+    "ListCodeSecurityScanConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListCodeSecurityScanConfigurationsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListCodeSecurityScanConfigurationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListCodeSecurityScanConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "configurations":{
+          "shape":"CodeSecurityScanConfigurationSummaries",
+          "documentation":"<p>A list of code security scan configuration summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.</p>"
+        }
+      }
     },
     "ListCoverageMaxResults":{
       "type":"integer",
@@ -6961,6 +8268,28 @@
       "max":5,
       "min":0
     },
+    "PeriodicScanConfiguration":{
+      "type":"structure",
+      "members":{
+        "frequency":{
+          "shape":"PeriodicScanFrequency",
+          "documentation":"<p>The frequency at which periodic scans are performed (such as weekly or monthly).</p> <p>If you don't provide the <code>frequencyExpression</code> Amazon Inspector chooses day for the scan to run. If you provide the <code>frequencyExpression</code>, the schedule must match the specified <code>frequency</code>.</p>"
+        },
+        "frequencyExpression":{
+          "shape":"FrequencyExpression",
+          "documentation":"<p>The schedule expression for periodic scans, in cron format.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for periodic scans that run on a scheduled basis.</p>"
+    },
+    "PeriodicScanFrequency":{
+      "type":"string",
+      "enum":[
+        "WEEKLY",
+        "MONTHLY",
+        "NEVER"
+      ]
+    },
     "Permission":{
       "type":"structure",
       "required":[
@@ -7049,6 +8378,64 @@
       "type":"string",
       "max":32,
       "min":0
+    },
+    "ProjectCodeSecurityScanConfiguration":{
+      "type":"structure",
+      "members":{
+        "continuousIntegrationScanConfigurations":{
+          "shape":"ProjectContinuousIntegrationScanConfigurationList",
+          "documentation":"<p>The continuous integration scan configurations applied to the project.</p>"
+        },
+        "periodicScanConfigurations":{
+          "shape":"ProjectPeriodicScanConfigurationList",
+          "documentation":"<p>The periodic scan configurations applied to the project.</p>"
+        }
+      },
+      "documentation":"<p>Contains the scan configuration settings applied to a specific project in a code repository.</p>"
+    },
+    "ProjectContinuousIntegrationScanConfiguration":{
+      "type":"structure",
+      "members":{
+        "ruleSetCategories":{
+          "shape":"RuleSetCategories",
+          "documentation":"<p>The categories of security rules applied during continuous integration scans for the project.</p>"
+        },
+        "supportedEvent":{
+          "shape":"ContinuousIntegrationScanEvent",
+          "documentation":"<p>The repository event that triggers continuous integration scans for the project.</p>"
+        }
+      },
+      "documentation":"<p>Contains the continuous integration scan configuration settings applied to a specific project.</p>"
+    },
+    "ProjectContinuousIntegrationScanConfigurationList":{
+      "type":"list",
+      "member":{"shape":"ProjectContinuousIntegrationScanConfiguration"}
+    },
+    "ProjectId":{
+      "type":"string",
+      "pattern":"^project-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
+    "ProjectPeriodicScanConfiguration":{
+      "type":"structure",
+      "members":{
+        "frequencyExpression":{
+          "shape":"FrequencyExpression",
+          "documentation":"<p>The schedule expression for periodic scans, in cron format, applied to the project.</p>"
+        },
+        "ruleSetCategories":{
+          "shape":"RuleSetCategories",
+          "documentation":"<p>The categories of security rules applied during periodic scans for the project.</p>"
+        }
+      },
+      "documentation":"<p>Contains the periodic scan configuration settings applied to a specific project.</p>"
+    },
+    "ProjectPeriodicScanConfigurationList":{
+      "type":"list",
+      "member":{"shape":"ProjectPeriodicScanConfiguration"}
+    },
+    "ProjectSelectionScope":{
+      "type":"string",
+      "enum":["ALL"]
     },
     "Reason":{
       "type":"string",
@@ -7260,6 +8647,10 @@
         "awsLambdaFunction":{
           "shape":"AwsLambdaFunctionDetails",
           "documentation":"<p>A summary of the information about an Amazon Web Services Lambda function affected by a finding.</p>"
+        },
+        "codeRepository":{
+          "shape":"CodeRepositoryDetails",
+          "documentation":"<p>Contains details about a code repository resource associated with a finding.</p>"
         }
       },
       "documentation":"<p>Contains details about the resource involved in the finding.</p>"
@@ -7306,7 +8697,7 @@
       "type":"string",
       "max":341,
       "min":10,
-      "pattern":"(^arn:.*:ecr:.*:\\d{12}:repository\\/(?:[a-z0-9]+(?:[._-][a-z0-9]+)*\\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*(\\/sha256:[a-z0-9]{64})?$)|(^i-([a-z0-9]{8}|[a-z0-9]{17}|\\\\*)$|(^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$))"
+      "pattern":"(^arn:.*:ecr:.*:\\d{12}:repository\\/(?:[a-z0-9]+(?:[._-][a-z0-9]+)*\\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*(\\/sha256:[a-z0-9]{64})?$)|(^i-([a-z0-9]{8}|[a-z0-9]{17}|\\\\*)$|(^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$)|(^arn:(aws[a-zA-Z-]*)?:inspector2:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:codesecurity-integration\\/[a-f0-9-]{36}\\/project-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$))"
     },
     "ResourceIdFilterList":{
       "type":"list",
@@ -7368,6 +8759,10 @@
     "ResourceScanMetadata":{
       "type":"structure",
       "members":{
+        "codeRepository":{
+          "shape":"CodeRepositoryMetadata",
+          "documentation":"<p>Contains metadata about scan coverage for a code repository resource.</p>"
+        },
         "ec2":{
           "shape":"Ec2Metadata",
           "documentation":"<p>An object that contains metadata details for an Amazon EC2 instance.</p>"
@@ -7393,7 +8788,8 @@
         "EC2",
         "ECR",
         "LAMBDA",
-        "LAMBDA_CODE"
+        "LAMBDA_CODE",
+        "CODE_REPOSITORY"
       ]
     },
     "ResourceState":{
@@ -7403,6 +8799,7 @@
         "ecr"
       ],
       "members":{
+        "codeRepository":{"shape":"State"},
         "ec2":{
           "shape":"State",
           "documentation":"<p>An object detailing the state of Amazon Inspector scanning for Amazon EC2 resources.</p>"
@@ -7429,6 +8826,10 @@
         "ecr"
       ],
       "members":{
+        "codeRepository":{
+          "shape":"Status",
+          "documentation":"<p>The status of Amazon Inspector scanning for code repositories.</p>"
+        },
         "ec2":{
           "shape":"Status",
           "documentation":"<p>The status of Amazon Inspector scanning for Amazon EC2 resources.</p>"
@@ -7496,7 +8897,8 @@
         "AWS_EC2_INSTANCE",
         "AWS_ECR_CONTAINER_IMAGE",
         "AWS_ECR_REPOSITORY",
-        "AWS_LAMBDA_FUNCTION"
+        "AWS_LAMBDA_FUNCTION",
+        "CODE_REPOSITORY"
       ]
     },
     "RiskScore":{
@@ -7507,6 +8909,20 @@
       "type":"string",
       "max":500,
       "min":1
+    },
+    "RuleSetCategories":{
+      "type":"list",
+      "member":{"shape":"RuleSetCategory"},
+      "max":3,
+      "min":1
+    },
+    "RuleSetCategory":{
+      "type":"string",
+      "enum":[
+        "SAST",
+        "IAC",
+        "SCA"
+      ]
     },
     "Runtime":{
       "type":"string",
@@ -7541,6 +8957,17 @@
         "SPDX_2_3"
       ]
     },
+    "ScanConfigurationArn":{
+      "type":"string",
+      "documentation":"<p>arn:aws:inspector2:<region>:<account-id>:owner/<owner-id>/codesecurity-configuration/<uuid></p>",
+      "pattern":"^arn:(aws[a-zA-Z-]*)?:inspector2:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:owner/(\\d{12}|o-[a-z0-9]{10,32})/codesecurity-configuration/[a-f0-9-]{36}$"
+    },
+    "ScanConfigurationName":{
+      "type":"string",
+      "max":60,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9-_$:.]*$"
+    },
     "ScanMode":{
       "type":"string",
       "enum":[
@@ -7557,7 +8984,7 @@
       "members":{
         "reason":{
           "shape":"ScanStatusReason",
-          "documentation":"<p>The scan status. Possible return values and descriptions are: </p> <p> <code>PENDING_INITIAL_SCAN</code> - This resource has been identified for scanning, results will be available soon.</p> <p> <code>ACCESS_DENIED</code> - Resource access policy restricting Amazon Inspector access. Please update the IAM policy.</p> <p> <code>INTERNAL_ERROR</code> - Amazon Inspector has encountered an internal error for this resource. Amazon Inspector service will automatically resolve the issue and resume the scanning. No action required from the user.</p> <p> <code>UNMANAGED_EC2_INSTANCE</code> - The EC2 instance is not managed by SSM, please use the following SSM automation to remediate the issue: <a href=\"https://docs.aws.amazon.com/systems-manager-automation-runbooks/latest/userguide/automation-awssupport-troubleshoot-managed-instance.html\">https://docs.aws.amazon.com/systems-manager-automation-runbooks/latest/userguide/automation-awssupport-troubleshoot-managed-instance.html</a>. Once the instance becomes managed by SSM, Inspector will automatically begin scanning this instance. </p> <p> <code>UNSUPPORTED_OS</code> - Amazon Inspector does not support this OS, architecture, or image manifest type at this time. To see a complete list of supported operating systems see: <a href=\" https://docs.aws.amazon.com/inspector/latest/user/supported.html\">https://docs.aws.amazon.com/inspector/latest/user/supported.html</a>.</p> <p> <code>SCAN_ELIGIBILITY_EXPIRED</code> - The configured scan duration has lapsed for this image.</p> <p> <code>RESOURCE_TERMINATED</code> - This resource has been terminated. The findings and coverage associated with this resource are in the process of being cleaned up.</p> <p> <code>SUCCESSFUL</code> - The scan was successful.</p> <p> <code>NO_RESOURCES_FOUND</code> - Reserved for future use.</p> <p> <code>IMAGE_SIZE_EXCEEDED</code> - Reserved for future use.</p> <p> <code>SCAN_FREQUENCY_MANUAL</code> - This image will not be covered by Amazon Inspector due to the repository scan frequency configuration.</p> <p> <code>SCAN_FREQUENCY_SCAN_ON_PUSH </code>- This image will be scanned one time and will not new findings because of the scan frequency configuration.</p> <p> <code>EC2_INSTANCE_STOPPED</code> - This EC2 instance is in a stopped state, therefore, Amazon Inspector will pause scanning. The existing findings will continue to exist until the instance is terminated. Once the instance is re-started, Inspector will automatically start scanning the instance again. Please note that you will not be charged for this instance while it’s in a stopped state.</p> <p> <code>PENDING_DISABLE</code> - This resource is pending cleanup during disablement. The customer will not be billed while a resource is in the pending disable status.</p> <p> <code>NO INVENTORY</code> - Amazon Inspector couldn’t find software application inventory to scan for vulnerabilities. This might be caused due to required Amazon Inspector associations being deleted or failing to run on your resource. Please verify the status of <code>InspectorInventoryCollection-do-not-delete</code> association in the SSM console for the resource. Additionally, you can verify the instance’s inventory in the SSM Fleet Manager console.</p> <p> <code>STALE_INVENTORY</code> - Amazon Inspector wasn’t able to collect an updated software application inventory in the last 7 days. Please confirm the required Amazon Inspector associations still exist and you can still see an updated inventory in the SSM console.</p> <p> <code>EXCLUDED_BY_TAG</code> - This resource was not scanned because it has been excluded by a tag.</p> <p> <code>UNSUPPORTED_RUNTIME</code> - The function was not scanned because it has an unsupported runtime. To see a complete list of supported runtimes see: <a href=\" https://docs.aws.amazon.com/inspector/latest/user/supported.html\">https://docs.aws.amazon.com/inspector/latest/user/supported.html</a>.</p> <p> <code>UNSUPPORTED_MEDIA_TYPE </code>- The ECR image has an unsupported media type.</p> <p> <code>UNSUPPORTED_CONFIG_FILE</code> - Reserved for future use.</p> <p> <code>DEEP_INSPECTION_PACKAGE_COLLECTION_LIMIT_EXCEEDED</code> - The instance has exceeded the 5000 package limit for Amazon Inspector Deep inspection. To resume Deep inspection for this instance you can try to adjust the custom paths associated with the account.</p> <p> <code>DEEP_INSPECTION_DAILY_SSM_INVENTORY_LIMIT_EXCEEDED</code> - The SSM agent couldn't send inventory to Amazon Inspector because the SSM quota for Inventory data collected per instance per day has already been reached for this instance.</p> <p> <code>DEEP_INSPECTION_COLLECTION_TIME_LIMIT_EXCEEDED</code> - Amazon Inspector failed to extract the package inventory because the package collection time exceeding the maximum threshold of 15 minutes.</p> <p> <code>DEEP_INSPECTION_NO_INVENTORY</code> The Amazon Inspector plugin hasn't yet been able to collect an inventory of packages for this instance. This is usually the result of a pending scan, however, if this status persists after 6 hours, use SSM to ensure that the required Amazon Inspector associations exist and are running for the instance.</p> <p/>"
+          "documentation":"<p>The scan status. Possible return values and descriptions are: </p> <p> <code>ACCESS_DENIED</code> - Resource access policy restricting Amazon Inspector access. Please update the IAM policy.</p> <p> <code>ACCESS_DENIED_TO_ENCRYPTION_KEY</code> - The KMS key policy doesn't allow Amazon Inspector access. Update the key policy.</p> <p> <code>DEEP_INSPECTION_COLLECTION_TIME_LIMIT_EXCEEDED</code> - Amazon Inspector failed to extract the package inventory because the package collection time exceeding the maximum threshold of 15 minutes.</p> <p> <code>DEEP_INSPECTION_DAILY_SSM_INVENTORY_LIMIT_EXCEEDED</code> - The SSM agent couldn't send inventory to Amazon Inspector because the SSM quota for Inventory data collected per instance per day has already been reached for this instance.</p> <p> <code>DEEP_INSPECTION_NO_INVENTORY</code> - The Amazon Inspector plugin hasn't yet been able to collect an inventory of packages for this instance. This is usually the result of a pending scan, however, if this status persists after 6 hours, use SSM to ensure that the required Amazon Inspector associations exist and are running for the instance.</p> <p> <code>DEEP_INSPECTION_PACKAGE_COLLECTION_LIMIT_EXCEEDED</code> - The instance has exceeded the 5000 package limit for Amazon Inspector Deep inspection. To resume Deep inspection for this instance you can try to adjust the custom paths associated with the account.</p> <p> <code>EC2_INSTANCE_STOPPED</code> - This EC2 instance is in a stopped state, therefore, Amazon Inspector will pause scanning. The existing findings will continue to exist until the instance is terminated. Once the instance is re-started, Inspector will automatically start scanning the instance again. Please note that you will not be charged for this instance while it's in a stopped state.</p> <p> <code>EXCLUDED_BY_TAG</code> - This resource was not scanned because it has been excluded by a tag.</p> <p> <code>IMAGE_SIZE_EXCEEDED</code> - Reserved for future use.</p> <p> <code>INTEGRATION_CONNNECTION_LOST</code> - Amazon Inspector couldn't communicate with the source code management platform.</p> <p> <code>INTERNAL_ERROR</code> - Amazon Inspector has encountered an internal error for this resource. Amazon Inspector service will automatically resolve the issue and resume the scanning. No action required from the user.</p> <p> <code>NO INVENTORY</code> - Amazon Inspector couldn't find software application inventory to scan for vulnerabilities. This might be caused due to required Amazon Inspector associations being deleted or failing to run on your resource. Please verify the status of <code>InspectorInventoryCollection-do-not-delete</code> association in the SSM console for the resource. Additionally, you can verify the instance's inventory in the SSM Fleet Manager console.</p> <p> <code>NO_RESOURCES_FOUND</code> - Reserved for future use.</p> <p> <code>NO_SCAN_CONFIGURATION_ASSOCIATED</code> - The code repository resource doesn't have an associated scan configuration.</p> <p> <code>PENDING_DISABLE</code> - This resource is pending cleanup during disablement. The customer will not be billed while a resource is in the pending disable status.</p> <p> <code>PENDING_INITIAL_SCAN</code> - This resource has been identified for scanning, results will be available soon.</p> <p> <code>RESOURCE_TERMINATED</code> - This resource has been terminated. The findings and coverage associated with this resource are in the process of being cleaned up.</p> <p> <code>SCAN_ELIGIBILITY_EXPIRED</code> - The configured scan duration has lapsed for this image.</p> <p> <code>SCAN_FREQUENCY_MANUAL</code> - This image will not be covered by Amazon Inspector due to the repository scan frequency configuration.</p> <p> <code>SCAN_FREQUENCY_SCAN_ON_PUSH</code> - This image will be scanned one time and will not new findings because of the scan frequency configuration.</p> <p> <code>SCAN_IN_PROGRESS</code> - The resource is currently being scanned.</p> <p> <code>STALE_INVENTORY</code> - Amazon Inspector wasn't able to collect an updated software application inventory in the last 7 days. Please confirm the required Amazon Inspector associations still exist and you can still see an updated inventory in the SSM console.</p> <p> <code>SUCCESSFUL</code> - The scan was successful.</p> <p> <code>UNMANAGED_EC2_INSTANCE</code> - The EC2 instance is not managed by SSM, please use the following SSM automation to remediate the issue: <a href=\"https://docs.aws.amazon.com/systems-manager-automation-runbooks/latest/userguide/automation-awssupport-troubleshoot-managed-instance.html\">https://docs.aws.amazon.com/systems-manager-automation-runbooks/latest/userguide/automation-awssupport-troubleshoot-managed-instance.html</a>. Once the instance becomes managed by SSM, Inspector will automatically begin scanning this instance. </p> <p> <code>UNSUPPORTED_CONFIG_FILE</code> - Reserved for future use.</p> <p> <code>UNSUPPORTED_LANGUAGE</code> - The scan was unsuccessful because the repository contains files in an unsupported programming language.</p> <p> <code>UNSUPPORTED_MEDIA_TYPE </code>- The ECR image has an unsupported media type.</p> <p> <code>UNSUPPORTED_OS</code> - Amazon Inspector does not support this OS, architecture, or image manifest type at this time. To see a complete list of supported operating systems see: <a href=\" https://docs.aws.amazon.com/inspector/latest/user/supported.html\">https://docs.aws.amazon.com/inspector/latest/user/supported.html</a>.</p> <p> <code>UNSUPPORTED_RUNTIME</code> - The function was not scanned because it has an unsupported runtime. To see a complete list of supported runtimes see: <a href=\" https://docs.aws.amazon.com/inspector/latest/user/supported.html\">https://docs.aws.amazon.com/inspector/latest/user/supported.html</a>.</p>"
         },
         "statusCode":{
           "shape":"ScanStatusCode",
@@ -7602,7 +9029,12 @@
         "DEEP_INSPECTION_NO_INVENTORY",
         "AGENTLESS_INSTANCE_STORAGE_LIMIT_EXCEEDED",
         "AGENTLESS_INSTANCE_COLLECTION_TIME_LIMIT_EXCEEDED",
-        "PENDING_REVIVAL_SCAN"
+        "PENDING_REVIVAL_SCAN",
+        "INTEGRATION_CONNECTION_LOST",
+        "ACCESS_DENIED_TO_ENCRYPTION_KEY",
+        "UNSUPPORTED_LANGUAGE",
+        "NO_SCAN_CONFIGURATION_ASSOCIATED",
+        "SCAN_IN_PROGRESS"
       ]
     },
     "ScanType":{
@@ -7635,6 +9067,16 @@
       },
       "documentation":"<p>A schedule.</p>",
       "union":true
+    },
+    "ScopeSettings":{
+      "type":"structure",
+      "members":{
+        "projectSelectionScope":{
+          "shape":"ProjectSelectionScope",
+          "documentation":"<p>The scope of projects to be selected for scanning within the integrated repositories. Setting the value to <code>ALL</code> applies the scope settings to all existing and future projects imported into Amazon Inspector.</p>"
+        }
+      },
+      "documentation":"<p>Defines the scope of repositories to be included in code security scans.</p>"
     },
     "SearchVulnerabilitiesFilterCriteria":{
       "type":"structure",
@@ -7881,6 +9323,34 @@
       "members":{
       }
     },
+    "StartCodeSecurityScanRequest":{
+      "type":"structure",
+      "required":["resource"],
+      "members":{
+        "clientToken":{
+          "shape":"CodeSecurityClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "resource":{
+          "shape":"CodeSecurityResource",
+          "documentation":"<p>The resource identifier for the code repository to scan.</p>"
+        }
+      }
+    },
+    "StartCodeSecurityScanResponse":{
+      "type":"structure",
+      "members":{
+        "scanId":{
+          "shape":"CodeSecurityUuid",
+          "documentation":"<p>The unique identifier of the initiated scan.</p>"
+        },
+        "status":{
+          "shape":"CodeScanStatus",
+          "documentation":"<p>The current status of the initiated scan.</p>"
+        }
+      }
+    },
     "State":{
       "type":"structure",
       "required":[
@@ -8120,6 +9590,21 @@
       "member":{"shape":"SubnetId"},
       "max":16,
       "min":0
+    },
+    "SuccessfulAssociationResult":{
+      "type":"structure",
+      "members":{
+        "resource":{"shape":"CodeSecurityResource"},
+        "scanConfigurationArn":{
+          "shape":"ScanConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scan configuration that was successfully associated or disassociated.</p>"
+        }
+      },
+      "documentation":"<p>Details about a successful association or disassociation between a code repository and a scan configuration.</p>"
+    },
+    "SuccessfulAssociationResultList":{
+      "type":"list",
+      "member":{"shape":"SuccessfulAssociationResult"}
     },
     "SuggestedFix":{
       "type":"structure",
@@ -8492,6 +9977,66 @@
       },
       "documentation":"<p>Updates CIS targets.</p>"
     },
+    "UpdateCodeSecurityIntegrationRequest":{
+      "type":"structure",
+      "required":[
+        "details",
+        "integrationArn"
+      ],
+      "members":{
+        "details":{
+          "shape":"UpdateIntegrationDetails",
+          "documentation":"<p>The updated integration details specific to the repository provider type.</p>"
+        },
+        "integrationArn":{
+          "shape":"CodeSecurityIntegrationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the code security integration to update.</p>"
+        }
+      }
+    },
+    "UpdateCodeSecurityIntegrationResponse":{
+      "type":"structure",
+      "required":[
+        "integrationArn",
+        "status"
+      ],
+      "members":{
+        "integrationArn":{
+          "shape":"CodeSecurityIntegrationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated code security integration.</p>"
+        },
+        "status":{
+          "shape":"IntegrationStatus",
+          "documentation":"<p>The current status of the updated code security integration.</p>"
+        }
+      }
+    },
+    "UpdateCodeSecurityScanConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "configuration",
+        "scanConfigurationArn"
+      ],
+      "members":{
+        "configuration":{
+          "shape":"CodeSecurityScanConfiguration",
+          "documentation":"<p>The updated configuration settings for the code security scan.</p>"
+        },
+        "scanConfigurationArn":{
+          "shape":"ScanConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scan configuration to update.</p>"
+        }
+      }
+    },
+    "UpdateCodeSecurityScanConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "scanConfigurationArn":{
+          "shape":"ScanConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated scan configuration.</p>"
+        }
+      }
+    },
     "UpdateConfigurationRequest":{
       "type":"structure",
       "members":{
@@ -8611,6 +10156,50 @@
         }
       }
     },
+    "UpdateGitHubIntegrationDetail":{
+      "type":"structure",
+      "required":[
+        "code",
+        "installationId"
+      ],
+      "members":{
+        "code":{
+          "shape":"GitHubAuthCode",
+          "documentation":"<p>The authorization code received from GitHub to update the integration.</p>"
+        },
+        "installationId":{
+          "shape":"GitHubInstallationId",
+          "documentation":"<p>The installation ID of the GitHub App associated with the integration.</p>"
+        }
+      },
+      "documentation":"<p>Contains details required to update an integration with GitHub.</p>"
+    },
+    "UpdateGitLabSelfManagedIntegrationDetail":{
+      "type":"structure",
+      "required":["authCode"],
+      "members":{
+        "authCode":{
+          "shape":"GitLabAuthCode",
+          "documentation":"<p>The authorization code received from the self-managed GitLab instance to update the integration.</p>"
+        }
+      },
+      "documentation":"<p>Contains details required to update an integration with a self-managed GitLab instance.</p>"
+    },
+    "UpdateIntegrationDetails":{
+      "type":"structure",
+      "members":{
+        "github":{
+          "shape":"UpdateGitHubIntegrationDetail",
+          "documentation":"<p>Details specific to updating an integration with GitHub.</p>"
+        },
+        "gitlabSelfManaged":{
+          "shape":"UpdateGitLabSelfManagedIntegrationDetail",
+          "documentation":"<p>Details specific to updating an integration with a self-managed GitLab instance.</p>"
+        }
+      },
+      "documentation":"<p>Contains details required to update a code security integration with a specific repository provider.</p>",
+      "union":true
+    },
     "UpdateOrgEc2DeepInspectionConfigurationRequest":{
       "type":"structure",
       "required":["orgPackagePaths"],
@@ -8707,7 +10296,10 @@
         "ECR_INITIAL_SCAN",
         "ECR_RESCAN",
         "LAMBDA_FUNCTION_HOURS",
-        "LAMBDA_FUNCTION_CODE_HOURS"
+        "LAMBDA_FUNCTION_CODE_HOURS",
+        "CODE_REPOSITORY_SAST",
+        "CODE_REPOSITORY_IAC",
+        "CODE_REPOSITORY_SCA"
       ]
     },
     "UsageValue":{

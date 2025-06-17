@@ -13,6 +13,23 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "AssociateBackupVaultMpaApprovalTeam":{
+      "name":"AssociateBackupVaultMpaApprovalTeam",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/backup-vaults/{backupVaultName}/mpaApprovalTeam",
+        "responseCode":204
+      },
+      "input":{"shape":"AssociateBackupVaultMpaApprovalTeamInput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Associates an MPA approval team with a backup vault.</p>"
+    },
     "CancelLegalHold":{
       "name":"CancelLegalHold",
       "http":{
@@ -158,6 +175,26 @@
       "documentation":"<p>Creates a report plan. A report plan is a document that contains information about the contents of the report and where Backup will deliver it.</p> <p>If you call <code>CreateReportPlan</code> with a plan that already exists, you receive an <code>AlreadyExistsException</code> exception.</p>",
       "idempotent":true
     },
+    "CreateRestoreAccessBackupVault":{
+      "name":"CreateRestoreAccessBackupVault",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/restore-access-backup-vaults"
+      },
+      "input":{"shape":"CreateRestoreAccessBackupVaultInput"},
+      "output":{"shape":"CreateRestoreAccessBackupVaultOutput"},
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Creates a restore access backup vault that provides temporary access to recovery points in a logically air-gapped backup vault, subject to MPA approval.</p>",
+      "idempotent":true
+    },
     "CreateRestoreTestingPlan":{
       "name":"CreateRestoreTestingPlan",
       "http":{
@@ -244,7 +281,8 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Deletes the backup vault identified by its name. A vault can be deleted only if it is empty.</p>"
+      "documentation":"<p>Deletes the backup vault identified by its name. A vault can be deleted only if it is empty.</p>",
+      "idempotent":true
     },
     "DeleteBackupVaultAccessPolicy":{
       "name":"DeleteBackupVaultAccessPolicy",
@@ -553,6 +591,23 @@
       ],
       "documentation":"<p>Returns metadata associated with a restore job that is specified by a job ID.</p>",
       "idempotent":true
+    },
+    "DisassociateBackupVaultMpaApprovalTeam":{
+      "name":"DisassociateBackupVaultMpaApprovalTeam",
+      "http":{
+        "method":"POST",
+        "requestUri":"/backup-vaults/{backupVaultName}/mpaApprovalTeam?delete",
+        "responseCode":204
+      },
+      "input":{"shape":"DisassociateBackupVaultMpaApprovalTeamInput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Removes the association between an MPA approval team and a backup vault, disabling the MPA approval workflow for restore operations.</p>"
     },
     "DisassociateRecoveryPoint":{
       "name":"DisassociateRecoveryPoint",
@@ -1126,6 +1181,22 @@
       ],
       "documentation":"<p>Returns a list of your report plans. For detailed information about a single report plan, use <code>DescribeReportPlan</code>.</p>"
     },
+    "ListRestoreAccessBackupVaults":{
+      "name":"ListRestoreAccessBackupVaults",
+      "http":{
+        "method":"GET",
+        "requestUri":"/logically-air-gapped-backup-vaults/{backupVaultName}/restore-access-backup-vaults/"
+      },
+      "input":{"shape":"ListRestoreAccessBackupVaultsInput"},
+      "output":{"shape":"ListRestoreAccessBackupVaultsOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns a list of restore access backup vaults associated with a specified backup vault.</p>"
+    },
     "ListRestoreJobSummaries":{
       "name":"ListRestoreJobSummaries",
       "http":{
@@ -1287,6 +1358,22 @@
       ],
       "documentation":"<p>This request allows you to send your independent self-run restore test validation results. <code>RestoreJobId</code> and <code>ValidationStatus</code> are required. Optionally, you can input a <code>ValidationStatusMessage</code>.</p>",
       "idempotent":true
+    },
+    "RevokeRestoreAccessBackupVault":{
+      "name":"RevokeRestoreAccessBackupVault",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/logically-air-gapped-backup-vaults/{backupVaultName}/restore-access-backup-vaults/{restoreAccessBackupVaultArn}"
+      },
+      "input":{"shape":"RevokeRestoreAccessBackupVaultInput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>Revokes access to a restore access backup vault, removing the ability to restore from its recovery points and permanently deleting the vault.</p>"
     },
     "StartBackupJob":{
       "name":"StartBackupJob",
@@ -1625,6 +1712,29 @@
       },
       "documentation":"<p>The required resource already exists.</p>",
       "exception":true
+    },
+    "AssociateBackupVaultMpaApprovalTeamInput":{
+      "type":"structure",
+      "required":[
+        "BackupVaultName",
+        "MpaApprovalTeamArn"
+      ],
+      "members":{
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>The name of the backup vault to associate with the MPA approval team.</p>",
+          "location":"uri",
+          "locationName":"backupVaultName"
+        },
+        "MpaApprovalTeamArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the MPA approval team to associate with the backup vault.</p>"
+        },
+        "RequesterComment":{
+          "shape":"RequesterComment",
+          "documentation":"<p>A comment provided by the requester explaining the association request.</p>"
+        }
+      }
     },
     "BackupJob":{
       "type":"structure",
@@ -2155,6 +2265,7 @@
         "BACKUP_PLAN_MODIFIED",
         "S3_BACKUP_OBJECT_FAILED",
         "S3_RESTORE_OBJECT_FAILED",
+        "CONTINUOUS_BACKUP_INTERRUPTED",
         "RECOVERY_POINT_INDEX_COMPLETED",
         "RECOVERY_POINT_INDEX_DELETED",
         "RECOVERY_POINT_INDEXING_FAILED"
@@ -2599,7 +2710,8 @@
         },
         "CreatorRequestId":{
           "shape":"string",
-          "documentation":"<p>Identifies the request and allows failed requests to be retried without the risk of running the operation twice. If the request includes a <code>CreatorRequestId</code> that matches an existing backup plan, that plan is returned. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
+          "documentation":"<p>Identifies the request and allows failed requests to be retried without the risk of running the operation twice. If the request includes a <code>CreatorRequestId</code> that matches an existing backup plan, that plan is returned. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -2647,7 +2759,8 @@
         },
         "CreatorRequestId":{
           "shape":"string",
-          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
+          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -2688,7 +2801,8 @@
         },
         "CreatorRequestId":{
           "shape":"string",
-          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
+          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -2769,7 +2883,8 @@
         },
         "IdempotencyToken":{
           "shape":"string",
-          "documentation":"<p>This is a user-chosen string used to distinguish between otherwise identical calls. Retrying a successful request with the same idempotency token results in a success message with no action taken.</p>"
+          "documentation":"<p>This is a user-chosen string used to distinguish between otherwise identical calls. Retrying a successful request with the same idempotency token results in a success message with no action taken.</p>",
+          "idempotencyToken":true
         },
         "RecoveryPointSelection":{
           "shape":"RecoveryPointSelection",
@@ -2834,7 +2949,8 @@
         },
         "CreatorRequestId":{
           "shape":"string",
-          "documentation":"<p>The ID of the creation request.</p> <p>This parameter is optional. If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
+          "documentation":"<p>The ID of the creation request.</p> <p>This parameter is optional. If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
+          "idempotencyToken":true
         },
         "MinRetentionDays":{
           "shape":"Long",
@@ -2916,6 +3032,54 @@
         "CreationTime":{
           "shape":"timestamp",
           "documentation":"<p>The date and time a backup vault is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        }
+      }
+    },
+    "CreateRestoreAccessBackupVaultInput":{
+      "type":"structure",
+      "required":["SourceBackupVaultArn"],
+      "members":{
+        "SourceBackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the source backup vault containing the recovery points to which temporary access is requested.</p>"
+        },
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>The name of the backup vault to associate with an MPA approval team.</p>"
+        },
+        "BackupVaultTags":{
+          "shape":"Tags",
+          "documentation":"<p>Optional tags to assign to the restore access backup vault.</p>"
+        },
+        "CreatorRequestId":{
+          "shape":"string",
+          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of executing the operation twice.</p>",
+          "idempotencyToken":true
+        },
+        "RequesterComment":{
+          "shape":"RequesterComment",
+          "documentation":"<p>A comment explaining the reason for requesting restore access to the backup vault.</p>"
+        }
+      }
+    },
+    "CreateRestoreAccessBackupVaultOutput":{
+      "type":"structure",
+      "members":{
+        "RestoreAccessBackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN that uniquely identifies the created restore access backup vault.</p>"
+        },
+        "VaultState":{
+          "shape":"VaultState",
+          "documentation":"<p>The current state of the restore access backup vault.</p>"
+        },
+        "RestoreAccessBackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>The name of the created restore access backup vault.</p>"
+        },
+        "CreationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>&gt;The date and time when the restore access backup vault was created, in Unix format and Coordinated Universal Time </p>"
         }
       }
     },
@@ -3419,6 +3583,22 @@
         "LockDate":{
           "shape":"timestamp",
           "documentation":"<p>The date and time when Backup Vault Lock configuration cannot be changed or deleted.</p> <p>If you applied Vault Lock to your vault without specifying a lock date, you can change any of your Vault Lock settings, or delete Vault Lock from the vault entirely, at any time.</p> <p>This value is in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "SourceBackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the source backup vault from which this restore access backup vault was created.</p>"
+        },
+        "MpaApprovalTeamArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the MPA approval team associated with this backup vault.</p>"
+        },
+        "MpaSessionArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the MPA session associated with this backup vault.</p>"
+        },
+        "LatestMpaApprovalTeamUpdate":{
+          "shape":"LatestMpaApprovalTeamUpdate",
+          "documentation":"<p>Information about the latest update to the MPA approval team association for this backup vault.</p>"
         }
       }
     },
@@ -3636,6 +3816,10 @@
           "shape":"timestamp",
           "documentation":"<p>The date and time that a recovery point is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
         },
+        "InitiationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the backup job that created this recovery point was initiated, in Unix format and Coordinated Universal Time (UTC).</p>"
+        },
         "CompletionDate":{
           "shape":"timestamp",
           "documentation":"<p>The date and time that a job to create a recovery point is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
@@ -3847,6 +4031,22 @@
         "DeletionStatusMessage":{
           "shape":"string",
           "documentation":"<p>This describes the restore job deletion status.</p>"
+        }
+      }
+    },
+    "DisassociateBackupVaultMpaApprovalTeamInput":{
+      "type":"structure",
+      "required":["BackupVaultName"],
+      "members":{
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>The name of the backup vault from which to disassociate the MPA approval team.</p>",
+          "location":"uri",
+          "locationName":"backupVaultName"
+        },
+        "RequesterComment":{
+          "shape":"RequesterComment",
+          "documentation":"<p>An optional comment explaining the reason for disassociating the MPA approval team from the backup vault.</p>"
         }
       }
     },
@@ -4642,6 +4842,58 @@
     "KeyValueList":{
       "type":"list",
       "member":{"shape":"KeyValue"}
+    },
+    "LatestMpaApprovalTeamUpdate":{
+      "type":"structure",
+      "members":{
+        "MpaSessionArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the MPA session associated with this update.</p>"
+        },
+        "Status":{
+          "shape":"MpaSessionStatus",
+          "documentation":"<p>The current status of the MPA approval team update.</p>"
+        },
+        "StatusMessage":{
+          "shape":"string",
+          "documentation":"<p>A message describing the current status of the MPA approval team update.</p>"
+        },
+        "InitiationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the MPA approval team update was initiated.</p>"
+        },
+        "ExpiryDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the MPA approval team update will expire.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the latest update to an MPA approval team association.</p>"
+    },
+    "LatestRevokeRequest":{
+      "type":"structure",
+      "members":{
+        "MpaSessionArn":{
+          "shape":"string",
+          "documentation":"<p>The ARN of the MPA session associated with this revoke request.</p>"
+        },
+        "Status":{
+          "shape":"MpaRevokeSessionStatus",
+          "documentation":"<p>The current status of the revoke request.</p>"
+        },
+        "StatusMessage":{
+          "shape":"string",
+          "documentation":"<p>A message describing the current status of the revoke request.</p>"
+        },
+        "InitiationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the revoke request was initiated.</p>"
+        },
+        "ExpiryDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the revoke request will expire.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the latest request to revoke access to a backup vault.</p>"
     },
     "LegalHold":{
       "type":"structure",
@@ -5667,6 +5919,43 @@
         }
       }
     },
+    "ListRestoreAccessBackupVaultsInput":{
+      "type":"structure",
+      "required":["BackupVaultName"],
+      "members":{
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>The name of the backup vault for which to list associated restore access backup vaults.</p>",
+          "location":"uri",
+          "locationName":"backupVaultName"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The pagination token from a previous request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListRestoreAccessBackupVaultsOutput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The pagination token to use in a subsequent request to retrieve the next set of results.</p>"
+        },
+        "RestoreAccessBackupVaults":{
+          "shape":"RestoreAccessBackupVaultList",
+          "documentation":"<p>A list of restore access backup vaults associated with the specified backup vault.</p>"
+        }
+      }
+    },
     "ListRestoreJobSummariesInput":{
       "type":"structure",
       "members":{
@@ -6013,6 +6302,21 @@
       "documentation":"<p>Indicates that a required parameter is missing.</p>",
       "exception":true
     },
+    "MpaRevokeSessionStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "FAILED"
+      ]
+    },
+    "MpaSessionStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "APPROVED",
+        "FAILED"
+      ]
+    },
     "ParameterName":{"type":"string"},
     "ParameterValue":{"type":"string"},
     "ProtectedResource":{
@@ -6123,7 +6427,7 @@
         },
         "BackupVaultEvents":{
           "shape":"BackupVaultEvents",
-          "documentation":"<p>An array of events that indicate the status of jobs to back up resources to the backup vault.</p> <p>For common use cases and code samples, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/sns-notifications.html\">Using Amazon SNS to track Backup events</a>.</p> <p>The following events are supported:</p> <ul> <li> <p> <code>BACKUP_JOB_STARTED</code> | <code>BACKUP_JOB_COMPLETED</code> | <code>BACKUP_JOB_FAILED</code> </p> </li> <li> <p> <code>COPY_JOB_STARTED</code> | <code>COPY_JOB_SUCCESSFUL</code> | <code>COPY_JOB_FAILED</code> </p> </li> <li> <p> <code>RESTORE_JOB_STARTED</code> | <code>RESTORE_JOB_COMPLETED</code> | <code>RECOVERY_POINT_MODIFIED</code> </p> </li> <li> <p> <code>S3_BACKUP_OBJECT_FAILED</code> | <code>S3_RESTORE_OBJECT_FAILED</code> </p> </li> <li> <p> <code>RECOVERY_POINT_INDEX_COMPLETED</code> | <code>RECOVERY_POINT_INDEX_DELETED</code> | <code>RECOVERY_POINT_INDEXING_FAILED</code> </p> </li> </ul> <note> <p>The list below includes both supported events and deprecated events that are no longer in use (for reference). Deprecated events do not return statuses or notifications. Refer to the list above for the supported events.</p> </note>"
+          "documentation":"<p>An array of events that indicate the status of jobs to back up resources to the backup vault. For the list of supported events, common use cases, and code samples, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-notifications.html\">Notification options with Backup</a>.</p>"
         }
       }
     },
@@ -6196,6 +6500,10 @@
         "CreationDate":{
           "shape":"timestamp",
           "documentation":"<p>The date and time a recovery point is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "InitiationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the backup job that created this recovery point was initiated, in Unix format and Coordinated Universal Time (UTC).</p>"
         },
         "CompletionDate":{
           "shape":"timestamp",
@@ -6563,6 +6871,10 @@
       },
       "documentation":"<p>Contains detailed information about a report setting.</p>"
     },
+    "RequesterComment":{
+      "type":"string",
+      "sensitive":true
+    },
     "ResourceArns":{
       "type":"list",
       "member":{"shape":"ARN"}
@@ -6609,6 +6921,36 @@
     "ResourceTypes":{
       "type":"list",
       "member":{"shape":"ResourceType"}
+    },
+    "RestoreAccessBackupVaultList":{
+      "type":"list",
+      "member":{"shape":"RestoreAccessBackupVaultListMember"}
+    },
+    "RestoreAccessBackupVaultListMember":{
+      "type":"structure",
+      "members":{
+        "RestoreAccessBackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the restore access backup vault.</p>"
+        },
+        "CreationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the restore access backup vault was created.</p>"
+        },
+        "ApprovalDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the restore access backup vault was approved.</p>"
+        },
+        "VaultState":{
+          "shape":"VaultState",
+          "documentation":"<p>The current state of the restore access backup vault.</p>"
+        },
+        "LatestRevokeRequest":{
+          "shape":"LatestRevokeRequest",
+          "documentation":"<p>Information about the latest request to revoke access to this backup vault.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a restore access backup vault.</p>"
     },
     "RestoreDeletionStatus":{
       "type":"string",
@@ -7142,6 +7484,33 @@
         "VALIDATING"
       ]
     },
+    "RevokeRestoreAccessBackupVaultInput":{
+      "type":"structure",
+      "required":[
+        "BackupVaultName",
+        "RestoreAccessBackupVaultArn"
+      ],
+      "members":{
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>The name of the source backup vault associated with the restore access backup vault to be revoked.</p>",
+          "location":"uri",
+          "locationName":"backupVaultName"
+        },
+        "RestoreAccessBackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the restore access backup vault to revoke.</p>",
+          "location":"uri",
+          "locationName":"restoreAccessBackupVaultArn"
+        },
+        "RequesterComment":{
+          "shape":"RequesterComment",
+          "documentation":"<p>A comment explaining the reason for revoking access to the restore access backup vault.</p>",
+          "location":"querystring",
+          "locationName":"requesterComment"
+        }
+      }
+    },
     "SensitiveStringMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -7188,7 +7557,8 @@
         },
         "IdempotencyToken":{
           "shape":"string",
-          "documentation":"<p>A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartBackupJob</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.</p>"
+          "documentation":"<p>A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartBackupJob</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.</p>",
+          "idempotencyToken":true
         },
         "StartWindowMinutes":{
           "shape":"WindowMinutes",
@@ -7264,7 +7634,8 @@
         },
         "IdempotencyToken":{
           "shape":"string",
-          "documentation":"<p>A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartCopyJob</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.</p>"
+          "documentation":"<p>A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartCopyJob</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.</p>",
+          "idempotencyToken":true
         },
         "Lifecycle":{"shape":"Lifecycle"}
       }
@@ -7333,7 +7704,8 @@
         },
         "IdempotencyToken":{
           "shape":"string",
-          "documentation":"<p>A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartRestoreJob</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.</p>"
+          "documentation":"<p>A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartRestoreJob</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.</p>",
+          "idempotencyToken":true
         },
         "ResourceType":{
           "shape":"ResourceType",
@@ -7799,7 +8171,8 @@
       "type":"string",
       "enum":[
         "BACKUP_VAULT",
-        "LOGICALLY_AIR_GAPPED_BACKUP_VAULT"
+        "LOGICALLY_AIR_GAPPED_BACKUP_VAULT",
+        "RESTORE_ACCESS_BACKUP_VAULT"
       ]
     },
     "WindowMinutes":{"type":"long"},

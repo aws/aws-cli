@@ -454,7 +454,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Provides the details of the GuardDuty administrator account associated with the current GuardDuty member account.</p> <note> <p>If the organization's management account or a delegated administrator runs this API, it will return success (<code>HTTP 200</code>) but no content.</p> </note>"
+      "documentation":"<p>Provides the details of the GuardDuty administrator account associated with the current GuardDuty member account.</p> <p>Based on the type of account that runs this API, the following list shows how the API behavior varies:</p> <ul> <li> <p>When the GuardDuty administrator account runs this API, it will return success (<code>HTTP 200</code>) but no content.</p> </li> <li> <p>When a member account runs this API, it will return the details of the GuardDuty administrator account that is associated with this calling member account.</p> </li> <li> <p>When an individual account (not associated with an organization) runs this API, it will return success (<code>HTTP 200</code>) but no content.</p> </li> </ul>"
     },
     "GetCoverageStatistics":{
       "name":"GetCoverageStatistics",
@@ -1318,7 +1318,7 @@
         },
         "Email":{
           "shape":"Email",
-          "documentation":"<p>The email address of the member account.</p>",
+          "documentation":"<p>The email address of the member account.</p> <p>The rules for a valid email address:</p> <ul> <li> <p>The email address must be a minimum of 6 and a maximum of 64 characters long.</p> </li> <li> <p>All characters must be 7-bit ASCII characters.</p> </li> <li> <p>There must be one and only one @ symbol, which separates the local name from the domain name.</p> </li> <li> <p>The local name can't contain any of the following characters:</p> <p>whitespace, \" ' ( ) &lt; &gt; [ ] : ' , \\ | % &amp;</p> </li> <li> <p>The local name can't begin with a dot (.).</p> </li> <li> <p>The domain name can consist of only the characters [a-z], [A-Z], [0-9], hyphen (-), or dot (.).</p> </li> <li> <p>The domain name can't begin or end with a dot (.) or hyphen (-).</p> </li> <li> <p>The domain name must contain at least one dot. </p> </li> </ul>",
           "locationName":"email"
         }
       },
@@ -1474,6 +1474,11 @@
           "shape":"Session",
           "documentation":"<p>Contains information about the user session where the activity initiated.</p>",
           "locationName":"session"
+        },
+        "Process":{
+          "shape":"ActorProcess",
+          "documentation":"<p>Contains information about the process associated with the threat actor. This includes details such as process name, path, execution time, and unique identifiers that help track the actor's activities within the system.</p>",
+          "locationName":"process"
         }
       },
       "documentation":"<p>Information about the actors involved in an attack sequence.</p>"
@@ -1483,10 +1488,39 @@
       "member":{"shape":"String"},
       "max":400
     },
+    "ActorProcess":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Path"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ProcessName",
+          "documentation":"<p>The name of the process as it appears in the system.</p>",
+          "locationName":"name"
+        },
+        "Path":{
+          "shape":"ProcessPath",
+          "documentation":"<p>The full file path to the process executable on the system.</p>",
+          "locationName":"path"
+        },
+        "Sha256":{
+          "shape":"ProcessSha256",
+          "documentation":"<p>The SHA256 hash of the process executable file, which can be used for identification and verification purposes.</p>",
+          "locationName":"sha256"
+        }
+      },
+      "documentation":"<p>Contains information about a process involved in a GuardDuty finding, including process identification, execution details, and file information.</p>"
+    },
     "Actors":{
       "type":"list",
       "member":{"shape":"Actor"},
       "max":400
+    },
+    "AdditionalSequenceTypes":{
+      "type":"list",
+      "member":{"shape":"FindingType"}
     },
     "AddonDetails":{
       "type":"structure",
@@ -1862,6 +1896,17 @@
       },
       "documentation":"<p>Contains information on the status of CloudTrail as a data source for the detector.</p>"
     },
+    "ClusterStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "DELETING",
+        "FAILED",
+        "UPDATING",
+        "PENDING"
+      ]
+    },
     "Condition":{
       "type":"structure",
       "members":{
@@ -1993,6 +2038,28 @@
       },
       "documentation":"<p>Details of a container.</p>"
     },
+    "ContainerFindingResource":{
+      "type":"structure",
+      "required":["Image"],
+      "members":{
+        "Image":{
+          "shape":"String",
+          "documentation":"<p>The container image information, including the image name and tag used to run the container that was involved in the finding.</p>",
+          "locationName":"image"
+        },
+        "ImageUid":{
+          "shape":"ContainerImageUid",
+          "documentation":"<p>The unique ID associated with the container image.</p>",
+          "locationName":"imageUid"
+        }
+      },
+      "documentation":"<p>Contains information about container resources involved in a GuardDuty finding. This structure provides details about containers that were identified as part of suspicious or malicious activity.</p>"
+    },
+    "ContainerImageUid":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "ContainerInstanceDetails":{
       "type":"structure",
       "members":{
@@ -2008,6 +2075,15 @@
         }
       },
       "documentation":"<p>Contains information about the Amazon EC2 instance that is running the Amazon ECS container.</p>"
+    },
+    "ContainerUid":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "ContainerUids":{
+      "type":"list",
+      "member":{"shape":"ContainerUid"}
     },
     "Containers":{
       "type":"list",
@@ -3771,6 +3847,17 @@
       },
       "documentation":"<p>Details about the potentially impacted Amazon EC2 instance resource.</p>"
     },
+    "Ec2InstanceUid":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "Ec2InstanceUids":{
+      "type":"list",
+      "member":{"shape":"Ec2InstanceUid"},
+      "max":25,
+      "min":0
+    },
     "Ec2NetworkInterface":{
       "type":"structure",
       "members":{
@@ -3918,6 +4005,37 @@
       },
       "documentation":"<p>Contains information about the task in an ECS cluster.</p>"
     },
+    "EksCluster":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the Amazon EKS cluster involved in the finding.</p>",
+          "locationName":"arn"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp indicating when the Amazon EKS cluster was created, in UTC format.</p>",
+          "locationName":"createdAt"
+        },
+        "Status":{
+          "shape":"ClusterStatus",
+          "documentation":"<p>The current status of the Amazon EKS cluster.</p>",
+          "locationName":"status"
+        },
+        "VpcId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Virtual Private Cloud (Amazon VPC) associated with the Amazon EKS cluster.</p>",
+          "locationName":"vpcId"
+        },
+        "Ec2InstanceUids":{
+          "shape":"Ec2InstanceUids",
+          "documentation":"<p>A list of unique identifiers for the Amazon EC2 instances that serve as worker nodes in the Amazon EKS cluster.</p>",
+          "locationName":"ec2InstanceUids"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon EKS cluster involved in a GuardDuty finding, including cluster identification, status, and network configuration.</p>"
+    },
     "EksClusterDetails":{
       "type":"structure",
       "members":{
@@ -3957,7 +4075,8 @@
     "Email":{
       "type":"string",
       "max":64,
-      "min":1,
+      "min":6,
+      "pattern":"See rules in parameter description",
       "sensitive":true
     },
     "EnableOrganizationAdminAccountRequest":{
@@ -4087,7 +4206,7 @@
       "members":{
         "CriterionKey":{
           "shape":"CriterionKey",
-          "documentation":"<p>An enum value representing possible scan properties to match with given scan entries.</p> <note> <p>Replace the enum value <code>CLUSTER_NAME</code> with <code>EKS_CLUSTER_NAME</code>. <code>CLUSTER_NAME</code> has been deprecated.</p> </note>",
+          "documentation":"<p>An enum value representing possible scan properties to match with given scan entries.</p>",
           "locationName":"criterionKey"
         },
         "FilterCondition":{
@@ -4177,7 +4296,7 @@
         },
         "Region":{
           "shape":"String",
-          "documentation":"<p>The Region where the finding was generated.</p>",
+          "documentation":"<p>The Region where the finding was generated. For findings generated from <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-concepts.html#cloudtrail-concepts-global-service-events\">Global Service Events</a>, the Region value in the finding might differ from the Region where GuardDuty identifies the potential threat. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_data-sources.html#cloudtrail_global\">How GuardDuty handles Amazon Web Services CloudTrail global events</a> in the <i>Amazon GuardDuty User Guide</i>.</p>",
           "locationName":"region"
         },
         "Resource":{
@@ -4258,7 +4377,10 @@
         "EC2_NETWORK_INTERFACE",
         "S3_BUCKET",
         "S3_OBJECT",
-        "ACCESS_KEY"
+        "ACCESS_KEY",
+        "EKS_CLUSTER",
+        "KUBERNETES_WORKLOAD",
+        "CONTAINER"
       ]
     },
     "FindingStatisticType":{
@@ -5244,7 +5366,13 @@
         "ATTACK_TECHNIQUE",
         "UNUSUAL_API_FOR_ACCOUNT",
         "UNUSUAL_ASN_FOR_ACCOUNT",
-        "UNUSUAL_ASN_FOR_USER"
+        "UNUSUAL_ASN_FOR_USER",
+        "SUSPICIOUS_PROCESS",
+        "MALICIOUS_DOMAIN",
+        "MALICIOUS_PROCESS",
+        "CRYPTOMINING_IP",
+        "CRYPTOMINING_DOMAIN",
+        "CRYPTOMINING_PROCESS"
       ]
     },
     "IndicatorValueString":{
@@ -5659,6 +5787,19 @@
       },
       "documentation":"<p>Information about the Kubernetes API for which you check if you have permission to call.</p>"
     },
+    "KubernetesResourcesTypes":{
+      "type":"string",
+      "enum":[
+        "PODS",
+        "JOBS",
+        "CRONJOBS",
+        "DEPLOYMENTS",
+        "DAEMONSETS",
+        "STATEFULSETS",
+        "REPLICASETS",
+        "REPLICATIONCONTROLLERS"
+      ]
+    },
     "KubernetesRoleBindingDetails":{
       "type":"structure",
       "members":{
@@ -5741,6 +5882,27 @@
         }
       },
       "documentation":"<p>Details about the Kubernetes user involved in a Kubernetes finding.</p>"
+    },
+    "KubernetesWorkload":{
+      "type":"structure",
+      "members":{
+        "ContainerUids":{
+          "shape":"ContainerUids",
+          "documentation":"<p>A list of unique identifiers for the containers that are part of the Kubernetes workload.</p>",
+          "locationName":"containerUids"
+        },
+        "Namespace":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes namespace in which the workload is running, providing logical isolation within the cluster.</p>",
+          "locationName":"namespace"
+        },
+        "KubernetesResourcesTypes":{
+          "shape":"KubernetesResourcesTypes",
+          "documentation":"<p>The types of Kubernetes resources involved in the workload.</p>",
+          "locationName":"kubernetesResourcesTypes"
+        }
+      },
+      "documentation":"<p>Contains information about Kubernetes workloads involved in a GuardDuty finding, including pods, deployments, and other Kubernetes resources.</p>"
     },
     "KubernetesWorkloadDetails":{
       "type":"structure",
@@ -7620,6 +7782,21 @@
       },
       "documentation":"<p>Information about the observed process.</p>"
     },
+    "ProcessName":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
+    "ProcessPath":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
+    "ProcessSha256":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
     "ProductCode":{
       "type":"structure",
       "members":{
@@ -8018,6 +8195,21 @@
           "shape":"S3Object",
           "documentation":"<p>Contains information about the Amazon S3 object.</p>",
           "locationName":"s3Object"
+        },
+        "EksCluster":{
+          "shape":"EksCluster",
+          "documentation":"<p>Contains detailed information about the Amazon EKS cluster associated with the activity that prompted GuardDuty to generate a finding.</p>",
+          "locationName":"eksCluster"
+        },
+        "KubernetesWorkload":{
+          "shape":"KubernetesWorkload",
+          "documentation":"<p>Contains detailed information about the Kubernetes workload associated with the activity that prompted GuardDuty to generate a finding.</p>",
+          "locationName":"kubernetesWorkload"
+        },
+        "Container":{
+          "shape":"ContainerFindingResource",
+          "documentation":"<p>Contains detailed information about the container associated with the activity that prompted GuardDuty to generate a finding.</p>",
+          "locationName":"container"
         }
       },
       "documentation":"<p>Contains information about the Amazon Web Services resource that is associated with the activity that prompted GuardDuty to generate a finding.</p>"
@@ -8883,6 +9075,11 @@
           "shape":"Indicators",
           "documentation":"<p>Contains information about the indicators observed in the attack sequence.</p>",
           "locationName":"sequenceIndicators"
+        },
+        "AdditionalSequenceTypes":{
+          "shape":"AdditionalSequenceTypes",
+          "documentation":"<p>Additional types of sequences that may be associated with the attack sequence finding, providing further context about the nature of the detected threat.</p>",
+          "locationName":"additionalSequenceTypes"
         }
       },
       "documentation":"<p>Contains information about the GuardDuty attack sequence finding.</p>"
@@ -9139,7 +9336,11 @@
       "enum":[
         "FINDING",
         "CLOUD_TRAIL",
-        "S3_DATA_EVENTS"
+        "S3_DATA_EVENTS",
+        "EKS_AUDIT_LOGS",
+        "FLOW_LOGS",
+        "DNS_LOGS",
+        "RUNTIME_MONITORING"
       ]
     },
     "Signals":{

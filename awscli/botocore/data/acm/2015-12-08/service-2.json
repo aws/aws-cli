@@ -24,11 +24,11 @@
       },
       "input":{"shape":"AddTagsToCertificateRequest"},
       "errors":[
-        {"shape":"TagPolicyException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"TagPolicyException"},
         {"shape":"TooManyTagsException"},
-        {"shape":"ThrottlingException"},
         {"shape":"InvalidArnException"},
+        {"shape":"ThrottlingException"},
         {"shape":"InvalidTagException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -43,8 +43,8 @@
       "input":{"shape":"DeleteCertificateRequest"},
       "errors":[
         {"shape":"ResourceInUseException"},
-        {"shape":"ThrottlingException"},
         {"shape":"InvalidArnException"},
+        {"shape":"ThrottlingException"},
         {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
@@ -78,7 +78,7 @@
         {"shape":"RequestInProgressException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Exports a private certificate issued by a private certificate authority (CA) for use anywhere. The exported file contains the certificate, the certificate chain, and the encrypted private 2048-bit RSA key associated with the public key that is embedded in the certificate. For security, you must assign a passphrase for the private key when exporting it. </p> <p>For information about exporting and formatting a certificate using the ACM console or CLI, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-export-private.html\">Export a Private Certificate</a>.</p>"
+      "documentation":"<p>Exports a private certificate issued by a private certificate authority (CA) or public certificate for use anywhere. The exported file contains the certificate, the certificate chain, and the encrypted private key associated with the public key that is embedded in the certificate. For security, you must assign a passphrase for the private key when exporting it. </p> <p>For information about exporting and formatting a certificate using the ACM console or CLI, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/export-private.html\">Export a private certificate</a> and <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/export-public-certificate\">Export a public certificate</a>.</p>"
     },
     "GetAccountConfiguration":{
       "name":"GetAccountConfiguration",
@@ -117,8 +117,8 @@
       "input":{"shape":"ImportCertificateRequest"},
       "output":{"shape":"ImportCertificateResponse"},
       "errors":[
-        {"shape":"TagPolicyException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"TagPolicyException"},
         {"shape":"TooManyTagsException"},
         {"shape":"InvalidArnException"},
         {"shape":"InvalidTagException"},
@@ -178,10 +178,10 @@
       },
       "input":{"shape":"RemoveTagsFromCertificateRequest"},
       "errors":[
-        {"shape":"TagPolicyException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"ThrottlingException"},
+        {"shape":"TagPolicyException"},
         {"shape":"InvalidArnException"},
+        {"shape":"ThrottlingException"},
         {"shape":"InvalidTagException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -199,7 +199,7 @@
         {"shape":"RequestInProgressException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Renews an eligible ACM certificate. At this time, only exported private certificates can be renewed with this operation. In order to renew your Amazon Web Services Private CA certificates with ACM, you must first <a href=\"https://docs.aws.amazon.com/privateca/latest/userguide/PcaPermissions.html\">grant the ACM service principal permission to do so</a>. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/manual-renewal.html\">Testing Managed Renewal</a> in the ACM User Guide.</p>"
+      "documentation":"<p>Renews an <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/managed-renewal.html\">eligible ACM certificate</a>. In order to renew your Amazon Web Services Private CA certificates with ACM, you must first <a href=\"https://docs.aws.amazon.com/privateca/latest/userguide/PcaPermissions.html\">grant the ACM service principal permission to do so</a>. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/manual-renewal.html\">Testing Managed Renewal</a> in the ACM User Guide.</p>"
     },
     "RequestCertificate":{
       "name":"RequestCertificate",
@@ -210,15 +210,15 @@
       "input":{"shape":"RequestCertificateRequest"},
       "output":{"shape":"RequestCertificateResponse"},
       "errors":[
-        {"shape":"TagPolicyException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"TagPolicyException"},
         {"shape":"TooManyTagsException"},
         {"shape":"InvalidArnException"},
         {"shape":"InvalidTagException"},
         {"shape":"InvalidDomainValidationOptionsException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Requests an ACM certificate for use with other Amazon Web Services services. To request an ACM certificate, you must specify a fully qualified domain name (FQDN) in the <code>DomainName</code> parameter. You can also specify additional FQDNs in the <code>SubjectAlternativeNames</code> parameter. </p> <p>If you are requesting a private certificate, domain validation is not required. If you are requesting a public certificate, each domain name that you specify must be validated to verify that you own or control the domain. You can use <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-validate-dns.html\">DNS validation</a> or <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-validate-email.html\">email validation</a>. We recommend that you use DNS validation. ACM issues public certificates after receiving approval from the domain owner. </p> <note> <p>ACM behavior differs from the <a href=\"https://datatracker.ietf.org/doc/html/rfc6125#appendix-B.2\">RFC 6125</a> specification of the certificate validation process. ACM first checks for a Subject Alternative Name, and, if it finds one, ignores the common name (CN).</p> </note> <p>After successful completion of the <code>RequestCertificate</code> action, there is a delay of several seconds before you can retrieve information about the new certificate.</p>"
+      "documentation":"<p>Requests an ACM certificate for use with other Amazon Web Services services. To request an ACM certificate, you must specify a fully qualified domain name (FQDN) in the <code>DomainName</code> parameter. You can also specify additional FQDNs in the <code>SubjectAlternativeNames</code> parameter. </p> <p>If you are requesting a private certificate, domain validation is not required. If you are requesting a public certificate, each domain name that you specify must be validated to verify that you own or control the domain. You can use <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-validate-dns.html\">DNS validation</a> or <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-validate-email.html\">email validation</a>. We recommend that you use DNS validation.</p> <note> <p>ACM behavior differs from the <a href=\"https://datatracker.ietf.org/doc/html/rfc6125#appendix-B.2\">RFC 6125</a> specification of the certificate validation process. ACM first checks for a Subject Alternative Name, and, if it finds one, ignores the common name (CN).</p> </note> <p>After successful completion of the <code>RequestCertificate</code> action, there is a delay of several seconds before you can retrieve information about the new certificate.</p>"
     },
     "ResendValidationEmail":{
       "name":"ResendValidationEmail",
@@ -235,6 +235,24 @@
       ],
       "documentation":"<p>Resends the email that requests domain ownership validation. The domain owner or an authorized representative must approve the ACM certificate before it can be issued. The certificate can be approved by clicking a link in the mail to navigate to the Amazon certificate approval website and then clicking <b>I Approve</b>. However, the validation email can be blocked by spam filters. Therefore, if you do not receive the original mail, you can request that the mail be resent within 72 hours of requesting the ACM certificate. If more than 72 hours have elapsed since your original request or since your last attempt to resend validation mail, you must request a new certificate. For more information about setting up your contact email addresses, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/setup-email.html\">Configure Email for your Domain</a>. </p>"
     },
+    "RevokeCertificate":{
+      "name":"RevokeCertificate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RevokeCertificateRequest"},
+      "output":{"shape":"RevokeCertificateResponse"},
+      "errors":[
+        {"shape":"ResourceInUseException"},
+        {"shape":"InvalidArnException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Revokes a public ACM certificate. You can only revoke certificates that have been previously exported.</p>"
+    },
     "UpdateCertificateOptions":{
       "name":"UpdateCertificateOptions",
       "http":{
@@ -248,7 +266,7 @@
         {"shape":"InvalidStateException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Updates a certificate. Currently, you can use this function to specify whether to opt in to or out of recording your certificate in a certificate transparency log. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-bestpractices.html#best-practices-transparency\"> Opting Out of Certificate Transparency Logging</a>. </p>"
+      "documentation":"<p>Updates a certificate. You can use this function to specify whether to opt in to or out of recording your certificate in a certificate transparency log and exporting. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-bestpractices.html#best-practices-transparency\"> Opting Out of Certificate Transparency Logging</a> and <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-exportable-certificates.html\">Certificate Manager Exportable Managed Certificates</a>.</p>"
     }
   },
   "shapes":{
@@ -420,6 +438,13 @@
       },
       "documentation":"<p>Contains metadata about an ACM certificate. This structure is returned in the response to a <a>DescribeCertificate</a> request. </p>"
     },
+    "CertificateExport":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "CertificateManagedBy":{
       "type":"string",
       "enum":["CLOUDFRONT"]
@@ -430,9 +455,13 @@
         "CertificateTransparencyLoggingPreference":{
           "shape":"CertificateTransparencyLoggingPreference",
           "documentation":"<p>You can opt out of certificate transparency logging by specifying the <code>DISABLED</code> option. Opt in by specifying <code>ENABLED</code>. </p>"
+        },
+        "Export":{
+          "shape":"CertificateExport",
+          "documentation":"<p>You can opt in to allow the export of your certificates by specifying <code>ENABLED</code>.</p>"
         }
       },
-      "documentation":"<p>Structure that contains options for your certificate. Currently, you can use this only to specify whether to opt in to or out of certificate transparency logging. Some browsers require that public certificates issued for your domain be recorded in a log. Certificates that are not logged typically generate a browser error. Transparency makes it possible for you to detect SSL/TLS certificates that have been mistakenly or maliciously issued for your domain. For general information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency\">Certificate Transparency Logging</a>. </p>"
+      "documentation":"<p>Structure that contains options for your certificate. You can use this structure to specify whether to opt in to or out of certificate transparency logging and export your certificate. </p> <p>Some browsers require that public certificates issued for your domain be recorded in a log. Certificates that are not logged typically generate a browser error. Transparency makes it possible for you to detect SSL/TLS certificates that have been mistakenly or maliciously issued for your domain. For general information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency\">Certificate Transparency Logging</a>.</p> <p>You can export public ACM certificates to use with Amazon Web Services services as well as outside Amazon Web Services Cloud. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-exportable-certificates.html\">Certificate Manager exportable public certificate</a>.</p>"
     },
     "CertificateStatus":{
       "type":"string",
@@ -488,6 +517,10 @@
         "ExtendedKeyUsages":{
           "shape":"ExtendedKeyUsageNames",
           "documentation":"<p>Contains a list of Extended Key Usage X.509 v3 extension objects. Each object specifies a purpose for which the certificate public key can be used and consists of a name and an object identifier (OID). </p>"
+        },
+        "ExportOption":{
+          "shape":"CertificateExport",
+          "documentation":"<p>Indicates if export is enabled for the certificate.</p>"
         },
         "InUse":{
           "shape":"NullableBoolean",
@@ -630,11 +663,11 @@
         },
         "ResourceRecord":{
           "shape":"ResourceRecord",
-          "documentation":"<p>Contains the CNAME record that you add to your DNS database for domain validation. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-validate-dns.html\">Use DNS to Validate Domain Ownership</a>.</p> <p>Note: The CNAME information that you need does not include the name of your domain. If you include your domain name in the DNS database CNAME record, validation fails. For example, if the name is \"_a79865eb4cd1a6ab990a45779b4e0b96.yourdomain.com\", only \"_a79865eb4cd1a6ab990a45779b4e0b96\" must be used.</p>"
+          "documentation":"<p>Contains the CNAME record that you add to your DNS database for domain validation. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-validate-dns.html\">Use DNS to Validate Domain Ownership</a>.</p> <note> <p>The CNAME information that you need does not include the name of your domain. If you include your domain name in the DNS database CNAME record, validation fails. For example, if the name is <code>_a79865eb4cd1a6ab990a45779b4e0b96.yourdomain.com</code>, only <code>_a79865eb4cd1a6ab990a45779b4e0b96</code> must be used.</p> </note>"
         },
         "HttpRedirect":{
           "shape":"HttpRedirect",
-          "documentation":"<p>Contains information for HTTP-based domain validation of certificates requested through CloudFront and issued by ACM. This field exists only when the certificate type is <code>AMAZON_ISSUED</code> and the validation method is <code>HTTP</code>.</p>"
+          "documentation":"<p>Contains information for HTTP-based domain validation of certificates requested through Amazon CloudFront and issued by ACM. This field exists only when the certificate type is <code>AMAZON_ISSUED</code> and the validation method is <code>HTTP</code>.</p>"
         },
         "ValidationMethod":{
           "shape":"ValidationMethod",
@@ -797,6 +830,10 @@
           "shape":"KeyAlgorithmList",
           "documentation":"<p>Specify one or more algorithms that can be used to generate key pairs.</p> <p>Default filtering returns only <code>RSA_1024</code> and <code>RSA_2048</code> certificates that have at least one domain. To return other certificate types, provide the desired type signatures in a comma-separated list. For example, <code>\"keyTypes\": [\"RSA_2048\",\"RSA_4096\"]</code> returns both <code>RSA_2048</code> and <code>RSA_4096</code> certificates.</p>"
         },
+        "exportOption":{
+          "shape":"CertificateExport",
+          "documentation":"<p>Specify <code>ENABLED</code> or <code>DISABLED</code> to identify certificates that can be exported.</p>"
+        },
         "managedBy":{
           "shape":"CertificateManagedBy",
           "documentation":"<p>Identifies the Amazon Web Services service that manages the certificate issued by ACM.</p>"
@@ -848,7 +885,7 @@
           "documentation":"<p>The URL hosting the validation token. <code>RedirectFrom</code> must return this content or redirect here.</p>"
         }
       },
-      "documentation":"<p>Contains information for HTTP-based domain validation of certificates requested through CloudFront and issued by ACM. This field exists only when the certificate type is <code>AMAZON_ISSUED</code> and the validation method is <code>HTTP</code>.</p>"
+      "documentation":"<p>Contains information for HTTP-based domain validation of certificates requested through Amazon CloudFront and issued by ACM. This field exists only when the certificate type is <code>AMAZON_ISSUED</code> and the validation method is <code>HTTP</code>.</p>"
     },
     "IdempotencyToken":{
       "type":"string",
@@ -903,7 +940,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>One or more of of request parameters specified is not valid.</p>",
+      "documentation":"<p>One or more of request parameters specified is not valid.</p>",
       "exception":true
     },
     "InvalidArnException":{
@@ -1229,7 +1266,7 @@
         },
         "Options":{
           "shape":"CertificateOptions",
-          "documentation":"<p>Currently, you can use this parameter to specify whether to add the certificate to a certificate transparency log. Certificate transparency makes it possible to detect SSL/TLS certificates that have been mistakenly or maliciously issued. Certificates that have not been logged typically produce an error message in a browser. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-bestpractices.html#best-practices-transparency\">Opting Out of Certificate Transparency Logging</a>.</p>"
+          "documentation":"<p>You can use this parameter to specify whether to add the certificate to a certificate transparency log and export your certificate.</p> <p>Certificate transparency makes it possible to detect SSL/TLS certificates that have been mistakenly or maliciously issued. Certificates that have not been logged typically produce an error message in a browser. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-bestpractices.html#best-practices-transparency\">Opting Out of Certificate Transparency Logging</a>.</p> <p>You can export public ACM certificates to use with Amazon Web Services services as well as outside the Amazon Web Services Cloud. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-exportable-certificates.html\">Certificate Manager exportable public certificate</a>.</p>"
         },
         "CertificateAuthorityArn":{
           "shape":"PcaArn",
@@ -1343,6 +1380,32 @@
         "A_A_COMPROMISE"
       ]
     },
+    "RevokeCertificateRequest":{
+      "type":"structure",
+      "required":[
+        "CertificateArn",
+        "RevocationReason"
+      ],
+      "members":{
+        "CertificateArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the public or private certificate that will be revoked. The ARN must have the following form: </p> <p> <code>arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012</code> </p>"
+        },
+        "RevocationReason":{
+          "shape":"RevocationReason",
+          "documentation":"<p>Specifies why you revoked the certificate.</p>"
+        }
+      }
+    },
+    "RevokeCertificateResponse":{
+      "type":"structure",
+      "members":{
+        "CertificateArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the public or private certificate that was revoked.</p>"
+        }
+      }
+    },
     "ServiceErrorMessage":{"type":"string"},
     "SortBy":{
       "type":"string",
@@ -1427,7 +1490,7 @@
         },
         "Options":{
           "shape":"CertificateOptions",
-          "documentation":"<p>Use to update the options for your certificate. Currently, you can specify whether to add your certificate to a transparency log. Certificate transparency makes it possible to detect SSL/TLS certificates that have been mistakenly or maliciously issued. Certificates that have not been logged typically produce an error message in a browser. </p>"
+          "documentation":"<p>Use to update the options for your certificate. Currently, you can specify whether to add your certificate to a transparency log or export your certificate. Certificate transparency makes it possible to detect SSL/TLS certificates that have been mistakenly or maliciously issued. Certificates that have not been logged typically produce an error message in a browser. </p>"
         }
       }
     },

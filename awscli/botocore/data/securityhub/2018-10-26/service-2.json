@@ -216,7 +216,24 @@
         {"shape":"LimitExceededException"},
         {"shape":"InvalidAccessException"}
       ],
-      "documentation":"<p>Used by Security Hub customers to update information about their investigation into a finding. Requested by administrator accounts or member accounts. Administrator accounts can update findings for their account and their member accounts. Member accounts can update findings for their account.</p> <p>Updates from <code>BatchUpdateFindings</code> don't affect the value of <code>UpdatedAt</code> for a finding.</p> <p>Administrator and member accounts can use <code>BatchUpdateFindings</code> to update the following finding fields and objects.</p> <ul> <li> <p> <code>Confidence</code> </p> </li> <li> <p> <code>Criticality</code> </p> </li> <li> <p> <code>Note</code> </p> </li> <li> <p> <code>RelatedFindings</code> </p> </li> <li> <p> <code>Severity</code> </p> </li> <li> <p> <code>Types</code> </p> </li> <li> <p> <code>UserDefinedFields</code> </p> </li> <li> <p> <code>VerificationState</code> </p> </li> <li> <p> <code>Workflow</code> </p> </li> </ul> <p>You can configure IAM policies to restrict access to fields and field values. For example, you might not want member accounts to be able to suppress findings or change the finding severity. See <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/finding-update-batchupdatefindings.html#batchupdatefindings-configure-access\">Configuring access to BatchUpdateFindings</a> in the <i>Security Hub User Guide</i>.</p>"
+      "documentation":"<p> Used by Security Hub customers to update information about their investigation into one or more findings. Requested by administrator accounts or member accounts. Administrator accounts can update findings for their account and their member accounts. A member account can update findings only for their own account. Administrator and member accounts can use this operation to update the following fields and objects for one or more findings: </p> <ul> <li> <p> <code>Confidence</code> </p> </li> <li> <p> <code>Criticality</code> </p> </li> <li> <p> <code>Note</code> </p> </li> <li> <p> <code>RelatedFindings</code> </p> </li> <li> <p> <code>Severity</code> </p> </li> <li> <p> <code>Types</code> </p> </li> <li> <p> <code>UserDefinedFields</code> </p> </li> <li> <p> <code>VerificationState</code> </p> </li> <li> <p> <code>Workflow</code> </p> </li> </ul> <p> If you use this operation to update a finding, your updates don’t affect the value for the <code>UpdatedAt</code> field of the finding. Also note that it can take several minutes for Security Hub to process your request and update each finding specified in the request. </p> <p> You can configure IAM policies to restrict access to fields and field values. For example, you might not want member accounts to be able to suppress findings or change the finding severity. For more information see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/finding-update-batchupdatefindings.html#batchupdatefindings-configure-access\">Configuring access to BatchUpdateFindings</a> in the <i>Security Hub User Guide</i>. </p>"
+    },
+    "BatchUpdateFindingsV2":{
+      "name":"BatchUpdateFindingsV2",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/findingsv2/batchupdatev2"
+      },
+      "input":{"shape":"BatchUpdateFindingsV2Request"},
+      "output":{"shape":"BatchUpdateFindingsV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Used by customers to update information about their investigation into a finding. Requested by delegated administrator accounts or member accounts. Delegated administrator accounts can update findings for their account and their member accounts. Member accounts can update findings for their account. <code>BatchUpdateFindings</code> and <code>BatchUpdateFindingV2</code> both use <code>securityhub:BatchUpdateFindings</code> in the <code>Action</code> element of an IAM policy statement. You must have permission to perform the <code>securityhub:BatchUpdateFindings</code> action. Updates from <code>BatchUpdateFindingsV2</code> don't affect the value of f<code>inding_info.modified_time</code>, <code>finding_info.modified_time_dt</code>, <code>time</code>, <code>time_dt for a finding</code>. This API is in private preview and subject to change.</p>"
     },
     "BatchUpdateStandardsControlAssociations":{
       "name":"BatchUpdateStandardsControlAssociations",
@@ -235,6 +252,24 @@
       ],
       "documentation":"<p> For a batch of security controls and standards, this operation updates the enablement status of a control in a standard. </p>"
     },
+    "ConnectorRegistrationsV2":{
+      "name":"ConnectorRegistrationsV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/connectorsv2/registrations"
+      },
+      "input":{"shape":"ConnectorRegistrationsV2Request"},
+      "output":{"shape":"ConnectorRegistrationsV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Grants permission to complete the authorization based on input parameters. This API is in preview release and subject to change.</p>"
+    },
     "CreateActionTarget":{
       "name":"CreateActionTarget",
       "http":{
@@ -251,6 +286,24 @@
         {"shape":"ResourceConflictException"}
       ],
       "documentation":"<p>Creates a custom action target in Security Hub.</p> <p>You can use custom actions on findings and insights in Security Hub to trigger target actions in Amazon CloudWatch Events.</p>"
+    },
+    "CreateAggregatorV2":{
+      "name":"CreateAggregatorV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/aggregatorv2/create"
+      },
+      "input":{"shape":"CreateAggregatorV2Request"},
+      "output":{"shape":"CreateAggregatorV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Enables aggregation across Amazon Web Services Regions. This API is in private preview and subject to change.</p>"
     },
     "CreateAutomationRule":{
       "name":"CreateAutomationRule",
@@ -269,6 +322,23 @@
       ],
       "documentation":"<p> Creates an automation rule based on input parameters. </p>"
     },
+    "CreateAutomationRuleV2":{
+      "name":"CreateAutomationRuleV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/automationrulesv2/create"
+      },
+      "input":{"shape":"CreateAutomationRuleV2Request"},
+      "output":{"shape":"CreateAutomationRuleV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a V2 automation rule. This API is in private preview and subject to change.</p>"
+    },
     "CreateConfigurationPolicy":{
       "name":"CreateConfigurationPolicy",
       "http":{
@@ -286,6 +356,24 @@
         {"shape":"ResourceConflictException"}
       ],
       "documentation":"<p> Creates a configuration policy with the defined configuration. Only the Security Hub delegated administrator can invoke this operation from the home Region. </p>"
+    },
+    "CreateConnectorV2":{
+      "name":"CreateConnectorV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/connectorsv2"
+      },
+      "input":{"shape":"CreateConnectorV2Request"},
+      "output":{"shape":"CreateConnectorV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Grants permission to create a connectorV2 based on input parameters. This API is in preview release and subject to change.</p>"
     },
     "CreateFindingAggregator":{
       "name":"CreateFindingAggregator",
@@ -339,6 +427,24 @@
       ],
       "documentation":"<p>Creates a member association in Security Hub between the specified accounts and the account used to make the request, which is the administrator account. If you are integrated with Organizations, then the administrator account is designated by the organization management account.</p> <p> <code>CreateMembers</code> is always used to add accounts that are not organization members.</p> <p>For accounts that are managed using Organizations, <code>CreateMembers</code> is only used in the following cases:</p> <ul> <li> <p>Security Hub is not configured to automatically add new organization accounts.</p> </li> <li> <p>The account was disassociated or deleted in Security Hub.</p> </li> </ul> <p>This action can only be used by an account that has Security Hub enabled. To enable Security Hub, you can use the <code>EnableSecurityHub</code> operation.</p> <p>For accounts that are not organization members, you create the account association and then send an invitation to the member account. To send the invitation, you use the <code>InviteMembers</code> operation. If the account owner accepts the invitation, the account becomes a member account in Security Hub.</p> <p>Accounts that are managed using Organizations don't receive an invitation. They automatically become a member account in Security Hub.</p> <ul> <li> <p>If the organization account does not have Security Hub enabled, then Security Hub and the default standards are automatically enabled. Note that Security Hub cannot be enabled automatically for the organization management account. The organization management account must enable Security Hub before the administrator account enables it as a member account.</p> </li> <li> <p>For organization accounts that already have Security Hub enabled, Security Hub does not make any other changes to those accounts. It does not change their enabled standards or controls.</p> </li> </ul> <p>A permissions policy is added that permits the administrator account to view the findings generated in the member account.</p> <p>To remove the association between the administrator and member accounts, use the <code>DisassociateFromMasterAccount</code> or <code>DisassociateMembers</code> operation.</p>"
     },
+    "CreateTicketV2":{
+      "name":"CreateTicketV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ticketsv2"
+      },
+      "input":{"shape":"CreateTicketV2Request"},
+      "output":{"shape":"CreateTicketV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Grants permission to create a ticket in the chosen ITSM based on finding information for the provided finding metadata UID. This API is in preview release and subject to change.</p>"
+    },
     "DeclineInvitations":{
       "name":"DeclineInvitations",
       "http":{
@@ -371,6 +477,42 @@
       ],
       "documentation":"<p>Deletes a custom action target from Security Hub.</p> <p>Deleting a custom action target does not affect any findings or insights that were already sent to Amazon CloudWatch Events using the custom action.</p>"
     },
+    "DeleteAggregatorV2":{
+      "name":"DeleteAggregatorV2",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/aggregatorv2/delete/{AggregatorV2Arn+}"
+      },
+      "input":{"shape":"DeleteAggregatorV2Request"},
+      "output":{"shape":"DeleteAggregatorV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes the Aggregator V2. This API is in private preview and subject to change.</p>"
+    },
+    "DeleteAutomationRuleV2":{
+      "name":"DeleteAutomationRuleV2",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/automationrulesv2/{Identifier}"
+      },
+      "input":{"shape":"DeleteAutomationRuleV2Request"},
+      "output":{"shape":"DeleteAutomationRuleV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a V2 automation rule. This API is in private preview and subject to change.</p>"
+    },
     "DeleteConfigurationPolicy":{
       "name":"DeleteConfigurationPolicy",
       "http":{
@@ -389,6 +531,24 @@
         {"shape":"ResourceConflictException"}
       ],
       "documentation":"<p> Deletes a configuration policy. Only the Security Hub delegated administrator can invoke this operation from the home Region. For the deletion to succeed, you must first disassociate a configuration policy from target accounts, organizational units, or the root by invoking the <code>StartConfigurationPolicyDisassociation</code> operation. </p>"
+    },
+    "DeleteConnectorV2":{
+      "name":"DeleteConnectorV2",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/connectorsv2/{ConnectorId+}"
+      },
+      "input":{"shape":"DeleteConnectorV2Request"},
+      "output":{"shape":"DeleteConnectorV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Grants permission to delete a connectorV2. This API is in preview release and subject to change.</p>"
     },
     "DeleteFindingAggregator":{
       "name":"DeleteFindingAggregator",
@@ -524,6 +684,39 @@
       ],
       "documentation":"<p>Returns information about product integrations in Security Hub.</p> <p>You can optionally provide an integration ARN. If you provide an integration ARN, then the results only include that integration.</p> <p>If you don't provide an integration ARN, then the results include all of the available product integrations. </p>"
     },
+    "DescribeProductsV2":{
+      "name":"DescribeProductsV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/productsV2"
+      },
+      "input":{"shape":"DescribeProductsV2Request"},
+      "output":{"shape":"DescribeProductsV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Gets information about the product integration. This API is in private preview and subject to change.</p>"
+    },
+    "DescribeSecurityHubV2":{
+      "name":"DescribeSecurityHubV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/hubv2"
+      },
+      "input":{"shape":"DescribeSecurityHubV2Request"},
+      "output":{"shape":"DescribeSecurityHubV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns details about the service resource in your account. This API is in private preview and subject to change.</p>"
+    },
     "DescribeStandards":{
       "name":"DescribeStandards",
       "http":{
@@ -605,6 +798,22 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Disables Security Hub in your account only in the current Amazon Web Services Region. To disable Security Hub in all Regions, you must submit one request per Region where you have enabled Security Hub.</p> <p>You can't disable Security Hub in an account that is currently the Security Hub administrator.</p> <p>When you disable Security Hub, your existing findings and insights and any Security Hub configuration settings are deleted after 90 days and cannot be recovered. Any standards that were enabled are disabled, and your administrator and member account associations are removed.</p> <p>If you want to save your existing findings, you must export them before you disable Security Hub.</p>"
+    },
+    "DisableSecurityHubV2":{
+      "name":"DisableSecurityHubV2",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/hubv2"
+      },
+      "input":{"shape":"DisableSecurityHubV2Request"},
+      "output":{"shape":"DisableSecurityHubV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Disable the service for the current Amazon Web Services Region or specified Amazon Web Services Region. This API is in private preview and subject to change.</p>"
     },
     "DisassociateFromAdministratorAccount":{
       "name":"DisassociateFromAdministratorAccount",
@@ -711,6 +920,22 @@
       ],
       "documentation":"<p>Enables Security Hub for your account in the current Region or the Region you specify in the request.</p> <p>When you enable Security Hub, you grant to Security Hub the permissions necessary to gather findings from other services that are integrated with Security Hub.</p> <p>When you use the <code>EnableSecurityHub</code> operation to enable Security Hub, you also automatically enable the following standards:</p> <ul> <li> <p>Center for Internet Security (CIS) Amazon Web Services Foundations Benchmark v1.2.0</p> </li> <li> <p>Amazon Web Services Foundational Security Best Practices</p> </li> </ul> <p>Other standards are not automatically enabled. </p> <p>To opt out of automatically enabled standards, set <code>EnableDefaultStandards</code> to <code>false</code>.</p> <p>After you enable Security Hub, to enable a standard, use the <code>BatchEnableStandards</code> operation. To disable a standard, use the <code>BatchDisableStandards</code> operation.</p> <p>To learn more, see the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-settingup.html\">setup information</a> in the <i>Security Hub User Guide</i>.</p>"
     },
+    "EnableSecurityHubV2":{
+      "name":"EnableSecurityHubV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/hubv2"
+      },
+      "input":{"shape":"EnableSecurityHubV2Request"},
+      "output":{"shape":"EnableSecurityHubV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Enables the service in account for the current Amazon Web Services Region or specified Amazon Web Services Region. This API is in private preview and subject to change.</p>"
+    },
     "GetAdministratorAccount":{
       "name":"GetAdministratorAccount",
       "http":{
@@ -727,6 +952,42 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Provides the details for the Security Hub administrator account for the current member account.</p> <p>Can be used by both member accounts that are managed using Organizations and accounts that were invited manually.</p>"
+    },
+    "GetAggregatorV2":{
+      "name":"GetAggregatorV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/aggregatorv2/get/{AggregatorV2Arn+}"
+      },
+      "input":{"shape":"GetAggregatorV2Request"},
+      "output":{"shape":"GetAggregatorV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Returns the configuration of the specified Aggregator V2. This API is in private preview and subject to change.</p>"
+    },
+    "GetAutomationRuleV2":{
+      "name":"GetAutomationRuleV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/automationrulesv2/{Identifier}"
+      },
+      "input":{"shape":"GetAutomationRuleV2Request"},
+      "output":{"shape":"GetAutomationRuleV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Returns an automation rule for the V2 service. This API is in private preview and subject to change.</p>"
     },
     "GetConfigurationPolicy":{
       "name":"GetConfigurationPolicy",
@@ -763,6 +1024,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p> Returns the association between a configuration and a target account, organizational unit, or the root. The configuration can be a configuration policy or self-managed behavior. Only the Security Hub delegated administrator can invoke this operation from the home Region. </p>"
+    },
+    "GetConnectorV2":{
+      "name":"GetConnectorV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/connectorsv2/{ConnectorId+}"
+      },
+      "input":{"shape":"GetConnectorV2Request"},
+      "output":{"shape":"GetConnectorV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Grants permission to retrieve details for a connectorV2 based on connector id. This API is in preview release and subject to change.</p>"
     },
     "GetEnabledStandards":{
       "name":"GetEnabledStandards",
@@ -812,7 +1091,24 @@
         {"shape":"InvalidAccessException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p> Returns history for a Security Hub finding in the last 90 days. The history includes changes made to any fields in the Amazon Web Services Security Finding Format (ASFF). </p>"
+      "documentation":"<p> Returns the history of a Security Hub finding for the past 90 days. The history includes changes made to any fields in the Amazon Web Services Security Finding Format (ASFF) except top-level timestamp fields, such as the <code>CreatedAt</code> and <code>UpdatedAt</code> fields. </p> <p>This operation might return fewer results than the maximum number of results (<code>MaxResults</code>) specified in a request, even when more results are available. If this occurs, the response includes a <code>NextToken</code> value, which you should use to retrieve the next set of results in the response. The presence of a <code>NextToken</code> value in a response doesn't necessarily indicate that the results are incomplete. However, you should continue to specify a <code>NextToken</code> value until you receive a response that doesn't include this value.</p>"
+    },
+    "GetFindingStatisticsV2":{
+      "name":"GetFindingStatisticsV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/findingsv2/statistics"
+      },
+      "input":{"shape":"GetFindingStatisticsV2Request"},
+      "output":{"shape":"GetFindingStatisticsV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns aggregated statistical data about findings. <code>GetFindingStatisticsV2</code> use <code>securityhub:GetAdhocInsightResults</code> in the <code>Action</code> element of an IAM policy statement. You must have permission to perform the <code>s</code> action. This API is in private preview and subject to change.</p>"
     },
     "GetFindings":{
       "name":"GetFindings",
@@ -829,6 +1125,23 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Returns a list of findings that match the specified criteria.</p> <p>If cross-Region aggregation is enabled, then when you call <code>GetFindings</code> from the home Region, the results include all of the matching findings from both the home Region and linked Regions.</p>"
+    },
+    "GetFindingsV2":{
+      "name":"GetFindingsV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/findingsv2"
+      },
+      "input":{"shape":"GetFindingsV2Request"},
+      "output":{"shape":"GetFindingsV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Return a list of findings that match the specified criteria. <code>GetFindings</code> and <code>GetFindingsV2</code> both use <code>securityhub:GetFindings</code> in the <code>Action</code> element of an IAM policy statement. You must have permission to perform the <code>securityhub:GetFindings</code> action. This API is in private preview and subject to change.</p>"
     },
     "GetInsightResults":{
       "name":"GetInsightResults",
@@ -916,6 +1229,42 @@
       ],
       "documentation":"<p>Returns the details for the Security Hub member accounts for the specified account IDs.</p> <p>An administrator account can be either the delegated Security Hub administrator account for an organization or an administrator account that enabled Security Hub manually.</p> <p>The results include both member accounts that are managed using Organizations and accounts that were invited manually.</p>"
     },
+    "GetResourcesStatisticsV2":{
+      "name":"GetResourcesStatisticsV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/resourcesv2/statistics"
+      },
+      "input":{"shape":"GetResourcesStatisticsV2Request"},
+      "output":{"shape":"GetResourcesStatisticsV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves statistical information about Amazon Web Services resources and their associated security findings. This API is in private preview and subject to change.</p>"
+    },
+    "GetResourcesV2":{
+      "name":"GetResourcesV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/resourcesv2"
+      },
+      "input":{"shape":"GetResourcesV2Request"},
+      "output":{"shape":"GetResourcesV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of resources. This API is in private preview and subject to change.</p>"
+    },
     "GetSecurityControlDefinition":{
       "name":"GetSecurityControlDefinition",
       "http":{
@@ -950,6 +1299,24 @@
       ],
       "documentation":"<note> <p>We recommend using Organizations instead of Security Hub invitations to manage your member accounts. For information, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-accounts-orgs.html\">Managing Security Hub administrator and member accounts with Organizations</a> in the <i>Security Hub User Guide</i>.</p> </note> <p>Invites other Amazon Web Services accounts to become member accounts for the Security Hub administrator account that the invitation is sent from.</p> <p>This operation is only used to invite accounts that don't belong to an Amazon Web Services organization. Organization accounts don't receive invitations.</p> <p>Before you can use this action to invite a member, you must first use the <code>CreateMembers</code> action to create the member account in Security Hub.</p> <p>When the account owner enables Security Hub and accepts the invitation to become a member account, the administrator account can view the findings generated in the member account.</p>"
     },
+    "ListAggregatorsV2":{
+      "name":"ListAggregatorsV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/aggregatorv2/list"
+      },
+      "input":{"shape":"ListAggregatorsV2Request"},
+      "output":{"shape":"ListAggregatorsV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Retrieves a list of V2 aggregators. This API is in private preview and subject to change.</p>"
+    },
     "ListAutomationRules":{
       "name":"ListAutomationRules",
       "http":{
@@ -966,6 +1333,23 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p> A list of automation rules and their metadata for the calling account. </p>"
+    },
+    "ListAutomationRulesV2":{
+      "name":"ListAutomationRulesV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/automationrulesv2/list"
+      },
+      "input":{"shape":"ListAutomationRulesV2Request"},
+      "output":{"shape":"ListAutomationRulesV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Returns a list of automation rules and metadata for the calling account. This API is in private preview and subject to change.</p>"
     },
     "ListConfigurationPolicies":{
       "name":"ListConfigurationPolicies",
@@ -1001,6 +1385,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p> Provides information about the associations for your configuration policies and self-managed behavior. Only the Security Hub delegated administrator can invoke this operation from the home Region. </p>"
+    },
+    "ListConnectorsV2":{
+      "name":"ListConnectorsV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/connectorsv2"
+      },
+      "input":{"shape":"ListConnectorsV2Request"},
+      "output":{"shape":"ListConnectorsV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Grants permission to retrieve a list of connectorsV2 and their metadata for the calling account. This API is in preview release and subject to change.</p>"
     },
     "ListEnabledProductsForImport":{
       "name":"ListEnabledProductsForImport",
@@ -1212,6 +1614,42 @@
       ],
       "documentation":"<p>Updates the name and description of a custom action target in Security Hub.</p>"
     },
+    "UpdateAggregatorV2":{
+      "name":"UpdateAggregatorV2",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/aggregatorv2/update/{AggregatorV2Arn+}"
+      },
+      "input":{"shape":"UpdateAggregatorV2Request"},
+      "output":{"shape":"UpdateAggregatorV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Udpates the configuration for the Aggregator V2. This API is in private preview and subject to change.</p>"
+    },
+    "UpdateAutomationRuleV2":{
+      "name":"UpdateAutomationRuleV2",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/automationrulesv2/{Identifier}"
+      },
+      "input":{"shape":"UpdateAutomationRuleV2Request"},
+      "output":{"shape":"UpdateAutomationRuleV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates a V2 automation rule. This API is in private preview and subject to change.</p>"
+    },
     "UpdateConfigurationPolicy":{
       "name":"UpdateConfigurationPolicy",
       "http":{
@@ -1230,6 +1668,24 @@
         {"shape":"ResourceConflictException"}
       ],
       "documentation":"<p> Updates a configuration policy. Only the Security Hub delegated administrator can invoke this operation from the home Region. </p>"
+    },
+    "UpdateConnectorV2":{
+      "name":"UpdateConnectorV2",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/connectorsv2/{ConnectorId+}"
+      },
+      "input":{"shape":"UpdateConnectorV2Request"},
+      "output":{"shape":"UpdateConnectorV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Grants permission to update a connectorV2 based on its id and input parameters. This API is in preview release and subject to change.</p>"
     },
     "UpdateFindingAggregator":{
       "name":"UpdateFindingAggregator",
@@ -1379,8 +1835,7 @@
     },
     "AcceptAdministratorInvitationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AcceptInvitationRequest":{
       "type":"structure",
@@ -1401,8 +1856,7 @@
     },
     "AcceptInvitationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AccessDeniedException":{
       "type":"structure",
@@ -1690,6 +2144,27 @@
       "max":10,
       "min":1
     },
+    "AggregatorV2":{
+      "type":"structure",
+      "members":{
+        "AggregatorV2Arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the aggregatorV2.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a cross-Region data aggregation configuration, including the aggregation Region and any linked Regions.</p>"
+    },
+    "AggregatorV2List":{
+      "type":"list",
+      "member":{"shape":"AggregatorV2"}
+    },
+    "AllowedOperators":{
+      "type":"string",
+      "enum":[
+        "AND",
+        "OR"
+      ]
+    },
     "AlphaNumericNonEmptyString":{
       "type":"string",
       "pattern":"^([^\\u0000-\\u007F]|[-_ a-zA-Z0-9])+$"
@@ -1813,9 +2288,55 @@
       },
       "documentation":"<p> One or more actions that Security Hub takes when a finding matches the defined criteria of a rule. </p>"
     },
+    "AutomationRulesActionListV2":{
+      "type":"list",
+      "member":{"shape":"AutomationRulesActionV2"},
+      "max":1,
+      "min":1
+    },
     "AutomationRulesActionType":{
       "type":"string",
       "enum":["FINDING_FIELDS_UPDATE"]
+    },
+    "AutomationRulesActionTypeListV2":{
+      "type":"list",
+      "member":{"shape":"AutomationRulesActionTypeObjectV2"}
+    },
+    "AutomationRulesActionTypeObjectV2":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"AutomationRulesActionTypeV2",
+          "documentation":"<p>The category of action to be executed by the automation rule.</p>"
+        }
+      },
+      "documentation":"<p>Allows you to customize security response workflows.</p>"
+    },
+    "AutomationRulesActionTypeV2":{
+      "type":"string",
+      "enum":[
+        "FINDING_FIELDS_UPDATE",
+        "EXTERNAL_INTEGRATION"
+      ]
+    },
+    "AutomationRulesActionV2":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"AutomationRulesActionTypeV2",
+          "documentation":"<p>The category of action to be executed by the automation rule.</p>"
+        },
+        "FindingFieldsUpdate":{
+          "shape":"AutomationRulesFindingFieldsUpdateV2",
+          "documentation":"<p>The changes to be applied to fields in a security finding when an automation rule is triggered.</p>"
+        },
+        "ExternalIntegrationConfiguration":{
+          "shape":"ExternalIntegrationConfiguration",
+          "documentation":"<p>The settings for integrating automation rule actions with external systems or service.</p>"
+        }
+      },
+      "documentation":"<p>Allows you to configure automated responses.</p>"
     },
     "AutomationRulesArnsList":{
       "type":"list",
@@ -1909,6 +2430,24 @@
         }
       },
       "documentation":"<p> Identifies the finding fields that the automation rule action updates when a finding matches the defined criteria. </p>"
+    },
+    "AutomationRulesFindingFieldsUpdateV2":{
+      "type":"structure",
+      "members":{
+        "SeverityId":{
+          "shape":"Integer",
+          "documentation":"<p>The severity level to be assigned to findings that match the automation rule criteria.</p>"
+        },
+        "Comment":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Notes or contextual information for findings that are modified by the automation rule.</p>"
+        },
+        "StatusId":{
+          "shape":"Integer",
+          "documentation":"<p>The status to be applied to findings that match automation rule criteria.</p>"
+        }
+      },
+      "documentation":"<p>Allows you to define the structure for modifying specific fields in security findings.</p>"
     },
     "AutomationRulesFindingFilters":{
       "type":"structure",
@@ -2113,6 +2652,52 @@
     "AutomationRulesMetadataList":{
       "type":"list",
       "member":{"shape":"AutomationRulesMetadata"}
+    },
+    "AutomationRulesMetadataListV2":{
+      "type":"list",
+      "member":{"shape":"AutomationRulesMetadataV2"}
+    },
+    "AutomationRulesMetadataV2":{
+      "type":"structure",
+      "members":{
+        "RuleArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the automation rule.</p>"
+        },
+        "RuleId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID of the automation rule.</p>"
+        },
+        "RuleOrder":{
+          "shape":"RuleOrderValueV2",
+          "documentation":"<p>The value for the rule priority.</p>"
+        },
+        "RuleName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the automation rule.</p>"
+        },
+        "RuleStatus":{
+          "shape":"RuleStatusV2",
+          "documentation":"<p>The status of the automation rule.</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An explanation for the purpose and funcitonality of the automation rule.</p>"
+        },
+        "Actions":{
+          "shape":"AutomationRulesActionTypeListV2",
+          "documentation":"<p>The list of action to be performed when the rule criteria is met.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the automation rule was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for the most recent modification to the automation rule.</p>"
+        }
+      },
+      "documentation":"<p>Includes essential metadata information about automation rules.</p>"
     },
     "AvailabilityZone":{
       "type":"structure",
@@ -15733,6 +16318,101 @@
       "type":"list",
       "member":{"shape":"BatchUpdateFindingsUnprocessedFinding"}
     },
+    "BatchUpdateFindingsV2ProcessedFinding":{
+      "type":"structure",
+      "members":{
+        "FindingIdentifier":{
+          "shape":"OcsfFindingIdentifier",
+          "documentation":"<p>The finding identifier of a processed finding.</p>"
+        },
+        "MetadataUid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The metadata.uid of a processed finding.</p>"
+        }
+      },
+      "documentation":"<p>The list of findings that were updated.</p>"
+    },
+    "BatchUpdateFindingsV2ProcessedFindingsList":{
+      "type":"list",
+      "member":{"shape":"BatchUpdateFindingsV2ProcessedFinding"}
+    },
+    "BatchUpdateFindingsV2Request":{
+      "type":"structure",
+      "members":{
+        "MetadataUids":{
+          "shape":"MetadataUidList",
+          "documentation":"<p>The list of finding <code>metadata.uid</code> to indicate findings to update. Finding <code>metadata.uid</code> is a globally unique identifier associated with the finding. Customers cannot use <code>MetadataUids</code> together with <code>FindingIdentifiers</code>.</p>"
+        },
+        "FindingIdentifiers":{
+          "shape":"OcsfFindingIdentifierList",
+          "documentation":"<p>Provides information to identify a specific V2 finding.</p>"
+        },
+        "Comment":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The updated value for a user provided comment about the finding. Minimum character length 1. Maximum character length 512.</p>"
+        },
+        "SeverityId":{
+          "shape":"Integer",
+          "documentation":"<p>The updated value for the normalized severity identifier. The severity ID is an integer with the allowed enum values [0, 1, 2, 3, 4, 5, 99]. When customer provides the updated severity ID, the string sibling severity will automatically be updated in the finding.</p>"
+        },
+        "StatusId":{
+          "shape":"Integer",
+          "documentation":"<p>The updated value for the normalized status identifier. The status ID is an integer with the allowed enum values [0, 1, 2, 3, 4, 5, 6, 99]. When customer provides the updated status ID, the string sibling status will automatically be updated in the finding.</p>"
+        }
+      }
+    },
+    "BatchUpdateFindingsV2Response":{
+      "type":"structure",
+      "required":[
+        "ProcessedFindings",
+        "UnprocessedFindings"
+      ],
+      "members":{
+        "ProcessedFindings":{
+          "shape":"BatchUpdateFindingsV2ProcessedFindingsList",
+          "documentation":"<p>The list of findings that were updated successfully.</p>"
+        },
+        "UnprocessedFindings":{
+          "shape":"BatchUpdateFindingsV2UnprocessedFindingsList",
+          "documentation":"<p>The list of V2 findings that were not updated.</p>"
+        }
+      }
+    },
+    "BatchUpdateFindingsV2UnprocessedFinding":{
+      "type":"structure",
+      "members":{
+        "FindingIdentifier":{
+          "shape":"OcsfFindingIdentifier",
+          "documentation":"<p>The finding identifier of an unprocessed finding.</p>"
+        },
+        "MetadataUid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The metadata.uid of an unprocessed finding.</p>"
+        },
+        "ErrorCode":{
+          "shape":"BatchUpdateFindingsV2UnprocessedFindingErrorCode",
+          "documentation":"<p>Indicates the specific type of error preventing successful processing of a finding during a batch update operation.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A detailed description of why a finding could not be processed during a batch update operation.</p>"
+        }
+      },
+      "documentation":"<p>The list of findings that were not updated.</p>"
+    },
+    "BatchUpdateFindingsV2UnprocessedFindingErrorCode":{
+      "type":"string",
+      "enum":[
+        "ResourceNotFoundException",
+        "ValidationException",
+        "InternalServerException",
+        "ConflictException"
+      ]
+    },
+    "BatchUpdateFindingsV2UnprocessedFindingsList":{
+      "type":"list",
+      "member":{"shape":"BatchUpdateFindingsV2UnprocessedFinding"}
+    },
     "BatchUpdateStandardsControlAssociationsRequest":{
       "type":"structure",
       "required":["StandardsControlAssociationUpdates"],
@@ -15883,6 +16563,12 @@
       },
       "documentation":"<p>Provides details about the current status of the sensitive data detection.</p>"
     },
+    "ClientToken":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"^[\\x21-\\x7E]{1,64}$"
+    },
     "CloudWatchLogsLogGroupArnConfigDetails":{
       "type":"structure",
       "members":{
@@ -15961,6 +16647,40 @@
         "FAILED",
         "NOT_AVAILABLE"
       ]
+    },
+    "CompositeFilter":{
+      "type":"structure",
+      "members":{
+        "StringFilters":{
+          "shape":"OcsfStringFilterList",
+          "documentation":"<p>Enables filtering based on string field values.</p>"
+        },
+        "DateFilters":{
+          "shape":"OcsfDateFilterList",
+          "documentation":"<p>Enables filtering based on date and timestamp fields.</p>"
+        },
+        "BooleanFilters":{
+          "shape":"OcsfBooleanFilterList",
+          "documentation":"<p>Enables filtering based on boolean field values.</p>"
+        },
+        "NumberFilters":{
+          "shape":"OcsfNumberFilterList",
+          "documentation":"<p>Enables filtering based on numerical field values.</p>"
+        },
+        "MapFilters":{
+          "shape":"OcsfMapFilterList",
+          "documentation":"<p>Enables filtering based on map field values.</p>"
+        },
+        "Operator":{
+          "shape":"AllowedOperators",
+          "documentation":"<p>The logical operator used to combine multiple filter conditions.</p>"
+        }
+      },
+      "documentation":"<p>Enables the creation of filtering criteria for security findings.</p>"
+    },
+    "CompositeFilterList":{
+      "type":"list",
+      "member":{"shape":"CompositeFilter"}
     },
     "ConfigurationOptions":{
       "type":"structure",
@@ -16099,12 +16819,116 @@
       "type":"list",
       "member":{"shape":"ConfigurationPolicySummary"}
     },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"NonEmptyString"},
+        "Code":{"shape":"NonEmptyString"}
+      },
+      "documentation":"<p>The request causes conflict with the current state of the service resource.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
     "ConnectionDirection":{
       "type":"string",
       "enum":[
         "INBOUND",
         "OUTBOUND"
       ]
+    },
+    "ConnectorAuthStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "FAILED"
+      ]
+    },
+    "ConnectorProviderName":{
+      "type":"string",
+      "enum":[
+        "JIRA_CLOUD",
+        "SERVICENOW"
+      ]
+    },
+    "ConnectorRegistrationsV2Request":{
+      "type":"structure",
+      "required":[
+        "AuthCode",
+        "AuthState"
+      ],
+      "members":{
+        "AuthCode":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The authCode retrieved from authUrl to complete the OAuth 2.0 authorization code flow.</p>"
+        },
+        "AuthState":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The authState retrieved from authUrl to complete the OAuth 2.0 authorization code flow.</p>"
+        }
+      }
+    },
+    "ConnectorRegistrationsV2Response":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connectorV2.</p>"
+        },
+        "ConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The UUID of the connectorV2 to identify connectorV2 resource.</p>"
+        }
+      }
+    },
+    "ConnectorStatus":{
+      "type":"string",
+      "enum":[
+        "CONNECTED",
+        "FAILED_TO_CONNECT",
+        "PENDING_CONFIGURATION",
+        "PENDING_AUTHORIZATION"
+      ]
+    },
+    "ConnectorSummary":{
+      "type":"structure",
+      "required":[
+        "ConnectorId",
+        "Name",
+        "ProviderSummary",
+        "CreatedAt"
+      ],
+      "members":{
+        "ConnectorArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connectorV2.</p>"
+        },
+        "ConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The UUID of the connectorV2 to identify connectorV2 resource.</p>"
+        },
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Name field contains the user-defined name assigned to the integration connector. This helps identify and manage multiple connectors within Security Hub.</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The description of the connectorV2.</p>"
+        },
+        "ProviderSummary":{
+          "shape":"ProviderSummary",
+          "documentation":"<p>The connectorV2 third party provider configuration summary.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>ISO 8601 UTC timestamp for the time create the connectorV2.</p>"
+        }
+      },
+      "documentation":"<p>A condensed overview of the connectorV2..</p>"
+    },
+    "ConnectorSummaryList":{
+      "type":"list",
+      "member":{"shape":"ConnectorSummary"}
     },
     "ContainerDetails":{
       "type":"structure",
@@ -16200,6 +17024,50 @@
         }
       }
     },
+    "CreateAggregatorV2Request":{
+      "type":"structure",
+      "required":["RegionLinkingMode"],
+      "members":{
+        "RegionLinkingMode":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Determines how Regions are linked to an Aggregator V2.</p>"
+        },
+        "LinkedRegions":{
+          "shape":"StringList",
+          "documentation":"<p>The list of Regions that are linked to the aggregation Region.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A list of key-value pairs to be applied to the AggregatorV2.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier used to ensure idempotency.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateAggregatorV2Response":{
+      "type":"structure",
+      "members":{
+        "AggregatorV2Arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the AggregatorV2.</p>"
+        },
+        "AggregationRegion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services Region where data is aggregated.</p>"
+        },
+        "RegionLinkingMode":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Determines how Regions are linked to an Aggregator V2.</p>"
+        },
+        "LinkedRegions":{
+          "shape":"StringList",
+          "documentation":"<p>The list of Regions that are linked to the aggregation Region.</p>"
+        }
+      }
+    },
     "CreateAutomationRuleRequest":{
       "type":"structure",
       "required":[
@@ -16250,6 +17118,64 @@
         "RuleArn":{
           "shape":"NonEmptyString",
           "documentation":"<p> The Amazon Resource Name (ARN) of the automation rule that you created. </p>"
+        }
+      }
+    },
+    "CreateAutomationRuleV2Request":{
+      "type":"structure",
+      "required":[
+        "RuleName",
+        "Description",
+        "RuleOrder",
+        "Criteria",
+        "Actions"
+      ],
+      "members":{
+        "RuleName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the V2 automation rule.</p>"
+        },
+        "RuleStatus":{
+          "shape":"RuleStatusV2",
+          "documentation":"<p>The status of the V2 automation rule.</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A description of the V2 automation rule.</p>"
+        },
+        "RuleOrder":{
+          "shape":"RuleOrderValueV2",
+          "documentation":"<p>The value for the rule priority.</p>"
+        },
+        "Criteria":{
+          "shape":"Criteria",
+          "documentation":"<p>The filtering type and configuration of the automation rule.</p>"
+        },
+        "Actions":{
+          "shape":"AutomationRulesActionListV2",
+          "documentation":"<p>A list of actions to be performed when the rule criteria is met.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A list of key-value pairs associated with the V2 automation rule.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier used to ensure idempotency.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateAutomationRuleV2Response":{
+      "type":"structure",
+      "members":{
+        "RuleArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the V2 automation rule.</p>"
+        },
+        "RuleId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID of the V2 automation rule.</p>"
         }
       }
     },
@@ -16308,6 +17234,58 @@
         "ConfigurationPolicy":{
           "shape":"Policy",
           "documentation":"<p> An object that defines how Security Hub is configured. It includes whether Security Hub is enabled or disabled, a list of enabled security standards, a list of enabled or disabled security controls, and a list of custom parameter values for specified controls. If the request included a list of security controls that are enabled in the configuration policy, Security Hub disables all other controls (including newly released controls). If the request included a list of security controls that are disabled in the configuration policy, Security Hub enables all other controls (including newly released controls). </p>"
+        }
+      }
+    },
+    "CreateConnectorV2Request":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Provider"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique name of the connectorV2.</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The description of the connectorV2.</p>"
+        },
+        "Provider":{
+          "shape":"ProviderConfiguration",
+          "documentation":"<p>The third-party provider’s service configuration.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of KMS key used to encrypt secrets for the connectorV2.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to add to the connectorV2 when you create.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier used to ensure idempotency.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateConnectorV2Response":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connectorV2.</p>"
+        },
+        "ConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The UUID of the connectorV2 to identify connectorV2 resource.</p>"
+        },
+        "AuthUrl":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Url provide to customers for OAuth auth code flow.</p>"
         }
       }
     },
@@ -16396,6 +17374,53 @@
           "documentation":"<p>The list of Amazon Web Services accounts that were not processed. For each account, the list includes the account ID and the email address.</p>"
         }
       }
+    },
+    "CreateTicketV2Request":{
+      "type":"structure",
+      "required":[
+        "ConnectorId",
+        "FindingMetadataUid"
+      ],
+      "members":{
+        "ConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The UUID of the connectorV2 to identify connectorV2 resource.</p>"
+        },
+        "FindingMetadataUid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The the unique ID for the finding.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client idempotency token.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateTicketV2Response":{
+      "type":"structure",
+      "required":["TicketId"],
+      "members":{
+        "TicketId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID for the ticketv2.</p>"
+        },
+        "TicketSrcUrl":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The url to the created ticket.</p>"
+        }
+      }
+    },
+    "Criteria":{
+      "type":"structure",
+      "members":{
+        "OcsfFindingCriteria":{
+          "shape":"OcsfFindingFilters",
+          "documentation":"<p>The filtering conditions that align with OCSF standards.</p>"
+        }
+      },
+      "documentation":"<p>Defines the parameters and conditions used to evaluate and filter security findings.</p>",
+      "union":true
     },
     "CrossAccountMaxResults":{
       "type":"integer",
@@ -16571,6 +17596,38 @@
         }
       }
     },
+    "DeleteAggregatorV2Request":{
+      "type":"structure",
+      "required":["AggregatorV2Arn"],
+      "members":{
+        "AggregatorV2Arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the Aggregator V2.</p>",
+          "location":"uri",
+          "locationName":"AggregatorV2Arn"
+        }
+      }
+    },
+    "DeleteAggregatorV2Response":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteAutomationRuleV2Request":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the V2 automation rule.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        }
+      }
+    },
+    "DeleteAutomationRuleV2Response":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteConfigurationPolicyRequest":{
       "type":"structure",
       "required":["Identifier"],
@@ -16585,8 +17642,23 @@
     },
     "DeleteConfigurationPolicyResponse":{
       "type":"structure",
+      "members":{}
+    },
+    "DeleteConnectorV2Request":{
+      "type":"structure",
+      "required":["ConnectorId"],
       "members":{
+        "ConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The UUID of the connectorV2 to identify connectorV2 resource.</p>",
+          "location":"uri",
+          "locationName":"ConnectorId"
+        }
       }
+    },
+    "DeleteConnectorV2Response":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteFindingAggregatorRequest":{
       "type":"structure",
@@ -16602,8 +17674,7 @@
     },
     "DeleteFindingAggregatorResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteInsightRequest":{
       "type":"structure",
@@ -16730,8 +17801,7 @@
     },
     "DescribeOrganizationConfigurationRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeOrganizationConfigurationResponse":{
       "type":"structure",
@@ -16785,6 +17855,54 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The pagination token to use to request the next page of results.</p>"
+        }
+      }
+    },
+    "DescribeProductsV2Request":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token required for pagination. On your first call, set the value of this parameter to <code>NULL</code>. For subsequent calls, to continue listing data, set the value of this parameter to the value returned in the previous response.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        }
+      }
+    },
+    "DescribeProductsV2Response":{
+      "type":"structure",
+      "required":["ProductsV2"],
+      "members":{
+        "ProductsV2":{
+          "shape":"ProductsV2List",
+          "documentation":"<p>Gets information about the product integration.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use to request the next page of results. Otherwise, this parameter is null.</p>"
+        }
+      }
+    },
+    "DescribeSecurityHubV2Request":{
+      "type":"structure",
+      "members":{}
+    },
+    "DescribeSecurityHubV2Response":{
+      "type":"structure",
+      "members":{
+        "HubV2Arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the service resource.</p>"
+        },
+        "SubscribedAt":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The date and time when the service was enabled in the account.</p>"
         }
       }
     },
@@ -16879,8 +17997,7 @@
     },
     "DisableImportFindingsForProductResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisableOrganizationAdminAccountRequest":{
       "type":"structure",
@@ -16889,23 +18006,32 @@
         "AdminAccountId":{
           "shape":"NonEmptyString",
           "documentation":"<p>The Amazon Web Services account identifier of the Security Hub administrator account.</p>"
+        },
+        "Feature":{
+          "shape":"SecurityHubFeature",
+          "documentation":"<p>The feature for which the delegated admin account is disabled. Defaults to Security Hub if not specified.</p>"
         }
       }
     },
     "DisableOrganizationAdminAccountResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisableSecurityHubRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisableSecurityHubResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
+    },
+    "DisableSecurityHubV2Request":{
+      "type":"structure",
+      "members":{}
+    },
+    "DisableSecurityHubV2Response":{
+      "type":"structure",
+      "members":{}
     },
     "DisabledSecurityControlIdentifierList":{
       "type":"list",
@@ -16913,23 +18039,19 @@
     },
     "DisassociateFromAdministratorAccountRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisassociateFromAdministratorAccountResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisassociateFromMasterAccountRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisassociateFromMasterAccountResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisassociateMembersRequest":{
       "type":"structure",
@@ -16943,8 +18065,7 @@
     },
     "DisassociateMembersResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DnsRequestAction":{
       "type":"structure",
@@ -17009,12 +18130,24 @@
         "AdminAccountId":{
           "shape":"NonEmptyString",
           "documentation":"<p>The Amazon Web Services account identifier of the account to designate as the Security Hub administrator account.</p>"
+        },
+        "Feature":{
+          "shape":"SecurityHubFeature",
+          "documentation":"<p>The feature for which the delegated admin account is enabled. Defaults to Security Hub if not specified.</p>"
         }
       }
     },
     "EnableOrganizationAdminAccountResponse":{
       "type":"structure",
       "members":{
+        "AdminAccountId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services account identifier of the account to designate as the Security Hub administrator account.</p>"
+        },
+        "Feature":{
+          "shape":"SecurityHubFeature",
+          "documentation":"<p>The feature where the delegated administrator is enabled. The default is Security Hub CSPM if no delegated administrator is specified in the request.</p>"
+        }
       }
     },
     "EnableSecurityHubRequest":{
@@ -17036,7 +18169,24 @@
     },
     "EnableSecurityHubResponse":{
       "type":"structure",
+      "members":{}
+    },
+    "EnableSecurityHubV2Request":{
+      "type":"structure",
       "members":{
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to add to the hub V2 resource when you enable Security Hub.</p>"
+        }
+      }
+    },
+    "EnableSecurityHubV2Response":{
+      "type":"structure",
+      "members":{
+        "HubV2Arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the V2 resource that was created.</p>"
+        }
       }
     },
     "EnabledSecurityControlIdentifierList":{
@@ -17078,6 +18228,16 @@
         }
       },
       "documentation":"<p> The options for customizing a security control parameter that is a list of enums. </p>"
+    },
+    "ExternalIntegrationConfiguration":{
+      "type":"structure",
+      "members":{
+        "ConnectorArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the connector that establishes the integration.</p>"
+        }
+      },
+      "documentation":"<p>Defines the settings and parameters required for integrating external security tools and services.</p>"
     },
     "FieldMap":{
       "type":"map",
@@ -17348,13 +18508,102 @@
     },
     "GetAdministratorAccountRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetAdministratorAccountResponse":{
       "type":"structure",
       "members":{
         "Administrator":{"shape":"Invitation"}
+      }
+    },
+    "GetAggregatorV2Request":{
+      "type":"structure",
+      "required":["AggregatorV2Arn"],
+      "members":{
+        "AggregatorV2Arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the Aggregator V2.</p>",
+          "location":"uri",
+          "locationName":"AggregatorV2Arn"
+        }
+      }
+    },
+    "GetAggregatorV2Response":{
+      "type":"structure",
+      "members":{
+        "AggregatorV2Arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the Aggregator V2.</p>"
+        },
+        "AggregationRegion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services Region where data is aggregated.</p>"
+        },
+        "RegionLinkingMode":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Determines how Regions are linked to an Aggregator V2.</p>"
+        },
+        "LinkedRegions":{
+          "shape":"StringList",
+          "documentation":"<p>The list of Regions that are linked to the aggregation Region.</p>"
+        }
+      }
+    },
+    "GetAutomationRuleV2Request":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the V2 automation rule.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        }
+      }
+    },
+    "GetAutomationRuleV2Response":{
+      "type":"structure",
+      "members":{
+        "RuleArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the V2 automation rule.</p>"
+        },
+        "RuleId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID of the V2 automation rule.</p>"
+        },
+        "RuleOrder":{
+          "shape":"RuleOrderValueV2",
+          "documentation":"<p>The value for the rule priority.</p>"
+        },
+        "RuleName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the V2 automation rule.</p>"
+        },
+        "RuleStatus":{
+          "shape":"RuleStatusV2",
+          "documentation":"<p>The status of the V2 automation automation rule.</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A description of the automation rule.</p>"
+        },
+        "Criteria":{
+          "shape":"Criteria",
+          "documentation":"<p>The filtering type and configuration of the V2 automation rule.</p>"
+        },
+        "Actions":{
+          "shape":"AutomationRulesActionListV2",
+          "documentation":"<p>A list of actions performed when the rule criteria is met.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the V2 automation rule was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the V2 automation rule was updated.</p>"
+        }
       }
     },
     "GetConfigurationPolicyAssociationRequest":{
@@ -17442,6 +18691,67 @@
         "ConfigurationPolicy":{
           "shape":"Policy",
           "documentation":"<p> An object that defines how Security Hub is configured. It includes whether Security Hub is enabled or disabled, a list of enabled security standards, a list of enabled or disabled security controls, and a list of custom parameter values for specified controls. If the policy includes a list of security controls that are enabled, Security Hub disables all other controls (including newly released controls). If the policy includes a list of security controls that are disabled, Security Hub enables all other controls (including newly released controls). </p>"
+        }
+      }
+    },
+    "GetConnectorV2Request":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The UUID of the connectorV2 to identify connectorV2 resource.</p>",
+          "location":"uri",
+          "locationName":"ConnectorId"
+        }
+      }
+    },
+    "GetConnectorV2Response":{
+      "type":"structure",
+      "required":[
+        "ConnectorId",
+        "Name",
+        "CreatedAt",
+        "LastUpdatedAt",
+        "Health",
+        "ProviderDetail"
+      ],
+      "members":{
+        "ConnectorArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connectorV2.</p>"
+        },
+        "ConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The UUID of the connectorV2 to identify connectorV2 resource.</p>"
+        },
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the connectorV2.</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The description of the connectorV2.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of KMS key used for the connectorV2.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>ISO 8601 UTC timestamp for the time create the connectorV2.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>ISO 8601 UTC timestamp for the time update the connectorV2 connectorStatus.</p>"
+        },
+        "Health":{
+          "shape":"HealthCheck",
+          "documentation":"<p>The current health status for connectorV2</p>"
+        },
+        "ProviderDetail":{
+          "shape":"ProviderDetail",
+          "documentation":"<p>The third-party provider detail for a service configuration.</p>"
         }
       }
     },
@@ -17544,6 +18854,33 @@
         }
       }
     },
+    "GetFindingStatisticsV2Request":{
+      "type":"structure",
+      "required":["GroupByRules"],
+      "members":{
+        "GroupByRules":{
+          "shape":"GroupByRules",
+          "documentation":"<p>Specifies how security findings should be aggregated and organized in the statistical analysis. It can accept up to 5 <code>groupBy</code> fields in a single call.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Orders the aggregation count in descending or ascending order. Descending order is the default.</p>"
+        },
+        "MaxStatisticResults":{
+          "shape":"MaxStatisticResults",
+          "documentation":"<p>The maximum number of results to be returned.</p>"
+        }
+      }
+    },
+    "GetFindingStatisticsV2Response":{
+      "type":"structure",
+      "members":{
+        "GroupByResults":{
+          "shape":"GroupByResults",
+          "documentation":"<p>Aggregated statistics about security findings based on specified grouping criteria.</p>"
+        }
+      }
+    },
     "GetFindingsRequest":{
       "type":"structure",
       "members":{
@@ -17576,6 +18913,40 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The pagination token to use to request the next page of results.</p>"
+        }
+      }
+    },
+    "GetFindingsV2Request":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"OcsfFindingFilters",
+          "documentation":"<p>The finding attributes used to define a condition to filter the returned OCSF findings. You can filter up to 10 composite filters. For each filter type inside of a composite filter, you can provide up to 20 filters.</p>"
+        },
+        "SortCriteria":{
+          "shape":"SortCriteria",
+          "documentation":"<p>The finding attributes used to sort the list of returned findings.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token required for pagination. On your first call, set the value of this parameter to <code>NULL</code>. For subsequent calls, to continue listing data, set the value of this parameter to the value returned in the previous response.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        }
+      }
+    },
+    "GetFindingsV2Response":{
+      "type":"structure",
+      "members":{
+        "Findings":{
+          "shape":"OcsfFindingsList",
+          "documentation":"<p>An array of security findings returned by the operation.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use to request the next page of results. Otherwise, this parameter is null.</p>"
         }
       }
     },
@@ -17634,8 +19005,7 @@
     },
     "GetInvitationsCountRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetInvitationsCountResponse":{
       "type":"structure",
@@ -17648,8 +19018,7 @@
     },
     "GetMasterAccountRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetMasterAccountResponse":{
       "type":"structure",
@@ -17683,6 +19052,69 @@
         }
       }
     },
+    "GetResourcesStatisticsV2Request":{
+      "type":"structure",
+      "required":["GroupByRules"],
+      "members":{
+        "GroupByRules":{
+          "shape":"ResourceGroupByRules",
+          "documentation":"<p>How resource statistics should be aggregated and organized in the response.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Sorts aggregated statistics.</p>"
+        },
+        "MaxStatisticResults":{
+          "shape":"MaxStatisticResults",
+          "documentation":"<p>The maximum number of results to be returned.</p>"
+        }
+      }
+    },
+    "GetResourcesStatisticsV2Response":{
+      "type":"structure",
+      "required":["GroupByResults"],
+      "members":{
+        "GroupByResults":{
+          "shape":"GroupByResults",
+          "documentation":"<p>The aggregated statistics about resources based on the specified grouping rule.</p>"
+        }
+      }
+    },
+    "GetResourcesV2Request":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"ResourcesFilters",
+          "documentation":"<p>Filters resources based on a set of criteria.</p>"
+        },
+        "SortCriteria":{
+          "shape":"SortCriteria",
+          "documentation":"<p>The finding attributes used to sort the list of returned findings.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token required for pagination. On your first call, set the value of this parameter to <code>NULL</code>. For subsequent calls, to continue listing data, set the value of this parameter to the value returned in the previous response.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        }
+      }
+    },
+    "GetResourcesV2Response":{
+      "type":"structure",
+      "required":["Resources"],
+      "members":{
+        "Resources":{
+          "shape":"Resources",
+          "documentation":"<p>Filters resources based on a set of criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use to request the next page of results. Otherwise, this parameter is null.</p>"
+        }
+      }
+    },
     "GetSecurityControlDefinitionRequest":{
       "type":"structure",
       "required":["SecurityControlId"],
@@ -17701,6 +19133,105 @@
       "members":{
         "SecurityControlDefinition":{"shape":"SecurityControlDefinition"}
       }
+    },
+    "GroupByField":{
+      "type":"string",
+      "enum":[
+        "activity_name",
+        "cloud.account.uid",
+        "cloud.provider",
+        "cloud.region",
+        "compliance.assessments.name",
+        "compliance.status",
+        "compliance.control",
+        "finding_info.title",
+        "finding_info.types",
+        "metadata.product.name",
+        "metadata.product.uid",
+        "resources.type",
+        "resources.uid",
+        "severity",
+        "status",
+        "vulnerabilities.fix_coverage",
+        "class_name"
+      ]
+    },
+    "GroupByResult":{
+      "type":"structure",
+      "members":{
+        "GroupByField":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The attribute by which filtered security findings should be grouped.</p>"
+        },
+        "GroupByValues":{
+          "shape":"GroupByValues",
+          "documentation":"<p>An array of grouped values and their respective counts for each <code>GroupByField</code>.</p>"
+        }
+      },
+      "documentation":"<p>Represents finding statistics grouped by <code>GroupedByField</code>.</p>"
+    },
+    "GroupByResults":{
+      "type":"list",
+      "member":{"shape":"GroupByResult"}
+    },
+    "GroupByRule":{
+      "type":"structure",
+      "required":["GroupByField"],
+      "members":{
+        "Filters":{
+          "shape":"OcsfFindingFilters",
+          "documentation":"<p>The criteria used to select which security findings should be included in the grouping operation.</p>"
+        },
+        "GroupByField":{
+          "shape":"GroupByField",
+          "documentation":"<p>The attribute by which filtered findings should be grouped.</p>"
+        }
+      },
+      "documentation":"<p>Defines the how the finding attribute should be grouped.</p>"
+    },
+    "GroupByRules":{
+      "type":"list",
+      "member":{"shape":"GroupByRule"}
+    },
+    "GroupByValue":{
+      "type":"structure",
+      "members":{
+        "FieldValue":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The value of the field by which findings are grouped.</p>"
+        },
+        "Count":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings for a specific <code>FieldValue</code> and <code>GroupByField</code>.</p>"
+        }
+      },
+      "documentation":"<p>Represents individual aggregated results when grouping security findings for each <code>GroupByField</code>.</p>"
+    },
+    "GroupByValues":{
+      "type":"list",
+      "member":{"shape":"GroupByValue"}
+    },
+    "HealthCheck":{
+      "type":"structure",
+      "required":[
+        "ConnectorStatus",
+        "LastCheckedAt"
+      ],
+      "members":{
+        "ConnectorStatus":{
+          "shape":"ConnectorStatus",
+          "documentation":"<p>The status of the connectorV2.</p>"
+        },
+        "Message":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The message for the reason of connectorStatus change.</p>"
+        },
+        "LastCheckedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>ISO 8601 UTC timestamp for the time check the health status of the connectorV2.</p>"
+        }
+      },
+      "documentation":"<p>Information about the operational status and health of a connectorV2.</p>"
     },
     "IcmpTypeCode":{
       "type":"structure",
@@ -17905,6 +19436,18 @@
       "type":"list",
       "member":{"shape":"IntegrationType"}
     },
+    "IntegrationV2Type":{
+      "type":"string",
+      "enum":[
+        "SEND_FINDINGS_TO_SECURITY_HUB",
+        "RECEIVE_FINDINGS_FROM_SECURITY_HUB",
+        "UPDATE_FINDINGS_IN_SECURITY_HUB"
+      ]
+    },
+    "IntegrationV2TypeList":{
+      "type":"list",
+      "member":{"shape":"IntegrationV2Type"}
+    },
     "InternalException":{
       "type":"structure",
       "members":{
@@ -17912,6 +19455,16 @@
         "Code":{"shape":"NonEmptyString"}
       },
       "documentation":"<p>Internal server error.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"NonEmptyString"},
+        "Code":{"shape":"NonEmptyString"}
+      },
+      "documentation":"<p> The request has failed due to an internal failure of the service. </p>",
       "error":{"httpStatusCode":500},
       "exception":true
     },
@@ -18038,6 +19591,53 @@
       "type":"list",
       "member":{"shape":"Ipv6CidrBlockAssociation"}
     },
+    "JiraCloudDetail":{
+      "type":"structure",
+      "members":{
+        "CloudId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The cloud id of the Jira Cloud.</p>"
+        },
+        "ProjectKey":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The projectKey of Jira Cloud.</p>"
+        },
+        "Domain":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The URL domain of your Jira Cloud instance.</p>"
+        },
+        "AuthUrl":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The URL to provide to customers for OAuth auth code flow.</p>"
+        },
+        "AuthStatus":{
+          "shape":"ConnectorAuthStatus",
+          "documentation":"<p>The status of the authorization between Jira Cloud and the service.</p>"
+        }
+      },
+      "documentation":"<p>Information about the configuration and status of a Jira Cloud integration.</p>"
+    },
+    "JiraCloudProviderConfiguration":{
+      "type":"structure",
+      "members":{
+        "ProjectKey":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The project key for a JiraCloud instance.</p>"
+        }
+      },
+      "documentation":"<p>The initial configuration settings required to establish an integration between Security Hub and Jira Cloud.</p>"
+    },
+    "JiraCloudUpdateConfiguration":{
+      "type":"structure",
+      "required":["ProjectKey"],
+      "members":{
+        "ProjectKey":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The project key for a JiraCloud instance.</p>"
+        }
+      },
+      "documentation":"<p>The parameters used to modify an existing Jira Cloud integration.</p>"
+    },
     "KeywordFilter":{
       "type":"structure",
       "members":{
@@ -18061,6 +19661,36 @@
       "documentation":"<p>The request was rejected because it attempted to create resources beyond the current Amazon Web Services account or throttling limits. The error code describes the limit exceeded.</p>",
       "error":{"httpStatusCode":429},
       "exception":true
+    },
+    "ListAggregatorsV2Request":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token required for pagination. On your first call, set the value of this parameter to <code>NULL</code>. For subsequent calls, to continue listing data, set the value of this parameter to the value returned in the previous response.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        }
+      }
+    },
+    "ListAggregatorsV2Response":{
+      "type":"structure",
+      "members":{
+        "AggregatorsV2":{
+          "shape":"AggregatorV2List",
+          "documentation":"<p>An array of aggregators.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use to request the next page of results. Otherwise, this parameter is null.</p>"
+        }
+      }
     },
     "ListAutomationRulesRequest":{
       "type":"structure",
@@ -18089,6 +19719,36 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p> A pagination token for the response. </p>"
+        }
+      }
+    },
+    "ListAutomationRulesV2Request":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token required for pagination. On your first call, set the value of this parameter to <code>NULL</code>. For subsequent calls, to continue listing data, set the value of this parameter to the value returned in the previous response.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        }
+      }
+    },
+    "ListAutomationRulesV2Response":{
+      "type":"structure",
+      "members":{
+        "Rules":{
+          "shape":"AutomationRulesMetadataListV2",
+          "documentation":"<p>An array of automation rules.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use to request the next page of results. Otherwise, this parameter is null.</p>"
         }
       }
     },
@@ -18149,6 +19809,49 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p> The <code>NextToken</code> value to include in the next <code>ListConfigurationPolicyAssociations</code> request. When the results of a <code>ListConfigurationPolicyAssociations</code> request exceed <code>MaxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. </p>"
+        }
+      }
+    },
+    "ListConnectorsV2Request":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token per the Amazon Web Services Pagination standard</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "ProviderName":{
+          "shape":"ConnectorProviderName",
+          "documentation":"<p>The name of the third-party provider.</p>",
+          "location":"querystring",
+          "locationName":"ProviderName"
+        },
+        "ConnectorStatus":{
+          "shape":"ConnectorStatus",
+          "documentation":"<p>The status for the connectorV2.</p>",
+          "location":"querystring",
+          "locationName":"ConnectorStatus"
+        }
+      }
+    },
+    "ListConnectorsV2Response":{
+      "type":"structure",
+      "required":["Connectors"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use to request the next page of results. Otherwise, this parameter is null.</p>"
+        },
+        "Connectors":{
+          "shape":"ConnectorSummaryList",
+          "documentation":"<p>An array of connectorV2 summaries.</p>"
         }
       }
     },
@@ -18292,6 +19995,12 @@
           "documentation":"<p>The token that is required for pagination. On your first call to the <code>ListOrganizationAdminAccounts</code> operation, set the value of this parameter to <code>NULL</code>. For subsequent calls to the operation, to continue listing data, set the value of this parameter to the value returned from the previous response. </p>",
           "location":"querystring",
           "locationName":"NextToken"
+        },
+        "Feature":{
+          "shape":"SecurityHubFeature",
+          "documentation":"<p>The feature where the delegated administrator account is listed. Defaults to Security Hub if not specified.</p>",
+          "location":"querystring",
+          "locationName":"Feature"
         }
       }
     },
@@ -18305,6 +20014,10 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The pagination token to use to request the next page of results.</p>"
+        },
+        "Feature":{
+          "shape":"SecurityHubFeature",
+          "documentation":"<p>The feature where the delegated administrator account is listed. Defaults to Security Hub CSPM if not specified.</p>"
         }
       }
     },
@@ -18510,6 +20223,11 @@
       "max":100,
       "min":1
     },
+    "MaxStatisticResults":{
+      "type":"integer",
+      "max":400,
+      "min":1
+    },
     "Member":{
       "type":"structure",
       "members":{
@@ -18549,6 +20267,12 @@
     "MemberList":{
       "type":"list",
       "member":{"shape":"Member"}
+    },
+    "MetadataUidList":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":100,
+      "min":0
     },
     "Network":{
       "type":"structure",
@@ -18890,6 +20614,202 @@
         }
       },
       "documentation":"<p>The detected occurrences of sensitive data.</p>"
+    },
+    "OcsfBooleanField":{
+      "type":"string",
+      "enum":[
+        "compliance.assessments.meets_criteria",
+        "vulnerabilities.is_exploit_available",
+        "vulnerabilities.is_fix_available"
+      ]
+    },
+    "OcsfBooleanFilter":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"OcsfBooleanField",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "Filter":{"shape":"BooleanFilter"}
+      },
+      "documentation":"<p>Enables filtering of security findings based on boolean field values in OCSF.</p>"
+    },
+    "OcsfBooleanFilterList":{
+      "type":"list",
+      "member":{"shape":"OcsfBooleanFilter"}
+    },
+    "OcsfDateField":{
+      "type":"string",
+      "enum":[
+        "finding_info.created_time_dt",
+        "finding_info.first_seen_time_dt",
+        "finding_info.last_seen_time_dt",
+        "finding_info.modified_time_dt"
+      ]
+    },
+    "OcsfDateFilter":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"OcsfDateField",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "Filter":{"shape":"DateFilter"}
+      },
+      "documentation":"<p>Enables filtering of security findings based on date and timestamp fields in OCSF.</p>"
+    },
+    "OcsfDateFilterList":{
+      "type":"list",
+      "member":{"shape":"OcsfDateFilter"}
+    },
+    "OcsfFinding":{
+      "type":"structure",
+      "members":{},
+      "document":true
+    },
+    "OcsfFindingFilters":{
+      "type":"structure",
+      "members":{
+        "CompositeFilters":{
+          "shape":"CompositeFilterList",
+          "documentation":"<p>Enables the creation of complex filtering conditions by combining filter criteria.</p>"
+        },
+        "CompositeOperator":{
+          "shape":"AllowedOperators",
+          "documentation":"<p>The logical operators used to combine the filtering on multiple <code>CompositeFilters</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the filtering criteria for security findings using OCSF.</p>"
+    },
+    "OcsfFindingIdentifier":{
+      "type":"structure",
+      "required":[
+        "CloudAccountUid",
+        "FindingInfoUid",
+        "MetadataProductUid"
+      ],
+      "members":{
+        "CloudAccountUid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Finding cloud.account.uid, which is a unique identifier in the Amazon Web Services account..</p>"
+        },
+        "FindingInfoUid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Finding finding_info.uid, which is a unique identifier for the finding from the finding provider.</p>"
+        },
+        "MetadataProductUid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Finding metadata.product.uid, which is a unique identifier for the product.</p>"
+        }
+      },
+      "documentation":"<p>Provides a standard to identify security findings using OCSF.</p>"
+    },
+    "OcsfFindingIdentifierList":{
+      "type":"list",
+      "member":{"shape":"OcsfFindingIdentifier"},
+      "max":100,
+      "min":0
+    },
+    "OcsfFindingsList":{
+      "type":"list",
+      "member":{"shape":"OcsfFinding"}
+    },
+    "OcsfMapField":{
+      "type":"string",
+      "enum":["resources.tags"]
+    },
+    "OcsfMapFilter":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"OcsfMapField",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "Filter":{"shape":"MapFilter"}
+      },
+      "documentation":"<p>Enables filtering of security findings based on map field values in OCSF.</p>"
+    },
+    "OcsfMapFilterList":{
+      "type":"list",
+      "member":{"shape":"OcsfMapFilter"}
+    },
+    "OcsfNumberField":{
+      "type":"string",
+      "enum":[
+        "activity_id",
+        "compliance.status_id",
+        "confidence_score",
+        "severity_id",
+        "status_id",
+        "finding_info.related_events_count"
+      ]
+    },
+    "OcsfNumberFilter":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"OcsfNumberField",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "Filter":{"shape":"NumberFilter"}
+      },
+      "documentation":"<p>Enables filtering of security findings based on numerical field values in OCSF.</p>"
+    },
+    "OcsfNumberFilterList":{
+      "type":"list",
+      "member":{"shape":"OcsfNumberFilter"}
+    },
+    "OcsfStringField":{
+      "type":"string",
+      "enum":[
+        "metadata.uid",
+        "activity_name",
+        "cloud.account.uid",
+        "cloud.provider",
+        "cloud.region",
+        "compliance.assessments.category",
+        "compliance.assessments.name",
+        "compliance.control",
+        "compliance.status",
+        "compliance.standards",
+        "finding_info.desc",
+        "finding_info.src_url",
+        "finding_info.title",
+        "finding_info.types",
+        "finding_info.uid",
+        "finding_info.related_events.uid",
+        "finding_info.related_events.product.uid",
+        "finding_info.related_events.title",
+        "metadata.product.name",
+        "metadata.product.uid",
+        "metadata.product.vendor_name",
+        "remediation.desc",
+        "remediation.references",
+        "resources.cloud_partition",
+        "resources.region",
+        "resources.type",
+        "resources.uid",
+        "severity",
+        "status",
+        "comment",
+        "vulnerabilities.fix_coverage",
+        "class_name"
+      ]
+    },
+    "OcsfStringFilter":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"OcsfStringField",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "Filter":{"shape":"StringFilter"}
+      },
+      "documentation":"<p>Enables filtering of security findings based on string field values in OCSF.</p>"
+    },
+    "OcsfStringFilterList":{
+      "type":"list",
+      "member":{"shape":"OcsfStringFilter"}
     },
     "OrganizationConfiguration":{
       "type":"structure",
@@ -19250,9 +21170,47 @@
       "type":"list",
       "member":{"shape":"NonEmptyString"}
     },
+    "ProductV2":{
+      "type":"structure",
+      "members":{
+        "ProductV2Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the productV2.</p>"
+        },
+        "CompanyName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the organization or vendor that provides the productV2.</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Detailed information about the productV2.</p>"
+        },
+        "Categories":{
+          "shape":"CategoryList",
+          "documentation":"<p>The domains or functional areas the productV2 addresses.</p>"
+        },
+        "IntegrationV2Types":{
+          "shape":"IntegrationV2TypeList",
+          "documentation":"<p>The type of integration.</p>"
+        },
+        "MarketplaceUrl":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The console URL where you can purchase or subscribe to products.</p>"
+        },
+        "ActivationUrl":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The URL to the serviceV@ or productV2 documentation about the integration, which includes how to activate the integration.</p>"
+        }
+      },
+      "documentation":"<p>Defines the structure for the productV2.</p>"
+    },
     "ProductsList":{
       "type":"list",
       "member":{"shape":"Product"}
+    },
+    "ProductsV2List":{
+      "type":"list",
+      "member":{"shape":"ProductV2"}
     },
     "PropagatingVgwSetDetails":{
       "type":"structure",
@@ -19267,6 +21225,61 @@
     "PropagatingVgwSetList":{
       "type":"list",
       "member":{"shape":"PropagatingVgwSetDetails"}
+    },
+    "ProviderConfiguration":{
+      "type":"structure",
+      "members":{
+        "JiraCloud":{
+          "shape":"JiraCloudProviderConfiguration",
+          "documentation":"<p>The configuration settings required to establish an integration with Jira Cloud.</p>"
+        },
+        "ServiceNow":{
+          "shape":"ServiceNowProviderConfiguration",
+          "documentation":"<p>The configuration settings required to establish an integration with ServiceNow ITSM.</p>"
+        }
+      },
+      "documentation":"<p>The initial configuration settings required to establish an integration between Security Hub and third-party provider.</p>",
+      "union":true
+    },
+    "ProviderDetail":{
+      "type":"structure",
+      "members":{
+        "JiraCloud":{
+          "shape":"JiraCloudDetail",
+          "documentation":"<p>Details about a Jira Cloud integration.</p>"
+        },
+        "ServiceNow":{
+          "shape":"ServiceNowDetail",
+          "documentation":"<p>Details about a ServiceNow ITSM integration.</p>"
+        }
+      },
+      "documentation":"<p>The third-party provider detail for a service configuration.</p>",
+      "union":true
+    },
+    "ProviderSummary":{
+      "type":"structure",
+      "members":{
+        "ProviderName":{
+          "shape":"ConnectorProviderName",
+          "documentation":"<p>The name of the provider.</p>"
+        },
+        "ConnectorStatus":{
+          "shape":"ConnectorStatus",
+          "documentation":"<p>The status for the connectorV2.</p>"
+        }
+      },
+      "documentation":"<p>The connectorV2 third-party provider configuration summary.</p>"
+    },
+    "ProviderUpdateConfiguration":{
+      "type":"structure",
+      "members":{
+        "JiraCloud":{
+          "shape":"JiraCloudUpdateConfiguration",
+          "documentation":"<p>The parameters required to update the configuration for a Jira Cloud integration.</p>"
+        }
+      },
+      "documentation":"<p>The parameters required to update the configuration of an integration provider.</p>",
+      "union":true
     },
     "Range":{
       "type":"structure",
@@ -19430,6 +21443,24 @@
     "ResourceArn":{
       "type":"string",
       "pattern":"^arn:aws:securityhub:.*"
+    },
+    "ResourceCategory":{
+      "type":"string",
+      "enum":[
+        "Compute",
+        "Database",
+        "Storage",
+        "Code",
+        "AI/ML",
+        "Identity",
+        "Network",
+        "Other"
+      ]
+    },
+    "ResourceConfig":{
+      "type":"structure",
+      "members":{},
+      "document":true
     },
     "ResourceConflictException":{
       "type":"structure",
@@ -19831,6 +21862,67 @@
       },
       "documentation":"<p>Additional details about a resource related to a finding.</p> <p>To provide the details, use the object that corresponds to the resource type. For example, if the resource type is <code>AwsEc2Instance</code>, then you use the <code>AwsEc2Instance</code> object to provide the details.</p> <p>If the type-specific object does not contain all of the fields you want to populate, then you use the <code>Other</code> object to populate those additional fields.</p> <p>You also use the <code>Other</code> object to populate the details when the selected type does not have a corresponding object.</p>"
     },
+    "ResourceFindingsSummary":{
+      "type":"structure",
+      "required":[
+        "FindingType",
+        "ProductName",
+        "TotalFindings"
+      ],
+      "members":{
+        "FindingType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The category or classification of the security finding.</p>"
+        },
+        "ProductName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the product associated with the security finding.</p>"
+        },
+        "TotalFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total count of security findings.</p>"
+        },
+        "Severities":{
+          "shape":"ResourceSeverityBreakdown",
+          "documentation":"<p>A breakdown of security findings by their severity levels.</p>"
+        }
+      },
+      "documentation":"<p>A list of summaries for all finding types on a resource.</p>"
+    },
+    "ResourceFindingsSummaryList":{
+      "type":"list",
+      "member":{"shape":"ResourceFindingsSummary"}
+    },
+    "ResourceGroupByField":{
+      "type":"string",
+      "enum":[
+        "account_id",
+        "region",
+        "resource_category",
+        "resource_type",
+        "resource_name",
+        "findings_summary.finding_type"
+      ]
+    },
+    "ResourceGroupByRule":{
+      "type":"structure",
+      "required":["GroupByField"],
+      "members":{
+        "GroupByField":{
+          "shape":"ResourceGroupByField",
+          "documentation":"<p>Specifies the attribute that resources should be grouped by.</p>"
+        },
+        "Filters":{
+          "shape":"ResourcesFilters",
+          "documentation":"<p>The criteria used to select resources and associated security findings.</p>"
+        }
+      },
+      "documentation":"<p>Defines the configuration for organizing and categorizing Amazon Web Services resources based on associated security findings.</p>"
+    },
+    "ResourceGroupByRules":{
+      "type":"list",
+      "member":{"shape":"ResourceGroupByRule"}
+    },
     "ResourceInUseException":{
       "type":"structure",
       "members":{
@@ -19854,6 +21946,274 @@
       "documentation":"<p>The request was rejected because we can't find the specified resource.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
+    },
+    "ResourceResult":{
+      "type":"structure",
+      "required":[
+        "ResourceId",
+        "AccountId",
+        "Region",
+        "ResourceDetailCaptureTimeDt",
+        "ResourceConfig"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Specifies the ARN that uniquely identifies a resource.</p>"
+        },
+        "ResourceId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier for a resource.</p>"
+        },
+        "AccountId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services account that owns the resource.</p>"
+        },
+        "Region":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services Region where the resource is located.</p>"
+        },
+        "ResourceCategory":{
+          "shape":"ResourceCategory",
+          "documentation":"<p>The grouping where the resource belongs.</p>"
+        },
+        "ResourceType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The type of resource.</p>"
+        },
+        "ResourceName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the resource.</p>"
+        },
+        "ResourceCreationTimeDt":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The time when the resource was created.</p>"
+        },
+        "ResourceDetailCaptureTimeDt":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The timestamp when information about the resource was captured.</p>"
+        },
+        "FindingsSummary":{
+          "shape":"ResourceFindingsSummaryList",
+          "documentation":"<p>An aggregated view of security findings associated with a resource.</p>"
+        },
+        "ResourceTags":{
+          "shape":"ResourceTagList",
+          "documentation":"<p>The key-value pairs associated with a resource.</p>"
+        },
+        "ResourceConfig":{
+          "shape":"ResourceConfig",
+          "documentation":"<p>The configuration details of a resource.</p>"
+        }
+      },
+      "documentation":"<p>Provides comprehensive details about an Amazon Web Services resource and its associated security findings.</p>"
+    },
+    "ResourceSeverityBreakdown":{
+      "type":"structure",
+      "members":{
+        "Other":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings not in any of the severity categories.</p>"
+        },
+        "Fatal":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings with a severity level of fatal.</p>"
+        },
+        "Critical":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings with a severity level of critical.</p>"
+        },
+        "High":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings with a severity level of high.</p>"
+        },
+        "Medium":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings with a severity level of medium.</p>"
+        },
+        "Low":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings with a severity level of low.</p>"
+        },
+        "Informational":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings that provide security-related information.</p>"
+        },
+        "Unknown":{
+          "shape":"Integer",
+          "documentation":"<p>The number of findings with a severity level cannot be determined.</p>"
+        }
+      },
+      "documentation":"<p>A comprehensive distribution of security findings by severity level for Amazon Web Services resources.</p>"
+    },
+    "ResourceTag":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The identifier or name of the tag.</p>"
+        },
+        "Value":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The data associated with the tag key.</p>"
+        }
+      },
+      "documentation":"<p>Represents tag information associated with Amazon Web Services resources.</p>"
+    },
+    "ResourceTagList":{
+      "type":"list",
+      "member":{"shape":"ResourceTag"}
+    },
+    "Resources":{
+      "type":"list",
+      "member":{"shape":"ResourceResult"}
+    },
+    "ResourcesCompositeFilter":{
+      "type":"structure",
+      "members":{
+        "StringFilters":{
+          "shape":"ResourcesStringFilterList",
+          "documentation":"<p>Enables filtering based on string field values.</p>"
+        },
+        "DateFilters":{
+          "shape":"ResourcesDateFilterList",
+          "documentation":"<p>Enables filtering based on date and timestamp field values.</p>"
+        },
+        "NumberFilters":{
+          "shape":"ResourcesNumberFilterList",
+          "documentation":"<p>Enables filtering based on numerical field values.</p>"
+        },
+        "MapFilters":{
+          "shape":"ResourcesMapFilterList",
+          "documentation":"<p>Enables filtering based on map-based field values.</p>"
+        },
+        "Operator":{
+          "shape":"AllowedOperators",
+          "documentation":"<p>The logical operator used to combine multiple filter conditions.</p>"
+        }
+      },
+      "documentation":"<p>Enables the creation of criteria for Amazon Web Services resources in Security Hub.</p>"
+    },
+    "ResourcesCompositeFilterList":{
+      "type":"list",
+      "member":{"shape":"ResourcesCompositeFilter"}
+    },
+    "ResourcesDateField":{
+      "type":"string",
+      "enum":[
+        "resource_detail_capture_time_dt",
+        "resource_creation_time_dt"
+      ]
+    },
+    "ResourcesDateFilter":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"ResourcesDateField",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "Filter":{"shape":"DateFilter"}
+      },
+      "documentation":"<p>Enables the filtering of Amazon Web Services resources based on date and timestamp attributes.</p>"
+    },
+    "ResourcesDateFilterList":{
+      "type":"list",
+      "member":{"shape":"ResourcesDateFilter"}
+    },
+    "ResourcesFilters":{
+      "type":"structure",
+      "members":{
+        "CompositeFilters":{
+          "shape":"ResourcesCompositeFilterList",
+          "documentation":"<p>A collection of complex filtering conditions that can be applied to Amazon Web Services resources.</p>"
+        },
+        "CompositeOperator":{
+          "shape":"AllowedOperators",
+          "documentation":"<p>The logical operator used to combine multiple filter conditions in the structure.</p>"
+        }
+      },
+      "documentation":"<p>Enables filtering of Amazon Web Services resources based on data.</p>"
+    },
+    "ResourcesMapField":{
+      "type":"string",
+      "enum":["tags"]
+    },
+    "ResourcesMapFilter":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"ResourcesMapField",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "Filter":{"shape":"MapFilter"}
+      },
+      "documentation":"<p>Enables filtering of Amazon Web Services resources based on key-value map attributes.</p>"
+    },
+    "ResourcesMapFilterList":{
+      "type":"list",
+      "member":{"shape":"ResourcesMapFilter"}
+    },
+    "ResourcesNumberField":{
+      "type":"string",
+      "enum":[
+        "findings_summary.total_findings",
+        "findings_summary.severities.other",
+        "findings_summary.severities.fatal",
+        "findings_summary.severities.critical",
+        "findings_summary.severities.high",
+        "findings_summary.severities.medium",
+        "findings_summary.severities.low",
+        "findings_summary.severities.informational",
+        "findings_summary.severities.unknown"
+      ]
+    },
+    "ResourcesNumberFilter":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"ResourcesNumberField",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "Filter":{"shape":"NumberFilter"}
+      },
+      "documentation":"<p>Enables filtering of Amazon Web Services resources based on numerical values.</p>"
+    },
+    "ResourcesNumberFilterList":{
+      "type":"list",
+      "member":{"shape":"ResourcesNumberFilter"}
+    },
+    "ResourcesStringField":{
+      "type":"string",
+      "enum":[
+        "resource_arn",
+        "resource_id",
+        "account_id",
+        "region",
+        "resource_category",
+        "resource_type",
+        "resource_name",
+        "findings_summary.finding_type",
+        "findings_summary.product_name"
+      ]
+    },
+    "ResourcesStringFilter":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"ResourcesStringField",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "Filter":{"shape":"StringFilter"}
+      },
+      "documentation":"<p>Enables filtering of Amazon Web Services resources based on string field values.</p>"
+    },
+    "ResourcesStringFilterList":{
+      "type":"list",
+      "member":{"shape":"ResourcesStringFilter"}
     },
     "Result":{
       "type":"structure",
@@ -20294,7 +22654,19 @@
       "max":1000,
       "min":1
     },
+    "RuleOrderValueV2":{
+      "type":"float",
+      "max":1000.0,
+      "min":1.0
+    },
     "RuleStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "RuleStatusV2":{
       "type":"string",
       "enum":[
         "ENABLED",
@@ -20472,6 +22844,13 @@
       "type":"list",
       "member":{"shape":"NonEmptyString"}
     },
+    "SecurityHubFeature":{
+      "type":"string",
+      "enum":[
+        "SecurityHub",
+        "SecurityHubV2"
+      ]
+    },
     "SecurityHubPolicy":{
       "type":"structure",
       "members":{
@@ -20534,6 +22913,11 @@
       "type":"list",
       "member":{"shape":"SensitiveDataResult"}
     },
+    "SensitiveNonEmptyString":{
+      "type":"string",
+      "pattern":".*\\S.*",
+      "sensitive":true
+    },
     "Sequence":{
       "type":"structure",
       "members":{
@@ -20559,6 +22943,48 @@
         }
       },
       "documentation":"<p> Contains information about an Amazon GuardDuty Extended Threat Detection attack sequence finding. GuardDuty generates an attack sequence finding when multiple events align to a potentially suspicious activity. To receive GuardDuty attack sequence findings in Security Hub, you must have GuardDuty enabled. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html\">GuardDuty Extended Threat Detection </a> in the <i>Amazon GuardDuty User Guide</i>. </p>"
+    },
+    "ServiceNowDetail":{
+      "type":"structure",
+      "required":["AuthStatus"],
+      "members":{
+        "InstanceName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The instanceName of ServiceNow ITSM.</p>"
+        },
+        "ClientId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The clientId of ServiceNow ITSM.</p>"
+        },
+        "AuthStatus":{
+          "shape":"ConnectorAuthStatus",
+          "documentation":"<p>The status of the authorization between Jira Cloud and the service.</p>"
+        }
+      },
+      "documentation":"<p>Information about a ServiceNow ITSM integration.</p>"
+    },
+    "ServiceNowProviderConfiguration":{
+      "type":"structure",
+      "required":[
+        "InstanceName",
+        "ClientId",
+        "ClientSecret"
+      ],
+      "members":{
+        "InstanceName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The instance name of ServiceNow ITSM.</p>"
+        },
+        "ClientId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The client ID of ServiceNow ITSM.</p>"
+        },
+        "ClientSecret":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The client secret of ServiceNow ITSM.</p>"
+        }
+      },
+      "documentation":"<p>The initial configuration settings required to establish an integration between Security Hub and ServiceNow ITSM.</p>"
     },
     "Severity":{
       "type":"structure",
@@ -21196,8 +23622,7 @@
     },
     "StartConfigurationPolicyDisassociationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StatelessCustomActionDefinition":{
       "type":"structure",
@@ -21287,7 +23712,7 @@
         },
         "Comparison":{
           "shape":"StringFilterComparison",
-          "documentation":"<p>The condition to apply to a string value when filtering Security Hub findings.</p> <p>To search for values that have the filter value, use one of the following comparison operators:</p> <ul> <li> <p>To search for values that include the filter value, use <code>CONTAINS</code>. For example, the filter <code>Title CONTAINS CloudFront</code> matches findings that have a <code>Title</code> that includes the string CloudFront.</p> </li> <li> <p>To search for values that exactly match the filter value, use <code>EQUALS</code>. For example, the filter <code>AwsAccountId EQUALS 123456789012</code> only matches findings that have an account ID of <code>123456789012</code>.</p> </li> <li> <p>To search for values that start with the filter value, use <code>PREFIX</code>. For example, the filter <code>ResourceRegion PREFIX us</code> matches findings that have a <code>ResourceRegion</code> that starts with <code>us</code>. A <code>ResourceRegion</code> that starts with a different value, such as <code>af</code>, <code>ap</code>, or <code>ca</code>, doesn't match.</p> </li> </ul> <p> <code>CONTAINS</code>, <code>EQUALS</code>, and <code>PREFIX</code> filters on the same field are joined by <code>OR</code>. A finding matches if it matches any one of those filters. For example, the filters <code>Title CONTAINS CloudFront OR Title CONTAINS CloudWatch</code> match a finding that includes either <code>CloudFront</code>, <code>CloudWatch</code>, or both strings in the title.</p> <p>To search for values that don’t have the filter value, use one of the following comparison operators:</p> <ul> <li> <p>To search for values that exclude the filter value, use <code>NOT_CONTAINS</code>. For example, the filter <code>Title NOT_CONTAINS CloudFront</code> matches findings that have a <code>Title</code> that excludes the string CloudFront.</p> </li> <li> <p>To search for values other than the filter value, use <code>NOT_EQUALS</code>. For example, the filter <code>AwsAccountId NOT_EQUALS 123456789012</code> only matches findings that have an account ID other than <code>123456789012</code>.</p> </li> <li> <p>To search for values that don't start with the filter value, use <code>PREFIX_NOT_EQUALS</code>. For example, the filter <code>ResourceRegion PREFIX_NOT_EQUALS us</code> matches findings with a <code>ResourceRegion</code> that starts with a value other than <code>us</code>.</p> </li> </ul> <p> <code>NOT_CONTAINS</code>, <code>NOT_EQUALS</code>, and <code>PREFIX_NOT_EQUALS</code> filters on the same field are joined by <code>AND</code>. A finding matches only if it matches all of those filters. For example, the filters <code>Title NOT_CONTAINS CloudFront AND Title NOT_CONTAINS CloudWatch</code> match a finding that excludes both <code>CloudFront</code> and <code>CloudWatch</code> in the title.</p> <p>You can’t have both a <code>CONTAINS</code> filter and a <code>NOT_CONTAINS</code> filter on the same field. Similarly, you can't provide both an <code>EQUALS</code> filter and a <code>NOT_EQUALS</code> or <code>PREFIX_NOT_EQUALS</code> filter on the same field. Combining filters in this way returns an error. <code>CONTAINS</code> filters can only be used with other <code>CONTAINS</code> filters. <code>NOT_CONTAINS</code> filters can only be used with other <code>NOT_CONTAINS</code> filters. </p> <p>You can combine <code>PREFIX</code> filters with <code>NOT_EQUALS</code> or <code>PREFIX_NOT_EQUALS</code> filters for the same field. Security Hub first processes the <code>PREFIX</code> filters, and then the <code>NOT_EQUALS</code> or <code>PREFIX_NOT_EQUALS</code> filters.</p> <p>For example, for the following filters, Security Hub first identifies findings that have resource types that start with either <code>AwsIam</code> or <code>AwsEc2</code>. It then excludes findings that have a resource type of <code>AwsIamPolicy</code> and findings that have a resource type of <code>AwsEc2NetworkInterface</code>.</p> <ul> <li> <p> <code>ResourceType PREFIX AwsIam</code> </p> </li> <li> <p> <code>ResourceType PREFIX AwsEc2</code> </p> </li> <li> <p> <code>ResourceType NOT_EQUALS AwsIamPolicy</code> </p> </li> <li> <p> <code>ResourceType NOT_EQUALS AwsEc2NetworkInterface</code> </p> </li> </ul> <p> <code>CONTAINS</code> and <code>NOT_CONTAINS</code> operators can be used only with automation rules. For more information, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/automation-rules.html\">Automation rules</a> in the <i>Security Hub User Guide</i>.</p>"
+          "documentation":"<p>The condition to apply to a string value when filtering Security Hub findings.</p> <p>To search for values that have the filter value, use one of the following comparison operators:</p> <ul> <li> <p>To search for values that include the filter value, use <code>CONTAINS</code>. For example, the filter <code>Title CONTAINS CloudFront</code> matches findings that have a <code>Title</code> that includes the string CloudFront.</p> </li> <li> <p>To search for values that exactly match the filter value, use <code>EQUALS</code>. For example, the filter <code>AwsAccountId EQUALS 123456789012</code> only matches findings that have an account ID of <code>123456789012</code>.</p> </li> <li> <p>To search for values that start with the filter value, use <code>PREFIX</code>. For example, the filter <code>ResourceRegion PREFIX us</code> matches findings that have a <code>ResourceRegion</code> that starts with <code>us</code>. A <code>ResourceRegion</code> that starts with a different value, such as <code>af</code>, <code>ap</code>, or <code>ca</code>, doesn't match.</p> </li> </ul> <p> <code>CONTAINS</code>, <code>EQUALS</code>, and <code>PREFIX</code> filters on the same field are joined by <code>OR</code>. A finding matches if it matches any one of those filters. For example, the filters <code>Title CONTAINS CloudFront OR Title CONTAINS CloudWatch</code> match a finding that includes either <code>CloudFront</code>, <code>CloudWatch</code>, or both strings in the title.</p> <p>To search for values that don’t have the filter value, use one of the following comparison operators:</p> <ul> <li> <p>To search for values that exclude the filter value, use <code>NOT_CONTAINS</code>. For example, the filter <code>Title NOT_CONTAINS CloudFront</code> matches findings that have a <code>Title</code> that excludes the string CloudFront.</p> </li> <li> <p>To search for values other than the filter value, use <code>NOT_EQUALS</code>. For example, the filter <code>AwsAccountId NOT_EQUALS 123456789012</code> only matches findings that have an account ID other than <code>123456789012</code>.</p> </li> <li> <p>To search for values that don't start with the filter value, use <code>PREFIX_NOT_EQUALS</code>. For example, the filter <code>ResourceRegion PREFIX_NOT_EQUALS us</code> matches findings with a <code>ResourceRegion</code> that starts with a value other than <code>us</code>.</p> </li> </ul> <p> <code>NOT_CONTAINS</code>, <code>NOT_EQUALS</code>, and <code>PREFIX_NOT_EQUALS</code> filters on the same field are joined by <code>AND</code>. A finding matches only if it matches all of those filters. For example, the filters <code>Title NOT_CONTAINS CloudFront AND Title NOT_CONTAINS CloudWatch</code> match a finding that excludes both <code>CloudFront</code> and <code>CloudWatch</code> in the title.</p> <p>You can’t have both a <code>CONTAINS</code> filter and a <code>NOT_CONTAINS</code> filter on the same field. Similarly, you can't provide both an <code>EQUALS</code> filter and a <code>NOT_EQUALS</code> or <code>PREFIX_NOT_EQUALS</code> filter on the same field. Combining filters in this way returns an error. <code>CONTAINS</code> filters can only be used with other <code>CONTAINS</code> filters. <code>NOT_CONTAINS</code> filters can only be used with other <code>NOT_CONTAINS</code> filters. </p> <p>You can combine <code>PREFIX</code> filters with <code>NOT_EQUALS</code> or <code>PREFIX_NOT_EQUALS</code> filters for the same field. Security Hub first processes the <code>PREFIX</code> filters, and then the <code>NOT_EQUALS</code> or <code>PREFIX_NOT_EQUALS</code> filters.</p> <p>For example, for the following filters, Security Hub first identifies findings that have resource types that start with either <code>AwsIam</code> or <code>AwsEc2</code>. It then excludes findings that have a resource type of <code>AwsIamPolicy</code> and findings that have a resource type of <code>AwsEc2NetworkInterface</code>.</p> <ul> <li> <p> <code>ResourceType PREFIX AwsIam</code> </p> </li> <li> <p> <code>ResourceType PREFIX AwsEc2</code> </p> </li> <li> <p> <code>ResourceType NOT_EQUALS AwsIamPolicy</code> </p> </li> <li> <p> <code>ResourceType NOT_EQUALS AwsEc2NetworkInterface</code> </p> </li> </ul> <p> <code>CONTAINS</code> and <code>NOT_CONTAINS</code> operators can be used only with automation rules V1. <code>CONTAINS_WORD</code> operator is only supported in <code>GetFindingsV2</code>, <code>GetFindingStatisticsV2</code>, <code>GetResourcesV2</code>, and <code>GetResourceStatisticsV2</code> APIs. For more information, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/automation-rules.html\">Automation rules</a> in the <i>Security Hub User Guide</i>.</p>"
         }
       },
       "documentation":"<p>A string filter for filtering Security Hub findings.</p>"
@@ -21300,7 +23725,8 @@
         "NOT_EQUALS",
         "PREFIX_NOT_EQUALS",
         "CONTAINS",
-        "NOT_CONTAINS"
+        "NOT_CONTAINS",
+        "CONTAINS_WORD"
       ]
     },
     "StringFilterList":{
@@ -21373,8 +23799,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -21493,6 +23918,16 @@
     "ThreatList":{
       "type":"list",
       "member":{"shape":"Threat"}
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"NonEmptyString"},
+        "Code":{"shape":"NonEmptyString"}
+      },
+      "documentation":"<p> The limit on the number of requests per second was exceeded. </p>",
+      "error":{"httpStatusCode":429},
+      "exception":true
     },
     "Timestamp":{
       "type":"timestamp",
@@ -21656,8 +24091,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateActionTargetRequest":{
       "type":"structure",
@@ -21681,8 +24115,91 @@
     },
     "UpdateActionTargetResponse":{
       "type":"structure",
+      "members":{}
+    },
+    "UpdateAggregatorV2Request":{
+      "type":"structure",
+      "required":[
+        "AggregatorV2Arn",
+        "RegionLinkingMode"
+      ],
       "members":{
+        "AggregatorV2Arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the Aggregator V2.</p>",
+          "location":"uri",
+          "locationName":"AggregatorV2Arn"
+        },
+        "RegionLinkingMode":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Determines how Amazon Web Services Regions should be linked to the Aggregator V2.</p>"
+        },
+        "LinkedRegions":{
+          "shape":"StringList",
+          "documentation":"<p>A list of Amazon Web Services Regions linked to the aggegation Region.</p>"
+        }
       }
+    },
+    "UpdateAggregatorV2Response":{
+      "type":"structure",
+      "members":{
+        "AggregatorV2Arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the Aggregator V2.</p>"
+        },
+        "AggregationRegion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services Region where data is aggregated.</p>"
+        },
+        "RegionLinkingMode":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Determines how Amazon Web Services Regions should be linked to the Aggregator V2.</p>"
+        },
+        "LinkedRegions":{
+          "shape":"StringList",
+          "documentation":"<p>A list of Amazon Web Services Regions linked to the aggegation Region.</p>"
+        }
+      }
+    },
+    "UpdateAutomationRuleV2Request":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the automation rule.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        },
+        "RuleStatus":{
+          "shape":"RuleStatusV2",
+          "documentation":"<p>The status of the automation rule.</p>"
+        },
+        "RuleOrder":{
+          "shape":"RuleOrderValueV2",
+          "documentation":"<p>Represents a value for the rule priority.</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A description of the automation rule.</p>"
+        },
+        "RuleName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the automation rule.</p>"
+        },
+        "Criteria":{
+          "shape":"Criteria",
+          "documentation":"<p>The filtering type and configuration of the automation rule.</p>"
+        },
+        "Actions":{
+          "shape":"AutomationRulesActionListV2",
+          "documentation":"<p>A list of actions to be performed when the rule criteria is met.</p>"
+        }
+      }
+    },
+    "UpdateAutomationRuleV2Response":{
+      "type":"structure",
+      "members":{}
     },
     "UpdateAutomationRulesRequestItem":{
       "type":"structure",
@@ -21790,6 +24307,34 @@
         }
       }
     },
+    "UpdateConnectorV2Request":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The UUID of the connectorV2 to identify connectorV2 resource.</p>",
+          "location":"uri",
+          "locationName":"ConnectorId"
+        },
+        "ClientSecret":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The clientSecret of ServiceNow.</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The description of the connectorV2.</p>"
+        },
+        "Provider":{
+          "shape":"ProviderUpdateConfiguration",
+          "documentation":"<p>The third-party provider’s service configuration.</p>"
+        }
+      }
+    },
+    "UpdateConnectorV2Response":{
+      "type":"structure",
+      "members":{}
+    },
     "UpdateFindingAggregatorRequest":{
       "type":"structure",
       "required":[
@@ -21852,8 +24397,7 @@
     },
     "UpdateFindingsResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateInsightRequest":{
       "type":"structure",
@@ -21881,8 +24425,7 @@
     },
     "UpdateInsightResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateOrganizationConfigurationRequest":{
       "type":"structure",
@@ -21901,8 +24444,7 @@
     },
     "UpdateOrganizationConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateSecurityControlRequest":{
       "type":"structure",
@@ -21927,8 +24469,7 @@
     },
     "UpdateSecurityControlResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateSecurityHubConfigurationRequest":{
       "type":"structure",
@@ -21945,8 +24486,7 @@
     },
     "UpdateSecurityHubConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateStandardsControlRequest":{
       "type":"structure",
@@ -21970,8 +24510,7 @@
     },
     "UpdateStandardsControlResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateStatus":{
       "type":"string",
@@ -21993,6 +24532,16 @@
         }
       },
       "documentation":"<p> Provides Amazon Web Services account information of the user involved in an Amazon GuardDuty Extended Threat Detection attack sequence. GuardDuty generates an attack sequence finding when multiple events align to a potentially suspicious activity. To receive GuardDuty attack sequence findings in Security Hub, you must have GuardDuty enabled. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html\">GuardDuty Extended Threat Detection </a> in the <i>Amazon GuardDuty User Guide</i>. </p>"
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"NonEmptyString"},
+        "Code":{"shape":"NonEmptyString"}
+      },
+      "documentation":"<p>The request has failed validation because it's missing required fields or has invalid inputs.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
     },
     "VerificationState":{
       "type":"string",

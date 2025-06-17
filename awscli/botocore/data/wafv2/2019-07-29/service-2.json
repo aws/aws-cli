@@ -1155,6 +1155,36 @@
       },
       "documentation":"<p>A logical rule statement used to combine other rule statements with AND logic. You provide more than one <a>Statement</a> within the <code>AndStatement</code>. </p>"
     },
+    "ApplicationAttribute":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"AttributeName",
+          "documentation":"<p>Specifies the attribute name.</p>"
+        },
+        "Values":{
+          "shape":"AttributeValues",
+          "documentation":"<p>Specifies the attribute value.</p>"
+        }
+      },
+      "documentation":"<p>Application details defined during the web ACL creation process. Application attributes help WAF give recommendations for protection packs.</p>"
+    },
+    "ApplicationAttributes":{
+      "type":"list",
+      "member":{"shape":"ApplicationAttribute"},
+      "max":10,
+      "min":1
+    },
+    "ApplicationConfig":{
+      "type":"structure",
+      "members":{
+        "Attributes":{
+          "shape":"ApplicationAttributes",
+          "documentation":"<p>Contains the attribute name and a list of values for that attribute.</p>"
+        }
+      },
+      "documentation":"<p>A list of <code>ApplicationAttribute</code>s that contains information about the application.</p>"
+    },
     "AsnList":{
       "type":"list",
       "member":{"shape":"ASN"},
@@ -1216,6 +1246,23 @@
         }
       },
       "documentation":"<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected resources forward to WAF for inspection. You can customize this setting for CloudFront, API Gateway, Amazon Cognito, App Runner, or Verified Access resources. The default setting is 16 KB (16,384 bytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href=\"http://aws.amazon.com/waf/pricing/\">WAF Pricing</a>.</p> </note> <p>For Application Load Balancer and AppSync, the limit is fixed at 8 KB (8,192 bytes).</p>"
+    },
+    "AttributeName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[\\w\\-]+$"
+    },
+    "AttributeValue":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "AttributeValues":{
+      "type":"list",
+      "member":{"shape":"AttributeValue"},
+      "max":10,
+      "min":1
     },
     "BlockAction":{
       "type":"structure",
@@ -1987,6 +2034,10 @@
         "OnSourceDDoSProtectionConfig":{
           "shape":"OnSourceDDoSProtectionConfig",
           "documentation":"<p>Specifies the type of DDoS protection to apply to web request data for a web ACL. For most scenarios, it is recommended to use the default protection level, <code>ACTIVE_UNDER_DDOS</code>. If a web ACL is associated with multiple Application Load Balancers, the changes you make to DDoS protection in that web ACL will apply to all associated Application Load Balancers.</p>"
+        },
+        "ApplicationConfig":{
+          "shape":"ApplicationConfig",
+          "documentation":"<p>Configures the ability for the WAF console to store and retrieve application attributes during the web ACL creation process. Application attributes help WAF give recommendations for protection packs.</p>"
         }
       }
     },
@@ -6757,6 +6808,10 @@
         "OnSourceDDoSProtectionConfig":{
           "shape":"OnSourceDDoSProtectionConfig",
           "documentation":"<p>Configures the level of DDoS protection that applies to web ACLs associated with Application Load Balancers.</p>"
+        },
+        "ApplicationConfig":{
+          "shape":"ApplicationConfig",
+          "documentation":"<p>Returns a list of <code>ApplicationAttribute</code>s.</p>"
         }
       },
       "documentation":"<p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, and Amazon Web Services Verified Access instance. </p>"

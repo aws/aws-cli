@@ -226,7 +226,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a transit gateway attachment from a Network Firewall. Either the firewall owner or the transit gateway owner can delete the attachment.</p> <important> <p>After you delete a transit gateway attachment, traffic will no longer flow through the firewall endpoints.</p> </important> <p>After you initiate the delete operation, use <a>DescribeFirewall</a> to monitor the deletion status.</p>"
+      "documentation":"<p>Deletes a transit gateway attachment from a Network Firewall. Either the firewall owner or the transit gateway owner can delete the attachment.</p> <important> <p>After you delete a transit gateway attachment, raffic will no longer flow through the firewall endpoints.</p> </important> <p>After you initiate the delete operation, use <a>DescribeFirewall</a> to monitor the deletion status.</p>"
     },
     "DeleteResourcePolicy":{
       "name":"DeleteResourcePolicy",
@@ -424,6 +424,22 @@
         {"shape":"InternalServerError"}
       ],
       "documentation":"<p>High-level information about a rule group, returned by operations like create and describe. You can use the information provided in the metadata to retrieve and manage a rule group. You can retrieve all objects for a rule group by calling <a>DescribeRuleGroup</a>. </p>"
+    },
+    "DescribeRuleGroupSummary":{
+      "name":"DescribeRuleGroupSummary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRuleGroupSummaryRequest"},
+      "output":{"shape":"DescribeRuleGroupSummaryResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Returns detailed information for a stateful rule group.</p> <p>For active threat defense Amazon Web Services managed rule groups, this operation provides insight into the protections enabled by the rule group, based on Suricata rule metadata fields. Summaries are available for rule groups you manage and for active threat defense Amazon Web Services managed rule groups.</p> <p>To modify how threat information appears in summaries, use the <code>SummaryConfiguration</code> parameter in <a>UpdateRuleGroup</a>.</p>"
     },
     "DescribeTLSInspectionConfiguration":{
       "name":"DescribeTLSInspectionConfiguration",
@@ -679,7 +695,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Rejects a transit gateway attachment request for Network Firewall. When you reject the attachment request, Network Firewall cancels the creation of routing components between the transit gateway and firewall endpoints.</p> <p>Only the transit gateway owner can reject the attachment. After rejection, no traffic will flow through the firewall endpoints for this attachment.</p> <p>Use <a>DescribeFirewall</a> to monitor the rejection status. To accept the attachment instead of rejecting it, use <a>AcceptNetworkFirewallTransitGatewayAttachment</a>.</p> <note> <p>Once rejected, you cannot reverse this action. To establish connectivity, you must create a new transit gateway-attached firewall.</p> </note>"
+      "documentation":"<p>Rejects a transit gateway attachment request for Network Firewall. When you reject the attachment request, Network Firewall cancels the creation of routing components between the transit gateway and firewall endpoints.</p> <p>Only the firewall owner can reject the attachment. After rejection, no traffic will flow through the firewall endpoints for this attachment.</p> <p>Use <a>DescribeFirewall</a> to monitor the rejection status. To accept the attachment instead of rejecting it, use <a>AcceptNetworkFirewallTransitGatewayAttachment</a>.</p> <note> <p>Once rejected, you cannot reverse this action. To establish connectivity, you must create a new transit gateway-attached firewall.</p> </note>"
     },
     "StartAnalysisReport":{
       "name":"StartAnalysisReport",
@@ -1578,6 +1594,10 @@
         "AnalyzeRuleGroup":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether you want Network Firewall to analyze the stateless rules in the rule group for rule behavior such as asymmetric routing. If set to <code>TRUE</code>, Network Firewall runs the analysis and then creates the rule group for you. To run the stateless rule group analyzer without creating the rule group, set <code>DryRun</code> to <code>TRUE</code>.</p>"
+        },
+        "SummaryConfiguration":{
+          "shape":"SummaryConfiguration",
+          "documentation":"<p>An object that contains a <code>RuleOptions</code> array of strings. You use <code>RuleOptions</code> to determine which of the following <a>RuleSummary</a> values are returned in response to <code>DescribeRuleGroupSummary</code>.</p> <ul> <li> <p> <code>Metadata</code> - returns</p> </li> <li> <p> <code>Msg</code> </p> </li> <li> <p> <code>SID</code> </p> </li> </ul>"
         }
       }
     },
@@ -1703,6 +1723,7 @@
       "type":"list",
       "member":{"shape":"CustomAction"}
     },
+    "DeepThreatInspection":{"type":"boolean"},
     "DeleteFirewallPolicyRequest":{
       "type":"structure",
       "members":{
@@ -2172,6 +2193,41 @@
         "RuleGroupResponse":{
           "shape":"RuleGroupResponse",
           "documentation":"<p>The high-level properties of a rule group. This, along with the <a>RuleGroup</a>, define the rule group. You can retrieve all objects for a rule group by calling <a>DescribeRuleGroup</a>. </p>"
+        }
+      }
+    },
+    "DescribeRuleGroupSummaryRequest":{
+      "type":"structure",
+      "members":{
+        "RuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the rule group. You can't change the name of a rule group after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "RuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>Required. The Amazon Resource Name (ARN) of the rule group.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "Type":{
+          "shape":"RuleGroupType",
+          "documentation":"<p>The type of rule group you want a summary for. This is a required field.</p> <p>Valid value: <code>STATEFUL</code> </p> <p>Note that <code>STATELESS</code> exists but is not currently supported. If you provide <code>STATELESS</code>, an exception is returned.</p>"
+        }
+      }
+    },
+    "DescribeRuleGroupSummaryResponse":{
+      "type":"structure",
+      "required":["RuleGroupName"],
+      "members":{
+        "RuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the rule group. You can't change the name of a rule group after you create it.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the rule group. </p>"
+        },
+        "Summary":{
+          "shape":"Summary",
+          "documentation":"<p>A complex type that contains rule information based on the rule group's configured summary settings. The content varies depending on the fields that you specified to extract in your SummaryConfiguration. When you haven't configured any summary settings, this returns an empty array. The response might include:</p> <ul> <li> <p>Rule identifiers</p> </li> <li> <p>Rule descriptions</p> </li> <li> <p>Any metadata fields that you specified in your SummaryConfiguration</p> </li> </ul>"
         }
       }
     },
@@ -3721,7 +3777,8 @@
       "type":"string",
       "enum":[
         "AWS_MANAGED_THREAT_SIGNATURES",
-        "AWS_MANAGED_DOMAIN_LISTS"
+        "AWS_MANAGED_DOMAIN_LISTS",
+        "ACTIVE_THREAT_DEFENSE"
       ]
     },
     "ResourceName":{
@@ -3885,6 +3942,10 @@
         "AnalysisResults":{
           "shape":"AnalysisResultList",
           "documentation":"<p>The list of analysis results for <code>AnalyzeRuleGroup</code>. If you set <code>AnalyzeRuleGroup</code> to <code>TRUE</code> in <a>CreateRuleGroup</a>, <a>UpdateRuleGroup</a>, or <a>DescribeRuleGroup</a>, Network Firewall analyzes the rule group and identifies the rules that might adversely effect your firewall's functionality. For example, if Network Firewall detects a rule that's routing traffic asymmetrically, which impacts the service's ability to properly process traffic, the service includes the rule in the list of analysis results.</p>"
+        },
+        "SummaryConfiguration":{
+          "shape":"SummaryConfiguration",
+          "documentation":"<p>A complex type containing the currently selected rule option fields that will be displayed for rule summarization returned by <a>DescribeRuleGroupSummary</a>.</p> <ul> <li> <p>The <code>RuleOptions</code> specified in <a>SummaryConfiguration</a> </p> </li> <li> <p>Rule metadata organization preferences</p> </li> </ul>"
         }
       },
       "documentation":"<p>The high-level properties of a rule group. This, along with the <a>RuleGroup</a>, define the rule group. You can retrieve all objects for a rule group by calling <a>DescribeRuleGroup</a>. </p>"
@@ -3929,6 +3990,28 @@
         "DEFAULT_ACTION_ORDER",
         "STRICT_ORDER"
       ]
+    },
+    "RuleSummaries":{
+      "type":"list",
+      "member":{"shape":"RuleSummary"}
+    },
+    "RuleSummary":{
+      "type":"structure",
+      "members":{
+        "SID":{
+          "shape":"CollectionMember_String",
+          "documentation":"<p>The unique identifier (Signature ID) of the Suricata rule.</p>"
+        },
+        "Msg":{
+          "shape":"CollectionMember_String",
+          "documentation":"<p>The contents taken from the rule's msg field.</p>"
+        },
+        "Metadata":{
+          "shape":"CollectionMember_String",
+          "documentation":"<p>The contents of the rule's metadata.</p>"
+        }
+      },
+      "documentation":"<p>A complex type containing details about a Suricata rule. Contains:</p> <ul> <li> <p> <code>SID</code> </p> </li> <li> <p> <code>Msg</code> </p> </li> <li> <p> <code>Metadata</code> </p> </li> </ul> <p>Summaries are available for rule groups you manage and for active threat defense Amazon Web Services managed rule groups.</p>"
     },
     "RuleTargets":{
       "type":"list",
@@ -4320,6 +4403,10 @@
         "Override":{
           "shape":"StatefulRuleGroupOverride",
           "documentation":"<p>The action that allows the policy owner to override the behavior of the rule group within a policy.</p>"
+        },
+        "DeepThreatInspection":{
+          "shape":"DeepThreatInspection",
+          "documentation":"<p>Network Firewall plans to augment the active threat defense managed rule group with an additional deep threat inspection capability. When this capability is released, Amazon Web Services will analyze service logs of network traffic processed by these rule groups to identify threat indicators across customers. Amazon Web Services will use these threat indicators to improve the active threat defense managed rule groups and protect the security of Amazon Web Services customers and services.</p> <note> <p>Customers can opt-out of deep threat inspection at any time through the Network Firewall console or API. When customers opt out, Network Firewall will not use the network traffic processed by those customers' active threat defense rule groups for rule group improvement.</p> </note>"
         }
       },
       "documentation":"<p>Identifier for a single stateful rule group, used in a firewall policy to refer to a rule group. </p>"
@@ -4465,6 +4552,38 @@
     "SubnetMappings":{
       "type":"list",
       "member":{"shape":"SubnetMapping"}
+    },
+    "Summary":{
+      "type":"structure",
+      "members":{
+        "RuleSummaries":{
+          "shape":"RuleSummaries",
+          "documentation":"<p>An array of <a>RuleSummary</a> objects containing individual rule details that had been configured by the rulegroup's SummaryConfiguration.</p>"
+        }
+      },
+      "documentation":"<p>A complex type containing summaries of security protections provided by a rule group.</p> <p>Network Firewall extracts this information from selected fields in the rule group's Suricata rules, based on your <a>SummaryConfiguration</a> settings.</p>"
+    },
+    "SummaryConfiguration":{
+      "type":"structure",
+      "members":{
+        "RuleOptions":{
+          "shape":"SummaryRuleOptions",
+          "documentation":"<p>Specifies the selected rule options returned by <a>DescribeRuleGroupSummary</a>.</p>"
+        }
+      },
+      "documentation":"<p>A complex type that specifies which Suricata rule metadata fields to use when displaying threat information. Contains:</p> <ul> <li> <p> <code>RuleOptions</code> - The Suricata rule options fields to extract and display</p> </li> </ul> <p>These settings affect how threat information appears in both the console and API responses. Summaries are available for rule groups you manage and for active threat defense Amazon Web Services managed rule groups.</p>"
+    },
+    "SummaryRuleOption":{
+      "type":"string",
+      "enum":[
+        "SID",
+        "MSG",
+        "METADATA"
+      ]
+    },
+    "SummaryRuleOptions":{
+      "type":"list",
+      "member":{"shape":"SummaryRuleOption"}
     },
     "SupportedAvailabilityZones":{
       "type":"map",
@@ -5190,6 +5309,10 @@
         "AnalyzeRuleGroup":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether you want Network Firewall to analyze the stateless rules in the rule group for rule behavior such as asymmetric routing. If set to <code>TRUE</code>, Network Firewall runs the analysis and then updates the rule group for you. To run the stateless rule group analyzer without updating the rule group, set <code>DryRun</code> to <code>TRUE</code>. </p>"
+        },
+        "SummaryConfiguration":{
+          "shape":"SummaryConfiguration",
+          "documentation":"<p>Updates the selected summary configuration for a rule group.</p> <p>Changes affect subsequent responses from <a>DescribeRuleGroupSummary</a>.</p>"
         }
       }
     },

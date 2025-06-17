@@ -17,20 +17,8 @@ A Universal Command Line Environment for Amazon Web Services.
 """
 
 import importlib.abc
-import importlib.metadata
 import os
 import sys
-
-# prompt-toolkit uses importlib.metadata.version to
-# identify its version. Because this module modifies the
-# system metadata path, importlib can't find prompt-toolkit
-# at build time or at runtime. So we always import it here
-# before the metadata path is modified, so that the package's
-# metadata is initialized.
-try:
-    import prompt_toolkit
-except importlib.metadata.PackageNotFoundError:
-    pass
 
 __version__ = '2.27.36'
 
@@ -106,7 +94,7 @@ class TopLevelImportAliasFinder(importlib.abc.MetaPathFinder):
                 finder_name = finder.__class__.__name__
             full_cls_name = f'{finder.__module__}.{finder_name}'
             if full_cls_name in cls._TARGET_FINDERS:
-                meta_path[i] = cls(finder)
+                meta_path.insert(i, cls(finder))
                 return
 
     def find_spec(self, fullname, path, target=None):

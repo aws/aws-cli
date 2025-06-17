@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.27.37
+=======
+
+* api-change:``network-firewall``: Release of Active Threat Defense in Network Firewall
+* api-change:``securityhub``: Adds operations, structures, and exceptions required for public preview release of Security Hub V2.
+* api-change:``organizations``: Add support for policy operations on the SECURITYHUB_POLICY policy type.
+* api-change:``mpa``: This release enables customers to create Multi-party approval teams and approval requests to protect supported operations.
+* api-change:``wafv2``: AWS WAF can now suggest protection packs for you based on the application information you provide when you create a webACL.
+* api-change:``inspector2``: Add Code Repository Scanning as part of AWS InspectorV2
+* api-change:``backup``: AWS Backup is adding support for integration of its logically air-gapped vaults with the AWS Organizations Multi-party approval capability.
+* api-change:``bedrock``: This release of the SDK has the API and documentation for the createcustommodel API. This feature lets you copy a trained model into Amazon Bedrock for inference.
+* api-change:``acm``: Adds support for Exportable Public Certificates
+* enhancement:Python: Update bundled Python interpreter to 3.13.4
+* api-change:``accessanalyzer``: We are launching a new analyzer type, internal access analyzer. The new analyzer will generate internal access findings, which help customers understand who within their AWS organization or AWS Account has access to their critical AWS resources.
+* api-change:``dms``: Add "Virtual" field to Data Provider as well as "S3Path" and "S3AccessRoleArn" fields to DataProvider settings
+* api-change:``guardduty``: Adding support for extended threat detection for EKS Audit Logs and EKS Runtime Monitoring.
+* api-change:``sts``: The AWS Security Token Service APIs AssumeRoleWithSAML and AssumeRoleWithWebIdentity can now be invoked without pre-configured AWS credentials in the SDK configuration.
+
+
 2.27.36
 =======
 

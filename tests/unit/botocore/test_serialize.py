@@ -14,6 +14,7 @@ spec.  This can happen for a number of reasons:
 
 import base64
 import datetime
+import decimal
 import io
 import json
 
@@ -375,6 +376,79 @@ class TestJSONTimestampSerialization(unittest.TestCase):
             ].decode('utf-8')
         )
         self.assertEqual(body['Timestamp'], 0)
+
+
+class TestJSONFloatSerialization(unittest.TestCase):
+    def setUp(self):
+        self.model = {
+            'metadata': {
+                'protocol': 'json',
+                'apiVersion': '2014-01-01',
+                'jsonVersion': '1.1',
+                'targetPrefix': 'foo',
+            },
+            'documentation': '',
+            'operations': {
+                'TestOperation': {
+                    'name': 'TestOperation',
+                    'http': {
+                        'method': 'POST',
+                        'requestUri': '/',
+                    },
+                    'input': {'shape': 'InputShape'},
+                }
+            },
+            'shapes': {
+                'InputShape': {
+                    'type': 'structure',
+                    'members': {
+                        'Double': {'shape': 'DoubleType'},
+                        'Float': {'shape': 'FloatType'},
+                    },
+                },
+                'DoubleType': {
+                    'type': 'double',
+                },
+                'FloatType': {
+                    'type': 'float',
+                },
+            },
+        }
+        self.service_model = ServiceModel(self.model)
+
+    def serialize_to_request(self, input_params):
+        request_serializer = serialize.create_serializer(
+            self.service_model.metadata['protocol']
+        )
+        return request_serializer.serialize_to_request(
+            input_params, self.service_model.operation_model('TestOperation')
+        )
+
+    def test_accepts_decimal_with_precision_above_floats(self):
+        float_string = '0.12345678901234567890'
+        float_as_float = float(
+            float_string
+        )  # This has less precision; it will be lost on serialization
+        float_as_decimal = decimal.Decimal(float_string)
+        body = json.loads(
+            self.serialize_to_request({'Float': float_as_decimal})[
+                'body'
+            ].decode('utf-8')
+        )
+        self.assertEqual(decimal.Decimal(body['Float']), float_as_float)
+
+    def test_accepts_decimal_with_precision_above_doubles(self):
+        double_string = '0.12345678901234567890'
+        double_as_float = float(
+            double_string
+        )  # This has less precision; it will be lost on serialization
+        double_as_decimal = decimal.Decimal(double_string)
+        body = json.loads(
+            self.serialize_to_request({'Double': double_as_decimal})[
+                'body'
+            ].decode('utf-8')
+        )
+        self.assertEqual(decimal.Decimal(body['Double']), double_as_float)
 
 
 class TestInstanceCreation(unittest.TestCase):

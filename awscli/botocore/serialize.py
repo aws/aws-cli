@@ -41,6 +41,7 @@ and if a str/unicode type is passed in, it will be encoded as utf-8.
 import base64
 import calendar
 import datetime
+import decimal
 import math
 import re
 import struct
@@ -434,6 +435,8 @@ class JSONSerializer(Serializer):
         serialized[key] = self._get_base64(value)
 
     def _serialize_type_float(self, serialized, value, shape, prefix=''):
+        if isinstance(value, decimal.Decimal):
+            value = float(value)
         serialized[prefix] = self._handle_float(value)
 
     def _serialize_type_double(self, serialized, value, shape, prefix=''):

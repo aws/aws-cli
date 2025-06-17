@@ -3,8 +3,8 @@
     "name": "s3.cp.upload",
     "command": ["s3", "cp", "test_file", "s3://bucket/test_file", "--quiet"],
     "dimensions": [
-      {"FileSize": "32MB"},
-      {"S3TransferClient": "Classic"}
+      {"name": "FileSize", "value": "32MB"},
+      {"name": "S3TransferClient", "value": "Classic"}
     ],
     "environment": {
       "files": [
@@ -32,7 +32,8 @@
     "name": "s3.mv.upload",
     "command": ["s3", "mv", "test_file", "s3://bucket/test_file", "--quiet"],
     "dimensions": [
-      {"FileSize": "32MB"}
+      {"name": "FileSize", "value": "32MB"},
+      {"name": "S3TransferClient", "value": "Classic"}
     ],
     "environment": {
       "files": [
@@ -61,8 +62,8 @@
     "name": "s3.mv.download",
     "command": ["s3", "mv", "s3://bucket/test_file123", "./test_file123", "--quiet"],
     "dimensions": [
-      {"FileSize": "32MB"},
-      {"S3TransferClient": "Classic"}
+      {"name": "FileSize", "value": "32MB"},
+      {"name": "S3TransferClient", "value": "Classic"}
     ],
     "environment": {
       "config": "[default]\ns3 =\n preferred_transfer_client = classic"
@@ -82,9 +83,9 @@
     "name": "s3.sync.upload",
     "command": ["s3", "sync", "./test_dir", "s3://bucket/test_dir", "--quiet"],
     "dimensions": [
-      {"FileCount": "5,000"},
-      {"FileSize": "4KB"},
-      {"S3TransferClient": "Classic"}
+      {"name": "FileCount", "value": "5,000"},
+      {"name": "FileSize", "value": "4KB"},
+      {"name": "S3TransferClient", "value": "Classic"}
     ],
     "environment": {
       "file_dirs": [
@@ -161,7 +162,7 @@
     "name": "ddb.put",
     "command": ["ddb", "put", "MyTable", "file://items.json"],
     "dimensions": [
-      {"ItemCount": 10}
+      {"name": "ItemCount", "value": "10"}
     ],
     "environment": {
       "file_literals": [

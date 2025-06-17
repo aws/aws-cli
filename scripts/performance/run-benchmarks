@@ -2,14 +2,24 @@
 import argparse
 import os
 
-from scripts.performance.benchmark_utils import BenchmarkHarness
+from benchmark_utils import BenchmarkHarness
 
 _BENCHMARK_DEFINITIONS = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'benchmarks.json'
 )
 
 
-if __name__ == "__main__":
+def _chunk_test_cases(test_cases, num_chunks, chunk_id):
+    chunks = [[] for _ in range(num_chunks)]
+    while test_cases:
+        for chunk in chunks:
+            if not test_cases:
+                break
+            chunk.append(test_cases.pop())
+    return chunks[chunk_id]
+
+
+def main():
     harness = BenchmarkHarness()
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -41,4 +51,57 @@ if __name__ == "__main__":
         default=None,
         help='If supplied, writes the output of the child process for each benchmark to a file in this directory.',
     )
-    harness.run_benchmarks(parser.parse_args())
+    parser.add_argument(
+        "--num-chunks",
+        default=None,
+        type=int,
+        help=(
+            "If specified, the performance tests will be partitioned as evenly as possible into "
+            "this number of chunks, and only one chunk of tests will be run per execution of "
+            "this script. If chunk-id is specified, this arg must be specified. By default, no "
+            "partitioning will be done, and all performance tests will be run."
+        ),
+    )
+    parser.add_argument(
+        "--chunk-id",
+        default=None,
+        type=int,
+        help=(
+            "If specified, the performance tests will be partitioned as evenly as possible across "
+            "multiple chunks, and only the chunk corresponding to this chunk ID will be run per "
+            "execution of this script. If num-chunks is specified, this arg must be specified. "
+            "By default, no partitioning will be done, and all performance tests will be run."
+        ),
+    )
+    parsed_args = parser.parse_args()
+    if len([x for x in [parsed_args.num_chunks, parsed_args.chunk_id] if x is not None]) == 1:
+        parser.error(
+            "If --num-chunks or --chunk-id is specified, then both args must be specified."
+        )
+    if parsed_args.num_chunks is not None:
+        if parsed_args.num_chunks < 1:
+            parser.error("--num-chunks must be a positive integer.")
+        if (
+            parsed_args.chunk_id < 0
+            or parsed_args.chunk_id >= parsed_args.num_chunks
+        ):
+            parser.error(
+                "--chunk-id must be an integer between 0 (inclusive) and num-chunks (exclusive)."
+            )
+
+    test_suites = harness.get_test_suites(parsed_args)
+    test_cases = []
+    for suite in test_suites:
+        for case in suite.get_test_cases(parsed_args):
+            test_cases.append((suite, case))
+    if parsed_args.chunk_id is not None:
+        test_cases = _chunk_test_cases(
+            test_cases, parsed_args.num_chunks, parsed_args.chunk_id
+        )
+        harness.run_benchmarks(test_cases, parsed_args)
+    else:
+        harness.run_benchmarks(test_cases, parsed_args)
+
+
+if __name__ == "__main__":
+    main()

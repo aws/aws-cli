@@ -4,13 +4,64 @@ import os
 import shutil
 import sys
 import time
-from unittest import mock
 
 import psutil
 
-from awscli.botocore.awsrequest import AWSResponse
 from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
-from awscli.compat import BytesIO
+from scripts.performance import BaseBenchmarkSuite
+from scripts.performance.simple_stubbed_tests import (
+    JSONStubbedBenchmarkSuite,
+)
+
+
+class Metric:
+    def __init__(self, description, unit, value):
+        self.description = description
+        self.unit = unit
+        self.value = value
+
+
+class BenchmarkResultsSerializer:
+    """
+    A class that serializes the execution results of a performance test case.
+    """
+
+    def __init__(self):
+        self._summarizer = Summarizer()
+        self._benchmark_results = {}
+
+    def add_execution_results(self, case, samples, execution_results):
+        """
+        Store a performance test case's execution result.
+        """
+        summarized_results = self._summarizer.summarize(
+            samples, execution_results
+        )
+        for metric, val in summarized_results.items():
+            key = f'{case["name"]}.{metric}'
+            if key not in self._benchmark_results:
+                self._benchmark_results[key] = {
+                    'name': key,
+                    'description': val.description,
+                    'unit': val.unit,
+                    'dimensions': case.get('dimensions', []),
+                    'measurements': [],
+                }
+            self._benchmark_results[key]['measurements'].append(val.value)
+
+    def get_processed_results(self):
+        """
+        Returns a list of dictionaries representing all stored execution
+        results. The key-value pairs will be converted to JSON and displayed as part
+        of the final output.
+        """
+        return list(self._benchmark_results.values())
+
+    def reset(self):
+        """
+        Resets the stored list of execution results.
+        """
+        self._benchmark_results.clear()
 
 
 class Summarizer:
@@ -25,8 +76,11 @@ class Summarizer:
             'cpu': 0.0,
         }
 
-    def summarize(self, samples):
-        """Processes benchmark data from a dictionary."""
+    def summarize(self, samples, worker_results):
+        """
+        Processes benchmark data from samples and the output of the benchmark
+        worker.
+        """
         self._samples = samples
         self._validate_samples(samples)
         for idx, sample in enumerate(samples):
@@ -35,7 +89,9 @@ class Summarizer:
                 self._start_time = self._get_time(sample)
             self.process_data_sample(sample)
         self._end_time = self._get_time(samples[-1])
-        metrics = self._finalize_processed_data_for_file(samples)
+        metrics = self._finalize_processed_data_for_file(
+            samples, worker_results
+        )
         return metrics
 
     def _validate_samples(self, samples):
@@ -49,7 +105,7 @@ class Summarizer:
         self._add_to_sums('memory', sample['memory'])
         self._add_to_sums('cpu', sample['cpu'])
 
-    def _finalize_processed_data_for_file(self, samples):
+    def _finalize_processed_data_for_file(self, samples, worker_results):
         # compute percentiles
         self._samples.sort(key=self._get_memory)
         memory_p50 = self._compute_metric_percentile(50, 'memory')
@@ -61,14 +117,58 @@ class Summarizer:
         max_cpu = max(samples, key=self._get_cpu)['cpu']
         # format computed statistics
         metrics = {
-            'average_memory': self._sums['memory'] / len(samples),
-            'average_cpu': self._sums['cpu'] / len(samples),
-            'max_memory': max_memory,
-            'max_cpu': max_cpu,
-            'memory_p50': memory_p50,
-            'memory_p95': memory_p95,
-            'cpu_p50': cpu_p50,
-            'cpu_p95': cpu_p95,
+            'mean.run.memory': Metric(
+                'Mean memory usage of a single command execution.',
+                'Bytes',
+                self._sums['memory'] / len(samples),
+            ),
+            'mean.run.cpu': Metric(
+                'Mean CPU usage of a single command execution.',
+                'Percent',
+                self._sums['cpu'] / len(samples),
+            ),
+            'peak.run.memory': Metric(
+                'Peak memory usage of a single command execution.',
+                'Bytes',
+                max_memory,
+            ),
+            'peak.run.cpu': Metric(
+                'Peak CPU usage of a single command execution.',
+                'Percent',
+                max_cpu,
+            ),
+            'p50.run.memory': Metric(
+                'p50 memory usage of a single command execution.',
+                'Bytes',
+                memory_p50,
+            ),
+            'p95.run.memory': Metric(
+                'p95 memory usage of a single command execution.',
+                'Bytes',
+                memory_p95,
+            ),
+            'p50.run.cpu': Metric(
+                'p50 CPU usage of a single command execution.',
+                'Percent',
+                cpu_p50,
+            ),
+            'p95.run.cpu': Metric(
+                'p95 CPU usage of a single command execution.',
+                'Percent',
+                cpu_p95,
+            ),
+            'run.time': Metric(
+                'Total running time of the Python process executing the CLI command.',
+                'Seconds',
+                worker_results['end_time'] - worker_results['start_time'],
+            ),
+            'pre.marshal.time': Metric(
+                'Elapsed time from the start of the Python process until just '
+                'before the HTTP request is created.',
+                'Seconds',
+                worker_results['first_client_invocation_time']
+                - worker_results['start_time'],
+            ),
         }
         # reset data state
         self._samples.clear()
@@ -87,58 +187,16 @@ class Summarizer:
         return sample['memory']
 
     def _get_cpu(self, sample):
-        return sample['cpu']
+        return sample['cpu'] / 100
 
     def _add_to_sums(self, name, data_point):
         self._sums[name] += data_point
 
 
-class RawResponse(BytesIO):
-    """
-    A bytes-like streamable HTTP response representation.
-    """
-
-    def stream(self, **kwargs):
-        contents = self.read()
-        while contents:
-            yield contents
-            contents = self.read()
-
-
-class StubbedHTTPClient:
-    """
-    A generic stubbed HTTP client.
-    """
-
-    def setup(self):
-        urllib3_session_send = 'botocore.httpsession.URLLib3Session.send'
-        self._urllib3_patch = mock.patch(urllib3_session_send)
-        self._send = self._urllib3_patch.start()
-        self._send.side_effect = self.get_response
-        self._responses = []
-
-    def tearDown(self):
-        self._urllib3_patch.stop()
-
-    def get_response(self, request):
-        response = self._responses.pop(0)
-        if isinstance(response, Exception):
-            raise response
-        return response
-
-    def add_response(self, body, headers, status_code):
-        response = AWSResponse(
-            url='http://169.254.169.254/',
-            status_code=status_code,
-            headers=headers,
-            raw=RawResponse(body.encode()),
-        )
-        self._responses.append(response)
-
-
 class ProcessBenchmarker:
     """
     Periodically samples CPU and memory usage of a process given its pid.
+    These measurements are sampled until the process is no longer running.
     """
 
     def benchmark_process(self, pid, data_interval):
@@ -165,7 +223,6 @@ class ProcessBenchmarker:
 
         while process_to_measure.is_running():
             if process_to_measure.status() == psutil.STATUS_ZOMBIE:
-                process_to_measure.kill()
                 break
             time.sleep(data_interval)
             try:
@@ -193,108 +250,14 @@ class ProcessBenchmarker:
 
 
 class BenchmarkHarness:
-    _DEFAULT_FILE_CONFIG_CONTENTS = "[default]"
+    BENCHMARK_SUITES = [JSONStubbedBenchmarkSuite]
 
     """
-    Orchestrates running benchmarks in isolated, configurable environments defined
-    via a specified JSON file.
+    Orchestrates running benchmarks in isolated, configurable environments.
     """
 
-    def __init__(self):
-        self._summarizer = Summarizer()
-
-    def _get_default_env(self, config_file):
-        return {
-            'AWS_CONFIG_FILE': config_file,
-            'AWS_DEFAULT_REGION': 'us-west-2',
-            'AWS_ACCESS_KEY_ID': 'access_key',
-            'AWS_SECRET_ACCESS_KEY': 'secret_key',
-        }
-
-    def _create_file_with_size(self, path, size):
-        """
-        Creates a full-access file in the given directory with the
-        specified name and size. The created file will be full of
-        null bytes to achieve the specified size.
-        """
-        f = open(path, 'wb')
-        os.chmod(path, 0o777)
-        size = int(size)
-        f.truncate(size)
-        f.close()
-
-    def _create_file_dir(self, dir_path, file_count, size):
-        """
-        Creates a directory with the specified name. Also creates identical files
-        with the given size in the created directory. The number of identical files
-        to be created is specified by file_count. Each file will be full of
-        null bytes to achieve the specified size.
-        """
-        os.mkdir(dir_path, 0o777)
-        for i in range(int(file_count)):
-            file_path = os.path.join(dir_path, f'{i}')
-            self._create_file_with_size(file_path, size)
-
-    def _setup_iteration(self, benchmark, client, result_dir, config_file):
-        """
-        Performs the environment setup for a single iteration of a
-        benchmark. This includes creating the files used by a
-        command and stubbing the HTTP client to use during execution.
-        """
-        # create necessary files for iteration
-        env = benchmark.get('environment', {})
-        if "files" in env:
-            for file_def in env['files']:
-                path = os.path.join(result_dir, file_def['name'])
-                self._create_file_with_size(path, file_def['size'])
-        if "file_dirs" in env:
-            for file_dir_def in env['file_dirs']:
-                dir_path = os.path.join(result_dir, file_dir_def['name'])
-                self._create_file_dir(
-                    dir_path,
-                    file_dir_def['file_count'],
-                    file_dir_def['file_size'],
-                )
-        if "file_literals" in env:
-            for file_lit in env['file_literals']:
-                path = os.path.join(result_dir, file_lit['name'])
-                f = open(path, 'w')
-                os.chmod(path, 0o777)
-                f.write(file_lit['content'])
-                f.close()
-        # create config file at specified path
-        os.makedirs(os.path.dirname(config_file), mode=0o777, exist_ok=True)
-        with open(config_file, 'w') as f:
-            f.write(env.get('config', self._DEFAULT_FILE_CONFIG_CONTENTS))
-            f.flush()
-        # setup and stub HTTP client
-        client.setup()
-        self._stub_responses(
-            benchmark.get('responses', [{"headers": {}, "body": ""}]),
-            client,
-            result_dir,
-        )
-
-    def _stub_responses(self, responses, client, result_dir):
-        """
-        Stubs the supplied HTTP client using the response instructions in the supplied
-        responses struct. Each instruction will generate one or more stubbed responses.
-        """
-        for response in responses:
-            body = response.get("body", "")
-            # if body is a dict, load the contents from a file
-            if isinstance(body, dict):
-                contents_path = os.path.join(result_dir, body['file'])
-                with open(contents_path) as contents_f:
-                    body = contents_f.read()
-            headers = response.get("headers", {})
-            status_code = response.get("status_code", 200)
-            # use the instances key to support duplicating responses a configured number of times
-            if "instances" in response:
-                for _ in range(int(response['instances'])):
-                    client.add_response(body, headers, status_code)
-            else:
-                client.add_response(body, headers, status_code)
+    def __init__(self, results_processor=BenchmarkResultsSerializer()):
+        self._results_processor = results_processor
 
     def _run_command_with_metric_hooks(self, cmd, out_file):
         """
@@ -315,30 +278,30 @@ class BenchmarkHarness:
             _log_invocation_time,
             'benchmarks.log-invocation-time',
         )
+
         rc = AWSCLIEntryPoint(driver).main(cmd)
         end_time = time.time()
 
         # write the collected metrics to a file
-        metrics_f = open(out_file, 'w')
-        metrics_f.write(
-            json.dumps(
-                {
-                    'return_code': rc,
-                    'start_time': start_time,
-                    'end_time': end_time,
-                    'first_client_invocation_time': first_client_invocation_time,
-                }
+        with open(out_file, 'w') as metrics_f:
+            metrics_f.write(
+                json.dumps(
+                    {
+                        'return_code': rc,
+                        'start_time': start_time,
+                        'end_time': end_time,
+                        'first_client_invocation_time': first_client_invocation_time,
+                    }
+                )
             )
-        )
-        metrics_f.close()
 
     def _run_isolated_benchmark(
         self,
         result_dir,
-        benchmark,
-        client,
-        process_benchmarker,
         iteration,
+        benchmark,
+        suite,
+        process_benchmarker,
         args,
     ):
         """
@@ -347,27 +310,23 @@ class BenchmarkHarness:
         the results, and cleaning up the environment.
         """
         assets_path = os.path.join(result_dir, 'assets')
-        config_path = os.path.join(assets_path, 'config')
         metrics_path = os.path.join(assets_path, 'metrics.json')
         child_output_path = os.path.join(assets_path, 'output.txt')
         child_err_path = os.path.join(assets_path, 'err.txt')
+
         # setup for iteration of benchmark
-        self._setup_iteration(benchmark, client, result_dir, config_path)
+        suite.begin_iteration(benchmark, result_dir, assets_path, iteration)
         os.chdir(result_dir)
-        # patch the OS environment with our supplied defaults
-        env_patch = mock.patch.dict(
-            'os.environ', self._get_default_env(config_path)
-        )
-        env_patch.start()
+
         # fork a child process to run the command on.
-        # the parent process benchmarks the child process until the child terminates.
         pid = os.fork()
 
         try:
             if pid == 0:
-                with open(child_output_path, 'w') as out, open(
-                    child_err_path, 'w'
-                ) as err:
+                with (
+                    open(child_output_path, 'w') as out,
+                    open(child_err_path, 'w') as err,
+                ):
                     if not args.debug_dir:
                         # redirect standard output of the child process to a file
                         os.dup2(out.fileno(), sys.stdout.fileno())
@@ -399,74 +358,91 @@ class BenchmarkHarness:
                     )
                     # terminate the child process
                     os._exit(0)
-            # benchmark child process from parent process until child terminates
+
+            # benchmark child process from parent process until child becomes zombie
             samples = process_benchmarker.benchmark_process(
                 pid, args.data_interval
             )
-            # load child-collected metrics if exists
+
+            # reap the child process and error on unsuccessful return codes
+            _, status = os.waitpid(pid, 0)
+            if status != 0:
+                raise RuntimeError(
+                    f'Child process execution failed: status code {status}'
+                )
+
+            # load child-collected metrics
             if not os.path.exists(metrics_path):
                 raise RuntimeError(
                     'Child process execution failed: output file not found.'
                 )
-            metrics_f = json.load(open(metrics_path))
-            # raise error if child process failed
-            if (rc := metrics_f['return_code']) != 0:
+            worker_results = json.load(open(metrics_path))
+
+            # raise error if CLI execution unsuccessful.
+            # this is different from the process return code checked above,
+            # because the process can succeed while the CLI execution failed
+            if (rc := worker_results['return_code']) != 0:
                 with open(child_err_path) as err:
                     raise RuntimeError(
-                        f'Child process execution failed: return code {rc}.\n'
+                        f'CLI execution failed: return code {rc}.\n'
                         f'Error: {err.read()}'
                     )
+
             # summarize benchmark results and process summary
-            summary = self._summarizer.summarize(samples)
-            summary['total_time'] = (
-                metrics_f['end_time'] - metrics_f['start_time']
-            )
-            summary['first_client_invocation_time'] = (
-                metrics_f['first_client_invocation_time']
-                - metrics_f['start_time']
-            )
+            return samples, worker_results
         finally:
-            # cleanup iteration of benchmark
-            client.tearDown()
+            suite.end_iteration(benchmark, iteration)
             shutil.rmtree(result_dir, ignore_errors=True)
             os.makedirs(result_dir, 0o777)
-            env_patch.stop()
-        return summary
 
-    def run_benchmarks(self, args):
+    def get_test_suites(self, args):
         """
-        Orchestrates benchmarking via the benchmark definitions in
-        the arguments.
+        Returns all test suites that should be executed by the default
+        performance test runner.
+        """
+        return [suite() for suite in BenchmarkHarness.BENCHMARK_SUITES]
+
+    def run_benchmarks(self, cases, args):
+        """
+        Orchestrates benchmarking via the supplied list of performance test
+        cases.
         """
         summaries = {'results': []}
         result_dir = args.result_dir
-        client = StubbedHTTPClient()
         process_benchmarker = ProcessBenchmarker()
-        definitions = json.load(open(args.benchmark_definitions))
+
         if os.path.exists(result_dir):
             shutil.rmtree(result_dir)
         os.makedirs(result_dir, 0o777)
-
         try:
-            for benchmark in definitions:
-                benchmark_result = {
-                    'name': benchmark['name'],
-                    'measurements': [],
-                }
-                if 'dimensions' in benchmark:
-                    benchmark_result['dimensions'] = benchmark['dimensions']
-                for iteration in range(args.num_iterations):
-                    measurements = self._run_isolated_benchmark(
-                        result_dir,
-                        benchmark,
-                        client,
-                        process_benchmarker,
-                        iteration,
-                        args,
-                    )
-                    benchmark_result['measurements'].append(measurements)
-                summaries['results'].append(benchmark_result)
+            for suite, case in cases:
+                for idx in range(args.num_iterations):
+                    for cmd in case:
+                        samples, execution_results = (
+                            self._run_isolated_benchmark(
+                                result_dir,
+                                idx,
+                                cmd,
+                                suite,
+                                process_benchmarker,
+                                args,
+                            )
+                        )
+                        self._results_processor.add_execution_results(
+                            cmd, samples, execution_results
+                        )
+                summaries['results'].extend(
+                    self._results_processor.get_processed_results()
+                )
+                self._results_processor.reset()
         finally:
             # final cleanup
             shutil.rmtree(result_dir, ignore_errors=True)
         print(json.dumps(summaries, indent=2))
+
+    def run_benchmark_suite(self, suite: BaseBenchmarkSuite, args):
+        """
+        Orchestrates benchmarking a particular benchmark suite.
+        """
+        sequence_generators = suite.get_test_cases(args)
+        self.run_benchmarks(sequence_generators, args)

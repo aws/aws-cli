@@ -20,6 +20,8 @@ import importlib.abc
 import os
 import sys
 
+import prompt_toolkit
+
 __version__ = '2.27.36'
 
 #

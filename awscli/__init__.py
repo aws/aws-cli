@@ -17,6 +17,7 @@ A Universal Command Line Environment for Amazon Web Services.
 """
 
 import importlib.abc
+import importlib.metadata
 import os
 import sys
 
@@ -26,7 +27,10 @@ import sys
 # at build time or at runtime. So we always import it here
 # before the metadata path is modified, so that the package's
 # metadata is initialized.
-import prompt_toolkit
+try:
+    import prompt_toolkit
+except importlib.metadata.PackageNotFoundError:
+    pass
 
 __version__ = '2.27.36'
 

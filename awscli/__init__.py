@@ -20,6 +20,12 @@ import importlib.abc
 import os
 import sys
 
+# prompt-toolkit uses importlib.metadata.version to
+# identify its version. Because this module modifies the
+# system metadata path, importlib can't find prompt-toolkit
+# at build time or at runtime. So we always import it here
+# before the metadata path is modified, so that the package's
+# metadata is initialized.
 import prompt_toolkit
 
 __version__ = '2.27.36'

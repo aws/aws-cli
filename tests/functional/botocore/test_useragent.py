@@ -22,6 +22,25 @@ from botocore.config import Config
 from tests import ClientHTTPStubber
 
 
+def get_captured_ua_strings(stubber):
+    """Get captured request-level user agent strings from stubber.
+
+    :type stubber: tests.BaseHTTPStubber
+    """
+    return [req.headers['User-Agent'].decode() for req in stubber.requests]
+
+
+def parse_registered_feature_ids(ua_string):
+    """Parse registered feature ids in user agent string.
+
+    :type ua_string: str
+    :rtype: list[str]
+    """
+    ua_fields = ua_string.split(' ')
+    feature_field = [field for field in ua_fields if field.startswith('m/')][0]
+    return feature_field[2:].split(',')
+
+
 class UACapHTTPStubber(ClientHTTPStubber):
     """
     Wrapper for ClientHTTPStubber that captures UA header from one request.

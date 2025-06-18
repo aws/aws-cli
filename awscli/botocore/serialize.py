@@ -41,6 +41,7 @@ and if a str/unicode type is passed in, it will be encoded as utf-8.
 import base64
 import calendar
 import datetime
+import decimal
 import math
 import re
 import struct
@@ -179,6 +180,8 @@ class Serializer:
             return None
 
         host_prefix_expression = operation_endpoint['hostPrefix']
+        if operation_model.input_shape is None:
+            return host_prefix_expression
         input_members = operation_model.input_shape.members
         host_labels = [
             member
@@ -188,6 +191,18 @@ class Serializer:
         format_kwargs = dict((name, parameters[name]) for name in host_labels)
 
         return host_prefix_expression.format(**format_kwargs)
+
+    def _is_shape_flattened(self, shape):
+        return shape.serialization.get('flattened')
+
+    def _handle_float(self, value):
+        if value == float("Infinity"):
+            value = "Infinity"
+        elif value == float("-Infinity"):
+            value = "-Infinity"
+        elif math.isnan(value):
+            value = "NaN"
+        return value
 
 
 class QuerySerializer(Serializer):
@@ -294,8 +309,11 @@ class QuerySerializer(Serializer):
     def _default_serialize(self, serialized, value, shape, prefix=''):
         serialized[prefix] = value
 
-    def _is_shape_flattened(self, shape):
-        return shape.serialization.get('flattened')
+    def _serialize_type_float(self, serialized, value, shape, prefix=''):
+        serialized[prefix] = self._handle_float(value)
+
+    def _serialize_type_double(self, serialized, value, shape, prefix=''):
+        self._serialize_type_float(serialized, value, shape, prefix)
 
 
 class EC2Serializer(QuerySerializer):
@@ -310,7 +328,7 @@ class EC2Serializer(QuerySerializer):
 
     def _get_serialized_name(self, shape, default_name):
         # Returns the serialized name for the shape if it exists.
-        # Otherwise it will return the passed in default_name.
+        # Otherwise it will return the passed in capitalized default_name.
         if 'queryName' in shape.serialization:
             return shape.serialization['queryName']
         elif 'name' in shape.serialization:
@@ -415,6 +433,14 @@ class JSONSerializer(Serializer):
 
     def _serialize_type_blob(self, serialized, value, shape, key):
         serialized[key] = self._get_base64(value)
+
+    def _serialize_type_float(self, serialized, value, shape, prefix=''):
+        if isinstance(value, decimal.Decimal):
+            value = float(value)
+        serialized[prefix] = self._handle_float(value)
+
+    def _serialize_type_double(self, serialized, value, shape, prefix=''):
+        self._serialize_type_float(serialized, value, shape, prefix)
 
 
 class CBORSerializer(Serializer):
@@ -683,6 +709,11 @@ class BaseRestSerializer(Serializer):
             'method', self.DEFAULT_METHOD
         )
         shape = operation_model.input_shape
+
+        host_prefix = self._expand_host_prefix(parameters, operation_model)
+        if host_prefix is not None:
+            serialized['host_prefix'] = host_prefix
+
         if shape is None:
             serialized['url_path'] = operation_model.http['requestUri']
             return serialized
@@ -729,10 +760,6 @@ class BaseRestSerializer(Serializer):
             partitioned, parameters, serialized, shape, shape_members
         )
         self._serialize_content_type(serialized, shape, shape_members)
-
-        host_prefix = self._expand_host_prefix(parameters, operation_model)
-        if host_prefix is not None:
-            serialized['host_prefix'] = host_prefix
 
         return serialized
 
@@ -828,32 +855,32 @@ class BaseRestSerializer(Serializer):
         location = member.serialization.get('location')
         key_name = member.serialization.get('name', param_name)
         if location == 'uri':
-            partitioned['uri_path_kwargs'][key_name] = param_value
+            uri_path_value = self._get_uri_and_query_string_value(
+                param_value, member
+            )
+            partitioned['uri_path_kwargs'][key_name] = uri_path_value
         elif location == 'querystring':
             if isinstance(param_value, dict):
                 partitioned['query_string_kwargs'].update(param_value)
-            elif isinstance(param_value, bool):
-                partitioned['query_string_kwargs'][key_name] = str(
-                    param_value
-                ).lower()
-            elif member.type_name == 'timestamp':
-                timestamp_format = member.serialization.get(
-                    'timestampFormat', self.QUERY_STRING_TIMESTAMP_FORMAT
-                )
-                partitioned['query_string_kwargs'][key_name] = (
-                    self._convert_timestamp_to_str(
-                        param_value, timestamp_format
-                    )
-                )
+            elif member.type_name == 'list':
+                new_param = [
+                    self._get_uri_and_query_string_value(value, member.member)
+                    for value in param_value
+                ]
+                partitioned['query_string_kwargs'][key_name] = new_param
             else:
-                partitioned['query_string_kwargs'][key_name] = param_value
+                new_param = self._get_uri_and_query_string_value(
+                    param_value, member
+                )
+                partitioned['query_string_kwargs'][key_name] = new_param
         elif location == 'header':
             shape = shape_members[param_name]
             if not param_value and shape.type_name == 'list':
                 # Empty lists should not be set on the headers
                 return
-            value = self._convert_header_value(shape, param_value)
-            partitioned['headers'][key_name] = str(value)
+            partitioned['headers'][key_name] = self._convert_header_value(
+                shape, param_value
+            )
         elif location == 'headers':
             # 'headers' is a bit of an oddball.  The ``key_name``
             # is actually really a prefix for the header names:
@@ -867,6 +894,20 @@ class BaseRestSerializer(Serializer):
             )
         else:
             partitioned['body_kwargs'][param_name] = param_value
+
+    def _get_uri_and_query_string_value(self, param_value, member):
+        if member.type_name == 'boolean':
+            return str(param_value).lower()
+        elif member.type_name == 'timestamp':
+            timestamp_format = member.serialization.get(
+                'timestampFormat', self.QUERY_STRING_TIMESTAMP_FORMAT
+            )
+            return self._convert_timestamp_to_str(
+                param_value, timestamp_format
+            )
+        elif member.type_name in ['float', 'double']:
+            return str(self._handle_float(param_value))
+        return param_value
 
     def _do_serialize_header_map(self, header_prefix, headers, user_input):
         for key, val in user_input.items():
@@ -883,18 +924,39 @@ class BaseRestSerializer(Serializer):
             timestamp_format = shape.serialization.get(
                 'timestampFormat', self.HEADER_TIMESTAMP_FORMAT
             )
-            return self._convert_timestamp_to_str(timestamp, timestamp_format)
+            return str(
+                self._convert_timestamp_to_str(timestamp, timestamp_format)
+            )
         elif shape.type_name == 'list':
-            converted_value = [
-                self._convert_header_value(shape.member, v)
-                for v in value
-                if v is not None
-            ]
+            if shape.member.type_name == "string":
+                converted_value = [
+                    self._escape_header_list_string(v)
+                    for v in value
+                    if v is not None
+                ]
+            else:
+                converted_value = [
+                    self._convert_header_value(shape.member, v)
+                    for v in value
+                    if v is not None
+                ]
             return ",".join(converted_value)
         elif is_json_value_header(shape):
             # Serialize with no spaces after separators to save space in
             # the header.
             return self._get_base64(json.dumps(value, separators=(',', ':')))
+        elif shape.type_name == 'boolean':
+            return str(value).lower()
+        elif shape.type_name in ['float', 'double']:
+            return str(self._handle_float(value))
+        else:
+            return str(value)
+
+    def _escape_header_list_string(self, value):
+        # Escapes a header list string by wrapping it in double quotes if it contains
+        # a comma or a double quote, and escapes any internal double quotes.
+        if '"' in value or ',' in value:
+            return '"' + value.replace('"', '\\"') + '"'
         else:
             return value
 
@@ -988,12 +1050,7 @@ class RestXMLSerializer(BaseRestSerializer):
     def _serialize_type_structure(self, xmlnode, params, shape, name):
         structure_node = ElementTree.SubElement(xmlnode, name)
 
-        if 'xmlNamespace' in shape.serialization:
-            namespace_metadata = shape.serialization['xmlNamespace']
-            attribute_name = 'xmlns'
-            if namespace_metadata.get('prefix'):
-                attribute_name += ':{}'.format(namespace_metadata['prefix'])
-            structure_node.attrib[attribute_name] = namespace_metadata['uri']
+        self._add_xml_namespace(shape, structure_node)
         for key, value in params.items():
             member_shape = shape.members[key]
             member_name = member_shape.serialization.get('name', key)
@@ -1019,6 +1076,7 @@ class RestXMLSerializer(BaseRestSerializer):
         else:
             element_name = member_shape.serialization.get('name', 'member')
             list_node = ElementTree.SubElement(xmlnode, name)
+        self._add_xml_namespace(shape, list_node)
         for item in params:
             self._serialize(member_shape, item, list_node, element_name)
 
@@ -1031,16 +1089,22 @@ class RestXMLSerializer(BaseRestSerializer):
         #       <value>val1</value>
         #     </entry>
         #  </MyMap>
-        node = ElementTree.SubElement(xmlnode, name)
-        # TODO: handle flattened maps.
+        if not self._is_shape_flattened(shape):
+            node = ElementTree.SubElement(xmlnode, name)
+            self._add_xml_namespace(shape, node)
+
         for key, value in params.items():
-            entry_node = ElementTree.SubElement(node, 'entry')
+            sub_node = (
+                ElementTree.SubElement(xmlnode, name)
+                if self._is_shape_flattened(shape)
+                else ElementTree.SubElement(node, 'entry')
+            )
             key_name = self._get_serialized_name(shape.key, default_name='key')
             val_name = self._get_serialized_name(
                 shape.value, default_name='value'
             )
-            self._serialize(shape.key, key, entry_node, key_name)
-            self._serialize(shape.value, value, entry_node, val_name)
+            self._serialize(shape.key, key, sub_node, key_name)
+            self._serialize(shape.value, value, sub_node, val_name)
 
     def _serialize_type_boolean(self, xmlnode, params, shape, name):
         # For scalar types, the 'params' attr is actually just a scalar
@@ -1052,20 +1116,47 @@ class RestXMLSerializer(BaseRestSerializer):
         else:
             str_value = 'false'
         node.text = str_value
+        self._add_xml_namespace(shape, node)
 
     def _serialize_type_blob(self, xmlnode, params, shape, name):
         node = ElementTree.SubElement(xmlnode, name)
         node.text = self._get_base64(params)
+        self._add_xml_namespace(shape, node)
 
     def _serialize_type_timestamp(self, xmlnode, params, shape, name):
         node = ElementTree.SubElement(xmlnode, name)
-        node.text = self._convert_timestamp_to_str(
-            params, shape.serialization.get('timestampFormat')
+        node.text = str(
+            self._convert_timestamp_to_str(
+                params, shape.serialization.get('timestampFormat')
+            )
         )
+        self._add_xml_namespace(shape, node)
+
+    def _serialize_type_float(self, xmlnode, params, shape, name):
+        node = ElementTree.SubElement(xmlnode, name)
+        node.text = str(self._handle_float(params))
+        self._add_xml_namespace(shape, node)
+
+    def _serialize_type_double(self, xmlnode, params, shape, name):
+        self._serialize_type_float(xmlnode, params, shape, name)
 
     def _default_serialize(self, xmlnode, params, shape, name):
         node = ElementTree.SubElement(xmlnode, name)
         node.text = str(params)
+        self._add_xml_namespace(shape, node)
+
+    def _add_xml_namespace(self, shape, structure_node):
+        if 'xmlNamespace' in shape.serialization:
+            namespace_metadata = shape.serialization['xmlNamespace']
+            attribute_name = 'xmlns'
+            if isinstance(namespace_metadata, dict):
+                if namespace_metadata.get('prefix'):
+                    attribute_name += f":{namespace_metadata['prefix']}"
+                structure_node.attrib[attribute_name] = namespace_metadata[
+                    'uri'
+                ]
+            elif isinstance(namespace_metadata, str):
+                structure_node.attrib[attribute_name] = namespace_metadata
 
 
 class RpcV2CBORSerializer(BaseRpcV2Serializer, CBORSerializer):

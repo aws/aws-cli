@@ -142,6 +142,15 @@ CHECKSUM_HEADER_PATTERN = re.compile(
     flags=re.IGNORECASE,
 )
 
+PRIORITY_ORDERED_SUPPORTED_PROTOCOLS = (
+    'json',
+    'rest-json',
+    'rest-xml',
+    'smithy-rpc-v2-cbor',
+    'query',
+    'ec2',
+)
+
 
 def ensure_boolean(val):
     """Ensures a boolean value if a string or boolean is provided

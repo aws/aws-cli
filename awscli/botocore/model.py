@@ -20,8 +20,14 @@ from botocore.compat import OrderedDict
 from botocore.exceptions import (
     MissingServiceIdError,
     UndefinedModelAttributeError,
+    UnsupportedServiceProtocolsError,
 )
-from botocore.utils import CachedProperty, hyphenize_service_id, instance_cache
+from botocore.utils import (
+    PRIORITY_ORDERED_SUPPORTED_PROTOCOLS,
+    CachedProperty,
+    hyphenize_service_id,
+    instance_cache,
+)
 
 NOT_SET = object()
 
@@ -423,6 +429,24 @@ class ServiceModel:
     @CachedProperty
     def protocols(self):
         return self._get_metadata_property('protocols')
+
+    @CachedProperty
+    def resolved_protocol(self):
+        # We need to ensure `protocols` exists in the metadata before attempting to
+        # access it directly since referencing service_model.protocols directly will
+        # raise an UndefinedModelAttributeError if protocols is not defined
+        if self.metadata.get('protocols'):
+            for protocol in PRIORITY_ORDERED_SUPPORTED_PROTOCOLS:
+                if protocol in self.protocols:
+                    return protocol
+            raise UnsupportedServiceProtocolsError(
+                botocore_supported_protocols=PRIORITY_ORDERED_SUPPORTED_PROTOCOLS,
+                service_supported_protocols=self.protocols,
+                service=self.service_name,
+            )
+        # If a service does not have a `protocols` trait, fall back to the legacy
+        # `protocol` trait
+        return self.protocol
 
     @CachedProperty
     def endpoint_prefix(self):

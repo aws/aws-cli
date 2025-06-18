@@ -14,7 +14,7 @@ Output::
                 "Domain": "example.com",
                 "ResourceType": "distribution-tenant",
                 "ResourceId": "***************ohWzv1b9It8J1AB",
-                "AccountId": "******789012"
+                "AccountId": "123456789012"
             }
         ]
     }

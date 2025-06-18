@@ -1,6 +1,6 @@
 **To create a CloudFront distribution tenant**
 
-The following ``create-distribution-tenant`` example creates a CloudFront distribution tenant that specifies customizations to disable WAF, add geo-restrictions, and use another certificate::
+The following ``create-distribution-tenant`` example creates a CloudFront distribution tenant that specifies customizations to disable WAF, add geo-restrictions, and use another certificate. ::
 
     aws cloudfront create-distribution-tenant \
         --cli-input-json file://tenant.json

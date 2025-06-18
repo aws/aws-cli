@@ -1,6 +1,6 @@
 **To update a domain association**
 
-The following ``update-domain-association`` example updates a domain association for a distribution tenant. ::
+The following ``update-domain-association`` example updates a domain association for a distribution tenant with ETag ``E23ZP02F085ABC``. ::
 
     aws cloudfront update-domain-association \
         --domain example.com \

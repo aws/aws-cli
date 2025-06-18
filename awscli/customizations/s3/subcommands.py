@@ -543,9 +543,7 @@ PROGRESS_MULTILINE = {
     'name': 'progress-multiline',
     'dest': 'progress_multiline',
     'action': 'store_true',
-    'help_text': (
-        'Show progress on multiple lines.'
-    ),
+    'help_text': ('Show progress on multiple lines.'),
 }
 
 
@@ -738,7 +736,7 @@ class ListCommand(S3Command):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(ListCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
         self._empty_result = False
         self._at_first_page = True
         self._size_accumulator = 0
@@ -881,7 +879,7 @@ class ListCommand(S3Command):
             str(last_mod.minute).zfill(2),
             str(last_mod.second).zfill(2),
         )
-        last_mod_str = "%s-%s-%s %s:%s:%s" % last_mod_tup
+        last_mod_str = "%s-%s-%s %s:%s:%s" % last_mod_tup  # noqa: UP031
         return last_mod_str.ljust(19, ' ')
 
     def _make_size_str(self, size):
@@ -923,7 +921,7 @@ class WebsiteCommand(S3Command):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(WebsiteCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
         bucket = self._get_bucket_name(parsed_args.paths[0])
         website_configuration = self._build_website_configuration(parsed_args)
         self.client.put_bucket_website(
@@ -981,7 +979,7 @@ class PresignCommand(S3Command):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(PresignCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
         path = parsed_args.path
         if path.startswith('s3://'):
             path = path[5:]
@@ -998,7 +996,7 @@ class PresignCommand(S3Command):
 
 class S3TransferCommand(S3Command):
     def _run_main(self, parsed_args, parsed_globals):
-        super(S3TransferCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
         register_feature_id('S3_TRANSFER')
         self._convert_path_args(parsed_args)
         params = self._get_params(parsed_args, parsed_globals, self._session)
@@ -1161,11 +1159,11 @@ class MbCommand(S3Command):
     ARG_TABLE = [{'name': 'path', 'positional_arg': True, 'synopsis': USAGE}]
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(MbCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
 
         if not parsed_args.path.startswith('s3://'):
             raise ParamValidationError(
-                "%s\nError: Invalid argument type" % self.USAGE
+                f"{self.USAGE}\nError: Invalid argument type"
             )
         bucket, _ = split_s3_bucket_key(parsed_args.path)
 
@@ -1182,11 +1180,11 @@ class MbCommand(S3Command):
         # TODO: Consolidate how we handle return codes and errors
         try:
             self.client.create_bucket(**params)
-            uni_print("make_bucket: %s\n" % bucket)
+            uni_print(f"make_bucket: {bucket}\n")
             return 0
         except Exception as e:
             uni_print(
-                "make_bucket failed: %s %s\n" % (parsed_args.path, e),
+                f"make_bucket failed: {parsed_args.path} {e}\n",
                 sys.stderr,
             )
             return 1
@@ -1208,18 +1206,18 @@ class RbCommand(S3Command):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(RbCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
 
         if not parsed_args.path.startswith('s3://'):
             raise ParamValidationError(
-                "%s\nError: Invalid argument type" % self.USAGE
+                f"{self.USAGE}\nError: Invalid argument type"
             )
         bucket, key = split_s3_bucket_key(parsed_args.path)
 
         if key:
             raise ParamValidationError(
                 'Please specify a valid bucket name only. '
-                'E.g. s3://%s' % bucket
+                f'E.g. s3://{bucket}'
             )
 
         if parsed_args.force:
@@ -1227,11 +1225,11 @@ class RbCommand(S3Command):
 
         try:
             self.client.delete_bucket(Bucket=bucket)
-            uni_print("remove_bucket: %s\n" % bucket)
+            uni_print(f"remove_bucket: {bucket}\n")
             return 0
         except Exception as e:
             uni_print(
-                "remove_bucket failed: %s %s\n" % (parsed_args.path, e),
+                f"remove_bucket failed: {parsed_args.path} {e}\n",
                 sys.stderr,
             )
             return 1
@@ -1637,7 +1635,7 @@ class CommandParameters:
         if 'locals3' == params['paths_type'] and not params['is_stream']:
             if not os.path.exists(params['src']):
                 raise RuntimeError(
-                    'The user-provided path %s does not exist.' % params['src']
+                    f'The user-provided path {params['src']} does not exist.'
                 )
         # If the operation is downloading to a directory that does not exist,
         # create the directories so no warnings are thrown during the syncing
@@ -1764,7 +1762,7 @@ class CommandParameters:
             'locallocal': [],
         }
         paths_type = ''
-        usage = "usage: aws s3 %s %s" % (self.cmd, self.usage)
+        usage = f"usage: aws s3 {self.cmd} {self.usage}"
         for i in range(len(paths)):
             if paths[i].startswith('s3://'):
                 paths_type = paths_type + 's3'
@@ -1774,7 +1772,7 @@ class CommandParameters:
             self.parameters['paths_type'] = paths_type
         else:
             raise ParamValidationError(
-                "%s\nError: Invalid argument type" % usage
+                f"{usage}\nError: Invalid argument type"
             )
 
     def add_region(self, parsed_globals):
@@ -1814,14 +1812,14 @@ class CommandParameters:
         if self.parameters.get(sse_c_type):
             if not self.parameters.get(sse_c_key_type):
                 raise ParamValidationError(
-                    'If %s is specified, %s must be specified '
-                    'as well.' % (sse_c_type_param, sse_c_key_type_param)
+                    f'If {sse_c_type_param} is specified, {sse_c_key_type_param} must be specified '
+                    'as well.'
                 )
         if self.parameters.get(sse_c_key_type):
             if not self.parameters.get(sse_c_type):
                 raise ParamValidationError(
-                    'If %s is specified, %s must be specified '
-                    'as well.' % (sse_c_key_type_param, sse_c_type_param)
+                    f'If {sse_c_key_type_param} is specified, {sse_c_type_param} must be specified '
+                    'as well.'
                 )
 
     def _validate_sse_c_copy_source_for_paths(self):

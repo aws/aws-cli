@@ -1,6 +1,6 @@
 **To disassociate a web ACL from a CloudFront distribution**
 
-The following ``disassociate-distribution-web-acl`` example removes the association between a web ACL and a CloudFront distribution. ::
+The following ``disassociate-distribution-web-acl`` example removes the association between a web ACL and a CloudFront distribution with ETag ``E13V1IB3VIYABC``. ::
 
     aws cloudfront disassociate-distribution-web-acl \
         --id E1XNX8R2GOAABC \

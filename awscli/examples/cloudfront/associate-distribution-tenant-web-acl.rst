@@ -1,6 +1,6 @@
 **To associate a web ACL with a CloudFront distribution tenant**
 
-The following ``associate-distribution-tenant-web-acl`` example associates a web ACL with a CloudFront distribution. ::
+The following ``associate-distribution-tenant-web-acl`` example associates a web ACL with a CloudFront distribution with ETag ``E13V1IB3VIYABC``. ::
 
     aws cloudfront associate-distribution-tenant-web-acl \
         --id dt_2wjDZi3hD1ivOXf6rpZJO1AB \

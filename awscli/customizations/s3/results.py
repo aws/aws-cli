@@ -316,7 +316,7 @@ class ResultPrinter(BaseResultHandler):
     SRC_TRANSFER_LOCATION_FORMAT = '{src}'
 
     def __init__(
-        self, result_recorder, out_file=None, error_file=None, frequency=0
+        self, result_recorder, out_file=None, error_file=None, frequency=0, oneline=True
     ):
         """Prints status of ongoing transfer
 
@@ -352,19 +352,30 @@ class ResultPrinter(BaseResultHandler):
             FinalTotalSubmissionsResult: self._clear_progress_if_no_more_expected_transfers,
         }
         self._now = time.time()
+        self._oneline = oneline
 
     def __call__(self, result):
         """Print the progress of the ongoing transfer based on a result"""
-        if (
-            self._first
-            or (self._frequency == 0)
-            or (time.time() - self._now >= self._frequency)
-        ):
-            self._result_handler_map.get(type(result), self._print_noop)(
-                result=result
+        result_handler = self._result_handler_map.get(type(result), self._print_noop)
+        if type(result) is ProgressResult:                
+            result_handler = self._override_progress_result_handler(
+                result, result_handler
             )
+        result_handler(result=result)
+
+    def _override_progress_result_handler(self, result, result_handler):
+        if (
+            type(result) in [ProgressResult]
+            and (
+                self._first
+                or (self._frequency == 0)
+                or (time.time() - self._now >= self._frequency)
+            )
+        ):
             self._now = time.time()
             self._first = False
+            return result_handler
+        return self._print_noop
 
     def _print_noop(self, **kwargs):
         # If the result does not have a handler, then do nothing with it.
@@ -475,15 +486,19 @@ class ResultPrinter(BaseResultHandler):
         if not self._result_recorder.expected_totals_are_final():
             progress_statement += self._STILL_CALCULATING_TOTALS
 
-        # Make sure that it overrides any previous progress bar.
-        progress_statement = self._adjust_statement_padding(
-            progress_statement, ending_char='\r'
-        )
-        # We do not want to include the carriage return in this calculation
-        # as progress length is used for determining whitespace padding.
-        # So we subtract one off of the length.
-        self._progress_length = len(progress_statement) - 1
-
+        if self._oneline:
+            # Make sure that it overrides any previous progress bar.
+            progress_statement = self._adjust_statement_padding(
+                progress_statement, ending_char='\r'
+            )
+            # We do not want to include the carriage return in this calculation
+            # as progress length is used for determining whitespace padding.
+            # So we subtract one off of the length.
+            self._progress_length = len(progress_statement) - 1
+        else:
+            progress_statement = self._adjust_statement_padding(
+                progress_statement, ending_char='\n'
+            )
         # Print the progress out.
         self._print_to_out_file(progress_statement)
 

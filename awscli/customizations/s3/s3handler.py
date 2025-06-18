@@ -107,6 +107,7 @@ class S3TransferHandlerFactory:
             result_printer = ResultPrinter(
                 result_recorder,
                 frequency=self._cli_params.get('progress_frequency'),
+                oneline=not self._cli_params.get('progress_multiline'),
             )
         result_processor_handlers.append(result_printer)
 

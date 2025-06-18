@@ -539,6 +539,15 @@ PROGRESS_FREQUENCY = {
     ),
 }
 
+PROGRESS_MULTILINE = {
+    'name': 'progress-multiline',
+    'dest': 'progress_multiline',
+    'action': 'store_true',
+    'help_text': (
+        'Show progress on multiple lines.'
+    ),
+}
+
 
 EXPECTED_SIZE = {
     'name': 'expected-size',
@@ -683,6 +692,7 @@ TRANSFER_ARGS = [
     ONLY_SHOW_ERRORS,
     NO_PROGRESS,
     PROGRESS_FREQUENCY,
+    PROGRESS_MULTILINE,
     PAGE_SIZE,
     IGNORE_GLACIER_WARNINGS,
     FORCE_GLACIER_TRANSFER,

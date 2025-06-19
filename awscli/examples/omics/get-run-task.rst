@@ -20,4 +20,4 @@ Output::
         "taskId": "1234567"
     }
 
-For more information, see `Omics Workflows <https://docs.aws.amazon.com/omics/latest/dev/workflows.html>`__ in the *Amazon Omics Developer Guide*.
+For more information, see `Task lifecycle in a HealthOmics run <https://docs.aws.amazon.com/omics/latest/dev/workflow-run-tasks.html>`__ in the *AWS HealthOmics User Guide*.

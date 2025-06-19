@@ -43,4 +43,4 @@ Output::
         ]
     }
 
-For more information, see `Omics Workflows <https://docs.aws.amazon.com/omics/latest/dev/workflows.html>`__ in the *Amazon Omics Developer Guide*.
+For more information, see `Run lifecycle in a workflow <https://docs.aws.amazon.com/omics/latest/dev/monitoring-runs.html>`__ in the *AWS HealthOmics User Guide*.

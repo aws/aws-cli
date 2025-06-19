@@ -132,6 +132,7 @@ def test_all_lock_files_are_generated_by_expected_python_version():
             content = f.read()
             assert f"Python {CANNONICAL_PYTHON_VERSION}" in content
 
+
 @pytest.mark.skipif(
     not IS_CANNONICAL_PYTHON_VERSION,
     reason=SKIP_REASON,

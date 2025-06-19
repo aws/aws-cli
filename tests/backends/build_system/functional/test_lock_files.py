@@ -144,7 +144,7 @@ def test_all_lock_files_are_generated_by_expected_python_version():
         "platforms we need to test are mac and Windows."
     ),
 )
-@pytest.mark.xfail(reason="pip-tools compatibility issue needs to be resolved:,"
+@pytest.mark.xfail(reason="pip-tools compatibility issue needs to be resolved:"
                           " https://github.com/jazzband/pip-tools/issues/2176")
 def test_lock_files_are_up_to_date(tmpdir):
     reqs_dir = tmpdir / "requirements"

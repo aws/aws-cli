@@ -7204,6 +7204,208 @@
       "min":0
     },
     "CertifyForMarketplace":{"type":"boolean"},
+    "CfnCreateTemplateProvider":{
+      "type":"structure",
+      "required":[
+        "TemplateName",
+        "TemplateURL"
+      ],
+      "members":{
+        "TemplateName":{
+          "shape":"CfnTemplateName",
+          "documentation":"<p> A unique identifier for the template within the project. </p>"
+        },
+        "TemplateURL":{
+          "shape":"CfnTemplateURL",
+          "documentation":"<p> The Amazon S3 URL of the CloudFormation template. </p>"
+        },
+        "RoleARN":{
+          "shape":"RoleArn",
+          "documentation":"<p> The IAM role that CloudFormation assumes when creating the stack. </p>"
+        },
+        "Parameters":{
+          "shape":"CfnStackCreateParameters",
+          "documentation":"<p> An array of CloudFormation stack parameters.</p>"
+        }
+      },
+      "documentation":"<p> The CloudFormation template provider configuration for creating infrastructure resources. </p>"
+    },
+    "CfnStackCreateParameter":{
+      "type":"structure",
+      "required":["Key"],
+      "members":{
+        "Key":{
+          "shape":"CfnStackParameterKey",
+          "documentation":"<p> The name of the CloudFormation parameter. </p>"
+        },
+        "Value":{
+          "shape":"CfnStackParameterValue",
+          "documentation":"<p> The value of the CloudFormation parameter. </p>"
+        }
+      },
+      "documentation":"<p> A key-value pair that represents a parameter for the CloudFormation stack. </p>"
+    },
+    "CfnStackCreateParameters":{
+      "type":"list",
+      "member":{"shape":"CfnStackCreateParameter"},
+      "max":180,
+      "min":0
+    },
+    "CfnStackDetail":{
+      "type":"structure",
+      "required":["StatusMessage"],
+      "members":{
+        "Name":{
+          "shape":"CfnStackName",
+          "documentation":"<p> The name of the CloudFormation stack. </p>"
+        },
+        "Id":{
+          "shape":"CfnStackId",
+          "documentation":"<p> The unique identifier of the CloudFormation stack. </p>"
+        },
+        "StatusMessage":{
+          "shape":"CfnStackStatusMessage",
+          "documentation":"<p> A human-readable message about the stack's current status. </p>"
+        }
+      },
+      "documentation":"<p> Details about the CloudFormation stack. </p>"
+    },
+    "CfnStackId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"(?=.{1,256}$)arn:aws[a-z\\-]*:cloudformation:[a-z0-9\\-]*:[0-9]{12}:stack/[a-zA-Z][a-zA-Z0-9-]{0,127}/.*"
+    },
+    "CfnStackName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z][A-Za-z0-9-]{0,127}"
+    },
+    "CfnStackParameter":{
+      "type":"structure",
+      "required":["Key"],
+      "members":{
+        "Key":{
+          "shape":"CfnStackParameterKey",
+          "documentation":"<p> The name of the CloudFormation parameter. </p>"
+        },
+        "Value":{
+          "shape":"CfnStackParameterValue",
+          "documentation":"<p> The value of the CloudFormation parameter. </p>"
+        }
+      },
+      "documentation":"<p> A key-value pair representing a parameter used in the CloudFormation stack. </p>"
+    },
+    "CfnStackParameterKey":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":".{1,255}"
+    },
+    "CfnStackParameterValue":{
+      "type":"string",
+      "max":4096,
+      "min":0,
+      "pattern":".{0,4096}"
+    },
+    "CfnStackParameters":{
+      "type":"list",
+      "member":{"shape":"CfnStackParameter"},
+      "max":180,
+      "min":0
+    },
+    "CfnStackStatusMessage":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":".{1,4096}"
+    },
+    "CfnStackUpdateParameter":{
+      "type":"structure",
+      "required":["Key"],
+      "members":{
+        "Key":{
+          "shape":"CfnStackParameterKey",
+          "documentation":"<p> The name of the CloudFormation parameter. </p>"
+        },
+        "Value":{
+          "shape":"CfnStackParameterValue",
+          "documentation":"<p> The value of the CloudFormation parameter. </p>"
+        }
+      },
+      "documentation":"<p> A key-value pair representing a parameter used in the CloudFormation stack. </p>"
+    },
+    "CfnStackUpdateParameters":{
+      "type":"list",
+      "member":{"shape":"CfnStackUpdateParameter"},
+      "max":180,
+      "min":0
+    },
+    "CfnTemplateName":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"(?=.{1,32}$)[a-zA-Z0-9](-*[a-zA-Z0-9])*"
+    },
+    "CfnTemplateProviderDetail":{
+      "type":"structure",
+      "required":[
+        "TemplateName",
+        "TemplateURL"
+      ],
+      "members":{
+        "TemplateName":{
+          "shape":"CfnTemplateName",
+          "documentation":"<p> The unique identifier of the template within the project. </p>"
+        },
+        "TemplateURL":{
+          "shape":"CfnTemplateURL",
+          "documentation":"<p> The Amazon S3 URL of the CloudFormation template. </p>"
+        },
+        "RoleARN":{
+          "shape":"RoleArn",
+          "documentation":"<p> The IAM role used by CloudFormation to create the stack. </p>"
+        },
+        "Parameters":{
+          "shape":"CfnStackParameters",
+          "documentation":"<p> An array of CloudFormation stack parameters.</p>"
+        },
+        "StackDetail":{
+          "shape":"CfnStackDetail",
+          "documentation":"<p> Information about the CloudFormation stack created by the template provider. </p>"
+        }
+      },
+      "documentation":"<p> Details about a CloudFormation template provider configuration and associated provisioning information. </p>"
+    },
+    "CfnTemplateURL":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"(?=.{1,1024}$)(https)://([^/]+)/(.+)"
+    },
+    "CfnUpdateTemplateProvider":{
+      "type":"structure",
+      "required":[
+        "TemplateName",
+        "TemplateURL"
+      ],
+      "members":{
+        "TemplateName":{
+          "shape":"CfnTemplateName",
+          "documentation":"<p> The unique identifier of the template to update within the project. </p>"
+        },
+        "TemplateURL":{
+          "shape":"CfnTemplateURL",
+          "documentation":"<p> The Amazon S3 URL of the CloudFormation template.</p>"
+        },
+        "Parameters":{
+          "shape":"CfnStackUpdateParameters",
+          "documentation":"<p> An array of CloudFormation stack parameters. </p>"
+        }
+      },
+      "documentation":"<p> Contains configuration details for updating an existing CloudFormation template provider in the project. </p>"
+    },
     "Channel":{
       "type":"structure",
       "required":[
@@ -11772,6 +11974,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An array of key-value pairs that you want to use to organize and track your Amazon Web Services resource costs. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
+        },
+        "TemplateProviders":{
+          "shape":"CreateTemplateProviderList",
+          "documentation":"<p> An array of template provider configurations for creating infrastructure resources for the project. </p>"
         }
       }
     },
@@ -11872,6 +12078,22 @@
           "documentation":"<p>The ARN of your created Lifecycle Configuration.</p>"
         }
       }
+    },
+    "CreateTemplateProvider":{
+      "type":"structure",
+      "members":{
+        "CfnTemplateProvider":{
+          "shape":"CfnCreateTemplateProvider",
+          "documentation":"<p> The CloudFormation template provider configuration for creating infrastructure resources. </p>"
+        }
+      },
+      "documentation":"<p> Contains configuration details for a template provider. Only one type of template provider can be specified. </p>"
+    },
+    "CreateTemplateProviderList":{
+      "type":"list",
+      "member":{"shape":"CreateTemplateProvider"},
+      "max":1,
+      "min":1
     },
     "CreateTrainingJobRequest":{
       "type":"structure",
@@ -17842,6 +18064,10 @@
         "ProjectStatus":{
           "shape":"ProjectStatus",
           "documentation":"<p>The status of the project.</p>"
+        },
+        "TemplateProviderDetails":{
+          "shape":"TemplateProviderDetailList",
+          "documentation":"<p> An array of template providers associated with the project. </p>"
         },
         "CreatedBy":{"shape":"UserContext"},
         "CreationTime":{
@@ -35083,6 +35309,10 @@
           "shape":"Timestamp",
           "documentation":"<p>A timestamp specifying when the project was created.</p>"
         },
+        "TemplateProviderDetails":{
+          "shape":"TemplateProviderDetailList",
+          "documentation":"<p> An array of template providers associated with the project. </p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An array of key-value pairs. You can use tags to categorize your Amazon Web Services resources in different ways, for example, by purpose, owner, or environment. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a>.</p>"
@@ -36451,7 +36681,7 @@
       "members":{
         "InstanceType":{
           "shape":"TrainingInstanceType",
-          "documentation":"<p>The ML compute instance type. </p> <note> <p>SageMaker Training on Amazon Elastic Compute Cloud (EC2) P4de instances is in preview release starting December 9th, 2022. </p> <p> <a href=\"http://aws.amazon.com/ec2/instance-types/p4/\">Amazon EC2 P4de instances</a> (currently in preview) are powered by 8 NVIDIA A100 GPUs with 80GB high-performance HBM2e GPU memory, which accelerate the speed of training ML models that need to be trained on large datasets of high-resolution data. In this preview release, Amazon SageMaker supports ML training jobs on P4de instances (<code>ml.p4de.24xlarge</code>) to reduce model training time. The <code>ml.p4de.24xlarge</code> instances are available in the following Amazon Web Services Regions. </p> <ul> <li> <p>US East (N. Virginia) (us-east-1)</p> </li> <li> <p>US West (Oregon) (us-west-2)</p> </li> </ul> <p>To request quota limit increase and start using P4de instances, contact the SageMaker Training service team through your account team.</p> </note>"
+          "documentation":"<p>The ML compute instance type. </p>"
         },
         "InstanceCount":{
           "shape":"TrainingInstanceCount",
@@ -38998,6 +39228,22 @@
     "TemplateContentSha256":{
       "type":"string",
       "max":128000,
+      "min":1
+    },
+    "TemplateProviderDetail":{
+      "type":"structure",
+      "members":{
+        "CfnTemplateProviderDetail":{
+          "shape":"CfnTemplateProviderDetail",
+          "documentation":"<p> Details about a CloudFormation template provider configuration and associated provisioning information. </p>"
+        }
+      },
+      "documentation":"<p> Details about a template provider configuration and associated provisioning information. </p>"
+    },
+    "TemplateProviderDetailList":{
+      "type":"list",
+      "member":{"shape":"TemplateProviderDetail"},
+      "max":1,
       "min":1
     },
     "TemplateUrl":{
@@ -42694,6 +42940,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An array of key-value pairs. You can use tags to categorize your Amazon Web Services resources in different ways, for example, by purpose, owner, or environment. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a>. In addition, the project must have tag update constraints set in order to include this parameter in the request. For more information, see <a href=\"https://docs.aws.amazon.com/servicecatalog/latest/adminguide/constraints-resourceupdate.html\">Amazon Web Services Service Catalog Tag Update Constraints</a>.</p>"
+        },
+        "TemplateProvidersToUpdate":{
+          "shape":"UpdateTemplateProviderList",
+          "documentation":"<p> The template providers to update in the project. </p>"
         }
       }
     },
@@ -42740,6 +42990,22 @@
           "documentation":"<p>The space's Amazon Resource Name (ARN).</p>"
         }
       }
+    },
+    "UpdateTemplateProvider":{
+      "type":"structure",
+      "members":{
+        "CfnTemplateProvider":{
+          "shape":"CfnUpdateTemplateProvider",
+          "documentation":"<p> The CloudFormation template provider configuration to update. </p>"
+        }
+      },
+      "documentation":"<p> Contains configuration details for updating an existing template provider in the project. </p>"
+    },
+    "UpdateTemplateProviderList":{
+      "type":"list",
+      "member":{"shape":"UpdateTemplateProvider"},
+      "max":1,
+      "min":1
     },
     "UpdateTrainingJobRequest":{
       "type":"structure",

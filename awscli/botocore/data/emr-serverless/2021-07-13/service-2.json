@@ -375,6 +375,10 @@
         "schedulerConfiguration":{
           "shape":"SchedulerConfiguration",
           "documentation":"<p>The scheduler configuration for batch and streaming jobs running on this application. Supported with release labels emr-7.0.0 and above.</p>"
+        },
+        "identityCenterConfiguration":{
+          "shape":"IdentityCenterConfiguration",
+          "documentation":"<p>The IAM Identity Center configuration applied to enable trusted identity propagation. </p>"
         }
       },
       "documentation":"<p>Information about an application. Amazon EMR Serverless uses applications to run jobs.</p>"
@@ -749,6 +753,10 @@
         "schedulerConfiguration":{
           "shape":"SchedulerConfiguration",
           "documentation":"<p>The scheduler configuration for batch and streaming jobs running on this application. Supported with release labels emr-7.0.0 and above.</p>"
+        },
+        "identityCenterConfiguration":{
+          "shape":"IdentityCenterConfigurationInput",
+          "documentation":"<p>The IAM Identity Center Configuration accepts the Identity Center instance parameter required to enable trusted identity propagation. This configuration allows identity propagation between integrated services and the Identity Center instance.</p>"
         }
       }
     },
@@ -972,6 +980,40 @@
       "max":2048,
       "min":20,
       "pattern":"arn:(aws[a-zA-Z0-9-]*):iam::([0-9]{12}):(role((\\u002F)|(\\u002F[\\u0021-\\u007F]+\\u002F))[\\w+=,.@-]+)"
+    },
+    "IdentityCenterApplicationArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z0-9-]*):sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}"
+    },
+    "IdentityCenterConfiguration":{
+      "type":"structure",
+      "members":{
+        "identityCenterInstanceArn":{
+          "shape":"IdentityCenterInstanceArn",
+          "documentation":"<p>The ARN of the IAM Identity Center instance.</p>"
+        },
+        "identityCenterApplicationArn":{
+          "shape":"IdentityCenterApplicationArn",
+          "documentation":"<p>The ARN of the EMR Serverless created IAM Identity Center Application that provides trusted-identity propagation.</p>"
+        }
+      },
+      "documentation":"<p>The IAM Identity Center Configuration that includes the Identify Center instance and application ARNs that provide trusted-identity propagation.</p>"
+    },
+    "IdentityCenterConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "identityCenterInstanceArn":{
+          "shape":"IdentityCenterInstanceArn",
+          "documentation":"<p>The ARN of the IAM Identity Center instance.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the IAM Identity Center configuration used to enable or disable trusted identity propagation. When provided, this configuration determines how the application interacts with IAM Identity Center for user authentication and access control.</p>"
+    },
+    "IdentityCenterInstanceArn":{
+      "type":"string",
+      "max":1024,
+      "min":10,
+      "pattern":"arn:(aws[a-zA-Z0-9-]*):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}"
     },
     "ImageConfiguration":{
       "type":"structure",
@@ -2226,6 +2268,10 @@
         "schedulerConfiguration":{
           "shape":"SchedulerConfiguration",
           "documentation":"<p>The scheduler configuration for batch and streaming jobs running on this application. Supported with release labels emr-7.0.0 and above.</p>"
+        },
+        "identityCenterConfiguration":{
+          "shape":"IdentityCenterConfigurationInput",
+          "documentation":"<p>Specifies the IAM Identity Center configuration used to enable or disable trusted identity propagation. When provided, this configuration determines how the application interacts with IAM Identity Center for user authentication and access control.</p>"
         }
       }
     },

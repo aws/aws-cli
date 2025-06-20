@@ -8788,7 +8788,8 @@
           "shape":"HashString",
           "documentation":"<p>Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.</p>"
         }
-      }
+      },
+      "documentation":"<p>A request to create a data quality ruleset.</p>"
     },
     "CreateDataQualityRulesetResponse":{
       "type":"structure",
@@ -10343,6 +10344,36 @@
       "type":"list",
       "member":{"shape":"DataOperation"}
     },
+    "DataQualityAggregatedMetrics":{
+      "type":"structure",
+      "members":{
+        "TotalRowsProcessed":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The total number of rows that were processed during the data quality evaluation.</p>"
+        },
+        "TotalRowsPassed":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The total number of rows that passed all applicable data quality rules.</p>"
+        },
+        "TotalRowsFailed":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The total number of rows that failed one or more data quality rules.</p>"
+        },
+        "TotalRulesProcessed":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The total number of data quality rules that were evaluated.</p>"
+        },
+        "TotalRulesPassed":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The total number of data quality rules that passed their evaluation criteria.</p>"
+        },
+        "TotalRulesFailed":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The total number of data quality rules that failed their evaluation criteria.</p>"
+        }
+      },
+      "documentation":"<p>A summary of metrics showing the total counts of processed rows and rules, including their pass/fail statistics based on row-level results.</p>"
+    },
     "DataQualityAnalyzerResult":{
       "type":"structure",
       "members":{
@@ -10525,6 +10556,10 @@
         "Observations":{
           "shape":"DataQualityObservations",
           "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the observations generated after evaluating the rules and analyzers. </p>"
+        },
+        "AggregatedMetrics":{
+          "shape":"DataQualityAggregatedMetrics",
+          "documentation":"<p> A summary of <code>DataQualityAggregatedMetrics</code> objects showing the total counts of processed rows and rules, including their pass/fail statistics based on row-level results. </p>"
         }
       },
       "documentation":"<p>Describes a data quality result.</p>"
@@ -10672,6 +10707,10 @@
         "EvaluatedRule":{
           "shape":"DataQualityRuleResultDescription",
           "documentation":"<p>The evaluated rule.</p>"
+        },
+        "RuleMetrics":{
+          "shape":"RuleMetricsMap",
+          "documentation":"<p>A map containing metrics associated with the evaluation of the rule based on row-level results. </p>"
         }
       },
       "documentation":"<p>Describes the result of the evaluation of a data quality rule.</p>"
@@ -14043,8 +14082,13 @@
         "Observations":{
           "shape":"DataQualityObservations",
           "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the observations generated after evaluating the rules and analyzers. </p>"
+        },
+        "AggregatedMetrics":{
+          "shape":"DataQualityAggregatedMetrics",
+          "documentation":"<p> A summary of <code>DataQualityAggregatedMetrics</code> objects showing the total counts of processed rows and rules, including their pass/fail statistics based on row-level results. </p>"
         }
-      }
+      },
+      "documentation":"<p>The response for the data quality result.</p>"
     },
     "GetDataQualityRuleRecommendationRunRequest":{
       "type":"structure",
@@ -14115,7 +14159,8 @@
           "shape":"NameString",
           "documentation":"<p>The name of the security configuration created with the data quality encryption option.</p>"
         }
-      }
+      },
+      "documentation":"<p>The response for the Data Quality rule recommendation run.</p>"
     },
     "GetDataQualityRulesetEvaluationRunRequest":{
       "type":"structure",
@@ -14237,7 +14282,8 @@
           "shape":"NameString",
           "documentation":"<p>The name of the security configuration created with the data quality encryption option.</p>"
         }
-      }
+      },
+      "documentation":"<p>Returns the data quality ruleset response.</p>"
     },
     "GetDatabaseRequest":{
       "type":"structure",
@@ -21632,6 +21678,12 @@
     },
     "RoleString":{"type":"string"},
     "RowTag":{"type":"string"},
+    "RuleMetricsMap":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NullableDouble"},
+      "sensitive":true
+    },
     "RulesetNames":{
       "type":"list",
       "member":{"shape":"NameString"},
@@ -23838,7 +23890,8 @@
           "shape":"HashString",
           "documentation":"<p>Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.</p>"
         }
-      }
+      },
+      "documentation":"<p>The request of the Data Quality rule recommendation request.</p>"
     },
     "StartDataQualityRuleRecommendationRunResponse":{
       "type":"structure",

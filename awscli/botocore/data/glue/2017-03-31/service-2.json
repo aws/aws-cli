@@ -7349,6 +7349,16 @@
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
+    "CompactionConfiguration":{
+      "type":"structure",
+      "members":{
+        "icebergConfiguration":{
+          "shape":"IcebergCompactionConfiguration",
+          "documentation":"<p>The configuration for an Iceberg compaction optimizer.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a compaction optimizer. This configuration defines how data files in your table will be compacted to improve query performance and reduce storage costs.</p>"
+    },
     "CompactionMetrics":{
       "type":"structure",
       "members":{
@@ -7358,6 +7368,14 @@
         }
       },
       "documentation":"<p>A structure that contains compaction metrics for the optimizer run.</p>"
+    },
+    "CompactionStrategy":{
+      "type":"string",
+      "enum":[
+        "binpack",
+        "sort",
+        "z-order"
+      ]
     },
     "Comparator":{
       "type":"string",
@@ -16545,6 +16563,16 @@
       "type":"string",
       "pattern":"^arn:aws(-(cn|us-gov|iso(-[bef])?))?:iam::[0-9]{12}:role/.+"
     },
+    "IcebergCompactionConfiguration":{
+      "type":"structure",
+      "members":{
+        "strategy":{
+          "shape":"CompactionStrategy",
+          "documentation":"<p>The strategy to use for compaction. Valid values are:</p> <ul> <li> <p> <code>binpack</code>: Combines small files into larger files, typically targeting sizes over 100MB, while applying any pending deletes. This is the recommended compaction strategy for most use cases. </p> </li> <li> <p> <code>sort</code>: Organizes data based on specified columns which are sorted hierarchically during compaction, improving query performance for filtered operations. This strategy is recommended when your queries frequently filter on specific columns. To use this strategy, you must first define a sort order in your Iceberg table properties using the <code>sort_order</code> table property.</p> </li> <li> <p> <code>z-order</code>: Optimizes data organization by blending multiple attributes into a single scalar value that can be used for sorting, allowing efficient querying across multiple dimensions. This strategy is recommended when you need to query data across multiple dimensions simultaneously. To use this strategy, you must first define a sort order in your Iceberg table properties using the <code>sort_order</code> table property. </p> </li> </ul> <p>If an input is not provided, the default value 'binpack' will be used.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an Iceberg compaction optimizer. This configuration defines parameters for optimizing the layout of data files in Iceberg tables.</p>"
+    },
     "IcebergCompactionMetrics":{
       "type":"structure",
       "members":{
@@ -24936,6 +24964,10 @@
           "shape":"TableOptimizerVpcConfiguration",
           "documentation":"<p>A <code>TableOptimizerVpcConfiguration</code> object representing the VPC configuration for a table optimizer.</p> <p>This configuration is necessary to perform optimization on tables that are in a customer VPC.</p>"
         },
+        "compactionConfiguration":{
+          "shape":"CompactionConfiguration",
+          "documentation":"<p>The configuration for a compaction optimizer. This configuration defines how data files in your table will be compacted to improve query performance and reduce storage costs.</p>"
+        },
         "retentionConfiguration":{
           "shape":"RetentionConfiguration",
           "documentation":"<p>The configuration for a snapshot retention optimizer.</p>"
@@ -24984,6 +25016,10 @@
         "compactionMetrics":{
           "shape":"CompactionMetrics",
           "documentation":"<p>A <code>CompactionMetrics</code> object containing metrics for the optimizer run.</p>"
+        },
+        "compactionStrategy":{
+          "shape":"CompactionStrategy",
+          "documentation":"<p>The strategy used for the compaction run. Indicates which algorithm was applied to determine how files were selected and combined during the compaction process. Valid values are:</p> <ul> <li> <p> <code>binpack</code>: Combines small files into larger files, typically targeting sizes over 100MB, while applying any pending deletes. This is the recommended compaction strategy for most use cases. </p> </li> <li> <p> <code>sort</code>: Organizes data based on specified columns which are sorted hierarchically during compaction, improving query performance for filtered operations. This strategy is recommended when your queries frequently filter on specific columns. To use this strategy, you must first define a sort order in your Iceberg table properties using the <code>sort_order</code> table property.</p> </li> <li> <p> <code>z-order</code>: Optimizes data organization by blending multiple attributes into a single scalar value that can be used for sorting, allowing efficient querying across multiple dimensions. This strategy is recommended when you need to query data across multiple dimensions simultaneously. To use this strategy, you must first define a sort order in your Iceberg table properties using the <code>sort_order</code> table property. </p> </li> </ul>"
         },
         "retentionMetrics":{
           "shape":"RetentionMetrics",

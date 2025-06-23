@@ -23,6 +23,7 @@ from awscli.compat import ensure_text_type, queue
 from awscli.customizations.s3.subscribers import OnDoneFilteredSubscriber
 from awscli.customizations.s3.utils import WarningResult, human_readable_size
 from awscli.customizations.utils import uni_print
+from awscli.customizations.s3.utils import create_warning
 
 LOGGER = logging.getLogger(__name__)
 
@@ -124,6 +125,11 @@ class DoneResultSubscriber(BaseResultSubscriber, OnDoneFilteredSubscriber):
                 error_result_cls = ErrorResult
             self._result_queue.put(error_result_cls(exception=e))
         else:
+            if self._is_precondition_failed(e):
+                error_message = f"as it already exists on {self._dest}"
+                warning = create_warning(self._src, error_message, True)
+                self._result_queue.put(warning)
+                return 
             self._result_queue.put(
                 FailureResult(
                     transfer_type=self._transfer_type,
@@ -132,6 +138,11 @@ class DoneResultSubscriber(BaseResultSubscriber, OnDoneFilteredSubscriber):
                     exception=e,
                 )
             )
+    
+    def _is_precondition_failed(self, exception):
+        """Check if this is a PreconditionFailed error"""
+        return (hasattr(exception, 'response') and 
+            exception.response.get('Error', {}).get('Code') == 'PreconditionFailed')
 
 
 class BaseResultHandler:

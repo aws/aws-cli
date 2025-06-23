@@ -315,7 +315,69 @@ class TestMvCommand(BaseS3TransferCommandTest):
         self.assertEqual(
             self.operations_called[1][1]['ChecksumMode'], 'ENABLED'
         )
+    
+    def test_mv_no_overwrite_flag_when_object_not_exists_on_target(self):
+        """Testing mv when object doesnt exist using no-overwrite"""
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {full_path} s3://bucket --no-overwrite'
+        self.run_cmd(cmdline, expected_rc=0)
+        # Verify putObject was called
+        self.assertEqual(len(self.operations_called),1)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        # Verify the IfNoneMatch condition was set in the request
+        self.assertEqual(self.operations_called[0][1]['IfNoneMatch'], '*')
+        # Verify source file was deleted (move operation)
+        self.assertFalse(os.path.exists(full_path))
+    
+    def test_mv_no_overwrite_flag_when_object_exists_on_target(self):
+        """Testing mv when object already exists using no-overwrite"""
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s %s s3://bucket/foo.txt --no-overwrite' % (self.prefix, full_path)
+        # Set up the response to simulate a PreconditionFailed error
+        self.http_response.status_code = 412
+        self.parsed_responses = [
+            {
+                'Error': {
+                    'Code': 'PreconditionFailed',
+                    'Message': 'At least one of the pre-conditions you specified did not hold'
+                }
+            }
+        ]
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=2)
+        # Verify PutObject was attempted with IfNoneMatch
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['IfNoneMatch'], '*')
+        # Verify source file was not deleted
+        self.assertTrue(os.path.exists(full_path))
 
+    def test_mv_no_overwrite_flag_multipart_upload_when_object_not_exists_on_target(self):
+        """Testing mv multipart upload with no-overwrite flag when object doesn't exist"""
+        # Create a large file that will trigger multipart upload
+        full_path = self.files.create_file('foo.txt', 'a' * 10 * (1024**2))
+        cmdline = '%s %s s3://bucket/foo.txt --no-overwrite' % (self.prefix, full_path)
+        
+        # Set up responses for multipart upload
+        self.parsed_responses = [
+            {'UploadId': 'foo'},  # CreateMultipartUpload response
+            {'ETag': '"foo-1"'},  # UploadPart response
+            {'ETag': '"foo-2"'},  # UploadPart response
+            {}                    # CompleteMultipartUpload response
+        ]
+        
+        self.run_cmd(cmdline, expected_rc=0)
+        
+        # Verify all multipart operations were called
+        self.assertEqual(len(self.operations_called), 4)
+        self.assertEqual(self.operations_called[0][0].name, 'CreateMultipartUpload')
+        self.assertEqual(self.operations_called[1][0].name, 'UploadPart')
+        self.assertEqual(self.operations_called[2][0].name, 'UploadPart')
+        self.assertEqual(self.operations_called[3][0].name, 'CompleteMultipartUpload')
+        
+        # Verify the IfNoneMatch condition was set in the CompleteMultipartUpload request
+        self.assertEqual(self.operations_called[3][1]['IfNoneMatch'], '*')
+        # Verify source file was deleted (successful move operation)
+        self.assertFalse(os.path.exists(full_path))
 
 class TestMvWithCRTClient(BaseCRTTransferClientTest):
     def test_upload_move_using_crt_client(self):

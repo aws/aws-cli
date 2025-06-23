@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.40.41
+=======
+
+* api-change:``glue``: AWS Glue now supports sort and z-order strategy for managed automated compaction for Iceberg tables in addition to binpack.
+* api-change:``s3tables``: S3 Tables now supports sort and z-order compaction strategies for Iceberg tables in addition to binpack.
+* api-change:``workspaces-instances``: Added support for Amazon WorkSpaces Instances API
+
+
 1.40.40
 =======
 

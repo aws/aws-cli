@@ -7349,6 +7349,16 @@
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
+    "CompactionConfiguration":{
+      "type":"structure",
+      "members":{
+        "icebergConfiguration":{
+          "shape":"IcebergCompactionConfiguration",
+          "documentation":"<p>The configuration for an Iceberg compaction optimizer.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a compaction optimizer. This configuration defines how data files in your table will be compacted to improve query performance and reduce storage costs.</p>"
+    },
     "CompactionMetrics":{
       "type":"structure",
       "members":{
@@ -7358,6 +7368,14 @@
         }
       },
       "documentation":"<p>A structure that contains compaction metrics for the optimizer run.</p>"
+    },
+    "CompactionStrategy":{
+      "type":"string",
+      "enum":[
+        "binpack",
+        "sort",
+        "z-order"
+      ]
     },
     "Comparator":{
       "type":"string",
@@ -8788,7 +8806,8 @@
           "shape":"HashString",
           "documentation":"<p>Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.</p>"
         }
-      }
+      },
+      "documentation":"<p>A request to create a data quality ruleset.</p>"
     },
     "CreateDataQualityRulesetResponse":{
       "type":"structure",
@@ -10343,6 +10362,36 @@
       "type":"list",
       "member":{"shape":"DataOperation"}
     },
+    "DataQualityAggregatedMetrics":{
+      "type":"structure",
+      "members":{
+        "TotalRowsProcessed":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The total number of rows that were processed during the data quality evaluation.</p>"
+        },
+        "TotalRowsPassed":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The total number of rows that passed all applicable data quality rules.</p>"
+        },
+        "TotalRowsFailed":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The total number of rows that failed one or more data quality rules.</p>"
+        },
+        "TotalRulesProcessed":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The total number of data quality rules that were evaluated.</p>"
+        },
+        "TotalRulesPassed":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The total number of data quality rules that passed their evaluation criteria.</p>"
+        },
+        "TotalRulesFailed":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The total number of data quality rules that failed their evaluation criteria.</p>"
+        }
+      },
+      "documentation":"<p>A summary of metrics showing the total counts of processed rows and rules, including their pass/fail statistics based on row-level results.</p>"
+    },
     "DataQualityAnalyzerResult":{
       "type":"structure",
       "members":{
@@ -10525,6 +10574,10 @@
         "Observations":{
           "shape":"DataQualityObservations",
           "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the observations generated after evaluating the rules and analyzers. </p>"
+        },
+        "AggregatedMetrics":{
+          "shape":"DataQualityAggregatedMetrics",
+          "documentation":"<p> A summary of <code>DataQualityAggregatedMetrics</code> objects showing the total counts of processed rows and rules, including their pass/fail statistics based on row-level results. </p>"
         }
       },
       "documentation":"<p>Describes a data quality result.</p>"
@@ -10672,6 +10725,10 @@
         "EvaluatedRule":{
           "shape":"DataQualityRuleResultDescription",
           "documentation":"<p>The evaluated rule.</p>"
+        },
+        "RuleMetrics":{
+          "shape":"RuleMetricsMap",
+          "documentation":"<p>A map containing metrics associated with the evaluation of the rule based on row-level results. </p>"
         }
       },
       "documentation":"<p>Describes the result of the evaluation of a data quality rule.</p>"
@@ -14043,8 +14100,13 @@
         "Observations":{
           "shape":"DataQualityObservations",
           "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the observations generated after evaluating the rules and analyzers. </p>"
+        },
+        "AggregatedMetrics":{
+          "shape":"DataQualityAggregatedMetrics",
+          "documentation":"<p> A summary of <code>DataQualityAggregatedMetrics</code> objects showing the total counts of processed rows and rules, including their pass/fail statistics based on row-level results. </p>"
         }
-      }
+      },
+      "documentation":"<p>The response for the data quality result.</p>"
     },
     "GetDataQualityRuleRecommendationRunRequest":{
       "type":"structure",
@@ -14115,7 +14177,8 @@
           "shape":"NameString",
           "documentation":"<p>The name of the security configuration created with the data quality encryption option.</p>"
         }
-      }
+      },
+      "documentation":"<p>The response for the Data Quality rule recommendation run.</p>"
     },
     "GetDataQualityRulesetEvaluationRunRequest":{
       "type":"structure",
@@ -14237,7 +14300,8 @@
           "shape":"NameString",
           "documentation":"<p>The name of the security configuration created with the data quality encryption option.</p>"
         }
-      }
+      },
+      "documentation":"<p>Returns the data quality ruleset response.</p>"
     },
     "GetDatabaseRequest":{
       "type":"structure",
@@ -16498,6 +16562,16 @@
     "IAMRoleArn":{
       "type":"string",
       "pattern":"^arn:aws(-(cn|us-gov|iso(-[bef])?))?:iam::[0-9]{12}:role/.+"
+    },
+    "IcebergCompactionConfiguration":{
+      "type":"structure",
+      "members":{
+        "strategy":{
+          "shape":"CompactionStrategy",
+          "documentation":"<p>The strategy to use for compaction. Valid values are:</p> <ul> <li> <p> <code>binpack</code>: Combines small files into larger files, typically targeting sizes over 100MB, while applying any pending deletes. This is the recommended compaction strategy for most use cases. </p> </li> <li> <p> <code>sort</code>: Organizes data based on specified columns which are sorted hierarchically during compaction, improving query performance for filtered operations. This strategy is recommended when your queries frequently filter on specific columns. To use this strategy, you must first define a sort order in your Iceberg table properties using the <code>sort_order</code> table property.</p> </li> <li> <p> <code>z-order</code>: Optimizes data organization by blending multiple attributes into a single scalar value that can be used for sorting, allowing efficient querying across multiple dimensions. This strategy is recommended when you need to query data across multiple dimensions simultaneously. To use this strategy, you must first define a sort order in your Iceberg table properties using the <code>sort_order</code> table property. </p> </li> </ul> <p>If an input is not provided, the default value 'binpack' will be used.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an Iceberg compaction optimizer. This configuration defines parameters for optimizing the layout of data files in Iceberg tables.</p>"
     },
     "IcebergCompactionMetrics":{
       "type":"structure",
@@ -21632,6 +21706,12 @@
     },
     "RoleString":{"type":"string"},
     "RowTag":{"type":"string"},
+    "RuleMetricsMap":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NullableDouble"},
+      "sensitive":true
+    },
     "RulesetNames":{
       "type":"list",
       "member":{"shape":"NameString"},
@@ -23838,7 +23918,8 @@
           "shape":"HashString",
           "documentation":"<p>Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.</p>"
         }
-      }
+      },
+      "documentation":"<p>The request of the Data Quality rule recommendation request.</p>"
     },
     "StartDataQualityRuleRecommendationRunResponse":{
       "type":"structure",
@@ -24883,6 +24964,10 @@
           "shape":"TableOptimizerVpcConfiguration",
           "documentation":"<p>A <code>TableOptimizerVpcConfiguration</code> object representing the VPC configuration for a table optimizer.</p> <p>This configuration is necessary to perform optimization on tables that are in a customer VPC.</p>"
         },
+        "compactionConfiguration":{
+          "shape":"CompactionConfiguration",
+          "documentation":"<p>The configuration for a compaction optimizer. This configuration defines how data files in your table will be compacted to improve query performance and reduce storage costs.</p>"
+        },
         "retentionConfiguration":{
           "shape":"RetentionConfiguration",
           "documentation":"<p>The configuration for a snapshot retention optimizer.</p>"
@@ -24931,6 +25016,10 @@
         "compactionMetrics":{
           "shape":"CompactionMetrics",
           "documentation":"<p>A <code>CompactionMetrics</code> object containing metrics for the optimizer run.</p>"
+        },
+        "compactionStrategy":{
+          "shape":"CompactionStrategy",
+          "documentation":"<p>The strategy used for the compaction run. Indicates which algorithm was applied to determine how files were selected and combined during the compaction process. Valid values are:</p> <ul> <li> <p> <code>binpack</code>: Combines small files into larger files, typically targeting sizes over 100MB, while applying any pending deletes. This is the recommended compaction strategy for most use cases. </p> </li> <li> <p> <code>sort</code>: Organizes data based on specified columns which are sorted hierarchically during compaction, improving query performance for filtered operations. This strategy is recommended when your queries frequently filter on specific columns. To use this strategy, you must first define a sort order in your Iceberg table properties using the <code>sort_order</code> table property.</p> </li> <li> <p> <code>z-order</code>: Optimizes data organization by blending multiple attributes into a single scalar value that can be used for sorting, allowing efficient querying across multiple dimensions. This strategy is recommended when you need to query data across multiple dimensions simultaneously. To use this strategy, you must first define a sort order in your Iceberg table properties using the <code>sort_order</code> table property. </p> </li> </ul>"
         },
         "retentionMetrics":{
           "shape":"RetentionMetrics",

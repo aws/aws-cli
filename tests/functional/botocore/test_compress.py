@@ -18,6 +18,10 @@ from botocore.compress import COMPRESSION_MAPPING
 from botocore.config import Config
 
 from tests import ALL_SERVICES, ClientHTTPStubber, patch_load_service_model
+from tests.functional.botocore.test_useragent import (
+    get_captured_ua_strings,
+    parse_registered_feature_ids,
+)
 
 FAKE_MODEL = {
     "version": "2.0",
@@ -127,3 +131,24 @@ def test_compression(patched_session, monkeypatch):
         serialized_body = f"{additional_params}&{serialized_params}"
         actual_body = gzip.decompress(http_stubber.requests[0].body)
         assert serialized_body.encode('utf-8') == actual_body
+
+
+def test_user_agent_has_gzip_feature_id(patched_session, monkeypatch):
+    patch_load_service_model(
+        patched_session, monkeypatch, FAKE_MODEL, FAKE_RULESET
+    )
+    client = patched_session.create_client(
+        "otherservice",
+        region_name="us-west-2",
+        config=Config(request_min_compression_size_bytes=100),
+    )
+    with ClientHTTPStubber(client, strict=True) as http_stubber:
+        http_stubber.add_response(status=200, body=b"<response/>")
+        params_list = [
+            {"MockOpParam": f"MockOpParamValue{i}"} for i in range(1, 21)
+        ]
+        # The mock operation registers `'GZIP_REQUEST_COMPRESSION': 'L'`
+        client.mock_operation(MockOpParamList=params_list)
+    ua_string = get_captured_ua_strings(http_stubber)[0]
+    feature_list = parse_registered_feature_ids(ua_string)
+    assert 'L' in feature_list

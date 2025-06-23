@@ -49,6 +49,7 @@ from xml.etree import ElementTree
 
 from botocore import validate
 from botocore.compat import formatdate, json
+from botocore.useragent import register_feature_id
 from botocore.utils import (
     has_header,
     is_json_value_header,
@@ -1161,6 +1162,10 @@ class RestXMLSerializer(BaseRestSerializer):
 
 class RpcV2CBORSerializer(BaseRpcV2Serializer, CBORSerializer):
     TIMESTAMP_FORMAT = 'unixtimestamp'
+
+    def serialize_to_request(self, parameters, operation_model):
+        register_feature_id('PROTOCOL_RPC_V2_CBOR')
+        return super().serialize_to_request(parameters, operation_model)
 
     def _serialize_body_params(self, parameters, input_shape):
         body = bytearray()

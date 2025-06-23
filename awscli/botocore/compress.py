@@ -22,6 +22,7 @@ from gzip import GzipFile
 from gzip import compress as gzip_compress
 
 from botocore.compat import urlencode
+from botocore.useragent import register_feature_id
 from botocore.utils import determine_content_length
 
 logger = logging.getLogger(__name__)
@@ -88,6 +89,7 @@ def _get_body_size(body):
 
 
 def _gzip_compress_body(body):
+    register_feature_id('GZIP_REQUEST_COMPRESSION')
     if isinstance(body, str):
         return gzip_compress(body.encode('utf-8'))
     elif isinstance(body, (bytes, bytearray)):

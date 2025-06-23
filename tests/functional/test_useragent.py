@@ -1,5 +1,8 @@
 from awscli import __version__ as awscli_version
 from tests import CLIRunner
+from tests.functional.botocore.test_useragent import (
+    parse_registered_feature_ids,
+)
 
 
 def assert_expected_user_agent(result, service, operation):
@@ -32,4 +35,5 @@ def test_user_agent_for_customization():
     result = cli_runner.run([service, operation])
     assert_expected_user_agent(result, service, operation)
     ua_string = result.aws_requests[0].http_requests[0].headers['User-Agent']
-    assert 'm/C' in ua_string
+    feature_list = parse_registered_feature_ids(ua_string)
+    assert 'C' in feature_list

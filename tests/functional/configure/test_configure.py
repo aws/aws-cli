@@ -57,7 +57,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
         stdout, _, _ = self.run_cmd("configure list")
         self.assertRegex(stdout, r"access_key.+config-file")
         self.assertRegex(stdout, r"secret_key.+config-file")
-        self.assertRegex(stdout, r"region\s+us-west-2\s+config-file")
+        self.assertRegex(stdout, r"region\s+:\sus-west-2\s+:\sconfig-file")
 
     def test_get_command(self):
         self.set_config_file_contents(

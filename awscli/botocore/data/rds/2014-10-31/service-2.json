@@ -3942,6 +3942,14 @@
         "CopyOptionGroup":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether to copy the DB option group associated with the source DB snapshot to the target Amazon Web Services account and associate with the target DB snapshot. The associated option group can be copied only with cross-account snapshot copy calls.</p>"
+        },
+        "SnapshotAvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>Specifies the name of the Availability Zone where RDS stores the DB snapshot. This value is valid only for snapshots that RDS stores on a Dedicated Local Zone.</p>"
+        },
+        "SnapshotTarget":{
+          "shape":"String",
+          "documentation":"<p>Configures the location where RDS will store copied snapshots.</p> <p>Valid Values:</p> <ul> <li> <p> <code>local</code> (Dedicated Local Zone)</p> </li> <li> <p> <code>outposts</code> (Amazon Web Services Outposts)</p> </li> <li> <p> <code>region</code> (Amazon Web Services Region)</p> </li> </ul>"
         }
       },
       "documentation":"<p/>"
@@ -4664,7 +4672,7 @@
         },
         "BackupTarget":{
           "shape":"String",
-          "documentation":"<p>The location for storing automated backups and manual snapshots.</p> <p>Valid Values:</p> <ul> <li> <p> <code>outposts</code> (Amazon Web Services Outposts)</p> </li> <li> <p> <code>region</code> (Amazon Web Services Region)</p> </li> </ul> <p>Default: <code>region</code> </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Working with Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide</i>.</p>"
+          "documentation":"<p>The location for storing automated backups and manual snapshots.</p> <p>Valid Values:</p> <ul> <li> <p> <code>local</code> (Dedicated Local Zone)</p> </li> <li> <p> <code>outposts</code> (Amazon Web Services Outposts)</p> </li> <li> <p> <code>region</code> (Amazon Web Services Region)</p> </li> </ul> <p>Default: <code>region</code> </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Working with Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide</i>.</p>"
         },
         "NetworkType":{
           "shape":"String",
@@ -4869,6 +4877,10 @@
         "EnableCustomerOwnedIp":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether to enable a customer-owned IP address (CoIP) for an RDS on Outposts read replica.</p> <p>A <i>CoIP</i> provides local or external connectivity to resources in your Outpost subnets through your on-premises network. For some use cases, a CoIP can provide lower latency for connections to the read replica from outside of its virtual private cloud (VPC) on your local network.</p> <p>For more information about RDS on Outposts, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Working with Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about CoIPs, see <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/routing.html#ip-addressing\">Customer-owned IP addresses</a> in the <i>Amazon Web Services Outposts User Guide</i>.</p>"
+        },
+        "BackupTarget":{
+          "shape":"String",
+          "documentation":"<p>The location where RDS stores automated backups and manual snapshots.</p> <p>Valid Values:</p> <ul> <li> <p> <code>local</code> for Dedicated Local Zones</p> </li> <li> <p> <code>region</code> for Amazon Web Services Region</p> </li> </ul>"
         },
         "AllocatedStorage":{
           "shape":"IntegerOptional",
@@ -7042,7 +7054,7 @@
         },
         "BackupTarget":{
           "shape":"String",
-          "documentation":"<p>The location where automated backups and manual snapshots are stored: Amazon Web Services Outposts or the Amazon Web Services Region.</p>"
+          "documentation":"<p>The location where automated backups and manual snapshots are stored: Dedicated Local Zones, Amazon Web Services Outposts or the Amazon Web Services Region.</p>"
         },
         "NetworkType":{
           "shape":"String",
@@ -7216,7 +7228,7 @@
         },
         "BackupTarget":{
           "shape":"String",
-          "documentation":"<p>The location where automated backups are stored: Amazon Web Services Outposts or the Amazon Web Services Region.</p>"
+          "documentation":"<p>The location where automated backups are stored: Dedicated Local Zones, Amazon Web Services Outposts or the Amazon Web Services Region.</p>"
         },
         "StorageThroughput":{
           "shape":"IntegerOptional",
@@ -8373,7 +8385,7 @@
         },
         "SnapshotTarget":{
           "shape":"String",
-          "documentation":"<p>Specifies where manual snapshots are stored: Amazon Web Services Outposts or the Amazon Web Services Region.</p>"
+          "documentation":"<p>Specifies where manual snapshots are stored: Dedicated Local Zones, Amazon Web Services Outposts or the Amazon Web Services Region.</p>"
         },
         "StorageThroughput":{
           "shape":"IntegerOptional",
@@ -8390,6 +8402,10 @@
         "MultiTenant":{
           "shape":"BooleanOptional",
           "documentation":"<p>Indicates whether the snapshot is of a DB instance using the multi-tenant configuration (TRUE) or the single-tenant configuration (FALSE).</p>"
+        },
+        "SnapshotAvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>Specifies the name of the Availability Zone where RDS stores the DB snapshot. This value is valid only for snapshots that RDS stores on a Dedicated Local Zone.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon RDS DB snapshot.</p> <p>This data type is used as a response element in the <code>DescribeDBSnapshots</code> action.</p>",
@@ -15444,7 +15460,7 @@
         },
         "BackupTarget":{
           "shape":"String",
-          "documentation":"<p>Specifies where automated backups and manual snapshots are stored for the restored DB instance.</p> <p>Possible values are <code>outposts</code> (Amazon Web Services Outposts) and <code>region</code> (Amazon Web Services Region). The default is <code>region</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Working with Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide</i>.</p>"
+          "documentation":"<p>Specifies where automated backups and manual snapshots are stored for the restored DB instance.</p> <p>Possible values are <code>local</code> (Dedicated Local Zone), <code>outposts</code> (Amazon Web Services Outposts), and <code>region</code> (Amazon Web Services Region). The default is <code>region</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Working with Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide</i>.</p>"
         },
         "NetworkType":{
           "shape":"String",
@@ -15878,7 +15894,7 @@
         },
         "BackupTarget":{
           "shape":"String",
-          "documentation":"<p>The location for storing automated backups and manual snapshots for the restored DB instance.</p> <p>Valid Values:</p> <ul> <li> <p> <code>outposts</code> (Amazon Web Services Outposts)</p> </li> <li> <p> <code>region</code> (Amazon Web Services Region)</p> </li> </ul> <p>Default: <code>region</code> </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Working with Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide</i>.</p>"
+          "documentation":"<p>The location for storing automated backups and manual snapshots for the restored DB instance.</p> <p>Valid Values:</p> <ul> <li> <p> <code>local</code> (Dedicated Local Zone)</p> </li> <li> <p> <code>outposts</code> (Amazon Web Services Outposts)</p> </li> <li> <p> <code>region</code> (Amazon Web Services Region)</p> </li> </ul> <p>Default: <code>region</code> </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Working with Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide</i>.</p>"
         },
         "NetworkType":{
           "shape":"String",

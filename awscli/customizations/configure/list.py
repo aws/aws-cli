@@ -41,12 +41,11 @@ class ConfigureListCommand(BasicCommand):
         'To show your current configuration values::\n'
         '\n'
         '  $ aws configure list\n'
-        '        Name                    Value             Type    Location\n'
-        '        ----                    -----             ----    --------\n'
-        '     profile                <not set>             None    None\n'
-        '  access_key     ****************ABCD      config_file    ~/.aws/config\n'
-        '  secret_key     ****************ABCD      config_file    ~/.aws/config\n'
-        '      region                us-west-2              env    AWS_DEFAULT_REGION\n'
+        '  NAME       : VALUE                    : TYPE             : LOCATION\n'
+        '  profile    : <not set>                : None             : None\n'
+        '  access_key : ****************ABCD     : config_file      : ~/.aws/config\n'
+        '  secret_key : ****************ABCD     : config_file      : ~/.aws/config\n'
+        '  region     : us-west-2                : env              : AWS_DEFAULT_REGION\n'
         '\n'
     )
 

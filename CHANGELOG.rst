@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.27.42
+=======
+
+* api-change:``gamelift``: Add support for UDP ping beacons to ListLocations API, including new PingBeacon and UDPEndpoint data types within its Locations return value. Use UDP ping beacon endpoints to help measure real-time network latency for multiplayer games.
+* api-change:``bedrock``: We are making ListFoundationModelAgreementOffers, DeleteFoundationModelAgreement, CreateFoundationModelAgreement, GetFoundationModelAvailability, PutUseCaseForModelAccess and GetUseCaseForModelAccess APIs public, previously they were console.
+* api-change:``ec2``: This release allows you to create and register AMIs while maintaining their underlying EBS snapshots within Local Zones.
+* api-change:``batch``: Add userdataType to LaunchTemplateSpecification and LaunchTemplateSpecificationOverride.
+* api-change:``aiops``: Adds support for cross account investigations for CloudWatch investigations AI Operations (AIOps).
+* api-change:``elbv2``: Add Paginator for DescribeAccountLimits, and fix Paginators for DescribeTrustStoreAssociations, DescribeTrustStoreRevocations, and DescribeTrustStores
+* api-change:``license-manager``: AWS License Manager now supports license type conversions for AWS Marketplace products. Customers can provide Marketplace codes in the source license context or destination license context in the CreateLicenseConversionTaskForResource requests.
+* api-change:``transcribe``: This Feature Adds Support for the "et-EE" Locale for Batch Operations
+* api-change:``rds``: Adding support for RDS on Dedicated Local Zones, including local backup target, snapshot availability zone and snapshot target
+* api-change:``route53resolver``: Add support for iterative DNS queries through the new INBOUND_DELEGATION endpoint. Add delegation support through the Outbound Endpoints with DELEGATE rules.
+
+
 2.27.41
 =======
 

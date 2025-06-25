@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.40.43
+=======
+
+* api-change:``ecs``: Updates for change to Amazon ECS default log driver mode from blocking to non-blocking
+* api-change:``fsx``: Add support for the ability to create Amazon S3 Access Points for Amazon FSx for OpenZFS file systems.
+* api-change:``s3``: Adds support for additional server-side encryption mode and storage class values for accessing Amazon FSx data from Amazon S3 using S3 Access Points
+* api-change:``s3control``: Add support for the ability to use Amazon S3 Access Points with Amazon FSx for OpenZFS file systems.
+* api-change:``storagegateway``: This release adds IPv6 support to the Storage Gateway APIs. APIs that previously only accept or return IPv4 address will now accept or return both IPv4 and IPv6 addresses.
+* api-change:``textract``: Add RotationAngle field to Geometry of WORD blocks for Textract AnalyzeDocument API
+* api-change:``workspaces-thin-client``: Remove Tags field from Get API responses
+
+
 1.40.42
 =======
 
@@ -51,6 +63,7 @@ CHANGELOG
 
 * api-change:``aiops``: This is the initial SDK release for Amazon AI Operations (AIOps). AIOps is a generative AI-powered assistant that helps you respond to incidents in your system by scanning your system's telemetry and quickly surface suggestions that might be related to your issue.
 * api-change:``autoscaling``: Add IncludeInstances parameter to DescribeAutoScalingGroups API
+* api-change:``imagebuilder``: Added paginators for ``imagebuilder``.
 * api-change:``logs``: Added CloudWatch Logs Transformer support for converting CloudTrail, VPC Flow, EKS Audit, AWS WAF and Route53 Resolver logs to OCSF v1.1 format.
 * api-change:``s3``: Added support for renaming objects within the same bucket using the new RenameObject API.
 * api-change:``sagemaker``: Add support for p6-b200 instance type for SageMaker Hyperpod

@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.27.43
+=======
+
+* api-change:``fsx``: Add support for the ability to create Amazon S3 Access Points for Amazon FSx for OpenZFS file systems.
+* api-change:``s3control``: Add support for the ability to use Amazon S3 Access Points with Amazon FSx for OpenZFS file systems.
+* api-change:``textract``: Add RotationAngle field to Geometry of WORD blocks for Textract AnalyzeDocument API
+* api-change:``ecs``: Updates for change to Amazon ECS default log driver mode from blocking to non-blocking
+* api-change:``s3``: Adds support for additional server-side encryption mode and storage class values for accessing Amazon FSx data from Amazon S3 using S3 Access Points
+* api-change:``storagegateway``: This release adds IPv6 support to the Storage Gateway APIs. APIs that previously only accept or return IPv4 address will now accept or return both IPv4 and IPv6 addresses.
+* api-change:``workspaces-thin-client``: Remove Tags field from Get API responses
+
+
 2.27.42
 =======
 

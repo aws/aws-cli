@@ -195,6 +195,7 @@ class TransferManager:
         + [
             'ChecksumType',
             'MpuObjectSize',
+            'IfNoneMatch',
         ]
         + FULL_OBJECT_CHECKSUM_ARGS
     )
@@ -522,6 +523,7 @@ class TransferManager:
         ):
             set_default_checksum_algorithm(extra_args)
 
+    # Potential
     def _submit_transfer(
         self, call_args, submission_task_cls, extra_main_kwargs=None
     ):

@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import hashlib
 import io
 import os
 import sqlite3
@@ -22,6 +21,8 @@ from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
 
+from botocore.compat import get_md5
+from botocore.exceptions import MD5UnavailableError
 from botocore.useragent import UserAgentComponent
 
 from awscli.compat import is_windows
@@ -30,8 +31,20 @@ from awscli.utils import add_component_to_user_agent_extra
 _CACHE_DIR = Path.home() / '.aws' / 'cli' / 'cache'
 _DATABASE_FILENAME = 'session.db'
 _SESSION_LENGTH_SECONDS = 60 * 30
+_SESSION_ID_LENGTH = 12
 
 _CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def _get_checksum():
+    hashlib_params = {"usedforsecurity": False}
+    try:
+        checksum = get_md5(**hashlib_params)
+    except MD5UnavailableError:
+        import hashlib
+
+        checksum = hashlib.sha256(**hashlib_params)
+    return checksum
 
 
 @dataclass
@@ -179,17 +192,19 @@ class CLISessionDatabaseSweeper:
 
 class CLISessionGenerator:
     def generate_session_id(self, host_id, tty, timestamp):
-        return self._generate_md5_hash(host_id, tty, timestamp)
+        return self._generate_checksum(host_id, tty, timestamp)
 
     def generate_cache_key(self, host_id, tty):
-        return self._generate_md5_hash(host_id, tty)
+        return self._generate_checksum(host_id, tty)
 
-    def _generate_md5_hash(self, *args):
+    def _generate_checksum(self, *args):
+        checksum = _get_checksum()
         str_to_hash = ""
         for arg in args:
             if arg is not None:
                 str_to_hash += str(arg)
-        return hashlib.md5(str_to_hash.encode('utf-8')).hexdigest()
+        checksum.update(str_to_hash.encode('utf-8'))
+        return checksum.hexdigest()[:_SESSION_ID_LENGTH]
 
 
 class CLISessionOrchestrator:
@@ -273,7 +288,16 @@ def _get_cli_session_orchestrator():
 
 
 def add_session_id_component_to_user_agent_extra(session, orchestrator=None):
-    cli_session_orchestrator = orchestrator or _get_cli_session_orchestrator()
-    add_component_to_user_agent_extra(
-        session, UserAgentComponent("sid", cli_session_orchestrator.session_id)
-    )
+    try:
+        cli_session_orchestrator = (
+            orchestrator or _get_cli_session_orchestrator()
+        )
+        add_component_to_user_agent_extra(
+            session,
+            UserAgentComponent("sid", cli_session_orchestrator.session_id),
+        )
+    except Exception:
+        # Ideally, the AWS CLI should never throw if the session id
+        # can't be generated since it's not critical for users. Issues
+        # with session dada should instead be caught server-side.
+        pass

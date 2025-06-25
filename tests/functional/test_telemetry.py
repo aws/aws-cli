@@ -14,6 +14,7 @@ import sqlite3
 from unittest.mock import MagicMock, patch
 
 import pytest
+from botocore.exceptions import MD5UnavailableError
 from botocore.session import Session
 
 from awscli.telemetry import (
@@ -182,14 +183,24 @@ class TestCLISessionGenerator:
             'my-tty',
             1000000000,
         )
-        assert session_id == 'd949713b13ee3fb52983b04316e8e6b5'
+        assert session_id == 'd949713b13ee'
 
     def test_generate_cache_key(self, session_generator):
         cache_key = session_generator.generate_cache_key(
             'my-hostname',
             'my-tty',
         )
-        assert cache_key == 'b1ca2be0ffac12f172933b6777e06f2c'
+        assert cache_key == 'b1ca2be0ffac'
+
+    @patch('awscli.telemetry.get_md5')
+    def test_checksum_fips_fallback(self, patched_get_md5, session_generator):
+        patched_get_md5.side_effect = MD5UnavailableError()
+        session_id = session_generator.generate_session_id(
+            'my-hostname',
+            'my-tty',
+            1000000000,
+        )
+        assert session_id == '183b154db015'
 
 
 @skip_if_windows
@@ -211,7 +222,7 @@ class TestCLISessionOrchestrator:
         orchestrator = CLISessionOrchestrator(
             session_generator, session_writer, session_reader, session_sweeper
         )
-        assert orchestrator.session_id == '881cea8546fa4888970cce8d133c3bf9'
+        assert orchestrator.session_id == '881cea8546fa'
 
         session_data = session_reader.read(orchestrator.cache_key)
         assert session_data.key == orchestrator.cache_key
@@ -299,3 +310,15 @@ def test_add_session_id_component_to_user_agent_extra():
     orchestrator.session_id = 'my-session-id'
     add_session_id_component_to_user_agent_extra(session, orchestrator)
     assert session.user_agent_extra == 'sid/my-session-id'
+
+
+def test_entrypoint_catches_bare_exceptions():
+    class FakeOrchestrator(CLISessionOrchestrator):
+        def __init__(self):
+            pass
+
+        def session_id(self):
+            raise Exception()
+
+    session = MagicMock(Session)
+    add_session_id_component_to_user_agent_extra(session, FakeOrchestrator())

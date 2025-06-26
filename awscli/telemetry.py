@@ -33,8 +33,6 @@ _DATABASE_FILENAME = 'session.db'
 _SESSION_LENGTH_SECONDS = 60 * 30
 _SESSION_ID_LENGTH = 12
 
-_CACHE_DIR.mkdir(parents=True, exist_ok=True)
-
 
 def _get_checksum():
     hashlib_params = {"usedforsecurity": False}
@@ -81,6 +79,7 @@ class CLISessionDatabaseConnection:
             check_same_thread=False,
             isolation_level=None,
         )
+        self._ensure_cache_dir()
         self._ensure_database_setup()
 
     def execute(self, query, *parameters):
@@ -91,6 +90,9 @@ class CLISessionDatabaseConnection:
             # Return any empty `Cursor` object instead of
             # raising an exception.
             return sqlite3.Cursor(self._connection)
+
+    def _ensure_cache_dir(self):
+        _CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
     def _ensure_database_setup(self):
         self._create_session_table()

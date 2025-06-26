@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.27.44
+=======
+
+* api-change:``deadline``: Added fields to track cumulative task retry attempts for steps and jobs
+* api-change:``iot-managed-integrations``: Adding managed integrations APIs for IoT Device Management to onboard and control devices across different manufacturers, connectivity protocols and third party vendor clouds. APIs include managed thing operations, provisioning profile management, and cloud connector operations.
+* api-change:``keyspaces``: This release provides change data capture (CDC) streams support through updates to the Amazon Keyspaces API.
+* api-change:``workspaces``: Updated modifyStreamingProperties to support PrivateLink VPC endpoints for directories
+* api-change:``kms``: This release updates AWS CLI examples for KMS APIs.
+* api-change:``ec2``: This release adds support for OdbNetworkArn as a target in VPC Route Tables
+* api-change:``keyspacesstreams``: This release adds change data capture (CDC) streams support through the new Amazon Keyspaces Streams API.
+* api-change:``qbusiness``: Added support for App level authentication for QBusiness DataAccessor using AWS IAM Identity center Trusted Token issuer
+
+
 2.27.43
 =======
 

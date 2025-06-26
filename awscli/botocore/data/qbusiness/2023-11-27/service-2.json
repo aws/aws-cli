@@ -1966,6 +1966,10 @@
           "shape":"QIamActions",
           "documentation":"<p>The list of Amazon Q Business actions that the ISV is allowed to perform.</p>"
         },
+        "conditions":{
+          "shape":"PermissionConditions",
+          "documentation":"<p>The conditions that restrict when the permission is effective. These conditions can be used to limit the permission based on specific attributes of the request.</p>"
+        },
         "principal":{
           "shape":"PrincipalRoleArn",
           "documentation":"<p>The Amazon Resource Name of the IAM role for the ISV that is being granted permission.</p>"
@@ -3184,6 +3188,10 @@
           "shape":"DataAccessorName",
           "documentation":"<p>A friendly name for the data accessor.</p>"
         },
+        "authenticationDetail":{
+          "shape":"DataAccessorAuthenticationDetail",
+          "documentation":"<p>The authentication configuration details for the data accessor. This specifies how the ISV will authenticate when accessing data through this data accessor.</p>"
+        },
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The tags to associate with the data accessor.</p>"
@@ -3702,6 +3710,10 @@
           "shape":"PrincipalRoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role for the ISV associated with this data accessor.</p>"
         },
+        "authenticationDetail":{
+          "shape":"DataAccessorAuthenticationDetail",
+          "documentation":"<p>The authentication configuration details for the data accessor. This specifies how the ISV authenticates when accessing data through this data accessor.</p>"
+        },
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the data accessor was created.</p>"
@@ -3719,11 +3731,72 @@
       "min":0,
       "pattern":"arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
     },
+    "DataAccessorAuthenticationConfiguration":{
+      "type":"structure",
+      "members":{
+        "idcTrustedTokenIssuerConfiguration":{
+          "shape":"DataAccessorIdcTrustedTokenIssuerConfiguration",
+          "documentation":"<p>Configuration for IAM Identity Center Trusted Token Issuer (TTI) authentication used when the authentication type is <code>AWS_IAM_IDC_TTI</code>.</p>"
+        }
+      },
+      "documentation":"<p>A union type that contains the specific authentication configuration based on the authentication type selected.</p>",
+      "union":true
+    },
+    "DataAccessorAuthenticationDetail":{
+      "type":"structure",
+      "required":["authenticationType"],
+      "members":{
+        "authenticationType":{
+          "shape":"DataAccessorAuthenticationType",
+          "documentation":"<p>The type of authentication to use for the data accessor. This determines how the ISV authenticates when accessing data. You can use one of two authentication types:</p> <ul> <li> <p> <code>AWS_IAM_IDC_TTI</code> - Authentication using IAM Identity Center Trusted Token Issuer (TTI). This authentication type allows the ISV to use a trusted token issuer to generate tokens for accessing the data.</p> </li> <li> <p> <code>AWS_IAM_IDC_AUTH_CODE</code> - Authentication using IAM Identity Center authorization code flow. This authentication type uses the standard OAuth 2.0 authorization code flow for authentication.</p> </li> </ul>"
+        },
+        "authenticationConfiguration":{
+          "shape":"DataAccessorAuthenticationConfiguration",
+          "documentation":"<p>The specific authentication configuration based on the authentication type.</p>"
+        },
+        "externalIds":{
+          "shape":"DataAccessorExternalIds",
+          "documentation":"<p>A list of external identifiers associated with this authentication configuration. These are used to correlate the data accessor with external systems.</p>"
+        }
+      },
+      "documentation":"<p>Contains the authentication configuration details for a data accessor. This structure defines how the ISV authenticates when accessing data through the data accessor.</p>"
+    },
+    "DataAccessorAuthenticationType":{
+      "type":"string",
+      "documentation":"<p>The type of authentication mechanism used by the data accessor.</p>",
+      "enum":[
+        "AWS_IAM_IDC_TTI",
+        "AWS_IAM_IDC_AUTH_CODE"
+      ]
+    },
+    "DataAccessorExternalId":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_-]*"
+    },
+    "DataAccessorExternalIds":{
+      "type":"list",
+      "member":{"shape":"DataAccessorExternalId"},
+      "max":1,
+      "min":1
+    },
     "DataAccessorId":{
       "type":"string",
       "max":36,
       "min":36,
       "pattern":"[a-zA-Z0-9][a-zA-Z0-9-]{35}"
+    },
+    "DataAccessorIdcTrustedTokenIssuerConfiguration":{
+      "type":"structure",
+      "required":["idcTrustedTokenIssuerArn"],
+      "members":{
+        "idcTrustedTokenIssuerArn":{
+          "shape":"IdcTrustedTokenIssuerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity Center Trusted Token Issuer that will be used for authentication.</p>"
+        }
+      },
+      "documentation":"<p>Configuration details for IAM Identity Center Trusted Token Issuer (TTI) authentication.</p>"
     },
     "DataAccessorName":{
       "type":"string",
@@ -5053,6 +5126,10 @@
           "shape":"ActionConfigurationList",
           "documentation":"<p>The list of action configurations specifying the allowed actions and any associated filters.</p>"
         },
+        "authenticationDetail":{
+          "shape":"DataAccessorAuthenticationDetail",
+          "documentation":"<p>The authentication configuration details for the data accessor. This specifies how the ISV authenticates when accessing data through this data accessor.</p>"
+        },
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the data accessor was created.</p>"
@@ -5718,7 +5795,7 @@
         },
         "lambdaArn":{
           "shape":"LambdaArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function sduring ingestion. For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/cde-lambda-operations.html\">Using Lambda functions for Amazon Q Business document enrichment</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function during ingestion. For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/cde-lambda-operations.html\">Using Lambda functions for Amazon Q Business document enrichment</a>.</p>"
         },
         "s3BucketName":{
           "shape":"S3BucketName",
@@ -5760,6 +5837,12 @@
         }
       },
       "documentation":"<p>Information about the IAM Identity Center Application used to configure authentication for a plugin.</p>"
+    },
+    "IdcTrustedTokenIssuerArn":{
+      "type":"string",
+      "max":1284,
+      "min":0,
+      "pattern":"arn:aws:sso::[0-9]{12}:trustedTokenIssuer/(sso)?ins-[a-zA-Z0-9-.]{16}/tti-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
     "IdentityProviderConfiguration":{
       "type":"structure",
@@ -7232,6 +7315,55 @@
     "Payload":{
       "type":"string",
       "sensitive":true
+    },
+    "PermissionCondition":{
+      "type":"structure",
+      "required":[
+        "conditionOperator",
+        "conditionKey",
+        "conditionValues"
+      ],
+      "members":{
+        "conditionOperator":{
+          "shape":"PermissionConditionOperator",
+          "documentation":"<p>The operator to use for the condition evaluation. This determines how the condition values are compared.</p>"
+        },
+        "conditionKey":{
+          "shape":"PermissionConditionKey",
+          "documentation":"<p>The key for the condition. This identifies the attribute that the condition applies to.</p>"
+        },
+        "conditionValues":{
+          "shape":"PermissionConditionValues",
+          "documentation":"<p>The values to compare against using the specified condition operator.</p>"
+        }
+      },
+      "documentation":"<p>Defines a condition that restricts when a permission is effective. Conditions allow you to control access based on specific attributes of the request.</p>"
+    },
+    "PermissionConditionKey":{
+      "type":"string",
+      "pattern":"aws:PrincipalTag/qbusiness-dataaccessor:[a-zA-Z]+.*"
+    },
+    "PermissionConditionOperator":{
+      "type":"string",
+      "enum":["StringEquals"]
+    },
+    "PermissionConditionValue":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_-]*"
+    },
+    "PermissionConditionValues":{
+      "type":"list",
+      "member":{"shape":"PermissionConditionValue"},
+      "max":1,
+      "min":1
+    },
+    "PermissionConditions":{
+      "type":"list",
+      "member":{"shape":"PermissionCondition"},
+      "max":10,
+      "min":1
     },
     "PersonalizationConfiguration":{
       "type":"structure",
@@ -8707,6 +8839,10 @@
         "actionConfigurations":{
           "shape":"ActionConfigurationList",
           "documentation":"<p>The updated list of action configurations specifying the allowed actions and any associated filters.</p>"
+        },
+        "authenticationDetail":{
+          "shape":"DataAccessorAuthenticationDetail",
+          "documentation":"<p>The updated authentication configuration details for the data accessor. This specifies how the ISV will authenticate when accessing data through this data accessor.</p>"
         },
         "displayName":{
           "shape":"DataAccessorName",

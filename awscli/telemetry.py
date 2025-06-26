@@ -301,5 +301,5 @@ def add_session_id_component_to_user_agent_extra(session, orchestrator=None):
     except Exception:
         # Ideally, the AWS CLI should never throw if the session id
         # can't be generated since it's not critical for users. Issues
-        # with session dada should instead be caught server-side.
+        # with session data should instead be caught server-side.
         pass

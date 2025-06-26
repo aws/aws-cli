@@ -15,6 +15,11 @@ Before running this command, replace the example key ID with a valid key ID or k
         --expiration-model KEY_MATERIAL_EXPIRES \
         --valid-to 2021-09-21T19:00:00Z
 
-This command produces no output.
+Output::
+
+    {
+        "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+        "KeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6"
+    }
 
 For more information about importing key material, see `Importing Key Material <https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys.html>`__ in the *AWS Key Management Service Developer Guide*.

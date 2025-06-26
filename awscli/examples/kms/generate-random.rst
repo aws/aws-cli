@@ -6,7 +6,7 @@ When you run this command, you must use the ``number-of-bytes`` parameter to spe
 
 You don't specify a KMS key when you run this command. The random byte string is unrelated to any KMS key. 
 
-By default, AWS KMS generates the random number. However, if you specify a `custom key store<https://docs.aws.amazon.com/kms/latest/developerguide/custom-key-store-overview.html>`__, the random byte string is generated in the AWS CloudHSM cluster associated with the custom key store.
+By default, AWS KMS generates the random number. However, if you specify a `custom key store <https://docs.aws.amazon.com/kms/latest/developerguide/custom-key-store-overview.html>`__, the random byte string is generated in the AWS CloudHSM cluster associated with the custom key store.
 
 This example uses the following parameters and values:
 

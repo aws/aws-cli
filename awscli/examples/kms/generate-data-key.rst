@@ -15,13 +15,13 @@ Output::
     {
         "Plaintext": "VdzKNHGzUAzJeRBVY+uUmofUGGiDzyB3+i9fVkh3piw=",
         "KeyId": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+        "KeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6",
         "CiphertextBlob": "AQEDAHjRYf5WytIc0C857tFSnBaPn2F8DgfmThbJlGfR8P3WlwAAAH4wfAYJKoZIhvcNAQcGoG8wbQIBADBoBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDEFogLqPWZconQhwHAIBEIA7d9AC7GeJJM34njQvg4Wf1d5sw0NIo1MrBqZa+YdhV8MrkBQPeac0ReRVNDt9qleAt+SHgIRF8P0H+7U="
     }
 
 The ``Plaintext`` (plaintext data key) and the ``CiphertextBlob`` (encrypted data key) are returned in base64-encoded format. 
 
-For more information, see `Data keys <https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#data-keys`__ in the *AWS Key Management Service Developer Guide*.
- 
+For more information, see `Data keys <https://docs.aws.amazon.com/kms/latest/developerguide/data-keys.html>`__ in the *AWS Key Management Service Developer Guide*.
 **Example 2: To generate a 512-bit symmetric data key**
 
 The following ``generate-data-key`` example requests a 512-bit symmetric data key for encryption and decryption. The command returns a plaintext data key for immediate use and deletion, and a copy of that data key encrypted under the specified KMS key. You can safely store the encrypted data key with the encrypted data. 
@@ -41,9 +41,10 @@ Output::
     {
         "CiphertextBlob": "AQIBAHi6LtupRpdKl2aJTzkK6FbhOtQkMlQJJH3PdtHvS/y+hAEnX/QQNmMwDfg2korNMEc8AAACaDCCAmQGCSqGSIb3DQEHBqCCAlUwggJRAgEAMIICSgYJKoZ...",
         "Plaintext": "ty8Lr0Bk6OF07M2BWt6qbFdNB+G00ZLtf5MSEb4al3R2UKWGOp06njAwy2n72VRm2m7z/Pm9Wpbvttz6a4lSo9hgPvKhZ5y6RTm4OovEXiVfBveyX3DQxDzRSwbKDPk/...",
-        "KeyId": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+        "KeyId": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+        "KeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6"
     }
 
 The ``Plaintext`` (plaintext data key) and ``CiphertextBlob`` (encrypted data key) are returned in base64-encoded format. 
 
-For more information, see `Data keys <https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#data-keys`__ in the *AWS Key Management Service Developer Guide*.
+For more information, see `Data keys <https://docs.aws.amazon.com/kms/latest/developerguide/data-keys.html>`__ in the *AWS Key Management Service Developer Guide*.

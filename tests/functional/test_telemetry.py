@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sqlite3
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
 from botocore.exceptions import MD5UnavailableError
@@ -313,12 +313,7 @@ def test_add_session_id_component_to_user_agent_extra():
 
 
 def test_entrypoint_catches_bare_exceptions():
-    class FakeOrchestrator(CLISessionOrchestrator):
-        def __init__(self):
-            pass
-
-        def session_id(self):
-            raise Exception()
-
+    mock_orchestrator = MagicMock(CLISessionOrchestrator)
+    type(mock_orchestrator).session_id = PropertyMock(side_effect=Exception)
     session = MagicMock(Session)
-    add_session_id_component_to_user_agent_extra(session, FakeOrchestrator())
+    add_session_id_component_to_user_agent_extra(session, mock_orchestrator)

@@ -3609,7 +3609,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"ConcurrentRunsExceededException"}
       ],
-      "documentation":"<p>Starts the active learning workflow for your machine learning transform to improve the transform's quality by generating label sets and adding labels.</p> <p>When the <code>StartMLLabelingSetGenerationTaskRun</code> finishes, Glue will have generated a \"labeling set\" or a set of questions for humans to answer.</p> <p>In the case of the <code>FindMatches</code> transform, these questions are of the form, “What is the correct way to group these rows together into groups composed entirely of matching records?” </p> <p>After the labeling process is finished, you can upload your labels with a call to <code>StartImportLabelsTaskRun</code>. After <code>StartImportLabelsTaskRun</code> finishes, all future runs of the machine learning transform will use the new and improved labels and perform a higher-quality transformation.</p>"
+      "documentation":"<p>Starts the active learning workflow for your machine learning transform to improve the transform's quality by generating label sets and adding labels.</p> <p>When the <code>StartMLLabelingSetGenerationTaskRun</code> finishes, Glue will have generated a \"labeling set\" or a set of questions for humans to answer.</p> <p>In the case of the <code>FindMatches</code> transform, these questions are of the form, “What is the correct way to group these rows together into groups composed entirely of matching records?” </p> <p>After the labeling process is finished, you can upload your labels with a call to <code>StartImportLabelsTaskRun</code>. After <code>StartImportLabelsTaskRun</code> finishes, all future runs of the machine learning transform will use the new and improved labels and perform a higher-quality transformation.</p> <p>Note: The role used to write the generated labeling set to the <code>OutputS3Path</code> is the role associated with the Machine Learning Transform, specified in the <code>CreateMLTransform</code> API.</p>"
     },
     "StartTrigger":{
       "name":"StartTrigger",
@@ -9017,6 +9017,36 @@
       },
       "documentation":"<p>Specifies a <code>grok</code> classifier for <code>CreateClassifier</code> to create.</p>"
     },
+    "CreateIcebergTableInput":{
+      "type":"structure",
+      "required":[
+        "Location",
+        "Schema"
+      ],
+      "members":{
+        "Location":{
+          "shape":"LocationString",
+          "documentation":"<p>The S3 location where the Iceberg table data will be stored.</p>"
+        },
+        "Schema":{
+          "shape":"IcebergSchema",
+          "documentation":"<p>The schema definition that specifies the structure, field types, and metadata for the Iceberg table.</p>"
+        },
+        "PartitionSpec":{
+          "shape":"IcebergPartitionSpec",
+          "documentation":"<p>The partitioning specification that defines how the Iceberg table data will be organized and partitioned for optimal query performance.</p>"
+        },
+        "WriteOrder":{
+          "shape":"IcebergSortOrder",
+          "documentation":"<p>The sort order specification that defines how data should be ordered within each partition to optimize query performance.</p>"
+        },
+        "Properties":{
+          "shape":"StringToStringMap",
+          "documentation":"<p>Key-value pairs of additional table properties and configuration settings for the Iceberg table.</p>"
+        }
+      },
+      "documentation":"<p>The configuration parameters required to create a new Iceberg table in the Glue Data Catalog, including table properties and metadata specifications.</p>"
+    },
     "CreateIntegrationRequest":{
       "type":"structure",
       "required":[
@@ -9791,6 +9821,10 @@
         "DatabaseName":{
           "shape":"NameString",
           "documentation":"<p>The catalog database in which to create the new table. For Hive compatibility, this name is entirely lowercase.</p>"
+        },
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The unique identifier for the table within the specified database that will be created in the Glue Data Catalog.</p>"
         },
         "TableInput":{
           "shape":"TableInput",
@@ -12904,6 +12938,10 @@
         "ConnectionName":{
           "shape":"NameString",
           "documentation":"<p>The name of the connection to an external data source, for example a Redshift-federated catalog.</p>"
+        },
+        "ConnectionType":{
+          "shape":"NameString",
+          "documentation":"<p>The type of connection used to access the federated catalog, specifying the protocol or method for connection to the external data source.</p>"
         }
       },
       "documentation":"<p>A catalog that points to an entity outside the Glue Data Catalog.</p>"
@@ -12918,6 +12956,10 @@
         "ConnectionName":{
           "shape":"NameString",
           "documentation":"<p>The name of the connection to the external metastore.</p>"
+        },
+        "ConnectionType":{
+          "shape":"NameString",
+          "documentation":"<p>The type of connection used to access the federated database, such as JDBC, ODBC, or other supported connection protocols.</p>"
         }
       },
       "documentation":"<p>A database that points to an entity outside the Glue Data Catalog.</p>"
@@ -12951,6 +12993,10 @@
         "ConnectionName":{
           "shape":"NameString",
           "documentation":"<p>The name of the connection to the external metastore.</p>"
+        },
+        "ConnectionType":{
+          "shape":"NameString",
+          "documentation":"<p>The type of connection used to access the federated table, specifying the protocol or method for connecting to the external data source.</p>"
         }
       },
       "documentation":"<p>A table that points to an entity outside the Glue Data Catalog.</p>"
@@ -16599,6 +16645,11 @@
       },
       "documentation":"<p>Compaction metrics for Iceberg for the optimizer run.</p>"
     },
+    "IcebergDocument":{
+      "type":"structure",
+      "members":{},
+      "document":true
+    },
     "IcebergInput":{
       "type":"structure",
       "required":["MetadataOperation"],
@@ -16610,9 +16661,20 @@
         "Version":{
           "shape":"VersionString",
           "documentation":"<p>The table version for the Iceberg table. Defaults to 2.</p>"
+        },
+        "CreateIcebergTableInput":{
+          "shape":"CreateIcebergTableInput",
+          "documentation":"<p>The configuration parameters required to create a new Iceberg table in the Glue Data Catalog, including table properties and metadata specifications.</p>"
         }
       },
       "documentation":"<p>A structure that defines an Apache Iceberg metadata table to create in the catalog.</p>"
+    },
+    "IcebergNullOrder":{
+      "type":"string",
+      "enum":[
+        "nulls-first",
+        "nulls-last"
+      ]
     },
     "IcebergOrphanFileDeletionConfiguration":{
       "type":"structure",
@@ -16649,6 +16711,52 @@
         }
       },
       "documentation":"<p>Orphan file deletion metrics for Iceberg for the optimizer run.</p>"
+    },
+    "IcebergPartitionField":{
+      "type":"structure",
+      "required":[
+        "SourceId",
+        "Transform",
+        "Name"
+      ],
+      "members":{
+        "SourceId":{
+          "shape":"Integer",
+          "documentation":"<p>The identifier of the source field from the table schema that this partition field is based on.</p>"
+        },
+        "Transform":{
+          "shape":"IcebergTransformString",
+          "documentation":"<p>The transformation function applied to the source field to create the partition, such as identity, bucket, truncate, year, month, day, or hour.</p>"
+        },
+        "Name":{
+          "shape":"ColumnNameString",
+          "documentation":"<p>The name of the partition field as it will appear in the partitioned table structure.</p>"
+        },
+        "FieldId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier assigned to this partition field within the Iceberg table's partition specification.</p>"
+        }
+      },
+      "documentation":"<p>Defines a single partition field within an Iceberg partition specification, including the source field, transformation function, partition name, and unique identifier.</p>"
+    },
+    "IcebergPartitionSpec":{
+      "type":"structure",
+      "required":["Fields"],
+      "members":{
+        "Fields":{
+          "shape":"IcebergPartitionSpecFieldList",
+          "documentation":"<p>The list of partition fields that define how the table data should be partitioned, including source fields and their transformations.</p>"
+        },
+        "SpecId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier for this partition specification within the Iceberg table's metadata history.</p>"
+        }
+      },
+      "documentation":"<p>Defines the partitioning specification for an Iceberg table, determining how table data will be organized and partitioned for optimal query performance.</p>"
+    },
+    "IcebergPartitionSpecFieldList":{
+      "type":"list",
+      "member":{"shape":"IcebergPartitionField"}
     },
     "IcebergRetentionConfiguration":{
       "type":"structure",
@@ -16698,6 +16806,160 @@
       },
       "documentation":"<p>Snapshot retention metrics for Iceberg for the optimizer run.</p>"
     },
+    "IcebergSchema":{
+      "type":"structure",
+      "required":["Fields"],
+      "members":{
+        "SchemaId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier for this schema version within the Iceberg table's schema evolution history.</p>"
+        },
+        "IdentifierFieldIds":{
+          "shape":"IntegerList",
+          "documentation":"<p>The list of field identifiers that uniquely identify records in the table, used for row-level operations and deduplication.</p>"
+        },
+        "Type":{
+          "shape":"IcebergStructTypeEnum",
+          "documentation":"<p>The root type of the schema structure, typically \"struct\" for Iceberg table schemas.</p>"
+        },
+        "Fields":{
+          "shape":"IcebergStructFieldList",
+          "documentation":"<p>The list of field definitions that make up the table schema, including field names, types, and metadata.</p>"
+        }
+      },
+      "documentation":"<p>Defines the schema structure for an Iceberg table, including field definitions, data types, and schema metadata.</p>"
+    },
+    "IcebergSortDirection":{
+      "type":"string",
+      "enum":[
+        "asc",
+        "desc"
+      ]
+    },
+    "IcebergSortField":{
+      "type":"structure",
+      "required":[
+        "SourceId",
+        "Transform",
+        "Direction",
+        "NullOrder"
+      ],
+      "members":{
+        "SourceId":{
+          "shape":"Integer",
+          "documentation":"<p>The identifier of the source field from the table schema that this sort field is based on.</p>"
+        },
+        "Transform":{
+          "shape":"IcebergTransformString",
+          "documentation":"<p>The transformation function applied to the source field before sorting, such as identity, bucket, or truncate.</p>"
+        },
+        "Direction":{
+          "shape":"IcebergSortDirection",
+          "documentation":"<p>The sort direction for this field, either ascending or descending.</p>"
+        },
+        "NullOrder":{
+          "shape":"IcebergNullOrder",
+          "documentation":"<p>The ordering behavior for null values in this field, specifying whether nulls should appear first or last in the sort order.</p>"
+        }
+      },
+      "documentation":"<p>Defines a single field within an Iceberg sort order specification, including the source field, transformation, sort direction, and null value ordering.</p>"
+    },
+    "IcebergSortOrder":{
+      "type":"structure",
+      "required":[
+        "OrderId",
+        "Fields"
+      ],
+      "members":{
+        "OrderId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier for this sort order specification within the Iceberg table's metadata.</p>"
+        },
+        "Fields":{
+          "shape":"IcebergSortOrderFieldList",
+          "documentation":"<p>The list of fields and their sort directions that define the ordering criteria for the Iceberg table data.</p>"
+        }
+      },
+      "documentation":"<p>Defines the sort order specification for an Iceberg table, determining how data should be ordered within partitions to optimize query performance.</p>"
+    },
+    "IcebergSortOrderFieldList":{
+      "type":"list",
+      "member":{"shape":"IcebergSortField"}
+    },
+    "IcebergStructField":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Name",
+        "Type",
+        "Required"
+      ],
+      "members":{
+        "Id":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier assigned to this field within the Iceberg table schema, used for schema evolution and field tracking.</p>"
+        },
+        "Name":{
+          "shape":"ColumnNameString",
+          "documentation":"<p>The name of the field as it appears in the table schema and query operations.</p>"
+        },
+        "Type":{
+          "shape":"IcebergDocument",
+          "documentation":"<p>The data type definition for this field, specifying the structure and format of the data it contains.</p>"
+        },
+        "Required":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this field is required (non-nullable) or optional (nullable) in the table schema.</p>"
+        },
+        "Doc":{
+          "shape":"CommentString",
+          "documentation":"<p>Optional documentation or description text that provides additional context about the purpose and usage of this field.</p>"
+        }
+      },
+      "documentation":"<p>Defines a single field within an Iceberg table schema, including its identifier, name, data type, nullability, and documentation.</p>"
+    },
+    "IcebergStructFieldList":{
+      "type":"list",
+      "member":{"shape":"IcebergStructField"}
+    },
+    "IcebergStructTypeEnum":{
+      "type":"string",
+      "enum":["struct"]
+    },
+    "IcebergTableUpdate":{
+      "type":"structure",
+      "required":[
+        "Schema",
+        "Location"
+      ],
+      "members":{
+        "Schema":{
+          "shape":"IcebergSchema",
+          "documentation":"<p>The updated schema definition for the Iceberg table, specifying any changes to field structure, data types, or schema metadata.</p>"
+        },
+        "PartitionSpec":{
+          "shape":"IcebergPartitionSpec",
+          "documentation":"<p>The updated partitioning specification that defines how the table data should be reorganized and partitioned.</p>"
+        },
+        "SortOrder":{
+          "shape":"IcebergSortOrder",
+          "documentation":"<p>The updated sort order specification that defines how data should be ordered within partitions for optimal query performance.</p>"
+        },
+        "Location":{
+          "shape":"LocationString",
+          "documentation":"<p>The updated S3 location where the Iceberg table data will be stored.</p>"
+        },
+        "Properties":{
+          "shape":"StringToStringMap",
+          "documentation":"<p>Updated key-value pairs of table properties and configuration settings for the Iceberg table.</p>"
+        }
+      },
+      "documentation":"<p>Defines a complete set of updates to be applied to an Iceberg table, including schema changes, partitioning modifications, sort order adjustments, location updates, and property changes.</p>"
+    },
+    "IcebergTableUpdateList":{
+      "type":"list",
+      "member":{"shape":"IcebergTableUpdate"}
+    },
     "IcebergTarget":{
       "type":"structure",
       "members":{
@@ -16733,6 +16995,7 @@
       "type":"list",
       "member":{"shape":"IcebergTarget"}
     },
+    "IcebergTransformString":{"type":"string"},
     "IdString":{
       "type":"string",
       "max":255,
@@ -16875,6 +17138,10 @@
       "type":"integer",
       "max":1,
       "min":0
+    },
+    "IntegerList":{
+      "type":"list",
+      "member":{"shape":"Integer"}
     },
     "IntegerValue":{"type":"integer"},
     "Integration":{
@@ -24698,6 +24965,11 @@
       "type":"list",
       "member":{"shape":"GenericString"}
     },
+    "StringToStringMap":{
+      "type":"map",
+      "key":{"shape":"NullableString"},
+      "value":{"shape":"NullableString"}
+    },
     "SupportedDialect":{
       "type":"structure",
       "members":{
@@ -26430,6 +26702,28 @@
       },
       "documentation":"<p>Specifies a grok classifier to update when passed to <code>UpdateClassifier</code>.</p>"
     },
+    "UpdateIcebergInput":{
+      "type":"structure",
+      "required":["UpdateIcebergTableInput"],
+      "members":{
+        "UpdateIcebergTableInput":{
+          "shape":"UpdateIcebergTableInput",
+          "documentation":"<p>The specific update operations to be applied to the Iceberg table, containing a list of updates that define the new state of the table including schema, partitions, and properties.</p>"
+        }
+      },
+      "documentation":"<p>Input parameters specific to updating Apache Iceberg tables in Glue Data Catalog, containing the update operations to be applied to an existing Iceberg table.</p>"
+    },
+    "UpdateIcebergTableInput":{
+      "type":"structure",
+      "required":["Updates"],
+      "members":{
+        "Updates":{
+          "shape":"IcebergTableUpdateList",
+          "documentation":"<p>The list of table update operations that specify the changes to be made to the Iceberg table, including schema modifications, partition specifications, and table properties.</p>"
+        }
+      },
+      "documentation":"<p>Contains the update operations to be applied to an existing Iceberg table in AWS Glue Data Catalog, defining the new state of the table metadata. </p>"
+    },
     "UpdateIntegrationResourcePropertyRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -26644,6 +26938,16 @@
         }
       }
     },
+    "UpdateOpenTableFormatInput":{
+      "type":"structure",
+      "members":{
+        "UpdateIcebergInput":{
+          "shape":"UpdateIcebergInput",
+          "documentation":"<p>Apache Iceberg-specific update parameters that define the table modifications to be applied, including schema changes, partition specifications, and table properties.</p>"
+        }
+      },
+      "documentation":"<p>Input parameters for updating open table format tables in GlueData Catalog, serving as a wrapper for format-specific update operations such as Apache Iceberg.</p>"
+    },
     "UpdatePartitionRequest":{
       "type":"structure",
       "required":[
@@ -26836,10 +27140,7 @@
     },
     "UpdateTableRequest":{
       "type":"structure",
-      "required":[
-        "DatabaseName",
-        "TableInput"
-      ],
+      "required":["DatabaseName"],
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
@@ -26848,6 +27149,10 @@
         "DatabaseName":{
           "shape":"NameString",
           "documentation":"<p>The name of the catalog database in which the table resides. For Hive compatibility, this name is entirely lowercase.</p>"
+        },
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The unique identifier for the table within the specified database that will be created in the Glue Data Catalog.</p>"
         },
         "TableInput":{
           "shape":"TableInput",
@@ -26872,7 +27177,8 @@
         "Force":{
           "shape":"Boolean",
           "documentation":"<p>A flag that can be set to true to ignore matching storage descriptor and subobject matching requirements.</p>"
-        }
+        },
+        "UpdateOpenTableFormatInput":{"shape":"UpdateOpenTableFormatInput"}
       }
     },
     "UpdateTableResponse":{

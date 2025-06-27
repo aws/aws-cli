@@ -109,10 +109,10 @@ class TestCLISessionDatabaseConnection:
 
     def test_timeout_does_not_raise_exception(self, session_conn):
         test_query = """
-                SELECT name
-                FROM sqlite_master
-                WHERE type='table'
-                AND name='session';
+            SELECT name
+            FROM sqlite_master
+            WHERE type='table'
+            AND name='session';
         """
 
         class FakeConnection(sqlite3.Connection):

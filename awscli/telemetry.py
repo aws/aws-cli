@@ -66,6 +66,9 @@ class CLISessionDatabaseConnection:
           id TEXT UNIQUE NOT NULL
         )
     """
+    _CHECK_HOST_ID = """
+        SELECT COUNT(*) FROM host_id
+    """
     _INSERT_HOST_ID = """
         INSERT OR IGNORE INTO host_id (
             key, id
@@ -107,15 +110,18 @@ class CLISessionDatabaseConnection:
         self.execute(self._CREATE_HOST_ID_TABLE)
 
     def _ensure_host_id(self):
-        self.execute(
-            self._INSERT_HOST_ID,
-            # Hardcode `0` as primary key to ensure
-            # there's only ever 1 host id in the table.
-            (
-                0,
-                str(uuid.uuid4()),
-            ),
-        )
+        cur = self.execute(self._CHECK_HOST_ID)
+        host_id_ct = cur.fetchone()[0]
+        if host_id_ct == 0:
+            self.execute(
+                self._INSERT_HOST_ID,
+                # Hardcode `0` as primary key to ensure
+                # there's only ever 1 host id in the table.
+                (
+                    0,
+                    str(uuid.uuid4()),
+                ),
+            )
 
     def _try_to_enable_wal(self):
         try:

@@ -32,7 +32,7 @@ Output::
         "tags": {}
     }
 
-For more information, see `Omics Workflows <https://docs.aws.amazon.com/omics/latest/dev/workflows.html>`__ in the *Amazon Omics Developer Guide*.
+For more information, see `Starting a run <https://docs.aws.amazon.com/omics/latest/dev/starting-a-run.html>`__ in the *AWS HealthOmics User Guide*.
 
 **To load source files from Amazon Omics**
 
@@ -46,4 +46,3 @@ You can also load source files from Amazon Omics storage, by using service-speci
         "ref_fasta_index": "omics://123456789012.storage.us-west-2.amazonaws.com/1234567890/reference/1234567890/index"
     }
 
-For more information, see `Omics Workflows <https://docs.aws.amazon.com/omics/latest/dev/workflows.html>`__ in the *Amazon Omics Developer Guide*.

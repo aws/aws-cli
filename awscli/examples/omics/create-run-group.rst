@@ -5,7 +5,9 @@ The following ``create-run-group`` example creates a run group named ``cram-conv
     aws omics create-run-group \
         --name cram-converter \
         --max-cpus 20 \
-        --max-duration 600
+        --max-gpus 10 \
+        --max-duration 600 \
+        --max-runs 5 
 
 Output::
 
@@ -15,4 +17,4 @@ Output::
         "tags": {}
     }
 
-For more information, see `Omics Workflows <https://docs.aws.amazon.com/omics/latest/dev/workflows.html>`__ in the *Amazon Omics Developer Guide*.
+For more information, see `Creating run groups <https://docs.aws.amazon.com/omics/latest/dev/creating-run-groups.html>`__ in the *AWS HealthOmics User Guide*.

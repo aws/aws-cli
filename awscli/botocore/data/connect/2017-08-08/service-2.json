@@ -438,7 +438,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<important> <p>Only the EMAIL and VOICE channels are supported. The supported initiation methods for EMAIL are: OUTBOUND, AGENT_REPLY, and FLOW. For VOICE the supported initiation methods are TRANSFER and the subtype connect:ExternalAudio. </p> </important> <p>Creates a new EMAIL or VOICE contact. </p>"
+      "documentation":"<important> <p>Only the VOICE, EMAIL, and TASK channels are supported. </p> <ul> <li> <p>For VOICE: The supported initiation method is <code>TRANSFER</code>. The contacts created with this initiation method have a subtype <code>connect:ExternalAudio</code>. </p> </li> <li> <p>For EMAIL: The supported initiation methods are <code>OUTBOUND</code>, <code>AGENT_REPLY</code>, and <code>FLOW</code>. </p> </li> <li> <p>For TASK: The supported initiation method is <code>API</code>. Contacts created with this API have a sub-type of <code>connect:ExternalTask</code>.</p> </li> </ul> </important> <p>Creates a new VOICE, EMAIL, or TASK contact. </p> <p>After a contact is created, you can move it to the desired state by using the <code>InitiateAs</code> parameter. While you can use API to create task contacts that are in the <code>COMPLETED</code> state, you must contact Amazon Web Services Support before using it for bulk import use cases. Bulk import causes your requests to be throttled or fail if your CreateContact limits aren't high enough. </p>"
     },
     "CreateContactFlow":{
       "name":"CreateContactFlow",
@@ -6674,6 +6674,44 @@
       "member":{"shape":"Channel"},
       "max":4
     },
+    "ChatContactMetrics":{
+      "type":"structure",
+      "members":{
+        "MultiParty":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>A boolean flag indicating whether multiparty chat or supervisor barge were enabled on this contact.</p>"
+        },
+        "TotalMessages":{
+          "shape":"Count",
+          "documentation":"<p>The number of chat messages on the contact.</p>"
+        },
+        "TotalBotMessages":{
+          "shape":"Count",
+          "documentation":"<p>The total number of bot and automated messages on a chat contact.</p>"
+        },
+        "TotalBotMessageLengthInChars":{
+          "shape":"Count",
+          "documentation":"<p>The total number of characters from bot and automated messages on a chat contact.</p>"
+        },
+        "ConversationCloseTimeInMillis":{
+          "shape":"DurationMillis",
+          "documentation":"<p>The time it took for a contact to end after the last customer message.</p>"
+        },
+        "ConversationTurnCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of conversation turns in a chat contact, which represents the back-and-forth exchanges between customer and other participants.</p>"
+        },
+        "AgentFirstResponseTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The agent first response timestamp for a chat contact.</p>"
+        },
+        "AgentFirstResponseTimeInMillis":{
+          "shape":"DurationMillis",
+          "documentation":"<p>The time for an agent to respond after obtaining a chat contact.</p>"
+        }
+      },
+      "documentation":"<p>Information about the overall participant interactions at the contact level.</p>"
+    },
     "ChatContent":{
       "type":"string",
       "max":16384,
@@ -6733,6 +6771,24 @@
         }
       },
       "documentation":"<p>A chat message.</p>"
+    },
+    "ChatMetrics":{
+      "type":"structure",
+      "members":{
+        "ChatContactMetrics":{
+          "shape":"ChatContactMetrics",
+          "documentation":"<p>Information about the overall participant interactions at the contact level.</p>"
+        },
+        "AgentMetrics":{
+          "shape":"ParticipantMetrics",
+          "documentation":"<p>Information about agent interactions in a contact.</p>"
+        },
+        "CustomerMetrics":{
+          "shape":"ParticipantMetrics",
+          "documentation":"<p>Information about customer interactions in a contact.</p>"
+        }
+      },
+      "documentation":"<p>Information about how agent, bot, and customer interact in a chat contact.</p>"
     },
     "ChatParticipantRoleConfig":{
       "type":"structure",
@@ -7119,6 +7175,10 @@
         "QualityMetrics":{
           "shape":"QualityMetrics",
           "documentation":"<p>Information about the quality of the participant's media connection.</p>"
+        },
+        "ChatMetrics":{
+          "shape":"ChatMetrics",
+          "documentation":"<p>Information about how agent, bot, and customer interact in a chat contact.</p>"
         },
         "DisconnectDetails":{
           "shape":"DisconnectDetails",
@@ -7893,6 +7953,7 @@
       },
       "documentation":"<p>An object that can be used to specify Tag conditions or Hierarchy Group conditions inside the <code>SearchFilter</code>.</p> <p>This accepts an <code>OR</code> of <code>AND</code> (List of List) input where:</p> <ul> <li> <p>The top level list specifies conditions that need to be applied with <code>OR</code> operator</p> </li> <li> <p>The inner list specifies conditions that need to be applied with <code>AND</code> operator.</p> </li> </ul> <note> <p>Only one field can be populated. Maximum number of allowed Tag conditions is 25. Maximum number of allowed Hierarchy Group conditions is 20. </p> </note>"
     },
+    "Count":{"type":"integer"},
     "CreateAgentStatusRequest":{
       "type":"structure",
       "required":[
@@ -8150,15 +8211,15 @@
         },
         "References":{
           "shape":"ContactReferences",
-          "documentation":"<p>A formatted URL that is shown to an agent in the Contact Control Panel (CCP). Tasks can have the following reference types at the time of creation: URL | NUMBER | STRING | DATE | EMAIL | ATTACHMENT.</p>"
+          "documentation":"<p>A formatted URL that is shown to an agent in the Contact Control Panel (CCP). Tasks can have the following reference types at the time of creation: <code>URL</code> | <code>NUMBER</code> | <code>STRING</code> | <code>DATE</code> | <code>EMAIL</code> | <code>ATTACHMENT</code>.</p>"
         },
         "Channel":{
           "shape":"Channel",
-          "documentation":"<p>The channel for the contact</p> <important> <p>CreateContact only supports the EMAIL and VOICE channels. The following information that states other channels are supported is incorrect. We are working to update this topic.</p> </important>"
+          "documentation":"<p>The channel for the contact.</p> <important> <p>The CHAT channel is not supported. The following information is incorrect. We're working to correct it.</p> </important>"
         },
         "InitiationMethod":{
           "shape":"ContactInitiationMethod",
-          "documentation":"<p>Indicates how the contact was initiated. </p> <important> <p>CreateContact only supports the following initiation methods: </p> <ul> <li> <p>For EMAIL: OUTBOUND, AGENT_REPLY, and FLOW. </p> </li> <li> <p>For VOICE: TRANSFER and the subtype connect:ExternalAudio. </p> </li> </ul> <p>The following information that states other initiation methods are supported is incorrect. We are working to update this topic.</p> </important>"
+          "documentation":"<p>Indicates how the contact was initiated. </p> <important> <p>CreateContact only supports the following initiation methods. Valid values by channel are: </p> <ul> <li> <p>For VOICE: <code>TRANSFER</code> and the subtype <code>connect:ExternalAudio</code> </p> </li> <li> <p>For EMAIL: <code>OUTBOUND</code> | <code>AGENT_REPLY</code> | <code>FLOW</code> </p> </li> <li> <p>For TASK: <code>API</code> </p> </li> </ul> <p>The other channels listed below are incorrect. We're working to correct this information.</p> </important>"
         },
         "ExpiryDurationInMinutes":{
           "shape":"ExpiryDurationInMinutes",
@@ -8166,11 +8227,11 @@
         },
         "UserInfo":{
           "shape":"UserInfo",
-          "documentation":"<p>User details for the contact</p> <important> <p>UserInfo is required when creating an EMAIL contact with OUTBOUND and AGENT_REPLY contact initiation methods.</p> </important>"
+          "documentation":"<p>User details for the contact</p> <important> <p>UserInfo is required when creating an EMAIL contact with <code>OUTBOUND</code> and <code>AGENT_REPLY</code> contact initiation methods.</p> </important>"
         },
         "InitiateAs":{
           "shape":"InitiateAs",
-          "documentation":"<p>Initial state of the contact when it's created</p>"
+          "documentation":"<p>Initial state of the contact when it's created. Only TASK channel contacts can be initiated with <code>COMPLETED</code> state.</p>"
         },
         "Name":{
           "shape":"Name",
@@ -11835,6 +11896,10 @@
       "min":0
     },
     "DurationInSeconds":{"type":"integer"},
+    "DurationMillis":{
+      "type":"long",
+      "min":0
+    },
     "EffectiveHoursOfOperationList":{
       "type":"list",
       "member":{"shape":"EffectiveHoursOfOperations"}
@@ -17948,6 +18013,7 @@
       },
       "documentation":"<p>The type of notification recipient.</p>"
     },
+    "NullableBoolean":{"type":"boolean"},
     "NullableProficiencyLevel":{
       "type":"float",
       "max":5.0,
@@ -18262,6 +18328,48 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "ParticipantMetrics":{
+      "type":"structure",
+      "members":{
+        "ParticipantId":{
+          "shape":"ParticipantId",
+          "documentation":"<p>The Participant's ID.</p>"
+        },
+        "ParticipantType":{
+          "shape":"ParticipantType",
+          "documentation":"<p>Information about the conversation participant. Following are the participant types: [Agent, Customer, Supervisor].</p>"
+        },
+        "ConversationAbandon":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>A boolean flag indicating whether the chat conversation was abandoned by a Participant.</p>"
+        },
+        "MessagesSent":{
+          "shape":"Count",
+          "documentation":"<p>Number of chat messages sent by Participant.</p>"
+        },
+        "NumResponses":{
+          "shape":"Count",
+          "documentation":"<p>Number of chat messages sent by Participant.</p>"
+        },
+        "MessageLengthInChars":{
+          "shape":"Count",
+          "documentation":"<p>Number of chat characters sent by Participant.</p>"
+        },
+        "TotalResponseTimeInMillis":{
+          "shape":"DurationMillis",
+          "documentation":"<p>Total chat response time by Participant.</p>"
+        },
+        "MaxResponseTimeInMillis":{
+          "shape":"DurationMillis",
+          "documentation":"<p>Maximum chat response time by Participant.</p>"
+        },
+        "LastMessageTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>Timestamp of last chat message by Participant.</p>"
+        }
+      },
+      "documentation":"<p>Information about a participant's interactions in a contact.</p>"
     },
     "ParticipantRole":{
       "type":"string",

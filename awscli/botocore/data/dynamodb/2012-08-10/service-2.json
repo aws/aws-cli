@@ -62,7 +62,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ItemCollectionSizeLimitExceededException"},
         {"shape":"RequestLimitExceeded"},
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"ReplicatedWriteConflictException"}
       ],
       "documentation":"<p>The <code>BatchWriteItem</code> operation puts or deletes multiple items in one or more tables. A single call to <code>BatchWriteItem</code> can transmit up to 16MB of data over the network, consisting of up to 25 item put or delete operations. While individual items can be up to 400 KB once stored, it's important to note that an item's representation might be greater than 400KB while being sent in DynamoDB's JSON format for the API call. For more details on this distinction, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html\">Naming Rules and Data Types</a>.</p> <note> <p> <code>BatchWriteItem</code> cannot update items. If you perform a <code>BatchWriteItem</code> operation on an existing item, that item's values will be overwritten by the operation and it will appear like it was updated. To update items, we recommend you use the <code>UpdateItem</code> action.</p> </note> <p>The individual <code>PutItem</code> and <code>DeleteItem</code> operations specified in <code>BatchWriteItem</code> are atomic; however <code>BatchWriteItem</code> as a whole is not. If any requested operations fail because the table's provisioned throughput is exceeded or an internal processing failure occurs, the failed operations are returned in the <code>UnprocessedItems</code> response parameter. You can investigate and optionally resend the requests. Typically, you would call <code>BatchWriteItem</code> in a loop. Each iteration would check for unprocessed items and submit a new <code>BatchWriteItem</code> request with those unprocessed items until all items have been processed.</p> <p>For tables and indexes with provisioned capacity, if none of the items can be processed due to insufficient provisioned throughput on all of the tables in the request, then <code>BatchWriteItem</code> returns a <code>ProvisionedThroughputExceededException</code>. For all tables and indexes, if none of the items can be processed due to other throttling scenarios (such as exceeding partition level limits), then <code>BatchWriteItem</code> returns a <code>ThrottlingException</code>.</p> <important> <p>If DynamoDB returns any unprocessed items, you should retry the batch operation on those items. However, <i>we strongly recommend that you use an exponential backoff algorithm</i>. If you retry the batch operation immediately, the underlying read or write requests can still fail due to throttling on the individual tables. If you delay the batch operation using exponential backoff, the individual requests in the batch are much more likely to succeed.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ErrorHandling.html#Programming.Errors.BatchOperations\">Batch Operations and Error Handling</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> </important> <p>With <code>BatchWriteItem</code>, you can efficiently write or delete large amounts of data, such as from Amazon EMR, or copy data from another database into DynamoDB. In order to improve performance with these large-scale operations, <code>BatchWriteItem</code> does not behave in the same way as individual <code>PutItem</code> and <code>DeleteItem</code> calls would. For example, you cannot specify conditions on individual put and delete requests, and <code>BatchWriteItem</code> does not return deleted items in the response.</p> <p>If you use a programming language that supports concurrency, you can use threads to write items in parallel. Your application must include the necessary logic to manage the threads. With languages that don't support threading, you must update or delete the specified items one at a time. In both situations, <code>BatchWriteItem</code> performs the specified put and delete operations in parallel, giving you the power of the thread pool approach without having to introduce complexity into your application.</p> <p>Parallel processing reduces latency, but each specified put and delete request consumes the same number of write capacity units whether it is processed in parallel or not. Delete operations on nonexistent items consume one write capacity unit.</p> <p>If one or more of the following is true, DynamoDB rejects the entire batch write operation:</p> <ul> <li> <p>One or more tables specified in the <code>BatchWriteItem</code> request does not exist.</p> </li> <li> <p>Primary key attributes specified on an item in the request do not match those in the corresponding table's primary key schema.</p> </li> <li> <p>You try to perform multiple operations on the same item in the same <code>BatchWriteItem</code> request. For example, you cannot put and delete the same item in the same <code>BatchWriteItem</code> request. </p> </li> <li> <p> Your request contains at least two items with identical hash and range keys (which essentially is two put operations). </p> </li> <li> <p>There are more than 25 requests in the batch.</p> </li> <li> <p>Any individual item in a batch exceeds 400 KB.</p> </li> <li> <p>The total request size exceeds 16 MB.</p> </li> <li> <p>Any individual items with keys exceeding the key length limits. For a partition key, the limit is 2048 bytes and for a sort key, the limit is 1024 bytes.</p> </li> </ul>",
       "endpointdiscovery":{},
@@ -192,7 +193,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>The <code>DeleteTable</code> operation deletes a table and all of its items. After a <code>DeleteTable</code> request, the specified table is in the <code>DELETING</code> state until DynamoDB completes the deletion. If the table is in the <code>ACTIVE</code> state, you can delete it. If a table is in <code>CREATING</code> or <code>UPDATING</code> states, then DynamoDB returns a <code>ResourceInUseException</code>. If the specified table does not exist, DynamoDB returns a <code>ResourceNotFoundException</code>. If table is already in the <code>DELETING</code> state, no error is returned. </p> <important> <p>For global tables, this operation only applies to global tables using Version 2019.11.21 (Current version). </p> </important> <note> <p>DynamoDB might continue to accept data read and write operations, such as <code>GetItem</code> and <code>PutItem</code>, on a table in the <code>DELETING</code> state until the table deletion is complete. For the full list of table states, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_TableDescription.html#DDB-Type-TableDescription-TableStatus\">TableStatus</a>.</p> </note> <p>When you delete a table, any indexes on that table are also deleted.</p> <p>If you have DynamoDB Streams enabled on the table, then the corresponding stream on that table goes into the <code>DISABLED</code> state, and the stream is automatically deleted after 24 hours.</p> <p>Use the <code>DescribeTable</code> action to check the status of the table. </p>",
+      "documentation":"<p>The <code>DeleteTable</code> operation deletes a table and all of its items. After a <code>DeleteTable</code> request, the specified table is in the <code>DELETING</code> state until DynamoDB completes the deletion. If the table is in the <code>ACTIVE</code> state, you can delete it. If a table is in <code>CREATING</code> or <code>UPDATING</code> states, then DynamoDB returns a <code>ResourceInUseException</code>. If the specified table does not exist, DynamoDB returns a <code>ResourceNotFoundException</code>. If table is already in the <code>DELETING</code> state, no error is returned. </p> <note> <p>DynamoDB might continue to accept data read and write operations, such as <code>GetItem</code> and <code>PutItem</code>, on a table in the <code>DELETING</code> state until the table deletion is complete. For the full list of table states, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_TableDescription.html#DDB-Type-TableDescription-TableStatus\">TableStatus</a>.</p> </note> <p>When you delete a table, any indexes on that table are also deleted.</p> <p>If you have DynamoDB Streams enabled on the table, then the corresponding stream on that table goes into the <code>DISABLED</code> state, and the stream is automatically deleted after 24 hours.</p> <p>Use the <code>DescribeTable</code> action to check the status of the table. </p>",
       "endpointdiscovery":{}
     },
     "DescribeBackup":{
@@ -349,7 +350,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Returns information about the table, including the current status of the table, when it was created, the primary key schema, and any indexes on the table.</p> <important> <p>For global tables, this operation only applies to global tables using Version 2019.11.21 (Current version). </p> </important> <note> <p>If you issue a <code>DescribeTable</code> request immediately after a <code>CreateTable</code> request, DynamoDB might return a <code>ResourceNotFoundException</code>. This is because <code>DescribeTable</code> uses an eventually consistent query, and the metadata for your table might not be available at that moment. Wait for a few seconds, and then try the <code>DescribeTable</code> request again.</p> </note>",
+      "documentation":"<p>Returns information about the table, including the current status of the table, when it was created, the primary key schema, and any indexes on the table.</p> <note> <p>If you issue a <code>DescribeTable</code> request immediately after a <code>CreateTable</code> request, DynamoDB might return a <code>ResourceNotFoundException</code>. This is because <code>DescribeTable</code> uses an eventually consistent query, and the metadata for your table might not be available at that moment. Wait for a few seconds, and then try the <code>DescribeTable</code> request again.</p> </note>",
       "endpointdiscovery":{}
     },
     "DescribeTableReplicaAutoScaling":{
@@ -364,7 +365,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Describes auto scaling settings across replicas of the global table at once.</p> <important> <p>For global tables, this operation only applies to global tables using Version 2019.11.21 (Current version).</p> </important>"
+      "documentation":"<p>Describes auto scaling settings across replicas of the global table at once.</p>"
     },
     "DescribeTimeToLive":{
       "name":"DescribeTimeToLive",
@@ -854,7 +855,7 @@
         {"shape":"ReplicaNotFoundException"},
         {"shape":"TableNotFoundException"}
       ],
-      "documentation":"<p>Adds or removes replicas in the specified global table. The global table must already exist to be able to use this operation. Any replica to be added must be empty, have the same name as the global table, have the same key schema, have DynamoDB Streams enabled, and have the same provisioned and maximum write capacity units.</p> <important> <p>This documentation is for version 2017.11.29 (Legacy) of global tables, which should be avoided for new global tables. Customers should use <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html\">Global Tables version 2019.11.21 (Current)</a> when possible, because it provides greater flexibility, higher efficiency, and consumes less write capacity than 2017.11.29 (Legacy).</p> <p>To determine which version you're using, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/globaltables.DetermineVersion.html\">Determining the global table version you are using</a>. To update existing global tables from version 2017.11.29 (Legacy) to version 2019.11.21 (Current), see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/V2globaltables_upgrade.html\">Upgrading global tables</a>.</p> </important> <note> <p> For global tables, this operation only applies to global tables using Version 2019.11.21 (Current version). If you are using global tables <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html\">Version 2019.11.21</a> you can use <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_UpdateTable.html\">UpdateTable</a> instead. </p> <p> Although you can use <code>UpdateGlobalTable</code> to add replicas and remove replicas in a single request, for simplicity we recommend that you issue separate requests for adding or removing replicas. </p> </note> <p> If global secondary indexes are specified, then the following conditions must also be met: </p> <ul> <li> <p> The global secondary indexes must have the same name. </p> </li> <li> <p> The global secondary indexes must have the same hash key and sort key (if present). </p> </li> <li> <p> The global secondary indexes must have the same provisioned and maximum write capacity units. </p> </li> </ul>",
+      "documentation":"<p>Adds or removes replicas in the specified global table. The global table must already exist to be able to use this operation. Any replica to be added must be empty, have the same name as the global table, have the same key schema, have DynamoDB Streams enabled, and have the same provisioned and maximum write capacity units.</p> <important> <p>This documentation is for version 2017.11.29 (Legacy) of global tables, which should be avoided for new global tables. Customers should use <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html\">Global Tables version 2019.11.21 (Current)</a> when possible, because it provides greater flexibility, higher efficiency, and consumes less write capacity than 2017.11.29 (Legacy).</p> <p>To determine which version you're using, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/globaltables.DetermineVersion.html\">Determining the global table version you are using</a>. To update existing global tables from version 2017.11.29 (Legacy) to version 2019.11.21 (Current), see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/V2globaltables_upgrade.html\">Upgrading global tables</a>.</p> </important> <note> <p> If you are using global tables <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html\">Version 2019.11.21</a> (Current) you can use <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_UpdateTable.html\">UpdateTable</a> instead. </p> <p> Although you can use <code>UpdateGlobalTable</code> to add replicas and remove replicas in a single request, for simplicity we recommend that you issue separate requests for adding or removing replicas. </p> </note> <p> If global secondary indexes are specified, then the following conditions must also be met: </p> <ul> <li> <p> The global secondary indexes must have the same name. </p> </li> <li> <p> The global secondary indexes must have the same hash key and sort key (if present). </p> </li> <li> <p> The global secondary indexes must have the same provisioned and maximum write capacity units. </p> </li> </ul>",
       "endpointdiscovery":{}
     },
     "UpdateGlobalTableSettings":{
@@ -928,7 +929,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Modifies the provisioned throughput settings, global secondary indexes, or DynamoDB Streams settings for a given table.</p> <important> <p>For global tables, this operation only applies to global tables using Version 2019.11.21 (Current version). </p> </important> <p>You can only perform one of the following operations at once:</p> <ul> <li> <p>Modify the provisioned throughput settings of the table.</p> </li> <li> <p>Remove a global secondary index from the table.</p> </li> <li> <p>Create a new global secondary index on the table. After the index begins backfilling, you can use <code>UpdateTable</code> to perform other operations.</p> </li> </ul> <p> <code>UpdateTable</code> is an asynchronous operation; while it's executing, the table status changes from <code>ACTIVE</code> to <code>UPDATING</code>. While it's <code>UPDATING</code>, you can't issue another <code>UpdateTable</code> request. When the table returns to the <code>ACTIVE</code> state, the <code>UpdateTable</code> operation is complete.</p>",
+      "documentation":"<p>Modifies the provisioned throughput settings, global secondary indexes, or DynamoDB Streams settings for a given table.</p> <p>You can only perform one of the following operations at once:</p> <ul> <li> <p>Modify the provisioned throughput settings of the table.</p> </li> <li> <p>Remove a global secondary index from the table.</p> </li> <li> <p>Create a new global secondary index on the table. After the index begins backfilling, you can use <code>UpdateTable</code> to perform other operations.</p> </li> </ul> <p> <code>UpdateTable</code> is an asynchronous operation; while it's executing, the table status changes from <code>ACTIVE</code> to <code>UPDATING</code>. While it's <code>UPDATING</code>, you can't issue another <code>UpdateTable</code> request. When the table returns to the <code>ACTIVE</code> state, the <code>UpdateTable</code> operation is complete.</p>",
       "endpointdiscovery":{}
     },
     "UpdateTableReplicaAutoScaling":{
@@ -945,7 +946,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Updates auto scaling settings on your global tables at once.</p> <important> <p>For global tables, this operation only applies to global tables using Version 2019.11.21 (Current version). </p> </important>"
+      "documentation":"<p>Updates auto scaling settings on your global tables at once.</p>"
     },
     "UpdateTimeToLive":{
       "name":"UpdateTimeToLive",
@@ -1989,6 +1990,17 @@
         }
       }
     },
+    "CreateGlobalTableWitnessGroupMemberAction":{
+      "type":"structure",
+      "required":["RegionName"],
+      "members":{
+        "RegionName":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region name to be added as a witness Region for the MRSC global table. The witness must be in a different Region than the replicas and within the same Region set:</p> <ul> <li> <p>US Region set: US East (N. Virginia), US East (Ohio), US West (Oregon)</p> </li> <li> <p>EU Region set: Europe (Ireland), Europe (London), Europe (Paris), Europe (Frankfurt)</p> </li> <li> <p>AP Region set: Asia Pacific (Tokyo), Asia Pacific (Seoul), Asia Pacific (Osaka)</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Specifies the action to add a new witness Region to a MRSC global table. A MRSC global table can be configured with either three replicas, or with two replicas and one witness.</p>"
+    },
     "CreateReplicaAction":{
       "type":"structure",
       "required":["RegionName"],
@@ -2210,6 +2222,17 @@
         }
       },
       "documentation":"<p>Represents a global secondary index to be deleted from an existing table.</p>"
+    },
+    "DeleteGlobalTableWitnessGroupMemberAction":{
+      "type":"structure",
+      "required":["RegionName"],
+      "members":{
+        "RegionName":{
+          "shape":"RegionName",
+          "documentation":"<p>The witness Region name to be removed from the MRSC global table.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the action to remove a witness Region from a MRSC global table. You cannot delete a single witness from a MRSC global table - you must delete both a replica and the witness together. The deletion of both a witness and replica converts the remaining replica to a single-Region DynamoDB table. </p>"
     },
     "DeleteItemInput":{
       "type":"structure",
@@ -3460,6 +3483,44 @@
         "DELETING",
         "UPDATING"
       ]
+    },
+    "GlobalTableWitnessDescription":{
+      "type":"structure",
+      "members":{
+        "RegionName":{
+          "shape":"RegionName",
+          "documentation":"<p>The name of the Amazon Web Services Region that serves as a witness for the MRSC global table.</p>"
+        },
+        "WitnessStatus":{
+          "shape":"WitnessStatus",
+          "documentation":"<p>The current status of the witness Region in the MRSC global table.</p>"
+        }
+      },
+      "documentation":"<p>Represents the properties of a witness Region in a MRSC global table. </p>"
+    },
+    "GlobalTableWitnessDescriptionList":{
+      "type":"list",
+      "member":{"shape":"GlobalTableWitnessDescription"}
+    },
+    "GlobalTableWitnessGroupUpdate":{
+      "type":"structure",
+      "members":{
+        "Create":{
+          "shape":"CreateGlobalTableWitnessGroupMemberAction",
+          "documentation":"<p>Specifies a witness Region to be added to a new MRSC global table. The witness must be added when creating the MRSC global table.</p>"
+        },
+        "Delete":{
+          "shape":"DeleteGlobalTableWitnessGroupMemberAction",
+          "documentation":"<p>Specifies a witness Region to be removed from an existing global table. Must be done in conjunction with removing a replica. The deletion of both a witness and replica converts the remaining replica to a single-Region DynamoDB table.</p>"
+        }
+      },
+      "documentation":"<p>Represents one of the following:</p> <ul> <li> <p>A new witness to be added to a new global table.</p> </li> <li> <p>An existing witness to be removed from an existing global table.</p> </li> </ul> <p>You can configure one witness per MRSC global table.</p>"
+    },
+    "GlobalTableWitnessGroupUpdateList":{
+      "type":"list",
+      "member":{"shape":"GlobalTableWitnessGroupUpdate"},
+      "max":1,
+      "min":1
     },
     "IdempotentParameterMismatchException":{
       "type":"structure",
@@ -5229,7 +5290,10 @@
         "DELETING",
         "ACTIVE",
         "REGION_DISABLED",
-        "INACCESSIBLE_ENCRYPTION_CREDENTIALS"
+        "INACCESSIBLE_ENCRYPTION_CREDENTIALS",
+        "ARCHIVING",
+        "ARCHIVED",
+        "REPLICATION_NOT_AUTHORIZED"
       ]
     },
     "ReplicaStatusDescription":{"type":"string"},
@@ -5258,7 +5322,8 @@
         "message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The request was rejected because one or more items in the request are being modified by a request in another Region. </p>",
-      "exception":true
+      "exception":true,
+      "retryable":{"throttling":false}
     },
     "ReplicationGroupUpdate":{
       "type":"structure",
@@ -5987,6 +6052,10 @@
           "shape":"ReplicaDescriptionList",
           "documentation":"<p>Represents replicas of the table.</p>"
         },
+        "GlobalTableWitnesses":{
+          "shape":"GlobalTableWitnessDescriptionList",
+          "documentation":"<p>The witness Region and its current status in the MRSC global table. Only one witness Region can be configured per MRSC global table.</p>"
+        },
         "RestoreSummary":{
           "shape":"RestoreSummary",
           "documentation":"<p>Contains details for the restore.</p>"
@@ -6017,7 +6086,7 @@
         },
         "MultiRegionConsistency":{
           "shape":"MultiRegionConsistency",
-          "documentation":"<p>Indicates one of the following consistency modes for a global table:</p> <ul> <li> <p> <code>EVENTUAL</code>: Indicates that the global table is configured for multi-Region eventual consistency.</p> </li> <li> <p> <code>STRONG</code>: Indicates that the global table is configured for multi-Region strong consistency (preview).</p> <note> <p>Multi-Region strong consistency (MRSC) is a new DynamoDB global tables capability currently available in preview mode. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/PreviewFeatures.html#multi-region-strong-consistency-gt\">Global tables multi-Region strong consistency</a>.</p> </note> </li> </ul> <p>If you don't specify this field, the global table consistency mode defaults to <code>EVENTUAL</code>.</p>"
+          "documentation":"<p>Indicates one of the following consistency modes for a global table:</p> <ul> <li> <p> <code>EVENTUAL</code>: Indicates that the global table is configured for multi-Region eventual consistency (MREC).</p> </li> <li> <p> <code>STRONG</code>: Indicates that the global table is configured for multi-Region strong consistency (MRSC).</p> </li> </ul> <p>If you don't specify this field, the global table consistency mode defaults to <code>EVENTUAL</code>. For more information about global tables consistency modes, see <a href=\"https://docs.aws.amazon.com/V2globaltables_HowItWorks.html#V2globaltables_HowItWorks.consistency-modes\"> Consistency modes</a> in DynamoDB developer guide. </p>"
         }
       },
       "documentation":"<p>Represents the properties of a table.</p>"
@@ -6061,7 +6130,8 @@
         "ACTIVE",
         "INACCESSIBLE_ENCRYPTION_CREDENTIALS",
         "ARCHIVING",
-        "ARCHIVED"
+        "ARCHIVED",
+        "REPLICATION_NOT_AUTHORIZED"
       ]
     },
     "TableWarmThroughputDescription":{
@@ -6733,7 +6803,7 @@
         },
         "ReplicaUpdates":{
           "shape":"ReplicationGroupUpdateList",
-          "documentation":"<p>A list of replica update actions (create, delete, or update) for the table.</p> <note> <p>For global tables, this property only applies to global tables using Version 2019.11.21 (Current version). </p> </note>"
+          "documentation":"<p>A list of replica update actions (create, delete, or update) for the table.</p>"
         },
         "TableClass":{
           "shape":"TableClass",
@@ -6745,7 +6815,11 @@
         },
         "MultiRegionConsistency":{
           "shape":"MultiRegionConsistency",
-          "documentation":"<p>Specifies the consistency mode for a new global table. This parameter is only valid when you create a global table by specifying one or more <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ReplicationGroupUpdate.html#DDB-Type-ReplicationGroupUpdate-Create\">Create</a> actions in the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_UpdateTable.html#DDB-UpdateTable-request-ReplicaUpdates\">ReplicaUpdates</a> action list.</p> <p>You can specify one of the following consistency modes:</p> <ul> <li> <p> <code>EVENTUAL</code>: Configures a new global table for multi-Region eventual consistency. This is the default consistency mode for global tables.</p> </li> <li> <p> <code>STRONG</code>: Configures a new global table for multi-Region strong consistency (preview).</p> <note> <p>Multi-Region strong consistency (MRSC) is a new DynamoDB global tables capability currently available in preview mode. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/PreviewFeatures.html#multi-region-strong-consistency-gt\">Global tables multi-Region strong consistency</a>.</p> </note> </li> </ul> <p>If you don't specify this parameter, the global table consistency mode defaults to <code>EVENTUAL</code>.</p>"
+          "documentation":"<p>Specifies the consistency mode for a new global table. This parameter is only valid when you create a global table by specifying one or more <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ReplicationGroupUpdate.html#DDB-Type-ReplicationGroupUpdate-Create\">Create</a> actions in the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_UpdateTable.html#DDB-UpdateTable-request-ReplicaUpdates\">ReplicaUpdates</a> action list.</p> <p>You can specify one of the following consistency modes:</p> <ul> <li> <p> <code>EVENTUAL</code>: Configures a new global table for multi-Region eventual consistency (MREC). This is the default consistency mode for global tables.</p> </li> <li> <p> <code>STRONG</code>: Configures a new global table for multi-Region strong consistency (MRSC).</p> </li> </ul> <p>If you don't specify this field, the global table consistency mode defaults to <code>EVENTUAL</code>. For more information about global tables consistency modes, see <a href=\"https://docs.aws.amazon.com/V2globaltables_HowItWorks.html#V2globaltables_HowItWorks.consistency-modes\"> Consistency modes</a> in DynamoDB developer guide. </p>"
+        },
+        "GlobalTableWitnessUpdates":{
+          "shape":"GlobalTableWitnessGroupUpdateList",
+          "documentation":"<p>A list of witness updates for a MRSC global table. A witness provides a cost-effective alternative to a full replica in a MRSC global table by maintaining replicated change data written to global table replicas. You cannot perform read or write operations on a witness. For each witness, you can request one action:</p> <ul> <li> <p> <code>Create</code> - add a new witness to the global table.</p> </li> <li> <p> <code>Delete</code> - remove a witness from the global table.</p> </li> </ul> <p>You can create or delete only one witness per <code>UpdateTable</code> operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/V2globaltables_HowItWorks.html#V2globaltables_HowItWorks.consistency-modes\">Multi-Region strong consistency (MRSC)</a> in the Amazon DynamoDB Developer Guide</p>"
         },
         "OnDemandThroughput":{
           "shape":"OnDemandThroughput",
@@ -6838,6 +6912,14 @@
         }
       },
       "documentation":"<p>Provides visibility into the number of read and write operations your table or secondary index can instantaneously support. The settings can be modified using the <code>UpdateTable</code> operation to meet the throughput requirements of an upcoming peak event.</p>"
+    },
+    "WitnessStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "DELETING",
+        "ACTIVE"
+      ]
     },
     "WriteRequest":{
       "type":"structure",

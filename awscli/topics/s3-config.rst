@@ -22,6 +22,7 @@ Configuration Values
 These are the configuration values you can set specifically for the ``aws s3``
 command set:
 
+* ``preferred_transfer_client`` - This determines the underlying Amazon S3 transfer client to use for transferring files to and from S3. For most workloads, choosing ``crt`` will enable faster uploads and downloads.
 * ``max_concurrent_requests`` - The maximum number of concurrent requests.
 * ``max_queue_size`` - The maximum number of tasks in the task queue.
 * ``multipart_threshold`` - The size threshold the CLI uses for multipart
@@ -58,6 +59,7 @@ configuration::
     aws_access_key_id=foo
     aws_secret_access_key=bar
     s3 =
+      preferred_transfer_client = crt
       max_concurrent_requests = 20
       max_queue_size = 10000
       multipart_threshold = 64MB
@@ -74,6 +76,7 @@ You can also set these values programmatically using the ``aws configure set``
 command.  For example, to set the above values for the default profile, you
 could instead run these commands::
 
+    $ aws configure set default.s3.preferred_transfer_client crt
     $ aws configure set default.s3.max_concurrent_requests 20
     $ aws configure set default.s3.max_queue_size 10000
     $ aws configure set default.s3.multipart_threshold 64MB

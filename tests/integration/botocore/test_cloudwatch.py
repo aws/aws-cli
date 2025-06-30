@@ -10,10 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-
+import pytest
 
 import botocore.session
-from botocore.exceptions import ClientError
 
 
 def test_ambiguous_error_parsing():
@@ -23,17 +22,15 @@ def test_ambiguous_error_parsing():
     # that is defined later, which in this case is `ResourceNotFound`.  This test
     # ensures that we continue to select the latter error going forward.
     session = botocore.session.get_session()
-    client = session.create_client('cloudwatch', region_name='us-west-2')
-    try:
-        client.get_dashboard(DashboardName='dashboard-which-does-not-exist')
-        assert False, "No error raised for non-existant dashboard"
-    except Exception as exception:
-        exception_class = exception.__class__
-        error_response = exception.response['Error']
-        assert isinstance(exception, ClientError)
-        assert (
-            f"{exception_class.__module__}.{exception_class.__name__}"
-            == 'botocore.errorfactory.ResourceNotFound'
+    cloudwatch = session.create_client('cloudwatch', region_name='us-west-2')
+    with pytest.raises(cloudwatch.exceptions.ResourceNotFound) as exception:
+        cloudwatch.get_dashboard(
+            DashboardName='dashboard-which-does-not-exist'
         )
-        assert error_response['Type'] == 'Sender'
-        assert error_response['Code'] == 'ResourceNotFound'
+
+    error_response = exception.value.response['Error']
+    assert error_response['Type'] == 'Sender'
+    assert error_response['Code'] == 'ResourceNotFound'
+    assert (
+        exception.value.response['ResponseMetadata']['HTTPStatusCode'] == 404
+    )

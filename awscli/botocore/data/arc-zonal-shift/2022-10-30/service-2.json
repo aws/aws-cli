@@ -2,18 +2,37 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2022-10-30",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"arc-zonal-shift",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
     "protocols":["rest-json"],
     "serviceFullName":"AWS ARC - Zonal Shift",
     "serviceId":"ARC Zonal Shift",
     "signatureVersion":"v4",
     "signingName":"arc-zonal-shift",
-    "uid":"arc-zonal-shift-2022-10-30",
-    "auth":["aws.auth#sigv4"]
+    "uid":"arc-zonal-shift-2022-10-30"
   },
   "operations":{
+    "CancelPracticeRun":{
+      "name":"CancelPracticeRun",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/practiceruns/{zonalShiftId}",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelPracticeRunRequest"},
+      "output":{"shape":"CancelPracticeRunResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Cancel an in-progress practice run zonal shift in Amazon Application Recovery Controller.</p>",
+      "idempotent":true
+    },
     "CancelZonalShift":{
       "name":"CancelZonalShift",
       "http":{
@@ -28,10 +47,10 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Cancel a zonal shift in Amazon Route 53 Application Recovery Controller. To cancel the zonal shift, specify the zonal shift ID.</p> <p>A zonal shift can be one that you've started for a resource in your Amazon Web Services account in an Amazon Web Services Region, or it can be a zonal shift started by a practice run with zonal autoshift. </p>"
+      "documentation":"<p>Cancel a zonal shift in Amazon Application Recovery Controller. To cancel the zonal shift, specify the zonal shift ID.</p> <p>A zonal shift can be one that you've started for a resource in your Amazon Web Services account in an Amazon Web Services Region, or it can be a zonal shift started by a practice run with zonal autoshift. </p>"
     },
     "CreatePracticeRunConfiguration":{
       "name":"CreatePracticeRunConfiguration",
@@ -47,10 +66,10 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>A practice run configuration for zonal autoshift is required when you enable zonal autoshift. A practice run configuration includes specifications for blocked dates and blocked time windows, and for Amazon CloudWatch alarms that you create to use with practice runs. The alarms that you specify are an <i>outcome alarm</i>, to monitor application health during practice runs and, optionally, a <i>blocking alarm</i>, to block practice runs from starting.</p> <p>When a resource has a practice run configuration, ARC starts zonal shifts for the resource weekly, to shift traffic for practice runs. Practice runs help you to ensure that shifting away traffic from an Availability Zone during an autoshift is safe for your application.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.considerations.html\"> Considerations when you configure zonal autoshift</a> in the Amazon Route 53 Application Recovery Controller Developer Guide.</p>"
+      "documentation":"<p>A practice run configuration for zonal autoshift is required when you enable zonal autoshift. A practice run configuration includes specifications for blocked dates and blocked time windows, and for Amazon CloudWatch alarms that you create to use with practice runs. The alarms that you specify are an <i>outcome alarm</i>, to monitor application health during practice runs and, optionally, a <i>blocking alarm</i>, to block practice runs from starting.</p> <p>When a resource has a practice run configuration, ARC starts zonal shifts for the resource weekly, to shift traffic for practice runs. Practice runs help you to ensure that shifting away traffic from an Availability Zone during an autoshift is safe for your application.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.considerations.html\"> Considerations when you configure zonal autoshift</a> in the Amazon Application Recovery Controller Developer Guide.</p>"
     },
     "DeletePracticeRunConfiguration":{
       "name":"DeletePracticeRunConfiguration",
@@ -66,8 +85,8 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes the practice run configuration for a resource. Before you can delete a practice run configuration for a resource., you must disable zonal autoshift for the resource. Practice runs must be configured for zonal autoshift to be enabled.</p>",
       "idempotent":true
@@ -101,10 +120,10 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Get information about a resource that's been registered for zonal shifts with Amazon Route 53 Application Recovery Controller in this Amazon Web Services Region. Resources that are registered for zonal shifts are managed resources in ARC. You can start zonal shifts and configure zonal autoshift for managed resources.</p>"
+      "documentation":"<p>Get information about a resource that's been registered for zonal shifts with Amazon Application Recovery Controller in this Amazon Web Services Region. Resources that are registered for zonal shifts are managed resources in ARC. You can start zonal shifts and configure zonal autoshift for managed resources.</p>"
     },
     "ListAutoshifts":{
       "name":"ListAutoshifts",
@@ -118,8 +137,8 @@
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Returns the autoshifts for an Amazon Web Services Region. By default, the call returns only <code>ACTIVE</code> autoshifts. Optionally, you can specify the <code>status</code> parameter to return <code>COMPLETED</code> autoshifts. </p>"
     },
@@ -135,10 +154,10 @@
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists all the resources in your Amazon Web Services account in this Amazon Web Services Region that are managed for zonal shifts in Amazon Route 53 Application Recovery Controller, and information about them. The information includes the zonal autoshift status for the resource, as well as the Amazon Resource Name (ARN), the Availability Zones that each resource is deployed in, and the resource name.</p>"
+      "documentation":"<p>Lists all the resources in your Amazon Web Services account in this Amazon Web Services Region that are managed for zonal shifts in Amazon Application Recovery Controller, and information about them. The information includes the zonal autoshift status for the resource, as well as the Amazon Resource Name (ARN), the Availability Zones that each resource is deployed in, and the resource name.</p>"
     },
     "ListZonalShifts":{
       "name":"ListZonalShifts",
@@ -152,10 +171,29 @@
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists all active and completed zonal shifts in Amazon Route 53 Application Recovery Controller in your Amazon Web Services account in this Amazon Web Services Region.</p>"
+      "documentation":"<p>Lists all active and completed zonal shifts in Amazon Application Recovery Controller in your Amazon Web Services account in this Amazon Web Services Region. <code>ListZonalShifts</code> returns customer-initiated zonal shifts, as well as practice run zonal shifts that ARC started on your behalf for zonal autoshift.</p> <p>For more information about listing autoshifts, see <a href=\"https://docs.aws.amazon.com/arc-zonal-shift/latest/api/API_ListAutoshifts.html\">\"&gt;ListAutoshifts</a>.</p>"
+    },
+    "StartPracticeRun":{
+      "name":"StartPracticeRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/practiceruns",
+        "responseCode":200
+      },
+      "input":{"shape":"StartPracticeRunRequest"},
+      "output":{"shape":"StartPracticeRunResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Start an on-demand practice run zonal shift in Amazon Application Recovery Controller. With zonal autoshift enabled, you can start an on-demand practice run to verify preparedness at any time. Amazon Web Services also runs automated practice runs about weekly when you have enabled zonal autoshift.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.considerations.html\"> Considerations when you configure zonal autoshift</a> in the Amazon Application Recovery Controller Developer Guide.</p>"
     },
     "StartZonalShift":{
       "name":"StartZonalShift",
@@ -171,10 +209,10 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>You start a zonal shift to temporarily move load balancer traffic away from an Availability Zone in an Amazon Web Services Region, to help your application recover immediately, for example, from a developer's bad code deployment or from an Amazon Web Services infrastructure failure in a single Availability Zone. You can start a zonal shift in ARC only for managed resources in your Amazon Web Services account in an Amazon Web Services Region. Resources are automatically registered with ARC by Amazon Web Services services.</p> <p>At this time, you can only start a zonal shift for Network Load Balancers and Application Load Balancers with cross-zone load balancing turned off.</p> <p>When you start a zonal shift, traffic for the resource is no longer routed to the Availability Zone. The zonal shift is created immediately in ARC. However, it can take a short time, typically up to a few minutes, for existing, in-progress connections in the Availability Zone to complete.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.html\">Zonal shift</a> in the Amazon Route 53 Application Recovery Controller Developer Guide.</p>"
+      "documentation":"<p>You start a zonal shift to temporarily move load balancer traffic away from an Availability Zone in an Amazon Web Services Region, to help your application recover immediately, for example, from a developer's bad code deployment or from an Amazon Web Services infrastructure failure in a single Availability Zone. You can start a zonal shift in ARC only for managed resources in your Amazon Web Services account in an Amazon Web Services Region. Resources are automatically registered with ARC by Amazon Web Services services.</p> <p>Amazon Application Recovery Controller currently supports enabling the following resources for zonal shift and zonal autoshift:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.ec2-auto-scaling-groups.html\">Amazon EC2 Auto Scaling groups</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.eks.html\">Amazon Elastic Kubernetes Service</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.app-load-balancers.html\">Application Load Balancer</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.network-load-balancers.html\">Network Load Balancer</a> </p> </li> </ul> <p>When you start a zonal shift, traffic for the resource is no longer routed to the Availability Zone. The zonal shift is created immediately in ARC. However, it can take a short time, typically up to a few minutes, for existing, in-progress connections in the Availability Zone to complete.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.html\">Zonal shift</a> in the Amazon Application Recovery Controller Developer Guide.</p>"
     },
     "UpdateAutoshiftObserverNotificationStatus":{
       "name":"UpdateAutoshiftObserverNotificationStatus",
@@ -188,10 +226,10 @@
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Update the status of autoshift observer notification. Autoshift observer notification enables you to be notified, through Amazon EventBridge, when there is an autoshift event for zonal autoshift.</p> <p>If the status is <code>ENABLED</code>, ARC includes all autoshift events when you use the EventBridge pattern <code>Autoshift In Progress</code>. When the status is <code>DISABLED</code>, ARC includes only autoshift events for autoshifts when one or more of your resources is included in the autoshift.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.how-it-works.html#ZAShiftNotification\"> Notifications for practice runs and autoshifts</a> in the Amazon Route 53 Application Recovery Controller Developer Guide.</p>",
+      "documentation":"<p>Update the status of autoshift observer notification. Autoshift observer notification enables you to be notified, through Amazon EventBridge, when there is an autoshift event for zonal autoshift.</p> <p>If the status is <code>ENABLED</code>, ARC includes all autoshift events when you use the EventBridge pattern <code>Autoshift In Progress</code>. When the status is <code>DISABLED</code>, ARC includes only autoshift events for autoshifts when one or more of your resources is included in the autoshift.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.how-it-works.html#ZAShiftNotification\"> Notifications for practice runs and autoshifts</a> in the Amazon Application Recovery Controller Developer Guide.</p>",
       "idempotent":true
     },
     "UpdatePracticeRunConfiguration":{
@@ -208,8 +246,8 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Update a practice run configuration to change one or more of the following: add, change, or remove the blocking alarm; change the outcome alarm; or add, change, or remove blocking dates or time windows.</p>"
     },
@@ -227,10 +265,10 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>The zonal autoshift configuration for a resource includes the practice run configuration and the status for running autoshifts, zonal autoshift status. When a resource has a practice run configuation, Route 53 ARC starts weekly zonal shifts for the resource, to shift traffic away from an Availability Zone. Weekly practice runs help you to make sure that your application can continue to operate normally with the loss of one Availability Zone.</p> <p>You can update the zonal autoshift autoshift status to enable or disable zonal autoshift. When zonal autoshift is <code>ENABLED</code>, you authorize Amazon Web Services to shift away resource traffic for an application from an Availability Zone during events, on your behalf, to help reduce time to recovery. Traffic is also shifted away for the required weekly practice runs.</p>",
+      "documentation":"<p>The zonal autoshift configuration for a resource includes the practice run configuration and the status for running autoshifts, zonal autoshift status. When a resource has a practice run configuation, ARC starts weekly zonal shifts for the resource, to shift traffic away from an Availability Zone. Weekly practice runs help you to make sure that your application can continue to operate normally with the loss of one Availability Zone.</p> <p>You can update the zonal autoshift autoshift status to enable or disable zonal autoshift. When zonal autoshift is <code>ENABLED</code>, you authorize Amazon Web Services to shift away resource traffic for an application from an Availability Zone during events, on your behalf, to help reduce time to recovery. Traffic is also shifted away for the required weekly practice runs.</p>",
       "idempotent":true
     },
     "UpdateZonalShift":{
@@ -247,10 +285,10 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Update an active zonal shift in Amazon Route 53 Application Recovery Controller in your Amazon Web Services account. You can update a zonal shift to set a new expiration, or edit or replace the comment for the zonal shift.</p>"
+      "documentation":"<p>Update an active zonal shift in Amazon Application Recovery Controller in your Amazon Web Services account. You can update a zonal shift to set a new expiration, or edit or replace the comment for the zonal shift.</p>"
     }
   },
   "shapes":{
@@ -302,7 +340,7 @@
       "members":{
         "appliedStatus":{
           "shape":"AutoshiftAppliedStatus",
-          "documentation":"<p>The <code>appliedStatus</code> field specifies which application traffic shift is in effect for a resource when there is more than one active traffic shift. There can be more than one application traffic shift in progress at the same time - that is, practice run zonal shifts, customer-initiated zonal shifts, or an autoshift. The <code>appliedStatus</code> field for a shift that is in progress for a resource can have one of two values: <code>APPLIED</code> or <code>NOT_APPLIED</code>. The zonal shift or autoshift that is currently in effect for the resource has an <code>appliedStatus</code> set to <code>APPLIED</code>.</p> <p>The overall principle for precedence is that zonal shifts that you start as a customer take precedence autoshifts, which take precedence over practice runs. That is, customer-initiated zonal shifts &gt; autoshifts &gt; practice run zonal shifts.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.how-it-works.html\">How zonal autoshift and practice runs work</a> in the Amazon Route 53 Application Recovery Controller Developer Guide.</p>"
+          "documentation":"<p>The <code>appliedStatus</code> field specifies which application traffic shift is in effect for a resource when there is more than one active traffic shift. There can be more than one application traffic shift in progress at the same time - that is, practice run zonal shifts, customer-initiated zonal shifts, or an autoshift. The <code>appliedStatus</code> field for a shift that is in progress for a resource can have one of two values: <code>APPLIED</code> or <code>NOT_APPLIED</code>. The zonal shift or autoshift that is currently in effect for the resource has an <code>appliedStatus</code> set to <code>APPLIED</code>.</p> <p>The overall principle for precedence is that zonal shifts that you start as a customer take precedence autoshifts, which take precedence over practice runs. That is, customer-initiated zonal shifts &gt; autoshifts &gt; practice run zonal shifts.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.how-it-works.html\">How zonal autoshift and practice runs work</a> in the Amazon Application Recovery Controller Developer Guide.</p>"
         },
         "awayFrom":{
           "shape":"AvailabilityZone",
@@ -313,7 +351,7 @@
           "documentation":"<p>The time (UTC) when the autoshift started.</p>"
         }
       },
-      "documentation":"<p>A complex structure that lists an autoshift that is currently active for a managed resource and information about the autoshift.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.how-it-works.html\">How zonal autoshift and practice runs work</a> in the Amazon Route 53 Application Recovery Controller Developer Guide.</p>"
+      "documentation":"<p>A complex structure that lists an autoshift that is currently active for a managed resource and information about the autoshift.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.how-it-works.html\">How zonal autoshift and practice runs work</a> in the Amazon Application Recovery Controller Developer Guide.</p>"
     },
     "AutoshiftObserverNotificationStatus":{
       "type":"string",
@@ -351,7 +389,7 @@
           "documentation":"<p>The status for an autoshift. </p>"
         }
       },
-      "documentation":"<p>Information about an autoshift. Amazon Web Services starts an autoshift to temporarily move traffic for a resource away from an Availability Zone in an Amazon Web Services Region when Amazon Web Services determines that there's an issue in the Availability Zone that could potentially affect customers. You can configure zonal autoshift in ARC for managed resources in your Amazon Web Services account in a Region. Supported Amazon Web Services resources are automatically registered with ARC.</p> <p>Autoshifts are temporary. When the Availability Zone recovers, Amazon Web Services ends the autoshift, and traffic for the resource is no longer directed to the other Availability Zones in the Region.</p>"
+      "documentation":"<p>Information about an autoshift. Amazon Web Services starts an autoshift to temporarily move traffic for a resource away from an Availability Zone in an Amazon Web Services Region when Amazon Web Services determines that there's an issue in the Availability Zone that could potentially affect customers. You can configure zonal autoshift in ARC for managed resources in your Amazon Web Services account in a Region. Supported Amazon Web Services resources are automatically registered with ARC.</p> <p>Autoshifts are temporary. When the Availability Zone recovers, Amazon Web Services ends the autoshift, and traffic for the resource is no longer directed to the other Availability Zones in the Region.</p> <p>You can stop an autoshift for a resource by disabling zonal autoshift.</p>"
     },
     "AutoshiftsInResource":{
       "type":"list",
@@ -370,7 +408,7 @@
       "type":"string",
       "max":10,
       "min":10,
-      "pattern":"^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+      "pattern":"[0-9]{4}-[0-9]{2}-[0-9]{2}"
     },
     "BlockedDates":{
       "type":"list",
@@ -382,13 +420,67 @@
       "type":"string",
       "max":19,
       "min":19,
-      "pattern":"^(Mon|Tue|Wed|Thu|Fri|Sat|Sun):[0-9]{2}:[0-9]{2}-(Mon|Tue|Wed|Thu|Fri|Sat|Sun):[0-9]{2}:[0-9]{2}$"
+      "pattern":"(Mon|Tue|Wed|Thu|Fri|Sat|Sun):[0-9]{2}:[0-9]{2}-(Mon|Tue|Wed|Thu|Fri|Sat|Sun):[0-9]{2}:[0-9]{2}"
     },
     "BlockedWindows":{
       "type":"list",
       "member":{"shape":"BlockedWindow"},
       "max":15,
       "min":0
+    },
+    "CancelPracticeRunRequest":{
+      "type":"structure",
+      "required":["zonalShiftId"],
+      "members":{
+        "zonalShiftId":{
+          "shape":"ZonalShiftId",
+          "documentation":"<p>The identifier of a practice run zonal shift in Amazon Application Recovery Controller that you want to cancel.</p>",
+          "location":"uri",
+          "locationName":"zonalShiftId"
+        }
+      }
+    },
+    "CancelPracticeRunResponse":{
+      "type":"structure",
+      "required":[
+        "zonalShiftId",
+        "resourceIdentifier",
+        "awayFrom",
+        "expiryTime",
+        "startTime",
+        "status",
+        "comment"
+      ],
+      "members":{
+        "zonalShiftId":{
+          "shape":"ZonalShiftId",
+          "documentation":"<p>The identifier of the practice run zonal shift in Amazon Application Recovery Controller that was canceled.</p>"
+        },
+        "resourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>The identifier for the resource that you canceled a practice run zonal shift for. The identifier is the Amazon Resource Name (ARN) for the resource.</p>"
+        },
+        "awayFrom":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The Availability Zone (for example, <code>use1-az1</code>) that traffic was moved away from for a resource that you specified for the practice run.</p>"
+        },
+        "expiryTime":{
+          "shape":"ExpiryTime",
+          "documentation":"<p>The expiry time (expiration time) for an on-demand practice run zonal shift is 30 minutes from the time when you start the practice run, unless you cancel it before that time. However, be aware that the <code>expiryTime</code> field for practice run zonal shifts always has a value of 1 minute. </p>"
+        },
+        "startTime":{
+          "shape":"StartTime",
+          "documentation":"<p>The time (UTC) when the zonal shift starts.</p>"
+        },
+        "status":{
+          "shape":"ZonalShiftStatus",
+          "documentation":"<p>A status for the practice run that you canceled (expected status is <b>CANCELED</b>).</p> <p>The <code>Status</code> for a practice run zonal shift can have one of the following values:</p>"
+        },
+        "comment":{
+          "shape":"ZonalShiftComment",
+          "documentation":"<p>The initial comment that you entered about the practice run. Be aware that this comment can be overwritten by Amazon Web Services if the automatic check for balanced capacity fails. For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.how-it-works.capacity-check.html\"> Capacity checks for practice runs</a> in the Amazon Application Recovery Controller Developer Guide. </p>"
+        }
+      }
     },
     "CancelZonalShiftRequest":{
       "type":"structure",
@@ -435,26 +527,30 @@
         "PracticeConfigurationAlreadyExists",
         "AutoShiftEnabled",
         "PracticeConfigurationDoesNotExist",
-        "ZonalAutoshiftActive"
+        "ZonalAutoshiftActive",
+        "PracticeOutcomeAlarmsRed",
+        "PracticeBlockingAlarmsRed",
+        "PracticeInBlockedDates",
+        "PracticeInBlockedWindows"
       ]
     },
     "ControlCondition":{
       "type":"structure",
       "required":[
-        "alarmIdentifier",
-        "type"
+        "type",
+        "alarmIdentifier"
       ],
       "members":{
-        "alarmIdentifier":{
-          "shape":"MetricIdentifier",
-          "documentation":"<p>The Amazon Resource Name (ARN) for an Amazon CloudWatch alarm that you specify as a control condition for a practice run.</p>"
-        },
         "type":{
           "shape":"ControlConditionType",
           "documentation":"<p>The type of alarm specified for a practice run. You can only specify Amazon CloudWatch alarms for practice runs, so the only valid value is <code>CLOUDWATCH</code>.</p>"
+        },
+        "alarmIdentifier":{
+          "shape":"MetricIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) for an Amazon CloudWatch alarm that you specify as a control condition for a practice run.</p>"
         }
       },
-      "documentation":"<p>A control condition is an alarm that you specify for a practice run. When you configure practice runs with zonal autoshift for a resource, you specify Amazon CloudWatch alarms, which you create in CloudWatch to use with the practice run. The alarms that you specify are an <i>outcome alarm</i>, to monitor application health during practice runs and, optionally, a <i>blocking alarm</i>, to block practice runs from starting or to interrupt a practice run in progress.</p> <p>Control condition alarms do not apply for autoshifts.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.considerations.html\"> Considerations when you configure zonal autoshift</a> in the Amazon Route 53 Application Recovery Controller Developer Guide.</p>"
+      "documentation":"<p>A control condition is an alarm that you specify for a practice run. When you configure practice runs with zonal autoshift for a resource, you specify Amazon CloudWatch alarms, which you create in CloudWatch to use with the practice run. The alarms that you specify are an <i>outcome alarm</i>, to monitor application health during practice runs and, optionally, a <i>blocking alarm</i>, to block practice runs from starting or to interrupt a practice run in progress.</p> <p>Control condition alarms do not apply for autoshifts.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.considerations.html\"> Considerations when you configure zonal autoshift</a> in the Amazon Application Recovery Controller Developer Guide.</p>"
     },
     "ControlConditionType":{
       "type":"string",
@@ -469,17 +565,21 @@
     "CreatePracticeRunConfigurationRequest":{
       "type":"structure",
       "required":[
-        "outcomeAlarms",
-        "resourceIdentifier"
+        "resourceIdentifier",
+        "outcomeAlarms"
       ],
       "members":{
-        "blockedDates":{
-          "shape":"BlockedDates",
-          "documentation":"<p>Optionally, you can block ARC from starting practice runs for a resource on specific calendar dates.</p> <p>The format for blocked dates is: YYYY-MM-DD. Keep in mind, when you specify dates, that dates and times for practice runs are in UTC. Separate multiple blocked dates with spaces.</p> <p>For example, if you have an application update scheduled to launch on May 1, 2024, and you don't want practice runs to shift traffic away at that time, you could set a blocked date for <code>2024-05-01</code>.</p>"
+        "resourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>The identifier of the resource that Amazon Web Services shifts traffic for with a practice run zonal shift. The identifier is the Amazon Resource Name (ARN) for the resource.</p> <p>Amazon Application Recovery Controller currently supports enabling the following resources for zonal shift and zonal autoshift:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.ec2-auto-scaling-groups.html\">Amazon EC2 Auto Scaling groups</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.eks.html\">Amazon Elastic Kubernetes Service</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.app-load-balancers.html\">Application Load Balancer</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.network-load-balancers.html\">Network Load Balancer</a> </p> </li> </ul>"
         },
         "blockedWindows":{
           "shape":"BlockedWindows",
           "documentation":"<p>Optionally, you can block ARC from starting practice runs for specific windows of days and times. </p> <p>The format for blocked windows is: DAY:HH:SS-DAY:HH:SS. Keep in mind, when you specify dates, that dates and times for practice runs are in UTC. Also, be aware of potential time adjustments that might be required for daylight saving time differences. Separate multiple blocked windows with spaces.</p> <p>For example, say you run business report summaries three days a week. For this scenario, you might set the following recurring days and times as blocked windows, for example: <code>MON-20:30-21:30 WED-20:30-21:30 FRI-20:30-21:30</code>.</p>"
+        },
+        "blockedDates":{
+          "shape":"BlockedDates",
+          "documentation":"<p>Optionally, you can block ARC from starting practice runs for a resource on specific calendar dates.</p> <p>The format for blocked dates is: YYYY-MM-DD. Keep in mind, when you specify dates, that dates and times for practice runs are in UTC. Separate multiple blocked dates with spaces.</p> <p>For example, if you have an application update scheduled to launch on May 1, 2024, and you don't want practice runs to shift traffic away at that time, you could set a blocked date for <code>2024-05-01</code>.</p>"
         },
         "blockingAlarms":{
           "shape":"ControlConditions",
@@ -488,10 +588,6 @@
         "outcomeAlarms":{
           "shape":"ControlConditions",
           "documentation":"<p>The <i>outcome alarm</i> for practice runs is a required Amazon CloudWatch alarm that you specify that ends a practice run when the alarm is in an <code>ALARM</code> state.</p> <p>Configure the alarm to monitor the health of your application when traffic is shifted away from an Availability Zone during each practice run. You should configure the alarm to go into an <code>ALARM</code> state if your application is impacted by the zonal shift, and you want to stop the zonal shift, to let traffic for the resource return to the Availability Zone.</p>"
-        },
-        "resourceIdentifier":{
-          "shape":"ResourceIdentifier",
-          "documentation":"<p>The identifier of the resource that Amazon Web Services shifts traffic for with a practice run zonal shift. The identifier is the Amazon Resource Name (ARN) for the resource.</p> <p>At this time, supported resources are Network Load Balancers and Application Load Balancers with cross-zone load balancing turned off.</p>"
         }
       }
     },
@@ -500,8 +596,8 @@
       "required":[
         "arn",
         "name",
-        "practiceRunConfiguration",
-        "zonalAutoshiftStatus"
+        "zonalAutoshiftStatus",
+        "practiceRunConfiguration"
       ],
       "members":{
         "arn":{
@@ -512,13 +608,13 @@
           "shape":"ResourceName",
           "documentation":"<p>The name of the resource that you configured the practice run for. </p>"
         },
-        "practiceRunConfiguration":{
-          "shape":"PracticeRunConfiguration",
-          "documentation":"<p>A practice run configuration for a resource. Configurations include the outcome alarm that you specify for practice runs, and, optionally, a blocking alarm and blocking dates and windows.</p>"
-        },
         "zonalAutoshiftStatus":{
           "shape":"ZonalAutoshiftStatus",
           "documentation":"<p>The status for zonal autoshift for a resource. When you specify <code>ENABLED</code> for the autoshift status, Amazon Web Services shifts traffic away from shifts away application resource traffic from an Availability Zone, on your behalf, when internal telemetry indicates that there is an Availability Zone impairment that could potentially impact customers.</p> <p>When you enable zonal autoshift, you must also configure practice runs for the resource.</p>"
+        },
+        "practiceRunConfiguration":{
+          "shape":"PracticeRunConfiguration",
+          "documentation":"<p>A practice run configuration for a resource. Configurations include the outcome alarm that you specify for practice runs, and, optionally, a blocking alarm and blocking dates and windows.</p>"
         }
       }
     },
@@ -560,13 +656,12 @@
       "type":"string",
       "max":5,
       "min":2,
-      "pattern":"^([1-9][0-9]*)(m|h)$"
+      "pattern":"([1-9][0-9]*)(m|h)"
     },
     "ExpiryTime":{"type":"timestamp"},
     "GetAutoshiftObserverNotificationStatusRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetAutoshiftObserverNotificationStatusResponse":{
       "type":"structure",
@@ -584,7 +679,7 @@
       "members":{
         "resourceIdentifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p>The identifier for the resource that Amazon Web Services shifts traffic for. The identifier is the Amazon Resource Name (ARN) for the resource.</p> <p>At this time, supported resources are Network Load Balancers and Application Load Balancers with cross-zone load balancing turned off.</p>",
+          "documentation":"<p>The identifier for the resource that Amazon Web Services shifts traffic for. The identifier is the Amazon Resource Name (ARN) for the resource.</p> <p>Amazon Application Recovery Controller currently supports enabling the following resources for zonal shift and zonal autoshift:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.ec2-auto-scaling-groups.html\">Amazon EC2 Auto Scaling groups</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.eks.html\">Amazon Elastic Kubernetes Service</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.app-load-balancers.html\">Application Load Balancer</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.network-load-balancers.html\">Network Load Balancer</a> </p> </li> </ul>",
           "location":"uri",
           "locationName":"resourceIdentifier"
         }
@@ -597,21 +692,25 @@
         "zonalShifts"
       ],
       "members":{
-        "appliedWeights":{
-          "shape":"AppliedWeights",
-          "documentation":"<p>A collection of key-value pairs that indicate whether resources are active in Availability Zones or not. The key name is the Availability Zone where the resource is deployed. The value is 1 or 0.</p>"
-        },
         "arn":{
           "shape":"ResourceArn",
           "documentation":"<p>The Amazon Resource Name (ARN) for the resource.</p>"
         },
-        "autoshifts":{
-          "shape":"AutoshiftsInResource",
-          "documentation":"<p>An array of the autoshifts that are active for the resource.</p>"
-        },
         "name":{
           "shape":"ResourceName",
           "documentation":"<p>The name of the resource.</p>"
+        },
+        "appliedWeights":{
+          "shape":"AppliedWeights",
+          "documentation":"<p>A collection of key-value pairs that indicate whether resources are active in Availability Zones or not. The key name is the Availability Zone where the resource is deployed. The value is 1 or 0.</p>"
+        },
+        "zonalShifts":{
+          "shape":"ZonalShiftsInResource",
+          "documentation":"<p>The zonal shifts that are currently active for a resource. </p>"
+        },
+        "autoshifts":{
+          "shape":"AutoshiftsInResource",
+          "documentation":"<p>An array of the autoshifts that are active for the resource.</p>"
         },
         "practiceRunConfiguration":{
           "shape":"PracticeRunConfiguration",
@@ -620,10 +719,6 @@
         "zonalAutoshiftStatus":{
           "shape":"ZonalAutoshiftStatus",
           "documentation":"<p>The status for zonal autoshift for a resource. When the autoshift status is <code>ENABLED</code>, Amazon Web Services shifts traffic for a resource away from an Availability Zone, on your behalf, when Amazon Web Services determines that there's an issue in the Availability Zone that could potentially affect customers.</p>"
-        },
-        "zonalShifts":{
-          "shape":"ZonalShiftsInResource",
-          "documentation":"<p>The zonal shifts that are currently active for a resource. </p>"
         }
       }
     },
@@ -640,12 +735,6 @@
     "ListAutoshiftsRequest":{
       "type":"structure",
       "members":{
-        "maxResults":{
-          "shape":"MaxResults",
-          "documentation":"<p>The number of objects that you want to return with this call.</p>",
-          "location":"querystring",
-          "locationName":"maxResults"
-        },
         "nextToken":{
           "shape":"String",
           "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>nextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>nextToken</code> response to request the next page of results.</p>",
@@ -657,6 +746,12 @@
           "documentation":"<p>The status of the autoshift.</p>",
           "location":"querystring",
           "locationName":"status"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The number of objects that you want to return with this call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
         }
       }
     },
@@ -676,17 +771,17 @@
     "ListManagedResourcesRequest":{
       "type":"structure",
       "members":{
-        "maxResults":{
-          "shape":"MaxResults",
-          "documentation":"<p>The number of objects that you want to return with this call.</p>",
-          "location":"querystring",
-          "locationName":"maxResults"
-        },
         "nextToken":{
           "shape":"String",
           "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>nextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>nextToken</code> response to request the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The number of objects that you want to return with this call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
         }
       }
     },
@@ -707,29 +802,29 @@
     "ListZonalShiftsRequest":{
       "type":"structure",
       "members":{
-        "maxResults":{
-          "shape":"MaxResults",
-          "documentation":"<p>The number of objects that you want to return with this call.</p>",
-          "location":"querystring",
-          "locationName":"maxResults"
-        },
         "nextToken":{
           "shape":"String",
           "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>nextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>nextToken</code> response to request the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
+        "status":{
+          "shape":"ZonalShiftStatus",
+          "documentation":"<p>A status for a zonal shift.</p> <p>The <code>Status</code> for a zonal shift can have one of the following values:</p> <ul> <li> <p> <b>ACTIVE</b>: The zonal shift has been started and is active.</p> </li> <li> <p> <b>EXPIRED</b>: The zonal shift has expired (the expiry time was exceeded).</p> </li> <li> <p> <b>CANCELED</b>: The zonal shift was canceled.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The number of objects that you want to return with this call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
         "resourceIdentifier":{
           "shape":"ResourceIdentifier",
           "documentation":"<p>The identifier for the resource that you want to list zonal shifts for. The identifier is the Amazon Resource Name (ARN) for the resource.</p>",
           "location":"querystring",
           "locationName":"resourceIdentifier"
-        },
-        "status":{
-          "shape":"ZonalShiftStatus",
-          "documentation":"<p>A status for a zonal shift.</p> <p>The <code>Status</code> for a zonal shift can have one of the following values:</p> <ul> <li> <p> <b>ACTIVE</b>: The zonal shift has been started and active.</p> </li> <li> <p> <b>EXPIRED</b>: The zonal shift has expired (the expiry time was exceeded).</p> </li> <li> <p> <b>CANCELED</b>: The zonal shift was canceled.</p> </li> </ul>",
-          "location":"querystring",
-          "locationName":"status"
         }
       }
     },
@@ -754,40 +849,40 @@
       "type":"structure",
       "required":["availabilityZones"],
       "members":{
-        "appliedWeights":{
-          "shape":"AppliedWeights",
-          "documentation":"<p>A collection of key-value pairs that indicate whether resources are active in Availability Zones or not. The key name is the Availability Zone where the resource is deployed. The value is 1 or 0.</p>"
-        },
         "arn":{
           "shape":"ResourceArn",
           "documentation":"<p>The Amazon Resource Name (ARN) for the managed resource.</p>"
-        },
-        "autoshifts":{
-          "shape":"AutoshiftsInResource",
-          "documentation":"<p>An array of the autoshifts that have been completed for a resource.</p>"
-        },
-        "availabilityZones":{
-          "shape":"AvailabilityZones",
-          "documentation":"<p>The Availability Zones that a resource is deployed in.</p>"
         },
         "name":{
           "shape":"ResourceName",
           "documentation":"<p>The name of the managed resource.</p>"
         },
-        "practiceRunStatus":{
-          "shape":"ZonalAutoshiftStatus",
-          "documentation":"<p>This status tracks whether a practice run configuration exists for a resource. When you configure a practice run for a resource so that a practice run configuration exists, ARC sets this value to <code>ENABLED</code>. If a you have not configured a practice run for the resource, or delete a practice run configuration, ARC sets the value to <code>DISABLED</code>.</p> <p>ARC updates this status; you can't set a practice run status to <code>ENABLED</code> or <code>DISABLED</code>.</p>"
+        "availabilityZones":{
+          "shape":"AvailabilityZones",
+          "documentation":"<p>The Availability Zones that a resource is deployed in.</p>"
+        },
+        "appliedWeights":{
+          "shape":"AppliedWeights",
+          "documentation":"<p>A collection of key-value pairs that indicate whether resources are active in Availability Zones or not. The key name is the Availability Zone where the resource is deployed. The value is 1 or 0.</p>"
+        },
+        "zonalShifts":{
+          "shape":"ZonalShiftsInResource",
+          "documentation":"<p>An array of the zonal shifts for a resource.</p>"
+        },
+        "autoshifts":{
+          "shape":"AutoshiftsInResource",
+          "documentation":"<p>An array of the autoshifts that have been completed for a resource.</p>"
         },
         "zonalAutoshiftStatus":{
           "shape":"ZonalAutoshiftStatus",
           "documentation":"<p>The status of autoshift for a resource. When you configure zonal autoshift for a resource, you can set the value of the status to <code>ENABLED</code> or <code>DISABLED</code>.</p>"
         },
-        "zonalShifts":{
-          "shape":"ZonalShiftsInResource",
-          "documentation":"<p>An array of the zonal shifts for a resource.</p>"
+        "practiceRunStatus":{
+          "shape":"ZonalAutoshiftStatus",
+          "documentation":"<p>This status tracks whether a practice run configuration exists for a resource. When you configure a practice run for a resource so that a practice run configuration exists, ARC sets this value to <code>ENABLED</code>. If a you have not configured a practice run for the resource, or delete a practice run configuration, ARC sets the value to <code>DISABLED</code>.</p> <p>ARC updates this status; you can't set a practice run status to <code>ENABLED</code> or <code>DISABLED</code>.</p>"
         }
       },
-      "documentation":"<p>A complex structure for a managed resource in an Amazon Web Services account with information about zonal shifts and autoshifts.</p> <p>A managed resource is a load balancer that has been registered with ARC by Elastic Load Balancing. You can start a zonal shift in ARC for a managed resource to temporarily move traffic for the resource away from an Availability Zone in an Amazon Web Services Region. You can also configure zonal autoshift for a managed resource.</p> <note> <p>At this time, managed resources are Network Load Balancers and Application Load Balancers with cross-zone load balancing turned off.</p> </note>"
+      "documentation":"<p>A complex structure for a managed resource in an Amazon Web Services account with information about zonal shifts and autoshifts.</p> <p>You can start a zonal shift in ARC for a managed resource to temporarily move traffic for the resource away from an Availability Zone in an Amazon Web Services Region. You can also configure zonal autoshift for a managed resource.</p> <note> <p>At this time, managed resources are Amazon EC2 Auto Scaling groups, Amazon Elastic Kubernetes Service, Network Load Balancers, and Application Load Balancer.</p> </note>"
     },
     "MaxResults":{
       "type":"integer",
@@ -799,20 +894,12 @@
       "type":"string",
       "max":1024,
       "min":8,
-      "pattern":"^.*$"
+      "pattern":".*"
     },
     "PracticeRunConfiguration":{
       "type":"structure",
       "required":["outcomeAlarms"],
       "members":{
-        "blockedDates":{
-          "shape":"BlockedDates",
-          "documentation":"<p>An array of one or more dates that you can specify when Amazon Web Services does not start practice runs for a resource.</p> <p>Specify blocked dates, in UTC, in the format <code>YYYY-MM-DD</code>, separated by spaces. </p>"
-        },
-        "blockedWindows":{
-          "shape":"BlockedWindows",
-          "documentation":"<p>An array of one or more windows of days and times that you can block ARC from starting practice runs for a resource.</p> <p>Specify the blocked windows in UTC, using the format <code>DAY:HH:MM-DAY:HH:MM</code>, separated by spaces. For example, <code>MON:18:30-MON:19:30 TUE:18:30-TUE:19:30</code>.</p>"
-        },
         "blockingAlarms":{
           "shape":"ControlConditions",
           "documentation":"<p>The <i>blocking alarm</i> for practice runs is an optional alarm that you can specify that blocks practice runs when the alarm is in an <code>ALARM</code> state.</p>"
@@ -820,6 +907,14 @@
         "outcomeAlarms":{
           "shape":"ControlConditions",
           "documentation":"<p>The <i>outcome alarm</i> for practice runs is an alarm that you specify that ends a practice run when the alarm is in an <code>ALARM</code> state.</p>"
+        },
+        "blockedWindows":{
+          "shape":"BlockedWindows",
+          "documentation":"<p>An array of one or more windows of days and times that you can block ARC from starting practice runs for a resource.</p> <p>Specify the blocked windows in UTC, using the format <code>DAY:HH:MM-DAY:HH:MM</code>, separated by spaces. For example, <code>MON:18:30-MON:19:30 TUE:18:30-TUE:19:30</code>.</p>"
+        },
+        "blockedDates":{
+          "shape":"BlockedDates",
+          "documentation":"<p>An array of one or more dates that you can specify when Amazon Web Services does not start practice runs for a resource.</p> <p>Specify blocked dates, in UTC, in the format <code>YYYY-MM-DD</code>, separated by spaces. </p>"
         }
       },
       "documentation":"<p>A practice run configuration for a resource includes the Amazon CloudWatch alarms that you've specified for a practice run, as well as any blocked dates or blocked windows for the practice run. When a resource has a practice run configuration, ARC shifts traffic for the resource weekly for practice runs.</p> <p>Practice runs are required for zonal autoshift. The zonal shifts that ARC starts for practice runs help you to ensure that shifting away traffic from an Availability Zone during an autoshift is safe for your application.</p> <p>You can update or delete a practice run configuration. Before you delete a practice run configuration, you must disable zonal autoshift for the resource. A practice run configuration is required when zonal autoshift is enabled.</p>"
@@ -830,14 +925,15 @@
         "FAILED",
         "INTERRUPTED",
         "PENDING",
-        "SUCCEEDED"
+        "SUCCEEDED",
+        "CAPACITY_CHECK_FAILED"
       ]
     },
     "ResourceArn":{
       "type":"string",
       "max":1024,
       "min":8,
-      "pattern":"^arn:.*$"
+      "pattern":"arn:.*"
     },
     "ResourceIdentifier":{
       "type":"string",
@@ -871,31 +967,95 @@
         "ZONAL_AUTOSHIFT"
       ]
     },
+    "StartPracticeRunRequest":{
+      "type":"structure",
+      "required":[
+        "resourceIdentifier",
+        "awayFrom",
+        "comment"
+      ],
+      "members":{
+        "resourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>The identifier for the resource that you want to start a practice run zonal shift for. The identifier is the Amazon Resource Name (ARN) for the resource.</p>"
+        },
+        "awayFrom":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The Availability Zone (for example, <code>use1-az1</code>) that traffic is shifted away from for the resource that you specify for the practice run.</p>"
+        },
+        "comment":{
+          "shape":"ZonalShiftComment",
+          "documentation":"<p>The initial comment that you enter about the practice run. Be aware that this comment can be overwritten by Amazon Web Services if the automatic check for balanced capacity fails. For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.how-it-works.capacity-check.html\"> Capacity checks for practice runs</a> in the Amazon Application Recovery Controller Developer Guide. </p>"
+        }
+      }
+    },
+    "StartPracticeRunResponse":{
+      "type":"structure",
+      "required":[
+        "zonalShiftId",
+        "resourceIdentifier",
+        "awayFrom",
+        "expiryTime",
+        "startTime",
+        "status",
+        "comment"
+      ],
+      "members":{
+        "zonalShiftId":{
+          "shape":"ZonalShiftId",
+          "documentation":"<p>The identifier of a practice run zonal shift.</p>"
+        },
+        "resourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>The identifier for the resource that you want to shift traffic for. The identifier is the Amazon Resource Name (ARN) for the resource.</p>"
+        },
+        "awayFrom":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The Availability Zone (for example, <code>use1-az1</code>) that traffic is shifted away from for the resource that you specify for the practice run.</p>"
+        },
+        "expiryTime":{
+          "shape":"ExpiryTime",
+          "documentation":"<p>The expiry time (expiration time) for an on-demand practice run zonal shift is 30 minutes from the time when you start the practice run, unless you cancel it before that time. However, be aware that the <code>expiryTime</code> field for practice run zonal shifts always has a value of 1 minute. </p>"
+        },
+        "startTime":{
+          "shape":"StartTime",
+          "documentation":"<p>The time (UTC) when the zonal shift starts.</p>"
+        },
+        "status":{
+          "shape":"ZonalShiftStatus",
+          "documentation":"<p>A status for the practice run (expected status is <b>ACTIVE</b>).</p>"
+        },
+        "comment":{
+          "shape":"ZonalShiftComment",
+          "documentation":"<p>The initial comment that you enter about the practice run. Be aware that this comment can be overwritten by Amazon Web Services if the automatic check for balanced capacity fails. For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.how-it-works.capacity-check.html\"> Capacity checks for practice runs</a> in the Amazon Application Recovery Controller Developer Guide. </p>"
+        }
+      }
+    },
     "StartTime":{"type":"timestamp"},
     "StartZonalShiftRequest":{
       "type":"structure",
       "required":[
+        "resourceIdentifier",
         "awayFrom",
-        "comment",
         "expiresIn",
-        "resourceIdentifier"
+        "comment"
       ],
       "members":{
+        "resourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>The identifier for the resource that Amazon Web Services shifts traffic for. The identifier is the Amazon Resource Name (ARN) for the resource.</p> <p>Amazon Application Recovery Controller currently supports enabling the following resources for zonal shift and zonal autoshift:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.ec2-auto-scaling-groups.html\">Amazon EC2 Auto Scaling groups</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.eks.html\">Amazon Elastic Kubernetes Service</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.app-load-balancers.html\">Application Load Balancer</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.network-load-balancers.html\">Network Load Balancer</a> </p> </li> </ul>"
+        },
         "awayFrom":{
           "shape":"AvailabilityZone",
           "documentation":"<p>The Availability Zone (for example, <code>use1-az1</code>) that traffic is moved away from for a resource when you start a zonal shift. Until the zonal shift expires or you cancel it, traffic for the resource is instead moved to other Availability Zones in the Amazon Web Services Region.</p>"
-        },
-        "comment":{
-          "shape":"ZonalShiftComment",
-          "documentation":"<p>A comment that you enter about the zonal shift. Only the latest comment is retained; no comment history is maintained. A new comment overwrites any existing comment string.</p>"
         },
         "expiresIn":{
           "shape":"ExpiresIn",
           "documentation":"<p>The length of time that you want a zonal shift to be active, which ARC converts to an expiry time (expiration time). Zonal shifts are temporary. You can set a zonal shift to be active initially for up to three days (72 hours).</p> <p>If you want to still keep traffic away from an Availability Zone, you can update the zonal shift and set a new expiration. You can also cancel a zonal shift, before it expires, for example, if you're ready to restore traffic to the Availability Zone.</p> <p>To set a length of time for a zonal shift to be active, specify a whole number, and then one of the following, with no space:</p> <ul> <li> <p> <b>A lowercase letter m:</b> To specify that the value is in minutes.</p> </li> <li> <p> <b>A lowercase letter h:</b> To specify that the value is in hours.</p> </li> </ul> <p>For example: <code>20h</code> means the zonal shift expires in 20 hours. <code>120m</code> means the zonal shift expires in 120 minutes (2 hours).</p>"
         },
-        "resourceIdentifier":{
-          "shape":"ResourceIdentifier",
-          "documentation":"<p>The identifier for the resource that Amazon Web Services shifts traffic for. The identifier is the Amazon Resource Name (ARN) for the resource.</p> <p>At this time, supported resources are Network Load Balancers and Application Load Balancers with cross-zone load balancing turned off.</p>"
+        "comment":{
+          "shape":"ZonalShiftComment",
+          "documentation":"<p>A comment that you enter about the zonal shift. Only the latest comment is retained; no comment history is maintained. A new comment overwrites any existing comment string.</p>"
         }
       }
     },
@@ -936,13 +1096,19 @@
       "type":"structure",
       "required":["resourceIdentifier"],
       "members":{
-        "blockedDates":{
-          "shape":"BlockedDates",
-          "documentation":"<p>Add, change, or remove blocked dates for a practice run in zonal autoshift.</p> <p>Optionally, you can block practice runs for specific calendar dates. The format for blocked dates is: YYYY-MM-DD. Keep in mind, when you specify dates, that dates and times for practice runs are in UTC. Separate multiple blocked dates with spaces.</p> <p>For example, if you have an application update scheduled to launch on May 1, 2024, and you don't want practice runs to shift traffic away at that time, you could set a blocked date for <code>2024-05-01</code>.</p>"
+        "resourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>The identifier for the resource that you want to update the practice run configuration for. The identifier is the Amazon Resource Name (ARN) for the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceIdentifier"
         },
         "blockedWindows":{
           "shape":"BlockedWindows",
           "documentation":"<p>Add, change, or remove windows of days and times for when you can, optionally, block ARC from starting a practice run for a resource.</p> <p>The format for blocked windows is: DAY:HH:SS-DAY:HH:SS. Keep in mind, when you specify dates, that dates and times for practice runs are in UTC. Also, be aware of potential time adjustments that might be required for daylight saving time differences. Separate multiple blocked windows with spaces.</p> <p>For example, say you run business report summaries three days a week. For this scenario, you might set the following recurring days and times as blocked windows, for example: <code>MON-20:30-21:30 WED-20:30-21:30 FRI-20:30-21:30</code>.</p>"
+        },
+        "blockedDates":{
+          "shape":"BlockedDates",
+          "documentation":"<p>Add, change, or remove blocked dates for a practice run in zonal autoshift.</p> <p>Optionally, you can block practice runs for specific calendar dates. The format for blocked dates is: YYYY-MM-DD. Keep in mind, when you specify dates, that dates and times for practice runs are in UTC. Separate multiple blocked dates with spaces.</p> <p>For example, if you have an application update scheduled to launch on May 1, 2024, and you don't want practice runs to shift traffic away at that time, you could set a blocked date for <code>2024-05-01</code>.</p>"
         },
         "blockingAlarms":{
           "shape":"ControlConditions",
@@ -951,12 +1117,6 @@
         "outcomeAlarms":{
           "shape":"ControlConditions",
           "documentation":"<p>Specify a new the Amazon CloudWatch alarm as the outcome alarm for practice runs.</p>"
-        },
-        "resourceIdentifier":{
-          "shape":"ResourceIdentifier",
-          "documentation":"<p>The identifier for the resource that you want to update the practice run configuration for. The identifier is the Amazon Resource Name (ARN) for the resource.</p>",
-          "location":"uri",
-          "locationName":"resourceIdentifier"
         }
       }
     },
@@ -965,8 +1125,8 @@
       "required":[
         "arn",
         "name",
-        "practiceRunConfiguration",
-        "zonalAutoshiftStatus"
+        "zonalAutoshiftStatus",
+        "practiceRunConfiguration"
       ],
       "members":{
         "arn":{
@@ -977,13 +1137,13 @@
           "shape":"ResourceName",
           "documentation":"<p>The name of the resource that you updated the practice run for. </p>"
         },
-        "practiceRunConfiguration":{
-          "shape":"PracticeRunConfiguration",
-          "documentation":"<p>The practice run configuration that was updated.</p>"
-        },
         "zonalAutoshiftStatus":{
           "shape":"ZonalAutoshiftStatus",
           "documentation":"<p>The zonal autoshift status for the resource that you updated the practice run for.</p>"
+        },
+        "practiceRunConfiguration":{
+          "shape":"PracticeRunConfiguration",
+          "documentation":"<p>The practice run configuration that was updated.</p>"
         }
       }
     },
@@ -1027,6 +1187,12 @@
       "type":"structure",
       "required":["zonalShiftId"],
       "members":{
+        "zonalShiftId":{
+          "shape":"ZonalShiftId",
+          "documentation":"<p>The identifier of a zonal shift.</p>",
+          "location":"uri",
+          "locationName":"zonalShiftId"
+        },
         "comment":{
           "shape":"ZonalShiftComment",
           "documentation":"<p>A comment that you enter about the zonal shift. Only the latest comment is retained; no comment history is maintained. A new comment overwrites any existing comment string.</p>"
@@ -1034,12 +1200,6 @@
         "expiresIn":{
           "shape":"ExpiresIn",
           "documentation":"<p>The length of time that you want a zonal shift to be active, which ARC converts to an expiry time (expiration time). Zonal shifts are temporary. You can set a zonal shift to be active initially for up to three days (72 hours).</p> <p>If you want to still keep traffic away from an Availability Zone, you can update the zonal shift and set a new expiration. You can also cancel a zonal shift, before it expires, for example, if you're ready to restore traffic to the Availability Zone.</p> <p>To set a length of time for a zonal shift to be active, specify a whole number, and then one of the following, with no space:</p> <ul> <li> <p> <b>A lowercase letter m:</b> To specify that the value is in minutes.</p> </li> <li> <p> <b>A lowercase letter h:</b> To specify that the value is in hours.</p> </li> </ul> <p>For example: <code>20h</code> means the zonal shift expires in 20 hours. <code>120m</code> means the zonal shift expires in 120 minutes (2 hours).</p>"
-        },
-        "zonalShiftId":{
-          "shape":"ZonalShiftId",
-          "documentation":"<p>The identifier of a zonal shift.</p>",
-          "location":"uri",
-          "locationName":"zonalShiftId"
         }
       }
     },
@@ -1077,7 +1237,8 @@
         "InvalidConditionType",
         "InvalidPracticeBlocker",
         "FISExperimentUpdateNotAllowed",
-        "AutoshiftUpdateNotAllowed"
+        "AutoshiftUpdateNotAllowed",
+        "UnsupportedPracticeCancelShiftType"
       ]
     },
     "Weight":{
@@ -1096,30 +1257,30 @@
     "ZonalShift":{
       "type":"structure",
       "required":[
-        "awayFrom",
-        "comment",
-        "expiryTime",
+        "zonalShiftId",
         "resourceIdentifier",
+        "awayFrom",
+        "expiryTime",
         "startTime",
         "status",
-        "zonalShiftId"
+        "comment"
       ],
       "members":{
+        "zonalShiftId":{
+          "shape":"ZonalShiftId",
+          "documentation":"<p>The identifier of a zonal shift.</p>"
+        },
+        "resourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>The identifier for the resource that Amazon Web Services shifts traffic for. The identifier is the Amazon Resource Name (ARN) for the resource.</p> <p>Amazon Application Recovery Controller currently supports enabling the following resources for zonal shift and zonal autoshift:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.ec2-auto-scaling-groups.html\">Amazon EC2 Auto Scaling groups</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.eks.html\">Amazon Elastic Kubernetes Service</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.app-load-balancers.html\">Application Load Balancer</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.network-load-balancers.html\">Network Load Balancer</a> </p> </li> </ul>"
+        },
         "awayFrom":{
           "shape":"AvailabilityZone",
           "documentation":"<p>The Availability Zone (for example, <code>use1-az1</code>) that traffic is moved away from for a resource when you start a zonal shift. Until the zonal shift expires or you cancel it, traffic for the resource is instead moved to other Availability Zones in the Amazon Web Services Region.</p>"
         },
-        "comment":{
-          "shape":"ZonalShiftComment",
-          "documentation":"<p>A comment that you enter about the zonal shift. Only the latest comment is retained; no comment history is maintained. A new comment overwrites any existing comment string.</p>"
-        },
         "expiryTime":{
           "shape":"ExpiryTime",
           "documentation":"<p>The expiry time (expiration time) for a customer-initiated zonal shift. A zonal shift is temporary and must be set to expire when you start the zonal shift. You can initially set a zonal shift to expire in a maximum of three days (72 hours). However, you can update a zonal shift to set a new expiration at any time. </p> <p>When you start a zonal shift, you specify how long you want it to be active, which ARC converts to an expiry time (expiration time). You can cancel a zonal shift when you're ready to restore traffic to the Availability Zone, or just wait for it to expire. Or you can update the zonal shift to specify another length of time to expire in.</p>"
-        },
-        "resourceIdentifier":{
-          "shape":"ResourceIdentifier",
-          "documentation":"<p>The identifier for the resource that Amazon Web Services shifts traffic for. The identifier is the Amazon Resource Name (ARN) for the resource.</p> <p>At this time, supported resources are Network Load Balancers and Application Load Balancers with cross-zone load balancing turned off.</p>"
         },
         "startTime":{
           "shape":"StartTime",
@@ -1127,11 +1288,11 @@
         },
         "status":{
           "shape":"ZonalShiftStatus",
-          "documentation":"<p>A status for a zonal shift.</p> <p>The <code>Status</code> for a zonal shift can have one of the following values:</p> <ul> <li> <p> <b>ACTIVE:</b> The zonal shift has been started and active.</p> </li> <li> <p> <b>EXPIRED:</b> The zonal shift has expired (the expiry time was exceeded).</p> </li> <li> <p> <b>CANCELED:</b> The zonal shift was canceled.</p> </li> </ul>"
+          "documentation":"<p>A status for a zonal shift.</p> <p>The <code>Status</code> for a zonal shift can have one of the following values:</p> <ul> <li> <p> <b>ACTIVE:</b> The zonal shift has been started and is active.</p> </li> <li> <p> <b>EXPIRED:</b> The zonal shift has expired (the expiry time was exceeded).</p> </li> <li> <p> <b>CANCELED:</b> The zonal shift was canceled.</p> </li> </ul>"
         },
-        "zonalShiftId":{
-          "shape":"ZonalShiftId",
-          "documentation":"<p>The identifier of a zonal shift.</p>"
+        "comment":{
+          "shape":"ZonalShiftComment",
+          "documentation":"<p>A comment that you enter about the zonal shift. Only the latest comment is retained; no comment history is maintained. A new comment overwrites any existing comment string.</p>"
         }
       }
     },
@@ -1144,55 +1305,55 @@
       "type":"string",
       "max":36,
       "min":6,
-      "pattern":"^[A-Za-z0-9-]+$"
+      "pattern":"[A-Za-z0-9-]+"
     },
     "ZonalShiftInResource":{
       "type":"structure",
       "required":[
         "appliedStatus",
-        "awayFrom",
-        "comment",
-        "expiryTime",
+        "zonalShiftId",
         "resourceIdentifier",
+        "awayFrom",
+        "expiryTime",
         "startTime",
-        "zonalShiftId"
+        "comment"
       ],
       "members":{
         "appliedStatus":{
           "shape":"AppliedStatus",
-          "documentation":"<p>The <code>appliedStatus</code> field specifies which application traffic shift is in effect for a resource when there is more than one active traffic shift. There can be more than one application traffic shift in progress at the same time - that is, practice run zonal shifts, customer-initiated zonal shifts, or an autoshift. The <code>appliedStatus</code> field for a shift that is in progress for a resource can have one of two values: <code>APPLIED</code> or <code>NOT_APPLIED</code>. The zonal shift or autoshift that is currently in effect for the resource has an <code>appliedStatus</code> set to <code>APPLIED</code>.</p> <p>The overall principle for precedence is that zonal shifts that you start as a customer take precedence autoshifts, which take precedence over practice runs. That is, customer-initiated zonal shifts &gt; autoshifts &gt; practice run zonal shifts.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.how-it-works.html\">How zonal autoshift and practice runs work</a> in the Amazon Route 53 Application Recovery Controller Developer Guide.</p>"
+          "documentation":"<p>The <code>appliedStatus</code> field specifies which application traffic shift is in effect for a resource when there is more than one active traffic shift. There can be more than one application traffic shift in progress at the same time - that is, practice run zonal shifts, customer-initiated zonal shifts, or an autoshift. The <code>appliedStatus</code> field for a shift that is in progress for a resource can have one of two values: <code>APPLIED</code> or <code>NOT_APPLIED</code>. The zonal shift or autoshift that is currently in effect for the resource has an <code>appliedStatus</code> set to <code>APPLIED</code>.</p> <p>The overall principle for precedence is that zonal shifts that you start as a customer take precedence autoshifts, which take precedence over practice runs. That is, customer-initiated zonal shifts &gt; autoshifts &gt; practice run zonal shifts.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.how-it-works.html\">How zonal autoshift and practice runs work</a> in the Amazon Application Recovery Controller Developer Guide.</p>"
+        },
+        "zonalShiftId":{
+          "shape":"ZonalShiftId",
+          "documentation":"<p>The identifier of a zonal shift.</p>"
+        },
+        "resourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>The identifier for the resource to include in a zonal shift. The identifier is the Amazon Resource Name (ARN) for the resource.</p> <p>Amazon Application Recovery Controller currently supports enabling the following resources for zonal shift and zonal autoshift:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.ec2-auto-scaling-groups.html\">Amazon EC2 Auto Scaling groups</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.eks.html\">Amazon Elastic Kubernetes Service</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.app-load-balancers.html\">Application Load Balancer</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.network-load-balancers.html\">Network Load Balancer</a> </p> </li> </ul>"
         },
         "awayFrom":{
           "shape":"AvailabilityZone",
           "documentation":"<p>The Availability Zone (for example, <code>use1-az1</code>) that traffic is moved away from for a resource when you start a zonal shift. Until the zonal shift expires or you cancel it, traffic for the resource is instead moved to other Availability Zones in the Amazon Web Services Region.</p>"
         },
-        "comment":{
-          "shape":"ZonalShiftComment",
-          "documentation":"<p>A comment that you enter for a customer-initiated zonal shift. Only the latest comment is retained; no comment history is maintained. That is, a new comment overwrites any existing comment string.</p>"
-        },
         "expiryTime":{
           "shape":"ExpiryTime",
           "documentation":"<p>The expiry time (expiration time) for a customer-initiated zonal shift. A zonal shift is temporary and must be set to expire when you start the zonal shift. You can initially set a zonal shift to expire in a maximum of three days (72 hours). However, you can update a zonal shift to set a new expiration at any time. </p> <p>When you start a zonal shift, you specify how long you want it to be active, which ARC converts to an expiry time (expiration time). You can cancel a zonal shift when you're ready to restore traffic to the Availability Zone, or just wait for it to expire. Or you can update the zonal shift to specify another length of time to expire in.</p>"
-        },
-        "practiceRunOutcome":{
-          "shape":"PracticeRunOutcome",
-          "documentation":"<p>The outcome, or end state, returned for a practice run. The following values can be returned:</p> <ul> <li> <p> <b>PENDING:</b> Outcome value when a practice run is in progress.</p> </li> <li> <p> <b>SUCCEEDED:</b> Outcome value when the outcome alarm specified for the practice run configuration does not go into an <code>ALARM</code> state during the practice run, and the practice run was not interrupted before it completed the expected 30 minute zonal shift.</p> </li> <li> <p> <b>INTERRUPTED:</b> Outcome value when the practice run was stopped before the expected 30 minute zonal shift duration, or there was another problem with the practice run that created an inconclusive outcome.</p> </li> <li> <p> <b>FAILED:</b> Outcome value when the outcome alarm specified for the practice run configuration goes into an <code>ALARM</code> state during the practice run, and the practice run was not interrupted before it completed.</p> </li> </ul> <p>For more information about practice run outcomes, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.configure.html\"> Considerations when you configure zonal autoshift</a> in the Amazon Route 53 Application Recovery Controller Developer Guide.</p>"
-        },
-        "resourceIdentifier":{
-          "shape":"ResourceIdentifier",
-          "documentation":"<p>The identifier for the resource to include in a zonal shift. The identifier is the Amazon Resource Name (ARN) for the resource.</p> <p>At this time, you can only start a zonal shift for Network Load Balancers and Application Load Balancers with cross-zone load balancing turned off.</p>"
-        },
-        "shiftType":{
-          "shape":"ShiftType",
-          "documentation":"<p>Defines the zonal shift type.</p>"
         },
         "startTime":{
           "shape":"StartTime",
           "documentation":"<p>The time (UTC) when the zonal shift starts.</p>"
         },
-        "zonalShiftId":{
-          "shape":"ZonalShiftId",
-          "documentation":"<p>The identifier of a zonal shift.</p>"
+        "comment":{
+          "shape":"ZonalShiftComment",
+          "documentation":"<p>A comment that you enter for a customer-initiated zonal shift. Only the latest comment is retained; no comment history is maintained. That is, a new comment overwrites any existing comment string.</p>"
+        },
+        "shiftType":{
+          "shape":"ShiftType",
+          "documentation":"<p>Defines the zonal shift type.</p>"
+        },
+        "practiceRunOutcome":{
+          "shape":"PracticeRunOutcome",
+          "documentation":"<p>The outcome, or end state, returned for a practice run. The following values can be returned:</p> <ul> <li> <p> <b>PENDING:</b> Outcome value when a practice run is in progress.</p> </li> <li> <p> <b>SUCCEEDED:</b> Outcome value when the outcome alarm specified for the practice run configuration does not go into an <code>ALARM</code> state during the practice run, and the practice run was not interrupted before it completed the expected 30 minute zonal shift.</p> </li> <li> <p> <b>INTERRUPTED:</b> Outcome value when the practice run was stopped before the expected 30 minute zonal shift duration, or there was another problem with the practice run that created an inconclusive outcome.</p> </li> <li> <p> <b>FAILED:</b> Outcome value when the outcome alarm specified for the practice run configuration goes into an <code>ALARM</code> state during the practice run, and the practice run was not interrupted before it completed.</p> </li> <li> <p> <b>CAPACITY_CHECK_FAILED:</b> The check for balanced capacity across Availability Zones for your load balancing and Auto Scaling group resources failed.</p> </li> </ul> <p>For more information about practice run outcomes, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.configure.html\"> Considerations when you configure zonal autoshift</a> in the Amazon Application Recovery Controller Developer Guide.</p>"
         }
       },
       "documentation":"<p>A complex structure that lists the zonal shifts for a managed resource and their statuses for the resource.</p>"
@@ -1212,38 +1373,30 @@
     "ZonalShiftSummary":{
       "type":"structure",
       "required":[
-        "awayFrom",
-        "comment",
-        "expiryTime",
+        "zonalShiftId",
         "resourceIdentifier",
+        "awayFrom",
+        "expiryTime",
         "startTime",
         "status",
-        "zonalShiftId"
+        "comment"
       ],
       "members":{
+        "zonalShiftId":{
+          "shape":"ZonalShiftId",
+          "documentation":"<p>The identifier of a zonal shift.</p>"
+        },
+        "resourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>The identifier for the resource to include in a zonal shift. The identifier is the Amazon Resource Name (ARN) for the resource.</p> <p>Amazon Application Recovery Controller currently supports enabling the following resources for zonal shift and zonal autoshift:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.ec2-auto-scaling-groups.html\">Amazon EC2 Auto Scaling groups</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.eks.html\">Amazon Elastic Kubernetes Service</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.app-load-balancers.html\">Application Load Balancers</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.resource-types.network-load-balancers.html\">Network Load Balancers</a> </p> </li> </ul>"
+        },
         "awayFrom":{
           "shape":"AvailabilityZone",
           "documentation":"<p>The Availability Zone (for example, <code>use1-az1</code>) that traffic is moved away from for a resource when you start a zonal shift. Until the zonal shift expires or you cancel it, traffic for the resource is instead moved to other Availability Zones in the Amazon Web Services Region.</p>"
         },
-        "comment":{
-          "shape":"ZonalShiftComment",
-          "documentation":"<p>A comment that you enter about the zonal shift. Only the latest comment is retained; no comment history is maintained. That is, a new comment overwrites any existing comment string.</p>"
-        },
         "expiryTime":{
           "shape":"ExpiryTime",
           "documentation":"<p>The expiry time (expiration time) for a customer-initiated zonal shift. A zonal shift is temporary and must be set to expire when you start the zonal shift. You can initially set a zonal shift to expire in a maximum of three days (72 hours). However, you can update a zonal shift to set a new expiration at any time. </p> <p>When you start a zonal shift, you specify how long you want it to be active, which ARC converts to an expiry time (expiration time). You can cancel a zonal shift when you're ready to restore traffic to the Availability Zone, or just wait for it to expire. Or you can update the zonal shift to specify another length of time to expire in.</p>"
-        },
-        "practiceRunOutcome":{
-          "shape":"PracticeRunOutcome",
-          "documentation":"<p>The outcome, or end state, of a practice run. The following values can be returned:</p> <ul> <li> <p> <b>PENDING:</b> Outcome value when the practice run is in progress.</p> </li> <li> <p> <b>SUCCEEDED:</b> Outcome value when the outcome alarm specified for the practice run configuration does not go into an <code>ALARM</code> state during the practice run, and the practice run was not interrupted before it completed.</p> </li> <li> <p> <b>INTERRUPTED:</b> Outcome value when the practice run did not run for the expected 30 minutes or there was another problem with the practice run that created an inconclusive outcome.</p> </li> <li> <p> <b>FAILED:</b> Outcome value when the outcome alarm specified for the practice run configuration goes into an <code>ALARM</code> state during the practice run, and the practice run was not interrupted before it completed.</p> </li> </ul> <p>For more information about practice run outcomes, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.configure.html\"> Considerations when you configure zonal autoshift</a> in the Amazon Route 53 Application Recovery Controller Developer Guide.</p>"
-        },
-        "resourceIdentifier":{
-          "shape":"ResourceIdentifier",
-          "documentation":"<p>The identifier for the resource to include in a zonal shift. The identifier is the Amazon Resource Name (ARN) for the resource.</p> <p>At this time, you can only start a zonal shift for Network Load Balancers and Application Load Balancers with cross-zone load balancing turned off.</p>"
-        },
-        "shiftType":{
-          "shape":"ShiftType",
-          "documentation":"<p>Defines the zonal shift type.</p>"
         },
         "startTime":{
           "shape":"StartTime",
@@ -1251,19 +1404,27 @@
         },
         "status":{
           "shape":"ZonalShiftStatus",
-          "documentation":"<p>A status for a zonal shift.</p> <p>The <code>Status</code> for a zonal shift can have one of the following values:</p> <ul> <li> <p> <b>ACTIVE:</b> The zonal shift has been started and active.</p> </li> <li> <p> <b>EXPIRED:</b> The zonal shift has expired (the expiry time was exceeded).</p> </li> <li> <p> <b>CANCELED:</b> The zonal shift was canceled.</p> </li> </ul>"
+          "documentation":"<p>A status for a zonal shift.</p> <p>The <code>Status</code> for a zonal shift can have one of the following values:</p> <ul> <li> <p> <b>ACTIVE:</b> The zonal shift has been started and is active.</p> </li> <li> <p> <b>EXPIRED:</b> The zonal shift has expired (the expiry time was exceeded).</p> </li> <li> <p> <b>CANCELED:</b> The zonal shift was canceled.</p> </li> </ul>"
         },
-        "zonalShiftId":{
-          "shape":"ZonalShiftId",
-          "documentation":"<p>The identifier of a zonal shift.</p>"
+        "comment":{
+          "shape":"ZonalShiftComment",
+          "documentation":"<p>A comment that you enter about the zonal shift. Only the latest comment is retained; no comment history is maintained. That is, a new comment overwrites any existing comment string.</p>"
+        },
+        "shiftType":{
+          "shape":"ShiftType",
+          "documentation":"<p>Defines the zonal shift type.</p>"
+        },
+        "practiceRunOutcome":{
+          "shape":"PracticeRunOutcome",
+          "documentation":"<p>The outcome, or end state, of a practice run. The following values can be returned:</p> <ul> <li> <p> <b>PENDING:</b> Outcome value when the practice run is in progress.</p> </li> <li> <p> <b>SUCCEEDED:</b> Outcome value when the outcome alarm specified for the practice run configuration does not go into an <code>ALARM</code> state during the practice run, and the practice run was not interrupted before it completed.</p> </li> <li> <p> <b>INTERRUPTED:</b> Outcome value when the practice run did not run for the expected 30 minutes or there was another problem with the practice run that created an inconclusive outcome.</p> </li> <li> <p> <b>FAILED:</b> Outcome value when the outcome alarm specified for the practice run configuration goes into an <code>ALARM</code> state during the practice run, and the practice run was not interrupted before it completed.</p> </li> <li> <p> <b>CAPACITY_CHECK_FAILED:</b> The check for balanced capacity across Availability Zones for your load balancing and Auto Scaling group resources failed.</p> </li> </ul> <p>For more information about practice run outcomes, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-autoshift.configure.html\"> Considerations when you configure zonal autoshift</a> in the Amazon Application Recovery Controller Developer Guide.</p>"
         }
       },
-      "documentation":"<p>Lists information about zonal shifts in Amazon Route 53 Application Recovery Controller, including zonal shifts that you start yourself and zonal shifts that ARC starts on your behalf for practice runs with zonal autoshift.</p> <p>Zonal shifts are temporary, including customer-initiated zonal shifts and the zonal autoshift practice run zonal shifts that ARC starts weekly, on your behalf. A zonal shift that a customer starts can be active for up to three days (72 hours). A practice run zonal shift has a 30 minute duration.</p>"
+      "documentation":"<p>Lists information about zonal shifts in Amazon Application Recovery Controller, including zonal shifts that you start yourself and zonal shifts that ARC starts on your behalf for practice runs with zonal autoshift.</p> <p>Zonal shifts are temporary, including customer-initiated zonal shifts and the zonal autoshift practice run zonal shifts that ARC starts weekly, on your behalf. A zonal shift that a customer starts can be active for up to three days (72 hours). A practice run zonal shift has a 30 minute duration.</p>"
     },
     "ZonalShiftsInResource":{
       "type":"list",
       "member":{"shape":"ZonalShiftInResource"}
     }
   },
-  "documentation":"<p>Welcome to the API Reference Guide for zonal shift and zonal autoshift in Amazon Route 53 Application Recovery Controller (ARC).</p> <p>You can start a zonal shift to move traffic for a load balancer resource away from an Availability Zone to help your application recover quickly from an impairment in an Availability Zone. For example, you can recover your application from a developer's bad code deployment or from an Amazon Web Services infrastructure failure in a single Availability Zone.</p> <p>You can also configure zonal autoshift for supported load balancer resources. Zonal autoshift is a capability in ARC where you authorize Amazon Web Services to shift away application resource traffic from an Availability Zone during events, on your behalf, to help reduce your time to recovery. Amazon Web Services starts an autoshift when internal telemetry indicates that there is an Availability Zone impairment that could potentially impact customers.</p> <p>To help make sure that zonal autoshift is safe for your application, you must also configure practice runs when you enable zonal autoshift for a resource. Practice runs start weekly zonal shifts for a resource, to shift traffic for the resource away from an Availability Zone. Practice runs help you to make sure, on a regular basis, that you have enough capacity in all the Availability Zones in an Amazon Web Services Region for your application to continue to operate normally when traffic for a resource is shifted away from one Availability Zone.</p> <important> <p>Before you configure practice runs or enable zonal autoshift, we strongly recommend that you prescale your application resource capacity in all Availability Zones in the Region where your application resources are deployed. You should not rely on scaling on demand when an autoshift or practice run starts. Zonal autoshift, including practice runs, works independently, and does not wait for auto scaling actions to complete. Relying on auto scaling, instead of pre-scaling, can result in loss of availability.</p> <p>If you use auto scaling to handle regular cycles of traffic, we strongly recommend that you configure the minimum capacity of your auto scaling to continue operating normally with the loss of an Availability Zone. </p> </important> <p>Be aware that ARC does not inspect the health of individual resources. Amazon Web Services only starts an autoshift when Amazon Web Services telemetry detects that there is an Availability Zone impairment that could potentially impact customers. In some cases, resources might be shifted away that are not experiencing impact.</p> <p>For more information about using zonal shift and zonal autoshift, see the <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/what-is-route53-recovery.html\">Amazon Route 53 Application Recovery Controller Developer Guide</a>.</p>"
+  "documentation":"<p>Welcome to the API Reference Guide for zonal shift and zonal autoshift in Amazon Application Recovery Controller (ARC).</p> <p>You can start a zonal shift to move traffic for a load balancer resource away from an Availability Zone to help your application recover quickly from an impairment in an Availability Zone. For example, you can recover your application from a developer's bad code deployment or from an Amazon Web Services infrastructure failure in a single Availability Zone.</p> <p>You can also configure zonal autoshift for supported load balancer resources. Zonal autoshift is a capability in ARC where you authorize Amazon Web Services to shift away application resource traffic from an Availability Zone during events, on your behalf, to help reduce your time to recovery. Amazon Web Services starts an autoshift when internal telemetry indicates that there is an Availability Zone impairment that could potentially impact customers.</p> <p>For more information about using zonal shift and zonal autoshift, see the <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/what-is-route53-recovery.html\">Amazon Application Recovery Controller Developer Guide</a>.</p>"
 }

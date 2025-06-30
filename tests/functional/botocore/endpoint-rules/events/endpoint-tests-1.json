@@ -443,19 +443,6 @@
             }
         },
         {
-            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://events.us-gov-east-1.amazonaws.com"
-                }
-            },
-            "params": {
-                "Region": "us-gov-east-1",
-                "UseFIPS": true,
-                "UseDualStack": false
-            }
-        },
-        {
             "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack disabled",
             "expect": {
                 "endpoint": {
@@ -466,32 +453,6 @@
                 "Region": "us-gov-west-1",
                 "UseFIPS": false,
                 "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://events.us-gov-west-1.amazonaws.com"
-                }
-            },
-            "params": {
-                "Region": "us-gov-west-1",
-                "UseFIPS": true,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack enabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://events-fips.us-gov-east-1.api.aws"
-                }
-            },
-            "params": {
-                "Region": "us-gov-east-1",
-                "UseFIPS": true,
-                "UseDualStack": true
             }
         },
         {
@@ -816,15 +777,107 @@
             }
         },
         {
-            "documentation": "Valid EndpointId with DualStack enabled and partition does not support DualStack",
+            "documentation": "legacy fips endpoint @ us-gov-east-1",
             "expect": {
-                "error": "DualStack is enabled but this partition does not support DualStack"
+                "endpoint": {
+                    "url": "https://events.us-gov-east-1.amazonaws.com"
+                }
             },
             "params": {
-                "EndpointId": "abc123.456def",
+                "Region": "us-gov-east-1",
+                "UseDualStack": false,
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "legacy non-fips endpoint @ us-gov-east-1",
+            "expect": {
+                "endpoint": {
+                    "url": "https://events.us-gov-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-gov-east-1",
+                "UseDualStack": false,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "Dualstack fips endpoint @ us-gov-east-1",
+            "expect": {
+                "endpoint": {
+                    "url": "https://events.us-gov-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-gov-east-1",
                 "UseDualStack": true,
-                "UseFIPS": false,
-                "Region": "us-isob-east-1"
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "Dualstack non-fips endpoint @ us-gov-east-1",
+            "expect": {
+                "endpoint": {
+                    "url": "https://events.us-gov-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-gov-east-1",
+                "UseDualStack": true,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "legacy fips endpoint @ us-gov-west-1",
+            "expect": {
+                "endpoint": {
+                    "url": "https://events.us-gov-west-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-gov-west-1",
+                "UseDualStack": false,
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "legacy non-fips endpoint @ us-gov-west-1",
+            "expect": {
+                "endpoint": {
+                    "url": "https://events.us-gov-west-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-gov-west-1",
+                "UseDualStack": false,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "Dualstack fips endpoint @ us-gov-west-1",
+            "expect": {
+                "endpoint": {
+                    "url": "https://events.us-gov-west-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-gov-west-1",
+                "UseDualStack": true,
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "Dualstack non-fips endpoint @ us-gov-west-1",
+            "expect": {
+                "endpoint": {
+                    "url": "https://events.us-gov-west-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-gov-west-1",
+                "UseDualStack": true,
+                "UseFIPS": false
             }
         }
     ],

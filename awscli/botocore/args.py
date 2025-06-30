@@ -29,8 +29,11 @@ from botocore.regions import EndpointResolverBuiltins as EPRBuiltins
 from botocore.regions import EndpointRulesetResolver
 from botocore.signers import RequestSigner
 from botocore.useragent import UserAgentString, register_feature_id
-from botocore.utils import PRIORITY_ORDERED_SUPPORTED_PROTOCOLS  # noqa: F401
-from botocore.utils import ensure_boolean, is_s3_accelerate_url
+from botocore.utils import (
+    PRIORITY_ORDERED_SUPPORTED_PROTOCOLS,  # noqa: F401
+    ensure_boolean,
+    is_s3_accelerate_url,
+)
 
 logger = logging.getLogger(__name__)
 

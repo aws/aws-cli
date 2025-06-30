@@ -1810,23 +1810,6 @@ def test_document_response_params_without_expires(document_expires_mocks):
     mocks['doc_section'].write.assert_not_called()
 
 
-def test_add_query_compatibility_header():
-    service_model = ServiceModel({'metadata': {'awsQueryCompatible': {}}})
-    operation_model = OperationModel(mock.Mock(), service_model)
-    request_dict = {'headers': {}}
-    handlers.add_query_compatibility_header(operation_model, request_dict)
-    assert 'x-amzn-query-mode' in request_dict['headers']
-    assert request_dict['headers']['x-amzn-query-mode'] == 'true'
-
-
-def test_does_not_add_query_compatibility_header():
-    service_model = ServiceModel({'metadata': {}})
-    operation_model = OperationModel(mock.Mock(), service_model)
-    request_dict = {'headers': {}}
-    handlers.add_query_compatibility_header(operation_model, request_dict)
-    assert 'x-amzn-query-mode' not in request_dict['headers']
-
-
 @pytest.fixture()
 def checksum_operation_model():
     operation_model = mock.Mock(spec=OperationModel)

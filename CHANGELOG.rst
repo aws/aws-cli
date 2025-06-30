@@ -2,6 +2,59 @@
 CHANGELOG
 =========
 
+2.27.45
+=======
+
+* api-change:``sesv2``: Added support for new SES regions
+* api-change:``qconnect``: Adding UnauthorizedException to public SDK
+* api-change:``config``: Added important considerations to the PutConformancePack and PutOrganizationConformancPack APIs.
+* api-change:``rds``: StartDBCluster and StopDBCluster can now throw InvalidDBShardGroupStateFault.
+* api-change:``guardduty``: Update JSON target for Kubernetes workload resource type.
+* api-change:``connect``: This release adds the following value to an InitiateAs enum: COMPLETED
+* api-change:``glue``: AWS Glue now supports schema, partition and sort management of Apache Iceberg tables using Glue SDK
+* enhancement:User Agent: Append session id to user agent string
+
+
+2.27.44
+=======
+
+* api-change:``deadline``: Added fields to track cumulative task retry attempts for steps and jobs
+* api-change:``iot-managed-integrations``: Adding managed integrations APIs for IoT Device Management to onboard and control devices across different manufacturers, connectivity protocols and third party vendor clouds. APIs include managed thing operations, provisioning profile management, and cloud connector operations.
+* api-change:``keyspaces``: This release provides change data capture (CDC) streams support through updates to the Amazon Keyspaces API.
+* api-change:``workspaces``: Updated modifyStreamingProperties to support PrivateLink VPC endpoints for directories
+* api-change:``kms``: This release updates AWS CLI examples for KMS APIs.
+* api-change:``ec2``: This release adds support for OdbNetworkArn as a target in VPC Route Tables
+* api-change:``keyspacesstreams``: This release adds change data capture (CDC) streams support through the new Amazon Keyspaces Streams API.
+* api-change:``qbusiness``: Added support for App level authentication for QBusiness DataAccessor using AWS IAM Identity center Trusted Token issuer
+
+
+2.27.43
+=======
+
+* api-change:``fsx``: Add support for the ability to create Amazon S3 Access Points for Amazon FSx for OpenZFS file systems.
+* api-change:``s3control``: Add support for the ability to use Amazon S3 Access Points with Amazon FSx for OpenZFS file systems.
+* api-change:``textract``: Add RotationAngle field to Geometry of WORD blocks for Textract AnalyzeDocument API
+* api-change:``ecs``: Updates for change to Amazon ECS default log driver mode from blocking to non-blocking
+* api-change:``s3``: Adds support for additional server-side encryption mode and storage class values for accessing Amazon FSx data from Amazon S3 using S3 Access Points
+* api-change:``storagegateway``: This release adds IPv6 support to the Storage Gateway APIs. APIs that previously only accept or return IPv4 address will now accept or return both IPv4 and IPv6 addresses.
+* api-change:``workspaces-thin-client``: Remove Tags field from Get API responses
+
+
+2.27.42
+=======
+
+* api-change:``gamelift``: Add support for UDP ping beacons to ListLocations API, including new PingBeacon and UDPEndpoint data types within its Locations return value. Use UDP ping beacon endpoints to help measure real-time network latency for multiplayer games.
+* api-change:``bedrock``: We are making ListFoundationModelAgreementOffers, DeleteFoundationModelAgreement, CreateFoundationModelAgreement, GetFoundationModelAvailability, PutUseCaseForModelAccess and GetUseCaseForModelAccess APIs public, previously they were console.
+* api-change:``ec2``: This release allows you to create and register AMIs while maintaining their underlying EBS snapshots within Local Zones.
+* api-change:``batch``: Add userdataType to LaunchTemplateSpecification and LaunchTemplateSpecificationOverride.
+* api-change:``aiops``: Adds support for cross account investigations for CloudWatch investigations AI Operations (AIOps).
+* api-change:``elbv2``: Add Paginator for DescribeAccountLimits, and fix Paginators for DescribeTrustStoreAssociations, DescribeTrustStoreRevocations, and DescribeTrustStores
+* api-change:``license-manager``: AWS License Manager now supports license type conversions for AWS Marketplace products. Customers can provide Marketplace codes in the source license context or destination license context in the CreateLicenseConversionTaskForResource requests.
+* api-change:``transcribe``: This Feature Adds Support for the "et-EE" Locale for Batch Operations
+* api-change:``rds``: Adding support for RDS on Dedicated Local Zones, including local backup target, snapshot availability zone and snapshot target
+* api-change:``route53resolver``: Add support for iterative DNS queries through the new INBOUND_DELEGATION endpoint. Add delegation support through the Outbound Endpoints with DELEGATE rules.
+
+
 2.27.41
 =======
 

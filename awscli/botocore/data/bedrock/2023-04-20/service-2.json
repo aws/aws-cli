@@ -74,6 +74,25 @@
       "documentation":"<p>Creates an evaluation job.</p>",
       "idempotent":true
     },
+    "CreateFoundationModelAgreement":{
+      "name":"CreateFoundationModelAgreement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/create-foundation-model-agreement",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateFoundationModelAgreementRequest"},
+      "output":{"shape":"CreateFoundationModelAgreementResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Request a model access agreement for the specified model.</p>"
+    },
     "CreateGuardrail":{
       "name":"CreateGuardrail",
       "http":{
@@ -303,6 +322,25 @@
       "documentation":"<p>Deletes a custom model that you created earlier. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "idempotent":true
     },
+    "DeleteFoundationModelAgreement":{
+      "name":"DeleteFoundationModelAgreement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/delete-foundation-model-agreement",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteFoundationModelAgreementRequest"},
+      "output":{"shape":"DeleteFoundationModelAgreementResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Delete the model access agreement for the specified model.</p>"
+    },
     "DeleteGuardrail":{
       "name":"DeleteGuardrail",
       "http":{
@@ -511,6 +549,24 @@
       ],
       "documentation":"<p>Get details about a Amazon Bedrock foundation model.</p>"
     },
+    "GetFoundationModelAvailability":{
+      "name":"GetFoundationModelAvailability",
+      "http":{
+        "method":"GET",
+        "requestUri":"/foundation-model-availability/{modelId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFoundationModelAvailabilityRequest"},
+      "output":{"shape":"GetFoundationModelAvailabilityResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get information about the Foundation model availability.</p>"
+    },
     "GetGuardrail":{
       "name":"GetGuardrail",
       "http":{
@@ -707,6 +763,23 @@
       ],
       "documentation":"<p>Returns details for a Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
+    "GetUseCaseForModelAccess":{
+      "name":"GetUseCaseForModelAccess",
+      "http":{
+        "method":"GET",
+        "requestUri":"/use-case-for-model-access",
+        "responseCode":200
+      },
+      "input":{"shape":"GetUseCaseForModelAccessRequest"},
+      "output":{"shape":"GetUseCaseForModelAccessResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get usecase for model access.</p>"
+    },
     "ListCustomModels":{
       "name":"ListCustomModels",
       "http":{
@@ -740,6 +813,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists all existing evaluation jobs.</p>"
+    },
+    "ListFoundationModelAgreementOffers":{
+      "name":"ListFoundationModelAgreementOffers",
+      "http":{
+        "method":"GET",
+        "requestUri":"/list-foundation-model-agreement-offers/{modelId}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListFoundationModelAgreementOffersRequest"},
+      "output":{"shape":"ListFoundationModelAgreementOffersResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get the offers associated with the specified model.</p>"
     },
     "ListFoundationModels":{
       "name":"ListFoundationModels",
@@ -967,6 +1058,23 @@
       "documentation":"<p>Set the configuration values for model invocation logging.</p>",
       "idempotent":true
     },
+    "PutUseCaseForModelAccess":{
+      "name":"PutUseCaseForModelAccess",
+      "http":{
+        "method":"POST",
+        "requestUri":"/use-case-for-model-access",
+        "responseCode":201
+      },
+      "input":{"shape":"PutUseCaseForModelAccessRequest"},
+      "output":{"shape":"PutUseCaseForModelAccessResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Put usecase for model access.</p>"
+    },
     "RegisterMarketplaceModelEndpoint":{
       "name":"RegisterMarketplaceModelEndpoint",
       "http":{
@@ -1160,6 +1268,11 @@
       "type":"string",
       "pattern":"[0-9]{12}"
     },
+    "AcknowledgementFormDataBody":{
+      "type":"blob",
+      "max":16384,
+      "min":10
+    },
     "AdditionalModelRequestFields":{
       "type":"map",
       "key":{"shape":"AdditionalModelRequestFieldsKey"},
@@ -1176,6 +1289,30 @@
       },
       "document":true
     },
+    "AgreementAvailability":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"AgreementStatus",
+          "documentation":"<p>Status of the agreement.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>Error message.</p>"
+        }
+      },
+      "documentation":"<p>Information about the agreement availability</p>"
+    },
+    "AgreementStatus":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "PENDING",
+        "NOT_AVAILABLE",
+        "ERROR"
+      ]
+    },
     "ApplicationType":{
       "type":"string",
       "enum":[
@@ -1187,6 +1324,13 @@
       "type":"string",
       "max":2048,
       "min":0
+    },
+    "AuthorizationStatus":{
+      "type":"string",
+      "enum":[
+        "AUTHORIZED",
+        "NOT_AUTHORIZED"
+      ]
     },
     "AutomatedEvaluationConfig":{
       "type":"structure",
@@ -1547,6 +1691,33 @@
         "jobArn":{
           "shape":"EvaluationJobArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the evaluation job.</p>"
+        }
+      }
+    },
+    "CreateFoundationModelAgreementRequest":{
+      "type":"structure",
+      "required":[
+        "offerToken",
+        "modelId"
+      ],
+      "members":{
+        "offerToken":{
+          "shape":"OfferToken",
+          "documentation":"<p>An offer token encapsulates the information for an offer.</p>"
+        },
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>Model Id of the model for the access request.</p>"
+        }
+      }
+    },
+    "CreateFoundationModelAgreementResponse":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>Model Id of the model for the access request.</p>"
         }
       }
     },
@@ -2291,6 +2462,21 @@
       "members":{
       }
     },
+    "DeleteFoundationModelAgreementRequest":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>Model Id of the model access to delete.</p>"
+        }
+      }
+    },
+    "DeleteFoundationModelAgreementResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteGuardrailRequest":{
       "type":"structure",
       "required":["guardrailIdentifier"],
@@ -2426,6 +2612,28 @@
       "members":{
       }
     },
+    "DimensionalPriceRate":{
+      "type":"structure",
+      "members":{
+        "dimension":{
+          "shape":"String",
+          "documentation":"<p>Dimension for the price rate.</p>"
+        },
+        "price":{
+          "shape":"String",
+          "documentation":"<p>Single-dimensional rate information.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>Description of the price rate.</p>"
+        },
+        "unit":{
+          "shape":"String",
+          "documentation":"<p>Unit associated with the price.</p>"
+        }
+      },
+      "documentation":"<p>Dimensional price rate.</p>"
+    },
     "DistillationConfig":{
       "type":"structure",
       "required":["teacherModelConfig"],
@@ -2452,6 +2660,13 @@
       "type":"string",
       "max":30,
       "min":1
+    },
+    "EntitlementAvailability":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "NOT_AVAILABLE"
+      ]
     },
     "ErrorMessage":{
       "type":"string",
@@ -3378,6 +3593,50 @@
         }
       }
     },
+    "GetFoundationModelAvailabilityRequest":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>The model Id of the foundation model.</p>",
+          "location":"uri",
+          "locationName":"modelId"
+        }
+      }
+    },
+    "GetFoundationModelAvailabilityResponse":{
+      "type":"structure",
+      "required":[
+        "modelId",
+        "agreementAvailability",
+        "authorizationStatus",
+        "entitlementAvailability",
+        "regionAvailability"
+      ],
+      "members":{
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>The model Id of the foundation model.</p>"
+        },
+        "agreementAvailability":{
+          "shape":"AgreementAvailability",
+          "documentation":"<p>Agreement availability. </p>"
+        },
+        "authorizationStatus":{
+          "shape":"AuthorizationStatus",
+          "documentation":"<p>Authorization status.</p>"
+        },
+        "entitlementAvailability":{
+          "shape":"EntitlementAvailability",
+          "documentation":"<p>Entitlement availability. </p>"
+        },
+        "regionAvailability":{
+          "shape":"RegionAvailability",
+          "documentation":"<p>Region availability. </p>"
+        }
+      }
+    },
     "GetFoundationModelRequest":{
       "type":"structure",
       "required":["modelIdentifier"],
@@ -4149,6 +4408,21 @@
         "commitmentExpirationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp for when the commitment term for the Provisioned Throughput expires.</p>"
+        }
+      }
+    },
+    "GetUseCaseForModelAccessRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetUseCaseForModelAccessResponse":{
+      "type":"structure",
+      "required":["formData"],
+      "members":{
+        "formData":{
+          "shape":"AcknowledgementFormDataBody",
+          "documentation":"<p>Get customer profile Response.</p>"
         }
       }
     },
@@ -5794,6 +6068,16 @@
       "max":100,
       "min":1
     },
+    "LegalTerm":{
+      "type":"structure",
+      "members":{
+        "url":{
+          "shape":"String",
+          "documentation":"<p>URL to the legal term document.</p>"
+        }
+      },
+      "documentation":"<p>The legal term of the agreement.</p>"
+    },
     "ListCustomModelsRequest":{
       "type":"structure",
       "members":{
@@ -5947,6 +6231,41 @@
         "jobSummaries":{
           "shape":"EvaluationSummaries",
           "documentation":"<p>A list of summaries of the evaluation jobs.</p>"
+        }
+      }
+    },
+    "ListFoundationModelAgreementOffersRequest":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>Model Id of the foundation model.</p>",
+          "location":"uri",
+          "locationName":"modelId"
+        },
+        "offerType":{
+          "shape":"OfferType",
+          "documentation":"<p>Type of offer associated with the model.</p>",
+          "location":"querystring",
+          "locationName":"offerType"
+        }
+      }
+    },
+    "ListFoundationModelAgreementOffersResponse":{
+      "type":"structure",
+      "required":[
+        "modelId",
+        "offers"
+      ],
+      "members":{
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>Model Id of the foundation model.</p>"
+        },
+        "offers":{
+          "shape":"Offers",
+          "documentation":"<p>List of the offers associated with the specified model.</p>"
         }
       }
     },
@@ -7210,6 +7529,41 @@
       "type":"string",
       "pattern":"[\\s\\S]*"
     },
+    "Offer":{
+      "type":"structure",
+      "required":[
+        "offerToken",
+        "termDetails"
+      ],
+      "members":{
+        "offerId":{
+          "shape":"OfferId",
+          "documentation":"<p>Offer Id for a model offer.</p>"
+        },
+        "offerToken":{
+          "shape":"OfferToken",
+          "documentation":"<p>Offer token.</p>"
+        },
+        "termDetails":{
+          "shape":"TermDetails",
+          "documentation":"<p>Details about the terms of the offer.</p>"
+        }
+      },
+      "documentation":"<p>An offer dictates usage terms for the model.</p>"
+    },
+    "OfferId":{"type":"string"},
+    "OfferToken":{"type":"string"},
+    "OfferType":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "PUBLIC"
+      ]
+    },
+    "Offers":{
+      "type":"list",
+      "member":{"shape":"Offer"}
+    },
     "OrchestrationConfiguration":{
       "type":"structure",
       "required":["queryTransformationConfiguration"],
@@ -7259,6 +7613,17 @@
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "PricingTerm":{
+      "type":"structure",
+      "required":["rateCard"],
+      "members":{
+        "rateCard":{
+          "shape":"RateCard",
+          "documentation":"<p>Describes a usage price for each dimension.</p>"
+        }
+      },
+      "documentation":"<p>Describes the usage-based pricing term.</p>"
     },
     "PromptRouterArn":{
       "type":"string",
@@ -7492,6 +7857,21 @@
       "members":{
       }
     },
+    "PutUseCaseForModelAccessRequest":{
+      "type":"structure",
+      "required":["formData"],
+      "members":{
+        "formData":{
+          "shape":"AcknowledgementFormDataBody",
+          "documentation":"<p>Put customer profile Request.</p>"
+        }
+      }
+    },
+    "PutUseCaseForModelAccessResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "QueryTransformationConfiguration":{
       "type":"structure",
       "required":["type"],
@@ -7538,6 +7918,10 @@
       "member":{"shape":"RAGConfig"},
       "max":1,
       "min":1
+    },
+    "RateCard":{
+      "type":"list",
+      "member":{"shape":"DimensionalPriceRate"}
     },
     "RatingScale":{
       "type":"list",
@@ -7587,6 +7971,13 @@
       "type":"string",
       "max":100,
       "min":1
+    },
+    "RegionAvailability":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "NOT_AVAILABLE"
+      ]
     },
     "RegisterMarketplaceModelEndpointRequest":{
       "type":"structure",
@@ -8058,6 +8449,16 @@
       "max":16,
       "min":1
     },
+    "SupportTerm":{
+      "type":"structure",
+      "members":{
+        "refundPolicyDescription":{
+          "shape":"String",
+          "documentation":"<p>Describes the refund policy.</p>"
+        }
+      },
+      "documentation":"<p>Describes a support term.</p>"
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -8152,6 +8553,30 @@
       "box":true,
       "max":1,
       "min":0
+    },
+    "TermDetails":{
+      "type":"structure",
+      "required":[
+        "usageBasedPricingTerm",
+        "legalTerm",
+        "supportTerm"
+      ],
+      "members":{
+        "usageBasedPricingTerm":{"shape":"PricingTerm"},
+        "legalTerm":{
+          "shape":"LegalTerm",
+          "documentation":"<p>Describes the legal terms.</p>"
+        },
+        "supportTerm":{
+          "shape":"SupportTerm",
+          "documentation":"<p>Describes the support terms.</p>"
+        },
+        "validityTerm":{
+          "shape":"ValidityTerm",
+          "documentation":"<p>Describes the validity terms.</p>"
+        }
+      },
+      "documentation":"<p>Describes the usage terms of an offer.</p>"
     },
     "TextInferenceConfig":{
       "type":"structure",
@@ -8502,6 +8927,16 @@
       "member":{"shape":"Validator"},
       "max":10,
       "min":0
+    },
+    "ValidityTerm":{
+      "type":"structure",
+      "members":{
+        "agreementDuration":{
+          "shape":"String",
+          "documentation":"<p>Describes the agreement duration.</p>"
+        }
+      },
+      "documentation":"<p>Describes the validity terms.</p>"
     },
     "VpcConfig":{
       "type":"structure",

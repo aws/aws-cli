@@ -1079,7 +1079,10 @@
       "output":{"shape":"ModifyWorkspaceAccessPropertiesResult"},
       "errors":[
         {"shape":"ResourceNotFoundException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValuesException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"OperationNotSupportedException"}
       ],
       "documentation":"<p>Specifies which devices and operating systems users can use to access their WorkSpaces. For more information, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/update-directory-details.html#control-device-access\"> Control Device Access</a>.</p>"
     },
@@ -1501,6 +1504,43 @@
       "documentation":"<p>The user is not authorized to access a resource.</p>",
       "exception":true
     },
+    "AccessEndpoint":{
+      "type":"structure",
+      "members":{
+        "AccessEndpointType":{
+          "shape":"AccessEndpointType",
+          "documentation":"<p>Indicates the type of access endpoint.</p>"
+        },
+        "VpcEndpointId":{
+          "shape":"AlphanumericDashUnderscoreNonEmptyString",
+          "documentation":"<p>Indicates the VPC endpoint to use for access.</p>"
+        }
+      },
+      "documentation":"<p>Describes the access type and endpoint for a WorkSpace.</p>"
+    },
+    "AccessEndpointConfig":{
+      "type":"structure",
+      "required":["AccessEndpoints"],
+      "members":{
+        "AccessEndpoints":{
+          "shape":"AccessEndpointList",
+          "documentation":"<p>Indicates a list of access endpoints associated with this directory.</p>"
+        },
+        "InternetFallbackProtocols":{
+          "shape":"InternetFallbackProtocolList",
+          "documentation":"<p>Indicates a list of protocols that fallback to using the public Internet when streaming over a VPC endpoint is not available.</p>"
+        }
+      },
+      "documentation":"<p>Describes the access endpoint configuration for a WorkSpace.</p>"
+    },
+    "AccessEndpointList":{
+      "type":"list",
+      "member":{"shape":"AccessEndpoint"}
+    },
+    "AccessEndpointType":{
+      "type":"string",
+      "enum":["STREAMING_WSP"]
+    },
     "AccessPropertyValue":{
       "type":"string",
       "enum":[
@@ -1617,6 +1657,10 @@
       "pattern":"^(http|https)\\://\\S+"
     },
     "Alias":{"type":"string"},
+    "AlphanumericDashUnderscoreNonEmptyString":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9\\_\\-]{1,1000}$"
+    },
     "AmazonUuid":{
       "type":"string",
       "max":36,
@@ -4325,6 +4369,25 @@
       "documentation":"<p>Unexpected server error occured.</p>",
       "exception":true
     },
+    "InternetFallbackProtocol":{
+      "type":"string",
+      "enum":["PCOIP"]
+    },
+    "InternetFallbackProtocolList":{
+      "type":"list",
+      "member":{"shape":"InternetFallbackProtocol"}
+    },
+    "InvalidParameterCombinationException":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"ExceptionMessage",
+          "documentation":"<p>The exception error message.</p>"
+        }
+      },
+      "documentation":"<p>Two or more of the selected parameter values cannot be used together.</p>",
+      "exception":true
+    },
     "InvalidParameterValuesException":{
       "type":"structure",
       "members":{
@@ -6319,6 +6382,10 @@
         "DeviceTypeWorkSpacesThinClient":{
           "shape":"AccessPropertyValue",
           "documentation":"<p>Indicates whether users can access their WorkSpaces through a WorkSpaces Thin Client.</p>"
+        },
+        "AccessEndpointConfig":{
+          "shape":"AccessEndpointConfig",
+          "documentation":"<p>Specifies the configuration for accessing the WorkSpace.</p>"
         }
       },
       "documentation":"<p>The device types and operating systems that can be used to access a WorkSpace. For more information, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/workspaces-network-requirements.html\">Amazon WorkSpaces Client Network Requirements</a>.</p>"

@@ -12,10 +12,14 @@
 # language governing permissions and limitations under the License.
 
 import pytest
+
 from botocore.config import Config
 from botocore.exceptions import EndpointResolutionError
-
 from tests import ClientHTTPStubber, patch_load_service_model
+from tests.functional.test_useragent import (
+    get_captured_ua_strings,
+    parse_registered_feature_ids,
+)
 
 FAKE_RULESET = {
     "version": "1.0",
@@ -78,6 +82,40 @@ FAKE_RULESET = {
             ],
             "error": "AccountIdEndpointMode is required but no AccountID was provided",
             "type": "error",
+        },
+        {
+            "documentation": "Template account ID into the URI when account ID is set and AccountIdEndpointMode is "
+            "set to required.",
+            "conditions": [
+                {"fn": "isSet", "argv": [{"ref": "AccountId"}]},
+                {"fn": "isSet", "argv": [{"ref": "AccountIdEndpointMode"}]},
+                {
+                    "fn": "stringEquals",
+                    "argv": [{"ref": "AccountIdEndpointMode"}, "required"],
+                },
+            ],
+            "endpoint": {
+                "url": "https://{AccountId}.otherservice.us-west-2.amazonaws.com"
+            },
+            "type": "endpoint",
+        },
+        {
+            "documentation": "Fallback when AccountID is unset but AccountIdEndpointMode is set to preferred.",
+            "conditions": [
+                {
+                    "fn": "not",
+                    "argv": [{"fn": "isSet", "argv": [{"ref": "AccountId"}]}],
+                },
+                {"fn": "isSet", "argv": [{"ref": "AccountIdEndpointMode"}]},
+                {
+                    "fn": "stringEquals",
+                    "argv": [{"ref": "AccountIdEndpointMode"}, "preferred"],
+                },
+            ],
+            "endpoint": {
+                "url": "https://otherservice.us-west-2.amazonaws.com/"
+            },
+            "type": "endpoint",
         },
     ],
 }
@@ -196,3 +234,48 @@ def test_account_id_endpoint_resolution(
             assert (
                 request.url == expected_endpoint
             ), f"Expected endpoint '{expected_endpoint}', but got: {request.url}"
+
+
+@pytest.mark.parametrize(
+    "account_id, account_id_endpoint_mode, expected_feature_ids",
+    [
+        # Feature IDs:
+        #   ACCOUNT_ID_MODE_PREFERRED -> P
+        #   ACCOUNT_ID_MODE_DISABLED  -> Q
+        #   ACCOUNT_ID_MODE_REQUIRED  -> R
+        #   RESOLVED_ACCOUNT_ID       -> T
+        ('123456789012', 'preferred', ['P', 'T']),
+        ('123456789012', 'disabled', ['Q', 'T']),
+        ('123456789012', 'required', ['R', 'T']),
+        (None, 'preferred', ['P']),
+        ('', 'preferred', ['P']),
+    ],
+)
+def test_user_agent_has_account_id_endpoint_feature_ids(
+    patched_session,
+    monkeypatch,
+    account_id,
+    account_id_endpoint_mode,
+    expected_feature_ids,
+):
+    if account_id is not None:
+        monkeypatch.setenv('AWS_ACCOUNT_ID', account_id)
+    else:
+        monkeypatch.delenv('AWS_ACCOUNT_ID', raising=False)
+
+    patch_load_service_model(
+        patched_session, monkeypatch, FAKE_SERVICE_MODEL, FAKE_RULESET
+    )
+
+    client = patched_session.create_client(
+        'otherservice',
+        region_name='us-west-2',
+        config=Config(account_id_endpoint_mode=account_id_endpoint_mode),
+    )
+
+    with ClientHTTPStubber(client, strict=True) as http_stubber:
+        http_stubber.add_response()
+        client.mock_operation(MockOpParam='mock-op-param-value')
+    ua_string = get_captured_ua_strings(http_stubber)[0]
+    feature_list = parse_registered_feature_ids(ua_string)
+    assert all(item in feature_list for item in expected_feature_ids)

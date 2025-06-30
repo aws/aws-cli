@@ -734,7 +734,21 @@ class ClientArgsCreator:
                 config_value=value,
                 valid_options=valid_options,
             )
+        self._register_checksum_config_feature_ids(value, config_key)
         config_kwargs[config_key] = value
+
+    def _register_checksum_config_feature_ids(self, value, config_key):
+        checksum_config_feature_id = None
+        if config_key == "request_checksum_calculation":
+            checksum_config_feature_id = (
+                f"FLEXIBLE_CHECKSUMS_REQ_{value.upper()}"
+            )
+        elif config_key == "response_checksum_validation":
+            checksum_config_feature_id = (
+                f"FLEXIBLE_CHECKSUMS_RES_{value.upper()}"
+            )
+        if checksum_config_feature_id is not None:
+            register_feature_id(checksum_config_feature_id)
 
     def _compute_account_id_endpoint_mode_config(self, config_kwargs):
         config_key = 'account_id_endpoint_mode'

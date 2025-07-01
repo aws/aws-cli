@@ -26,7 +26,7 @@ from configparser import RawConfigParser
 from urllib.error import URLError
 from urllib.request import urlopen
 
-from botocore.compat import six, OrderedDict
+from botocore.compat import OrderedDict
 
 import sys
 import zipfile
@@ -502,3 +502,20 @@ except ImportError:
         if _id:
             id = _id
         return distname, version, id
+
+
+def __getattr__(name):
+    """
+    Module override to raise warnings when deprecated libraries
+    are imported in external code.
+    """
+    if name == "six":
+        warnstr = (
+            "The awscli.compat.six module is deprecated and will be removed "
+            "in a future version. Please use six as a direct dependency."
+        )
+        warnings.warn(warnstr, DeprecationWarning, stacklevel=2)
+        from botocore.compat import six
+        return six
+
+    raise AttributeError(f"Module {__name__} has no attribute {name}.")

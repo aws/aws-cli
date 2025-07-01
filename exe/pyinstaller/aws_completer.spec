@@ -7,7 +7,7 @@ exe_name = "aws_completer"
 
 completer_a = Analysis(['../../bin/aws_completer'],
              binaries=[],
-             datas=[],
+             datas=[('../../awscli/data/metadata.json', 'awscli/data')],
              hiddenimports=[],
              hookspath=['.'],
              runtime_hooks=[],

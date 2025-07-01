@@ -53,7 +53,8 @@ aws_exe = EXE(aws_pyz,
           strip=False,
           upx=True,
           console=True,
-          contents_directory='.')
+          contents_directory='.',
+          target_arch='universal2',)
 coll = COLLECT(aws_exe,
                aws_a.binaries,
                aws_a.zipfiles,

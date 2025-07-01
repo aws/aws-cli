@@ -22,10 +22,11 @@
       },
       "input":{"shape":"CancelTrainedModelRequest"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Submits a request to cancel the trained model job.</p>",
       "idempotent":true
@@ -39,10 +40,11 @@
       },
       "input":{"shape":"CancelTrainedModelInferenceJobRequest"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Submits a request to cancel a trained model inference job.</p>",
       "idempotent":true
@@ -57,8 +59,8 @@
       "input":{"shape":"CreateAudienceModelRequest"},
       "output":{"shape":"CreateAudienceModelResponse"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceQuotaExceededException"}
@@ -76,8 +78,8 @@
       "input":{"shape":"CreateConfiguredAudienceModelRequest"},
       "output":{"shape":"CreateConfiguredAudienceModelResponse"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceQuotaExceededException"}
@@ -95,8 +97,8 @@
       "input":{"shape":"CreateConfiguredModelAlgorithmRequest"},
       "output":{"shape":"CreateConfiguredModelAlgorithmResponse"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
@@ -113,10 +115,11 @@
       "input":{"shape":"CreateConfiguredModelAlgorithmAssociationRequest"},
       "output":{"shape":"CreateConfiguredModelAlgorithmAssociationResponse"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Associates a configured model algorithm to a collaboration for use by any member of the collaboration.</p>",
@@ -132,10 +135,11 @@
       "input":{"shape":"CreateMLInputChannelRequest"},
       "output":{"shape":"CreateMLInputChannelResponse"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Provides the information to create an ML input channel. An ML input channel is the result of a query that can be used for ML modeling.</p>",
@@ -151,10 +155,12 @@
       "input":{"shape":"CreateTrainedModelRequest"},
       "output":{"shape":"CreateTrainedModelResponse"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates a trained model from an associated configured model algorithm using data from any member of the collaboration.</p>",
@@ -170,8 +176,8 @@
       "input":{"shape":"CreateTrainingDatasetRequest"},
       "output":{"shape":"CreateTrainingDatasetResponse"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Defines the information necessary to create a training dataset. In Clean Rooms ML, the <code>TrainingDataset</code> is metadata that points to a Glue table, which is read only during <code>AudienceModel</code> creation.</p>",
@@ -186,8 +192,8 @@
       },
       "input":{"shape":"DeleteAudienceGenerationJobRequest"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -203,8 +209,8 @@
       },
       "input":{"shape":"DeleteAudienceModelRequest"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -220,8 +226,8 @@
       },
       "input":{"shape":"DeleteConfiguredAudienceModelRequest"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -253,8 +259,8 @@
       },
       "input":{"shape":"DeleteConfiguredModelAlgorithmRequest"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -270,10 +276,11 @@
       },
       "input":{"shape":"DeleteConfiguredModelAlgorithmAssociationRequest"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes a configured model algorithm association.</p>",
       "idempotent":true
@@ -289,7 +296,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes a ML modeling configuration.</p>",
       "idempotent":true
@@ -303,10 +311,11 @@
       },
       "input":{"shape":"DeleteMLInputChannelDataRequest"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Provides the information necessary to delete an ML input channel.</p>",
       "idempotent":true
@@ -320,12 +329,13 @@
       },
       "input":{"shape":"DeleteTrainedModelOutputRequest"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes the output of a trained model.</p>",
+      "documentation":"<p>Deletes the model artifacts stored by the service.</p>",
       "idempotent":true
     },
     "DeleteTrainingDataset":{
@@ -337,8 +347,8 @@
       },
       "input":{"shape":"DeleteTrainingDatasetRequest"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -389,7 +399,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns information about the configured model algorithm association in a collaboration.</p>"
     },
@@ -405,7 +416,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns information about a specific ML input channel in a collaboration.</p>"
     },
@@ -421,7 +433,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns information about a trained model in a collaboration.</p>"
     },
@@ -485,7 +498,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns information about a configured model algorithm association.</p>"
     },
@@ -501,7 +515,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns information about a specific ML configuration.</p>"
     },
@@ -517,7 +532,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns information about an ML input channel.</p>"
     },
@@ -533,7 +549,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns information about a trained model.</p>"
     },
@@ -549,7 +566,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns information about a trained model inference job.</p>"
     },
@@ -625,7 +643,8 @@
       "output":{"shape":"ListCollaborationConfiguredModelAlgorithmAssociationsResponse"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a list of the configured model algorithm associations in a collaboration.</p>"
     },
@@ -640,7 +659,8 @@
       "output":{"shape":"ListCollaborationMLInputChannelsResponse"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a list of the ML input channels in a collaboration.</p>"
     },
@@ -655,7 +675,8 @@
       "output":{"shape":"ListCollaborationTrainedModelExportJobsResponse"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a list of the export jobs for a trained model in a collaboration.</p>"
     },
@@ -670,7 +691,8 @@
       "output":{"shape":"ListCollaborationTrainedModelInferenceJobsResponse"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a list of trained model inference jobs in a specified collaboration.</p>"
     },
@@ -685,7 +707,8 @@
       "output":{"shape":"ListCollaborationTrainedModelsResponse"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a list of the trained models in a collaboration.</p>"
     },
@@ -715,7 +738,8 @@
       "output":{"shape":"ListConfiguredModelAlgorithmAssociationsResponse"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a list of configured model algorithm associations.</p>"
     },
@@ -745,7 +769,8 @@
       "output":{"shape":"ListMLInputChannelsResponse"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a list of ML input channels.</p>"
     },
@@ -776,9 +801,27 @@
       "output":{"shape":"ListTrainedModelInferenceJobsResponse"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a list of trained model inference jobs that match the request parameters.</p>"
+    },
+    "ListTrainedModelVersions":{
+      "name":"ListTrainedModelVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/trained-models/{trainedModelArn}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTrainedModelVersionsRequest"},
+      "output":{"shape":"ListTrainedModelVersionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of trained model versions for a specified trained model. This operation allows you to view all versions of a trained model, including information about their status and creation details. You can use this to track the evolution of your trained models and select specific versions for inference or further training.</p>"
     },
     "ListTrainedModels":{
       "name":"ListTrainedModels",
@@ -791,7 +834,8 @@
       "output":{"shape":"ListTrainedModelsResponse"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a list of trained models.</p>"
     },
@@ -837,7 +881,8 @@
       "input":{"shape":"PutMLConfigurationRequest"},
       "errors":[
         {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Assigns information about an ML configuration.</p>",
       "idempotent":true
@@ -851,8 +896,8 @@
       },
       "input":{"shape":"StartAudienceExportJobRequest"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceQuotaExceededException"}
@@ -870,10 +915,11 @@
       "input":{"shape":"StartAudienceGenerationJobRequest"},
       "output":{"shape":"StartAudienceGenerationJobResponse"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Information necessary to start the audience generation job.</p>",
@@ -888,10 +934,11 @@
       },
       "input":{"shape":"StartTrainedModelExportJobRequest"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Provides the information necessary to start a trained model export job.</p>",
       "idempotent":true
@@ -906,10 +953,11 @@
       "input":{"shape":"StartTrainedModelInferenceJobRequest"},
       "output":{"shape":"StartTrainedModelInferenceJobResponse"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Defines the information necessary to begin a trained model inference job.</p>",
@@ -958,8 +1006,8 @@
       "input":{"shape":"UpdateConfiguredAudienceModelRequest"},
       "output":{"shape":"UpdateConfiguredAudienceModelResponse"},
       "errors":[
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -1348,6 +1396,12 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the trained model job that you want to cancel.</p>",
           "location":"uri",
           "locationName":"trainedModelArn"
+        },
+        "versionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model to cancel. This parameter allows you to specify which version of the trained model you want to cancel when multiple versions exist.</p> <p>If <code>versionIdentifier</code> is not specified, the base model will be cancelled.</p>",
+          "location":"querystring",
+          "locationName":"versionIdentifier"
         }
       }
     },
@@ -1522,6 +1576,10 @@
           "shape":"TrainedModelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that is being exported.</p>"
         },
+        "trainedModelVersionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model that was exported in this job.</p>"
+        },
         "membershipIdentifier":{
           "shape":"UUID",
           "documentation":"<p>The membership ID of the member that created the trained model export job.</p>"
@@ -1567,6 +1625,10 @@
         "trainedModelArn":{
           "shape":"TrainedModelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that is used for the trained model inference job.</p>"
+        },
+        "trainedModelVersionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model that was used for inference in this job.</p>"
         },
         "collaborationIdentifier":{
           "shape":"UUID",
@@ -1652,6 +1714,14 @@
         "name":{
           "shape":"NameString",
           "documentation":"<p>The name of the trained model.</p>"
+        },
+        "versionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of this trained model version.</p>"
+        },
+        "incrementalTrainingDataChannels":{
+          "shape":"IncrementalTrainingDataChannelsOutput",
+          "documentation":"<p>Information about the incremental training data channels used to create this version of the trained model.</p>"
         },
         "description":{
           "shape":"ResourceDescription",
@@ -1817,7 +1887,7 @@
       "type":"string",
       "max":2048,
       "min":20,
-      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:(membership/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)?configured-model-algorithm-association/[-a-zA-Z0-9_/.]+"
+      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:membership/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/configured-model-algorithm-association/[-a-zA-Z0-9_/.]+"
     },
     "ConfiguredModelAlgorithmAssociationList":{
       "type":"list",
@@ -1937,7 +2007,7 @@
       "members":{
         "imageUri":{
           "shape":"AlgorithmImage",
-          "documentation":"<p>The registry path of the docker image that contains the algorithm. Clean Rooms ML supports both <code>registry/repository[:tag]</code> and <code>registry/repositry[@digest]</code> image path formats. For more information about using images in Clean Rooms ML, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AlgorithmSpecification.html#sagemaker-Type-AlgorithmSpecification-TrainingImage\">Sagemaker API reference</a>.</p>"
+          "documentation":"<p>The registry path of the docker image that contains the algorithm. Clean Rooms ML currently only supports the <code>registry/repository[:tag]</code> image path format. For more information about using images in Clean Rooms ML, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AlgorithmSpecification.html#sagemaker-Type-AlgorithmSpecification-TrainingImage\">Sagemaker API reference</a>.</p>"
         },
         "entrypoint":{
           "shape":"ContainerEntrypoint",
@@ -2271,9 +2341,17 @@
           "shape":"StoppingCondition",
           "documentation":"<p>The criteria that is used to stop model training.</p>"
         },
+        "incrementalTrainingDataChannels":{
+          "shape":"IncrementalTrainingDataChannels",
+          "documentation":"<p>Specifies the incremental training data channels for the trained model. </p> <p>Incremental training allows you to create a new trained model with updates without retraining from scratch. You can specify up to one incremental training data channel that references a previously trained model and its version.</p> <p>Limit: Maximum of 20 channels total (including both <code>incrementalTrainingDataChannels</code> and <code>dataChannels</code>).</p>"
+        },
         "dataChannels":{
           "shape":"ModelTrainingDataChannels",
-          "documentation":"<p>Defines the data channels that are used as input for the trained model request.</p>"
+          "documentation":"<p>Defines the data channels that are used as input for the trained model request.</p> <p>Limit: Maximum of 20 channels total (including both <code>dataChannels</code> and <code>incrementalTrainingDataChannels</code>).</p>"
+        },
+        "trainingInputMode":{
+          "shape":"TrainingInputMode",
+          "documentation":"<p>The input mode for accessing the training data. This parameter determines how the training data is made available to the training algorithm. Valid values are:</p> <ul> <li> <p> <code>File</code> - The training data is downloaded to the training instance and made available as files.</p> </li> <li> <p> <code>FastFile</code> - The training data is streamed directly from Amazon S3 to the training algorithm, providing faster access for large datasets.</p> </li> <li> <p> <code>Pipe</code> - The training data is streamed to the training algorithm using named pipes, which can improve performance for certain algorithms.</p> </li> </ul>"
         },
         "description":{
           "shape":"ResourceDescription",
@@ -2296,6 +2374,10 @@
         "trainedModelArn":{
           "shape":"TrainedModelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the trained model.</p>"
+        },
+        "versionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The unique version identifier assigned to the newly created trained model. This identifier can be used to reference this specific version of the trained model in subsequent operations such as inference jobs or incremental training.</p> <p>The initial version identifier for the base version of the trained model is \"NULL\".</p>"
         }
       }
     },
@@ -2538,6 +2620,12 @@
           "documentation":"<p>The membership ID of the member that is deleting the trained model output.</p>",
           "location":"uri",
           "locationName":"membershipIdentifier"
+        },
+        "versionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model to delete. If not specified, the operation will delete the base version of the trained model. When specified, only the particular version will be deleted.</p>",
+          "location":"querystring",
+          "locationName":"versionIdentifier"
         }
       }
     },
@@ -2934,6 +3022,12 @@
           "documentation":"<p>The collaboration ID that contains the trained model that you want to return information about.</p>",
           "location":"uri",
           "locationName":"collaborationIdentifier"
+        },
+        "versionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model to retrieve. If not specified, the operation returns information about the latest version of the trained model.</p>",
+          "location":"querystring",
+          "locationName":"versionIdentifier"
         }
       }
     },
@@ -2963,6 +3057,14 @@
           "shape":"TrainedModelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the trained model.</p>"
         },
+        "versionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model. This unique identifier distinguishes this version from other versions of the same trained model.</p>"
+        },
+        "incrementalTrainingDataChannels":{
+          "shape":"IncrementalTrainingDataChannelsOutput",
+          "documentation":"<p>Information about the incremental training data channels used to create this version of the trained model. This includes details about the base model that was used for incremental training and the channel configuration.</p>"
+        },
         "name":{
           "shape":"NameString",
           "documentation":"<p>The name of the trained model.</p>"
@@ -2983,6 +3085,10 @@
         "resourceConfig":{
           "shape":"ResourceConfig",
           "documentation":"<p>The EC2 resource configuration that was used to train this model.</p>"
+        },
+        "trainingInputMode":{
+          "shape":"TrainingInputMode",
+          "documentation":"<p>The input mode that was used for accessing the training data when this trained model was created. This indicates how the training data was made available to the training algorithm.</p>"
         },
         "stoppingCondition":{
           "shape":"StoppingCondition",
@@ -3514,6 +3620,10 @@
           "shape":"TrainedModelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) for the trained model that was used for the trained model inference job.</p>"
         },
+        "trainedModelVersionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model used for this inference job. This identifies the specific version of the trained model that was used to generate the inference results.</p>"
+        },
         "resourceConfig":{
           "shape":"InferenceResourceConfig",
           "documentation":"<p>The resource configuration information for the trained model inference job.</p>"
@@ -3591,6 +3701,12 @@
           "documentation":"<p>The membership ID of the member that created the trained model that you are interested in.</p>",
           "location":"uri",
           "locationName":"membershipIdentifier"
+        },
+        "versionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model to retrieve. If not specified, the operation returns information about the latest version of the trained model.</p>",
+          "location":"querystring",
+          "locationName":"versionIdentifier"
         }
       }
     },
@@ -3620,6 +3736,14 @@
           "shape":"TrainedModelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the trained model.</p>"
         },
+        "versionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model. This unique identifier distinguishes this version from other versions of the same trained model.</p>"
+        },
+        "incrementalTrainingDataChannels":{
+          "shape":"IncrementalTrainingDataChannelsOutput",
+          "documentation":"<p>Information about the incremental training data channels used to create this version of the trained model. This includes details about the base model that was used for incremental training and the channel configuration.</p>"
+        },
         "name":{
           "shape":"NameString",
           "documentation":"<p>The name of the trained model.</p>"
@@ -3640,6 +3764,10 @@
         "resourceConfig":{
           "shape":"ResourceConfig",
           "documentation":"<p>The EC2 resource configuration that was used to create the trained model.</p>"
+        },
+        "trainingInputMode":{
+          "shape":"TrainingInputMode",
+          "documentation":"<p>The input mode that was used for accessing the training data when this trained model was created. This indicates how the training data was made available to the training algorithm.</p>"
         },
         "stoppingCondition":{
           "shape":"StoppingCondition",
@@ -3822,13 +3950,69 @@
       "min":20,
       "pattern":"arn:aws[-a-z]*:iam::[0-9]{12}:role/.+"
     },
+    "IncrementalTrainingDataChannel":{
+      "type":"structure",
+      "required":[
+        "trainedModelArn",
+        "channelName"
+      ],
+      "members":{
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the base trained model to use for incremental training. This model serves as the starting point for the incremental training process.</p>"
+        },
+        "versionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the base trained model to use for incremental training. If not specified, the latest version of the trained model is used.</p>"
+        },
+        "channelName":{
+          "shape":"ModelTrainingDataChannelName",
+          "documentation":"<p>The name of the incremental training data channel. This name is used to identify the channel during the training process and must be unique within the training job.</p>"
+        }
+      },
+      "documentation":"<p>Defines an incremental training data channel that references a previously trained model. Incremental training allows you to update an existing trained model with new data, building upon the knowledge from a base model rather than training from scratch. This can significantly reduce training time and computational costs while improving model performance with additional data.</p>"
+    },
+    "IncrementalTrainingDataChannelOutput":{
+      "type":"structure",
+      "required":[
+        "channelName",
+        "modelName"
+      ],
+      "members":{
+        "channelName":{
+          "shape":"ModelTrainingDataChannelName",
+          "documentation":"<p>The name of the incremental training data channel that was used.</p>"
+        },
+        "versionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model that was used for incremental training.</p>"
+        },
+        "modelName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the base trained model that was used for incremental training.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an incremental training data channel that was used to create a trained model. This structure provides details about the base model and channel configuration used during incremental training.</p>"
+    },
+    "IncrementalTrainingDataChannels":{
+      "type":"list",
+      "member":{"shape":"IncrementalTrainingDataChannel"},
+      "max":1,
+      "min":1
+    },
+    "IncrementalTrainingDataChannelsOutput":{
+      "type":"list",
+      "member":{"shape":"IncrementalTrainingDataChannelOutput"},
+      "max":1,
+      "min":1
+    },
     "InferenceContainerConfig":{
       "type":"structure",
       "required":["imageUri"],
       "members":{
         "imageUri":{
           "shape":"AlgorithmImage",
-          "documentation":"<p>The registry path of the docker image that contains the inference algorithm. Clean Rooms ML supports both <code>registry/repository[:tag]</code> and <code>registry/repositry[@digest]</code> image path formats. For more information about using images in Clean Rooms ML, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AlgorithmSpecification.html#sagemaker-Type-AlgorithmSpecification-TrainingImage\">Sagemaker API reference</a>.</p>"
+          "documentation":"<p>The registry path of the docker image that contains the inference algorithm. Clean Rooms ML currently only supports the <code>registry/repository[:tag]</code> image path format. For more information about using images in Clean Rooms ML, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AlgorithmSpecification.html#sagemaker-Type-AlgorithmSpecification-TrainingImage\">Sagemaker API reference</a>.</p>"
         }
       },
       "documentation":"<p>Provides configuration information for the inference container.</p>"
@@ -4039,7 +4223,7 @@
         },
         "roleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The ARN of the IAM role that Clean Rooms ML can assume to read the data referred to in the <code>dataSource</code> field the input channel.</p> <p>Passing a role across AWS accounts is not allowed. If you pass a role that isn't in your account, you get an <code>AccessDeniedException</code> error.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role used to run the query specified in the <code>dataSource</code> field of the input channel.</p> <p>Passing a role across AWS accounts is not allowed. If you pass a role that isn't in your account, you get an <code>AccessDeniedException</code> error.</p>"
         }
       },
       "documentation":"<p>Provides information about the data source that is used to create an ML input channel.</p>"
@@ -4145,6 +4329,17 @@
         "ml.r5.16xlarge",
         "ml.r5.24xlarge"
       ]
+    },
+    "InternalServiceException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>An internal service error occurred. Retry your request. If the problem persists, contact AWS Support.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
     },
     "KmsKeyArn":{
       "type":"string",
@@ -4369,6 +4564,12 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that was used to create the export jobs that you are interested in.</p>",
           "location":"uri",
           "locationName":"trainedModelArn"
+        },
+        "trainedModelVersionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model to filter export jobs by. When specified, only export jobs for this specific version of the trained model are returned.</p>",
+          "location":"querystring",
+          "locationName":"trainedModelVersionIdentifier"
         }
       }
     },
@@ -4413,6 +4614,12 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that was used to create the trained model inference jobs that you are interested in.</p>",
           "location":"querystring",
           "locationName":"trainedModelArn"
+        },
+        "trainedModelVersionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model to filter inference jobs by. When specified, only inference jobs that used this specific version of the trained model are returned.</p>",
+          "location":"querystring",
+          "locationName":"trainedModelVersionIdentifier"
         }
       }
     },
@@ -4655,6 +4862,12 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of a trained model that was used to create the trained model inference jobs that you are interested in.</p>",
           "location":"querystring",
           "locationName":"trainedModelArn"
+        },
+        "trainedModelVersionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model to filter inference jobs by. When specified, only inference jobs that used this specific version of the trained model are returned.</p>",
+          "location":"querystring",
+          "locationName":"trainedModelVersionIdentifier"
         }
       }
     },
@@ -4669,6 +4882,59 @@
         "trainedModelInferenceJobs":{
           "shape":"TrainedModelInferenceJobList",
           "documentation":"<p>Returns the requested trained model inference jobs.</p>"
+        }
+      }
+    },
+    "ListTrainedModelVersionsRequest":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "trainedModelArn"
+      ],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous <code>ListTrainedModelVersions</code> request. Use this token to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of trained model versions to return in a single page. The default value is 10, and the maximum value is 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership identifier for the collaboration that contains the trained model.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model for which to list versions.</p>",
+          "location":"uri",
+          "locationName":"trainedModelArn"
+        },
+        "status":{
+          "shape":"TrainedModelStatus",
+          "documentation":"<p>Filter the results to only include trained model versions with the specified status. Valid values include <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>ACTIVE</code>, <code>CREATE_FAILED</code>, and others.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        }
+      }
+    },
+    "ListTrainedModelVersionsResponse":{
+      "type":"structure",
+      "required":["trainedModels"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use in a subsequent <code>ListTrainedModelVersions</code> request to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        },
+        "trainedModels":{
+          "shape":"TrainedModelList",
+          "documentation":"<p>A list of trained model versions that match the specified criteria. Each entry contains summary information about a trained model version, including its version identifier, status, and creation details.</p>"
         }
       }
     },
@@ -4971,6 +5237,10 @@
         "channelName":{
           "shape":"ModelTrainingDataChannelName",
           "documentation":"<p>The name of the training data channel.</p>"
+        },
+        "s3DataDistributionType":{
+          "shape":"S3DataDistributionType",
+          "documentation":"<p>Specifies how the training data stored in Amazon S3 should be distributed to training instances. This parameter controls the data distribution strategy for the training job:</p> <ul> <li> <p> <code>FullyReplicated</code> - The entire dataset is replicated on each training instance. This is suitable for smaller datasets and algorithms that require access to the complete dataset.</p> </li> <li> <p> <code>ShardedByS3Key</code> - The dataset is distributed across training instances based on Amazon S3 key names. This is suitable for larger datasets and distributed training scenarios where each instance processes a subset of the data.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Information about the model training data channel. A training data channel is a named data source that the training algorithms can consume. </p>"
@@ -5205,7 +5475,7 @@
     "ResourceConfigInstanceCountInteger":{
       "type":"integer",
       "box":true,
-      "max":1,
+      "max":5,
       "min":1
     },
     "ResourceConfigVolumeSizeInGBInteger":{
@@ -5249,6 +5519,13 @@
       },
       "documentation":"<p>Provides information about an Amazon S3 bucket and path.</p>"
     },
+    "S3DataDistributionType":{
+      "type":"string",
+      "enum":[
+        "FullyReplicated",
+        "ShardedByS3Key"
+      ]
+    },
     "S3Path":{
       "type":"string",
       "max":1285,
@@ -5259,7 +5536,15 @@
       "type":"structure",
       "required":["message"],
       "members":{
-        "message":{"shape":"String"}
+        "message":{"shape":"String"},
+        "quotaName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service quota limit that was exceeded</p>"
+        },
+        "quotaValue":{
+          "shape":"ServiceQuotaExceededExceptionQuotaValueDouble",
+          "documentation":"<p>The current limit on the service quota that was exceeded</p>"
+        }
       },
       "documentation":"<p>You have exceeded your service quota.</p>",
       "error":{
@@ -5267,6 +5552,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ServiceQuotaExceededExceptionQuotaValueDouble":{
+      "type":"double",
+      "box":true,
+      "max":100000,
+      "min":0
     },
     "SharedAudienceMetrics":{
       "type":"string",
@@ -5365,6 +5656,10 @@
           "location":"uri",
           "locationName":"trainedModelArn"
         },
+        "trainedModelVersionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model to export. This specifies which version of the trained model should be exported to the specified destination.</p>"
+        },
         "membershipIdentifier":{
           "shape":"UUID",
           "documentation":"<p>The membership ID of the member that is receiving the exported trained model artifacts.</p>",
@@ -5405,6 +5700,10 @@
         "trainedModelArn":{
           "shape":"TrainedModelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that is used for this trained model inference job.</p>"
+        },
+        "trainedModelVersionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model to use for inference. This specifies which version of the trained model should be used to generate predictions on the input data.</p>"
         },
         "configuredModelAlgorithmAssociationArn":{
           "shape":"ConfiguredModelAlgorithmAssociationArn",
@@ -5547,13 +5846,54 @@
       "type":"string",
       "max":2048,
       "min":20,
-      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:(membership/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/(configured-model-algorithm-association|trained-model|trained-model-inference-job|ml-input-channel)|training-dataset|audience-model|configured-audience-model|audience-generation-job|configured-model-algorithm|configured-model-algorithm-association|trained-model|trained-model-inference-job)/[-a-zA-Z0-9_/.]+"
+      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:((membership/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/(configured-model-algorithm-association|trained-model|trained-model-inference-job|ml-input-channel))|training-dataset|audience-model|configured-audience-model|audience-generation-job|configured-model-algorithm)/[-a-zA-Z0-9_/.]+"
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
     },
     "TrainedModelArn":{
       "type":"string",
       "max":2048,
       "min":20,
-      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:(membership/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)?trained-model/[-a-zA-Z0-9_/.]+"
+      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:membership/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/trained-model/[-a-zA-Z0-9_/.]+"
+    },
+    "TrainedModelArtifactMaxSize":{
+      "type":"structure",
+      "required":[
+        "unit",
+        "value"
+      ],
+      "members":{
+        "unit":{
+          "shape":"TrainedModelArtifactMaxSizeUnitType",
+          "documentation":"<p>The unit of measurement for the maximum artifact size. Valid values include common storage units such as bytes, kilobytes, megabytes, gigabytes, and terabytes.</p>"
+        },
+        "value":{
+          "shape":"TrainedModelArtifactMaxSizeValue",
+          "documentation":"<p>The numerical value for the maximum artifact size limit. This value is interpreted according to the specified unit.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the maximum size limit for trained model artifacts. This configuration helps control storage costs and ensures that trained models don't exceed specified size constraints. The size limit applies to the total size of all artifacts produced by the training job.</p>"
+    },
+    "TrainedModelArtifactMaxSizeUnitType":{
+      "type":"string",
+      "enum":["GB"]
+    },
+    "TrainedModelArtifactMaxSizeValue":{
+      "type":"double",
+      "box":true,
+      "max":10.0,
+      "min":0.01
     },
     "TrainedModelExportFileType":{
       "type":"string",
@@ -5655,7 +5995,7 @@
       "type":"string",
       "max":2048,
       "min":20,
-      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:(membership/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)?trained-model-inference-job/[-a-zA-Z0-9_/.]+"
+      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:membership/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/trained-model-inference-job/[-a-zA-Z0-9_/.]+"
     },
     "TrainedModelInferenceJobList":{
       "type":"list",
@@ -5703,6 +6043,10 @@
         "trainedModelArn":{
           "shape":"TrainedModelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that is used for the trained model inference job.</p>"
+        },
+        "trainedModelVersionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of the trained model that was used for inference in this job.</p>"
         },
         "collaborationIdentifier":{
           "shape":"UUID",
@@ -5790,7 +6134,7 @@
     "TrainedModelInferenceMaxOutputSizeValue":{
       "type":"double",
       "box":true,
-      "max":10.0,
+      "max":50.0,
       "min":0.01
     },
     "TrainedModelList":{
@@ -5838,6 +6182,14 @@
           "shape":"TrainedModelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the trained model.</p>"
         },
+        "versionIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The version identifier of this trained model version.</p>"
+        },
+        "incrementalTrainingDataChannels":{
+          "shape":"IncrementalTrainingDataChannelsOutput",
+          "documentation":"<p>Information about the incremental training data channels used to create this version of the trained model.</p>"
+        },
         "name":{
           "shape":"NameString",
           "documentation":"<p>The name of the trained model.</p>"
@@ -5875,6 +6227,10 @@
         "containerMetrics":{
           "shape":"MetricsConfigurationPolicy",
           "documentation":"<p>The container for the metrics of the trained model.</p>"
+        },
+        "maxArtifactSize":{
+          "shape":"TrainedModelArtifactMaxSize",
+          "documentation":"<p>The maximum size limit for trained model artifacts as defined in the configuration policy. This setting helps enforce consistent size limits across trained models in the collaboration.</p>"
         }
       },
       "documentation":"<p>The configuration policy for the trained models.</p>"
@@ -5929,6 +6285,14 @@
         }
       },
       "documentation":"<p>Provides information about the training dataset.</p>"
+    },
+    "TrainingInputMode":{
+      "type":"string",
+      "enum":[
+        "File",
+        "FastFile",
+        "Pipe"
+      ]
     },
     "UUID":{
       "type":"string",

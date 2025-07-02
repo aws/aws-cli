@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.27.48
+=======
+
+* api-change:``s3control``: Added TagResource, UntagResource, and ListTagsForResource support for directory bucket
+* api-change:``ec2``: AWS Site-to-Site VPN now supports IPv6 addresses on outer tunnel IPs, making it easier for customers to build or transition to IPv6-only networks.
+* api-change:``connectcases``: This release adds DeleteCase and DeleteRelatedItem APIs, which enable deleting cases and comments, undoing contact association, and removing service level agreements (SLAs) from cases. Contact center admins can use these APIs to delete cases when requested by customers and correct agent errors.
+* api-change:``s3``: Added support for directory bucket creation with tags and bucket ARN retrieval in CreateBucket, ListDirectoryBuckets, and HeadBucket operations
+
+
 2.27.47
 =======
 

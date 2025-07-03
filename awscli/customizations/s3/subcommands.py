@@ -642,6 +642,15 @@ BUCKET_REGION = {
     ),
 }
 
+NO_OVERWRITE = {
+    'name': 'no-overwrite',
+    'action': 'store_true',
+    'help_text': (
+        "To only upload files that don't exist at the destination"
+    ),
+
+}
+
 TRANSFER_ARGS = [
     DRYRUN,
     QUIET,
@@ -1057,7 +1066,7 @@ class CpCommand(S3TransferCommand):
             }
         ]
         + TRANSFER_ARGS
-        + [METADATA, COPY_PROPS, METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
+        + [METADATA, COPY_PROPS, METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE, NO_OVERWRITE]
     )
 
 
@@ -1081,6 +1090,7 @@ class MvCommand(S3TransferCommand):
             METADATA_DIRECTIVE,
             RECURSIVE,
             VALIDATE_SAME_S3_PATHS,
+            NO_OVERWRITE,
         ]
     )
 

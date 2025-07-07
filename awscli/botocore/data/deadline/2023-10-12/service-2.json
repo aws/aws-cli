@@ -2286,11 +2286,11 @@
       "members":{
         "name":{
           "shape":"AcceleratorName",
-          "documentation":"<p>The name of the chip used by the GPU accelerator.</p> <p>If you specify <code>l4</code> as the name of the accelerator, you must specify <code>latest</code> or <code>grid:r550</code> as the runtime.</p> <p>The available GPU accelerators are:</p> <ul> <li> <p> <code>t4</code> - NVIDIA T4 Tensor Core GPU</p> </li> <li> <p> <code>a10g</code> - NVIDIA A10G Tensor Core GPU</p> </li> <li> <p> <code>l4</code> - NVIDIA L4 Tensor Core GPU</p> </li> <li> <p> <code>l40s</code> - NVIDIA L40S Tensor Core GPU</p> </li> </ul>"
+          "documentation":"<p>The name of the chip used by the GPU accelerator.</p> <p>If you specify <code>l4</code> as the name of the accelerator, you must specify <code>latest</code> or <code>grid:r570</code> as the runtime.</p> <p>The available GPU accelerators are:</p> <ul> <li> <p> <code>t4</code> - NVIDIA T4 Tensor Core GPU</p> </li> <li> <p> <code>a10g</code> - NVIDIA A10G Tensor Core GPU</p> </li> <li> <p> <code>l4</code> - NVIDIA L4 Tensor Core GPU</p> </li> <li> <p> <code>l40s</code> - NVIDIA L40S Tensor Core GPU</p> </li> </ul>"
         },
         "runtime":{
           "shape":"AcceleratorRuntime",
-          "documentation":"<p>Specifies the runtime driver to use for the GPU accelerator. You must use the same runtime for all GPUs. </p> <p>You can choose from the following runtimes:</p> <ul> <li> <p> <code>latest</code> - Use the latest runtime available for the chip. If you specify <code>latest</code> and a new version of the runtime is released, the new version of the runtime is used.</p> </li> <li> <p> <code>grid:r550</code> - <a href=\"https://docs.nvidia.com/vgpu/17.0/index.html\">NVIDIA vGPU software 17</a> </p> </li> <li> <p> <code>grid:r535</code> - <a href=\"https://docs.nvidia.com/vgpu/16.0/index.html\">NVIDIA vGPU software 16</a> </p> </li> </ul> <p>If you don't specify a runtime, Deadline Cloud uses <code>latest</code> as the default. However, if you have multiple accelerators and specify <code>latest</code> for some and leave others blank, Deadline Cloud raises an exception.</p>"
+          "documentation":"<p>Specifies the runtime driver to use for the GPU accelerator. You must use the same runtime for all GPUs. </p> <p>You can choose from the following runtimes:</p> <ul> <li> <p> <code>latest</code> - Use the latest runtime available for the chip. If you specify <code>latest</code> and a new version of the runtime is released, the new version of the runtime is used.</p> </li> <li> <p> <code>grid:r570</code> - <a href=\"https://docs.nvidia.com/vgpu/18.0/index.html\">NVIDIA vGPU software 18</a> </p> </li> <li> <p> <code>grid:r535</code> - <a href=\"https://docs.nvidia.com/vgpu/16.0/index.html\">NVIDIA vGPU software 16</a> </p> </li> </ul> <p>If you don't specify a runtime, Deadline Cloud uses <code>latest</code> as the default. However, if you have multiple accelerators and specify <code>latest</code> for some and leave others blank, Deadline Cloud raises an exception.</p>"
         }
       },
       "documentation":"<p>Describes a specific GPU accelerator required for an Amazon Elastic Compute Cloud worker host.</p>"
@@ -5458,7 +5458,7 @@
         },
         "status":{
           "shape":"FleetStatus",
-          "documentation":"<p>The Auto Scaling status of the fleet.</p>"
+          "documentation":"<p>The status of the fleet.</p>"
         },
         "autoScalingStatus":{
           "shape":"AutoScalingStatus",
@@ -5632,6 +5632,10 @@
         "taskRunStatusCounts":{
           "shape":"TaskRunStatusCounts",
           "documentation":"<p>The number of tasks running on the job.</p>"
+        },
+        "taskFailureRetryCount":{
+          "shape":"TaskFailureRetryCount",
+          "documentation":"<p>The total number of times tasks from the job failed and were retried.</p>"
         },
         "storageProfileId":{
           "shape":"StorageProfileId",
@@ -6281,6 +6285,10 @@
         "acquiredLimits":{
           "shape":"AcquiredLimits",
           "documentation":"<p>The limits and their amounts acquired during a session action. If no limits were acquired during the session, this field isn't returned.</p>"
+        },
+        "manifests":{
+          "shape":"TaskRunManifestPropertiesListResponse",
+          "documentation":"<p>The list of manifest properties that describe file attachments for the task run.</p>"
         }
       }
     },
@@ -6505,6 +6513,10 @@
         "taskRunStatusCounts":{
           "shape":"TaskRunStatusCounts",
           "documentation":"<p>The number of tasks running on the job.</p>"
+        },
+        "taskFailureRetryCount":{
+          "shape":"TaskFailureRetryCount",
+          "documentation":"<p>The total number of times tasks from the step failed and were retried.</p>"
         },
         "targetTaskRunStatus":{
           "shape":"StepTargetTaskRunStatus",
@@ -7410,6 +7422,10 @@
           "shape":"TaskRunStatusCounts",
           "documentation":"<p>The number of tasks running on the job.</p>"
         },
+        "taskFailureRetryCount":{
+          "shape":"TaskFailureRetryCount",
+          "documentation":"<p>The total number of times tasks from the job failed and were retried.</p>"
+        },
         "priority":{
           "shape":"JobPriority",
           "documentation":"<p>The job priority.</p>"
@@ -7524,6 +7540,10 @@
         "taskRunStatusCounts":{
           "shape":"TaskRunStatusCounts",
           "documentation":"<p>The number of tasks running on the job.</p>"
+        },
+        "taskFailureRetryCount":{
+          "shape":"TaskFailureRetryCount",
+          "documentation":"<p>The total number of times tasks from the job failed and were retried.</p>"
         },
         "maxFailedTasksCount":{
           "shape":"MaxFailedTasksCount",
@@ -10611,6 +10631,10 @@
         "definition":{
           "shape":"SessionActionDefinitionSummary",
           "documentation":"<p>The session action definition.</p>"
+        },
+        "manifests":{
+          "shape":"TaskRunManifestPropertiesListResponse",
+          "documentation":"<p>The list of manifest properties that describe file attachments for the task run.</p>"
         }
       },
       "documentation":"<p>The details of a session action.</p>"
@@ -11126,7 +11150,8 @@
         "INT",
         "FLOAT",
         "STRING",
-        "PATH"
+        "PATH",
+        "CHUNK_INT"
       ]
     },
     "StepRequiredCapabilities":{
@@ -11190,6 +11215,10 @@
           "shape":"TaskRunStatusCounts",
           "documentation":"<p>The number of tasks running on the job.</p>"
         },
+        "taskFailureRetryCount":{
+          "shape":"TaskFailureRetryCount",
+          "documentation":"<p>The total number of times tasks from the step failed and were retried.</p>"
+        },
         "createdAt":{
           "shape":"CreatedAt",
           "documentation":"<p>The date and time the resource was created.</p>"
@@ -11248,6 +11277,10 @@
         "taskRunStatusCounts":{
           "shape":"TaskRunStatusCounts",
           "documentation":"<p>The number of tasks running on the job.</p>"
+        },
+        "taskFailureRetryCount":{
+          "shape":"TaskFailureRetryCount",
+          "documentation":"<p>The total number of times tasks from the step failed and were retried.</p>"
         },
         "targetTaskRunStatus":{
           "shape":"StepTargetTaskRunStatus",
@@ -11434,6 +11467,12 @@
       "key":{"shape":"String"},
       "value":{"shape":"String"}
     },
+    "TaskFailureRetryCount":{
+      "type":"integer",
+      "box":true,
+      "max":2147483647,
+      "min":0
+    },
     "TaskId":{
       "type":"string",
       "pattern":"task-[0-9a-f]{32}-(0|([1-9][0-9]{0,9}))"
@@ -11456,6 +11495,10 @@
         "path":{
           "shape":"PathString",
           "documentation":"<p>A file system path represented as a string.</p>"
+        },
+        "chunkInt":{
+          "shape":"String",
+          "documentation":"<p>A range (for example 1-10) or selection of specific (for example 1,3,7,8,10) integers represented as a string.</p>"
         }
       },
       "documentation":"<p>The data types for the task parameters.</p>",
@@ -11473,6 +11516,54 @@
       "box":true,
       "max":2147483647,
       "min":0
+    },
+    "TaskRunManifestPropertiesListRequest":{
+      "type":"list",
+      "member":{"shape":"TaskRunManifestPropertiesRequest"},
+      "max":10,
+      "min":0
+    },
+    "TaskRunManifestPropertiesListResponse":{
+      "type":"list",
+      "member":{"shape":"TaskRunManifestPropertiesResponse"}
+    },
+    "TaskRunManifestPropertiesRequest":{
+      "type":"structure",
+      "members":{
+        "outputManifestPath":{
+          "shape":"TaskRunManifestPropertiesRequestOutputManifestPathString",
+          "documentation":"<p>The manifest file path.</p>"
+        },
+        "outputManifestHash":{
+          "shape":"TaskRunManifestPropertiesRequestOutputManifestHashString",
+          "documentation":"<p>The hash value of the file.</p>"
+        }
+      },
+      "documentation":"<p>The output manifest properties reported by the worker agent for a completed task run.</p>"
+    },
+    "TaskRunManifestPropertiesRequestOutputManifestHashString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "TaskRunManifestPropertiesRequestOutputManifestPathString":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "TaskRunManifestPropertiesResponse":{
+      "type":"structure",
+      "members":{
+        "outputManifestPath":{
+          "shape":"String",
+          "documentation":"<p>The manifest file path.</p>"
+        },
+        "outputManifestHash":{
+          "shape":"String",
+          "documentation":"<p>The hash value of the file.</p>"
+        }
+      },
+      "documentation":"<p>The manifest properties for a task run, corresponding to the manifest properties in the job.</p>"
     },
     "TaskRunSessionActionDefinition":{
       "type":"structure",
@@ -11507,6 +11598,10 @@
         "stepId":{
           "shape":"StepId",
           "documentation":"<p>The step ID.</p>"
+        },
+        "parameters":{
+          "shape":"TaskParameters",
+          "documentation":"<p>The parameters of a task run in a session action.</p>"
         }
       },
       "documentation":"<p>The details of a task run in a session action.</p>"
@@ -12600,6 +12695,10 @@
         "progressPercent":{
           "shape":"SessionActionProgressPercent",
           "documentation":"<p>The percentage completed.</p>"
+        },
+        "manifests":{
+          "shape":"TaskRunManifestPropertiesListRequest",
+          "documentation":"<p>A list of output manifest properties reported by the worker agent, with each entry corresponding to a manifest property in the job.</p>"
         }
       },
       "documentation":"<p>The updated session action information as it relates to completion and progress of the session.</p>"

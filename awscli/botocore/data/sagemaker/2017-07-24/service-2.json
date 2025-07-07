@@ -406,6 +406,16 @@
       ],
       "documentation":"<p>Create a hub.</p>"
     },
+    "CreateHubContentPresignedUrls":{
+      "name":"CreateHubContentPresignedUrls",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateHubContentPresignedUrlsRequest"},
+      "output":{"shape":"CreateHubContentPresignedUrlsResponse"},
+      "documentation":"<p>Creates presigned URLs for accessing hub content artifacts. This operation generates time-limited, secure URLs that allow direct download of model artifacts and associated files from Amazon SageMaker hub content, including gated models that require end-user license agreement acceptance.</p>"
+    },
     "CreateHubContentReference":{
       "name":"CreateHubContentReference",
       "http":{
@@ -3639,6 +3649,20 @@
       ],
       "documentation":"<p>Starts a pipeline execution.</p>"
     },
+    "StartSession":{
+      "name":"StartSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartSessionRequest"},
+      "output":{"shape":"StartSessionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Initiates a remote connection session between a local integrated development environments (IDEs) and a remote SageMaker space.</p>"
+    },
     "StopAutoMLJob":{
       "name":"StopAutoMLJob",
       "http":{
@@ -5723,6 +5747,24 @@
       "max":512,
       "min":0,
       "pattern":".*"
+    },
+    "AuthorizedUrl":{
+      "type":"structure",
+      "members":{
+        "Url":{
+          "shape":"LongS3Uri",
+          "documentation":"<p>The presigned S3 URL that provides temporary, secure access to download the file. URLs expire within 15 minutes for security purposes.</p>"
+        },
+        "LocalPath":{
+          "shape":"LocalPath",
+          "documentation":"<p>The recommended local file path where the downloaded file should be stored to maintain proper directory structure and file organization.</p>"
+        }
+      },
+      "documentation":"<p>Contains a presigned URL and its associated local file path for downloading hub content artifacts.</p>"
+    },
+    "AuthorizedUrlConfigs":{
+      "type":"list",
+      "member":{"shape":"AuthorizedUrl"}
     },
     "AutoGenerateEndpointName":{"type":"boolean"},
     "AutoMLAlgorithm":{
@@ -9707,10 +9749,7 @@
     },
     "CreateClusterRequest":{
       "type":"structure",
-      "required":[
-        "ClusterName",
-        "InstanceGroups"
-      ],
+      "required":["ClusterName"],
       "members":{
         "ClusterName":{
           "shape":"ClusterName",
@@ -10070,9 +10109,7 @@
       "required":[
         "DomainName",
         "AuthMode",
-        "DefaultUserSettings",
-        "SubnetIds",
-        "VpcId"
+        "DefaultUserSettings"
       ],
       "members":{
         "DomainName":{
@@ -10474,6 +10511,58 @@
         "FlowDefinitionArn":{
           "shape":"FlowDefinitionArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the flow definition you create.</p>"
+        }
+      }
+    },
+    "CreateHubContentPresignedUrlsRequest":{
+      "type":"structure",
+      "required":[
+        "HubName",
+        "HubContentType",
+        "HubContentName"
+      ],
+      "members":{
+        "HubName":{
+          "shape":"HubNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the hub that contains the content. For public content, use <code>SageMakerPublicHub</code>.</p>"
+        },
+        "HubContentType":{
+          "shape":"HubContentType",
+          "documentation":"<p>The type of hub content to access. Valid values include <code>Model</code>, <code>Notebook</code>, and <code>ModelReference</code>.</p>"
+        },
+        "HubContentName":{
+          "shape":"HubContentName",
+          "documentation":"<p>The name of the hub content for which to generate presigned URLs. This identifies the specific model or content within the hub.</p>"
+        },
+        "HubContentVersion":{
+          "shape":"HubContentVersion",
+          "documentation":"<p>The version of the hub content. If not specified, the latest version is used.</p>"
+        },
+        "AccessConfig":{
+          "shape":"PresignedUrlAccessConfig",
+          "documentation":"<p>Configuration settings for accessing the hub content, including end-user license agreement acceptance for gated models and expected S3 URL validation.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of presigned URLs to return in the response. Default value is 100. Large models may contain hundreds of files, requiring pagination to retrieve all URLs.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A token for pagination. Use this token to retrieve the next set of presigned URLs when the response is truncated.</p>"
+        }
+      }
+    },
+    "CreateHubContentPresignedUrlsResponse":{
+      "type":"structure",
+      "required":["AuthorizedUrlConfigs"],
+      "members":{
+        "AuthorizedUrlConfigs":{
+          "shape":"AuthorizedUrlConfigs",
+          "documentation":"<p>An array of authorized URL configurations, each containing a presigned URL and its corresponding local file path for proper file organization during download.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token for pagination. If present, indicates that more presigned URLs are available. Use this token in a subsequent request to retrieve additional URLs.</p>"
         }
       }
     },
@@ -13421,8 +13510,7 @@
     },
     "DeleteFlowDefinitionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteHubContentReferenceRequest":{
       "type":"structure",
@@ -13495,8 +13583,7 @@
     },
     "DeleteHumanTaskUiResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteHyperParameterTuningJobRequest":{
       "type":"structure",
@@ -13520,8 +13607,7 @@
     },
     "DeleteImageResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteImageVersionRequest":{
       "type":"structure",
@@ -13543,8 +13629,7 @@
     },
     "DeleteImageVersionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteInferenceComponentInput":{
       "type":"structure",
@@ -13822,8 +13907,7 @@
     },
     "DeleteTagsOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteTrialComponentRequest":{
       "type":"structure",
@@ -13892,8 +13976,7 @@
     },
     "DeleteWorkforceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteWorkteamRequest":{
       "type":"structure",
@@ -19180,13 +19263,11 @@
     "DisableProfiler":{"type":"boolean"},
     "DisableSagemakerServicecatalogPortfolioInput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisableSagemakerServicecatalogPortfolioOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisassociateAdditionalCodeRepositories":{"type":"boolean"},
     "DisassociateDefaultCodeRepository":{"type":"boolean"},
@@ -20033,13 +20114,11 @@
     },
     "EnableSagemakerServicecatalogPortfolioInput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "EnableSagemakerServicecatalogPortfolioOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "EnableSessionTagChaining":{
       "type":"boolean",
@@ -21556,8 +21635,7 @@
     },
     "GetSagemakerServicecatalogPortfolioStatusInput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetSagemakerServicecatalogPortfolioStatusOutput":{
       "type":"structure",
@@ -25649,7 +25727,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Set the maximum number of SageMaker HyperPod clusters to list.</p>"
+          "documentation":"<p>Specifies the maximum number of clusters to evaluate for the operation (not necessarily the number of matching items). After SageMaker processes the number of clusters up to <code>MaxResults</code>, it stops the operation and returns the matching clusters up to that point. If all the matching clusters are desired, SageMaker will go through all the clusters until <code>NextToken</code> is empty.</p>"
         },
         "NameContains":{
           "shape":"NameContains",
@@ -29271,7 +29349,19 @@
         "CreateDate"
       ]
     },
+    "LocalPath":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"\\/.*"
+    },
     "Long":{"type":"long"},
+    "LongS3Uri":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"(https|s3)://([^/]+)/?(.*)"
+    },
     "MLFramework":{
       "type":"string",
       "max":128,
@@ -31857,8 +31947,7 @@
     },
     "MonitoringParquetDatasetFormat":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Represents the Parquet dataset format used when running a monitoring job.</p>"
     },
     "MonitoringProblemType":{
@@ -33924,6 +34013,21 @@
       ]
     },
     "PresignedDomainUrl":{"type":"string"},
+    "PresignedUrlAccessConfig":{
+      "type":"structure",
+      "members":{
+        "AcceptEula":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates acceptance of the End User License Agreement (EULA) for gated models. Set to true to acknowledge acceptance of the license terms required for accessing gated content.</p>",
+          "box":true
+        },
+        "ExpectedS3Url":{
+          "shape":"S3ModelUri",
+          "documentation":"<p>The expected S3 URL prefix for validation purposes. This parameter helps ensure consistency between the resolved S3 URIs and the deployment configuration, reducing potential compatibility issues.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for accessing hub content through presigned URLs, including license agreement acceptance and URL validation settings.</p>"
+    },
     "PriorityClass":{
       "type":"structure",
       "required":[
@@ -36728,6 +36832,12 @@
       "max":32,
       "min":0
     },
+    "ResourceIdentifier":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:.*\\/.*"
+    },
     "ResourceInUse":{
       "type":"structure",
       "members":{
@@ -37790,6 +37900,11 @@
       "max":43200,
       "min":1800
     },
+    "SessionId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "ShadowModeConfig":{
       "type":"structure",
       "required":[
@@ -38209,6 +38324,10 @@
         "CustomFileSystems":{
           "shape":"CustomFileSystems",
           "documentation":"<p>A file system, created by you, that you assign to a space for an Amazon SageMaker AI Domain. Permitted users can access this file system in Amazon SageMaker AI Studio.</p>"
+        },
+        "RemoteAccess":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>A setting that enables or disables remote access for a SageMaker space. When enabled, this allows you to connect to the remote space from your local IDE.</p>"
         }
       },
       "documentation":"<p>A collection of space settings.</p>"
@@ -38219,6 +38338,10 @@
         "AppType":{
           "shape":"AppType",
           "documentation":"<p>The type of app created within the space.</p>"
+        },
+        "RemoteAccess":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>A setting that enables or disables remote access for a SageMaker space. When enabled, this allows you to connect to the remote space from your local IDE.</p>"
         },
         "SpaceStorageSettings":{
           "shape":"SpaceStorageSettings",
@@ -38448,6 +38571,33 @@
         "PipelineExecutionArn":{
           "shape":"PipelineExecutionArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the pipeline execution.</p>"
+        }
+      }
+    },
+    "StartSessionRequest":{
+      "type":"structure",
+      "required":["ResourceIdentifier"],
+      "members":{
+        "ResourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to which the remote connection will be established. For example, this identifies the specific ARN space application you want to connect to from your local IDE.</p>"
+        }
+      }
+    },
+    "StartSessionResponse":{
+      "type":"structure",
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>A unique identifier for the established remote connection session.</p>"
+        },
+        "StreamUrl":{
+          "shape":"StreamUrl",
+          "documentation":"<p>A WebSocket URL used to establish a SSH connection between the local IDE and remote SageMaker space.</p>"
+        },
+        "TokenValue":{
+          "shape":"TokenValue",
+          "documentation":"<p>An encrypted token value containing session and caller information. </p>"
         }
       }
     },
@@ -38745,6 +38895,7 @@
         "InMemory"
       ]
     },
+    "StreamUrl":{"type":"string"},
     "String":{"type":"string"},
     "String1024":{
       "type":"string",
@@ -39527,6 +39678,11 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "TokenValue":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "TotalHits":{
       "type":"structure",
@@ -41700,10 +41856,7 @@
     },
     "UpdateClusterRequest":{
       "type":"structure",
-      "required":[
-        "ClusterName",
-        "InstanceGroups"
-      ],
+      "required":["ClusterName"],
       "members":{
         "ClusterName":{
           "shape":"ClusterNameOrArn",
@@ -42794,13 +42947,11 @@
     },
     "UpdateNotebookInstanceLifecycleConfigOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateNotebookInstanceOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdatePartnerAppRequest":{
       "type":"structure",

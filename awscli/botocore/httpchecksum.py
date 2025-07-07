@@ -30,6 +30,7 @@ from botocore.compat import urlparse
 from botocore.exceptions import AwsChunkedWrapperError, FlexibleChecksumError
 from botocore.model import StructureShape
 from botocore.response import StreamingBody
+from botocore.useragent import register_feature_id
 from botocore.utils import determine_content_length, has_checksum_header
 
 logger = logging.getLogger(__name__)
@@ -360,6 +361,7 @@ def _apply_request_header_checksum(request):
     checksum_cls = _CHECKSUM_CLS.get(algorithm["algorithm"])
     digest = checksum_cls().handle(request["body"])
     request["headers"][location_name] = digest
+    _register_checksum_algorithm_feature_id(algorithm)
 
 
 def _apply_request_trailer_checksum(request):
@@ -383,6 +385,7 @@ def _apply_request_trailer_checksum(request):
     else:
         headers["Content-Encoding"] = "aws-chunked"
     headers["X-Amz-Trailer"] = location_name
+    _register_checksum_algorithm_feature_id(algorithm)
 
     content_length = determine_content_length(body)
     if content_length is not None:
@@ -404,6 +407,16 @@ def _apply_request_trailer_checksum(request):
         checksum_cls=checksum_cls,
         checksum_name=location_name,
     )
+
+
+def _register_checksum_algorithm_feature_id(algorithm):
+    checksum_algorithm_name = algorithm["algorithm"].upper()
+    if checksum_algorithm_name == "CRC64NVME":
+        checksum_algorithm_name = "CRC64"
+    checksum_algorithm_name_feature_id = (
+        f"FLEXIBLE_CHECKSUMS_REQ_{checksum_algorithm_name}"
+    )
+    register_feature_id(checksum_algorithm_name_feature_id)
 
 
 def resolve_response_checksum_algorithms(

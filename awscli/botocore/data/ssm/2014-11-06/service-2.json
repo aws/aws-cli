@@ -157,7 +157,8 @@
         {"shape":"InternalServerError"},
         {"shape":"InvalidDocumentContent"},
         {"shape":"DocumentLimitExceeded"},
-        {"shape":"InvalidDocumentSchemaVersion"}
+        {"shape":"InvalidDocumentSchemaVersion"},
+        {"shape":"TooManyUpdates"}
       ],
       "documentation":"<p>Creates a Amazon Web Services Systems Manager (SSM document). An SSM document defines the actions that Systems Manager performs on your managed nodes. For more information about SSM documents, including information about supported schemas, features, and syntax, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/documents.html\">Amazon Web Services Systems Manager Documents</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
     },
@@ -286,7 +287,8 @@
         {"shape":"InternalServerError"},
         {"shape":"InvalidDocument"},
         {"shape":"InvalidDocumentOperation"},
-        {"shape":"AssociatedInstances"}
+        {"shape":"AssociatedInstances"},
+        {"shape":"TooManyUpdates"}
       ],
       "documentation":"<p>Deletes the Amazon Web Services Systems Manager document (SSM document) and all managed node associations to the document.</p> <p>Before you delete the document, we recommend that you use <a>DeleteAssociation</a> to disassociate all managed nodes that are associated with the document.</p>"
     },
@@ -2184,7 +2186,8 @@
         {"shape":"InternalServerError"},
         {"shape":"InvalidDocument"},
         {"shape":"InvalidDocumentOperation"},
-        {"shape":"InvalidDocumentVersion"}
+        {"shape":"InvalidDocumentVersion"},
+        {"shape":"TooManyUpdates"}
       ],
       "documentation":"<p>Updates information related to approval reviews for a specific version of a change template in Change Manager.</p>"
     },
@@ -2358,6 +2361,13 @@
         "Pending"
       ]
     },
+    "AccessType":{
+      "type":"string",
+      "enum":[
+        "Standard",
+        "JustInTime"
+      ]
+    },
     "Account":{"type":"string"},
     "AccountId":{
       "type":"string",
@@ -2481,8 +2491,7 @@
     },
     "AddTagsToResourceResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AgentErrorCode":{
       "type":"string",
@@ -2621,8 +2630,7 @@
     },
     "AssociatedInstances":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You must disassociate a document from all managed nodes before you can delete it.</p>",
       "exception":true
     },
@@ -2689,8 +2697,7 @@
     },
     "AssociationAlreadyExists":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified association already exists.</p>",
       "exception":true
     },
@@ -3078,8 +3085,7 @@
     },
     "AssociationLimitExceeded":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can have at most 2,000 active associations.</p>",
       "exception":true
     },
@@ -3982,8 +3988,7 @@
     },
     "CancelCommandResult":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Whether or not the command was successfully canceled. There is no guarantee that a request can be canceled.</p>"
     },
     "CancelMaintenanceWindowExecutionRequest":{
@@ -5279,8 +5284,7 @@
     },
     "CreateResourceDataSyncResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CreatedDate":{"type":"timestamp"},
     "Credentials":{
@@ -5339,8 +5343,7 @@
     },
     "DeleteActivationResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAssociationRequest":{
       "type":"structure",
@@ -5361,8 +5364,7 @@
     },
     "DeleteAssociationResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDocumentRequest":{
       "type":"structure",
@@ -5388,8 +5390,7 @@
     },
     "DeleteDocumentResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteInventoryRequest":{
       "type":"structure",
@@ -5462,8 +5463,7 @@
     },
     "DeleteOpsItemResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteOpsMetadataRequest":{
       "type":"structure",
@@ -5477,8 +5477,7 @@
     },
     "DeleteOpsMetadataResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteParameterRequest":{
       "type":"structure",
@@ -5492,8 +5491,7 @@
     },
     "DeleteParameterResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteParametersRequest":{
       "type":"structure",
@@ -5553,8 +5551,7 @@
     },
     "DeleteResourceDataSyncResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteResourcePolicyRequest":{
       "type":"structure",
@@ -5580,8 +5577,7 @@
     },
     "DeleteResourcePolicyResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeliveryTimedOutCount":{"type":"integer"},
     "DeregisterManagedInstanceRequest":{
@@ -5596,8 +5592,7 @@
     },
     "DeregisterManagedInstanceResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeregisterPatchBaselineForPatchGroupRequest":{
       "type":"structure",
@@ -5972,7 +5967,7 @@
       "members":{
         "Name":{
           "shape":"DocumentName",
-          "documentation":"<p>The name of the document for which you are the owner.</p>"
+          "documentation":"<p>The name of the document for which you are the owner. </p>"
         },
         "PermissionType":{
           "shape":"DocumentPermissionType",
@@ -5994,7 +5989,7 @@
       "members":{
         "AccountIds":{
           "shape":"AccountIdList",
-          "documentation":"<p>The account IDs that have permission to use this document. The ID can be either an Amazon Web Services account or <i>All</i>.</p>"
+          "documentation":"<p>The account IDs that have permission to use this document. The ID can be either an Amazon Web Services account number or <code>all</code>.</p>"
         },
         "AccountSharingInfoList":{
           "shape":"AccountSharingInfoList",
@@ -6012,7 +6007,7 @@
       "members":{
         "Name":{
           "shape":"DocumentARN",
-          "documentation":"<p>The name of the SSM document.</p>"
+          "documentation":"<p>The name of the SSM document.</p> <note> <p>If you're calling a shared SSM document from a different Amazon Web Services account, <code>Name</code> is the full Amazon Resource Name (ARN) of the document.</p> </note>"
         },
         "DocumentVersion":{
           "shape":"DocumentVersion",
@@ -6945,8 +6940,7 @@
     },
     "DisassociateOpsItemRelatedItemResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DocumentARN":{
       "type":"string",
@@ -7602,8 +7596,7 @@
     },
     "DuplicateInstanceId":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't specify a managed node ID in more than one association.</p>",
       "exception":true
     },
@@ -9409,7 +9402,7 @@
       "members":{
         "Key":{
           "shape":"InstanceInformationStringFilterKey",
-          "documentation":"<p>The filter key name to describe your managed nodes.</p> <p>Valid filter key values: ActivationIds | AgentVersion | AssociationStatus | IamRole | InstanceIds | PingStatus | PlatformTypes | ResourceType | SourceIds | SourceTypes | \"tag-key\" | \"tag:<code>{keyname}</code> </p> <ul> <li> <p>Valid values for the <code>AssociationStatus</code> filter key: Success | Pending | Failed</p> </li> <li> <p>Valid values for the <code>PingStatus</code> filter key: Online | ConnectionLost | Inactive (deprecated)</p> </li> <li> <p>Valid values for the <code>PlatformType</code> filter key: Windows | Linux | MacOS</p> </li> <li> <p>Valid values for the <code>ResourceType</code> filter key: EC2Instance | ManagedInstance</p> </li> <li> <p>Valid values for the <code>SourceType</code> filter key: AWS::EC2::Instance | AWS::SSM::ManagedInstance | AWS::IoT::Thing</p> </li> <li> <p>Valid tag examples: <code>Key=tag-key,Values=Purpose</code> | <code>Key=tag:Purpose,Values=Test</code>.</p> </li> </ul>"
+          "documentation":"<p>The filter key name to describe your managed nodes.</p> <p>Valid filter key values: ActivationIds | AgentVersion | AssociationStatus | IamRole | InstanceIds | PingStatus | PlatformType | ResourceType | SourceIds | SourceTypes | \"tag-key\" | \"tag:<code>{keyname}</code> </p> <ul> <li> <p>Valid values for the <code>AssociationStatus</code> filter key: Success | Pending | Failed</p> </li> <li> <p>Valid values for the <code>PingStatus</code> filter key: Online | ConnectionLost | Inactive (deprecated)</p> </li> <li> <p>Valid values for the <code>PlatformType</code> filter key: Windows | Linux | MacOS</p> </li> <li> <p>Valid values for the <code>ResourceType</code> filter key: EC2Instance | ManagedInstance</p> </li> <li> <p>Valid values for the <code>SourceType</code> filter key: AWS::EC2::Instance | AWS::SSM::ManagedInstance | AWS::IoT::Thing</p> </li> <li> <p>Valid tag examples: <code>Key=tag-key,Values=Purpose</code> | <code>Key=tag:Purpose,Values=Test</code>.</p> </li> </ul>"
         },
         "Values":{
           "shape":"InstanceInformationFilterValueSet",
@@ -9918,8 +9911,7 @@
     },
     "InvalidCommandId":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified command ID isn't valid. Verify the ID and try again.</p>",
       "exception":true
     },
@@ -10003,8 +9995,7 @@
     },
     "InvalidFilterKey":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified key isn't valid.</p>",
       "exception":true
     },
@@ -10118,15 +10109,13 @@
     },
     "InvalidOutputFolder":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The S3 bucket doesn't exist.</p>",
       "exception":true
     },
     "InvalidOutputLocation":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The output location isn't valid or doesn't exist.</p>",
       "exception":true
     },
@@ -10148,8 +10137,7 @@
     },
     "InvalidPluginName":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The plugin name isn't valid.</p>",
       "exception":true
     },
@@ -10171,15 +10159,13 @@
     },
     "InvalidResourceId":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The resource ID isn't valid. Verify that you entered the correct ID and try again.</p>",
       "exception":true
     },
     "InvalidResourceType":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The resource type isn't valid. For example, if you are attempting to tag an EC2 instance, the instance must be a registered managed node.</p>",
       "exception":true
     },
@@ -10656,8 +10642,7 @@
     "InventoryTypeDisplayName":{"type":"string"},
     "InvocationDoesNotExist":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The command ID and managed node ID you specified didn't match any invocations. Verify the command ID and the managed node ID and try again. </p>",
       "exception":true
     },
@@ -12234,8 +12219,7 @@
     },
     "ModifyDocumentPermissionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "NextToken":{"type":"string"},
     "Node":{
@@ -14679,8 +14663,7 @@
     },
     "PutComplianceItemsResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "PutInventoryMessage":{"type":"string"},
     "PutInventoryRequest":{
@@ -15104,8 +15087,7 @@
     },
     "RemoveTagsFromResourceResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RequireType":{
       "type":"string",
@@ -15818,8 +15800,7 @@
     },
     "SendAutomationSignalResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "SendCommandRequest":{
       "type":"structure",
@@ -16033,6 +16014,10 @@
         "MaxSessionDuration":{
           "shape":"MaxSessionDuration",
           "documentation":"<p>The maximum duration of a session before it terminates.</p>"
+        },
+        "AccessType":{
+          "shape":"AccessType",
+          "documentation":"<p> <code>Standard</code> access type is the default for Session Manager sessions. <code>JustInTime</code> is the access type for <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-just-in-time-node-access.html\">Just-in-time node access</a>. </p>"
         }
       },
       "documentation":"<p>Information about a Session Manager connection to a managed node.</p>"
@@ -16068,7 +16053,8 @@
         "Target",
         "Owner",
         "Status",
-        "SessionId"
+        "SessionId",
+        "AccessType"
       ]
     },
     "SessionFilterList":{
@@ -16295,8 +16281,7 @@
     },
     "StartAssociationsOnceResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StartAutomationExecutionRequest":{
       "type":"structure",
@@ -16517,8 +16502,7 @@
     "StatusName":{"type":"string"},
     "StatusUnchanged":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The updated status is the same as the current status.</p>",
       "exception":true
     },
@@ -16705,8 +16689,7 @@
     },
     "StopAutomationExecutionResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StopType":{
       "type":"string",
@@ -16992,8 +16975,7 @@
     },
     "TooManyTagsError":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The <code>Targets</code> parameter includes too many tags. Remove one or more tags and try the command again.</p>",
       "exception":true
     },
@@ -17298,8 +17280,7 @@
     },
     "UpdateDocumentMetadataResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateDocumentRequest":{
       "type":"structure",
@@ -17697,8 +17678,7 @@
     },
     "UpdateManagedInstanceRoleResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateOpsItemRequest":{
       "type":"structure",
@@ -17772,8 +17752,7 @@
     },
     "UpdateOpsItemResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateOpsMetadataRequest":{
       "type":"structure",
@@ -17952,8 +17931,7 @@
     },
     "UpdateResourceDataSyncResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateServiceSettingRequest":{
       "type":"structure",
@@ -17975,8 +17953,7 @@
     },
     "UpdateServiceSettingResult":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The result body of the UpdateServiceSetting API operation.</p>"
     },
     "Url":{"type":"string"},
@@ -18006,5 +17983,5 @@
       "pattern":"^[0-9]{1,6}(\\.[0-9]{1,6}){2,3}$"
     }
   },
-  "documentation":"<p>Amazon Web Services Systems Manager is the operations hub for your Amazon Web Services applications and resources and a secure end-to-end management solution for hybrid cloud environments that enables safe and secure operations at scale.</p> <p>This reference is intended to be used with the <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/\">Amazon Web Services Systems Manager User Guide</a>. To get started, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-setting-up.html\">Setting up Amazon Web Services Systems Manager</a>.</p> <p class=\"title\"> <b>Related resources</b> </p> <ul> <li> <p>For information about each of the tools that comprise Systems Manager, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-tools.html\">Using Systems Manager tools</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </li> <li> <p>For details about predefined runbooks for Automation, a tool in Amazon Web Services Systems Manager, see the <i> <a href=\"https://docs.aws.amazon.com/systems-manager-automation-runbooks/latest/userguide/automation-runbook-reference.html\">Systems Manager Automation runbook reference</a> </i>.</p> </li> <li> <p>For information about AppConfig, a tool in Systems Manager, see the <i> <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/\">AppConfig User Guide</a> </i> and the <i> <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/\">AppConfig API Reference</a> </i>.</p> </li> <li> <p>For information about Incident Manager, a tool in Systems Manager, see the <i> <a href=\"https://docs.aws.amazon.com/incident-manager/latest/userguide/\">Systems Manager Incident Manager User Guide</a> </i> and the <i> <a href=\"https://docs.aws.amazon.com/incident-manager/latest/APIReference/\">Systems Manager Incident Manager API Reference</a> </i>.</p> </li> </ul>"
+  "documentation":"<p>Amazon Web Services Systems Manager is the operations hub for your Amazon Web Services applications and resources and a secure end-to-end management solution for hybrid cloud environments that enables safe and secure operations at scale.</p> <p>This reference is intended to be used with the <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/\">Amazon Web Services Systems Manager User Guide</a>. To get started, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-setting-up-console.html\">Setting up Amazon Web Services Systems Manager</a>.</p> <p class=\"title\"> <b>Related resources</b> </p> <ul> <li> <p>For information about each of the tools that comprise Systems Manager, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-tools.html\">Using Systems Manager tools</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </li> <li> <p>For details about predefined runbooks for Automation, a tool in Amazon Web Services Systems Manager, see the <i> <a href=\"https://docs.aws.amazon.com/systems-manager-automation-runbooks/latest/userguide/automation-runbook-reference.html\">Systems Manager Automation runbook reference</a> </i>.</p> </li> <li> <p>For information about AppConfig, a tool in Systems Manager, see the <i> <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/\">AppConfig User Guide</a> </i> and the <i> <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/\">AppConfig API Reference</a> </i>.</p> </li> <li> <p>For information about Incident Manager, a tool in Systems Manager, see the <i> <a href=\"https://docs.aws.amazon.com/incident-manager/latest/userguide/\">Systems Manager Incident Manager User Guide</a> </i> and the <i> <a href=\"https://docs.aws.amazon.com/incident-manager/latest/APIReference/\">Systems Manager Incident Manager API Reference</a> </i>.</p> </li> </ul>"
 }

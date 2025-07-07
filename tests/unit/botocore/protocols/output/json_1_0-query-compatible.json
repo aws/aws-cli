@@ -1,0 +1,142 @@
+[
+    {
+        "description": "Test cases for QueryCompatibleOperation operation",
+        "metadata": {
+            "apiVersion": "2020-07-14",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "awsQueryCompatible": {},
+            "endpointPrefix": "querycompatiblejsonrpc10",
+            "jsonVersion": "1.0",
+            "protocol": "json",
+            "protocols": [
+                "json"
+            ],
+            "serviceFullName": "QueryCompatibleJsonRpc10",
+            "serviceId": "Query Compatible JSON RPC 10",
+            "signatureVersion": "v4",
+            "signingName": "QueryCompatibleJsonRpc10",
+            "targetPrefix": "QueryCompatibleJsonRpc10",
+            "uid": "query-compatible-json-rpc-10-2020-07-14"
+        },
+        "shapes": {
+            "NoCustomCodeError": {
+                "type": "structure",
+                "members": {
+                    "message": {
+                        "shape": "String"
+                    }
+                },
+                "exception": true
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "QueryCompatibleAwsJson10NoCustomCodeError",
+                "given": {
+                    "name": "QueryCompatibleOperation",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "NoCustomCodeError"
+                        }
+                    ]
+                },
+                "description": "Parses simple errors with no query error code",
+                "errorCode": "NoCustomCodeError",
+                "errorMessage": "Hi",
+                "error": {
+                    "message": "Hi"
+                },
+                "response": {
+                    "status_code": 400,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0"
+                    },
+                    "body": "{\n    \"__type\": \"aws.protocoltests.json10#NoCustomCodeError\",\n    \"message\": \"Hi\"\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for QueryCompatibleOperation operation",
+        "metadata": {
+            "apiVersion": "2020-07-14",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "awsQueryCompatible": {},
+            "endpointPrefix": "querycompatiblejsonrpc10",
+            "jsonVersion": "1.0",
+            "protocol": "json",
+            "protocols": [
+                "json"
+            ],
+            "serviceFullName": "QueryCompatibleJsonRpc10",
+            "serviceId": "Query Compatible JSON RPC 10",
+            "signatureVersion": "v4",
+            "signingName": "QueryCompatibleJsonRpc10",
+            "targetPrefix": "QueryCompatibleJsonRpc10",
+            "uid": "query-compatible-json-rpc-10-2020-07-14"
+        },
+        "shapes": {
+            "CustomCodeError": {
+                "type": "structure",
+                "members": {
+                    "message": {
+                        "shape": "String"
+                    }
+                },
+                "error": {
+                    "code": "Customized",
+                    "httpStatusCode": 402,
+                    "senderFault": true
+                },
+                "exception": true
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "QueryCompatibleAwsJson10CustomCodeError",
+                "given": {
+                    "name": "QueryCompatibleOperation",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "CustomCodeError"
+                        }
+                    ]
+                },
+                "description": "Parses simple errors with query error code",
+                "errorCode": "Customized",
+                "errorMessage": "Hi",
+                "error": {
+                    "message": "Hi"
+                },
+                "response": {
+                    "status_code": 400,
+                    "headers": {
+                        "Content-Type": "application/x-amz-json-1.0",
+                        "x-amzn-query-error": "Customized;Sender"
+                    },
+                    "body": "{\n    \"__type\": \"aws.protocoltests.json10#CustomCodeError\",\n    \"message\": \"Hi\"\n}"
+                }
+            }
+        ]
+    }
+]

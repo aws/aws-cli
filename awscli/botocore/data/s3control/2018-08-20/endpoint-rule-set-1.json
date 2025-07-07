@@ -58,6 +58,11 @@
             "documentation": "When an Access Point ARN is provided and this flag is enabled, the SDK MUST use the ARN's region when constructing the endpoint instead of the client's configured region.",
             "type": "Boolean"
         },
+        "ResourceArn": {
+            "required": false,
+            "documentation": "The resource ARN included in the request.  Only set on TagResource, UntagResourceand ListTagsForResource",
+            "type": "String"
+        },
         "UseS3ExpressControlEndpoint": {
             "required": false,
             "documentation": "Internal parameter to indicate whether S3Express operation should use control plane, (ex. ListDirectoryAccessPoints)",
@@ -415,6 +420,281 @@
                                     "conditions": [],
                                     "error": "Invalid region: region was not a valid DNS name.",
                                     "type": "error"
+                                }
+                            ],
+                            "type": "tree"
+                        }
+                    ],
+                    "type": "tree"
+                },
+                {
+                    "conditions": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "ResourceArn"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "aws.parseArn",
+                            "argv": [
+                                {
+                                    "ref": "ResourceArn"
+                                }
+                            ],
+                            "assign": "resourceArn"
+                        },
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "resourceArn"
+                                        },
+                                        "service"
+                                    ]
+                                },
+                                "s3express"
+                            ]
+                        }
+                    ],
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "aws.partition",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ],
+                                    "assign": "partitionResult"
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "aws.partition",
+                                            "argv": [
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "resourceArn"
+                                                        },
+                                                        "region"
+                                                    ]
+                                                }
+                                            ],
+                                            "assign": "arnPartition"
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "stringEquals",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "arnPartition"
+                                                                },
+                                                                "name"
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "partitionResult"
+                                                                },
+                                                                "name"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "isSet",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseArnRegion"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseArnRegion"
+                                                                },
+                                                                false
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "not",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "resourceArn"
+                                                                                },
+                                                                                "region"
+                                                                            ]
+                                                                        },
+                                                                        "{Region}"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "error": "Invalid configuration: region from ARN `{resourceArn#region}` does not match client region `{Region}` and UseArnRegion is `false`",
+                                                    "type": "error"
+                                                },
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "isSet",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Endpoint"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseDualStack"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "error": "Invalid Configuration: DualStack and custom endpoint are not supported",
+                                                    "type": "error"
+                                                },
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseDualStack"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "error": "S3Express does not support Dual-stack.",
+                                                    "type": "error"
+                                                },
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "isSet",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Endpoint"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "parseURL",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Endpoint"
+                                                                }
+                                                            ],
+                                                            "assign": "url"
+                                                        }
+                                                    ],
+                                                    "endpoint": {
+                                                        "url": "{url#scheme}://{url#authority}",
+                                                        "properties": {
+                                                            "authSchemes": [
+                                                                {
+                                                                    "disableDoubleEncoding": true,
+                                                                    "name": "sigv4",
+                                                                    "signingName": "s3express",
+                                                                    "signingRegion": "{Region}"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                },
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseFIPS"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "endpoint": {
+                                                        "url": "https://s3express-control-fips.{Region}.{partitionResult#dnsSuffix}",
+                                                        "properties": {
+                                                            "authSchemes": [
+                                                                {
+                                                                    "disableDoubleEncoding": true,
+                                                                    "name": "sigv4",
+                                                                    "signingName": "s3express",
+                                                                    "signingRegion": "{Region}"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "endpoint": {
+                                                        "url": "https://s3express-control.{Region}.{partitionResult#dnsSuffix}",
+                                                        "properties": {
+                                                            "authSchemes": [
+                                                                {
+                                                                    "disableDoubleEncoding": true,
+                                                                    "name": "sigv4",
+                                                                    "signingName": "s3express",
+                                                                    "signingRegion": "{Region}"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "Client was configured for partition `{partitionResult#name}` but ARN has `{arnPartition#name}`",
+                                            "type": "error"
+                                        }
+                                    ],
+                                    "type": "tree"
                                 }
                             ],
                             "type": "tree"

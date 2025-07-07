@@ -301,7 +301,7 @@
       },
       "input":{"shape":"AssociateSecurityGroupVpcRequest"},
       "output":{"shape":"AssociateSecurityGroupVpcResult"},
-      "documentation":"<p>Associates a security group with another VPC in the same Region. This enables you to use the same security group with network interfaces and instances in the specified VPC.</p> <note> <ul> <li> <p>The VPC you want to associate the security group with must be in the same Region.</p> </li> <li> <p>You can associate the security group with another VPC if your account owns the VPC or if the VPC was shared with you.</p> </li> <li> <p>You must own the security group and the VPC that it was created in.</p> </li> <li> <p>You cannot use this feature with default security groups.</p> </li> <li> <p>You cannot use this feature with the default VPC.</p> </li> </ul> </note>"
+      "documentation":"<p>Associates a security group with another VPC in the same Region. This enables you to use the same security group with network interfaces and instances in the specified VPC.</p> <note> <ul> <li> <p>The VPC you want to associate the security group with must be in the same Region.</p> </li> <li> <p>You can associate the security group with another VPC if your account owns the VPC or if the VPC was shared with you.</p> </li> <li> <p>You must own the security group.</p> </li> <li> <p>You cannot use this feature with default security groups.</p> </li> <li> <p>You cannot use this feature with the default VPC.</p> </li> </ul> </note>"
     },
     "AssociateSubnetCidrBlock":{
       "name":"AssociateSubnetCidrBlock",
@@ -788,7 +788,7 @@
       },
       "input":{"shape":"CreateImageRequest"},
       "output":{"shape":"CreateImageResult"},
-      "documentation":"<p>Creates an Amazon EBS-backed AMI from an Amazon EBS-backed instance that is either running or stopped.</p> <p>If you customized your instance with instance store volumes or Amazon EBS volumes in addition to the root device volume, the new AMI contains block device mapping information for those volumes. When you launch an instance from this new AMI, the instance automatically launches with those additional volumes.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-ebs.html\">Create an Amazon EBS-backed AMI</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+      "documentation":"<p>Creates an Amazon EBS-backed AMI from an Amazon EBS-backed instance that is either running or stopped.</p> <p>If you customized your instance with instance store volumes or Amazon EBS volumes in addition to the root device volume, the new AMI contains block device mapping information for those volumes. When you launch an instance from this new AMI, the instance automatically launches with those additional volumes.</p> <p>The location of the source instance determines where you can create the snapshots of the AMI:</p> <ul> <li> <p>If the source instance is in a Region, you must create the snapshots in the same Region as the instance.</p> </li> <li> <p>If the source instance is in a Local Zone, you can create the snapshots in the same Local Zone or in its parent Region.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-ebs.html\">Create an Amazon EBS-backed AMI</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
     "CreateInstanceConnectEndpoint":{
       "name":"CreateInstanceConnectEndpoint",
@@ -798,7 +798,7 @@
       },
       "input":{"shape":"CreateInstanceConnectEndpointRequest"},
       "output":{"shape":"CreateInstanceConnectEndpointResult"},
-      "documentation":"<p>Creates an EC2 Instance Connect Endpoint.</p> <p>An EC2 Instance Connect Endpoint allows you to connect to an instance, without requiring the instance to have a public IPv4 address. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Connect-using-EC2-Instance-Connect-Endpoint.html\">Connect to your instances without requiring a public IPv4 address using EC2 Instance Connect Endpoint</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Creates an EC2 Instance Connect Endpoint.</p> <p>An EC2 Instance Connect Endpoint allows you to connect to an instance, without requiring the instance to have a public IPv4 address. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Connect-using-EC2-Instance-Connect-Endpoint.html\">Connect to your instances using EC2 Instance Connect Endpoint</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "CreateInstanceEventWindow":{
       "name":"CreateInstanceEventWindow",
@@ -6670,7 +6670,7 @@
       },
       "input":{"shape":"StartDeclarativePoliciesReportRequest"},
       "output":{"shape":"StartDeclarativePoliciesReportResult"},
-      "documentation":"<p>Generates an account status report. The report is generated asynchronously, and can take several hours to complete.</p> <p>The report provides the current status of all attributes supported by declarative policies for the accounts within the specified scope. The scope is determined by the specified <code>TargetId</code>, which can represent an individual account, or all the accounts that fall under the specified organizational unit (OU) or root (the entire Amazon Web Services Organization).</p> <p>The report is saved to your specified S3 bucket, using the following path structure (with the <i>italicized placeholders</i> representing your specific values):</p> <p> <code>s3://<i>amzn-s3-demo-bucket</i>/<i>your-optional-s3-prefix</i>/ec2_<i>targetId</i>_<i>reportId</i>_<i>yyyyMMdd</i>T<i>hhmm</i>Z.csv</code> </p> <p class=\"title\"> <b>Prerequisites for generating a report</b> </p> <ul> <li> <p>The <code>StartDeclarativePoliciesReport</code> API can only be called by the management account or delegated administrators for the organization.</p> </li> <li> <p>An S3 bucket must be available before generating the report (you can create a new one or use an existing one), it must be in the same Region where the report generation request is made, and it must have an appropriate bucket policy. For a sample S3 policy, see <i>Sample Amazon S3 policy</i> under .</p> </li> <li> <p>Trusted access must be enabled for the service for which the declarative policy will enforce a baseline configuration. If you use the Amazon Web Services Organizations console, this is done automatically when you enable declarative policies. The API uses the following service principal to identify the EC2 service: <code>ec2.amazonaws.com</code>. For more information on how to enable trusted access with the Amazon Web Services CLI and Amazon Web Services SDKs, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_integrate_services.html\">Using Organizations with other Amazon Web Services services</a> in the <i>Amazon Web Services Organizations User Guide</i>.</p> </li> <li> <p>Only one report per organization can be generated at a time. Attempting to generate a report while another is in progress will result in an error.</p> </li> </ul> <p>For more information, including the required IAM permissions to run this API, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_declarative_status-report.html\">Generating the account status report for declarative policies</a> in the <i>Amazon Web Services Organizations User Guide</i>.</p>"
+      "documentation":"<p>Generates an account status report. The report is generated asynchronously, and can take several hours to complete.</p> <p>The report provides the current status of all attributes supported by declarative policies for the accounts within the specified scope. The scope is determined by the specified <code>TargetId</code>, which can represent an individual account, or all the accounts that fall under the specified organizational unit (OU) or root (the entire Amazon Web Services Organization).</p> <p>The report is saved to your specified S3 bucket, using the following path structure (with the <i>italicized placeholders</i> representing your specific values):</p> <p> <code>s3://<i>amzn-s3-demo-bucket</i>/<i>your-optional-s3-prefix</i>/ec2_<i>targetId</i>_<i>reportId</i>_<i>yyyyMMdd</i>T<i>hhmm</i>Z.csv</code> </p> <p class=\"title\"> <b>Prerequisites for generating a report</b> </p> <ul> <li> <p>The <code>StartDeclarativePoliciesReport</code> API can only be called by the management account or delegated administrators for the organization.</p> </li> <li> <p>An S3 bucket must be available before generating the report (you can create a new one or use an existing one), it must be in the same Region where the report generation request is made, and it must have an appropriate bucket policy. For a sample S3 policy, see <i>Sample Amazon S3 policy</i> under <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_StartDeclarativePoliciesReport.html#API_StartDeclarativePoliciesReport_Examples\">Examples</a>.</p> </li> <li> <p>Trusted access must be enabled for the service for which the declarative policy will enforce a baseline configuration. If you use the Amazon Web Services Organizations console, this is done automatically when you enable declarative policies. The API uses the following service principal to identify the EC2 service: <code>ec2.amazonaws.com</code>. For more information on how to enable trusted access with the Amazon Web Services CLI and Amazon Web Services SDKs, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_integrate_services.html\">Using Organizations with other Amazon Web Services services</a> in the <i>Amazon Web Services Organizations User Guide</i>.</p> </li> <li> <p>Only one report per organization can be generated at a time. Attempting to generate a report while another is in progress will result in an error.</p> </li> </ul> <p>For more information, including the required IAM permissions to run this API, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_declarative_status-report.html\">Generating the account status report for declarative policies</a> in the <i>Amazon Web Services Organizations User Guide</i>.</p>"
     },
     "StartInstances":{
       "name":"StartInstances",
@@ -6720,7 +6720,7 @@
       },
       "input":{"shape":"StopInstancesRequest"},
       "output":{"shape":"StopInstancesResult"},
-      "documentation":"<p>Stops an Amazon EBS-backed instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html\">Stop and start Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>When you stop an instance, we shut it down. You can restart your instance at any time.</p> <p>You can use the Stop operation together with the Hibernate parameter to hibernate an instance if the instance is <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enabling-hibernation.html\">enabled for hibernation</a> and meets the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/hibernating-prerequisites.html\">hibernation prerequisites</a>. Stopping an instance doesn't preserve data stored in RAM, while hibernation does. If hibernation fails, a normal shutdown occurs. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Hibernate.html\">Hibernate your Amazon EC2 instance</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>If your instance appears stuck in the <code>stopping</code> state, there might be an issue with the underlying host computer. You can use the Stop operation together with the Force parameter to force stop your instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstancesStopping.html\">Troubleshoot Amazon EC2 instance stop issues</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Stopping and hibernating an instance differs from rebooting or terminating it. For example, a stopped or hibernated instance retains its root volume and any data volumes, unlike terminated instances where these volumes are automatically deleted. For more information about the differences between stopping, hibernating, rebooting, and terminating instances, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Amazon EC2 instance state changes</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>We don't charge for instance usage or data transfer fees when an instance is stopped. However, the root volume and any data volumes remain and continue to persist your data, and you're charged for volume usage. Every time you start your instance, Amazon EC2 charges a one-minute minimum for instance usage, followed by per-second billing.</p> <p>You can't stop or hibernate instance store-backed instances.</p>"
+      "documentation":"<p>Stops an Amazon EBS-backed instance. You can restart your instance at any time using the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_StartInstances.html\">StartInstances</a> API. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html\">Stop and start Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>When you stop an instance, we shut it down.</p> <p>You can use the Stop operation together with the Hibernate parameter to hibernate an instance if the instance is <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enabling-hibernation.html\">enabled for hibernation</a> and meets the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/hibernating-prerequisites.html\">hibernation prerequisites</a>. Stopping an instance doesn't preserve data stored in RAM, while hibernation does. If hibernation fails, a normal shutdown occurs. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Hibernate.html\">Hibernate your Amazon EC2 instance</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>If your instance appears stuck in the <code>stopping</code> state, there might be an issue with the underlying host computer. You can use the Stop operation together with the Force parameter to force stop your instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstancesStopping.html\">Troubleshoot Amazon EC2 instance stop issues</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Stopping and hibernating an instance differs from rebooting or terminating it. For example, a stopped or hibernated instance retains its root volume and any data volumes, unlike terminated instances where these volumes are automatically deleted. For more information about the differences between stopping, hibernating, rebooting, and terminating instances, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Amazon EC2 instance state changes</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>We don't charge for instance usage or data transfer fees when an instance is stopped. However, the root volume and any data volumes remain and continue to persist your data, and you're charged for volume usage. Every time you start your instance, Amazon EC2 charges a one-minute minimum for instance usage, followed by per-second billing.</p> <p>You can't stop or hibernate instance store-backed instances.</p>"
     },
     "TerminateClientVpnConnections":{
       "name":"TerminateClientVpnConnections",
@@ -14053,7 +14053,7 @@
         },
         "IpAddress":{
           "shape":"String",
-          "documentation":"<p>IPv4 address for the customer gateway device's outside interface. The address must be static. If <code>OutsideIpAddressType</code> in your VPN connection options is set to <code>PrivateIpv4</code>, you can use an RFC6598 or RFC1918 private IPv4 address. If <code>OutsideIpAddressType</code> is set to <code>PublicIpv4</code>, you can use a public IPv4 address. </p>"
+          "documentation":"<p>The IP address for the customer gateway device's outside interface. The address must be static. If <code>OutsideIpAddressType</code> in your VPN connection options is set to <code>PrivateIpv4</code>, you can use an RFC6598 or RFC1918 private IPv4 address. If <code>OutsideIpAddressType</code> is set to <code>Ipv6</code>, you can use an IPv6 address. </p>"
         },
         "BgpAsnExtended":{
           "shape":"Long",
@@ -14541,6 +14541,10 @@
           "shape":"TagSpecificationList",
           "documentation":"<p>The tags to apply to the AMI and snapshots on creation. You can tag the AMI, the snapshots, or both.</p> <ul> <li> <p>To tag the AMI, the value for <code>ResourceType</code> must be <code>image</code>.</p> </li> <li> <p>To tag the snapshots that are created of the root volume and of other Amazon EBS volumes that are attached to the instance, the value for <code>ResourceType</code> must be <code>snapshot</code>. The same tag is applied to all of the snapshots that are created.</p> </li> </ul> <p>If you specify other values for <code>ResourceType</code>, the request fails.</p> <p>To tag an AMI or snapshot after it has been created, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateTags.html\">CreateTags</a>. </p>",
           "locationName":"TagSpecification"
+        },
+        "SnapshotLocation":{
+          "shape":"SnapshotLocationEnum",
+          "documentation":"<note> <p>Only supported for instances in Local Zones. If the source instance is not in a Local Zone, omit this parameter.</p> </note> <p>The Amazon S3 location where the snapshots will be stored.</p> <ul> <li> <p>To create local snapshots in the same Local Zone as the source instance, specify <code>local</code>.</p> </li> <li> <p>To create regional snapshots in the parent Region of the Local Zone, specify <code>regional</code> or omit this parameter.</p> </li> </ul> <p>Default: <code>regional</code> </p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -16128,6 +16132,10 @@
           "shape":"CoreNetworkArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the core network.</p>"
         },
+        "OdbNetworkArn":{
+          "shape":"OdbNetworkArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ODB network.</p>"
+        },
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
@@ -16474,7 +16482,7 @@
         },
         "Location":{
           "shape":"SnapshotLocationEnum",
-          "documentation":"<note> <p>Only supported for instances in Local Zones. If the source instance is not in a Local Zone, omit this parameter.</p> </note> <ul> <li> <p>To create local snapshots in the same Local Zone as the source instance, specify <code>local</code>.</p> </li> <li> <p>To create a regional snapshots in the parent Region of the Local Zone, specify <code>regional</code> or omit this parameter.</p> </li> </ul> <p>Default value: <code>regional</code> </p>"
+          "documentation":"<note> <p>Only supported for instances in Local Zones. If the source instance is not in a Local Zone, omit this parameter.</p> </note> <ul> <li> <p>To create local snapshots in the same Local Zone as the source instance, specify <code>local</code>.</p> </li> <li> <p>To create regional snapshots in the parent Region of the Local Zone, specify <code>regional</code> or omit this parameter.</p> </li> </ul> <p>Default value: <code>regional</code> </p>"
         }
       }
     },
@@ -18520,7 +18528,7 @@
         },
         "IpAddress":{
           "shape":"String",
-          "documentation":"<p> IPv4 address for the customer gateway device's outside interface. The address must be static. If <code>OutsideIpAddressType</code> in your VPN connection options is set to <code>PrivateIpv4</code>, you can use an RFC6598 or RFC1918 private IPv4 address. If <code>OutsideIpAddressType</code> is set to <code>PublicIpv4</code>, you can use a public IPv4 address. </p>",
+          "documentation":"<p> The IP address for the customer gateway device's outside interface. The address must be static. If <code>OutsideIpAddressType</code> in your VPN connection options is set to <code>PrivateIpv4</code>, you can use an RFC6598 or RFC1918 private IPv4 address. If <code>OutsideIpAddressType</code> is set to <code>PublicIpv4</code>, you can use a public IPv4 address. If <code>OutsideIpAddressType</code> is set to <code>Ipv6</code>, you can use a public IPv6 address. </p>",
           "locationName":"ipAddress"
         },
         "BgpAsn":{
@@ -21016,7 +21024,7 @@
         },
         "Cidr":{
           "shape":"String",
-          "documentation":"<p>The CIDR you want to deprovision from the pool. Enter the CIDR you want to deprovision with a netmask of <code>/32</code>. You must rerun this command for each IP address in the CIDR range. If your CIDR is a <code>/24</code>, you will have to run this command to deprovision each of the 256 IP addresses in the <code>/24</code> CIDR.</p>"
+          "documentation":"<p>The CIDR you want to deprovision from the pool.</p>"
         }
       }
     },
@@ -26183,7 +26191,7 @@
       "members":{
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>Security group VPC association filters.</p> <ul> <li> <p> <code>group-id</code>: The security group ID.</p> </li> <li> <p> <code>vpc-id</code>: The ID of the associated VPC.</p> </li> <li> <p> <code>vpc-owner-id</code>: The account ID of the VPC owner.</p> </li> <li> <p> <code>state</code>: The state of the association.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code>: The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code>: The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
+          "documentation":"<p>Security group VPC association filters.</p> <ul> <li> <p> <code>group-id</code>: The security group ID.</p> </li> <li> <p> <code>group-owner-id</code>: The group owner ID.</p> </li> <li> <p> <code>vpc-id</code>: The ID of the associated VPC.</p> </li> <li> <p> <code>vpc-owner-id</code>: The account ID of the VPC owner.</p> </li> <li> <p> <code>state</code>: The state of the association.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code>: The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code>: The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "NextToken":{
@@ -30411,6 +30419,11 @@
           "documentation":"<p>The ARN of the Outpost on which the snapshot is stored.</p> <p>This parameter is not supported when using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.</p>",
           "locationName":"outpostArn"
         },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone where the EBS volume will be created (for example, <code>us-east-1a</code>).</p> <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> can be specified, but not both. If neither is specified, Amazon EC2 automatically selects an Availability Zone within the Region.</p> <p>This parameter is not supported when using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.</p>",
+          "locationName":"availabilityZone"
+        },
         "Encrypted":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the encryption state of an EBS volume is changed while being restored from a backing snapshot. The effect of setting the encryption state to <code>true</code> depends on the volume origin (new or from a snapshot), starting encryption state, ownership, and whether encryption by default is enabled. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-encryption.html#encryption-parameters\">Amazon EBS encryption</a> in the <i>Amazon EBS User Guide</i>.</p> <p>In no case can you remove encryption from an encrypted volume.</p> <p>Encrypted volumes can only be attached to instances that support Amazon EBS encryption. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-encryption-requirements.html#ebs-encryption_supported_instances\">Supported instance types</a>.</p> <p>This parameter is not returned by <a>DescribeImageAttribute</a>.</p> <p>For <a>CreateImage</a> and <a>RegisterImage</a>, whether you can include this parameter, and the allowed values differ depending on the type of block device mapping you are creating.</p> <ul> <li> <p>If you are creating a block device mapping for a <b>new (empty) volume</b>, you can include this parameter, and specify either <code>true</code> for an encrypted volume, or <code>false</code> for an unencrypted volume. If you omit this parameter, it defaults to <code>false</code> (unencrypted).</p> </li> <li> <p>If you are creating a block device mapping from an <b>existing encrypted or unencrypted snapshot</b>, you must omit this parameter. If you include this parameter, the request will fail, regardless of the value that you specify.</p> </li> <li> <p>If you are creating a block device mapping from an <b>existing unencrypted volume</b>, you can include this parameter, but you must specify <code>false</code>. If you specify <code>true</code>, the request will fail. In this case, we recommend that you omit the parameter.</p> </li> <li> <p>If you are creating a block device mapping from an <b>existing encrypted volume</b>, you can include this parameter, and specify either <code>true</code> or <code>false</code>. However, if you specify <code>false</code>, the parameter is ignored and the block device mapping is always encrypted. In this case, we recommend that you omit the parameter.</p> </li> </ul>",
@@ -30419,6 +30432,10 @@
         "VolumeInitializationRate":{
           "shape":"Integer",
           "documentation":"<p>Specifies the Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate), in MiB/s, at which to download the snapshot blocks from Amazon S3 to the volume. This is also known as <i>volume initialization</i>. Specifying a volume initialization rate ensures that the volume is initialized at a predictable and consistent rate after creation.</p> <p>This parameter is supported only for volumes created from snapshots. Omit this parameter if:</p> <ul> <li> <p>You want to create the volume using fast snapshot restore. You must specify a snapshot that is enabled for fast snapshot restore. In this case, the volume is fully initialized at creation.</p> <note> <p>If you specify a snapshot that is enabled for fast snapshot restore and a volume initialization rate, the volume will be initialized at the specified rate instead of fast snapshot restore.</p> </note> </li> <li> <p>You want to create a volume that is initialized at the default rate.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/initalize-volume.html\"> Initialize Amazon EBS volumes</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>This parameter is not supported when using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.</p> <p>Valid range: 100 - 300 MiB/s</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone where the EBS volume will be created (for example, <code>use1-az1</code>).</p> <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> can be specified, but not both. If neither is specified, Amazon EC2 automatically selects an Availability Zone within the Region.</p> <p>This parameter is not supported when using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.</p>"
         }
       },
       "documentation":"<p>Describes a block device for an EBS volume.</p>"
@@ -34645,6 +34662,10 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "Context":{
+          "shape":"String",
+          "documentation":"<p>Reserved.</p>"
         }
       }
     },
@@ -38433,7 +38454,7 @@
         },
         "PublicDnsName":{
           "shape":"String",
-          "documentation":"<p>[IPv4 only] The public DNS name assigned to the instance. This name is not available until the instance enters the <code>running</code> state. This name is only available if you've enabled DNS hostnames for your VPC.</p>",
+          "documentation":"<p>The public DNS name assigned to the instance. This name is not available until the instance enters the <code>running</code> state. This name is only available if you've enabled DNS hostnames for your VPC. The format of this name depends on the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/hostname-types.html#public-hostnames\">public hostname type</a>.</p>",
           "locationName":"dnsName"
         },
         "StateTransitionReason":{
@@ -51662,6 +51683,7 @@
         "locationName":"item"
       }
     },
+    "OdbNetworkArn":{"type":"string"},
     "OfferingClassType":{
       "type":"string",
       "enum":[
@@ -54917,6 +54939,10 @@
           "shape":"CoreNetworkArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the core network.</p>"
         },
+        "OdbNetworkArn":{
+          "shape":"OdbNetworkArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ODB network.</p>"
+        },
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
@@ -57277,6 +57303,11 @@
           "shape":"CoreNetworkArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the core network.</p>",
           "locationName":"coreNetworkArn"
+        },
+        "OdbNetworkArn":{
+          "shape":"OdbNetworkArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ODB network.</p>",
+          "locationName":"odbNetworkArn"
         }
       },
       "documentation":"<p>Describes a route in a route table.</p>"
@@ -59354,6 +59385,11 @@
           "shape":"String",
           "documentation":"<p>The association's state reason.</p>",
           "locationName":"stateReason"
+        },
+        "GroupOwnerId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID of the owner of the security group.</p>",
+          "locationName":"groupOwnerId"
         }
       },
       "documentation":"<p>A security group association with a VPC that you made with <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_AssociateSecurityGroupVpc.html\">AssociateSecurityGroupVpc</a>.</p>"
@@ -68111,7 +68147,7 @@
         },
         "OutsideIpAddressType":{
           "shape":"String",
-          "documentation":"<p>The type of IPv4 address assigned to the outside interface of the customer gateway.</p> <p>Valid values: <code>PrivateIpv4</code> | <code>PublicIpv4</code> </p> <p>Default: <code>PublicIpv4</code> </p>",
+          "documentation":"<p>The type of IPv4 address assigned to the outside interface of the customer gateway.</p> <p>Valid values: <code>PrivateIpv4</code> | <code>PublicIpv4</code> | <code>Ipv6</code> </p> <p>Default: <code>PublicIpv4</code> </p>",
           "locationName":"outsideIpAddressType"
         },
         "TransportTransitGatewayAttachmentId":{
@@ -68165,7 +68201,7 @@
         },
         "OutsideIpAddressType":{
           "shape":"String",
-          "documentation":"<p>The type of IPv4 address assigned to the outside interface of the customer gateway device.</p> <p>Valid values: <code>PrivateIpv4</code> | <code>PublicIpv4</code> </p> <p>Default: <code>PublicIpv4</code> </p>"
+          "documentation":"<p>The type of IP address assigned to the outside interface of the customer gateway device.</p> <p>Valid values: <code>PrivateIpv4</code> | <code>PublicIpv4</code> | <code>Ipv6</code> </p> <p>Default: <code>PublicIpv4</code> </p>"
         },
         "TransportTransitGatewayAttachmentId":{
           "shape":"TransitGatewayAttachmentId",

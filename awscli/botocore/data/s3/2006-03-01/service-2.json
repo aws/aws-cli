@@ -1337,7 +1337,7 @@
       "errors":[
         {"shape":"IdempotencyParameterMismatch"}
       ],
-      "documentation":"<p>Renames an existing object in a directory bucket that uses the S3 Express One Zone storage class. You can use <code>RenameObject</code> by specifying an existing object’s name as the source and the new name of the object as the destination within the same directory bucket.</p> <note> <p> <code>RenameObject</code> is only supported for objects stored in the S3 Express One Zone storage class.</p> </note> <p> To prevent overwriting an object, you can use the <code>If-None-Match</code> conditional header.</p> <ul> <li> <p> <b>If-None-Match</b> - Renames the object only if an object with the specified name does not already exist in the directory bucket. If you don't want to overwrite an existing object, you can add the <code>If-None-Match</code> conditional header with the value <code>‘*’</code> in the <code>RenameObject</code> request. Amazon S3 then returns a <code>412 Precondition Failed</code> error if the object with the specified name already exists. For more information, see <a href=\"https://datatracker.ietf.org/doc/rfc7232/\">RFC 7232</a>.</p> </li> </ul> <dl> <dt>Permissions</dt> <dd> <p> To grant access to the <code>RenameObject</code> operation on a directory bucket, we recommend that you use the <code>CreateSession</code> operation for session-based authorization. Specifically, you grant the <code>s3express:CreateSession</code> permission to the directory bucket in a bucket policy or an IAM identity-based policy. Then, you make the <code>CreateSession</code> API call on the directory bucket to obtain a session token. With the session token in your request header, you can make API requests to this operation. After the session token expires, you make another <code>CreateSession</code> API call to generate a new session token for use. The Amazon Web Services CLI and SDKs will create and manage your session including refreshing the session token automatically to avoid service interruptions when a session expires. In your bucket policy, you can specify the <code>s3express:SessionMode</code> condition key to control who can create a <code>ReadWrite</code> or <code>ReadOnly</code> session. A <code>ReadWrite</code> session is required for executing all the Zonal endpoint API operations, including <code>RenameObject</code>. For more information about authorization, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateSession.html\"> <code>CreateSession</code> </a>. To learn more about Zonal endpoint APT operations, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-create-session.html\">Authorizing Zonal endpoint API operations with CreateSession</a> in the <i>Amazon S3 User Guide</i>. </p> </dd> <dt>HTTP Host header syntax</dt> <dd> <p> <b>Directory buckets </b> - The HTTP Host header syntax is <code> <i>Bucket-name</i>.s3express-<i>zone-id</i>.<i>region-code</i>.amazonaws.com</code>.</p> </dd> </dl>"
+      "documentation":"<p>Renames an existing object in a directory bucket that uses the S3 Express One Zone storage class. You can use <code>RenameObject</code> by specifying an existing object’s name as the source and the new name of the object as the destination within the same directory bucket.</p> <note> <p> <code>RenameObject</code> is only supported for objects stored in the S3 Express One Zone storage class.</p> </note> <p> To prevent overwriting an object, you can use the <code>If-None-Match</code> conditional header.</p> <ul> <li> <p> <b>If-None-Match</b> - Renames the object only if an object with the specified name does not already exist in the directory bucket. If you don't want to overwrite an existing object, you can add the <code>If-None-Match</code> conditional header with the value <code>‘*’</code> in the <code>RenameObject</code> request. Amazon S3 then returns a <code>412 Precondition Failed</code> error if the object with the specified name already exists. For more information, see <a href=\"https://datatracker.ietf.org/doc/rfc7232/\">RFC 7232</a>.</p> </li> </ul> <dl> <dt>Permissions</dt> <dd> <p> To grant access to the <code>RenameObject</code> operation on a directory bucket, we recommend that you use the <code>CreateSession</code> operation for session-based authorization. Specifically, you grant the <code>s3express:CreateSession</code> permission to the directory bucket in a bucket policy or an IAM identity-based policy. Then, you make the <code>CreateSession</code> API call on the directory bucket to obtain a session token. With the session token in your request header, you can make API requests to this operation. After the session token expires, you make another <code>CreateSession</code> API call to generate a new session token for use. The Amazon Web Services CLI and SDKs will create and manage your session including refreshing the session token automatically to avoid service interruptions when a session expires. In your bucket policy, you can specify the <code>s3express:SessionMode</code> condition key to control who can create a <code>ReadWrite</code> or <code>ReadOnly</code> session. A <code>ReadWrite</code> session is required for executing all the Zonal endpoint API operations, including <code>RenameObject</code>. For more information about authorization, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateSession.html\"> <code>CreateSession</code> </a>. To learn more about Zonal endpoint API operations, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-create-session.html\">Authorizing Zonal endpoint API operations with CreateSession</a> in the <i>Amazon S3 User Guide</i>. </p> </dd> <dt>HTTP Host header syntax</dt> <dd> <p> <b>Directory buckets </b> - The HTTP Host header syntax is <code> <i>Bucket-name</i>.s3express-<i>zone-id</i>.<i>region-code</i>.amazonaws.com</code>.</p> </dd> </dl>"
     },
     "RestoreObject":{
       "name":"RestoreObject",
@@ -1676,6 +1676,10 @@
         "BucketRegion":{
           "shape":"BucketRegion",
           "documentation":"<p> <code>BucketRegion</code> indicates the Amazon Web Services region where the bucket is located. If the request contains at least one valid parameter, it is included in the response.</p>"
+        },
+        "BucketArn":{
+          "shape":"S3RegionalOrS3ExpressBucketArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 bucket. ARNs uniquely identify Amazon Web Services resources across all of Amazon Web Services.</p> <note> <p>This parameter is only supported for S3 directory buckets. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-tagging.html\">Using tags with directory buckets</a>.</p> </note>"
         }
       },
       "documentation":"<p> In terms of implementation, a Bucket is a resource. </p>"
@@ -2102,7 +2106,7 @@
         },
         "ServerSideEncryption":{
           "shape":"ServerSideEncryption",
-          "documentation":"<p>The server-side encryption algorithm used when storing this object in Amazon S3 (for example, <code>AES256</code>, <code>aws:kms</code>).</p>",
+          "documentation":"<p>The server-side encryption algorithm used when storing this object in Amazon S3.</p> <note> <p>When accessing data stored in Amazon FSx file systems using S3 access points, the only valid server side encryption option is <code>aws:fsx</code>.</p> </note> <p/>",
           "location":"header",
           "locationName":"x-amz-server-side-encryption"
         },
@@ -2367,7 +2371,7 @@
         },
         "ServerSideEncryption":{
           "shape":"ServerSideEncryption",
-          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3 (for example, <code>AES256</code>, <code>aws:kms</code>, <code>aws:kms:dsse</code>).</p>",
+          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3 or Amazon FSx.</p> <note> <p>When accessing data stored in Amazon FSx file systems using S3 access points, the only valid server side encryption option is <code>aws:fsx</code>.</p> </note>",
           "location":"header",
           "locationName":"x-amz-server-side-encryption"
         },
@@ -2554,7 +2558,7 @@
         },
         "ServerSideEncryption":{
           "shape":"ServerSideEncryption",
-          "documentation":"<p>The server-side encryption algorithm used when storing this object in Amazon S3. Unrecognized or unsupported values won’t write a destination object and will receive a <code>400 Bad Request</code> response. </p> <p>Amazon S3 automatically encrypts all new objects that are copied to an S3 bucket. When copying an object, if you don't specify encryption information in your copy request, the encryption setting of the target object is set to the default encryption configuration of the destination bucket. By default, all buckets have a base level of encryption configuration that uses server-side encryption with Amazon S3 managed keys (SSE-S3). If the destination bucket has a different default encryption configuration, Amazon S3 uses the corresponding encryption key to encrypt the target object copy.</p> <p>With server-side encryption, Amazon S3 encrypts your data as it writes your data to disks in its data centers and decrypts the data when you access it. For more information about server-side encryption, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/serv-side-encryption.html\">Using Server-Side Encryption</a> in the <i>Amazon S3 User Guide</i>.</p> <p> <b>General purpose buckets </b> </p> <ul> <li> <p>For general purpose buckets, there are the following supported options for server-side encryption: server-side encryption with Key Management Service (KMS) keys (SSE-KMS), dual-layer server-side encryption with Amazon Web Services KMS keys (DSSE-KMS), and server-side encryption with customer-provided encryption keys (SSE-C). Amazon S3 uses the corresponding KMS key, or a customer-provided key to encrypt the target object copy.</p> </li> <li> <p>When you perform a <code>CopyObject</code> operation, if you want to use a different type of encryption setting for the target object, you can specify appropriate encryption-related headers to encrypt the target object with an Amazon S3 managed key, a KMS key, or a customer-provided key. If the encryption setting in your request is different from the default encryption configuration of the destination bucket, the encryption setting in your request takes precedence. </p> </li> </ul> <p> <b>Directory buckets </b> </p> <ul> <li> <p>For directory buckets, there are only two supported options for server-side encryption: server-side encryption with Amazon S3 managed keys (SSE-S3) (<code>AES256</code>) and server-side encryption with KMS keys (SSE-KMS) (<code>aws:kms</code>). We recommend that the bucket's default encryption uses the desired encryption configuration and you don't override the bucket default encryption in your <code>CreateSession</code> requests or <code>PUT</code> object requests. Then, new objects are automatically encrypted with the desired encryption settings. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-serv-side-encryption.html\">Protecting data with server-side encryption</a> in the <i>Amazon S3 User Guide</i>. For more information about the encryption overriding behaviors in directory buckets, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-specifying-kms-encryption.html\">Specifying server-side encryption with KMS for new object uploads</a>.</p> </li> <li> <p>To encrypt new object copies to a directory bucket with SSE-KMS, we recommend you specify SSE-KMS as the directory bucket's default encryption configuration with a KMS key (specifically, a <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk\">customer managed key</a>). The <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk\">Amazon Web Services managed key</a> (<code>aws/s3</code>) isn't supported. Your SSE-KMS configuration can only support 1 <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk\">customer managed key</a> per directory bucket for the lifetime of the bucket. After you specify a customer managed key for SSE-KMS, you can't override the customer managed key for the bucket's SSE-KMS configuration. Then, when you perform a <code>CopyObject</code> operation and want to specify server-side encryption settings for new object copies with SSE-KMS in the encryption-related request headers, you must ensure the encryption key is the same customer managed key that you specified for the directory bucket's default encryption configuration. </p> </li> </ul>",
+          "documentation":"<p>The server-side encryption algorithm used when storing this object in Amazon S3. Unrecognized or unsupported values won’t write a destination object and will receive a <code>400 Bad Request</code> response. </p> <p>Amazon S3 automatically encrypts all new objects that are copied to an S3 bucket. When copying an object, if you don't specify encryption information in your copy request, the encryption setting of the target object is set to the default encryption configuration of the destination bucket. By default, all buckets have a base level of encryption configuration that uses server-side encryption with Amazon S3 managed keys (SSE-S3). If the destination bucket has a different default encryption configuration, Amazon S3 uses the corresponding encryption key to encrypt the target object copy.</p> <p>With server-side encryption, Amazon S3 encrypts your data as it writes your data to disks in its data centers and decrypts the data when you access it. For more information about server-side encryption, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/serv-side-encryption.html\">Using Server-Side Encryption</a> in the <i>Amazon S3 User Guide</i>.</p> <p> <b>General purpose buckets </b> </p> <ul> <li> <p>For general purpose buckets, there are the following supported options for server-side encryption: server-side encryption with Key Management Service (KMS) keys (SSE-KMS), dual-layer server-side encryption with Amazon Web Services KMS keys (DSSE-KMS), and server-side encryption with customer-provided encryption keys (SSE-C). Amazon S3 uses the corresponding KMS key, or a customer-provided key to encrypt the target object copy.</p> </li> <li> <p>When you perform a <code>CopyObject</code> operation, if you want to use a different type of encryption setting for the target object, you can specify appropriate encryption-related headers to encrypt the target object with an Amazon S3 managed key, a KMS key, or a customer-provided key. If the encryption setting in your request is different from the default encryption configuration of the destination bucket, the encryption setting in your request takes precedence. </p> </li> </ul> <p> <b>Directory buckets </b> </p> <ul> <li> <p>For directory buckets, there are only two supported options for server-side encryption: server-side encryption with Amazon S3 managed keys (SSE-S3) (<code>AES256</code>) and server-side encryption with KMS keys (SSE-KMS) (<code>aws:kms</code>). We recommend that the bucket's default encryption uses the desired encryption configuration and you don't override the bucket default encryption in your <code>CreateSession</code> requests or <code>PUT</code> object requests. Then, new objects are automatically encrypted with the desired encryption settings. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-serv-side-encryption.html\">Protecting data with server-side encryption</a> in the <i>Amazon S3 User Guide</i>. For more information about the encryption overriding behaviors in directory buckets, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-specifying-kms-encryption.html\">Specifying server-side encryption with KMS for new object uploads</a>.</p> </li> <li> <p>To encrypt new object copies to a directory bucket with SSE-KMS, we recommend you specify SSE-KMS as the directory bucket's default encryption configuration with a KMS key (specifically, a <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk\">customer managed key</a>). The <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk\">Amazon Web Services managed key</a> (<code>aws/s3</code>) isn't supported. Your SSE-KMS configuration can only support 1 <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk\">customer managed key</a> per directory bucket for the lifetime of the bucket. After you specify a customer managed key for SSE-KMS, you can't override the customer managed key for the bucket's SSE-KMS configuration. Then, when you perform a <code>CopyObject</code> operation and want to specify server-side encryption settings for new object copies with SSE-KMS in the encryption-related request headers, you must ensure the encryption key is the same customer managed key that you specified for the directory bucket's default encryption configuration. </p> </li> <li> <p> <b>S3 access points for Amazon FSx </b> - When accessing data stored in Amazon FSx file systems using S3 access points, the only valid server side encryption option is <code>aws:fsx</code>. All Amazon FSx file systems have encryption configured by default and are encrypted at rest. Data is automatically encrypted before being written to the file system, and automatically decrypted as it is read. These processes are handled transparently by Amazon FSx.</p> </li> </ul>",
           "location":"header",
           "locationName":"x-amz-server-side-encryption"
         },
@@ -2769,6 +2773,10 @@
         "Bucket":{
           "shape":"BucketInfo",
           "documentation":"<p>Specifies the information about the bucket that will be created.</p> <note> <p>This functionality is only supported by directory buckets.</p> </note>"
+        },
+        "Tags":{
+          "shape":"TagSet",
+          "documentation":"<p>An array of tags that you can apply to the bucket that you're creating. Tags are key-value pairs of metadata used to categorize and organize your buckets, track costs, and control access. </p> <note> <p>This parameter is only supported for S3 directory buckets. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-tagging.html\">Using tags with directory buckets</a>.</p> </note>"
         }
       },
       "documentation":"<p>The configuration information for the bucket.</p>"
@@ -2822,6 +2830,12 @@
           "documentation":"<p>A forward slash followed by the name of the bucket.</p>",
           "location":"header",
           "locationName":"Location"
+        },
+        "BucketArn":{
+          "shape":"S3RegionalOrS3ExpressBucketArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 bucket. ARNs uniquely identify Amazon Web Services resources across all of Amazon Web Services.</p> <note> <p>This parameter is only supported for S3 directory buckets. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-tagging.html\">Using tags with directory buckets</a>.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-bucket-arn"
         }
       }
     },
@@ -2922,7 +2936,7 @@
         },
         "ServerSideEncryption":{
           "shape":"ServerSideEncryption",
-          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3 (for example, <code>AES256</code>, <code>aws:kms</code>).</p>",
+          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3 or Amazon FSx.</p> <note> <p>When accessing data stored in Amazon FSx file systems using S3 access points, the only valid server side encryption option is <code>aws:fsx</code>.</p> </note>",
           "location":"header",
           "locationName":"x-amz-server-side-encryption"
         },
@@ -3070,7 +3084,7 @@
         },
         "ServerSideEncryption":{
           "shape":"ServerSideEncryption",
-          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3 (for example, <code>AES256</code>, <code>aws:kms</code>).</p> <ul> <li> <p> <b>Directory buckets </b> - For directory buckets, there are only two supported options for server-side encryption: server-side encryption with Amazon S3 managed keys (SSE-S3) (<code>AES256</code>) and server-side encryption with KMS keys (SSE-KMS) (<code>aws:kms</code>). We recommend that the bucket's default encryption uses the desired encryption configuration and you don't override the bucket default encryption in your <code>CreateSession</code> requests or <code>PUT</code> object requests. Then, new objects are automatically encrypted with the desired encryption settings. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-serv-side-encryption.html\">Protecting data with server-side encryption</a> in the <i>Amazon S3 User Guide</i>. For more information about the encryption overriding behaviors in directory buckets, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-specifying-kms-encryption.html\">Specifying server-side encryption with KMS for new object uploads</a>. </p> <p>In the Zonal endpoint API calls (except <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html\">CopyObject</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html\">UploadPartCopy</a>) using the REST API, the encryption request headers must match the encryption settings that are specified in the <code>CreateSession</code> request. You can't override the values of the encryption settings (<code>x-amz-server-side-encryption</code>, <code>x-amz-server-side-encryption-aws-kms-key-id</code>, <code>x-amz-server-side-encryption-context</code>, and <code>x-amz-server-side-encryption-bucket-key-enabled</code>) that are specified in the <code>CreateSession</code> request. You don't need to explicitly specify these encryption settings values in Zonal endpoint API calls, and Amazon S3 will use the encryption settings values from the <code>CreateSession</code> request to protect new objects in the directory bucket. </p> <note> <p>When you use the CLI or the Amazon Web Services SDKs, for <code>CreateSession</code>, the session token refreshes automatically to avoid service interruptions when a session expires. The CLI or the Amazon Web Services SDKs use the bucket's default encryption configuration for the <code>CreateSession</code> request. It's not supported to override the encryption settings values in the <code>CreateSession</code> request. So in the Zonal endpoint API calls (except <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html\">CopyObject</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html\">UploadPartCopy</a>), the encryption request headers must match the default encryption configuration of the directory bucket. </p> </note> </li> </ul>",
+          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3 or Amazon FSx.</p> <ul> <li> <p> <b>Directory buckets </b> - For directory buckets, there are only two supported options for server-side encryption: server-side encryption with Amazon S3 managed keys (SSE-S3) (<code>AES256</code>) and server-side encryption with KMS keys (SSE-KMS) (<code>aws:kms</code>). We recommend that the bucket's default encryption uses the desired encryption configuration and you don't override the bucket default encryption in your <code>CreateSession</code> requests or <code>PUT</code> object requests. Then, new objects are automatically encrypted with the desired encryption settings. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-serv-side-encryption.html\">Protecting data with server-side encryption</a> in the <i>Amazon S3 User Guide</i>. For more information about the encryption overriding behaviors in directory buckets, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-specifying-kms-encryption.html\">Specifying server-side encryption with KMS for new object uploads</a>. </p> <p>In the Zonal endpoint API calls (except <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html\">CopyObject</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html\">UploadPartCopy</a>) using the REST API, the encryption request headers must match the encryption settings that are specified in the <code>CreateSession</code> request. You can't override the values of the encryption settings (<code>x-amz-server-side-encryption</code>, <code>x-amz-server-side-encryption-aws-kms-key-id</code>, <code>x-amz-server-side-encryption-context</code>, and <code>x-amz-server-side-encryption-bucket-key-enabled</code>) that are specified in the <code>CreateSession</code> request. You don't need to explicitly specify these encryption settings values in Zonal endpoint API calls, and Amazon S3 will use the encryption settings values from the <code>CreateSession</code> request to protect new objects in the directory bucket. </p> <note> <p>When you use the CLI or the Amazon Web Services SDKs, for <code>CreateSession</code>, the session token refreshes automatically to avoid service interruptions when a session expires. The CLI or the Amazon Web Services SDKs use the bucket's default encryption configuration for the <code>CreateSession</code> request. It's not supported to override the encryption settings values in the <code>CreateSession</code> request. So in the Zonal endpoint API calls (except <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html\">CopyObject</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html\">UploadPartCopy</a>), the encryption request headers must match the default encryption configuration of the directory bucket. </p> </note> </li> <li> <p> <b>S3 access points for Amazon FSx </b> - When accessing data stored in Amazon FSx file systems using S3 access points, the only valid server side encryption option is <code>aws:fsx</code>. All Amazon FSx file systems have encryption configured by default and are encrypted at rest. Data is automatically encrypted before being written to the file system, and automatically decrypted as it is read. These processes are handled transparently by Amazon FSx.</p> </li> </ul>",
           "location":"header",
           "locationName":"x-amz-server-side-encryption"
         },
@@ -3177,7 +3191,7 @@
       "members":{
         "ServerSideEncryption":{
           "shape":"ServerSideEncryption",
-          "documentation":"<p>The server-side encryption algorithm used when you store objects in the directory bucket.</p>",
+          "documentation":"<p>The server-side encryption algorithm used when you store objects in the directory bucket.</p> <note> <p>When accessing data stored in Amazon FSx file systems using S3 access points, the only valid server side encryption option is <code>aws:fsx</code>.</p> </note>",
           "location":"header",
           "locationName":"x-amz-server-side-encryption"
         },
@@ -3225,7 +3239,7 @@
         },
         "ServerSideEncryption":{
           "shape":"ServerSideEncryption",
-          "documentation":"<p>The server-side encryption algorithm to use when you store objects in the directory bucket.</p> <p>For directory buckets, there are only two supported options for server-side encryption: server-side encryption with Amazon S3 managed keys (SSE-S3) (<code>AES256</code>) and server-side encryption with KMS keys (SSE-KMS) (<code>aws:kms</code>). By default, Amazon S3 encrypts data with SSE-S3. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html\">Protecting data with server-side encryption</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "documentation":"<p>The server-side encryption algorithm to use when you store objects in the directory bucket.</p> <p>For directory buckets, there are only two supported options for server-side encryption: server-side encryption with Amazon S3 managed keys (SSE-S3) (<code>AES256</code>) and server-side encryption with KMS keys (SSE-KMS) (<code>aws:kms</code>). By default, Amazon S3 encrypts data with SSE-S3. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html\">Protecting data with server-side encryption</a> in the <i>Amazon S3 User Guide</i>.</p> <p> <b>S3 access points for Amazon FSx </b> - When accessing data stored in Amazon FSx file systems using S3 access points, the only valid server side encryption option is <code>aws:fsx</code>. All Amazon FSx file systems have encryption configured by default and are encrypted at rest. Data is automatically encrypted before being written to the file system, and automatically decrypted as it is read. These processes are handled transparently by Amazon FSx.</p>",
           "location":"header",
           "locationName":"x-amz-server-side-encryption"
         },
@@ -3925,7 +3939,7 @@
         },
         "StorageClass":{
           "shape":"StorageClass",
-          "documentation":"<p> The storage class to use when replicating objects, such as S3 Standard or reduced redundancy. By default, Amazon S3 uses the storage class of the source object to create the object replica. </p> <p>For valid values, see the <code>StorageClass</code> element of the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTreplication.html\">PUT Bucket replication</a> action in the <i>Amazon S3 API Reference</i>.</p>"
+          "documentation":"<p> The storage class to use when replicating objects, such as S3 Standard or reduced redundancy. By default, Amazon S3 uses the storage class of the source object to create the object replica. </p> <p>For valid values, see the <code>StorageClass</code> element of the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTreplication.html\">PUT Bucket replication</a> action in the <i>Amazon S3 API Reference</i>.</p> <p> <code>FSX_OPENZFS</code> is not an accepted value when replicating objects.</p>"
         },
         "AccessControlTranslation":{
           "shape":"AccessControlTranslation",
@@ -5339,7 +5353,7 @@
         },
         "ServerSideEncryption":{
           "shape":"ServerSideEncryption",
-          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3.</p>",
+          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3 or Amazon FSx.</p> <note> <p>When accessing data stored in Amazon FSx file systems using S3 access points, the only valid server side encryption option is <code>aws:fsx</code>.</p> </note>",
           "location":"header",
           "locationName":"x-amz-server-side-encryption"
         },
@@ -5819,6 +5833,12 @@
     "HeadBucketOutput":{
       "type":"structure",
       "members":{
+        "BucketArn":{
+          "shape":"S3RegionalOrS3ExpressBucketArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 bucket. ARNs uniquely identify Amazon Web Services resources across all of Amazon Web Services.</p> <note> <p>This parameter is only supported for S3 directory buckets. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-tagging.html\">Using tags with directory buckets</a>.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-bucket-arn"
+        },
         "BucketLocationType":{
           "shape":"LocationType",
           "documentation":"<p>The type of location where the bucket is created.</p> <note> <p>This functionality is only supported by directory buckets.</p> </note>",
@@ -6013,7 +6033,7 @@
         },
         "ServerSideEncryption":{
           "shape":"ServerSideEncryption",
-          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3 (for example, <code>AES256</code>, <code>aws:kms</code>, <code>aws:kms:dsse</code>).</p>",
+          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3 or Amazon FSx.</p> <note> <p>When accessing data stored in Amazon FSx file systems using S3 access points, the only valid server side encryption option is <code>aws:fsx</code>.</p> </note>",
           "location":"header",
           "locationName":"x-amz-server-side-encryption"
         },
@@ -6722,7 +6742,7 @@
         },
         "Filter":{
           "shape":"LifecycleRuleFilter",
-          "documentation":"<p>The <code>Filter</code> is used to identify objects that a Lifecycle Rule applies to. A <code>Filter</code> must have exactly one of <code>Prefix</code>, <code>Tag</code>, <code>ObjectSizeGreaterThan</code>, <code>ObjectSizeLessThan</code>, or <code>And</code> specified. <code>Filter</code> is required if the <code>LifecycleRule</code> does not contain a <code>Prefix</code> element.</p> <note> <p> <code>Tag</code> filters are not supported for directory buckets.</p> </note>"
+          "documentation":"<p>The <code>Filter</code> is used to identify objects that a Lifecycle Rule applies to. A <code>Filter</code> must have exactly one of <code>Prefix</code>, <code>Tag</code>, <code>ObjectSizeGreaterThan</code>, <code>ObjectSizeLessThan</code>, or <code>And</code> specified. <code>Filter</code> is required if the <code>LifecycleRule</code> does not contain a <code>Prefix</code> element.</p> <p>For more information about <code>Tag</code> filters, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/intro-lifecycle-filters.html\">Adding filters to Lifecycle rules</a> in the <i>Amazon S3 User Guide</i>.</p> <note> <p> <code>Tag</code> filters are not supported for directory buckets.</p> </note>"
         },
         "Status":{
           "shape":"ExpirationStatus",
@@ -7135,7 +7155,7 @@
         },
         "Delimiter":{
           "shape":"Delimiter",
-          "documentation":"<p>Character you use to group keys.</p> <p>All keys that contain the same string between the prefix, if specified, and the first occurrence of the delimiter after the prefix are grouped under a single result element, <code>CommonPrefixes</code>. If you don't specify the prefix parameter, then the substring starts at the beginning of the key. The keys that are grouped under <code>CommonPrefixes</code> result element are not returned elsewhere in the response.</p> <note> <p> <b>Directory buckets</b> - For directory buckets, <code>/</code> is the only supported delimiter.</p> </note>",
+          "documentation":"<p>Character you use to group keys.</p> <p>All keys that contain the same string between the prefix, if specified, and the first occurrence of the delimiter after the prefix are grouped under a single result element, <code>CommonPrefixes</code>. If you don't specify the prefix parameter, then the substring starts at the beginning of the key. The keys that are grouped under <code>CommonPrefixes</code> result element are not returned elsewhere in the response.</p> <p> <code>CommonPrefixes</code> is filtered out from results if it is not lexicographically greater than the key-marker.</p> <note> <p> <b>Directory buckets</b> - For directory buckets, <code>/</code> is the only supported delimiter.</p> </note>",
           "location":"querystring",
           "locationName":"delimiter"
         },
@@ -7259,7 +7279,7 @@
         },
         "Delimiter":{
           "shape":"Delimiter",
-          "documentation":"<p>A delimiter is a character that you specify to group keys. All keys that contain the same string between the <code>prefix</code> and the first occurrence of the delimiter are grouped under a single result element in <code>CommonPrefixes</code>. These groups are counted as one result against the <code>max-keys</code> limitation. These keys are not returned elsewhere in the response.</p>",
+          "documentation":"<p>A delimiter is a character that you specify to group keys. All keys that contain the same string between the <code>prefix</code> and the first occurrence of the delimiter are grouped under a single result element in <code>CommonPrefixes</code>. These groups are counted as one result against the <code>max-keys</code> limitation. These keys are not returned elsewhere in the response.</p> <p> <code>CommonPrefixes</code> is filtered out from results if it is not lexicographically greater than the key-marker.</p>",
           "location":"querystring",
           "locationName":"delimiter"
         },
@@ -7375,7 +7395,7 @@
         },
         "Delimiter":{
           "shape":"Delimiter",
-          "documentation":"<p>A delimiter is a character that you use to group keys.</p>",
+          "documentation":"<p>A delimiter is a character that you use to group keys.</p> <p> <code>CommonPrefixes</code> is filtered out from results if it is not lexicographically greater than the key-marker.</p>",
           "location":"querystring",
           "locationName":"delimiter"
         },
@@ -7494,7 +7514,7 @@
         },
         "Delimiter":{
           "shape":"Delimiter",
-          "documentation":"<p>A delimiter is a character that you use to group keys.</p> <note> <ul> <li> <p> <b>Directory buckets</b> - For directory buckets, <code>/</code> is the only supported delimiter.</p> </li> <li> <p> <b>Directory buckets </b> - When you query <code>ListObjectsV2</code> with a delimiter during in-progress multipart uploads, the <code>CommonPrefixes</code> response parameter contains the prefixes that are associated with the in-progress multipart uploads. For more information about multipart uploads, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html\">Multipart Upload Overview</a> in the <i>Amazon S3 User Guide</i>.</p> </li> </ul> </note>",
+          "documentation":"<p>A delimiter is a character that you use to group keys.</p> <p> <code>CommonPrefixes</code> is filtered out from results if it is not lexicographically greater than the <code>StartAfter</code> value.</p> <note> <ul> <li> <p> <b>Directory buckets</b> - For directory buckets, <code>/</code> is the only supported delimiter.</p> </li> <li> <p> <b>Directory buckets </b> - When you query <code>ListObjectsV2</code> with a delimiter during in-progress multipart uploads, the <code>CommonPrefixes</code> response parameter contains the prefixes that are associated with the in-progress multipart uploads. For more information about multipart uploads, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html\">Multipart Upload Overview</a> in the <i>Amazon S3 User Guide</i>.</p> </li> </ul> </note>",
           "location":"querystring",
           "locationName":"delimiter"
         },
@@ -8369,7 +8389,8 @@
         "OUTPOSTS",
         "GLACIER_IR",
         "SNOW",
-        "EXPRESS_ONEZONE"
+        "EXPRESS_ONEZONE",
+        "FSX_OPENZFS"
       ]
     },
     "ObjectVersion":{
@@ -9809,7 +9830,7 @@
         },
         "ServerSideEncryption":{
           "shape":"ServerSideEncryption",
-          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3.</p>",
+          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3 or Amazon FSx.</p> <note> <p>When accessing data stored in Amazon FSx file systems using S3 access points, the only valid server side encryption option is <code>aws:fsx</code>.</p> </note>",
           "location":"header",
           "locationName":"x-amz-server-side-encryption"
         },
@@ -10028,7 +10049,7 @@
         },
         "ServerSideEncryption":{
           "shape":"ServerSideEncryption",
-          "documentation":"<p>The server-side encryption algorithm that was used when you store this object in Amazon S3 (for example, <code>AES256</code>, <code>aws:kms</code>, <code>aws:kms:dsse</code>).</p> <ul> <li> <p> <b>General purpose buckets </b> - You have four mutually exclusive options to protect data using server-side encryption in Amazon S3, depending on how you choose to manage the encryption keys. Specifically, the encryption key options are Amazon S3 managed keys (SSE-S3), Amazon Web Services KMS keys (SSE-KMS or DSSE-KMS), and customer-provided keys (SSE-C). Amazon S3 encrypts data with server-side encryption by using Amazon S3 managed keys (SSE-S3) by default. You can optionally tell Amazon S3 to encrypt data at rest by using server-side encryption with other key options. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingServerSideEncryption.html\">Using Server-Side Encryption</a> in the <i>Amazon S3 User Guide</i>.</p> </li> <li> <p> <b>Directory buckets </b> - For directory buckets, there are only two supported options for server-side encryption: server-side encryption with Amazon S3 managed keys (SSE-S3) (<code>AES256</code>) and server-side encryption with KMS keys (SSE-KMS) (<code>aws:kms</code>). We recommend that the bucket's default encryption uses the desired encryption configuration and you don't override the bucket default encryption in your <code>CreateSession</code> requests or <code>PUT</code> object requests. Then, new objects are automatically encrypted with the desired encryption settings. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-serv-side-encryption.html\">Protecting data with server-side encryption</a> in the <i>Amazon S3 User Guide</i>. For more information about the encryption overriding behaviors in directory buckets, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-specifying-kms-encryption.html\">Specifying server-side encryption with KMS for new object uploads</a>. </p> <p>In the Zonal endpoint API calls (except <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html\">CopyObject</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html\">UploadPartCopy</a>) using the REST API, the encryption request headers must match the encryption settings that are specified in the <code>CreateSession</code> request. You can't override the values of the encryption settings (<code>x-amz-server-side-encryption</code>, <code>x-amz-server-side-encryption-aws-kms-key-id</code>, <code>x-amz-server-side-encryption-context</code>, and <code>x-amz-server-side-encryption-bucket-key-enabled</code>) that are specified in the <code>CreateSession</code> request. You don't need to explicitly specify these encryption settings values in Zonal endpoint API calls, and Amazon S3 will use the encryption settings values from the <code>CreateSession</code> request to protect new objects in the directory bucket. </p> <note> <p>When you use the CLI or the Amazon Web Services SDKs, for <code>CreateSession</code>, the session token refreshes automatically to avoid service interruptions when a session expires. The CLI or the Amazon Web Services SDKs use the bucket's default encryption configuration for the <code>CreateSession</code> request. It's not supported to override the encryption settings values in the <code>CreateSession</code> request. So in the Zonal endpoint API calls (except <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html\">CopyObject</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html\">UploadPartCopy</a>), the encryption request headers must match the default encryption configuration of the directory bucket. </p> </note> </li> </ul>",
+          "documentation":"<p>The server-side encryption algorithm that was used when you store this object in Amazon S3 or Amazon FSx.</p> <ul> <li> <p> <b>General purpose buckets </b> - You have four mutually exclusive options to protect data using server-side encryption in Amazon S3, depending on how you choose to manage the encryption keys. Specifically, the encryption key options are Amazon S3 managed keys (SSE-S3), Amazon Web Services KMS keys (SSE-KMS or DSSE-KMS), and customer-provided keys (SSE-C). Amazon S3 encrypts data with server-side encryption by using Amazon S3 managed keys (SSE-S3) by default. You can optionally tell Amazon S3 to encrypt data at rest by using server-side encryption with other key options. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingServerSideEncryption.html\">Using Server-Side Encryption</a> in the <i>Amazon S3 User Guide</i>.</p> </li> <li> <p> <b>Directory buckets </b> - For directory buckets, there are only two supported options for server-side encryption: server-side encryption with Amazon S3 managed keys (SSE-S3) (<code>AES256</code>) and server-side encryption with KMS keys (SSE-KMS) (<code>aws:kms</code>). We recommend that the bucket's default encryption uses the desired encryption configuration and you don't override the bucket default encryption in your <code>CreateSession</code> requests or <code>PUT</code> object requests. Then, new objects are automatically encrypted with the desired encryption settings. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-serv-side-encryption.html\">Protecting data with server-side encryption</a> in the <i>Amazon S3 User Guide</i>. For more information about the encryption overriding behaviors in directory buckets, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-specifying-kms-encryption.html\">Specifying server-side encryption with KMS for new object uploads</a>. </p> <p>In the Zonal endpoint API calls (except <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html\">CopyObject</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html\">UploadPartCopy</a>) using the REST API, the encryption request headers must match the encryption settings that are specified in the <code>CreateSession</code> request. You can't override the values of the encryption settings (<code>x-amz-server-side-encryption</code>, <code>x-amz-server-side-encryption-aws-kms-key-id</code>, <code>x-amz-server-side-encryption-context</code>, and <code>x-amz-server-side-encryption-bucket-key-enabled</code>) that are specified in the <code>CreateSession</code> request. You don't need to explicitly specify these encryption settings values in Zonal endpoint API calls, and Amazon S3 will use the encryption settings values from the <code>CreateSession</code> request to protect new objects in the directory bucket. </p> <note> <p>When you use the CLI or the Amazon Web Services SDKs, for <code>CreateSession</code>, the session token refreshes automatically to avoid service interruptions when a session expires. The CLI or the Amazon Web Services SDKs use the bucket's default encryption configuration for the <code>CreateSession</code> request. It's not supported to override the encryption settings values in the <code>CreateSession</code> request. So in the Zonal endpoint API calls (except <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html\">CopyObject</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html\">UploadPartCopy</a>), the encryption request headers must match the default encryption configuration of the directory bucket. </p> </note> </li> <li> <p> <b>S3 access points for Amazon FSx </b> - When accessing data stored in Amazon FSx file systems using S3 access points, the only valid server side encryption option is <code>aws:fsx</code>. All Amazon FSx file systems have encryption configured by default and are encrypted at rest. Data is automatically encrypted before being written to the file system, and automatically decrypted as it is read. These processes are handled transparently by Amazon FSx.</p> </li> </ul>",
           "location":"header",
           "locationName":"x-amz-server-side-encryption"
         },
@@ -10506,7 +10527,7 @@
         },
         "ClientToken":{
           "shape":"ClientToken",
-          "documentation":"<p> A unique string with a max of 64 ASCII characters in the ASCII range of 33 - 126. <code>RenameObject</code> supports idempotency using a client token. To make an idempotent API request using <code>RenameObject</code>, specify a client token in the request. You should not reuse the same client token for other API requests. If you retry a request that completed successfully using the same client token and the same parameters, the retry succeeds without performing any further actions. If you retry a successful request using the same client token, but one or more of the parameters are different, the retry fails and an <code>IdempotentParameterMismatch</code> error is returned. </p>",
+          "documentation":"<p> A unique string with a max of 64 ASCII characters in the ASCII range of 33 - 126.</p> <note> <p> <code>RenameObject</code> supports idempotency using a client token. To make an idempotent API request using <code>RenameObject</code>, specify a client token in the request. You should not reuse the same client token for other API requests. If you retry a request that completed successfully using the same client token and the same parameters, the retry succeeds without performing any further actions. If you retry a successful request using the same client token, but one or more of the parameters are different, the retry fails and an <code>IdempotentParameterMismatch</code> error is returned. </p> </note>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"x-amz-client-token"
@@ -10973,6 +10994,12 @@
       },
       "documentation":"<p>Describes an Amazon S3 location that will receive the results of the restore request.</p>"
     },
+    "S3RegionalOrS3ExpressBucketArnString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"arn:[^:]+:(s3|s3express):.*"
+    },
     "S3TablesArn":{"type":"string"},
     "S3TablesBucketArn":{"type":"string"},
     "S3TablesDestination":{
@@ -11213,6 +11240,7 @@
       "type":"string",
       "enum":[
         "AES256",
+        "aws:fsx",
         "aws:kms",
         "aws:kms:dsse"
       ]
@@ -11405,7 +11433,8 @@
         "OUTPOSTS",
         "GLACIER_IR",
         "SNOW",
-        "EXPRESS_ONEZONE"
+        "EXPRESS_ONEZONE",
+        "FSX_OPENZFS"
       ]
     },
     "StorageClassAnalysis":{
@@ -11682,7 +11711,7 @@
         },
         "ServerSideEncryption":{
           "shape":"ServerSideEncryption",
-          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3 (for example, <code>AES256</code>, <code>aws:kms</code>).</p>",
+          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3 or Amazon FSx.</p> <note> <p>When accessing data stored in Amazon FSx file systems using S3 access points, the only valid server side encryption option is <code>aws:fsx</code>.</p> </note>",
           "location":"header",
           "locationName":"x-amz-server-side-encryption"
         },
@@ -11849,7 +11878,7 @@
       "members":{
         "ServerSideEncryption":{
           "shape":"ServerSideEncryption",
-          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3 (for example, <code>AES256</code>, <code>aws:kms</code>).</p>",
+          "documentation":"<p>The server-side encryption algorithm used when you store this object in Amazon S3 or Amazon FSx.</p> <note> <p>When accessing data stored in Amazon FSx file systems using S3 access points, the only valid server side encryption option is <code>aws:fsx</code>.</p> </note>",
           "location":"header",
           "locationName":"x-amz-server-side-encryption"
         },
@@ -12297,7 +12326,7 @@
         },
         "ServerSideEncryption":{
           "shape":"ServerSideEncryption",
-          "documentation":"<p> The server-side encryption algorithm used when storing requested object in Amazon S3 (for example, AES256, <code>aws:kms</code>).</p>",
+          "documentation":"<p> The server-side encryption algorithm used when storing requested object in Amazon S3 or Amazon FSx.</p> <note> <p>When accessing data stored in Amazon FSx file systems using S3 access points, the only valid server side encryption option is <code>aws:fsx</code>.</p> </note>",
           "location":"header",
           "locationName":"x-amz-fwd-header-x-amz-server-side-encryption"
         },

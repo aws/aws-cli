@@ -238,6 +238,24 @@
       ],
       "documentation":"<p>Triggers a job to export a segment to a specified destination.</p>"
     },
+    "CreateUploadJob":{
+      "name":"CreateUploadJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/upload-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateUploadJobRequest"},
+      "output":{"shape":"CreateUploadJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates an Upload job to ingest data for segment imports. The metadata is created for the job with the provided field mapping and unique key. </p>"
+    },
     "DeleteCalculatedAttributeDefinition":{
       "name":"DeleteCalculatedAttributeDefinition",
       "http":{
@@ -754,6 +772,42 @@
       ],
       "documentation":"<p>Returns a set of profiles that belong to the same matching group using the <code>matchId</code> or <code>profileId</code>. You can also specify the type of matching that you want for finding similar profiles using either <code>RULE_BASED_MATCHING</code> or <code>ML_BASED_MATCHING</code>.</p>"
     },
+    "GetUploadJob":{
+      "name":"GetUploadJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/upload-jobs/{JobId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetUploadJobRequest"},
+      "output":{"shape":"GetUploadJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This API retrieves the details of a specific upload job. </p>"
+    },
+    "GetUploadJobPath":{
+      "name":"GetUploadJobPath",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/upload-jobs/{JobId}/path",
+        "responseCode":200
+      },
+      "input":{"shape":"GetUploadJobPathRequest"},
+      "output":{"shape":"GetUploadJobPathResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This API retrieves the pre-signed URL and client token for uploading the file associated with the upload job. </p>"
+    },
     "GetWorkflow":{
       "name":"GetWorkflow",
       "http":{
@@ -1076,6 +1130,24 @@
       ],
       "documentation":"<p>Displays the tags associated with an Amazon Connect Customer Profiles resource. In Connect Customer Profiles, domains, profile object types, and integrations can be tagged.</p>"
     },
+    "ListUploadJobs":{
+      "name":"ListUploadJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/upload-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListUploadJobsRequest"},
+      "output":{"shape":"ListUploadJobsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This API retrieves a list of upload jobs for the specified domain. </p>"
+    },
     "ListWorkflows":{
       "name":"ListWorkflows",
       "http":{
@@ -1176,6 +1248,42 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Searches for profiles within a specific domain using one or more predefined search keys (e.g., _fullName, _phone, _email, _account, etc.) and/or custom-defined search keys. A search key is a data type pair that consists of a <code>KeyName</code> and <code>Values</code> list.</p> <p>This operation supports searching for profiles with a minimum of 1 key-value(s) pair and up to 5 key-value(s) pairs using either <code>AND</code> or <code>OR</code> logic.</p>"
+    },
+    "StartUploadJob":{
+      "name":"StartUploadJob",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/domains/{DomainName}/upload-jobs/{JobId}",
+        "responseCode":200
+      },
+      "input":{"shape":"StartUploadJobRequest"},
+      "output":{"shape":"StartUploadJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This API starts the processing of an upload job to ingest profile data. </p>"
+    },
+    "StopUploadJob":{
+      "name":"StopUploadJob",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/domains/{DomainName}/upload-jobs/{JobId}/stop",
+        "responseCode":200
+      },
+      "input":{"shape":"StopUploadJobRequest"},
+      "output":{"shape":"StopUploadJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This API stops the processing of an upload job. </p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -2858,6 +2966,50 @@
         }
       }
     },
+    "CreateUploadJobRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "DisplayName",
+        "Fields",
+        "UniqueKey"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain. Domain should be exists for the upload job to be created. </p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "DisplayName":{
+          "shape":"string1To255",
+          "documentation":"<p>The unique name of the upload job. Could be a file name to identify the upload job.</p>"
+        },
+        "Fields":{
+          "shape":"FieldMap",
+          "documentation":"<p>The mapping between CSV Columns and Profile Object attributes. A map of the name and ObjectType field.</p>"
+        },
+        "UniqueKey":{
+          "shape":"text",
+          "documentation":"<p>The unique key columns for de-duping the profiles used to map data to the profile. </p>"
+        },
+        "DataExpiry":{
+          "shape":"expirationDaysInteger",
+          "documentation":"<p>The expiry duration for the profiles ingested with the job. If not provided, the system default of 2 weeks is used. </p>"
+        }
+      }
+    },
+    "CreateUploadJobResponse":{
+      "type":"structure",
+      "required":["JobId"],
+      "members":{
+        "JobId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier for the created upload job. </p>",
+          "locationName":"JobId"
+        }
+      }
+    },
     "CustomAttributes":{
       "type":"map",
       "key":{"shape":"typeName"},
@@ -3676,7 +3828,7 @@
     },
     "FieldMap":{
       "type":"map",
-      "key":{"shape":"name"},
+      "key":{"shape":"fieldName"},
       "value":{"shape":"ObjectTypeField"},
       "sensitive":true
     },
@@ -5000,6 +5152,124 @@
         }
       }
     },
+    "GetUploadJobPathRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "JobId"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain containing the upload job. </p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "JobId":{
+          "shape":"name",
+          "documentation":"<p>The unique identifier of the upload job to retrieve the upload path for. This is generated from the CreateUploadJob API. </p>",
+          "location":"uri",
+          "locationName":"JobId"
+        }
+      }
+    },
+    "GetUploadJobPathResponse":{
+      "type":"structure",
+      "required":["Url"],
+      "members":{
+        "Url":{
+          "shape":"stringTo2048",
+          "documentation":"<p>The pre-signed S3 URL for uploading the CSV file associated with the upload job. </p>",
+          "locationName":"Url"
+        },
+        "ClientToken":{
+          "shape":"text",
+          "documentation":"<p>The plaintext data key used to encrypt the upload file. </p> <p>To persist to the pre-signed url, use the client token and MD5 client token as header. The required headers are as follows: </p> <ul> <li> <p>x-amz-server-side-encryption-customer-key: Client Token </p> </li> <li> <p>x-amz-server-side-encryption-customer-key-MD5: MD5 Client Token </p> </li> <li> <p>x-amz-server-side-encryption-customer-algorithm: AES256 </p> </li> </ul>",
+          "locationName":"ClientToken"
+        },
+        "ValidUntil":{
+          "shape":"timestamp",
+          "documentation":"<p>The expiry timestamp for the pre-signed URL, after which the URL will no longer be valid. </p>",
+          "locationName":"ValidUntil"
+        }
+      }
+    },
+    "GetUploadJobRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "JobId"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain containing the upload job. </p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "JobId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of the upload job to retrieve. </p>",
+          "location":"uri",
+          "locationName":"JobId"
+        }
+      }
+    },
+    "GetUploadJobResponse":{
+      "type":"structure",
+      "members":{
+        "JobId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of the upload job. </p>",
+          "locationName":"JobId"
+        },
+        "DisplayName":{
+          "shape":"string1To255",
+          "documentation":"<p>The unique name of the upload job. Could be a file name to identify the upload job. </p>",
+          "locationName":"DisplayName"
+        },
+        "Status":{
+          "shape":"UploadJobStatus",
+          "documentation":"<p>The status describing the status for the upload job. The following are Valid Values: </p> <ul> <li> <p> <b>CREATED</b>: The upload job has been created, but has not started processing yet. </p> </li> <li> <p> <b>IN_PROGRESS</b>: The upload job is currently in progress, ingesting and processing the profile data. </p> </li> <li> <p> <b>PARTIALLY_SUCCEEDED</b>: The upload job has successfully completed the ingestion and processing of all profile data. </p> </li> <li> <p> <b>SUCCEEDED</b>: The upload job has successfully completed the ingestion and processing of all profile data. </p> </li> <li> <p> <b>FAILED</b>: The upload job has failed to complete. </p> </li> <li> <p> <b>STOPPED</b>: The upload job has been manually stopped or terminated before completion. </p> </li> </ul>",
+          "locationName":"Status"
+        },
+        "StatusReason":{
+          "shape":"StatusReason",
+          "documentation":"<p>The reason for the current status of the upload job. Possible reasons: </p> <ul> <li> <p> <b>VALIDATION_FAILURE</b>: The upload job has encountered an error or issue and was unable to complete the profile data ingestion. </p> </li> <li> <p> <b>INTERNAL_FAILURE</b>: Failure caused from service side </p> </li> </ul>",
+          "locationName":"StatusReason"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the upload job was created. </p>",
+          "locationName":"CreatedAt"
+        },
+        "CompletedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the upload job was completed. </p>",
+          "locationName":"CompletedAt"
+        },
+        "Fields":{
+          "shape":"FieldMap",
+          "documentation":"<p>The mapping between CSV Columns and Profile Object attributes for the upload job. </p>",
+          "locationName":"Fields"
+        },
+        "UniqueKey":{
+          "shape":"text",
+          "documentation":"<p>The unique key columns used for de-duping the keys in the upload job. </p>",
+          "locationName":"UniqueKey"
+        },
+        "ResultsSummary":{
+          "shape":"ResultsSummary",
+          "documentation":"<p>The summary of results for the upload job, including the number of updated, created, and failed records. </p>",
+          "locationName":"ResultsSummary"
+        },
+        "DataExpiry":{
+          "shape":"expirationDaysInteger",
+          "documentation":"<p>The expiry duration for the profiles ingested with the upload job. </p>",
+          "locationName":"DataExpiry"
+        }
+      }
+    },
     "GetWorkflowRequest":{
       "type":"structure",
       "required":[
@@ -6219,6 +6489,45 @@
         }
       }
     },
+    "ListUploadJobsRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain to list upload jobs for. </p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "MaxResults":{
+          "shape":"MaxSize500",
+          "documentation":"<p>The maximum number of upload jobs to return per page. </p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call to retrieve the next page of results. </p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListUploadJobsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token to use to retrieve the next page of results. </p>",
+          "locationName":"NextToken"
+        },
+        "Items":{
+          "shape":"UploadJobsList",
+          "documentation":"<p>The list of upload jobs for the specified domain. </p>",
+          "locationName":"Items"
+        }
+      }
+    },
     "ListWorkflowsItem":{
       "type":"structure",
       "required":[
@@ -7419,6 +7728,27 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "ResultsSummary":{
+      "type":"structure",
+      "members":{
+        "UpdatedRecords":{
+          "shape":"optionalLong",
+          "documentation":"<p>The number of records that were updated during the upload job. </p>",
+          "locationName":"UpdatedRecords"
+        },
+        "CreatedRecords":{
+          "shape":"optionalLong",
+          "documentation":"<p>The number of records that were newly created during the upload job. </p>",
+          "locationName":"CreatedRecords"
+        },
+        "FailedRecords":{
+          "shape":"optionalLong",
+          "documentation":"<p>The number of records that failed to be processed during the upload job. </p>",
+          "locationName":"FailedRecords"
+        }
+      },
+      "documentation":"<p>The summary of results for an upload job, including the number of updated, created, and failed records. </p>"
+    },
     "RoleArn":{
       "type":"string",
       "max":512,
@@ -7949,6 +8279,31 @@
       "member":{"shape":"StandardIdentifier"}
     },
     "Start":{"type":"integer"},
+    "StartUploadJobRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "JobId"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain containing the upload job to start. </p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "JobId":{
+          "shape":"name",
+          "documentation":"<p>The unique identifier of the upload job to start. </p>",
+          "location":"uri",
+          "locationName":"JobId"
+        }
+      }
+    },
+    "StartUploadJobResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "Statistic":{
       "type":"string",
       "enum":[
@@ -7976,6 +8331,38 @@
       ]
     },
     "StatusCode":{"type":"integer"},
+    "StatusReason":{
+      "type":"string",
+      "enum":[
+        "VALIDATION_FAILURE",
+        "INTERNAL_FAILURE"
+      ]
+    },
+    "StopUploadJobRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "JobId"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain containing the upload job to stop. </p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "JobId":{
+          "shape":"name",
+          "documentation":"<p>The unique identifier of the upload job to stop. </p>",
+          "location":"uri",
+          "locationName":"JobId"
+        }
+      }
+    },
+    "StopUploadJobResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "String":{"type":"string"},
     "StringDimensionType":{
       "type":"string",
@@ -8700,6 +9087,62 @@
           "documentation":"<p>The unique identifier of a customer profile.</p>"
         }
       }
+    },
+    "UploadJobItem":{
+      "type":"structure",
+      "members":{
+        "JobId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of the upload job. </p>",
+          "locationName":"JobId"
+        },
+        "DisplayName":{
+          "shape":"string1To255",
+          "documentation":"<p>The name of the upload job. </p>",
+          "locationName":"DisplayName"
+        },
+        "Status":{
+          "shape":"UploadJobStatus",
+          "documentation":"<p>The current status of the upload job. </p>",
+          "locationName":"Status"
+        },
+        "StatusReason":{
+          "shape":"StatusReason",
+          "documentation":"<p>The reason for the current status of the upload job. </p>",
+          "locationName":"StatusReason"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the upload job was created. </p>",
+          "locationName":"CreatedAt"
+        },
+        "CompletedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the upload job was completed. </p>",
+          "locationName":"CompletedAt"
+        },
+        "DataExpiry":{
+          "shape":"expirationDaysInteger",
+          "documentation":"<p>The expiry duration for the profiles ingested with the upload job. </p>",
+          "locationName":"DataExpiry"
+        }
+      },
+      "documentation":"<p>The summary information for an individual upload job. </p>"
+    },
+    "UploadJobStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "IN_PROGRESS",
+        "PARTIALLY_SUCCEEDED",
+        "SUCCEEDED",
+        "FAILED",
+        "STOPPED"
+      ]
+    },
+    "UploadJobsList":{
+      "type":"list",
+      "member":{"shape":"UploadJobItem"}
     },
     "Value":{
       "type":"integer",

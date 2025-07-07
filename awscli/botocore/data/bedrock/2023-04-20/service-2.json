@@ -2,7 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2023-04-20",
-    "auth":["aws.auth#sigv4"],
+    "auth":[
+      "aws.auth#sigv4",
+      "smithy.api#httpBearerAuth"
+    ],
     "endpointPrefix":"bedrock",
     "protocol":"rest-json",
     "protocols":["rest-json"],
@@ -73,6 +76,25 @@
       ],
       "documentation":"<p>Creates an evaluation job.</p>",
       "idempotent":true
+    },
+    "CreateFoundationModelAgreement":{
+      "name":"CreateFoundationModelAgreement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/create-foundation-model-agreement",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateFoundationModelAgreementRequest"},
+      "output":{"shape":"CreateFoundationModelAgreementResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Request a model access agreement for the specified model.</p>"
     },
     "CreateGuardrail":{
       "name":"CreateGuardrail",
@@ -303,6 +325,25 @@
       "documentation":"<p>Deletes a custom model that you created earlier. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "idempotent":true
     },
+    "DeleteFoundationModelAgreement":{
+      "name":"DeleteFoundationModelAgreement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/delete-foundation-model-agreement",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteFoundationModelAgreementRequest"},
+      "output":{"shape":"DeleteFoundationModelAgreementResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Delete the model access agreement for the specified model.</p>"
+    },
     "DeleteGuardrail":{
       "name":"DeleteGuardrail",
       "http":{
@@ -511,6 +552,24 @@
       ],
       "documentation":"<p>Get details about a Amazon Bedrock foundation model.</p>"
     },
+    "GetFoundationModelAvailability":{
+      "name":"GetFoundationModelAvailability",
+      "http":{
+        "method":"GET",
+        "requestUri":"/foundation-model-availability/{modelId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFoundationModelAvailabilityRequest"},
+      "output":{"shape":"GetFoundationModelAvailabilityResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get information about the Foundation model availability.</p>"
+    },
     "GetGuardrail":{
       "name":"GetGuardrail",
       "http":{
@@ -707,6 +766,23 @@
       ],
       "documentation":"<p>Returns details for a Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
+    "GetUseCaseForModelAccess":{
+      "name":"GetUseCaseForModelAccess",
+      "http":{
+        "method":"GET",
+        "requestUri":"/use-case-for-model-access",
+        "responseCode":200
+      },
+      "input":{"shape":"GetUseCaseForModelAccessRequest"},
+      "output":{"shape":"GetUseCaseForModelAccessResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get usecase for model access.</p>"
+    },
     "ListCustomModels":{
       "name":"ListCustomModels",
       "http":{
@@ -740,6 +816,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists all existing evaluation jobs.</p>"
+    },
+    "ListFoundationModelAgreementOffers":{
+      "name":"ListFoundationModelAgreementOffers",
+      "http":{
+        "method":"GET",
+        "requestUri":"/list-foundation-model-agreement-offers/{modelId}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListFoundationModelAgreementOffersRequest"},
+      "output":{"shape":"ListFoundationModelAgreementOffersResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get the offers associated with the specified model.</p>"
     },
     "ListFoundationModels":{
       "name":"ListFoundationModels",
@@ -967,6 +1061,23 @@
       "documentation":"<p>Set the configuration values for model invocation logging.</p>",
       "idempotent":true
     },
+    "PutUseCaseForModelAccess":{
+      "name":"PutUseCaseForModelAccess",
+      "http":{
+        "method":"POST",
+        "requestUri":"/use-case-for-model-access",
+        "responseCode":201
+      },
+      "input":{"shape":"PutUseCaseForModelAccessRequest"},
+      "output":{"shape":"PutUseCaseForModelAccessResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Put usecase for model access.</p>"
+    },
     "RegisterMarketplaceModelEndpoint":{
       "name":"RegisterMarketplaceModelEndpoint",
       "http":{
@@ -1160,6 +1271,11 @@
       "type":"string",
       "pattern":"[0-9]{12}"
     },
+    "AcknowledgementFormDataBody":{
+      "type":"blob",
+      "max":16384,
+      "min":10
+    },
     "AdditionalModelRequestFields":{
       "type":"map",
       "key":{"shape":"AdditionalModelRequestFieldsKey"},
@@ -1176,6 +1292,30 @@
       },
       "document":true
     },
+    "AgreementAvailability":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"AgreementStatus",
+          "documentation":"<p>Status of the agreement.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>Error message.</p>"
+        }
+      },
+      "documentation":"<p>Information about the agreement availability</p>"
+    },
+    "AgreementStatus":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "PENDING",
+        "NOT_AVAILABLE",
+        "ERROR"
+      ]
+    },
     "ApplicationType":{
       "type":"string",
       "enum":[
@@ -1187,6 +1327,22 @@
       "type":"string",
       "max":2048,
       "min":0
+    },
+    "AttributeType":{
+      "type":"string",
+      "enum":[
+        "STRING",
+        "NUMBER",
+        "BOOLEAN",
+        "STRING_LIST"
+      ]
+    },
+    "AuthorizationStatus":{
+      "type":"string",
+      "enum":[
+        "AUTHORIZED",
+        "NOT_AUTHORIZED"
+      ]
     },
     "AutomatedEvaluationConfig":{
       "type":"structure",
@@ -1353,6 +1509,12 @@
       "max":140,
       "min":0,
       "pattern":"[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12}|)"
+    },
+    "BedrockRerankingModelArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/(.*))?"
     },
     "Boolean":{
       "type":"boolean",
@@ -1547,6 +1709,33 @@
         "jobArn":{
           "shape":"EvaluationJobArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the evaluation job.</p>"
+        }
+      }
+    },
+    "CreateFoundationModelAgreementRequest":{
+      "type":"structure",
+      "required":[
+        "offerToken",
+        "modelId"
+      ],
+      "members":{
+        "offerToken":{
+          "shape":"OfferToken",
+          "documentation":"<p>An offer token encapsulates the information for an offer.</p>"
+        },
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>Model Id of the model for the access request.</p>"
+        }
+      }
+    },
+    "CreateFoundationModelAgreementResponse":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>Model Id of the model for the access request.</p>"
         }
       }
     },
@@ -2291,6 +2480,21 @@
       "members":{
       }
     },
+    "DeleteFoundationModelAgreementRequest":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>Model Id of the model access to delete.</p>"
+        }
+      }
+    },
+    "DeleteFoundationModelAgreementResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteGuardrailRequest":{
       "type":"structure",
       "required":["guardrailIdentifier"],
@@ -2426,6 +2630,28 @@
       "members":{
       }
     },
+    "DimensionalPriceRate":{
+      "type":"structure",
+      "members":{
+        "dimension":{
+          "shape":"String",
+          "documentation":"<p>Dimension for the price rate.</p>"
+        },
+        "price":{
+          "shape":"String",
+          "documentation":"<p>Single-dimensional rate information.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>Description of the price rate.</p>"
+        },
+        "unit":{
+          "shape":"String",
+          "documentation":"<p>Unit associated with the price.</p>"
+        }
+      },
+      "documentation":"<p>Dimensional price rate.</p>"
+    },
     "DistillationConfig":{
       "type":"structure",
       "required":["teacherModelConfig"],
@@ -2452,6 +2678,13 @@
       "type":"string",
       "max":30,
       "min":1
+    },
+    "EntitlementAvailability":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "NOT_AVAILABLE"
+      ]
     },
     "ErrorMessage":{
       "type":"string",
@@ -3013,6 +3246,29 @@
       },
       "documentation":"<p>The configuration of the external source wrapper object in the <code>retrieveAndGenerate</code> function.</p>"
     },
+    "FieldForReranking":{
+      "type":"structure",
+      "required":["fieldName"],
+      "members":{
+        "fieldName":{
+          "shape":"FieldForRerankingFieldNameString",
+          "documentation":"<p>The name of the metadata field to be used during the reranking process.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a field to be used during the reranking process in a Knowledge Base vector search. This structure identifies metadata fields that should be considered when reordering search results to improve relevance.</p>"
+    },
+    "FieldForRerankingFieldNameString":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
+    "FieldsForReranking":{
+      "type":"list",
+      "member":{"shape":"FieldForReranking"},
+      "max":100,
+      "min":1,
+      "sensitive":true
+    },
     "FilterAttribute":{
       "type":"structure",
       "required":[
@@ -3375,6 +3631,50 @@
         "failureMessages":{
           "shape":"ErrorMessages",
           "documentation":"<p>A list of strings that specify why the evaluation job failed to create.</p>"
+        }
+      }
+    },
+    "GetFoundationModelAvailabilityRequest":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>The model Id of the foundation model.</p>",
+          "location":"uri",
+          "locationName":"modelId"
+        }
+      }
+    },
+    "GetFoundationModelAvailabilityResponse":{
+      "type":"structure",
+      "required":[
+        "modelId",
+        "agreementAvailability",
+        "authorizationStatus",
+        "entitlementAvailability",
+        "regionAvailability"
+      ],
+      "members":{
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>The model Id of the foundation model.</p>"
+        },
+        "agreementAvailability":{
+          "shape":"AgreementAvailability",
+          "documentation":"<p>Agreement availability. </p>"
+        },
+        "authorizationStatus":{
+          "shape":"AuthorizationStatus",
+          "documentation":"<p>Authorization status.</p>"
+        },
+        "entitlementAvailability":{
+          "shape":"EntitlementAvailability",
+          "documentation":"<p>Entitlement availability. </p>"
+        },
+        "regionAvailability":{
+          "shape":"RegionAvailability",
+          "documentation":"<p>Region availability. </p>"
         }
       }
     },
@@ -4149,6 +4449,21 @@
         "commitmentExpirationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp for when the commitment term for the Provisioned Throughput expires.</p>"
+        }
+      }
+    },
+    "GetUseCaseForModelAccessRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetUseCaseForModelAccessResponse":{
+      "type":"structure",
+      "required":["formData"],
+      "members":{
+        "formData":{
+          "shape":"AcknowledgementFormDataBody",
+          "documentation":"<p>Get customer profile Response.</p>"
         }
       }
     },
@@ -5413,6 +5728,24 @@
       "min":1,
       "sensitive":true
     },
+    "ImplicitFilterConfiguration":{
+      "type":"structure",
+      "required":[
+        "metadataAttributes",
+        "modelArn"
+      ],
+      "members":{
+        "metadataAttributes":{
+          "shape":"MetadataAttributeSchemaList",
+          "documentation":"<p>A list of metadata attribute schemas that define the structure and properties of metadata fields used for implicit filtering. Each attribute defines a key, type, and optional description.</p>"
+        },
+        "modelArn":{
+          "shape":"BedrockModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the foundation model used for implicit filtering. This model processes the query to extract relevant filtering criteria.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for implicit filtering in Knowledge Base vector searches. Implicit filtering allows you to automatically filter search results based on metadata attributes without requiring explicit filter expressions in each query.</p>"
+    },
     "ImportedModelArn":{
       "type":"string",
       "max":1011,
@@ -5784,6 +6117,14 @@
         "filter":{
           "shape":"RetrievalFilter",
           "documentation":"<p>Specifies the filters to use on the metadata fields in the knowledge base data sources before returning results.</p>"
+        },
+        "implicitFilterConfiguration":{
+          "shape":"ImplicitFilterConfiguration",
+          "documentation":"<p>Configuration for implicit filtering in Knowledge Base vector searches. This allows the system to automatically apply filters based on the query context without requiring explicit filter expressions.</p>"
+        },
+        "rerankingConfiguration":{
+          "shape":"VectorSearchRerankingConfiguration",
+          "documentation":"<p>Configuration for reranking search results in Knowledge Base vector searches. Reranking improves search relevance by reordering initial vector search results using more sophisticated relevance models.</p>"
         }
       },
       "documentation":"<p>The configuration details for returning the results from the knowledge base vector search.</p>"
@@ -5793,6 +6134,16 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "LegalTerm":{
+      "type":"structure",
+      "members":{
+        "url":{
+          "shape":"String",
+          "documentation":"<p>URL to the legal term document.</p>"
+        }
+      },
+      "documentation":"<p>The legal term of the agreement.</p>"
     },
     "ListCustomModelsRequest":{
       "type":"structure",
@@ -5947,6 +6298,41 @@
         "jobSummaries":{
           "shape":"EvaluationSummaries",
           "documentation":"<p>A list of summaries of the evaluation jobs.</p>"
+        }
+      }
+    },
+    "ListFoundationModelAgreementOffersRequest":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>Model Id of the foundation model.</p>",
+          "location":"uri",
+          "locationName":"modelId"
+        },
+        "offerType":{
+          "shape":"OfferType",
+          "documentation":"<p>Type of offer associated with the model.</p>",
+          "location":"querystring",
+          "locationName":"offerType"
+        }
+      }
+    },
+    "ListFoundationModelAgreementOffersResponse":{
+      "type":"structure",
+      "required":[
+        "modelId",
+        "offers"
+      ],
+      "members":{
+        "modelId":{
+          "shape":"BedrockModelId",
+          "documentation":"<p>Model Id of the foundation model.</p>"
+        },
+        "offers":{
+          "shape":"Offers",
+          "documentation":"<p>List of the offers associated with the specified model.</p>"
         }
       }
     },
@@ -6705,6 +7091,63 @@
       "min":0,
       "sensitive":true
     },
+    "MetadataAttributeSchema":{
+      "type":"structure",
+      "required":[
+        "key",
+        "type",
+        "description"
+      ],
+      "members":{
+        "key":{
+          "shape":"MetadataAttributeSchemaKeyString",
+          "documentation":"<p>The unique identifier for the metadata attribute. This key is used to reference the attribute in filter expressions and reranking configurations.</p>"
+        },
+        "type":{
+          "shape":"AttributeType",
+          "documentation":"<p>The data type of the metadata attribute. The type determines how the attribute can be used in filter expressions and reranking.</p>"
+        },
+        "description":{
+          "shape":"MetadataAttributeSchemaDescriptionString",
+          "documentation":"<p>An optional description of the metadata attribute that provides additional context about its purpose and usage.</p>"
+        }
+      },
+      "documentation":"<p>Defines the schema for a metadata attribute used in Knowledge Base vector searches. Metadata attributes provide additional context for documents and can be used for filtering and reranking search results.</p>",
+      "sensitive":true
+    },
+    "MetadataAttributeSchemaDescriptionString":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[\\s\\S]+"
+    },
+    "MetadataAttributeSchemaKeyString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\s\\S]+"
+    },
+    "MetadataAttributeSchemaList":{
+      "type":"list",
+      "member":{"shape":"MetadataAttributeSchema"},
+      "max":25,
+      "min":1
+    },
+    "MetadataConfigurationForReranking":{
+      "type":"structure",
+      "required":["selectionMode"],
+      "members":{
+        "selectionMode":{
+          "shape":"RerankingMetadataSelectionMode",
+          "documentation":"<p>The mode for selecting which metadata fields to include in the reranking process. Valid values are ALL (use all available metadata fields) or SELECTIVE (use only specified fields).</p>"
+        },
+        "selectiveModeConfiguration":{
+          "shape":"RerankingMetadataSelectiveModeConfiguration",
+          "documentation":"<p>Configuration for selective mode, which allows you to explicitly include or exclude specific metadata fields during reranking. This is only used when selectionMode is set to SELECTIVE.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for how metadata should be used during the reranking process in Knowledge Base vector searches. This determines which metadata fields are included or excluded when reordering search results.</p>"
+    },
     "MetricFloat":{
       "type":"float",
       "box":true
@@ -7210,6 +7653,41 @@
       "type":"string",
       "pattern":"[\\s\\S]*"
     },
+    "Offer":{
+      "type":"structure",
+      "required":[
+        "offerToken",
+        "termDetails"
+      ],
+      "members":{
+        "offerId":{
+          "shape":"OfferId",
+          "documentation":"<p>Offer Id for a model offer.</p>"
+        },
+        "offerToken":{
+          "shape":"OfferToken",
+          "documentation":"<p>Offer token.</p>"
+        },
+        "termDetails":{
+          "shape":"TermDetails",
+          "documentation":"<p>Details about the terms of the offer.</p>"
+        }
+      },
+      "documentation":"<p>An offer dictates usage terms for the model.</p>"
+    },
+    "OfferId":{"type":"string"},
+    "OfferToken":{"type":"string"},
+    "OfferType":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "PUBLIC"
+      ]
+    },
+    "Offers":{
+      "type":"list",
+      "member":{"shape":"Offer"}
+    },
     "OrchestrationConfiguration":{
       "type":"structure",
       "required":["queryTransformationConfiguration"],
@@ -7259,6 +7737,17 @@
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "PricingTerm":{
+      "type":"structure",
+      "required":["rateCard"],
+      "members":{
+        "rateCard":{
+          "shape":"RateCard",
+          "documentation":"<p>Describes a usage price for each dimension.</p>"
+        }
+      },
+      "documentation":"<p>Describes the usage-based pricing term.</p>"
     },
     "PromptRouterArn":{
       "type":"string",
@@ -7492,6 +7981,21 @@
       "members":{
       }
     },
+    "PutUseCaseForModelAccessRequest":{
+      "type":"structure",
+      "required":["formData"],
+      "members":{
+        "formData":{
+          "shape":"AcknowledgementFormDataBody",
+          "documentation":"<p>Put customer profile Request.</p>"
+        }
+      }
+    },
+    "PutUseCaseForModelAccessResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "QueryTransformationConfiguration":{
       "type":"structure",
       "required":["type"],
@@ -7538,6 +8042,10 @@
       "member":{"shape":"RAGConfig"},
       "max":1,
       "min":1
+    },
+    "RateCard":{
+      "type":"list",
+      "member":{"shape":"DimensionalPriceRate"}
     },
     "RatingScale":{
       "type":"list",
@@ -7587,6 +8095,13 @@
       "type":"string",
       "max":100,
       "min":1
+    },
+    "RegionAvailability":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "NOT_AVAILABLE"
+      ]
     },
     "RegisterMarketplaceModelEndpointRequest":{
       "type":"structure",
@@ -7679,6 +8194,28 @@
       "max":256,
       "min":0,
       "pattern":"[a-zA-Z0-9\\s._:/=+$@-]{0,256}"
+    },
+    "RerankingMetadataSelectionMode":{
+      "type":"string",
+      "enum":[
+        "SELECTIVE",
+        "ALL"
+      ]
+    },
+    "RerankingMetadataSelectiveModeConfiguration":{
+      "type":"structure",
+      "members":{
+        "fieldsToInclude":{
+          "shape":"FieldsForReranking",
+          "documentation":"<p>A list of metadata field names to explicitly include in the reranking process. Only these fields will be considered when reordering search results. This parameter cannot be used together with fieldsToExclude.</p>"
+        },
+        "fieldsToExclude":{
+          "shape":"FieldsForReranking",
+          "documentation":"<p>A list of metadata field names to explicitly exclude from the reranking process. All metadata fields except these will be considered when reordering search results. This parameter cannot be used together with fieldsToInclude.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for selectively including or excluding metadata fields during the reranking process. This allows you to control which metadata attributes are considered when reordering search results.</p>",
+      "union":true
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -8058,6 +8595,16 @@
       "max":16,
       "min":1
     },
+    "SupportTerm":{
+      "type":"structure",
+      "members":{
+        "refundPolicyDescription":{
+          "shape":"String",
+          "documentation":"<p>Describes the refund policy.</p>"
+        }
+      },
+      "documentation":"<p>Describes a support term.</p>"
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -8152,6 +8699,30 @@
       "box":true,
       "max":1,
       "min":0
+    },
+    "TermDetails":{
+      "type":"structure",
+      "required":[
+        "usageBasedPricingTerm",
+        "legalTerm",
+        "supportTerm"
+      ],
+      "members":{
+        "usageBasedPricingTerm":{"shape":"PricingTerm"},
+        "legalTerm":{
+          "shape":"LegalTerm",
+          "documentation":"<p>Describes the legal terms.</p>"
+        },
+        "supportTerm":{
+          "shape":"SupportTerm",
+          "documentation":"<p>Describes the support terms.</p>"
+        },
+        "validityTerm":{
+          "shape":"ValidityTerm",
+          "documentation":"<p>Describes the validity terms.</p>"
+        }
+      },
+      "documentation":"<p>Describes the usage terms of an offer.</p>"
     },
     "TextInferenceConfig":{
       "type":"structure",
@@ -8502,6 +9073,75 @@
       "member":{"shape":"Validator"},
       "max":10,
       "min":0
+    },
+    "ValidityTerm":{
+      "type":"structure",
+      "members":{
+        "agreementDuration":{
+          "shape":"String",
+          "documentation":"<p>Describes the agreement duration.</p>"
+        }
+      },
+      "documentation":"<p>Describes the validity terms.</p>"
+    },
+    "VectorSearchBedrockRerankingConfiguration":{
+      "type":"structure",
+      "required":["modelConfiguration"],
+      "members":{
+        "modelConfiguration":{
+          "shape":"VectorSearchBedrockRerankingModelConfiguration",
+          "documentation":"<p>Configuration for the Amazon Bedrock foundation model used for reranking. This includes the model ARN and any additional request fields required by the model.</p>"
+        },
+        "numberOfRerankedResults":{
+          "shape":"VectorSearchBedrockRerankingConfigurationNumberOfRerankedResultsInteger",
+          "documentation":"<p>The maximum number of results to rerank. This limits how many of the initial vector search results will be processed by the reranking model. A smaller number improves performance but may exclude potentially relevant results.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"MetadataConfigurationForReranking",
+          "documentation":"<p>Configuration for how document metadata should be used during the reranking process. This determines which metadata fields are included when reordering search results.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for using Amazon Bedrock foundation models to rerank Knowledge Base vector search results. This enables more sophisticated relevance ranking using large language models.</p>"
+    },
+    "VectorSearchBedrockRerankingConfigurationNumberOfRerankedResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "VectorSearchBedrockRerankingModelConfiguration":{
+      "type":"structure",
+      "required":["modelArn"],
+      "members":{
+        "modelArn":{
+          "shape":"BedrockRerankingModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the foundation model to use for reranking. This model processes the query and search results to determine a more relevant ordering.</p>"
+        },
+        "additionalModelRequestFields":{
+          "shape":"AdditionalModelRequestFields",
+          "documentation":"<p>A list of additional fields to include in the model request during reranking. These fields provide extra context or configuration options specific to the selected foundation model.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for the Amazon Bedrock foundation model used for reranking vector search results. This specifies which model to use and any additional parameters required by the model.</p>"
+    },
+    "VectorSearchRerankingConfiguration":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"VectorSearchRerankingConfigurationType",
+          "documentation":"<p>The type of reranking to apply to vector search results. Currently, the only supported value is BEDROCK, which uses Amazon Bedrock foundation models for reranking.</p>"
+        },
+        "bedrockRerankingConfiguration":{
+          "shape":"VectorSearchBedrockRerankingConfiguration",
+          "documentation":"<p>Configuration for using Amazon Bedrock foundation models to rerank search results. This is required when the reranking type is set to BEDROCK.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for reranking vector search results to improve relevance. Reranking applies additional relevance models to reorder the initial vector search results based on more sophisticated criteria.</p>"
+    },
+    "VectorSearchRerankingConfigurationType":{
+      "type":"string",
+      "enum":["BEDROCK_RERANKING_MODEL"]
     },
     "VpcConfig":{
       "type":"structure",

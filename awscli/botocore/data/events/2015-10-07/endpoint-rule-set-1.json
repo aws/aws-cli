@@ -37,6 +37,79 @@
         {
             "conditions": [
                 {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                },
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "fn": "getAttr",
+                            "argv": [
+                                {
+                                    "ref": "PartitionResult"
+                                },
+                                "name"
+                            ]
+                        },
+                        "aws-us-gov"
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        true
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseDualStack"
+                        },
+                        true
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://events.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                "properties": {},
+                "headers": {}
+            },
+            "type": "endpoint"
+        },
+        {
+            "conditions": [
+                {
                     "fn": "isSet",
                     "argv": [
                         {

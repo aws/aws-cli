@@ -25,7 +25,7 @@ from build_system.utils import (
     parse_requirements,
 )
 
-from tests.backends.build_system.markers import if_windows, skip_if_windows
+from tests.markers import if_windows, skip_if_windows
 
 
 @pytest.fixture

@@ -20,8 +20,7 @@ Output::
         ]
     }
 
-For more information about using asymmetric KMS keys in AWS KMS, see `Using Symmetric and Asymmetric Keys <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service API Reference*.
-
+For more information about using asymmetric KMS keys in AWS KMS, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service Developer Guide*.
 **Example 2: To convert a public key to DER format (Linux and macOS)**
 
 The following ``get-public-key`` example downloads the public key of an asymmetric KMS key and saves it in a DER file.
@@ -37,4 +36,4 @@ Before running this command, replace the example key ID with a valid key ID from
 
 This command produces no output.
 
-For more information about using asymmetric KMS keys in AWS KMS, see `Using Symmetric and Asymmetric Keys <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service API Reference*.
+For more information about using asymmetric KMS keys in AWS KMS, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service Developer Guide*.

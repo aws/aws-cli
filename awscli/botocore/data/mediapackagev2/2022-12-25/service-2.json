@@ -765,7 +765,8 @@
       "type":"string",
       "enum":[
         "TS",
-        "CMAF"
+        "CMAF",
+        "ISM"
       ]
     },
     "CreateChannelGroupRequest":{
@@ -1273,6 +1274,35 @@
       "type":"list",
       "member":{"shape":"CreateLowLatencyHlsManifestConfiguration"}
     },
+    "CreateMssManifestConfiguration":{
+      "type":"structure",
+      "required":["ManifestName"],
+      "members":{
+        "ManifestName":{
+          "shape":"ManifestName",
+          "documentation":"<p>A short string that's appended to the endpoint URL to create a unique path to this MSS manifest. The manifest name must be unique within the origin endpoint and can contain letters, numbers, hyphens, and underscores.</p>"
+        },
+        "ManifestWindowSeconds":{
+          "shape":"CreateMssManifestConfigurationManifestWindowSecondsInteger",
+          "documentation":"<p>The total duration (in seconds) of the manifest window. This determines how much content is available in the manifest at any given time. The manifest window slides forward as new segments become available, maintaining a consistent duration of content. The minimum value is 30 seconds.</p>"
+        },
+        "FilterConfiguration":{"shape":"FilterConfiguration"},
+        "ManifestLayout":{
+          "shape":"MssManifestLayout",
+          "documentation":"<p>Determines the layout format of the MSS manifest. This controls how the manifest is structured and presented to client players, affecting compatibility with different MSS-compatible devices and applications.</p>"
+        }
+      },
+      "documentation":"<p>Configuration parameters for creating a Microsoft Smooth Streaming (MSS) manifest. MSS is a streaming media format developed by Microsoft that delivers adaptive bitrate streaming content to compatible players and devices.</p>"
+    },
+    "CreateMssManifestConfigurationManifestWindowSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "min":30
+    },
+    "CreateMssManifests":{
+      "type":"list",
+      "member":{"shape":"CreateMssManifestConfiguration"}
+    },
     "CreateOriginEndpointRequest":{
       "type":"structure",
       "required":[
@@ -1332,6 +1362,10 @@
         "DashManifests":{
           "shape":"CreateDashManifests",
           "documentation":"<p>A DASH manifest configuration.</p>"
+        },
+        "MssManifests":{
+          "shape":"CreateMssManifests",
+          "documentation":"<p>A list of Microsoft Smooth Streaming (MSS) manifest configurations for the origin endpoint. You can configure multiple MSS manifests to provide different streaming experiences or to support different client requirements.</p>"
         },
         "ForceEndpointErrorConfiguration":{
           "shape":"ForceEndpointErrorConfiguration",
@@ -1413,6 +1447,10 @@
         "DashManifests":{
           "shape":"GetDashManifests",
           "documentation":"<p>A DASH manifest configuration.</p>"
+        },
+        "MssManifests":{
+          "shape":"GetMssManifests",
+          "documentation":"<p>The Microsoft Smooth Streaming (MSS) manifest configurations that were created for this origin endpoint.</p>"
         },
         "ForceEndpointErrorConfiguration":{
           "shape":"ForceEndpointErrorConfiguration",
@@ -1886,6 +1924,10 @@
           "shape":"EncryptionKeyRotationIntervalSecondsInteger",
           "documentation":"<p>The frequency (in seconds) of key changes for live workflows, in which content is streamed real time. The service retrieves content keys before the live content begins streaming, and then retrieves them as needed over the lifetime of the workflow. By default, key rotation is set to 300 seconds (5 minutes), the minimum rotation interval, which is equivalent to setting it to 300. If you don't enter an interval, content keys aren't rotated.</p> <p>The following example setting causes the service to rotate keys every thirty minutes: <code>1800</code> </p>"
         },
+        "CmafExcludeSegmentDrmMetadata":{
+          "shape":"Boolean",
+          "documentation":"<p>Excludes SEIG and SGPD boxes from segment metadata in CMAF containers.</p> <p>When set to <code>true</code>, MediaPackage omits these DRM metadata boxes from CMAF segments, which can improve compatibility with certain devices and players that don't support these boxes.</p> <p>Important considerations:</p> <ul> <li> <p>This setting only affects CMAF container formats</p> </li> <li> <p>Key rotation can still be handled through media playlist signaling</p> </li> <li> <p>PSSH and TENC boxes remain unaffected</p> </li> <li> <p>Default behavior is preserved when this setting is disabled</p> </li> </ul> <p>Valid values: <code>true</code> | <code>false</code> </p> <p>Default: <code>false</code> </p>"
+        },
         "SpekeKeyProvider":{
           "shape":"SpekeKeyProvider",
           "documentation":"<p>The parameters for the SPEKE key provider.</p>"
@@ -1933,6 +1975,10 @@
         "CmafEncryptionMethod":{
           "shape":"CmafEncryptionMethod",
           "documentation":"<p>The encryption method to use.</p>"
+        },
+        "IsmEncryptionMethod":{
+          "shape":"IsmEncryptionMethod",
+          "documentation":"<p>The encryption method used for Microsoft Smooth Streaming (MSS) content. This specifies how the MSS segments are encrypted to protect the content during delivery to client players.</p>"
         }
       },
       "documentation":"<p>The encryption type.</p>"
@@ -2469,6 +2515,37 @@
       "type":"list",
       "member":{"shape":"GetLowLatencyHlsManifestConfiguration"}
     },
+    "GetMssManifestConfiguration":{
+      "type":"structure",
+      "required":[
+        "ManifestName",
+        "Url"
+      ],
+      "members":{
+        "ManifestName":{
+          "shape":"ManifestName",
+          "documentation":"<p>The name of the MSS manifest. This name is appended to the origin endpoint URL to create the unique path for accessing this specific MSS manifest.</p>"
+        },
+        "Url":{
+          "shape":"String",
+          "documentation":"<p>The complete URL for accessing the MSS manifest. Client players use this URL to retrieve the manifest and begin streaming the Microsoft Smooth Streaming content.</p>"
+        },
+        "FilterConfiguration":{"shape":"FilterConfiguration"},
+        "ManifestWindowSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The duration (in seconds) of the manifest window. This represents the total amount of content available in the manifest at any given time.</p>"
+        },
+        "ManifestLayout":{
+          "shape":"MssManifestLayout",
+          "documentation":"<p>The layout format of the MSS manifest, which determines how the manifest is structured for client compatibility.</p>"
+        }
+      },
+      "documentation":"<p>Configuration details for a Microsoft Smooth Streaming (MSS) manifest associated with an origin endpoint. This includes all the settings and properties that define how the MSS content is packaged and delivered.</p>"
+    },
+    "GetMssManifests":{
+      "type":"list",
+      "member":{"shape":"GetMssManifestConfiguration"}
+    },
     "GetOriginEndpointPolicyRequest":{
       "type":"structure",
       "required":[
@@ -2617,6 +2694,10 @@
         "DashManifests":{
           "shape":"GetDashManifests",
           "documentation":"<p>A DASH manifest configuration.</p>"
+        },
+        "MssManifests":{
+          "shape":"GetMssManifests",
+          "documentation":"<p>The Microsoft Smooth Streaming (MSS) manifest configurations associated with this origin endpoint.</p>"
         },
         "ForceEndpointErrorConfiguration":{
           "shape":"ForceEndpointErrorConfiguration",
@@ -2858,6 +2939,10 @@
       "exception":true,
       "fault":true
     },
+    "IsmEncryptionMethod":{
+      "type":"string",
+      "enum":["CENC"]
+    },
     "ListChannelGroupsRequest":{
       "type":"structure",
       "members":{
@@ -3065,6 +3150,25 @@
       "type":"list",
       "member":{"shape":"ListLowLatencyHlsManifestConfiguration"}
     },
+    "ListMssManifestConfiguration":{
+      "type":"structure",
+      "required":["ManifestName"],
+      "members":{
+        "ManifestName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the MSS manifest configuration.</p>"
+        },
+        "Url":{
+          "shape":"String",
+          "documentation":"<p>The URL for accessing the MSS manifest.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a Microsoft Smooth Streaming (MSS) manifest configuration. This provides key details about the MSS manifest without including all configuration parameters.</p>"
+    },
+    "ListMssManifests":{
+      "type":"list",
+      "member":{"shape":"ListMssManifestConfiguration"}
+    },
     "ListOriginEndpointsRequest":{
       "type":"structure",
       "required":[
@@ -3145,6 +3249,13 @@
       "min":1,
       "pattern":"[a-zA-Z0-9-]+"
     },
+    "MssManifestLayout":{
+      "type":"string",
+      "enum":[
+        "FULL",
+        "COMPACT"
+      ]
+    },
     "OriginEndpointListConfiguration":{
       "type":"structure",
       "required":[
@@ -3198,6 +3309,10 @@
         "DashManifests":{
           "shape":"ListDashManifests",
           "documentation":"<p>A DASH manifest configuration.</p>"
+        },
+        "MssManifests":{
+          "shape":"ListMssManifests",
+          "documentation":"<p>A list of Microsoft Smooth Streaming (MSS) manifest configurations associated with the origin endpoint. Each configuration represents a different MSS streaming option available from this endpoint.</p>"
         },
         "ForceEndpointErrorConfiguration":{
           "shape":"ForceEndpointErrorConfiguration",
@@ -3960,6 +4075,10 @@
           "shape":"CreateDashManifests",
           "documentation":"<p>A DASH manifest configuration.</p>"
         },
+        "MssManifests":{
+          "shape":"CreateMssManifests",
+          "documentation":"<p>A list of Microsoft Smooth Streaming (MSS) manifest configurations to update for the origin endpoint. This replaces the existing MSS manifest configurations.</p>"
+        },
         "ForceEndpointErrorConfiguration":{
           "shape":"ForceEndpointErrorConfiguration",
           "documentation":"<p>The failover settings for the endpoint.</p>"
@@ -4039,6 +4158,10 @@
           "shape":"GetLowLatencyHlsManifests",
           "documentation":"<p>A low-latency HLS manifest configuration.</p>"
         },
+        "MssManifests":{
+          "shape":"GetMssManifests",
+          "documentation":"<p>The updated Microsoft Smooth Streaming (MSS) manifest configurations for this origin endpoint.</p>"
+        },
         "ForceEndpointErrorConfiguration":{
           "shape":"ForceEndpointErrorConfiguration",
           "documentation":"<p>The failover settings for the endpoint.</p>"
@@ -4082,6 +4205,7 @@
         "ENCRYPTION_METHOD_CONTAINER_TYPE_MISMATCH",
         "CENC_IV_INCOMPATIBLE",
         "ENCRYPTION_CONTRACT_WITHOUT_AUDIO_RENDITION_INCOMPATIBLE",
+        "ENCRYPTION_CONTRACT_WITH_ISM_CONTAINER_INCOMPATIBLE",
         "ENCRYPTION_CONTRACT_UNENCRYPTED",
         "ENCRYPTION_CONTRACT_SHARED",
         "NUM_MANIFESTS_LOW",
@@ -4130,12 +4254,20 @@
         "HARVEST_JOB_CUSTOMER_ENDPOINT_READ_ACCESS_DENIED",
         "CLIP_START_TIME_WITH_START_OR_END",
         "START_TAG_TIME_OFFSET_INVALID",
-        "ONLY_CMAF_INPUT_TYPE_ALLOW_MQCS_INPUT_SWITCHING",
-        "ONLY_CMAF_INPUT_TYPE_ALLOW_MQCS_OUTPUT_CONFIGURATION",
         "INCOMPATIBLE_DASH_PROFILE_DVB_DASH_CONFIGURATION",
         "DASH_DVB_ATTRIBUTES_WITHOUT_DVB_DASH_PROFILE",
         "INCOMPATIBLE_DASH_COMPACTNESS_CONFIGURATION",
-        "INCOMPATIBLE_XML_ENCODING"
+        "INCOMPATIBLE_XML_ENCODING",
+        "CMAF_EXCLUDE_SEGMENT_DRM_METADATA_INCOMPATIBLE_CONTAINER_TYPE",
+        "ONLY_CMAF_INPUT_TYPE_ALLOW_MQCS_INPUT_SWITCHING",
+        "ONLY_CMAF_INPUT_TYPE_ALLOW_MQCS_OUTPUT_CONFIGURATION",
+        "TS_CONTAINER_TYPE_WITH_MSS_MANIFEST",
+        "CMAF_CONTAINER_TYPE_WITH_MSS_MANIFEST",
+        "ISM_CONTAINER_TYPE_WITH_HLS_MANIFEST",
+        "ISM_CONTAINER_TYPE_WITH_LL_HLS_MANIFEST",
+        "ISM_CONTAINER_TYPE_WITH_DASH_MANIFEST",
+        "ISM_CONTAINER_TYPE_WITH_SCTE",
+        "ISM_CONTAINER_WITH_KEY_ROTATION"
       ]
     }
   },

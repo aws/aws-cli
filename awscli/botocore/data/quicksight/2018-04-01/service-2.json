@@ -4209,8 +4209,7 @@
     },
     "AllSheetsFilterScopeConfiguration":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An empty object that represents that the <code>AllSheets</code> option is the chosen value for the <code>FilterScopeConfiguration</code> parameter. This structure applies the filter to all visuals on all sheets of an Analysis, Dashboard, or Template.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
     },
     "AltText":{
@@ -6118,6 +6117,10 @@
         "RoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>Use the <code>RoleArn</code> structure to override an account-wide role for a specific Athena data source. For example, say an account administrator has turned off all Athena access with an account-wide role. The administrator can then use <code>RoleArn</code> to bypass the account-wide role and allow Athena access for the single Athena data source that is specified in the structure, even if the account-wide role forbidding Athena access is still active.</p>"
+        },
+        "IdentityCenterConfiguration":{
+          "shape":"IdentityCenterConfiguration",
+          "documentation":"<p>An optional parameter that configures IAM Identity Center authentication to grant Amazon QuickSight access to your workgroup.</p> <p>This parameter can only be specified if your Amazon QuickSight account is configured with IAM Identity Center.</p>"
         }
       },
       "documentation":"<p>Parameters for Amazon Athena.</p>"
@@ -6286,8 +6289,7 @@
     },
     "AxisDisplayDataDrivenRange":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The options that are saved for future extension.</p>"
     },
     "AxisDisplayMinMaxRange":{
@@ -7450,11 +7452,19 @@
       "members":{
         "ExportToCsv":{
           "shape":"CapabilityState",
-          "documentation":"<p>The ability to export to CSV files.</p>"
+          "documentation":"<p>The ability to export to CSV files from the UI.</p>"
         },
         "ExportToExcel":{
           "shape":"CapabilityState",
-          "documentation":"<p>The ability to export to Excel files.</p>"
+          "documentation":"<p>The ability to export to Excel files from the UI.</p>"
+        },
+        "ExportToPdf":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to export to PDF files from the UI.</p>"
+        },
+        "PrintReports":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to print reports.</p>"
         },
         "CreateAndUpdateThemes":{
           "shape":"CapabilityState",
@@ -7515,6 +7525,22 @@
         "CreateSPICEDataset":{
           "shape":"CapabilityState",
           "documentation":"<p>The ability to create a SPICE dataset.</p>"
+        },
+        "ExportToPdfInScheduledReports":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to export to PDF files in scheduled email reports.</p>"
+        },
+        "ExportToCsvInScheduledReports":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to export to CSV files in scheduled email reports.</p>"
+        },
+        "ExportToExcelInScheduledReports":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to export to Excel files in scheduled email reports.</p>"
+        },
+        "IncludeContentInScheduledReportsEmail":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to include content in scheduled email reports.</p>"
         }
       },
       "documentation":"<p>A set of actions that correspond to Amazon QuickSight permissions.</p>"
@@ -11652,7 +11678,7 @@
         },
         "DataSetId":{
           "shape":"ResourceId",
-          "documentation":"<p>The ID of the dataset.</p>"
+          "documentation":"<p>The ID of the dataset. Limited to 96 characters.</p>"
         },
         "Name":{
           "shape":"ResourceName",
@@ -30041,7 +30067,8 @@
       "type":"string",
       "enum":[
         "REDSHIFT",
-        "QBUSINESS"
+        "QBUSINESS",
+        "ATHENA"
       ]
     },
     "SessionLifetimeInMinutes":{
@@ -30515,6 +30542,10 @@
         "Content":{
           "shape":"SheetTextBoxContent",
           "documentation":"<p>The content that is displayed in the text box.</p>"
+        },
+        "Interactions":{
+          "shape":"TextBoxInteractionOptions",
+          "documentation":"<p>The general textbox interactions setup for a textbox.</p>"
         }
       },
       "documentation":"<p>A text box.</p>"
@@ -32801,6 +32832,26 @@
         }
       },
       "documentation":"<p>The display options of a control.</p>"
+    },
+    "TextBoxInteractionOptions":{
+      "type":"structure",
+      "members":{
+        "TextBoxMenuOption":{
+          "shape":"TextBoxMenuOption",
+          "documentation":"<p>The menu options for the textbox.</p>"
+        }
+      },
+      "documentation":"<p>The general textbox interactions setup for textbox publish options.</p>"
+    },
+    "TextBoxMenuOption":{
+      "type":"structure",
+      "members":{
+        "AvailabilityStatus":{
+          "shape":"DashboardBehavior",
+          "documentation":"<p>The availability status of the textbox menu. If the value of this property is set to <code>ENABLED</code>, dashboard readers can interact with the textbox menu.</p>"
+        }
+      },
+      "documentation":"<p>The menu options for the interactions of a textbox.</p>"
     },
     "TextConditionalFormat":{
       "type":"structure",

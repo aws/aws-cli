@@ -439,7 +439,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + '--ec2-attributes InstanceProfile=Ec2_InstanceProfile'
         )
         expected_error_msg = (
-            '\naws: error: You cannot specify both --use-default-roles '
+            '\naws: ERROR: You cannot specify both --use-default-roles '
             'and --ec2-attributes InstanceProfile options together. Either '
             'choose --use-default-roles or use both --service-role <roleName>'
             ' and --ec2-attributes InstanceProfile=<profileName>.\n'
@@ -453,7 +453,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--ec2-attributes InstanceProfile=Ec2_InstanceProfile'
         )
         expected_error_msg = (
-            '\naws: error: You cannot specify both --use-default-roles '
+            '\naws: ERROR: You cannot specify both --use-default-roles '
             'and --service-role options together. Either choose '
             '--use-default-roles or use both --service-role <roleName> '
             'and --ec2-attributes InstanceProfile=<profileName>.\n'
@@ -511,7 +511,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + '--auto-terminate --no-auto-terminate'
         )
         expected_error_msg = (
-            '\naws: error: cannot use both --no-auto-terminate and'
+            '\naws: ERROR: cannot use both --no-auto-terminate and'
             ' --auto-terminate options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -534,7 +534,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             DEFAULT_CMD + '--termination-protected --no-termination-protected'
         )
         expected_error_msg = (
-            '\naws: error: cannot use both --termination-protected'
+            '\naws: ERROR: cannot use both --termination-protected'
             ' and --no-termination-protected options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -564,7 +564,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + '--unhealthy-node-replacement --no-unhealthy-node-replacement'
         )
         expected_error_msg = (
-            '\naws: error: cannot use both --unhealthy-node-replacement'
+            '\naws: ERROR: cannot use both --unhealthy-node-replacement'
             ' and --no-unhealthy-node-replacement options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -583,7 +583,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_visible_to_all_users_and_no_visible_to_all_users(self):
         cmd = DEFAULT_CMD + '--visible-to-all-users --no-visible-to-all-users'
         expected_error_msg = (
-            '\naws: error: cannot use both --visible-to-all-users and '
+            '\naws: ERROR: cannot use both --visible-to-all-users and '
             '--no-visible-to-all-users options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -648,7 +648,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_enable_debugging_no_log_uri(self):
         cmd = DEFAULT_CMD + '--enable-debugging'
         expected_error_msg = (
-            '\naws: error: LogUri not specified. You must specify a logUri'
+            '\naws: ERROR: LogUri not specified. You must specify a logUri'
             ' if you enable debugging when creating a cluster.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -661,7 +661,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + ' --log-uri s3://test/logs'
         )
         expected_error_msg = (
-            '\naws: error: cannot use both --enable-debugging and '
+            '\naws: ERROR: cannot use both --enable-debugging and '
             '--no-enable-debugging options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -738,7 +738,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_instance_groups_missing_required_parameter_error(self):
         cmd = 'emr create-cluster --use-default-roles --ami-version 3.0.4 '
         expect_error_msg = (
-            '\naws: error: Must specify either --instance-groups or '
+            '\naws: ERROR: Must specify either --instance-groups or '
             '--instance-type with --instance-count(optional) to '
             'configure instance groups.\n'
         )
@@ -750,7 +750,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--instance-count 2'
         )
         expect_error_msg = (
-            '\naws: error: Must specify either --instance-groups or '
+            '\naws: ERROR: Must specify either --instance-groups or '
             '--instance-type with --instance-count(optional) to '
             'configure instance groups.\n'
         )
@@ -764,7 +764,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + DEFAULT_INSTANCE_GROUPS_ARG
         )
         expect_error_msg = (
-            '\naws: error: You may not specify --instance-type '
+            '\naws: ERROR: You may not specify --instance-type '
             'or --instance-count with --instance-groups, '
             'because --instance-type and --instance-count are '
             'shortcut options for --instance-groups.\n'
@@ -778,7 +778,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG
         )
         expect_error_msg = (
-            '\naws: error: You may not specify --instance-type '
+            '\naws: ERROR: You may not specify --instance-type '
             'or --instance-count with --instance-groups, '
             'because --instance-type and --instance-count are '
             'shortcut options for --instance-groups.\n'
@@ -920,7 +920,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + 'SubnetId=subnet-123456,AvailabilityZone=us-east-1a'
         )
         expect_error_msg = (
-            '\naws: error: You may not specify both a SubnetId and an Availab'
+            '\naws: ERROR: You may not specify both a SubnetId and an Availab'
             'ilityZone (placement) because ec2SubnetId implies a placement.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -986,7 +986,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             cmd += ba_cmd
 
         expected_error_msg = (
-            '\naws: error: maximum number of '
+            '\naws: ERROR: maximum number of '
             + 'bootstrap actions for a cluster exceeded.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1003,7 +1003,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         for i in range(1, 15):
             cmd += ba_cmd
         expected_error_msg = (
-            '\naws: error: maximum number of '
+            '\naws: ERROR: maximum number of '
             + 'bootstrap actions for a cluster exceeded.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1176,7 +1176,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_wrong_step_type_error(self):
         cmd = DEFAULT_CMD + '--steps Type=unknown'
         expected_error_msg = (
-            '\naws: error: The step type unknown is not supported.\n'
+            '\naws: ERROR: The step type unknown is not supported.\n'
         )
         result = self.run_cmd(cmd, 252)
         self.assertEqual(expected_error_msg, result[1])
@@ -1190,7 +1190,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_custom_jar_step_missing_jar(self):
         cmd = DEFAULT_CMD + '--steps Name=CustomJarMissingJar'
         expect_error_msg = (
-            '\naws: error: The following '
+            '\naws: ERROR: The following '
             + 'required parameters are missing for CustomJARStepConfig: Jar.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1237,7 +1237,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_streaming_step_missing_args(self):
         cmd = DEFAULT_CMD + '--steps Type=Streaming'
         expect_error_msg = (
-            '\naws: error: The following '
+            '\naws: ERROR: The following '
             + 'required parameters are missing for StreamingStepConfig: Args.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1270,7 +1270,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_hive_step_missing_args(self):
         cmd = DEFAULT_CMD + '--applications Name=Hive --steps Type=Hive'
         expect_error_msg = (
-            '\naws: error: The following '
+            '\naws: ERROR: The following '
             + 'required parameters are missing for HiveStepConfig: Args.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1300,7 +1300,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_pig_missing_args(self):
         cmd = DEFAULT_CMD + '--applications Name=Pig --steps Type=Pig'
         expect_error_msg = (
-            '\naws: error: The following '
+            '\naws: ERROR: The following '
             + 'required parameters are missing for PigStepConfig: Args.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1333,7 +1333,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_impala_missing_args(self):
         cmd = DEFAULT_CMD + '--applications Name=Impala --steps Type=Impala'
         expect_error_msg = (
-            '\naws: error: The following '
+            '\naws: ERROR: The following '
             + 'required parameters are missing for ImpalaStepConfig: Args.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1394,7 +1394,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_empty_step_args(self):
         cmd = DEFAULT_CMD + '--steps Type=Streaming,Args= '
         expect_error_msg = (
-            '\naws: error: The prameter Args cannot ' 'be an empty list.\n'
+            '\naws: ERROR: The prameter Args cannot ' 'be an empty list.\n'
         )
         result = self.run_cmd(cmd, 252)
         self.assertEqual(expect_error_msg, result[1])
@@ -1409,7 +1409,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
         cmd = DEFAULT_CMD + '--steps Args= '
         expect_error_msg = (
-            '\naws: error: The following required parameters '
+            '\naws: ERROR: The following required parameters '
             'are missing for CustomJARStepConfig: Jar.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1433,12 +1433,12 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         )
 
         expected_error_msg1 = (
-            '\naws: error: Some of the steps require the following'
+            '\naws: ERROR: Some of the steps require the following'
             ' applications to be installed: Impala, Pig. '
             'Please install the applications using --applications.\n'
         )
         expected_error_msg2 = (
-            '\naws: error: Some of the steps require the following'
+            '\naws: ERROR: Some of the steps require the following'
             ' applications to be installed: Pig, Impala. '
             'Please install the applications using --applications.\n'
         )
@@ -1467,12 +1467,12 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         )
 
         expected_error_msg1 = (
-            '\naws: error: Some of the steps require the following'
+            '\naws: ERROR: Some of the steps require the following'
             ' applications to be installed: Hbase, Impala. '
             'Please install the applications using --applications.\n'
         )
         expected_error_msg2 = (
-            '\naws: error: Some of the steps require the following'
+            '\naws: ERROR: Some of the steps require the following'
             ' applications to be installed: Impala, Hbase. '
             'Please install the applications using --applications.\n'
         )
@@ -1614,7 +1614,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + CONSTANTS.INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY_ARG
         )
         expected_error_msg = (
-            '\naws: error: Must specify --auto-scaling-role when'
+            '\naws: ERROR: Must specify --auto-scaling-role when'
             ' configuring an AutoScaling policy for an instance group.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1972,7 +1972,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + ' --ec2-attributes AvailabilityZone=us-east-1a,AvailabilityZones=[us-east-1a,us-east-1b]'
         )
         expected_error_msg = (
-            '\naws: error: You cannot specify both AvailabilityZone'
+            '\naws: ERROR: You cannot specify both AvailabilityZone'
             ' and AvailabilityZones options together.\n'
         )
         result = self.run_cmd(cmd, 252)

@@ -27,3 +27,8 @@ alias_packages_plugins = hooks.collect_submodules(
 hiddenimports += alias_packages_plugins
 
 datas = hooks.collect_data_files('awscli')
+# prompt_toolkit uses its own metadata to determine
+# its version. So we need to bundle the package
+# metadata to avoid runtime errors.
+# https://github.com/aws/aws-cli/issues/9453
+datas += hooks.collect_metadata('prompt_toolkit')

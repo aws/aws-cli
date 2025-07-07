@@ -301,7 +301,7 @@
       },
       "input":{"shape":"AssociateSecurityGroupVpcRequest"},
       "output":{"shape":"AssociateSecurityGroupVpcResult"},
-      "documentation":"<p>Associates a security group with another VPC in the same Region. This enables you to use the same security group with network interfaces and instances in the specified VPC.</p> <note> <ul> <li> <p>The VPC you want to associate the security group with must be in the same Region.</p> </li> <li> <p>You can associate the security group with another VPC if your account owns the VPC or if the VPC was shared with you.</p> </li> <li> <p>You must own the security group and the VPC that it was created in.</p> </li> <li> <p>You cannot use this feature with default security groups.</p> </li> <li> <p>You cannot use this feature with the default VPC.</p> </li> </ul> </note>"
+      "documentation":"<p>Associates a security group with another VPC in the same Region. This enables you to use the same security group with network interfaces and instances in the specified VPC.</p> <note> <ul> <li> <p>The VPC you want to associate the security group with must be in the same Region.</p> </li> <li> <p>You can associate the security group with another VPC if your account owns the VPC or if the VPC was shared with you.</p> </li> <li> <p>You must own the security group.</p> </li> <li> <p>You cannot use this feature with default security groups.</p> </li> <li> <p>You cannot use this feature with the default VPC.</p> </li> </ul> </note>"
     },
     "AssociateSubnetCidrBlock":{
       "name":"AssociateSubnetCidrBlock",
@@ -14053,7 +14053,7 @@
         },
         "IpAddress":{
           "shape":"String",
-          "documentation":"<p>IPv4 address for the customer gateway device's outside interface. The address must be static. If <code>OutsideIpAddressType</code> in your VPN connection options is set to <code>PrivateIpv4</code>, you can use an RFC6598 or RFC1918 private IPv4 address. If <code>OutsideIpAddressType</code> is set to <code>PublicIpv4</code>, you can use a public IPv4 address. </p>"
+          "documentation":"<p>The IP address for the customer gateway device's outside interface. The address must be static. If <code>OutsideIpAddressType</code> in your VPN connection options is set to <code>PrivateIpv4</code>, you can use an RFC6598 or RFC1918 private IPv4 address. If <code>OutsideIpAddressType</code> is set to <code>Ipv6</code>, you can use an IPv6 address. </p>"
         },
         "BgpAsnExtended":{
           "shape":"Long",
@@ -18528,7 +18528,7 @@
         },
         "IpAddress":{
           "shape":"String",
-          "documentation":"<p> IPv4 address for the customer gateway device's outside interface. The address must be static. If <code>OutsideIpAddressType</code> in your VPN connection options is set to <code>PrivateIpv4</code>, you can use an RFC6598 or RFC1918 private IPv4 address. If <code>OutsideIpAddressType</code> is set to <code>PublicIpv4</code>, you can use a public IPv4 address. </p>",
+          "documentation":"<p> The IP address for the customer gateway device's outside interface. The address must be static. If <code>OutsideIpAddressType</code> in your VPN connection options is set to <code>PrivateIpv4</code>, you can use an RFC6598 or RFC1918 private IPv4 address. If <code>OutsideIpAddressType</code> is set to <code>PublicIpv4</code>, you can use a public IPv4 address. If <code>OutsideIpAddressType</code> is set to <code>Ipv6</code>, you can use a public IPv6 address. </p>",
           "locationName":"ipAddress"
         },
         "BgpAsn":{
@@ -26191,7 +26191,7 @@
       "members":{
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>Security group VPC association filters.</p> <ul> <li> <p> <code>group-id</code>: The security group ID.</p> </li> <li> <p> <code>vpc-id</code>: The ID of the associated VPC.</p> </li> <li> <p> <code>vpc-owner-id</code>: The account ID of the VPC owner.</p> </li> <li> <p> <code>state</code>: The state of the association.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code>: The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code>: The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
+          "documentation":"<p>Security group VPC association filters.</p> <ul> <li> <p> <code>group-id</code>: The security group ID.</p> </li> <li> <p> <code>group-owner-id</code>: The group owner ID.</p> </li> <li> <p> <code>vpc-id</code>: The ID of the associated VPC.</p> </li> <li> <p> <code>vpc-owner-id</code>: The account ID of the VPC owner.</p> </li> <li> <p> <code>state</code>: The state of the association.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code>: The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code>: The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "NextToken":{
@@ -34662,6 +34662,10 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "Context":{
+          "shape":"String",
+          "documentation":"<p>Reserved.</p>"
         }
       }
     },
@@ -59381,6 +59385,11 @@
           "shape":"String",
           "documentation":"<p>The association's state reason.</p>",
           "locationName":"stateReason"
+        },
+        "GroupOwnerId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID of the owner of the security group.</p>",
+          "locationName":"groupOwnerId"
         }
       },
       "documentation":"<p>A security group association with a VPC that you made with <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_AssociateSecurityGroupVpc.html\">AssociateSecurityGroupVpc</a>.</p>"
@@ -68138,7 +68147,7 @@
         },
         "OutsideIpAddressType":{
           "shape":"String",
-          "documentation":"<p>The type of IPv4 address assigned to the outside interface of the customer gateway.</p> <p>Valid values: <code>PrivateIpv4</code> | <code>PublicIpv4</code> </p> <p>Default: <code>PublicIpv4</code> </p>",
+          "documentation":"<p>The type of IPv4 address assigned to the outside interface of the customer gateway.</p> <p>Valid values: <code>PrivateIpv4</code> | <code>PublicIpv4</code> | <code>Ipv6</code> </p> <p>Default: <code>PublicIpv4</code> </p>",
           "locationName":"outsideIpAddressType"
         },
         "TransportTransitGatewayAttachmentId":{
@@ -68192,7 +68201,7 @@
         },
         "OutsideIpAddressType":{
           "shape":"String",
-          "documentation":"<p>The type of IPv4 address assigned to the outside interface of the customer gateway device.</p> <p>Valid values: <code>PrivateIpv4</code> | <code>PublicIpv4</code> </p> <p>Default: <code>PublicIpv4</code> </p>"
+          "documentation":"<p>The type of IP address assigned to the outside interface of the customer gateway device.</p> <p>Valid values: <code>PrivateIpv4</code> | <code>PublicIpv4</code> | <code>Ipv6</code> </p> <p>Default: <code>PublicIpv4</code> </p>"
         },
         "TransportTransitGatewayAttachmentId":{
           "shape":"TransitGatewayAttachmentId",

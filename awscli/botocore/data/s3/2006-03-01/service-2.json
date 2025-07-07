@@ -1676,6 +1676,10 @@
         "BucketRegion":{
           "shape":"BucketRegion",
           "documentation":"<p> <code>BucketRegion</code> indicates the Amazon Web Services region where the bucket is located. If the request contains at least one valid parameter, it is included in the response.</p>"
+        },
+        "BucketArn":{
+          "shape":"S3RegionalOrS3ExpressBucketArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 bucket. ARNs uniquely identify Amazon Web Services resources across all of Amazon Web Services.</p> <note> <p>This parameter is only supported for S3 directory buckets. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-tagging.html\">Using tags with directory buckets</a>.</p> </note>"
         }
       },
       "documentation":"<p> In terms of implementation, a Bucket is a resource. </p>"
@@ -2769,6 +2773,10 @@
         "Bucket":{
           "shape":"BucketInfo",
           "documentation":"<p>Specifies the information about the bucket that will be created.</p> <note> <p>This functionality is only supported by directory buckets.</p> </note>"
+        },
+        "Tags":{
+          "shape":"TagSet",
+          "documentation":"<p>An array of tags that you can apply to the bucket that you're creating. Tags are key-value pairs of metadata used to categorize and organize your buckets, track costs, and control access. </p> <note> <p>This parameter is only supported for S3 directory buckets. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-tagging.html\">Using tags with directory buckets</a>.</p> </note>"
         }
       },
       "documentation":"<p>The configuration information for the bucket.</p>"
@@ -2822,6 +2830,12 @@
           "documentation":"<p>A forward slash followed by the name of the bucket.</p>",
           "location":"header",
           "locationName":"Location"
+        },
+        "BucketArn":{
+          "shape":"S3RegionalOrS3ExpressBucketArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 bucket. ARNs uniquely identify Amazon Web Services resources across all of Amazon Web Services.</p> <note> <p>This parameter is only supported for S3 directory buckets. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-tagging.html\">Using tags with directory buckets</a>.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-bucket-arn"
         }
       }
     },
@@ -3925,7 +3939,7 @@
         },
         "StorageClass":{
           "shape":"StorageClass",
-          "documentation":"<p> The storage class to use when replicating objects, such as S3 Standard or reduced redundancy. By default, Amazon S3 uses the storage class of the source object to create the object replica. </p> <p>For valid values, see the <code>StorageClass</code> element of the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTreplication.html\">PUT Bucket replication</a> action in the <i>Amazon S3 API Reference</i>.</p>"
+          "documentation":"<p> The storage class to use when replicating objects, such as S3 Standard or reduced redundancy. By default, Amazon S3 uses the storage class of the source object to create the object replica. </p> <p>For valid values, see the <code>StorageClass</code> element of the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTreplication.html\">PUT Bucket replication</a> action in the <i>Amazon S3 API Reference</i>.</p> <p> <code>FSX_OPENZFS</code> is not an accepted value when replicating objects.</p>"
         },
         "AccessControlTranslation":{
           "shape":"AccessControlTranslation",
@@ -5819,6 +5833,12 @@
     "HeadBucketOutput":{
       "type":"structure",
       "members":{
+        "BucketArn":{
+          "shape":"S3RegionalOrS3ExpressBucketArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 bucket. ARNs uniquely identify Amazon Web Services resources across all of Amazon Web Services.</p> <note> <p>This parameter is only supported for S3 directory buckets. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-tagging.html\">Using tags with directory buckets</a>.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-bucket-arn"
+        },
         "BucketLocationType":{
           "shape":"LocationType",
           "documentation":"<p>The type of location where the bucket is created.</p> <note> <p>This functionality is only supported by directory buckets.</p> </note>",
@@ -7135,7 +7155,7 @@
         },
         "Delimiter":{
           "shape":"Delimiter",
-          "documentation":"<p>Character you use to group keys.</p> <p>All keys that contain the same string between the prefix, if specified, and the first occurrence of the delimiter after the prefix are grouped under a single result element, <code>CommonPrefixes</code>. If you don't specify the prefix parameter, then the substring starts at the beginning of the key. The keys that are grouped under <code>CommonPrefixes</code> result element are not returned elsewhere in the response.</p> <note> <p> <b>Directory buckets</b> - For directory buckets, <code>/</code> is the only supported delimiter.</p> </note>",
+          "documentation":"<p>Character you use to group keys.</p> <p>All keys that contain the same string between the prefix, if specified, and the first occurrence of the delimiter after the prefix are grouped under a single result element, <code>CommonPrefixes</code>. If you don't specify the prefix parameter, then the substring starts at the beginning of the key. The keys that are grouped under <code>CommonPrefixes</code> result element are not returned elsewhere in the response.</p> <p> <code>CommonPrefixes</code> is filtered out from results if it is not lexicographically greater than the key-marker.</p> <note> <p> <b>Directory buckets</b> - For directory buckets, <code>/</code> is the only supported delimiter.</p> </note>",
           "location":"querystring",
           "locationName":"delimiter"
         },
@@ -7259,7 +7279,7 @@
         },
         "Delimiter":{
           "shape":"Delimiter",
-          "documentation":"<p>A delimiter is a character that you specify to group keys. All keys that contain the same string between the <code>prefix</code> and the first occurrence of the delimiter are grouped under a single result element in <code>CommonPrefixes</code>. These groups are counted as one result against the <code>max-keys</code> limitation. These keys are not returned elsewhere in the response.</p>",
+          "documentation":"<p>A delimiter is a character that you specify to group keys. All keys that contain the same string between the <code>prefix</code> and the first occurrence of the delimiter are grouped under a single result element in <code>CommonPrefixes</code>. These groups are counted as one result against the <code>max-keys</code> limitation. These keys are not returned elsewhere in the response.</p> <p> <code>CommonPrefixes</code> is filtered out from results if it is not lexicographically greater than the key-marker.</p>",
           "location":"querystring",
           "locationName":"delimiter"
         },
@@ -7375,7 +7395,7 @@
         },
         "Delimiter":{
           "shape":"Delimiter",
-          "documentation":"<p>A delimiter is a character that you use to group keys.</p>",
+          "documentation":"<p>A delimiter is a character that you use to group keys.</p> <p> <code>CommonPrefixes</code> is filtered out from results if it is not lexicographically greater than the key-marker.</p>",
           "location":"querystring",
           "locationName":"delimiter"
         },
@@ -7494,7 +7514,7 @@
         },
         "Delimiter":{
           "shape":"Delimiter",
-          "documentation":"<p>A delimiter is a character that you use to group keys.</p> <note> <ul> <li> <p> <b>Directory buckets</b> - For directory buckets, <code>/</code> is the only supported delimiter.</p> </li> <li> <p> <b>Directory buckets </b> - When you query <code>ListObjectsV2</code> with a delimiter during in-progress multipart uploads, the <code>CommonPrefixes</code> response parameter contains the prefixes that are associated with the in-progress multipart uploads. For more information about multipart uploads, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html\">Multipart Upload Overview</a> in the <i>Amazon S3 User Guide</i>.</p> </li> </ul> </note>",
+          "documentation":"<p>A delimiter is a character that you use to group keys.</p> <p> <code>CommonPrefixes</code> is filtered out from results if it is not lexicographically greater than the <code>StartAfter</code> value.</p> <note> <ul> <li> <p> <b>Directory buckets</b> - For directory buckets, <code>/</code> is the only supported delimiter.</p> </li> <li> <p> <b>Directory buckets </b> - When you query <code>ListObjectsV2</code> with a delimiter during in-progress multipart uploads, the <code>CommonPrefixes</code> response parameter contains the prefixes that are associated with the in-progress multipart uploads. For more information about multipart uploads, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html\">Multipart Upload Overview</a> in the <i>Amazon S3 User Guide</i>.</p> </li> </ul> </note>",
           "location":"querystring",
           "locationName":"delimiter"
         },
@@ -10973,6 +10993,12 @@
         }
       },
       "documentation":"<p>Describes an Amazon S3 location that will receive the results of the restore request.</p>"
+    },
+    "S3RegionalOrS3ExpressBucketArnString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"arn:[^:]+:(s3|s3express):.*"
     },
     "S3TablesArn":{"type":"string"},
     "S3TablesBucketArn":{"type":"string"},

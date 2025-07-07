@@ -88,7 +88,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <p>The following fields are required when creating a case:</p> <ul> <li> <p> <code>customer_id</code> - You must provide the full customer profile ARN in this format: <code>arn:aws:profile:your_AWS_Region:your_AWS_account ID:domains/your_profiles_domain_name/profiles/profile_ID</code> </p> </li> <li> <p> <code>title</code> </p> </li> </ul>",
+      "documentation":"<p><note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <p>The following fields are required when creating a case:</p> <ul> <li> <p> <code>customer_id</code> - You must provide the full customer profile ARN in this format: <code>arn:aws:profile:your_AWS_Region:your_AWS_account ID:domains/your_profiles_domain_name/profiles/profile_ID</code> </p> </li> <li> <p> <code>title</code> </p> </li> </ul></p>",
       "idempotent":true
     },
     "CreateCaseRule":{
@@ -214,6 +214,25 @@
       "documentation":"<p>Creates a template in the Cases domain. This template is used to define the case object model (that is, to define what data can be captured on cases) in a Cases domain. A template must have a unique name within a domain, and it must reference existing field IDs and layout IDs. Additionally, multiple fields with same IDs are not allowed within the same Template. A template can be either Active or Inactive, as indicated by its status. Inactive templates cannot be used to create cases.</p> <p> Other template APIs are: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetTemplate.html\">GetTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_ListTemplates.html\">ListTemplates</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_UpdateTemplate.html\">UpdateTemplate</a> </p> </li> </ul>",
       "idempotent":true
     },
+    "DeleteCase":{
+      "name":"DeleteCase",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{domainId}/cases/{caseId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteCaseRequest"},
+      "output":{"shape":"DeleteCaseResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> The DeleteCase API permanently deletes a case and all its associated resources from the cases data store. After a successful deletion, you cannot:</p> <ul> <li> <p>Retrieve related items</p> </li> <li> <p>Access audit history</p> </li> <li> <p>Perform any operations that require the CaseID</p> </li> </ul> <important> <p>This action is irreversible. Once you delete a case, you cannot recover its data.</p> </important>",
+      "idempotent":true
+    },
     "DeleteCaseRule":{
       "name":"DeleteCaseRule",
       "http":{
@@ -292,6 +311,25 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Deletes a layout from a cases template. You can delete up to 100 layouts per domain.</p> <p>After a layout is deleted:</p> <ul> <li> <p>You can still retrieve the layout by calling <code>GetLayout</code>.</p> </li> <li> <p>You cannot update a deleted layout by calling <code>UpdateLayout</code>; it throws a <code>ValidationException</code>.</p> </li> <li> <p>Deleted layouts are not included in the <code>ListLayouts</code> response.</p> </li> </ul>",
+      "idempotent":true
+    },
+    "DeleteRelatedItem":{
+      "name":"DeleteRelatedItem",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{domainId}/cases/{caseId}/related-items/{relatedItemId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRelatedItemRequest"},
+      "output":{"shape":"DeleteRelatedItemResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes the related item resource under a case.</p> <note> <p>This API cannot be used on a FILE type related attachment. To delete this type of file, use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteAttachedFile.html\">DeleteAttachedFile</a> API</p> </note>",
       "idempotent":true
     },
     "DeleteTemplate":{
@@ -673,7 +711,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Updates the values of fields on a case. Fields to be updated are received as an array of id/value pairs identical to the <code>CreateCase</code> input .</p> <p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p>"
+      "documentation":"<p><note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Updates the values of fields on a case. Fields to be updated are received as an array of id/value pairs identical to the <code>CreateCase</code> input .</p> <p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p></p>"
     },
     "UpdateCaseRule":{
       "name":"UpdateCaseRule",
@@ -1750,6 +1788,32 @@
       "pattern":"^[a-zA-Z0-9_\\-\\.@:/ ]*[a-zA-Z0-9_\\-\\.@:/]$",
       "sensitive":true
     },
+    "DeleteCaseRequest":{
+      "type":"structure",
+      "required":[
+        "caseId",
+        "domainId"
+      ],
+      "members":{
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>A unique identifier of the case.</p>",
+          "location":"uri",
+          "locationName":"caseId"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>A unique identifier of the Cases domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        }
+      }
+    },
+    "DeleteCaseResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteCaseRuleRequest":{
       "type":"structure",
       "required":[
@@ -1841,6 +1905,39 @@
       }
     },
     "DeleteLayoutResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteRelatedItemRequest":{
+      "type":"structure",
+      "required":[
+        "caseId",
+        "domainId",
+        "relatedItemId"
+      ],
+      "members":{
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>A unique identifier of the case.</p>",
+          "location":"uri",
+          "locationName":"caseId"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>A unique identifier of the Cases domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "relatedItemId":{
+          "shape":"RelatedItemId",
+          "documentation":"<p>A unique identifier of a related item.</p>",
+          "location":"uri",
+          "locationName":"relatedItemId"
+        }
+      }
+    },
+    "DeleteRelatedItemResponse":{
       "type":"structure",
       "members":{
       }

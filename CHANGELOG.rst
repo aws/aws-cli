@@ -2,6 +2,38 @@
 CHANGELOG
 =========
 
+2.27.49
+=======
+
+* api-change:``customer-profiles``: This release introduces capability of create Segments via importing a CSV file directly. This consumes the CSV file and creates/updates corresponding profiles for the particular domain.
+* api-change:``route53``: Amazon Route 53 now supports the iso-e regions for private DNS Amazon VPCs and cloudwatch healthchecks.
+* api-change:``deadline``: Added fields for output manifest reporting and task chunking parameters
+* api-change:``sagemaker``: Changes include new StartSession API for SageMaker Studio spaces and CreateHubContentPresignedUrls API for SageMaker JumpStart.
+* api-change:``mediapackagev2``: This release adds support for Microsoft Smooth Streaming (MSS) and allows users to exclude DRM segment Metadata in MediaPackage v2 Origin Endpoints
+* api-change:``ec2``: This release adds GroupOwnerId as a response member to the DescribeSecurityGroupVpcAssociations API and also adds waiters for SecurityGroupVpcAssociations (SecurityGroupVpcAssociationAssociated and SecurityGroupVpcAssociationDisassociated).
+
+
+2.27.48
+=======
+
+* api-change:``s3control``: Added TagResource, UntagResource, and ListTagsForResource support for directory bucket
+* api-change:``ec2``: AWS Site-to-Site VPN now supports IPv6 addresses on outer tunnel IPs, making it easier for customers to build or transition to IPv6-only networks.
+* api-change:``connectcases``: This release adds DeleteCase and DeleteRelatedItem APIs, which enable deleting cases and comments, undoing contact association, and removing service level agreements (SLAs) from cases. Contact center admins can use these APIs to delete cases when requested by customers and correct agent errors.
+* api-change:``s3``: Added support for directory bucket creation with tags and bucket ARN retrieval in CreateBucket, ListDirectoryBuckets, and HeadBucket operations
+
+
+2.27.47
+=======
+
+* api-change:``odb``: This release adds API operations for Oracle Database@AWS. You can use the APIs to create Exadata infrastructure, ODB networks, and Exadata and Autonomous VM clusters inside AWS data centers. The infrastructure is managed by OCI. You can integrate these resources with AWS services.
+* api-change:``sagemaker``: Updated field validation requirements for InstanceGroups.
+* api-change:``cleanroomsml``: This release introduces support for incremental training and distributed training for custom models in AWS Clean Rooms ML.
+* api-change:``rds``: Amazon RDS Custom for Oracle now supports multi-AZ database instances.
+* api-change:``ec2``: Add Context to GetInstanceTypesFromInstanceRequirements API
+* api-change:``datazone``: Add support for the new optional domain-unit-id parameter in the UpdateProject API.
+* api-change:``qbusiness``: New ChatResponseConfiguration to Customize Q Business chat responses for specific use cases and communication needs. Updated Boosting capability allowing admins to provide preference on date attributes for recency and/or provide a preferred data source.
+
+
 2.27.46
 =======
 

@@ -6285,6 +6285,10 @@
         "acquiredLimits":{
           "shape":"AcquiredLimits",
           "documentation":"<p>The limits and their amounts acquired during a session action. If no limits were acquired during the session, this field isn't returned.</p>"
+        },
+        "manifests":{
+          "shape":"TaskRunManifestPropertiesListResponse",
+          "documentation":"<p>The list of manifest properties that describe file attachments for the task run.</p>"
         }
       }
     },
@@ -10627,6 +10631,10 @@
         "definition":{
           "shape":"SessionActionDefinitionSummary",
           "documentation":"<p>The session action definition.</p>"
+        },
+        "manifests":{
+          "shape":"TaskRunManifestPropertiesListResponse",
+          "documentation":"<p>The list of manifest properties that describe file attachments for the task run.</p>"
         }
       },
       "documentation":"<p>The details of a session action.</p>"
@@ -11142,7 +11150,8 @@
         "INT",
         "FLOAT",
         "STRING",
-        "PATH"
+        "PATH",
+        "CHUNK_INT"
       ]
     },
     "StepRequiredCapabilities":{
@@ -11486,6 +11495,10 @@
         "path":{
           "shape":"PathString",
           "documentation":"<p>A file system path represented as a string.</p>"
+        },
+        "chunkInt":{
+          "shape":"String",
+          "documentation":"<p>A range (for example 1-10) or selection of specific (for example 1,3,7,8,10) integers represented as a string.</p>"
         }
       },
       "documentation":"<p>The data types for the task parameters.</p>",
@@ -11503,6 +11516,54 @@
       "box":true,
       "max":2147483647,
       "min":0
+    },
+    "TaskRunManifestPropertiesListRequest":{
+      "type":"list",
+      "member":{"shape":"TaskRunManifestPropertiesRequest"},
+      "max":10,
+      "min":0
+    },
+    "TaskRunManifestPropertiesListResponse":{
+      "type":"list",
+      "member":{"shape":"TaskRunManifestPropertiesResponse"}
+    },
+    "TaskRunManifestPropertiesRequest":{
+      "type":"structure",
+      "members":{
+        "outputManifestPath":{
+          "shape":"TaskRunManifestPropertiesRequestOutputManifestPathString",
+          "documentation":"<p>The manifest file path.</p>"
+        },
+        "outputManifestHash":{
+          "shape":"TaskRunManifestPropertiesRequestOutputManifestHashString",
+          "documentation":"<p>The hash value of the file.</p>"
+        }
+      },
+      "documentation":"<p>The output manifest properties reported by the worker agent for a completed task run.</p>"
+    },
+    "TaskRunManifestPropertiesRequestOutputManifestHashString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "TaskRunManifestPropertiesRequestOutputManifestPathString":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "TaskRunManifestPropertiesResponse":{
+      "type":"structure",
+      "members":{
+        "outputManifestPath":{
+          "shape":"String",
+          "documentation":"<p>The manifest file path.</p>"
+        },
+        "outputManifestHash":{
+          "shape":"String",
+          "documentation":"<p>The hash value of the file.</p>"
+        }
+      },
+      "documentation":"<p>The manifest properties for a task run, corresponding to the manifest properties in the job.</p>"
     },
     "TaskRunSessionActionDefinition":{
       "type":"structure",
@@ -11537,6 +11598,10 @@
         "stepId":{
           "shape":"StepId",
           "documentation":"<p>The step ID.</p>"
+        },
+        "parameters":{
+          "shape":"TaskParameters",
+          "documentation":"<p>The parameters of a task run in a session action.</p>"
         }
       },
       "documentation":"<p>The details of a task run in a session action.</p>"
@@ -12630,6 +12695,10 @@
         "progressPercent":{
           "shape":"SessionActionProgressPercent",
           "documentation":"<p>The percentage completed.</p>"
+        },
+        "manifests":{
+          "shape":"TaskRunManifestPropertiesListRequest",
+          "documentation":"<p>A list of output manifest properties reported by the worker agent, with each entry corresponding to a manifest property in the job.</p>"
         }
       },
       "documentation":"<p>The updated session action information as it relates to completion and progress of the session.</p>"

@@ -87,7 +87,7 @@ class TestDisableHBaseBackups(BaseAWSCommandParamsTest):
         args = ' --cluster-id j-ABCD --full'
         cmdline = self.prefix + args
         expected_error_msg = (
-            "\naws: error: disable-hbase-backups"
+            "\naws: ERROR: disable-hbase-backups"
             " is not supported with 'emr-4.0' release.\n"
         )
         result = self.run_cmd(cmdline, 252)

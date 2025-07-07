@@ -259,7 +259,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
             '<subcommand> [<subcommand> ...] [parameters]',
             p.stderr,
         )
-        self.assertIn('aws: error', p.stderr)
+        self.assertIn('aws: [ERROR]', p.stderr)
 
     def test_help_usage_service_level(self):
         p = aws('ec2')
@@ -268,11 +268,11 @@ class TestBasicCommandFunctionality(unittest.TestCase):
             '<subcommand> [<subcommand> ...] [parameters]',
             p.stderr,
         )
-        # python3: aws: error: the following arguments are required: operation
-        # python2: aws: error: too few arguments
+        # python3: aws: [ERROR]: the following arguments are required: operation
+        # python2: aws: [ERROR]: too few arguments
         # We don't care too much about the specific error message, as long
         # as it says we have a parse error.
-        self.assertIn('aws: error', p.stderr)
+        self.assertIn('aws: [ERROR]', p.stderr)
 
     def test_help_usage_operation_level(self):
         p = aws('ec2 start-instances')

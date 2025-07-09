@@ -43,9 +43,13 @@ def register_configure_cmd(cli):
 
 class InteractivePrompter:
     def get_value(self, current_value, config_name, prompt_text=''):
-        if config_name in ('aws_access_key_id', 'aws_secret_access_key'):
+        if config_name in (
+            'aws_access_key_id',
+            'aws_secret_access_key',
+            'aws_session_token',
+        ):
             current_value = mask_value(current_value)
-        response = compat_input("%s [%s]: " % (prompt_text, current_value))
+        response = compat_input(f"{prompt_text} [{current_value}]: ")
         if not response:
             # If the user hits enter, we return a value of None
             # instead of an empty string.  That way we can determine
@@ -100,7 +104,7 @@ class ConfigureCommand(BasicCommand):
     ]
 
     def __init__(self, session, prompter=None, config_writer=None):
-        super(ConfigureCommand, self).__init__(session)
+        super().__init__(session)
         if prompter is None:
             prompter = InteractivePrompter()
         self._prompter = prompter
@@ -117,6 +121,10 @@ class ConfigureCommand(BasicCommand):
             config = self._session.get_scoped_config()
         except ProfileNotFound:
             config = {}
+
+        # Track if we need to prompt for session token
+        needs_session_token = False
+
         for config_name, prompt_text in self.VALUES_TO_PROMPT:
             current_value = config.get(config_name)
             new_value = self._prompter.get_value(
@@ -124,6 +132,36 @@ class ConfigureCommand(BasicCommand):
             )
             if new_value is not None and new_value != current_value:
                 new_values[config_name] = new_value
+
+            # Check if this is a temporary credential (starts with ASIA)
+            if (
+                config_name == 'aws_access_key_id'
+                and new_value
+                and new_value.startswith('ASIA')
+            ):
+                needs_session_token = True
+
+            # Prompt for session token after secret key but before region
+            if config_name == 'aws_secret_access_key' and needs_session_token:
+                session_token_current = config.get('aws_session_token')
+                session_token_new = self._prompter.get_value(
+                    session_token_current,
+                    'aws_session_token',
+                    'AWS Session Token',
+                )
+                if (
+                    session_token_new is not None
+                    and session_token_new != session_token_current
+                ):
+                    new_values['aws_session_token'] = session_token_new
+
+        # Remove session token for non-temporary credentials
+        if (
+            'aws_access_key_id' in new_values
+            and not needs_session_token
+            and config.get('aws_session_token')
+        ):
+            new_values['aws_session_token'] = None
         config_filename = os.path.expanduser(
             self._session.get_config_variable('config_file')
         )
@@ -149,6 +187,10 @@ class ConfigureCommand(BasicCommand):
         if 'aws_secret_access_key' in new_values:
             credential_file_values['aws_secret_access_key'] = new_values.pop(
                 'aws_secret_access_key'
+            )
+        if 'aws_session_token' in new_values:
+            credential_file_values['aws_session_token'] = new_values.pop(
+                'aws_session_token'
             )
         if credential_file_values:
             if profile_name is not None:

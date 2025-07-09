@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.41.4
+======
+
+* api-change:``ec2``: Adds support to Capacity Blocks for ML for purchasing EC2 P6e-GB200 UltraServers. Customers can now purchase u-p6e-gb200x72 and u-p6e-gb200x36 UltraServers. Adds new DescribeCapacityBlocks andDescribeCapacityBlockStatus APIs. Adds support for CapacityBlockId to DescribeInstanceTopology.
+* api-change:``freetier``: This release introduces four new APIs: GetAccountPlanState and UpgradeAccountPlan for AWS account plan management; ListAccountActivities and GetAccountActivity that provide activity tracking capabilities.
+* api-change:``opsworkscm``: Removing content that refers to an S3 bucket that is no longer in use.
+
+
 1.41.3
 ======
 

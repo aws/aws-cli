@@ -1,0 +1,400 @@
+# Copyright 2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
+import logging
+import os
+import random
+import string
+import sys
+
+# Import botocore at module level to avoid repeated imports
+import botocore.session
+from botocore.exceptions import ClientError, ProfileNotFound
+
+from awscli.compat import compat_input
+from awscli.customizations.commands import BasicCommand
+from awscli.customizations.configure import profile_to_section
+from awscli.customizations.configure.writer import ConfigFileWriter
+
+LOG = logging.getLogger(__name__)
+
+
+class InteractiveMFAPrompter:
+    """Handles interactive prompting for MFA login."""
+
+    def get_value(self, current_value, prompt_text=''):
+        """Prompt for a value, showing the current value as a default."""
+        response = compat_input(f"{prompt_text} [{current_value}]: ")
+        if not response:
+            # If the user hits enter, return the current value
+            return current_value
+        return response
+
+    def get_credential_value(self, current_value, config_name, prompt_text=''):
+        """Prompt for credential values with masking for sensitive data."""
+        response = compat_input(f"{prompt_text}: ")
+        if not response:
+            return None
+        return response
+
+
+class ConfigureMFALoginCommand(BasicCommand):
+    """Configures MFA login for AWS CLI by creating temporary credentials."""
+
+    NAME = 'mfa-login'
+    DESCRIPTION = (
+        'Sets up temporary credentials for MFA authentication. '
+        'This command creates a new profile with temporary credentials '
+        'obtained using the AWS STS get-session-token API.'
+    )
+    SYNOPSIS = (
+        'aws configure mfa-login [--profile profile-name] '
+        '[--update-profile profile-to-update] [--duration-seconds seconds] '
+        '[--serial-number mfa-serial-number]'
+    )
+    EXAMPLES = (
+        'To create a new profile with temporary credentials::\n'
+        '\n'
+        '    $ aws configure mfa-login\n'
+        '    MFA serial number or ARN: arn:aws:iam::123456789012:mfa/user\n'
+        '    MFA token code: 123456\n'
+        '    Profile to update [session-12345]:\n'
+        '\n'
+        'To update an existing profile with temporary credentials::\n'
+        '\n'
+        '    $ aws configure mfa-login --profile myprofile --update-profile mytemp\n'
+        '    MFA token code: 123456\n'
+        '\n'
+        'To specify the MFA device serial number or ARN directly::\n'
+        '\n'
+        '    $ aws configure mfa-login --serial-number arn:aws:iam::123456789012:mfa/user\n'
+        '    MFA token code: 123456\n'
+        '    Profile to update [session-12345]:\n'
+    )
+    ARG_TABLE = [
+        {
+            'name': 'profile',
+            'help_text': ('Use a specific profile from your credential file.'),
+            'action': 'store',
+            'required': False,
+            'cli_type_name': 'string',
+        },
+        {
+            'name': 'update-profile',
+            'help_text': (
+                'The profile to update with temporary credentials. '
+                'If not provided, a default name will be generated.'
+            ),
+            'action': 'store',
+            'required': False,
+            'cli_type_name': 'string',
+        },
+        {
+            'name': 'duration-seconds',
+            'help_text': (
+                'The duration, in seconds, that the credentials should remain valid. '
+                'Default is 43200 seconds (12 hours).'
+            ),
+            'action': 'store',
+            'required': False,
+            'cli_type_name': 'integer',
+        },
+        {
+            'name': 'serial-number',
+            'help_text': (
+                'The ARN or serial number of the MFA device associated with the IAM user. '
+                'If not provided, will use the mfa_serial from the profile configuration.'
+            ),
+            'action': 'store',
+            'required': False,
+            'cli_type_name': 'string',
+        },
+    ]
+
+    def __init__(self, session, prompter=None, config_writer=None):
+        super().__init__(session)
+        if prompter is None:
+            prompter = InteractiveMFAPrompter()
+        self._prompter = prompter
+        if config_writer is None:
+            config_writer = ConfigFileWriter()
+        self._config_writer = config_writer
+
+    def _check_profile_exists(self, profile_name):
+        """Check if a profile exists using botocore's native profile handling."""
+        session = botocore.session.Session()
+        return profile_name in session.available_profiles
+
+    def _run_main(self, parsed_args, parsed_globals):
+        # Get the source profile for credentials
+        source_profile = parsed_globals.profile or 'default'
+
+        # Get the target profile to update
+        target_profile = parsed_args.update_profile
+
+        # Get duration seconds
+        duration_seconds = (
+            parsed_args.duration_seconds or 43200
+        )  # Default 12 hours
+
+        # Import here to avoid circular imports
+
+        # Create a new session with the specified profile
+        try:
+            # Use botocore's native profile handling
+            session = botocore.session.Session(profile=source_profile)
+
+            # Check if profile exists
+            if (
+                source_profile not in session.available_profiles
+                and source_profile != 'default'
+            ):
+                sys.stderr.write(
+                    f"The profile ({source_profile}) could not be found. \n"
+                )
+                return 1
+
+            # Get credentials
+            credentials = session.get_credentials()
+            if credentials is None:
+                # If no credentials found and using default profile and running interactively, prompt for them
+                if source_profile == 'default' and sys.stdin.isatty():
+                    return self._handle_missing_default_profile(
+                        parsed_args, duration_seconds
+                    )
+                else:
+                    sys.stderr.write(
+                        f"Unable to locate credentials for profile {source_profile}\n"
+                    )
+                    return 1
+
+            source_config = session.get_scoped_config()
+        except ProfileNotFound:
+            # If default profile not found and running interactively, prompt for credentials
+            if source_profile == 'default' and sys.stdin.isatty():
+                return self._handle_missing_default_profile(
+                    parsed_args, duration_seconds
+                )
+            else:
+                sys.stderr.write(
+                    f"The profile ({source_profile}) could not be found. \n"
+                )
+                return 1
+        except Exception as e:
+            sys.stderr.write(
+                f"Error accessing profile {source_profile}: {str(e)}\n"
+            )
+            return 1
+
+        # Get MFA serial number
+        mfa_serial = parsed_args.serial_number or source_config.get(
+            'mfa_serial'
+        )
+        if not mfa_serial:
+            if sys.stdin.isatty():
+                mfa_serial = self._prompter.get_credential_value(
+                    'None', 'mfa_serial', 'MFA serial number or ARN'
+                )
+                if not mfa_serial:
+                    sys.stderr.write("MFA serial number or ARN is required\n")
+                    return 1
+            else:
+                sys.stderr.write("MFA serial number or ARN is required\n")
+                return 1
+
+        # Get MFA token code
+        if sys.stdin.isatty():
+            token_code = self._prompter.get_credential_value(
+                'None', 'mfa_token', 'MFA token code'
+            )
+            if not token_code:
+                sys.stderr.write("MFA token code is required\n")
+                return 1
+        else:
+            sys.stderr.write("MFA token code is required\n")
+            return 1
+
+        # If no target profile is specified, generate a default name
+        if not target_profile:
+            random_suffix = ''.join(
+                random.choices(string.ascii_lowercase + string.digits, k=5)
+            )
+            target_profile = f"session-{random_suffix}"
+            if sys.stdin.isatty():
+                target_profile = self._prompter.get_value(
+                    target_profile, 'Profile to update'
+                )
+
+        # Call STS to get temporary credentials
+        try:
+            sts_client = session.create_client('sts')
+            response = sts_client.get_session_token(
+                DurationSeconds=duration_seconds,
+                SerialNumber=mfa_serial,
+                TokenCode=token_code,
+            )
+        except ClientError as e:
+            sys.stderr.write(f"An error occurred: {e}\n")
+            return 1
+
+        # Extract credentials from response
+        temp_credentials = response['Credentials']
+
+        # Write credentials to the credentials file
+        credentials_file = os.path.expanduser('~/.aws/credentials')
+
+        # Prepare the values to write
+        credential_values = {
+            '__section__': target_profile,
+            'aws_access_key_id': temp_credentials['AccessKeyId'],
+            'aws_secret_access_key': temp_credentials['SecretAccessKey'],
+            'aws_session_token': temp_credentials['SessionToken'],
+        }
+
+        # Get expiration time as a string
+        try:
+            expiration_time = temp_credentials['Expiration'].strftime(
+                '%Y-%m-%d %H:%M:%S UTC'
+            )
+        except Exception:
+            # Handle case where Expiration might not be a datetime object
+            expiration_time = str(temp_credentials['Expiration'])
+
+        # Add expiration as a comment in the config file
+        credential_values['#expiration'] = (
+            f"# Credentials expire at: {expiration_time}"
+        )
+
+        # Write to credentials file
+        self._config_writer.update_config(credential_values, credentials_file)
+
+        sys.stdout.write(
+            f"Temporary credentials written to profile '{target_profile}'\n"
+        )
+        sys.stdout.write(f"Credentials will expire at {expiration_time}\n")
+        sys.stdout.write(
+            f"To use these credentials, specify --profile {target_profile} when running AWS CLI commands\n"
+        )
+
+        return 0
+
+    def _handle_missing_default_profile(self, parsed_args, duration_seconds):
+        """Handle the case where no default profile exists by prompting for credentials."""
+        sys.stdout.write(
+            "No default profile found. Please provide your AWS credentials:\n"
+        )
+
+        # Prompt for access key ID
+        access_key = self._prompter.get_credential_value(
+            'None', 'aws_access_key_id', 'AWS Access Key ID'
+        )
+        if not access_key or access_key == 'None':
+            sys.stderr.write("AWS Access Key ID is required\n")
+            return 1
+
+        # Prompt for secret access key
+        secret_key = self._prompter.get_credential_value(
+            'None', 'aws_secret_access_key', 'AWS Secret Access Key'
+        )
+        if not secret_key or secret_key == 'None':
+            sys.stderr.write("AWS Secret Access Key is required\n")
+            return 1
+
+        # Get MFA serial number
+        mfa_serial = parsed_args.serial_number
+        if not mfa_serial:
+            mfa_serial = self._prompter.get_credential_value(
+                'None', 'mfa_serial', 'MFA serial number or ARN'
+            )
+            if not mfa_serial:
+                sys.stderr.write("MFA serial number or ARN is required\n")
+                return 1
+
+        # Get MFA token code
+        token_code = self._prompter.get_credential_value(
+            'None', 'mfa_token', 'MFA token code'
+        )
+        if not token_code:
+            sys.stderr.write("MFA token code is required\n")
+            return 1
+
+        # Generate target profile name if not specified
+        target_profile = parsed_args.update_profile
+        if not target_profile:
+            random_suffix = ''.join(
+                random.choices(string.ascii_lowercase + string.digits, k=5)
+            )
+            target_profile = f"session-{random_suffix}"
+            target_profile = self._prompter.get_value(
+                target_profile, 'Profile to update'
+            )
+
+        # Create a temporary session with the provided credentials
+        session = botocore.session.Session()
+
+        try:
+            # Create STS client with the provided credentials
+            sts_client = session.create_client(
+                'sts',
+                aws_access_key_id=access_key,
+                aws_secret_access_key=secret_key,
+            )
+
+            # Call STS to get temporary credentials
+            response = sts_client.get_session_token(
+                DurationSeconds=duration_seconds,
+                SerialNumber=mfa_serial,
+                TokenCode=token_code,
+            )
+        except ClientError as e:
+            sys.stderr.write(f"An error occurred: {e}\n")
+            return 1
+
+        # Extract credentials from response
+        temp_credentials = response['Credentials']
+
+        # Write credentials to the credentials file
+        credentials_file = os.path.expanduser('~/.aws/credentials')
+
+        # Prepare the values to write
+        credential_values = {
+            '__section__': target_profile,
+            'aws_access_key_id': temp_credentials['AccessKeyId'],
+            'aws_secret_access_key': temp_credentials['SecretAccessKey'],
+            'aws_session_token': temp_credentials['SessionToken'],
+        }
+
+        # Get expiration time as a string
+        try:
+            expiration_time = temp_credentials['Expiration'].strftime(
+                '%Y-%m-%d %H:%M:%S UTC'
+            )
+        except Exception:
+            expiration_time = str(temp_credentials['Expiration'])
+
+        # Add expiration as a comment in the config file
+        credential_values['#expiration'] = (
+            f"# Credentials expire at: {expiration_time}"
+        )
+
+        # Write to credentials file
+        self._config_writer.update_config(credential_values, credentials_file)
+
+        sys.stdout.write(
+            f"Temporary credentials written to profile '{target_profile}'\n"
+        )
+        sys.stdout.write(f"Credentials will expire at {expiration_time}\n")
+        sys.stdout.write(
+            f"To use these credentials, specify --profile {target_profile} when running AWS CLI commands\n"
+        )
+
+        return 0

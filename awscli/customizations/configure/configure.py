@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 import os
+import sys
 
 from botocore.exceptions import ProfileNotFound
 
@@ -25,6 +26,7 @@ from awscli.customizations.configure.get import ConfigureGetCommand
 from awscli.customizations.configure.importer import ConfigureImportCommand
 from awscli.customizations.configure.list import ConfigureListCommand
 from awscli.customizations.configure.listprofiles import ListProfilesCommand
+from awscli.customizations.configure.mfalogin import ConfigureMFALoginCommand
 from awscli.customizations.configure.set import ConfigureSetCommand
 from awscli.customizations.configure.sso import (
     ConfigureSSOCommand,
@@ -88,6 +90,7 @@ class ConfigureCommand(BasicCommand):
         {'name': 'list-profiles', 'command_class': ListProfilesCommand},
         {'name': 'sso', 'command_class': ConfigureSSOCommand},
         {'name': 'sso-session', 'command_class': ConfigureSSOSessionCommand},
+        {'name': 'mfa-login', 'command_class': ConfigureMFALoginCommand},
         {
             'name': 'export-credentials',
             'command_class': ConfigureExportCredentialsCommand,
@@ -114,6 +117,16 @@ class ConfigureCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         # Called when invoked with no args "aws configure"
+        # Check if there are any remaining unparsed arguments that might be invalid subcommands
+        if hasattr(parsed_args, 'remaining') and parsed_args.remaining:
+            sys.stderr.write(
+                f"Invalid subcommand: {' '.join(parsed_args.remaining)}\n"
+            )
+            sys.stderr.write(
+                "Valid subcommands are: list, get, set, add-model, import, list-profiles, sso, sso-session, mfa-login, export-credentials\n"
+            )
+            return 1
+
         new_values = {}
         # This is the config from the config file scoped to a specific
         # profile.

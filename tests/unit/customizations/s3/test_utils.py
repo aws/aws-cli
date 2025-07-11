@@ -859,6 +859,20 @@ class TestNonSeekableStream(unittest.TestCase):
         self.assertEqual(nonseekable_fileobj.read(3), 'foo')
 
 
+class TestRequestParamsMapperNoOverwrite(unittest.TestCase):
+    def test_map_put_object_params_with_no_overwrite(self):
+        request_params = {}
+        cli_params = {'no_overwrite': True}
+        RequestParamsMapper.map_put_object_params(request_params, cli_params)
+        self.assertEqual(request_params['IfNoneMatch'], '*')
+
+    def test_map_put_object_params_without_no_overwrite(self):
+        request_params = {}
+        cli_params = {}
+        RequestParamsMapper.map_put_object_params(request_params, cli_params)
+        self.assertNotIn('IfNoneMatch', request_params)
+
+
 class TestS3PathResolver:
     _BASE_ACCESSPOINT_ARN = (
         "s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint"

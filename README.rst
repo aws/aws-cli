@@ -102,6 +102,7 @@ Before using aws-cli, you need to tell it about your AWS credentials.  You
 can do this in several ways:
 
 * Environment variables
+* `IAM Roles Anywhere <https://docs.aws.amazon.com/rolesanywhere/latest/userguide/introduction.html>` with a public certificate and private key
 * Shared credentials file
 * Config file
 * IAM Role
@@ -119,6 +120,24 @@ To use environment variables, do the following::
     $ export AWS_ACCESS_KEY_ID=<access_key>
     $ export AWS_SECRET_ACCESS_KEY=<secret_key>
 
+To use IAM Roles Anywhere, you must first complete the following:
+* Have a public certificate and private key pair issued by your private certificate authority (CA). You well need the CA public certificate or an instance of `AWS Private CA <https://docs.aws.amazon.com/privateca/latest/userguide/PcaWelcome.html>` as well
+* Setup your trust anchors and profiles by following the `IAM Roles Anywhere documentation <https://docs.aws.amazon.com/rolesanywhere/latest/userguide/getting-started.html>`
+
+Once you complete the pre-requisites, you can test your setup with the following::
+    docker run --rm -v </path/to/your/certificates>:</path/to/expose/your/certificates>:ro --entrypoint /usr/local/bin/aws_signing_helper amazon/aws-cli --region <an AWS region code> --certificate </path/to/expose/your/certificates>/<yourcert.pem> --private-key </path/to/expose/your/certificates>/<yourprivatekey.pem> --profile-arn <your profile ARN> --role-arn <an AWS IAM ROLE ARN> --trust-anchor-arn <your trust anchor ARN>
+
+To use it with the AWS CLI, first create a configuration file like this::
+    [profile default]
+    credential_process = /usr/local/bin/aws_signing_helper --region <an AWS region code> --certificate </path/to/expose/your/certificates>/<yourcert.pem> --private-key </path/to/expose/your/certificates>/<yourprivatekey.pem> --profile-arn <your profile ARN> --role-arn <an AWS IAM ROLE ARN> --trust-anchor-arn <your trust anchor ARN>
+
+and place it in ~/.aws/config. If you place this else where, you will need to use that directory path for the next step.
+
+Then you can test an AWS command, like the following::
+    docker run --rm -v </path/to/your/certificates>:</path/to/expose/your/certificates>:ro -v <path to your AWS config directory>:/root/.aws:ro amazon/aws-cli s3api list-buckets
+
+You must replace the following variables in the examples above::
+    * 
 To use the shared credentials file, create an INI formatted file like this::
 
     [default]

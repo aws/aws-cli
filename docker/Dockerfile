@@ -1,4 +1,4 @@
-FROM public.ecr.aws/amazonlinux/amazonlinux:2 as installer
+FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS installer
 ARG EXE_FILENAME=awscli-exe-linux-x86_64.zip
 COPY $EXE_FILENAME .
 RUN yum update -y \
@@ -9,7 +9,12 @@ RUN yum update -y \
   # into /usr/local/bin of the final stage without
   # accidentally copying over any other executables that
   # may be present in /usr/local/bin of the installer stage.
-  && ./aws/install --bin-dir /aws-cli-bin/
+  && ./aws/install --bin-dir /aws-cli-bin/ \
+  # build the IAM Roles Anywhere signing helper
+  && yum -y groupinstall 'Development Tools' && yum -y install golang-go \
+  && git clone https://github.com/aws/rolesanywhere-credential-helper.git \
+  && cd /rolesanywhere-credential-helper \
+  && make release
 
 FROM public.ecr.aws/amazonlinux/amazonlinux:2
 RUN yum update -y \
@@ -17,5 +22,7 @@ RUN yum update -y \
   && yum clean all
 COPY --from=installer /usr/local/aws-cli/ /usr/local/aws-cli/
 COPY --from=installer /aws-cli-bin/ /usr/local/bin/
+COPY --from=installer /rolesanywhere-credential-helper/build/bin/* /usr/local/bin/
+
 WORKDIR /aws
 ENTRYPOINT ["/usr/local/bin/aws"]

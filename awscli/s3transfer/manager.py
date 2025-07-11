@@ -195,6 +195,7 @@ class TransferManager:
         + [
             'ChecksumType',
             'MpuObjectSize',
+            'IfNoneMatch',
         ]
         + FULL_OBJECT_CHECKSUM_ARGS
     )

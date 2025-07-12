@@ -1603,6 +1603,7 @@ class CommandParameters:
             self.parameters['is_stream'] = True
             self.parameters['dir_op'] = False
             self.parameters['only_show_errors'] = True
+            self._validate_streaming_no_overwrite_for_download_parameter()
 
     def _validate_path_args(self):
         # If we're using a mv command, you can't copy the object onto itself.
@@ -1824,3 +1825,22 @@ class CommandParameters:
                     '--sse-c-copy-source is only supported for '
                     'copy operations.'
                 )
+
+    def _validate_streaming_no_overwrite_for_download_parameter(self):
+        """
+        Validates that no-overwrite parameter is not used with streaming downloads.
+
+        When downloading from S3 to stdout (streaming download), the no-overwrite
+        parameter doesn't make sense since stdout is not a file that can be checked
+        for existence. This method checks for this invalid combination and raises
+        an appropriate error.
+
+        Raises:
+            ParamValidationError: If no-overwrite is specified with a streaming download.
+        """
+        params = self.parameters
+        if params['paths_type'] == 's3local' and params.get('no_overwrite'):
+            raise ParamValidationError(
+                "--no-overwrite parameter is not supported for "
+                "streaming downloads"
+            )

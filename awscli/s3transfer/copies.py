@@ -67,6 +67,7 @@ class CopySubmissionTask(SubmissionTask):
         'CopySourceSSECustomerKeyMD5',
         'MetadataDirective',
         'TaggingDirective',
+        'IfNoneMatch',
     ]
 
     COMPLETE_MULTIPART_ARGS = [
@@ -75,6 +76,11 @@ class CopySubmissionTask(SubmissionTask):
         'SSECustomerKeyMD5',
         'RequestPayer',
         'ExpectedBucketOwner',
+        'IfNoneMatch',
+    ]
+
+    COPY_OBJECT_BLOCKLIST = [
+        'IfNoneMatch',
     ]
 
     def _submit(
@@ -98,6 +104,7 @@ class CopySubmissionTask(SubmissionTask):
         :param transfer_future: The transfer future associated with the
             transfer request that tasks are being submitted for
         """
+        call_args = transfer_future.meta.call_args
         # Determine the size if it was not provided
         if transfer_future.meta.size is None:
             # If a size was not provided figure out the size for the
@@ -105,7 +112,6 @@ class CopySubmissionTask(SubmissionTask):
             # the TransferManager. If the object is outside of the region
             # of the client, they may have to provide the file size themselves
             # with a completely new client.
-            call_args = transfer_future.meta.call_args
             head_object_request = (
                 self._get_head_object_request_from_copy_source(
                     call_args.copy_source
@@ -127,10 +133,17 @@ class CopySubmissionTask(SubmissionTask):
             transfer_future.meta.provide_transfer_size(
                 response['ContentLength']
             )
-
-        # If it is greater than threshold do a multipart copy, otherwise
-        # do a regular copy object.
-        if transfer_future.meta.size < config.multipart_threshold:
+        # Check if no-overwrite is enabled and file has content
+        no_overwrite_requested = (
+            call_args.extra_args.get("IfNoneMatch")
+            and transfer_future.meta.size != 0
+        )
+        # If it is less than threshold and no_overwrite is not requested
+        # do a regular copy else do multipart copy.
+        if (
+            transfer_future.meta.size < config.multipart_threshold
+            and not no_overwrite_requested
+        ):
             self._submit_copy_request(
                 client, config, osutil, request_executor, transfer_future
             )
@@ -147,7 +160,13 @@ class CopySubmissionTask(SubmissionTask):
         # Get the needed progress callbacks for the task
         progress_callbacks = get_callbacks(transfer_future, 'progress')
 
-        # Submit the request of a single copy.
+        # Submit the request of a single copy and make sure it
+        # does not include any blocked arguments.
+        copy_object_extra_args = {}
+        for param, val in call_args.extra_args.items():
+            if param not in self.COPY_OBJECT_BLOCKLIST:
+                copy_object_extra_args[param] = val
+
         self._transfer_coordinator.submit(
             request_executor,
             CopyObjectTask(
@@ -157,7 +176,7 @@ class CopySubmissionTask(SubmissionTask):
                     'copy_source': call_args.copy_source,
                     'bucket': call_args.bucket,
                     'key': call_args.key,
-                    'extra_args': call_args.extra_args,
+                    'extra_args': copy_object_extra_args,
                     'callbacks': progress_callbacks,
                     'size': transfer_future.meta.size,
                 },

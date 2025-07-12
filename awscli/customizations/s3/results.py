@@ -23,7 +23,6 @@ from awscli.compat import ensure_text_type, queue
 from awscli.customizations.s3.subscribers import OnDoneFilteredSubscriber
 from awscli.customizations.s3.utils import (
     WarningResult,
-    create_warning,
     human_readable_size,
 )
 from awscli.customizations.utils import uni_print

@@ -679,6 +679,39 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         for i, actual_subscriber in enumerate(actual_subscribers):
             self.assertIsInstance(actual_subscriber, ref_subscribers[i])
 
+    def test_submit_with_no_overwrite_flag_when_file_exists_at_destination(
+        self,
+    ):
+        # Setting up the CLI params with no_overwrite flag as True
+        self.cli_params['no_overwrite'] = True
+        fileinfo = self.create_file_info(self.key)
+        # Mocking os.path.exists to simulate that file already exists
+        with mock.patch('os.path.exists', return_value=True):
+            # Submitting download request
+            future = self.transfer_request_submitter.submit(fileinfo)
+            # Asserting that the future is None, as the file already exists
+            self.assertIsNone(future)
+            # Asserting that no download happened
+            self.assert_no_downloads_happened()
+
+    def test_submit_with_no_overwrite_flag_when_file_does_not_exist_at_destination(
+        self,
+    ):
+        # Setting up the CLI params with no_overwrite flag as True
+        self.cli_params['no_overwrite'] = True
+        fileinfo = self.create_file_info(self.key)
+        # Mocking os.path.exists to return False, to simulate that file does not exist
+        with mock.patch('os.path.exists', return_value=False):
+            # Submitting download request
+            future = self.transfer_request_submitter.submit(fileinfo)
+            # Asserting that the future is the same object returned by transfer_manager.download
+            # This confirms that download was actually initiated
+            self.assertIs(self.transfer_manager.download.return_value, future)
+            # Asserting that download happened
+            self.assertEqual(
+                len(self.transfer_manager.download.call_args_list), 1
+            )
+
 
 class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):

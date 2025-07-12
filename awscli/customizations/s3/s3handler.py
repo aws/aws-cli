@@ -438,7 +438,38 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         return fileinfo.dest
 
     def _get_warning_handlers(self):
-        return [self._warn_glacier, self._warn_parent_reference]
+        return [
+            self._warn_glacier,
+            self._warn_parent_reference,
+            self._warn_if_file_exists_with_no_overwrite,
+        ]
+
+    def _warn_if_file_exists_with_no_overwrite(self, fileinfo):
+        """
+        Warning handler to skip downloads when no-overwrite is set and local file exists.
+
+        This method prevents overwriting existing local files during S3 download operations
+        when the --no-overwrite flag is specified. It checks if the destination file already
+        exists on the local filesystem and skips the download if found.
+
+        :type fileinfo: awscli.customizations.s3.fileinfo.FileInfo
+        :param fileinfo: The FileInfo object containing source and destination details
+
+        :rtype: bool
+        :returns: True if the file should be skipped (exists and no-overwrite is set),
+                False if the download should proceed
+        """
+        if not self._cli_params.get('no_overwrite'):
+            return False
+        fileout = self._get_fileout(fileinfo)
+        if os.path.exists(fileout):
+            LOGGER.debug(
+                "Warning: Skipping file %s as it already exists on %s",
+                fileinfo.src,
+                fileinfo.dest,
+            )
+            return True
+        return False
 
     def _format_src_dest(self, fileinfo):
         src = self._format_s3_path(fileinfo.src)

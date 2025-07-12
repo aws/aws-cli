@@ -521,6 +521,7 @@ class RequestParamsMapper:
         )
         cls._set_request_payer_param(request_params, cli_params)
         cls._set_checksum_algorithm_param(request_params, cli_params)
+        cls._set_no_overwrite_param(request_params, cli_params)
 
     @classmethod
     def map_head_object_params(cls, request_params, cli_params):

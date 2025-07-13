@@ -524,7 +524,6 @@ class CommandParametersTest(unittest.TestCase):
         paths = ['s3://bucket/key', '-']
         cmd_params = CommandParameters('cp', {}, '')
         cmd_params.add_paths(paths)
-        print(" Paramertes %s", cmd_params.parameters)
         self.assertTrue(cmd_params.parameters['is_stream'])
         self.assertTrue(cmd_params.parameters['only_show_errors'])
         self.assertFalse(cmd_params.parameters['dir_op'])

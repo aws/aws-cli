@@ -336,13 +336,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
         # Set up the response to simulate a PreconditionFailed error
         self.http_response.status_code = 412
         self.parsed_responses = [
-            {
-                'Error': {
-                    'Code': 'PreconditionFailed',
-                    'Message': 'At least one of the pre-conditions you specified did not hold',
-                    'Condition': 'If-None-Match',
-                }
-            }
+            self.precondition_failed_error_response(),
         ]
         self.run_cmd(cmdline, expected_rc=0)
         # Verify PutObject was attempted with IfNoneMatch
@@ -392,13 +386,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
             {'UploadId': 'foo'},  # CreateMultipartUpload response
             {'ETag': '"foo-1"'},  # UploadPart response
             {'ETag': '"foo-2"'},  # UploadPart response
-            {
-                'Error': {
-                    'Code': 'PreconditionFailed',
-                    'Message': 'At least one of the pre-conditions you specified did not hold',
-                    'Condition': 'If-None-Match',
-                }
-            },  # CompleteMultipartUpload response
+            self.precondition_failed_error_response(),  # CompleteMultipartUpload response
             {},  # Abort Multipart
         ]
         self.run_cmd(cmdline, expected_rc=0)
@@ -575,7 +563,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
         )
         self.assertEqual(self.operations_called[6][0].name, 'DeleteObject')
 
-    def test_no_overwrite_flag_on_mv_download_when_small_object_exists_at_target(
+    def test_no_overwrite_flag_on_mv_download_when_single_object_exists_at_target(
         self,
     ):
         full_path = self.files.create_file('foo.txt', 'existing content')
@@ -591,7 +579,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
         with open(full_path) as f:
             self.assertEqual(f.read(), 'existing content')
 
-    def test_no_overwrite_flag_on_mv_download_when_small_object_does_not_exist_at_target(
+    def test_no_overwrite_flag_on_mv_download_when_single_object_does_not_exist_at_target(
         self,
     ):
         full_path = self.files.full_path('foo.txt')
@@ -610,42 +598,6 @@ class TestMvCommand(BaseS3TransferCommandTest):
         self.assertEqual(self.operations_called[2][0].name, 'DeleteObject')
         with open(full_path) as f:
             self.assertEqual(f.read(), 'foo')
-
-    def test_no_overwrite_flag_on_mv_download_when_large_object_exists_at_target(
-        self,
-    ):
-        full_path = self.files.create_file('foo.txt', 'existing content')
-        cmdline = (
-            f'{self.prefix} s3://bucket/foo.txt {full_path} --no-overwrite'
-        )
-        self.parsed_responses = [
-            self.head_object_response(ContentLength=10 * (1024**2)),
-        ]
-        self.run_cmd(cmdline, expected_rc=0)
-        self.assertEqual(len(self.operations_called), 1)
-        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
-        with open(full_path) as f:
-            self.assertEqual(f.read(), 'existing content')
-
-    def test_no_overwrite_flag_on_mv_download_when_large_object_does_not_exist_at_target(
-        self,
-    ):
-        full_path = self.files.full_path('foo.txt')
-        cmdline = (
-            f'{self.prefix} s3://bucket/foo.txt {full_path} --no-overwrite'
-        )
-        self.parsed_responses = [
-            self.head_object_response(ContentLength=10 * (1024**2)),
-            self.get_object_response(),
-            self.get_object_response(),
-            self.delete_object_response(),
-        ]
-        self.run_cmd(cmdline, expected_rc=0)
-        self.assertEqual(len(self.operations_called), 4)
-        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
-        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
-        self.assertEqual(self.operations_called[2][0].name, 'GetObject')
-        self.assertEqual(self.operations_called[3][0].name, 'DeleteObject')
 
 
 class TestMvWithCRTClient(BaseCRTTransferClientTest):

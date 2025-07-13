@@ -1314,7 +1314,6 @@ class CommandArchitecture:
                     sync_type = override_sync_strategy.sync_type
                     sync_type += '_sync_strategy'
                     sync_strategies[sync_type] = override_sync_strategy
-
         return sync_strategies
 
     def run(self):
@@ -1829,11 +1828,6 @@ class CommandParameters:
     def _validate_streaming_no_overwrite_for_download_parameter(self):
         """
         Validates that no-overwrite parameter is not used with streaming downloads.
-
-        When downloading from S3 to stdout (streaming download), the no-overwrite
-        parameter doesn't make sense since stdout is not a file that can be checked
-        for existence. This method checks for this invalid combination and raises
-        an appropriate error.
 
         Raises:
             ParamValidationError: If no-overwrite is specified with a streaming download.

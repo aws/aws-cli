@@ -452,8 +452,8 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         when the --no-overwrite flag is specified. It checks if the destination file already
         exists on the local filesystem and skips the download if found.
 
-        :type fileinfo: awscli.customizations.s3.fileinfo.FileInfo
-        :param fileinfo: The FileInfo object containing source and destination details
+        :type fileinfo: FileInfo
+        :param fileinfo: The FileInfo object containing transfer details
 
         :rtype: bool
         :returns: True if the file should be skipped (exists and no-overwrite is set),

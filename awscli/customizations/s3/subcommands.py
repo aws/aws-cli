@@ -1143,7 +1143,7 @@ class SyncCommand(S3TransferCommand):
             }
         ]
         + TRANSFER_ARGS
-        + [METADATA, COPY_PROPS, METADATA_DIRECTIVE]
+        + [METADATA, COPY_PROPS, METADATA_DIRECTIVE, NO_OVERWRITE]
     )
 
 
@@ -1400,7 +1400,8 @@ class CommandArchitecture:
             self._client, self._source_client, self.parameters
         )
 
-        s3_transfer_handler = S3TransferHandlerFactory(self.parameters)(
+        params = self._get_s3_handler_params()
+        s3_transfer_handler = S3TransferHandlerFactory(params)(
             self._transfer_manager, result_queue
         )
 
@@ -1509,6 +1510,16 @@ class CommandArchitecture:
                 },
             )
 
+    def _get_s3_handler_params(self):
+        """
+        Removing no-overwrite params from sync since file to
+        be synced are already separated out using sync strategy
+        """
+        params = self.parameters.copy()
+        if self.cmd == 'sync':
+            params.pop('no_overwrite', None)
+        return params
+
 
 # TODO: This class is fairly quirky in the sense that it is both a builder
 #  and a data object. In the future we should make the following refactorings
@@ -1572,6 +1583,7 @@ class CommandParameters:
         elif len(paths) == 1:
             self.parameters['dest'] = paths[0]
         self._validate_streaming_paths()
+        self._validate_no_overwrite_for_download_streaming()
         self._validate_path_args()
         self._validate_sse_c_args()
         self._validate_not_s3_express_bucket_for_sync()
@@ -1602,7 +1614,6 @@ class CommandParameters:
             self.parameters['is_stream'] = True
             self.parameters['dir_op'] = False
             self.parameters['only_show_errors'] = True
-            self._validate_streaming_no_overwrite_for_download_parameter()
 
     def _validate_path_args(self):
         # If we're using a mv command, you can't copy the object onto itself.
@@ -1825,15 +1836,18 @@ class CommandParameters:
                     'copy operations.'
                 )
 
-    def _validate_streaming_no_overwrite_for_download_parameter(self):
+    def _validate_no_overwrite_for_download_streaming(self):
         """
         Validates that no-overwrite parameter is not used with streaming downloads.
 
         Raises:
             ParamValidationError: If no-overwrite is specified with a streaming download.
         """
-        params = self.parameters
-        if params['paths_type'] == 's3local' and params.get('no_overwrite'):
+        if (
+            self.parameters['is_stream']
+            and self.parameters.get('no_overwrite')
+            and self.parameters['dest'] == '-'
+        ):
             raise ParamValidationError(
                 "--no-overwrite parameter is not supported for "
                 "streaming downloads"

@@ -452,8 +452,8 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         when the --no-overwrite flag is specified. It checks if the destination file already
         exists on the local filesystem and skips the download if found.
 
-        :type fileinfo: awscli.customizations.s3.fileinfo.FileInfo
-        :param fileinfo: The FileInfo object containing source and destination details
+        :type fileinfo: FileInfo
+        :param fileinfo: The FileInfo object containing transfer details
 
         :rtype: bool
         :returns: True if the file should be skipped (exists and no-overwrite is set),
@@ -464,9 +464,7 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         fileout = self._get_fileout(fileinfo)
         if os.path.exists(fileout):
             LOGGER.debug(
-                "Warning: Skipping file %s as it already exists on %s",
-                fileinfo.src,
-                fileinfo.dest,
+                f"warning: skipping {fileinfo.src} -> {fileinfo.dest}, file exists at destination"
             )
             return True
         return False
@@ -543,9 +541,7 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
         try:
             client.head_object(Bucket=bucket, Key=key)
             LOGGER.debug(
-                "Warning: Skipping file %s as it already exists on %s",
-                fileinfo.src,
-                fileinfo.dest,
+                f"warning: skipping {fileinfo.src} -> {fileinfo.dest}, file exists at destination"
             )
             return True
         except ClientError as e:

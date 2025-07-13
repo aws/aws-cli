@@ -336,13 +336,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
         # Set up the response to simulate a PreconditionFailed error
         self.http_response.status_code = 412
         self.parsed_responses = [
-            {
-                'Error': {
-                    'Code': 'PreconditionFailed',
-                    'Message': 'At least one of the pre-conditions you specified did not hold',
-                    'Condition': 'If-None-Match',
-                }
-            }
+            self.precondition_failed_error_response(),
         ]
         self.run_cmd(cmdline, expected_rc=0)
         # Verify PutObject was attempted with IfNoneMatch
@@ -392,13 +386,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
             {'UploadId': 'foo'},  # CreateMultipartUpload response
             {'ETag': '"foo-1"'},  # UploadPart response
             {'ETag': '"foo-2"'},  # UploadPart response
-            {
-                'Error': {
-                    'Code': 'PreconditionFailed',
-                    'Message': 'At least one of the pre-conditions you specified did not hold',
-                    'Condition': 'If-None-Match',
-                }
-            },  # CompleteMultipartUpload response
+            self.precondition_failed_error_response(),  # CompleteMultipartUpload response
             {},  # Abort Multipart
         ]
         self.run_cmd(cmdline, expected_rc=0)

@@ -315,13 +315,7 @@ class TestCPCommand(BaseCPCommandTest):
         # Set up the response to simulate a PreconditionFailed error
         self.http_response.status_code = 412
         self.parsed_responses = [
-            {
-                'Error': {
-                    'Code': 'PreconditionFailed',
-                    'Message': 'At least one of the pre-conditions you specified did not hold',
-                    'Condition': 'If-None-Match',
-                }
-            }
+            self.precondition_failed_error_response(),
         ]
         self.run_cmd(cmdline, expected_rc=0)
         # Verify PutObject was attempted with IfNoneMatch
@@ -367,13 +361,7 @@ class TestCPCommand(BaseCPCommandTest):
             {'UploadId': 'foo'},  # CreateMultipartUpload response
             {'ETag': '"foo-1"'},  # UploadPart response
             {'ETag': '"foo-2"'},  # UploadPart response
-            {
-                'Error': {
-                    'Code': 'PreconditionFailed',
-                    'Message': 'At least one of the pre-conditions you specified did not hold',
-                    'Condition': 'If-None-Match',
-                }
-            },  # PreconditionFailed error for CompleteMultipart Upload
+            self.precondition_failed_error_response(),  # PreconditionFailed error for CompleteMultipart Upload
             {},  # AbortMultipartUpload response
         ]
         # Checking for success as file is skipped
@@ -1493,6 +1481,15 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
         error_message = (
             'An error occurred (NoSuchBucket) when calling '
             'the HeadObject operation: The specified bucket does not exist'
+        )
+        self.assertIn(error_message, stderr)
+
+    def test_no_overwrite_cannot_be_used_with_streaming_download(self):
+        command = "s3 cp s3://bucket/streaming.txt - --no-overwrite"
+        _, stderr, _ = self.run_cmd(command, expected_rc=252)
+        error_message = (
+            "--no-overwrite parameter is not supported for "
+            "streaming downloads"
         )
         self.assertIn(error_message, stderr)
 

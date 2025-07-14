@@ -489,6 +489,7 @@ class RequestParamsMapper:
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_request_payer_param(request_params, cli_params)
         cls._set_checksum_algorithm_param(request_params, cli_params)
+        cls._set_no_overwrite_param(request_params, cli_params)
 
     @classmethod
     def map_get_object_params(cls, request_params, cli_params):
@@ -557,6 +558,12 @@ class RequestParamsMapper:
     @classmethod
     def map_list_objects_v2_params(cls, request_params, cli_params):
         cls._set_request_payer_param(request_params, cli_params)
+
+    @classmethod
+    def _set_no_overwrite_param(cls, request_params, cli_params):
+        """Map No overwrite header with IfNoneMatch"""
+        if cli_params.get('no_overwrite'):
+            request_params['IfNoneMatch'] = "*"
 
     @classmethod
     def _set_request_payer_param(cls, request_params, cli_params):

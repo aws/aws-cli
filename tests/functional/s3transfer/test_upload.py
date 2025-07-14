@@ -367,6 +367,51 @@ class TestNonMultipartUpload(BaseUploadTest):
         with self.assertRaisesRegex(ValueError, 'methods do not support'):
             self.manager.upload(self.filename, s3_object_lambda_arn, self.key)
 
+    def test_upload_with_no_overwrite_flag_when_object_exists(self):
+        self.extra_args['IfNoneMatch'] = '*'
+        # Mocking a precondition Error
+        self.stubber.add_client_error(
+            'put_object',
+            http_status_code=412,
+            service_error_code='PreconditionFailed',
+            expected_params={
+                'Body': ANY,
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'IfNoneMatch': '*',
+                'ChecksumAlgorithm': DEFAULT_CHECKSUM_ALGORITHM,
+            },
+        )
+        with self.assertRaises(ClientError) as context:
+            future = self.manager.upload(
+                self.filename, self.bucket, self.key, self.extra_args
+            )
+            future.result()
+        # Verify the error is a PreconditionFailed error
+        self.assertEqual(
+            context.exception.response['Error']['Code'], 'PreconditionFailed'
+        )
+        self.stubber.assert_no_pending_responses()
+
+    def test_upload_with_no_overwrite_flag_when_object_does_not_exists(self):
+        self.extra_args['IfNoneMatch'] = '*'
+        self.stubber.add_response(
+            'put_object',
+            service_response={},
+            expected_params={
+                'Body': ANY,
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'IfNoneMatch': '*',
+                'ChecksumAlgorithm': DEFAULT_CHECKSUM_ALGORITHM,
+            },
+        )
+        future = self.manager.upload(
+            self.filename, self.bucket, self.key, self.extra_args
+        )
+        future.result()
+        self.stubber.assert_no_pending_responses()
+
 
 class TestMultipartUpload(BaseUploadTest):
     __test__ = True
@@ -848,3 +893,110 @@ class TestMultipartUpload(BaseUploadTest):
         )
         future.result()
         self.assert_expected_client_calls_were_correct()
+
+    def test_multipart_upload_with_no_overwrite_flag_when_object_exists(self):
+        self.extra_args['IfNoneMatch'] = '*'
+        # Add response for create_multipart_upload (no IfNoneMatch here)
+        self.add_create_multipart_response_with_default_expected_params()
+        # Add responses for upload_part
+        self.add_upload_part_responses_with_default_expected_params()
+        # Mock a PreconditionFailed error response when trying to complete the multipart upload
+        self.stubber.add_client_error(
+            method='complete_multipart_upload',
+            service_error_code='PreconditionFailed',
+            service_message='The condition specified in the conditional header(s) was not met',
+            http_status_code=412,
+            expected_params={
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'UploadId': self.multipart_id,
+                'MultipartUpload': {
+                    'Parts': [
+                        {
+                            'ETag': 'etag-1',
+                            'PartNumber': 1,
+                            'ChecksumCRC64NVME': 'sum1==',
+                        },
+                        {
+                            'ETag': 'etag-2',
+                            'PartNumber': 2,
+                            'ChecksumCRC64NVME': 'sum2==',
+                        },
+                        {
+                            'ETag': 'etag-3',
+                            'PartNumber': 3,
+                            'ChecksumCRC64NVME': 'sum3==',
+                        },
+                    ]
+                },
+                'IfNoneMatch': '*',
+            },
+        )
+        # Add response for abort_multipart_upload that should be called after the error
+        self.stubber.add_response(
+            method='abort_multipart_upload',
+            service_response={},
+            expected_params={
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'UploadId': self.multipart_id,
+            },
+        )
+        # Execute the upload and verify it raises the expected exception
+        with self.assertRaises(ClientError) as context:
+            future = self.manager.upload(
+                self.filename, self.bucket, self.key, self.extra_args
+            )
+            future.result()
+        # Verify the error is a PreconditionFailed error
+        self.assertEqual(
+            context.exception.response['Error']['Code'], 'PreconditionFailed'
+        )
+        self.stubber.assert_no_pending_responses()
+
+    def test_multipart_upload_with_no_overwrite_flag_when_object_does_not_exist(
+        self,
+    ):
+        self.extra_args['IfNoneMatch'] = '*'
+        # Add response for create_multipart_upload (no IfNoneMatch here)
+        self.add_create_multipart_response_with_default_expected_params()
+        # Add responses for upload_part
+        self.add_upload_part_responses_with_default_expected_params()
+        # Add response for complete_multipart_upload with IfNoneMatch in expected_params
+        self.stubber.add_response(
+            'complete_multipart_upload',
+            service_response={},
+            expected_params={
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'UploadId': self.multipart_id,
+                'MultipartUpload': {
+                    'Parts': [
+                        {
+                            'ETag': 'etag-1',
+                            'PartNumber': 1,
+                            'ChecksumCRC64NVME': 'sum1==',
+                        },
+                        {
+                            'ETag': 'etag-2',
+                            'PartNumber': 2,
+                            'ChecksumCRC64NVME': 'sum2==',
+                        },
+                        {
+                            'ETag': 'etag-3',
+                            'PartNumber': 3,
+                            'ChecksumCRC64NVME': 'sum3==',
+                        },
+                    ]
+                },
+                'IfNoneMatch': '*',
+            },
+        )
+        # Execute the upload
+        future = self.manager.upload(
+            self.filename, self.bucket, self.key, self.extra_args
+        )
+        future.result()
+        # Verify the upload was successful
+        self.stubber.assert_no_pending_responses()
+        self.assert_upload_part_bodies_were_correct()

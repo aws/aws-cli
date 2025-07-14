@@ -2207,7 +2207,7 @@ def test_retries_reuse_request_checksum(
     }
     s3 = _create_s3_client(
         retries={
-            'max_attempts': 1,
+            'max_attempts': 2,
         }
     )
     with pytest.raises(ConnectionError):

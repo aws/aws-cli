@@ -8,7 +8,7 @@ The following ``list-pod-identity-associations`` returns the list of Pod Identit
 Output::
 
     {
-    "associations": [
+        "associations": [
             {
                 "clusterName": "eks-customer",
                 "namespace": "default",

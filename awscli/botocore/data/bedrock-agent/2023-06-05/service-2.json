@@ -6233,6 +6233,16 @@
         "Collector"
       ]
     },
+    "IndexArn":{
+      "type":"string",
+      "sensitive":true
+    },
+    "IndexName":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "sensitive":true
+    },
     "InferenceConfiguration":{
       "type":"structure",
       "members":{
@@ -6929,7 +6939,8 @@
         "RDS",
         "MONGO_DB_ATLAS",
         "NEPTUNE_ANALYTICS",
-        "OPENSEARCH_MANAGED_CLUSTER"
+        "OPENSEARCH_MANAGED_CLUSTER",
+        "S3_VECTORS"
       ]
     },
     "KnowledgeBaseSummaries":{
@@ -9656,6 +9667,24 @@
       "max":1,
       "min":1
     },
+    "S3VectorsConfiguration":{
+      "type":"structure",
+      "members":{
+        "indexArn":{
+          "shape":"IndexArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the vector index used for the knowledge base. This ARN identifies the specific vector index resource within Amazon Bedrock.</p>"
+        },
+        "indexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the vector index used for the knowledge base. This name identifies the vector index within the Amazon Bedrock service.</p>"
+        },
+        "vectorBucketArn":{
+          "shape":"VectorBucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 bucket where vector embeddings are stored. This bucket contains the vector data used by the knowledge base.</p>"
+        }
+      },
+      "documentation":"<p>Contains the storage configuration of the knowledge base for S3 vectors.</p>"
+    },
     "SalesforceAuthType":{
       "type":"string",
       "enum":["OAUTH2_CLIENT_CREDENTIALS"]
@@ -10047,6 +10076,10 @@
         "redisEnterpriseCloudConfiguration":{
           "shape":"RedisEnterpriseCloudConfiguration",
           "documentation":"<p>Contains the storage configuration of the knowledge base in Redis Enterprise Cloud.</p>"
+        },
+        "s3VectorsConfiguration":{
+          "shape":"S3VectorsConfiguration",
+          "documentation":"<p>The configuration settings for storing knowledge base data using S3 vectors. This includes vector index information and S3 bucket details for vector storage.</p>"
         },
         "type":{
           "shape":"KnowledgeBaseStorageType",
@@ -11354,6 +11387,10 @@
     "ValidationExceptionFieldList":{
       "type":"list",
       "member":{"shape":"ValidationExceptionField"}
+    },
+    "VectorBucketArn":{
+      "type":"string",
+      "sensitive":true
     },
     "VectorIngestionConfiguration":{
       "type":"structure",

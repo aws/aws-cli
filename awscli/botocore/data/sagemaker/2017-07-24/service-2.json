@@ -3262,6 +3262,19 @@
       ],
       "documentation":"<p>Gets a list of parameters for a pipeline execution.</p>"
     },
+    "ListPipelineVersions":{
+      "name":"ListPipelineVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListPipelineVersionsRequest"},
+      "output":{"shape":"ListPipelineVersionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Gets a list of all versions of the pipeline.</p>"
+    },
     "ListPipelines":{
       "name":"ListPipelines",
       "http":{
@@ -4328,6 +4341,20 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Updates a pipeline execution.</p>"
+    },
+    "UpdatePipelineVersion":{
+      "name":"UpdatePipelineVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdatePipelineVersionRequest"},
+      "output":{"shape":"UpdatePipelineVersionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Updates a pipeline version.</p>"
     },
     "UpdateProject":{
       "name":"UpdateProject",
@@ -6635,10 +6662,7 @@
     },
     "BatchDeleteClusterNodesRequest":{
       "type":"structure",
-      "required":[
-        "ClusterName",
-        "NodeIds"
-      ],
+      "required":["ClusterName"],
       "members":{
         "ClusterName":{
           "shape":"ClusterNameOrArn",
@@ -8477,6 +8501,123 @@
       "pattern":"((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}"
     },
     "ClusterPrivatePrimaryIpv6":{"type":"string"},
+    "ClusterRestrictedInstanceGroupDetails":{
+      "type":"structure",
+      "members":{
+        "CurrentCount":{
+          "shape":"ClusterNonNegativeInstanceCount",
+          "documentation":"<p>The number of instances that are currently in the restricted instance group of a SageMaker HyperPod cluster.</p>"
+        },
+        "TargetCount":{
+          "shape":"ClusterInstanceCount",
+          "documentation":"<p>The number of instances you specified to add to the restricted instance group of a SageMaker HyperPod cluster.</p>"
+        },
+        "InstanceGroupName":{
+          "shape":"ClusterInstanceGroupName",
+          "documentation":"<p>The name of the restricted instance group of a SageMaker HyperPod cluster.</p>"
+        },
+        "InstanceType":{
+          "shape":"ClusterInstanceType",
+          "documentation":"<p>The instance type of the restricted instance group of a SageMaker HyperPod cluster.</p>"
+        },
+        "ExecutionRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>The execution role for the restricted instance group to assume.</p>"
+        },
+        "ThreadsPerCore":{
+          "shape":"ClusterThreadsPerCore",
+          "documentation":"<p>The number you specified to <code>TreadsPerCore</code> in <code>CreateCluster</code> for enabling or disabling multithreading. For instance types that support multithreading, you can specify 1 for disabling multithreading and 2 for enabling multithreading. For more information, see the reference table of <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cpu-options-supported-instances-values.html\">CPU cores and threads per CPU core per instance type</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+        },
+        "InstanceStorageConfigs":{
+          "shape":"ClusterInstanceStorageConfigs",
+          "documentation":"<p>The additional storage configurations for the instances in the SageMaker HyperPod cluster restricted instance group.</p>"
+        },
+        "OnStartDeepHealthChecks":{
+          "shape":"OnStartDeepHealthChecks",
+          "documentation":"<p>A flag indicating whether deep health checks should be performed when the cluster's restricted instance group is created or updated.</p>"
+        },
+        "Status":{
+          "shape":"InstanceGroupStatus",
+          "documentation":"<p>The current status of the cluster's restricted instance group.</p> <ul> <li> <p> <code>InService</code>: The restricted instance group is active and healthy.</p> </li> <li> <p> <code>Creating</code>: The restricted instance group is being provisioned.</p> </li> <li> <p> <code>Updating</code>: The restricted instance group is being updated.</p> </li> <li> <p> <code>Failed</code>: The restricted instance group has failed to provision or is no longer healthy.</p> </li> <li> <p> <code>Degraded</code>: The restricted instance group is degraded, meaning that some instances have failed to provision or are no longer healthy.</p> </li> <li> <p> <code>Deleting</code>: The restricted instance group is being deleted.</p> </li> </ul>"
+        },
+        "TrainingPlanArn":{
+          "shape":"TrainingPlanArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the training plan to filter clusters by. For more information about reserving GPU capacity for your SageMaker HyperPod clusters using Amazon SageMaker Training Plan, see <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingPlan.html\">CreateTrainingPlan</a> </code>.</p>"
+        },
+        "TrainingPlanStatus":{
+          "shape":"InstanceGroupTrainingPlanStatus",
+          "documentation":"<p>The current status of the training plan associated with this cluster restricted instance group.</p>"
+        },
+        "OverrideVpcConfig":{"shape":"VpcConfig"},
+        "ScheduledUpdateConfig":{"shape":"ScheduledUpdateConfig"},
+        "EnvironmentConfig":{
+          "shape":"EnvironmentConfigDetails",
+          "documentation":"<p>The configuration for the restricted instance groups (RIG) environment.</p>"
+        }
+      },
+      "documentation":"<p>The instance group details of the restricted instance group (RIG).</p>"
+    },
+    "ClusterRestrictedInstanceGroupDetailsList":{
+      "type":"list",
+      "member":{"shape":"ClusterRestrictedInstanceGroupDetails"}
+    },
+    "ClusterRestrictedInstanceGroupSpecification":{
+      "type":"structure",
+      "required":[
+        "InstanceCount",
+        "InstanceGroupName",
+        "InstanceType",
+        "ExecutionRole",
+        "EnvironmentConfig"
+      ],
+      "members":{
+        "InstanceCount":{
+          "shape":"ClusterInstanceCount",
+          "documentation":"<p>Specifies the number of instances to add to the restricted instance group of a SageMaker HyperPod cluster.</p>"
+        },
+        "InstanceGroupName":{
+          "shape":"ClusterInstanceGroupName",
+          "documentation":"<p>Specifies the name of the restricted instance group.</p>"
+        },
+        "InstanceType":{
+          "shape":"ClusterInstanceType",
+          "documentation":"<p>Specifies the instance type of the restricted instance group.</p>"
+        },
+        "ExecutionRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>Specifies an IAM execution role to be assumed by the restricted instance group.</p>"
+        },
+        "ThreadsPerCore":{
+          "shape":"ClusterThreadsPerCore",
+          "documentation":"<p>The number you specified to <code>TreadsPerCore</code> in <code>CreateCluster</code> for enabling or disabling multithreading. For instance types that support multithreading, you can specify 1 for disabling multithreading and 2 for enabling multithreading. For more information, see the reference table of <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cpu-options-supported-instances-values.html\">CPU cores and threads per CPU core per instance type</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+        },
+        "InstanceStorageConfigs":{
+          "shape":"ClusterInstanceStorageConfigs",
+          "documentation":"<p>Specifies the additional storage configurations for the instances in the SageMaker HyperPod cluster restricted instance group.</p>"
+        },
+        "OnStartDeepHealthChecks":{
+          "shape":"OnStartDeepHealthChecks",
+          "documentation":"<p>A flag indicating whether deep health checks should be performed when the cluster restricted instance group is created or updated.</p>"
+        },
+        "TrainingPlanArn":{
+          "shape":"TrainingPlanArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the training plan to filter clusters by. For more information about reserving GPU capacity for your SageMaker HyperPod clusters using Amazon SageMaker Training Plan, see <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingPlan.html\">CreateTrainingPlan</a> </code>.</p>"
+        },
+        "OverrideVpcConfig":{"shape":"VpcConfig"},
+        "ScheduledUpdateConfig":{"shape":"ScheduledUpdateConfig"},
+        "EnvironmentConfig":{
+          "shape":"EnvironmentConfig",
+          "documentation":"<p>The configuration for the restricted instance groups (RIG) environment.</p>"
+        }
+      },
+      "documentation":"<p>The specifications of a restricted instance group that you need to define.</p>"
+    },
+    "ClusterRestrictedInstanceGroupSpecifications":{
+      "type":"list",
+      "member":{"shape":"ClusterRestrictedInstanceGroupSpecification"},
+      "max":100,
+      "min":1
+    },
     "ClusterSchedulerConfigArn":{
       "type":"string",
       "max":256,
@@ -9758,6 +9899,10 @@
         "InstanceGroups":{
           "shape":"ClusterInstanceGroupSpecifications",
           "documentation":"<p>The instance groups to be created in the SageMaker HyperPod cluster.</p>"
+        },
+        "RestrictedInstanceGroups":{
+          "shape":"ClusterRestrictedInstanceGroupSpecifications",
+          "documentation":"<p>The specialized instance groups for training models like Amazon Nova to be created in the SageMaker HyperPod cluster.</p>"
         },
         "VpcConfig":{
           "shape":"VpcConfig",
@@ -14712,10 +14857,7 @@
     },
     "DescribeClusterNodeRequest":{
       "type":"structure",
-      "required":[
-        "ClusterName",
-        "NodeId"
-      ],
+      "required":["ClusterName"],
       "members":{
         "ClusterName":{
           "shape":"ClusterNameOrArn",
@@ -14778,6 +14920,10 @@
         "InstanceGroups":{
           "shape":"ClusterInstanceGroupDetailsList",
           "documentation":"<p>The instance groups of the SageMaker HyperPod cluster.</p>"
+        },
+        "RestrictedInstanceGroups":{
+          "shape":"ClusterRestrictedInstanceGroupDetailsList",
+          "documentation":"<p>The specialized instance groups for training models like Amazon Nova to be created in the SageMaker HyperPod cluster.</p>"
         },
         "VpcConfig":{"shape":"VpcConfig"},
         "Orchestrator":{
@@ -17929,6 +18075,10 @@
         "SelectiveExecutionConfig":{
           "shape":"SelectiveExecutionConfig",
           "documentation":"<p>The selective execution configuration applied to the pipeline run.</p>"
+        },
+        "PipelineVersionId":{
+          "shape":"PipelineVersionId",
+          "documentation":"<p>The ID of the pipeline version.</p>"
         }
       }
     },
@@ -17939,6 +18089,10 @@
         "PipelineName":{
           "shape":"PipelineNameOrArn",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the pipeline to describe.</p>"
+        },
+        "PipelineVersionId":{
+          "shape":"PipelineVersionId",
+          "documentation":"<p>The ID of the pipeline version to describe.</p>"
         }
       }
     },
@@ -17990,6 +18144,14 @@
         "ParallelismConfiguration":{
           "shape":"ParallelismConfiguration",
           "documentation":"<p>Lists the parallelism configuration applied to the pipeline.</p>"
+        },
+        "PipelineVersionDisplayName":{
+          "shape":"PipelineVersionName",
+          "documentation":"<p>The display name of the pipeline version.</p>"
+        },
+        "PipelineVersionDescription":{
+          "shape":"PipelineVersionDescription",
+          "documentation":"<p>The description of the pipeline version.</p>"
         }
       }
     },
@@ -20517,6 +20679,30 @@
       "min":1,
       "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
     },
+    "EnvironmentConfig":{
+      "type":"structure",
+      "members":{
+        "FSxLustreConfig":{
+          "shape":"FSxLustreConfig",
+          "documentation":"<p>Configuration settings for an Amazon FSx for Lustre file system to be used with the cluster.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the restricted instance groups (RIG) environment.</p>"
+    },
+    "EnvironmentConfigDetails":{
+      "type":"structure",
+      "members":{
+        "FSxLustreConfig":{
+          "shape":"FSxLustreConfig",
+          "documentation":"<p>Configuration settings for an Amazon FSx for Lustre file system to be used with the cluster.</p>"
+        },
+        "S3OutputPath":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 path where output data from the restricted instance group (RIG) environment will be stored.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for the restricted instance groups (RIG) environment.</p>"
+    },
     "EnvironmentKey":{
       "type":"string",
       "max":1024,
@@ -20793,6 +20979,24 @@
       },
       "documentation":"<p>A parameter to activate explainers.</p>"
     },
+    "FSxLustreConfig":{
+      "type":"structure",
+      "required":[
+        "SizeInGiB",
+        "PerUnitStorageThroughput"
+      ],
+      "members":{
+        "SizeInGiB":{
+          "shape":"FSxLustreSizeInGiB",
+          "documentation":"<p>The storage capacity of the Amazon FSx for Lustre file system, specified in gibibytes (GiB).</p>"
+        },
+        "PerUnitStorageThroughput":{
+          "shape":"FSxLustrePerUnitStorageThroughput",
+          "documentation":"<p>The throughput capacity of the Amazon FSx for Lustre file system, measured in MB/s per TiB of storage.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for an Amazon FSx for Lustre file system to be used with the cluster.</p>"
+    },
     "FSxLustreFileSystem":{
       "type":"structure",
       "required":["FileSystemId"],
@@ -20818,6 +21022,18 @@
         }
       },
       "documentation":"<p>The settings for assigning a custom Amazon FSx for Lustre file system to a user profile or space for an Amazon SageMaker Domain.</p>"
+    },
+    "FSxLustrePerUnitStorageThroughput":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":125
+    },
+    "FSxLustreSizeInGiB":{
+      "type":"integer",
+      "box":true,
+      "max":100800,
+      "min":1200
     },
     "FailStepMetadata":{
       "type":"structure",
@@ -28480,6 +28696,49 @@
         }
       }
     },
+    "ListPipelineVersionsRequest":{
+      "type":"structure",
+      "required":["PipelineName"],
+      "members":{
+        "PipelineName":{
+          "shape":"PipelineNameOrArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the pipeline.</p>"
+        },
+        "CreatedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns the pipeline versions that were created after a specified time.</p>"
+        },
+        "CreatedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns the pipeline versions that were created before a specified time.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for the results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the result of the previous <code>ListPipelineVersions</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of pipeline versions, use this token in your next request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of pipeline versions to return in the response.</p>"
+        }
+      }
+    },
+    "ListPipelineVersionsResponse":{
+      "type":"structure",
+      "members":{
+        "PipelineVersionSummaries":{
+          "shape":"PipelineVersionSummaryList",
+          "documentation":"<p>Contains a sorted list of pipeline version summary objects matching the specified filters. Each version summary includes the pipeline version ID, the creation date, and the last pipeline execution created from that version. This list can be empty.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the result of the previous <code>ListPipelineVersions</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of pipeline versions, use this token in your next request.</p>"
+        }
+      }
+    },
     "ListPipelinesRequest":{
       "type":"structure",
       "members":{
@@ -33699,6 +33958,14 @@
         "PipelineParameters":{
           "shape":"ParameterList",
           "documentation":"<p>Contains a list of pipeline parameters. This list can be empty. </p>"
+        },
+        "PipelineVersionId":{
+          "shape":"PipelineVersionId",
+          "documentation":"<p>The ID of the pipeline version that started this execution.</p>"
+        },
+        "PipelineVersionDisplayName":{
+          "shape":"PipelineVersionName",
+          "documentation":"<p>The display name of the pipeline version that started this execution.</p>"
         }
       },
       "documentation":"<p>An execution of a pipeline.</p>"
@@ -33980,6 +34247,103 @@
     "PipelineSummaryList":{
       "type":"list",
       "member":{"shape":"PipelineSummary"},
+      "max":100,
+      "min":0
+    },
+    "PipelineVersion":{
+      "type":"structure",
+      "members":{
+        "PipelineArn":{
+          "shape":"PipelineArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the pipeline.</p>"
+        },
+        "PipelineVersionId":{
+          "shape":"PipelineVersionId",
+          "documentation":"<p>The ID of the pipeline version.</p>"
+        },
+        "PipelineVersionDisplayName":{
+          "shape":"PipelineVersionName",
+          "documentation":"<p>The display name of the pipeline version.</p>"
+        },
+        "PipelineVersionDescription":{
+          "shape":"PipelineVersionDescription",
+          "documentation":"<p>The description of the pipeline version.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation time of the pipeline version.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the pipeline version was last modified.</p>"
+        },
+        "CreatedBy":{"shape":"UserContext"},
+        "LastModifiedBy":{"shape":"UserContext"},
+        "LastExecutedPipelineExecutionArn":{
+          "shape":"PipelineExecutionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the most recent pipeline execution created from this pipeline version.</p>"
+        },
+        "LastExecutedPipelineExecutionDisplayName":{
+          "shape":"PipelineExecutionName",
+          "documentation":"<p>The display name of the most recent pipeline execution created from this pipeline version.</p>"
+        },
+        "LastExecutedPipelineExecutionStatus":{
+          "shape":"PipelineExecutionStatus",
+          "documentation":"<p>The status of the most recent pipeline execution created from this pipeline version.</p>"
+        }
+      },
+      "documentation":"<p>The version of the pipeline.</p>"
+    },
+    "PipelineVersionDescription":{
+      "type":"string",
+      "max":3072,
+      "min":0,
+      "pattern":".*"
+    },
+    "PipelineVersionId":{
+      "type":"long",
+      "box":true,
+      "min":1
+    },
+    "PipelineVersionName":{
+      "type":"string",
+      "max":82,
+      "min":1,
+      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,81}"
+    },
+    "PipelineVersionSummary":{
+      "type":"structure",
+      "members":{
+        "PipelineArn":{
+          "shape":"PipelineArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the pipeline.</p>"
+        },
+        "PipelineVersionId":{
+          "shape":"PipelineVersionId",
+          "documentation":"<p>The ID of the pipeline version.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation time of the pipeline version.</p>"
+        },
+        "PipelineVersionDescription":{
+          "shape":"PipelineVersionDescription",
+          "documentation":"<p>The description of the pipeline version.</p>"
+        },
+        "PipelineVersionDisplayName":{
+          "shape":"PipelineVersionName",
+          "documentation":"<p>The display name of the pipeline version.</p>"
+        },
+        "LastExecutionPipelineExecutionArn":{
+          "shape":"PipelineExecutionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the most recent pipeline execution created from this pipeline version.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the pipeline version.</p>"
+    },
+    "PipelineVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"PipelineVersionSummary"},
       "max":100,
       "min":0
     },
@@ -36968,7 +37332,8 @@
         "ImageVersion",
         "Project",
         "HyperParameterTuningJob",
-        "ModelCard"
+        "ModelCard",
+        "PipelineVersion"
       ]
     },
     "ResponseMIMEType":{
@@ -37509,6 +37874,10 @@
         "ModelPackageGroup":{"shape":"ModelPackageGroup"},
         "Pipeline":{"shape":"Pipeline"},
         "PipelineExecution":{"shape":"PipelineExecution"},
+        "PipelineVersion":{
+          "shape":"PipelineVersion",
+          "documentation":"<p>The version of the pipeline.</p>"
+        },
         "FeatureGroup":{"shape":"FeatureGroup"},
         "FeatureMetadata":{
           "shape":"FeatureMetadata",
@@ -38562,6 +38931,10 @@
         "SelectiveExecutionConfig":{
           "shape":"SelectiveExecutionConfig",
           "documentation":"<p>The selective execution configuration applied to the pipeline run.</p>"
+        },
+        "PipelineVersionId":{
+          "shape":"PipelineVersionId",
+          "documentation":"<p>The ID of the pipeline version to start execution from.</p>"
         }
       }
     },
@@ -41866,6 +42239,10 @@
           "shape":"ClusterInstanceGroupSpecifications",
           "documentation":"<p>Specify the instance groups to update.</p>"
         },
+        "RestrictedInstanceGroups":{
+          "shape":"ClusterRestrictedInstanceGroupSpecifications",
+          "documentation":"<p>The specialized instance groups for training models like Amazon Nova to be created in the SageMaker HyperPod cluster.</p>"
+        },
         "NodeRecovery":{
           "shape":"ClusterNodeRecovery",
           "documentation":"<p>The node recovery mode to be applied to the SageMaker HyperPod cluster.</p>"
@@ -43069,6 +43446,48 @@
         "PipelineArn":{
           "shape":"PipelineArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the updated pipeline.</p>"
+        },
+        "PipelineVersionId":{
+          "shape":"PipelineVersionId",
+          "documentation":"<p>The ID of the pipeline version.</p>"
+        }
+      }
+    },
+    "UpdatePipelineVersionRequest":{
+      "type":"structure",
+      "required":[
+        "PipelineArn",
+        "PipelineVersionId"
+      ],
+      "members":{
+        "PipelineArn":{
+          "shape":"PipelineArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the pipeline.</p>"
+        },
+        "PipelineVersionId":{
+          "shape":"PipelineVersionId",
+          "documentation":"<p>The pipeline version ID to update.</p>"
+        },
+        "PipelineVersionDisplayName":{
+          "shape":"PipelineVersionName",
+          "documentation":"<p>The display name of the pipeline version.</p>"
+        },
+        "PipelineVersionDescription":{
+          "shape":"PipelineVersionDescription",
+          "documentation":"<p>The description of the pipeline version.</p>"
+        }
+      }
+    },
+    "UpdatePipelineVersionResponse":{
+      "type":"structure",
+      "members":{
+        "PipelineArn":{
+          "shape":"PipelineArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the pipeline.</p>"
+        },
+        "PipelineVersionId":{
+          "shape":"PipelineVersionId",
+          "documentation":"<p>The ID of the pipeline version.</p>"
         }
       }
     },
@@ -43400,7 +43819,7 @@
           "documentation":"<p>The IAM Identity details associated with the user. These details are associated with model package groups, model packages, and project entities only.</p>"
         }
       },
-      "documentation":"<p>Information about the user who created or modified an experiment, trial, trial component, lineage group, project, or model card.</p>"
+      "documentation":"<p>Information about the user who created or modified a SageMaker resource.</p>"
     },
     "UserProfileArn":{
       "type":"string",

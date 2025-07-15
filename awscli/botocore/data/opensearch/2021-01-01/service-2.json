@@ -1304,6 +1304,10 @@
         "NaturalLanguageQueryGenerationOptions":{
           "shape":"NaturalLanguageQueryGenerationOptionsInput",
           "documentation":"<p>Container for parameters required for natural language query generation on the specified domain.</p>"
+        },
+        "S3VectorsEngine":{
+          "shape":"S3VectorsEngine",
+          "documentation":"<p>Container for parameters required to enable S3 vectors engine features on the specified domain.</p>"
         }
       },
       "documentation":"<p>Container for parameters required to enable all machine learning features.</p>"
@@ -1314,6 +1318,10 @@
         "NaturalLanguageQueryGenerationOptions":{
           "shape":"NaturalLanguageQueryGenerationOptionsOutput",
           "documentation":"<p>Container for parameters required for natural language query generation on the specified domain.</p>"
+        },
+        "S3VectorsEngine":{
+          "shape":"S3VectorsEngine",
+          "documentation":"<p>Container for parameters representing the state of S3 vectors engine features on the specified domain.</p>"
         }
       },
       "documentation":"<p>Container for parameters representing the state of machine learning features on the specified domain.</p>"
@@ -1388,8 +1396,7 @@
     },
     "AccessDeniedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An error occurred because you don't have permissions to access the resource.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
@@ -2474,8 +2481,7 @@
     },
     "ConflictException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An error occurred because the client attempts to remove a resource that is currently in use.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
@@ -2843,7 +2849,7 @@
           "documentation":"<p>Detailed description of a data source.</p>"
         }
       },
-      "documentation":"<p>Data sources that are associated with an OpenSearch Application. </p>"
+      "documentation":"<p>Data sources that are associated with an OpenSearch application. </p>"
     },
     "DataSourceDescription":{
       "type":"string",
@@ -2918,8 +2924,7 @@
     },
     "DeleteApplicationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDataSourceRequest":{
       "type":"structure",
@@ -3081,8 +3086,7 @@
     },
     "DependencyFailureException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An exception for when a failure in one of the dependencies results in the service being unable to fetch details about the resource.</p>",
       "error":{"httpStatusCode":424},
       "exception":true
@@ -3722,8 +3726,7 @@
     "DisableTimestamp":{"type":"timestamp"},
     "DisabledOperationException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An error occured because the client wanted to access an unsupported operation.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
@@ -4886,16 +4889,16 @@
       "members":{
         "enabled":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether IAM Identity Center is enabled for the OpenSearch Application.</p>"
+          "documentation":"<p>Indicates whether IAM Identity Center is enabled for the OpenSearch application.</p>"
         },
         "iamIdentityCenterInstanceArn":{"shape":"ARN"},
         "iamRoleForIdentityCenterApplicationArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role assigned to the IAM Identity Center application for the OpenSearch Application.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role assigned to the IAM Identity Center application for the OpenSearch application.</p>"
         },
         "iamIdentityCenterApplicationArn":{"shape":"ARN"}
       },
-      "documentation":"<p>Configuration settings for IAM Identity Center in an OpenSearch Application.</p>"
+      "documentation":"<p>Configuration settings for IAM Identity Center in an OpenSearch application.</p>"
     },
     "IamIdentityCenterOptionsInput":{
       "type":"structure",
@@ -5160,24 +5163,21 @@
     "IntegerClass":{"type":"integer"},
     "InternalException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Request processing failed because of an unknown error, exception, or internal failure.</p>",
       "error":{"httpStatusCode":500},
       "exception":true
     },
     "InvalidPaginationTokenException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Request processing failed because you provided an invalid pagination token.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
     "InvalidTypeException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An exception for trying to create or access a sub-resource that's either invalid or not supported.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
@@ -5260,8 +5260,7 @@
     },
     "LimitExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An exception for trying to create more than the allowed number of resources or sub-resources.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
@@ -6910,16 +6909,14 @@
     },
     "ResourceAlreadyExistsException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An exception for creating a resource that already exists.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
     "ResourceNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An exception for accessing or deleting a resource that doesn't exist.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
@@ -6946,8 +6943,7 @@
     },
     "RevokeVpcEndpointAccessResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RoleArn":{
       "type":"string",
@@ -6994,6 +6990,16 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "S3VectorsEngine":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables S3 vectors engine features.</p>"
+        }
+      },
+      "documentation":"<p>Options for enabling S3 vectors engine features on the specified domain.</p>"
     },
     "SAMLEntityId":{
       "type":"string",
@@ -8113,8 +8119,7 @@
     },
     "ValidationException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An exception for accessing or deleting a resource that doesn't exist.</p>",
       "error":{"httpStatusCode":400},
       "exception":true

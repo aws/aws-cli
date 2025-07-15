@@ -4635,6 +4635,10 @@
           "shape":"RedshiftPropertiesInput",
           "documentation":"<p>The Amazon Redshift properties of a connection.</p>"
         },
+        "s3Properties":{
+          "shape":"S3PropertiesInput",
+          "documentation":"<p>The Amazon S3 properties of a connection.</p>"
+        },
         "sparkEmrProperties":{
           "shape":"SparkEmrPropertiesInput",
           "documentation":"<p>The Spark EMR properties of a connection.</p>"
@@ -4670,6 +4674,10 @@
           "shape":"RedshiftPropertiesOutput",
           "documentation":"<p>The Amazon Redshift properties of a connection.</p>"
         },
+        "s3Properties":{
+          "shape":"S3PropertiesOutput",
+          "documentation":"<p>The Amazon S3 properties of a connection.</p>"
+        },
         "sparkEmrProperties":{
           "shape":"SparkEmrPropertiesOutput",
           "documentation":"<p>The Spark EMR properties of a connection.</p>"
@@ -4700,6 +4708,10 @@
         "redshiftProperties":{
           "shape":"RedshiftPropertiesPatch",
           "documentation":"<p>The Amazon Redshift properties of a connection properties patch.</p>"
+        },
+        "s3Properties":{
+          "shape":"S3PropertiesPatch",
+          "documentation":"<p>The Amazon S3 properties of a connection properties patch.</p>"
         },
         "sparkEmrProperties":{
           "shape":"SparkEmrPropertiesPatch",
@@ -4796,6 +4808,7 @@
         "ORACLE",
         "POSTGRESQL",
         "REDSHIFT",
+        "S3",
         "SAPHANA",
         "SNOWFLAKE",
         "SPARK",
@@ -6071,7 +6084,6 @@
       "type":"structure",
       "required":[
         "domainIdentifier",
-        "environmentProfileIdentifier",
         "name",
         "projectIdentifier"
       ],
@@ -18760,6 +18772,12 @@
       },
       "documentation":"<p>The asset statistics from the data source run.</p>"
     },
+    "S3AccessGrantLocationId":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"^[a-zA-Z0-9\\-]+$"
+    },
     "S3Location":{
       "type":"string",
       "max":1024,
@@ -18771,6 +18789,65 @@
       "member":{"shape":"S3Location"},
       "max":20,
       "min":0
+    },
+    "S3PropertiesInput":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3AccessGrantLocationId":{
+          "shape":"S3AccessGrantLocationId",
+          "documentation":"<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties of a connection.</p>"
+        },
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI that's part of the Amazon S3 properties of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 properties of a connection.</p>"
+    },
+    "S3PropertiesOutput":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message that gets displayed.</p>"
+        },
+        "s3AccessGrantLocationId":{
+          "shape":"S3AccessGrantLocationId",
+          "documentation":"<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties of a connection.</p>"
+        },
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI that's part of the Amazon S3 properties of a connection.</p>"
+        },
+        "status":{
+          "shape":"ConnectionStatus",
+          "documentation":"<p>The status of the Amazon S3 connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 properties of a connection.</p>"
+    },
+    "S3PropertiesPatch":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3AccessGrantLocationId":{
+          "shape":"S3AccessGrantLocationId",
+          "documentation":"<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties patch of a connection.</p>"
+        },
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI that's part of the Amazon S3 properties patch of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 properties patch of a connection.</p>"
+    },
+    "S3Uri":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^s3://.+$"
     },
     "SageMakerAssetType":{
       "type":"string",

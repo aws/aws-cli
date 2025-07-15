@@ -2481,7 +2481,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Lists the history of SPICE ingestions for a dataset.</p>"
+      "documentation":"<p>Lists the history of SPICE ingestions for a dataset. Limited to 5 TPS per user and 25 TPS per account.</p>"
     },
     "ListNamespaces":{
       "name":"ListNamespaces",
@@ -10314,6 +10314,10 @@
         "FolderArns":{
           "shape":"FolderArnList",
           "documentation":"<p>The Folder ARN of the folder that you want the topic to reside in.</p>"
+        },
+        "CustomInstructions":{
+          "shape":"CustomInstructions",
+          "documentation":"<p>Custom instructions for the topic.</p>"
         }
       }
     },
@@ -10749,6 +10753,22 @@
         }
       },
       "documentation":"<p>A list of custom filter values.</p>"
+    },
+    "CustomInstructions":{
+      "type":"structure",
+      "required":["CustomInstructionsString"],
+      "members":{
+        "CustomInstructionsString":{
+          "shape":"CustomInstructionsString",
+          "documentation":"<p>A text field for providing additional guidance or context for response generation.</p>"
+        }
+      },
+      "documentation":"<p>Instructions that provide additional guidance and context for response generation.</p>"
+    },
+    "CustomInstructionsString":{
+      "type":"string",
+      "max":5000,
+      "sensitive":true
     },
     "CustomLabel":{
       "type":"string",
@@ -16933,6 +16953,10 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        },
+        "CustomInstructions":{
+          "shape":"CustomInstructions",
+          "documentation":"<p>Custom instructions for the topic.</p>"
         }
       }
     },
@@ -37293,6 +37317,10 @@
         "Topic":{
           "shape":"TopicDetails",
           "documentation":"<p>The definition of the topic that you want to update.</p>"
+        },
+        "CustomInstructions":{
+          "shape":"CustomInstructions",
+          "documentation":"<p>Custom instructions for the topic.</p>"
         }
       }
     },

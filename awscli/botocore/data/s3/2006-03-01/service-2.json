@@ -73,6 +73,22 @@
         "UseS3ExpressControlEndpoint":{"value":true}
       }
     },
+    "CreateBucketMetadataConfiguration":{
+      "name":"CreateBucketMetadataConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/{Bucket}?metadataConfiguration"
+      },
+      "input":{"shape":"CreateBucketMetadataConfigurationRequest"},
+      "documentation":"<p>Creates an S3 Metadata V2 metadata configuration for a general purpose bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-overview.html\">Accelerating data discovery with S3 Metadata</a> in the <i>Amazon S3 User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have the following permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\">Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>.</p> <p>If you want to encrypt your metadata tables with server-side encryption with Key Management Service (KMS) keys (SSE-KMS), you need additional permissions in your KMS key policy. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\"> Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>.</p> <p>If you also want to integrate your table bucket with Amazon Web Services analytics services so that you can query your metadata table, you need additional permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-integrating-aws.html\"> Integrating Amazon S3 Tables with Amazon Web Services analytics services</a> in the <i>Amazon S3 User Guide</i>.</p> <p>To query your metadata tables, you need additional permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-bucket-query-permissions.html\"> Permissions for querying metadata tables</a> in the <i>Amazon S3 User Guide</i>.</p> <ul> <li> <p> <code>s3:CreateBucketMetadataTableConfiguration</code> </p> <note> <p>The IAM policy action name is the same for the V1 and V2 API operations.</p> </note> </li> <li> <p> <code>s3tables:CreateTableBucket</code> </p> </li> <li> <p> <code>s3tables:CreateNamespace</code> </p> </li> <li> <p> <code>s3tables:GetTable</code> </p> </li> <li> <p> <code>s3tables:CreateTable</code> </p> </li> <li> <p> <code>s3tables:PutTablePolicy</code> </p> </li> <li> <p> <code>s3tables:PutTableEncryption</code> </p> </li> <li> <p> <code>kms:DescribeKey</code> </p> </li> </ul> </dd> </dl> <p>The following operations are related to <code>CreateBucketMetadataConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketMetadataConfiguration.html\">DeleteBucketMetadataConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketMetadataConfiguration.html\">GetBucketMetadataConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UpdateBucketMetadataInventoryTableConfiguration.html\">UpdateBucketMetadataInventoryTableConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UpdateBucketMetadataJournalTableConfiguration.html\">UpdateBucketMetadataJournalTableConfiguration</a> </p> </li> </ul>",
+      "httpChecksum":{
+        "requestAlgorithmMember":"ChecksumAlgorithm",
+        "requestChecksumRequired":true
+      },
+      "staticContextParams":{
+        "UseS3ExpressControlEndpoint":{"value":true}
+      }
+    },
     "CreateBucketMetadataTableConfiguration":{
       "name":"CreateBucketMetadataTableConfiguration",
       "http":{
@@ -80,7 +96,7 @@
         "requestUri":"/{Bucket}?metadataTable"
       },
       "input":{"shape":"CreateBucketMetadataTableConfigurationRequest"},
-      "documentation":"<p>Creates a metadata table configuration for a general purpose bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-overview.html\">Accelerating data discovery with S3 Metadata</a> in the <i>Amazon S3 User Guide</i>. </p> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have the following permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\">Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>.</p> <p>If you also want to integrate your table bucket with Amazon Web Services analytics services so that you can query your metadata table, you need additional permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-integrating-aws.html\"> Integrating Amazon S3 Tables with Amazon Web Services analytics services</a> in the <i>Amazon S3 User Guide</i>.</p> <ul> <li> <p> <code>s3:CreateBucketMetadataTableConfiguration</code> </p> </li> <li> <p> <code>s3tables:CreateNamespace</code> </p> </li> <li> <p> <code>s3tables:GetTable</code> </p> </li> <li> <p> <code>s3tables:CreateTable</code> </p> </li> <li> <p> <code>s3tables:PutTablePolicy</code> </p> </li> </ul> </dd> </dl> <p>The following operations are related to <code>CreateBucketMetadataTableConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketMetadataTableConfiguration.html\">DeleteBucketMetadataTableConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketMetadataTableConfiguration.html\">GetBucketMetadataTableConfiguration</a> </p> </li> </ul>",
+      "documentation":"<important> <p> We recommend that you create your S3 Metadata configurations by using the V2 <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataConfiguration.html\">CreateBucketMetadataConfiguration</a> API operation. We no longer recommend using the V1 <code>CreateBucketMetadataTableConfiguration</code> API operation. </p> <p>If you created your S3 Metadata configuration before July 15, 2025, we recommend that you delete and re-create your configuration by using <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataConfiguration.html\">CreateBucketMetadataConfiguration</a> so that you can expire journal table records and create a live inventory table.</p> </important> <p>Creates a V1 S3 Metadata configuration for a general purpose bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-overview.html\">Accelerating data discovery with S3 Metadata</a> in the <i>Amazon S3 User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have the following permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\">Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>.</p> <p>If you want to encrypt your metadata tables with server-side encryption with Key Management Service (KMS) keys (SSE-KMS), you need additional permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\"> Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>.</p> <p>If you also want to integrate your table bucket with Amazon Web Services analytics services so that you can query your metadata table, you need additional permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-integrating-aws.html\"> Integrating Amazon S3 Tables with Amazon Web Services analytics services</a> in the <i>Amazon S3 User Guide</i>.</p> <ul> <li> <p> <code>s3:CreateBucketMetadataTableConfiguration</code> </p> </li> <li> <p> <code>s3tables:CreateNamespace</code> </p> </li> <li> <p> <code>s3tables:GetTable</code> </p> </li> <li> <p> <code>s3tables:CreateTable</code> </p> </li> <li> <p> <code>s3tables:PutTablePolicy</code> </p> </li> </ul> </dd> </dl> <p>The following operations are related to <code>CreateBucketMetadataTableConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketMetadataTableConfiguration.html\">DeleteBucketMetadataTableConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketMetadataTableConfiguration.html\">GetBucketMetadataTableConfiguration</a> </p> </li> </ul>",
       "httpChecksum":{
         "requestAlgorithmMember":"ChecksumAlgorithm",
         "requestChecksumRequired":true
@@ -188,7 +204,7 @@
         "responseCode":204
       },
       "input":{"shape":"DeleteBucketInventoryConfigurationRequest"},
-      "documentation":"<note> <p>This operation is not supported for directory buckets.</p> </note> <p>Deletes an inventory configuration (identified by the inventory ID) from the bucket.</p> <p>To use this operation, you must have permissions to perform the <code>s3:PutInventoryConfiguration</code> action. The bucket owner has this permission by default. The bucket owner can grant this permission to others. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions Related to Bucket Subresource Operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Managing Access Permissions to Your Amazon S3 Resources</a>.</p> <p>For information about the Amazon S3 inventory feature, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a>.</p> <p>Operations related to <code>DeleteBucketInventoryConfiguration</code> include: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketInventoryConfiguration.html\">GetBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketInventoryConfiguration.html\">PutBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketInventoryConfigurations.html\">ListBucketInventoryConfigurations</a> </p> </li> </ul>",
+      "documentation":"<note> <p>This operation is not supported for directory buckets.</p> </note> <p>Deletes an S3 Inventory configuration (identified by the inventory ID) from the bucket.</p> <p>To use this operation, you must have permissions to perform the <code>s3:PutInventoryConfiguration</code> action. The bucket owner has this permission by default. The bucket owner can grant this permission to others. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions Related to Bucket Subresource Operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Managing Access Permissions to Your Amazon S3 Resources</a>.</p> <p>For information about the Amazon S3 inventory feature, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a>.</p> <p>Operations related to <code>DeleteBucketInventoryConfiguration</code> include: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketInventoryConfiguration.html\">GetBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketInventoryConfiguration.html\">PutBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketInventoryConfigurations.html\">ListBucketInventoryConfigurations</a> </p> </li> </ul>",
       "staticContextParams":{
         "UseS3ExpressControlEndpoint":{"value":true}
       }
@@ -206,6 +222,19 @@
         "UseS3ExpressControlEndpoint":{"value":true}
       }
     },
+    "DeleteBucketMetadataConfiguration":{
+      "name":"DeleteBucketMetadataConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/{Bucket}?metadataConfiguration",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteBucketMetadataConfigurationRequest"},
+      "documentation":"<p> Deletes an S3 Metadata configuration from a general purpose bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-overview.html\">Accelerating data discovery with S3 Metadata</a> in the <i>Amazon S3 User Guide</i>. </p> <note> <p>You can use the V2 <code>DeleteBucketMetadataConfiguration</code> API operation with V1 or V2 metadata configurations. However, if you try to use the V1 <code>DeleteBucketMetadataTableConfiguration</code> API operation with V2 configurations, you will receive an HTTP <code>405 Method Not Allowed</code> error.</p> </note> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have the <code>s3:DeleteBucketMetadataTableConfiguration</code> permission. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\">Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>. </p> <note> <p>The IAM policy action name is the same for the V1 and V2 API operations.</p> </note> </dd> </dl> <p>The following operations are related to <code>DeleteBucketMetadataConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataConfiguration.html\">CreateBucketMetadataConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketMetadataConfiguration.html\">GetBucketMetadataConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UpdateBucketMetadataInventoryTableConfiguration.html\">UpdateBucketMetadataInventoryTableConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UpdateBucketMetadataJournalTableConfiguration.html\">UpdateBucketMetadataJournalTableConfiguration</a> </p> </li> </ul>",
+      "staticContextParams":{
+        "UseS3ExpressControlEndpoint":{"value":true}
+      }
+    },
     "DeleteBucketMetadataTableConfiguration":{
       "name":"DeleteBucketMetadataTableConfiguration",
       "http":{
@@ -214,7 +243,7 @@
         "responseCode":204
       },
       "input":{"shape":"DeleteBucketMetadataTableConfigurationRequest"},
-      "documentation":"<p> Deletes a metadata table configuration from a general purpose bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-overview.html\">Accelerating data discovery with S3 Metadata</a> in the <i>Amazon S3 User Guide</i>. </p> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have the <code>s3:DeleteBucketMetadataTableConfiguration</code> permission. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\">Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>. </p> </dd> </dl> <p>The following operations are related to <code>DeleteBucketMetadataTableConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataTableConfiguration.html\">CreateBucketMetadataTableConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketMetadataTableConfiguration.html\">GetBucketMetadataTableConfiguration</a> </p> </li> </ul>",
+      "documentation":"<important> <p> We recommend that you delete your S3 Metadata configurations by using the V2 <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketMetadataTableConfiguration.html\">DeleteBucketMetadataTableConfiguration</a> API operation. We no longer recommend using the V1 <code>DeleteBucketMetadataTableConfiguration</code> API operation. </p> <p>If you created your S3 Metadata configuration before July 15, 2025, we recommend that you delete and re-create your configuration by using <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataConfiguration.html\">CreateBucketMetadataConfiguration</a> so that you can expire journal table records and create a live inventory table.</p> </important> <p> Deletes a V1 S3 Metadata configuration from a general purpose bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-overview.html\">Accelerating data discovery with S3 Metadata</a> in the <i>Amazon S3 User Guide</i>. </p> <note> <p>You can use the V2 <code>DeleteBucketMetadataConfiguration</code> API operation with V1 or V2 metadata table configurations. However, if you try to use the V1 <code>DeleteBucketMetadataTableConfiguration</code> API operation with V2 configurations, you will receive an HTTP <code>405 Method Not Allowed</code> error.</p> <p>Make sure that you update your processes to use the new V2 API operations (<code>CreateBucketMetadataConfiguration</code>, <code>GetBucketMetadataConfiguration</code>, and <code>DeleteBucketMetadataConfiguration</code>) instead of the V1 API operations. </p> </note> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have the <code>s3:DeleteBucketMetadataTableConfiguration</code> permission. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\">Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>. </p> </dd> </dl> <p>The following operations are related to <code>DeleteBucketMetadataTableConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataTableConfiguration.html\">CreateBucketMetadataTableConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketMetadataTableConfiguration.html\">GetBucketMetadataTableConfiguration</a> </p> </li> </ul>",
       "staticContextParams":{
         "UseS3ExpressControlEndpoint":{"value":true}
       }
@@ -432,7 +461,7 @@
       },
       "input":{"shape":"GetBucketInventoryConfigurationRequest"},
       "output":{"shape":"GetBucketInventoryConfigurationOutput"},
-      "documentation":"<note> <p>This operation is not supported for directory buckets.</p> </note> <p>Returns an inventory configuration (identified by the inventory configuration ID) from the bucket.</p> <p>To use this operation, you must have permissions to perform the <code>s3:GetInventoryConfiguration</code> action. The bucket owner has this permission by default and can grant this permission to others. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions Related to Bucket Subresource Operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Managing Access Permissions to Your Amazon S3 Resources</a>.</p> <p>For information about the Amazon S3 inventory feature, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a>.</p> <p>The following operations are related to <code>GetBucketInventoryConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketInventoryConfiguration.html\">DeleteBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketInventoryConfigurations.html\">ListBucketInventoryConfigurations</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketInventoryConfiguration.html\">PutBucketInventoryConfiguration</a> </p> </li> </ul>",
+      "documentation":"<note> <p>This operation is not supported for directory buckets.</p> </note> <p>Returns an S3 Inventory configuration (identified by the inventory configuration ID) from the bucket.</p> <p>To use this operation, you must have permissions to perform the <code>s3:GetInventoryConfiguration</code> action. The bucket owner has this permission by default and can grant this permission to others. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions Related to Bucket Subresource Operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Managing Access Permissions to Your Amazon S3 Resources</a>.</p> <p>For information about the Amazon S3 inventory feature, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a>.</p> <p>The following operations are related to <code>GetBucketInventoryConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketInventoryConfiguration.html\">DeleteBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketInventoryConfigurations.html\">ListBucketInventoryConfigurations</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketInventoryConfiguration.html\">PutBucketInventoryConfiguration</a> </p> </li> </ul>",
       "staticContextParams":{
         "UseS3ExpressControlEndpoint":{"value":true}
       }
@@ -490,6 +519,19 @@
         "UseS3ExpressControlEndpoint":{"value":true}
       }
     },
+    "GetBucketMetadataConfiguration":{
+      "name":"GetBucketMetadataConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/{Bucket}?metadataConfiguration"
+      },
+      "input":{"shape":"GetBucketMetadataConfigurationRequest"},
+      "output":{"shape":"GetBucketMetadataConfigurationOutput"},
+      "documentation":"<p>Retrieves the S3 Metadata configuration for a general purpose bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-overview.html\">Accelerating data discovery with S3 Metadata</a> in the <i>Amazon S3 User Guide</i>. </p> <note> <p>You can use the V2 <code>GetBucketMetadataConfiguration</code> API operation with V1 or V2 metadata configurations. However, if you try to use the V1 <code>GetBucketMetadataTableConfiguration</code> API operation with V2 configurations, you will receive an HTTP <code>405 Method Not Allowed</code> error.</p> </note> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have the <code>s3:GetBucketMetadataTableConfiguration</code> permission. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\">Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>. </p> <note> <p>The IAM policy action name is the same for the V1 and V2 API operations.</p> </note> </dd> </dl> <p>The following operations are related to <code>GetBucketMetadataConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataConfiguration.html\">CreateBucketMetadataConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketMetadataConfiguration.html\">DeleteBucketMetadataConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UpdateBucketMetadataInventoryTableConfiguration.html\">UpdateBucketMetadataInventoryTableConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UpdateBucketMetadataJournalTableConfiguration.html\">UpdateBucketMetadataJournalTableConfiguration</a> </p> </li> </ul>",
+      "staticContextParams":{
+        "UseS3ExpressControlEndpoint":{"value":true}
+      }
+    },
     "GetBucketMetadataTableConfiguration":{
       "name":"GetBucketMetadataTableConfiguration",
       "http":{
@@ -498,7 +540,7 @@
       },
       "input":{"shape":"GetBucketMetadataTableConfigurationRequest"},
       "output":{"shape":"GetBucketMetadataTableConfigurationOutput"},
-      "documentation":"<p> Retrieves the metadata table configuration for a general purpose bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-overview.html\">Accelerating data discovery with S3 Metadata</a> in the <i>Amazon S3 User Guide</i>. </p> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have the <code>s3:GetBucketMetadataTableConfiguration</code> permission. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\">Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>. </p> </dd> </dl> <p>The following operations are related to <code>GetBucketMetadataTableConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataTableConfiguration.html\">CreateBucketMetadataTableConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketMetadataTableConfiguration.html\">DeleteBucketMetadataTableConfiguration</a> </p> </li> </ul>",
+      "documentation":"<important> <p> We recommend that you retrieve your S3 Metadata configurations by using the V2 <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketMetadataTableConfiguration.html\">GetBucketMetadataTableConfiguration</a> API operation. We no longer recommend using the V1 <code>GetBucketMetadataTableConfiguration</code> API operation. </p> <p>If you created your S3 Metadata configuration before July 15, 2025, we recommend that you delete and re-create your configuration by using <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataConfiguration.html\">CreateBucketMetadataConfiguration</a> so that you can expire journal table records and create a live inventory table.</p> </important> <p> Retrieves the V1 S3 Metadata configuration for a general purpose bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-overview.html\">Accelerating data discovery with S3 Metadata</a> in the <i>Amazon S3 User Guide</i>. </p> <note> <p>You can use the V2 <code>GetBucketMetadataConfiguration</code> API operation with V1 or V2 metadata table configurations. However, if you try to use the V1 <code>GetBucketMetadataTableConfiguration</code> API operation with V2 configurations, you will receive an HTTP <code>405 Method Not Allowed</code> error.</p> <p>Make sure that you update your processes to use the new V2 API operations (<code>CreateBucketMetadataConfiguration</code>, <code>GetBucketMetadataConfiguration</code>, and <code>DeleteBucketMetadataConfiguration</code>) instead of the V1 API operations. </p> </note> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have the <code>s3:GetBucketMetadataTableConfiguration</code> permission. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\">Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>. </p> </dd> </dl> <p>The following operations are related to <code>GetBucketMetadataTableConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataTableConfiguration.html\">CreateBucketMetadataTableConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketMetadataTableConfiguration.html\">DeleteBucketMetadataTableConfiguration</a> </p> </li> </ul>",
       "staticContextParams":{
         "UseS3ExpressControlEndpoint":{"value":true}
       }
@@ -820,7 +862,7 @@
       },
       "input":{"shape":"ListBucketInventoryConfigurationsRequest"},
       "output":{"shape":"ListBucketInventoryConfigurationsOutput"},
-      "documentation":"<note> <p>This operation is not supported for directory buckets.</p> </note> <p>Returns a list of inventory configurations for the bucket. You can have up to 1,000 analytics configurations per bucket.</p> <p>This action supports list pagination and does not return more than 100 configurations at a time. Always check the <code>IsTruncated</code> element in the response. If there are no more configurations to list, <code>IsTruncated</code> is set to false. If there are more configurations to list, <code>IsTruncated</code> is set to true, and there is a value in <code>NextContinuationToken</code>. You use the <code>NextContinuationToken</code> value to continue the pagination of the list by passing the value in continuation-token in the request to <code>GET</code> the next page.</p> <p> To use this operation, you must have permissions to perform the <code>s3:GetInventoryConfiguration</code> action. The bucket owner has this permission by default. The bucket owner can grant this permission to others. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions Related to Bucket Subresource Operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Managing Access Permissions to Your Amazon S3 Resources</a>.</p> <p>For information about the Amazon S3 inventory feature, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a> </p> <p>The following operations are related to <code>ListBucketInventoryConfigurations</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketInventoryConfiguration.html\">GetBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketInventoryConfiguration.html\">DeleteBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketInventoryConfiguration.html\">PutBucketInventoryConfiguration</a> </p> </li> </ul>",
+      "documentation":"<note> <p>This operation is not supported for directory buckets.</p> </note> <p>Returns a list of S3 Inventory configurations for the bucket. You can have up to 1,000 analytics configurations per bucket.</p> <p>This action supports list pagination and does not return more than 100 configurations at a time. Always check the <code>IsTruncated</code> element in the response. If there are no more configurations to list, <code>IsTruncated</code> is set to false. If there are more configurations to list, <code>IsTruncated</code> is set to true, and there is a value in <code>NextContinuationToken</code>. You use the <code>NextContinuationToken</code> value to continue the pagination of the list by passing the value in continuation-token in the request to <code>GET</code> the next page.</p> <p> To use this operation, you must have permissions to perform the <code>s3:GetInventoryConfiguration</code> action. The bucket owner has this permission by default. The bucket owner can grant this permission to others. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions Related to Bucket Subresource Operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Managing Access Permissions to Your Amazon S3 Resources</a>.</p> <p>For information about the Amazon S3 inventory feature, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a> </p> <p>The following operations are related to <code>ListBucketInventoryConfigurations</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketInventoryConfiguration.html\">GetBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketInventoryConfiguration.html\">DeleteBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketInventoryConfiguration.html\">PutBucketInventoryConfiguration</a> </p> </li> </ul>",
       "staticContextParams":{
         "UseS3ExpressControlEndpoint":{"value":true}
       }
@@ -1009,7 +1051,7 @@
         "requestUri":"/{Bucket}?inventory"
       },
       "input":{"shape":"PutBucketInventoryConfigurationRequest"},
-      "documentation":"<note> <p>This operation is not supported for directory buckets.</p> </note> <p>This implementation of the <code>PUT</code> action adds an inventory configuration (identified by the inventory ID) to the bucket. You can have up to 1,000 inventory configurations per bucket. </p> <p>Amazon S3 inventory generates inventories of the objects in the bucket on a daily or weekly basis, and the results are published to a flat file. The bucket that is inventoried is called the <i>source</i> bucket, and the bucket where the inventory flat file is stored is called the <i>destination</i> bucket. The <i>destination</i> bucket must be in the same Amazon Web Services Region as the <i>source</i> bucket. </p> <p>When you configure an inventory for a <i>source</i> bucket, you specify the <i>destination</i> bucket where you want the inventory to be stored, and whether to generate the inventory daily or weekly. You can also configure what object metadata to include and whether to inventory all object versions or only current versions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a> in the Amazon S3 User Guide.</p> <important> <p>You must create a bucket policy on the <i>destination</i> bucket to grant permissions to Amazon S3 to write objects to the bucket in the defined location. For an example policy, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html#example-bucket-policies-use-case-9\"> Granting Permissions for Amazon S3 Inventory and Storage Class Analysis</a>.</p> </important> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have permission to perform the <code>s3:PutInventoryConfiguration</code> action. The bucket owner has this permission by default and can grant this permission to others. </p> <p>The <code>s3:PutInventoryConfiguration</code> permission allows a user to create an <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-inventory.html\">S3 Inventory</a> report that includes all object metadata fields available and to specify the destination bucket to store the inventory. A user with read access to objects in the destination bucket can also access all object metadata fields that are available in the inventory report. </p> <p>To restrict access to an inventory report, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html#example-bucket-policies-use-case-10\">Restricting access to an Amazon S3 Inventory report</a> in the <i>Amazon S3 User Guide</i>. For more information about the metadata fields available in S3 Inventory, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-inventory.html#storage-inventory-contents\">Amazon S3 Inventory lists</a> in the <i>Amazon S3 User Guide</i>. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions related to bucket subresource operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Identity and access management in Amazon S3</a> in the <i>Amazon S3 User Guide</i>.</p> </dd> </dl> <p> <code>PutBucketInventoryConfiguration</code> has the following special errors:</p> <dl> <dt>HTTP 400 Bad Request Error</dt> <dd> <p> <i>Code:</i> InvalidArgument</p> <p> <i>Cause:</i> Invalid Argument</p> </dd> <dt>HTTP 400 Bad Request Error</dt> <dd> <p> <i>Code:</i> TooManyConfigurations</p> <p> <i>Cause:</i> You are attempting to create a new configuration but have already reached the 1,000-configuration limit. </p> </dd> <dt>HTTP 403 Forbidden Error</dt> <dd> <p> <i>Cause:</i> You are not the owner of the specified bucket, or you do not have the <code>s3:PutInventoryConfiguration</code> bucket permission to set the configuration on the bucket. </p> </dd> </dl> <p>The following operations are related to <code>PutBucketInventoryConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketInventoryConfiguration.html\">GetBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketInventoryConfiguration.html\">DeleteBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketInventoryConfigurations.html\">ListBucketInventoryConfigurations</a> </p> </li> </ul>",
+      "documentation":"<note> <p>This operation is not supported for directory buckets.</p> </note> <p>This implementation of the <code>PUT</code> action adds an S3 Inventory configuration (identified by the inventory ID) to the bucket. You can have up to 1,000 inventory configurations per bucket. </p> <p>Amazon S3 inventory generates inventories of the objects in the bucket on a daily or weekly basis, and the results are published to a flat file. The bucket that is inventoried is called the <i>source</i> bucket, and the bucket where the inventory flat file is stored is called the <i>destination</i> bucket. The <i>destination</i> bucket must be in the same Amazon Web Services Region as the <i>source</i> bucket. </p> <p>When you configure an inventory for a <i>source</i> bucket, you specify the <i>destination</i> bucket where you want the inventory to be stored, and whether to generate the inventory daily or weekly. You can also configure what object metadata to include and whether to inventory all object versions or only current versions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-inventory.html\">Amazon S3 Inventory</a> in the Amazon S3 User Guide.</p> <important> <p>You must create a bucket policy on the <i>destination</i> bucket to grant permissions to Amazon S3 to write objects to the bucket in the defined location. For an example policy, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html#example-bucket-policies-use-case-9\"> Granting Permissions for Amazon S3 Inventory and Storage Class Analysis</a>.</p> </important> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have permission to perform the <code>s3:PutInventoryConfiguration</code> action. The bucket owner has this permission by default and can grant this permission to others. </p> <p>The <code>s3:PutInventoryConfiguration</code> permission allows a user to create an <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-inventory.html\">S3 Inventory</a> report that includes all object metadata fields available and to specify the destination bucket to store the inventory. A user with read access to objects in the destination bucket can also access all object metadata fields that are available in the inventory report. </p> <p>To restrict access to an inventory report, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html#example-bucket-policies-use-case-10\">Restricting access to an Amazon S3 Inventory report</a> in the <i>Amazon S3 User Guide</i>. For more information about the metadata fields available in S3 Inventory, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-inventory.html#storage-inventory-contents\">Amazon S3 Inventory lists</a> in the <i>Amazon S3 User Guide</i>. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-with-s3-actions.html#using-with-s3-actions-related-to-bucket-subresources\">Permissions related to bucket subresource operations</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Identity and access management in Amazon S3</a> in the <i>Amazon S3 User Guide</i>.</p> </dd> </dl> <p> <code>PutBucketInventoryConfiguration</code> has the following special errors:</p> <dl> <dt>HTTP 400 Bad Request Error</dt> <dd> <p> <i>Code:</i> InvalidArgument</p> <p> <i>Cause:</i> Invalid Argument</p> </dd> <dt>HTTP 400 Bad Request Error</dt> <dd> <p> <i>Code:</i> TooManyConfigurations</p> <p> <i>Cause:</i> You are attempting to create a new configuration but have already reached the 1,000-configuration limit. </p> </dd> <dt>HTTP 403 Forbidden Error</dt> <dd> <p> <i>Cause:</i> You are not the owner of the specified bucket, or you do not have the <code>s3:PutInventoryConfiguration</code> bucket permission to set the configuration on the bucket. </p> </dd> </dl> <p>The following operations are related to <code>PutBucketInventoryConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketInventoryConfiguration.html\">GetBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketInventoryConfiguration.html\">DeleteBucketInventoryConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketInventoryConfigurations.html\">ListBucketInventoryConfigurations</a> </p> </li> </ul>",
       "staticContextParams":{
         "UseS3ExpressControlEndpoint":{"value":true}
       }
@@ -1369,6 +1411,38 @@
       },
       "output":{"shape":"SelectObjectContentOutput"},
       "documentation":"<note> <p>This operation is not supported for directory buckets.</p> </note> <p>This action filters the contents of an Amazon S3 object based on a simple structured query language (SQL) statement. In the request, along with the SQL expression, you must also specify a data serialization format (JSON, CSV, or Apache Parquet) of the object. Amazon S3 uses this format to parse object data into records, and returns only records that match the specified SQL expression. You must also specify the data serialization format for the response.</p> <p>This functionality is not supported for Amazon S3 on Outposts.</p> <p>For more information about Amazon S3 Select, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/selecting-content-from-objects.html\">Selecting Content from Objects</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-glacier-select-sql-reference-select.html\">SELECT Command</a> in the <i>Amazon S3 User Guide</i>.</p> <p/> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3:GetObject</code> permission for this operation. Amazon S3 Select does not support anonymous access. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/using-with-s3-actions.html\">Specifying Permissions in a Policy</a> in the <i>Amazon S3 User Guide</i>.</p> </dd> <dt>Object Data Formats</dt> <dd> <p>You can use Amazon S3 Select to query objects that have the following format properties:</p> <ul> <li> <p> <i>CSV, JSON, and Parquet</i> - Objects must be in CSV, JSON, or Parquet format.</p> </li> <li> <p> <i>UTF-8</i> - UTF-8 is the only encoding type Amazon S3 Select supports.</p> </li> <li> <p> <i>GZIP or BZIP2</i> - CSV and JSON files can be compressed using GZIP or BZIP2. GZIP and BZIP2 are the only compression formats that Amazon S3 Select supports for CSV and JSON files. Amazon S3 Select supports columnar compression for Parquet using GZIP or Snappy. Amazon S3 Select does not support whole-object compression for Parquet objects.</p> </li> <li> <p> <i>Server-side encryption</i> - Amazon S3 Select supports querying objects that are protected with server-side encryption.</p> <p>For objects that are encrypted with customer-provided encryption keys (SSE-C), you must use HTTPS, and you must use the headers that are documented in the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html\">GetObject</a>. For more information about SSE-C, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerSideEncryptionCustomerKeys.html\">Server-Side Encryption (Using Customer-Provided Encryption Keys)</a> in the <i>Amazon S3 User Guide</i>.</p> <p>For objects that are encrypted with Amazon S3 managed keys (SSE-S3) and Amazon Web Services KMS keys (SSE-KMS), server-side encryption is handled transparently, so you don't need to specify anything. For more information about server-side encryption, including SSE-S3 and SSE-KMS, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/serv-side-encryption.html\">Protecting Data Using Server-Side Encryption</a> in the <i>Amazon S3 User Guide</i>.</p> </li> </ul> </dd> <dt>Working with the Response Body</dt> <dd> <p>Given the response size is unknown, Amazon S3 Select streams the response as a series of messages and includes a <code>Transfer-Encoding</code> header with <code>chunked</code> as its value in the response. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/RESTSelectObjectAppendix.html\">Appendix: SelectObjectContent Response</a>.</p> </dd> <dt>GetObject Support</dt> <dd> <p>The <code>SelectObjectContent</code> action does not support the following <code>GetObject</code> functionality. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html\">GetObject</a>.</p> <ul> <li> <p> <code>Range</code>: Although you can specify a scan range for an Amazon S3 Select request (see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_SelectObjectContent.html#AmazonS3-SelectObjectContent-request-ScanRange\">SelectObjectContentRequest - ScanRange</a> in the request parameters), you cannot specify the range of bytes of an object to return. </p> </li> <li> <p>The <code>GLACIER</code>, <code>DEEP_ARCHIVE</code>, and <code>REDUCED_REDUNDANCY</code> storage classes, or the <code>ARCHIVE_ACCESS</code> and <code>DEEP_ARCHIVE_ACCESS</code> access tiers of the <code>INTELLIGENT_TIERING</code> storage class: You cannot query objects in the <code>GLACIER</code>, <code>DEEP_ARCHIVE</code>, or <code>REDUCED_REDUNDANCY</code> storage classes, nor objects in the <code>ARCHIVE_ACCESS</code> or <code>DEEP_ARCHIVE_ACCESS</code> access tiers of the <code>INTELLIGENT_TIERING</code> storage class. For more information about storage classes, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html\">Using Amazon S3 storage classes</a> in the <i>Amazon S3 User Guide</i>.</p> </li> </ul> </dd> <dt>Special Errors</dt> <dd> <p>For a list of special errors for this operation, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#SelectObjectContentErrorCodeList\">List of SELECT Object Content Error Codes</a> </p> </dd> </dl> <p>The following operations are related to <code>SelectObjectContent</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html\">GetObject</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketLifecycleConfiguration.html\">GetBucketLifecycleConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketLifecycleConfiguration.html\">PutBucketLifecycleConfiguration</a> </p> </li> </ul>"
+    },
+    "UpdateBucketMetadataInventoryTableConfiguration":{
+      "name":"UpdateBucketMetadataInventoryTableConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/{Bucket}?metadataInventoryTable"
+      },
+      "input":{"shape":"UpdateBucketMetadataInventoryTableConfigurationRequest"},
+      "documentation":"<p>Enables or disables a live inventory table for an S3 Metadata configuration on a general purpose bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-overview.html\">Accelerating data discovery with S3 Metadata</a> in the <i>Amazon S3 User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have the following permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\">Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>.</p> <p>If you want to encrypt your inventory table with server-side encryption with Key Management Service (KMS) keys (SSE-KMS), you need additional permissions in your KMS key policy. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\"> Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>.</p> <ul> <li> <p> <code>s3:UpdateBucketMetadataInventoryTableConfiguration</code> </p> </li> <li> <p> <code>s3tables:CreateTableBucket</code> </p> </li> <li> <p> <code>s3tables:CreateNamespace</code> </p> </li> <li> <p> <code>s3tables:GetTable</code> </p> </li> <li> <p> <code>s3tables:CreateTable</code> </p> </li> <li> <p> <code>s3tables:PutTablePolicy</code> </p> </li> <li> <p> <code>s3tables:PutTableEncryption</code> </p> </li> <li> <p> <code>kms:DescribeKey</code> </p> </li> </ul> </dd> </dl> <p>The following operations are related to <code>UpdateBucketMetadataInventoryTableConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataConfiguration.html\">CreateBucketMetadataConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketMetadataConfiguration.html\">DeleteBucketMetadataConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketMetadataConfiguration.html\">GetBucketMetadataConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UpdateBucketMetadataJournalTableConfiguration.html\">UpdateBucketMetadataJournalTableConfiguration</a> </p> </li> </ul>",
+      "httpChecksum":{
+        "requestAlgorithmMember":"ChecksumAlgorithm",
+        "requestChecksumRequired":true
+      },
+      "staticContextParams":{
+        "UseS3ExpressControlEndpoint":{"value":true}
+      }
+    },
+    "UpdateBucketMetadataJournalTableConfiguration":{
+      "name":"UpdateBucketMetadataJournalTableConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/{Bucket}?metadataJournalTable"
+      },
+      "input":{"shape":"UpdateBucketMetadataJournalTableConfigurationRequest"},
+      "documentation":"<p>Enables or disables journal table record expiration for an S3 Metadata configuration on a general purpose bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-overview.html\">Accelerating data discovery with S3 Metadata</a> in the <i>Amazon S3 User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have the <code>s3:UpdateBucketMetadataJournalTableConfiguration</code> permission. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\">Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>. </p> </dd> </dl> <p>The following operations are related to <code>UpdateBucketMetadataJournalTableConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataConfiguration.html\">CreateBucketMetadataConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketMetadataConfiguration.html\">DeleteBucketMetadataConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketMetadataConfiguration.html\">GetBucketMetadataConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_UpdateBucketMetadataInventoryTableConfiguration.html\">UpdateBucketMetadataInventoryTableConfiguration</a> </p> </li> </ul>",
+      "httpChecksum":{
+        "requestAlgorithmMember":"ChecksumAlgorithm",
+        "requestChecksumRequired":true
+      },
+      "staticContextParams":{
+        "UseS3ExpressControlEndpoint":{"value":true}
+      }
     },
     "UploadPart":{
       "name":"UploadPart",
@@ -2781,6 +2855,47 @@
       },
       "documentation":"<p>The configuration information for the bucket.</p>"
     },
+    "CreateBucketMetadataConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "Bucket",
+        "MetadataConfiguration"
+      ],
+      "members":{
+        "Bucket":{
+          "shape":"BucketName",
+          "documentation":"<p> The general purpose bucket that you want to create the metadata configuration for. </p>",
+          "contextParam":{"name":"Bucket"},
+          "location":"uri",
+          "locationName":"Bucket"
+        },
+        "ContentMD5":{
+          "shape":"ContentMD5",
+          "documentation":"<p> The <code>Content-MD5</code> header for the metadata configuration. </p>",
+          "location":"header",
+          "locationName":"Content-MD5"
+        },
+        "ChecksumAlgorithm":{
+          "shape":"ChecksumAlgorithm",
+          "documentation":"<p> The checksum algorithm to use with your metadata configuration. </p>",
+          "location":"header",
+          "locationName":"x-amz-sdk-checksum-algorithm"
+        },
+        "MetadataConfiguration":{
+          "shape":"MetadataConfiguration",
+          "documentation":"<p> The contents of your metadata configuration. </p>",
+          "locationName":"MetadataConfiguration",
+          "xmlNamespace":{"uri":"http://s3.amazonaws.com/doc/2006-03-01/"}
+        },
+        "ExpectedBucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p> The expected owner of the general purpose bucket that corresponds to your metadata configuration. </p>",
+          "location":"header",
+          "locationName":"x-amz-expected-bucket-owner"
+        }
+      },
+      "payload":"MetadataConfiguration"
+    },
     "CreateBucketMetadataTableConfigurationRequest":{
       "type":"structure",
       "required":[
@@ -2790,7 +2905,7 @@
       "members":{
         "Bucket":{
           "shape":"BucketName",
-          "documentation":"<p> The general purpose bucket that you want to create the metadata table configuration in. </p>",
+          "documentation":"<p> The general purpose bucket that you want to create the metadata table configuration for. </p>",
           "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
@@ -2815,7 +2930,7 @@
         },
         "ExpectedBucketOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The expected owner of the general purpose bucket that contains your metadata table configuration. </p>",
+          "documentation":"<p> The expected owner of the general purpose bucket that corresponds to your metadata table configuration. </p>",
           "location":"header",
           "locationName":"x-amz-expected-bucket-owner"
         }
@@ -3458,6 +3573,25 @@
         }
       }
     },
+    "DeleteBucketMetadataConfigurationRequest":{
+      "type":"structure",
+      "required":["Bucket"],
+      "members":{
+        "Bucket":{
+          "shape":"BucketName",
+          "documentation":"<p> The general purpose bucket that you want to remove the metadata configuration from. </p>",
+          "contextParam":{"name":"Bucket"},
+          "location":"uri",
+          "locationName":"Bucket"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p> The expected bucket owner of the general purpose bucket that you want to remove the metadata table configuration from. </p>",
+          "location":"header",
+          "locationName":"x-amz-expected-bucket-owner"
+        }
+      }
+    },
     "DeleteBucketMetadataTableConfigurationRequest":{
       "type":"structure",
       "required":["Bucket"],
@@ -3960,6 +4094,24 @@
       },
       "documentation":"<p>Specifies information about where to publish analysis or configuration results for an Amazon S3 bucket and S3 Replication Time Control (S3 RTC).</p>"
     },
+    "DestinationResult":{
+      "type":"structure",
+      "members":{
+        "TableBucketType":{
+          "shape":"S3TablesBucketType",
+          "documentation":"<p> The type of the table bucket where the metadata configuration is stored. The <code>aws</code> value indicates an Amazon Web Services managed table bucket, and the <code>customer</code> value indicates a customer-managed table bucket. V2 metadata configurations are stored in Amazon Web Services managed table buckets, and V1 metadata configurations are stored in customer-managed table buckets. </p>"
+        },
+        "TableBucketArn":{
+          "shape":"S3TablesBucketArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the table bucket where the metadata configuration is stored. </p>"
+        },
+        "TableNamespace":{
+          "shape":"S3TablesNamespace",
+          "documentation":"<p> The namespace in the table bucket where the metadata tables for a metadata configuration are stored. </p>"
+        }
+      },
+      "documentation":"<p> The destination information for the S3 Metadata configuration. </p>"
+    },
     "DirectoryBucketToken":{
       "type":"string",
       "max":1024,
@@ -4051,14 +4203,14 @@
       "members":{
         "ErrorCode":{
           "shape":"ErrorCode",
-          "documentation":"<p> If the <code>CreateBucketMetadataTableConfiguration</code> request succeeds, but S3 Metadata was unable to create the table, this structure contains the error code. The possible error codes and error messages are as follows: </p> <ul> <li> <p> <code>AccessDeniedCreatingResources</code> - You don't have sufficient permissions to create the required resources. Make sure that you have <code>s3tables:CreateNamespace</code>, <code>s3tables:CreateTable</code>, <code>s3tables:GetTable</code> and <code>s3tables:PutTablePolicy</code> permissions, and then try again. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration. </p> </li> <li> <p> <code>AccessDeniedWritingToTable</code> - Unable to write to the metadata table because of missing resource permissions. To fix the resource policy, Amazon S3 needs to create a new metadata table. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>DestinationTableNotFound</code> - The destination table doesn't exist. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>ServerInternalError</code> - An internal error has occurred. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>TableAlreadyExists</code> - The table that you specified already exists in the table bucket's namespace. Specify a different table name. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>TableBucketNotFound</code> - The table bucket that you specified doesn't exist in this Amazon Web Services Region and account. Create or choose a different table bucket. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> </ul>"
+          "documentation":"<p> If the V1 <code>CreateBucketMetadataTableConfiguration</code> request succeeds, but S3 Metadata was unable to create the table, this structure contains the error code. The possible error codes and error messages are as follows: </p> <ul> <li> <p> <code>AccessDeniedCreatingResources</code> - You don't have sufficient permissions to create the required resources. Make sure that you have <code>s3tables:CreateNamespace</code>, <code>s3tables:CreateTable</code>, <code>s3tables:GetTable</code> and <code>s3tables:PutTablePolicy</code> permissions, and then try again. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration. </p> </li> <li> <p> <code>AccessDeniedWritingToTable</code> - Unable to write to the metadata table because of missing resource permissions. To fix the resource policy, Amazon S3 needs to create a new metadata table. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>DestinationTableNotFound</code> - The destination table doesn't exist. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>ServerInternalError</code> - An internal error has occurred. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>TableAlreadyExists</code> - The table that you specified already exists in the table bucket's namespace. Specify a different table name. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>TableBucketNotFound</code> - The table bucket that you specified doesn't exist in this Amazon Web Services Region and account. Create or choose a different table bucket. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> </ul> <p> If the V2 <code>CreateBucketMetadataConfiguration</code> request succeeds, but S3 Metadata was unable to create the table, this structure contains the error code. The possible error codes and error messages are as follows: </p> <ul> <li> <p> <code>AccessDeniedCreatingResources</code> - You don't have sufficient permissions to create the required resources. Make sure that you have <code>s3tables:CreateTableBucket</code>, <code>s3tables:CreateNamespace</code>, <code>s3tables:CreateTable</code>, <code>s3tables:GetTable</code>, <code>s3tables:PutTablePolicy</code>, <code>kms:DescribeKey</code>, and <code>s3tables:PutTableEncryption</code> permissions. Additionally, ensure that the KMS key used to encrypt the table still exists, is active and has a resource policy granting access to the S3 service principals '<code>maintenance.s3tables.amazonaws.com</code>' and '<code>metadata.s3.amazonaws.com</code>'. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration. </p> </li> <li> <p> <code>AccessDeniedWritingToTable</code> - Unable to write to the metadata table because of missing resource permissions. To fix the resource policy, Amazon S3 needs to create a new metadata table. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>DestinationTableNotFound</code> - The destination table doesn't exist. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>ServerInternalError</code> - An internal error has occurred. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>JournalTableAlreadyExists</code> - A journal table already exists in the Amazon Web Services managed table bucket's namespace. Delete the journal table, and then try again. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>InventoryTableAlreadyExists</code> - An inventory table already exists in the Amazon Web Services managed table bucket's namespace. Delete the inventory table, and then try again. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>JournalTableNotAvailable</code> - The journal table that the inventory table relies on has a <code>FAILED</code> status. An inventory table requires a journal table with an <code>ACTIVE</code> status. To create a new journal or inventory table, you must delete the metadata configuration for this bucket, along with any journal or inventory tables, and then create a new metadata configuration.</p> </li> <li> <p> <code>NoSuchBucket</code> - The specified general purpose bucket does not exist.</p> </li> </ul>"
         },
         "ErrorMessage":{
           "shape":"ErrorMessage",
-          "documentation":"<p> If the <code>CreateBucketMetadataTableConfiguration</code> request succeeds, but S3 Metadata was unable to create the table, this structure contains the error message. The possible error codes and error messages are as follows: </p> <ul> <li> <p> <code>AccessDeniedCreatingResources</code> - You don't have sufficient permissions to create the required resources. Make sure that you have <code>s3tables:CreateNamespace</code>, <code>s3tables:CreateTable</code>, <code>s3tables:GetTable</code> and <code>s3tables:PutTablePolicy</code> permissions, and then try again. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration. </p> </li> <li> <p> <code>AccessDeniedWritingToTable</code> - Unable to write to the metadata table because of missing resource permissions. To fix the resource policy, Amazon S3 needs to create a new metadata table. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>DestinationTableNotFound</code> - The destination table doesn't exist. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>ServerInternalError</code> - An internal error has occurred. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>TableAlreadyExists</code> - The table that you specified already exists in the table bucket's namespace. Specify a different table name. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>TableBucketNotFound</code> - The table bucket that you specified doesn't exist in this Amazon Web Services Region and account. Create or choose a different table bucket. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> </ul>"
+          "documentation":"<p> If the V1 <code>CreateBucketMetadataTableConfiguration</code> request succeeds, but S3 Metadata was unable to create the table, this structure contains the error message. The possible error codes and error messages are as follows: </p> <ul> <li> <p> <code>AccessDeniedCreatingResources</code> - You don't have sufficient permissions to create the required resources. Make sure that you have <code>s3tables:CreateNamespace</code>, <code>s3tables:CreateTable</code>, <code>s3tables:GetTable</code> and <code>s3tables:PutTablePolicy</code> permissions, and then try again. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration. </p> </li> <li> <p> <code>AccessDeniedWritingToTable</code> - Unable to write to the metadata table because of missing resource permissions. To fix the resource policy, Amazon S3 needs to create a new metadata table. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>DestinationTableNotFound</code> - The destination table doesn't exist. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>ServerInternalError</code> - An internal error has occurred. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>TableAlreadyExists</code> - The table that you specified already exists in the table bucket's namespace. Specify a different table name. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>TableBucketNotFound</code> - The table bucket that you specified doesn't exist in this Amazon Web Services Region and account. Create or choose a different table bucket. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> </ul> <p> If the V2 <code>CreateBucketMetadataConfiguration</code> request succeeds, but S3 Metadata was unable to create the table, this structure contains the error code. The possible error codes and error messages are as follows: </p> <ul> <li> <p> <code>AccessDeniedCreatingResources</code> - You don't have sufficient permissions to create the required resources. Make sure that you have <code>s3tables:CreateTableBucket</code>, <code>s3tables:CreateNamespace</code>, <code>s3tables:CreateTable</code>, <code>s3tables:GetTable</code>, <code>s3tables:PutTablePolicy</code>, <code>kms:DescribeKey</code>, and <code>s3tables:PutTableEncryption</code> permissions. Additionally, ensure that the KMS key used to encrypt the table still exists, is active and has a resource policy granting access to the S3 service principals '<code>maintenance.s3tables.amazonaws.com</code>' and '<code>metadata.s3.amazonaws.com</code>'. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration. </p> </li> <li> <p> <code>AccessDeniedWritingToTable</code> - Unable to write to the metadata table because of missing resource permissions. To fix the resource policy, Amazon S3 needs to create a new metadata table. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>DestinationTableNotFound</code> - The destination table doesn't exist. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>ServerInternalError</code> - An internal error has occurred. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>JournalTableAlreadyExists</code> - A journal table already exists in the Amazon Web Services managed table bucket's namespace. Delete the journal table, and then try again. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>InventoryTableAlreadyExists</code> - An inventory table already exists in the Amazon Web Services managed table bucket's namespace. Delete the inventory table, and then try again. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>JournalTableNotAvailable</code> - The journal table that the inventory table relies on has a <code>FAILED</code> status. An inventory table requires a journal table with an <code>ACTIVE</code> status. To create a new journal or inventory table, you must delete the metadata configuration for this bucket, along with any journal or inventory tables, and then create a new metadata configuration.</p> </li> <li> <p> <code>NoSuchBucket</code> - The specified general purpose bucket does not exist.</p> </li> </ul>"
         }
       },
-      "documentation":"<p> If the <code>CreateBucketMetadataTableConfiguration</code> request succeeds, but S3 Metadata was unable to create the table, this structure contains the error code and error message. </p>"
+      "documentation":"<p> If an S3 Metadata V1 <code>CreateBucketMetadataTableConfiguration</code> or V2 <code>CreateBucketMetadataConfiguration</code> request succeeds, but S3 Metadata was unable to create the table, this structure contains the error code and error message. </p> <note> <p>If you created your S3 Metadata configuration before July 15, 2025, we recommend that you delete and re-create your configuration by using <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataConfiguration.html\">CreateBucketMetadataConfiguration</a> so that you can expire journal table records and create a live inventory table.</p> </note>"
     },
     "ErrorDocument":{
       "type":"structure",
@@ -4139,6 +4291,13 @@
       ]
     },
     "Expiration":{"type":"string"},
+    "ExpirationState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "ExpirationStatus":{
       "type":"string",
       "enum":[
@@ -4560,6 +4719,46 @@
         }
       }
     },
+    "GetBucketMetadataConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "GetBucketMetadataConfigurationResult":{
+          "shape":"GetBucketMetadataConfigurationResult",
+          "documentation":"<p> The metadata configuration for the general purpose bucket. </p>"
+        }
+      },
+      "payload":"GetBucketMetadataConfigurationResult"
+    },
+    "GetBucketMetadataConfigurationRequest":{
+      "type":"structure",
+      "required":["Bucket"],
+      "members":{
+        "Bucket":{
+          "shape":"BucketName",
+          "documentation":"<p> The general purpose bucket that corresponds to the metadata configuration that you want to retrieve. </p>",
+          "contextParam":{"name":"Bucket"},
+          "location":"uri",
+          "locationName":"Bucket"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p> The expected owner of the general purpose bucket that you want to retrieve the metadata table configuration for. </p>",
+          "location":"header",
+          "locationName":"x-amz-expected-bucket-owner"
+        }
+      }
+    },
+    "GetBucketMetadataConfigurationResult":{
+      "type":"structure",
+      "required":["MetadataConfigurationResult"],
+      "members":{
+        "MetadataConfigurationResult":{
+          "shape":"MetadataConfigurationResult",
+          "documentation":"<p> The metadata configuration for a general purpose bucket. </p>"
+        }
+      },
+      "documentation":"<p> The S3 Metadata configuration for a general purpose bucket. </p>"
+    },
     "GetBucketMetadataTableConfigurationOutput":{
       "type":"structure",
       "members":{
@@ -4576,14 +4775,14 @@
       "members":{
         "Bucket":{
           "shape":"BucketName",
-          "documentation":"<p> The general purpose bucket that contains the metadata table configuration that you want to retrieve. </p>",
+          "documentation":"<p> The general purpose bucket that corresponds to the metadata table configuration that you want to retrieve. </p>",
           "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"Bucket"
         },
         "ExpectedBucketOwner":{
           "shape":"AccountId",
-          "documentation":"<p> The expected owner of the general purpose bucket that you want to retrieve the metadata table configuration from. </p>",
+          "documentation":"<p> The expected owner of the general purpose bucket that you want to retrieve the metadata table configuration for. </p>",
           "location":"header",
           "locationName":"x-amz-expected-bucket-owner"
         }
@@ -4598,18 +4797,18 @@
       "members":{
         "MetadataTableConfigurationResult":{
           "shape":"MetadataTableConfigurationResult",
-          "documentation":"<p> The metadata table configuration for a general purpose bucket. </p>"
+          "documentation":"<p> The V1 S3 Metadata configuration for a general purpose bucket. </p>"
         },
         "Status":{
           "shape":"MetadataTableStatus",
-          "documentation":"<p> The status of the metadata table. The status values are: </p> <ul> <li> <p> <code>CREATING</code> - The metadata table is in the process of being created in the specified table bucket.</p> </li> <li> <p> <code>ACTIVE</code> - The metadata table has been created successfully and records are being delivered to the table. </p> </li> <li> <p> <code>FAILED</code> - Amazon S3 is unable to create the metadata table, or Amazon S3 is unable to deliver records. See <code>ErrorDetails</code> for details.</p> </li> </ul>"
+          "documentation":"<p> The status of the metadata table. The status values are: </p> <ul> <li> <p> <code>CREATING</code> - The metadata table is in the process of being created in the specified table bucket.</p> </li> <li> <p> <code>ACTIVE</code> - The metadata table has been created successfully, and records are being delivered to the table. </p> </li> <li> <p> <code>FAILED</code> - Amazon S3 is unable to create the metadata table, or Amazon S3 is unable to deliver records. See <code>ErrorDetails</code> for details.</p> </li> </ul>"
         },
         "Error":{
           "shape":"ErrorDetails",
           "documentation":"<p> If the <code>CreateBucketMetadataTableConfiguration</code> request succeeds, but S3 Metadata was unable to create the table, this structure contains the error code and error message. </p>"
         }
       },
-      "documentation":"<p> The metadata table configuration for a general purpose bucket. </p>"
+      "documentation":"<p> The V1 S3 Metadata configuration for a general purpose bucket. </p> <note> <p>If you created your S3 Metadata configuration before July 15, 2025, we recommend that you delete and re-create your configuration by using <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataConfiguration.html\">CreateBucketMetadataConfiguration</a> so that you can expire journal table records and create a live inventory table.</p> </note>"
     },
     "GetBucketMetricsConfigurationOutput":{
       "type":"structure",
@@ -6473,12 +6672,19 @@
           "documentation":"<p>Specifies the schedule for generating inventory results.</p>"
         }
       },
-      "documentation":"<p>Specifies the inventory configuration for an Amazon S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketGETInventoryConfig.html\">GET Bucket inventory</a> in the <i>Amazon S3 API Reference</i>. </p>"
+      "documentation":"<p>Specifies the S3 Inventory configuration for an Amazon S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketGETInventoryConfig.html\">GET Bucket inventory</a> in the <i>Amazon S3 API Reference</i>. </p>"
     },
     "InventoryConfigurationList":{
       "type":"list",
       "member":{"shape":"InventoryConfiguration"},
       "flattened":true
+    },
+    "InventoryConfigurationState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "InventoryDestination":{
       "type":"structure",
@@ -6489,7 +6695,7 @@
           "documentation":"<p>Contains the bucket name, file format, bucket owner (optional), and prefix (optional) where inventory results are published.</p>"
         }
       },
-      "documentation":"<p>Specifies the inventory configuration for an Amazon S3 bucket.</p>"
+      "documentation":"<p>Specifies the S3 Inventory configuration for an Amazon S3 bucket.</p>"
     },
     "InventoryEncryption":{
       "type":"structure",
@@ -6505,7 +6711,7 @@
           "locationName":"SSE-KMS"
         }
       },
-      "documentation":"<p>Contains the type of server-side encryption used to encrypt the inventory results.</p>"
+      "documentation":"<p>Contains the type of server-side encryption used to encrypt the S3 Inventory results.</p>"
     },
     "InventoryFilter":{
       "type":"structure",
@@ -6516,7 +6722,7 @@
           "documentation":"<p>The prefix that an object must have to be included in the inventory results.</p>"
         }
       },
-      "documentation":"<p>Specifies an inventory filter. The inventory only includes objects that meet the filter's criteria.</p>"
+      "documentation":"<p>Specifies an S3 Inventory filter. The inventory only includes objects that meet the filter's criteria.</p>"
     },
     "InventoryFormat":{
       "type":"string",
@@ -6596,7 +6802,7 @@
           "documentation":"<p>Contains the type of server-side encryption used to encrypt the inventory results.</p>"
         }
       },
-      "documentation":"<p>Contains the bucket name, file format, bucket owner (optional), and prefix (optional) where inventory results are published.</p>"
+      "documentation":"<p>Contains the bucket name, file format, bucket owner (optional), and prefix (optional) where S3 Inventory results are published.</p>"
     },
     "InventorySchedule":{
       "type":"structure",
@@ -6607,7 +6813,61 @@
           "documentation":"<p>Specifies how frequently inventory results are produced.</p>"
         }
       },
-      "documentation":"<p>Specifies the schedule for generating inventory results.</p>"
+      "documentation":"<p>Specifies the schedule for generating S3 Inventory results.</p>"
+    },
+    "InventoryTableConfiguration":{
+      "type":"structure",
+      "required":["ConfigurationState"],
+      "members":{
+        "ConfigurationState":{
+          "shape":"InventoryConfigurationState",
+          "documentation":"<p> The configuration state of the inventory table, indicating whether the inventory table is enabled or disabled. </p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"MetadataTableEncryptionConfiguration",
+          "documentation":"<p> The encryption configuration for the inventory table. </p>"
+        }
+      },
+      "documentation":"<p> The inventory table configuration for an S3 Metadata configuration. </p>"
+    },
+    "InventoryTableConfigurationResult":{
+      "type":"structure",
+      "required":["ConfigurationState"],
+      "members":{
+        "ConfigurationState":{
+          "shape":"InventoryConfigurationState",
+          "documentation":"<p> The configuration state of the inventory table, indicating whether the inventory table is enabled or disabled. </p>"
+        },
+        "TableStatus":{
+          "shape":"MetadataTableStatus",
+          "documentation":"<p> The status of the inventory table. The status values are: </p> <ul> <li> <p> <code>CREATING</code> - The inventory table is in the process of being created in the specified Amazon Web Services managed table bucket.</p> </li> <li> <p> <code>BACKFILLING</code> - The inventory table is in the process of being backfilled. When you enable the inventory table for your metadata configuration, the table goes through a process known as backfilling, during which Amazon S3 scans your general purpose bucket to retrieve the initial metadata for all objects in the bucket. Depending on the number of objects in your bucket, this process can take several hours. When the backfilling process is finished, the status of your inventory table changes from <code>BACKFILLING</code> to <code>ACTIVE</code>. After backfilling is completed, updates to your objects are reflected in the inventory table within one hour.</p> </li> <li> <p> <code>ACTIVE</code> - The inventory table has been created successfully, and records are being delivered to the table. </p> </li> <li> <p> <code>FAILED</code> - Amazon S3 is unable to create the inventory table, or Amazon S3 is unable to deliver records.</p> </li> </ul>"
+        },
+        "Error":{"shape":"ErrorDetails"},
+        "TableName":{
+          "shape":"S3TablesName",
+          "documentation":"<p> The name of the inventory table. </p>"
+        },
+        "TableArn":{
+          "shape":"S3TablesArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) for the inventory table. </p>"
+        }
+      },
+      "documentation":"<p> The inventory table configuration for an S3 Metadata configuration. </p>"
+    },
+    "InventoryTableConfigurationUpdates":{
+      "type":"structure",
+      "required":["ConfigurationState"],
+      "members":{
+        "ConfigurationState":{
+          "shape":"InventoryConfigurationState",
+          "documentation":"<p> The configuration state of the inventory table, indicating whether the inventory table is enabled or disabled. </p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"MetadataTableEncryptionConfiguration",
+          "documentation":"<p> The encryption configuration for the inventory table. </p>"
+        }
+      },
+      "documentation":"<p> The specified updates to the S3 Metadata inventory table configuration. </p>"
     },
     "IsEnabled":{
       "type":"boolean",
@@ -6656,10 +6916,65 @@
         "LINES"
       ]
     },
+    "JournalTableConfiguration":{
+      "type":"structure",
+      "required":["RecordExpiration"],
+      "members":{
+        "RecordExpiration":{
+          "shape":"RecordExpiration",
+          "documentation":"<p> The journal table record expiration settings for the journal table. </p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"MetadataTableEncryptionConfiguration",
+          "documentation":"<p> The encryption configuration for the journal table. </p>"
+        }
+      },
+      "documentation":"<p> The journal table configuration for an S3 Metadata configuration. </p>"
+    },
+    "JournalTableConfigurationResult":{
+      "type":"structure",
+      "required":[
+        "TableStatus",
+        "TableName",
+        "RecordExpiration"
+      ],
+      "members":{
+        "TableStatus":{
+          "shape":"MetadataTableStatus",
+          "documentation":"<p> The status of the journal table. The status values are: </p> <ul> <li> <p> <code>CREATING</code> - The journal table is in the process of being created in the specified table bucket.</p> </li> <li> <p> <code>ACTIVE</code> - The journal table has been created successfully, and records are being delivered to the table. </p> </li> <li> <p> <code>FAILED</code> - Amazon S3 is unable to create the journal table, or Amazon S3 is unable to deliver records.</p> </li> </ul>"
+        },
+        "Error":{"shape":"ErrorDetails"},
+        "TableName":{
+          "shape":"S3TablesName",
+          "documentation":"<p> The name of the journal table. </p>"
+        },
+        "TableArn":{
+          "shape":"S3TablesArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) for the journal table. </p>"
+        },
+        "RecordExpiration":{
+          "shape":"RecordExpiration",
+          "documentation":"<p> The journal table record expiration settings for the journal table. </p>"
+        }
+      },
+      "documentation":"<p> The journal table configuration for the S3 Metadata configuration. </p>"
+    },
+    "JournalTableConfigurationUpdates":{
+      "type":"structure",
+      "required":["RecordExpiration"],
+      "members":{
+        "RecordExpiration":{
+          "shape":"RecordExpiration",
+          "documentation":"<p> The journal table record expiration settings for the journal table. </p>"
+        }
+      },
+      "documentation":"<p> The specified updates to the S3 Metadata journal table configuration. </p>"
+    },
     "KMSContext":{"type":"string"},
     "KeyCount":{"type":"integer"},
     "KeyMarker":{"type":"string"},
     "KeyPrefixEquals":{"type":"string"},
+    "KmsKeyArn":{"type":"string"},
     "LambdaFunctionArn":{"type":"string"},
     "LambdaFunctionConfiguration":{
       "type":"structure",
@@ -7812,6 +8127,40 @@
       "key":{"shape":"MetadataKey"},
       "value":{"shape":"MetadataValue"}
     },
+    "MetadataConfiguration":{
+      "type":"structure",
+      "required":["JournalTableConfiguration"],
+      "members":{
+        "JournalTableConfiguration":{
+          "shape":"JournalTableConfiguration",
+          "documentation":"<p> The journal table configuration for a metadata configuration. </p>"
+        },
+        "InventoryTableConfiguration":{
+          "shape":"InventoryTableConfiguration",
+          "documentation":"<p> The inventory table configuration for a metadata configuration. </p>"
+        }
+      },
+      "documentation":"<p> The S3 Metadata configuration for a general purpose bucket. </p>"
+    },
+    "MetadataConfigurationResult":{
+      "type":"structure",
+      "required":["DestinationResult"],
+      "members":{
+        "DestinationResult":{
+          "shape":"DestinationResult",
+          "documentation":"<p> The destination settings for a metadata configuration. </p>"
+        },
+        "JournalTableConfigurationResult":{
+          "shape":"JournalTableConfigurationResult",
+          "documentation":"<p> The journal table configuration for a metadata configuration. </p>"
+        },
+        "InventoryTableConfigurationResult":{
+          "shape":"InventoryTableConfigurationResult",
+          "documentation":"<p> The inventory table configuration for a metadata configuration. </p>"
+        }
+      },
+      "documentation":"<p> The S3 Metadata configuration for a general purpose bucket. </p>"
+    },
     "MetadataDirective":{
       "type":"string",
       "enum":[
@@ -7843,7 +8192,7 @@
           "documentation":"<p> The destination information for the metadata table configuration. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p>"
         }
       },
-      "documentation":"<p> The metadata table configuration for a general purpose bucket. </p>"
+      "documentation":"<p> The V1 S3 Metadata configuration for a general purpose bucket. </p> <note> <p>If you created your S3 Metadata configuration before July 15, 2025, we recommend that you delete and re-create your configuration by using <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataConfiguration.html\">CreateBucketMetadataConfiguration</a> so that you can expire journal table records and create a live inventory table.</p> </note>"
     },
     "MetadataTableConfigurationResult":{
       "type":"structure",
@@ -7854,7 +8203,22 @@
           "documentation":"<p> The destination information for the metadata table configuration. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p>"
         }
       },
-      "documentation":"<p> The metadata table configuration for a general purpose bucket. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p>"
+      "documentation":"<p> The V1 S3 Metadata configuration for a general purpose bucket. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p> <note> <p>If you created your S3 Metadata configuration before July 15, 2025, we recommend that you delete and re-create your configuration by using <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataConfiguration.html\">CreateBucketMetadataConfiguration</a> so that you can expire journal table records and create a live inventory table.</p> </note>"
+    },
+    "MetadataTableEncryptionConfiguration":{
+      "type":"structure",
+      "required":["SseAlgorithm"],
+      "members":{
+        "SseAlgorithm":{
+          "shape":"TableSseAlgorithm",
+          "documentation":"<p> The encryption type specified for a metadata table. To specify server-side encryption with Key Management Service (KMS) keys (SSE-KMS), use the <code>aws:kms</code> value. To specify server-side encryption with Amazon S3 managed keys (SSE-S3), use the <code>AES256</code> value. </p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p> If server-side encryption with Key Management Service (KMS) keys (SSE-KMS) is specified, you must also specify the KMS key Amazon Resource Name (ARN). You must specify a customer-managed KMS key that's located in the same Region as the general purpose bucket that corresponds to the metadata table configuration. </p>"
+        }
+      },
+      "documentation":"<p> The encryption settings for an S3 Metadata journal table or inventory table configuration. </p>"
     },
     "MetadataTableStatus":{"type":"string"},
     "MetadataValue":{"type":"string"},
@@ -10387,6 +10751,23 @@
     },
     "Range":{"type":"string"},
     "RecordDelimiter":{"type":"string"},
+    "RecordExpiration":{
+      "type":"structure",
+      "required":["Expiration"],
+      "members":{
+        "Expiration":{
+          "shape":"ExpirationState",
+          "documentation":"<p> Specifies whether journal table record expiration is enabled or disabled. </p>"
+        },
+        "Days":{
+          "shape":"RecordExpirationDays",
+          "documentation":"<p> If you enable journal table record expiration, you can set the number of days to retain your journal table records. Journal table records must be retained for a minimum of 7 days. To set this value, specify any whole number from <code>7</code> to <code>2147483647</code>. For example, to retain your journal table records for one year, set this value to <code>365</code>. </p>",
+          "box":true
+        }
+      },
+      "documentation":"<p> The journal table record expiration settings for a journal table in an S3 Metadata configuration. </p>"
+    },
+    "RecordExpirationDays":{"type":"integer"},
     "RecordsEvent":{
       "type":"structure",
       "members":{
@@ -11002,6 +11383,13 @@
     },
     "S3TablesArn":{"type":"string"},
     "S3TablesBucketArn":{"type":"string"},
+    "S3TablesBucketType":{
+      "type":"string",
+      "enum":[
+        "aws",
+        "customer"
+      ]
+    },
     "S3TablesDestination":{
       "type":"structure",
       "required":[
@@ -11018,7 +11406,7 @@
           "documentation":"<p> The name for the metadata table in your metadata table configuration. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p>"
         }
       },
-      "documentation":"<p> The destination information for the metadata table configuration. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p>"
+      "documentation":"<p> The destination information for a V1 S3 Metadata configuration. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p> <note> <p>If you created your S3 Metadata configuration before July 15, 2025, we recommend that you delete and re-create your configuration by using <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataConfiguration.html\">CreateBucketMetadataConfiguration</a> so that you can expire journal table records and create a live inventory table.</p> </note>"
     },
     "S3TablesDestinationResult":{
       "type":"structure",
@@ -11046,7 +11434,7 @@
           "documentation":"<p> The table bucket namespace for the metadata table in your metadata table configuration. This value is always <code>aws_s3_metadata</code>. </p>"
         }
       },
-      "documentation":"<p> The destination information for the metadata table configuration. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p>"
+      "documentation":"<p> The destination information for a V1 S3 Metadata configuration. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p> <note> <p>If you created your S3 Metadata configuration before July 15, 2025, we recommend that you delete and re-create your configuration by using <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataConfiguration.html\">CreateBucketMetadataConfiguration</a> so that you can expire journal table records and create a live inventory table.</p> </note>"
     },
     "S3TablesName":{"type":"string"},
     "S3TablesNamespace":{"type":"string"},
@@ -11470,6 +11858,13 @@
       "enum":["V_1"]
     },
     "Suffix":{"type":"string"},
+    "TableSseAlgorithm":{
+      "type":"string",
+      "enum":[
+        "aws:kms",
+        "AES256"
+      ]
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -11695,6 +12090,88 @@
       ]
     },
     "URI":{"type":"string"},
+    "UpdateBucketMetadataInventoryTableConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "Bucket",
+        "InventoryTableConfiguration"
+      ],
+      "members":{
+        "Bucket":{
+          "shape":"BucketName",
+          "documentation":"<p> The general purpose bucket that corresponds to the metadata configuration that you want to enable or disable an inventory table for. </p>",
+          "contextParam":{"name":"Bucket"},
+          "location":"uri",
+          "locationName":"Bucket"
+        },
+        "ContentMD5":{
+          "shape":"ContentMD5",
+          "documentation":"<p> The <code>Content-MD5</code> header for the inventory table configuration. </p>",
+          "location":"header",
+          "locationName":"Content-MD5"
+        },
+        "ChecksumAlgorithm":{
+          "shape":"ChecksumAlgorithm",
+          "documentation":"<p> The checksum algorithm to use with your inventory table configuration. </p>",
+          "location":"header",
+          "locationName":"x-amz-sdk-checksum-algorithm"
+        },
+        "InventoryTableConfiguration":{
+          "shape":"InventoryTableConfigurationUpdates",
+          "documentation":"<p> The contents of your inventory table configuration. </p>",
+          "locationName":"InventoryTableConfiguration",
+          "xmlNamespace":{"uri":"http://s3.amazonaws.com/doc/2006-03-01/"}
+        },
+        "ExpectedBucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p> The expected owner of the general purpose bucket that corresponds to the metadata table configuration that you want to enable or disable an inventory table for. </p>",
+          "location":"header",
+          "locationName":"x-amz-expected-bucket-owner"
+        }
+      },
+      "payload":"InventoryTableConfiguration"
+    },
+    "UpdateBucketMetadataJournalTableConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "Bucket",
+        "JournalTableConfiguration"
+      ],
+      "members":{
+        "Bucket":{
+          "shape":"BucketName",
+          "documentation":"<p> The general purpose bucket that corresponds to the metadata configuration that you want to enable or disable journal table record expiration for. </p>",
+          "contextParam":{"name":"Bucket"},
+          "location":"uri",
+          "locationName":"Bucket"
+        },
+        "ContentMD5":{
+          "shape":"ContentMD5",
+          "documentation":"<p> The <code>Content-MD5</code> header for the journal table configuration. </p>",
+          "location":"header",
+          "locationName":"Content-MD5"
+        },
+        "ChecksumAlgorithm":{
+          "shape":"ChecksumAlgorithm",
+          "documentation":"<p> The checksum algorithm to use with your journal table configuration. </p>",
+          "location":"header",
+          "locationName":"x-amz-sdk-checksum-algorithm"
+        },
+        "JournalTableConfiguration":{
+          "shape":"JournalTableConfigurationUpdates",
+          "documentation":"<p> The contents of your journal table configuration. </p>",
+          "locationName":"JournalTableConfiguration",
+          "xmlNamespace":{"uri":"http://s3.amazonaws.com/doc/2006-03-01/"}
+        },
+        "ExpectedBucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p> The expected owner of the general purpose bucket that corresponds to the metadata table configuration that you want to enable or disable journal table record expiration for. </p>",
+          "location":"header",
+          "locationName":"x-amz-expected-bucket-owner"
+        }
+      },
+      "payload":"JournalTableConfiguration"
+    },
     "UploadIdMarker":{"type":"string"},
     "UploadPartCopyOutput":{
       "type":"structure",

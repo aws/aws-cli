@@ -102,7 +102,8 @@
       "output":{"shape":"CreateIPSetResponse"},
       "errors":[
         {"shape":"BadRequestException"},
-        {"shape":"InternalServerErrorException"}
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Creates a new IPSet, which is called a trusted IP list in the console user interface. An IPSet is a list of IP addresses that are trusted for secure communication with Amazon Web Services infrastructure and applications. GuardDuty doesn't generate findings for IP addresses that are included in IPSets. Only users from the administrator account can use this operation.</p>"
     },
@@ -179,7 +180,8 @@
       "output":{"shape":"CreateThreatIntelSetResponse"},
       "errors":[
         {"shape":"BadRequestException"},
-        {"shape":"InternalServerErrorException"}
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Creates a new ThreatIntelSet. ThreatIntelSets consist of known malicious IP addresses. GuardDuty generates findings based on ThreatIntelSets. Only users of the administrator account can use this operation.</p>"
     },
@@ -1045,7 +1047,8 @@
       "output":{"shape":"UpdateIPSetResponse"},
       "errors":[
         {"shape":"BadRequestException"},
-        {"shape":"InternalServerErrorException"}
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Updates the IPSet specified by the IPSet ID.</p>"
     },
@@ -1136,7 +1139,8 @@
       "output":{"shape":"UpdateThreatIntelSetResponse"},
       "errors":[
         {"shape":"BadRequestException"},
-        {"shape":"InternalServerErrorException"}
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Updates the ThreatIntelSet specified by the ThreatIntelSet ID.</p>"
     }
@@ -2566,6 +2570,11 @@
           "shape":"TagMap",
           "documentation":"<p>The tags to be added to a new IP set resource.</p>",
           "locationName":"tags"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID that owns the Amazon S3 bucket specified in the <b>location</b> parameter.</p>",
+          "locationName":"expectedBucketOwner"
         }
       }
     },
@@ -2793,6 +2802,11 @@
           "shape":"TagMap",
           "documentation":"<p>The tags to be added to a new threat list resource.</p>",
           "locationName":"tags"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID that owns the Amazon S3 bucket specified in the <b>location</b> parameter.</p>",
+          "locationName":"expectedBucketOwner"
         }
       }
     },
@@ -4864,6 +4878,11 @@
           "shape":"TagMap",
           "documentation":"<p>The tags of the IPSet resource.</p>",
           "locationName":"tags"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID that owns the Amazon S3 bucket specified in the <b>location</b> parameter. This field appears in the response only if it was provided during IPSet creation or update.</p>",
+          "locationName":"expectedBucketOwner"
         }
       }
     },
@@ -5166,6 +5185,11 @@
           "shape":"TagMap",
           "documentation":"<p>The tags of the threat list resource.</p>",
           "locationName":"tags"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID that owns the Amazon S3 bucket specified in the <b>location</b> parameter. This field appears in the response only if it was provided during ThreatIntelSet creation or update.</p>",
+          "locationName":"expectedBucketOwner"
         }
       }
     },
@@ -9928,6 +9952,11 @@
           "shape":"Boolean",
           "documentation":"<p>The updated Boolean value that specifies whether the IPSet is active or not.</p>",
           "locationName":"activate"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID that owns the Amazon S3 bucket specified in the <b>location</b> parameter.</p>",
+          "locationName":"expectedBucketOwner"
         }
       }
     },
@@ -10156,6 +10185,11 @@
           "shape":"Boolean",
           "documentation":"<p>The updated Boolean value that specifies whether the ThreateIntelSet is active or not.</p>",
           "locationName":"activate"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID that owns the Amazon S3 bucket specified in the <b>location</b> parameter.</p>",
+          "locationName":"expectedBucketOwner"
         }
       }
     },

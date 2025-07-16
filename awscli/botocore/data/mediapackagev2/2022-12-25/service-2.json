@@ -580,7 +580,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>You don't have permissions to perform the requested operation. The user or role that is making the request must have at least one IAM permissions policy attached that grants the required permissions. For more information, see Access Management in the IAM User Guide.</p>",
+      "documentation":"<p>Access is denied because either you don't have permissions to perform the requested operation or MediaPackage is getting throttling errors with CDN authorization. The user or role that is making the request must have at least one IAM permissions policy attached that grants the required permissions. For more information, see Access Management in the IAM User Guide. Or, if you're using CDN authorization, you will receive this exception if MediaPackage receives a throttling error from Secrets Manager.</p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
@@ -647,6 +647,39 @@
       "type":"structure",
       "members":{
       }
+    },
+    "CdnAuthConfiguration":{
+      "type":"structure",
+      "required":[
+        "CdnIdentifierSecretArns",
+        "SecretsRoleArn"
+      ],
+      "members":{
+        "CdnIdentifierSecretArns":{
+          "shape":"CdnAuthConfigurationCdnIdentifierSecretArnsList",
+          "documentation":"<p>The ARN for the secret in Secrets Manager that your CDN uses for authorization to access the endpoint.</p>"
+        },
+        "SecretsRoleArn":{
+          "shape":"CdnAuthConfigurationSecretsRoleArnString",
+          "documentation":"<p>The ARN for the IAM role that gives MediaPackage read access to Secrets Manager and KMS for CDN authorization.</p>"
+        }
+      },
+      "documentation":"<p>The settings to enable CDN authorization headers in MediaPackage.</p>"
+    },
+    "CdnAuthConfigurationCdnIdentifierSecretArnsList":{
+      "type":"list",
+      "member":{"shape":"CdnIdentifierSecretArn"},
+      "min":1
+    },
+    "CdnAuthConfigurationSecretsRoleArnString":{
+      "type":"string",
+      "max":2048,
+      "min":20
+    },
+    "CdnIdentifierSecretArn":{
+      "type":"string",
+      "max":2048,
+      "min":20
     },
     "ChannelGroupListConfiguration":{
       "type":"structure",
@@ -2598,6 +2631,10 @@
         "Policy":{
           "shape":"PolicyText",
           "documentation":"<p>The policy assigned to the origin endpoint.</p>"
+        },
+        "CdnAuthConfiguration":{
+          "shape":"CdnAuthConfiguration",
+          "documentation":"<p>The settings for using authorization headers between the MediaPackage endpoint and your CDN. </p> <p>For information about CDN authorization, see <a href=\"https://docs.aws.amazon.com/mediapackage/latest/userguide/cdn-auth.html\">CDN authorization in Elemental MediaPackage</a> in the MediaPackage user guide.</p>"
         }
       }
     },
@@ -3426,6 +3463,10 @@
         "Policy":{
           "shape":"PolicyText",
           "documentation":"<p>The policy to attach to the specified origin endpoint.</p>"
+        },
+        "CdnAuthConfiguration":{
+          "shape":"CdnAuthConfiguration",
+          "documentation":"<p>The settings for using authorization headers between the MediaPackage endpoint and your CDN. </p> <p>For information about CDN authorization, see <a href=\"https://docs.aws.amazon.com/mediapackage/latest/userguide/cdn-auth.html\">CDN authorization in Elemental MediaPackage</a> in the MediaPackage user guide. </p>"
         }
       }
     },
@@ -4267,7 +4308,22 @@
         "ISM_CONTAINER_TYPE_WITH_LL_HLS_MANIFEST",
         "ISM_CONTAINER_TYPE_WITH_DASH_MANIFEST",
         "ISM_CONTAINER_TYPE_WITH_SCTE",
-        "ISM_CONTAINER_WITH_KEY_ROTATION"
+        "ISM_CONTAINER_WITH_KEY_ROTATION",
+        "BATCH_GET_SECRET_VALUE_DENIED",
+        "GET_SECRET_VALUE_DENIED",
+        "DESCRIBE_SECRET_DENIED",
+        "INVALID_SECRET_FORMAT",
+        "SECRET_IS_NOT_ONE_KEY_VALUE_PAIR",
+        "INVALID_SECRET_KEY",
+        "INVALID_SECRET_VALUE",
+        "SECRET_ARN_RESOURCE_NOT_FOUND",
+        "DECRYPT_SECRET_FAILED",
+        "TOO_MANY_SECRETS",
+        "DUPLICATED_SECRET",
+        "MALFORMED_SECRET_ARN",
+        "SECRET_FROM_DIFFERENT_ACCOUNT",
+        "SECRET_FROM_DIFFERENT_REGION",
+        "INVALID_SECRET"
       ]
     }
   },

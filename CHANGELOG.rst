@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.41.6
+======
+
+* api-change:``ecs``: This release removes hookDetails for the Amazon ECS native blue/green deployments.
+
+
 1.41.5
 ======
 

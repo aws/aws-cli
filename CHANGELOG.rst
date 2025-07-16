@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.27.53
+=======
+
+* api-change:``glue``: AWS Glue now supports schema, partition and sort management of Apache Iceberg tables using Glue SDK
+* api-change:``bedrock``: This release adds support for on-demand custom model inference through CustomModelDeployment APIs for Amazon Bedrock.
+* api-change:``mediapackagev2``: This release adds support for CDN Authentication using Static Headers in MediaPackage v2.
+* api-change:``iotwireless``: FuotaTaskId is not a valid IdentifierType for EventConfiguration and is being removed from possible IdentifierType values.
+* api-change:``stepfunctions``: Doc-only update to introduction, and edits to clarify input parameter and the set of control characters.
+* api-change:``bedrock-agentcore``: Initial release of Amazon Bedrock AgentCore SDK including Runtime, Built-In Tools, Memory, Gateway and Identity.
+* api-change:``networkflowmonitor``: Introducing 2 new scope status types - DEACTIVATING and DEACTIVATED.
+* api-change:``guardduty``: Add expectedBucketOwner parameter to ThreatIntel and IPSet APIs.
+* api-change:``bedrock-runtime``: document update to support on demand custom model.
+* api-change:``datasync``: AWS DataSync now supports IPv6 address inputs and outputs in create, update, and describe operations for NFS, SMB, and Object Storage locations
+* api-change:``payment-cryptography-data``: Expand length of message data field for Mac generation and validation to 8192 characters.
+* api-change:``bedrock-agentcore-control``: Initial release of Amazon Bedrock AgentCore SDK including Runtime, Built-In Tools, Memory, Gateway and Identity.
+* api-change:``logs``: CloudWatch Logs updates: Added X-Ray tracing for Amazon Bedrock Agent resources. Logs introduced Log Group level resource policies (managed through Put/Delete/Describe Resource Policy APIs). For more information, see CloudWatch Logs API documentation.
+
+
 2.27.52
 =======
 

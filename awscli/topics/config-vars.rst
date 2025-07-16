@@ -422,8 +422,7 @@ These configuration variables control how the AWS CLI retries requests.
     a single request, including the initial attempt.  For example,
     setting this value to 5 will result in a request being retried up to
     4 times.  If not provided, the number of retries will default to whatever
-    is modeled, which is typically 5 total attempts in the ``legacy`` retry mode,
-    and 3 in the ``standard`` and ``adaptive`` retry modes.
+    is modeled, which is 3 in the ``standard`` and ``adaptive`` retry modes.
 
 ``retry_mode``
     A string representing the type of retries the AWS CLI will perform.  Value

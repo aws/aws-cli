@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 import os
+import sys
 
 from botocore.exceptions import ProfileNotFound
 
@@ -25,6 +26,7 @@ from awscli.customizations.configure.get import ConfigureGetCommand
 from awscli.customizations.configure.importer import ConfigureImportCommand
 from awscli.customizations.configure.list import ConfigureListCommand
 from awscli.customizations.configure.listprofiles import ListProfilesCommand
+from awscli.customizations.configure.mfalogin import ConfigureMFALoginCommand
 from awscli.customizations.configure.set import ConfigureSetCommand
 from awscli.customizations.configure.sso import (
     ConfigureSSOCommand,
@@ -43,9 +45,13 @@ def register_configure_cmd(cli):
 
 class InteractivePrompter:
     def get_value(self, current_value, config_name, prompt_text=''):
-        if config_name in ('aws_access_key_id', 'aws_secret_access_key'):
+        if config_name in (
+            'aws_access_key_id',
+            'aws_secret_access_key',
+            'aws_session_token',
+        ):
             current_value = mask_value(current_value)
-        response = compat_input("%s [%s]: " % (prompt_text, current_value))
+        response = compat_input(f"{prompt_text} [{current_value}]: ")
         if not response:
             # If the user hits enter, we return a value of None
             # instead of an empty string.  That way we can determine
@@ -84,6 +90,7 @@ class ConfigureCommand(BasicCommand):
         {'name': 'list-profiles', 'command_class': ListProfilesCommand},
         {'name': 'sso', 'command_class': ConfigureSSOCommand},
         {'name': 'sso-session', 'command_class': ConfigureSSOSessionCommand},
+        {'name': 'mfa-login', 'command_class': ConfigureMFALoginCommand},
         {
             'name': 'export-credentials',
             'command_class': ConfigureExportCredentialsCommand,
@@ -100,7 +107,7 @@ class ConfigureCommand(BasicCommand):
     ]
 
     def __init__(self, session, prompter=None, config_writer=None):
-        super(ConfigureCommand, self).__init__(session)
+        super().__init__(session)
         if prompter is None:
             prompter = InteractivePrompter()
         self._prompter = prompter
@@ -110,6 +117,16 @@ class ConfigureCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         # Called when invoked with no args "aws configure"
+        # Check if there are any remaining unparsed arguments that might be invalid subcommands
+        if hasattr(parsed_args, 'remaining') and parsed_args.remaining:
+            sys.stderr.write(
+                f"Invalid subcommand: {' '.join(parsed_args.remaining)}\n"
+            )
+            sys.stderr.write(
+                "Valid subcommands are: list, get, set, add-model, import, list-profiles, sso, sso-session, mfa-login, export-credentials\n"
+            )
+            return 1
+
         new_values = {}
         # This is the config from the config file scoped to a specific
         # profile.
@@ -117,6 +134,10 @@ class ConfigureCommand(BasicCommand):
             config = self._session.get_scoped_config()
         except ProfileNotFound:
             config = {}
+
+        # Track if we need to prompt for session token
+        needs_session_token = False
+
         for config_name, prompt_text in self.VALUES_TO_PROMPT:
             current_value = config.get(config_name)
             new_value = self._prompter.get_value(
@@ -124,6 +145,36 @@ class ConfigureCommand(BasicCommand):
             )
             if new_value is not None and new_value != current_value:
                 new_values[config_name] = new_value
+
+            # Check if this is a temporary credential (starts with ASIA)
+            if (
+                config_name == 'aws_access_key_id'
+                and new_value
+                and new_value.startswith('ASIA')
+            ):
+                needs_session_token = True
+
+            # Prompt for session token after secret key but before region
+            if config_name == 'aws_secret_access_key' and needs_session_token:
+                session_token_current = config.get('aws_session_token')
+                session_token_new = self._prompter.get_value(
+                    session_token_current,
+                    'aws_session_token',
+                    'AWS Session Token',
+                )
+                if (
+                    session_token_new is not None
+                    and session_token_new != session_token_current
+                ):
+                    new_values['aws_session_token'] = session_token_new
+
+        # Remove session token for non-temporary credentials
+        if (
+            'aws_access_key_id' in new_values
+            and not needs_session_token
+            and config.get('aws_session_token')
+        ):
+            new_values['aws_session_token'] = None
         config_filename = os.path.expanduser(
             self._session.get_config_variable('config_file')
         )
@@ -149,6 +200,10 @@ class ConfigureCommand(BasicCommand):
         if 'aws_secret_access_key' in new_values:
             credential_file_values['aws_secret_access_key'] = new_values.pop(
                 'aws_secret_access_key'
+            )
+        if 'aws_session_token' in new_values:
+            credential_file_values['aws_session_token'] = new_values.pop(
+                'aws_session_token'
             )
         if credential_file_values:
             if profile_name is not None:

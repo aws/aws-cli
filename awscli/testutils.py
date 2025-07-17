@@ -43,6 +43,7 @@ from botocore.exceptions import ClientError, WaiterError
 
 import awscli.clidriver
 from awscli.compat import BytesIO, StringIO
+from awscli.utils import create_nested_client
 
 _LOADER = botocore.loaders.Loader()
 INTEG_LOG = logging.getLogger('awscli.tests.integration')
@@ -143,7 +144,7 @@ def create_bucket(session, name=None, region=None):
     """
     if not region:
         region = 'us-west-2'
-    client = session.create_client('s3', region_name=region)
+    client = create_nested_client(session, 's3', region_name=region)
     if name:
         bucket_name = name
     else:
@@ -172,7 +173,7 @@ def create_dir_bucket(session, name=None, location=None):
     if not location:
         location = ('us-west-2', 'usw2-az1')
     region, az = location
-    client = session.create_client('s3', region_name=region)
+    client = create_nested_client(session, 's3', region_name=region)
     if name:
         bucket_name = name
     else:
@@ -778,7 +779,7 @@ class BaseS3CLICommand(unittest.TestCase):
         self.session = botocore.session.get_session()
         self.regions = {}
         self.region = 'us-west-2'
-        self.client = self.session.create_client('s3', region_name=self.region)
+        self.client = create_nested_client(self.session, 's3', region_name=self.region)
         self.extra_setup()
 
     def extra_setup(self):
@@ -799,7 +800,7 @@ class BaseS3CLICommand(unittest.TestCase):
 
     def create_client_for_bucket(self, bucket_name):
         region = self.regions.get(bucket_name, self.region)
-        client = self.session.create_client('s3', region_name=region)
+        client = create_nested_client(self.session, 's3', region_name=region)
         return client
 
     def assert_key_contents_equal(self, bucket, key, expected_contents):

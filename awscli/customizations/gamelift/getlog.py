@@ -15,6 +15,7 @@ from functools import partial
 
 from awscli.compat import urlopen
 from awscli.customizations.commands import BasicCommand
+from awscli.utils import create_nested_client
 
 
 class GetGameSessionLogCommand(BasicCommand):
@@ -28,8 +29,8 @@ class GetGameSessionLogCommand(BasicCommand):
     ]
 
     def _run_main(self, args, parsed_globals):
-        client = self._session.create_client(
-            'gamelift', region_name=parsed_globals.region,
+        client = create_nested_client(
+            self._session, 'gamelift', region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl
         )

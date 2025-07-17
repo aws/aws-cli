@@ -24,7 +24,7 @@ from awscli.customizations.cloudformation.yamlhelper import yaml_parse
 
 from awscli.customizations.commands import BasicCommand
 from awscli.compat import get_stdout_text_writer
-from awscli.utils import write_exception
+from awscli.utils import create_nested_client, write_exception
 
 LOG = logging.getLogger(__name__)
 
@@ -267,8 +267,8 @@ class DeployCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         cloudformation_client = \
-            self._session.create_client(
-                    'cloudformation', region_name=parsed_globals.region,
+            create_nested_client(
+                    self._session, 'cloudformation', region_name=parsed_globals.region,
                     endpoint_url=parsed_globals.endpoint_url,
                     verify=parsed_globals.verify_ssl)
 
@@ -300,7 +300,8 @@ class DeployCommand(BasicCommand):
 
         bucket = parsed_args.s3_bucket
         if bucket:
-            s3_client = self._session.create_client(
+            s3_client = create_nested_client(
+                self._session,
                 "s3",
                 config=Config(signature_version='s3v4'),
                 region_name=parsed_globals.region,

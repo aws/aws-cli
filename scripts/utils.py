@@ -95,13 +95,6 @@ def update_metadata(dirname, **kwargs):
         json.dump(metadata, f)
 
 
-def remove_dist_info(dirname):
-    with cd(dirname):
-        for distinfo in glob.glob("**/*.dist-info", recursive=True):
-            path = os.path.join(dirname, distinfo)
-            shutil.rmtree(path)
-
-
 def save_to_zip(dirname, zipfile_name):
     if zipfile_name.endswith('.zip'):
         zipfile_name = zipfile_name[:-4]

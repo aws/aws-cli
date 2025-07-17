@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.27.54
+=======
+
+* api-change:``synthetics``: This feature allows AWS Synthetics customers to provide code dependencies using lambda layer while creating a canary
+* api-change:``mediaconvert``: This release expands the range of supported audio outputs to include xHE, 192khz FLAC and the deprecation of dual mono for AC3.
+* api-change:``cloudfront``: Doc only update for CloudFront that fixes some customer-reported issues
+* api-change:``keyspacesstreams``: Doc only update for the Amazon Keyspaces Streams API.
+* api-change:``mailmanager``: Allow underscores in the local part of the input of the "Email recipients rewrite" action in rule sets.
+* api-change:``stepfunctions``: Align input with style guidelines.
+* api-change:``ec2``: AWS Free Tier Version2 Support
+* api-change:``cleanroomsml``: This release introduces Parquet result format support for ML Input Channel models in AWS Clean Rooms ML.
+
+
 2.27.53
 =======
 

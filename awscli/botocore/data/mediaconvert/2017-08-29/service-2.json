@@ -1304,7 +1304,8 @@
       "enum": [
         "LC",
         "HEV1",
-        "HEV2"
+        "HEV2",
+        "XHE"
       ]
     },
     "AacCodingMode": {
@@ -1316,6 +1317,14 @@
         "CODING_MODE_1_1",
         "CODING_MODE_2_0",
         "CODING_MODE_5_1"
+      ]
+    },
+    "AacLoudnessMeasurementMode": {
+      "type": "string",
+      "documentation": "Choose the loudness measurement mode for your audio content. For music or advertisements: We recommend that you keep the default value, Program. For speech or other content: We recommend that you choose Anchor. When you do, MediaConvert optimizes the loudness of your output for clarify by applying speech gates.",
+      "enum": [
+        "PROGRAM",
+        "ANCHOR"
       ]
     },
     "AacRateControlMode": {
@@ -1357,6 +1366,16 @@
           "locationName": "codingMode",
           "documentation": "The Coding mode that you specify determines the number of audio channels and the audio channel layout metadata in your AAC output. Valid coding modes depend on the Rate control mode and Profile that you select. The following list shows the number of audio channels and channel layout for each coding mode. * 1.0 Audio Description (Receiver Mix): One channel, C. Includes audio description data from your stereo input. For more information see ETSI TS 101 154 Annex E. * 1.0 Mono: One channel, C. * 2.0 Stereo: Two channels, L, R. * 5.1 Surround: Six channels, C, L, R, Ls, Rs, LFE."
         },
+        "LoudnessMeasurementMode": {
+          "shape": "AacLoudnessMeasurementMode",
+          "locationName": "loudnessMeasurementMode",
+          "documentation": "Choose the loudness measurement mode for your audio content. For music or advertisements: We recommend that you keep the default value, Program. For speech or other content: We recommend that you choose Anchor. When you do, MediaConvert optimizes the loudness of your output for clarify by applying speech gates."
+        },
+        "RapInterval": {
+          "shape": "__integerMin2000Max30000",
+          "locationName": "rapInterval",
+          "documentation": "Specify the RAP (Random Access Point) interval for your xHE-AAC audio output. A RAP allows a decoder to decode audio data mid-stream, without the need to reference previous audio frames, and perform adaptive audio bitrate switching. To specify the RAP interval: Enter an integer from 2000 to 30000, in milliseconds. Smaller values allow for better seeking and more frequent stream switching, while large values improve compression efficiency. To have MediaConvert automatically determine the RAP interval: Leave blank."
+        },
         "RateControlMode": {
           "shape": "AacRateControlMode",
           "locationName": "rateControlMode",
@@ -1376,6 +1395,11 @@
           "shape": "AacSpecification",
           "locationName": "specification",
           "documentation": "Use MPEG-2 AAC instead of MPEG-4 AAC audio for raw or MPEG-2 Transport Stream containers."
+        },
+        "TargetLoudnessRange": {
+          "shape": "__integerMin6Max16",
+          "locationName": "targetLoudnessRange",
+          "documentation": "Specify the xHE-AAC loudness target. Enter an integer from 6 to 16, representing \"loudness units\". For more information, see the following specification: Supplementary information for R 128 EBU Tech 3342-2023."
         },
         "VbrQuality": {
           "shape": "AacVbrQuality",
@@ -3721,6 +3745,7 @@
         "AV1",
         "AVC",
         "HEVC",
+        "JPEG2000",
         "MJPEG",
         "MP4V",
         "MPEG2",
@@ -3923,7 +3948,7 @@
         "Format": {
           "shape": "Format",
           "locationName": "format",
-          "documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), or WebM. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize."
+          "documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM or MXF. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize."
         },
         "Tracks": {
           "shape": "__listOfTrack",
@@ -5920,7 +5945,7 @@
           "documentation": "Specify the number of channels in this output audio track. Choosing Mono on the console gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are between 1 and 8."
         },
         "SampleRate": {
-          "shape": "__integerMin22050Max48000",
+          "shape": "__integerMin22050Max192000",
           "locationName": "sampleRate",
           "documentation": "Sample rate in Hz."
         }
@@ -5972,7 +5997,8 @@
         "mp4",
         "quicktime",
         "matroska",
-        "webm"
+        "webm",
+        "mxf"
       ]
     },
     "FrameCaptureSettings": {
@@ -13214,7 +13240,7 @@
         "Codec": {
           "shape": "VideoCodec",
           "locationName": "codec",
-          "documentation": "Specifies the video codec. This must be equal to one of the enum values defined by the object VideoCodec. To passthrough the video stream of your input JPEG2000, VC-3, AVC-INTRA or Apple ProRes video without any video encoding: Choose Passthrough. If you have multiple input videos, note that they must have identical encoding attributes. When you choose Passthrough, your output container must be MXF or QuickTime MOV."
+          "documentation": "Specifies the video codec. This must be equal to one of the enum values defined by the object VideoCodec. To passthrough the video stream of your input without any video encoding: Choose Passthrough. More information about passthrough codec support and job settings requirements, see: https://docs.aws.amazon.com/mediaconvert/latest/ug/video-passthrough-feature-restrictions.html"
         },
         "FrameCaptureSettings": {
           "shape": "FrameCaptureSettings",
@@ -14851,6 +14877,16 @@
       "min": 1,
       "max": 8
     },
+    "__integerMin2000Max30000": {
+      "type": "integer",
+      "min": 2000,
+      "max": 30000
+    },
+    "__integerMin22050Max192000": {
+      "type": "integer",
+      "min": 22050,
+      "max": 192000
+    },
     "__integerMin22050Max48000": {
       "type": "integer",
       "min": 22050,
@@ -14945,6 +14981,11 @@
       "type": "integer",
       "min": 64000,
       "max": 640000
+    },
+    "__integerMin6Max16": {
+      "type": "integer",
+      "min": 6,
+      "max": 16
     },
     "__integerMin8000Max192000": {
       "type": "integer",

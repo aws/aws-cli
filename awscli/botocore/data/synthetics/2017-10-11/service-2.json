@@ -568,6 +568,10 @@
         "Handler":{
           "shape":"CodeHandler",
           "documentation":"<p>The entry point to use for the source code when running the canary. For canaries that use the <code>syn-python-selenium-1.0</code> runtime or a <code>syn-nodejs.puppeteer</code> runtime earlier than <code>syn-nodejs.puppeteer-3.4</code>, the handler must be specified as <code> <i>fileName</i>.handler</code>. For <code>syn-python-selenium-1.1</code>, <code>syn-nodejs.puppeteer-3.4</code>, and later runtimes, the handler can be specified as <code> <i>fileName</i>.<i>functionName</i> </code>, or you can specify a folder where canary scripts reside as <code> <i>folder</i>/<i>fileName</i>.<i>functionName</i> </code>.</p>"
+        },
+        "Dependencies":{
+          "shape":"Dependencies",
+          "documentation":"<p>A list of dependencies that should be used for running this canary. Specify the dependencies as a key-value pair, where the key is the type of dependency and the value is the dependency reference.</p>"
         }
       },
       "documentation":"<p>Use this structure to input your script code for the canary. This structure contains the Lambda handler with the location where the canary should start running the script. If the script is stored in an Amazon S3 bucket, the bucket name, key, and version are also included. If the script was passed into the canary directly, the script code is contained in the value of <code>Zipfile</code>. </p> <p>If you are uploading your canary scripts with an Amazon S3 bucket, your zip file should include your script in a certain folder structure.</p> <ul> <li> <p>For Node.js canaries, the folder structure must be <code>nodejs/node_modules/<i>myCanaryFilename.js</i> </code> For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_WritingCanary_Nodejs.html#CloudWatch_Synthetics_Canaries_package\">Packaging your Node.js canary files</a> </p> </li> <li> <p>For Python canaries, the folder structure must be <code>python/<i>myCanaryFilename.py</i> </code> or <code>python/<i>myFolder/myCanaryFilename.py</i> </code> For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_WritingCanary_Python.html#CloudWatch_Synthetics_Canaries_WritingCanary_Python_package\">Packaging your Python canary files</a> </p> </li> </ul>"
@@ -582,6 +586,10 @@
         "Handler":{
           "shape":"String",
           "documentation":"<p>The entry point to use for the source code when running the canary.</p>"
+        },
+        "Dependencies":{
+          "shape":"Dependencies",
+          "documentation":"<p>A list of dependencies that are used for running this canary. The dependencies are specified as a key-value pair, where the key is the type of dependency and the value is the dependency reference.</p>"
         }
       },
       "documentation":"<p>This structure contains information about the canary's Lambda handler and where its code is stored by CloudWatch Synthetics.</p>"
@@ -1030,6 +1038,31 @@
     "DeleteGroupResponse":{
       "type":"structure",
       "members":{}
+    },
+    "Dependencies":{
+      "type":"list",
+      "member":{"shape":"Dependency"},
+      "max":1,
+      "min":0
+    },
+    "Dependency":{
+      "type":"structure",
+      "required":["Reference"],
+      "members":{
+        "Type":{
+          "shape":"DependencyType",
+          "documentation":"<p>The type of dependency. Valid value is <code>LambdaLayer</code>.</p>"
+        },
+        "Reference":{
+          "shape":"String",
+          "documentation":"<p>The dependency reference. For Lambda layers, this is the ARN of the Lambda layer. For more information about Lambda ARN format, see <a href=\"https://docs.aws.amazon.com/lambda/latest/api/API_Layer.html\">Lambda</a>.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about a dependency for a canary.</p>"
+    },
+    "DependencyType":{
+      "type":"string",
+      "enum":["LambdaLayer"]
     },
     "DescribeCanariesLastRunNameFilter":{
       "type":"list",

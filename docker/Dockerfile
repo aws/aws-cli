@@ -13,7 +13,7 @@ RUN dnf update -y \
 
 FROM public.ecr.aws/amazonlinux/amazonlinux:2023
 RUN dnf update -y \
-  && dnf install -y less groff \
+  && dnf install -y less groff findutils \
   && dnf clean all
 COPY --from=installer /usr/local/aws-cli/ /usr/local/aws-cli/
 COPY --from=installer /aws-cli-bin/ /usr/local/bin/

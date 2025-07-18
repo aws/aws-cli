@@ -66,6 +66,8 @@ def register_removals(event_handler):
                         remove_commands=['chat'])
     cmd_remover.remove(on_event='building-command-table.iotsitewise',
                         remove_commands=['invoke-assistant'])
+    cmd_remover.remove(on_event='building-command-table.logs',
+                        remove_commands=['get-log-object'])
 
 
 class CommandRemover(object):

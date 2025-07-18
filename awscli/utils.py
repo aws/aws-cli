@@ -311,3 +311,17 @@ class ShapeRecordingVisitor(BaseShapeVisitor):
 
     def visit_shape(self, shape):
         self.visited.append(shape)
+
+# NOTE: The following interfaces are considered private and are subject
+# to abrupt breaking changes. Please do not use them directly.
+
+try:
+    from botocore.utils import create_nested_client as create_client
+except ImportError:
+
+    def create_client(session, service_name, **kwargs):
+        return session.create_client(service_name, **kwargs)
+
+
+def create_nested_client(session, service_name, **kwargs):
+    return create_client(session, service_name, **kwargs)

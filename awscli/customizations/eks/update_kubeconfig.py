@@ -26,6 +26,7 @@ from awscli.customizations.eks.kubeconfig import (Kubeconfig,
                                                   KubeconfigValidator,
                                                   KubeconfigAppender)
 from awscli.customizations.eks.ordered_yaml import ordered_yaml_dump
+from awscli.utils import create_nested_client
 
 LOG = logging.getLogger(__name__)
 
@@ -270,7 +271,7 @@ class EKSClient(object):
 
         # Handle role assumption if needed
         if getattr(self._parsed_args, 'assume_role_arn', None):
-            sts_client = self._session.create_client('sts')
+            sts_client = create_nested_client(self._session, 'sts')
             credentials = sts_client.assume_role(
                 RoleArn=self._parsed_args.assume_role_arn,
                 RoleSessionName='EKSDescribeClusterSession'
@@ -282,7 +283,7 @@ class EKSClient(object):
                 "aws_session_token": credentials["SessionToken"],
             })
 
-        client = self._session.create_client("eks", **client_kwargs)
+        client = create_nested_client(self._session, "eks", **client_kwargs)
         full_description = client.describe_cluster(name=self._cluster_name)
         cluster = full_description.get("cluster")
 

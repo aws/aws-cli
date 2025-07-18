@@ -13,7 +13,7 @@
 import sys
 
 from awscli.customizations.commands import BasicCommand
-
+from awscli.utils import create_nested_client
 
 def register_get_status(cli):
     cli.register('building-command-table.configservice', add_get_status)
@@ -44,8 +44,8 @@ class GetStatusCommand(BasicCommand):
             'region_name': parsed_globals.region,
             'endpoint_url': parsed_globals.endpoint_url
         }
-        self._config_client = self._session.create_client('config',
-                                                          **client_args)
+        self._config_client = create_nested_client(self._session, 'config',
+                                           **client_args)
 
     def _check_configuration_recorders(self):
         status = self._config_client.describe_configuration_recorder_status()

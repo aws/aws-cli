@@ -19,7 +19,7 @@ import time
 
 from awscli.compat import get_stdout_text_writer
 from awscli.customizations.commands import BasicCommand
-from awscli.utils import is_a_tty
+from awscli.utils import is_a_tty, create_nested_client
 
 
 DESCRIPTION = (
@@ -240,8 +240,8 @@ class StartLiveTailCommand(BasicCommand):
         self._output = get_stdout_text_writer()
 
     def _get_client(self, parsed_globals):
-        return self._session.create_client(
-            "logs",
+        return create_nested_client(
+            self._session, "logs",
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl,

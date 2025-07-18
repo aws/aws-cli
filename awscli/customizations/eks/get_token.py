@@ -21,6 +21,7 @@ from botocore.signers import RequestSigner
 from botocore.model import ServiceId
 
 from awscli.formatter import get_formatter
+from awscli.utils import create_nested_client
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print
 from awscli.customizations.utils import validate_mutually_exclusive
@@ -247,12 +248,12 @@ class STSClientFactory(object):
             client_kwargs['aws_access_key_id'] = creds['AccessKeyId']
             client_kwargs['aws_secret_access_key'] = creds['SecretAccessKey']
             client_kwargs['aws_session_token'] = creds['SessionToken']
-        sts = self._session.create_client('sts', **client_kwargs)
+        sts = create_nested_client(self._session, 'sts', **client_kwargs)
         self._register_k8s_aws_id_handlers(sts)
         return sts
 
     def _get_role_credentials(self, region_name, role_arn):
-        sts = self._session.create_client('sts', region_name)
+        sts = create_nested_client(self._session, 'sts', region_name=region_name)
         return sts.assume_role(
             RoleArn=role_arn, RoleSessionName='EKSGetTokenAuth'
         )['Credentials']

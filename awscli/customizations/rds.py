@@ -29,6 +29,7 @@ from awscli.clidriver import CLIOperationCaller
 from awscli.customizations import utils
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print
+from awscli.utils import create_nested_client
 
 
 def register_rds_modify_split(cli):
@@ -95,7 +96,8 @@ class GenerateDBAuthTokenCommand(BasicCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        rds = self._session.create_client(
+        rds = create_nested_client(
+            self._session,
             'rds',
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,

@@ -23,6 +23,7 @@ from awscli.customizations.dlm.constants \
     POLICY_ARN_PATTERN, \
     RESOURCE_TYPE_SNAPSHOT, \
     RESOURCE_TYPE_IMAGE
+from awscli.utils import create_nested_client
 
 LOG = logging.getLogger(__name__)
 
@@ -98,8 +99,9 @@ class CreateDefaultRole(BasicCommand):
         self._region = get_region(self._session, parsed_globals)
         self._endpoint_url = parsed_args.iam_endpoint
         self._resource_type = parsed_args.resource_type
-        self._iam_client = IAM(self._session.create_client(
-            'iam',
+        from awscli.utils import create_nested_client
+        self._iam_client = IAM(create_nested_client(
+            self._session, 'iam',
             region_name=self._region,
             endpoint_url=self._endpoint_url,
             verify=parsed_globals.verify_ssl

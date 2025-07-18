@@ -14,6 +14,7 @@
 import ctypes
 import os
 import subprocess
+from awscli.utils import create_nested_client
 
 DEFAULT_CONFIG_FILE = 'codedeploy.onpremises.yml'
 
@@ -26,7 +27,8 @@ class System:
 
     def __init__(self, params):
         self.session = params.session
-        self.s3 = self.session.create_client(
+        self.s3 = create_nested_client(
+            self.session,
             's3',
             region_name=params.region
         )

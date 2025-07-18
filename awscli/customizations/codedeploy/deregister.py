@@ -18,6 +18,7 @@ from botocore.exceptions import ClientError
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.codedeploy.utils import \
     validate_region, validate_instance_name, INSTANCE_NAME_ARG
+from awscli.utils import create_nested_client
 
 
 class Deregister(BasicCommand):
@@ -48,13 +49,15 @@ class Deregister(BasicCommand):
         validate_region(params, parsed_globals)
         validate_instance_name(params)
 
-        self.codedeploy = self._session.create_client(
+        self.codedeploy = create_nested_client(
+            self._session,
             'codedeploy',
             region_name=params.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl
         )
-        self.iam = self._session.create_client(
+        self.iam = create_nested_client(
+            self._session,
             'iam',
             region_name=params.region
         )

@@ -67,6 +67,7 @@ class CopySubmissionTask(SubmissionTask):
         'CopySourceSSECustomerKeyMD5',
         'MetadataDirective',
         'TaggingDirective',
+        'IfNoneMatch',
     ]
 
     COMPLETE_MULTIPART_ARGS = [
@@ -75,6 +76,11 @@ class CopySubmissionTask(SubmissionTask):
         'SSECustomerKeyMD5',
         'RequestPayer',
         'ExpectedBucketOwner',
+        'IfNoneMatch',
+    ]
+
+    COPY_OBJECT_BLOCKLIST = [
+        'IfNoneMatch',
     ]
 
     def _submit(
@@ -98,6 +104,7 @@ class CopySubmissionTask(SubmissionTask):
         :param transfer_future: The transfer future associated with the
             transfer request that tasks are being submitted for
         """
+        call_args = transfer_future.meta.call_args
         # Determine the size if it was not provided
         if transfer_future.meta.size is None:
             # If a size was not provided figure out the size for the
@@ -105,7 +112,6 @@ class CopySubmissionTask(SubmissionTask):
             # the TransferManager. If the object is outside of the region
             # of the client, they may have to provide the file size themselves
             # with a completely new client.
-            call_args = transfer_future.meta.call_args
             head_object_request = (
                 self._get_head_object_request_from_copy_source(
                     call_args.copy_source
@@ -127,10 +133,17 @@ class CopySubmissionTask(SubmissionTask):
             transfer_future.meta.provide_transfer_size(
                 response['ContentLength']
             )
-
-        # If it is greater than threshold do a multipart copy, otherwise
-        # do a regular copy object.
-        if transfer_future.meta.size < config.multipart_threshold:
+        # Check if no-overwrite is enabled and file has content
+        no_overwrite_requested = (
+            call_args.extra_args.get("IfNoneMatch")
+            and transfer_future.meta.size != 0
+        )
+        # If it is less than threshold and no_overwrite is not requested
+        # do a regular copy else do multipart copy.
+        if (
+            transfer_future.meta.size < config.multipart_threshold
+            and not no_overwrite_requested
+        ):
             self._submit_copy_request(
                 client, config, osutil, request_executor, transfer_future
             )
@@ -147,23 +160,32 @@ class CopySubmissionTask(SubmissionTask):
         # Get the needed progress callbacks for the task
         progress_callbacks = get_callbacks(transfer_future, 'progress')
 
-        # Submit the request of a single copy.
-        self._transfer_coordinator.submit(
-            request_executor,
-            CopyObjectTask(
-                transfer_coordinator=self._transfer_coordinator,
-                main_kwargs={
-                    'client': client,
-                    'copy_source': call_args.copy_source,
-                    'bucket': call_args.bucket,
-                    'key': call_args.key,
-                    'extra_args': call_args.extra_args,
-                    'callbacks': progress_callbacks,
-                    'size': transfer_future.meta.size,
-                },
-                is_final=True,
-            ),
-        )
+        # Submit the request of a single copy and make sure it
+        # does not include any blocked arguments.
+        copy_object_extra_args = {}
+        for param, val in call_args.extra_args.items():
+            if param not in self.COPY_OBJECT_BLOCKLIST:
+                copy_object_extra_args[param] = val
+
+        if not self._check_destination_object_existence(client, call_args):
+            self._transfer_coordinator.announce_done()
+        else:
+            self._transfer_coordinator.submit(
+                request_executor,
+                CopyObjectTask(
+                    transfer_coordinator=self._transfer_coordinator,
+                    main_kwargs={
+                        'client': client,
+                        'copy_source': call_args.copy_source,
+                        'bucket': call_args.bucket,
+                        'key': call_args.key,
+                        'extra_args': copy_object_extra_args,
+                        'callbacks': progress_callbacks,
+                        'size': transfer_future.meta.size,
+                    },
+                    is_final=True,
+                ),
+            )
 
     def _submit_multipart_request(
         self, client, config, osutil, request_executor, transfer_future
@@ -299,6 +321,59 @@ class CopySubmissionTask(SubmissionTask):
             # parts.
             return total_transfer_size - (part_index * part_size)
         return part_size
+
+    def _check_destination_object_existence(self, client, call_args):
+        """
+        Check if destination object exists when IfNoneMatch is specified.
+
+        This method implements the no-overwrite functionality by checking if the
+        destination object already exists before proceeding with the copy operation.
+        Args:
+        client: The S3 client to use for the head_object call
+        call_args: The transfer call arguments containing bucket, key, and extra_args
+
+        Returns:
+            bool: True if copy should proceed, False if process should terminate
+
+        Behavior:
+        If IfNoneMatch is not specified: Returns True (proceed normally)
+        If IfNoneMatch is specified and destination object exists:
+          Sets PreconditionFailed exception achieveing behaviour of ifNoneMatch header
+          and returns False (terminate process)
+        If IfNoneMatch is specified and destination object doesn't exist (404/NoSuchKey):
+          Returns True (proceed with copy)
+        If other errors occur: Re-raises the exception
+
+        """
+        if not call_args.extra_args.get("IfNoneMatch"):
+            return True
+        try:
+            client.head_object(Bucket=call_args.bucket, Key=call_args.key)
+            self._transfer_coordinator.set_exception(
+                client.exceptions.ClientError(
+                    {
+                        'Error': {
+                            'Code': 'PreconditionFailed',
+                            'Message': 'At least one of the pre-conditions you specified did not hold',
+                            'StatusCode': 412,
+                        }
+                    },
+                    'HeadObject',
+                )
+            )
+            return False
+        except Exception as e:
+            error_code = None
+            if hasattr(e, 'response'):
+                error_code = e.response.get('Error', {}).get('Code')
+                if (
+                    error_code == '404'
+                    or error_code == 'NoSuchKey'
+                    or 'NoSuchKey' in str(e)
+                ):
+                    return True
+                else:
+                    raise
 
 
 class CopyObjectTask(Task):

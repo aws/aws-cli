@@ -48,7 +48,7 @@ from awscli.help import (
     ServiceHelpCommand,
 )
 from awscli.plugin import load_plugins
-from awscli.utils import emit_top_level_args_parsed_event, write_exception
+from awscli.utils import emit_top_level_args_parsed_event, write_exception, create_nested_client
 from botocore import __version__ as botocore_version
 from botocore import xform_name
 
@@ -692,7 +692,8 @@ class CLIOperationCaller:
             value is returned.
 
         """
-        client = self._session.create_client(
+        client = create_nested_client(
+            self._session,
             service_name,
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,

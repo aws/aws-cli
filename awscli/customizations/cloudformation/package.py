@@ -24,6 +24,7 @@ from awscli.customizations.cloudformation.yamlhelper import yaml_dump
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3uploader import S3Uploader
+from awscli.utils import create_nested_client
 
 LOG = logging.getLogger(__name__)
 
@@ -124,8 +125,8 @@ class PackageCommand(BasicCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        s3_client = self._session.create_client(
-            "s3",
+        s3_client = create_nested_client(
+            self._session, "s3",
             config=Config(signature_version='s3v4'),
             region_name=parsed_globals.region,
             verify=parsed_globals.verify_ssl)

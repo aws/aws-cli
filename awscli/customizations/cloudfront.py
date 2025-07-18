@@ -21,6 +21,7 @@ from botocore.signers import CloudFrontSigner
 from awscli.arguments import CustomArgument
 from awscli.customizations.utils import validate_mutually_exclusive_handler
 from awscli.customizations.commands import BasicCommand
+from awscli.utils import create_nested_client
 
 
 def register(event_handler):
@@ -172,7 +173,8 @@ class UpdateDefaultRootObject(CreateDefaultRootObject):
 
     def add_to_params(self, parameters, value):
         if value is not None:
-            client = self.context['session'].create_client(
+            client = create_nested_client(
+                self.context['session'],
                 'cloudfront',
                 region_name=self.context['parsed_args'].region,
                 endpoint_url=self.context['parsed_args'].endpoint_url,

@@ -23,7 +23,7 @@ from botocore.exceptions import ClientError
 from awscli.customizations.codedeploy.utils import validate_s3_location
 from awscli.customizations.commands import BasicCommand
 from awscli.compat import BytesIO, ZIP_COMPRESSION_MODE
-
+from awscli.utils import create_nested_client
 
 ONE_MB = 1 << 20
 MULTIPART_LIMIT = 6 * ONE_MB
@@ -107,13 +107,15 @@ class Push(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         self._validate_args(parsed_args)
-        self.codedeploy = self._session.create_client(
+        self.codedeploy = create_nested_client(
+            self._session,
             'codedeploy',
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl
         )
-        self.s3 = self._session.create_client(
+        self.s3 = create_nested_client(
+            self._session,
             's3',
             region_name=parsed_globals.region
         )

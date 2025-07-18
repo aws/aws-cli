@@ -18,6 +18,7 @@ from awscli.customizations.codedeploy.systems import DEFAULT_CONFIG_FILE
 from awscli.customizations.codedeploy.utils import \
     validate_region, validate_instance_name, validate_tags, \
     validate_iam_user_arn, INSTANCE_NAME_ARG, IAM_USER_ARN_ARG
+from awscli.utils import create_nested_client
 
 
 class Register(BasicCommand):
@@ -73,13 +74,15 @@ class Register(BasicCommand):
         validate_tags(params)
         validate_iam_user_arn(params)
 
-        self.codedeploy = self._session.create_client(
+        self.codedeploy = create_nested_client(
+            self._session,
             'codedeploy',
             region_name=params.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl
         )
-        self.iam = self._session.create_client(
+        self.iam = create_nested_client(
+            self._session,
             'iam',
             region_name=params.region
         )

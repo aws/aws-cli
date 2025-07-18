@@ -22,7 +22,7 @@ from awscli.customizations.datapipeline.createdefaultroles \
     import CreateDefaultRoles
 from awscli.customizations.datapipeline.listrunsformatter \
     import ListRunsFormatter
-
+from awscli.utils import create_nested_client
 
 DEFINITION_HELP_TEXT = """\
 The JSON pipeline definition.  If the pipeline definition
@@ -361,7 +361,9 @@ class ListRunsCommand(BasicCommand):
     def _set_client(self, parsed_globals):
         # This is called from _run_main and is used to ensure that we have
         # a service/endpoint object to work with.
-        self.client = self._session.create_client(
+        from awscli.utils import create_nested_client
+        self.client = create_nested_client(
+            self._session,
             'datapipeline',
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,

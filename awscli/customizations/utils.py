@@ -18,6 +18,7 @@ import copy
 import sys
 
 from botocore.exceptions import ClientError
+from awscli.utils import create_nested_client
 
 
 def rename_argument(argument_table, existing_name, new_name):
@@ -172,7 +173,7 @@ def create_client_from_parsed_globals(session, service_name, parsed_globals,
         client_args['verify'] = parsed_globals.verify_ssl
     if overrides:
         client_args.update(overrides)
-    return session.create_client(service_name, **client_args)
+    return create_nested_client(session, service_name, **client_args)
 
 
 def uni_print(statement, out_file=None):

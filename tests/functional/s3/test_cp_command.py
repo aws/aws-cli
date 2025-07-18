@@ -399,14 +399,12 @@ class TestCPCommand(BaseCPCommandTest):
     def test_no_overwrite_flag_on_copy_when_small_object_does_not_exist_on_target(
         self,
     ):
-        cmdline = (
-            f'{self.prefix} s3://bucket1/key.txt s3://bucket --no-overwrite'
-        )
+        cmdline = f'{self.prefix} s3://bucket1/key.txt s3://bucket/key1.txt --no-overwrite'
         # Set up responses for multipart copy (since no-overwrite always uses multipart)
         self.parsed_responses = [
             self.head_object_response(),  # HeadObject to get source metadata
-            {'UploadId': 'foo'},  # CreateMultipartUpload response
-            {'CopyPartResult': {'ETag': '"foo-1"'}},  # UploadPartCopy response
+            self.create_mpu_response('foo'),  # CreateMultipartUpload response
+            self.upload_part_copy_response(),  # UploadPartCopy response
             {},  # CompleteMultipartUpload response
         ]
         self.run_cmd(cmdline, expected_rc=0)
@@ -426,22 +424,13 @@ class TestCPCommand(BaseCPCommandTest):
     def test_no_overwrite_flag_on_copy_when_small_object_exists_on_target(
         self,
     ):
-        cmdline = (
-            f'{self.prefix} s3://bucket1/key.txt s3://bucket --no-overwrite'
-        )
+        cmdline = f'{self.prefix} s3://bucket1/key.txt s3://bucket/key.txt --no-overwrite'
         # Set up responses for multipart copy (since no-overwrite always uses multipart)
         self.parsed_responses = [
             self.head_object_response(),  # HeadObject to get source metadata
-            {'UploadId': 'foo'},  # CreateMultipartUpload response
-            {'CopyPartResult': {'ETag': '"foo-1"'}},  # UploadPartCopy response
-            {
-                'ResponseMetadata': {'HTTPStatusCode': 412},
-                'Error': {
-                    'Code': 'PreconditionFailed',
-                    'Message': 'At least one of the pre-conditions you specified did not hold',
-                    'Condition': 'If-None-Match',
-                },
-            },  # CompleteMultipartUpload
+            self.create_mpu_response('foo'),  # CreateMultipartUpload response
+            self.upload_part_copy_response(),  # UploadPartCopy response
+            self.precondition_failed_error_response(),  # CompleteMultipartUpload
             {},  # AbortMultipartUpload response
         ]
         self.run_cmd(cmdline, expected_rc=0)
@@ -461,54 +450,52 @@ class TestCPCommand(BaseCPCommandTest):
         # Verify the IfNoneMatch condition was set in the CompleteMultipartUpload request
         self.assertEqual(self.operations_called[3][1]['IfNoneMatch'], '*')
 
-    def test_no_overwrite_flag_on_copy_when_object_is_of_zero_size(self):
-        cmdline = (
-            f'{self.prefix} s3://bucket1/file.txt s3://bucket2 --no-overwrite'
-        )
+    def test_no_overwrite_flag_on_copy_when_zero_size_object_exists_at_destination(
+        self,
+    ):
+        cmdline = f'{self.prefix} s3://bucket1/file.txt s3://bucket2/file.txt --no-overwrite'
         self.parsed_responses = [
-            {
-                "ContentLength": 0,
-                "LastModified": "00:00:00Z",
-                'ETag': '"d41d8cd98f00b204e9800998ecf8427e"',
-            },  # HeadObject with content length 0
-            {
-                'CopyObjectResult': {
-                    'ETag': '"d41d8cd98f00b204e9800998ecf8427e"'
-                }
-            },  # Copy Response
+            self.head_object_response(
+                ContentLength=0
+            ),  # Source object (zero size)
+            self.head_object_response(),  # Checking the object at destination
         ]
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 2)
         self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
-        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        self.assertEqual(self.operations_called[1][0].name, 'HeadObject')
+
+    def test_no_overwrite_flag_on_copy_when_zero_size_object_not_exists_at_destination(
+        self,
+    ):
+        cmdline = f'{self.prefix} s3://bucket1/file.txt s3://bucket2/file1.txt --no-overwrite'
+        self.parsed_responses = [
+            self.head_object_response(
+                ContentLength=0
+            ),  # Source object (zero size)
+            self.no_such_key_error_response(),  # At destination object does not exists
+            self.copy_object_response(),  # Copy Request when object does not exists
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 3)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertEqual(self.operations_called[1][0].name, 'HeadObject')
+        self.assertEqual(self.operations_called[2][0].name, 'CopyObject')
 
     def test_no_overwrite_flag_on_copy_when_large_object_exists_on_target(
         self,
     ):
-        cmdline = (
-            f'{self.prefix} s3://bucket1/key.txt s3://bucket --no-overwrite'
-        )
+        cmdline = f'{self.prefix} s3://bucket1/key.txt s3://bucket/key.txt --no-overwrite'
         # Set up responses for multipart copy with large object
         self.parsed_responses = [
             self.head_object_response(
                 ContentLength=10 * (1024**2)
             ),  # HeadObject with large content
-            {'TagSet': []},  # GetObjectTagging response
-            {'UploadId': 'foo'},  # CreateMultipartUpload response
-            {
-                'CopyPartResult': {'ETag': '"foo-1"'}
-            },  # UploadPartCopy response part 1
-            {
-                'CopyPartResult': {'ETag': '"foo-2"'}
-            },  # UploadPartCopy response part 2
-            {
-                'ResponseMetadata': {'HTTPStatusCode': 412},
-                'Error': {
-                    'Code': 'PreconditionFailed',
-                    'Message': 'At least one of the pre-conditions you specified did not hold',
-                    'Condition': 'If-None-Match',
-                },
-            },  # CompleteMultipartUpload fails with PreconditionFailed
+            self.get_object_tagging_response({}),  # GetObjectTagging response
+            self.create_mpu_response('foo'),  # CreateMultipartUpload response
+            self.upload_part_copy_response(),  # UploadPartCopy response part 1
+            self.upload_part_copy_response(),  # UploadPartCopy response part 2
+            self.precondition_failed_error_response(),  # CompleteMultipartUpload fails with PreconditionFailed
             {},  # AbortMultipartUpload response
         ]
         self.run_cmd(cmdline, expected_rc=0)
@@ -533,22 +520,16 @@ class TestCPCommand(BaseCPCommandTest):
     def test_no_overwrite_flag_on_copy_when_large_object_does_not_exist_on_target(
         self,
     ):
-        cmdline = (
-            f'{self.prefix} s3://bucket1/key.txt s3://bucket --no-overwrite'
-        )
+        cmdline = f'{self.prefix} s3://bucket1/key.txt s3://bucket/key1.txt --no-overwrite'
         # Set up responses for multipart copy with large object
         self.parsed_responses = [
             self.head_object_response(
                 ContentLength=10 * (1024**2)
             ),  # HeadObject with large content
-            {'TagSet': []},  # GetObjectTagging response
-            {'UploadId': 'foo'},  # CreateMultipartUpload response
-            {
-                'CopyPartResult': {'ETag': '"foo-1"'}
-            },  # UploadPartCopy response part 1
-            {
-                'CopyPartResult': {'ETag': '"foo-2"'}
-            },  # UploadPartCopy response part 2
+            self.get_object_tagging_response({}),  # GetObjectTagging response
+            self.create_mpu_response('foo'),  # CreateMultipartUpload response
+            self.upload_part_copy_response(),  # UploadPartCopy response part 1
+            self.upload_part_copy_response(),  # UploadPartCopy response part 2
             {},  # CompleteMultipartUpload response
         ]
         self.run_cmd(cmdline, expected_rc=0)

@@ -318,7 +318,9 @@ class TestNonMultipartCopy(BaseCopyTest):
         with self.assertRaisesRegex(ValueError, 'methods do not support'):
             self.manager.copy(source, self.bucket, self.key)
 
-    def test_copy_with_no_overwrite_flag_when_object_is_of_zero_size(self):
+    def test_copy_with_no_overwrite_flag_when_zero_size_object_exists_at_destination(
+        self,
+    ):
         # Set up IfNoneMatch in extra_args
         self.extra_args['IfNoneMatch'] = '*'
         # Override the content with zero-length content
@@ -329,7 +331,49 @@ class TestNonMultipartCopy(BaseCopyTest):
             'Key': self.copy_source['Key'],
         }
         self.add_head_object_response(expected_params=expected_head_params)
-        # IfNoneMatch should NOT be included in copy_object call
+        # Add head object response for destination
+        expected_dest_head_params = {
+            'Bucket': self.bucket,
+            'Key': self.key,
+        }
+        self.add_head_object_response(
+            expected_params=expected_dest_head_params
+        )
+        call_kwargs = self.create_call_kwargs()
+        call_kwargs['extra_args'] = self.extra_args
+        future = self.manager.copy(**call_kwargs)
+        with self.assertRaises(ClientError) as e:
+            future.result()
+        self.assertEqual(
+            e.exception.response['Error']['Code'], 'PreconditionFailed'
+        )
+        self.stubber.assert_no_pending_responses()
+
+    def test_copy_with_no_overwrite_flag_when_zero_size_object_does_not_exist_at_destination(
+        self,
+    ):
+        # Set up IfNoneMatch in extra_args
+        self.extra_args['IfNoneMatch'] = '*'
+        # Override the content with zero-length content
+        self.content = b''
+        # Add head object response with ContentLength 0
+        expected_head_params = {
+            'Bucket': self.copy_source['Bucket'],
+            'Key': self.copy_source['Key'],
+        }
+        self.add_head_object_response(expected_params=expected_head_params)
+        # Add head object response for destination
+        expected_dest_head_params = {
+            'Bucket': self.bucket,
+            'Key': self.key,
+        }
+        self.stubber.add_client_error(
+            'head_object',
+            service_error_code='NoSuchKey',
+            service_message='The specified key does not exist.',
+            http_status_code=404,
+            expected_params=expected_dest_head_params,
+        )
         expected_copy_object = {
             'Bucket': self.bucket,
             'Key': self.key,

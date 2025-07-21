@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.27.56
+=======
+
+* api-change:``ec2``: This release adds support for C8gn, F2 and P6e-GB200 Instance types
+* api-change:``cloudfront``: Add dualstack endpoint support
+* api-change:``timestream-influxdb``: Timestream for InfluxDB adds support for db.influx.24xlarge instance type. This enhancement enables higher compute capacity for demanding workloads through CreateDbInstance, CreateDbCluster, UpdateDbInstance, and UpdateDbCluster APIs.
+* api-change:``deadline``: Add support for VPC resource endpoints in Service Managed Fleets
+* enhancement:cloudfront: This release adds automatic pagination to the list-origin-access-controls command.  To disable this behavior, please use the --no-paginate flag.
+* api-change:``sagemaker``: This release adds 1/ Support for S3FileSystem in CustomFileSystems 2/ The ability for a customer to select their preferred IpAddressType for use with private Workforces 3/ Support for p4de instance type in SageMaker Training Plans
+
+
 2.27.55
 =======
 

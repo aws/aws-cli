@@ -94,7 +94,7 @@ class TopLevelImportAliasFinder(importlib.abc.MetaPathFinder):
                 finder_name = finder.__class__.__name__
             full_cls_name = f'{finder.__module__}.{finder_name}'
             if full_cls_name in cls._TARGET_FINDERS:
-                meta_path[i] = cls(finder)
+                meta_path.insert(i, cls(finder))
                 return
 
     def find_spec(self, fullname, path, target=None):

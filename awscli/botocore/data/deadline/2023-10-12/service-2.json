@@ -7454,6 +7454,14 @@
           "shape":"StartedAt",
           "documentation":"<p>The date and time the resource started running.</p>"
         },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The date and time the resource was updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user or system that updated this resource.</p>"
+        },
         "jobParameters":{
           "shape":"JobParameters",
           "documentation":"<p>The job parameters.</p>"
@@ -10380,6 +10388,10 @@
           "shape":"ServiceManagedEc2InstanceMarketOptions",
           "documentation":"<p>The Amazon EC2 market type.</p>"
         },
+        "vpcConfiguration":{
+          "shape":"VpcConfiguration",
+          "documentation":"<p>The VPC configuration details for a service managed Amazon EC2 fleet.</p>"
+        },
         "storageProfileId":{
           "shape":"StorageProfileId",
           "documentation":"<p>The storage profile ID.</p>"
@@ -11223,6 +11235,10 @@
           "shape":"CreatedAt",
           "documentation":"<p>The date and time the resource was created.</p>"
         },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user or system that created this resource.</p>"
+        },
         "startedAt":{
           "shape":"StartedAt",
           "documentation":"<p>The date and time the resource started running.</p>"
@@ -11230,6 +11246,14 @@
         "endedAt":{
           "shape":"EndedAt",
           "documentation":"<p>The date and time the resource ended running.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The date and time the resource was updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user or system that updated this resource.</p>"
         },
         "parameterSpace":{
           "shape":"ParameterSpace",
@@ -11674,6 +11698,14 @@
         "endedAt":{
           "shape":"EndedAt",
           "documentation":"<p>The date and time the resource ended running.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The date and time the resource was updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user or system that updated this resource.</p>"
         }
       },
       "documentation":"<p>The details of a task search.</p>"
@@ -12854,11 +12886,30 @@
         "OTHER"
       ]
     },
+    "VpcConfiguration":{
+      "type":"structure",
+      "members":{
+        "resourceConfigurationArns":{
+          "shape":"VpcResourceConfigurationArns",
+          "documentation":"<p>The ARNs of the VPC Lattice resource configurations attached to the fleet.</p>"
+        }
+      },
+      "documentation":"<p>The configuration options for a service managed fleet's VPC.</p>"
+    },
     "VpcId":{
       "type":"string",
       "max":32,
       "min":1,
       "pattern":"vpc-[\\w]{1,120}"
+    },
+    "VpcResourceConfigurationArn":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "VpcResourceConfigurationArns":{
+      "type":"list",
+      "member":{"shape":"VpcResourceConfigurationArn"}
     },
     "WindowsUser":{
       "type":"structure",

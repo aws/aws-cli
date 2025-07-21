@@ -43,6 +43,7 @@ KNOWN_EXTRA_OUTPUT_KEYS = [
     'cloudfront.ListDistributionsByConnectionMode.DistributionList',
     'cloudfront.ListInvalidations.InvalidationList',
     'cloudfront.ListInvalidationsForDistributionTenant.InvalidationList',
+    'cloudfront.ListOriginAccessControls.OriginAccessControlList',
     'cloudfront.ListPublicKeys.PublicKeyList',
     'cloudfront.ListStreamingDistributions.StreamingDistributionList',
     'cloudfront.ListKeyValueStores.KeyValueStoreList',

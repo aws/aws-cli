@@ -13,10 +13,9 @@
 import argparse
 import os
 
-from botocore.exceptions import ProfileNotFound
-from botocore.history import HistoryRecorder
-from botocore.session import Session
-
+from awscli.botocore.exceptions import ProfileNotFound
+from awscli.botocore.history import HistoryRecorder
+from awscli.botocore.session import Session
 from awscli.compat import StringIO
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.history import (

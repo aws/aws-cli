@@ -14,10 +14,10 @@ import os
 import stat
 import sys
 
-from botocore.exceptions import ClientError
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
+from awscli.botocore.exceptions import ClientError
 from awscli.compat import queue
 from awscli.customizations.s3.utils import (
     EPOCH_TIME,

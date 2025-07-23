@@ -14,7 +14,7 @@ import os
 import shutil
 import tempfile
 
-from s3transfer.bandwidth import (
+from awscli.s3transfer.bandwidth import (
     BandwidthLimitedStream,
     BandwidthLimiter,
     BandwidthRateTracker,
@@ -24,8 +24,7 @@ from s3transfer.bandwidth import (
     RequestToken,
     TimeUtils,
 )
-from s3transfer.futures import TransferCoordinator
-
+from awscli.s3transfer.futures import TransferCoordinator
 from tests import mock, unittest
 
 

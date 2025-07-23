@@ -19,16 +19,17 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 import dateutil.parser
-from botocore import UNSIGNED
-from botocore.compat import total_seconds
-from botocore.config import Config
-from botocore.exceptions import (
+from dateutil.tz import tzutc
+
+from awscli.botocore import UNSIGNED
+from awscli.botocore.compat import total_seconds
+from awscli.botocore.config import Config
+from awscli.botocore.exceptions import (
     ClientError,
     InvalidConfigError,
     TokenRetrievalError,
 )
-from botocore.utils import CachedProperty, JSONFileCache, SSOTokenLoader
-from dateutil.tz import tzutc
+from awscli.botocore.utils import CachedProperty, JSONFileCache, SSOTokenLoader
 
 logger = logging.getLogger(__name__)
 

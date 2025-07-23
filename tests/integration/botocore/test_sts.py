@@ -10,15 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
-from botocore.exceptions import ClientError
-
+import awscli.botocore.session
+from awscli.botocore.exceptions import ClientError
 from tests import unittest
 
 
 class TestSTS(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         credentials = self.session.get_credentials()
         if credentials.token is not None:
             self.skipTest('STS tests require long-term credentials')

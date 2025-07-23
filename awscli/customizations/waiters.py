@@ -10,9 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore import xform_name
-from botocore.exceptions import DataNotFoundError
-
+from awscli.botocore import xform_name
+from awscli.botocore.exceptions import DataNotFoundError
 from awscli.clidriver import ServiceOperation
 from awscli.customizations.commands import (
     BasicCommand,

@@ -15,8 +15,7 @@ import json
 import logging
 import sys
 
-import botocore
-
+import awscli.botocore
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emrcontainers.base36 import Base36
 from awscli.customizations.emrcontainers.constants import (
@@ -174,7 +173,7 @@ class DeleteRoleAssociationsCommand(BasicCommand):
                     if "association" in result
                     else result
                 )
-            except botocore.exceptions.ClientError as error:
+            except awscli.botocore.exceptions.ClientError as error:
                 raise Exception(
                     f"Failed to delete pod identity association for service account {service_account_name}, "
                     f"role {self._role_name} in namespace {namespace}: {error.response['Error']['Message']}"

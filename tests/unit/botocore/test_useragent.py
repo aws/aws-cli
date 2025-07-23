@@ -15,10 +15,11 @@ import platform
 import unittest
 
 import pytest
-from botocore import __version__ as botocore_version
-from botocore.config import Config
-from botocore.context import get_context
-from botocore.useragent import (
+
+from awscli.botocore import __version__ as botocore_version
+from awscli.botocore.config import Config
+from awscli.botocore.context import get_context
+from awscli.botocore.useragent import (
     UserAgentComponent,
     UserAgentComponentSizeConfig,
     UserAgentString,

@@ -15,8 +15,7 @@ import os
 import shlex
 import subprocess
 
-from botocore.configloader import raw_config_parse
-
+from awscli.botocore.configloader import raw_config_parse
 from awscli.commands import CLICommand
 from awscli.compat import compat_shell_quote
 from awscli.utils import emit_top_level_args_parsed_event
@@ -115,7 +114,7 @@ class AliasCommandInjector(BaseAliasCommandInjector):
     def __init__(self, session, alias_loader):
         """Injects alias commands for a command table
 
-        :type session: botocore.session.Session
+        :type session: awscli.botocore.session.Session
         :param session: The botocore session
 
         :type alias_loader: awscli.alias.AliasLoader
@@ -329,7 +328,7 @@ class ServiceAliasCommand(BaseInternalAliasCommand):
         :param alias_value: The parsed value of the alias. This can be
             retrieved from `AliasLoader.get_aliases()[alias_name]`
 
-        :type session: botocore.session.Session
+        :type session: awscli.botocore.session.Session
         :param session: The botocore session
 
         :type command_table: dict

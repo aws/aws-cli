@@ -12,9 +12,8 @@
 # language governing permissions and limitations under the License.
 from copy import deepcopy
 
-from botocore.model import ServiceModel
-
 from awscli.autocomplete.autogen import ServerCompletionHeuristic
+from awscli.botocore.model import ServiceModel
 from awscli.testutils import unittest
 
 # To make these tests more realistic, a stripped down version of the ACM

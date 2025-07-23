@@ -10,12 +10,11 @@
 # distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore
-import botocore.session
-from botocore.exceptions import WaiterError
-from s3transfer.manager import TransferManager
-from s3transfer.subscribers import BaseSubscriber
-
+import awscli.botocore
+import awscli.botocore.session
+from awscli.botocore.exceptions import WaiterError
+from awscli.s3transfer.manager import TransferManager
+from awscli.s3transfer.subscribers import BaseSubscriber
 from tests import FileCreator, S3Utils, random_bucket_name, unittest
 
 
@@ -25,7 +24,7 @@ class BaseTransferManagerIntegTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.region = 'us-west-2'
-        cls.session = botocore.session.get_session()
+        cls.session = awscli.botocore.session.get_session()
         cls.client = cls.session.create_client('s3', cls.region)
         cls.bucket_name = random_bucket_name()
         cls.s3_utils = S3Utils(cls.session, cls.region)

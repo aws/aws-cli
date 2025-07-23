@@ -13,10 +13,10 @@
 import time
 from datetime import datetime, timedelta
 
-from botocore.session import Session
-from botocore.stub import Stubber
 from dateutil import tz
 
+from awscli.botocore.session import Session
+from awscli.botocore.stub import Stubber
 from awscli.compat import StringIO
 from awscli.customizations.logs.tail import (
     DetailedLogEventsFormatter,

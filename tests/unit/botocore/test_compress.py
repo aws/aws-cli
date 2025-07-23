@@ -14,11 +14,14 @@ import gzip
 import io
 import sys
 
-import botocore
 import pytest
-from botocore.compress import COMPRESSION_MAPPING, maybe_compress_request
-from botocore.config import Config
 
+import awscli.botocore
+from awscli.botocore.compress import (
+    COMPRESSION_MAPPING,
+    maybe_compress_request,
+)
+from awscli.botocore.config import Config
 from tests import mock
 
 
@@ -185,8 +188,8 @@ def assert_request_compressed(request_dict, expected_body):
         ),
     ],
 )
-@mock.patch.object(botocore.compress, 'GzipFile', StaticGzipFile)
-@mock.patch.object(botocore.compress, 'gzip_compress', static_compress)
+@mock.patch.object(awscli.botocore.compress, 'GzipFile', StaticGzipFile)
+@mock.patch.object(awscli.botocore.compress, 'gzip_compress', static_compress)
 @pytest.mark.skipif(
     sys.version_info < (3, 8), reason='requires python3.8 or higher'
 )
@@ -273,7 +276,7 @@ def test_no_compression(config, request_dict, operation_model):
         (OP_NO_COMPRESSION, {'foo': 'bar'}),
     ],
 )
-@mock.patch.object(botocore.compress, 'gzip_compress', static_compress)
+@mock.patch.object(awscli.botocore.compress, 'gzip_compress', static_compress)
 @pytest.mark.skipif(
     sys.version_info < (3, 8), reason='requires python3.8 or higher'
 )
@@ -295,7 +298,7 @@ def test_maybe_compress_bad_types(body):
     assert request_dict['body'] == body
 
 
-@mock.patch.object(botocore.compress, 'GzipFile', StaticGzipFile)
+@mock.patch.object(awscli.botocore.compress, 'GzipFile', StaticGzipFile)
 def test_body_streams_position_reset():
     request_dict = _request_dict(io.BytesIO(REQUEST_BODY))
     maybe_compress_request(
@@ -307,8 +310,10 @@ def test_body_streams_position_reset():
     assert_request_compressed(request_dict, REQUEST_BODY_COMPRESSED)
 
 
-@mock.patch.object(botocore.compress, 'gzip_compress', static_compress)
-@mock.patch.object(botocore.compress, 'COMPRESSION_MAPPING', MOCK_COMPRESSION)
+@mock.patch.object(awscli.botocore.compress, 'gzip_compress', static_compress)
+@mock.patch.object(
+    awscli.botocore.compress, 'COMPRESSION_MAPPING', MOCK_COMPRESSION
+)
 @pytest.mark.skipif(
     sys.version_info < (3, 8), reason='requires python3.8 or higher'
 )

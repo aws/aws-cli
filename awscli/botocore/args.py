@@ -21,15 +21,15 @@ import copy
 import logging
 import socket
 
-import botocore.exceptions
-import botocore.serialize
-from botocore.config import Config
-from botocore.endpoint import EndpointCreator
-from botocore.regions import EndpointResolverBuiltins as EPRBuiltins
-from botocore.regions import EndpointRulesetResolver
-from botocore.signers import RequestSigner
-from botocore.useragent import UserAgentString, register_feature_id
-from botocore.utils import (
+import awscli.botocore.exceptions
+import awscli.botocore.serialize
+from awscli.botocore.config import Config
+from awscli.botocore.endpoint import EndpointCreator
+from awscli.botocore.regions import EndpointResolverBuiltins as EPRBuiltins
+from awscli.botocore.regions import EndpointRulesetResolver
+from awscli.botocore.signers import RequestSigner
+from awscli.botocore.useragent import UserAgentString, register_feature_id
+from awscli.botocore.utils import (
     PRIORITY_ORDERED_SUPPORTED_PROTOCOLS,  # noqa: F401
     ensure_boolean,
     is_s3_accelerate_url,
@@ -146,10 +146,10 @@ class ClientArgsCreator:
             proxies_config=new_config.proxies_config,
         )
 
-        serializer = botocore.serialize.create_serializer(
+        serializer = awscli.botocore.serialize.create_serializer(
             protocol, parameter_validation
         )
-        response_parser = botocore.parsers.create_parser(protocol)
+        response_parser = awscli.botocore.parsers.create_parser(protocol)
 
         ruleset_resolver = self._build_endpoint_resolver(
             endpoints_ruleset_data,
@@ -514,13 +514,13 @@ class ClientArgsCreator:
                 f'{error_msg_base} Value must be an integer. '
                 f'Received {type(min_size)} instead.'
             )
-            raise botocore.exceptions.InvalidConfigError(error_msg=msg)
+            raise awscli.botocore.exceptions.InvalidConfigError(error_msg=msg)
         if not min_allowed_min_size <= min_size <= max_allowed_min_size:
             msg = (
                 f'{error_msg_base} Value must be between '
                 f'{min_allowed_min_size} and {max_allowed_min_size}.'
             )
-            raise botocore.exceptions.InvalidConfigError(error_msg=msg)
+            raise awscli.botocore.exceptions.InvalidConfigError(error_msg=msg)
 
         return min_size
 
@@ -732,7 +732,7 @@ class ClientArgsCreator:
             value = value.lower()
 
         if value not in valid_options:
-            raise botocore.exceptions.InvalidChecksumConfigError(
+            raise awscli.botocore.exceptions.InvalidChecksumConfigError(
                 config_key=config_key,
                 config_value=value,
                 valid_options=valid_options,
@@ -759,7 +759,7 @@ class ClientArgsCreator:
         # Disable account id based endpoint routing for unsigned requests
         # since there are no credentials to resolve.
         signature_version = config_kwargs.get('signature_version')
-        if signature_version is botocore.UNSIGNED:
+        if signature_version is awscli.botocore.UNSIGNED:
             config_kwargs[config_key] = 'disabled'
             return
 
@@ -776,7 +776,7 @@ class ClientArgsCreator:
             account_id_endpoint_mode
             not in VALID_ACCOUNT_ID_ENDPOINT_MODE_CONFIG
         ):
-            raise botocore.exceptions.InvalidConfigError(
+            raise awscli.botocore.exceptions.InvalidConfigError(
                 error_msg=f"The configured value '{account_id_endpoint_mode}' for '{config_key}' is "
                 f"invalid. Valid values are: {VALID_ACCOUNT_ID_ENDPOINT_MODE_CONFIG}."
             )

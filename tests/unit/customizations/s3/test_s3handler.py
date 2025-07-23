@@ -12,8 +12,6 @@
 # language governing permissions and limitations under the License.
 import os
 
-from s3transfer.manager import TransferManager
-
 from awscli.compat import queue
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.results import (
@@ -57,6 +55,7 @@ from awscli.customizations.s3.utils import (
     StdoutBytesWriter,
     WarningResult,
 )
+from awscli.s3transfer.manager import TransferManager
 from awscli.testutils import FileCreator, mock, unittest
 
 

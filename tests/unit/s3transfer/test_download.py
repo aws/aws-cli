@@ -16,9 +16,9 @@ import shutil
 import tempfile
 from io import BytesIO
 
-from s3transfer.bandwidth import BandwidthLimiter
-from s3transfer.compat import SOCKET_ERROR
-from s3transfer.download import (
+from awscli.s3transfer.bandwidth import BandwidthLimiter
+from awscli.s3transfer.compat import SOCKET_ERROR
+from awscli.s3transfer.download import (
     CompleteDownloadNOOPTask,
     DeferQueue,
     DownloadChunkIterator,
@@ -34,10 +34,9 @@ from s3transfer.download import (
     IOStreamingWriteTask,
     IOWriteTask,
 )
-from s3transfer.exceptions import RetriesExceededError
-from s3transfer.futures import IN_MEMORY_DOWNLOAD_TAG, BoundedExecutor
-from s3transfer.utils import CallArgs, OSUtils
-
+from awscli.s3transfer.exceptions import RetriesExceededError
+from awscli.s3transfer.futures import IN_MEMORY_DOWNLOAD_TAG, BoundedExecutor
+from awscli.s3transfer.utils import CallArgs, OSUtils
 from tests import (
     BaseSubmissionTaskTest,
     BaseTaskTest,

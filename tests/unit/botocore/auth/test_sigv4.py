@@ -30,13 +30,13 @@ import os
 import re
 from http.server import BaseHTTPRequestHandler
 
-import botocore.auth
-import botocore.crt.auth
 import pytest
-from botocore.awsrequest import AWSRequest
-from botocore.compat import parse_qsl, urlsplit
-from botocore.credentials import Credentials
 
+import awscli.botocore.auth
+import awscli.botocore.crt.auth
+from awscli.botocore.awsrequest import AWSRequest
+from awscli.botocore.compat import parse_qsl, urlsplit
+from awscli.botocore.credentials import Credentials
 from tests import FreezeTime
 
 SECRET_KEY = "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY"
@@ -94,13 +94,13 @@ def generate_test_cases():
 
 
 @pytest.mark.parametrize("test_case", generate_test_cases())
-@FreezeTime(module=botocore.auth.datetime, date=DATE)
+@FreezeTime(module=awscli.botocore.auth.datetime, date=DATE)
 def test_signature_version_4(test_case):
     _test_signature_version_4(test_case)
 
 
 @pytest.mark.parametrize("test_case", generate_test_cases())
-@FreezeTime(module=botocore.auth.datetime, date=DATE)
+@FreezeTime(module=awscli.botocore.auth.datetime, date=DATE)
 def test_crt_signature_version_4(test_case):
     _test_crt_signature_version_4(test_case)
 
@@ -137,7 +137,9 @@ def _test_signature_version_4(test_case):
     test_case = SignatureTestCase(test_case)
     request = create_request_from_raw_request(test_case.raw_request)
 
-    auth = botocore.auth.SigV4Auth(test_case.credentials, SERVICE, REGION)
+    auth = awscli.botocore.auth.SigV4Auth(
+        test_case.credentials, SERVICE, REGION
+    )
     actual_canonical_request = auth.canonical_request(request)
     actual_string_to_sign = auth.string_to_sign(
         request, actual_canonical_request
@@ -177,7 +179,7 @@ def _test_crt_signature_version_4(test_case):
     # Use CRT logging to diagnose interim steps (canonical request, etc)
     # import awscrt.io
     # awscrt.io.init_logging(awscrt.io.LogLevel.Trace, 'stdout')
-    auth = botocore.crt.auth.CrtSigV4Auth(
+    auth = awscli.botocore.crt.auth.CrtSigV4Auth(
         test_case.credentials, SERVICE, REGION
     )
     auth.add_auth(request)

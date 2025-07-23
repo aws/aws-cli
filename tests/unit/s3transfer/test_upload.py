@@ -17,10 +17,10 @@ import shutil
 import tempfile
 from io import BytesIO
 
-from botocore.stub import ANY
-from s3transfer.futures import IN_MEMORY_UPLOAD_TAG
-from s3transfer.manager import TransferConfig
-from s3transfer.upload import (
+from awscli.botocore.stub import ANY
+from awscli.s3transfer.futures import IN_MEMORY_UPLOAD_TAG
+from awscli.s3transfer.manager import TransferConfig
+from awscli.s3transfer.upload import (
     AggregatedProgressCallback,
     InterruptReader,
     PutObjectTask,
@@ -30,8 +30,7 @@ from s3transfer.upload import (
     UploadSeekableInputManager,
     UploadSubmissionTask,
 )
-from s3transfer.utils import MIN_UPLOAD_CHUNKSIZE, CallArgs, OSUtils
-
+from awscli.s3transfer.utils import MIN_UPLOAD_CHUNKSIZE, CallArgs, OSUtils
 from tests import (
     BaseSubmissionTaskTest,
     BaseTaskTest,

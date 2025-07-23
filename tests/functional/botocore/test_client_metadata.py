@@ -10,14 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
-
+import awscli.botocore.session
 from tests import unittest
 
 
 class TestClientMeta(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
 
     def test_region_name_on_meta(self):
         client = self.session.create_client('s3', 'us-west-2')

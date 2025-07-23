@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 # A list of auth types supported by the signers in botocore/crt/auth.py. This
-# should always match the keys of botocore.crt.auth.CRT_AUTH_TYPE_MAPS. The
+# should always match the keys of awscli.botocore.crt.auth.CRT_AUTH_TYPE_MAPS. The
 # information is duplicated here so that it can be accessed in environments
-# where `awscrt` is not present and any import from botocore.crt.auth would
+# where `awscrt` is not present and any import from awscli.botocore.crt.auth would
 # fail.

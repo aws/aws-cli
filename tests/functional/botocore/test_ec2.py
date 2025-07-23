@@ -12,10 +12,9 @@
 # language governing permissions and limitations under the License.
 import datetime
 
-import botocore.session
-from botocore.compat import parse_qs, urlparse
-from botocore.stub import ANY, Stubber
-
+import awscli.botocore.session
+from awscli.botocore.compat import parse_qs, urlparse
+from awscli.botocore.stub import ANY, Stubber
 from tests import BaseSessionTest, ClientHTTPStubber, mock, unittest
 
 
@@ -23,7 +22,7 @@ class TestIdempotencyToken(unittest.TestCase):
     def setUp(self):
         self.function_name = 'purchase_scheduled_instances'
         self.region = 'us-west-2'
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.client = self.session.create_client('ec2', self.region)
         self.stubber = Stubber(self.client)
         self.service_response = {}
@@ -82,7 +81,7 @@ class TestIdempotencyToken(unittest.TestCase):
 class TestCopySnapshotCustomization(BaseSessionTest):
     def setUp(self):
         super().setUp()
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.client = self.session.create_client('ec2', 'us-east-1')
         self.http_stubber = ClientHTTPStubber(self.client)
         self.snapshot_id = 'snap-0123abc'
@@ -94,7 +93,7 @@ class TestCopySnapshotCustomization(BaseSessionTest):
         )
         self.now = datetime.datetime(2011, 9, 9, 23, 36)
         self.datetime_patch = mock.patch.object(
-            botocore.auth.datetime,
+            awscli.botocore.auth.datetime,
             'datetime',
             mock.Mock(wraps=datetime.datetime),
         )

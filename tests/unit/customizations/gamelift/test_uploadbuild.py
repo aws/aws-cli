@@ -15,9 +15,8 @@ import os
 import zipfile
 from argparse import Namespace
 
-from botocore.exceptions import ClientError
-from botocore.session import get_session
-
+from awscli.botocore.exceptions import ClientError
+from awscli.botocore.session import get_session
 from awscli.compat import StringIO
 from awscli.customizations.gamelift.uploadbuild import (
     UploadBuildCommand,
@@ -30,7 +29,7 @@ from awscli.testutils import FileCreator, mock, unittest
 class TestGetGameSessionLogCommand(unittest.TestCase):
     def setUp(self):
         self.create_client_patch = mock.patch(
-            'botocore.session.Session.create_client'
+            'awscli.botocore.session.Session.create_client'
         )
         self.mock_create_client = self.create_client_patch.start()
         self.session = get_session()

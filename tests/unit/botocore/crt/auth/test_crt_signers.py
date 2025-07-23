@@ -1,5 +1,4 @@
-import botocore.crt.auth
-
+import awscli.botocore.crt.auth
 from tests.unit.botocore.auth.test_signers import (
     TestS3SigV4Auth,
     TestSigV4Presign,
@@ -9,12 +8,12 @@ from tests.unit.botocore.auth.test_signers import (
 
 class TestCrtS3SigV4Auth(TestS3SigV4Auth):
     # Repeat TestS3SigV4Auth tests, but using CRT signer
-    AuthClass = botocore.crt.auth.CrtS3SigV4Auth
+    AuthClass = awscli.botocore.crt.auth.CrtS3SigV4Auth
 
 
 class TestCrtSigV4Resign(TestSigV4Resign):
-    AuthClass = botocore.crt.auth.CrtSigV4Auth
+    AuthClass = awscli.botocore.crt.auth.CrtSigV4Auth
 
 
 class TestCrtSigV4Presign(TestSigV4Presign):
-    AuthClass = botocore.crt.auth.CrtSigV4QueryAuth
+    AuthClass = awscli.botocore.crt.auth.CrtSigV4QueryAuth

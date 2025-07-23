@@ -2,8 +2,7 @@ import random
 import threading
 import time
 
-from botocore.retries import quota
-
+from awscli.botocore.retries import quota
 from tests import unittest
 
 

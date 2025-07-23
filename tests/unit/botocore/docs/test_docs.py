@@ -14,9 +14,8 @@ import os
 import shutil
 import tempfile
 
-from botocore.docs import generate_docs
-from botocore.session import get_session
-
+from awscli.botocore.docs import generate_docs
+from awscli.botocore.session import get_session
 from tests import mock
 from tests.unit.botocore.docs import BaseDocsTest
 
@@ -26,10 +25,10 @@ class TestGenerateDocs(BaseDocsTest):
         super().setUp()
         self.docs_root = tempfile.mkdtemp()
         self.loader_patch = mock.patch(
-            'botocore.session.create_loader', return_value=self.loader
+            'awscli.botocore.session.create_loader', return_value=self.loader
         )
         self.available_service_patch = mock.patch(
-            'botocore.session.Session.get_available_services',
+            'awscli.botocore.session.Session.get_available_services',
             return_value=['myservice'],
         )
         self.loader_patch.start()

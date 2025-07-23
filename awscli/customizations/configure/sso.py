@@ -18,11 +18,6 @@ import os
 import re
 
 import colorama
-from botocore import UNSIGNED
-from botocore.config import Config
-from botocore.configprovider import ConstantProvider
-from botocore.exceptions import ProfileNotFound
-from botocore.utils import is_valid_endpoint_url
 from prompt_toolkit import prompt as ptk_prompt
 from prompt_toolkit.application import get_app
 from prompt_toolkit.completion import WordCompleter
@@ -30,6 +25,11 @@ from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.styles import Style
 from prompt_toolkit.validation import ValidationError, Validator
 
+from awscli.botocore import UNSIGNED
+from awscli.botocore.config import Config
+from awscli.botocore.configprovider import ConstantProvider
+from awscli.botocore.exceptions import ProfileNotFound
+from awscli.botocore.utils import is_valid_endpoint_url
 from awscli.customizations.configure import (
     get_section_header,
     profile_to_section,
@@ -543,7 +543,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         # profile won't cause us to fail to create clients.
         # No configuration from the profile is needed for the SSO APIs.
         # It might be good to see if we can address this in a better way
-        # in botocore.
+        # in awscli.botocore.
         config_store = self._session.get_component('config_store')
         config_store.set_config_provider('profile', ConstantProvider(None))
 

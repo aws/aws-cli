@@ -12,9 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 
-from botocore.docs.service import ServiceDocumenter
-from botocore.session import get_session
-
+from awscli.botocore.docs.service import ServiceDocumenter
+from awscli.botocore.session import get_session
 from tests import mock
 from tests.unit.botocore.docs import BaseDocsTest
 
@@ -25,7 +24,7 @@ class TestServiceDocumenter(BaseDocsTest):
         self.add_shape_to_params('Biz', 'String')
         self.setup_client()
         with mock.patch(
-            'botocore.session.create_loader', return_value=self.loader
+            'awscli.botocore.session.create_loader', return_value=self.loader
         ):
             session = get_session()
             self.service_documenter = ServiceDocumenter('myservice', session)

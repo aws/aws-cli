@@ -13,16 +13,16 @@
 import math
 from io import BytesIO
 
-from s3transfer.compat import readable, seekable
-from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS
-from s3transfer.futures import IN_MEMORY_UPLOAD_TAG
-from s3transfer.tasks import (
+from awscli.s3transfer.compat import readable, seekable
+from awscli.s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS
+from awscli.s3transfer.futures import IN_MEMORY_UPLOAD_TAG
+from awscli.s3transfer.tasks import (
     CompleteMultipartUploadTask,
     CreateMultipartUploadTask,
     SubmissionTask,
     Task,
 )
-from s3transfer.utils import (
+from awscli.s3transfer.utils import (
     ChunksizeAdjuster,
     DeferredOpenFile,
     get_callbacks,
@@ -72,7 +72,7 @@ class InterruptReader:
     :type fileobj: file-like obj
     :param fileobj: The file-like object to read from
 
-    :type transfer_coordinator: s3transfer.futures.TransferCoordinator
+    :type transfer_coordinator: awscli.s3transfer.futures.TransferCoordinator
     :param transfer_coordinator: The transfer coordinator to use if the
         reader needs to be interrupted.
     """
@@ -158,7 +158,7 @@ class UploadInputManager:
     def provide_transfer_size(self, transfer_future):
         """Provides the transfer size of an upload
 
-        :type transfer_future: s3transfer.futures.TransferFuture
+        :type transfer_future: awscli.s3transfer.futures.TransferFuture
         :param transfer_future: The future associated with upload request
         """
         raise NotImplementedError('must implement provide_transfer_size()')
@@ -166,10 +166,10 @@ class UploadInputManager:
     def requires_multipart_upload(self, transfer_future, config):
         """Determines where a multipart upload is required
 
-        :type transfer_future: s3transfer.futures.TransferFuture
+        :type transfer_future: awscli.s3transfer.futures.TransferFuture
         :param transfer_future: The future associated with upload request
 
-        :type config: s3transfer.manager.TransferConfig
+        :type config: awscli.s3transfer.manager.TransferConfig
         :param config: The config associated to the transfer manager
 
         :rtype: boolean
@@ -181,13 +181,13 @@ class UploadInputManager:
     def get_put_object_body(self, transfer_future):
         """Returns the body to use for PutObject
 
-        :type transfer_future: s3transfer.futures.TransferFuture
+        :type transfer_future: awscli.s3transfer.futures.TransferFuture
         :param transfer_future: The future associated with upload request
 
-        :type config: s3transfer.manager.TransferConfig
+        :type config: awscli.s3transfer.manager.TransferConfig
         :param config: The config associated to the transfer manager
 
-        :rtype: s3transfer.utils.ReadFileChunk
+        :rtype: awscli.s3transfer.utils.ReadFileChunk
         :returns: A ReadFileChunk including all progress callbacks
             associated with the transfer future.
         """
@@ -196,13 +196,13 @@ class UploadInputManager:
     def yield_upload_part_bodies(self, transfer_future, chunksize):
         """Yields the part number and body to use for each UploadPart
 
-        :type transfer_future: s3transfer.futures.TransferFuture
+        :type transfer_future: awscli.s3transfer.futures.TransferFuture
         :param transfer_future: The future associated with upload request
 
         :type chunksize: int
         :param chunksize: The chunksize to use for this upload.
 
-        :rtype: int, s3transfer.utils.ReadFileChunk
+        :rtype: int, awscli.s3transfer.utils.ReadFileChunk
         :returns: Yields the part number and the ReadFileChunk including all
             progress callbacks associated with the transfer future for that
             specific yielded part.
@@ -539,7 +539,7 @@ class UploadSubmissionTask(SubmissionTask):
     def _get_upload_input_manager_cls(self, transfer_future):
         """Retrieves a class for managing input for an upload based on file type
 
-        :type transfer_future: s3transfer.futures.TransferFuture
+        :type transfer_future: awscli.s3transfer.futures.TransferFuture
         :param transfer_future: The transfer future for the request
 
         :rtype: class of UploadInputManager
@@ -572,18 +572,18 @@ class UploadSubmissionTask(SubmissionTask):
         """
         :param client: The client associated with the transfer manager
 
-        :type config: s3transfer.manager.TransferConfig
+        :type config: awscli.s3transfer.manager.TransferConfig
         :param config: The transfer config associated with the transfer
             manager
 
-        :type osutil: s3transfer.utils.OSUtil
+        :type osutil: awscli.s3transfer.utils.OSUtil
         :param osutil: The os utility associated to the transfer manager
 
-        :type request_executor: s3transfer.futures.BoundedExecutor
+        :type request_executor: awscli.s3transfer.futures.BoundedExecutor
         :param request_executor: The request executor associated with the
             transfer manager
 
-        :type transfer_future: s3transfer.futures.TransferFuture
+        :type transfer_future: awscli.s3transfer.futures.TransferFuture
         :param transfer_future: The transfer future associated with the
             transfer request that tasks are being submitted for
         """

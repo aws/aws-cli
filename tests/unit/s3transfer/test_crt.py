@@ -13,18 +13,19 @@
 import io
 
 import pytest
-from botocore.credentials import Credentials, ReadOnlyCredentials
-from botocore.exceptions import ClientError, NoCredentialsError
-from botocore.session import Session
-from s3transfer.exceptions import TransferNotDoneError
-from s3transfer.utils import CallArgs
 
+from awscli.botocore.credentials import Credentials, ReadOnlyCredentials
+from awscli.botocore.exceptions import ClientError, NoCredentialsError
+from awscli.botocore.session import Session
+from awscli.s3transfer.exceptions import TransferNotDoneError
+from awscli.s3transfer.utils import CallArgs
 from tests import HAS_CRT, FileCreator, mock, requires_crt, unittest
 
 if HAS_CRT:
     import awscrt.auth
     import awscrt.s3
-    import s3transfer.crt
+
+    import awscli.s3transfer.crt
 
 
 requires_crt_pytest = pytest.mark.skipif(
@@ -39,21 +40,23 @@ def mock_crt_process_lock(monkeypatch):
     # test cases will start off with no previously cached process lock and
     # if a cross process is instantiated/acquired it will be the mock that
     # can be used for controlling lock behavior.
-    monkeypatch.setattr('s3transfer.crt.CRT_S3_PROCESS_LOCK', None)
+    monkeypatch.setattr('awscli.s3transfer.crt.CRT_S3_PROCESS_LOCK', None)
     with mock.patch('awscrt.s3.CrossProcessLock', spec=True) as mock_lock:
         yield mock_lock
 
 
 @pytest.fixture
 def mock_s3_crt_client():
-    with mock.patch('s3transfer.crt.S3Client', spec=True) as mock_client:
+    with mock.patch(
+        'awscli.s3transfer.crt.S3Client', spec=True
+    ) as mock_client:
         yield mock_client
 
 
 @pytest.fixture
 def mock_get_recommended_throughput_target_gbps():
     with mock.patch(
-        's3transfer.crt.get_recommended_throughput_target_gbps'
+        'awscli.s3transfer.crt.get_recommended_throughput_target_gbps'
     ) as mock_get_target_gbps:
         yield mock_get_target_gbps
 
@@ -65,23 +68,29 @@ class CustomFutureException(Exception):
 @requires_crt_pytest
 class TestCRTProcessLock:
     def test_acquire_crt_s3_process_lock(self, mock_crt_process_lock):
-        lock = s3transfer.crt.acquire_crt_s3_process_lock('app-name')
-        assert lock is s3transfer.crt.CRT_S3_PROCESS_LOCK
+        lock = awscli.s3transfer.crt.acquire_crt_s3_process_lock('app-name')
+        assert lock is awscli.s3transfer.crt.CRT_S3_PROCESS_LOCK
         assert lock is mock_crt_process_lock.return_value
         mock_crt_process_lock.assert_called_once_with('app-name')
         mock_crt_process_lock.return_value.acquire.assert_called_once_with()
 
     def test_unable_to_acquire_lock_returns_none(self, mock_crt_process_lock):
         mock_crt_process_lock.return_value.acquire.side_effect = RuntimeError
-        assert s3transfer.crt.acquire_crt_s3_process_lock('app-name') is None
-        assert s3transfer.crt.CRT_S3_PROCESS_LOCK is None
+        assert (
+            awscli.s3transfer.crt.acquire_crt_s3_process_lock('app-name')
+            is None
+        )
+        assert awscli.s3transfer.crt.CRT_S3_PROCESS_LOCK is None
         mock_crt_process_lock.assert_called_once_with('app-name')
         mock_crt_process_lock.return_value.acquire.assert_called_once_with()
 
     def test_multiple_acquires_return_same_lock(self, mock_crt_process_lock):
-        lock = s3transfer.crt.acquire_crt_s3_process_lock('app-name')
-        assert s3transfer.crt.acquire_crt_s3_process_lock('app-name') is lock
-        assert lock is s3transfer.crt.CRT_S3_PROCESS_LOCK
+        lock = awscli.s3transfer.crt.acquire_crt_s3_process_lock('app-name')
+        assert (
+            awscli.s3transfer.crt.acquire_crt_s3_process_lock('app-name')
+            is lock
+        )
+        assert lock is awscli.s3transfer.crt.CRT_S3_PROCESS_LOCK
 
         # The process lock should have only been instantiated and acquired once
         mock_crt_process_lock.assert_called_once_with('app-name')
@@ -94,8 +103,8 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
         self.region = 'us-west-2'
         self.session = Session()
         self.session.set_config_variable('region', self.region)
-        self.request_serializer = s3transfer.crt.BotocoreCRTRequestSerializer(
-            self.session
+        self.request_serializer = (
+            awscli.s3transfer.crt.BotocoreCRTRequestSerializer(self.session)
         )
         self.bucket = "test_bucket"
         self.key = "test_key"
@@ -115,9 +124,10 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
             extra_args={},
             subscribers=[],
         )
-        coordinator = s3transfer.crt.CRTTransferCoordinator()
-        future = s3transfer.crt.CRTTransferFuture(
-            s3transfer.crt.CRTTransferMeta(call_args=callargs), coordinator
+        coordinator = awscli.s3transfer.crt.CRTTransferCoordinator()
+        future = awscli.s3transfer.crt.CRTTransferFuture(
+            awscli.s3transfer.crt.CRTTransferMeta(call_args=callargs),
+            coordinator,
         )
         crt_request = self.request_serializer.serialize_http_request(
             "put_object", future
@@ -135,9 +145,10 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
             extra_args={},
             subscribers=[],
         )
-        coordinator = s3transfer.crt.CRTTransferCoordinator()
-        future = s3transfer.crt.CRTTransferFuture(
-            s3transfer.crt.CRTTransferMeta(call_args=callargs), coordinator
+        coordinator = awscli.s3transfer.crt.CRTTransferCoordinator()
+        future = awscli.s3transfer.crt.CRTTransferFuture(
+            awscli.s3transfer.crt.CRTTransferMeta(call_args=callargs),
+            coordinator,
         )
         crt_request = self.request_serializer.serialize_http_request(
             "get_object", future
@@ -151,9 +162,10 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
         callargs = CallArgs(
             bucket=self.bucket, key=self.key, extra_args={}, subscribers=[]
         )
-        coordinator = s3transfer.crt.CRTTransferCoordinator()
-        future = s3transfer.crt.CRTTransferFuture(
-            s3transfer.crt.CRTTransferMeta(call_args=callargs), coordinator
+        coordinator = awscli.s3transfer.crt.CRTTransferCoordinator()
+        future = awscli.s3transfer.crt.CRTTransferFuture(
+            awscli.s3transfer.crt.CRTTransferMeta(call_args=callargs),
+            coordinator,
         )
         crt_request = self.request_serializer.serialize_http_request(
             "delete_object", future
@@ -238,7 +250,7 @@ class TestBotocoreCRTCredentialsWrapper:
         assert crt_credentials.session_token == expected_token
 
     def test_fetch_crt_credentials_successfully(self, botocore_credentials):
-        wrapper = s3transfer.crt.BotocoreCRTCredentialsWrapper(
+        wrapper = awscli.s3transfer.crt.BotocoreCRTCredentialsWrapper(
             botocore_credentials
         )
         crt_credentials = wrapper()
@@ -250,7 +262,7 @@ class TestBotocoreCRTCredentialsWrapper:
             ReadOnlyCredentials('access_key_1', 'secret_key_1', 'token_1'),
             ReadOnlyCredentials('access_key_2', 'secret_key_2', 'token_2'),
         ]
-        wrapper = s3transfer.crt.BotocoreCRTCredentialsWrapper(
+        wrapper = awscli.s3transfer.crt.BotocoreCRTCredentialsWrapper(
             mock_credentials
         )
 
@@ -273,12 +285,12 @@ class TestBotocoreCRTCredentialsWrapper:
         assert mock_credentials.get_frozen_credentials.call_count == 2
 
     def test_raises_error_when_resolved_credentials_is_none(self):
-        wrapper = s3transfer.crt.BotocoreCRTCredentialsWrapper(None)
+        wrapper = awscli.s3transfer.crt.BotocoreCRTCredentialsWrapper(None)
         with pytest.raises(NoCredentialsError):
             wrapper()
 
     def test_to_crt_credentials_provider(self, botocore_credentials):
-        wrapper = s3transfer.crt.BotocoreCRTCredentialsWrapper(
+        wrapper = awscli.s3transfer.crt.BotocoreCRTCredentialsWrapper(
             botocore_credentials
         )
         crt_credentials_provider = wrapper.to_crt_credentials_provider()
@@ -296,9 +308,9 @@ class TestCRTTransferFuture(unittest.TestCase):
         self.mock_s3_request = mock.Mock(awscrt.s3.S3RequestType)
         self.mock_crt_future = mock.Mock(awscrt.s3.Future)
         self.mock_s3_request.finished_future = self.mock_crt_future
-        self.coordinator = s3transfer.crt.CRTTransferCoordinator()
+        self.coordinator = awscli.s3transfer.crt.CRTTransferCoordinator()
         self.coordinator.set_s3_request(self.mock_s3_request)
-        self.future = s3transfer.crt.CRTTransferFuture(
+        self.future = awscli.s3transfer.crt.CRTTransferFuture(
             coordinator=self.coordinator
         )
 
@@ -323,7 +335,7 @@ class TestCRTTransferFuture(unittest.TestCase):
 class TestOnBodyFileObjWriter(unittest.TestCase):
     def test_call(self):
         fileobj = io.BytesIO()
-        writer = s3transfer.crt.OnBodyFileObjWriter(fileobj)
+        writer = awscli.s3transfer.crt.OnBodyFileObjWriter(fileobj)
         writer(chunk=b'content')
         self.assertEqual(fileobj.getvalue(), b'content')
 
@@ -353,7 +365,7 @@ class TestCreateS3CRTClient:
         mock_get_recommended_throughput_target_gbps.return_value = (
             recommended_gbps
         )
-        s3transfer.crt.create_s3_crt_client(
+        awscli.s3transfer.crt.create_s3_crt_client(
             'us-west-2',
             target_throughput=provided_bytes_per_sec,
         )
@@ -363,5 +375,5 @@ class TestCreateS3CRTClient:
         )
 
     def test_always_enables_s3express(self, mock_s3_crt_client):
-        s3transfer.crt.create_s3_crt_client('us-west-2')
+        awscli.s3transfer.crt.create_s3_crt_client('us-west-2')
         assert mock_s3_crt_client.call_args[1]['enable_s3express'] is True

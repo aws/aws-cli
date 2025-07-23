@@ -2,7 +2,7 @@ import logging
 import math
 import threading
 
-from botocore.retries import bucket, standard, throttling
+from awscli.botocore.retries import bucket, standard, throttling
 
 logger = logging.getLogger(__name__)
 

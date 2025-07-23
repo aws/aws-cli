@@ -15,10 +15,11 @@ import time
 from functools import partial
 
 import jmespath
-from botocore.context import with_current_context
-from botocore.docs.docstring import WaiterDocstring
-from botocore.useragent import register_feature_id
-from botocore.utils import get_service_module_name
+
+from awscli.botocore.context import with_current_context
+from awscli.botocore.docs.docstring import WaiterDocstring
+from awscli.botocore.useragent import register_feature_id
+from awscli.botocore.utils import get_service_module_name
 
 from . import xform_name
 from .exceptions import ClientError, WaiterConfigError, WaiterError
@@ -34,13 +35,13 @@ def create_waiter_with_client(waiter_name, waiter_model, client):
         the name (including the casing) of the key name in the waiter
         model file (typically this is CamelCasing).
 
-    :type waiter_model: botocore.waiter.WaiterModel
+    :type waiter_model: awscli.botocore.waiter.WaiterModel
     :param waiter_model: The model for the waiter configuration.
 
-    :type client: botocore.client.BaseClient
+    :type client: awscli.botocore.client.BaseClient
     :param client: The botocore client associated with the service.
 
-    :rtype: botocore.waiter.Waiter
+    :rtype: awscli.botocore.waiter.Waiter
     :return: The waiter object.
 
     """
@@ -312,7 +313,7 @@ class Waiter:
         :type name: string
         :param name: The name of the waiter
 
-        :type config: botocore.waiter.SingleWaiterConfig
+        :type config: awscli.botocore.waiter.SingleWaiterConfig
         :param config: The configuration for the waiter.
 
         :type operation_method: callable

@@ -10,9 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
-from botocore.exceptions import ClientError
-
+import awscli.botocore.session
+from awscli.botocore.exceptions import ClientError
 from awscli.compat import StringIO
 from awscli.customizations.configservice.subscribe import (
     S3BucketHelper,
@@ -24,7 +23,7 @@ from awscli.testutils import mock, unittest
 
 class TestS3BucketHelper(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.s3_client = mock.Mock(self.session.create_client('s3'))
         self.helper = S3BucketHelper(self.s3_client)
         self.error_response = {
@@ -111,7 +110,7 @@ class TestS3BucketHelper(unittest.TestCase):
 
 class TestSNSTopicHelper(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.sns_client = mock.Mock(
             self.session.create_client('sns', 'us-east-1')
         )
@@ -150,7 +149,7 @@ class TestSNSTopicHelper(unittest.TestCase):
 
 class TestSubscribeCommand(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
 
         # Set up the client mocks.
         self.s3_client = mock.Mock(self.session.create_client('s3'))

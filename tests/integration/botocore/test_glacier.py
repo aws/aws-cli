@@ -12,9 +12,8 @@
 # language governing permissions and limitations under the License.
 import io
 
-import botocore.session
-from botocore.exceptions import ClientError
-
+import awscli.botocore.session
+from awscli.botocore.exceptions import ClientError
 from tests import unittest
 
 
@@ -31,7 +30,7 @@ class TestGlacier(unittest.TestCase):
     VAULT_NAME = 'botocore-integ-test-vault'
 
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.client = self.session.create_client('glacier', 'us-west-2')
         # There's no error if the vault already exists so we don't
         # need to catch any exceptions here.

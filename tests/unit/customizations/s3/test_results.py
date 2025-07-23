@@ -10,8 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from s3transfer.exceptions import CancelledError, FatalError
-
 from awscli.compat import StringIO, queue
 from awscli.customizations.s3.results import (
     CommandResultRecorder,
@@ -34,6 +32,7 @@ from awscli.customizations.s3.results import (
     SuccessResult,
 )
 from awscli.customizations.s3.utils import WarningResult
+from awscli.s3transfer.exceptions import CancelledError, FatalError
 from awscli.testutils import mock, unittest
 from tests.unit.customizations.s3 import (
     FakeTransferFuture,

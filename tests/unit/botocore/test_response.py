@@ -13,13 +13,13 @@
 import datetime
 import io
 
-import botocore
-from botocore import response
-from botocore.awsrequest import AWSRequest, AWSResponse
-from botocore.exceptions import IncompleteReadError, ReadTimeoutError
 from dateutil.tz import tzutc
 from urllib3.exceptions import ReadTimeoutError as URLLib3ReadTimeoutError
 
+import awscli.botocore
+from awscli.botocore import response
+from awscli.botocore.awsrequest import AWSRequest, AWSResponse
+from awscli.botocore.exceptions import IncompleteReadError, ReadTimeoutError
 from tests import unittest
 from tests.unit.botocore import BaseResponseTest
 
@@ -210,7 +210,7 @@ class TestGetResponse(BaseResponseTest):
 
         http_response = AWSResponse(None, 200, headers, raw)
 
-        session = botocore.session.get_session()
+        session = awscli.botocore.session.get_session()
         service_model = session.get_service_model('s3')
         operation_model = service_model.operation_model('GetObject')
 
@@ -230,7 +230,7 @@ class TestGetResponse(BaseResponseTest):
         raw = FakeRawResponse(XMLBODY1)
         http_response = AWSResponse(None, 403, headers, raw)
 
-        session = botocore.session.get_session()
+        session = awscli.botocore.session.get_session()
         service_model = session.get_service_model('s3')
         operation_model = service_model.operation_model('GetObject')
 
@@ -258,7 +258,7 @@ class TestGetResponse(BaseResponseTest):
         raw = FakeRawResponse(XMLBODY1)
         http_response = AWSResponse(None, 403, headers, raw)
 
-        session = botocore.session.get_session()
+        session = awscli.botocore.session.get_session()
         service_model = session.get_service_model('s3')
         operation_model = service_model.operation_model('ListObjects')
 
@@ -286,7 +286,7 @@ class TestGetResponse(BaseResponseTest):
         raw = FakeRawResponse(XMLBODY2)
         http_response = AWSResponse(None, 200, headers, raw)
 
-        session = botocore.session.get_session()
+        session = awscli.botocore.session.get_session()
         service_model = session.get_service_model('s3')
         operation_model = service_model.operation_model('ListObjects')
 

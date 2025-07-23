@@ -14,10 +14,9 @@ import os
 import shutil
 import tempfile
 
-from botocore.session import Session
-
 from awscli.autocomplete import db
 from awscli.autocomplete.local import indexer, model
+from awscli.botocore.session import Session
 from awscli.testutils import mock, unittest
 
 # Quick note about these tests.  sqlite3 is used as the data store for the

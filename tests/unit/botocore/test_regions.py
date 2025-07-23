@@ -11,9 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-from botocore import regions
-from botocore.exceptions import EndpointVariantError, NoRegionError
 
+from awscli.botocore import regions
+from awscli.botocore.exceptions import EndpointVariantError, NoRegionError
 from tests import unittest
 
 
@@ -429,7 +429,9 @@ class TestEndpointResolver(unittest.TestCase):
 
     def test_construct_deprecated_endpoint_raises_warning(self):
         resolver = regions.EndpointResolver(self._template())
-        with self.assertLogs('botocore.regions', level='WARNING') as log:
+        with self.assertLogs(
+            'awscli.botocore.regions', level='WARNING'
+        ) as log:
             result = resolver.construct_endpoint(
                 'ec2',
                 'us-dep',

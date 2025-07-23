@@ -15,8 +15,7 @@ import shutil
 import socket
 import tempfile
 
-from s3transfer.utils import OSUtils
-
+from awscli.s3transfer.utils import OSUtils
 from tests import skip_if_windows, unittest
 
 

@@ -13,8 +13,6 @@
 import logging
 import os
 
-from s3transfer.manager import TransferManager
-
 from awscli.compat import get_binary_stdin
 from awscli.customizations.s3.results import (
     CommandResultRecorder,
@@ -55,6 +53,7 @@ from awscli.customizations.s3.utils import (
     human_readable_size,
     relative_path,
 )
+from awscli.s3transfer.manager import TransferManager
 
 LOGGER = logging.getLogger(__name__)
 
@@ -112,7 +111,7 @@ class S3TransferHandler:
     def __init__(self, transfer_manager, cli_params, result_command_recorder):
         """Backend for performing S3 transfers
 
-        :type transfer_manager: s3transfer.manager.TransferManager
+        :type transfer_manager: awscli.s3transfer.manager.TransferManager
         :param transfer_manager: Transfer manager to use for transfers
 
         :type cli_params: dict
@@ -183,7 +182,7 @@ class BaseTransferRequestSubmitter:
         necessary extra arguments and subscribers in making a call to the
         TransferManager.
 
-        :type transfer_manager: s3transfer.manager.TransferManager
+        :type transfer_manager: awscli.s3transfer.manager.TransferManager
         :param transfer_manager: The underlying transfer manager
 
         :type result_queue: queue.Queue
@@ -208,7 +207,7 @@ class BaseTransferRequestSubmitter:
         :param fileinfo: The FileInfo to be used to submit a transfer
             request to the underlying transfer manager.
 
-        :rtype: s3transfer.futures.TransferFuture
+        :rtype: awscli.s3transfer.futures.TransferFuture
         :returns: A TransferFuture representing the transfer if it the
             transfer was submitted. If it was not submitted nothing
             is returned.
@@ -573,7 +572,7 @@ class LocalDeleteRequestSubmitter(BaseTransferRequestSubmitter):
 
         # The main downsides in doing this is that delete and the result
         # creation happens in the main thread as opposed to a separate thread
-        # in s3transfer. However, this is not too big of a downside because
+        # in awscli.s3transfer. However, this is not too big of a downside because
         # deleting a local file only happens for sync --delete downloads and
         # is very fast compared to all of the other types of transfers.
         src, dest = self._format_src_dest(fileinfo)

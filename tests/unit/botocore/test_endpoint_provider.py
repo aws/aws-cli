@@ -16,7 +16,8 @@ import logging
 import os
 
 import pytest
-from botocore.endpoint_provider import (
+
+from awscli.botocore.endpoint_provider import (
     EndpointProvider,
     EndpointRule,
     ErrorRule,
@@ -25,12 +26,12 @@ from botocore.endpoint_provider import (
     RuleSetStandardLibary,
     TreeRule,
 )
-from botocore.exceptions import (
+from awscli.botocore.exceptions import (
     EndpointResolutionError,
     UnknownSignatureVersionError,
 )
-from botocore.loaders import Loader
-from botocore.regions import EndpointRulesetResolver
+from awscli.botocore.loaders import Loader
+from awscli.botocore.regions import EndpointRulesetResolver
 
 REGION_TEMPLATE = "{Region}"
 REGION_REF = {"ref": "Region"}
@@ -448,7 +449,9 @@ def test_auth_schemes_conversion_no_known_auth_types(empty_resolver):
 def test_auth_schemes_conversion_first_authtype_unknown(
     monkeypatch, empty_resolver
 ):
-    monkeypatch.setattr('botocore.regions.AUTH_TYPE_MAPS', {'bar': None})
+    monkeypatch.setattr(
+        'awscli.botocore.regions.AUTH_TYPE_MAPS', {'bar': None}
+    )
     auth_schemes = [
         {'name': 'foo', 'signingName': 's3', 'signingRegion': 'ap-south-1'},
         {'name': 'bar', 'signingName': 's3', 'signingRegion': 'ap-south-2'},

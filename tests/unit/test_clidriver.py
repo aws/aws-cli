@@ -19,22 +19,22 @@ import re
 import sys
 
 import awscrt.io
-import botocore.model
 import pytest
-from botocore import xform_name
-from botocore.awsrequest import AWSResponse
-from botocore.compat import OrderedDict
-from botocore.configprovider import (
+
+import awscli
+import awscli.botocore.model
+from awscli import formatter
+from awscli.argparser import HELP_BLURB
+from awscli.botocore import xform_name
+from awscli.botocore.awsrequest import AWSResponse
+from awscli.botocore.compat import OrderedDict
+from awscli.botocore.configprovider import (
     ConfigChainFactory,
     ConfigValueStore,
     create_botocore_default_config_mapping,
 )
-from botocore.exceptions import NoCredentialsError
-from botocore.hooks import HierarchicalEmitter
-
-import awscli
-from awscli import formatter
-from awscli.argparser import HELP_BLURB
+from awscli.botocore.exceptions import NoCredentialsError
+from awscli.botocore.hooks import HierarchicalEmitter
 from awscli.clidriver import (
     CLICommand,
     CLIDriver,
@@ -234,7 +234,9 @@ class FakeSession:
         return self.session_vars[name]
 
     def get_service_model(self, name, api_version=None):
-        return botocore.model.ServiceModel(MINI_SERVICE, service_name='s3')
+        return awscli.botocore.model.ServiceModel(
+            MINI_SERVICE, service_name='s3'
+        )
 
     def user_agent(self):
         return 'user_agent'
@@ -815,7 +817,7 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
     def setUp(self):
         super(TestHowClientIsCreated, self).setUp()
         self.endpoint_creator_patch = mock.patch(
-            'botocore.args.EndpointCreator'
+            'awscli.botocore.args.EndpointCreator'
         )
         self.endpoint_creator = self.endpoint_creator_patch.start()
         self.create_endpoint = (

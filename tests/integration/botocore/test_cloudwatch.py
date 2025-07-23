@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import pytest
 
-import botocore.session
+import awscli.botocore.session
 
 
 def test_ambiguous_error_parsing():
@@ -21,7 +21,7 @@ def test_ambiguous_error_parsing():
     # code: `DashboardNotFoundError` and `ResourceNotFound`.  Botocore picks the one
     # that is defined later, which in this case is `ResourceNotFound`.  This test
     # ensures that we continue to select the latter error going forward.
-    session = botocore.session.get_session()
+    session = awscli.botocore.session.get_session()
     cloudwatch = session.create_client('cloudwatch', region_name='us-west-2')
     with pytest.raises(cloudwatch.exceptions.ResourceNotFound) as exception:
         cloudwatch.get_dashboard(

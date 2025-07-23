@@ -18,18 +18,19 @@ import io
 import json
 import time
 
-import botocore.auth
-import botocore.credentials
-from botocore.awsrequest import AWSRequest
-from botocore.compat import HTTPHeaders, parse_qs, urlsplit
-
+import awscli.botocore.auth
+import awscli.botocore.credentials
+from awscli.botocore.awsrequest import AWSRequest
+from awscli.botocore.compat import HTTPHeaders, parse_qs, urlsplit
 from tests import mock, unittest
 
 
 class BaseTestWithFixedDate(unittest.TestCase):
     def setUp(self):
         self.fixed_date = datetime.datetime(2014, 3, 10, 17, 2, 55, 0)
-        self.datetime_patch = mock.patch('botocore.auth.datetime.datetime')
+        self.datetime_patch = mock.patch(
+            'awscli.botocore.auth.datetime.datetime'
+        )
         self.datetime_mock = self.datetime_patch.start()
         self.datetime_mock.utcnow.return_value = self.fixed_date
         self.datetime_mock.strptime.return_value = self.fixed_date
@@ -44,12 +45,12 @@ class TestSigV2(unittest.TestCase):
     def setUp(self):
         access_key = 'foo'
         secret_key = 'bar'
-        self.credentials = botocore.credentials.Credentials(
+        self.credentials = awscli.botocore.credentials.Credentials(
             access_key, secret_key
         )
-        self.signer = botocore.auth.SigV2Auth(self.credentials)
+        self.signer = awscli.botocore.auth.SigV2Auth(self.credentials)
         self.time_patcher = mock.patch.object(
-            botocore.auth.time, 'gmtime', mock.Mock(wraps=time.gmtime)
+            awscli.botocore.auth.time, 'gmtime', mock.Mock(wraps=time.gmtime)
         )
         mocked_time = self.time_patcher.start()
         mocked_time.return_value = time.struct_time(
@@ -124,11 +125,11 @@ class TestSigV3(unittest.TestCase):
     def setUp(self):
         self.access_key = 'access_key'
         self.secret_key = 'secret_key'
-        self.credentials = botocore.credentials.Credentials(
+        self.credentials = awscli.botocore.credentials.Credentials(
             self.access_key, self.secret_key
         )
-        self.auth = botocore.auth.SigV3Auth(self.credentials)
-        self.date_mock = mock.patch('botocore.auth.formatdate')
+        self.auth = awscli.botocore.auth.SigV3Auth(self.credentials)
+        self.date_mock = mock.patch('awscli.botocore.auth.formatdate')
         self.formatdate = self.date_mock.start()
         self.formatdate.return_value = 'Thu, 17 Nov 2005 18:49:58 GMT'
 
@@ -149,10 +150,10 @@ class TestSigV3(unittest.TestCase):
         )
 
     def test_resign_with_token(self):
-        credentials = botocore.credentials.Credentials(
+        credentials = awscli.botocore.credentials.Credentials(
             access_key='foo', secret_key='bar', token='baz'
         )
-        auth = botocore.auth.SigV3Auth(credentials)
+        auth = awscli.botocore.auth.SigV3Auth(credentials)
         request = AWSRequest()
         request.headers['Date'] = 'Thu, 17 Nov 2005 18:49:58 GMT'
         request.method = 'PUT'
@@ -168,12 +169,12 @@ class TestSigV3(unittest.TestCase):
 
 
 class TestS3SigV4Auth(BaseTestWithFixedDate):
-    AuthClass = botocore.auth.S3SigV4Auth
+    AuthClass = awscli.botocore.auth.S3SigV4Auth
     maxDiff = None
 
     def setUp(self):
         super().setUp()
-        self.credentials = botocore.credentials.Credentials(
+        self.credentials = awscli.botocore.credentials.Credentials(
             access_key='foo', secret_key='bar', token='baz'
         )
         self.auth = self.AuthClass(self.credentials, 'ec2', 'eu-central-1')
@@ -200,7 +201,7 @@ class TestS3SigV4Auth(BaseTestWithFixedDate):
         request = AWSRequest()
         request.url = 'https://s3.amazonaws.com/bucket/foo/./bar/../bar'
         request.method = 'GET'
-        credentials = botocore.credentials.Credentials(
+        credentials = awscli.botocore.credentials.Credentials(
             'access_key', 'secret_key'
         )
         auth = self.AuthClass(credentials, 's3', 'us-east-1')
@@ -234,7 +235,7 @@ class TestS3SigV4Auth(BaseTestWithFixedDate):
         request.url = 'https://s3.amazonaws.com/bucket/foo'
         request.method = 'PUT'
         request.headers[header] = value
-        credentials = botocore.credentials.Credentials(
+        credentials = awscli.botocore.credentials.Credentials(
             'access_key', 'secret_key'
         )
         auth = self.AuthClass(credentials, 's3', 'us-east-1')
@@ -335,12 +336,14 @@ class TestS3SigV4Auth(BaseTestWithFixedDate):
 
 class TestSigV4(unittest.TestCase):
     def setUp(self):
-        self.credentials = botocore.credentials.Credentials(
+        self.credentials = awscli.botocore.credentials.Credentials(
             access_key='foo', secret_key='bar'
         )
 
     def create_signer(self, service_name='myservice', region='us-west-2'):
-        auth = botocore.auth.SigV4Auth(self.credentials, service_name, region)
+        auth = awscli.botocore.auth.SigV4Auth(
+            self.credentials, service_name, region
+        )
         return auth
 
     def test_canonical_query_string(self):
@@ -375,7 +378,7 @@ class TestSigV4(unittest.TestCase):
         request.method = 'GET'
         auth = self.create_signer('cloudsearchdomain', 'us-west-2')
         with mock.patch.object(
-            botocore.auth.datetime,
+            awscli.botocore.auth.datetime,
             'datetime',
             mock.Mock(wraps=datetime.datetime),
         ) as mock_datetime:
@@ -499,11 +502,11 @@ class TestSigV4(unittest.TestCase):
 
 class TestSigV4Resign(BaseTestWithFixedDate):
     maxDiff = None
-    AuthClass = botocore.auth.SigV4Auth
+    AuthClass = awscli.botocore.auth.SigV4Auth
 
     def setUp(self):
         super().setUp()
-        self.credentials = botocore.credentials.Credentials(
+        self.credentials = awscli.botocore.credentials.Credentials(
             access_key='foo', secret_key='bar', token='baz'
         )
         self.auth = self.AuthClass(self.credentials, 'ec2', 'us-west-2')
@@ -544,12 +547,12 @@ class BasePresignTest(unittest.TestCase):
 
 class TestSigV4Presign(BasePresignTest):
     maxDiff = None
-    AuthClass = botocore.auth.SigV4QueryAuth
+    AuthClass = awscli.botocore.auth.SigV4QueryAuth
 
     def setUp(self):
         self.access_key = 'access_key'
         self.secret_key = 'secret_key'
-        self.credentials = botocore.credentials.Credentials(
+        self.credentials = awscli.botocore.credentials.Credentials(
             self.access_key, self.secret_key
         )
         self.service_name = 'myservice'
@@ -558,7 +561,7 @@ class TestSigV4Presign(BasePresignTest):
             self.credentials, self.service_name, self.region_name, expires=60
         )
         self.datetime_patcher = mock.patch.object(
-            botocore.auth.datetime,
+            awscli.botocore.auth.datetime,
             'datetime',
             mock.Mock(wraps=datetime.datetime),
         )
@@ -631,7 +634,7 @@ class TestSigV4Presign(BasePresignTest):
         self.assertIn('uploads', request.url)
 
     def test_s3_sigv4_presign(self):
-        auth = botocore.auth.S3SigV4QueryAuth(
+        auth = awscli.botocore.auth.S3SigV4QueryAuth(
             self.credentials, self.service_name, self.region_name, expires=60
         )
         request = AWSRequest()
@@ -663,7 +666,7 @@ class TestSigV4Presign(BasePresignTest):
 
     def test_presign_with_security_token(self):
         self.credentials.token = 'security-token'
-        auth = botocore.auth.S3SigV4QueryAuth(
+        auth = awscli.botocore.auth.S3SigV4QueryAuth(
             self.credentials, self.service_name, self.region_name, expires=60
         )
         request = AWSRequest()
@@ -738,7 +741,7 @@ class BaseS3PresignPostTest(unittest.TestCase):
     def setUp(self):
         self.access_key = 'access_key'
         self.secret_key = 'secret_key'
-        self.credentials = botocore.credentials.Credentials(
+        self.credentials = awscli.botocore.credentials.Credentials(
             self.access_key, self.secret_key
         )
 
@@ -771,11 +774,11 @@ class BaseS3PresignPostTest(unittest.TestCase):
 class TestS3SigV4Post(BaseS3PresignPostTest):
     def setUp(self):
         super().setUp()
-        self.auth = botocore.auth.S3SigV4PostAuth(
+        self.auth = awscli.botocore.auth.S3SigV4PostAuth(
             self.credentials, self.service_name, self.region_name
         )
         self.datetime_patcher = mock.patch.object(
-            botocore.auth.datetime,
+            awscli.botocore.auth.datetime,
             'datetime',
             mock.Mock(wraps=datetime.datetime),
         )
@@ -820,7 +823,7 @@ class TestS3SigV4Post(BaseS3PresignPostTest):
 
     def test_presign_post_with_security_token(self):
         self.credentials.token = 'my-token'
-        self.auth = botocore.auth.S3SigV4PostAuth(
+        self.auth = awscli.botocore.auth.S3SigV4PostAuth(
             self.credentials, self.service_name, self.region_name
         )
         self.auth.add_auth(self.request)

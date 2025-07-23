@@ -14,8 +14,7 @@ import os
 import re
 import shutil
 
-import botocore
-
+import awscli.botocore
 from awscli.clidriver import create_clidriver
 from awscli.testutils import BaseCLIDriverTest, FileCreator, mock
 from tests import RawResponse
@@ -36,7 +35,9 @@ class RegionCapture:
 class TestSession(BaseCLIDriverTest):
     def setUp(self):
         super(TestSession, self).setUp()
-        urllib3_session_send = 'botocore.httpsession.URLLib3Session.send'
+        urllib3_session_send = (
+            'awscli.botocore.httpsession.URLLib3Session.send'
+        )
         self._urllib3_patch = mock.patch(urllib3_session_send)
         self._send = self._urllib3_patch.start()
         self._send.side_effect = self.get_response
@@ -52,7 +53,7 @@ class TestSession(BaseCLIDriverTest):
         return response
 
     def add_response(self, body, status_code=200):
-        response = botocore.awsrequest.AWSResponse(
+        response = awscli.botocore.awsrequest.AWSResponse(
             url='http://169.254.169.254/',
             status_code=status_code,
             headers={},

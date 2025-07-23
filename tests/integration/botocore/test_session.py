@@ -10,14 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
-
+import awscli.botocore.session
 from tests import unittest
 
 
 class TestCanChangeParsing(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
 
     def test_can_change_timestamp_with_clients(self):
         factory = self.session.get_component('response_parser_factory')

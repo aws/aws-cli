@@ -13,18 +13,21 @@
 import io
 import os
 
-import botocore
-from botocore.exceptions import ClientError, WaiterConfigError, WaiterError
-from botocore.loaders import Loader
-from botocore.model import ServiceModel
-from botocore.waiter import (
+import awscli.botocore
+from awscli.botocore.exceptions import (
+    ClientError,
+    WaiterConfigError,
+    WaiterError,
+)
+from awscli.botocore.loaders import Loader
+from awscli.botocore.model import ServiceModel
+from awscli.botocore.waiter import (
     NormalizedOperationMethod,
     SingleWaiterConfig,
     Waiter,
     WaiterModel,
     create_waiter_with_client,
 )
-
 from tests import BaseEnvVar, mock, unittest
 
 
@@ -849,7 +852,7 @@ class ServiceWaiterFunctionalTest(BaseEnvVar):
     def setUp(self):
         super().setUp()
         self.data_path = os.path.join(
-            os.path.dirname(botocore.__file__), 'data'
+            os.path.dirname(awscli.botocore.__file__), 'data'
         )
         self.environ['AWS_DATA_PATH'] = self.data_path
         self.loader = Loader([self.data_path])
@@ -857,7 +860,7 @@ class ServiceWaiterFunctionalTest(BaseEnvVar):
     def get_waiter_model(self, service):
         """Get the waiter model for the service."""
         with mock.patch(
-            'botocore.loaders.Loader.list_available_services',
+            'awscli.botocore.loaders.Loader.list_available_services',
             return_value=[service],
         ):
             return WaiterModel(
@@ -867,7 +870,7 @@ class ServiceWaiterFunctionalTest(BaseEnvVar):
     def get_service_model(self, service):
         """Get the service model for the service."""
         with mock.patch(
-            'botocore.loaders.Loader.list_available_services',
+            'awscli.botocore.loaders.Loader.list_available_services',
             return_value=[service],
         ):
             return ServiceModel(

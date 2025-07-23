@@ -39,7 +39,7 @@ class ServerCompletionHeuristic:
     ):
         """
 
-        :param service_model: A botocore.model.ServiceModel.
+        :param service_model: A awscli.botocore.model.ServiceModel.
         :param prune_completions: If True, the generated file will be
             pruned of unused resources not used by completion operations.
 

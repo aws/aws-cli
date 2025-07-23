@@ -10,8 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.model import OperationModel, ServiceModel
-
+from awscli.botocore.model import OperationModel, ServiceModel
 from awscli.customizations.dynamodb.transform import ParameterTransformer
 from awscli.testutils import unittest
 

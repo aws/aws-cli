@@ -59,11 +59,17 @@ from base64 import b64decode
 from enum import Enum
 
 import pytest
-from botocore.awsrequest import HeadersDict, prepare_request_dict
-from botocore.compat import OrderedDict, json, urlsplit
-from botocore.eventstream import EventStream
-from botocore.model import NoShapeFoundError, OperationModel, ServiceModel
-from botocore.parsers import (
+from dateutil.tz import tzutc
+
+from awscli.botocore.awsrequest import HeadersDict, prepare_request_dict
+from awscli.botocore.compat import OrderedDict, json, urlsplit
+from awscli.botocore.eventstream import EventStream
+from awscli.botocore.model import (
+    NoShapeFoundError,
+    OperationModel,
+    ServiceModel,
+)
+from awscli.botocore.parsers import (
     EC2QueryParser,
     JSONParser,
     QueryParser,
@@ -71,7 +77,7 @@ from botocore.parsers import (
     RestXMLParser,
     RpcV2CBORParser,
 )
-from botocore.serialize import (
+from awscli.botocore.serialize import (
     EC2Serializer,
     JSONSerializer,
     QuerySerializer,
@@ -79,8 +85,7 @@ from botocore.serialize import (
     RestXMLSerializer,
     RpcV2CBORSerializer,
 )
-from botocore.utils import parse_timestamp, percent_encode_sequence
-from dateutil.tz import tzutc
+from awscli.botocore.utils import parse_timestamp, percent_encode_sequence
 
 TEST_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'protocols'

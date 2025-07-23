@@ -14,17 +14,16 @@ from concurrent import futures
 from functools import partial
 from threading import Event
 
-from botocore.context import ClientContext, get_context
-from s3transfer.futures import BoundedExecutor, TransferCoordinator
-from s3transfer.subscribers import BaseSubscriber
-from s3transfer.tasks import (
+from awscli.botocore.context import ClientContext, get_context
+from awscli.s3transfer.futures import BoundedExecutor, TransferCoordinator
+from awscli.s3transfer.subscribers import BaseSubscriber
+from awscli.s3transfer.tasks import (
     CompleteMultipartUploadTask,
     CreateMultipartUploadTask,
     SubmissionTask,
     Task,
 )
-from s3transfer.utils import CallArgs, FunctionContainer, get_callbacks
-
+from awscli.s3transfer.utils import CallArgs, FunctionContainer, get_callbacks
 from tests import (
     BaseSubmissionTaskTest,
     BaseTaskTest,

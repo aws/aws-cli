@@ -17,14 +17,16 @@ import operator
 from contextlib import contextmanager
 from sys import getrefcount
 
-import botocore
 import pytest
-from botocore import xform_name
-from botocore.awsrequest import AWSRequest, AWSResponse, HeadersDict
-from botocore.compat import OrderedDict, json
-from botocore.config import Config
-from botocore.endpoint_provider import RuleSetEndpoint
-from botocore.exceptions import (
+from dateutil.tz import tzoffset, tzutc
+
+import awscli.botocore
+from awscli.botocore import xform_name
+from awscli.botocore.awsrequest import AWSRequest, AWSResponse, HeadersDict
+from awscli.botocore.compat import OrderedDict, json
+from awscli.botocore.config import Config
+from awscli.botocore.endpoint_provider import RuleSetEndpoint
+from awscli.botocore.exceptions import (
     ClientError,
     ConfigNotFound,
     ConnectionClosedError,
@@ -41,16 +43,16 @@ from botocore.exceptions import (
     UnsupportedS3AccesspointConfigurationError,
     UnsupportedS3ArnError,
 )
-from botocore.model import (
+from awscli.botocore.model import (
     DenormalizedStructureBuilder,
     OperationModel,
     ServiceModel,
     ShapeResolver,
 )
-from botocore.regions import EndpointResolver, EndpointRulesetResolver
-from botocore.session import Session
-from botocore.stub import Stubber
-from botocore.utils import (
+from awscli.botocore.regions import EndpointResolver, EndpointRulesetResolver
+from awscli.botocore.session import Session
+from awscli.botocore.stub import Stubber
+from awscli.botocore.utils import (
     ArgumentGenerator,
     ArnParser,
     BadIMDSRequestError,
@@ -98,8 +100,6 @@ from botocore.utils import (
     switch_to_virtual_host_style,
     validate_jmespath_for_set,
 )
-from dateutil.tz import tzoffset, tzutc
-
 from tests import FreezeTime, RawResponse, create_session, mock, unittest
 
 DATE = datetime.datetime(2021, 12, 10, 00, 00, 00)
@@ -516,7 +516,7 @@ class TestParseTimestamps(unittest.TestCase):
         mock_get_tzinfo_options = mock.MagicMock(return_value=(mock_tzinfo,))
 
         with mock.patch(
-            'botocore.utils.get_tzinfo_options', mock_get_tzinfo_options
+            'awscli.botocore.utils.get_tzinfo_options', mock_get_tzinfo_options
         ):
             with self.assertRaises(RuntimeError):
                 parse_timestamp(0)
@@ -2695,15 +2695,21 @@ class TestContainerMetadataFetcher(unittest.TestCase):
 
 class TestUnsigned(unittest.TestCase):
     def test_copy_returns_same_object(self):
-        self.assertIs(botocore.UNSIGNED, copy.copy(botocore.UNSIGNED))
+        self.assertIs(
+            awscli.botocore.UNSIGNED, copy.copy(awscli.botocore.UNSIGNED)
+        )
 
     def test_deepcopy_returns_same_object(self):
-        self.assertIs(botocore.UNSIGNED, copy.deepcopy(botocore.UNSIGNED))
+        self.assertIs(
+            awscli.botocore.UNSIGNED, copy.deepcopy(awscli.botocore.UNSIGNED)
+        )
 
 
 class TestInstanceMetadataFetcher(unittest.TestCase):
     def setUp(self):
-        urllib3_session_send = 'botocore.httpsession.URLLib3Session.send'
+        urllib3_session_send = (
+            'awscli.botocore.httpsession.URLLib3Session.send'
+        )
         self._urllib3_patch = mock.patch(urllib3_session_send)
         self._send = self._urllib3_patch.start()
         self._imds_responses = []
@@ -2727,7 +2733,7 @@ class TestInstanceMetadataFetcher(unittest.TestCase):
         self._urllib3_patch.stop()
 
     def add_imds_response(self, body, status_code=200):
-        response = botocore.awsrequest.AWSResponse(
+        response = awscli.botocore.awsrequest.AWSResponse(
             url='http://169.254.169.254/',
             status_code=status_code,
             headers={},
@@ -3156,7 +3162,7 @@ class TestInstanceMetadataFetcher(unittest.TestCase):
         randint_mock.return_value = int_val
         return randint_mock
 
-    @FreezeTime(module=botocore.utils.datetime, date=DATE)
+    @FreezeTime(module=awscli.botocore.utils.datetime, date=DATE)
     def test_expiry_time_extension(self):
         current_time = self._get_datetime()
         expiration_time = self._get_datetime(
@@ -3179,7 +3185,7 @@ class TestInstanceMetadataFetcher(unittest.TestCase):
             result = fetcher.retrieve_iam_role_credentials()
             assert result == expected_data
 
-    @FreezeTime(module=botocore.utils.datetime, date=DATE)
+    @FreezeTime(module=awscli.botocore.utils.datetime, date=DATE)
     def test_expired_expiry_extension(self):
         current_time = self._get_datetime()
         expiration_time = self._get_datetime(
@@ -3206,7 +3212,7 @@ class TestInstanceMetadataFetcher(unittest.TestCase):
             result = fetcher.retrieve_iam_role_credentials()
             assert result == expected_data
 
-    @FreezeTime(module=botocore.utils.datetime, date=DATE)
+    @FreezeTime(module=awscli.botocore.utils.datetime, date=DATE)
     def test_expiry_extension_with_config(self):
         current_time = self._get_datetime()
         expiration_time = self._get_datetime(
@@ -3235,7 +3241,7 @@ class TestInstanceMetadataFetcher(unittest.TestCase):
             result = fetcher.retrieve_iam_role_credentials()
             assert result == expected_data
 
-    @FreezeTime(module=botocore.utils.datetime, date=DATE)
+    @FreezeTime(module=awscli.botocore.utils.datetime, date=DATE)
     def test_expiry_extension_with_bad_datetime(self):
         bad_datetime = "May 20th, 2020 19:00:00"
         creds = self._get_default_creds({"Expiration": bad_datetime})

@@ -13,9 +13,9 @@
 import re
 
 import ruamel.yaml
-from botocore.compat import OrderedDict, json
 from ruamel.yaml.resolver import ScalarNode, SequenceNode
 
+from awscli.botocore.compat import OrderedDict, json
 from awscli.utils import dump_yaml_to_str
 
 

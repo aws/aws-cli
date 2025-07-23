@@ -1,5 +1,4 @@
-from botocore.retries import throttling
-
+from awscli.botocore.retries import throttling
 from tests import unittest
 
 

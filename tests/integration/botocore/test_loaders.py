@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 
-import botocore.session
-
+import awscli.botocore.session
 from tests import mock, unittest
 
 
@@ -28,7 +27,7 @@ class TestLoaderBasicFunctionality(unittest.TestCase):
         self.patched.start()
         self.environ.pop('AWS_DATA_PATH', None)
 
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.loader = self.session.get_component('data_loader')
 
     def tearDown(self):

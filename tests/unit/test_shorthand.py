@@ -14,10 +14,10 @@ import signal
 from unittest.mock import patch
 
 import pytest
-from botocore import model
 
 import awscli.paramfile
 from awscli import shorthand
+from awscli.botocore import model
 from awscli.testutils import skip_if_windows, unittest
 
 PARSING_TEST_CASES = (

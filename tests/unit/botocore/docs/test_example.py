@@ -10,13 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.docs.example import (
+from awscli.botocore.docs.example import (
     RequestExampleDocumenter,
     ResponseExampleDocumenter,
 )
-from botocore.docs.utils import DocumentedShape
-from botocore.hooks import HierarchicalEmitter
-
+from awscli.botocore.docs.utils import DocumentedShape
+from awscli.botocore.hooks import HierarchicalEmitter
 from tests import mock
 from tests.unit.botocore.docs import BaseDocsTest
 

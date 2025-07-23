@@ -28,10 +28,9 @@ import logging
 import sys
 from functools import partial
 
-from botocore import model, xform_name
-from botocore.exceptions import DataNotFoundError
-
 from awscli.arguments import BaseCLIArgument
+from awscli.botocore import model, xform_name
+from awscli.botocore.exceptions import DataNotFoundError
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.utils import uni_print
 

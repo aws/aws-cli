@@ -13,8 +13,7 @@
 import json
 import os
 
-from botocore.model import ServiceModel
-
+from awscli.botocore.model import ServiceModel
 from awscli.customizations.commands import BasicCommand
 
 
@@ -48,7 +47,7 @@ def _get_service_name(session, endpoint_prefix):
 def get_model_location(session, service_definition, service_name=None):
     """Gets the path of where a service-2.json file should go in ~/.aws/models
 
-    :type session: botocore.session.Session
+    :type session: awscli.botocore.session.Session
     :param session: A session object
 
     :type service_definition: dict
@@ -60,7 +59,7 @@ def get_model_location(session, service_definition, service_name=None):
         and the service definition.
 
     :returns: The path to where are model should be placed based on
-        the service definition and the current services in botocore.
+        the service definition and the current services in awscli.botocore.
     """
     # Add the ServiceModel abstraction over the service json definition to
     # make it easier to work with.

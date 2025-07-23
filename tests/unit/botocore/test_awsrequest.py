@@ -19,7 +19,9 @@ import socket
 import sys
 import tempfile
 
-from botocore.awsrequest import (
+from urllib3.connectionpool import HTTPConnectionPool, HTTPSConnectionPool
+
+from awscli.botocore.awsrequest import (
     AWSHTTPConnection,
     AWSHTTPSConnection,
     AWSPreparedRequest,
@@ -29,10 +31,8 @@ from botocore.awsrequest import (
     create_request_object,
     prepare_request_dict,
 )
-from botocore.compat import file_type
-from botocore.exceptions import UnseekableStreamError
-from urllib3.connectionpool import HTTPConnectionPool, HTTPSConnectionPool
-
+from awscli.botocore.compat import file_type
+from awscli.botocore.exceptions import UnseekableStreamError
 from tests import mock, unittest
 
 

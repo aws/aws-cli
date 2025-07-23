@@ -13,8 +13,7 @@
 import logging
 import os
 
-from botocore.exceptions import ProfileNotFound
-
+from awscli.botocore.exceptions import ProfileNotFound
 from awscli.compat import compat_input
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.addmodel import AddModelCommand

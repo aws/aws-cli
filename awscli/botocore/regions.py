@@ -23,10 +23,11 @@ import re
 from enum import Enum
 
 import jmespath
-from botocore import UNSIGNED, xform_name
-from botocore.auth import AUTH_TYPE_MAPS
-from botocore.endpoint_provider import EndpointProvider
-from botocore.exceptions import (
+
+from awscli.botocore import UNSIGNED, xform_name
+from awscli.botocore.auth import AUTH_TYPE_MAPS
+from awscli.botocore.endpoint_provider import EndpointProvider
+from awscli.botocore.exceptions import (
     EndpointProviderError,
     EndpointVariantError,
     InvalidEndpointConfigurationError,
@@ -41,8 +42,8 @@ from botocore.exceptions import (
     UnsupportedS3ControlArnError,
     UnsupportedS3ControlConfigurationError,
 )
-from botocore.useragent import register_feature_id
-from botocore.utils import ensure_boolean, instance_cache
+from awscli.botocore.useragent import register_feature_id
+from awscli.botocore.utils import ensure_boolean, instance_cache
 
 LOG = logging.getLogger(__name__)
 DEFAULT_URI_TEMPLATE = '{service}.{region}.{dnsSuffix}'  # noqa
@@ -519,7 +520,7 @@ class EndpointRulesetResolver:
                 url=f'http://{provider_result.url[8:]}'
             )
 
-        # Multi-valued headers are not supported in botocore. Replace the list
+        # Multi-valued headers are not supported in awscli.botocore. Replace the list
         # of values returned for each header with just its first entry,
         # dropping any additionally entries.
         provider_result = provider_result._replace(

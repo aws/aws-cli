@@ -10,15 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.credentials import (
+from awscli.botocore.credentials import (
     AssumeRoleProvider,
     AssumeRoleWithWebIdentityProvider,
     CredentialResolver,
 )
-from botocore.exceptions import ProfileNotFound
-from botocore.hooks import HierarchicalEmitter
-from botocore.session import Session
-
+from awscli.botocore.exceptions import ProfileNotFound
+from awscli.botocore.hooks import HierarchicalEmitter
+from awscli.botocore.session import Session
 from awscli.customizations import assumerole
 from awscli.testutils import mock, unittest
 

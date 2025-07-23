@@ -15,8 +15,8 @@ import logging
 import re
 import time
 
-from botocore.compat import ensure_bytes, ensure_unicode, urlparse
-from botocore.exceptions import (
+from awscli.botocore.compat import ensure_bytes, ensure_unicode, urlparse
+from awscli.botocore.exceptions import (
     ConnectionClosedError,
     ConnectionError,
     EndpointConnectionError,

@@ -25,8 +25,8 @@ from collections import OrderedDict
 from collections.abc import MutableMapping
 from math import floor
 
-from botocore.vendored import six
-from botocore.exceptions import MD5UnavailableError
+from awscli.botocore.vendored import six
+from awscli.botocore.exceptions import MD5UnavailableError
 from dateutil.tz import tzlocal
 from urllib3 import exceptions
 

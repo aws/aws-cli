@@ -12,20 +12,20 @@
 # language governing permissions and limitations under the License.
 import awscrt.s3
 import pytest
-import s3transfer.crt
 from awscrt.s3 import S3RequestTlsMode
-from botocore.config import Config
-from botocore.credentials import Credentials
-from botocore.httpsession import DEFAULT_CA_BUNDLE
-from botocore.session import Session
-from s3transfer.crt import CRTTransferManager
-from s3transfer.manager import TransferManager
 
+import awscli.s3transfer.crt
+from awscli.botocore.config import Config
+from awscli.botocore.credentials import Credentials
+from awscli.botocore.httpsession import DEFAULT_CA_BUNDLE
+from awscli.botocore.session import Session
 from awscli.customizations.s3.factory import (
     ClientFactory,
     TransferManagerFactory,
 )
 from awscli.customizations.s3.transferconfig import RuntimeConfig
+from awscli.s3transfer.crt import CRTTransferManager
+from awscli.s3transfer.manager import TransferManager
 from awscli.testutils import FileCreator, mock, unittest
 
 
@@ -43,14 +43,16 @@ def mock_crt_process_lock(monkeypatch):
     # test cases will start off with no previously cached process lock and
     # if a cross process is instantiated/acquired it will be the mock that
     # can be used for controlling lock behavior.
-    monkeypatch.setattr('s3transfer.crt.CRT_S3_PROCESS_LOCK', None)
+    monkeypatch.setattr('awscli.s3transfer.crt.CRT_S3_PROCESS_LOCK', None)
     with mock.patch('awscrt.s3.CrossProcessLock', spec=True) as mock_lock:
         yield mock_lock
 
 
 @pytest.fixture
 def mock_crt_s3_client():
-    with mock.patch('s3transfer.crt.S3Client', spec=True) as mock_client:
+    with mock.patch(
+        'awscli.s3transfer.crt.S3Client', spec=True
+    ) as mock_client:
         yield mock_client
 
 
@@ -258,7 +260,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.session.create_client.assert_not_called()
         self.assertIs(transfer_manager.client, transfer_client)
 
-    @mock.patch('s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
     def test_uses_region_parameter_for_crt_manager(self, mock_crt_client):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt'
@@ -276,7 +278,7 @@ class TestTransferManagerFactory(unittest.TestCase):
             'param-region',
         )
 
-    @mock.patch('s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
     def test_falls_back_to_session_region_for_crt_manager(
         self, mock_crt_client
     ):
@@ -297,7 +299,7 @@ class TestTransferManagerFactory(unittest.TestCase):
             'config-region',
         )
 
-    @mock.patch('s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
     def test_uses_tls_by_default_for_crt_manager(self, mock_crt_client):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt'
@@ -308,7 +310,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assert_is_crt_manager(transfer_manager)
         self.assert_tls_enabled_for_crt_client(mock_crt_client)
 
-    @mock.patch('s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
     def test_uses_endpoint_url_parameter_for_crt_manager(
         self, mock_crt_client
     ):
@@ -326,7 +328,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         )
         self.assert_tls_enabled_for_crt_client(mock_crt_client)
 
-    @mock.patch('s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
     def test_can_disable_tls_using_endpoint_scheme_for_crt_manager(
         self, mock_crt_client
     ):
@@ -344,7 +346,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         )
         self.assert_tls_disabled_for_crt_client(mock_crt_client)
 
-    @mock.patch('s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
     def test_uses_botocore_credentials_for_crt_manager(self, mock_crt_client):
         credentials = Credentials('access_key', 'secret_key', 'token')
         self.session.get_credentials.return_value = credentials
@@ -369,7 +371,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         assert crt_credentials.secret_access_key == 'secret_key'
         assert crt_credentials.session_token == 'token'
 
-    @mock.patch('s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
     def test_disable_botocore_credentials_for_crt_manager(
         self, mock_crt_client
     ):
@@ -384,8 +386,8 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.session.get_credentials.assert_not_called()
         self.assertIsNone(mock_crt_client.call_args[1]['credential_provider'])
 
-    @mock.patch('s3transfer.crt.S3Client')
-    @mock.patch('s3transfer.crt.ClientTlsContext')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.ClientTlsContext')
     def test_use_verify_ssl_parameter_for_crt_manager(
         self, mock_client_tls_context_options, mock_crt_client
     ):
@@ -407,8 +409,8 @@ class TestTransferManagerFactory(unittest.TestCase):
             mock_crt_client, mock_client_tls_context_options
         )
 
-    @mock.patch('s3transfer.crt.S3Client')
-    @mock.patch('s3transfer.crt.ClientTlsContext')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.ClientTlsContext')
     def test_use_ca_bundle_from_session_for_crt_manager(
         self, mock_client_tls_context_options, mock_crt_client
     ):
@@ -430,8 +432,8 @@ class TestTransferManagerFactory(unittest.TestCase):
             mock_crt_client, mock_client_tls_context_options
         )
 
-    @mock.patch('s3transfer.crt.S3Client')
-    @mock.patch('s3transfer.crt.ClientTlsContext')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.ClientTlsContext')
     def test_use_verify_ssl_parameter_none_for_crt_manager(
         self, mock_client_tls_context_options, mock_crt_client
     ):
@@ -451,8 +453,8 @@ class TestTransferManagerFactory(unittest.TestCase):
             mock_crt_client, mock_client_tls_context_options
         )
 
-    @mock.patch('s3transfer.crt.S3Client')
-    @mock.patch('s3transfer.crt.ClientTlsContext')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.ClientTlsContext')
     def test_use_verify_ssl_parameter_false_for_crt_manager(
         self, mock_client_tls_context_options, mock_crt_client
     ):
@@ -470,7 +472,7 @@ class TestTransferManagerFactory(unittest.TestCase):
             mock_crt_client, mock_client_tls_context_options
         )
 
-    @mock.patch('s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
     def test_target_bandwidth_configure_for_crt_manager(self, mock_crt_client):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt', target_bandwidth=1_000_000_000
@@ -481,8 +483,8 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assert_is_crt_manager(transfer_manager)
         self.assert_expected_throughput_target_gbps(mock_crt_client, 8)
 
-    @mock.patch('s3transfer.crt.get_recommended_throughput_target_gbps')
-    @mock.patch('s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.get_recommended_throughput_target_gbps')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
     def test_target_bandwidth_uses_crt_recommended_throughput(
         self, mock_crt_client, mock_get_target_gbps
     ):
@@ -496,8 +498,8 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assert_is_crt_manager(transfer_manager)
         self.assert_expected_throughput_target_gbps(mock_crt_client, 100)
 
-    @mock.patch('s3transfer.crt.get_recommended_throughput_target_gbps')
-    @mock.patch('s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.get_recommended_throughput_target_gbps')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
     def test_crt_recommended_target_throughput_default(
         self, mock_crt_client, mock_get_target_gbps
     ):
@@ -513,7 +515,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         # should be 10 gbps
         self.assert_expected_throughput_target_gbps(mock_crt_client, 10)
 
-    @mock.patch('s3transfer.crt.S3Client')
+    @mock.patch('awscli.s3transfer.crt.S3Client')
     def test_multipart_chunksize_configure_for_crt_manager(
         self, mock_crt_client
     ):
@@ -606,7 +608,7 @@ def test_factory_always_acquires_crt_transfer_lock_for_crt_manager(
         transfer_manager_factory, s3_params, preferred_transfer_client
     )
     assert isinstance(transfer_manager, CRTTransferManager)
-    assert s3transfer.crt.CRT_S3_PROCESS_LOCK
+    assert awscli.s3transfer.crt.CRT_S3_PROCESS_LOCK
     mock_crt_process_lock.assert_called_once_with('aws-cli')
     mock_crt_process_lock.return_value.acquire.assert_called_once_with()
 
@@ -633,7 +635,7 @@ def test_factory_never_acquires_crt_transfer_lock_for_classic_manager(
         transfer_manager_factory, s3_params, preferred_transfer_client
     )
     assert isinstance(transfer_manager, TransferManager)
-    assert s3transfer.crt.CRT_S3_PROCESS_LOCK is None
+    assert awscli.s3transfer.crt.CRT_S3_PROCESS_LOCK is None
     mock_crt_process_lock.assert_not_called()
     mock_crt_process_lock.return_value.acquire.assert_not_called()
 

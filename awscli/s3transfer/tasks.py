@@ -13,8 +13,8 @@
 import copy
 import logging
 
-from botocore.context import start_as_current_context
-from s3transfer.utils import get_callbacks
+from awscli.botocore.context import start_as_current_context
+from awscli.s3transfer.utils import get_callbacks
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class Task:
         is_final=False,
     ):
         """
-        :type transfer_coordinator: s3transfer.futures.TransferCoordinator
+        :type transfer_coordinator: awscli.s3transfer.futures.TransferCoordinator
         :param transfer_coordinator: The context associated to the
             TransferFuture for which this Task is associated with.
 
@@ -244,7 +244,7 @@ class SubmissionTask(Task):
 
     def _main(self, transfer_future, **kwargs):
         """
-        :type transfer_future: s3transfer.futures.TransferFuture
+        :type transfer_future: awscli.s3transfer.futures.TransferFuture
         :param transfer_future: The transfer future associated with the
             transfer request that tasks are being submitted for
 
@@ -292,7 +292,7 @@ class SubmissionTask(Task):
     def _submit(self, transfer_future, **kwargs):
         """The submission method to be implemented
 
-        :type transfer_future: s3transfer.futures.TransferFuture
+        :type transfer_future: awscli.s3transfer.futures.TransferFuture
         :param transfer_future: The transfer future associated with the
             transfer request that tasks are being submitted for
 

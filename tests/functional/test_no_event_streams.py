@@ -11,8 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-from botocore.model import OperationModel
 
+from awscli.botocore.model import OperationModel
 from awscli.clidriver import create_clidriver
 
 # Excluded commands must be registered in awscli/customizations/removals.py

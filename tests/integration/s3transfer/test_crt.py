@@ -15,10 +15,9 @@ import io
 import os
 from uuid import uuid4
 
-from botocore.exceptions import ClientError
-from s3transfer.subscribers import BaseSubscriber
-from s3transfer.utils import OSUtils
-
+from awscli.botocore.exceptions import ClientError
+from awscli.s3transfer.subscribers import BaseSubscriber
+from awscli.s3transfer.utils import OSUtils
 from tests import (
     HAS_CRT,
     NonSeekableReader,
@@ -29,8 +28,9 @@ from tests import (
 from tests.integration.s3transfer import BaseTransferManagerIntegTest
 
 if HAS_CRT:
-    import s3transfer.crt
     from awscrt.exceptions import AwsCrtError
+
+    import awscli.s3transfer.crt
 
 
 class RecordingSubscriber(BaseSubscriber):
@@ -59,21 +59,23 @@ class TestCRTS3Transfers(BaseTransferManagerIntegTest):
         self.download_path = os.path.join(self.files.rootdir, 'download.txt')
 
     def _create_s3_transfer(self):
-        self.request_serializer = s3transfer.crt.BotocoreCRTRequestSerializer(
-            self.session, client_kwargs={'region_name': self.region}
+        self.request_serializer = (
+            awscli.s3transfer.crt.BotocoreCRTRequestSerializer(
+                self.session, client_kwargs={'region_name': self.region}
+            )
         )
-        self.s3_crt_client = s3transfer.crt.create_s3_crt_client(
+        self.s3_crt_client = awscli.s3transfer.crt.create_s3_crt_client(
             self.region, self._get_crt_credentials_provider()
         )
         self.record_subscriber = RecordingSubscriber()
         self.osutil = OSUtils()
-        return s3transfer.crt.CRTTransferManager(
+        return awscli.s3transfer.crt.CRTTransferManager(
             self.s3_crt_client, self.request_serializer
         )
 
     def _get_crt_credentials_provider(self):
         botocore_credentials = self.session.get_credentials()
-        wrapper = s3transfer.crt.BotocoreCRTCredentialsWrapper(
+        wrapper = awscli.s3transfer.crt.BotocoreCRTCredentialsWrapper(
             botocore_credentials
         )
         return wrapper.to_crt_credentials_provider()

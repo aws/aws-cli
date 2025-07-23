@@ -17,8 +17,7 @@ import io
 import platform
 import sys
 
-from botocore.compat import json
-
+from awscli.botocore.compat import json
 from awscli.compat import StringIO, get_stdout_text_writer
 from awscli.formatter import JSONFormatter
 from awscli.testutils import (

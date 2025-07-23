@@ -17,10 +17,10 @@ import threading
 from collections import namedtuple
 from concurrent import futures
 
-from botocore.context import get_context
-from s3transfer.compat import MAXINT
-from s3transfer.exceptions import CancelledError, TransferNotDoneError
-from s3transfer.utils import FunctionContainer, TaskSemaphore
+from awscli.botocore.context import get_context
+from awscli.s3transfer.compat import MAXINT
+from awscli.s3transfer.exceptions import CancelledError, TransferNotDoneError
+from awscli.s3transfer.utils import FunctionContainer, TaskSemaphore
 
 logger = logging.getLogger(__name__)
 
@@ -317,13 +317,13 @@ class TransferCoordinator:
     def submit(self, executor, task, tag=None):
         """Submits a task to a provided executor
 
-        :type executor: s3transfer.futures.BoundedExecutor
+        :type executor: awscli.s3transfer.futures.BoundedExecutor
         :param executor: The executor to submit the callable to
 
-        :type task: s3transfer.tasks.Task
+        :type task: awscli.s3transfer.tasks.Task
         :param task: The task to submit to the executor
 
-        :type tag: s3transfer.futures.TaskTag
+        :type tag: awscli.s3transfer.futures.TaskTag
         :param tag: A tag to associate to the submitted task
 
         :rtype: concurrent.futures.Future
@@ -454,11 +454,11 @@ class BoundedExecutor:
     def submit(self, task, tag=None, block=True):
         """Submit a task to complete
 
-        :type task: s3transfer.tasks.Task
+        :type task: awscli.s3transfer.tasks.Task
         :param task: The task to run __call__ on
 
 
-        :type tag: s3transfer.futures.TaskTag
+        :type tag: awscli.s3transfer.futures.TaskTag
         :param tag: An optional tag to associate to the task. This
             is used to override which semaphore to use.
 

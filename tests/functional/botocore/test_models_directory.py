@@ -12,17 +12,18 @@
 # language governing permissions and limitations under the License.
 import os
 
-import botocore.session
 import pytest
+
+import awscli.botocore.session
 
 
 @pytest.fixture
 def loader():
-    return botocore.session.Session().get_component('data_loader')
+    return awscli.botocore.session.Session().get_component('data_loader')
 
 
 def _available_services():
-    return botocore.session.Session().get_available_services()
+    return awscli.botocore.session.Session().get_available_services()
 
 
 @pytest.mark.parametrize("service", _available_services())

@@ -21,15 +21,14 @@ import signal
 import sys
 from subprocess import PIPE, Popen
 
-from botocore.configprovider import BaseProvider
-from botocore.useragent import UserAgentComponent
-from botocore.utils import (
+from awscli.botocore.configprovider import BaseProvider
+from awscli.botocore.useragent import UserAgentComponent
+from awscli.botocore.utils import (
     BadIMDSRequestError,
     IMDSFetcher,
     original_ld_library_path,
     resolve_imds_endpoint_mode,
 )
-
 from awscli.compat import (
     StringIO,
     get_popen_kwargs_for_pager_cmd,
@@ -96,7 +95,7 @@ class IMDSRegionProvider(BaseProvider):
     def __init__(self, session, environ=None, fetcher=None):
         """Initialize IMDSRegionProvider.
 
-        :type session: :class:`botocore.session.Session`
+        :type session: :class:`awscli.botocore.session.Session`
         :param session: The session is needed to look up configuration for
             how to contact the instance metadata service. Specifically the
             whether or not it should use the IMDS region at all, and if so how
@@ -108,7 +107,7 @@ class IMDSRegionProvider(BaseProvider):
             ``None`` is the argument then ``os.environ`` will be used by
             default.
 
-        :type fecther: :class:`botocore.utils.InstanceMetadataRegionFetcher`
+        :type fecther: :class:`awscli.botocore.utils.InstanceMetadataRegionFetcher`
         :param fetcher: The class to actually handle the fetching of the region
             from the IMDS. If not provided a default one will be created.
         """
@@ -492,7 +491,7 @@ class ShapeWalker:
     def walk(self, shape, visitor):
         """Walk through and visit shapes for introspection
 
-        :type shape: botocore.model.Shape
+        :type shape: awscli.botocore.model.Shape
         :param shape: Shape to walk
 
         :type visitor: BaseShapeVisitor

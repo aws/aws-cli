@@ -16,7 +16,7 @@
 # ``traverse_and_document_shape`` method called directly. It should be
 # inherited from a Documenter class with the appropriate methods
 # and attributes.
-from botocore.utils import is_json_value_header
+from awscli.botocore.utils import is_json_value_header
 
 
 class ShapeDocumenter:

@@ -13,8 +13,7 @@
 import os
 from argparse import Namespace
 
-from botocore.session import get_session
-
+from awscli.botocore.session import get_session
 from awscli.compat import BytesIO
 from awscli.customizations.gamelift.getlog import GetGameSessionLogCommand
 from awscli.testutils import FileCreator, mock, unittest
@@ -23,7 +22,7 @@ from awscli.testutils import FileCreator, mock, unittest
 class TestGetGameSessionLogCommand(unittest.TestCase):
     def setUp(self):
         self.create_client_patch = mock.patch(
-            'botocore.session.Session.create_client'
+            'awscli.botocore.session.Session.create_client'
         )
         self.mock_create_client = self.create_client_patch.start()
         self.session = get_session()

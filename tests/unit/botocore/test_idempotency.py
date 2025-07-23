@@ -13,8 +13,7 @@
 
 import re
 
-from botocore.handlers import generate_idempotent_uuid
-
+from awscli.botocore.handlers import generate_idempotent_uuid
 from tests import mock, unittest
 
 

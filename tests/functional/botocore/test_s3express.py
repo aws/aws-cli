@@ -12,14 +12,14 @@
 # language governing permissions and limitations under the License.
 import datetime
 
-import botocore.session
 import pytest
-from botocore.auth import S3ExpressAuth
-from botocore.awsrequest import AWSRequest
-from botocore.credentials import Credentials, RefreshableCredentials
-from botocore.utils import S3ExpressIdentityCache
 from dateutil.tz import tzutc
 
+import awscli.botocore.session
+from awscli.botocore.auth import S3ExpressAuth
+from awscli.botocore.awsrequest import AWSRequest
+from awscli.botocore.credentials import Credentials, RefreshableCredentials
+from awscli.botocore.utils import S3ExpressIdentityCache
 from tests import ClientHTTPStubber, mock
 
 ACCESS_KEY = "AKIDEXAMPLE"
@@ -52,7 +52,7 @@ CREATE_SESSION_RESPONSE = (
 
 @pytest.fixture
 def default_s3_client():
-    session = botocore.session.Session()
+    session = awscli.botocore.session.Session()
     return session.create_client(
         's3',
         'us-west-2',

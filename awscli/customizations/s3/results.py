@@ -16,13 +16,12 @@ import threading
 import time
 from collections import defaultdict, namedtuple
 
-from s3transfer.exceptions import CancelledError, FatalError
-from s3transfer.subscribers import BaseSubscriber
-
 from awscli.compat import ensure_text_type, queue
 from awscli.customizations.s3.subscribers import OnDoneFilteredSubscriber
 from awscli.customizations.s3.utils import WarningResult, human_readable_size
 from awscli.customizations.utils import uni_print
+from awscli.s3transfer.exceptions import CancelledError, FatalError
+from awscli.s3transfer.subscribers import BaseSubscriber
 
 LOGGER = logging.getLogger(__name__)
 

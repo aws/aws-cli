@@ -21,7 +21,7 @@ import time
 from email.utils import formatdate
 from hashlib import sha256
 
-from botocore.compat import (
+from awscli.botocore.compat import (
     MD5_AVAILABLE,  # noqa
     HTTPHeaders,
     encodebytes,
@@ -32,13 +32,13 @@ from botocore.compat import (
     urlsplit,
     urlunsplit,
 )
-from botocore.exceptions import (
+from awscli.botocore.exceptions import (
     NoAuthTokenError,
     NoCredentialsError,
     UnknownSignatureVersionError,
     UnsupportedSignatureVersionError,
 )
-from botocore.utils import (
+from awscli.botocore.utils import (
     is_valid_ipv6_endpoint_url,
     normalize_url_path,
     percent_encode_sequence,
@@ -876,10 +876,10 @@ class BearerAuth(TokenSigner):
 
 
 # NOTE: This import is at the bottom because it resolves an import error when
-# the botocore.crt.auth module imports functions/classes defined above from
+# the awscli.botocore.crt.auth module imports functions/classes defined above from
 # this module. In the future, we should isolate those functions/classes into
 # a separate utility module to avoid any potential circular import.
-import botocore.crt.auth  # noqa
+import awscli.botocore.crt.auth  # noqa
 
 
 def resolve_auth_type(auth_trait):
@@ -900,15 +900,15 @@ def resolve_auth_type(auth_trait):
 AUTH_TYPE_MAPS = {
     'v2': SigV2Auth,
     'v4': SigV4Auth,
-    'v4a': botocore.crt.auth.CrtSigV4AsymAuth,
+    'v4a': awscli.botocore.crt.auth.CrtSigV4AsymAuth,
     'v4-query': SigV4QueryAuth,
     'v3': SigV3Auth,
     'v3https': SigV3Auth,
     's3v4': S3SigV4Auth,
     's3v4-query': S3SigV4QueryAuth,
     's3v4-presign-post': S3SigV4PostAuth,
-    's3v4a': botocore.crt.auth.CrtS3SigV4AsymAuth,
-    's3v4a-query': botocore.crt.auth.CrtS3SigV4AsymQueryAuth,
+    's3v4a': awscli.botocore.crt.auth.CrtS3SigV4AsymAuth,
+    's3v4a-query': awscli.botocore.crt.auth.CrtS3SigV4AsymQueryAuth,
     'v4-s3express': S3ExpressAuth,
     'v4-s3express-query': S3ExpressQueryAuth,
     'v4-s3express-presign-post': S3ExpressPostAuth,

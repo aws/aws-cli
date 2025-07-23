@@ -10,9 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.exceptions import DataNotFoundError
-from botocore.waiter import WaiterModel
-
+from awscli.botocore.exceptions import DataNotFoundError
+from awscli.botocore.waiter import WaiterModel
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.waiters import (
     WaitCommand,

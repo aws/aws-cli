@@ -16,8 +16,8 @@ import sys
 from argparse import Namespace
 
 import pytest
-from botocore.paginate import PageIterator
 
+from awscli.botocore.paginate import PageIterator
 from awscli.compat import StringIO, contextlib
 from awscli.formatter import JSONFormatter, StreamedYAMLFormatter, YAMLDumper
 from awscli.testutils import mock, unittest

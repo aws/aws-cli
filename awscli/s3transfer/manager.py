@@ -15,19 +15,19 @@ import logging
 import re
 import threading
 
-from botocore.useragent import register_feature_id
-from s3transfer.bandwidth import BandwidthLimiter, LeakyBucket
-from s3transfer.constants import (
+from awscli.botocore.useragent import register_feature_id
+from awscli.s3transfer.bandwidth import BandwidthLimiter, LeakyBucket
+from awscli.s3transfer.constants import (
     ALLOWED_DOWNLOAD_ARGS,
     FULL_OBJECT_CHECKSUM_ARGS,
     KB,
     MB,
 )
-from s3transfer.copies import CopySubmissionTask
-from s3transfer.delete import DeleteSubmissionTask
-from s3transfer.download import DownloadSubmissionTask
-from s3transfer.exceptions import CancelledError, FatalError
-from s3transfer.futures import (
+from awscli.s3transfer.copies import CopySubmissionTask
+from awscli.s3transfer.delete import DeleteSubmissionTask
+from awscli.s3transfer.download import DownloadSubmissionTask
+from awscli.s3transfer.exceptions import CancelledError, FatalError
+from awscli.s3transfer.futures import (
     IN_MEMORY_DOWNLOAD_TAG,
     IN_MEMORY_UPLOAD_TAG,
     BoundedExecutor,
@@ -35,8 +35,8 @@ from s3transfer.futures import (
     TransferFuture,
     TransferMeta,
 )
-from s3transfer.upload import UploadSubmissionTask
-from s3transfer.utils import (
+from awscli.s3transfer.upload import UploadSubmissionTask
+from awscli.s3transfer.utils import (
     CallArgs,
     OSUtils,
     SlidingWindowSemaphore,
@@ -107,7 +107,7 @@ class TransferConfig:
             Other retryable exceptions such as throttling errors and 5xx errors
             are already retried by botocore (this default is 5). The
             ``num_download_attempts`` does not take into account the
-            number of exceptions retried by botocore.
+            number of exceptions retried by awscli.botocore.
 
         :param max_in_memory_upload_chunks: The number of chunks that can
             be stored in memory at a time for all ongoing upload requests.
@@ -235,7 +235,7 @@ class TransferManager:
         :param osutil: OSUtils object to use for os-related behavior when
             using with transfer manager.
 
-        :type executor_cls: s3transfer.futures.BaseExecutor
+        :type executor_cls: awscli.s3transfer.futures.BaseExecutor
         :param executor_cls: The class of executor to use with the transfer
             manager. By default, concurrent.futures.ThreadPoolExecutor is used.
         """
@@ -319,12 +319,12 @@ class TransferManager:
         :param extra_args: Extra arguments that may be passed to the
             client operation
 
-        :type subscribers: list(s3transfer.subscribers.BaseSubscriber)
+        :type subscribers: list(awscli.s3transfer.subscribers.BaseSubscriber)
         :param subscribers: The list of subscribers to be invoked in the
             order provided based on the event emit during the process of
             the transfer request.
 
-        :rtype: s3transfer.futures.TransferFuture
+        :rtype: awscli.s3transfer.futures.TransferFuture
         :returns: Transfer future representing the upload
         """
         extra_args = extra_args.copy() if extra_args else {}
@@ -367,12 +367,12 @@ class TransferManager:
         :param extra_args: Extra arguments that may be passed to the
             client operation
 
-        :type subscribers: list(s3transfer.subscribers.BaseSubscriber)
+        :type subscribers: list(awscli.s3transfer.subscribers.BaseSubscriber)
         :param subscribers: The list of subscribers to be invoked in the
             order provided based on the event emit during the process of
             the transfer request.
 
-        :rtype: s3transfer.futures.TransferFuture
+        :rtype: awscli.s3transfer.futures.TransferFuture
         :returns: Transfer future representing the download
         """
         if extra_args is None:
@@ -435,7 +435,7 @@ class TransferManager:
             If no client is provided, the transfer manager's client is used
             as the client for the source object.
 
-        :rtype: s3transfer.futures.TransferFuture
+        :rtype: awscli.s3transfer.futures.TransferFuture
         :returns: Transfer future representing the copy
         """
         if extra_args is None:
@@ -476,7 +476,7 @@ class TransferManager:
             process of the transfer request.  Note that the ``on_progress``
             callback is not invoked during object deletion.
 
-        :rtype: s3transfer.futures.TransferFuture
+        :rtype: awscli.s3transfer.futures.TransferFuture
         :return: Transfer future representing the deletion.
 
         """
@@ -688,7 +688,7 @@ class TransferCoordinatorController:
     def add_transfer_coordinator(self, transfer_coordinator):
         """Adds a transfer coordinator of a transfer to be canceled if needed
 
-        :type transfer_coordinator: s3transfer.futures.TransferCoordinator
+        :type transfer_coordinator: awscli.s3transfer.futures.TransferCoordinator
         :param transfer_coordinator: The transfer coordinator for the
             particular transfer
         """
@@ -701,7 +701,7 @@ class TransferCoordinatorController:
         Typically, this method is invoked by the transfer coordinator itself
         to remove its self when it completes its transfer.
 
-        :type transfer_coordinator: s3transfer.futures.TransferCoordinator
+        :type transfer_coordinator: awscli.s3transfer.futures.TransferCoordinator
         :param transfer_coordinator: The transfer coordinator for the
             particular transfer
         """

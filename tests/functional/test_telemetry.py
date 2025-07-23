@@ -14,9 +14,9 @@ import sqlite3
 from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
-from botocore.exceptions import MD5UnavailableError
-from botocore.session import Session
 
+from awscli.botocore.exceptions import MD5UnavailableError
+from awscli.botocore.session import Session
 from awscli.telemetry import (
     CLISessionData,
     CLISessionDatabaseConnection,

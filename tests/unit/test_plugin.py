@@ -12,9 +12,8 @@
 # language governing permissions and limitations under the License.
 import sys
 
-from botocore import hooks
-
 from awscli import plugin
+from awscli.botocore import hooks
 from awscli.testutils import mock, unittest
 
 

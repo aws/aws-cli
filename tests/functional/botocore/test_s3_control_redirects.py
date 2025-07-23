@@ -14,17 +14,17 @@ import re
 from contextlib import contextmanager
 
 import pytest
-from botocore import exceptions
-from botocore.awsrequest import AWSResponse
-from botocore.compat import urlsplit
-from botocore.config import Config
-from botocore.exceptions import (
+
+from awscli.botocore import exceptions
+from awscli.botocore.awsrequest import AWSResponse
+from awscli.botocore.compat import urlsplit
+from awscli.botocore.config import Config
+from awscli.botocore.exceptions import (
     InvalidHostLabelError,
     ParamValidationError,
     UnsupportedS3ControlArnError,
 )
-from botocore.session import Session
-
+from awscli.botocore.session import Session
 from tests import BaseSessionTest, ClientHTTPStubber, mock, unittest
 
 ACCESSPOINT_ARN_TEST_CASES = [

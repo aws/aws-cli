@@ -13,8 +13,7 @@
 import errno
 import json
 
-from botocore.exceptions import ProfileNotFound
-
+from awscli.botocore.exceptions import ProfileNotFound
 from awscli.clidriver import AWSCLIEntryPoint
 from awscli.testutils import (
     BaseAWSCommandParamsTest,

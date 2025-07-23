@@ -13,8 +13,8 @@
 import os
 
 from awscrt.s3 import S3Request
-from botocore.awsrequest import AWSResponse
 
+from awscli.botocore.awsrequest import AWSResponse
 from awscli.clidriver import AWSCLIEntryPoint
 from awscli.compat import BytesIO, urlparse
 from awscli.testutils import (
@@ -423,7 +423,7 @@ class BaseS3CLIRunnerTest(unittest.TestCase):
 class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
     def setUp(self):
         super(BaseCRTTransferClientTest, self).setUp()
-        self.crt_client_patch = mock.patch('s3transfer.crt.S3Client')
+        self.crt_client_patch = mock.patch('awscli.s3transfer.crt.S3Client')
         self.mock_crt_client = self.crt_client_patch.start()
         self.mock_crt_client.return_value.make_request.side_effect = (
             self.simulate_make_request_side_effect

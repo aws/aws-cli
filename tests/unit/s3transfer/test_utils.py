@@ -21,8 +21,9 @@ import time
 from io import BytesIO, StringIO
 
 import pytest
-from s3transfer.futures import TransferFuture, TransferMeta
-from s3transfer.utils import (
+
+from awscli.s3transfer.futures import TransferFuture, TransferMeta
+from awscli.s3transfer.utils import (
     MAX_PARTS,
     MAX_SINGLE_UPLOAD_SIZE,
     MIN_UPLOAD_CHUNKSIZE,
@@ -45,7 +46,6 @@ from s3transfer.utils import (
     random_file_extension,
     set_default_checksum_algorithm,
 )
-
 from tests import NonSeekableWriter, RecordingSubscriber, mock, unittest
 
 
@@ -327,14 +327,14 @@ class TestOSUtils(BaseUtilsTest):
         with open(self.filename, 'rb') as f:
             self.assertEqual(len(f.read()), truncate_size)
 
-    @mock.patch('s3transfer.utils.fallocate')
+    @mock.patch('awscli.s3transfer.utils.fallocate')
     def test_allocate_with_io_error(self, mock_fallocate):
         mock_fallocate.side_effect = OSError()
         with self.assertRaises(IOError):
             OSUtils().allocate(self.filename, 1)
         self.assertFalse(os.path.exists(self.filename))
 
-    @mock.patch('s3transfer.utils.fallocate')
+    @mock.patch('awscli.s3transfer.utils.fallocate')
     def test_allocate_with_os_error(self, mock_fallocate):
         mock_fallocate.side_effect = OSError()
         with self.assertRaises(OSError):

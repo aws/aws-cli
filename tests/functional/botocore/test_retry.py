@@ -13,9 +13,8 @@
 import contextlib
 import json
 
-from botocore.config import Config
-from botocore.exceptions import ClientError
-
+from awscli.botocore.config import Config
+from awscli.botocore.exceptions import ClientError
 from tests import BaseSessionTest, ClientHTTPStubber, mock
 from tests.functional.botocore.test_useragent import (
     get_captured_ua_strings,

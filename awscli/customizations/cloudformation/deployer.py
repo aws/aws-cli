@@ -17,8 +17,7 @@ import sys
 import time
 from datetime import datetime
 
-import botocore
-
+import awscli.botocore
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.artifact_exporter import (
     mktempfile,
@@ -62,7 +61,7 @@ class Deployer:
             stack = resp["Stacks"][0]
             return stack["StackStatus"] != "REVIEW_IN_PROGRESS"
 
-        except botocore.exceptions.ClientError as e:
+        except awscli.botocore.exceptions.ClientError as e:
             # If a stack does not exist, describe_stacks will throw an
             # exception. Unfortunately we don't have a better way than parsing
             # the exception msg to understand the nature of this exception.
@@ -190,7 +189,7 @@ class Deployer:
                 StackName=stack_name,
                 WaiterConfig=waiter_config,
             )
-        except botocore.exceptions.WaiterError as ex:
+        except awscli.botocore.exceptions.WaiterError as ex:
             LOG.debug("Create changeset waiter exception", exc_info=ex)
 
             resp = ex.last_response
@@ -248,7 +247,7 @@ class Deployer:
 
         try:
             waiter.wait(StackName=stack_name, WaiterConfig=waiter_config)
-        except botocore.exceptions.WaiterError as ex:
+        except awscli.botocore.exceptions.WaiterError as ex:
             LOG.debug("Execute changeset waiter exception", exc_info=ex)
 
             raise exceptions.DeployFailedError(stack_name=stack_name)

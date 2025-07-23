@@ -81,7 +81,7 @@ class BandwidthLimiter:
         :type fileobj: file-like obj
         :param fileobj: The file-like obj to wrap
 
-        :type transfer_coordinator: s3transfer.futures.TransferCoordinator
+        :type transfer_coordinator: awscli.s3transfer.futures.TransferCoordinator
         param transfer_coordinator: The coordinator for the general transfer
             that the wrapped stream is a part of
 
@@ -114,7 +114,7 @@ class BandwidthLimitedStream:
         :param leaky_bucket: The leaky bucket to use to throttle reads on
             the stream
 
-        :type transfer_coordinator: s3transfer.futures.TransferCoordinator
+        :type transfer_coordinator: awscli.s3transfer.futures.TransferCoordinator
         param transfer_coordinator: The coordinator for the general transfer
             that the wrapped stream is a part of
 

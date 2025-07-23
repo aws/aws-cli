@@ -21,11 +21,14 @@ import string
 import threading
 from collections import defaultdict
 
-from botocore.exceptions import IncompleteReadError, ReadTimeoutError
-from botocore.httpchecksum import DEFAULT_CHECKSUM_ALGORITHM, AwsChunkedWrapper
-from botocore.utils import is_s3express_bucket
-from s3transfer.compat import SOCKET_ERROR, fallocate, rename_file
-from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS
+from awscli.botocore.exceptions import IncompleteReadError, ReadTimeoutError
+from awscli.botocore.httpchecksum import (
+    DEFAULT_CHECKSUM_ALGORITHM,
+    AwsChunkedWrapper,
+)
+from awscli.botocore.utils import is_s3express_bucket
+from awscli.s3transfer.compat import SOCKET_ERROR, fallocate, rename_file
+from awscli.s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS
 
 MAX_PARTS = 10000
 # The maximum file size you can upload via S3 per request.
@@ -101,7 +104,7 @@ def calculate_range_parameter(
 def get_callbacks(transfer_future, callback_type):
     """Retrieves callbacks from a subscriber
 
-    :type transfer_future: s3transfer.futures.TransferFuture
+    :type transfer_future: awscli.s3transfer.futures.TransferFuture
     :param transfer_future: The transfer future the subscriber is associated
         to.
 

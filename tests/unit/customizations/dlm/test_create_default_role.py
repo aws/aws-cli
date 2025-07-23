@@ -10,9 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
-from botocore.compat import json
-
+import awscli.botocore.session
+from awscli.botocore.compat import json
 from awscli.customizations.dlm.constants import (
     LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME,
     LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME_AMI,
@@ -252,7 +251,7 @@ class TestCreateDefaultRoleUnitTest(unittest.TestCase):
     def setUp(self):
         self.iam_client = mock.Mock()
         self.iam_client.exceptions.NoSuchEntityException = (
-            botocore.session.get_session()
+            awscli.botocore.session.get_session()
             .create_client('iam', region_name="us-east-1")
             .exceptions.NoSuchEntityException
         )

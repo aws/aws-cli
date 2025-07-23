@@ -135,13 +135,16 @@ import socket
 import string
 import threading
 
-import s3transfer.compat
-from botocore.compat import six  # noqa: F401
-from botocore.exceptions import IncompleteReadError
-from botocore.vendored.requests.packages.urllib3.exceptions import (
+import awscli.s3transfer.compat
+from awscli.botocore.compat import six  # noqa: F401
+from awscli.botocore.exceptions import IncompleteReadError
+from awscli.botocore.vendored.requests.packages.urllib3.exceptions import (
     ReadTimeoutError,
 )
-from s3transfer.exceptions import RetriesExceededError, S3UploadFailedError
+from awscli.s3transfer.exceptions import (
+    RetriesExceededError,
+    S3UploadFailedError,
+)
 
 __author__ = 'Amazon Web Services'
 __version__ = '0.5.1'
@@ -367,7 +370,7 @@ class OSUtils:
             pass
 
     def rename_file(self, current_filename, new_filename):
-        s3transfer.compat.rename_file(current_filename, new_filename)
+        awscli.s3transfer.compat.rename_file(current_filename, new_filename)
 
 
 class MultipartUploader:

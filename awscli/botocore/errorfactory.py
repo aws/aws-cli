@@ -10,8 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.exceptions import ClientError
-from botocore.utils import get_service_module_name
+from awscli.botocore.exceptions import ClientError
+from awscli.botocore.utils import get_service_module_name
 
 
 class BaseClientExceptions:
@@ -62,7 +62,7 @@ class ClientExceptionsFactory:
     def create_client_exceptions(self, service_model):
         """Creates a ClientExceptions object for the particular service client
 
-        :type service_model: botocore.model.ServiceModel
+        :type service_model: awscli.botocore.model.ServiceModel
         :param service_model: The service model for the client
 
         :rtype: object that subclasses from BaseClientExceptions

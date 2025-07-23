@@ -18,10 +18,9 @@ import sys
 import tempfile
 from argparse import Namespace
 
-import botocore
-from botocore.compat import OrderedDict
-
+import awscli.botocore
 import awscli.customizations.eks.kubeconfig as kubeconfig
+from awscli.botocore.compat import OrderedDict
 from awscli.customizations.eks.exceptions import EKSClusterError, EKSError
 from awscli.customizations.eks.ordered_yaml import ordered_yaml_load
 from awscli.customizations.eks.update_kubeconfig import (
@@ -275,7 +274,7 @@ class TestEKSClient(unittest.TestCase):
             describe_cluster_response()
         )
 
-        self._session = mock.Mock(spec=botocore.session.Session)
+        self._session = mock.Mock(spec=awscli.botocore.session.Session)
         self._session.create_client.return_value = self._mock_client
         self._session.profile = None
 

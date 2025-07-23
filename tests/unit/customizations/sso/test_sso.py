@@ -10,10 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.credentials
-import botocore.session
-from botocore.exceptions import ProfileNotFound, UnknownCredentialError
-
+import awscli.botocore.credentials
+import awscli.botocore.session
+from awscli.botocore.exceptions import ProfileNotFound, UnknownCredentialError
 from awscli.customizations.sso import inject_json_file_cache
 from awscli.testutils import mock, unittest
 
@@ -21,11 +20,13 @@ from awscli.testutils import mock, unittest
 class TestInjectJSONFileCache(unittest.TestCase):
     def setUp(self):
         self.mock_sso_provider = mock.Mock(
-            spec=botocore.credentials.SSOProvider
+            spec=awscli.botocore.credentials.SSOProvider
         )
-        self.mock_resolver = mock.Mock(botocore.credentials.CredentialResolver)
+        self.mock_resolver = mock.Mock(
+            awscli.botocore.credentials.CredentialResolver
+        )
         self.mock_resolver.get_provider.return_value = self.mock_sso_provider
-        self.session = mock.Mock(spec=botocore.session.Session)
+        self.session = mock.Mock(spec=awscli.botocore.session.Session)
         self.session.get_component.return_value = self.mock_resolver
 
     def test_inject_json_file_cache(self):
@@ -33,7 +34,7 @@ class TestInjectJSONFileCache(unittest.TestCase):
         self.session.get_component.assert_called_with('credential_provider')
         self.assertIsInstance(
             self.mock_sso_provider.cache,
-            botocore.credentials.JSONFileCache,
+            awscli.botocore.credentials.JSONFileCache,
         )
 
     def test_profile_not_found_is_not_propagated(self):

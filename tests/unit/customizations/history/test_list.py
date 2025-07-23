@@ -13,8 +13,7 @@
 import argparse
 import datetime
 
-from botocore.session import Session
-
+from awscli.botocore.session import Session
 from awscli.compat import StringIO, ensure_text_type
 from awscli.customizations.history.db import DatabaseRecordReader
 from awscli.customizations.history.list import (

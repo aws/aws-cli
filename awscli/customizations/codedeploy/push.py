@@ -18,8 +18,7 @@ import tempfile
 import zipfile
 from datetime import datetime
 
-from botocore.exceptions import ClientError
-
+from awscli.botocore.exceptions import ClientError
 from awscli.compat import ZIP_COMPRESSION_MODE, BytesIO
 from awscli.customizations.codedeploy.utils import validate_s3_location
 from awscli.customizations.commands import BasicCommand

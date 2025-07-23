@@ -8,8 +8,7 @@ from configparser import RawConfigParser
 from io import StringIO
 from urllib.parse import urlsplit
 
-from botocore.utils import parse_timestamp
-
+from awscli.botocore.utils import parse_timestamp
 from awscli.compat import urlparse
 from awscli.customizations.codeartifact.login import CodeArtifactLogin
 from awscli.testutils import FileCreator, mock, unittest

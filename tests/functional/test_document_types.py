@@ -14,8 +14,7 @@ import copy
 import json
 import os
 
-from botocore.loaders import Loader
-
+from awscli.botocore.loaders import Loader
 from awscli.testutils import (
     BaseAWSCommandParamsTest,
     BaseAWSHelpOutputTest,

@@ -12,9 +12,8 @@
 # language governing permissions and limitations under the License.
 import gzip
 
-from botocore.exceptions import ClientError
-from botocore.handlers import parse_get_bucket_location
-
+from awscli.botocore.exceptions import ClientError
+from awscli.botocore.handlers import parse_get_bucket_location
 from awscli.compat import BytesIO
 from awscli.customizations.cloudtrail.validation import (
     DATE_FORMAT,

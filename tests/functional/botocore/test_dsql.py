@@ -12,10 +12,10 @@
 # language governing permissions and limitations under the License.
 import datetime
 
-import botocore.auth
 import pytest
 from dateutil.tz import tzutc
 
+import awscli.botocore.auth
 from tests import FreezeTime
 
 HOSTNAME = "peccy.dsql.us-east-1.on.aws"
@@ -35,7 +35,7 @@ def client(patched_session):
     )
 
 
-@FreezeTime(botocore.auth.datetime, date=DATE)
+@FreezeTime(awscli.botocore.auth.datetime, date=DATE)
 def test_generate_db_connect_auth_token(client):
     auth_token = client.generate_db_connect_auth_token(
         Hostname=HOSTNAME, Region=REGION
@@ -50,7 +50,7 @@ def test_generate_db_connect_auth_token(client):
     assert auth_token.startswith(HOSTNAME)
 
 
-@FreezeTime(botocore.auth.datetime, date=DATE)
+@FreezeTime(awscli.botocore.auth.datetime, date=DATE)
 def test_generate_db_connect_admin_auth_token(client):
     auth_token = client.generate_db_connect_admin_auth_token(
         Hostname=HOSTNAME, Region=REGION

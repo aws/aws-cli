@@ -13,10 +13,13 @@
 import unittest
 from io import BytesIO
 
-from botocore.awsrequest import AWSResponse
-from botocore.config import Config
-from botocore.exceptions import AwsChunkedWrapperError, FlexibleChecksumError
-from botocore.httpchecksum import (
+from awscli.botocore.awsrequest import AWSResponse
+from awscli.botocore.config import Config
+from awscli.botocore.exceptions import (
+    AwsChunkedWrapperError,
+    FlexibleChecksumError,
+)
+from awscli.botocore.httpchecksum import (
     AwsChunkedWrapper,
     Crc32Checksum,
     CrtCrc32cChecksum,
@@ -30,8 +33,7 @@ from botocore.httpchecksum import (
     resolve_request_checksum_algorithm,
     resolve_response_checksum_algorithms,
 )
-from botocore.model import OperationModel, StringShape, StructureShape
-
+from awscli.botocore.model import OperationModel, StringShape, StructureShape
 from tests import mock
 from tests.utils.botocore import get_checksum_cls
 

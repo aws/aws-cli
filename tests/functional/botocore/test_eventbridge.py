@@ -1,9 +1,9 @@
 import json
 
 import pytest
-from botocore.config import Config
-from botocore.exceptions import InvalidEndpointConfigurationError
 
+from awscli.botocore.config import Config
+from awscli.botocore.exceptions import InvalidEndpointConfigurationError
 from tests import BaseSessionTest, ClientHTTPStubber
 
 

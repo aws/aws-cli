@@ -14,11 +14,10 @@
 import os
 from datetime import datetime
 
-from botocore.awsrequest import AWSRequest
-from botocore.credentials import Credentials
-from botocore.session import Session
-
 import awscli
+from awscli.botocore.awsrequest import AWSRequest
+from awscli.botocore.credentials import Credentials
+from awscli.botocore.session import Session
 from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
 from awscli.compat import StringIO
 from awscli.customizations.codecommit import CodeCommitGetCommand

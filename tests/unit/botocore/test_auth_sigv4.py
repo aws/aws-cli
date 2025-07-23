@@ -10,10 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.auth import SigV4Auth
-from botocore.awsrequest import AWSRequest
-from botocore.credentials import Credentials
-
+from awscli.botocore.auth import SigV4Auth
+from awscli.botocore.awsrequest import AWSRequest
+from awscli.botocore.credentials import Credentials
 from tests import unittest
 
 SECRET_KEY = "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY"

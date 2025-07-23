@@ -12,7 +12,9 @@
 # language governing permissions and limitations under the License.
 import json
 
-from botocore.model import (
+from awscli.arguments import CustomArgument
+from awscli.bcdoc.restdoc import ReSTDocument
+from awscli.botocore.model import (
     DenormalizedStructureBuilder,
     ListShape,
     MapShape,
@@ -21,9 +23,6 @@ from botocore.model import (
     StringShape,
     StructureShape,
 )
-
-from awscli.arguments import CustomArgument
-from awscli.bcdoc.restdoc import ReSTDocument
 from awscli.clidocs import (
     CLIDocumentEventHandler,
     GlobalOptionsDocumenter,

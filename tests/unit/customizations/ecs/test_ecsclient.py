@@ -13,8 +13,7 @@
 
 from argparse import Namespace
 
-from botocore import config
-
+from awscli.botocore import config
 from awscli.customizations.ecs.deploy import ECSClient, ECSDeploy
 from awscli.testutils import capture_output, mock, unittest
 

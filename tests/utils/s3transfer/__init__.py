@@ -21,9 +21,9 @@ import tempfile
 import unittest
 from unittest import mock  # noqa: F401
 
-import botocore.session
-from botocore.stub import Stubber
-from s3transfer.futures import (
+import awscli.botocore.session
+from awscli.botocore.stub import Stubber
+from awscli.s3transfer.futures import (
     IN_MEMORY_DOWNLOAD_TAG,
     IN_MEMORY_UPLOAD_TAG,
     BoundedExecutor,
@@ -32,9 +32,9 @@ from s3transfer.futures import (
     TransferFuture,
     TransferMeta,
 )
-from s3transfer.manager import TransferConfig
-from s3transfer.subscribers import BaseSubscriber
-from s3transfer.utils import (
+from awscli.s3transfer.manager import TransferConfig
+from awscli.s3transfer.subscribers import BaseSubscriber
+from awscli.s3transfer.utils import (
     CallArgs,
     OSUtils,
     SlidingWindowSemaphore,
@@ -286,7 +286,7 @@ class RecordingExecutor:
 
 class StubbedClientTest(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.region = 'us-west-2'
         self.client = self.session.create_client(
             's3',
@@ -381,7 +381,7 @@ class BaseGeneralInterfaceTest(StubbedClientTest):
         """A list of stubbed responses that will cause the request to succeed
 
         The elements of this list is a dictionary that will be used as key
-        word arguments to botocore.Stubber.add_response(). For example::
+        word arguments to awscli.botocore.Stubber.add_response(). For example::
 
             [{'method': 'put_object', 'service_response': {}}]
         """

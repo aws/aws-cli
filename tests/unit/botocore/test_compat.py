@@ -13,7 +13,8 @@
 import datetime
 
 import pytest
-from botocore.compat import (
+
+from awscli.botocore.compat import (
     compat_shell_split,
     ensure_bytes,
     get_md5,
@@ -21,8 +22,7 @@ from botocore.compat import (
     total_seconds,
     unquote_str,
 )
-from botocore.exceptions import MD5UnavailableError
-
+from awscli.botocore.exceptions import MD5UnavailableError
 from tests import BaseEnvVar, mock, unittest
 
 
@@ -91,12 +91,12 @@ class TestEnsureBytes(unittest.TestCase):
 class TestGetMD5(unittest.TestCase):
     def test_available(self):
         md5 = mock.Mock()
-        with mock.patch('botocore.compat.MD5_AVAILABLE', True):
+        with mock.patch('awscli.botocore.compat.MD5_AVAILABLE', True):
             with mock.patch('hashlib.md5', mock.Mock(return_value=md5)):
                 self.assertEqual(get_md5(), md5)
 
     def test_unavailable_raises_error(self):
-        with mock.patch('botocore.compat.MD5_AVAILABLE', False):
+        with mock.patch('awscli.botocore.compat.MD5_AVAILABLE', False):
             with self.assertRaises(MD5UnavailableError):
                 get_md5()
 

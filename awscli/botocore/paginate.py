@@ -18,11 +18,12 @@ from functools import partial
 from itertools import tee
 
 import jmespath
-from botocore.compat import zip
-from botocore.context import with_current_context
-from botocore.exceptions import PaginationError
-from botocore.useragent import register_feature_id
-from botocore.utils import merge_dicts, set_value_from_jmespath
+
+from awscli.botocore.compat import zip
+from awscli.botocore.context import with_current_context
+from awscli.botocore.exceptions import PaginationError
+from awscli.botocore.useragent import register_feature_id
+from awscli.botocore.utils import merge_dicts, set_value_from_jmespath
 
 log = logging.getLogger(__name__)
 

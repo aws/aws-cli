@@ -1,9 +1,8 @@
-from botocore.history import (
+from awscli.botocore.history import (
     BaseHistoryHandler,
     HistoryRecorder,
     get_global_history_recorder,
 )
-
 from tests import mock, unittest
 
 

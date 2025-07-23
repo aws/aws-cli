@@ -15,10 +15,9 @@
 import logging
 import os
 
-from botocore.compat import OrderedDict, json
-from botocore.utils import is_json_value_header
-
 from awscli import COMPLEX_TYPES, SCALAR_TYPES, shorthand
+from awscli.botocore.compat import OrderedDict, json
+from awscli.botocore.utils import is_json_value_header
 from awscli.utils import (
     find_service_and_method_in_event_name,
     is_document_type,
@@ -311,7 +310,7 @@ class ParamShorthandParser(ParamShorthand):
         :type cli_argument: :class:`awscli.arguments.BaseCLIArgument`
         :param cli_argument: The CLI argument object.
 
-        :type param: :class:`botocore.parameters.Parameter`
+        :type param: :class:`awscli.botocore.parameters.Parameter`
         :param param: The parameter object (includes various metadata
             about the parameter).
 

@@ -1,13 +1,13 @@
 import pytest
-from botocore import model
-from botocore.awsrequest import AWSResponse
-from botocore.exceptions import (
+
+from awscli.botocore import model
+from awscli.botocore.awsrequest import AWSResponse
+from awscli.botocore.exceptions import (
     ConnectionError,
     HTTPClientError,
     ReadTimeoutError,
 )
-from botocore.retries import quota, standard
-
+from awscli.botocore.retries import quota, standard
 from tests import mock, unittest
 
 RETRYABLE_THROTTLED_RESPONSES = [

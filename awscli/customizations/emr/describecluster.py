@@ -11,8 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from botocore.exceptions import NoCredentialsError
-
+from awscli.botocore.exceptions import NoCredentialsError
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import constants, emrutils, helptext
 from awscli.customizations.emr.command import Command

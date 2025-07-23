@@ -13,9 +13,8 @@
 
 from argparse import Namespace
 
-from botocore.exceptions import ClientError
-
 import awscli
+from awscli.botocore.exceptions import ClientError
 from awscli.compat import ZIP_COMPRESSION_MODE, StringIO
 from awscli.customizations.codedeploy.push import Push
 from awscli.customizations.exceptions import ParamValidationError

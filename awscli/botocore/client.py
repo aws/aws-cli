@@ -13,28 +13,31 @@
 import functools
 import logging
 
-from botocore import (
+from awscli.botocore import (
     UNSIGNED,  # noqa
     waiter,
     xform_name,
 )
-from botocore.args import ClientArgsCreator
-from botocore.auth import AUTH_TYPE_MAPS, resolve_auth_type
-from botocore.awsrequest import prepare_request_dict
-from botocore.compress import maybe_compress_request
+from awscli.botocore.args import ClientArgsCreator
+from awscli.botocore.auth import AUTH_TYPE_MAPS, resolve_auth_type
+from awscli.botocore.awsrequest import prepare_request_dict
+from awscli.botocore.compress import maybe_compress_request
 
 # Keep this imported.  There's pre-existing code that uses
-# "from botocore.client import UNSIGNED".
-from botocore.config import Config
-from botocore.context import with_current_context
-from botocore.credentials import RefreshableCredentials
-from botocore.discovery import (
+# "from awscli.botocore.client import UNSIGNED".
+from awscli.botocore.config import Config
+from awscli.botocore.context import with_current_context
+from awscli.botocore.credentials import RefreshableCredentials
+from awscli.botocore.discovery import (
     EndpointDiscoveryHandler,
     EndpointDiscoveryManager,
     block_endpoint_discovery_required_operations,
 )
-from botocore.docs.docstring import ClientMethodDocstring, PaginatorDocstring
-from botocore.exceptions import (
+from awscli.botocore.docs.docstring import (
+    ClientMethodDocstring,
+    PaginatorDocstring,
+)
+from awscli.botocore.exceptions import (
     ClientError,  # noqa
     DataNotFoundError,
     InvalidEndpointDiscoveryConfigurationError,
@@ -42,17 +45,17 @@ from botocore.exceptions import (
     UnknownServiceError,
     UnknownSignatureVersionError,
 )
-from botocore.history import get_global_history_recorder
-from botocore.hooks import first_non_none_response
-from botocore.httpchecksum import (
+from awscli.botocore.history import get_global_history_recorder
+from awscli.botocore.hooks import first_non_none_response
+from awscli.botocore.httpchecksum import (
     apply_request_checksum,
     resolve_checksum_context,
 )
-from botocore.model import ServiceModel
-from botocore.paginate import Paginator
-from botocore.retries import adaptive, standard
-from botocore.useragent import UserAgentString, register_feature_id
-from botocore.utils import (
+from awscli.botocore.model import ServiceModel
+from awscli.botocore.paginate import Paginator
+from awscli.botocore.retries import adaptive, standard
+from awscli.botocore.useragent import UserAgentString, register_feature_id
+from awscli.botocore.utils import (
     CachedProperty,
     EventbridgeSignerSetter,
     S3ControlArnParamHandlerv2,
@@ -1026,7 +1029,7 @@ class BaseClient:
             pageable.  You can use the ``client.can_paginate`` method to
             check if an operation is pageable.
 
-        :rtype: L{botocore.paginate.Paginator}
+        :rtype: L{awscli.botocore.paginate.Paginator}
         :return: A paginator object.
 
         """
@@ -1118,7 +1121,7 @@ class BaseClient:
             section of the service docs for a list of available waiters.
 
         :returns: The specified waiter object.
-        :rtype: botocore.waiter.Waiter
+        :rtype: awscli.botocore.waiter.Waiter
         """
         config = self._get_waiter_config()
         if not config:

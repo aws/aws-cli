@@ -14,9 +14,8 @@ import logging
 import os
 import sys
 
-from botocore.exceptions import ProfileNotFound
-from botocore.history import get_global_history_recorder
-
+from awscli.botocore.exceptions import ProfileNotFound
+from awscli.botocore.history import get_global_history_recorder
 from awscli.compat import sqlite3
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.history.constants import (

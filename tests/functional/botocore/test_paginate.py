@@ -14,9 +14,9 @@ from datetime import datetime
 from math import ceil
 
 import pytest
-from botocore.paginate import TokenDecoder, TokenEncoder
-from botocore.stub import StubAssertionError, Stubber
 
+from awscli.botocore.paginate import TokenDecoder, TokenEncoder
+from awscli.botocore.stub import StubAssertionError, Stubber
 from tests import BaseSessionTest, random_chars
 
 

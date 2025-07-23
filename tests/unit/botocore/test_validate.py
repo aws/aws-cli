@@ -2,9 +2,8 @@ import decimal
 import io
 from datetime import datetime
 
-from botocore.model import ShapeResolver
-from botocore.validate import ParamValidator
-
+from awscli.botocore.model import ShapeResolver
+from awscli.botocore.validate import ParamValidator
 from tests import unittest
 
 BOILER_PLATE_SHAPES = {'StringType': {'type': 'string'}}

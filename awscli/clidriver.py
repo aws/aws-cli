@@ -18,20 +18,9 @@ import platform
 import re
 import sys
 
-import botocore.session
 import distro
-from botocore import xform_name
-from botocore.compat import OrderedDict, copy_kwargs
-from botocore.configprovider import (
-    ChainProvider,
-    ConstantProvider,
-    EnvironmentProvider,
-    InstanceVarProvider,
-    ScopedConfigProvider,
-)
-from botocore.context import start_as_current_context
-from botocore.history import get_global_history_recorder
 
+import awscli.botocore.session
 from awscli import __version__
 from awscli.alias import AliasCommandInjector, AliasLoader
 from awscli.argparser import (
@@ -50,6 +39,17 @@ from awscli.arguments import (
     UnknownArgumentError,
 )
 from awscli.autoprompt.core import AutoPromptDriver
+from awscli.botocore import xform_name
+from awscli.botocore.compat import OrderedDict, copy_kwargs
+from awscli.botocore.configprovider import (
+    ChainProvider,
+    ConstantProvider,
+    EnvironmentProvider,
+    InstanceVarProvider,
+    ScopedConfigProvider,
+)
+from awscli.botocore.context import start_as_current_context
+from awscli.botocore.history import get_global_history_recorder
 from awscli.commands import CLICommand
 from awscli.compat import (
     default_pager,
@@ -113,7 +113,7 @@ def create_clidriver(args=None):
         parser = FirstPassGlobalArgParser()
         args, _ = parser.parse_known_args(args)
         debug = args.debug
-    session = botocore.session.Session()
+    session = awscli.botocore.session.Session()
     _set_user_agent_for_session(session)
     load_plugins(
         session.full_config.get('plugins', {}),
@@ -240,7 +240,7 @@ class AWSCLIEntryPoint:
 class CLIDriver:
     def __init__(self, session=None, error_handler=None, debug=False):
         if session is None:
-            self.session = botocore.session.get_session()
+            self.session = awscli.botocore.session.get_session()
             _set_user_agent_for_session(self.session)
         else:
             self.session = session
@@ -583,7 +583,7 @@ class ServiceCommand(CLICommand):
     def __init__(self, cli_name, session, service_name=None):
         # The cli_name is the name the user types, the name we show
         # in doc, etc.
-        # The service_name is the name we used internally with botocore.
+        # The service_name is the name we used internally with awscli.botocore.
         # For example, we have the 's3api' as the cli_name for the service
         # but this is actually bound to the 's3' service name in botocore,
         # i.e. we load s3.json from the botocore data dir.  Most of
@@ -647,7 +647,7 @@ class ServiceCommand(CLICommand):
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a service for this operation
         # we can go ahead and create the parser for it.  We
-        # can also grab the Service object from botocore.
+        # can also grab the Service object from awscli.botocore.
         service_parser = self.create_parser()
         parsed_args, remaining = service_parser.parse_known_args(args)
         command_table = self._get_command_table()
@@ -725,7 +725,7 @@ class ServiceOperation:
         :type parent_name: str
         :param parent_name: The name of the parent command.
 
-        :type operation_model: ``botocore.model.OperationModel``
+        :type operation_model: ``awscli.botocore.model.OperationModel``
         :param operation_object: The operation model
             associated with this subcommand.
 
@@ -733,7 +733,7 @@ class ServiceOperation:
         :param operation_caller: An object that can properly call the
             operation.
 
-        :type session: ``botocore.session.Session``
+        :type session: ``awscli.botocore.session.Session``
         :param session: The session object.
 
         """
@@ -892,7 +892,7 @@ class ServiceOperation:
 
     def _build_call_parameters(self, args, arg_table):
         # We need to convert the args specified on the command
-        # line as valid **kwargs we can hand to botocore.
+        # line as valid **kwargs we can hand to awscli.botocore.
         service_params = {}
         # args is an argparse.Namespace object so we're using vars()
         # so we can iterate over the parsed key/values.

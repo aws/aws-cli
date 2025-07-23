@@ -13,12 +13,11 @@
 
 from argparse import Namespace
 
-from botocore.auth import SigV4Auth
-from botocore.awsrequest import AWSRequest
-from botocore.credentials import Credentials
-from botocore.session import Session
-
 import awscli
+from awscli.botocore.auth import SigV4Auth
+from awscli.botocore.awsrequest import AWSRequest
+from awscli.botocore.credentials import Credentials
+from awscli.botocore.session import Session
 from awscli.compat import StringIO
 from awscli.customizations.codecommit import (
     CodeCommitCommand,
@@ -217,8 +216,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
 
     @mock.patch('sys.stdout', MOCK_STDOUT_CLASS())
     @mock.patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
-    @mock.patch('botocore.auth.SigV4Auth.string_to_sign')
-    @mock.patch('botocore.auth.SigV4Auth.signature')
+    @mock.patch('awscli.botocore.auth.SigV4Auth.string_to_sign')
+    @mock.patch('awscli.botocore.auth.SigV4Auth.signature')
     def test_generate_credentials_creates_a_valid_request(
         self, signature, string_to_sign
     ):

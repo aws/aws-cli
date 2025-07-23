@@ -39,10 +39,9 @@ Arguments generally fall into one of several categories:
 
 import logging
 
-from botocore import model, xform_name
-from botocore.hooks import first_non_none_response
-
 from awscli.argprocess import unpack_cli_arg
+from awscli.botocore import model, xform_name
+from awscli.botocore.hooks import first_non_none_response
 from awscli.schema import SchemaTransformer
 
 LOG = logging.getLogger('awscli.arguments')
@@ -54,7 +53,7 @@ class UnknownArgumentError(Exception):
 
 def create_argument_model_from_schema(schema):
     # Given a JSON schems (described in schema.py), convert it
-    # to a shape object from `botocore.model.Shape` that can be
+    # to a shape object from `awscli.botocore.model.Shape` that can be
     # used as the argument_model for the Argument classes below.
     transformer = SchemaTransformer()
     shapes_map = transformer.transform(schema)
@@ -382,13 +381,13 @@ class CLIArgument(BaseCLIArgument):
         :param name: The name of the argument in "cli" form
             (e.g.  ``min-instances``).
 
-        :type argument_model: ``botocore.model.Shape``
+        :type argument_model: ``awscli.botocore.model.Shape``
         :param argument_model: The shape object that models the argument.
 
-        :type argument_model: ``botocore.model.OperationModel``
+        :type argument_model: ``awscli.botocore.model.OperationModel``
         :param argument_model: The object that models the associated operation.
 
-        :type event_emitter: ``botocore.hooks.BaseEventHooks``
+        :type event_emitter: ``awscli.botocore.hooks.BaseEventHooks``
         :param event_emitter: The event emitter to use when emitting events.
             This class will emit events during parts of the argument
             parsing process.  This event emitter is what is used to emit
@@ -400,7 +399,7 @@ class CLIArgument(BaseCLIArgument):
         """
         self._name = name
         # This is the name we need to use when constructing the parameters
-        # dict we send to botocore.  While we can change the .name attribute
+        # dict we send to awscli.botocore.  While we can change the .name attribute
         # which is the name exposed in the CLI, the serialized name we use
         # for botocore is invariant and should not be changed.
         if serialized_name is None:
@@ -465,7 +464,7 @@ class CLIArgument(BaseCLIArgument):
             # can be converted from "name=value" to {"name": "value"}.  This is
             # referred to as the "unpacking" process.  Once we've unpacked the
             # argument value, we have to decide how this is converted into
-            # something that can be consumed by botocore.  Many times this is
+            # something that can be consumed by awscli.botocore.  Many times this is
             # just associating the key and value in the params dict as down
             # below.  Sometimes this can be more complicated, and subclasses
             # can customize as they need.

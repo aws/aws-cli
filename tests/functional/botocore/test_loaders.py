@@ -13,8 +13,7 @@
 import os
 import shutil
 
-from botocore import loaders
-
+from awscli.botocore import loaders
 from tests import temporary_file, unittest
 
 

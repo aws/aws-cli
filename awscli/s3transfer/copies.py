@@ -13,13 +13,13 @@
 import copy
 import math
 
-from s3transfer.tasks import (
+from awscli.s3transfer.tasks import (
     CompleteMultipartUploadTask,
     CreateMultipartUploadTask,
     SubmissionTask,
     Task,
 )
-from s3transfer.utils import (
+from awscli.s3transfer.utils import (
     ChunksizeAdjuster,
     calculate_range_parameter,
     get_callbacks,
@@ -83,18 +83,18 @@ class CopySubmissionTask(SubmissionTask):
         """
         :param client: The client associated with the transfer manager
 
-        :type config: s3transfer.manager.TransferConfig
+        :type config: awscli.s3transfer.manager.TransferConfig
         :param config: The transfer config associated with the transfer
             manager
 
-        :type osutil: s3transfer.utils.OSUtil
+        :type osutil: awscli.s3transfer.utils.OSUtil
         :param osutil: The os utility associated to the transfer manager
 
-        :type request_executor: s3transfer.futures.BoundedExecutor
+        :type request_executor: awscli.s3transfer.futures.BoundedExecutor
         :param request_executor: The request executor associated with the
             transfer manager
 
-        :type transfer_future: s3transfer.futures.TransferFuture
+        :type transfer_future: awscli.s3transfer.futures.TransferFuture
         :param transfer_future: The transfer future associated with the
             transfer request that tasks are being submitted for
         """

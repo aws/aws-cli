@@ -15,8 +15,8 @@ import errno
 import os
 
 import ruamel.yaml as yaml
-from botocore.compat import OrderedDict
 
+from awscli.botocore.compat import OrderedDict
 from awscli.compat import compat_open
 from awscli.customizations.eks.exceptions import EKSError
 from awscli.customizations.eks.ordered_yaml import (

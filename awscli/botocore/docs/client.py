@@ -12,16 +12,19 @@
 # language governing permissions and limitations under the License.
 import inspect
 
-from botocore.compat import OrderedDict
-from botocore.docs.example import ResponseExampleDocumenter
-from botocore.docs.method import (
+from awscli.botocore.compat import OrderedDict
+from awscli.botocore.docs.example import ResponseExampleDocumenter
+from awscli.botocore.docs.method import (
     document_custom_method,
     document_model_driven_method,
     get_instance_public_methods,
 )
-from botocore.docs.params import ResponseParamsDocumenter
-from botocore.docs.sharedexample import document_shared_examples
-from botocore.docs.utils import DocumentedShape, get_official_service_name
+from awscli.botocore.docs.params import ResponseParamsDocumenter
+from awscli.botocore.docs.sharedexample import document_shared_examples
+from awscli.botocore.docs.utils import (
+    DocumentedShape,
+    get_official_service_name,
+)
 
 
 class ClientDocumenter:

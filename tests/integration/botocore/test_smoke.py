@@ -16,12 +16,12 @@ import os
 import warnings
 from pprint import pformat
 
-import botocore.session
 import pytest
-from botocore import xform_name
-from botocore.client import ClientError
-from botocore.exceptions import ConnectionClosedError
 
+import awscli.botocore.session
+from awscli.botocore import xform_name
+from awscli.botocore.client import ClientError
+from awscli.botocore.exceptions import ConnectionClosedError
 from tests import ClientHTTPStubber
 
 # Mapping of service -> api calls to try.
@@ -250,7 +250,7 @@ def _list_services(dict_entries):
 
 @pytest.fixture()
 def botocore_session():
-    return botocore.session.get_session()
+    return awscli.botocore.session.get_session()
 
 
 def _smoke_tests():

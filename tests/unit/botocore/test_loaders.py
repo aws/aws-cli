@@ -23,14 +23,13 @@ import contextlib
 import copy
 import os
 
-from botocore.exceptions import DataNotFoundError, UnknownServiceError
-from botocore.loaders import (
+from awscli.botocore.exceptions import DataNotFoundError, UnknownServiceError
+from awscli.botocore.loaders import (
     ExtrasProcessor,
     JSONFileLoader,
     Loader,
     create_loader,
 )
-
 from tests import BaseEnvVar, mock
 
 

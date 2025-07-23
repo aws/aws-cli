@@ -6,8 +6,7 @@ import sys
 import threading
 import time
 
-from botocore.vendored import six
-
+from awscli.botocore.vendored import six
 from tests import mock
 
 _original_setattr = six.moves.__class__.__setattr__
@@ -38,7 +37,7 @@ class _ExampleThread(threading.Thread):
     def run(self):
         try:
             # Simulate use of six by
-            # botocore.configloader.raw_config_parse()
+            # awscli.botocore.configloader.raw_config_parse()
             # Should raise AttributeError if six < 1.9.0
             six.moves.configparser.RawConfigParser()
         except Exception:
@@ -48,7 +47,7 @@ class _ExampleThread(threading.Thread):
 def test_six_thread_safety():
     _reload_six()
     with mock.patch(
-        'botocore.vendored.six.moves.__class__.__setattr__',
+        'awscli.botocore.vendored.six.moves.__class__.__setattr__',
         wraps=_wrapped_setattr,
     ):
         threads = []

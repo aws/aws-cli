@@ -14,8 +14,7 @@
 import hashlib
 import json
 
-from botocore import compat
-
+from awscli.botocore import compat
 from awscli.customizations.ecs.deploy import MAX_WAIT_MIN, CodeDeployer
 from awscli.customizations.ecs.exceptions import MissingPropertyError
 from awscli.testutils import capture_output, mock, unittest

@@ -12,9 +12,9 @@
 # language governing permissions and limitations under the License.
 import copy
 
-from botocore.compat import OrderedDict
-from botocore.endpoint import DEFAULT_TIMEOUT, MAX_POOL_CONNECTIONS
-from botocore.exceptions import (
+from awscli.botocore.compat import OrderedDict
+from awscli.botocore.endpoint import DEFAULT_TIMEOUT, MAX_POOL_CONNECTIONS
+from awscli.botocore.exceptions import (
     InvalidMaxRetryAttemptsError,
     InvalidRetryConfigurationError,
     InvalidRetryModeError,
@@ -385,7 +385,7 @@ class Config:
         This will merge in all non-default values from the provided config
         and return a new config object
 
-        :type other_config: botocore.config.Config
+        :type other_config: awscli.botocore.config.Config
         :param other config: Another config object to merge with. The values
             in the provided config object will take precedence in the merging
 

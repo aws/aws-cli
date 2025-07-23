@@ -10,12 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.compat import OrderedDict
-from botocore.docs.sharedexample import (
+from awscli.botocore.compat import OrderedDict
+from awscli.botocore.docs.sharedexample import (
     SharedExampleDocumenter,
     document_shared_examples,
 )
-
 from tests.unit.botocore.docs import BaseDocsTest
 
 

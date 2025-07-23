@@ -125,7 +125,7 @@ class TestConfigureCommand(unittest.TestCase):
         )
 
     def test_session_says_profile_does_not_exist(self):
-        # Whenever you try to get a config value from botocore,
+        # Whenever you try to get a config value from awscli.botocore,
         # it will raise an exception complaining about ProfileNotFound.
         # We should handle this case, and write out a new profile section
         # in the config file.

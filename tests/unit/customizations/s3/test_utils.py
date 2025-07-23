@@ -17,10 +17,9 @@ import os
 import time
 
 import pytest
-from botocore.hooks import HierarchicalEmitter
 from dateutil.tz import tzlocal
-from s3transfer.compat import seekable
 
+from awscli.botocore.hooks import HierarchicalEmitter
 from awscli.compat import StringIO
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.s3.utils import (
@@ -42,6 +41,7 @@ from awscli.customizations.s3.utils import (
     relative_path,
     set_file_utime,
 )
+from awscli.s3transfer.compat import seekable
 from awscli.testutils import mock, temporary_file, unittest
 
 

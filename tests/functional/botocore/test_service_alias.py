@@ -10,9 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
 import pytest
-from botocore.handlers import SERVICE_NAME_ALIASES
+
+import awscli.botocore.session
+from awscli.botocore.handlers import SERVICE_NAME_ALIASES
 
 CLIENT_KWARGS = {
     "region_name": "us-east-1",
@@ -22,7 +23,7 @@ CLIENT_KWARGS = {
 
 
 def _service_alias_test_cases():
-    session = botocore.session.get_session()
+    session = awscli.botocore.session.get_session()
     for alias, name in SERVICE_NAME_ALIASES.items():
         yield session, name, alias
 

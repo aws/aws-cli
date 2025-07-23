@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 import datetime
 
-from botocore.compat import urlsplit
-
+from awscli.botocore.compat import urlsplit
 from awscli.clidriver import AWSCLIEntryPoint
 from awscli.testutils import (
     BaseAWSCommandParamsTest,

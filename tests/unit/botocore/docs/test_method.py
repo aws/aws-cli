@@ -10,16 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.docs.method import (
+from awscli.botocore.docs.method import (
     document_custom_method,
     document_custom_signature,
     document_model_driven_method,
     document_model_driven_signature,
     get_instance_public_methods,
 )
-from botocore.docs.utils import DocumentedShape
-from botocore.hooks import HierarchicalEmitter
-
+from awscli.botocore.docs.utils import DocumentedShape
+from awscli.botocore.hooks import HierarchicalEmitter
 from tests import unittest
 from tests.unit.botocore.docs import BaseDocsTest
 

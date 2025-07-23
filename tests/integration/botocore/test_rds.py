@@ -12,14 +12,13 @@
 # language governing permissions and limitations under the License.
 import itertools
 
-import botocore.session
-
+import awscli.botocore.session
 from tests import unittest
 
 
 class TestRDSPagination(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.client = self.session.create_client('rds', 'us-west-2')
 
     def test_can_paginate_reserved_instances(self):

@@ -22,8 +22,7 @@ import subprocess
 import tempfile
 import textwrap
 
-from botocore.exceptions import ClientError
-
+from awscli.botocore.exceptions import ClientError
 from awscli.compat import ensure_text_type, urlopen
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError

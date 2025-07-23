@@ -29,7 +29,7 @@ class ClientContext:
     Encapsulation of objects tracked within the ``_context`` context variable.
 
     ``features`` is a set responsible for storing features used during
-    preparation of an AWS request. ``botocore.useragent.register_feature_id``
+    preparation of an AWS request. ``awscli.botocore.useragent.register_feature_id``
     is used to add to this set.
     """
 

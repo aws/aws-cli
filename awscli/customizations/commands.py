@@ -2,15 +2,14 @@ import copy
 import logging
 import os
 
-from botocore import model
-from botocore.compat import OrderedDict
-from botocore.validate import validate_parameters
-
 import awscli
 from awscli.argparser import ArgTableArgParser, SubCommandArgParser
 from awscli.argprocess import unpack_argument, unpack_cli_arg
 from awscli.arguments import CustomArgument, create_argument_model_from_schema
 from awscli.bcdoc import docevents
+from awscli.botocore import model
+from awscli.botocore.compat import OrderedDict
+from awscli.botocore.validate import validate_parameters
 from awscli.clidocs import OperationDocumentEventHandler
 from awscli.commands import CLICommand
 from awscli.customizations.exceptions import ParamValidationError

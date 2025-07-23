@@ -19,11 +19,11 @@ import io
 import json
 
 import dateutil.tz
-from botocore import serialize
-from botocore.exceptions import ParamValidationError
-from botocore.model import ServiceModel
-from botocore.serialize import SERIALIZERS
 
+from awscli.botocore import serialize
+from awscli.botocore.exceptions import ParamValidationError
+from awscli.botocore.model import ServiceModel
+from awscli.botocore.serialize import SERIALIZERS
 from tests import unittest
 
 

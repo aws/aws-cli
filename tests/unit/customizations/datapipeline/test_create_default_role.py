@@ -1,7 +1,7 @@
 import pytest
-from botocore.compat import json
 
 import awscli.customizations.datapipeline.createdefaultroles as createdefaultroles
+from awscli.botocore.compat import json
 from awscli.customizations.datapipeline.constants import (
     DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ASSUME_POLICY,
     DATAPIPELINE_DEFAULT_RESOURCE_ROLE_NAME,

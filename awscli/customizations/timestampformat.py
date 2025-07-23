@@ -28,9 +28,8 @@ in the future.
 
 """
 
-from botocore.exceptions import ProfileNotFound
-from botocore.utils import parse_timestamp
-
+from awscli.botocore.exceptions import ProfileNotFound
+from awscli.botocore.utils import parse_timestamp
 from awscli.customizations.exceptions import ConfigurationError
 
 

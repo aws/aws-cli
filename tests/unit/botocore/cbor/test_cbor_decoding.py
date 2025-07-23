@@ -3,7 +3,8 @@ import os
 import struct
 
 import pytest
-from botocore.parsers import ResponseParserError, RpcV2CBORParser
+
+from awscli.botocore.parsers import ResponseParserError, RpcV2CBORParser
 
 IGNORE_CASES = [
     # We ignore all the tag tests since none of them are supported tags in AWS.

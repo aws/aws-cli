@@ -16,13 +16,12 @@ import os
 import shutil
 import tempfile
 
-import botocore.exceptions
-from botocore.configloader import (
+import awscli.botocore.exceptions
+from awscli.botocore.configloader import (
     load_config,
     multi_file_load_config,
     raw_config_parse,
 )
-
 from tests import BaseEnvVar, mock, unittest
 
 
@@ -61,24 +60,26 @@ class TestConfigLoader(BaseEnvVar):
         return full_path
 
     def test_config_not_found(self):
-        with self.assertRaises(botocore.exceptions.ConfigNotFound):
+        with self.assertRaises(awscli.botocore.exceptions.ConfigNotFound):
             raw_config_parse(path('aws_config_notfound'))
 
     def test_config_parse_error(self):
         filename = path('aws_config_bad')
-        with self.assertRaises(botocore.exceptions.ConfigParseError):
+        with self.assertRaises(awscli.botocore.exceptions.ConfigParseError):
             raw_config_parse(filename)
 
     def test_config_parse_error_bad_unicode(self):
         filename = path('aws_config_badbytes')
-        with self.assertRaises(botocore.exceptions.ConfigParseError):
+        with self.assertRaises(awscli.botocore.exceptions.ConfigParseError):
             raw_config_parse(filename)
 
     def test_config_parse_error_filesystem_encoding_none(self):
         filename = path('aws_config_bad')
         with mock.patch('sys.getfilesystemencoding') as encoding:
             encoding.return_value = None
-            with self.assertRaises(botocore.exceptions.ConfigParseError):
+            with self.assertRaises(
+                awscli.botocore.exceptions.ConfigParseError
+            ):
                 raw_config_parse(filename)
 
     def test_config(self):
@@ -128,14 +129,16 @@ class TestConfigLoader(BaseEnvVar):
 
     def test_nested_bad_config(self):
         filename = path('aws_config_nested_bad')
-        with self.assertRaises(botocore.exceptions.ConfigParseError):
+        with self.assertRaises(awscli.botocore.exceptions.ConfigParseError):
             load_config(filename)
 
     def test_nested_bad_config_filesystem_encoding_none(self):
         filename = path('aws_config_nested_bad')
         with mock.patch('sys.getfilesystemencoding') as encoding:
             encoding.return_value = None
-            with self.assertRaises(botocore.exceptions.ConfigParseError):
+            with self.assertRaises(
+                awscli.botocore.exceptions.ConfigParseError
+            ):
                 load_config(filename)
 
     def test_multi_file_load(self):
@@ -159,7 +162,7 @@ class TestConfigLoader(BaseEnvVar):
         self.assertEqual(third_config['aws_security_token'], 'third_fiebaz')
 
     def test_unicode_bytes_path_not_found(self):
-        with self.assertRaises(botocore.exceptions.ConfigNotFound):
+        with self.assertRaises(awscli.botocore.exceptions.ConfigNotFound):
             with mock.patch('sys.getfilesystemencoding') as encoding:
                 encoding.return_value = 'utf-8'
                 load_config(path(b'\xe2\x9c\x93'))
@@ -167,7 +170,7 @@ class TestConfigLoader(BaseEnvVar):
     def test_unicode_bytes_path_not_found_filesystem_encoding_none(self):
         with mock.patch('sys.getfilesystemencoding') as encoding:
             encoding.return_value = None
-            with self.assertRaises(botocore.exceptions.ConfigNotFound):
+            with self.assertRaises(awscli.botocore.exceptions.ConfigNotFound):
                 load_config(path(b'\xe2\x9c\x93'))
 
     def test_unicode_bytes_path(self):

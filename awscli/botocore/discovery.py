@@ -14,10 +14,14 @@ import logging
 import time
 import weakref
 
-from botocore import xform_name
-from botocore.exceptions import BotoCoreError, ConnectionError, HTTPClientError
-from botocore.model import OperationNotFoundError
-from botocore.utils import CachedProperty
+from awscli.botocore import xform_name
+from awscli.botocore.exceptions import (
+    BotoCoreError,
+    ConnectionError,
+    HTTPClientError,
+)
+from awscli.botocore.model import OperationNotFoundError
+from awscli.botocore.utils import CachedProperty
 
 logger = logging.getLogger(__name__)
 

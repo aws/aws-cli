@@ -15,10 +15,9 @@ import logging
 import os
 import time
 
-from botocore.utils import percent_encode_sequence
-from s3transfer.subscribers import BaseSubscriber
-
+from awscli.botocore.utils import percent_encode_sequence
 from awscli.customizations.s3 import utils
+from awscli.s3transfer.subscribers import BaseSubscriber
 
 LOGGER = logging.getLogger(__name__)
 
@@ -28,8 +27,8 @@ class CreateDirectoryError(Exception):
 
 
 # TODO: Eventually port this down to the BaseSubscriber or a new subscriber
-# class in s3transfer. The functionality is very convenient but may need
-# some further design decisions to make it a feature in s3transfer.
+# class in awscli.s3transfer. The functionality is very convenient but may need
+# some further design decisions to make it a feature in awscli.s3transfer.
 class OnDoneFilteredSubscriber(BaseSubscriber):
     """Subscriber that differentiates between successes and failures
 

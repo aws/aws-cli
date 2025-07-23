@@ -16,15 +16,14 @@ import tempfile
 import time
 from io import BytesIO
 
-from botocore.awsrequest import AWSRequest
-from botocore.client import Config
-from botocore.exceptions import ClientError
-from botocore.httpchecksum import DEFAULT_CHECKSUM_ALGORITHM
-from botocore.stub import ANY
-from s3transfer.manager import TransferConfig, TransferManager
-from s3transfer.upload import UploadSubmissionTask
-from s3transfer.utils import ChunksizeAdjuster
-
+from awscli.botocore.awsrequest import AWSRequest
+from awscli.botocore.client import Config
+from awscli.botocore.exceptions import ClientError
+from awscli.botocore.httpchecksum import DEFAULT_CHECKSUM_ALGORITHM
+from awscli.botocore.stub import ANY
+from awscli.s3transfer.manager import TransferConfig, TransferManager
+from awscli.s3transfer.upload import UploadSubmissionTask
+from awscli.s3transfer.utils import ChunksizeAdjuster
 from tests import (
     BaseGeneralInterfaceTest,
     NonSeekableReader,
@@ -47,7 +46,7 @@ class BaseUploadTest(BaseGeneralInterfaceTest):
         # chunksize adjuster.  Instead we need to patch out the
         # chunksize adjuster class.
         self.adjuster_patch = mock.patch(
-            's3transfer.upload.ChunksizeAdjuster',
+            'awscli.s3transfer.upload.ChunksizeAdjuster',
             lambda: ChunksizeAdjuster(min_size=1),
         )
         self.adjuster_patch.start()

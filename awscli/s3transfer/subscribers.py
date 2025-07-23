@@ -10,8 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from s3transfer.compat import accepts_kwargs
-from s3transfer.exceptions import InvalidSubscriberMethodError
+from awscli.s3transfer.compat import accepts_kwargs
+from awscli.s3transfer.exceptions import InvalidSubscriberMethodError
 
 
 class BaseSubscriber:
@@ -52,7 +52,7 @@ class BaseSubscriber:
               future.meta.provide_transfer_size() so a HeadObject would not
               need to be made for copies and downloads.
 
-        :type future: s3transfer.futures.TransferFuture
+        :type future: awscli.s3transfer.futures.TransferFuture
         :param future: The TransferFuture representing the requested transfer.
         """
         pass
@@ -64,7 +64,7 @@ class BaseSubscriber:
 
             * Recording and displaying progress
 
-        :type future: s3transfer.futures.TransferFuture
+        :type future: awscli.s3transfer.futures.TransferFuture
         :param future: The TransferFuture representing the requested transfer.
 
         :type bytes_transferred: int
@@ -85,7 +85,7 @@ class BaseSubscriber:
             * Running some task after the transfer completed like changing
               the last modified time of a downloaded file.
 
-        :type future: s3transfer.futures.TransferFuture
+        :type future: awscli.s3transfer.futures.TransferFuture
         :param future: The TransferFuture representing the requested transfer.
         """
         pass

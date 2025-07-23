@@ -1,11 +1,11 @@
 import unittest
 
-import botocore
+import awscli.botocore
 
 
 class TestCreateClients(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
 
     def test_client_can_clone_with_service_events(self):
         # We should also be able to create a client object.

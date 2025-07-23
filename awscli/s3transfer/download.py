@@ -14,12 +14,15 @@ import heapq
 import logging
 import threading
 
-from botocore.exceptions import ClientError
-from s3transfer.compat import seekable
-from s3transfer.exceptions import RetriesExceededError, S3DownloadFailedError
-from s3transfer.futures import IN_MEMORY_DOWNLOAD_TAG
-from s3transfer.tasks import SubmissionTask, Task
-from s3transfer.utils import (
+from awscli.botocore.exceptions import ClientError
+from awscli.s3transfer.compat import seekable
+from awscli.s3transfer.exceptions import (
+    RetriesExceededError,
+    S3DownloadFailedError,
+)
+from awscli.s3transfer.futures import IN_MEMORY_DOWNLOAD_TAG
+from awscli.s3transfer.tasks import SubmissionTask, Task
+from awscli.s3transfer.utils import (
     S3_RETRYABLE_DOWNLOAD_ERRORS,
     CountCallbackInvoker,
     DeferredOpenFile,
@@ -70,7 +73,7 @@ class DownloadOutputManager:
     def get_download_task_tag(self):
         """Get the tag (if any) to associate all GetObjectTasks
 
-        :rtype: s3transfer.futures.TaskTag
+        :rtype: awscli.s3transfer.futures.TaskTag
         :returns: The tag to associate all GetObjectTasks with
         """
         return None
@@ -78,7 +81,7 @@ class DownloadOutputManager:
     def get_fileobj_for_io_writes(self, transfer_future):
         """Get file-like object to use for io writes in the io executor
 
-        :type transfer_future: s3transfer.futures.TransferFuture
+        :type transfer_future: awscli.s3transfer.futures.TransferFuture
         :param transfer_future: The future associated with upload request
 
         returns: A file-like object to write to
@@ -132,7 +135,7 @@ class DownloadOutputManager:
         needs a final task for it to signal that the transfer is done and
         all done callbacks can be run.
 
-        :rtype: s3transfer.tasks.Task
+        :rtype: awscli.s3transfer.tasks.Task
         :returns: A final task to completed in the io executor
         """
         raise NotImplementedError('must implement get_final_io_task()')
@@ -286,10 +289,10 @@ class DownloadSubmissionTask(SubmissionTask):
     def _get_download_output_manager_cls(self, transfer_future, osutil):
         """Retrieves a class for managing output for a download
 
-        :type transfer_future: s3transfer.futures.TransferFuture
+        :type transfer_future: awscli.s3transfer.futures.TransferFuture
         :param transfer_future: The transfer future for the request
 
-        :type osutil: s3transfer.utils.OSUtils
+        :type osutil: awscli.s3transfer.utils.OSUtils
         :param osutil: The os utility associated to the transfer
 
         :rtype: class of DownloadOutputManager
@@ -324,26 +327,26 @@ class DownloadSubmissionTask(SubmissionTask):
         """
         :param client: The client associated with the transfer manager
 
-        :type config: s3transfer.manager.TransferConfig
+        :type config: awscli.s3transfer.manager.TransferConfig
         :param config: The transfer config associated with the transfer
             manager
 
-        :type osutil: s3transfer.utils.OSUtil
+        :type osutil: awscli.s3transfer.utils.OSUtil
         :param osutil: The os utility associated to the transfer manager
 
-        :type request_executor: s3transfer.futures.BoundedExecutor
+        :type request_executor: awscli.s3transfer.futures.BoundedExecutor
         :param request_executor: The request executor associated with the
             transfer manager
 
-        :type io_executor: s3transfer.futures.BoundedExecutor
+        :type io_executor: awscli.s3transfer.futures.BoundedExecutor
         :param io_executor: The io executor associated with the
             transfer manager
 
-        :type transfer_future: s3transfer.futures.TransferFuture
+        :type transfer_future: awscli.s3transfer.futures.TransferFuture
         :param transfer_future: The transfer future associated with the
             transfer request that tasks are being submitted for
 
-        :type bandwidth_limiter: s3transfer.bandwidth.BandwidthLimiter
+        :type bandwidth_limiter: awscli.s3transfer.bandwidth.BandwidthLimiter
         :param bandwidth_limiter: The bandwidth limiter to use when
             downloading streams
         """

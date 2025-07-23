@@ -13,9 +13,8 @@
 import re
 from datetime import datetime
 
-from botocore.config import Config
-from botocore.stub import Stubber
-
+from awscli.botocore.config import Config
+from awscli.botocore.stub import Stubber
 from tests import BaseSessionTest, ClientHTTPStubber, assert_url_equal, mock
 
 _V4_SIGNING_REGION_REGEX = re.compile(
@@ -33,7 +32,7 @@ class TestSTSPresignedUrl(BaseSessionTest):
 
     def test_presigned_url_contains_no_content_type(self):
         timestamp = datetime(2017, 3, 22, 0, 0)
-        with mock.patch('botocore.auth.datetime') as _datetime:
+        with mock.patch('awscli.botocore.auth.datetime') as _datetime:
             _datetime.datetime.utcnow.return_value = timestamp
             url = self.client.generate_presigned_url('get_caller_identity', {})
 

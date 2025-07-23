@@ -10,8 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.model import DenormalizedStructureBuilder
-
+from awscli.botocore.model import DenormalizedStructureBuilder
 from awscli.compat import StringIO
 from awscli.customizations.generatecliskeleton import (
     GenerateCliSkeletonArgument,

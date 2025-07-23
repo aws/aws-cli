@@ -16,7 +16,7 @@ import os
 import socket
 import sys
 
-from botocore.compat import six
+from awscli.botocore.compat import six
 
 if sys.platform.startswith('win'):
     def rename_file(current_filename, new_filename):

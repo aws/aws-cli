@@ -16,12 +16,12 @@ import time
 import traceback
 from concurrent.futures import ThreadPoolExecutor
 
-from s3transfer.exceptions import (
+from awscli.s3transfer.exceptions import (
     CancelledError,
     FatalError,
     TransferNotDoneError,
 )
-from s3transfer.futures import (
+from awscli.s3transfer.futures import (
     BaseExecutor,
     BoundedExecutor,
     ExecutorFuture,
@@ -31,13 +31,12 @@ from s3transfer.futures import (
     TransferFuture,
     TransferMeta,
 )
-from s3transfer.tasks import Task
-from s3transfer.utils import (
+from awscli.s3transfer.tasks import Task
+from awscli.s3transfer.utils import (
     FunctionContainer,
     NoResourcesAvailable,
     TaskSemaphore,
 )
-
 from tests import (
     RecordingExecutor,
     TransferCoordinatorWithInterrupt,

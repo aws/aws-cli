@@ -15,11 +15,11 @@ import re
 import socket
 import time
 
-from botocore.awsrequest import AWSRequest
-from botocore.exceptions import ConnectionError
-from botocore.hooks import HierarchicalEmitter
-from botocore.model import OperationModel, ServiceModel
-from botocore.monitoring import (
+from awscli.botocore.awsrequest import AWSRequest
+from awscli.botocore.exceptions import ConnectionError
+from awscli.botocore.hooks import HierarchicalEmitter
+from awscli.botocore.model import OperationModel, ServiceModel
+from awscli.botocore.monitoring import (
     APICallAttemptEvent,
     APICallEvent,
     BaseMonitorEvent,
@@ -28,7 +28,6 @@ from botocore.monitoring import (
     MonitorEventAdapter,
     SocketPublisher,
 )
-
 from tests import mock, unittest
 
 

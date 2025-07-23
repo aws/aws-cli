@@ -1,6 +1,5 @@
-from botocore.exceptions import CapacityNotAvailableError
-from botocore.retries import bucket
-
+from awscli.botocore.exceptions import CapacityNotAvailableError
+from awscli.botocore.retries import bucket
 from tests import unittest
 
 

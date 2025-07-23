@@ -13,8 +13,7 @@
 
 import sys
 
-from botocore.exceptions import ClientError
-
+from awscli.botocore.exceptions import ClientError
 from awscli.customizations.codedeploy.utils import (
     INSTANCE_NAME_ARG,
     validate_instance_name,

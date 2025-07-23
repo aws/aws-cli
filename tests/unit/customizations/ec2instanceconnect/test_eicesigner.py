@@ -13,9 +13,9 @@
 from urllib.parse import urlencode
 
 import pytest
-from botocore.session import Session
-from botocore.signers import RequestSigner
 
+from awscli.botocore.session import Session
+from awscli.botocore.signers import RequestSigner
 from awscli.customizations.ec2instanceconnect.eicesigner import (
     InstanceConnectEndpointRequestSigner,
 )

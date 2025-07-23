@@ -15,9 +15,8 @@ import time
 from concurrent.futures import CancelledError
 from io import BytesIO
 
-from botocore.config import Config
-from s3transfer.manager import TransferConfig
-
+from awscli.botocore.config import Config
+from awscli.s3transfer.manager import TransferConfig
 from tests import (
     NonSeekableReader,
     RecordingSubscriber,

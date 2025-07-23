@@ -10,9 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.awsrequest import AWSResponse
-from botocore.config import Config
-
+from awscli.botocore.awsrequest import AWSResponse
+from awscli.botocore.config import Config
 from tests import BaseSessionTest, create_session, mock, unittest
 
 
@@ -22,7 +21,7 @@ class S3ControlOperationTest(BaseSessionTest):
         self.region = 'us-west-2'
         self.client = self.session.create_client('s3control', self.region)
         self.session_send_patch = mock.patch(
-            'botocore.endpoint.Endpoint._send'
+            'awscli.botocore.endpoint.Endpoint._send'
         )
         self.http_session_send_mock = self.session_send_patch.start()
         self.http_response = mock.Mock(spec=AWSResponse)

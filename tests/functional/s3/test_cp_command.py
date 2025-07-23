@@ -2636,7 +2636,7 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
             crt_requests[0][1]['request'].headers.get('Authorization')
         )
 
-    @mock.patch('s3transfer.crt.ClientTlsContext')
+    @mock.patch('awscli.s3transfer.crt.ClientTlsContext')
     def test_respects_ca_bundle_parameter(
         self, mock_client_tls_context_options
     ):
@@ -2659,7 +2659,7 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
         tls_context_options = mock_client_tls_context_options.call_args[0][0]
         self.assertEqual(tls_context_options.ca_buffer, fake_ca_contents)
 
-    @mock.patch('s3transfer.crt.ClientTlsContext')
+    @mock.patch('awscli.s3transfer.crt.ClientTlsContext')
     def test_respects_ca_bundle_parameter_no_verify(
         self, mock_client_tls_context_options
     ):

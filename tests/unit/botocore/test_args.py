@@ -13,19 +13,18 @@
 # language governing permissions and limitations under the License.
 import socket
 
-import botocore.config
-from botocore import UNSIGNED, args, exceptions
-from botocore.client import ClientEndpointBridge
-from botocore.config import Config
-from botocore.configprovider import ConfigValueStore
-from botocore.credentials import Credentials
-from botocore.hooks import HierarchicalEmitter
-from botocore.model import ServiceModel
-from botocore.parsers import PROTOCOL_PARSERS
-from botocore.serialize import SERIALIZERS
-from botocore.useragent import UserAgentString
-from botocore.utils import PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
-
+import awscli.botocore.config
+from awscli.botocore import UNSIGNED, args, exceptions
+from awscli.botocore.client import ClientEndpointBridge
+from awscli.botocore.config import Config
+from awscli.botocore.configprovider import ConfigValueStore
+from awscli.botocore.credentials import Credentials
+from awscli.botocore.hooks import HierarchicalEmitter
+from awscli.botocore.model import ServiceModel
+from awscli.botocore.parsers import PROTOCOL_PARSERS
+from awscli.botocore.serialize import SERIALIZERS
+from awscli.botocore.useragent import UserAgentString
+from awscli.botocore.utils import PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
 from tests import get_botocore_default_config_mapping, mock, unittest
 
 
@@ -180,8 +179,8 @@ class TestCreateClientArgs(unittest.TestCase):
         )
 
     def test_max_pool_from_client_config_forwarded_to_endpoint_creator(self):
-        config = botocore.config.Config(max_pool_connections=20)
-        with mock.patch('botocore.args.EndpointCreator') as m:
+        config = awscli.botocore.config.Config(max_pool_connections=20)
+        with mock.patch('awscli.botocore.args.EndpointCreator') as m:
             self.call_get_client_args(client_config=config)
             self.assert_create_endpoint_call(m, max_pool_connections=20)
 
@@ -190,8 +189,8 @@ class TestCreateClientArgs(unittest.TestCase):
             'http': 'http://foo.bar:1234',
             'https': 'https://foo.bar:4321',
         }
-        config = botocore.config.Config(proxies=proxies)
-        with mock.patch('botocore.args.EndpointCreator') as m:
+        config = awscli.botocore.config.Config(proxies=proxies)
+        with mock.patch('awscli.botocore.args.EndpointCreator') as m:
             self.call_get_client_args(client_config=config)
             self.assert_create_endpoint_call(m, proxies=proxies)
 
@@ -240,7 +239,7 @@ class TestCreateClientArgs(unittest.TestCase):
         self.assertEqual(client_args['client_config'].region_name, None)
 
     def test_provide_retry_config(self):
-        config = botocore.config.Config(retries={'max_attempts': 10})
+        config = awscli.botocore.config.Config(retries={'max_attempts': 10})
         client_args = self.call_get_client_args(client_config=config)
         self.assertEqual(
             client_args['client_config'].retries['max_attempts'], 10
@@ -248,7 +247,7 @@ class TestCreateClientArgs(unittest.TestCase):
 
     def test_tcp_keepalive_enabled(self):
         scoped_config = {'tcp_keepalive': 'true'}
-        with mock.patch('botocore.args.EndpointCreator') as m:
+        with mock.patch('awscli.botocore.args.EndpointCreator') as m:
             self.call_get_client_args(scoped_config=scoped_config)
             self.assert_create_endpoint_call(
                 m,
@@ -258,7 +257,7 @@ class TestCreateClientArgs(unittest.TestCase):
 
     def test_tcp_keepalive_not_specified(self):
         scoped_config = {}
-        with mock.patch('botocore.args.EndpointCreator') as m:
+        with mock.patch('awscli.botocore.args.EndpointCreator') as m:
             self.call_get_client_args(scoped_config=scoped_config)
             self.assert_create_endpoint_call(
                 m, socket_options=self.default_socket_options
@@ -266,7 +265,7 @@ class TestCreateClientArgs(unittest.TestCase):
 
     def test_tcp_keepalive_explicitly_disabled(self):
         scoped_config = {'tcp_keepalive': 'false'}
-        with mock.patch('botocore.args.EndpointCreator') as m:
+        with mock.patch('awscli.botocore.args.EndpointCreator') as m:
             self.call_get_client_args(scoped_config=scoped_config)
             self.assert_create_endpoint_call(
                 m, socket_options=self.default_socket_options
@@ -274,7 +273,7 @@ class TestCreateClientArgs(unittest.TestCase):
 
     def test_tcp_keepalive_enabled_case_insensitive(self):
         scoped_config = {'tcp_keepalive': 'True'}
-        with mock.patch('botocore.args.EndpointCreator') as m:
+        with mock.patch('awscli.botocore.args.EndpointCreator') as m:
             self.call_get_client_args(scoped_config=scoped_config)
             self.assert_create_endpoint_call(
                 m,
@@ -384,7 +383,7 @@ class TestCreateClientArgs(unittest.TestCase):
         self.assertEqual(config.retries['mode'], 'standard')
 
     def test_creates_ruleset_resolver_if_given_data(self):
-        with mock.patch('botocore.args.EndpointRulesetResolver') as m:
+        with mock.patch('awscli.botocore.args.EndpointRulesetResolver') as m:
             self.call_get_client_args(
                 service_model=self._get_service_model('s3'),
                 endpoints_ruleset_data={
@@ -396,7 +395,7 @@ class TestCreateClientArgs(unittest.TestCase):
             self.assertEqual(len(m.call_args_list), 1)
 
     def test_doesnt_create_ruleset_resolver_if_not_given_data(self):
-        with mock.patch('botocore.args.EndpointRulesetResolver') as m:
+        with mock.patch('awscli.botocore.args.EndpointRulesetResolver') as m:
             self.call_get_client_args(
                 service_model=self._get_service_model('s3'),
                 endpoints_ruleset_data=None,

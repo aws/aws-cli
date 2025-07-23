@@ -15,8 +15,7 @@ import argparse
 import datetime
 import json
 
-from botocore.exceptions import ClientError
-
+from awscli.botocore.exceptions import ClientError
 from awscli.customizations import opsworks
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import mock, unittest

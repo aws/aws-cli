@@ -110,7 +110,7 @@ class ConfigureListCommand(BasicCommand):
             else:
                 # For the ConfigValue, we don't track down the
                 # config_variable because that info is not
-                # visible from botocore.credentials.  I think
+                # visible from awscli.botocore.credentials.  I think
                 # the credentials.method is sufficient to show
                 # where the credentials are coming from.
                 access_key = ConfigValue(

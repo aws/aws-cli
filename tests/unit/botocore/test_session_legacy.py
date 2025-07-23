@@ -17,17 +17,17 @@ import os
 import shutil
 import tempfile
 
-import botocore.config
-import botocore.exceptions
-import botocore.loaders
-import botocore.session
 import pytest
-from botocore import client
-from botocore.hooks import HierarchicalEmitter
-from botocore.model import ServiceModel
-from botocore.paginate import PaginatorModel
-from botocore.waiter import WaiterModel
 
+import awscli.botocore.config
+import awscli.botocore.exceptions
+import awscli.botocore.loaders
+import awscli.botocore.session
+from awscli.botocore import client
+from awscli.botocore.hooks import HierarchicalEmitter
+from awscli.botocore.model import ServiceModel
+from awscli.botocore.paginate import PaginatorModel
+from awscli.botocore.waiter import WaiterModel
 from tests import create_session, mock, temporary_file, unittest
 
 
@@ -136,7 +136,7 @@ class SessionTest(BaseSessionTest):
         # Given we have no profile:
         self.environ['FOO_PROFILE'] = 'profile_that_does_not_exist'
         session = create_session(session_vars=self.env_vars)
-        with self.assertRaises(botocore.exceptions.ProfileNotFound):
+        with self.assertRaises(awscli.botocore.exceptions.ProfileNotFound):
             session.get_scoped_config()
 
     def test_variable_does_not_exist(self):
@@ -186,7 +186,7 @@ class SessionTest(BaseSessionTest):
         # In this case, even though we specified default, because
         # the boto_config_empty config file does not have a default
         # profile, we should be raising an exception.
-        with self.assertRaises(botocore.exceptions.ProfileNotFound):
+        with self.assertRaises(awscli.botocore.exceptions.ProfileNotFound):
             session.get_scoped_config()
 
     def test_file_logger(self):
@@ -272,11 +272,13 @@ class SessionTest(BaseSessionTest):
     @mock.patch('logging.getLogger')
     @mock.patch('logging.FileHandler')
     def test_logger_name_can_be_passed_in(self, file_handler, get_logger):
-        self.session.set_debug_logger('botocore.hooks')
-        get_logger.assert_called_with('botocore.hooks')
+        self.session.set_debug_logger('awscli.botocore.hooks')
+        get_logger.assert_called_with('awscli.botocore.hooks')
 
-        self.session.set_file_logger('DEBUG', 'debuglog', 'botocore.service')
-        get_logger.assert_called_with('botocore.service')
+        self.session.set_file_logger(
+            'DEBUG', 'debuglog', 'awscli.botocore.service'
+        )
+        get_logger.assert_called_with('awscli.botocore.service')
         file_handler.assert_called_with('debuglog')
 
     @mock.patch('logging.getLogger')
@@ -311,7 +313,7 @@ class TestBuiltinEventHandlers(BaseSessionTest):
         ]
         self.foo_called = False
         self.handler_patch = mock.patch(
-            'botocore.handlers.BUILTIN_HANDLERS', self.builtin_handlers
+            'awscli.botocore.handlers.BUILTIN_HANDLERS', self.builtin_handlers
         )
         self.handler_patch.start()
 
@@ -323,7 +325,7 @@ class TestBuiltinEventHandlers(BaseSessionTest):
         self.handler_patch.stop()
 
     def test_registered_builtin_handlers(self):
-        session = botocore.session.Session(
+        session = awscli.botocore.session.Session(
             self.env_vars, None, include_builtin_handlers=True
         )
         session.emit('foo')
@@ -554,14 +556,18 @@ class TestCreateClient(BaseSessionTest):
         )
 
     def test_cred_provider_called_when_partial_creds_provided(self):
-        with self.assertRaises(botocore.exceptions.PartialCredentialsError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.PartialCredentialsError
+        ):
             self.session.create_client(
                 'sts',
                 'us-west-2',
                 aws_access_key_id='foo',
                 aws_secret_access_key=None,
             )
-        with self.assertRaises(botocore.exceptions.PartialCredentialsError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.PartialCredentialsError
+        ):
             self.session.create_client(
                 'sts',
                 'us-west-2',
@@ -569,14 +575,14 @@ class TestCreateClient(BaseSessionTest):
                 aws_secret_access_key='foo',
             )
 
-    @mock.patch('botocore.client.ClientCreator')
+    @mock.patch('awscli.botocore.client.ClientCreator')
     def test_config_passed_to_client_creator(self, client_creator):
         # Make sure there is no default set
         self.assertEqual(self.session.get_default_client_config(), None)
 
         # The config passed to the client should be the one that is used
         # in creating the client.
-        config = botocore.config.Config(region_name='us-west-2')
+        config = awscli.botocore.config.Config(region_name='us-west-2')
         self.session.create_client('sts', config=config)
         client_creator.return_value.create_client.assert_called_with(
             service_name=mock.ANY,
@@ -590,9 +596,9 @@ class TestCreateClient(BaseSessionTest):
             auth_token=mock.ANY,
         )
 
-    @mock.patch('botocore.client.ClientCreator')
+    @mock.patch('awscli.botocore.client.ClientCreator')
     def test_create_client_with_default_client_config(self, client_creator):
-        config = botocore.config.Config()
+        config = awscli.botocore.config.Config()
         self.session.set_default_client_config(config)
         self.session.create_client('sts')
 
@@ -608,10 +614,10 @@ class TestCreateClient(BaseSessionTest):
             auth_token=mock.ANY,
         )
 
-    @mock.patch('botocore.client.ClientCreator')
+    @mock.patch('awscli.botocore.client.ClientCreator')
     def test_create_client_with_merging_client_configs(self, client_creator):
-        config = botocore.config.Config(region_name='us-west-2')
-        other_config = botocore.config.Config(region_name='us-east-1')
+        config = awscli.botocore.config.Config(region_name='us-west-2')
+        other_config = awscli.botocore.config.Config(region_name='us-east-1')
         self.session.set_default_client_config(config)
         self.session.create_client('sts', config=other_config)
 
@@ -633,7 +639,7 @@ class TestCreateClient(BaseSessionTest):
         self.assertEqual(ec2_client.meta.region_name, 'us-west-2')
 
     def test_create_client_with_region_and_client_config(self):
-        config = botocore.config.Config()
+        config = awscli.botocore.config.Config()
         # Use a client config with no region configured.
         ec2_client = self.session.create_client(
             'ec2', region_name='us-west-2', config=config
@@ -653,7 +659,7 @@ class TestCreateClient(BaseSessionTest):
         ec2_client = self.session.create_client('ec2')
         self.assertEqual(ec2_client.meta.region_name, 'us-west-11')
 
-    @mock.patch('botocore.client.ClientCreator')
+    @mock.patch('awscli.botocore.client.ClientCreator')
     def test_create_client_with_ca_bundle_from_config(self, client_creator):
         with temporary_file('w') as f:
             del self.environ['FOO_PROFILE']
@@ -669,14 +675,14 @@ class TestCreateClient(BaseSessionTest):
             ]
             self.assertEqual(call_kwargs['verify'], 'config-certs.pem')
 
-    @mock.patch('botocore.client.ClientCreator')
+    @mock.patch('awscli.botocore.client.ClientCreator')
     def test_create_client_with_ca_bundle_from_env_var(self, client_creator):
         self.environ['FOO_AWS_CA_BUNDLE'] = 'env-certs.pem'
         self.session.create_client('ec2', 'us-west-2')
         call_kwargs = client_creator.return_value.create_client.call_args[1]
         self.assertEqual(call_kwargs['verify'], 'env-certs.pem')
 
-    @mock.patch('botocore.client.ClientCreator')
+    @mock.patch('awscli.botocore.client.ClientCreator')
     def test_create_client_with_verify_param(self, client_creator):
         self.session.create_client(
             'ec2', 'us-west-2', verify='verify-certs.pem'
@@ -684,7 +690,7 @@ class TestCreateClient(BaseSessionTest):
         call_kwargs = client_creator.return_value.create_client.call_args[1]
         self.assertEqual(call_kwargs['verify'], 'verify-certs.pem')
 
-    @mock.patch('botocore.client.ClientCreator')
+    @mock.patch('awscli.botocore.client.ClientCreator')
     def test_create_client_verify_param_overrides_all(self, client_creator):
         with temporary_file('w') as f:
             # Set the ca cert using the config file
@@ -745,7 +751,7 @@ class TestSessionComponent(BaseSessionTest):
 
 class TestComponentLocator(unittest.TestCase):
     def setUp(self):
-        self.components = botocore.session.ComponentLocator()
+        self.components = awscli.botocore.session.ComponentLocator()
 
     def test_unknown_component_raises_exception(self):
         with self.assertRaises(ValueError):
@@ -819,6 +825,6 @@ class TestDefaultClientConfig(BaseSessionTest):
         self.assertEqual(self.session.get_default_client_config(), None)
 
     def test_set_and_get_client_config(self):
-        client_config = botocore.config.Config()
+        client_config = awscli.botocore.config.Config()
         self.session.set_default_client_config(client_config)
         self.assertIs(self.session.get_default_client_config(), client_config)

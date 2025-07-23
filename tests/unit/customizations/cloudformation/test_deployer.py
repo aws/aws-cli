@@ -1,6 +1,5 @@
-import botocore.session
-from botocore.stub import Stubber
-
+import awscli.botocore.session
+from awscli.botocore.stub import Stubber
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.deployer import (
     ChangeSetResult,
@@ -13,7 +12,7 @@ from tests.unit.customizations.cloudformation import BaseYAMLTest
 class TestDeployer(BaseYAMLTest):
     def setUp(self):
         super(TestDeployer, self).setUp()
-        client = botocore.session.get_session().create_client(
+        client = awscli.botocore.session.get_session().create_client(
             'cloudformation', region_name="us-east-1"
         )
         self.stub_client = Stubber(client)
@@ -79,7 +78,7 @@ class TestDeployer(BaseYAMLTest):
             'describe_stacks', "ValidationError", "Service is bad"
         )
         with self.stub_client:
-            with self.assertRaises(botocore.exceptions.ClientError):
+            with self.assertRaises(awscli.botocore.exceptions.ClientError):
                 self.deployer.has_stack("stack_name")
 
     def test_create_changeset_success(self):
@@ -108,13 +107,13 @@ class TestDeployer(BaseYAMLTest):
         self.deployer.has_stack.return_value = False
 
         expected_params = {
-            "ChangeSetName": botocore.stub.ANY,
+            "ChangeSetName": awscli.botocore.stub.ANY,
             "StackName": stack_name,
             "TemplateBody": template,
             "ChangeSetType": "CREATE",
             "Parameters": filtered_parameters,
             "Capabilities": capabilities,
-            "Description": botocore.stub.ANY,
+            "Description": awscli.botocore.stub.ANY,
             "RoleARN": role_arn,
             "NotificationARNs": notification_arns,
             "Tags": tags,
@@ -211,13 +210,13 @@ class TestDeployer(BaseYAMLTest):
         self.deployer.has_stack.return_value = False
 
         expected_params = {
-            "ChangeSetName": botocore.stub.ANY,
+            "ChangeSetName": awscli.botocore.stub.ANY,
             "StackName": stack_name,
             "TemplateURL": template_url,
             "ChangeSetType": "CREATE",
             "Parameters": filtered_parameters,
             "Capabilities": capabilities,
-            "Description": botocore.stub.ANY,
+            "Description": awscli.botocore.stub.ANY,
             "RoleARN": role_arn,
             "Tags": [],
             "NotificationARNs": notification_arns,
@@ -301,7 +300,7 @@ class TestDeployer(BaseYAMLTest):
             'create_change_set', "Somethign is wrong", "Service is bad"
         )
         with self.stub_client:
-            with self.assertRaises(botocore.exceptions.ClientError):
+            with self.assertRaises(awscli.botocore.exceptions.ClientError):
                 self.deployer.create_changeset(
                     stack_name,
                     template,
@@ -356,7 +355,7 @@ class TestDeployer(BaseYAMLTest):
             'execute_change_set', "Somethign is wrong", "Service is bad"
         )
         with self.stub_client:
-            with self.assertRaises(botocore.exceptions.ClientError):
+            with self.assertRaises(awscli.botocore.exceptions.ClientError):
                 self.deployer.execute_changeset(changeset_id, stack_name)
 
     def test_create_and_wait_for_changeset_successful(self):
@@ -449,7 +448,7 @@ class TestDeployer(BaseYAMLTest):
             "StatusReason": "The submitted information didn't contain changes.",
         }
 
-        waiter_error = botocore.exceptions.WaiterError(
+        waiter_error = awscli.botocore.exceptions.WaiterError(
             name="name", reason="reason", last_response=response
         )
         mock_waiter.wait.side_effect = waiter_error
@@ -482,7 +481,7 @@ class TestDeployer(BaseYAMLTest):
             "StatusReason": "No updates are to be performed",
         }
 
-        waiter_error = botocore.exceptions.WaiterError(
+        waiter_error = awscli.botocore.exceptions.WaiterError(
             name="name", reason="reason", last_response=response
         )
         mock_waiter.wait.side_effect = waiter_error
@@ -512,7 +511,7 @@ class TestDeployer(BaseYAMLTest):
 
         response = {"Status": "FAILED", "StatusReason": "some reason"}
 
-        waiter_error = botocore.exceptions.WaiterError(
+        waiter_error = awscli.botocore.exceptions.WaiterError(
             name="name", reason="reason", last_response=response
         )
         mock_waiter.wait.side_effect = waiter_error
@@ -540,7 +539,7 @@ class TestDeployer(BaseYAMLTest):
         mock_waiter = mock.Mock()
         mock_client.get_waiter.return_value = mock_waiter
 
-        waiter_error = botocore.exceptions.WaiterError(
+        waiter_error = awscli.botocore.exceptions.WaiterError(
             name="name", reason="reason", last_response={}
         )
         mock_waiter.wait.side_effect = waiter_error

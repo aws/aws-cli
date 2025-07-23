@@ -14,12 +14,12 @@ import logging
 import os
 import sys
 
-from botocore.client import Config
-from botocore.useragent import register_feature_id
-from botocore.utils import ensure_boolean, is_s3express_bucket
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
+from awscli.botocore.client import Config
+from awscli.botocore.useragent import register_feature_id
+from awscli.botocore.utils import ensure_boolean, is_s3express_bucket
 from awscli.compat import queue
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError

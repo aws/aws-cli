@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.27.58
+=======
+
+* api-change:``workspaces-thin-client``: Added the lastUserId parameter to the ListDevices and GetDevice API.
+* api-change:``glue``: AWS Glue now supports dynamic session policies for job executions. This feature allows you to specify custom, fine-grained permissions for each job run without creating multiple IAM roles.
+* api-change:``ec2``: Added support for skip-os-shutdown option for the EC2 instance stop and terminate operations. This feature enables customers to bypass the graceful OS shutdown, supporting faster state transitions when instance data preservation isn't critical.
+
+
 2.27.57
 =======
 

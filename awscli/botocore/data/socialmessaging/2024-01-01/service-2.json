@@ -24,12 +24,73 @@
       "output":{"shape":"AssociateWhatsAppBusinessAccountOutput"},
       "errors":[
         {"shape":"ValidationException"},
+        {"shape":"LimitExceededException"},
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidParametersException"},
         {"shape":"ThrottledRequestException"},
         {"shape":"DependencyException"}
       ],
       "documentation":"<p>This is only used through the Amazon Web Services console during sign-up to associate your WhatsApp Business Account to your Amazon Web Services account.</p>"
+    },
+    "CreateWhatsAppMessageTemplate":{
+      "name":"CreateWhatsAppMessageTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/whatsapp/template/put",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateWhatsAppMessageTemplateInput"},
+      "output":{"shape":"CreateWhatsAppMessageTemplateOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Creates a new WhatsApp message template from a custom definition.</p>"
+    },
+    "CreateWhatsAppMessageTemplateFromLibrary":{
+      "name":"CreateWhatsAppMessageTemplateFromLibrary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/whatsapp/template/create",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateWhatsAppMessageTemplateFromLibraryInput"},
+      "output":{"shape":"CreateWhatsAppMessageTemplateFromLibraryOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Creates a new WhatsApp message template using a template from Meta's template library.</p>"
+    },
+    "CreateWhatsAppMessageTemplateMedia":{
+      "name":"CreateWhatsAppMessageTemplateMedia",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/whatsapp/template/media",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateWhatsAppMessageTemplateMediaInput"},
+      "output":{"shape":"CreateWhatsAppMessageTemplateMediaOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Uploads media for use in a WhatsApp message template.</p>"
     },
     "DeleteWhatsAppMessageMedia":{
       "name":"DeleteWhatsAppMessageMedia",
@@ -51,6 +112,27 @@
         {"shape":"DependencyException"}
       ],
       "documentation":"<p>Delete a media object from the WhatsApp service. If the object is still in an Amazon S3 bucket you should delete it from there too.</p>",
+      "idempotent":true
+    },
+    "DeleteWhatsAppMessageTemplate":{
+      "name":"DeleteWhatsAppMessageTemplate",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/whatsapp/template",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteWhatsAppMessageTemplateInput"},
+      "output":{"shape":"DeleteWhatsAppMessageTemplateOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Deletes a WhatsApp message template.</p>",
       "idempotent":true
     },
     "DisassociateWhatsAppBusinessAccount":{
@@ -134,6 +216,26 @@
       ],
       "documentation":"<p>Get a media file from the WhatsApp service. On successful completion the media file is retrieved from Meta and stored in the specified Amazon S3 bucket. Use either <code>destinationS3File</code> or <code>destinationS3PresignedUrl</code> for the destination. If both are used then an <code>InvalidParameterException</code> is returned.</p>"
     },
+    "GetWhatsAppMessageTemplate":{
+      "name":"GetWhatsAppMessageTemplate",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/whatsapp/template",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWhatsAppMessageTemplateInput"},
+      "output":{"shape":"GetWhatsAppMessageTemplateOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Retrieves a specific WhatsApp message template.</p>"
+    },
     "ListLinkedWhatsAppBusinessAccounts":{
       "name":"ListLinkedWhatsAppBusinessAccounts",
       "http":{
@@ -170,6 +272,46 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>List all tags associated with a resource, such as a phone number or WABA.</p>"
+    },
+    "ListWhatsAppMessageTemplates":{
+      "name":"ListWhatsAppMessageTemplates",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/whatsapp/template/list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListWhatsAppMessageTemplatesInput"},
+      "output":{"shape":"ListWhatsAppMessageTemplatesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Lists WhatsApp message templates for a specific WhatsApp Business Account.</p>"
+    },
+    "ListWhatsAppTemplateLibrary":{
+      "name":"ListWhatsAppTemplateLibrary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/whatsapp/template/library",
+        "responseCode":200
+      },
+      "input":{"shape":"ListWhatsAppTemplateLibraryInput"},
+      "output":{"shape":"ListWhatsAppTemplateLibraryOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Lists templates available in Meta's template library for WhatsApp messaging.</p>"
     },
     "PostWhatsAppMessageMedia":{
       "name":"PostWhatsAppMessageMedia",
@@ -266,6 +408,26 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Removes the specified tags from a resource. </p>"
+    },
+    "UpdateWhatsAppMessageTemplate":{
+      "name":"UpdateWhatsAppMessageTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/whatsapp/template",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateWhatsAppMessageTemplateInput"},
+      "output":{"shape":"UpdateWhatsAppMessageTemplateOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Updates an existing WhatsApp message template.</p>"
     }
   },
   "shapes":{
@@ -292,6 +454,22 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "AddContactNumber":{
+      "type":"boolean",
+      "box":true
+    },
+    "AddLearnMoreLink":{
+      "type":"boolean",
+      "box":true
+    },
+    "AddSecurityRecommendation":{
+      "type":"boolean",
+      "box":true
+    },
+    "AddTrackPackageLink":{
+      "type":"boolean",
+      "box":true
     },
     "Arn":{
       "type":"string",
@@ -335,6 +513,107 @@
       "type":"boolean",
       "box":true
     },
+    "ButtonType":{
+      "type":"string",
+      "max":25,
+      "min":1
+    },
+    "CodeExpirationMinutes":{
+      "type":"integer",
+      "box":true
+    },
+    "CreateWhatsAppMessageTemplateFromLibraryInput":{
+      "type":"structure",
+      "required":[
+        "metaLibraryTemplate",
+        "id"
+      ],
+      "members":{
+        "metaLibraryTemplate":{
+          "shape":"MetaLibraryTemplate",
+          "documentation":"<p>The template configuration from Meta's library, including customizations for buttons and body text.</p>"
+        },
+        "id":{
+          "shape":"LinkedWhatsAppBusinessAccountId",
+          "documentation":"<p>The ID of the WhatsApp Business Account to associate with this template.</p>"
+        }
+      }
+    },
+    "CreateWhatsAppMessageTemplateFromLibraryOutput":{
+      "type":"structure",
+      "members":{
+        "metaTemplateId":{
+          "shape":"MetaTemplateId",
+          "documentation":"<p>The numeric ID assigned to the template by Meta.</p>"
+        },
+        "templateStatus":{
+          "shape":"String",
+          "documentation":"<p>The status of the created template (for example, PENDING or APPROVED).</p>"
+        },
+        "category":{
+          "shape":"MetaTemplateCategory",
+          "documentation":"<p>The category of the template (for example, UTILITY or MARKETING).</p>"
+        }
+      }
+    },
+    "CreateWhatsAppMessageTemplateInput":{
+      "type":"structure",
+      "required":[
+        "templateDefinition",
+        "id"
+      ],
+      "members":{
+        "templateDefinition":{
+          "shape":"MetaTemplateDefinition",
+          "documentation":"<p>The complete template definition as a JSON blob.</p>"
+        },
+        "id":{
+          "shape":"LinkedWhatsAppBusinessAccountId",
+          "documentation":"<p>The ID of the WhatsApp Business Account to associate with this template.</p>"
+        }
+      }
+    },
+    "CreateWhatsAppMessageTemplateMediaInput":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"LinkedWhatsAppBusinessAccountId",
+          "documentation":"<p>The ID of the WhatsApp Business Account associated with this media upload.</p>"
+        },
+        "sourceS3File":{"shape":"S3File"}
+      }
+    },
+    "CreateWhatsAppMessageTemplateMediaOutput":{
+      "type":"structure",
+      "members":{
+        "metaHeaderHandle":{
+          "shape":"String",
+          "documentation":"<p>The handle assigned to the uploaded media by Meta, used to reference the media in templates.</p>"
+        }
+      }
+    },
+    "CreateWhatsAppMessageTemplateOutput":{
+      "type":"structure",
+      "members":{
+        "metaTemplateId":{
+          "shape":"MetaTemplateId",
+          "documentation":"<p>The numeric ID assigned to the template by Meta.</p>"
+        },
+        "templateStatus":{
+          "shape":"String",
+          "documentation":"<p>The status of the created template, such as PENDING or APPROVED..</p>"
+        },
+        "category":{
+          "shape":"MetaTemplateCategory",
+          "documentation":"<p>The category of the template, such as UTILITY or MARKETING.</p>"
+        }
+      }
+    },
+    "DeleteAllLanguages":{
+      "type":"boolean",
+      "box":true
+    },
     "DeleteWhatsAppMessageMediaInput":{
       "type":"structure",
       "required":[
@@ -363,6 +642,44 @@
           "shape":"Boolean",
           "documentation":"<p>Success indicator for deleting the media file.</p>"
         }
+      }
+    },
+    "DeleteWhatsAppMessageTemplateInput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "templateName"
+      ],
+      "members":{
+        "metaTemplateId":{
+          "shape":"MetaTemplateId",
+          "documentation":"<p>The numeric ID of the template assigned by Meta.</p>",
+          "location":"querystring",
+          "locationName":"metaTemplateId"
+        },
+        "deleteAllLanguages":{
+          "shape":"DeleteAllLanguages",
+          "documentation":"<p>If true, deletes all language versions of the template.</p>",
+          "location":"querystring",
+          "locationName":"deleteAllTemplates"
+        },
+        "id":{
+          "shape":"LinkedWhatsAppBusinessAccountId",
+          "documentation":"<p>The ID of the WhatsApp Business Account associated with this template.</p>",
+          "location":"querystring",
+          "locationName":"id"
+        },
+        "templateName":{
+          "shape":"MetaTemplateName",
+          "documentation":"<p>The name of the template to delete.</p>",
+          "location":"querystring",
+          "locationName":"templateName"
+        }
+      }
+    },
+    "DeleteWhatsAppMessageTemplateOutput":{
+      "type":"structure",
+      "members":{
       }
     },
     "DependencyException":{
@@ -399,6 +716,23 @@
       "max":2048,
       "min":0,
       "pattern":"arn:.*:[a-z-]+([/:](.*))?"
+    },
+    "Filter":{
+      "type":"map",
+      "key":{"shape":"FilterKeyString"},
+      "value":{"shape":"FilterValueString"},
+      "max":10,
+      "min":0
+    },
+    "FilterKeyString":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "FilterValueString":{
+      "type":"string",
+      "max":100,
+      "min":1
     },
     "GetLinkedWhatsAppBusinessAccountInput":{
       "type":"structure",
@@ -485,6 +819,36 @@
         }
       }
     },
+    "GetWhatsAppMessageTemplateInput":{
+      "type":"structure",
+      "required":[
+        "metaTemplateId",
+        "id"
+      ],
+      "members":{
+        "metaTemplateId":{
+          "shape":"MetaTemplateId",
+          "documentation":"<p>The numeric ID of the template assigned by Meta.</p>",
+          "location":"querystring",
+          "locationName":"metaTemplateId"
+        },
+        "id":{
+          "shape":"LinkedWhatsAppBusinessAccountId",
+          "documentation":"<p>The ID of the WhatsApp Business Account associated with this template.</p>",
+          "location":"querystring",
+          "locationName":"id"
+        }
+      }
+    },
+    "GetWhatsAppMessageTemplateOutput":{
+      "type":"structure",
+      "members":{
+        "template":{
+          "shape":"MetaTemplate",
+          "documentation":"<p>The complete template definition as a JSON string (maximum 6000 characters).</p>"
+        }
+      }
+    },
     "Headers":{
       "type":"map",
       "key":{"shape":"String"},
@@ -520,6 +884,108 @@
     "IsoCountryCode":{
       "type":"string",
       "pattern":"[A-Z]{2}"
+    },
+    "LibraryTemplateBodyInputs":{
+      "type":"structure",
+      "members":{
+        "addContactNumber":{
+          "shape":"AddContactNumber",
+          "documentation":"<p>When true, includes a contact number in the template body.</p>"
+        },
+        "addLearnMoreLink":{
+          "shape":"AddLearnMoreLink",
+          "documentation":"<p>When true, includes a \"learn more\" link in the template body.</p>"
+        },
+        "addSecurityRecommendation":{
+          "shape":"AddSecurityRecommendation",
+          "documentation":"<p>When true, includes security recommendations in the template body.</p>"
+        },
+        "addTrackPackageLink":{
+          "shape":"AddTrackPackageLink",
+          "documentation":"<p>When true, includes a package tracking link in the template body.</p>"
+        },
+        "codeExpirationMinutes":{
+          "shape":"CodeExpirationMinutes",
+          "documentation":"<p>The number of minutes until a verification code or OTP expires.</p>"
+        }
+      },
+      "documentation":"<p>Configuration options for customizing the body content of a template from Meta's library.</p>"
+    },
+    "LibraryTemplateButtonInput":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"ButtonType",
+          "documentation":"<p>The type of button (for example, QUICK_REPLY, CALL, or URL).</p>"
+        },
+        "phoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The phone number in E.164 format for CALL-type buttons.</p>"
+        },
+        "url":{
+          "shape":"MetaUrlWithSuffixExample",
+          "documentation":"<p>The URL with dynamic parameters for URL-type buttons.</p>"
+        },
+        "otpType":{
+          "shape":"OtpType",
+          "documentation":"<p>The type of one-time password for OTP buttons.</p>"
+        },
+        "zeroTapTermsAccepted":{
+          "shape":"ZeroTapTermsAccepted",
+          "documentation":"<p>When true, indicates acceptance of zero-tap terms for the button.</p>"
+        },
+        "supportedApps":{
+          "shape":"SupportedApps",
+          "documentation":"<p>List of supported applications for this button type.</p>"
+        }
+      },
+      "documentation":"<p>Configuration options for customizing buttons in a template from Meta's library.</p>"
+    },
+    "LibraryTemplateButtonList":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"ButtonType",
+          "documentation":"<p>The type of button (for example, QUICK_REPLY, CALL, or URL).</p>"
+        },
+        "text":{
+          "shape":"MetaText",
+          "documentation":"<p>The text displayed on the button (maximum 40 characters).</p>"
+        },
+        "phoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The phone number in E.164 format for CALL-type buttons.</p>"
+        },
+        "url":{
+          "shape":"MetaUrl",
+          "documentation":"<p>The URL for URL-type buttons.</p>"
+        },
+        "otpType":{
+          "shape":"OtpType",
+          "documentation":"<p>The type of one-time password for OTP buttons.</p>"
+        },
+        "zeroTapTermsAccepted":{
+          "shape":"ZeroTapTermsAccepted",
+          "documentation":"<p>When true, indicates acceptance of zero-tap terms for the button.</p>"
+        },
+        "supportedApps":{
+          "shape":"SupportedApps",
+          "documentation":"<p>List of supported applications for this button type.</p>"
+        }
+      },
+      "documentation":"<p>Defines a button in a template from Meta's library.</p>"
+    },
+    "LimitExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request was denied because it would exceed one or more service quotas or limits.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
     },
     "LinkedAccountWithIncompleteSetup":{
       "type":"map",
@@ -716,6 +1182,80 @@
         }
       }
     },
+    "ListWhatsAppMessageTemplatesInput":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"LinkedWhatsAppBusinessAccountId",
+          "documentation":"<p>The ID of the WhatsApp Business Account to list templates for.</p>",
+          "location":"querystring",
+          "locationName":"id"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page (1-100).</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListWhatsAppMessageTemplatesOutput":{
+      "type":"structure",
+      "members":{
+        "templates":{
+          "shape":"TemplateSummaryList",
+          "documentation":"<p>A list of template summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next page of results, if any.</p>"
+        }
+      }
+    },
+    "ListWhatsAppTemplateLibraryInput":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page (1-100).</p>"
+        },
+        "id":{
+          "shape":"LinkedWhatsAppBusinessAccountId",
+          "documentation":"<p>The ID of the WhatsApp Business Account to list library templates for.</p>",
+          "location":"querystring",
+          "locationName":"id"
+        },
+        "filters":{
+          "shape":"Filter",
+          "documentation":"<p>Map of filters to apply (searchKey, topic, usecase, industry, language).</p>"
+        }
+      }
+    },
+    "ListWhatsAppTemplateLibraryOutput":{
+      "type":"structure",
+      "members":{
+        "metaLibraryTemplates":{
+          "shape":"MetaLibraryTemplatesList",
+          "documentation":"<p>A list of templates from Meta's library.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next page of results, if any.</p>"
+        }
+      }
+    },
     "Long":{
       "type":"long",
       "box":true
@@ -726,9 +1266,210 @@
       "max":100,
       "min":1
     },
+    "MetaIndustries":{
+      "type":"list",
+      "member":{"shape":"MetaIndustry"}
+    },
+    "MetaIndustry":{
+      "type":"string",
+      "max":25,
+      "min":1
+    },
+    "MetaLibraryTemplate":{
+      "type":"structure",
+      "required":[
+        "templateName",
+        "libraryTemplateName",
+        "templateCategory",
+        "templateLanguage"
+      ],
+      "members":{
+        "templateName":{
+          "shape":"MetaTemplateName",
+          "documentation":"<p>The name to assign to the template.</p>"
+        },
+        "libraryTemplateName":{
+          "shape":"MetaTemplateName",
+          "documentation":"<p>The name of the template in Meta's library.</p>"
+        },
+        "templateCategory":{
+          "shape":"MetaTemplateCategory",
+          "documentation":"<p>The category of the template (for example, UTILITY or MARKETING).</p>"
+        },
+        "templateLanguage":{
+          "shape":"MetaTemplateLanguage",
+          "documentation":"<p>The language code for the template (for example, en_US).</p>"
+        },
+        "libraryTemplateButtonInputs":{
+          "shape":"MetaLibraryTemplateButtonInputs",
+          "documentation":"<p>Button customizations for the template.</p>"
+        },
+        "libraryTemplateBodyInputs":{
+          "shape":"LibraryTemplateBodyInputs",
+          "documentation":"<p>Body text customizations for the template.</p>"
+        }
+      },
+      "documentation":"<p>Represents a template from Meta's library with customization options.</p>"
+    },
+    "MetaLibraryTemplateButtonInputs":{
+      "type":"list",
+      "member":{"shape":"LibraryTemplateButtonInput"}
+    },
+    "MetaLibraryTemplateButtonList":{
+      "type":"list",
+      "member":{"shape":"LibraryTemplateButtonList"}
+    },
+    "MetaLibraryTemplateDefinition":{
+      "type":"structure",
+      "members":{
+        "templateName":{
+          "shape":"MetaTemplateName",
+          "documentation":"<p>The name of the template.</p>"
+        },
+        "templateLanguage":{
+          "shape":"MetaTemplateLanguage",
+          "documentation":"<p>The language code for the template (for example, en_US).</p>"
+        },
+        "templateCategory":{
+          "shape":"MetaTemplateCategory",
+          "documentation":"<p>The category of the template (for example, UTILITY or MARKETING).</p>"
+        },
+        "templateTopic":{
+          "shape":"MetaTemplateTopic",
+          "documentation":"<p>The topic or subject matter of the template.</p>"
+        },
+        "templateUseCase":{
+          "shape":"MetaTemplateUseCase",
+          "documentation":"<p>The intended use case for the template.</p>"
+        },
+        "templateIndustry":{
+          "shape":"MetaIndustries",
+          "documentation":"<p>The industries the template is designed for.</p>"
+        },
+        "templateHeader":{
+          "shape":"MetaTemplateHeader",
+          "documentation":"<p>The header text of the template.</p>"
+        },
+        "templateBody":{
+          "shape":"MetaTemplateBody",
+          "documentation":"<p>The body text of the template.</p>"
+        },
+        "templateButtons":{
+          "shape":"MetaLibraryTemplateButtonList",
+          "documentation":"<p>The buttons included in the template.</p>"
+        },
+        "templateId":{
+          "shape":"MetaTemplateId",
+          "documentation":"<p>The ID of the template in Meta's library.</p>"
+        }
+      },
+      "documentation":"<p>Defines the complete structure and content of a template in Meta's library.</p>"
+    },
+    "MetaLibraryTemplatesList":{
+      "type":"list",
+      "member":{"shape":"MetaLibraryTemplateDefinition"}
+    },
+    "MetaTemplate":{
+      "type":"string",
+      "max":6000,
+      "min":1
+    },
+    "MetaTemplateBody":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
+    "MetaTemplateCategory":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "MetaTemplateComponents":{
+      "type":"blob",
+      "max":3000,
+      "min":1
+    },
+    "MetaTemplateDefinition":{
+      "type":"blob",
+      "max":6000,
+      "min":1
+    },
+    "MetaTemplateHeader":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "MetaTemplateId":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[0-9]+"
+    },
+    "MetaTemplateLanguage":{
+      "type":"string",
+      "max":6,
+      "min":1
+    },
+    "MetaTemplateName":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "MetaTemplateQualityScore":{
+      "type":"string",
+      "max":20,
+      "min":1
+    },
+    "MetaTemplateStatus":{
+      "type":"string",
+      "max":20,
+      "min":1
+    },
+    "MetaTemplateTopic":{
+      "type":"string",
+      "max":20,
+      "min":1
+    },
+    "MetaTemplateUseCase":{
+      "type":"string",
+      "max":30,
+      "min":1
+    },
+    "MetaText":{
+      "type":"string",
+      "max":40,
+      "min":1
+    },
+    "MetaUrl":{
+      "type":"string",
+      "max":400,
+      "min":1
+    },
+    "MetaUrlWithSuffixExample":{
+      "type":"map",
+      "key":{"shape":"MetaUrlWithSuffixExampleKeyString"},
+      "value":{"shape":"MetaUrlWithSuffixExampleValueString"},
+      "max":10,
+      "min":0
+    },
+    "MetaUrlWithSuffixExampleKeyString":{
+      "type":"string",
+      "max":30,
+      "min":1
+    },
+    "MetaUrlWithSuffixExampleValueString":{
+      "type":"string",
+      "max":400,
+      "min":1
+    },
     "NextToken":{
       "type":"string",
       "max":600,
+      "min":1
+    },
+    "OtpType":{
+      "type":"string",
+      "max":25,
       "min":1
     },
     "PhoneNumber":{
@@ -899,6 +1640,27 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "SupportedApp":{
+      "type":"map",
+      "key":{"shape":"SupportedAppKeyString"},
+      "value":{"shape":"SupportedAppValueString"},
+      "max":10,
+      "min":0
+    },
+    "SupportedAppKeyString":{
+      "type":"string",
+      "max":30,
+      "min":1
+    },
+    "SupportedAppValueString":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "SupportedApps":{
+      "type":"list",
+      "member":{"shape":"SupportedApp"}
+    },
     "Tag":{
       "type":"structure",
       "required":["key"],
@@ -954,6 +1716,40 @@
       "max":256,
       "min":0
     },
+    "TemplateSummary":{
+      "type":"structure",
+      "members":{
+        "templateName":{
+          "shape":"MetaTemplateName",
+          "documentation":"<p>The name of the template.</p>"
+        },
+        "metaTemplateId":{
+          "shape":"MetaTemplateId",
+          "documentation":"<p>The numeric ID assigned to the template by Meta.</p>"
+        },
+        "templateStatus":{
+          "shape":"MetaTemplateStatus",
+          "documentation":"<p>The current status of the template (for example, APPROVED, PENDING, or REJECTED).</p>"
+        },
+        "templateQualityScore":{
+          "shape":"MetaTemplateQualityScore",
+          "documentation":"<p>The quality score assigned to the template by Meta.</p>"
+        },
+        "templateLanguage":{
+          "shape":"MetaTemplateLanguage",
+          "documentation":"<p>The language code of the template (for example, en_US).</p>"
+        },
+        "templateCategory":{
+          "shape":"MetaTemplateCategory",
+          "documentation":"<p>The category of the template (for example, UTILITY or MARKETING).</p>"
+        }
+      },
+      "documentation":"<p>Provides a summary of a WhatsApp message template's key attributes.</p>"
+    },
+    "TemplateSummaryList":{
+      "type":"list",
+      "member":{"shape":"TemplateSummary"}
+    },
     "ThrottledRequestException":{
       "type":"structure",
       "members":{
@@ -997,6 +1793,36 @@
           "shape":"Integer",
           "documentation":"<p>The status code of the untag resource operation.</p>"
         }
+      }
+    },
+    "UpdateWhatsAppMessageTemplateInput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "metaTemplateId"
+      ],
+      "members":{
+        "id":{
+          "shape":"LinkedWhatsAppBusinessAccountId",
+          "documentation":"<p>The ID of the WhatsApp Business Account associated with this template.</p>"
+        },
+        "metaTemplateId":{
+          "shape":"MetaTemplateId",
+          "documentation":"<p>The numeric ID of the template assigned by Meta.</p>"
+        },
+        "templateCategory":{
+          "shape":"MetaTemplateCategory",
+          "documentation":"<p>The new category for the template (for example, UTILITY or MARKETING).</p>"
+        },
+        "templateComponents":{
+          "shape":"MetaTemplateComponents",
+          "documentation":"<p>The updated components of the template as a JSON blob (maximum 3000 characters).</p>"
+        }
+      }
+    },
+    "UpdateWhatsAppMessageTemplateOutput":{
+      "type":"structure",
+      "members":{
       }
     },
     "ValidationException":{
@@ -1152,6 +1978,10 @@
         "qualityRating":{
           "shape":"WhatsAppPhoneNumberQualityRating",
           "documentation":"<p>The quality rating of the phone number.</p>"
+        },
+        "dataLocalizationRegion":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The geographic region where the WhatsApp phone number's data is stored and processed.</p>"
         }
       },
       "documentation":"<p>The details of your WhatsApp phone number.</p>"
@@ -1215,6 +2045,10 @@
         "qualityRating":{
           "shape":"WhatsAppPhoneNumberQualityRating",
           "documentation":"<p>The quality rating of the phone number. This is from Meta.</p>"
+        },
+        "dataLocalizationRegion":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The geographic region where the WhatsApp phone number's data is stored and processed.</p>"
         }
       },
       "documentation":"<p>The details of a linked phone number.</p>"
@@ -1256,6 +2090,10 @@
         "accessToken":{
           "shape":"WhatsAppSignupCallbackAccessTokenString",
           "documentation":"<p>The access token for your WhatsApp Business Account. The <code>accessToken</code> value is provided by Meta.</p>"
+        },
+        "callbackUrl":{
+          "shape":"WhatsAppSignupCallbackCallbackUrlString",
+          "documentation":"<p>The URL where WhatsApp will send callback notifications for this account.</p>"
         }
       },
       "documentation":"<p>Contains the <code>accessToken</code> provided by Meta during signup.</p>"
@@ -1263,6 +2101,11 @@
     "WhatsAppSignupCallbackAccessTokenString":{
       "type":"string",
       "max":1000,
+      "min":0
+    },
+    "WhatsAppSignupCallbackCallbackUrlString":{
+      "type":"string",
+      "max":100,
       "min":0
     },
     "WhatsAppSignupCallbackResult":{
@@ -1278,6 +2121,10 @@
         }
       },
       "documentation":"<p>Contains the results of WhatsAppSignupCallback.</p>"
+    },
+    "ZeroTapTermsAccepted":{
+      "type":"boolean",
+      "box":true
     }
   },
   "documentation":"<p> <i>Amazon Web Services End User Messaging Social</i>, also referred to as Social messaging, is a messaging service that enables application developers to incorporate WhatsApp into their existing workflows. The <i>Amazon Web Services End User Messaging Social API</i> provides information about the <i>Amazon Web Services End User Messaging Social API</i> resources, including supported HTTP methods, parameters, and schemas.</p> <p>The <i>Amazon Web Services End User Messaging Social API</i> provides programmatic access to options that are unique to the WhatsApp Business Platform.</p> <p>If you're new to the <i>Amazon Web Services End User Messaging Social API</i>, it's also helpful to review <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/what-is-service.html\">What is Amazon Web Services End User Messaging Social</a> in the <i>Amazon Web Services End User Messaging Social User Guide</i>. The <i>Amazon Web Services End User Messaging Social User Guide</i> provides tutorials, code samples, and procedures that demonstrate how to use <i>Amazon Web Services End User Messaging Social API</i> features programmatically and how to integrate functionality into applications. The guide also provides key information, such as integration with other Amazon Web Services services, and the quotas that apply to use of the service.</p> <p> <b>Regional availability</b> </p> <p>The <i>Amazon Web Services End User Messaging Social API</i> is available across several Amazon Web Services Regions and it provides a dedicated endpoint for each of these Regions. For a list of all the Regions and endpoints where the API is currently available, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande.html#pinpoint_region\">Amazon Web Services Service Endpoints</a> and <a href=\"https://docs.aws.amazon.com/general/latest/gr/end-user-messaging.html\">Amazon Web Services End User Messaging endpoints and quotas</a> in the Amazon Web Services General Reference. To learn more about Amazon Web Services Regions, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande-manage.html\">Managing Amazon Web Services Regions</a> in the Amazon Web Services General Reference.</p> <p>In each Region, Amazon Web Services maintains multiple Availability Zones. These Availability Zones are physically isolated from each other, but are united by private, low-latency, high-throughput, and highly redundant network connections. These Availability Zones enable us to provide very high levels of availability and redundancy, while also minimizing latency. To learn more about the number of Availability Zones that are available in each Region, see <a href=\"https://aws.amazon.com/about-aws/global-infrastructure/\">Amazon Web Services Global Infrastructure.</a> </p>"

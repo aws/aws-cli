@@ -188,6 +188,7 @@ class TransferManager:
         'SSEKMSEncryptionContext',
         'Tagging',
         'WebsiteRedirectLocation',
+        'IfNoneMatch',
     ]
 
     ALLOWED_UPLOAD_ARGS = (
@@ -195,7 +196,6 @@ class TransferManager:
         + [
             'ChecksumType',
             'MpuObjectSize',
-            'IfNoneMatch',
         ]
         + FULL_OBJECT_CHECKSUM_ARGS
     )

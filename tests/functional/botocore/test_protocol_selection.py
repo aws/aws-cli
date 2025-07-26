@@ -12,9 +12,9 @@
 # language governing permissions and limitations under the License.
 from unittest.mock import patch
 
-from botocore.parsers import RestJSONParser
-from botocore.session import Session
-from botocore.utils import PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
+from awscli.botocore.parsers import RestJSONParser
+from awscli.botocore.session import Session
+from awscli.botocore.utils import PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
 from tests import ClientHTTPStubber
 from tests.functional.botocore import TEST_MODELS_DIR
 
@@ -54,7 +54,9 @@ def test_correct_protocol_selection():
         called['was_called'] = True
         return original_do_parse(self, *args, **kwargs)
 
-    with patch("botocore.parsers.RestJSONParser._do_parse", tracking_do_parse):
+    with patch(
+        "awscli.botocore.parsers.RestJSONParser._do_parse", tracking_do_parse
+    ):
         called = {'was_called': False}
         with ClientHTTPStubber(client) as stubber:
             stubber.add_response(

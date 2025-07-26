@@ -13,7 +13,7 @@
 
 """Builtin event handlers.
 
-This module contains builtin handlers for events emitted by botocore.
+This module contains builtin handlers for events emitted by awscli.botocore.
 """
 
 import base64
@@ -24,10 +24,10 @@ import uuid
 import warnings
 from io import BytesIO
 
-import botocore
-import botocore.auth
-from botocore import UNSIGNED, utils
-from botocore.compat import (
+import awscli.botocore
+import awscli.botocore.auth
+from awscli.botocore import UNSIGNED, utils
+from awscli.botocore.compat import (
     MD5_AVAILABLE,  # noqa
     ETree,
     OrderedDict,
@@ -40,25 +40,25 @@ from botocore.compat import (
     urlsplit,
     urlunsplit,
 )
-from botocore.docs.utils import (
+from awscli.botocore.docs.utils import (
     AppendParamDocumentation,
     AutoPopulatedParam,
     HideParamFromOperations,
 )
-from botocore.exceptions import (
+from awscli.botocore.exceptions import (
     AliasConflictParameterError,
     MissingServiceIdError,  # noqa
     ParamValidationError,
     UnsupportedTLSVersionWarning,
 )
-from botocore.regions import EndpointResolverBuiltins
-from botocore.signers import (
+from awscli.botocore.regions import EndpointResolverBuiltins
+from awscli.botocore.signers import (
     add_dsql_generate_db_auth_token_methods,
     add_generate_db_auth_token,
     add_generate_presigned_post,
     add_generate_presigned_url,
 )
-from botocore.utils import (
+from awscli.botocore.utils import (
     SAFE_CHARS,
     SERVICE_NAME_ALIASES,
     ArnParser,
@@ -149,7 +149,7 @@ def set_operation_specific_signer(context, signing_name, **kwargs):
     # Auth type will be the string value 'none' if the operation should not
     # be signed at all.
     if auth_type == 'none':
-        return botocore.UNSIGNED
+        return awscli.botocore.UNSIGNED
 
     if auth_type == 'bearer':
         return 'bearer'
@@ -301,7 +301,7 @@ def disable_signing(**kwargs):
     This handler disables request signing by setting the signer
     name to a special sentinel value.
     """
-    return botocore.UNSIGNED
+    return awscli.botocore.UNSIGNED
 
 
 def add_expect_header(model, params, **kwargs):
@@ -681,7 +681,7 @@ def document_glacier_tree_hash_checksum():
         previous uploaded parts, using the algorithm described in
         `Glacier documentation <http://docs.aws.amazon.com/amazonglacier/latest/dev/checksum-calculations.html>`_.
 
-        But if you prefer, you can also use botocore.utils.calculate_tree_hash()
+        But if you prefer, you can also use awscli.botocore.utils.calculate_tree_hash()
         to compute it from raw file by::
 
             checksum = calculate_tree_hash(open('your_file.txt', 'rb'))
@@ -985,12 +985,14 @@ def remove_qbusiness_chat(class_attributes, **kwargs):
         del class_attributes['chat']
 
 
-def remove_bedrock_runtime_invoke_model_with_bidirectional_stream(class_attributes, **kwargs):
+def remove_bedrock_runtime_invoke_model_with_bidirectional_stream(
+    class_attributes, **kwargs
+):
     """Operation requires h2 which is currently unsupported in Python"""
     if 'invoke_model_with_bidirectional_stream' in class_attributes:
         del class_attributes['invoke_model_with_bidirectional_stream']
- 
- 
+
+
 def remove_bucket_from_url_paths_from_model(params, model, context, **kwargs):
     """Strips leading `{Bucket}/` from any operations that have it.
 
@@ -1242,7 +1244,10 @@ BUILTIN_HANDLERS = [
     ),
     ('creating-client-class.lex-runtime-v2', remove_lex_v2_start_conversation),
     ('creating-client-class.qbusiness', remove_qbusiness_chat),
-    ('creating-client-class.bedrock-runtime', remove_bedrock_runtime_invoke_model_with_bidirectional_stream),
+    (
+        'creating-client-class.bedrock-runtime',
+        remove_bedrock_runtime_invoke_model_with_bidirectional_stream,
+    ),
     ('after-call.iam', json_decode_policies),
     ('after-call.ec2.GetConsoleOutput', decode_console_output),
     ('after-call.cloudformation.GetTemplate', json_decode_template_body),

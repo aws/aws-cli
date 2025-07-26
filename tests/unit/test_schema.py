@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 import pprint
 
-from botocore.compat import OrderedDict
-
+from awscli.botocore.compat import OrderedDict
 from awscli.schema import (
     ParameterRequiredError,
     SchemaTransformer,

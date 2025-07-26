@@ -18,17 +18,19 @@ import subprocess
 import tempfile
 from datetime import datetime, timedelta
 
-import botocore.exceptions
-import botocore.session
 import pytest
-from botocore import credentials
-from botocore.compat import json
-from botocore.configprovider import (
+from dateutil.tz import tzlocal, tzutc
+
+import awscli.botocore.exceptions
+import awscli.botocore.session
+from awscli.botocore import credentials
+from awscli.botocore.compat import json
+from awscli.botocore.configprovider import (
     ConfigChainFactory,
     ConfigValueStore,
     create_botocore_default_config_mapping,
 )
-from botocore.credentials import (
+from awscli.botocore.credentials import (
     AssumeRoleProvider,
     AssumeRoleWithWebIdentityProvider,
     BaseAssumeRoleCredentialFetcher,
@@ -43,16 +45,14 @@ from botocore.credentials import (
     SSOProvider,
     create_assume_role_refresher,
 )
-from botocore.session import Session
-from botocore.stub import Stubber
-from botocore.utils import (
+from awscli.botocore.session import Session
+from awscli.botocore.stub import Stubber
+from awscli.botocore.utils import (
     ContainerMetadataFetcher,
     FileWebIdentityTokenLoader,
     SSOTokenLoader,
     datetime2timestamp,
 )
-from dateutil.tz import tzlocal, tzutc
-
 from tests import BaseEnvVar, IntegerRefresher, mock, skip_if_windows, unittest
 
 # Passed to session to keep it from finding default config file
@@ -176,7 +176,9 @@ class TestRefreshableCredentials(TestCredentials):
         self.mock_time.return_value = datetime.now(tzlocal())
         self.assertTrue(self.creds.refresh_needed())
 
-        with self.assertRaises(botocore.exceptions.CredentialRetrievalError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.CredentialRetrievalError
+        ):
             self.creds.access_key
 
     def test_refresh_returns_none(self):
@@ -184,7 +186,9 @@ class TestRefreshableCredentials(TestCredentials):
         self.mock_time.return_value = datetime.now(tzlocal())
         self.assertTrue(self.creds.refresh_needed())
 
-        with self.assertRaises(botocore.exceptions.CredentialRetrievalError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.CredentialRetrievalError
+        ):
             self.creds.access_key
 
     def test_refresh_returns_partial_credentials(self):
@@ -192,7 +196,9 @@ class TestRefreshableCredentials(TestCredentials):
         self.mock_time.return_value = datetime.now(tzlocal())
         self.assertTrue(self.creds.refresh_needed())
 
-        with self.assertRaises(botocore.exceptions.CredentialRetrievalError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.CredentialRetrievalError
+        ):
             self.creds.access_key
 
 
@@ -1066,7 +1072,7 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
             profile_name=self.profile_name,
         )
         # If the role arn isn't set but the token path is raise an error
-        with self.assertRaises(botocore.exceptions.InvalidConfigError):
+        with self.assertRaises(awscli.botocore.exceptions.InvalidConfigError):
             provider.load()
 
 
@@ -1169,7 +1175,9 @@ class TestEnvVar(BaseEnvVar):
 
         del environ['AWS_CREDENTIAL_EXPIRATION']
 
-        with self.assertRaises(botocore.exceptions.PartialCredentialsError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.PartialCredentialsError
+        ):
             creds.get_frozen_credentials()
 
     def test_can_override_env_var_mapping(self):
@@ -1257,7 +1265,9 @@ class TestEnvVar(BaseEnvVar):
             # Missing the AWS_SECRET_ACCESS_KEY
         }
         provider = credentials.EnvProvider(environ)
-        with self.assertRaises(botocore.exceptions.PartialCredentialsError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.PartialCredentialsError
+        ):
             provider.load()
 
     def test_partial_creds_is_an_error_empty_string(self):
@@ -1269,7 +1279,9 @@ class TestEnvVar(BaseEnvVar):
             'AWS_SECRET_ACCESS_KEY': '',
         }
         provider = credentials.EnvProvider(environ)
-        with self.assertRaises(botocore.exceptions.PartialCredentialsError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.PartialCredentialsError
+        ):
             provider.load()
 
     def test_missing_access_key_id_raises_error(self):
@@ -1287,7 +1299,9 @@ class TestEnvVar(BaseEnvVar):
         # Since the credentials are expired, we'll trigger a refresh
         # whenever we try to access them. At that refresh time, the relevant
         # environment variables are incomplete, so an error will be raised.
-        with self.assertRaises(botocore.exceptions.PartialCredentialsError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.PartialCredentialsError
+        ):
             creds.get_frozen_credentials()
 
     def test_credentials_refresh(self):
@@ -1455,7 +1469,9 @@ class TestSharedCredentialsProvider(BaseEnvVar):
             profile_name='default',
             ini_parser=self.ini_parser,
         )
-        with self.assertRaises(botocore.exceptions.PartialCredentialsError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.PartialCredentialsError
+        ):
             provider.load()
 
     def test_credentials_file_exists_with_session_token(self):
@@ -1508,8 +1524,8 @@ class TestSharedCredentialsProvider(BaseEnvVar):
     def test_credentials_file_does_not_exist_returns_none(self):
         # It's ok if the credentials file does not exist, we should
         # just catch the appropriate errors and return None.
-        self.ini_parser.side_effect = botocore.exceptions.ConfigNotFound(
-            path='foo'
+        self.ini_parser.side_effect = (
+            awscli.botocore.exceptions.ConfigNotFound(path='foo')
         )
         provider = credentials.SharedCredentialProvider(
             creds_filename='~/.aws/creds',
@@ -1582,7 +1598,7 @@ class TestConfigFileProvider(BaseEnvVar):
     def test_config_file_errors_ignored(self):
         # We should move on to the next provider if the config file
         # can't be found.
-        self.parser.side_effect = botocore.exceptions.ConfigNotFound(
+        self.parser.side_effect = awscli.botocore.exceptions.ConfigNotFound(
             path='cli.cfg'
         )
         provider = credentials.ConfigProvider(
@@ -1600,7 +1616,9 @@ class TestConfigFileProvider(BaseEnvVar):
         parser = mock.Mock()
         parser.return_value = parsed
         provider = credentials.ConfigProvider('cli.cfg', 'default', parser)
-        with self.assertRaises(botocore.exceptions.PartialCredentialsError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.PartialCredentialsError
+        ):
             provider.load()
 
     def test_config_file_with_account_id(self):
@@ -1673,8 +1691,8 @@ class TestBotoProvider(BaseEnvVar):
         self.ini_parser.assert_called_with('alternate-config.cfg')
 
     def test_no_boto_config_file_exists(self):
-        self.ini_parser.side_effect = botocore.exceptions.ConfigNotFound(
-            path='foo'
+        self.ini_parser.side_effect = (
+            awscli.botocore.exceptions.ConfigNotFound(path='foo')
         )
         provider = credentials.BotoProvider(
             environ={}, ini_parser=self.ini_parser
@@ -1691,7 +1709,9 @@ class TestBotoProvider(BaseEnvVar):
             }
         }
         provider = credentials.BotoProvider(environ={}, ini_parser=ini_parser)
-        with self.assertRaises(botocore.exceptions.PartialCredentialsError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.PartialCredentialsError
+        ):
             provider.load()
 
 
@@ -1780,7 +1800,9 @@ class CredentialResolverTest(BaseEnvVar):
 
     def test_get_unknown_provider_raises_error(self):
         resolver = credentials.CredentialResolver(providers=[self.provider1])
-        with self.assertRaises(botocore.exceptions.UnknownCredentialError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.UnknownCredentialError
+        ):
             resolver.get_provider('unknown-foo')
 
     def test_first_credential_non_none_wins(self):
@@ -1875,7 +1897,9 @@ class CredentialResolverTest(BaseEnvVar):
         resolver.remove('providerFOO')
         # But an error IS raised if you try to insert after an unknown
         # provider.
-        with self.assertRaises(botocore.exceptions.UnknownCredentialError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.UnknownCredentialError
+        ):
             resolver.insert_after('providerFoo', None)
 
 
@@ -1883,7 +1907,7 @@ class TestCreateCredentialResolver(BaseEnvVar):
     def setUp(self):
         super().setUp()
 
-        self.session = mock.Mock(spec=botocore.session.Session)
+        self.session = mock.Mock(spec=awscli.botocore.session.Session)
         self.session.get_component = self.fake_get_component
 
         self.fake_instance_variables = {
@@ -1982,7 +2006,9 @@ class TestCanonicalNameSourceProvider(BaseEnvVar):
         provider = credentials.CanonicalNameCredentialSourcer(
             providers=[self.custom_provider1]
         )
-        with self.assertRaises(botocore.exceptions.UnknownCredentialError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.UnknownCredentialError
+        ):
             provider.source_credentials('CustomUnknown')
 
     def _assert_assume_role_creds_returned_with_shared_file(self, provider):
@@ -2077,9 +2103,13 @@ class TestCanonicalNameSourceProvider(BaseEnvVar):
         provider = credentials.CanonicalNameCredentialSourcer(
             providers=[self.custom_provider1]
         )
-        with self.assertRaises(botocore.exceptions.UnknownCredentialError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.UnknownCredentialError
+        ):
             provider.source_credentials('SharedConfig')
-        with self.assertRaises(botocore.exceptions.UnknownCredentialError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.UnknownCredentialError
+        ):
             provider.source_credentials('SharedCredentials')
 
 
@@ -2535,7 +2565,7 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         )
 
         local_now = mock.Mock(return_value=datetime.now(tzlocal()))
-        with mock.patch('botocore.credentials._local_now', local_now):
+        with mock.patch('awscli.botocore.credentials._local_now', local_now):
             # This will trigger the first assume_role() call.  It returns
             # credentials that are expired and will trigger a refresh.
             creds = provider.load()
@@ -2582,7 +2612,7 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         )
 
         local_now = mock.Mock(return_value=datetime.now(tzlocal()))
-        with mock.patch('botocore.credentials._local_now', local_now):
+        with mock.patch('awscli.botocore.credentials._local_now', local_now):
             # Loads the credentials, resulting in the first assume role call.
             creds = provider.load()
             creds.get_frozen_credentials()
@@ -2623,7 +2653,9 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         )
 
         # source_profile is required, we shoudl get an error.
-        with self.assertRaises(botocore.exceptions.PartialCredentialsError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.PartialCredentialsError
+        ):
             provider.load()
 
     def test_source_profile_does_not_exist(self):
@@ -2637,7 +2669,7 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         )
 
         # source_profile is required, we shoudl get an error.
-        with self.assertRaises(botocore.exceptions.InvalidConfigError):
+        with self.assertRaises(awscli.botocore.exceptions.InvalidConfigError):
             provider.load()
 
     def test_incomplete_source_credentials_raises_error(self):
@@ -2649,7 +2681,9 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
             profile_name='development',
         )
 
-        with self.assertRaises(botocore.exceptions.PartialCredentialsError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.PartialCredentialsError
+        ):
             provider.load()
 
     def test_source_profile_and_credential_source_provided(self):
@@ -2662,7 +2696,7 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
             profile_name='development',
         )
 
-        with self.assertRaises(botocore.exceptions.InvalidConfigError):
+        with self.assertRaises(awscli.botocore.exceptions.InvalidConfigError):
             provider.load()
 
     def test_credential_source_with_no_resolver_configured(self):
@@ -2673,7 +2707,7 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
             profile_name='non-static',
         )
 
-        with self.assertRaises(botocore.exceptions.InvalidConfigError):
+        with self.assertRaises(awscli.botocore.exceptions.InvalidConfigError):
             provider.load()
 
     def test_credential_source_with_no_providers_configured(self):
@@ -2685,7 +2719,7 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
             credential_sourcer=credentials.CanonicalNameCredentialSourcer([]),
         )
 
-        with self.assertRaises(botocore.exceptions.InvalidConfigError):
+        with self.assertRaises(awscli.botocore.exceptions.InvalidConfigError):
             provider.load()
 
     def test_credential_source_not_among_providers(self):
@@ -2707,7 +2741,7 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         # calls for the Environment credential provider as the credentials
         # source. Since that isn't one of the configured source providers,
         # an error is thrown.
-        with self.assertRaises(botocore.exceptions.InvalidConfigError):
+        with self.assertRaises(awscli.botocore.exceptions.InvalidConfigError):
             provider.load()
 
     def test_assume_role_with_credential_source(self):
@@ -2782,7 +2816,9 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
             ),
         )
 
-        with self.assertRaises(botocore.exceptions.CredentialRetrievalError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.CredentialRetrievalError
+        ):
             provider.load()
 
     def test_source_profile_can_reference_self(self):
@@ -2834,7 +2870,9 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
             profile_name='first',
         )
 
-        with self.assertRaises(botocore.credentials.InfiniteLoopConfigError):
+        with self.assertRaises(
+            awscli.botocore.credentials.InfiniteLoopConfigError
+        ):
             provider.load()
 
     def test_recursive_assume_role(self):
@@ -3197,7 +3235,7 @@ class TestContainerProvider(BaseEnvVar):
             'AWS_CONTAINER_CREDENTIALS_RELATIVE_URI': '/latest/credentials?id=foo'
         }
         fetcher = mock.Mock(spec=credentials.ContainerMetadataFetcher)
-        exception = botocore.exceptions.CredentialRetrievalError
+        exception = awscli.botocore.exceptions.CredentialRetrievalError
         fetcher.retrieve_full_uri.side_effect = exception(
             provider='ecs-role', error_msg='fake http error'
         )
@@ -3214,8 +3252,8 @@ class TestContainerProvider(BaseEnvVar):
         fetcher = mock.Mock(spec=credentials.ContainerMetadataFetcher)
         timeobj = datetime.now(tzlocal())
         expired_timestamp = (timeobj - timedelta(hours=23)).isoformat()
-        http_exception = botocore.exceptions.MetadataRetrievalError
-        raised_exception = botocore.exceptions.CredentialRetrievalError
+        http_exception = awscli.botocore.exceptions.MetadataRetrievalError
+        raised_exception = awscli.botocore.exceptions.CredentialRetrievalError
         fetcher.retrieve_full_uri.side_effect = [
             {
                 "AccessKeyId": "access_key_old",
@@ -3493,7 +3531,7 @@ class TestProcessProvider(BaseEnvVar):
         self._set_process_return_value('', 'Error Message', 1)
 
         provider = self.create_process_provider()
-        exception = botocore.exceptions.CredentialRetrievalError
+        exception = awscli.botocore.exceptions.CredentialRetrievalError
         with self.assertRaisesRegex(exception, 'Error Message'):
             provider.load()
 
@@ -3513,7 +3551,7 @@ class TestProcessProvider(BaseEnvVar):
         )
 
         provider = self.create_process_provider()
-        exception = botocore.exceptions.CredentialRetrievalError
+        exception = awscli.botocore.exceptions.CredentialRetrievalError
         with self.assertRaisesRegex(exception, 'Unsupported version'):
             provider.load()
 
@@ -3532,7 +3570,7 @@ class TestProcessProvider(BaseEnvVar):
         )
 
         provider = self.create_process_provider()
-        exception = botocore.exceptions.CredentialRetrievalError
+        exception = awscli.botocore.exceptions.CredentialRetrievalError
         with self.assertRaisesRegex(exception, 'Unsupported version'):
             provider.load()
 
@@ -3551,7 +3589,7 @@ class TestProcessProvider(BaseEnvVar):
         )
 
         provider = self.create_process_provider()
-        exception = botocore.exceptions.CredentialRetrievalError
+        exception = awscli.botocore.exceptions.CredentialRetrievalError
         with self.assertRaisesRegex(exception, 'Missing required key'):
             provider.load()
 
@@ -3570,7 +3608,7 @@ class TestProcessProvider(BaseEnvVar):
         )
 
         provider = self.create_process_provider()
-        exception = botocore.exceptions.CredentialRetrievalError
+        exception = awscli.botocore.exceptions.CredentialRetrievalError
         with self.assertRaisesRegex(exception, 'Missing required key'):
             provider.load()
 
@@ -3795,7 +3833,9 @@ class TestSSOCredentialFetcher(unittest.TestCase):
             service_error_code='UnauthorizedException',
             expected_params=expected_params,
         )
-        with self.assertRaises(botocore.exceptions.UnauthorizedSSOTokenError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.UnauthorizedSSOTokenError
+        ):
             with self.stubber:
                 self.fetcher.fetch_credentials()
 
@@ -3816,7 +3856,9 @@ class TestSSOCredentialFetcher(unittest.TestCase):
         )
         # since the cached token is expired, an UnauthorizedSSOTokenError should be
         # raised and GetRoleCredentials should not be called.
-        with self.assertRaises(botocore.exceptions.UnauthorizedSSOTokenError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.UnauthorizedSSOTokenError
+        ):
             fetcher.fetch_credentials()
         self.assertFalse(mock_client.get_role_credentials.called)
 
@@ -3931,7 +3973,7 @@ class TestSSOProvider(unittest.TestCase):
     def test_required_config_not_set(self):
         del self.config['sso_start_url']
         # If any required configuration is missing we should get an error
-        with self.assertRaises(botocore.exceptions.InvalidConfigError):
+        with self.assertRaises(awscli.botocore.exceptions.InvalidConfigError):
             self.provider.load()
 
     def test_load_sso_credentials_with_account_id(self):

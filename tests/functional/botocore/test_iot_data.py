@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 import sys
 
-from botocore.exceptions import UnsupportedTLSVersionWarning
-
+from awscli.botocore.exceptions import UnsupportedTLSVersionWarning
 from tests import BaseSessionTest, mock, unittest
 
 

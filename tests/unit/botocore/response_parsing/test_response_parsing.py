@@ -18,10 +18,10 @@ import logging
 import os
 import pprint
 
-import botocore.session
 import pytest
-from botocore import parsers, xform_name
 
+import awscli.botocore.session
+from awscli.botocore import parsers, xform_name
 from tests import create_session
 
 log = logging.getLogger(__name__)
@@ -164,7 +164,7 @@ def _json_test_cases():
     base_dir = os.path.join(os.path.dirname(__file__), 'json')
     json_responses_dir = os.path.join(base_dir, 'errors')
     expected_parsed_dir = os.path.join(base_dir, 'expected')
-    session = botocore.session.get_session()
+    session = awscli.botocore.session.get_session()
     for json_response_file in os.listdir(json_responses_dir):
         # Files look like: 'datapipeline-create-pipeline.json'
         service_name, operation_name = os.path.splitext(json_response_file)[

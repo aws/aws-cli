@@ -18,9 +18,8 @@ import string
 import tempfile
 import threading
 
-import s3transfer
-from botocore.client import Config
-
+import awscli.s3transfer
+from awscli.botocore.client import Config
 from tests.integration.s3transfer import BaseTransferManagerIntegTest
 
 
@@ -103,7 +102,7 @@ class TestS3Transfers(BaseTransferManagerIntegTest):
     """Tests for the high level s3transfer module."""
 
     def create_s3_transfer(self, config=None):
-        return s3transfer.S3Transfer(self.client, config=config)
+        return awscli.s3transfer.S3Transfer(self.client, config=config)
 
     def assert_has_public_read_acl(self, response):
         grants = response['Grants']
@@ -115,7 +114,9 @@ class TestS3Transfers(BaseTransferManagerIntegTest):
         self.assertIn('groups/global/AllUsers', public_read[0])
 
     def test_upload_below_threshold(self):
-        config = s3transfer.TransferConfig(multipart_threshold=2 * 1024 * 1024)
+        config = awscli.s3transfer.TransferConfig(
+            multipart_threshold=2 * 1024 * 1024
+        )
         transfer = self.create_s3_transfer(config)
         filename = self.files.create_file_with_size(
             'foo.txt', filesize=1024 * 1024
@@ -126,7 +127,9 @@ class TestS3Transfers(BaseTransferManagerIntegTest):
         self.assertTrue(self.object_exists('foo.txt'))
 
     def test_upload_above_threshold(self):
-        config = s3transfer.TransferConfig(multipart_threshold=2 * 1024 * 1024)
+        config = awscli.s3transfer.TransferConfig(
+            multipart_threshold=2 * 1024 * 1024
+        )
         transfer = self.create_s3_transfer(config)
         filename = self.files.create_file_with_size(
             '20mb.txt', filesize=20 * 1024 * 1024
@@ -136,7 +139,9 @@ class TestS3Transfers(BaseTransferManagerIntegTest):
         self.assertTrue(self.object_exists('20mb.txt'))
 
     def test_upload_file_above_threshold_with_acl(self):
-        config = s3transfer.TransferConfig(multipart_threshold=5 * 1024 * 1024)
+        config = awscli.s3transfer.TransferConfig(
+            multipart_threshold=5 * 1024 * 1024
+        )
         transfer = self.create_s3_transfer(config)
         filename = self.files.create_file_with_size(
             '6mb.txt', filesize=6 * 1024 * 1024
@@ -159,7 +164,9 @@ class TestS3Transfers(BaseTransferManagerIntegTest):
             'SSECustomerKey': key_bytes,
             'SSECustomerAlgorithm': 'AES256',
         }
-        config = s3transfer.TransferConfig(multipart_threshold=5 * 1024 * 1024)
+        config = awscli.s3transfer.TransferConfig(
+            multipart_threshold=5 * 1024 * 1024
+        )
         transfer = self.create_s3_transfer(config)
         filename = self.files.create_file_with_size(
             '6mb.txt', filesize=6 * 1024 * 1024
@@ -213,7 +220,7 @@ class TestS3Transfers(BaseTransferManagerIntegTest):
         client = self.session.create_client(
             's3', self.region, config=Config(signature_version='s3v4')
         )
-        transfer = s3transfer.S3Transfer(client)
+        transfer = awscli.s3transfer.S3Transfer(client)
         filename = self.files.create_file_with_size(
             '10mb.txt', filesize=10 * 1024 * 1024
         )
@@ -242,7 +249,9 @@ class TestS3Transfers(BaseTransferManagerIntegTest):
         self.assert_has_public_read_acl(response)
 
     def test_can_configure_threshold(self):
-        config = s3transfer.TransferConfig(multipart_threshold=6 * 1024 * 1024)
+        config = awscli.s3transfer.TransferConfig(
+            multipart_threshold=6 * 1024 * 1024
+        )
         transfer = self.create_s3_transfer(config)
         filename = self.files.create_file_with_size(
             'foo.txt', filesize=8 * 1024 * 1024

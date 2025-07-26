@@ -33,7 +33,7 @@ class TestClientEvents(BaseSessionTest):
             'response-received.ec2.DescribeRegions', recording_handler.record
         )
         with mock.patch(
-            'botocore.httpsession.URLLib3Session.send'
+            'awscli.botocore.httpsession.URLLib3Session.send'
         ) as mock_send:
             response_body = (
                 b'<?xml version="1.0" ?>'
@@ -70,7 +70,7 @@ class TestClientEvents(BaseSessionTest):
             'response-received.ec2.DescribeRegions', recording_handler.record
         )
         with mock.patch(
-            'botocore.httpsession.URLLib3Session.send'
+            'awscli.botocore.httpsession.URLLib3Session.send'
         ) as mock_send:
             raised_exception = RuntimeError('Unexpected exception')
             mock_send.side_effect = raised_exception

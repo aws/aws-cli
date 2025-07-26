@@ -21,10 +21,9 @@ from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
 
-from botocore.compat import get_md5
-from botocore.exceptions import MD5UnavailableError
-from botocore.useragent import UserAgentComponent
-
+from awscli.botocore.compat import get_md5
+from awscli.botocore.exceptions import MD5UnavailableError
+from awscli.botocore.useragent import UserAgentComponent
 from awscli.compat import is_windows
 from awscli.utils import add_component_to_user_agent_extra
 

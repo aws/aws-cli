@@ -10,8 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.client
-
+import awscli.botocore.client
 from awscli.autocomplete import parser
 from awscli.autocomplete.completer import CompletionResult
 from awscli.autocomplete.serverside.servercomp import (
@@ -227,7 +226,7 @@ class TestLazyClientCreator(unittest.TestCase):
             aws_secret_access_key='bar',
             region_name='us-west-2',
         )
-        self.assertIsInstance(client, botocore.client.BaseClient)
+        self.assertIsInstance(client, awscli.botocore.client.BaseClient)
         # Sanity check it's an IAM client.
         self.assertTrue(hasattr(client, 'list_users'))
         # Verify we can create another client.
@@ -237,7 +236,7 @@ class TestLazyClientCreator(unittest.TestCase):
             aws_secret_access_key='bar',
             region_name='us-west-2',
         )
-        self.assertIsInstance(new_client, botocore.client.BaseClient)
+        self.assertIsInstance(new_client, awscli.botocore.client.BaseClient)
 
     def test_can_use_session_cache(self):
         creator = LazyClientCreator()

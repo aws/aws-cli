@@ -14,10 +14,9 @@
 import logging
 import re
 
-import botocore.exceptions
-import botocore.session
-from botocore import xform_name
-
+import awscli.botocore.exceptions
+import awscli.botocore.session
+from awscli.botocore import xform_name
 from awscli.customizations.emr import configutils, emrutils, exceptions
 from awscli.customizations.emr.command import Command
 from awscli.customizations.emr.constants import (
@@ -68,7 +67,7 @@ def get_service_principal(service, endpoint_host, session=None):
 
     suffix, region = _get_suffix_and_region_from_endpoint_host(endpoint_host)
     if session is None:
-        session = botocore.session.Session()
+        session = awscli.botocore.session.Session()
 
     if service == EMR_AUTOSCALING_SERVICE_NAME:
         if region not in session.get_available_regions('emr', 'aws-cn'):
@@ -230,7 +229,7 @@ class CreateDefaultRoles(Command):
     def _check_for_iam_endpoint(self, region, iam_endpoint):
         try:
             self._session.create_client('emr', region)
-        except botocore.exceptions.UnknownEndpointError:
+        except awscli.botocore.exceptions.UnknownEndpointError:
             if iam_endpoint is None:
                 raise exceptions.UnknownIamEndpointError(region=region)
 
@@ -267,7 +266,7 @@ class CreateDefaultRoles(Command):
 
         try:
             self._call_iam_operation('GetRole', parameters, parsed_globals)
-        except botocore.exceptions.ClientError as e:
+        except awscli.botocore.exceptions.ClientError as e:
             role_not_found_code = "NoSuchEntity"
             error_code = e.response.get('Error', {}).get('Code', '')
             if role_not_found_code == error_code:
@@ -287,7 +286,7 @@ class CreateDefaultRoles(Command):
             self._call_iam_operation(
                 'GetInstanceProfile', parameters, parsed_globals
             )
-        except botocore.exceptions.ClientError as e:
+        except awscli.botocore.exceptions.ClientError as e:
             profile_not_found_code = 'NoSuchEntity'
             error_code = e.response.get('Error', {}).get('Code')
             if profile_not_found_code == error_code:

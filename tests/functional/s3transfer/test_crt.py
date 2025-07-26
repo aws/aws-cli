@@ -16,9 +16,8 @@ import threading
 import time
 from concurrent.futures import Future
 
-from botocore.session import Session
-from s3transfer.subscribers import BaseSubscriber
-
+from awscli.botocore.session import Session
+from awscli.s3transfer.subscribers import BaseSubscriber
 from tests import (
     HAS_CRT,
     FileCreator,
@@ -31,7 +30,8 @@ from tests import (
 
 if HAS_CRT:
     import awscrt
-    import s3transfer.crt
+
+    import awscli.s3transfer.crt
 
 
 class submitThread(threading.Thread):
@@ -94,10 +94,10 @@ class TestCRTTransferManager(unittest.TestCase):
         )
         self.session = Session()
         self.session.set_config_variable('region', self.region)
-        self.request_serializer = s3transfer.crt.BotocoreCRTRequestSerializer(
-            self.session
+        self.request_serializer = (
+            awscli.s3transfer.crt.BotocoreCRTRequestSerializer(self.session)
         )
-        self.transfer_manager = s3transfer.crt.CRTTransferManager(
+        self.transfer_manager = awscli.s3transfer.crt.CRTTransferManager(
             crt_s3_client=self.s3_crt_client,
             crt_request_serializer=self.request_serializer,
         )
@@ -694,13 +694,13 @@ class TestCRTTransferManager(unittest.TestCase):
             pass
 
         class ExceptionRaisingSerializer(
-            s3transfer.crt.BaseCRTRequestSerializer
+            awscli.s3transfer.crt.BaseCRTRequestSerializer
         ):
             def serialize_http_request(self, transfer_type, future):
                 raise SerializationException()
 
         not_impl_serializer = ExceptionRaisingSerializer()
-        transfer_manager = s3transfer.crt.CRTTransferManager(
+        transfer_manager = awscli.s3transfer.crt.CRTTransferManager(
             crt_s3_client=self.s3_crt_client,
             crt_request_serializer=not_impl_serializer,
         )

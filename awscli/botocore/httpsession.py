@@ -49,15 +49,15 @@ except ImportError:
     # Openssl 1.1.1+ or secure system defaults.
     DEFAULT_CIPHERS = None
 
-import botocore.awsrequest
-from botocore.compat import (
+import awscli.botocore.awsrequest
+from awscli.botocore.compat import (
     IPV6_ADDRZ_RE,
     ensure_bytes,
     filter_ssl_warnings,
     unquote,
     urlparse,
 )
-from botocore.exceptions import (
+from awscli.botocore.exceptions import (
     ConnectionClosedError,
     ConnectTimeoutError,
     EndpointConnectionError,
@@ -269,7 +269,7 @@ class URLLib3Session:
     """A basic HTTP client that supports connection pooling and proxies.
 
     This class is inspired by requests.adapters.HTTPAdapter, but has been
-    boiled down to meet the use cases needed by botocore. For the most part
+    boiled down to meet the use cases needed by awscli.botocore. For the most part
     this classes matches the functionality of HTTPAdapter in requests v2.7.0
     (the same as our vendored version). The only major difference of note is
     that we currently do not support sending chunked requests. While requests
@@ -292,8 +292,8 @@ class URLLib3Session:
             proxies=proxies, proxies_settings=proxies_config
         )
         self._pool_classes_by_scheme = {
-            'http': botocore.awsrequest.AWSHTTPConnectionPool,
-            'https': botocore.awsrequest.AWSHTTPSConnectionPool,
+            'http': awscli.botocore.awsrequest.AWSHTTPConnectionPool,
+            'https': awscli.botocore.awsrequest.AWSHTTPSConnectionPool,
         }
         if timeout is None:
             timeout = DEFAULT_TIMEOUT
@@ -450,7 +450,7 @@ class URLLib3Session:
                 # This is currently an "experimental" feature which provides
                 # no guarantees of backwards compatibility. It may be subject
                 # to change or removal in any patch version. Anyone opting in
-                # to this feature should strictly pin botocore.
+                # to this feature should strictly pin awscli.botocore.
                 host = urlparse(request.url).hostname
                 conn.proxy_headers['host'] = host
 
@@ -467,7 +467,7 @@ class URLLib3Session:
                 chunked=self._chunked(request.headers),
             )
 
-            http_response = botocore.awsrequest.AWSResponse(
+            http_response = awscli.botocore.awsrequest.AWSResponse(
                 request.url,
                 urllib_response.status,
                 urllib_response.headers,

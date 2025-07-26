@@ -13,8 +13,6 @@
 import os
 import subprocess
 
-from botocore.session import Session
-
 from awscli.alias import (
     AliasCommandInjector,
     AliasLoader,
@@ -26,6 +24,7 @@ from awscli.alias import (
     ServiceAliasCommand,
 )
 from awscli.argparser import ArgParseException, MainArgParser
+from awscli.botocore.session import Session
 from awscli.clidriver import CLIDriver
 from awscli.commands import CLICommand
 from awscli.testutils import FileCreator, mock, unittest

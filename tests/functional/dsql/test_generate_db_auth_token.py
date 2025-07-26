@@ -12,9 +12,9 @@
 # language governing permissions and limitations under the License.
 import datetime
 
-from botocore.compat import parse_qs, urlparse
 from dateutil.tz import tzutc
 
+from awscli.botocore.compat import parse_qs, urlparse
 from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 

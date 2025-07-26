@@ -10,8 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from s3transfer.manager import TransferManager
-
+from awscli.s3transfer.manager import TransferManager
 from tests import BaseGeneralInterfaceTest
 
 
@@ -45,7 +44,7 @@ class TestDeleteObject(BaseGeneralInterfaceTest):
         """A list of stubbed responses that will cause the request to succeed
 
         The elements of this list is a dictionary that will be used as key
-        word arguments to botocore.Stubber.add_response(). For example::
+        word arguments to awscli.botocore.Stubber.add_response(). For example::
 
             [{'method': 'put_object', 'service_response': {}}]
         """

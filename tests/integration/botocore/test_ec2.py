@@ -12,15 +12,14 @@
 # language governing permissions and limitations under the License.
 import itertools
 
-import botocore.session
-from botocore.exceptions import ClientError
-
+import awscli.botocore.session
+from awscli.botocore.exceptions import ClientError
 from tests import unittest
 
 
 class TestEC2(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.client = self.session.create_client(
             'ec2', region_name='us-west-2'
         )
@@ -44,7 +43,7 @@ class TestEC2(unittest.TestCase):
 
 class TestEC2Pagination(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.client = self.session.create_client(
             'ec2', region_name='us-west-2'
         )

@@ -14,7 +14,7 @@ import copy
 import logging
 from collections import defaultdict, deque, namedtuple
 
-from botocore.compat import accepts_kwargs
+from awscli.botocore.compat import accepts_kwargs
 
 logger = logging.getLogger(__name__)
 

@@ -11,12 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from botocore.auth import BaseSigner, resolve_auth_type
-from botocore.exceptions import (
+from awscli.botocore.auth import BaseSigner, resolve_auth_type
+from awscli.botocore.exceptions import (
     UnknownSignatureVersionError,
     UnsupportedSignatureVersionError,
 )
-
 from tests import mock, unittest
 
 
@@ -27,9 +26,9 @@ class TestAuthTraitResolution(unittest.TestCase):
         auth_types = {'bar': mock.Mock(spec=BaseSigner)}
         auth_type_conversions = {'aws.auth#foo': 'foo', 'aws.auth#bar': 'bar'}
 
-        with mock.patch('botocore.auth.AUTH_TYPE_MAPS', auth_types):
+        with mock.patch('awscli.botocore.auth.AUTH_TYPE_MAPS', auth_types):
             with mock.patch(
-                'botocore.auth.AUTH_TYPE_TO_SIGNATURE_VERSION',
+                'awscli.botocore.auth.AUTH_TYPE_TO_SIGNATURE_VERSION',
                 auth_type_conversions,
             ):
                 assert resolve_auth_type(auth) == 'bar'

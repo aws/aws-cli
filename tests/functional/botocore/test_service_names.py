@@ -13,7 +13,8 @@
 import re
 
 import pytest
-from botocore.session import get_session
+
+from awscli.botocore.session import get_session
 
 BLOCKLIST = []
 

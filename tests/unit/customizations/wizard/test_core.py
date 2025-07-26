@@ -13,10 +13,10 @@
 import os
 
 import pytest
-from botocore.paginate import Paginator
-from botocore.session import Session
 from ruamel.yaml import YAML
 
+from awscli.botocore.paginate import Paginator
+from awscli.botocore.session import Session
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.wizard import core, ui
 from awscli.customizations.wizard.app import WizardValues

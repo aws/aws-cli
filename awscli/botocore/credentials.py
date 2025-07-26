@@ -23,13 +23,16 @@ from collections import namedtuple
 from copy import deepcopy
 from hashlib import sha1
 
-import botocore.compat
-import botocore.configloader
 import dateutil.parser
-from botocore import UNSIGNED
-from botocore.compat import compat_shell_split, total_seconds
-from botocore.config import Config
-from botocore.exceptions import (
+from dateutil.parser import parse
+from dateutil.tz import tzlocal, tzutc
+
+import awscli.botocore.compat
+import awscli.botocore.configloader
+from awscli.botocore import UNSIGNED
+from awscli.botocore.compat import compat_shell_split, total_seconds
+from awscli.botocore.config import Config
+from awscli.botocore.exceptions import (
     ConfigNotFound,
     CredentialRetrievalError,
     InfiniteLoopConfigError,
@@ -40,8 +43,8 @@ from botocore.exceptions import (
     UnauthorizedSSOTokenError,
     UnknownCredentialError,
 )
-from botocore.tokens import SSOTokenProvider
-from botocore.utils import (
+from awscli.botocore.tokens import SSOTokenProvider
+from awscli.botocore.utils import (
     ArnParser,
     ContainerMetadataFetcher,
     FileWebIdentityTokenLoader,
@@ -52,8 +55,6 @@ from botocore.utils import (
     parse_key_val_file,
     resolve_imds_endpoint_mode,
 )
-from dateutil.parser import parse
-from dateutil.tz import tzlocal, tzutc
 
 logger = logging.getLogger(__name__)
 ReadOnlyCredentials = namedtuple(
@@ -338,8 +339,12 @@ class Credentials:
         #
         # Eventually the service will decide whether to accept the credential.
         # This also complies with the behavior in Python 3.
-        self.access_key = botocore.compat.ensure_unicode(self.access_key)
-        self.secret_key = botocore.compat.ensure_unicode(self.secret_key)
+        self.access_key = awscli.botocore.compat.ensure_unicode(
+            self.access_key
+        )
+        self.secret_key = awscli.botocore.compat.ensure_unicode(
+            self.secret_key
+        )
 
     def get_frozen_credentials(self):
         return ReadOnlyCredentials(
@@ -406,8 +411,12 @@ class RefreshableCredentials(Credentials):
             self._mandatory_refresh_timeout = mandatory_timeout
 
     def _normalize(self):
-        self._access_key = botocore.compat.ensure_unicode(self._access_key)
-        self._secret_key = botocore.compat.ensure_unicode(self._secret_key)
+        self._access_key = awscli.botocore.compat.ensure_unicode(
+            self._access_key
+        )
+        self._secret_key = awscli.botocore.compat.ensure_unicode(
+            self._secret_key
+        )
 
     @classmethod
     def create_from_metadata(
@@ -985,7 +994,7 @@ class AssumeRoleWithWebIdentityCredentialFetcher(
 
 
 class CredentialProvider:
-    # A short name to identify the provider within botocore.
+    # A short name to identify the provider within awscli.botocore.
     METHOD = None
 
     # A name to identify the provider for use in cross-sdk features like
@@ -1073,7 +1082,7 @@ class ProcessProvider(CredentialProvider):
             raise CredentialRetrievalError(
                 provider=self.METHOD, error_msg=stderr.decode('utf-8')
             )
-        parsed = botocore.compat.json.loads(stdout.decode('utf-8'))
+        parsed = awscli.botocore.compat.json.loads(stdout.decode('utf-8'))
         version = parsed.get('Version', '<Version key not provided>')
         if version != 1:
             raise CredentialRetrievalError(
@@ -1339,7 +1348,7 @@ class SharedCredentialProvider(CredentialProvider):
             profile_name = 'default'
         self._profile_name = profile_name
         if ini_parser is None:
-            ini_parser = botocore.configloader.raw_config_parse
+            ini_parser = awscli.botocore.configloader.raw_config_parse
         self._ini_parser = ini_parser
 
     def load(self):
@@ -1402,7 +1411,7 @@ class ConfigProvider(CredentialProvider):
         self._config_filename = config_filename
         self._profile_name = profile_name
         if config_parser is None:
-            config_parser = botocore.configloader.load_config
+            config_parser = awscli.botocore.configloader.load_config
         self._config_parser = config_parser
 
     def load(self):
@@ -1458,7 +1467,7 @@ class BotoProvider(CredentialProvider):
         if environ is None:
             environ = os.environ
         if ini_parser is None:
-            ini_parser = botocore.configloader.raw_config_parse
+            ini_parser = awscli.botocore.configloader.raw_config_parse
         self._environ = environ
         self._ini_parser = ini_parser
 
@@ -1524,7 +1533,7 @@ class AssumeRoleProvider(CredentialProvider):
         :type client_creator: callable
         :param client_creator: A factory function that will create
             a client when called.  Has the same interface as
-            ``botocore.session.Session.create_client``.
+            ``awscli.botocore.session.Session.create_client``.
 
         :type cache: dict
         :param cache: An object that supports ``__getitem__``,

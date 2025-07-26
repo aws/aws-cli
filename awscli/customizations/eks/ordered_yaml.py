@@ -11,8 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import ruamel.yaml
-from botocore.compat import OrderedDict
 
+from awscli.botocore.compat import OrderedDict
 from awscli.utils import dump_yaml_to_str
 
 

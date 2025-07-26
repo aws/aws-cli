@@ -17,13 +17,16 @@ import shlex
 import signal
 import subprocess
 
-import botocore
-import botocore.model
-import botocore.session as session
 import pytest
 import ruamel.yaml
-from botocore.exceptions import ConnectionClosedError, MetadataRetrievalError
 
+import awscli.botocore
+import awscli.botocore.model
+import awscli.botocore.session as session
+from awscli.botocore.exceptions import (
+    ConnectionClosedError,
+    MetadataRetrievalError,
+)
 from awscli.clidriver import create_clidriver
 from awscli.compat import is_windows
 from awscli.testutils import mock, skip_if_windows, unittest
@@ -51,7 +54,7 @@ from tests import RawResponse
 
 @pytest.fixture()
 def argument_model():
-    return botocore.model.Shape('argument', {'type': 'string'})
+    return awscli.botocore.model.Shape('argument', {'type': 'string'})
 
 
 class TestCSVSplit(unittest.TestCase):
@@ -393,7 +396,9 @@ class TestOutputStreamFactory(unittest.TestCase):
 
 class BaseIMDSRegionTest(unittest.TestCase):
     def setUp(self):
-        urllib3_session_send = 'botocore.httpsession.URLLib3Session.send'
+        urllib3_session_send = (
+            'awscli.botocore.httpsession.URLLib3Session.send'
+        )
         self._urllib3_patch = mock.patch(urllib3_session_send)
         self._send = self._urllib3_patch.start()
         self._imds_responses = []
@@ -408,7 +413,7 @@ class BaseIMDSRegionTest(unittest.TestCase):
         self.environ_patch.stop()
 
     def add_imds_response(self, body, status_code=200):
-        response = botocore.awsrequest.AWSResponse(
+        response = awscli.botocore.awsrequest.AWSResponse(
             url='http://169.254.169.254/',
             status_code=status_code,
             headers={},
@@ -707,9 +712,9 @@ class BaseShapeTest(unittest.TestCase):
 
     def get_shape_model(self, shape_name):
         shape_model = self.shapes[shape_name]
-        resolver = botocore.model.ShapeResolver(self.shapes)
+        resolver = awscli.botocore.model.ShapeResolver(self.shapes)
         shape_cls = resolver.SHAPE_CLASSES.get(
-            shape_model['type'], botocore.model.Shape
+            shape_model['type'], awscli.botocore.model.Shape
         )
         return shape_cls(shape_name, shape_model, resolver)
 
@@ -808,7 +813,7 @@ class TestOperationUsesDocumentTypes(BaseShapeTest):
             'input': {'shape': 'Input'},
             'output': {'shape': 'Output'},
         }
-        self.service_model = botocore.model.ServiceModel(
+        self.service_model = awscli.botocore.model.ServiceModel(
             {
                 'operations': {'DescribeResource': self.operation_definition},
                 'shapes': self.shapes,

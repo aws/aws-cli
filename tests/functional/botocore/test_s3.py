@@ -12,21 +12,21 @@
 # language governing permissions and limitations under the License.
 import re
 
-import botocore.session
 import pytest
-from botocore import UNSIGNED
-from botocore.compat import datetime, parse_qs, urlsplit
-from botocore.config import Config
-from botocore.exceptions import (
+from dateutil.tz import tzutc
+
+import awscli.botocore.session
+from awscli.botocore import UNSIGNED
+from awscli.botocore.compat import datetime, parse_qs, urlsplit
+from awscli.botocore.config import Config
+from awscli.botocore.exceptions import (
     ClientError,
     ConnectionError,
     ParamValidationError,
     UnsupportedS3AccesspointConfigurationError,
     UnsupportedS3ConfigurationError,
 )
-from botocore.loaders import Loader
-from dateutil.tz import tzutc
-
+from awscli.botocore.loaders import Loader
 from tests import (
     BaseSessionTest,
     ClientHTTPStubber,
@@ -43,7 +43,7 @@ DATE = datetime.datetime(2021, 8, 27, 0, 0, 0)
 
 class TestS3BucketValidation(unittest.TestCase):
     def test_invalid_bucket_name_raises_error(self):
-        session = botocore.session.get_session()
+        session = awscli.botocore.session.get_session()
         s3 = session.create_client('s3')
         with self.assertRaises(ParamValidationError):
             s3.put_object(
@@ -380,7 +380,9 @@ class TestS3200ErrorResponse(BaseS3OperationTest):
         # we reached two max retries and raised an exception.
         for i in range(3):
             self.http_stubber.add_response(status=200, body=error_body)
-        with self.assertRaises(botocore.exceptions.ClientError) as context:
+        with self.assertRaises(
+            awscli.botocore.exceptions.ClientError
+        ) as context:
             self.client.copy_object(
                 Bucket='bucket',
                 CopySource='other-bucket/test.txt',
@@ -469,24 +471,32 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
 
     def test_missing_account_id_in_arn(self):
         accesspoint_arn = 'arn:aws:s3:us-west-2::accesspoint:myendpoint'
-        with self.assertRaises(botocore.exceptions.ParamValidationError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.ParamValidationError
+        ):
             self.client.list_objects(Bucket=accesspoint_arn)
 
     def test_missing_accesspoint_name_in_arn(self):
         accesspoint_arn = 'arn:aws:s3:us-west-2:123456789012:accesspoint'
-        with self.assertRaises(botocore.exceptions.ParamValidationError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.ParamValidationError
+        ):
             self.client.list_objects(Bucket=accesspoint_arn)
 
     def test_accesspoint_includes_asterisk(self):
         accesspoint_arn = 'arn:aws:s3:us-west-2:123456789012:accesspoint:*'
-        with self.assertRaises(botocore.exceptions.ParamValidationError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.ParamValidationError
+        ):
             self.client.list_objects(Bucket=accesspoint_arn)
 
     def test_accesspoint_arn_contains_subresources(self):
         accesspoint_arn = (
             'arn:aws:s3:us-west-2:123456789012:accesspoint:myendpoint:object'
         )
-        with self.assertRaises(botocore.exceptions.ParamValidationError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.ParamValidationError
+        ):
             self.client.list_objects(Bucket=accesspoint_arn)
 
     def test_accesspoint_arn_with_custom_endpoint(self):
@@ -522,7 +532,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             config=Config(s3={'use_accelerate_endpoint': True})
         )
         with self.assertRaises(
-            botocore.exceptions.UnsupportedS3AccesspointConfigurationError
+            awscli.botocore.exceptions.UnsupportedS3AccesspointConfigurationError
         ):
             self.client.list_objects(Bucket=accesspoint_arn)
 
@@ -534,7 +544,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             region_name='cn-north-1'
         )
         with self.assertRaises(
-            botocore.exceptions.UnsupportedS3AccesspointConfigurationError
+            awscli.botocore.exceptions.UnsupportedS3AccesspointConfigurationError
         ):
             self.client.list_objects(Bucket=accesspoint_arn)
 
@@ -547,7 +557,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             config=Config(s3={'use_accelerate_endpoint': True}),
         )
         with self.assertRaises(
-            botocore.exceptions.UnsupportedS3AccesspointConfigurationError
+            awscli.botocore.exceptions.UnsupportedS3AccesspointConfigurationError
         ):
             self.client.list_objects(Bucket=accesspoint_arn)
 
@@ -826,7 +836,9 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
 
     def test_incorrect_outpost_format(self):
         outpost_arn = 'arn:aws:s3-outposts:us-west-2:123456789012:outpost'
-        with self.assertRaises(botocore.exceptions.ParamValidationError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.ParamValidationError
+        ):
             self.client.list_objects(Bucket=outpost_arn)
 
     def test_incorrect_outpost_no_accesspoint(self):
@@ -834,14 +846,18 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'arn:aws:s3-outposts:us-west-2:123456789012:outpost:'
             'op-01234567890123456'
         )
-        with self.assertRaises(botocore.exceptions.ParamValidationError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.ParamValidationError
+        ):
             self.client.list_objects(Bucket=outpost_arn)
 
     def test_incorrect_outpost_resource_format(self):
         outpost_arn = (
             'arn:aws:s3-outposts:us-west-2:123456789012:outpost:myaccesspoint'
         )
-        with self.assertRaises(botocore.exceptions.ParamValidationError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.ParamValidationError
+        ):
             self.client.list_objects(Bucket=outpost_arn)
 
     def test_incorrect_outpost_sub_resources(self):
@@ -849,7 +865,9 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'arn:aws:s3-outposts:us-west-2:123456789012:outpost:'
             'op-01234567890123456:accesspoint:mybucket:object:foo'
         )
-        with self.assertRaises(botocore.exceptions.ParamValidationError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.ParamValidationError
+        ):
             self.client.list_objects(Bucket=outpost_arn)
 
     def test_incorrect_outpost_invalid_character(self):
@@ -857,7 +875,9 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'arn:aws:s3-outposts:us-west-2:123456789012:outpost:'
             'op-0123456.890123456:accesspoint:myaccesspoint'
         )
-        with self.assertRaises(botocore.exceptions.ParamValidationError):
+        with self.assertRaises(
+            awscli.botocore.exceptions.ParamValidationError
+        ):
             self.client.list_objects(Bucket=outpost_arn)
 
     def test_s3_object_lambda_arn_with_s3_dualstack(self):
@@ -1114,11 +1134,11 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             region_name=region, config=config
         )
         with self.assertRaises(
-            botocore.exceptions.UnsupportedS3AccesspointConfigurationError
+            awscli.botocore.exceptions.UnsupportedS3AccesspointConfigurationError
         ):
             self.client.list_objects(Bucket=arn)
 
-    @FreezeTime(botocore.auth.datetime, date=DATE)
+    @FreezeTime(awscli.botocore.auth.datetime, date=DATE)
     def _get_presigned_url(self, arn, region, config=None, endpoint_url=None):
         self.client, self.http_stubber = self.create_stubbed_s3_client(
             region_name=region,
@@ -1162,7 +1182,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             region_name=region, config=config
         )
         with self.assertRaises(
-            botocore.exceptions.UnsupportedS3AccesspointConfigurationError
+            awscli.botocore.exceptions.UnsupportedS3AccesspointConfigurationError
         ):
             self.client.generate_presigned_url(
                 'get_object', Params={'Bucket': arn, 'Key': 'test_object'}
@@ -1308,7 +1328,9 @@ class TestS3ExpiresHeaderResponse(BaseS3OperationTest):
         mock_headers = {'expires': expires_value}
         warning_msg = 'Failed to parse the "Expires" member as a timestamp'
         s3 = self.session.create_client("s3")
-        with self.assertLogs('botocore.handlers', level='WARNING') as log:
+        with self.assertLogs(
+            'awscli.botocore.handlers', level='WARNING'
+        ) as log:
             with ClientHTTPStubber(s3) as http_stubber:
                 http_stubber.add_response(headers=mock_headers)
                 response = s3.get_object(Bucket='mybucket', Key='mykey')
@@ -1977,7 +1999,7 @@ class TestGeneratePresigned(BaseS3OperationTest):
         self.assertIn('Signature', qs_components)
 
     def test_generate_unauthed_url(self):
-        config = Config(signature_version=botocore.UNSIGNED)
+        config = Config(signature_version=awscli.botocore.UNSIGNED)
         client = self.session.create_client('s3', self.region, config=config)
         url = client.generate_presigned_url(
             ClientMethod='get_object', Params={'Bucket': 'foo', 'Key': 'bar'}
@@ -1985,7 +2007,7 @@ class TestGeneratePresigned(BaseS3OperationTest):
         self.assertEqual(url, 'https://foo.s3.us-west-2.amazonaws.com/bar')
 
     def test_generate_unauthed_post(self):
-        config = Config(signature_version=botocore.UNSIGNED)
+        config = Config(signature_version=awscli.botocore.UNSIGNED)
         client = self.session.create_client('s3', self.region, config=config)
         parts = client.generate_presigned_post(Bucket='foo', Key='bar')
         expected = {
@@ -2015,7 +2037,7 @@ class TestGeneratePresigned(BaseS3OperationTest):
         self.assertIn('Algorithm=AWS4-HMAC-SHA256', url)
 
     def test_presign_unsigned(self):
-        config = Config(signature_version=botocore.UNSIGNED)
+        config = Config(signature_version=awscli.botocore.UNSIGNED)
         client = self.session.create_client('s3', 'us-east-2', config=config)
         url = client.generate_presigned_url(ClientMethod='list_buckets')
         self.assertEqual("https://s3.us-east-2.amazonaws.com/", url)
@@ -2038,7 +2060,7 @@ class TestGeneratePresigned(BaseS3OperationTest):
 
     def test_presign_s3_accelerate(self):
         config = Config(
-            signature_version=botocore.UNSIGNED,
+            signature_version=awscli.botocore.UNSIGNED,
             s3={'use_accelerate_endpoint': True},
         )
         client = self.session.create_client('s3', 'us-east-1', config=config)
@@ -2053,7 +2075,7 @@ class TestGeneratePresigned(BaseS3OperationTest):
 
     def test_presign_s3_accelerate_fails_with_fips(self):
         config = Config(
-            signature_version=botocore.UNSIGNED,
+            signature_version=awscli.botocore.UNSIGNED,
             s3={"use_accelerate_endpoint": True},
         )
         client = self.session.create_client(
@@ -2070,7 +2092,7 @@ class TestGeneratePresigned(BaseS3OperationTest):
 
     def test_presign_post_s3_accelerate(self):
         config = Config(
-            signature_version=botocore.UNSIGNED,
+            signature_version=awscli.botocore.UNSIGNED,
             s3={'use_accelerate_endpoint': True},
         )
         client = self.session.create_client('s3', 'us-east-1', config=config)
@@ -2192,8 +2214,8 @@ def test_checksum_content_encoding(content_encoding, expected_header):
         assert request_headers["Content-Encoding"] == expected_header
 
 
-@mock.patch('botocore.endpoint.URLLib3Session.send')
-@mock.patch('botocore.client.apply_request_checksum')
+@mock.patch('awscli.botocore.endpoint.URLLib3Session.send')
+@mock.patch('awscli.botocore.client.apply_request_checksum')
 def test_retries_reuse_request_checksum(
     mock_apply_request_checksum, mock_urllib3_session_send
 ):

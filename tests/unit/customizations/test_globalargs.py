@@ -12,9 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 
-from botocore import UNSIGNED
-from botocore.session import get_session
-
+from awscli.botocore import UNSIGNED
+from awscli.botocore.session import get_session
 from awscli.customizations import globalargs
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import mock, unittest

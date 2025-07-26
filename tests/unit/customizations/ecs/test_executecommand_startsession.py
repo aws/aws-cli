@@ -14,15 +14,14 @@ import errno
 import json
 import unittest
 
-import botocore.session
-
+import awscli.botocore.session
 from awscli.customizations.ecs import executecommand
 from awscli.testutils import mock
 
 
 class TestExecuteCommand(unittest.TestCase):
     def setUp(self):
-        self.session = mock.Mock(botocore.session.Session)
+        self.session = mock.Mock(awscli.botocore.session.Session)
         self.client = mock.Mock()
         self.region = 'us-west-2'
         self.profile = 'testProfile'

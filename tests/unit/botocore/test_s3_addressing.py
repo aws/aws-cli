@@ -15,9 +15,8 @@
 
 import os
 
-from botocore.compat import OrderedDict
-from botocore.handlers import set_list_objects_encoding_type_url
-
+from awscli.botocore.compat import OrderedDict
+from awscli.botocore.handlers import set_list_objects_encoding_type_url
 from tests import BaseSessionTest, ClientHTTPStubber
 
 

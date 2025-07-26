@@ -14,20 +14,20 @@ import io
 from collections import namedtuple
 
 import pytest
-from botocore.exceptions import (
-    ClientError,
-    NoCredentialsError,
-    NoRegionError,
-)
-from botocore.exceptions import (
-    ParamValidationError as BotocoreParamValidationError,
-)
 
 from awscli import errorhandler
 from awscli.argparser import ArgParseException
 from awscli.argprocess import ParamError, ParamSyntaxError
 from awscli.arguments import UnknownArgumentError
 from awscli.autoprompt.factory import PrompterKeyboardInterrupt
+from awscli.botocore.exceptions import (
+    ClientError,
+    NoCredentialsError,
+    NoRegionError,
+)
+from awscli.botocore.exceptions import (
+    ParamValidationError as BotocoreParamValidationError,
+)
 from awscli.customizations.exceptions import (
     ConfigurationError,
     ParamValidationError,

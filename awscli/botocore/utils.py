@@ -34,11 +34,14 @@ from ipaddress import ip_address
 from pathlib import Path
 from urllib.request import getproxies, proxy_bypass
 
-import botocore
-import botocore.awsrequest
-import botocore.httpsession
 import dateutil.parser
-from botocore.compat import (
+from dateutil.tz import tzutc
+from urllib3.exceptions import LocationParseError
+
+import awscli.botocore
+import awscli.botocore.awsrequest
+import awscli.botocore.httpsession
+from awscli.botocore.compat import (
     MD5_AVAILABLE,
     get_md5,
     get_tzinfo_options,
@@ -50,7 +53,7 @@ from botocore.compat import (
     urlunsplit,
     zip_longest,
 )
-from botocore.exceptions import (
+from awscli.botocore.exceptions import (
     AuthorizationCodeLoadError,
     ClientError,
     ConfigNotFound,
@@ -76,8 +79,6 @@ from botocore.exceptions import (
     UnsupportedS3ControlArnError,
     UnsupportedS3ControlConfigurationError,
 )
-from dateutil.tz import tzutc
-from urllib3.exceptions import LocationParseError
 
 logger = logging.getLogger(__name__)
 DEFAULT_METADATA_SERVICE_TIMEOUT = 1
@@ -190,7 +191,7 @@ def resolve_imds_endpoint_mode(session):
 def is_json_value_header(shape):
     """Determines if the provided shape is the special header type jsonvalue.
 
-    :type shape: botocore.shape
+    :type shape: awscli.botocore.shape
     :param shape: Shape to be inspected for the jsonvalue trait.
 
     :return: True if this type is a jsonvalue, False otherwise
@@ -208,7 +209,7 @@ def has_header(header_name, headers):
     """Case-insensitive check for header key."""
     if header_name is None:
         return False
-    elif isinstance(headers, botocore.awsrequest.HeadersDict):
+    elif isinstance(headers, awscli.botocore.awsrequest.HeadersDict):
         return header_name in headers
     else:
         return header_name.lower() in [key.lower() for key in headers.keys()]
@@ -360,7 +361,7 @@ class IMDSFetcher:
         )
         self._imds_v1_disabled = config.get('ec2_metadata_v1_disabled')
         self._user_agent = user_agent
-        self._session = botocore.httpsession.URLLib3Session(
+        self._session = awscli.botocore.httpsession.URLLib3Session(
             timeout=self._timeout,
             proxies=get_environ_proxies(self._base_url),
         )
@@ -403,7 +404,7 @@ class IMDSFetcher:
             'x-aws-ec2-metadata-token-ttl-seconds': self._TOKEN_TTL,
         }
         self._add_user_agent(headers)
-        request = botocore.awsrequest.AWSRequest(
+        request = awscli.botocore.awsrequest.AWSRequest(
             method='PUT', url=url, headers=headers
         )
         for i in range(self._num_attempts):
@@ -460,7 +461,7 @@ class IMDSFetcher:
         self._add_user_agent(headers)
         for i in range(self._num_attempts):
             try:
-                request = botocore.awsrequest.AWSRequest(
+                request = awscli.botocore.awsrequest.AWSRequest(
                     method='GET', url=url, headers=headers
                 )
                 response = self._session.send(request.prepare())
@@ -1017,7 +1018,7 @@ class ArgumentGenerator:
     """Generate sample input based on a shape model.
 
     This class contains a ``generate_skeleton`` method that will take
-    an input/output shape (created from ``botocore.model``) and generate
+    an input/output shape (created from ``awscli.botocore.model``) and generate
     a sample dictionary corresponding to the input/output shape.
 
     The specific values used are place holder values. For strings either an
@@ -1031,7 +1032,7 @@ class ArgumentGenerator:
 
     Example usage::
 
-        s = botocore.session.get_session()
+        s = awscli.botocore.session.get_session()
         ddb = s.get_service_model('dynamodb')
         arg_gen = ArgumentGenerator()
         sample_input = arg_gen.generate_skeleton(
@@ -1046,7 +1047,7 @@ class ArgumentGenerator:
     def generate_skeleton(self, shape):
         """Generate a sample input.
 
-        :type shape: ``botocore.model.Shape``
+        :type shape: ``awscli.botocore.model.Shape``
         :param shape: The input shape.
 
         :return: The generated skeleton input corresponding to the
@@ -2891,7 +2892,7 @@ class ContainerMetadataFetcher:
 
     def __init__(self, session=None, sleep=time.sleep):
         if session is None:
-            session = botocore.httpsession.URLLib3Session(
+            session = awscli.botocore.httpsession.URLLib3Session(
                 timeout=self.TIMEOUT_SECONDS
             )
         self._session = session
@@ -2910,7 +2911,7 @@ class ContainerMetadataFetcher:
         return self._retrieve_credentials(full_url, headers)
 
     def _validate_allowed_url(self, full_url):
-        parsed = botocore.compat.urlparse(full_url)
+        parsed = awscli.botocore.compat.urlparse(full_url)
         if self._is_loopback_address(parsed.hostname):
             return
         is_whitelisted_host = self._check_if_whitelisted_host(parsed.hostname)
@@ -2968,7 +2969,7 @@ class ContainerMetadataFetcher:
 
     def _get_response(self, full_url, headers, timeout):
         try:
-            AWSRequest = botocore.awsrequest.AWSRequest
+            AWSRequest = awscli.botocore.awsrequest.AWSRequest
             request = AWSRequest(method='GET', url=full_url, headers=headers)
             response = self._session.send(request.prepare())
             response_text = response.content.decode('utf-8')
@@ -3252,9 +3253,9 @@ class BaseSSOTokenFetcher:
 
     @CachedProperty
     def _client(self):
-        config = botocore.config.Config(
+        config = awscli.botocore.config.Config(
             region_name=self._sso_region,
-            signature_version=botocore.UNSIGNED,
+            signature_version=awscli.botocore.UNSIGNED,
             user_agent_extra=self._USER_AGENT_EXTRA,
         )
         return self._client_creator(
@@ -3604,7 +3605,7 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
             self._base_endpoint = f'{parsed.scheme}://{parsed.netloc}'
 
         # Return a tuple containing the "response" to short-circuit the request
-        return botocore.awsrequest.AWSResponse(None, 200, {}, None), {}
+        return awscli.botocore.awsrequest.AWSResponse(None, 200, {}, None), {}
 
     def _get_base_authorization_uri(self):
         """Simulates an SSO-OIDC request so that we can extract the "base"

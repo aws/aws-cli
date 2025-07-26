@@ -13,8 +13,7 @@
 
 import sys
 
-from botocore.compat import json
-
+from awscli.botocore.compat import json
 from awscli.customizations.servicecatalog import helptext
 from awscli.customizations.servicecatalog.generatebase import (
     GenerateBaseCommand,

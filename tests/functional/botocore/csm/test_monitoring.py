@@ -18,12 +18,12 @@ import os
 import socket
 import threading
 
-import botocore.config
-import botocore.exceptions
-import botocore.session
 import pytest
-from botocore import xform_name
 
+import awscli.botocore.config
+import awscli.botocore.exceptions
+import awscli.botocore.session
+from awscli.botocore import xform_name
 from tests import ClientHTTPStubber, mock, temporary_file
 
 logger = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ CASES_FILE = os.path.join(os.path.dirname(__file__), 'cases.json')
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data/')
 
 
-class RetryableException(botocore.exceptions.EndpointConnectionError):
+class RetryableException(awscli.botocore.exceptions.EndpointConnectionError):
     fmt = '{message}'
 
 
@@ -41,7 +41,7 @@ class NonRetryableException(Exception):
 
 
 EXPECTED_EXCEPTIONS_THROWN = (
-    botocore.exceptions.ClientError,
+    awscli.botocore.exceptions.ClientError,
     NonRetryableException,
     RetryableException,
 )
@@ -95,7 +95,7 @@ def _configured_session(case_configuration, listener_port):
             f, case_configuration['sharedConfigFile'], environ
         )
         with mock.patch('os.environ', environ):
-            session = botocore.session.Session()
+            session = awscli.botocore.session.Session()
             if 'maxRetries' in case_configuration:
                 _setup_max_retry_attempts(session, case_configuration)
             yield session
@@ -110,7 +110,7 @@ def _setup_shared_config(fileobj, shared_config_options, environ):
 
 
 def _setup_max_retry_attempts(session, case_configuration):
-    config = botocore.config.Config(
+    config = awscli.botocore.config.Config(
         retries={'max_attempts': case_configuration['maxRetries'] + 1}
     )
     session.set_default_client_config(config)

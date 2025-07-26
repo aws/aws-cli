@@ -17,7 +17,7 @@ import os
 import shlex
 import sys
 
-import botocore.exceptions
+import awscli.botocore.exceptions
 
 
 def multi_file_load_config(*filenames):
@@ -73,7 +73,7 @@ def multi_file_load_config(*filenames):
     for filename in filenames:
         try:
             loaded = load_config(filename)
-        except botocore.exceptions.ConfigNotFound:
+        except awscli.botocore.exceptions.ConfigNotFound:
             continue
         profiles.append(loaded.pop('profiles'))
         configs.append(loaded)
@@ -142,12 +142,14 @@ def raw_config_parse(config_filename, parse_subsections=True):
         path = os.path.expandvars(path)
         path = os.path.expanduser(path)
         if not os.path.isfile(path):
-            raise botocore.exceptions.ConfigNotFound(path=_unicode_path(path))
+            raise awscli.botocore.exceptions.ConfigNotFound(
+                path=_unicode_path(path)
+            )
         cp = configparser.RawConfigParser()
         try:
             cp.read([path])
         except (configparser.Error, UnicodeDecodeError):
-            raise botocore.exceptions.ConfigParseError(
+            raise awscli.botocore.exceptions.ConfigParseError(
                 path=_unicode_path(path)
             )
         else:
@@ -162,7 +164,7 @@ def raw_config_parse(config_filename, parse_subsections=True):
                         try:
                             config_value = _parse_nested(config_value)
                         except ValueError:
-                            raise botocore.exceptions.ConfigParseError(
+                            raise awscli.botocore.exceptions.ConfigParseError(
                                 path=_unicode_path(path)
                             )
                     config[section][option] = config_value

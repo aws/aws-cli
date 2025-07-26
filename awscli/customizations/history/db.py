@@ -17,8 +17,7 @@ import threading
 import time
 import uuid
 
-from botocore.history import BaseHistoryHandler
-
+from awscli.botocore.history import BaseHistoryHandler
 from awscli.compat import binary_type, collections_abc, sqlite3
 
 LOG = logging.getLogger(__name__)

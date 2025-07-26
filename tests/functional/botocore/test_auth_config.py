@@ -11,8 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-from botocore.config import Config
 
+from awscli.botocore.config import Config
 from tests import create_session, mock
 
 # In the future, a service may have a list of credentials requirements where one
@@ -37,9 +37,10 @@ AUTH_TYPE_REQUIREMENTS = {
 # Services with a `signing_name` that are known to have
 # customizations for handling mixed authentication methods.
 # TODO: Replace with get_bearer_auth_supported_services()
-#  from botocore.handlers once it's ported over.
+#  from awscli.botocore.handlers once it's ported over.
 KNOWN_MIXED_AUTH_SERVICES = {'bedrock'}
 KNOWN_MIXED_AUTH_SCHEMES = {'aws.auth#sigv4', 'smithy.api#httpBearerAuth'}
+
 
 def _all_test_cases():
     session = create_session()

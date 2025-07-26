@@ -14,8 +14,7 @@ import copy
 import functools
 from functools import partial
 
-from botocore.hooks import HierarchicalEmitter, first_non_none_response
-
+from awscli.botocore.hooks import HierarchicalEmitter, first_non_none_response
 from tests import unittest
 
 

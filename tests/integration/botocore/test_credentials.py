@@ -17,9 +17,8 @@ import tempfile
 import time
 from uuid import uuid4
 
-from botocore.exceptions import ClientError
-from botocore.session import Session
-
+from awscli.botocore.exceptions import ClientError
+from awscli.botocore.session import Session
 from tests import BaseEnvVar, mock, random_chars, temporary_file
 
 S3_READ_POLICY_ARN = 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
@@ -63,7 +62,7 @@ class TestCredentialPrecedence(BaseEnvVar):
         self.assertEqual(credentials.access_key, 'env')
         self.assertEqual(credentials.secret_key, 'env-secret')
 
-    @mock.patch('botocore.credentials.Credentials')
+    @mock.patch('awscli.botocore.credentials.Credentials')
     def test_access_secret_vs_profile_code(self, credentials_cls):
         # If all three are given, then the access/secret keys should
         # take precedence.
@@ -91,7 +90,7 @@ class TestCredentialPrecedence(BaseEnvVar):
         self.assertEqual(credentials.access_key, 'default')
         self.assertEqual(credentials.secret_key, 'default-secret')
 
-    @mock.patch('botocore.credentials.Credentials')
+    @mock.patch('awscli.botocore.credentials.Credentials')
     def test_access_secret_env_vs_code(self, credentials_cls):
         # If the access/secret keys are set both as env vars and via
         # code, then those set by code should take precedence.

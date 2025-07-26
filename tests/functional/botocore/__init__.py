@@ -13,13 +13,12 @@
 import os
 import uuid
 
-import botocore
-
+import awscli.botocore
 from tests import BaseEnvVar
 
 _ORIGINAL = os.environ.copy()
 # These are environment variables that allow users to control
-# the location of config files used by botocore.
+# the location of config files used by awscli.botocore.
 _CONFIG_FILE_ENV_VARS = [
     'AWS_CONFIG_FILE',
     'AWS_SHARED_CREDENTIALS_FILE',
@@ -40,14 +39,14 @@ TEST_MODELS_DIR = os.path.join(
 def create_session(**kwargs):
     # Create session and inject functional test models into loader
     loader = _create_functional_test_loader()
-    session = botocore.session.Session(**kwargs)
+    session = awscli.botocore.session.Session(**kwargs)
     session.register_component('data_loader', loader)
     session.set_config_variable('credentials_file', 'noexist/foo/botocore')
     return session
 
 
 def _create_functional_test_loader():
-    loader = botocore.loaders.Loader()
+    loader = awscli.botocore.loaders.Loader()
     loader.search_paths.insert(0, TEST_MODELS_DIR)
     return loader
 

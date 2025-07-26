@@ -16,17 +16,17 @@ from functools import lru_cache
 from pathlib import Path
 
 import pytest
-from botocore import xform_name
-from botocore.config import Config
-from botocore.endpoint_provider import EndpointProvider
-from botocore.exceptions import (
+
+from awscli.botocore import xform_name
+from awscli.botocore.config import Config
+from awscli.botocore.endpoint_provider import EndpointProvider
+from awscli.botocore.exceptions import (
     BotoCoreError,
     ClientError,
     EndpointResolutionError,
 )
-from botocore.loaders import Loader
-from botocore.parsers import ResponseParserError
-
+from awscli.botocore.loaders import Loader
+from awscli.botocore.parsers import ResponseParserError
 from tests import ClientHTTPStubber
 
 ENDPOINT_TESTDATA_DIR = Path(__file__).parent / 'endpoint-rules'

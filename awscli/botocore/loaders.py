@@ -13,7 +13,7 @@
 """Module for loading various model files.
 
 This module provides the classes that are used to load models used
-by botocore.  This can include:
+by awscli.botocore.  This can include:
 
     * Service models (e.g. the model for EC2, S3, DynamoDB, etc.)
     * Service model extras which customize the service models
@@ -40,7 +40,7 @@ through AWS_DATA_PATH.
 
 This enables end users to provide additional search paths where we
 will attempt to load models outside of the models we ship with
-botocore.  When you create a ``Loader``, there are two paths
+awscli.botocore.  When you create a ``Loader``, there are two paths
 automatically added to the model search path:
 
     * <botocore root>/data/
@@ -105,10 +105,10 @@ which don't represent the actual service api.
 import logging
 import os
 
-from botocore import BOTOCORE_ROOT
-from botocore.compat import OrderedDict, json
-from botocore.exceptions import DataNotFoundError, UnknownServiceError
-from botocore.utils import deep_merge
+from awscli.botocore import BOTOCORE_ROOT
+from awscli.botocore.compat import OrderedDict, json
+from awscli.botocore.exceptions import DataNotFoundError, UnknownServiceError
+from awscli.botocore.utils import deep_merge
 
 logger = logging.getLogger(__name__)
 
@@ -213,7 +213,7 @@ class Loader:
     """
 
     FILE_LOADER_CLASS = JSONFileLoader
-    # The included models in botocore/data/ that we ship with botocore.
+    # The included models in botocore/data/ that we ship with awscli.botocore.
     BUILTIN_DATA_PATH = os.path.join(BOTOCORE_ROOT, 'data')
     # For convenience we automatically add ~/.aws/models to the data path.
     CUSTOMER_DATA_PATH = os.path.join(

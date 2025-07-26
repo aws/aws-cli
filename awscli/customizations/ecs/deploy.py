@@ -16,9 +16,8 @@ import json
 import os
 import sys
 
-from botocore import compat, config
-from botocore.exceptions import ClientError
-
+from awscli.botocore import compat, config
+from awscli.botocore.exceptions import ClientError
 from awscli.compat import compat_open
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.ecs import exceptions, filehelpers

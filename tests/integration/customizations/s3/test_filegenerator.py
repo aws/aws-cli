@@ -20,9 +20,9 @@
 import itertools
 import os
 
-import botocore.session
 import pytest
 
+import awscli.botocore.session
 from awscli.customizations.s3.filegenerator import FileGenerator, FileStat
 from tests.integration.customizations.s3 import BaseS3IntegrationTest
 from tests.unit.customizations.s3 import compare_files
@@ -30,7 +30,7 @@ from tests.unit.customizations.s3 import compare_files
 
 @pytest.fixture(scope='module')
 def s3_client(region):
-    session = botocore.session.get_session()
+    session = awscli.botocore.session.get_session()
     # Use the datetime and and blob parsing of the CLI
     factory = session.get_component('response_parser_factory')
     factory.set_parser_defaults(

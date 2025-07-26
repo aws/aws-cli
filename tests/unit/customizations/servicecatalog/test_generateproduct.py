@@ -13,8 +13,7 @@
 
 from argparse import Namespace
 
-from botocore.compat import json
-
+from awscli.botocore.compat import json
 from awscli.customizations.servicecatalog import exceptions
 from awscli.customizations.servicecatalog.generateproduct import (
     GenerateProductCommand,

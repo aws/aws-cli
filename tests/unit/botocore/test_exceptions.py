@@ -13,10 +13,9 @@
 # language governing permissions and limitations under the License.
 import pickle
 
-import botocore.awsrequest
-import botocore.session
-from botocore import exceptions
-
+import awscli.botocore.awsrequest
+import awscli.botocore.session
+from awscli.botocore import exceptions
 from tests import unittest
 
 
@@ -90,27 +89,29 @@ def test_can_handle_when_response_missing_error_key():
 
 class TestPickleExceptions(unittest.TestCase):
     def test_single_kwarg_botocore_error(self):
-        exception = botocore.exceptions.DataNotFoundError(data_path='mypath')
+        exception = awscli.botocore.exceptions.DataNotFoundError(
+            data_path='mypath'
+        )
         unpickled_exception = pickle.loads(pickle.dumps(exception))
         self.assertIsInstance(
-            unpickled_exception, botocore.exceptions.DataNotFoundError
+            unpickled_exception, awscli.botocore.exceptions.DataNotFoundError
         )
         self.assertEqual(str(unpickled_exception), str(exception))
         self.assertEqual(unpickled_exception.kwargs, exception.kwargs)
 
     def test_multiple_kwarg_botocore_error(self):
-        exception = botocore.exceptions.UnknownServiceError(
+        exception = awscli.botocore.exceptions.UnknownServiceError(
             service_name='myservice', known_service_names=['s3']
         )
         unpickled_exception = pickle.loads(pickle.dumps(exception))
         self.assertIsInstance(
-            unpickled_exception, botocore.exceptions.UnknownServiceError
+            unpickled_exception, awscli.botocore.exceptions.UnknownServiceError
         )
         self.assertEqual(str(unpickled_exception), str(exception))
         self.assertEqual(unpickled_exception.kwargs, exception.kwargs)
 
     def test_client_error(self):
-        exception = botocore.exceptions.ClientError(
+        exception = awscli.botocore.exceptions.ClientError(
             error_response={
                 'Error': {'Code': 'MyCode', 'Message': 'MyMessage'}
             },
@@ -118,7 +119,7 @@ class TestPickleExceptions(unittest.TestCase):
         )
         unpickled_exception = pickle.loads(pickle.dumps(exception))
         self.assertIsInstance(
-            unpickled_exception, botocore.exceptions.ClientError
+            unpickled_exception, awscli.botocore.exceptions.ClientError
         )
         self.assertEqual(str(unpickled_exception), str(exception))
         self.assertEqual(
@@ -127,7 +128,7 @@ class TestPickleExceptions(unittest.TestCase):
         self.assertEqual(unpickled_exception.response, exception.response)
 
     def test_dynamic_client_error(self):
-        session = botocore.session.Session()
+        session = awscli.botocore.session.Session()
         client = session.create_client('s3', 'us-west-2')
         exception = client.exceptions.NoSuchKey(
             error_response={
@@ -137,7 +138,7 @@ class TestPickleExceptions(unittest.TestCase):
         )
         unpickled_exception = pickle.loads(pickle.dumps(exception))
         self.assertIsInstance(
-            unpickled_exception, botocore.exceptions.ClientError
+            unpickled_exception, awscli.botocore.exceptions.ClientError
         )
         self.assertEqual(str(unpickled_exception), str(exception))
         self.assertEqual(
@@ -146,16 +147,16 @@ class TestPickleExceptions(unittest.TestCase):
         self.assertEqual(unpickled_exception.response, exception.response)
 
     def test_http_client_error(self):
-        exception = botocore.exceptions.HTTPClientError(
-            botocore.awsrequest.AWSRequest(),
-            botocore.awsrequest.AWSResponse(
+        exception = awscli.botocore.exceptions.HTTPClientError(
+            awscli.botocore.awsrequest.AWSRequest(),
+            awscli.botocore.awsrequest.AWSResponse(
                 url='https://foo.com', status_code=400, headers={}, raw=b''
             ),
             error='error',
         )
         unpickled_exception = pickle.loads(pickle.dumps(exception))
         self.assertIsInstance(
-            unpickled_exception, botocore.exceptions.HTTPClientError
+            unpickled_exception, awscli.botocore.exceptions.HTTPClientError
         )
         self.assertEqual(str(unpickled_exception), str(exception))
         self.assertEqual(unpickled_exception.kwargs, exception.kwargs)
@@ -163,8 +164,9 @@ class TestPickleExceptions(unittest.TestCase):
         # __eq__ defined so we want to make sure properties are at least
         # of the expected type
         self.assertIsInstance(
-            unpickled_exception.request, botocore.awsrequest.AWSRequest
+            unpickled_exception.request, awscli.botocore.awsrequest.AWSRequest
         )
         self.assertIsInstance(
-            unpickled_exception.response, botocore.awsrequest.AWSResponse
+            unpickled_exception.response,
+            awscli.botocore.awsrequest.AWSResponse,
         )

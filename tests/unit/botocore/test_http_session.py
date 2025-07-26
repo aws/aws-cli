@@ -1,24 +1,24 @@
 import socket
 
 import pytest
-from botocore.awsrequest import (
+from urllib3.exceptions import NewConnectionError, ProtocolError, ProxyError
+
+from awscli.botocore.awsrequest import (
     AWSHTTPConnectionPool,
     AWSHTTPSConnectionPool,
     AWSRequest,
 )
-from botocore.exceptions import (
+from awscli.botocore.exceptions import (
     ConnectionClosedError,
     EndpointConnectionError,
     ProxyConnectionError,
 )
-from botocore.httpsession import (
+from awscli.botocore.httpsession import (
     ProxyConfiguration,
     URLLib3Session,
     get_cert_path,
     mask_proxy_url,
 )
-from urllib3.exceptions import NewConnectionError, ProtocolError, ProxyError
-
 from tests import mock, unittest
 
 
@@ -64,7 +64,7 @@ class TestHttpSessionUtils(unittest.TestCase):
         self.assertEqual(path, cert_path)
 
     def test_get_cert_path_certifi_or_default(self):
-        with mock.patch('botocore.httpsession.where') as where:
+        with mock.patch('awscli.botocore.httpsession.where') as where:
             path = '/bundle/path'
             where.return_value = path
             cert_path = get_cert_path(True)
@@ -117,8 +117,10 @@ class TestURLLib3Session(unittest.TestCase):
         self.connection.urlopen.return_value = self.response
         self.pool_manager.connection_from_url.return_value = self.connection
 
-        self.pool_patch = mock.patch('botocore.httpsession.PoolManager')
-        self.proxy_patch = mock.patch('botocore.httpsession.proxy_from_url')
+        self.pool_patch = mock.patch('awscli.botocore.httpsession.PoolManager')
+        self.proxy_patch = mock.patch(
+            'awscli.botocore.httpsession.proxy_from_url'
+        )
         self.pool_manager_cls = self.pool_patch.start()
         self.proxy_manager_fun = self.proxy_patch.start()
         self.pool_manager_cls.return_value = self.pool_manager
@@ -186,7 +188,7 @@ class TestURLLib3Session(unittest.TestCase):
             'proxy_use_forwarding_for_https': False,
         }
         use_forwarding = proxies_config['proxy_use_forwarding_for_https']
-        with mock.patch('botocore.httpsession.create_urllib3_context'):
+        with mock.patch('awscli.botocore.httpsession.create_urllib3_context'):
             session = URLLib3Session(
                 proxies=proxies, proxies_config=proxies_config
             )
@@ -314,7 +316,7 @@ class TestURLLib3Session(unittest.TestCase):
         cert = ('/some/cert', '/some/key')
         proxies = {'https': 'https://proxy.com'}
         proxies_config = {'proxy_client_cert': "path/to/cert"}
-        with mock.patch('botocore.httpsession.create_urllib3_context'):
+        with mock.patch('awscli.botocore.httpsession.create_urllib3_context'):
             session = URLLib3Session(
                 proxies=proxies,
                 client_cert=cert,
@@ -335,7 +337,7 @@ class TestURLLib3Session(unittest.TestCase):
         cert = ('/some/cert', '/some/key')
         proxies = {'https': 'https://proxy.com'}
         proxies_config = {'proxy_client_cert': "path/to/cert"}
-        with mock.patch('botocore.httpsession.create_urllib3_context'):
+        with mock.patch('awscli.botocore.httpsession.create_urllib3_context'):
             session = URLLib3Session(
                 proxies=proxies,
                 client_cert=cert,
@@ -359,7 +361,7 @@ class TestURLLib3Session(unittest.TestCase):
             'https://[::1]:789',
         ]
         for proxy_url in urls:
-            with mock.patch('botocore.httpsession.SSLContext'):
+            with mock.patch('awscli.botocore.httpsession.SSLContext'):
                 proxies = {'https': proxy_url}
                 session = URLLib3Session(
                     proxies=proxies,

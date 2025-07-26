@@ -10,10 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
 import pytest
-from botocore.exceptions import ParamValidationError
-from botocore.stub import Stubber
+
+import awscli.botocore.session
+from awscli.botocore.exceptions import ParamValidationError
+from awscli.botocore.stub import Stubber
 
 ALIAS_CASES = [
     {
@@ -48,13 +49,13 @@ ALIAS_CASES = [
 
 @pytest.mark.parametrize("case", ALIAS_CASES)
 def test_can_use_alias(case):
-    session = botocore.session.get_session()
+    session = awscli.botocore.session.get_session()
     _can_use_parameter_in_client_call(session, case)
 
 
 @pytest.mark.parametrize("case", ALIAS_CASES)
 def test_can_use_original_name(case):
-    session = botocore.session.get_session()
+    session = awscli.botocore.session.get_session()
     _can_use_parameter_in_client_call(session, case, False)
 
 

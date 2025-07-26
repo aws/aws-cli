@@ -11,10 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-from botocore.client import ClientEndpointBridge
-from botocore.compat import urlparse
-from botocore.exceptions import NoRegionError
 
+from awscli.botocore.client import ClientEndpointBridge
+from awscli.botocore.compat import urlparse
+from awscli.botocore.exceptions import NoRegionError
 from tests import BaseSessionTest, ClientHTTPStubber, mock
 
 # NOTE: sqs endpoint updated to be the CN in the SSL cert because

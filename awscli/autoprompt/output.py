@@ -16,9 +16,9 @@ import logging
 import re
 
 import jmespath
-from botocore.utils import ArgumentGenerator
 
 from awscli.autocomplete.local.fetcher import CliDriverFetcher
+from awscli.botocore.utils import ArgumentGenerator
 from awscli.formatter import get_formatter
 
 LOG = logging.getLogger(__name__)

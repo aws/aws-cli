@@ -5,10 +5,10 @@ import tempfile
 import zipfile
 from contextlib import closing, contextmanager
 
-import botocore.session
 import pytest
-from botocore.stub import Stubber
 
+import awscli.botocore.session
+from awscli.botocore.stub import Stubber
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.artifact_exporter import (
     GLOBAL_EXPORT_DICT,

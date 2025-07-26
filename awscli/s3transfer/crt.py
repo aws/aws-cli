@@ -16,8 +16,6 @@ import threading
 from io import BytesIO
 
 import awscrt.http
-import botocore.awsrequest
-import botocore.session
 from awscrt.auth import (
     AwsCredentials,
     AwsCredentialsProvider,
@@ -38,16 +36,23 @@ from awscrt.s3 import (
     S3ResponseError,
     get_recommended_throughput_target_gbps,
 )
-from botocore import UNSIGNED
-from botocore.compat import urlsplit
-from botocore.config import Config
-from botocore.exceptions import NoCredentialsError
-from botocore.useragent import register_feature_id
-from botocore.utils import ArnParser, InvalidArnException, is_s3express_bucket
-from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS, MB
-from s3transfer.exceptions import TransferNotDoneError
-from s3transfer.futures import BaseTransferFuture, BaseTransferMeta
-from s3transfer.utils import CallArgs, OSUtils, get_callbacks
+
+import awscli.botocore.awsrequest
+import awscli.botocore.session
+from awscli.botocore import UNSIGNED
+from awscli.botocore.compat import urlsplit
+from awscli.botocore.config import Config
+from awscli.botocore.exceptions import NoCredentialsError
+from awscli.botocore.useragent import register_feature_id
+from awscli.botocore.utils import (
+    ArnParser,
+    InvalidArnException,
+    is_s3express_bucket,
+)
+from awscli.s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS, MB
+from awscli.s3transfer.exceptions import TransferNotDoneError
+from awscli.s3transfer.futures import BaseTransferFuture, BaseTransferMeta
+from awscli.s3transfer.utils import CallArgs, OSUtils, get_callbacks
 
 logger = logging.getLogger(__name__)
 
@@ -191,11 +196,11 @@ class CRTTransferManager:
         :param crt_s3_client: The CRT s3 client, handling all the
             HTTP requests and functions under then hood
 
-        :type crt_request_serializer: s3transfer.crt.BaseCRTRequestSerializer
+        :type crt_request_serializer: awscli.s3transfer.crt.BaseCRTRequestSerializer
         :param crt_request_serializer: Serializer, generates unsigned crt HTTP
             request.
 
-        :type osutil: s3transfer.utils.OSUtils
+        :type osutil: awscli.s3transfer.utils.OSUtils
         :param osutil: OSUtils object to use for os-related behavior when
             using with transfer manager.
         """
@@ -377,10 +382,10 @@ class CRTTransferFuture(BaseTransferFuture):
     def __init__(self, meta=None, coordinator=None):
         """The future associated to a submitted transfer request via CRT S3 client
 
-        :type meta: s3transfer.crt.CRTTransferMeta
+        :type meta: awscli.s3transfer.crt.CRTTransferMeta
         :param meta: The metadata associated to the transfer future.
 
-        :type coordinator: s3transfer.crt.CRTTransferCoordinator
+        :type coordinator: awscli.s3transfer.crt.CRTTransferCoordinator
         :param coordinator: The coordinator associated to the transfer future.
         """
         self._meta = meta
@@ -419,7 +424,7 @@ class BaseCRTRequestSerializer:
         :param transfer_type: the type of transfer made,
             e.g 'put_object', 'get_object', 'delete_object'
 
-        :type future: s3transfer.crt.CRTTransferFuture
+        :type future: awscli.s3transfer.crt.CRTTransferFuture
 
         :rtype: awscrt.http.HttpRequest
         :returns: An unsigned HTTP request to be used for the CRT S3 client
@@ -437,7 +442,7 @@ class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
         and any keyword arguments that could be passed to
         `Session.create_client()` when serializing the request.
 
-        :type session: botocore.session.Session
+        :type session: awscli.botocore.session.Session
 
         :type client_kwargs: Optional[Dict[str, str]])
         :param client_kwargs: The kwargs for the botocore
@@ -536,7 +541,7 @@ class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
         parsed['HTTPRequest'] = request.prepare()
 
     def _make_fake_http_response(self, request, **kwargs):
-        return botocore.awsrequest.AWSResponse(
+        return awscli.botocore.awsrequest.AWSResponse(
             None,
             200,
             {},
@@ -577,7 +582,7 @@ class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
             shape = None
 
         response_dict = {
-            'headers': botocore.awsrequest.HeadersDict(headers),
+            'headers': awscli.botocore.awsrequest.HeadersDict(headers),
             'status_code': status_code,
             'body': s3_response_error.body,
         }
@@ -920,7 +925,7 @@ class OnBodyFileObjWriter:
 
 
 class _S3ArnParamHandler:
-    """Partial port of S3ArnParamHandler from botocore.
+    """Partial port of S3ArnParamHandler from awscli.botocore.
 
     This is used to make a determination on MRAP accesspoints for signing
     purposes. This should be safe to remove once we properly integrate auth

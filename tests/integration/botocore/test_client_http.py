@@ -6,9 +6,9 @@ import threading
 from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler
 
-import botocore.session
-from botocore.config import Config
-from botocore.exceptions import (
+import awscli.botocore.session
+from awscli.botocore.config import Config
+from awscli.botocore.exceptions import (
     ClientError,
     ConnectionClosedError,
     ConnectTimeoutError,
@@ -16,7 +16,6 @@ from botocore.exceptions import (
     ProxyConnectionError,
     ReadTimeoutError,
 )
-
 from tests import mock, unittest
 
 
@@ -24,7 +23,7 @@ class TestClientHTTPBehavior(unittest.TestCase):
     def setUp(self):
         self.port = unused_port()
         self.localhost = f'http://localhost:{self.port}/'
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         # We need to set fake credentials to ensure credentials aren't searched
         # for which might make additional API calls (assume role, etc).
         self.session.set_credentials('fakeakid', 'fakesecret')

@@ -18,8 +18,8 @@ import copy
 import logging
 import os
 
-from botocore import utils
-from botocore.exceptions import InvalidConfigError
+from awscli.botocore import utils
+from awscli.botocore.exceptions import InvalidConfigError
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 #: When creating a new Session object, you can pass in your own dictionary
 #: to remap the logical names or to add new logical names.  You can then
 #: get the current value for these variables by using the
-#: ``get_config_variable`` method of the :class:`botocore.session.Session`
+#: ``get_config_variable`` method of the :class:`awscli.botocore.session.Session`
 #: class.
 #: These form the keys of the dictionary.  The values in the dictionary
 #: are tuples of (<config_name>, <environment variable>, <default value>,
@@ -123,7 +123,7 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
     ),
     'parameter_validation': ('parameter_validation', None, True, None),
     # Client side monitoring configurations.
-    # Note: These configurations are considered internal to botocore.
+    # Note: These configurations are considered internal to awscli.botocore.
     # Do not use them until publicly documented.
     'csm_enabled': (
         'csm_enabled',
@@ -282,7 +282,7 @@ class ConfigChainFactory:
     def __init__(self, session, environ=None):
         """Initialize a ConfigChainFactory.
 
-        :type session: :class:`botocore.session.Session`
+        :type session: :class:`awscli.botocore.session.Session`
         :param session: This is the session that should be used to look up
             values from the config file.
 
@@ -498,7 +498,7 @@ class ConfigValueStore:
         :param logical_name: The name of the config value to change the config
             provider for.
 
-        :type provider: :class:`botocore.configprovider.BaseProvider`
+        :type provider: :class:`awscli.botocore.configprovider.BaseProvider`
         :param provider: The new provider that should be responsible for
             providing a value for the config named ``logical_name``.
         """
@@ -572,7 +572,7 @@ class InstanceVarProvider(BaseProvider):
         :type instance_var: str
         :param instance_var: The instance variable to load from the session.
 
-        :type session: :class:`botocore.session.Session`
+        :type session: :class:`awscli.botocore.session.Session`
         :param session: The botocore session to get the loaded configuration
             file variables from.
         """
@@ -599,7 +599,7 @@ class ScopedConfigProvider(BaseProvider):
             consist of two items, where the first item represents the section
             and the second item represents the config var name in the section.
 
-        :type session: :class:`botocore.session.Session`
+        :type session: :class:`awscli.botocore.session.Session`
         :param session: The botocore session to get the loaded configuration
             file variables from.
         """
@@ -735,7 +735,7 @@ class ConfiguredEndpointProvider(BaseProvider):
 
         :type client_name: str
         :param client_name: The name used to instantiate a client using
-            botocore.session.Session.create_client.
+            awscli.botocore.session.Session.create_client.
 
         :type environ: dict
         :param environ: A mapping to use for environment variables. If this

@@ -18,11 +18,13 @@ import tempfile
 import time
 from io import BytesIO
 
-from botocore.exceptions import ClientError
-from s3transfer.compat import SOCKET_ERROR
-from s3transfer.exceptions import RetriesExceededError, S3DownloadFailedError
-from s3transfer.manager import TransferConfig, TransferManager
-
+from awscli.botocore.exceptions import ClientError
+from awscli.s3transfer.compat import SOCKET_ERROR
+from awscli.s3transfer.exceptions import (
+    RetriesExceededError,
+    S3DownloadFailedError,
+)
+from awscli.s3transfer.manager import TransferConfig, TransferManager
 from tests import (
     BaseGeneralInterfaceTest,
     ETagProvider,

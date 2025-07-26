@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 import uuid
 
-from botocore.history import HistoryRecorder
-
+from awscli.botocore.history import HistoryRecorder
 from awscli.clidriver import AWSCLIEntryPoint
 from awscli.testutils import (
     BaseAWSCommandParamsTest,
@@ -48,7 +47,7 @@ class BaseHistoryCommandParamsTest(BaseAWSCommandParamsTest):
 
         # The HISTORY_RECORDER is instantiated on module import before we
         # doing any patching which means we cannot simply patch
-        # botocore.get_global_history_recorder as the objects are already
+        # awscli.botocore.get_global_history_recorder as the objects are already
         # instantiated as so we have to individually patch each one of these...
         self._apply_history_recorder_patch(
             'awscli.clidriver', history_recorder

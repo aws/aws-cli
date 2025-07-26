@@ -11,14 +11,17 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-from botocore.session import get_session
-from botocore.utils import CLIENT_NAME_TO_HYPHENIZED_SERVICE_ID_OVERRIDES
+
+from awscli.botocore.session import get_session
+from awscli.botocore.utils import (
+    CLIENT_NAME_TO_HYPHENIZED_SERVICE_ID_OVERRIDES,
+)
 
 ENDPOINT_PREFIX_OVERRIDE = {
     # entry in endpoints.json -> actual endpoint prefix.
     # The autoscaling-* services actually send requests to the
     # autoscaling service, but they're exposed as separate clients
-    # in botocore.
+    # in awscli.botocore.
     'autoscaling-plans': 'autoscaling',
     'application-autoscaling': 'autoscaling',
     # For neptune, we send requests to the RDS endpoint.

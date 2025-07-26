@@ -12,15 +12,14 @@
 # language governing permissions and limitations under the License.
 import time
 
-import botocore.session
-from botocore import exceptions
-
+import awscli.botocore.session
+from awscli.botocore import exceptions
 from tests import unittest
 
 
 class TestApigateway(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.client = self.session.create_client('apigateway', 'us-east-1')
 
         # Create a resource to use with this client.

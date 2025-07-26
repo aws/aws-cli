@@ -1,7 +1,9 @@
 from contextlib import contextmanager
 
-from botocore.history import BaseHistoryHandler, get_global_history_recorder
-
+from awscli.botocore.history import (
+    BaseHistoryHandler,
+    get_global_history_recorder,
+)
 from tests import BaseSessionTest, ClientHTTPStubber
 
 

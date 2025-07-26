@@ -10,9 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
-from botocore.exceptions import ProfileNotFound
-
+import awscli.botocore.session
+from awscli.botocore.exceptions import ProfileNotFound
 from tests import mock, temporary_file, unittest
 
 
@@ -21,7 +20,7 @@ class TestSession(unittest.TestCase):
         self.environ = {}
         self.env_patch = mock.patch('os.environ', self.environ)
         self.env_patch.start()
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
 
     def tearDown(self):
         self.env_patch.stop()

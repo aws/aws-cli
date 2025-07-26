@@ -12,14 +12,14 @@
 # language governing permissions and limitations under the License.
 import dateutil.parser
 import pytest
-from botocore.exceptions import (
+
+from awscli.botocore.exceptions import (
     InvalidConfigError,
     SSOTokenLoadError,
     TokenRetrievalError,
 )
-from botocore.session import Session
-from botocore.tokens import SSOTokenProvider
-
+from awscli.botocore.session import Session
+from awscli.botocore.tokens import SSOTokenProvider
 from tests import mock
 
 

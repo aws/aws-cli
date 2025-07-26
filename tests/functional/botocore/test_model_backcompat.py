@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 
-from botocore.session import Session
-
+from awscli.botocore.session import Session
 from tests import ClientHTTPStubber
 from tests.functional.botocore import TEST_MODELS_DIR
 
@@ -24,7 +23,7 @@ def test_old_model_continues_to_work():
     # snapshot of a service model.  This test ensures that we can continue
     # to stub an API call using this model.  That way if the models ever
     # change we have a mechanism to ensure that the existing models continue
-    # to work with botocore.  The test should not change (with the exception
+    # to work with awscli.botocore.  The test should not change (with the exception
     # of potential changes to the ClientHTTPStubber), and the files in
     # tests/functional/models should not change!
     session = Session()
@@ -40,7 +39,7 @@ def test_old_model_continues_to_work():
     # client name.
     loader.search_paths.insert(0, TEST_MODELS_DIR)
 
-    # The model dir we copied from botocore/data/acm was renamed to
+    # The model dir we copied from awscli.botocore/data/acm was renamed to
     # 'custom-acm' to ensure we're loading our version of the model and
     # not the built in one.
     client = session.create_client(

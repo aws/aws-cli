@@ -20,8 +20,7 @@ import re
 import sys
 import xml
 
-from botocore.exceptions import ClientError
-
+from awscli.botocore.exceptions import ClientError
 from awscli.customizations.exceptions import ParamValidationError
 
 _SENTENCE_DELIMETERS_REGEX = re.compile(r'[.:]+')

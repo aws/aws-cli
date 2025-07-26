@@ -14,8 +14,7 @@ import argparse
 import os
 import sys
 
-import botocore.session
-
+import awscli.botocore.session
 from awscli.compat import StringIO
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.s3.s3 import S3
@@ -673,7 +672,7 @@ class CommandParametersTest(unittest.TestCase):
 class HelpDocTest(BaseAWSHelpOutputTest):
     def setUp(self):
         super(HelpDocTest, self).setUp()
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
 
     def tearDown(self):
         super(HelpDocTest, self).tearDown()

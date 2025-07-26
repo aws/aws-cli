@@ -12,11 +12,10 @@
 # language governing permissions and limitations under the License.
 from io import BytesIO
 
-from botocore.awsrequest import create_request_object
-from s3transfer.exceptions import CancelledError, FatalError
-from s3transfer.futures import BaseExecutor
-from s3transfer.manager import TransferConfig, TransferManager
-
+from awscli.botocore.awsrequest import create_request_object
+from awscli.s3transfer.exceptions import CancelledError, FatalError
+from awscli.s3transfer.futures import BaseExecutor
+from awscli.s3transfer.manager import TransferConfig, TransferManager
 from tests import StubbedClientTest, mock, skip_if_using_serial_implementation
 
 

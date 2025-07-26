@@ -9,10 +9,10 @@ from datetime import datetime
 from io import StringIO
 from urllib.parse import urlsplit
 
-from botocore.utils import original_ld_library_path, parse_timestamp
 from dateutil.relativedelta import relativedelta
 from dateutil.tz import tzutc
 
+from awscli.botocore.utils import original_ld_library_path, parse_timestamp
 from awscli.compat import get_stderr_encoding, is_macos, is_windows, urlparse
 from awscli.customizations import utils as cli_utils
 from awscli.customizations.commands import BasicCommand

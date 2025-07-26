@@ -20,19 +20,18 @@ import webbrowser
 from functools import partial
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from botocore.compat import parse_qs, urlparse
-from botocore.credentials import JSONFileCache
-from botocore.exceptions import (
+from awscli import __version__ as awscli_version
+from awscli.botocore.compat import parse_qs, urlparse
+from awscli.botocore.credentials import JSONFileCache
+from awscli.botocore.exceptions import (
     AuthCodeFetcherError,
     PendingAuthorizationExpiredError,
 )
-from botocore.utils import (
+from awscli.botocore.utils import (
     SSOTokenFetcher,
     SSOTokenFetcherAuth,
     original_ld_library_path,
 )
-
-from awscli import __version__ as awscli_version
 from awscli.customizations.assumerole import CACHE_DIR as AWS_CREDS_CACHE_DIR
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ConfigurationError

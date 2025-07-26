@@ -10,8 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.hooks import HierarchicalEmitter
-
+from awscli.botocore.hooks import HierarchicalEmitter
 from awscli.clidriver import CLIDriver
 from awscli.customizations.commands import (
     BasicCommand,

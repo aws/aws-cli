@@ -12,9 +12,8 @@
 # language governing permissions and limitations under the License.
 from contextlib import contextmanager
 
-import botocore.session
-from botocore.stub import Stubber
-
+import awscli.botocore.session
+from awscli.botocore.stub import Stubber
 from tests import BaseSessionTest, ClientHTTPStubber, unittest
 
 

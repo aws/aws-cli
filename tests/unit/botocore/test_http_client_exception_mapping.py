@@ -1,6 +1,7 @@
 import pytest
-from botocore import exceptions as botocore_exceptions
-from botocore.vendored.requests.packages.urllib3 import (
+
+from awscli.botocore import exceptions as botocore_exceptions
+from awscli.botocore.vendored.requests.packages.urllib3 import (
     exceptions as urllib3_exceptions,
 )
 

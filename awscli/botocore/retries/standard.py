@@ -20,21 +20,21 @@ The key base classes uses for retries:
     in this module.
 
 This allows us to define an API that has minimal coupling to the event
-based API used by botocore.
+based API used by awscli.botocore.
 
 """
 
 import logging
 import random
 
-from botocore.exceptions import (
+from awscli.botocore.exceptions import (
     ConnectionError,
     ConnectTimeoutError,
     HTTPClientError,
     ReadTimeoutError,
 )
-from botocore.retries import quota, special
-from botocore.retries.base import BaseRetryableChecker, BaseRetryBackoff
+from awscli.botocore.retries import quota, special
+from awscli.botocore.retries.base import BaseRetryableChecker, BaseRetryBackoff
 
 DEFAULT_MAX_ATTEMPTS = 3
 logger = logging.getLogger(__name__)
@@ -107,7 +107,7 @@ class RetryEventAdapter:
     """Adapter to existing retry interface used in the endpoints layer.
 
     This existing interface for determining if a retry needs to happen
-    is event based and used in ``botocore.endpoint``.  The interface has
+    is event based and used in ``awscli.botocore.endpoint``.  The interface has
     grown organically over the years and could use some cleanup.  This
     adapter converts that interface into the interface used by the
     new retry strategies.
@@ -193,7 +193,7 @@ class RetryContext:
         # This is the parsed response dictionary we get from parsing
         # the HTTP response from the service.
         self.parsed_response = parsed_response
-        # This is an instance of botocore.awsrequest.AWSResponse.
+        # This is an instance of awscli.botocore.awsrequest.AWSResponse.
         self.http_response = http_response
         # This is a subclass of Exception that will be non None if
         # an exception was raised when retrying to retrieve a response.

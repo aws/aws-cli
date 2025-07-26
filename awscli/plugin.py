@@ -14,7 +14,7 @@ import logging
 import os
 import sys
 
-from botocore.hooks import HierarchicalEmitter
+from awscli.botocore.hooks import HierarchicalEmitter
 
 log = logging.getLogger('awscli.plugin')
 

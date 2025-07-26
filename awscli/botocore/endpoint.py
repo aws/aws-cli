@@ -17,15 +17,15 @@ import os
 import threading
 import time
 
-from botocore import parsers
-from botocore.awsrequest import create_request_object
-from botocore.exceptions import HTTPClientError
-from botocore.history import get_global_history_recorder
-from botocore.hooks import first_non_none_response
-from botocore.httpchecksum import handle_checksum_body
-from botocore.httpsession import URLLib3Session
-from botocore.response import StreamingBody
-from botocore.utils import (
+from awscli.botocore import parsers
+from awscli.botocore.awsrequest import create_request_object
+from awscli.botocore.exceptions import HTTPClientError
+from awscli.botocore.history import get_global_history_recorder
+from awscli.botocore.hooks import first_non_none_response
+from awscli.botocore.httpchecksum import handle_checksum_body
+from awscli.botocore.httpsession import URLLib3Session
+from awscli.botocore.response import StreamingBody
+from awscli.botocore.utils import (
     get_environ_proxies,
     is_valid_endpoint_url,
     is_valid_ipv6_endpoint_url,
@@ -43,7 +43,7 @@ def convert_to_response_dict(http_response, operation_model):
     This converts the requests library's HTTP response object to
     a dictionary.
 
-    :type http_response: botocore.vendored.requests.model.Response
+    :type http_response: awscli.botocore.vendored.requests.model.Response
     :param http_response: The HTTP response from an AWS service request.
 
     :rtype: dict

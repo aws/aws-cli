@@ -16,9 +16,9 @@ import webbrowser
 
 import pytest
 import urllib3
-from botocore.exceptions import PendingAuthorizationExpiredError
-from botocore.session import Session
 
+from awscli.botocore.exceptions import PendingAuthorizationExpiredError
+from awscli.botocore.session import Session
 from awscli.compat import BytesIO, StringIO
 from awscli.customizations.sso.utils import (
     AuthCodeFetcher,

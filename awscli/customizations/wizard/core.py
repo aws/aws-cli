@@ -18,8 +18,8 @@ import re
 from functools import partial
 
 import jmespath
-from botocore import xform_name
 
+from awscli.botocore import xform_name
 from awscli.customizations.wizard.exceptions import (
     InvalidDataTypeConversionException,
 )

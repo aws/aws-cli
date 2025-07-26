@@ -3,7 +3,7 @@
 import threading
 import time
 
-from botocore.exceptions import CapacityNotAvailableError
+from awscli.botocore.exceptions import CapacityNotAvailableError
 
 
 class Clock:

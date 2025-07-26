@@ -14,7 +14,7 @@
 """The interfaces in this module are not intended for public use.
 
 This module defines interfaces for applying checksums to HTTP requests within
-the context of botocore. This involves both resolving the checksum to be used
+the context of awscli.botocore. This involves both resolving the checksum to be used
 based on client configuration and environment, as well as application of the
 checksum to the request.
 """
@@ -26,12 +26,16 @@ from binascii import crc32
 from hashlib import sha1, sha256
 
 from awscrt import checksums as crt_checksums
-from botocore.compat import urlparse
-from botocore.exceptions import AwsChunkedWrapperError, FlexibleChecksumError
-from botocore.model import StructureShape
-from botocore.response import StreamingBody
-from botocore.useragent import register_feature_id
-from botocore.utils import determine_content_length, has_checksum_header
+
+from awscli.botocore.compat import urlparse
+from awscli.botocore.exceptions import (
+    AwsChunkedWrapperError,
+    FlexibleChecksumError,
+)
+from awscli.botocore.model import StructureShape
+from awscli.botocore.response import StreamingBody
+from awscli.botocore.useragent import register_feature_id
+from awscli.botocore.utils import determine_content_length, has_checksum_header
 
 logger = logging.getLogger(__name__)
 

@@ -34,21 +34,27 @@ from io import BytesIO
 from subprocess import PIPE, Popen
 from unittest import mock
 
-import botocore.loaders
-import botocore.session
-from botocore import credentials, utils
-from botocore.awsrequest import AWSResponse
-from botocore.compat import parse_qs, urlparse
-from botocore.configprovider import create_botocore_default_config_mapping
-from botocore.httpchecksum import _CHECKSUM_CLS, DEFAULT_CHECKSUM_ALGORITHM
-from botocore.stub import Stubber
 from dateutil.tz import tzlocal
 
-_LOADER = botocore.loaders.Loader()
+import awscli.botocore.loaders
+import awscli.botocore.session
+from awscli.botocore import credentials, utils
+from awscli.botocore.awsrequest import AWSResponse
+from awscli.botocore.compat import parse_qs, urlparse
+from awscli.botocore.configprovider import (
+    create_botocore_default_config_mapping,
+)
+from awscli.botocore.httpchecksum import (
+    _CHECKSUM_CLS,
+    DEFAULT_CHECKSUM_ALGORITHM,
+)
+from awscli.botocore.stub import Stubber
+
+_LOADER = awscli.botocore.loaders.Loader()
 
 
 def _all_services():
-    session = botocore.session.Session()
+    session = awscli.botocore.session.Session()
     service_names = session.get_available_services()
     return [session.get_service_model(name) for name in service_names]
 
@@ -99,14 +105,14 @@ def create_session(**kwargs):
     # Create a Session object.  By default,
     # the _LOADER object is used as the loader
     # so that we reused the same models across tests.
-    session = botocore.session.Session(**kwargs)
+    session = awscli.botocore.session.Session(**kwargs)
     session.register_component('data_loader', _LOADER)
     session.set_config_variable('credentials_file', 'noexist/foo/botocore')
     return session
 
 
 def get_botocore_default_config_mapping():
-    session = botocore.session.get_session()
+    session = awscli.botocore.session.get_session()
     return create_botocore_default_config_mapping(session)
 
 
@@ -530,7 +536,7 @@ class ConsistencyWaiter:
         )
 
 
-class StubbedSession(botocore.session.Session):
+class StubbedSession(awscli.botocore.session.Session):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._cached_clients = {}
@@ -576,7 +582,7 @@ class FreezeTime(contextlib.ContextDecorator):
     performing actions like signing which require point in time specificity.
 
     :type module: module
-    :param module: reference to imported module to patch (e.g. botocore.auth.datetime)
+    :param module: reference to imported module to patch (e.g. awscli.botocore.auth.datetime)
 
     :type date: datetime.datetime
     :param date: datetime object specifying the output for utcnow()

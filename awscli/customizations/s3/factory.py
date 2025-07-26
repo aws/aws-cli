@@ -13,22 +13,22 @@
 import logging
 
 import awscrt.s3
-from botocore.client import Config
-from botocore.httpsession import DEFAULT_CA_BUNDLE
-from s3transfer.crt import (
+
+from awscli.botocore.client import Config
+from awscli.botocore.httpsession import DEFAULT_CA_BUNDLE
+from awscli.compat import urlparse
+from awscli.customizations.s3 import constants
+from awscli.customizations.s3.transferconfig import (
+    create_transfer_config_from_runtime_config,
+)
+from awscli.s3transfer.crt import (
     BotocoreCRTCredentialsWrapper,
     BotocoreCRTRequestSerializer,
     CRTTransferManager,
     acquire_crt_s3_process_lock,
     create_s3_crt_client,
 )
-from s3transfer.manager import TransferManager
-
-from awscli.compat import urlparse
-from awscli.customizations.s3 import constants
-from awscli.customizations.s3.transferconfig import (
-    create_transfer_config_from_runtime_config,
-)
+from awscli.s3transfer.manager import TransferManager
 
 LOGGER = logging.getLogger(__name__)
 

@@ -20,9 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-from botocore.docs.bcdoc.restdoc import ReSTDocument
-from botocore.docs.bcdoc.style import ReSTStyle
-
+from awscli.botocore.docs.bcdoc.restdoc import ReSTDocument
+from awscli.botocore.docs.bcdoc.style import ReSTStyle
 from tests import unittest
 
 

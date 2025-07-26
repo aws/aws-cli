@@ -14,8 +14,7 @@
 import copy
 import os
 
-from botocore.compat import OrderedDict, json
-
+from awscli.botocore.compat import OrderedDict, json
 from awscli.testutils import mock, unittest
 from tests.unit.customizations.emr import (
     EMRBaseAWSCommandParamsTest as BaseAWSCommandParamsTest,

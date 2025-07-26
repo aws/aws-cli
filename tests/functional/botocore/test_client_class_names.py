@@ -10,8 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
 import pytest
+
+import awscli.botocore.session
 
 REGION = 'us-east-1'
 
@@ -69,6 +70,6 @@ SERVICE_TO_CLASS_NAME = {
 
 @pytest.mark.parametrize("service_name", SERVICE_TO_CLASS_NAME)
 def test_client_has_correct_class_name(service_name):
-    session = botocore.session.get_session()
+    session = awscli.botocore.session.get_session()
     client = session.create_client(service_name, REGION)
     assert client.__class__.__name__ == SERVICE_TO_CLASS_NAME[service_name]

@@ -1,8 +1,8 @@
 import pytest
-from botocore import model
-from botocore.compat import OrderedDict
-from botocore.exceptions import MissingServiceIdError
 
+from awscli.botocore import model
+from awscli.botocore.compat import OrderedDict
+from awscli.botocore.exceptions import MissingServiceIdError
 from tests import unittest
 
 

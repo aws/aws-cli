@@ -16,9 +16,9 @@ from concurrent import futures
 from itertools import product
 
 import pytest
-from botocore import __version__ as botocore_version
-from botocore.config import Config
 
+from awscli.botocore import __version__ as botocore_version
+from awscli.botocore.config import Config
 from tests import ClientHTTPStubber
 
 

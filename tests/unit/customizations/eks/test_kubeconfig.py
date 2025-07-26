@@ -16,8 +16,7 @@ import os
 import shutil
 import tempfile
 
-from botocore.compat import OrderedDict
-
+from awscli.botocore.compat import OrderedDict
 from awscli.customizations.eks.exceptions import EKSError
 from awscli.customizations.eks.kubeconfig import (
     Kubeconfig,

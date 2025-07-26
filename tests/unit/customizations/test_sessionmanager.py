@@ -14,16 +14,16 @@ import errno
 import json
 import subprocess
 
-import botocore.session
 import pytest
 
+import awscli.botocore.session
 from awscli.customizations import sessionmanager
 from awscli.testutils import mock, unittest
 
 
 class TestSessionManager(unittest.TestCase):
     def setUp(self):
-        self.session = mock.Mock(botocore.session.Session)
+        self.session = mock.Mock(awscli.botocore.session.Session)
         self.client = mock.Mock()
         self.region = 'us-west-2'
         self.profile = 'testProfile'

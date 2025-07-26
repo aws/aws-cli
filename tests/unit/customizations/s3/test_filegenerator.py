@@ -17,8 +17,7 @@ import socket
 import stat
 import tempfile
 
-from botocore.exceptions import ClientError
-
+from awscli.botocore.exceptions import ClientError
 from awscli.customizations.s3.filegenerator import (
     FileDecodingError,
     FileGenerator,

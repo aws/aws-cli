@@ -15,14 +15,14 @@
 from collections import defaultdict
 from typing import NamedTuple, Union
 
-from botocore.auth import resolve_auth_type
-from botocore.compat import OrderedDict
-from botocore.exceptions import (
+from awscli.botocore.auth import resolve_auth_type
+from awscli.botocore.compat import OrderedDict
+from awscli.botocore.exceptions import (
     MissingServiceIdError,
     UndefinedModelAttributeError,
     UnsupportedServiceProtocolsError,
 )
-from botocore.utils import (
+from awscli.botocore.utils import (
     PRIORITY_ORDERED_SUPPORTED_PROTOCOLS,
     CachedProperty,
     hyphenize_service_id,
@@ -109,7 +109,7 @@ class Shape:
             associated with the key in the "shapes" dict of the
             service model (i.e ``model['shapes'][shape_name]``)
 
-        :type shape_resolver: botocore.model.ShapeResolver
+        :type shape_resolver: awscli.botocore.model.ShapeResolver
         :param shape_resolver: A shape resolver object.  This is used to
             resolve references to other shapes.  For scalar shape types
             (string, integer, boolean, etc.), this argument is not
@@ -308,7 +308,7 @@ class ServiceModel:
 
         :type service_description: dict
         :param service_description: The service description model.  This value
-            is obtained from a botocore.loader.Loader, or from directly loading
+            is obtained from a awscli.botocore.loader.Loader, or from directly loading
             the file yourself::
 
                 service_description = json.load(
@@ -521,7 +521,7 @@ class OperationModel:
             service model, and is the value associated with the operation
             name in the service model (i.e ``model['operations'][op_name]``).
 
-        :type service_model: botocore.model.ServiceModel
+        :type service_model: awscli.botocore.model.ServiceModel
         :param service_model: The service model associated with the operation.
 
         :type name: string
@@ -841,7 +841,7 @@ class DenormalizedStructureBuilder:
                 }
             }
         }).build_model()
-        # ``shape`` is now an instance of botocore.model.StructureShape
+        # ``shape`` is now an instance of awscli.botocore.model.StructureShape
 
     :type dict_type: class
     :param dict_type: The dictionary type to use, allowing you to opt-in
@@ -872,7 +872,7 @@ class DenormalizedStructureBuilder:
     def build_model(self):
         """Build the model based on the provided members.
 
-        :rtype: botocore.model.StructureShape
+        :rtype: awscli.botocore.model.StructureShape
         :return: The built StructureShape object.
 
         """

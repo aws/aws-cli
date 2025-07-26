@@ -14,14 +14,17 @@ import os
 import shutil
 import tempfile
 
-from botocore.exceptions import (
+from urllib3.exceptions import LocationParseError
+
+from awscli.botocore.exceptions import (
     ConnectionClosedError,
     HTTPClientError,
     InvalidIMDSEndpointError,
 )
-from botocore.utils import FileWebIdentityTokenLoader, InstanceMetadataFetcher
-from urllib3.exceptions import LocationParseError
-
+from awscli.botocore.utils import (
+    FileWebIdentityTokenLoader,
+    InstanceMetadataFetcher,
+)
 from tests import mock, unittest
 
 
@@ -52,7 +55,7 @@ class TestFileWebIdentityTokenLoader(unittest.TestCase):
 class TestInstanceMetadataFetcher(unittest.TestCase):
     def test_catch_retryable_http_errors(self):
         with mock.patch(
-            'botocore.httpsession.URLLib3Session.send'
+            'awscli.botocore.httpsession.URLLib3Session.send'
         ) as send_mock:
             fetcher = InstanceMetadataFetcher()
             send_mock.side_effect = ConnectionClosedError(endpoint_url="foo")
@@ -66,7 +69,7 @@ class TestInstanceMetadataFetcher(unittest.TestCase):
 
     def test_catch_invalid_imds_error(self):
         with mock.patch(
-            'botocore.httpsession.URLLib3Session.send'
+            'awscli.botocore.httpsession.URLLib3Session.send'
         ) as send_mock:
             fetcher = InstanceMetadataFetcher()
             e = LocationParseError(location="foo")

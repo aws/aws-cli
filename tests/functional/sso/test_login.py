@@ -457,7 +457,7 @@ class TestLoginCommand(BaseSSOTest):
             'md/sso#auth', self.last_request_dict['headers']['User-Agent']
         )
 
-    @mock.patch('botocore.session.Session.create_client')
+    @mock.patch('awscli.botocore.session.Session.create_client')
     def test_login_custom_ca(self, create_client_patch):
         # Profile and mock responses aren't wired up so this fails with 255,
         # but it does get far enough to verify that the internal SSO-OIDC
@@ -469,7 +469,7 @@ class TestLoginCommand(BaseSSOTest):
             'sso-oidc', config=mock.ANY, verify='/path/to/ca/bundle.pem'
         )
 
-    @mock.patch('botocore.session.Session.create_client')
+    @mock.patch('awscli.botocore.session.Session.create_client')
     def test_login_no_verify_ssl(self, create_client_patch):
         # Profile and mock responses aren't wired up so this fails with 255,
         # but it does get far enough to verify that the internal SSO-OIDC

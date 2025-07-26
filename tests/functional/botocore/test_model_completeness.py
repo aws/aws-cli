@@ -11,7 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-from botocore.loaders import Loader
+
+from awscli.botocore.loaders import Loader
 
 LOADER = Loader()
 AVAILABLE_SERVICES = LOADER.list_available_services(type_name='service-2')

@@ -16,9 +16,8 @@ import shutil
 import tempfile
 import time
 
-from botocore.exceptions import ClientError
-from botocore.session import Session
-
+from awscli.botocore.exceptions import ClientError
+from awscli.botocore.session import Session
 from awscli.testutils import aws, random_chars, unittest
 
 S3_READ_POLICY_ARN = 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'

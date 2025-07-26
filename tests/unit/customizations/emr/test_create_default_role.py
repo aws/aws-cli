@@ -10,12 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.awsrequest import AWSResponse
-from botocore.compat import json
-from botocore.exceptions import ClientError
-
 import awscli.customizations.emr.createdefaultroles as createdefaultroles
 import awscli.customizations.emr.emrutils as emrutils
+from awscli.botocore.awsrequest import AWSResponse
+from awscli.botocore.compat import json
+from awscli.botocore.exceptions import ClientError
 from awscli.testutils import mock, unittest
 from tests.unit.customizations.emr import (
     EMRBaseAWSCommandParamsTest as BaseAWSCommandParamsTest,
@@ -374,21 +373,21 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(get_sp_patch.call_args[0][1], endpoint_url)
 
-    @mock.patch('botocore.session.Session.create_client')
+    @mock.patch('awscli.botocore.session.Session.create_client')
     def test_call_parameters(self, call_patch):
         cmdline = self.prefix + ' --region eu-west-1' + ' --no-verify-ssl'
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(call_patch.call_args[1]['region_name'], 'eu-west-1')
         self.assertEqual(call_patch.call_args[1]['verify'], False)
 
-    @mock.patch('botocore.session.Session.create_client')
+    @mock.patch('awscli.botocore.session.Session.create_client')
     def test_call_parameters_only_endpoint(self, call_patch):
         endpoint_arg = 'https://elasticmapreduce.us-unknown-1.amazonaws.com'
         cmdline = self.prefix + ' --endpoint ' + endpoint_arg
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(call_patch.call_args[1]['endpoint_url'], None)
 
-    @mock.patch('botocore.session.Session.create_client')
+    @mock.patch('awscli.botocore.session.Session.create_client')
     def test_call_parameters_only_iam_endpoint(self, call_patch):
         endpoint_arg = 'https://elasticmapreduce.us-unknown-1.amazonaws.com'
         cmdline = self.prefix + ' --iam-endpoint ' + endpoint_arg

@@ -11,8 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import botocore.session
-
+import awscli.botocore.session
 from tests import random_chars, unittest
 
 DEFAULT_ROLE_POLICY = """\
@@ -31,7 +30,7 @@ DEFAULT_ROLE_POLICY = """\
 
 class TestElasticTranscoder(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.client = self.session.create_client(
             'elastictranscoder', 'us-east-1'
         )

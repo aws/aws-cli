@@ -13,8 +13,7 @@
 
 import logging
 
-from botocore.compat import OrderedDict
-
+from awscli.botocore.compat import OrderedDict
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.flatten import SEP, FlattenArguments
 

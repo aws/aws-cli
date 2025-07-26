@@ -22,9 +22,11 @@ import uuid
 from datetime import datetime, timedelta
 
 import pytest
-from botocore import UNSIGNED
-from botocore.config import Config
-from botocore.credentials import (
+from dateutil.tz import tzlocal
+
+from awscli.botocore import UNSIGNED
+from awscli.botocore.config import Config
+from awscli.botocore.credentials import (
     AssumeRoleProvider,
     CanonicalNameCredentialSourcer,
     ContainerProvider,
@@ -38,17 +40,15 @@ from botocore.credentials import (
     SSOProvider,
     create_credential_resolver,
 )
-from botocore.exceptions import (
+from awscli.botocore.exceptions import (
     CredentialRetrievalError,
     InfiniteLoopConfigError,
     InvalidConfigError,
 )
-from botocore.session import Session
-from botocore.stub import Stubber
-from botocore.tokens import SSOTokenProvider
-from botocore.utils import datetime2timestamp
-from dateutil.tz import tzlocal
-
+from awscli.botocore.session import Session
+from awscli.botocore.stub import Stubber
+from awscli.botocore.tokens import SSOTokenProvider
+from awscli.botocore.utils import datetime2timestamp
 from tests import (
     BaseEnvVar,
     BaseSessionTest,
@@ -932,7 +932,7 @@ class TestProcessProvider(unittest.TestCase):
 
 
 class TestInstanceMetadataFetcher(BaseSessionTest):
-    @mock.patch('botocore.httpsession.URLLib3Session.send')
+    @mock.patch('awscli.botocore.httpsession.URLLib3Session.send')
     def test_imds_use_truncated_user_agent(self, send):
         self.session.user_agent_version = '24.0'
         resolver = create_credential_resolver(self.session)

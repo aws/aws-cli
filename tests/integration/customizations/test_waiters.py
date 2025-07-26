@@ -12,15 +12,15 @@
 # language governing permissions and limitations under the License.
 import random
 
-import botocore.session
 import pytest
 
+import awscli.botocore.session
 from awscli.testutils import aws, random_chars, unittest
 
 
 class TestDynamoDBWait(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.client = self.session.create_client('dynamodb', 'us-west-2')
 
     @pytest.mark.slow

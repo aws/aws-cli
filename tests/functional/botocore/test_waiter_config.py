@@ -10,12 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
 import jmespath
 import pytest
-from botocore.exceptions import UnknownServiceError
-from botocore.utils import ArgumentGenerator
 from jsonschema import Draft4Validator
+
+import awscli.botocore.session
+from awscli.botocore.exceptions import UnknownServiceError
+from awscli.botocore.utils import ArgumentGenerator
 
 WAITER_SCHEMA = {
     "type": "object",
@@ -77,7 +78,7 @@ WAITER_SCHEMA = {
 
 
 def _waiter_configs():
-    session = botocore.session.get_session()
+    session = awscli.botocore.session.get_session()
     validator = Draft4Validator(WAITER_SCHEMA)
     for service_name in session.get_available_services():
         client = session.create_client(service_name, 'us-east-1')

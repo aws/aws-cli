@@ -2,8 +2,7 @@ import random
 import threading
 import time
 
-from botocore.retries import bucket
-
+from awscli.botocore.retries import bucket
 from tests import unittest
 
 

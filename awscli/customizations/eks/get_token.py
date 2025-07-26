@@ -16,10 +16,9 @@ import os
 import sys
 from datetime import datetime, timedelta
 
-import botocore
-from botocore.model import ServiceId
-from botocore.signers import RequestSigner
-
+import awscli.botocore
+from awscli.botocore.model import ServiceId
+from awscli.botocore.signers import RequestSigner
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print, validate_mutually_exclusive
 from awscli.formatter import get_formatter

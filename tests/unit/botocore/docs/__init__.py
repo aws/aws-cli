@@ -15,14 +15,13 @@ import os
 import shutil
 import tempfile
 
-from botocore.client import ClientCreator
-from botocore.compat import OrderedDict
-from botocore.configprovider import ConfigValueStore
-from botocore.docs.bcdoc.restdoc import DocumentStructure
-from botocore.hooks import HierarchicalEmitter
-from botocore.loaders import Loader
-from botocore.model import OperationModel, ServiceModel
-
+from awscli.botocore.client import ClientCreator
+from awscli.botocore.compat import OrderedDict
+from awscli.botocore.configprovider import ConfigValueStore
+from awscli.botocore.docs.bcdoc.restdoc import DocumentStructure
+from awscli.botocore.hooks import HierarchicalEmitter
+from awscli.botocore.loaders import Loader
+from awscli.botocore.model import OperationModel, ServiceModel
 from tests import get_botocore_default_config_mapping, mock, unittest
 
 

@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 
-from botocore.docs.service import ServiceDocumenter
+from awscli.botocore.docs.service import ServiceDocumenter
 
 
 def generate_docs(root_dir, session):

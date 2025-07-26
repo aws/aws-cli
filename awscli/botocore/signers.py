@@ -15,17 +15,20 @@ import datetime
 import json
 import weakref
 
-import botocore
-import botocore.auth
-from botocore.awsrequest import create_request_object, prepare_request_dict
-from botocore.compat import OrderedDict
-from botocore.exceptions import (
+import awscli.botocore
+import awscli.botocore.auth
+from awscli.botocore.awsrequest import (
+    create_request_object,
+    prepare_request_dict,
+)
+from awscli.botocore.compat import OrderedDict
+from awscli.botocore.exceptions import (
     ParamValidationError,
     UnknownClientMethodError,
     UnknownSignatureVersionError,
     UnsupportedSignatureVersionError,
 )
-from botocore.utils import (
+from awscli.botocore.utils import (
     ArnParser,
     datetime2timestamp,
     fix_s3_host,  # noqa
@@ -46,7 +49,7 @@ class RequestSigner:
     and disabling signing per operation.
 
 
-    :type service_id: botocore.model.ServiceId
+    :type service_id: awscli.botocore.model.ServiceId
     :param service_id: The service id for the service, e.g. ``S3``
 
     :type region_name: string
@@ -60,10 +63,10 @@ class RequestSigner:
     :type signature_version: string
     :param signature_version: Signature name like ``v4``.
 
-    :type credentials: :py:class:`~botocore.credentials.Credentials`
+    :type credentials: :py:class:`~awscli.botocore.credentials.Credentials`
     :param credentials: User credentials with which to sign requests.
 
-    :type event_emitter: :py:class:`~botocore.hooks.BaseEventHooks`
+    :type event_emitter: :py:class:`~awscli.botocore.hooks.BaseEventHooks`
     :param event_emitter: Extension mechanism to fire events.
     """
 
@@ -163,7 +166,7 @@ class RequestSigner:
             operation_name=operation_name,
         )
 
-        if signature_version != botocore.UNSIGNED:
+        if signature_version != awscli.botocore.UNSIGNED:
             kwargs = {
                 'signing_name': signing_name,
                 'region_name': region_name,
@@ -201,7 +204,7 @@ class RequestSigner:
     def _choose_signer(self, operation_name, signing_type, context):
         """
         Allow setting the signature version via the choose-signer event.
-        A value of `botocore.UNSIGNED` means no signing will be performed.
+        A value of `awscli.botocore.UNSIGNED` means no signing will be performed.
 
         :param operation_name: The operation to sign.
         :param signing_type: The type of signing that the signer is to be used
@@ -220,7 +223,7 @@ class RequestSigner:
         signing_name = signing.get('signing_name', self._signing_name)
         region_name = signing.get('region', self._region_name)
         if (
-            signature_version is not botocore.UNSIGNED
+            signature_version is not awscli.botocore.UNSIGNED
             and not signature_version.endswith(suffix)
         ):
             signature_version += suffix
@@ -238,7 +241,7 @@ class RequestSigner:
             # The suffix needs to be checked again in case we get an improper
             # signature version from choose-signer.
             if (
-                signature_version is not botocore.UNSIGNED
+                signature_version is not awscli.botocore.UNSIGNED
                 and not signature_version.endswith(suffix)
             ):
                 signature_version += suffix
@@ -263,13 +266,13 @@ class RequestSigner:
         :type signature_version: string
         :param signature_version: Signature name like ``v4``.
 
-        :rtype: :py:class:`~botocore.auth.BaseSigner`
+        :rtype: :py:class:`~awscli.botocore.auth.BaseSigner`
         :return: Auth instance to sign a request.
         """
         if signature_version is None:
             signature_version = self._signature_version
 
-        cls = botocore.auth.AUTH_TYPE_MAPS.get(signature_version)
+        cls = awscli.botocore.auth.AUTH_TYPE_MAPS.get(signature_version)
         if cls is None:
             raise UnknownSignatureVersionError(
                 signature_version=signature_version
@@ -299,7 +302,7 @@ class RequestSigner:
         kwargs['credentials'] = frozen_credentials
         if cls.REQUIRES_REGION:
             if self._region_name is None:
-                raise botocore.exceptions.NoRegionError()
+                raise awscli.botocore.exceptions.NoRegionError()
             kwargs['region_name'] = region_name
             kwargs['service_name'] = signing_name
         auth = cls(**kwargs)
@@ -320,7 +323,7 @@ class RequestSigner:
 
         :type request_dict: dict
         :param request_dict: The prepared request dictionary returned by
-            ``botocore.awsrequest.prepare_request_dict()``
+            ``awscli.botocore.awsrequest.prepare_request_dict()``
 
         :type operation_name: str
         :param operation_name: The operation being signed.
@@ -668,7 +671,7 @@ class S3PostPresigner:
 
         :type request_dict: dict
         :param request_dict: The prepared request dictionary returned by
-            ``botocore.awsrequest.prepare_request_dict()``
+            ``awscli.botocore.awsrequest.prepare_request_dict()``
 
         :type fields: dict
         :param fields: A dictionary of prefilled form fields to build on top
@@ -715,7 +718,9 @@ class S3PostPresigner:
         # Create an expiration date for the policy
         datetime_now = datetime.datetime.utcnow()
         expire_date = datetime_now + datetime.timedelta(seconds=expires_in)
-        policy['expiration'] = expire_date.strftime(botocore.auth.ISO8601)
+        policy['expiration'] = expire_date.strftime(
+            awscli.botocore.auth.ISO8601
+        )
 
         # Append all of the conditions that the user supplied.
         policy['conditions'] = []

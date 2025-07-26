@@ -17,8 +17,8 @@ import decimal
 import json
 from datetime import datetime
 
-from botocore.exceptions import ParamValidationError
-from botocore.utils import is_json_value_header, parse_to_aware_datetime
+from awscli.botocore.exceptions import ParamValidationError
+from awscli.botocore.utils import is_json_value_header, parse_to_aware_datetime
 
 
 def validate_parameters(params, shape):
@@ -34,7 +34,7 @@ def validate_parameters(params, shape):
 
     :param params: The user provided input parameters.
 
-    :type shape: botocore.model.Shape
+    :type shape: awscli.botocore.model.Shape
     :param shape: The schema which the input parameters should
         adhere to.
 

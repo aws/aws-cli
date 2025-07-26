@@ -10,17 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
 import pytest
-from botocore.exceptions import OperationNotPageableError
-from botocore.paginate import PageIterator
 
+import awscli.botocore.session
+from awscli.botocore.exceptions import OperationNotPageableError
+from awscli.botocore.paginate import PageIterator
 from tests import unittest
 
 
 @pytest.fixture()
 def botocore_session():
-    return botocore.session.get_session()
+    return awscli.botocore.session.get_session()
 
 
 @pytest.mark.parametrize(
@@ -52,7 +52,7 @@ def test_emr_endpoints_work_with_py26(botocore_session, region):
 # accessible from the session works as expected.
 class TestEMRGetExtraResources(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.client = self.session.create_client('emr', 'us-west-2')
 
     def test_can_access_pagination_configs(self):

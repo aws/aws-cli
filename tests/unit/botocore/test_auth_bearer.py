@@ -11,10 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-from botocore.auth import BearerAuth
-from botocore.awsrequest import AWSRequest
-from botocore.exceptions import NoAuthTokenError
-from botocore.tokens import FrozenAuthToken
+
+from awscli.botocore.auth import BearerAuth
+from awscli.botocore.awsrequest import AWSRequest
+from awscli.botocore.exceptions import NoAuthTokenError
+from awscli.botocore.tokens import FrozenAuthToken
 
 cases = [
     {

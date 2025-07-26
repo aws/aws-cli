@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import s3transfer
+import awscli.s3transfer
 
 KB = 1024
 MB = KB * KB
@@ -34,5 +34,5 @@ FULL_OBJECT_CHECKSUM_ARGS = [
     'ChecksumSHA256',
 ]
 
-USER_AGENT = f's3transfer/{s3transfer.__version__}'
+USER_AGENT = f's3transfer/{awscli.s3transfer.__version__}'
 PROCESS_USER_AGENT = f'{USER_AGENT} processpool'

@@ -15,11 +15,14 @@ import json
 from datetime import datetime, timedelta
 
 import pytest
-from botocore.credentials import Credentials as StaticCredentials
-from botocore.credentials import ReadOnlyCredentials, RefreshableCredentials
-from botocore.session import Session
 from dateutil.tz import tzutc
 
+from awscli.botocore.credentials import Credentials as StaticCredentials
+from awscli.botocore.credentials import (
+    ReadOnlyCredentials,
+    RefreshableCredentials,
+)
+from awscli.botocore.session import Session
 from awscli.customizations.configure.exportcreds import (
     BashEnvVarFormatter,
     BashNoExportEnvFormatter,

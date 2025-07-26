@@ -10,10 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.errorfactory import BaseClientExceptions, ClientExceptionsFactory
-from botocore.exceptions import ClientError
-from botocore.model import ServiceModel
-
+from awscli.botocore.errorfactory import (
+    BaseClientExceptions,
+    ClientExceptionsFactory,
+)
+from awscli.botocore.exceptions import ClientError
+from awscli.botocore.model import ServiceModel
 from tests import unittest
 
 

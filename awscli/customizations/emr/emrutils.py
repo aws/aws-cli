@@ -15,9 +15,8 @@ import json
 import logging
 import os
 
-from botocore import xform_name
-from botocore.exceptions import NoCredentialsError, WaiterError
-
+from awscli.botocore import xform_name
+from awscli.botocore.exceptions import NoCredentialsError, WaiterError
 from awscli.clidriver import CLIOperationCaller
 from awscli.customizations.emr import constants, exceptions
 from awscli.customizations.exceptions import ParamValidationError

@@ -14,8 +14,7 @@ import json
 import logging
 import os
 
-from botocore.exceptions import ClientError
-
+from awscli.botocore.exceptions import ClientError
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.sso.utils import AWS_CREDS_CACHE_DIR, SSO_TOKEN_DIR
 

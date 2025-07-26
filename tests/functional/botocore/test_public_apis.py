@@ -13,10 +13,10 @@
 from collections import defaultdict
 
 import pytest
-from botocore import xform_name
-from botocore.exceptions import NoCredentialsError
-from botocore.session import Session
 
+from awscli.botocore import xform_name
+from awscli.botocore.exceptions import NoCredentialsError
+from awscli.botocore.session import Session
 from tests import ClientHTTPStubber, mock
 
 REGIONS = defaultdict(lambda: 'us-east-1')

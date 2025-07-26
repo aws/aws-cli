@@ -21,17 +21,21 @@ from contextlib import closing
 from io import BytesIO
 from tarfile import TarFile
 
-import botocore.auth
-import botocore.credentials
-import botocore.session
 import pytest
 import urllib3
-from botocore.compat import OrderedDict, zip_longest
-from botocore.config import Config
-from botocore.endpoint import Endpoint
-from botocore.exceptions import ClientError, ConnectionClosedError, WaiterError
-from botocore.httpsession import DEFAULT_CA_BUNDLE
 
+import awscli.botocore.auth
+import awscli.botocore.credentials
+import awscli.botocore.session
+from awscli.botocore.compat import OrderedDict, zip_longest
+from awscli.botocore.config import Config
+from awscli.botocore.endpoint import Endpoint
+from awscli.botocore.exceptions import (
+    ClientError,
+    ConnectionClosedError,
+    WaiterError,
+)
+from awscli.botocore.httpsession import DEFAULT_CA_BUNDLE
 from tests import (
     ClientHTTPStubber,
     ConsistencyWaiter,
@@ -45,7 +49,7 @@ def random_bucketname():
     return 'botocoretest-' + random_chars(50)
 
 
-LOG = logging.getLogger('botocore.tests.integration')
+LOG = logging.getLogger('awscli.botocore.tests.integration')
 _SHARED_BUCKET = random_bucketname()
 _DEFAULT_REGION = 'us-west-2'
 
@@ -74,7 +78,7 @@ def http_post(url, data, files):
 
 
 def setup_module():
-    s3 = botocore.session.get_session().create_client('s3')
+    s3 = awscli.botocore.session.get_session().create_client('s3')
     waiter = s3.get_waiter('bucket_exists')
     params = {
         'Bucket': _SHARED_BUCKET,
@@ -95,7 +99,9 @@ def setup_module():
 
 
 def clear_out_bucket(bucket, region, delete_bucket=False):
-    s3 = botocore.session.get_session().create_client('s3', region_name=region)
+    s3 = awscli.botocore.session.get_session().create_client(
+        's3', region_name=region
+    )
     # Ensure the bucket exists before attempting to wipe it out
     exists_waiter = s3.get_waiter('bucket_exists')
     exists_waiter.wait(Bucket=bucket)
@@ -137,7 +143,7 @@ class BaseS3ClientTest(unittest.TestCase):
         self.bucket_name = _SHARED_BUCKET
         self.region = _DEFAULT_REGION
         clear_out_bucket(self.bucket_name, self.region)
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.client = self.session.create_client('s3', region_name=self.region)
 
     def assert_status_code(self, response, status_code):

@@ -1,19 +1,18 @@
 import time
 
-from botocore.awsrequest import AWSRequest
-from botocore.client import ClientMeta
-from botocore.discovery import (
+from awscli.botocore.awsrequest import AWSRequest
+from awscli.botocore.client import ClientMeta
+from awscli.botocore.discovery import (
     EndpointDiscoveryHandler,
     EndpointDiscoveryManager,
     EndpointDiscoveryRefreshFailed,
     EndpointDiscoveryRequired,
     block_endpoint_discovery_required_operations,
 )
-from botocore.exceptions import ConnectionError
-from botocore.handlers import inject_api_version_header_if_needed
-from botocore.hooks import HierarchicalEmitter
-from botocore.model import ServiceModel
-
+from awscli.botocore.exceptions import ConnectionError
+from awscli.botocore.handlers import inject_api_version_header_if_needed
+from awscli.botocore.hooks import HierarchicalEmitter
+from awscli.botocore.model import ServiceModel
 from tests import mock, unittest
 
 

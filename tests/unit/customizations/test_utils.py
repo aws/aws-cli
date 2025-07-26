@@ -13,9 +13,8 @@
 import argparse
 import io
 
-from botocore.exceptions import ClientError
-from botocore.model import Shape
-
+from awscli.botocore.exceptions import ClientError
+from awscli.botocore.model import Shape
 from awscli.customizations import utils
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import BaseAWSHelpOutputTest, mock, unittest

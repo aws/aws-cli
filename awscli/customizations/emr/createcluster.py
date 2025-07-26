@@ -13,8 +13,7 @@
 
 import re
 
-from botocore.compat import json
-
+from awscli.botocore.compat import json
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import (
     applicationutils,

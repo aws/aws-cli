@@ -16,8 +16,7 @@ import threading
 import time
 from concurrent.futures import CancelledError
 
-from s3transfer.manager import TransferConfig
-
+from awscli.s3transfer.manager import TransferConfig
 from tests import (
     NonSeekableWriter,
     RecordingSubscriber,

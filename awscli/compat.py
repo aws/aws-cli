@@ -30,7 +30,7 @@ from functools import partial
 from urllib.error import URLError
 from urllib.request import urlopen
 
-from botocore.compat import OrderedDict, six
+from awscli.botocore.compat import OrderedDict, six
 
 # Backwards compatible definitions from six
 PY3 = sys.version_info[0] == 3

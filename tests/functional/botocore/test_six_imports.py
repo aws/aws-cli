@@ -1,10 +1,11 @@
 import ast
 import os
 
-import botocore
 import pytest
 
-ROOTDIR = os.path.dirname(botocore.__file__)
+import awscli.botocore
+
+ROOTDIR = os.path.dirname(awscli.botocore.__file__)
 
 
 def _all_files():
@@ -37,7 +38,7 @@ class SixImportChecker(ast.NodeVisitor):
                 raise AssertionError(
                     f"A bare 'import six' was found in {self.filename}:\n"
                     f"\n{node.lineno}: {line}\n"
-                    "Please use 'from botocore.compat import six' instead"
+                    "Please use 'from awscli.botocore.compat import six' instead"
                 )
 
     def visit_ImportFrom(self, node):
@@ -46,7 +47,7 @@ class SixImportChecker(ast.NodeVisitor):
             raise AssertionError(
                 f"A bare 'from six import ...' was found in {self.filename}:\n"
                 f"\n{node.lineno}:{line}\n"
-                "Please use 'from botocore.compat import six' instead"
+                "Please use 'from awscli.botocore.compat import six' instead"
             )
 
     def _get_line_content(self, filename, lineno):

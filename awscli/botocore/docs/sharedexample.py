@@ -13,8 +13,8 @@
 import numbers
 import re
 
-from botocore.docs.utils import escape_controls
-from botocore.utils import parse_timestamp
+from awscli.botocore.docs.utils import escape_controls
+from awscli.botocore.utils import parse_timestamp
 
 
 class SharedExampleDocumenter:

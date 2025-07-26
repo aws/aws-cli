@@ -16,7 +16,7 @@ from awscli.testutils import BaseCLIDriverTest, create_bucket, mock
 class TestCreateBucket(BaseCLIDriverTest):
     def test_bucket_already_owned_by_you(self):
         # TODO: fix this patch when we have a better way to stub out responses
-        with mock.patch('botocore.endpoint.Endpoint._send') as _send:
+        with mock.patch('awscli.botocore.endpoint.Endpoint._send') as _send:
             _send.side_effect = [
                 mock.Mock(status_code=500, headers={}, content=b''),
                 mock.Mock(

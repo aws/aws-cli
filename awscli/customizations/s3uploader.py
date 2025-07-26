@@ -16,13 +16,12 @@ import os
 import sys
 import threading
 
-import botocore
-import botocore.exceptions
-from botocore.compat import get_md5
-from s3transfer.manager import TransferManager
-from s3transfer.subscribers import BaseSubscriber
-
+import awscli.botocore
+import awscli.botocore.exceptions
+from awscli.botocore.compat import get_md5
 from awscli.compat import collections_abc
+from awscli.s3transfer.manager import TransferManager
+from awscli.s3transfer.subscribers import BaseSubscriber
 
 LOG = logging.getLogger(__name__)
 
@@ -31,8 +30,9 @@ def _get_checksum():
     hashlib_params = {"usedforsecurity": False}
     try:
         checksum = get_md5(**hashlib_params)
-    except botocore.exceptions.MD5UnavailableError:
+    except awscli.botocore.exceptions.MD5UnavailableError:
         import hashlib
+
         checksum = hashlib.sha256(**hashlib_params)
     return checksum
 
@@ -136,7 +136,7 @@ class S3Uploader:
 
             return self.make_url(remote_path)
 
-        except botocore.exceptions.ClientError as ex:
+        except awscli.botocore.exceptions.ClientError as ex:
             error_code = ex.response["Error"]["Code"]
             if error_code == "NoSuchBucket":
                 raise NoSuchBucketError(bucket_name=self.bucket_name)
@@ -175,7 +175,7 @@ class S3Uploader:
             # Find the object that matches this ETag
             self.s3.head_object(Bucket=self.bucket_name, Key=remote_path)
             return True
-        except botocore.exceptions.ClientError:
+        except awscli.botocore.exceptions.ClientError:
             # Either File does not exist or we are unable to get
             # this information.
             return False

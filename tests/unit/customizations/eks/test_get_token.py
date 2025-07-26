@@ -14,15 +14,14 @@ import base64
 import json
 from datetime import datetime
 
-import botocore
-
+import awscli.botocore
 from awscli.customizations.eks.get_token import GetTokenCommand, TokenGenerator
 from awscli.testutils import capture_output, mock, unittest
 
 
 class BaseTokenTest(unittest.TestCase):
     def setUp(self):
-        self._session = botocore.session.get_session()
+        self._session = awscli.botocore.session.get_session()
         self._access_key = 'ABCDEFGHIJKLMNOPQRST'
         self._secret_key = 'TSRQPONMLKJUHGFEDCBA'
         self._region = 'us-west-2'

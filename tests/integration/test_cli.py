@@ -18,8 +18,7 @@ import signal
 import tempfile
 import time
 
-import botocore.session
-
+import awscli.botocore.session
 from awscli.clidriver import create_clidriver
 from awscli.testutils import (
     BaseS3CLICommand,
@@ -44,7 +43,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         content,
         extra_args=None,
     ):
-        session = botocore.session.get_session()
+        session = awscli.botocore.session.get_session()
         client = session.create_client('s3', 'us-east-1')
         client.create_bucket(Bucket=bucket, ObjectOwnership='ObjectWriter')
         time.sleep(5)

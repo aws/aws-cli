@@ -16,8 +16,7 @@ import shutil
 import sys
 import tempfile
 
-from botocore.session import get_session
-
+from awscli.botocore.session import get_session
 from awscli.customizations.eks.exceptions import EKSClusterError
 from awscli.customizations.eks.kubeconfig import (
     KubeconfigCorruptedError,
@@ -57,7 +56,7 @@ def build_environment(entries):
 class TestUpdateKubeconfig(unittest.TestCase):
     def setUp(self):
         self.create_client_patch = mock.patch(
-            'botocore.session.Session.create_client'
+            'awscli.botocore.session.Session.create_client'
         )
 
         self.mock_create_client = self.create_client_patch.start()

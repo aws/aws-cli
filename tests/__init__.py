@@ -40,12 +40,12 @@ from awscli.testutils import (
     create_dir_bucket,
 )
 
-import botocore.awsrequest
-import botocore.loaders
-import botocore.model
-import botocore.serialize
-import botocore.validate
-from botocore.exceptions import ClientError, WaiterError
+import awscli.botocore.awsrequest
+import awscli.botocore.loaders
+import awscli.botocore.model
+import awscli.botocore.serialize
+import awscli.botocore.validate
+from awscli.botocore.exceptions import ClientError, WaiterError
 
 from awscrt.crypto import RSA
 
@@ -105,7 +105,7 @@ from tests.utils.s3transfer import (
 # A shared loader to use for classes in this module. This allows us to
 # load models outside of influence of a session and take advantage of
 # caching to speed up tests.
-_LOADER = botocore.loaders.Loader()
+_LOADER = awscli.botocore.loaders.Loader()
 
 
 class CLIRunner:
@@ -244,13 +244,13 @@ class AWSResponse(BaseResponse):
         loaded_service_model = _LOADER.load_service_model(
             service_name=self._service_name, type_name='service-2'
         )
-        return botocore.model.ServiceModel(
+        return awscli.botocore.model.ServiceModel(
             loaded_service_model, service_name=self._service_name
         )
 
     def _validate_parsed_response(self):
         if self._operation_model.output_shape:
-            botocore.validate.validate_parameters(
+            awscli.botocore.validate.validate_parameters(
                 self._parsed_response, self._operation_model.output_shape
             )
 
@@ -272,7 +272,7 @@ class AWSResponse(BaseResponse):
         # protocols), but there are definitely edge cases that are not
         # being handled (e.g. query protocol). Going forward as more tests
         # adopt this, we **will** have to build up the logic around this.
-        serializer = botocore.serialize.create_serializer(
+        serializer = awscli.botocore.serialize.create_serializer(
             protocol_name=self._service_model.metadata['protocol'],
             include_validation=False,
         )

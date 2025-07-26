@@ -569,7 +569,7 @@ class QueryCompleter(BaseCompleter):
     @property
     def argument_generator(self):
         if self._argument_generator is None:
-            from botocore.utils import ArgumentGenerator
+            from awscli.botocore.utils import ArgumentGenerator
 
             self._argument_generator = ArgumentGenerator
         return self._argument_generator

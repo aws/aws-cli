@@ -15,18 +15,19 @@
 import logging
 import sys
 
-from botocore import (
+from urllib3.exceptions import ReadTimeoutError as URLLib3ReadTimeoutError
+
+from awscli.botocore import (
     ScalarTypes,  # noqa
     parsers,
 )
-from botocore.compat import (
+from awscli.botocore.compat import (
     XMLParseError,  # noqa
     json,  # noqa
     set_socket_timeout,
 )
-from botocore.exceptions import IncompleteReadError, ReadTimeoutError
-from botocore.hooks import first_non_none_response  # noqa
-from urllib3.exceptions import ReadTimeoutError as URLLib3ReadTimeoutError
+from awscli.botocore.exceptions import IncompleteReadError, ReadTimeoutError
+from awscli.botocore.hooks import first_non_none_response  # noqa
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +67,7 @@ class StreamingBody:
         try:
             # To further complicate things, the way to grab the
             # underlying socket object from an HTTPResponse is different
-            # in py2 and py3.  So this code has been pushed to botocore.compat.
+            # in py2 and py3.  So this code has been pushed to awscli.botocore.compat.
             set_socket_timeout(self._raw_stream, timeout)
         except AttributeError:
             logger.error(

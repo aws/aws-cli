@@ -17,10 +17,9 @@ import tempfile
 import threading
 import zipfile
 
-from s3transfer import S3Transfer
-
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3.utils import human_readable_size
+from awscli.s3transfer import S3Transfer
 
 
 class UploadBuildCommand(BasicCommand):
@@ -154,7 +153,7 @@ def validate_directory(source_root):
     return False
 
 
-# TODO: Remove this class once available to CLI from s3transfer
+# TODO: Remove this class once available to CLI from awscli.s3transfer
 # docstring.
 class ProgressPercentage:
     def __init__(self, filename, label=None):

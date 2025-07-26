@@ -15,8 +15,7 @@ import json
 import logging
 import sys
 
-import botocore
-
+import awscli.botocore
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emrcontainers.base36 import Base36
 from awscli.customizations.emrcontainers.constants import (
@@ -165,7 +164,7 @@ class CreateRoleAssociationsCommand(BasicCommand):
                     if "association" in result
                     else result
                 )
-            except botocore.exceptions.ClientError as error:
+            except awscli.botocore.exceptions.ClientError as error:
                 # Raise the error if EKS throws exceptions other than ResourceInUseException
                 if error.response["Error"]["Code"] != "ResourceInUseException":
                     for result in results:

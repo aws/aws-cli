@@ -12,15 +12,14 @@
 # language governing permissions and limitations under the License.
 import os
 
-import botocore
-from botocore.compat import json
-from botocore.config import Config
-from botocore.discovery import EndpointDiscoveryRequired
-from botocore.exceptions import (
+import awscli.botocore
+from awscli.botocore.compat import json
+from awscli.botocore.config import Config
+from awscli.botocore.discovery import EndpointDiscoveryRequired
+from awscli.botocore.exceptions import (
     ClientError,
     InvalidEndpointDiscoveryConfigurationError,
 )
-
 from tests import ClientHTTPStubber, temporary_file
 from tests.functional.botocore import FunctionalSessionTest
 

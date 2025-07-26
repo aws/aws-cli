@@ -12,10 +12,11 @@
 # language governing permissions and limitations under the License.
 import string
 
-import botocore.session
 import jmespath
 import pytest
 from jmespath.exceptions import JMESPathError
+
+import awscli.botocore.session
 
 KNOWN_PAGE_KEYS = set(
     [
@@ -134,7 +135,7 @@ KNOWN_EXTRA_OUTPUT_KEYS = [
 
 
 def _pagination_configs():
-    session = botocore.session.get_session()
+    session = awscli.botocore.session.get_session()
     loader = session.get_component('data_loader')
     services = loader.list_available_services('paginators-1')
     for service_name in services:

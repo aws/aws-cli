@@ -17,14 +17,13 @@ import shutil
 import string
 import tempfile
 
-import botocore
-import botocore.exceptions
-import botocore.session
-from botocore.stub import Stubber
-from s3transfer import S3Transfer
-
+import awscli.botocore
+import awscli.botocore.exceptions
+import awscli.botocore.session
+from awscli.botocore.stub import Stubber
 from awscli.compat import OrderedDict
 from awscli.customizations.s3uploader import NoSuchBucketError, S3Uploader
+from awscli.s3transfer import S3Transfer
 from awscli.testutils import mock, unittest
 
 
@@ -33,7 +32,7 @@ class TestS3Uploader(unittest.TestCase):
         self._construct_uploader("us-east-1")
 
     def _construct_uploader(self, region):
-        self.s3client = botocore.session.get_session().create_client(
+        self.s3client = awscli.botocore.session.get_session().create_client(
             's3', region_name=region
         )
         self.s3client_stub = Stubber(self.s3client)
@@ -242,7 +241,7 @@ class TestS3Uploader(unittest.TestCase):
         self.s3uploader.file_exists.return_value = False
 
         # Setup uploader to return a NOSuchBucket exception
-        exception = botocore.exceptions.ClientError(
+        exception = awscli.botocore.exceptions.ClientError(
             {"Error": {"Code": "NoSuchBucket"}}, "OpName"
         )
         self.transfer_manager_mock.upload.side_effect = exception
@@ -263,12 +262,12 @@ class TestS3Uploader(unittest.TestCase):
         self.s3uploader.file_exists.return_value = False
 
         # Raise an unrecognized botocore error
-        exception = botocore.exceptions.ClientError(
+        exception = awscli.botocore.exceptions.ClientError(
             {"Error": {"Code": "SomeError"}}, "OpName"
         )
         self.transfer_manager_mock.upload.side_effect = exception
 
-        with self.assertRaises(botocore.exceptions.ClientError):
+        with self.assertRaises(awscli.botocore.exceptions.ClientError):
             self.s3uploader.upload(file_name, remote_path)
 
         # Some other exception
@@ -350,15 +349,18 @@ class TestS3Uploader(unittest.TestCase):
 
     @mock.patch("awscli.customizations.s3uploader.get_md5")
     def test_file_checksum_fips_fallback(self, get_md5_mock):
-        num_chars = 4096*5
-        data = ''.join(random.choice(string.ascii_uppercase)
-                       for _ in range(num_chars)).encode('utf-8')
+        num_chars = 4096 * 5
+        data = ''.join(
+            random.choice(string.ascii_uppercase) for _ in range(num_chars)
+        ).encode('utf-8')
         checksum = hashlib.sha256(usedforsecurity=False)
         checksum.update(data)
         expected_checksum = checksum.hexdigest()
 
         tempdir = tempfile.mkdtemp()
-        get_md5_mock.side_effect = botocore.exceptions.MD5UnavailableError()
+        get_md5_mock.side_effect = (
+            awscli.botocore.exceptions.MD5UnavailableError()
+        )
         try:
             filename = os.path.join(tempdir, 'tempfile')
             with open(filename, 'wb') as f:

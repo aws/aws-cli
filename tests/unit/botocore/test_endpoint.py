@@ -14,21 +14,21 @@ import io
 import socket
 
 import pytest
-from botocore.awsrequest import AWSRequest
-from botocore.endpoint import DEFAULT_TIMEOUT, Endpoint, EndpointCreator
-from botocore.exceptions import (
+
+from awscli.botocore.awsrequest import AWSRequest
+from awscli.botocore.endpoint import DEFAULT_TIMEOUT, Endpoint, EndpointCreator
+from awscli.botocore.exceptions import (
     ConnectionClosedError,
     EndpointConnectionError,
     HTTPClientError,
 )
-from botocore.httpsession import URLLib3Session
-from botocore.model import (
+from awscli.botocore.httpsession import URLLib3Session
+from awscli.botocore.model import (
     OperationModel,
     ServiceId,
     ServiceModel,
     StructureShape,
 )
-
 from tests import mock, unittest
 
 
@@ -65,7 +65,7 @@ class TestEndpointBase(unittest.TestCase):
         self.event_emitter = mock.Mock()
         self.event_emitter.emit.return_value = []
         self.factory_patch = mock.patch(
-            'botocore.parsers.ResponseParserFactory'
+            'awscli.botocore.parsers.ResponseParserFactory'
         )
         self.factory = self.factory_patch.start()
         self.endpoint = Endpoint(
@@ -131,7 +131,7 @@ class TestEndpointFeatures(TestEndpointBase):
         r = request_dict()
         r['context'] = {'signing': {'region': 'us-west-2'}}
         with mock.patch(
-            'botocore.endpoint.Endpoint.prepare_request'
+            'awscli.botocore.endpoint.Endpoint.prepare_request'
         ) as prepare:
             self.endpoint.make_request(self.op, r)
         request = prepare.call_args[0][0]

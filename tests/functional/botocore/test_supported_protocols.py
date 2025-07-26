@@ -11,8 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-from botocore.args import PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
-from botocore.session import get_session
+
+from awscli.botocore.args import PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
+from awscli.botocore.session import get_session
 
 
 def _multi_protocol_test_cases():

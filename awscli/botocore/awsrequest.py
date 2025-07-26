@@ -17,9 +17,12 @@ import logging
 import socket
 import sys
 
-import botocore.utils
 import urllib3.util
-from botocore.compat import (
+from urllib3.connection import HTTPConnection, VerifiedHTTPSConnection
+from urllib3.connectionpool import HTTPConnectionPool, HTTPSConnectionPool
+
+import awscli.botocore.utils
+from awscli.botocore.compat import (
     HTTPHeaders,
     HTTPResponse,
     MutableMapping,
@@ -27,9 +30,7 @@ from botocore.compat import (
     urlsplit,
     urlunsplit,
 )
-from botocore.exceptions import UnseekableStreamError
-from urllib3.connection import HTTPConnection, VerifiedHTTPSConnection
-from urllib3.connectionpool import HTTPConnectionPool, HTTPSConnectionPool
+from awscli.botocore.exceptions import UnseekableStreamError
 
 logger = logging.getLogger(__name__)
 
@@ -272,7 +273,7 @@ def prepare_request_dict(
         # NOTE: This is to avoid circular import with utils. This is being
         # done to avoid moving classes to different modules as to not cause
         # breaking chainges.
-        percent_encode_sequence = botocore.utils.percent_encode_sequence
+        percent_encode_sequence = awscli.botocore.utils.percent_encode_sequence
         encoded_query_string = percent_encode_sequence(r['query_string'])
         if '?' not in url:
             url += f'?{encoded_query_string}'
@@ -293,7 +294,7 @@ def create_request_object(request_dict):
     :param request_dict:  The request dict (created from the
         ``prepare_request_dict`` method).
 
-    :rtype: ``botocore.awsrequest.AWSRequest``
+    :rtype: ``awscli.botocore.awsrequest.AWSRequest``
     :return: An AWSRequest object based on the request_dict.
 
     """
@@ -341,7 +342,7 @@ class AWSRequestPreparer:
     """
     This class performs preparation on AWSRequest objects similar to that of
     the PreparedRequest class does in the requests library. However, the logic
-    has been boiled down to meet the specific use cases in botocore. Of note
+    has been boiled down to meet the specific use cases in awscli.botocore. Of note
     there are the following differences:
         This class does not heavily prepare the URL. Requests performed many
         validations and corrections to ensure the URL is properly formatted.
@@ -416,14 +417,14 @@ class AWSRequestPreparer:
         return body
 
     def _determine_content_length(self, body):
-        return botocore.utils.determine_content_length(body)
+        return awscli.botocore.utils.determine_content_length(body)
 
 
 class AWSRequest:
     """Represents the elements of an HTTP request.
 
     This class was originally inspired by requests.models.Request, but has been
-    boiled down to meet the specific use cases in botocore. That being said this
+    boiled down to meet the specific use cases in awscli.botocore. That being said this
     class (even in requests) is effectively a named-tuple.
     """
 
@@ -532,7 +533,7 @@ class AWSResponse:
     """A data class representing an HTTP response.
 
     This class was originally inspired by requests.models.Response, but has
-    been boiled down to meet the specific use cases in botocore. This has
+    been boiled down to meet the specific use cases in awscli.botocore. This has
     effectively been reduced to a named tuple.
 
     :ivar url: The full url.
@@ -570,7 +571,9 @@ class AWSResponse:
         response content into a proper text type. If the encoding is not
         present in the headers, UTF-8 is used as a default.
         """
-        encoding = botocore.utils.get_encoding_from_headers(self.headers)
+        encoding = awscli.botocore.utils.get_encoding_from_headers(
+            self.headers
+        )
         if encoding:
             return self.content.decode(encoding)
         else:

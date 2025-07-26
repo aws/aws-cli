@@ -14,10 +14,9 @@ import datetime
 import io
 import logging
 
-import botocore.session
-from botocore.client import ClientError
-from botocore.exceptions import EndpointConnectionError
-
+import awscli.botocore.session
+from awscli.botocore.client import ClientError
+from awscli.botocore.exceptions import EndpointConnectionError
 from tests import random_chars, unittest
 
 
@@ -32,7 +31,7 @@ class TestResponseLog(unittest.TestCase):
         # are in the debug log.  It's an integration test so that
         # we can refactor the code however we want, as long as we don't
         # lose this feature.
-        session = botocore.session.get_session()
+        session = awscli.botocore.session.get_session()
         client = session.create_client('s3', region_name='us-west-2')
         debug_log = io.StringIO()
         session.set_stream_logger('', logging.DEBUG, debug_log)
@@ -44,7 +43,7 @@ class TestResponseLog(unittest.TestCase):
 
 class TestAcceptedDateTimeFormats(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.client = self.session.create_client('emr', 'us-west-2')
 
     def test_accepts_datetime_object(self):
@@ -78,7 +77,7 @@ class TestAcceptedDateTimeFormats(unittest.TestCase):
 
 class TestClientErrors(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
 
     def test_region_mentioned_in_invalid_region(self):
         client = self.session.create_client(
@@ -123,7 +122,7 @@ class TestClientErrors(unittest.TestCase):
 
 class TestClientMeta(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
 
     def test_region_name_on_meta(self):
         client = self.session.create_client('s3', 'us-west-2')
@@ -138,7 +137,7 @@ class TestClientMeta(unittest.TestCase):
 
 class TestClientInjection(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
 
     def test_can_inject_client_methods(self):
         def extra_client_method(self, name):
@@ -158,7 +157,7 @@ class TestClientInjection(unittest.TestCase):
 class TestMixedEndpointCasing(unittest.TestCase):
     def setUp(self):
         self.url = 'https://EC2.US-WEST-2.amazonaws.com/'
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.client = self.session.create_client(
             'ec2', 'us-west-2', endpoint_url=self.url
         )

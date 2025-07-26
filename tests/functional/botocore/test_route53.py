@@ -10,15 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
-from botocore.stub import Stubber
-
+import awscli.botocore.session
+from awscli.botocore.stub import Stubber
 from tests import BaseSessionTest, ClientHTTPStubber, unittest
 
 
 class TestRoute53Pagination(unittest.TestCase):
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.client = self.session.create_client('route53', 'us-west-2')
         self.stubber = Stubber(self.client)
         # response has required fields

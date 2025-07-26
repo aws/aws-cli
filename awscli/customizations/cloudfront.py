@@ -15,12 +15,11 @@ import random
 import sys
 import time
 
-from botocore.signers import CloudFrontSigner
-from botocore.utils import parse_to_aware_datetime
-
 from awscrt.crypto import RSA, RSASignatureAlgorithm
 
 from awscli.arguments import CustomArgument
+from awscli.botocore.signers import CloudFrontSigner
+from awscli.botocore.utils import parse_to_aware_datetime
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import validate_mutually_exclusive_handler
 
@@ -307,6 +306,5 @@ class RSASigner:
 
     def sign(self, message):
         return self.priv_key.sign(
-            RSASignatureAlgorithm.PKCS1_5_SHA1,
-            hashlib.sha1(message).digest()
+            RSASignatureAlgorithm.PKCS1_5_SHA1, hashlib.sha1(message).digest()
         )

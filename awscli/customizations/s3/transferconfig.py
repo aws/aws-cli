@@ -15,10 +15,9 @@
 # commands.
 import logging
 
-from s3transfer.manager import TransferConfig
-
 from awscli.customizations.s3 import constants
 from awscli.customizations.s3.utils import human_readable_to_int
+from awscli.s3transfer.manager import TransferConfig
 
 LOGGER = logging.getLogger(__name__)
 

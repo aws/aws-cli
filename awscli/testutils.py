@@ -37,18 +37,18 @@ from pprint import pformat
 from subprocess import PIPE, Popen
 from unittest import mock
 
-import botocore.loaders
-from botocore.awsrequest import AWSResponse
-from botocore.exceptions import ClientError, WaiterError
-from botocore.session import Session
 from ruamel.yaml import YAML
 
+import awscli.botocore.loaders
 import awscli.clidriver
+from awscli.botocore.awsrequest import AWSResponse
+from awscli.botocore.exceptions import ClientError, WaiterError
+from awscli.botocore.session import Session
 from awscli.clidriver import CLIDriver
 from awscli.compat import BytesIO, StringIO
 from awscli.plugin import load_plugins
 
-_LOADER = botocore.loaders.Loader()
+_LOADER = awscli.botocore.loaders.Loader()
 INTEG_LOG = logging.getLogger('awscli.tests.integration')
 AWS_CMD = None
 
@@ -402,7 +402,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.error_http_response = AWSResponse(None, 400, {}, None)
         self.parsed_response = {}
         self.make_request_patch = mock.patch(
-            'botocore.endpoint.Endpoint.make_request'
+            'awscli.botocore.endpoint.Endpoint.make_request'
         )
         self.make_request_is_patched = False
         self.operations_called = []
@@ -466,7 +466,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         if stderr_contains is not None:
             self.assertIn(stderr_contains, stderr)
         if params is not None:
-            # The last kwargs of Operation.call() in botocore.
+            # The last kwargs of Operation.call() in awscli.botocore.
             last_kwargs = copy.copy(self.last_kwargs)
             if ignore_params is not None:
                 for key in ignore_params:
@@ -524,7 +524,7 @@ class BaseCLIWireResponseTest(unittest.TestCase):
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
         # TODO: fix this patch when we have a better way to stub out responses
-        self.send_patch = mock.patch('botocore.endpoint.Endpoint._send')
+        self.send_patch = mock.patch('awscli.botocore.endpoint.Endpoint._send')
         self.send_is_patched = False
         self.driver = create_clidriver()
         self.entry_point = awscli.clidriver.AWSCLIEntryPoint(self.driver)
@@ -811,7 +811,7 @@ class BaseS3CLICommand(unittest.TestCase):
 
     def setUp(self):
         self.files = FileCreator()
-        self.session = botocore.session.get_session()
+        self.session = awscli.botocore.session.get_session()
         self.regions = {}
         self.region = 'us-west-2'
         self.client = self.session.create_client('s3', region_name=self.region)

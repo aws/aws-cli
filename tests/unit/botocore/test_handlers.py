@@ -18,35 +18,35 @@ import json
 import logging
 import os
 
-import botocore
-import botocore.session
 import pytest
-from botocore import handlers
-from botocore.awsrequest import AWSRequest
-from botocore.compat import OrderedDict, quote
-from botocore.config import Config
-from botocore.credentials import Credentials
-from botocore.docs.bcdoc.restdoc import DocumentStructure
-from botocore.docs.example import RequestExampleDocumenter
-from botocore.docs.params import RequestParamsDocumenter
-from botocore.exceptions import (
+
+import awscli.botocore
+import awscli.botocore.session
+from awscli.botocore import handlers
+from awscli.botocore.awsrequest import AWSRequest
+from awscli.botocore.compat import OrderedDict, quote
+from awscli.botocore.config import Config
+from awscli.botocore.credentials import Credentials
+from awscli.botocore.docs.bcdoc.restdoc import DocumentStructure
+from awscli.botocore.docs.example import RequestExampleDocumenter
+from awscli.botocore.docs.params import RequestParamsDocumenter
+from awscli.botocore.exceptions import (
     AliasConflictParameterError,
     MD5UnavailableError,
     MissingServiceIdError,
     ParamValidationError,
 )
-from botocore.hooks import HierarchicalEmitter
-from botocore.loaders import Loader
-from botocore.model import (
+from awscli.botocore.hooks import HierarchicalEmitter
+from awscli.botocore.loaders import Loader
+from awscli.botocore.model import (
     DenormalizedStructureBuilder,
     OperationModel,
     ServiceId,
     ServiceModel,
 )
-from botocore.session import Session
-from botocore.signers import RequestSigner
-from botocore.utils import conditionally_calculate_md5
-
+from awscli.botocore.session import Session
+from awscli.botocore.signers import RequestSigner
+from awscli.botocore.utils import conditionally_calculate_md5
 from tests import BaseSessionTest, mock, unittest
 
 
@@ -87,7 +87,7 @@ class TestHandlers(BaseSessionTest):
         self.assertEqual(converted_value, value)
 
     def test_disable_signing(self):
-        self.assertEqual(handlers.disable_signing(), botocore.UNSIGNED)
+        self.assertEqual(handlers.disable_signing(), awscli.botocore.UNSIGNED)
 
     def test_only_quote_url_path_not_version_id(self):
         params = {'CopySource': '/foo/bar++baz?versionId=123'}
@@ -987,7 +987,7 @@ class TestHandlers(BaseSessionTest):
         response = handlers.set_operation_specific_signer(
             context=context, signing_name=signing_name
         )
-        self.assertEqual(response, botocore.UNSIGNED)
+        self.assertEqual(response, awscli.botocore.UNSIGNED)
 
     def test_set_operation_specific_signer_v4(self):
         signing_name = 'myservice'
@@ -1179,7 +1179,7 @@ class TestRetryHandlerOrder(BaseSessionTest):
         )
         # This is implementation specific, but we're trying to verify that
         # the _update_status_code is before any of the retry logic in
-        # botocore.retries.*.
+        # awscli.botocore.retries.*.
         # Technically, as long as the relative order is preserved, we don't
         # care about the absolute order.
         names = self.get_handler_names(responses)
@@ -1217,7 +1217,7 @@ class BaseMD5Test(BaseSessionTest):
             self._md5_available_patch.stop()
 
         self._md5_available_patch = mock.patch(
-            'botocore.compat.MD5_AVAILABLE', is_available
+            'awscli.botocore.compat.MD5_AVAILABLE', is_available
         )
         self._md5_available_patch.start()
 
@@ -1347,7 +1347,7 @@ class TestAddMD5(BaseMD5Test):
 
         context = self.get_context()
         self.set_md5_available(False)
-        with mock.patch('botocore.utils.MD5_AVAILABLE', False):
+        with mock.patch('awscli.botocore.utils.MD5_AVAILABLE', False):
             conditionally_calculate_md5(
                 request_dict, request_signer=request_signer, context=context
             )

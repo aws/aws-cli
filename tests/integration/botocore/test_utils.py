@@ -10,9 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
 import pytest
-from botocore.utils import ArgumentGenerator
+
+import awscli.botocore.session
+from awscli.botocore.utils import ArgumentGenerator
 
 
 @pytest.fixture(scope="module")
@@ -21,7 +22,7 @@ def generator():
 
 
 def _all_inputs():
-    session = botocore.session.get_session()
+    session = awscli.botocore.session.get_session()
     for service_name in session.get_available_services():
         service_model = session.get_service_model(service_name)
         for operation_name in service_model.operation_names:

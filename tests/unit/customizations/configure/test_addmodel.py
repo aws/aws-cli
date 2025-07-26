@@ -13,9 +13,8 @@
 import json
 import os
 
-from botocore.loaders import Loader
-from botocore.session import get_session
-
+from awscli.botocore.loaders import Loader
+from awscli.botocore.session import get_session
 from awscli.customizations.configure.addmodel import get_model_location
 from awscli.testutils import FileCreator, unittest
 

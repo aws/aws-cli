@@ -10,28 +10,27 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore
-import botocore.client
-import botocore.config
-import botocore.session
-import botocore.stub as stub
-from botocore.exceptions import (
+import awscli.botocore
+import awscli.botocore.client
+import awscli.botocore.config
+import awscli.botocore.session
+import awscli.botocore.stub as stub
+from awscli.botocore.exceptions import (
     ClientError,
     ParamValidationError,
     StubAssertionError,
     StubResponseError,
     UnStubbedResponseError,
 )
-from botocore.stub import Stubber
-
+from awscli.botocore.stub import Stubber
 from tests import unittest
 
 
 class TestStubber(unittest.TestCase):
     def setUp(self):
-        session = botocore.session.get_session()
-        config = botocore.config.Config(
-            signature_version=botocore.UNSIGNED,
+        session = awscli.botocore.session.get_session()
+        config = awscli.botocore.config.Config(
+            signature_version=awscli.botocore.UNSIGNED,
             s3={'addressing_style': 'path'},
         )
         self.client = session.create_client(

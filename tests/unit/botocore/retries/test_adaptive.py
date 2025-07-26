@@ -1,5 +1,4 @@
-from botocore.retries import adaptive, bucket, standard, throttling
-
+from awscli.botocore.retries import adaptive, bucket, standard, throttling
 from tests import mock, unittest
 
 

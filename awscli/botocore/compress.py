@@ -21,9 +21,9 @@ import logging
 from gzip import GzipFile
 from gzip import compress as gzip_compress
 
-from botocore.compat import urlencode
-from botocore.useragent import register_feature_id
-from botocore.utils import determine_content_length
+from awscli.botocore.compat import urlencode
+from awscli.botocore.useragent import register_feature_id
+from awscli.botocore.utils import determine_content_length
 
 logger = logging.getLogger(__name__)
 

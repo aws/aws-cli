@@ -12,9 +12,6 @@
 # language governing permissions and limitations under the License.
 import json
 
-from botocore import model, xform_name
-from botocore.compat import OrderedDict
-
 from awscli.argprocess import (
     ParamError,
     ParamShorthandDocGen,
@@ -30,6 +27,8 @@ from awscli.arguments import (
     ListArgument,
     create_argument_model_from_schema,
 )
+from awscli.botocore import model, xform_name
+from awscli.botocore.compat import OrderedDict
 from awscli.help import OperationHelpCommand
 from awscli.paramfile import LOCAL_PREFIX_MAP, URIArgumentHandler
 from awscli.testutils import BaseCLIDriverTest, mock, temporary_file, unittest

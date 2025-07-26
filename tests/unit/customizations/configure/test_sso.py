@@ -18,7 +18,6 @@ from datetime import datetime, timedelta
 
 import prompt_toolkit
 import pytest
-from botocore.stub import Stubber
 from dateutil.tz import tzlocal
 from prompt_toolkit import prompt as ptk_prompt
 from prompt_toolkit.document import Document
@@ -28,6 +27,7 @@ from prompt_toolkit.validation import (
     Validator,
 )
 
+from awscli.botocore.stub import Stubber
 from awscli.customizations.configure.sso import (
     ConfigureSSOCommand,
     ConfigureSSOSessionCommand,

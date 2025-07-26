@@ -11,9 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-from botocore.exceptions import DataNotFoundError
-from botocore.model import OperationModel
 
+from awscli.botocore.exceptions import DataNotFoundError
+from awscli.botocore.model import OperationModel
 from awscli.customizations import paginate
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.paginate import PageArgument

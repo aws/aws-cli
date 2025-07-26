@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from urllib.parse import urlencode
 
-from botocore.signers import RequestSigner
+from awscli.botocore.signers import RequestSigner
 
 
 class InstanceConnectEndpointRequestSigner:

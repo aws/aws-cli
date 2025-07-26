@@ -15,12 +15,12 @@ import json
 from pathlib import Path
 from unittest import mock
 
-import botocore.configprovider
-import botocore.utils
 import pytest
-from botocore.compat import urlsplit
-from botocore.config import Config
 
+import awscli.botocore.configprovider
+import awscli.botocore.utils
+from awscli.botocore.compat import urlsplit
+from awscli.botocore.config import Config
 from tests import ClientHTTPStubber
 
 ENDPOINT_TESTDATA_FILE = Path(__file__).parent / "profile-tests.json"
@@ -124,7 +124,7 @@ def client_creator(tmp_path):
             f.write(config_file_contents)
             f.flush()
 
-        return botocore.session.Session(profile=profile).create_client(
+        return awscli.botocore.session.Session(profile=profile).create_client(
             service, **client_args
         )
 
@@ -159,7 +159,7 @@ def assert_endpoint_url_used_for_operation(
 
 
 def _known_service_names_and_ids():
-    my_session = botocore.session.get_session()
+    my_session = awscli.botocore.session.get_session()
     loader = my_session.get_component('data_loader')
     available_services = loader.list_available_services('service-2')
 

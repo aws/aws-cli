@@ -13,8 +13,7 @@
 import base64
 import binascii
 
-from botocore.exceptions import ProfileNotFound
-
+from awscli.botocore.exceptions import ProfileNotFound
 from awscli.shorthand import ModelVisitor
 
 

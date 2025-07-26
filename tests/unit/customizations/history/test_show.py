@@ -14,8 +14,7 @@ import argparse
 import os
 import xml.dom.minidom
 
-from botocore.session import Session
-
+from awscli.botocore.session import Session
 from awscli.compat import StringIO, ensure_text_type
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.history.db import DatabaseRecordReader

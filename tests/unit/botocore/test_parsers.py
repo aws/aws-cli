@@ -14,10 +14,10 @@ import datetime
 import itertools
 
 import pytest
-from botocore import model, parsers
-from botocore.compat import MutableMapping, json
 from dateutil.tz import tzutc
 
+from awscli.botocore import model, parsers
+from awscli.botocore.compat import MutableMapping, json
 from tests import RawResponse, unittest
 
 

@@ -21,8 +21,8 @@ import zipfile
 from contextlib import contextmanager
 
 import jmespath
-from botocore.utils import set_value_from_jmespath
 
+from awscli.botocore.utils import set_value_from_jmespath
 from awscli.compat import compat_open, urlparse
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import (

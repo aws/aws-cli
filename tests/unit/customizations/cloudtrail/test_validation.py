@@ -19,9 +19,9 @@ from argparse import Namespace
 from datetime import datetime, timedelta
 
 from awscrt.crypto import RSASignatureAlgorithm
-from botocore.exceptions import ClientError
 from dateutil import parser, tz
 
+from awscli.botocore.exceptions import ClientError
 from awscli.compat import BytesIO
 from awscli.customizations.cloudtrail.validation import (
     DATE_FORMAT,

@@ -13,7 +13,8 @@
 """Unit tests for the binary event stream decoder."""
 
 import pytest
-from botocore.eventstream import (
+
+from awscli.botocore.eventstream import (
     ChecksumMismatch,
     DecodeUtils,
     DuplicateHeader,
@@ -25,9 +26,8 @@ from botocore.eventstream import (
     MessagePrelude,
     NoInitialResponseError,
 )
-from botocore.exceptions import EventStreamError
-from botocore.parsers import EventStreamXMLParser
-
+from awscli.botocore.exceptions import EventStreamError
+from awscli.botocore.parsers import EventStreamXMLParser
 from tests import mock
 
 EMPTY_MESSAGE = (

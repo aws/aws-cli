@@ -10,11 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore import xform_name
-from botocore.compat import OrderedDict
-from botocore.docs.method import document_model_driven_method
-from botocore.docs.utils import DocumentedShape
-from botocore.utils import get_service_module_name
+from awscli.botocore import xform_name
+from awscli.botocore.compat import OrderedDict
+from awscli.botocore.docs.method import document_model_driven_method
+from awscli.botocore.docs.utils import DocumentedShape
+from awscli.botocore.utils import get_service_module_name
 
 
 class PaginatorDocumenter:

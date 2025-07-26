@@ -19,10 +19,10 @@ from awscli.customizations.dynamodb.types import (
 
 
 class ParameterTransformer:
-    """Transforms the input to and output from botocore based on shape"""
+    """Transforms the input to and output from awscli.botocore based on shape"""
 
     def transform(self, params, model, transformation, target_shape):
-        """Transforms the dynamodb input to or output from botocore
+        """Transforms the dynamodb input to or output from awscli.botocore
         It applies a specified transformation whenever a specific shape name
         is encountered while traversing the parameters in the dictionary.
         :param params: The parameters structure to transform.

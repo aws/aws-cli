@@ -110,7 +110,7 @@ class TestConfigureSSOCommand(BaseSSOTest):
         ):
             self.run_cmd('configure sso')
 
-    @patch('botocore.session.Session.create_client')
+    @patch('awscli.botocore.session.Session.create_client')
     def test_configure_sso_custom_ca(self, create_client_patch):
         # Profile and mock responses aren't wired up so this fails with 255,
         # but it does get far enough to verify that the internal SSO-OIDC
@@ -126,7 +126,7 @@ class TestConfigureSSOCommand(BaseSSOTest):
             verify='/path/to/ca/bundle.pem',
         )
 
-    @patch('botocore.session.Session.create_client')
+    @patch('awscli.botocore.session.Session.create_client')
     def test_configure_sso_no_verify_ssl(self, create_client_patch):
         # Profile and mock responses aren't wired up so this fails with 255,
         # but it does get far enough to verify that the internal SSO-OIDC

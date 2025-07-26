@@ -11,12 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-from botocore.session import Session
 from prompt_toolkit.application import Application
 from prompt_toolkit.completion import Completion, PathCompleter
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout import walk
 
+from awscli.botocore.session import Session
 from awscli.customizations.wizard.app import (
     FileIO,
     WizardAppRunner,

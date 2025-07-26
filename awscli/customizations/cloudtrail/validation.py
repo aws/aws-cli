@@ -22,9 +22,9 @@ from datetime import datetime, timedelta
 from zlib import error as ZLibError
 
 from awscrt.crypto import RSA, RSASignatureAlgorithm
-from botocore.exceptions import ClientError
 from dateutil import parser, tz
 
+from awscli.botocore.exceptions import ClientError
 from awscli.customizations.cloudtrail.utils import (
     PublicKeyProvider,
     get_account_id_from_arn,
@@ -96,9 +96,9 @@ def create_digest_traverser(
 ):
     """Creates a CloudTrail DigestTraverser and its object graph.
 
-    :type cloudtrail_client: botocore.client.CloudTrail
+    :type cloudtrail_client: awscli.botocore.client.CloudTrail
     :param cloudtrail_client: Client used to connect to CloudTrail
-    :type organization_client: botocore.client.organizations
+    :type organization_client: awscli.botocore.client.organizations
     :param organization_client: Client used to connect to Organizations
     :type s3_client_provider: S3ClientProvider
     :param s3_client_provider: Used to create Amazon S3 client per/region.

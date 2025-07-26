@@ -19,9 +19,6 @@ import tempfile
 
 import pytest
 from dateutil.tz import tzlocal
-from s3transfer.crt import CRTTransferFuture, CRTTransferMeta
-from s3transfer.futures import TransferFuture, TransferMeta
-from s3transfer.manager import TransferConfig
 
 from awscli.compat import queue
 from awscli.customizations.s3 import utils
@@ -44,6 +41,9 @@ from awscli.customizations.s3.subscribers import (
     SetMetadataDirectivePropsSubscriber,
     SetTagsSubscriber,
 )
+from awscli.s3transfer.crt import CRTTransferFuture, CRTTransferMeta
+from awscli.s3transfer.futures import TransferFuture, TransferMeta
+from awscli.s3transfer.manager import TransferConfig
 from awscli.testutils import FileCreator, mock, unittest
 from tests.unit.customizations.s3 import (
     FakeTransferFuture,

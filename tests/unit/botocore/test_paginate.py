@@ -11,15 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from botocore import model
-from botocore.exceptions import PaginationError
-from botocore.paginate import (
+from awscli.botocore import model
+from awscli.botocore.exceptions import PaginationError
+from awscli.botocore.paginate import (
     Paginator,
     PaginatorModel,
     TokenDecoder,
     TokenEncoder,
 )
-
 from tests import mock, unittest
 
 

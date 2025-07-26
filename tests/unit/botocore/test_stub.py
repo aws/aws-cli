@@ -11,15 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from botocore import hooks
-from botocore.exceptions import (
+from awscli.botocore import hooks
+from awscli.botocore.exceptions import (
     ParamValidationError,
     StubResponseError,
     UnStubbedResponseError,
 )
-from botocore.model import ServiceModel
-from botocore.stub import Stubber
-
+from awscli.botocore.model import ServiceModel
+from awscli.botocore.stub import Stubber
 from tests import mock, unittest
 
 
@@ -32,7 +31,8 @@ class TestStubber(unittest.TestCase):
         self.stubber = Stubber(self.client)
         self.validate_parameters_mock = mock.Mock()
         self.validate_parameters_patch = mock.patch(
-            'botocore.stub.validate_parameters', self.validate_parameters_mock
+            'awscli.botocore.stub.validate_parameters',
+            self.validate_parameters_mock,
         )
         self.validate_parameters_patch.start()
 

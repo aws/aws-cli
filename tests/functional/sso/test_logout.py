@@ -130,7 +130,7 @@ class TestLogoutCommand(BaseSSOTest):
         self.run_cmd('sso logout', expected_rc=0)
         self.assert_file_does_not_exist(token)
 
-    @mock.patch('botocore.session.Session.create_client')
+    @mock.patch('awscli.botocore.session.Session.create_client')
     def test_logout_with_custom_ca(self, create_client_patch):
         token = self.add_cached_token('token.json')
         creds = self.add_cached_aws_credentials('sso-creds.json')
@@ -143,7 +143,7 @@ class TestLogoutCommand(BaseSSOTest):
         self.assert_file_does_not_exist(token)
         self.assert_file_does_not_exist(creds)
 
-    @mock.patch('botocore.session.Session.create_client')
+    @mock.patch('awscli.botocore.session.Session.create_client')
     def test_logout_no_verify_ssl(self, create_client_patch):
         token = self.add_cached_token('token.json')
         creds = self.add_cached_aws_credentials('sso-creds.json')

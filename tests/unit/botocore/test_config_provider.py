@@ -12,10 +12,11 @@
 # language governing permissions and limitations under the License.
 import copy
 
-import botocore
-import botocore.session as session
 import pytest
-from botocore.configprovider import (
+
+import awscli.botocore
+import awscli.botocore.session as session
+from awscli.botocore.configprovider import (
     BaseProvider,
     ChainProvider,
     ConfigChainFactory,
@@ -27,7 +28,6 @@ from botocore.configprovider import (
     ScopedConfigProvider,
     SectionConfigProvider,
 )
-
 from tests import mock, unittest
 
 

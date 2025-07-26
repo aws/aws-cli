@@ -12,7 +12,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from botocore.vendored.requests.packages import urllib3
+from awscli.botocore.vendored.requests.packages import urllib3
 
 
 def _exception_from_packed_args(exception_cls, args=None, kwargs=None):
@@ -565,7 +565,7 @@ class InvalidDNSNameError(BotoCoreError):
         'hosted-style addressing cannot be used. The addressing style '
         'can be configured by removing the addressing_style value '
         'or setting that value to \'path\' or \'auto\' in the AWS Config '
-        'file or in the botocore.client.Config object.'
+        'file or in the awscli.botocore.client.Config object.'
     )
 
 
@@ -804,7 +804,7 @@ class InvalidChecksumConfigError(BotoCoreError):
 
 
 class UnsupportedServiceProtocolsError(BotoCoreError):
-    """Error when a service does not use any protocol supported by botocore."""
+    """Error when a service does not use any protocol supported by awscli.botocore."""
 
     fmt = (
         'Botocore supports {botocore_supported_protocols}, but service {service} only '

@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 
 import pytest
-from botocore.config import Config
 
+from awscli.botocore.config import Config
 from tests import ClientHTTPStubber, mock, patch_load_service_model
 
 # fake rulesets compatible with all fake service models below

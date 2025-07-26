@@ -13,11 +13,11 @@
 import inspect
 import types
 
-from botocore.docs.example import (
+from awscli.botocore.docs.example import (
     RequestExampleDocumenter,
     ResponseExampleDocumenter,
 )
-from botocore.docs.params import (
+from awscli.botocore.docs.params import (
     RequestParamsDocumenter,
     ResponseParamsDocumenter,
 )

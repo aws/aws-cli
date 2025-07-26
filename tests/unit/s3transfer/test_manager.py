@@ -13,10 +13,12 @@
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-from s3transfer.exceptions import CancelledError, FatalError
-from s3transfer.futures import TransferCoordinator
-from s3transfer.manager import TransferConfig, TransferCoordinatorController
-
+from awscli.s3transfer.exceptions import CancelledError, FatalError
+from awscli.s3transfer.futures import TransferCoordinator
+from awscli.s3transfer.manager import (
+    TransferConfig,
+    TransferCoordinatorController,
+)
 from tests import TransferCoordinatorWithInterrupt, unittest
 
 

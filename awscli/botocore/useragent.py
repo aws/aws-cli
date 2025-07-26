@@ -18,8 +18,8 @@ To modify the User-Agent header sent by botocore, use one of these
 configuration options:
 * The ``AWS_SDK_UA_APP_ID`` environment variable.
 * The ``sdk_ua_app_id`` setting in the shared AWS config file.
-* The ``user_agent_appid`` field in the :py:class:`botocore.config.Config`.
-* The ``user_agent_extra`` field in the :py:class:`botocore.config.Config`.
+* The ``user_agent_appid`` field in the :py:class:`awscli.botocore.config.Config`.
+* The ``user_agent_extra`` field in the :py:class:`awscli.botocore.config.Config`.
 
 """
 
@@ -30,8 +30,8 @@ from copy import copy
 from string import ascii_letters, digits
 from typing import NamedTuple, Optional
 
-from botocore import __version__ as botocore_version
-from botocore.context import get_context
+from awscli.botocore import __version__ as botocore_version
+from awscli.botocore.context import get_context
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +88,7 @@ def register_feature_id(feature_id):
     ctx = get_context()
     if ctx is None:
         # Never register features outside the scope of a
-        # ``botocore.context.start_as_current_context`` context manager.
+        # ``awscli.botocore.context.start_as_current_context`` context manager.
         # Otherwise, the context variable won't be reset and features will
         # bleed into all subsequent requests. Return instead of raising an
         # exception since this function could be invoked in a public interface.
@@ -316,13 +316,13 @@ class UserAgentString:
         Set the user agent configuration values that apply at session level.
 
         :param user_agent_name: The user agent name configured in the
-            :py:class:`botocore.session.Session` object. For backwards
+            :py:class:`awscli.botocore.session.Session` object. For backwards
             compatibility, this will always be at the beginning of the
             User-Agent string, together with ``user_agent_version``.
         :param user_agent_version: The user agent version configured in the
-            :py:class:`botocore.session.Session` object.
+            :py:class:`awscli.botocore.session.Session` object.
         :param user_agent_extra: The user agent "extra" configured in the
-            :py:class:`botocore.session.Session` object.
+            :py:class:`awscli.botocore.session.Session` object.
         """
         self._session_user_agent_name = session_user_agent_name
         self._session_user_agent_version = session_user_agent_version
@@ -342,7 +342,7 @@ class UserAgentString:
         """
         Create a copy with all original values and client-specific values.
 
-        :type client_config: botocore.config.Config
+        :type client_config: awscli.botocore.config.Config
         :param client_config: The client configuration object.
         """
         cp = copy(self)
@@ -544,7 +544,7 @@ class UserAgentString:
         Build app component of the User-Agent header string.
 
         Returns a single component with prefix "app" and value sourced from the
-        ``user_agent_appid`` field in :py:class:`botocore.config.Config` or
+        ``user_agent_appid`` field in :py:class:`awscli.botocore.config.Config` or
         the ``sdk_ua_app_id`` setting in the shared configuration file, or the
         ``AWS_SDK_UA_APP_ID`` environment variable. These are the recommended
         ways for apps built with Botocore to insert their identifer into the
@@ -566,7 +566,7 @@ class UserAgentString:
 
         Preferred ways to inject application-specific information into
         botocore's User-Agent header string are the ``user_agent_appid` field
-        in :py:class:`botocore.config.Config`. The ``AWS_SDK_UA_APP_ID``
+        in :py:class:`awscli.botocore.config.Config`. The ``AWS_SDK_UA_APP_ID``
         environment variable and the ``sdk_ua_app_id`` configuration file
         setting are alternative ways to set the ``user_agent_appid`` config.
         """

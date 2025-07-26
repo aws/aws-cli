@@ -15,8 +15,7 @@ import shutil
 import tempfile
 from io import BytesIO
 
-from s3transfer.compat import readable, seekable
-
+from awscli.s3transfer.compat import readable, seekable
 from tests import unittest
 
 

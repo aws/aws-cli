@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.27.61
+=======
+
+* api-change:``directconnect``: Enable MACSec support and features on Interconnects.
+* api-change:``osis``: Add Pipeline Role Arn as an optional parameter to the create / update pipeline APIs as an alternative to passing in the pipeline configuration body
+* api-change:``iotsitewise``: Add support for native anomaly detection in IoT SiteWise using new Computation Model APIs
+
+
 2.27.60
 =======
 

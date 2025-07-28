@@ -18,7 +18,7 @@ from awscli.customizations.configure.importer import (
     ConfigureImportCommand,
     CredentialImporter,
     CredentialParserError,
-    CSVCredentialParser, ConfigureImportError,
+    CSVCredentialParser,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.testutils import mock, unittest
@@ -97,7 +97,7 @@ class TestConfigureImportCommand(unittest.TestCase):
         with open('temp_creds.csv', 'w') as f:
             f.write('User name,Access key ID,Secret access key\nuser,AKID,SAK')
         try:
-            with self.assertRaises(ConfigureImportError) as cm:
+            with self.assertRaises(ValueError) as cm:
                 self.import_command(args=['--csv', 'temp_creds.csv'], parsed_globals=None)
             self.assertIn("file://", str(cm.exception))
         finally:

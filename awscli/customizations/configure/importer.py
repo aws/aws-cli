@@ -18,9 +18,6 @@ from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.utils import uni_print
 
-class ConfigureImportError(Exception):
-    pass
-
 
 class ConfigureImportCommand(BasicCommand):
     NAME = 'import'
@@ -104,8 +101,10 @@ class ConfigureImportCommand(BasicCommand):
         uni_print(import_msg, out_file=self._out_stream)
 
     def _check_possible_filepath(self, csv_data):
-        if os.path.exists(csv_data):
-            raise ConfigureImportError(
+        if ('\n' not in csv_data and
+            os.path.exists(csv_data) and
+            not csv_data.startswith('file://')):
+            raise ValueError(
                 "You may be passing a file to import without the 'file://' prefix. "
                 "To import a CSV file, use --csv file://path/to/file.csv"
             )

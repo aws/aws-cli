@@ -18,7 +18,7 @@ from awscli.customizations.configure.importer import (
     ConfigureImportCommand,
     CredentialImporter,
     CredentialParserError,
-    CSVCredentialParser,
+    CSVCredentialParser, ConfigureImportError,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.testutils import mock, unittest
@@ -93,6 +93,31 @@ class TestConfigureImportCommand(unittest.TestCase):
         with self.assertRaises(CredentialParserError):
             self.import_command(args=['--csv', content], parsed_globals=None)
 
+    def test_raises_error_when_plain_file_path_passed(self):
+        with open('temp_creds.csv', 'w') as f:
+            f.write('User name,Access key ID,Secret access key\nuser,AKID,SAK')
+        try:
+            with self.assertRaises(ConfigureImportError) as cm:
+                self.import_command(args=['--csv', 'temp_creds.csv'], parsed_globals=None)
+            self.assertIn("file://", str(cm.exception))
+        finally:
+            os.remove('temp_creds.csv')
+
+    def test_inline_csv_succeeds(self):
+        csv_string = 'User name,Access key ID,Secret access key\nuser,AKID,SAK'
+        self.import_command(args=['--csv', csv_string], parsed_globals=None)
+        self.assertIn('Successfully imported 1 profile', self.stdout.getvalue())
+
+    def test_csv_content_from_file_succeeds(self):
+        with open('temp_creds.csv', 'w') as f:
+            f.write('User name,Access key ID,Secret access key\nuser,AKID,SAK')
+        try:
+            with open('temp_creds.csv', 'r') as f:
+                contents = f.read()
+            self.import_command(args=['--csv', contents], parsed_globals=None)
+            self.assertIn('Successfully imported 1 profile', self.stdout.getvalue())
+        finally:
+            os.remove('temp_creds.csv')
 
 class TestCSVCredentialParser(unittest.TestCase):
     def setUp(self):

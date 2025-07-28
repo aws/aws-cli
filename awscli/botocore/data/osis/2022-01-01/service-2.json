@@ -419,6 +419,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>List of tags to add to the pipeline upon creation.</p>"
+        },
+        "PipelineRoleArn":{
+          "shape":"PipelineRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that provides the required permissions for a pipeline to read from the source and write to the sink. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/pipeline-security-overview.html\">Setting up roles and users in Amazon OpenSearch Ingestion</a>.</p>"
         }
       }
     },
@@ -738,6 +742,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of tags associated with the given pipeline.</p>"
+        },
+        "PipelineRoleArn":{
+          "shape":"PipelineRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that provides the required permissions for a pipeline to read from the source and write to the sink.</p>"
         }
       },
       "documentation":"<p>Information about an existing OpenSearch Ingestion pipeline.</p>"
@@ -836,6 +844,12 @@
       "max":28,
       "min":3,
       "pattern":"[a-z][a-z0-9\\-]+"
+    },
+    "PipelineRoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:(aws|aws\\-cn|aws\\-us\\-gov|aws\\-iso|aws\\-iso\\-b|aws\\-iso\\-e|aws\\-iso\\-f):iam::[0-9]+:role\\/.*$"
     },
     "PipelineStatus":{
       "type":"string",
@@ -1128,6 +1142,10 @@
         "EncryptionAtRestOptions":{
           "shape":"EncryptionAtRestOptions",
           "documentation":"<p>Key-value pairs to configure encryption for data that is written to a persistent buffer.</p>"
+        },
+        "PipelineRoleArn":{
+          "shape":"PipelineRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that provides the required permissions for a pipeline to read from the source and write to the sink. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/pipeline-security-overview.html\">Setting up roles and users in Amazon OpenSearch Ingestion</a>.</p>"
         }
       }
     },

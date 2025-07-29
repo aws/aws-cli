@@ -27,6 +27,7 @@ from io import BytesIO
 import botocore
 import botocore.auth
 from botocore import UNSIGNED, utils
+from botocore.args import ClientConfigString
 from botocore.compat import (
     MD5_AVAILABLE,  # noqa
     ETree,
@@ -58,10 +59,12 @@ from botocore.signers import (
     add_generate_presigned_post,
     add_generate_presigned_url,
 )
+from botocore.useragent import register_feature_id
 from botocore.utils import (
     SAFE_CHARS,
     SERVICE_NAME_ALIASES,
     ArnParser,
+    get_token_from_environment,
     hyphenize_service_id,  # noqa
     is_global_accesspoint,  # noqa
     percent_encode,
@@ -985,12 +988,14 @@ def remove_qbusiness_chat(class_attributes, **kwargs):
         del class_attributes['chat']
 
 
-def remove_bedrock_runtime_invoke_model_with_bidirectional_stream(class_attributes, **kwargs):
+def remove_bedrock_runtime_invoke_model_with_bidirectional_stream(
+    class_attributes, **kwargs
+):
     """Operation requires h2 which is currently unsupported in Python"""
     if 'invoke_model_with_bidirectional_stream' in class_attributes:
         del class_attributes['invoke_model_with_bidirectional_stream']
- 
- 
+
+
 def remove_bucket_from_url_paths_from_model(params, model, context, **kwargs):
     """Strips leading `{Bucket}/` from any operations that have it.
 
@@ -1201,6 +1206,91 @@ def _handle_request_validation_mode_member(params, model, **kwargs):
         params.setdefault(mode_member, "ENABLED")
 
 
+def _set_auth_scheme_preference_signer(context, signing_name, **kwargs):
+    """
+    Determines the appropriate signer to use based on the client configuration,
+    authentication scheme preferences, and the availability of a bearer token.
+    """
+    client_config = context.get('client_config')
+    if client_config is None:
+        return
+
+    signature_version = client_config.signature_version
+    auth_scheme_preference = client_config.auth_scheme_preference
+    auth_options = context.get('auth_options')
+
+    signature_version_set_in_code = (
+        isinstance(signature_version, ClientConfigString)
+        or signature_version is botocore.UNSIGNED
+    )
+    auth_preference_set_in_code = isinstance(
+        auth_scheme_preference, ClientConfigString
+    )
+    has_in_code_configuration = (
+        signature_version_set_in_code or auth_preference_set_in_code
+    )
+
+    resolved_signature_version = signature_version
+
+    # If signature version was not set in code, but an auth scheme preference
+    # is available, resolve it based on the preferred schemes and supported auth
+    # options for this service.
+    if (
+        not signature_version_set_in_code
+        and auth_scheme_preference
+        and auth_options
+    ):
+        preferred_schemes = auth_scheme_preference.split(',')
+        resolved = botocore.auth.resolve_auth_scheme_preference(
+            preferred_schemes, auth_options
+        )
+        resolved_signature_version = (
+            botocore.UNSIGNED if resolved == 'none' else resolved
+        )
+
+    # Prefer 'bearer' signature version if a bearer token is available, and it
+    # is allowed for this service. This can override earlier resolution if the
+    # config object didn't explicitly set a signature version.
+    if _should_prefer_bearer_auth(
+        has_in_code_configuration, signing_name, resolved_signature_version
+    ):
+        register_feature_id('BEARER_SERVICE_ENV_VARS')
+        resolved_signature_version = 'bearer'
+
+    if resolved_signature_version == signature_version:
+        return None
+    return resolved_signature_version
+
+
+def _should_prefer_bearer_auth(
+    has_in_code_configuration, signing_name, resolved_signature_version
+):
+    if signing_name not in get_bearer_auth_supported_services():
+        return False
+
+    has_token = get_token_from_environment(signing_name) is not None
+
+    # Prefer 'bearer' if a bearer token is available, and either:
+    #   Bearer was already resolved, or
+    #   No auth-related values were explicitly set in code
+    return has_token and (
+        resolved_signature_version == 'bearer' or not has_in_code_configuration
+    )
+
+
+def get_bearer_auth_supported_services():
+    """
+    Returns a set of services that support bearer token authentication.
+    These values correspond to the service's `signingName` property as defined
+    in model.py, falling back to `endpointPrefix` if `signingName` is not set.
+
+    Warning: This is a private interface and is subject to abrupt breaking changes,
+    including removal, in any botocore release. It is not intended for external use,
+    and its usage outside of botocore is not advised or supported.
+    """
+    return {'bedrock'}
+
+
 def _set_extra_headers_for_unsigned_request(
     request, signature_version, **kwargs
 ):
@@ -1242,7 +1332,10 @@ BUILTIN_HANDLERS = [
     ),
     ('creating-client-class.lex-runtime-v2', remove_lex_v2_start_conversation),
     ('creating-client-class.qbusiness', remove_qbusiness_chat),
-    ('creating-client-class.bedrock-runtime', remove_bedrock_runtime_invoke_model_with_bidirectional_stream),
+    (
+        'creating-client-class.bedrock-runtime',
+        remove_bedrock_runtime_invoke_model_with_bidirectional_stream,
+    ),
     ('after-call.iam', json_decode_policies),
     ('after-call.ec2.GetConsoleOutput', decode_console_output),
     ('after-call.cloudformation.GetTemplate', json_decode_template_body),
@@ -1299,6 +1392,7 @@ BUILTIN_HANDLERS = [
     ('choose-signer.sts.AssumeRoleWithSAML', disable_signing),
     ('choose-signer.sts.AssumeRoleWithWebIdentity', disable_signing),
     ('choose-signer', set_operation_specific_signer),
+    ('choose-signer', _set_auth_scheme_preference_signer),
     ('before-parameter-build.s3.HeadObject', sse_md5),
     ('before-parameter-build.s3.GetObject', sse_md5),
     ('before-parameter-build.s3.PutObject', sse_md5),

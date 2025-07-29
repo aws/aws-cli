@@ -14,7 +14,9 @@
 import socket
 
 import botocore.config
+import pytest
 from botocore import UNSIGNED, args, exceptions
+from botocore.args import ClientConfigString
 from botocore.client import ClientEndpointBridge
 from botocore.config import Config
 from botocore.configprovider import ConfigValueStore
@@ -617,6 +619,43 @@ class TestCreateClientArgs(unittest.TestCase):
         config = client_args['client_config']
         self.assertEqual(config.inject_host_prefix, False)
 
+    def test_auth_scheme_preference_set_on_config_store(self):
+        self.config_store.set_config_variable(
+            'auth_scheme_preference', 'scheme1, scheme2 , \tscheme3 \t'
+        )
+        config = self.call_get_client_args()['client_config']
+        self.assertEqual(
+            config.auth_scheme_preference, 'scheme1,scheme2,scheme3'
+        )
+        self.assertNotIsInstance(
+            config.auth_scheme_preference, ClientConfigString
+        )
+
+    def test_auth_scheme_preference_set_on_client_config(self):
+        config = self.call_get_client_args(
+            client_config=Config(
+                auth_scheme_preference='scheme1, scheme2 , \tscheme3 \t'
+            )
+        )['client_config']
+        self.assertEqual(
+            config.auth_scheme_preference, 'scheme1,scheme2,scheme3'
+        )
+        self.assertIsInstance(
+            config.auth_scheme_preference, ClientConfigString
+        )
+
+    def test_auth_scheme_preference_bad_value(self):
+        with self.assertRaises(exceptions.InvalidConfigError):
+            config = Config(
+                auth_scheme_preference=['scheme1', 'scheme2', 'scheme3']
+            )
+            self.call_get_client_args(client_config=config)
+        self.config_store.set_config_variable(
+            'auth_scheme_preference', ['scheme1', 'scheme2', 'scheme3']
+        )
+        with self.assertRaises(exceptions.InvalidConfigError):
+            self.call_get_client_args()
+
 
 class TestEndpointResolverBuiltins(unittest.TestCase):
     def setUp(self):
@@ -866,3 +905,40 @@ class TestProtocolPriorityList:
             "The map of protocol names to serializers is out of sync with the "
             "priority ordered list of protocols supported by botocore"
         )
+
+
+@pytest.mark.parametrize(
+    "value, expected",
+    [
+        ("scheme1, scheme2 , \tscheme3 \t", "scheme1,scheme2,scheme3"),
+        (
+            "scheme1, scheme2 \t scheme3 scheme4",
+            "scheme1,scheme2scheme3scheme4",
+        ),
+        (
+            "scheme1, scheme2   scheme3 scheme4     ",
+            "scheme1,scheme2scheme3scheme4",
+        ),
+        (",scheme1,, scheme2\t", "scheme1,scheme2"),
+    ],
+)
+def test_auth_scheme_preference_normalization(value, expected):
+    config_store = ConfigValueStore()
+    config_store.set_config_variable("auth_scheme_preference", value)
+
+    args_creator = args.ClientArgsCreator(
+        event_emitter=None,
+        user_agent=None,
+        response_parser_factory=None,
+        loader=None,
+        exceptions_factory=None,
+        config_store=config_store,
+        user_agent_creator=mock.Mock(),
+    )
+
+    config_kwargs = {}
+    args_creator._compute_auth_scheme_preference_config(
+        client_config=None, config_kwargs=config_kwargs
+    )
+
+    assert config_kwargs["auth_scheme_preference"] == expected

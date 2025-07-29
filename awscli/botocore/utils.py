@@ -3989,6 +3989,21 @@ def is_s3express_bucket(bucket):
     return bucket.endswith('--x-s3')
 
 
+def get_token_from_environment(signing_name, environ=None):
+    if not isinstance(signing_name, str) or not signing_name.strip():
+        return None
+
+    if environ is None:
+        environ = os.environ
+    env_var = _get_bearer_env_var_name(signing_name)
+    return environ.get(env_var)
+
+
+def _get_bearer_env_var_name(signing_name):
+    bearer_name = signing_name.replace('-', '_').replace(' ', '_').upper()
+    return f"AWS_BEARER_TOKEN_{bearer_name}"
+
+
 # This parameter is not part of the public interface and is subject to abrupt
 # breaking changes or removal without prior announcement.
 # Mapping of services that have been renamed for backwards compatibility reasons.

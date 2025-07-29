@@ -64,6 +64,7 @@ from botocore.utils import (
     S3RegionRedirectorv2,
     SSOTokenFetcher,
     SSOTokenLoader,
+    _get_bearer_env_var_name,
     calculate_sha256,
     calculate_tree_hash,
     datetime2timestamp,
@@ -73,6 +74,7 @@ from botocore.utils import (
     fix_s3_host,
     get_encoding_from_headers,
     get_service_module_name,
+    get_token_from_environment,
     has_header,
     instance_cache,
     is_json_value_header,
@@ -3840,3 +3842,46 @@ def test_lru_cache_weakref():
     assert cls2.cached_fn.cache_info().currsize == 2
     assert cls2.cached_fn.cache_info().hits == 1  # the call was a cache hit
     assert cls2.cached_fn.cache_info().misses == 2
+
+
+@pytest.mark.parametrize(
+    "signing_name, expected_env_var",
+    (
+        ("my-service", "AWS_BEARER_TOKEN_MY_SERVICE"),
+        ("my service", "AWS_BEARER_TOKEN_MY_SERVICE"),
+        ("my-custom service", "AWS_BEARER_TOKEN_MY_CUSTOM_SERVICE"),
+    ),
+)
+def test_get_bearer_env_var_name(signing_name, expected_env_var):
+    assert _get_bearer_env_var_name(signing_name) == expected_env_var
+
+
+@pytest.mark.parametrize(
+    "signing_name, env_var, token",
+    [
+        ("my-service", "AWS_BEARER_TOKEN_MY_SERVICE", "test_token"),
+        (
+            "my-other-service",
+            "AWS_BEARER_TOKEN_MY_OTHER_SERVICE",
+            "test_token",
+        ),
+    ],
+)
+def test_get_token_from_environment_returns_token(
+    monkeypatch, signing_name, env_var, token
+):
+    monkeypatch.setenv(env_var, token)
+    assert get_token_from_environment(signing_name) == token
+
+
+@pytest.mark.parametrize(
+    "signing_name, env_var",
+    [
+        ("no-token-service", "AWS_BEARER_TOKEN_NO_TOKEN_SERVICE"),
+    ],
+)
+def test_get_token_from_environment_returns_none(
+    monkeypatch, signing_name, env_var
+):
+    monkeypatch.delenv(env_var, raising=False)
+    assert get_token_from_environment(signing_name) is None

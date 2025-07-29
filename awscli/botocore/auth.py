@@ -895,6 +895,38 @@ def resolve_auth_type(auth_trait):
     raise UnsupportedSignatureVersionError(signature_version=auth_trait)
 
 
+def resolve_auth_scheme_preference(preference_list, auth_options):
+    service_supported = [scheme.split('#')[-1] for scheme in auth_options]
+
+    unsupported = [
+        scheme
+        for scheme in preference_list
+        if scheme not in AUTH_PREF_TO_SIGNATURE_VERSION
+    ]
+    if unsupported:
+        logger.debug(
+            f"Unsupported auth schemes in preference list: {', '.join(unsupported)}"
+        )
+
+    combined = preference_list + service_supported
+    prioritized_schemes = [
+        scheme
+        for scheme in dict.fromkeys(combined)
+        if scheme in service_supported
+    ]
+
+    for scheme in prioritized_schemes:
+        if scheme == 'noAuth':
+            return AUTH_PREF_TO_SIGNATURE_VERSION[scheme]
+        sig_version = AUTH_PREF_TO_SIGNATURE_VERSION.get(scheme)
+        if sig_version in AUTH_TYPE_MAPS:
+            return sig_version
+
+    raise UnsupportedSignatureVersionError(
+        signature_version=', '.join(sorted(service_supported))
+    )
+
+
 # Defined at the bottom instead of the top of the module because the Auth
 # classes weren't defined yet.
 AUTH_TYPE_MAPS = {
@@ -920,4 +952,14 @@ AUTH_TYPE_TO_SIGNATURE_VERSION = {
     'aws.auth#sigv4a': 'v4a',
     'smithy.api#httpBearerAuth': 'bearer',
     'smithy.api#noAuth': 'none',
+}
+
+
+# Mapping used specifically for resolving user-configured auth scheme preferences.
+# This is similar to AUTH_TYPE_TO_SIGNATURE_VERSION, but uses simplified keys by
+# stripping the auth trait prefixes ('smithy.api#httpBearerAuth' → 'httpBearerAuth').
+# These simplified keys match what customers are expected to provide in configuration.
+AUTH_PREF_TO_SIGNATURE_VERSION = {
+    auth_scheme.split('#')[-1]: sig_version
+    for auth_scheme, sig_version in AUTH_TYPE_TO_SIGNATURE_VERSION.items()
 }

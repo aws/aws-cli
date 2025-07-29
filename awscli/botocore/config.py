@@ -241,6 +241,12 @@ class Config:
         If a value is not provided, the client will default to ``preferred``.
 
         Defaults to None.
+
+    :type auth_scheme_preference: str
+    :param auth_scheme_preference: A comma-delimited string of case-sensitive
+        auth scheme names used to determine the client's auth scheme preference.
+
+        Defaults to None.
     """
 
     OPTION_DEFAULTS = OrderedDict(
@@ -270,6 +276,7 @@ class Config:
             ('request_checksum_calculation', None),
             ('response_checksum_validation', None),
             ('account_id_endpoint_mode', None),
+            ('auth_scheme_preference', None),
         ]
     )
 

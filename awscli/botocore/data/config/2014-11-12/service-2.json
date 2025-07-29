@@ -81,7 +81,7 @@
         {"shape":"NoSuchConfigRuleException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Deletes the specified Config rule and all of its evaluation results.</p> <p>Config sets the state of a rule to <code>DELETING</code> until the deletion is complete. You cannot update a rule while it is in this state. If you make a <code>PutConfigRule</code> or <code>DeleteConfigRule</code> request for the rule, you will receive a <code>ResourceInUseException</code>.</p> <p>You can check the state of a rule by using the <code>DescribeConfigRules</code> request.</p> <note> <p> <b>Recommendation: Stop recording resource compliance before deleting rules</b> </p> <p>It is highly recommended that you stop recording for the <code>AWS::Config::ResourceCompliance</code> resource type before you delete rules in your account. Deleting rules creates CIs for <code>AWS::Config::ResourceCompliance</code> and can affect your Config <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/stop-start-recorder.html\">configuration recorder</a> costs. If you are deleting rules which evaluate a large number of resource types, this can lead to a spike in the number of CIs recorded.</p> <p>Best practice:</p> <ol> <li> <p>Stop recording <code>AWS::Config::ResourceCompliance</code> </p> </li> <li> <p>Delete rule(s)</p> </li> <li> <p>Turn on recording for <code>AWS::Config::ResourceCompliance</code> </p> </li> </ol> </note>"
+      "documentation":"<p>Deletes the specified Config rule and all of its evaluation results.</p> <p>Config sets the state of a rule to <code>DELETING</code> until the deletion is complete. You cannot update a rule while it is in this state. If you make a <code>PutConfigRule</code> or <code>DeleteConfigRule</code> request for the rule, you will receive a <code>ResourceInUseException</code>.</p> <p>You can check the state of a rule by using the <code>DescribeConfigRules</code> request.</p> <note> <p> <b>Recommendation: Consider excluding the <code>AWS::Config::ResourceCompliance</code> resource type from recording before deleting rules</b> </p> <p>Deleting rules creates configuration items (CIs) for <code>AWS::Config::ResourceCompliance</code> that can affect your costs for the configuration recorder. If you are deleting rules which evaluate a large number of resource types, this can lead to a spike in the number of CIs recorded.</p> <p>To avoid the associated costs, you can opt to disable recording for the <code>AWS::Config::ResourceCompliance</code> resource type before deleting rules, and re-enable recording after the rules have been deleted.</p> <p>However, since deleting rules is an asynchronous process, it might take an hour or more to complete. During the time when recording is disabled for <code>AWS::Config::ResourceCompliance</code>, rule evaluations will not be recorded in the associated resource’s history.</p> </note>"
     },
     "DeleteConfigurationAggregator":{
       "name":"DeleteConfigurationAggregator",
@@ -119,7 +119,7 @@
         {"shape":"NoSuchConformancePackException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Deletes the specified conformance pack and all the Config rules, remediation actions, and all evaluation results within that conformance pack.</p> <p>Config sets the conformance pack to <code>DELETE_IN_PROGRESS</code> until the deletion is complete. You cannot update a conformance pack while it is in this state.</p>"
+      "documentation":"<p>Deletes the specified conformance pack and all the Config rules, remediation actions, and all evaluation results within that conformance pack.</p> <p>Config sets the conformance pack to <code>DELETE_IN_PROGRESS</code> until the deletion is complete. You cannot update a conformance pack while it is in this state.</p> <note> <p> <b>Recommendation: Consider excluding the <code>AWS::Config::ResourceCompliance</code> resource type from recording before deleting rules</b> </p> <p>Deleting rules creates configuration items (CIs) for <code>AWS::Config::ResourceCompliance</code> that can affect your costs for the configuration recorder. If you are deleting rules which evaluate a large number of resource types, this can lead to a spike in the number of CIs recorded.</p> <p>To avoid the associated costs, you can opt to disable recording for the <code>AWS::Config::ResourceCompliance</code> resource type before deleting rules, and re-enable recording after the rules have been deleted.</p> <p>However, since deleting rules is an asynchronous process, it might take an hour or more to complete. During the time when recording is disabled for <code>AWS::Config::ResourceCompliance</code>, rule evaluations will not be recorded in the associated resource’s history.</p> </note>"
     },
     "DeleteDeliveryChannel":{
       "name":"DeleteDeliveryChannel",
@@ -160,7 +160,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"OrganizationAccessDeniedException"}
       ],
-      "documentation":"<p>Deletes the specified organization Config rule and all of its evaluation results from all member accounts in that organization. </p> <p>Only a management account and a delegated administrator account can delete an organization Config rule. When calling this API with a delegated administrator, you must ensure Organizations <code>ListDelegatedAdministrator</code> permissions are added.</p> <p>Config sets the state of a rule to DELETE_IN_PROGRESS until the deletion is complete. You cannot update a rule while it is in this state.</p>"
+      "documentation":"<p>Deletes the specified organization Config rule and all of its evaluation results from all member accounts in that organization. </p> <p>Only a management account and a delegated administrator account can delete an organization Config rule. When calling this API with a delegated administrator, you must ensure Organizations <code>ListDelegatedAdministrator</code> permissions are added.</p> <p>Config sets the state of a rule to DELETE_IN_PROGRESS until the deletion is complete. You cannot update a rule while it is in this state.</p> <note> <p> <b>Recommendation: Consider excluding the <code>AWS::Config::ResourceCompliance</code> resource type from recording before deleting rules</b> </p> <p>Deleting rules creates configuration items (CIs) for <code>AWS::Config::ResourceCompliance</code> that can affect your costs for the configuration recorder. If you are deleting rules which evaluate a large number of resource types, this can lead to a spike in the number of CIs recorded.</p> <p>To avoid the associated costs, you can opt to disable recording for the <code>AWS::Config::ResourceCompliance</code> resource type before deleting rules, and re-enable recording after the rules have been deleted.</p> <p>However, since deleting rules is an asynchronous process, it might take an hour or more to complete. During the time when recording is disabled for <code>AWS::Config::ResourceCompliance</code>, rule evaluations will not be recorded in the associated resource’s history.</p> </note>"
     },
     "DeleteOrganizationConformancePack":{
       "name":"DeleteOrganizationConformancePack",
@@ -174,7 +174,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"OrganizationAccessDeniedException"}
       ],
-      "documentation":"<p>Deletes the specified organization conformance pack and all of the Config rules and remediation actions from all member accounts in that organization. </p> <p> Only a management account or a delegated administrator account can delete an organization conformance pack. When calling this API with a delegated administrator, you must ensure Organizations <code>ListDelegatedAdministrator</code> permissions are added.</p> <p>Config sets the state of a conformance pack to DELETE_IN_PROGRESS until the deletion is complete. You cannot update a conformance pack while it is in this state. </p>"
+      "documentation":"<p>Deletes the specified organization conformance pack and all of the Config rules and remediation actions from all member accounts in that organization. </p> <p> Only a management account or a delegated administrator account can delete an organization conformance pack. When calling this API with a delegated administrator, you must ensure Organizations <code>ListDelegatedAdministrator</code> permissions are added.</p> <p>Config sets the state of a conformance pack to DELETE_IN_PROGRESS until the deletion is complete. You cannot update a conformance pack while it is in this state. </p> <note> <p> <b>Recommendation: Consider excluding the <code>AWS::Config::ResourceCompliance</code> resource type from recording before deleting rules</b> </p> <p>Deleting rules creates configuration items (CIs) for <code>AWS::Config::ResourceCompliance</code> that can affect your costs for the configuration recorder. If you are deleting rules which evaluate a large number of resource types, this can lead to a spike in the number of CIs recorded.</p> <p>To avoid the associated costs, you can opt to disable recording for the <code>AWS::Config::ResourceCompliance</code> resource type before deleting rules, and re-enable recording after the rules have been deleted.</p> <p>However, since deleting rules is an asynchronous process, it might take an hour or more to complete. During the time when recording is disabled for <code>AWS::Config::ResourceCompliance</code>, rule evaluations will not be recorded in the associated resource’s history.</p> </note>"
     },
     "DeletePendingAggregationRequest":{
       "name":"DeletePendingAggregationRequest",
@@ -927,7 +927,7 @@
         {"shape":"NoAvailableConfigurationRecorderException"},
         {"shape":"ResourceNotDiscoveredException"}
       ],
-      "documentation":"<important> <p>For accurate reporting on the compliance status, you must record the <code>AWS::Config::ResourceCompliance</code> resource type. For more information, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html\">Selecting Which Resources Config Records</a>.</p> </important> <p>Returns a list of <code>ConfigurationItems</code> for the specified resource. The list contains details about each state of the resource during the specified time interval. If you specified a retention period to retain your <code>ConfigurationItems</code> between a minimum of 30 days and a maximum of 7 years (2557 days), Config returns the <code>ConfigurationItems</code> for the specified retention period. </p> <p>The response is paginated. By default, Config returns a limit of 10 configuration items per page. You can customize this number with the <code>limit</code> parameter. The response includes a <code>nextToken</code> string. To get the next page of results, run the request again and specify the string for the <code>nextToken</code> parameter.</p> <note> <p>Each call to the API is limited to span a duration of seven days. It is likely that the number of records returned is smaller than the specified <code>limit</code>. In such cases, you can make another call, using the <code>nextToken</code>.</p> </note>"
+      "documentation":"<important> <p>For accurate reporting on the compliance status, you must record the <code>AWS::Config::ResourceCompliance</code> resource type.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html\">Recording Amazon Web Services Resources</a> in the <i>Config Resources Developer Guide</i>.</p> </important> <p>Returns a list of configurations items (CIs) for the specified resource.</p> <p> <b>Contents</b> </p> <p>The list contains details about each state of the resource during the specified time interval. If you specified a retention period to retain your CIs between a minimum of 30 days and a maximum of 7 years (2557 days), Config returns the CIs for the specified retention period. </p> <p> <b>Pagination</b> </p> <p>The response is paginated. By default, Config returns a limit of 10 configuration items per page. You can customize this number with the <code>limit</code> parameter. The response includes a <code>nextToken</code> string. To get the next page of results, run the request again and specify the string for the <code>nextToken</code> parameter.</p> <note> <p>Each call to the API is limited to span a duration of seven days. It is likely that the number of records returned is smaller than the specified <code>limit</code>. In such cases, you can make another call, using the <code>nextToken</code>.</p> </note>"
     },
     "GetResourceEvaluationSummary":{
       "name":"GetResourceEvaluationSummary",
@@ -1014,7 +1014,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"NoAvailableConfigurationRecorderException"}
       ],
-      "documentation":"<p>Accepts a resource type and returns a list of resource identifiers for the resources of that type. A resource identifier includes the resource type, ID, and (if available) the custom resource name. The results consist of resources that Config has discovered, including those that Config is not currently recording. You can narrow the results to include only resources that have specific resource IDs or a resource name.</p> <note> <p>You can specify either resource IDs or a resource name, but not both, in the same request.</p> </note> <p>The response is paginated. By default, Config lists 100 resource identifiers on each page. You can customize this number with the <code>limit</code> parameter. The response includes a <code>nextToken</code> string. To get the next page of results, run the request again and specify the string for the <code>nextToken</code> parameter.</p>"
+      "documentation":"<p>Returns a list of resource resource identifiers for the specified resource types for the resources of that type. A <i>resource identifier</i> includes the resource type, ID, and (if available) the custom resource name.</p> <p>The results consist of resources that Config has <i>discovered</i>, including those that Config is not currently recording. You can narrow the results to include only resources that have specific resource IDs or a resource name.</p> <note> <p>You can specify either resource IDs or a resource name, but not both, in the same request.</p> </note> <important> <p> <i>CloudFormation stack recording behavior in Config</i> </p> <p>When a CloudFormation stack fails to create (for example, it enters the <code>ROLLBACK_FAILED</code> state), Config does not record a configuration item (CI) for that stack. Configuration items are only recorded for stacks that reach the following states:</p> <ul> <li> <p> <code>CREATE_COMPLETE</code> </p> </li> <li> <p> <code>UPDATE_COMPLETE</code> </p> </li> <li> <p> <code>UPDATE_ROLLBACK_COMPLETE</code> </p> </li> <li> <p> <code>UPDATE_ROLLBACK_FAILED</code> </p> </li> <li> <p> <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>DELETE_COMPLETE</code> </p> </li> </ul> <p>Because no CI is created for a failed stack creation, you won't see configuration history for that stack in Config, even after the stack is deleted. This helps make sure that Config only tracks resources that were successfully provisioned.</p> </important>"
     },
     "ListResourceEvaluations":{
       "name":"ListResourceEvaluations",
@@ -1140,7 +1140,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"MaxNumberOfConformancePacksExceededException"}
       ],
-      "documentation":"<p>Creates or updates a conformance pack. A conformance pack is a collection of Config rules that can be easily deployed in an account and a region and across an organization. For information on how many conformance packs you can have per account, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html\"> <b>Service Limits</b> </a> in the <i>Config Developer Guide</i>.</p> <p>This API creates a service-linked role <code>AWSServiceRoleForConfigConforms</code> in your account. The service-linked role is created only when the role does not exist in your account. </p> <note> <p>You must specify only one of the follow parameters: <code>TemplateS3Uri</code>, <code>TemplateBody</code> or <code>TemplateSSMDocumentDetails</code>.</p> </note>"
+      "documentation":"<p>Creates or updates a conformance pack. A conformance pack is a collection of Config rules that can be easily deployed in an account and a region and across an organization. For information on how many conformance packs you can have per account, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html\"> <b>Service Limits</b> </a> in the <i>Config Developer Guide</i>.</p> <important> <p>When you use <code>PutConformancePack</code> to deploy conformance packs in your account, the operation can create Config rules and remediation actions without requiring <code>config:PutConfigRule</code> or <code>config:PutRemediationConfigurations</code> permissions in your account IAM policies.</p> <p>This API uses the <code>AWSServiceRoleForConfigConforms</code> service-linked role in your account to create conformance pack resources. This service-linked role includes the permissions to create Config rules and remediation configurations, even if your account IAM policies explicitly deny these actions.</p> </important> <p>This API creates a service-linked role <code>AWSServiceRoleForConfigConforms</code> in your account. The service-linked role is created only when the role does not exist in your account. </p> <note> <p>You must specify only one of the follow parameters: <code>TemplateS3Uri</code>, <code>TemplateBody</code> or <code>TemplateSSMDocumentDetails</code>.</p> </note>"
     },
     "PutDeliveryChannel":{
       "name":"PutDeliveryChannel",
@@ -1228,7 +1228,7 @@
         {"shape":"OrganizationAllFeaturesNotEnabledException"},
         {"shape":"NoAvailableOrganizationException"}
       ],
-      "documentation":"<p>Deploys conformance packs across member accounts in an Amazon Web Services Organization. For information on how many organization conformance packs and how many Config rules you can have per account, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html\"> <b>Service Limits</b> </a> in the <i>Config Developer Guide</i>.</p> <p>Only a management account and a delegated administrator can call this API. When calling this API with a delegated administrator, you must ensure Organizations <code>ListDelegatedAdministrator</code> permissions are added. An organization can have up to 3 delegated administrators.</p> <p>This API enables organization service access for <code>config-multiaccountsetup.amazonaws.com</code> through the <code>EnableAWSServiceAccess</code> action and creates a service-linked role <code>AWSServiceRoleForConfigMultiAccountSetup</code> in the management or delegated administrator account of your organization. The service-linked role is created only when the role does not exist in the caller account. To use this API with delegated administrator, register a delegated administrator by calling Amazon Web Services Organization <code>register-delegate-admin</code> for <code>config-multiaccountsetup.amazonaws.com</code>.</p> <note> <p>Prerequisite: Ensure you call <code>EnableAllFeatures</code> API to enable all features in an organization.</p> <p>You must specify either the <code>TemplateS3Uri</code> or the <code>TemplateBody</code> parameter, but not both. If you provide both Config uses the <code>TemplateS3Uri</code> parameter and ignores the <code>TemplateBody</code> parameter.</p> <p>Config sets the state of a conformance pack to CREATE_IN_PROGRESS and UPDATE_IN_PROGRESS until the conformance pack is created or updated. You cannot update a conformance pack while it is in this state.</p> </note>"
+      "documentation":"<p>Deploys conformance packs across member accounts in an Amazon Web Services Organization. For information on how many organization conformance packs and how many Config rules you can have per account, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html\"> <b>Service Limits</b> </a> in the <i>Config Developer Guide</i>.</p> <p>Only a management account and a delegated administrator can call this API. When calling this API with a delegated administrator, you must ensure Organizations <code>ListDelegatedAdministrator</code> permissions are added. An organization can have up to 3 delegated administrators.</p> <important> <p>When you use <code>PutOrganizationConformancePack</code> to deploy conformance packs across member accounts, the operation can create Config rules and remediation actions without requiring <code>config:PutConfigRule</code> or <code>config:PutRemediationConfigurations</code> permissions in member account IAM policies.</p> <p>This API uses the <code>AWSServiceRoleForConfigConforms</code> service-linked role in each member account to create conformance pack resources. This service-linked role includes the permissions to create Config rules and remediation configurations, even if member account IAM policies explicitly deny these actions.</p> </important> <p>This API enables organization service access for <code>config-multiaccountsetup.amazonaws.com</code> through the <code>EnableAWSServiceAccess</code> action and creates a service-linked role <code>AWSServiceRoleForConfigMultiAccountSetup</code> in the management or delegated administrator account of your organization. The service-linked role is created only when the role does not exist in the caller account. To use this API with delegated administrator, register a delegated administrator by calling Amazon Web Services Organization <code>register-delegate-admin</code> for <code>config-multiaccountsetup.amazonaws.com</code>.</p> <note> <p>Prerequisite: Ensure you call <code>EnableAllFeatures</code> API to enable all features in an organization.</p> <p>You must specify either the <code>TemplateS3Uri</code> or the <code>TemplateBody</code> parameter, but not both. If you provide both Config uses the <code>TemplateS3Uri</code> parameter and ignores the <code>TemplateBody</code> parameter.</p> <p>Config sets the state of a conformance pack to CREATE_IN_PROGRESS and UPDATE_IN_PROGRESS until the conformance pack is created or updated. You cannot update a conformance pack while it is in this state.</p> </note>"
     },
     "PutRemediationConfigurations":{
       "name":"PutRemediationConfigurations",
@@ -1301,7 +1301,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Creates a service-linked configuration recorder that is linked to a specific Amazon Web Services service based on the <code>ServicePrincipal</code> you specify.</p> <p>The configuration recorder's <code>name</code>, <code>recordingGroup</code>, <code>recordingMode</code>, and <code>recordingScope</code> is set by the service that is linked to the configuration recorder.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/stop-start-recorder.html\"> <b>Working with the Configuration Recorder</b> </a> in the <i>Config Developer Guide</i>.</p> <p>This API creates a service-linked role <code>AWSServiceRoleForConfig</code> in your account. The service-linked role is created only when the role does not exist in your account.</p> <note> <p> <b>The recording scope determines if you receive configuration items</b> </p> <p>The recording scope is set by the service that is linked to the configuration recorder and determines whether you receive configuration items (CIs) in the delivery channel. If the recording scope is internal, you will not receive CIs in the delivery channel.</p> <p> <b>Tags are added at creation and cannot be updated with this operation</b> </p> <p>Use <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_TagResource.html\">TagResource</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_UntagResource.html\">UntagResource</a> to update tags after creation.</p> </note>"
+      "documentation":"<p>Creates a service-linked configuration recorder that is linked to a specific Amazon Web Services service based on the <code>ServicePrincipal</code> you specify.</p> <p>The configuration recorder's <code>name</code>, <code>recordingGroup</code>, <code>recordingMode</code>, and <code>recordingScope</code> is set by the service that is linked to the configuration recorder.</p> <p>For more information and a list of supported services/service principals, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/stop-start-recorder.html\"> <b>Working with the Configuration Recorder</b> </a> in the <i>Config Developer Guide</i>.</p> <p>This API creates a service-linked role <code>AWSServiceRoleForConfig</code> in your account. The service-linked role is created only when the role does not exist in your account.</p> <note> <p> <b>The recording scope determines if you receive configuration items</b> </p> <p>The recording scope is set by the service that is linked to the configuration recorder and determines whether you receive configuration items (CIs) in the delivery channel. If the recording scope is internal, you will not receive CIs in the delivery channel.</p> <p> <b>Tags are added at creation and cannot be updated with this operation</b> </p> <p>Use <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_TagResource.html\">TagResource</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_UntagResource.html\">UntagResource</a> to update tags after creation.</p> </note>"
     },
     "PutStoredQuery":{
       "name":"PutStoredQuery",
@@ -1963,15 +1963,15 @@
         },
         "configuration":{
           "shape":"Configuration",
-          "documentation":"<p>The description of the resource configuration.</p>"
+          "documentation":"<p>A JSON-encoded string that contains the contents for the resource configuration. This string needs to be deserialized using <code>json.loads()</code> before you can access the contents. </p>"
         },
         "supplementaryConfiguration":{
           "shape":"SupplementaryConfiguration",
-          "documentation":"<p>Configuration attributes that Config returns for certain resource types to supplement the information returned for the configuration parameter.</p>"
+          "documentation":"<p>A string to string map that contains additional contents for the resource configuration.Config returns this field for certain resource types to supplement the information returned for the <code>configuration</code> field.</p> <p>This string needs to be deserialized using <code>json.loads()</code> before you can access the contents.</p>"
         },
         "recordingFrequency":{
           "shape":"RecordingFrequency",
-          "documentation":"<p>The recording frequency that Config uses to record configuration changes for the resource.</p>"
+          "documentation":"<p>The recording frequency that Config uses to record configuration changes for the resource.</p> <note> <p>This field only appears in the API response when <code>DAILY</code> recording is enabled for a resource type. If this field is not present, <code>CONTINUOUS</code> recording is enabled for that resource type. For more information on daily recording and continuous recording, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html#select-resources-recording-frequency\">Recording Frequency</a> in the <i>Config Developer Guide</i>.</p> </note>"
         },
         "configurationItemDeliveryTime":{
           "shape":"ConfigurationItemDeliveryTime",
@@ -2238,7 +2238,7 @@
         },
         "Scope":{
           "shape":"Scope",
-          "documentation":"<p>Defines which resources can trigger an evaluation for the rule. The scope can include one or more resource types, a combination of one resource type and one resource ID, or a combination of a tag key and value. Specify a scope to constrain the resources that can trigger an evaluation for the rule. If you do not specify a scope, evaluations are triggered when any resource in the recording group changes.</p> <note> <p>The scope can be empty. </p> </note>"
+          "documentation":"<p>Defines which resources can trigger an evaluation for the rule. The scope can include one or more resource types, a combination of one resource type and one resource ID, or a combination of a tag key and value. Specify a scope to constrain the resources that can trigger an evaluation for the rule. If you do not specify a scope, evaluations are triggered when any resource in the recording group changes.</p>"
         },
         "Source":{
           "shape":"Source",
@@ -2565,19 +2565,19 @@
         },
         "configuration":{
           "shape":"Configuration",
-          "documentation":"<p>The description of the resource configuration.</p>"
+          "documentation":"<p>A JSON-encoded string that contains the contents for the resource configuration. This string needs to be deserialized using <code>json.loads()</code> before you can access the contents.</p>"
         },
         "supplementaryConfiguration":{
           "shape":"SupplementaryConfiguration",
-          "documentation":"<p>Configuration attributes that Config returns for certain resource types to supplement the information returned for the <code>configuration</code> parameter.</p>"
+          "documentation":"<p>A string to string map that contains additional contents for the resource configuration.Config returns this field for certain resource types to supplement the information returned for the <code>configuration</code> field.</p> <p>This string to string map needs to be deserialized using <code>json.loads()</code> before you can accessing the contents.</p>"
         },
         "recordingFrequency":{
           "shape":"RecordingFrequency",
-          "documentation":"<p>The recording frequency that Config uses to record configuration changes for the resource.</p>"
+          "documentation":"<p>The recording frequency that Config uses to record configuration changes for the resource.</p> <note> <p>This field only appears in the API response when <code>DAILY</code> recording is enabled for a resource type. If this field is not present, <code>CONTINUOUS</code> recording is enabled for that resource type. For more information on daily recording and continuous recording, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html#select-resources-recording-frequency\">Recording Frequency</a> in the <i>Config Developer Guide</i>.</p> </note>"
         },
         "configurationItemDeliveryTime":{
           "shape":"ConfigurationItemDeliveryTime",
-          "documentation":"<p>The time when configuration changes for the resource were delivered.</p> <note> <p>This field is optional and is not guaranteed to be present in a configuration item (CI). If you are using daily recording, this field will be populated. However, if you are using continuous recording, this field will be omitted since the delivery time is instantaneous as the CI is available right away. For more information on daily recording and continuous recording, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html#select-resources-recording-frequency\">Recording Frequency</a> in the <i>Config Developer Guide</i>.</p> </note>"
+          "documentation":"<p>The time when configuration changes for the resource were delivered.</p> <note> <p>This field is optional and is not guaranteed to be present in a configuration item (CI). If you are using daily recording, this field will be populated. However, if you are using continuous recording, this field will be omitted since the delivery time is instantaneous as the CI is available right away.</p> <p>For more information on daily recording and continuous recording, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html#select-resources-recording-frequency\">Recording Frequency</a> in the <i>Config Developer Guide</i>.</p> </note>"
         }
       },
       "documentation":"<p>A list that contains detailed configurations of a specified resource.</p>"
@@ -2608,7 +2608,7 @@
         },
         "name":{
           "shape":"RecorderName",
-          "documentation":"<p>The name of the configuration recorder.</p> <p>For customer managed configuration recorders, Config automatically assigns the name of \"default\" when creating a configuration recorder if you do not specify a name at creation time.</p> <p>For service-linked configuration recorders, Config automatically assigns a name that has the prefix \"<code>AWS</code>\" to a new service-linked configuration recorder.</p> <note> <p> <b>Changing the name of a configuration recorder</b> </p> <p>To change the name of the customer managed configuration recorder, you must delete it and create a new customer managed configuration recorder with a new name.</p> <p>You cannot change the name of a service-linked configuration recorder.</p> </note>"
+          "documentation":"<p>The name of the configuration recorder.</p> <p>For customer managed configuration recorders, Config automatically assigns the name of \"default\" when creating a configuration recorder if you do not specify a name at creation time.</p> <p>For service-linked configuration recorders, Config automatically assigns a name that has the prefix \"<code>AWSConfigurationRecorderFor</code>\" to a new service-linked configuration recorder.</p> <note> <p> <b>Changing the name of a configuration recorder</b> </p> <p>To change the name of the customer managed configuration recorder, you must delete it and create a new customer managed configuration recorder with a new name.</p> <p>You cannot change the name of a service-linked configuration recorder.</p> </note>"
         },
         "roleARN":{
           "shape":"String",
@@ -3805,7 +3805,7 @@
       "members":{
         "ConfigurationRecorderNames":{
           "shape":"ConfigurationRecorderNameList",
-          "documentation":"<p>The name of the configuration recorder. If the name is not specified, the opertation returns the status for the customer managed configuration recorder configured for the account, if applicable.</p> <note> <p>When making a request to this operation, you can only specify one configuration recorder.</p> </note>"
+          "documentation":"<p>The name of the configuration recorder. If the name is not specified, the operation returns the status for the customer managed configuration recorder configured for the account, if applicable.</p> <note> <p>When making a request to this operation, you can only specify one configuration recorder.</p> </note>"
         },
         "ServicePrincipal":{
           "shape":"ServicePrincipal",
@@ -3833,7 +3833,7 @@
       "members":{
         "ConfigurationRecorderNames":{
           "shape":"ConfigurationRecorderNameList",
-          "documentation":"<p>A list of names of the configuration recorders that you want to specify.</p>"
+          "documentation":"<p>A list of names of the configuration recorders that you want to specify.</p> <note> <p>When making a request to this operation, you can only specify one configuration recorder.</p> </note>"
         },
         "ServicePrincipal":{
           "shape":"ServicePrincipal",
@@ -5193,7 +5193,7 @@
       "members":{
         "configurationItems":{
           "shape":"ConfigurationItemList",
-          "documentation":"<p>A list that contains the configuration history of one or more resources.</p>"
+          "documentation":"<p>An array of <code>ConfigurationItems</code> Objects. Contatins the configuration history for one or more resources.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -5316,7 +5316,7 @@
     "InvalidConfigurationRecorderNameException":{
       "type":"structure",
       "members":{},
-      "documentation":"<p>You have provided a name for the customer managed configuration recorder that is not valid.</p>",
+      "documentation":"<p>The configuration recorder name is not valid. The prefix \"<code>AWSConfigurationRecorderFor</code>\" is reserved for service-linked configuration recorders.</p>",
       "exception":true
     },
     "InvalidDeliveryChannelNameException":{
@@ -6576,7 +6576,7 @@
         },
         "TemplateBody":{
           "shape":"TemplateBody",
-          "documentation":"<p>A string containing the full conformance pack template body. The structure containing the template body has a minimum length of 1 byte and a maximum length of 51,200 bytes.</p> <note> <p>You can use a YAML template with two resource types: Config rule (<code>AWS::Config::ConfigRule</code>) and remediation action (<code>AWS::Config::RemediationConfiguration</code>).</p> </note>"
+          "documentation":"<p>A string that contains the full conformance pack template body. The structure containing the template body has a minimum length of 1 byte and a maximum length of 51,200 bytes.</p> <note> <p>You can use a YAML template with two resource types: Config rule (<code>AWS::Config::ConfigRule</code>) and remediation action (<code>AWS::Config::RemediationConfiguration</code>).</p> </note>"
         },
         "DeliveryS3Bucket":{
           "shape":"DeliveryS3Bucket",
@@ -6715,7 +6715,7 @@
         },
         "TemplateBody":{
           "shape":"TemplateBody",
-          "documentation":"<p>A string containing full conformance pack template body. Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes.</p>"
+          "documentation":"<p>A string that contains the full conformance pack template body. Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes.</p>"
         },
         "DeliveryS3Bucket":{
           "shape":"DeliveryS3Bucket",
@@ -6874,7 +6874,7 @@
         },
         "Name":{
           "shape":"RecorderName",
-          "documentation":"<p>The name of the specified configuration recorder.</p> <p>For service-linked configuration recorders, Config automatically assigns a name that has the prefix \"<code>AWS</code>\" to the new service-linked configuration recorder.</p>"
+          "documentation":"<p>The name of the specified configuration recorder.</p> <p>For service-linked configuration recorders, Config automatically assigns a name that has the prefix \"<code>AWSConfigurationRecorderFor</code>\" to the new service-linked configuration recorder.</p>"
         }
       }
     },
@@ -8395,7 +8395,7 @@
         },
         "EvaluationMode":{
           "shape":"EvaluationMode",
-          "documentation":"<p>The mode of an evaluation. The valid values for this API are <code>DETECTIVE</code> and <code>PROACTIVE</code>.</p>"
+          "documentation":"<p>The mode of an evaluation.</p> <note> <p>The only valid value for this API is <code>PROACTIVE</code>.</p> </note>"
         },
         "EvaluationTimeout":{
           "shape":"EvaluationTimeout",

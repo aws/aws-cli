@@ -61,8 +61,28 @@ _xform_cache = {
         'AssociateWhatsAppBusinessAccount',
         '-',
     ): 'associate-whatsapp-business-account',
+    ('CreateWhatsAppMessageTemplate', '_'): 'create_whatsapp_message_template',
+    ('CreateWhatsAppMessageTemplate', '-'): 'create-whatsapp-message-template',
+    (
+        'CreateWhatsAppMessageTemplateFromLibrary',
+        '_',
+    ): 'create_whatsapp_message_template_from_library',
+    (
+        'CreateWhatsAppMessageTemplateFromLibrary',
+        '-',
+    ): 'create-whatsapp-message-template-from-library',
+    (
+        'CreateWhatsAppMessageTemplateMedia',
+        '_',
+    ): 'create_whatsapp_message_template_media',
+    (
+        'CreateWhatsAppMessageTemplateMedia',
+        '-',
+    ): 'create-whatsapp-message-template-media',
     ('DeleteWhatsAppMessageMedia', '_'): 'delete_whatsapp_message_media',
     ('DeleteWhatsAppMessageMedia', '-'): 'delete-whatsapp-message-media',
+    ('DeleteWhatsAppMessageTemplate', '_'): 'delete_whatsapp_message_template',
+    ('DeleteWhatsAppMessageTemplate', '-'): 'delete-whatsapp-message-template',
     (
         'DisassociateWhatsAppBusinessAccount',
         '_',
@@ -89,6 +109,8 @@ _xform_cache = {
     ): 'get-linked-whatsapp-business-account-phone-number',
     ('GetWhatsAppMessageMedia', '_'): 'get_whatsapp_message_media',
     ('GetWhatsAppMessageMedia', '-'): 'get-whatsapp-message-media',
+    ('GetWhatsAppMessageTemplate', '_'): 'get_whatsapp_message_template',
+    ('GetWhatsAppMessageTemplate', '-'): 'get-whatsapp-message-template',
     (
         'ListLinkedWhatsAppBusinessAccounts',
         '_',
@@ -97,6 +119,10 @@ _xform_cache = {
         'ListLinkedWhatsAppBusinessAccounts',
         '-',
     ): 'list-linked-whatsapp-business-accounts',
+    ('ListWhatsAppMessageTemplates', '_'): 'list_whatsapp_message_templates',
+    ('ListWhatsAppMessageTemplates', '-'): 'list-whatsapp-message-templates',
+    ('ListWhatsAppTemplateLibrary', '_'): 'list_whatsapp_template_library',
+    ('ListWhatsAppTemplateLibrary', '-'): 'list-whatsapp-template-library',
     ('PostWhatsAppMessageMedia', '_'): 'post_whatsapp_message_media',
     ('PostWhatsAppMessageMedia', '-'): 'post-whatsapp-message-media',
     (
@@ -109,6 +135,8 @@ _xform_cache = {
     ): 'put-whatsapp-business-account-event-destinations',
     ('SendWhatsAppMessage', '_'): 'send_whatsapp_message',
     ('SendWhatsAppMessage', '-'): 'send-whatsapp-message',
+    ('UpdateWhatsAppMessageTemplate', '_'): 'update_whatsapp_message_template',
+    ('UpdateWhatsAppMessageTemplate', '-'): 'update-whatsapp-message-template',
 }
 ScalarTypes = ('string', 'integer', 'boolean', 'timestamp', 'float', 'double')
 

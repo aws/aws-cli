@@ -1231,6 +1231,10 @@
           "shape":"ImageTagMutability",
           "documentation":"<p>The tag mutability setting for the repository. If this parameter is omitted, the default setting of <code>MUTABLE</code> will be used which will allow image tags to be overwritten. If <code>IMMUTABLE</code> is specified, all image tags within the repository will be immutable which will prevent them from being overwritten.</p>"
         },
+        "imageTagMutabilityExclusionFilters":{
+          "shape":"ImageTagMutabilityExclusionFilters",
+          "documentation":"<p>Creates a repository creation template with a list of filters that define which image tags can override the default image tag mutability setting.</p>"
+        },
         "repositoryPolicy":{
           "shape":"RepositoryPolicyText",
           "documentation":"<p>The repository policy to apply to repositories created using the template. A repository policy is a permissions policy associated with a repository to control access permissions. </p>"
@@ -1281,6 +1285,10 @@
         "imageTagMutability":{
           "shape":"ImageTagMutability",
           "documentation":"<p>The tag mutability setting for the repository. If this parameter is omitted, the default setting of <code>MUTABLE</code> will be used which will allow image tags to be overwritten. If <code>IMMUTABLE</code> is specified, all image tags within the repository will be immutable which will prevent them from being overwritten.</p>"
+        },
+        "imageTagMutabilityExclusionFilters":{
+          "shape":"ImageTagMutabilityExclusionFilters",
+          "documentation":"<p>Creates a repository with a list of filters that define which image tags can override the default image tag mutability setting.</p>"
         },
         "imageScanningConfiguration":{
           "shape":"ImageScanningConfiguration",
@@ -2549,8 +2557,44 @@
       "type":"string",
       "enum":[
         "MUTABLE",
-        "IMMUTABLE"
+        "IMMUTABLE",
+        "IMMUTABLE_WITH_EXCLUSION",
+        "MUTABLE_WITH_EXCLUSION"
       ]
+    },
+    "ImageTagMutabilityExclusionFilter":{
+      "type":"structure",
+      "required":[
+        "filterType",
+        "filter"
+      ],
+      "members":{
+        "filterType":{
+          "shape":"ImageTagMutabilityExclusionFilterType",
+          "documentation":"<p>Specifies the type of filter to use for excluding image tags from the repository's mutability setting.</p>"
+        },
+        "filter":{
+          "shape":"ImageTagMutabilityExclusionFilterValue",
+          "documentation":"<p>The value to use when filtering image tags. Must be either a regular expression pattern or a tag prefix value based on the specified filter type.</p>"
+        }
+      },
+      "documentation":"<p>Overrides the default image tag mutability setting of the repository for image tags that match the specified filters.</p>"
+    },
+    "ImageTagMutabilityExclusionFilterType":{
+      "type":"string",
+      "enum":["WILDCARD"]
+    },
+    "ImageTagMutabilityExclusionFilterValue":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z._*-]{1,128}$"
+    },
+    "ImageTagMutabilityExclusionFilters":{
+      "type":"list",
+      "member":{"shape":"ImageTagMutabilityExclusionFilter"},
+      "max":5,
+      "min":1
     },
     "ImageTagsList":{
       "type":"list",
@@ -3264,6 +3308,10 @@
         "imageTagMutability":{
           "shape":"ImageTagMutability",
           "documentation":"<p>The tag mutability setting for the repository. If <code>MUTABLE</code> is specified, image tags can be overwritten. If <code>IMMUTABLE</code> is specified, all image tags within the repository will be immutable which will prevent them from being overwritten.</p>"
+        },
+        "imageTagMutabilityExclusionFilters":{
+          "shape":"ImageTagMutabilityExclusionFilters",
+          "documentation":"<p>Creates or updates a repository with filters that define which image tags can override the default image tag mutability setting.</p>"
         }
       }
     },
@@ -3281,6 +3329,10 @@
         "imageTagMutability":{
           "shape":"ImageTagMutability",
           "documentation":"<p>The image tag mutability setting for the repository.</p>"
+        },
+        "imageTagMutabilityExclusionFilters":{
+          "shape":"ImageTagMutabilityExclusionFilters",
+          "documentation":"<p>Returns a list of filters that were defined for a repository. These filters determine which image tags can override the default image tag mutability setting of the repository.</p>"
         }
       }
     },
@@ -3595,6 +3647,10 @@
           "shape":"ImageTagMutability",
           "documentation":"<p>The tag mutability setting for the repository.</p>"
         },
+        "imageTagMutabilityExclusionFilters":{
+          "shape":"ImageTagMutabilityExclusionFilters",
+          "documentation":"<p>The image tag mutability exclusion filters associated with the repository. These filters specify which image tags can override the repository's default image tag mutability setting.</p>"
+        },
         "imageScanningConfiguration":{"shape":"ImageScanningConfiguration"},
         "encryptionConfiguration":{
           "shape":"EncryptionConfiguration",
@@ -3636,6 +3692,10 @@
         "imageTagMutability":{
           "shape":"ImageTagMutability",
           "documentation":"<p>The tag mutability setting for the repository. If this parameter is omitted, the default setting of <code>MUTABLE</code> will be used which will allow image tags to be overwritten. If <code>IMMUTABLE</code> is specified, all image tags within the repository will be immutable which will prevent them from being overwritten.</p>"
+        },
+        "imageTagMutabilityExclusionFilters":{
+          "shape":"ImageTagMutabilityExclusionFilters",
+          "documentation":"<p>Defines the image tag mutability exclusion filters to apply when creating repositories from this template. These filters specify which image tags can override the repository's default image tag mutability setting.</p>"
         },
         "repositoryPolicy":{
           "shape":"RepositoryPolicyText",
@@ -4319,6 +4379,10 @@
         "imageTagMutability":{
           "shape":"ImageTagMutability",
           "documentation":"<p>Updates the tag mutability setting for the repository. If this parameter is omitted, the default setting of <code>MUTABLE</code> will be used which will allow image tags to be overwritten. If <code>IMMUTABLE</code> is specified, all image tags within the repository will be immutable which will prevent them from being overwritten.</p>"
+        },
+        "imageTagMutabilityExclusionFilters":{
+          "shape":"ImageTagMutabilityExclusionFilters",
+          "documentation":"<p>Updates a repository with filters that define which image tags can override the default image tag mutability setting.</p>"
         },
         "repositoryPolicy":{
           "shape":"RepositoryPolicyText",

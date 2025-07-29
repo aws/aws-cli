@@ -294,8 +294,24 @@ class TestTransformName(unittest.TestCase):
             'associate-whatsapp-business-account',
         )
         self.assertEqual(
+            xform_name('CreateWhatsAppMessageTemplate', '-'),
+            'create-whatsapp-message-template',
+        )
+        self.assertEqual(
+            xform_name('CreateWhatsAppMessageTemplateFromLibrary', '-'),
+            'create-whatsapp-message-template-from-library',
+        )
+        self.assertEqual(
+            xform_name('CreateWhatsAppMessageTemplateMedia', '-'),
+            'create-whatsapp-message-template-media',
+        )
+        self.assertEqual(
             xform_name('DeleteWhatsAppMessageMedia', '-'),
             'delete-whatsapp-message-media',
+        )
+        self.assertEqual(
+            xform_name('DeleteWhatsAppMessageTemplate', '-'),
+            'delete-whatsapp-message-template',
         )
         self.assertEqual(
             xform_name('DisassociateWhatsAppBusinessAccount', '-'),
@@ -314,8 +330,20 @@ class TestTransformName(unittest.TestCase):
             'get-whatsapp-message-media',
         )
         self.assertEqual(
+            xform_name('GetWhatsAppMessageTemplate', '-'),
+            'get-whatsapp-message-template',
+        )
+        self.assertEqual(
             xform_name('ListLinkedWhatsAppBusinessAccounts', '-'),
             'list-linked-whatsapp-business-accounts',
+        )
+        self.assertEqual(
+            xform_name('ListWhatsAppMessageTemplates', '-'),
+            'list-whatsapp-message-templates',
+        )
+        self.assertEqual(
+            xform_name('ListWhatsAppTemplateLibrary', '-'),
+            'list-whatsapp-template-library',
         )
         self.assertEqual(
             xform_name('PostWhatsAppMessageMedia', '-'),
@@ -327,6 +355,10 @@ class TestTransformName(unittest.TestCase):
         )
         self.assertEqual(
             xform_name('SendWhatsAppMessage', '-'), 'send-whatsapp-message'
+        )
+        self.assertEqual(
+            xform_name('UpdateWhatsAppMessageTemplate', '-'),
+            'update-whatsapp-message-template',
         )
 
     def test_special_case_ends_with_s(self):

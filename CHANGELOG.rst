@@ -2,6 +2,45 @@
 CHANGELOG
 =========
 
+2.27.60
+=======
+
+* api-change:``ec2``: Transit Gateway native integration with AWS Network Firewall. Adding new enum value for the new Transit Gateway Attachment type.
+* api-change:``appintegrations``: Amazon AppIntegrations introduces new configuration capabilities to enable customers to manage iframe permissions, control application refresh behavior (per contact or per browser/cross-contact), and run background applications (service).
+* api-change:``config``: Documentation improvements have been made to the EvaluationModel and DescribeConfigurationRecorders APIs.
+* api-change:``kms``: Doc only update: fixed grammatical errors.
+* api-change:``socialmessaging``: This release introduces new WhatsApp template management APIs that enable customers to programmatically create and submit templates for approval, monitor approval status, and manage the complete template lifecycle
+* api-change:``sqs``: Documentation updates for Amazon SQS fair queues feature.
+* api-change:``mediapackagev2``: This release adds support for specifying a preferred input for channels using CMAF ingest.
+* api-change:``budgets``: Adds IPv6 and PrivateLink support for AWS Budgets in IAD.
+
+
+2.27.59
+=======
+
+* api-change:``datazone``: This release adds support for 1) highlighting relevant text in returned results for Search and SearchListings APIs and 2) returning aggregated counts of values for specified attributes for SearchListings API.
+* api-change:``omics``: Add Git integration and README support for HealthOmics workflows
+
+
+2.27.58
+=======
+
+* api-change:``workspaces-thin-client``: Added the lastUserId parameter to the ListDevices and GetDevice API.
+* api-change:``glue``: AWS Glue now supports dynamic session policies for job executions. This feature allows you to specify custom, fine-grained permissions for each job run without creating multiple IAM roles.
+* api-change:``ec2``: Added support for skip-os-shutdown option for the EC2 instance stop and terminate operations. This feature enables customers to bypass the graceful OS shutdown, supporting faster state transitions when instance data preservation isn't critical.
+
+
+2.27.57
+=======
+
+* enhancement:EMR: Updated create-cluster and describe-cluster commands to support --extended-support and --no-extended-support arguments
+* api-change:``neptunedata``: This release updates the supported regions for Neptune API to include current AWS regions.
+* enhancement:Dockerfile: Include ``findutils`` and ``jq`` in Docker image
+* api-change:``lambda``: This release migrated the model to Smithy keeping all features unchanged.
+* api-change:``ecr``: Add support for Image Tag Mutability Exception feature, allowing repositories to define wildcard-based patterns that override the default image tag mutability settings.
+* api-change:``emr``: This release adds new parameter 'ExtendedSupport' in AWS EMR RunJobFlow, ModifyCluster and DescribeCluster API.
+
+
 2.27.56
 =======
 

@@ -50,7 +50,7 @@ from botocore.compat import (
     urlunsplit,
     zip_longest,
 )
-from awscli.botocore.exceptions import (
+from botocore.exceptions import (
     AuthorizationCodeLoadError,
     ClientError,
     ConfigNotFound,

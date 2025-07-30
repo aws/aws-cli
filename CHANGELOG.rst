@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.27.63
+=======
+
+* api-change:``ds``: This release adds support for AWS Managed Microsoft AD Hybrid Edition, introducing new operations: StartADAssessment, DescribeADAssessment, ListADAssessments, DeleteADAssessment, CreateHybridAD, UpdateHybridAD, and DescribeHybridADUpdate; and updated existing operation: DescribeDirectories.
+* api-change:``iotwireless``: Added TxPowerIndexMin, TxPowerIndexMax, NbTransMin and NbTransMax params to ServiceProfile.
+* api-change:``docdb``: Add support for setting Serverless Scaling Configuration on clusters.
+* enhancement:autocomplete: Add completion model for ``dsql``
+* api-change:``ec2``: Release to show the next hop IP address for routes propagated by VPC Route Server into VPC route tables.
+* api-change:``cloudfront``: This release adds new origin timeout options: 1) ResponseCompletionTimeout and 2) OriginReadTimeout (for S3 origins)
+
+
 2.27.62
 =======
 

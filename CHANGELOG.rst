@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.41.17
+=======
+
+* api-change:``cloudfront``: This release adds new origin timeout options: 1) ResponseCompletionTimeout and 2) OriginReadTimeout (for S3 origins)
+* api-change:``docdb``: Add support for setting Serverless Scaling Configuration on clusters.
+* api-change:``ds``: This release adds support for AWS Managed Microsoft AD Hybrid Edition, introducing new operations: StartADAssessment, DescribeADAssessment, ListADAssessments, DeleteADAssessment, CreateHybridAD, UpdateHybridAD, and DescribeHybridADUpdate; and updated existing operation: DescribeDirectories.
+* api-change:``ec2``: Release to show the next hop IP address for routes propagated by VPC Route Server into VPC route tables.
+* api-change:``iotwireless``: Added TxPowerIndexMin, TxPowerIndexMax, NbTransMin and NbTransMax params to ServiceProfile.
+
+
 1.41.16
 =======
 

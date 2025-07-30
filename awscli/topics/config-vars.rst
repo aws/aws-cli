@@ -500,8 +500,8 @@ These configuration variables control how the AWS CLI retries requests.
           throttling.  This is a provisional mode that may change behavior in
           the future.
 
-For more information, see `Available retry modes <https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-retries.html#cli-usage-retries-modes>`__
-in the *AWS CLI User Guide*.
+    For more information, see `Available retry modes <https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-retries.html#cli-usage-retries-modes>`__
+    in the *AWS CLI User Guide*.
 
 Amazon S3
 ---------

@@ -1252,7 +1252,10 @@ def _set_auth_scheme_preference_signer(context, signing_name, **kwargs):
     # is allowed for this service. This can override earlier resolution if the
     # config object didn't explicitly set a signature version.
     if _should_prefer_bearer_auth(
-        has_in_code_configuration, signing_name, resolved_signature_version
+        has_in_code_configuration,
+        signing_name,
+        resolved_signature_version,
+        auth_options,
     ):
         register_feature_id('BEARER_SERVICE_ENV_VARS')
         resolved_signature_version = 'bearer'
@@ -1263,9 +1266,15 @@ def _set_auth_scheme_preference_signer(context, signing_name, **kwargs):
 
 
 def _should_prefer_bearer_auth(
-    has_in_code_configuration, signing_name, resolved_signature_version
+    has_in_code_configuration,
+    signing_name,
+    resolved_signature_version,
+    auth_options,
 ):
     if signing_name not in get_bearer_auth_supported_services():
+        return False
+
+    if not auth_options or 'smithy.api#httpBearerAuth' not in auth_options:
         return False
 
     has_token = get_token_from_environment(signing_name) is not None

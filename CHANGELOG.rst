@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+1.42.0
+======
+
+* api-change:``customer-profiles``: The release updates standard profile with 2 new fields that supports account-level engagement. Updated APIs include CreateProfile, UpdateProfile, MergeProfiles, SearchProfiles, BatchGetProfile, GetSegmentMembership, CreateSegmentDefinition, CreateSegmentEstimate.
+* api-change:``ec2``: Added support for the force option for the EC2 instance terminate command. This feature enables customers to recover resources associated with an instance stuck in the shutting-down state as a result of rare issues caused by a frozen operating system or an underlying hardware problem.
+* api-change:``elbv2``: This release enables secondary IP addresses for Network Load Balancers.
+* api-change:``entityresolution``: Add support for creating advanced rule-based matching workflows in AWS Entity Resolution.
+* api-change:``glue``: Added support for Route node, S3 Iceberg sources/targets, catalog Iceberg sources, DynamoDB ELT connector, AutoDataQuality evaluation, enhanced PII detection with redaction, Kinesis fan-out support, and new R-series worker types.
+* api-change:``inspector2``: Extend usage to include agentless hours and add CODE_REPOSITORY to aggregation resource type
+* api-change:``iot``: This release allows AWS IoT Core users to use their own AWS KMS keys for data protection
+* api-change:``opensearch``: Granular access control support for NEO-SAML with IAMFederation for AOS data source
+* api-change:``quicksight``: Added Impala connector support
+* api-change:``s3control``: Add Tags field to CreateAccessPoint
+* api-change:``sesv2``: This release introduces support for Multi-tenant management
+* api-change:``workspaces-web``: Added ability to log session activity on a portal to an S3 bucket.
+* feature:``sts``: Updated the default sts service endpoint from ``legacy`` to ``regional``. This behavior can be overridden using the ``sts_regional_endpoints`` setting in the shared AWS config file or the ``AWS_STS_REGIONAL_ENDPOINTS`` environment variable.
+
+
 1.41.17
 =======
 

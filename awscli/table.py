@@ -88,6 +88,7 @@ def align_left(
     right_edge='|',
     text_length=None,
     left_padding=2,
+    right_padding=2,
 ):
     """Left align text."""
     # postcondition: get_text_length(returned_text) == length

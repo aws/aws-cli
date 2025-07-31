@@ -1600,6 +1600,10 @@
           "shape":"JWTOptionsOutput",
           "documentation":"<p>Container for information about the JWT configuration of the Amazon OpenSearch Service.</p>"
         },
+        "IAMFederationOptions":{
+          "shape":"IAMFederationOptionsOutput",
+          "documentation":"<p>Container for information about the IAM federation configuration for an OpenSearch UI application.</p>"
+        },
         "AnonymousAuthDisableDate":{
           "shape":"DisableTimestamp",
           "documentation":"<p>Date and time when the migration period will be disabled. Only necessary when <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-enabling-existing\">enabling fine-grained access control on an existing domain</a>.</p>"
@@ -1633,6 +1637,10 @@
         "JWTOptions":{
           "shape":"JWTOptionsInput",
           "documentation":"<p>Container for information about the JWT configuration of the Amazon OpenSearch Service. </p>"
+        },
+        "IAMFederationOptions":{
+          "shape":"IAMFederationOptionsInput",
+          "documentation":"<p>Container for information about the IAM federation configuration for an OpenSearch UI application.</p>"
         },
         "AnonymousAuthEnabled":{
           "shape":"Boolean",
@@ -4862,6 +4870,54 @@
       "documentation":"<p>Container for the response returned by the <code>GetUpgradeStatus</code> operation.</p>"
     },
     "HostedZoneId":{"type":"string"},
+    "IAMFederationOptionsInput":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>True to enable IAM federation authentication for a domain.</p>"
+        },
+        "SubjectKey":{
+          "shape":"IAMFederationSubjectKey",
+          "documentation":"<p>Element of the IAM federation assertion to use for the user name. Default is <code>sub</code>.</p>"
+        },
+        "RolesKey":{
+          "shape":"IAMFederationRolesKey",
+          "documentation":"<p>Element of the IAM federation assertion to use for backend roles. Default is <code>roles</code>.</p>"
+        }
+      },
+      "documentation":"<p>The IAM federation authentication configuration for an Amazon OpenSearch Service domain.</p>"
+    },
+    "IAMFederationOptionsOutput":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>True if IAM federation is enabled.</p>"
+        },
+        "SubjectKey":{
+          "shape":"IAMFederationSubjectKey",
+          "documentation":"<p>The key used for matching the IAM federation subject attribute.</p>"
+        },
+        "RolesKey":{
+          "shape":"IAMFederationRolesKey",
+          "documentation":"<p>The key used for matching the IAM federation roles attribute.</p>"
+        }
+      },
+      "documentation":"<p>Describes the IAM federation options configured for the domain.</p>"
+    },
+    "IAMFederationRolesKey":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^(null|[A-Za-z][A-Za-z0-9_.:/=+\\-@]*)$"
+    },
+    "IAMFederationSubjectKey":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^(null|[A-Za-z][A-Za-z0-9_.:/=+\\-@]*)$"
+    },
     "IPAddressType":{
       "type":"string",
       "enum":[

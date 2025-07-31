@@ -266,6 +266,38 @@
       ],
       "documentation":"<p>Creates a multi-region endpoint (global-endpoint).</p> <p>The primary region is going to be the AWS-Region where the operation is executed. The secondary region has to be provided in request's parameters. From the data flow standpoint there is no difference between primary and secondary regions - sending traffic will be split equally between the two. The primary region is the region where the resource has been created and where it can be managed. </p>"
     },
+    "CreateTenant":{
+      "name":"CreateTenant",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/tenants"
+      },
+      "input":{"shape":"CreateTenantRequest"},
+      "output":{"shape":"CreateTenantResponse"},
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Create a tenant.</p> <p> <i>Tenants</i> are logical containers that group related SES resources together. Each tenant can have its own set of resources like email identities, configuration sets, and templates, along with reputation metrics and sending status. This helps isolate and manage email sending for different customers or business units within your Amazon SES API v2 account.</p>"
+    },
+    "CreateTenantResourceAssociation":{
+      "name":"CreateTenantResourceAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/tenants/resources"
+      },
+      "input":{"shape":"CreateTenantResourceAssociationRequest"},
+      "output":{"shape":"CreateTenantResourceAssociationResponse"},
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Associate a resource with a tenant.</p> <p> <i>Resources</i> can be email identities, configuration sets, or email templates. When you associate a resource with a tenant, you can use that resource when sending emails on behalf of that tenant.</p> <p>A single resource can be associated with multiple tenants, allowing for resource sharing across different tenants while maintaining isolation in email sending operations.</p>"
+    },
     "DeleteConfigurationSet":{
       "name":"DeleteConfigurationSet",
       "http":{
@@ -435,6 +467,36 @@
         {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p>Removes an email address from the suppression list for your account.</p>"
+    },
+    "DeleteTenant":{
+      "name":"DeleteTenant",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/tenants/delete"
+      },
+      "input":{"shape":"DeleteTenantRequest"},
+      "output":{"shape":"DeleteTenantResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Delete an existing tenant.</p> <p>When you delete a tenant, its associations with resources are removed, but the resources themselves are not deleted.</p>"
+    },
+    "DeleteTenantResourceAssociation":{
+      "name":"DeleteTenantResourceAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/tenants/resources/delete"
+      },
+      "input":{"shape":"DeleteTenantResourceAssociationRequest"},
+      "output":{"shape":"DeleteTenantResourceAssociationResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Delete an association between a tenant and a resource.</p> <p>When you delete a tenant-resource association, the resource itself is not deleted, only its association with the specific tenant is removed. After removal, the resource will no longer be available for use with that tenant's email sending operations.</p>"
     },
     "GetAccount":{
       "name":"GetAccount",
@@ -750,6 +812,21 @@
       ],
       "documentation":"<p>Displays the multi-region endpoint (global-endpoint) configuration.</p> <p>Only multi-region endpoints (global-endpoints) whose primary region is the AWS-Region where operation is executed can be displayed.</p>"
     },
+    "GetReputationEntity":{
+      "name":"GetReputationEntity",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/email/reputation/entities/{ReputationEntityType}/{ReputationEntityReference}"
+      },
+      "input":{"shape":"GetReputationEntityRequest"},
+      "output":{"shape":"GetReputationEntityResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Retrieve information about a specific reputation entity, including its reputation management policy, customer-managed status, Amazon Web Services Amazon SES-managed status, and aggregate sending status.</p> <p> <i>Reputation entities</i> represent resources in your Amazon SES account that have reputation tracking and management capabilities. The reputation impact reflects the highest impact reputation finding for the entity. Reputation findings can be retrieved using the <code>ListRecommendations</code> operation.</p>"
+    },
     "GetSuppressedDestination":{
       "name":"GetSuppressedDestination",
       "http":{
@@ -764,6 +841,21 @@
         {"shape":"NotFoundException"}
       ],
       "documentation":"<p>Retrieves information about a specific email address that's on the suppression list for your account.</p>"
+    },
+    "GetTenant":{
+      "name":"GetTenant",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/tenants/get"
+      },
+      "input":{"shape":"GetTenantRequest"},
+      "output":{"shape":"GetTenantResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Get information about a specific tenant, including the tenant's name, ID, ARN, creation timestamp, tags, and sending status.</p>"
     },
     "ListConfigurationSets":{
       "name":"ListConfigurationSets",
@@ -951,6 +1043,35 @@
       ],
       "documentation":"<p>Lists the recommendations present in your Amazon SES account in the current Amazon Web Services Region.</p> <p>You can execute this operation no more than once per second.</p>"
     },
+    "ListReputationEntities":{
+      "name":"ListReputationEntities",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/reputation/entities"
+      },
+      "input":{"shape":"ListReputationEntitiesRequest"},
+      "output":{"shape":"ListReputationEntitiesResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>List reputation entities in your Amazon SES account in the current Amazon Web Services Region. You can filter the results by entity type, reputation impact, sending status, or entity reference prefix.</p> <p> <i>Reputation entities</i> represent resources in your account that have reputation tracking and management capabilities. Use this operation to get an overview of all entities and their current reputation status.</p>"
+    },
+    "ListResourceTenants":{
+      "name":"ListResourceTenants",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/resources/tenants/list"
+      },
+      "input":{"shape":"ListResourceTenantsRequest"},
+      "output":{"shape":"ListResourceTenantsResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>List all tenants associated with a specific resource.</p> <p>This operation returns a list of tenants that are associated with the specified resource. This is useful for understanding which tenants are currently using a particular resource such as an email identity, configuration set, or email template.</p>"
+    },
     "ListSuppressedDestinations":{
       "name":"ListSuppressedDestinations",
       "http":{
@@ -980,6 +1101,35 @@
         {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p>Retrieve a list of the tags (keys and values) that are associated with a specified resource. A <i>tag</i> is a label that you optionally define and associate with a resource. Each tag consists of a required <i>tag key</i> and an optional associated <i>tag value</i>. A tag key is a general label that acts as a category for more specific tag values. A tag value acts as a descriptor within a tag key.</p>"
+    },
+    "ListTenantResources":{
+      "name":"ListTenantResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/tenants/resources/list"
+      },
+      "input":{"shape":"ListTenantResourcesRequest"},
+      "output":{"shape":"ListTenantResourcesResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>List all resources associated with a specific tenant.</p> <p>This operation returns a list of resources (email identities, configuration sets, or email templates) that are associated with the specified tenant. You can optionally filter the results by resource type.</p>"
+    },
+    "ListTenants":{
+      "name":"ListTenants",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/tenants/list"
+      },
+      "input":{"shape":"ListTenantsRequest"},
+      "output":{"shape":"ListTenantsResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>List all tenants associated with your account in the current Amazon Web Services Region.</p> <p>This operation returns basic information about each tenant, such as tenant name, ID, ARN, and creation timestamp.</p>"
     },
     "PutAccountDedicatedIpWarmupAttributes":{
       "name":"PutAccountDedicatedIpWarmupAttributes",
@@ -1508,6 +1658,36 @@
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Updates an email template. Email templates enable you to send personalized email to one or more destinations in a single API operation. For more information, see the <a href=\"https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-personalized-email-api.html\">Amazon SES Developer Guide</a>.</p> <p>You can execute this operation no more than once per second.</p>"
+    },
+    "UpdateReputationEntityCustomerManagedStatus":{
+      "name":"UpdateReputationEntityCustomerManagedStatus",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v2/email/reputation/entities/{ReputationEntityType}/{ReputationEntityReference}/customer-managed-status"
+      },
+      "input":{"shape":"UpdateReputationEntityCustomerManagedStatusRequest"},
+      "output":{"shape":"UpdateReputationEntityCustomerManagedStatusResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Update the customer-managed sending status for a reputation entity. This allows you to enable, disable, or reinstate sending for the entity.</p> <p>The customer-managed status works in conjunction with the Amazon Web Services Amazon SES-managed status to determine the overall sending capability. When you update the customer-managed status, the Amazon Web Services Amazon SES-managed status remains unchanged. If Amazon Web Services Amazon SES has disabled the entity, it will not be allowed to send regardless of the customer-managed status setting. When you reinstate an entity through the customer-managed status, it can continue sending only if the Amazon Web Services Amazon SES-managed status also permits sending, even if there are active reputation findings, until the findings are resolved or new violations occur.</p>"
+    },
+    "UpdateReputationEntityPolicy":{
+      "name":"UpdateReputationEntityPolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v2/email/reputation/entities/{ReputationEntityType}/{ReputationEntityReference}/policy"
+      },
+      "input":{"shape":"UpdateReputationEntityPolicyRequest"},
+      "output":{"shape":"UpdateReputationEntityPolicyResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Update the reputation management policy for a reputation entity. The policy determines how the entity responds to reputation findings, such as automatically pausing sending when certain thresholds are exceeded.</p> <p>Reputation management policies are Amazon Web Services Amazon SES-managed (predefined policies). You can select from none, standard, and strict policies.</p>"
     }
   },
   "shapes":{
@@ -1570,7 +1750,10 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
-    "AmazonResourceName":{"type":"string"},
+    "AmazonResourceName":{
+      "type":"string",
+      "min":1
+    },
     "ArchiveArn":{
       "type":"string",
       "max":1011,
@@ -2527,6 +2710,74 @@
       },
       "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
     },
+    "CreateTenantRequest":{
+      "type":"structure",
+      "required":["TenantName"],
+      "members":{
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant to create. The name can contain up to 64 alphanumeric characters, including letters, numbers, hyphens (-) and underscores (_) only.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of objects that define the tags (keys and values) to associate with the tenant</p>"
+        }
+      },
+      "documentation":"<p>Represents a request to create a tenant.</p> <p> <i>Tenants</i> are logical containers that group related SES resources together. Each tenant can have its own set of resources like email identities, configuration sets, and templates, along with reputation metrics and sending status. This helps isolate and manage email sending for different customers or business units within your Amazon SES API v2 account.</p>"
+    },
+    "CreateTenantResourceAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "TenantName",
+        "ResourceArn"
+      ],
+      "members":{
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant to associate the resource with.</p>"
+        },
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to associate with the tenant.</p>"
+        }
+      },
+      "documentation":"<p>Represents a request to associate a resource with a tenant.</p> <p>Resources can be email identities, configuration sets, or email templates. When you associate a resource with a tenant, you can use that resource when sending emails on behalf of that tenant.</p>"
+    },
+    "CreateTenantResourceAssociationResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p>"
+    },
+    "CreateTenantResponse":{
+      "type":"structure",
+      "members":{
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant.</p>"
+        },
+        "TenantId":{
+          "shape":"TenantId",
+          "documentation":"<p>A unique identifier for the tenant.</p>"
+        },
+        "TenantArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the tenant.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the tenant was created.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of objects that define the tags (keys and values) associated with the tenant.</p>"
+        },
+        "SendingStatus":{
+          "shape":"SendingStatus",
+          "documentation":"<p>The status of email sending capability for the tenant.</p>"
+        }
+      },
+      "documentation":"<p>Information about a newly created tenant.</p>"
+    },
     "CustomRedirectDomain":{
       "type":"string",
       "documentation":"<p>The domain to use for tracking open and click events.</p>"
@@ -2891,6 +3142,45 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
+    },
+    "DeleteTenantRequest":{
+      "type":"structure",
+      "required":["TenantName"],
+      "members":{
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant to delete.</p>"
+        }
+      },
+      "documentation":"<p>Represents a request to delete a tenant.</p>"
+    },
+    "DeleteTenantResourceAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "TenantName",
+        "ResourceArn"
+      ],
+      "members":{
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant to remove the resource association from.</p>"
+        },
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to remove from the tenant association.</p>"
+        }
+      },
+      "documentation":"<p>Represents a request to delete an association between a tenant and a resource.</p>"
+    },
+    "DeleteTenantResourceAssociationResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p>"
+    },
+    "DeleteTenantResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p>"
     },
     "DeliverabilityDashboardAccountStatus":{
       "type":"string",
@@ -4493,6 +4783,38 @@
       },
       "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
     },
+    "GetReputationEntityRequest":{
+      "type":"structure",
+      "required":[
+        "ReputationEntityReference",
+        "ReputationEntityType"
+      ],
+      "members":{
+        "ReputationEntityReference":{
+          "shape":"ReputationEntityReference",
+          "documentation":"<p>The unique identifier for the reputation entity. For resource-type entities, this is the Amazon Resource Name (ARN) of the resource.</p>",
+          "location":"uri",
+          "locationName":"ReputationEntityReference"
+        },
+        "ReputationEntityType":{
+          "shape":"ReputationEntityType",
+          "documentation":"<p>The type of reputation entity. Currently, only <code>RESOURCE</code> type entities are supported.</p>",
+          "location":"uri",
+          "locationName":"ReputationEntityType"
+        }
+      },
+      "documentation":"<p>Represents a request to retrieve information about a specific reputation entity.</p>"
+    },
+    "GetReputationEntityResponse":{
+      "type":"structure",
+      "members":{
+        "ReputationEntity":{
+          "shape":"ReputationEntity",
+          "documentation":"<p>The reputation entity information, including status records, policy configuration, and reputation impact.</p>"
+        }
+      },
+      "documentation":"<p>Information about the requested reputation entity.</p>"
+    },
     "GetSuppressedDestinationRequest":{
       "type":"structure",
       "required":["EmailAddress"],
@@ -4516,6 +4838,27 @@
         }
       },
       "documentation":"<p>Information about the suppressed email address.</p>"
+    },
+    "GetTenantRequest":{
+      "type":"structure",
+      "required":["TenantName"],
+      "members":{
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant to retrieve information about.</p>"
+        }
+      },
+      "documentation":"<p>Represents a request to get information about a specific tenant.</p>"
+    },
+    "GetTenantResponse":{
+      "type":"structure",
+      "members":{
+        "Tenant":{
+          "shape":"Tenant",
+          "documentation":"<p>A structure that contains details about the tenant.</p>"
+        }
+      },
+      "documentation":"<p>Information about a specific tenant.</p>"
     },
     "GuardianAttributes":{
       "type":"structure",
@@ -5316,6 +5659,71 @@
       },
       "documentation":"<p>Contains the response to your request to retrieve the list of recommendations for your account.</p>"
     },
+    "ListReputationEntitiesRequest":{
+      "type":"structure",
+      "members":{
+        "Filter":{
+          "shape":"ReputationEntityFilter",
+          "documentation":"<p>An object that contains filters to apply when listing reputation entities. You can filter by entity type, reputation impact, sending status, or entity reference prefix.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token returned from a previous call to <code>ListReputationEntities</code> to indicate the position in the list of reputation entities.</p>"
+        },
+        "PageSize":{
+          "shape":"MaxItems",
+          "documentation":"<p>The number of results to show in a single call to <code>ListReputationEntities</code>. If the number of results is larger than the number you specified in this parameter, then the response includes a <code>NextToken</code> element, which you can use to obtain additional results.</p>"
+        }
+      },
+      "documentation":"<p>Represents a request to list reputation entities with optional filtering.</p>"
+    },
+    "ListReputationEntitiesResponse":{
+      "type":"structure",
+      "members":{
+        "ReputationEntities":{
+          "shape":"ReputationEntitiesList",
+          "documentation":"<p>An array that contains information about the reputation entities in your account.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that indicates that there are additional reputation entities to list. To view additional reputation entities, issue another request to <code>ListReputationEntities</code>, and pass this token in the <code>NextToken</code> parameter.</p>"
+        }
+      },
+      "documentation":"<p>A list of reputation entities in your account.</p>"
+    },
+    "ListResourceTenantsRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to list associated tenants for.</p>"
+        },
+        "PageSize":{
+          "shape":"MaxItems",
+          "documentation":"<p>The number of results to show in a single call to <code>ListResourceTenants</code>. If the number of results is larger than the number you specified in this parameter, then the response includes a <code>NextToken</code> element, which you can use to obtain additional results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token returned from a previous call to <code>ListResourceTenants</code> to indicate the position in the list of resource tenants.</p>"
+        }
+      },
+      "documentation":"<p>Represents a request to list tenants associated with a specific resource.</p>"
+    },
+    "ListResourceTenantsResponse":{
+      "type":"structure",
+      "members":{
+        "ResourceTenants":{
+          "shape":"ResourceTenantMetadataList",
+          "documentation":"<p>An array that contains information about each tenant associated with the resource.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that indicates that there are additional tenants to list. To view additional tenants, issue another request to <code>ListResourceTenants</code>, and pass this token in the <code>NextToken</code> parameter.</p>"
+        }
+      },
+      "documentation":"<p>Information about tenants associated with a specific resource.</p>"
+    },
     "ListSuppressedDestinationsRequest":{
       "type":"structure",
       "members":{
@@ -5387,6 +5795,88 @@
           "documentation":"<p>An array that lists all the tags that are associated with the resource. Each tag consists of a required tag key (<code>Key</code>) and an associated tag value (<code>Value</code>)</p>"
         }
       }
+    },
+    "ListTenantResourcesFilter":{
+      "type":"map",
+      "key":{"shape":"ListTenantResourcesFilterKey"},
+      "value":{"shape":"ListTenantResourcesFilterValue"},
+      "documentation":"<p>An object that contains mapping between <code>ListTenantResourcesFilterKey</code> and <code>ListTenantResourcesFilterValue</code> to filter by.</p>"
+    },
+    "ListTenantResourcesFilterKey":{
+      "type":"string",
+      "documentation":"<p>The key used to filter tenant resources. Currently, the only supported filter key is <code>RESOURCE_TYPE</code>.</p>",
+      "enum":["RESOURCE_TYPE"]
+    },
+    "ListTenantResourcesFilterValue":{
+      "type":"string",
+      "documentation":"<p>The value used to filter tenant resources. When filtering by <code>RESOURCE_TYPE</code>, valid values are <code>EMAIL_IDENTITY</code>, <code>CONFIGURATION_SET</code>, or <code>EMAIL_TEMPLATE</code>.</p>",
+      "max":512,
+      "min":1
+    },
+    "ListTenantResourcesRequest":{
+      "type":"structure",
+      "required":["TenantName"],
+      "members":{
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant to list resources for.</p>"
+        },
+        "Filter":{
+          "shape":"ListTenantResourcesFilter",
+          "documentation":"<p>A map of filter keys and values for filtering the list of tenant resources. Currently, the only supported filter key is <code>RESOURCE_TYPE</code>.</p>"
+        },
+        "PageSize":{
+          "shape":"MaxItems",
+          "documentation":"<p>The number of results to show in a single call to <code>ListTenantResources</code>. If the number of results is larger than the number you specified in this parameter, then the response includes a <code>NextToken</code> element, which you can use to obtain additional results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token returned from a previous call to <code>ListTenantResources</code> to indicate the position in the list of tenant resources.</p>"
+        }
+      },
+      "documentation":"<p>Represents a request to list resources associated with a specific tenant.</p>"
+    },
+    "ListTenantResourcesResponse":{
+      "type":"structure",
+      "members":{
+        "TenantResources":{
+          "shape":"TenantResourceList",
+          "documentation":"<p>An array that contains information about each resource associated with the tenant.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that indicates that there are additional resources to list. To view additional resources, issue another request to <code>ListTenantResources</code>, and pass this token in the <code>NextToken</code> parameter.</p>"
+        }
+      },
+      "documentation":"<p>Information about resources associated with a specific tenant.</p>"
+    },
+    "ListTenantsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token returned from a previous call to <code>ListTenants</code> to indicate the position in the list of tenants.</p>"
+        },
+        "PageSize":{
+          "shape":"MaxItems",
+          "documentation":"<p>The number of results to show in a single call to <code>ListTenants</code>. If the number of results is larger than the number you specified in this parameter, then the response includes a <code>NextToken</code> element, which you can use to obtain additional results.</p>"
+        }
+      },
+      "documentation":"<p>Represents a request to list all tenants associated with your account in the current Amazon Web Services Region.</p>"
+    },
+    "ListTenantsResponse":{
+      "type":"structure",
+      "members":{
+        "Tenants":{
+          "shape":"TenantInfoList",
+          "documentation":"<p>An array that contains basic information about each tenant.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that indicates that there are additional tenants to list. To view additional tenants, issue another request to <code>ListTenants</code>, and pass this token in the <code>NextToken</code> parameter.</p>"
+        }
+      },
+      "documentation":"<p>Information about tenants associated with your account.</p>"
     },
     "MailFromAttributes":{
       "type":"structure",
@@ -6484,7 +6974,10 @@
         "DMARC",
         "SPF",
         "BIMI",
-        "COMPLAINT"
+        "COMPLAINT",
+        "BOUNCE",
+        "FEEDBACK_3P",
+        "IP_LISTING"
       ]
     },
     "RecommendationsList":{
@@ -6531,6 +7024,77 @@
       "type":"string",
       "documentation":"<p>A name that helps you identify a report generated by the Deliverability dashboard.</p>"
     },
+    "ReputationEntitiesList":{
+      "type":"list",
+      "member":{"shape":"ReputationEntity"},
+      "documentation":"<p>A list of reputation entities.</p>"
+    },
+    "ReputationEntity":{
+      "type":"structure",
+      "members":{
+        "ReputationEntityReference":{
+          "shape":"ReputationEntityReference",
+          "documentation":"<p>The unique identifier for the reputation entity. For resource-type entities, this is the Amazon Resource Name (ARN) of the resource.</p>"
+        },
+        "ReputationEntityType":{
+          "shape":"ReputationEntityType",
+          "documentation":"<p>The type of reputation entity. Currently, only <code>RESOURCE</code> type entities are supported.</p>"
+        },
+        "ReputationManagementPolicy":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the reputation management policy applied to this entity. This is an Amazon Web Services Amazon SES-managed policy.</p>"
+        },
+        "CustomerManagedStatus":{
+          "shape":"StatusRecord",
+          "documentation":"<p>The customer-managed status record for this reputation entity, including the current status, cause description, and last updated timestamp.</p>"
+        },
+        "AwsSesManagedStatus":{
+          "shape":"StatusRecord",
+          "documentation":"<p>The Amazon Web Services Amazon SES-managed status record for this reputation entity, including the current status, cause description, and last updated timestamp.</p>"
+        },
+        "SendingStatusAggregate":{
+          "shape":"SendingStatus",
+          "documentation":"<p>The aggregate sending status that determines whether the entity is allowed to send emails. This status is derived from both the customer-managed and Amazon Web Services Amazon SES-managed statuses. If either the customer-managed status or the Amazon Web Services Amazon SES-managed status is <code>DISABLED</code>, the aggregate status will be <code>DISABLED</code> and the entity will not be allowed to send emails. When the customer-managed status is set to <code>REINSTATED</code>, the entity can continue sending even if there are active reputation findings, provided the Amazon Web Services Amazon SES-managed status also permits sending. The entity can only send emails when both statuses permit sending.</p>"
+        },
+        "ReputationImpact":{
+          "shape":"RecommendationImpact",
+          "documentation":"<p>The reputation impact level for this entity, representing the highest impact reputation finding currently active. Reputation findings can be retrieved using the <code>ListRecommendations</code> operation.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains information about a reputation entity, including its reference, type, policy, status records, and reputation impact.</p>"
+    },
+    "ReputationEntityFilter":{
+      "type":"map",
+      "key":{"shape":"ReputationEntityFilterKey"},
+      "value":{"shape":"ReputationEntityFilterValue"},
+      "documentation":"<p>An object that contains filters to apply when listing reputation entities.</p>"
+    },
+    "ReputationEntityFilterKey":{
+      "type":"string",
+      "documentation":"<p>The filter key to use when listing reputation entities. This can be one of the following:</p> <ul> <li> <p> <code>ENTITY_TYPE</code> – Filter by entity type.</p> </li> <li> <p> <code>REPUTATION_IMPACT</code> – Filter by reputation impact level.</p> </li> <li> <p> <code>SENDING_STATUS</code> – Filter by aggregate sending status.</p> </li> <li> <p> <code>ENTITY_REFERENCE_PREFIX</code> – Filter by entity reference prefix.</p> </li> </ul>",
+      "enum":[
+        "ENTITY_TYPE",
+        "REPUTATION_IMPACT",
+        "SENDING_STATUS",
+        "ENTITY_REFERENCE_PREFIX"
+      ]
+    },
+    "ReputationEntityFilterValue":{
+      "type":"string",
+      "documentation":"<p>The filter value to match against the specified filter key.</p>",
+      "max":512,
+      "min":1
+    },
+    "ReputationEntityReference":{
+      "type":"string",
+      "documentation":"<p>The unique identifier for a reputation entity. For resource-type entities, this is the Amazon Resource Name (ARN) of the resource.</p>",
+      "min":1
+    },
+    "ReputationEntityType":{
+      "type":"string",
+      "documentation":"<p>The type of reputation entity. Currently, only <code>RESOURCE</code> type entities are supported, which represent resources in your Amazon SES account that have reputation tracking capabilities.</p>",
+      "enum":["RESOURCE"]
+    },
     "ReputationOptions":{
       "type":"structure",
       "members":{
@@ -6544,6 +7108,42 @@
         }
       },
       "documentation":"<p>Enable or disable collection of reputation metrics for emails that you send using this configuration set in the current Amazon Web Services Region. </p>"
+    },
+    "ResourceTenantMetadata":{
+      "type":"structure",
+      "members":{
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant associated with the resource.</p>"
+        },
+        "TenantId":{
+          "shape":"TenantId",
+          "documentation":"<p>A unique identifier for the tenant associated with the resource.</p>"
+        },
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+        },
+        "AssociatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the resource was associated with the tenant.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about a tenant associated with a resource.</p>"
+    },
+    "ResourceTenantMetadataList":{
+      "type":"list",
+      "member":{"shape":"ResourceTenantMetadata"},
+      "documentation":"<p>A list of tenant metadata objects associated with a resource.</p>"
+    },
+    "ResourceType":{
+      "type":"string",
+      "documentation":"<p>The type of resource that can be associated with a tenant. Can be one of the following:</p> <ul> <li> <p> <code>EMAIL_IDENTITY</code> - An email address or domain that you use to send email.</p> </li> <li> <p> <code>CONFIGURATION_SET</code> - A set of rules that you can apply to emails you send.</p> </li> <li> <p> <code>EMAIL_TEMPLATE</code> - A template that defines the content of an email message.</p> </li> </ul>",
+      "enum":[
+        "EMAIL_IDENTITY",
+        "CONFIGURATION_SET",
+        "EMAIL_TEMPLATE"
+      ]
     },
     "ReviewDetails":{
       "type":"structure",
@@ -6683,6 +7283,10 @@
           "shape":"EndpointId",
           "documentation":"<p>The ID of the multi-region endpoint (global-endpoint).</p>",
           "contextParam":{"name":"EndpointId"}
+        },
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant through which this bulk email will be sent.</p> <note> <p> The email sending operation will only succeed if all referenced resources (identities, configuration sets, and templates) are associated with this tenant. </p> </note>"
         }
       },
       "documentation":"<p>Represents a request to send email messages to multiple destinations using Amazon SES. For more information, see the <a href=\"https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-personalized-email-api.html\">Amazon SES Developer Guide</a>.</p>"
@@ -6775,6 +7379,10 @@
           "documentation":"<p>The ID of the multi-region endpoint (global-endpoint).</p>",
           "contextParam":{"name":"EndpointId"}
         },
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant through which this email will be sent.</p> <note> <p>The email sending operation will only succeed if all referenced resources (identities, configuration sets, and templates) are associated with this tenant. </p> </note>"
+        },
         "ListManagementOptions":{
           "shape":"ListManagementOptions",
           "documentation":"<p>An object used to specify a list or topic to which an email belongs, which will be used when a contact chooses to unsubscribe.</p>"
@@ -6831,6 +7439,15 @@
       "type":"string",
       "documentation":"<p>The name of the dedicated IP pool to associate with the configuration set.</p>"
     },
+    "SendingStatus":{
+      "type":"string",
+      "documentation":"<p>The sending status for a reputation entity. This can be one of the following:</p> <ul> <li> <p> <code>ENABLED</code> – Sending is allowed for this entity.</p> </li> <li> <p> <code>DISABLED</code> – Sending is prevented for this entity.</p> </li> <li> <p> <code>REINSTATED</code> – Sending is allowed even if there are active reputation findings.</p> </li> </ul>",
+      "enum":[
+        "ENABLED",
+        "REINSTATED",
+        "DISABLED"
+      ]
+    },
     "SentLast24Hours":{"type":"double"},
     "SerialNumber":{"type":"long"},
     "SnsDestination":{
@@ -6853,6 +7470,30 @@
         "FAILED",
         "DELETING"
       ]
+    },
+    "StatusCause":{
+      "type":"string",
+      "documentation":"<p>A description of the reason for a status change, such as automated actions taken due to reputation findings or manual status updates.</p>",
+      "max":512,
+      "min":1
+    },
+    "StatusRecord":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"SendingStatus",
+          "documentation":"<p>The current sending status. This can be one of the following:</p> <ul> <li> <p> <code>ENABLED</code> – Sending is allowed.</p> </li> <li> <p> <code>DISABLED</code> – Sending is prevented.</p> </li> <li> <p> <code>REINSTATED</code> – Sending is allowed even with active reputation findings.</p> </li> </ul>"
+        },
+        "Cause":{
+          "shape":"StatusCause",
+          "documentation":"<p>A description of the reason for the current status, or null if no specific cause is available.</p>"
+        },
+        "LastUpdatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this status was last updated.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains status information for a reputation entity, including the current status, cause description, and timestamp.</p>"
     },
     "Subject":{"type":"string"},
     "SubscriptionStatus":{
@@ -7067,6 +7708,88 @@
     "TemplateContent":{
       "type":"string",
       "documentation":"<p>The content of the custom verification email template.</p>"
+    },
+    "Tenant":{
+      "type":"structure",
+      "members":{
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant.</p>"
+        },
+        "TenantId":{
+          "shape":"TenantId",
+          "documentation":"<p>A unique identifier for the tenant.</p>"
+        },
+        "TenantArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the tenant.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the tenant was created.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of objects that define the tags (keys and values) associated with the tenant.</p>"
+        },
+        "SendingStatus":{
+          "shape":"SendingStatus",
+          "documentation":"<p>The status of sending capability for the tenant.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains details about a tenant.</p>"
+    },
+    "TenantId":{"type":"string"},
+    "TenantInfo":{
+      "type":"structure",
+      "members":{
+        "TenantName":{
+          "shape":"TenantName",
+          "documentation":"<p>The name of the tenant.</p>"
+        },
+        "TenantId":{
+          "shape":"TenantId",
+          "documentation":"<p>A unique identifier for the tenant.</p>"
+        },
+        "TenantArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the tenant.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the tenant was created.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains basic information about a tenant.</p>"
+    },
+    "TenantInfoList":{
+      "type":"list",
+      "member":{"shape":"TenantInfo"},
+      "documentation":"<p>A list of tenant information objects.</p>"
+    },
+    "TenantName":{
+      "type":"string",
+      "documentation":"<p>The name of a tenant. The name can contain up to 64 alphanumeric characters, including letters, numbers, hyphens (-) and underscores (_) only.</p>",
+      "min":1
+    },
+    "TenantResource":{
+      "type":"structure",
+      "members":{
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of resource associated with the tenant. Valid values are <code>EMAIL_IDENTITY</code>, <code>CONFIGURATION_SET</code>, or <code>EMAIL_TEMPLATE</code>.</p>"
+        },
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource associated with the tenant.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about a resource associated with a tenant.</p>"
+    },
+    "TenantResourceList":{
+      "type":"list",
+      "member":{"shape":"TenantResource"},
+      "documentation":"<p>A list of resources associated with a tenant.</p>"
     },
     "TestRenderEmailTemplateRequest":{
       "type":"structure",
@@ -7419,6 +8142,70 @@
       "documentation":"<p>Represents a request to update an email template. For more information, see the <a href=\"https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-personalized-email-api.html\">Amazon SES Developer Guide</a>.</p>"
     },
     "UpdateEmailTemplateResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p>"
+    },
+    "UpdateReputationEntityCustomerManagedStatusRequest":{
+      "type":"structure",
+      "required":[
+        "ReputationEntityType",
+        "ReputationEntityReference",
+        "SendingStatus"
+      ],
+      "members":{
+        "ReputationEntityType":{
+          "shape":"ReputationEntityType",
+          "documentation":"<p>The type of reputation entity. Currently, only <code>RESOURCE</code> type entities are supported.</p>",
+          "location":"uri",
+          "locationName":"ReputationEntityType"
+        },
+        "ReputationEntityReference":{
+          "shape":"ReputationEntityReference",
+          "documentation":"<p>The unique identifier for the reputation entity. For resource-type entities, this is the Amazon Resource Name (ARN) of the resource.</p>",
+          "location":"uri",
+          "locationName":"ReputationEntityReference"
+        },
+        "SendingStatus":{
+          "shape":"SendingStatus",
+          "documentation":"<p>The new customer-managed sending status for the reputation entity. This can be one of the following:</p> <ul> <li> <p> <code>ENABLED</code> – Allow sending for this entity.</p> </li> <li> <p> <code>DISABLED</code> – Prevent sending for this entity.</p> </li> <li> <p> <code>REINSTATED</code> – Allow sending even if there are active reputation findings.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Represents a request to update the customer-managed sending status for a reputation entity.</p>"
+    },
+    "UpdateReputationEntityCustomerManagedStatusResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p>"
+    },
+    "UpdateReputationEntityPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "ReputationEntityType",
+        "ReputationEntityReference",
+        "ReputationEntityPolicy"
+      ],
+      "members":{
+        "ReputationEntityType":{
+          "shape":"ReputationEntityType",
+          "documentation":"<p>The type of reputation entity. Currently, only <code>RESOURCE</code> type entities are supported.</p>",
+          "location":"uri",
+          "locationName":"ReputationEntityType"
+        },
+        "ReputationEntityReference":{
+          "shape":"ReputationEntityReference",
+          "documentation":"<p>The unique identifier for the reputation entity. For resource-type entities, this is the Amazon Resource Name (ARN) of the resource.</p>",
+          "location":"uri",
+          "locationName":"ReputationEntityReference"
+        },
+        "ReputationEntityPolicy":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the reputation management policy to apply to this entity. This is an Amazon Web Services Amazon SES-managed policy.</p>"
+        }
+      },
+      "documentation":"<p>Represents a request to update the reputation management policy for a reputation entity.</p>"
+    },
+    "UpdateReputationEntityPolicyResponse":{
       "type":"structure",
       "members":{},
       "documentation":"<p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p>"

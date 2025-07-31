@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.28.0
+======
+
+* api-change:``workspaces-web``: Added ability to log session activity on a portal to an S3 bucket.
+* api-change:``quicksight``: Added Impala connector support
+* api-change:``ec2``: Added support for the force option for the EC2 instance terminate command. This feature enables customers to recover resources associated with an instance stuck in the shutting-down state as a result of rare issues caused by a frozen operating system or an underlying hardware problem.
+* api-change:``glue``: Added support for Route node, S3 Iceberg sources/targets, catalog Iceberg sources, DynamoDB ELT connector, AutoDataQuality evaluation, enhanced PII detection with redaction, Kinesis fan-out support, and new R-series worker types.
+* api-change:``iot``: This release allows AWS IoT Core users to use their own AWS KMS keys for data protection
+* api-change:``s3control``: Add Tags field to CreateAccessPoint
+* feature:``bedrock``: Add support for retrieving a Bearer token from environment variables to enable bearer authentication with Bedrock services.
+* api-change:``entityresolution``: Add support for creating advanced rule-based matching workflows in AWS Entity Resolution.
+* api-change:``sesv2``: This release introduces support for Multi-tenant management
+* api-change:``inspector2``: Extend usage to include agentless hours and add CODE_REPOSITORY to aggregation resource type
+* api-change:``elbv2``: This release enables secondary IP addresses for Network Load Balancers.
+* api-change:``customer-profiles``: The release updates standard profile with 2 new fields that supports account-level engagement. Updated APIs include CreateProfile, UpdateProfile, MergeProfiles, SearchProfiles, BatchGetProfile, GetSegmentMembership, CreateSegmentDefinition, CreateSegmentEstimate.
+* api-change:``opensearch``: Granular access control support for NEO-SAML with IAMFederation for AOS data source
+
+
 2.27.63
 =======
 

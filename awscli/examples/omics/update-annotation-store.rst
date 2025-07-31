@@ -21,4 +21,4 @@ Output::
         "updateTime": "2022-12-05T18:13:16.100051Z"
     }
 
-For more information, see `Omics Analytics <https://docs.aws.amazon.com/omics/latest/dev/omics-analytics.html>`__ in the *Amazon Omics Developer Guide*.
+For more information, see `HealthOmics Analytics <https://docs.aws.amazon.com/omics/latest/dev/omics-analytics.html>`__ in the *AWS HealthOmics User Guide*.

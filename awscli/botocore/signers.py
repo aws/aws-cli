@@ -25,6 +25,7 @@ from botocore.exceptions import (
     UnknownSignatureVersionError,
     UnsupportedSignatureVersionError,
 )
+from botocore.tokens import FrozenAuthToken
 from botocore.utils import (
     ArnParser,
     datetime2timestamp,
@@ -276,9 +277,12 @@ class RequestSigner:
             )
 
         if cls.REQUIRES_TOKEN is True:
-            frozen_token = None
-            if self._auth_token is not None:
+            if self._auth_token and not isinstance(
+                self._auth_token, FrozenAuthToken
+            ):
                 frozen_token = self._auth_token.get_frozen_token()
+            else:
+                frozen_token = self._auth_token
             auth = cls(frozen_token)
             return auth
 

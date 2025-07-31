@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import pytest
 from botocore.config import Config
+from botocore.handlers import get_bearer_auth_supported_services
 
 from tests import create_session, mock
 
@@ -19,6 +20,10 @@ from tests import create_session, mock
 # signature may fail and others may succeed. e.g. a service may want to use bearer
 # auth but fall back to sigv4 if a token isn't available. There's currently no way to do
 # this in botocore, so this test ensures we handle this gracefully when the need arises.
+
+# Some services (such as Bedrock) have customizations that bypass this limitation
+# by manually assigning a signer when credentials are unavailable. To avoid
+# false positives, we filter these services out of the tests below.
 
 # Some services (such as Bedrock) have customizations that bypass this limitation
 # by manually assigning a signer when credentials are unavailable. To avoid
@@ -36,10 +41,9 @@ AUTH_TYPE_REQUIREMENTS = {
 
 # Services with a `signing_name` that are known to have
 # customizations for handling mixed authentication methods.
-# TODO: Replace with get_bearer_auth_supported_services()
-#  from botocore.handlers once it's ported over.
-KNOWN_MIXED_AUTH_SERVICES = {'bedrock'}
+KNOWN_MIXED_AUTH_SERVICES = get_bearer_auth_supported_services()
 KNOWN_MIXED_AUTH_SCHEMES = {'aws.auth#sigv4', 'smithy.api#httpBearerAuth'}
+
 
 def _all_test_cases():
     session = create_session()

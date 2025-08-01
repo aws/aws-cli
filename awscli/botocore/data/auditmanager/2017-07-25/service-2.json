@@ -912,7 +912,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p> Updates a custom framework in Audit Manager. </p>"
     },
@@ -2451,7 +2452,7 @@
         },
         "controlSets":{
           "shape":"CreateAssessmentFrameworkControlSets",
-          "documentation":"<p> The control sets that are associated with the framework. </p>"
+          "documentation":"<p> The control sets that are associated with the framework. </p> <note> <p>The <code>Controls</code> object returns a partial response when called through Framework APIs. For a complete <code>Controls</code> object, use <code>GetControl</code>.</p> </note>"
         },
         "tags":{
           "shape":"TagMap",
@@ -2464,7 +2465,7 @@
       "members":{
         "framework":{
           "shape":"Framework",
-          "documentation":"<p> The name of the new framework that the <code>CreateAssessmentFramework</code> API returned. </p>"
+          "documentation":"<p> The new framework object that the <code>CreateAssessmentFramework</code> API returned. </p>"
         }
       }
     },
@@ -3184,11 +3185,14 @@
         },
         "controlSources":{
           "shape":"ControlSources",
-          "documentation":"<p> The control data sources where Audit Manager collects evidence from.</p>"
+          "documentation":"<p> The control data sources where Audit Manager collects evidence from.</p> <important> <p>This API parameter is no longer supported.</p> </important>",
+          "deprecated":true,
+          "deprecatedMessage":"Use controlSources from the Control",
+          "deprecatedSince":"2025-07-24"
         },
         "controlSets":{
           "shape":"ControlSets",
-          "documentation":"<p> The control sets that are associated with the framework. </p>"
+          "documentation":"<p> The control sets that are associated with the framework. </p> <note> <p>The <code>Controls</code> object returns a partial response when called through Framework APIs. For a complete <code>Controls</code> object, use <code>GetControl</code>.</p> </note>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -3294,7 +3298,7 @@
       "members":{
         "framework":{
           "shape":"Framework",
-          "documentation":"<p> The framework that the <code>GetAssessmentFramework</code> API returned. </p>"
+          "documentation":"<p> The framework that the <code>GetAssessmentFramework</code> API returned. </p> <note> <p>The <code>Controls</code> object returns a partial response when called through Framework APIs. For a complete <code>Controls</code> object, use <code>GetControl</code>.</p> </note>"
         }
       }
     },
@@ -4559,7 +4563,7 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"^(S|s)3:\\/\\/[a-zA-Z0-9\\-\\.\\(\\)\\'\\*\\_\\!\\/]+$"
+      "pattern":"^(S|s)3:\\/\\/[a-zA-Z0-9\\-\\.\\(\\)\\'\\*\\_\\!\\=\\+\\@\\:\\s\\,\\?\\/]+$"
     },
     "SNSTopic":{
       "type":"string",
@@ -5073,7 +5077,7 @@
         },
         "controlSets":{
           "shape":"UpdateAssessmentFrameworkControlSets",
-          "documentation":"<p> The control sets that are associated with the framework. </p>"
+          "documentation":"<p> The control sets that are associated with the framework. </p> <note> <p>The <code>Controls</code> object returns a partial response when called through Framework APIs. For a complete <code>Controls</code> object, use <code>GetControl</code>.</p> </note>"
         }
       }
     },
@@ -5082,7 +5086,7 @@
       "members":{
         "framework":{
           "shape":"Framework",
-          "documentation":"<p> The name of the framework. </p>"
+          "documentation":"<p> The framework object. </p>"
         }
       }
     },

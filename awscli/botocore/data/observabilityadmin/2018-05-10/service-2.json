@@ -13,6 +13,78 @@
     "uid":"observabilityadmin-2018-05-10"
   },
   "operations":{
+    "CreateTelemetryRule":{
+      "name":"CreateTelemetryRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateTelemetryRule",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateTelemetryRuleInput"},
+      "output":{"shape":"CreateTelemetryRuleOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Creates a telemetry rule that defines how telemetry should be configured for Amazon Web Services resources in your account. The rule specifies which resources should have telemetry enabled and how that telemetry data should be collected based on resource type, telemetry type, and selection criteria. </p>"
+    },
+    "CreateTelemetryRuleForOrganization":{
+      "name":"CreateTelemetryRuleForOrganization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateTelemetryRuleForOrganization",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateTelemetryRuleForOrganizationInput"},
+      "output":{"shape":"CreateTelemetryRuleForOrganizationOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Creates a telemetry rule that applies across an Amazon Web Services Organization. This operation can only be called by the organization's management account or a delegated administrator account. </p>"
+    },
+    "DeleteTelemetryRule":{
+      "name":"DeleteTelemetryRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteTelemetryRule",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteTelemetryRuleInput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Deletes a telemetry rule from your account. Any telemetry configurations previously created by the rule will remain but no new resources will be configured by this rule. </p>"
+    },
+    "DeleteTelemetryRuleForOrganization":{
+      "name":"DeleteTelemetryRuleForOrganization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteTelemetryRuleForOrganization",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteTelemetryRuleForOrganizationInput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Deletes an organization-wide telemetry rule. This operation can only be called by the organization's management account or a delegated administrator account. </p>"
+    },
     "GetTelemetryEvaluationStatus":{
       "name":"GetTelemetryEvaluationStatus",
       "http":{
@@ -23,7 +95,8 @@
       "output":{"shape":"GetTelemetryEvaluationStatusOutput"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p> Returns the current onboarding status of the telemetry config feature, including the status of the feature and reason the feature failed to start or stop. </p>"
     },
@@ -38,9 +111,46 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p> This returns the onboarding status of the telemetry configuration feature for the organization. It can only be called by a Management Account of an AWS Organization or an assigned Delegated Admin Account of AWS CloudWatch telemetry config. </p>"
+      "documentation":"<p> This returns the onboarding status of the telemetry configuration feature for the organization. It can only be called by a Management Account of an Amazon Web Services Organization or an assigned Delegated Admin Account of Amazon CloudWatch telemetry config. </p>"
+    },
+    "GetTelemetryRule":{
+      "name":"GetTelemetryRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetTelemetryRule",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTelemetryRuleInput"},
+      "output":{"shape":"GetTelemetryRuleOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Retrieves the details of a specific telemetry rule in your account. </p>"
+    },
+    "GetTelemetryRuleForOrganization":{
+      "name":"GetTelemetryRuleForOrganization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetTelemetryRuleForOrganization",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTelemetryRuleForOrganizationInput"},
+      "output":{"shape":"GetTelemetryRuleForOrganizationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Retrieves the details of a specific organization telemetry rule. This operation can only be called by the organization's management account or a delegated administrator account. </p>"
     },
     "ListResourceTelemetry":{
       "name":"ListResourceTelemetry",
@@ -54,9 +164,10 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p> Returns a list of telemetry configurations for AWS resources supported by telemetry config. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/telemetry-config-cloudwatch.html\">Auditing CloudWatch telemetry configurations</a>. </p>"
+      "documentation":"<p> Returns a list of telemetry configurations for Amazon Web Services resources supported by telemetry config. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/telemetry-config-cloudwatch.html\">Auditing CloudWatch telemetry configurations</a>. </p>"
     },
     "ListResourceTelemetryForOrganization":{
       "name":"ListResourceTelemetryForOrganization",
@@ -70,9 +181,62 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p> Returns a list of telemetry configurations for AWS resources supported by telemetry config in the organization. </p>"
+      "documentation":"<p> Returns a list of telemetry configurations for Amazon Web Services resources supported by telemetry config in the organization. </p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListTagsForResource",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceInput"},
+      "output":{"shape":"ListTagsForResourceOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Lists all tags attached to the specified telemetry rule resource. </p>"
+    },
+    "ListTelemetryRules":{
+      "name":"ListTelemetryRules",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListTelemetryRules",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTelemetryRulesInput"},
+      "output":{"shape":"ListTelemetryRulesOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Lists all telemetry rules in your account. You can filter the results by specifying a rule name prefix. </p>"
+    },
+    "ListTelemetryRulesForOrganization":{
+      "name":"ListTelemetryRulesForOrganization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListTelemetryRulesForOrganization",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTelemetryRulesForOrganizationInput"},
+      "output":{"shape":"ListTelemetryRulesForOrganizationOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Lists all telemetry rules in your organization. This operation can only be called by the organization's management account or a delegated administrator account. </p>"
     },
     "StartTelemetryEvaluation":{
       "name":"StartTelemetryEvaluation",
@@ -84,9 +248,10 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p> This action begins onboarding onboarding the caller AWS account to the telemetry config feature. </p>"
+      "documentation":"<p> This action begins onboarding the caller Amazon Web Services account to the telemetry config feature. </p>"
     },
     "StartTelemetryEvaluationForOrganization":{
       "name":"StartTelemetryEvaluationForOrganization",
@@ -98,7 +263,8 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p> This actions begins onboarding the organization and all member accounts to the telemetry config feature. </p>"
     },
@@ -112,9 +278,10 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p> This action begins offboarding the caller AWS account from the telemetry config feature. </p>"
+      "documentation":"<p> This action begins offboarding the caller Amazon Web Services account from the telemetry config feature. </p>"
     },
     "StopTelemetryEvaluationForOrganization":{
       "name":"StopTelemetryEvaluationForOrganization",
@@ -126,9 +293,83 @@
       "errors":[
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p> This action offboards the Organization of the caller AWS account from thef telemetry config feature. </p>"
+      "documentation":"<p> This action offboards the Organization of the caller Amazon Web Services account from the telemetry config feature. </p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/TagResource",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceInput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Adds or updates tags for a telemetry rule resource. </p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UntagResource",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceInput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Removes tags from a telemetry rule resource. </p>"
+    },
+    "UpdateTelemetryRule":{
+      "name":"UpdateTelemetryRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateTelemetryRule",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateTelemetryRuleInput"},
+      "output":{"shape":"UpdateTelemetryRuleOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Updates an existing telemetry rule in your account. </p>"
+    },
+    "UpdateTelemetryRuleForOrganization":{
+      "name":"UpdateTelemetryRuleForOrganization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateTelemetryRuleForOrganization",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateTelemetryRuleForOrganizationInput"},
+      "output":{"shape":"UpdateTelemetryRuleForOrganizationOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Updates an existing telemetry rule that applies across an Amazon Web Services Organization. This operation can only be called by the organization's management account or a delegated administrator account. </p>"
     }
   },
   "shapes":{
@@ -143,7 +384,7 @@
           "locationName":"x-amzn-ErrorType"
         }
       },
-      "documentation":"<p> Indicates you don't have permissions to perform the requested operation. The user or role that is making the request must have at least one IAM permissions policy attached that grants the required permissions. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access.html\">Access management for AWS resources</a> in the IAM user guide. </p>",
+      "documentation":"<p> Indicates you don't have permissions to perform the requested operation. The user or role that is making the request must have at least one IAM permissions policy attached that grants the required permissions. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access.html\">Access management for Amazon Web Services resources</a> in the IAM user guide. </p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -160,7 +401,103 @@
       "type":"list",
       "member":{"shape":"AccountIdentifier"},
       "max":10,
-      "min":0
+      "min":1
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p> The requested operation conflicts with the current state of the specified resource or with another request. </p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateTelemetryRuleForOrganizationInput":{
+      "type":"structure",
+      "required":[
+        "RuleName",
+        "Rule"
+      ],
+      "members":{
+        "RuleName":{
+          "shape":"RuleName",
+          "documentation":"<p> A unique name for the organization-wide telemetry rule being created. </p>"
+        },
+        "Rule":{
+          "shape":"TelemetryRule",
+          "documentation":"<p> The configuration details for the organization-wide telemetry rule, including the resource type, telemetry type, destination configuration, and selection criteria for which resources the rule applies to across the organization. </p>"
+        },
+        "Tags":{
+          "shape":"TagMapInput",
+          "documentation":"<p> The key-value pairs to associate with the organization telemetry rule resource for categorization and management purposes. </p>"
+        }
+      }
+    },
+    "CreateTelemetryRuleForOrganizationOutput":{
+      "type":"structure",
+      "members":{
+        "RuleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the created organization telemetry rule. </p>"
+        }
+      }
+    },
+    "CreateTelemetryRuleInput":{
+      "type":"structure",
+      "required":[
+        "RuleName",
+        "Rule"
+      ],
+      "members":{
+        "RuleName":{
+          "shape":"RuleName",
+          "documentation":"<p> A unique name for the telemetry rule being created. </p>"
+        },
+        "Rule":{
+          "shape":"TelemetryRule",
+          "documentation":"<p> The configuration details for the telemetry rule, including the resource type, telemetry type, destination configuration, and selection criteria for which resources the rule applies to. </p>"
+        },
+        "Tags":{
+          "shape":"TagMapInput",
+          "documentation":"<p> The key-value pairs to associate with the telemetry rule resource for categorization and management purposes. </p>"
+        }
+      }
+    },
+    "CreateTelemetryRuleOutput":{
+      "type":"structure",
+      "members":{
+        "RuleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the created telemetry rule. </p>"
+        }
+      }
+    },
+    "DeleteTelemetryRuleForOrganizationInput":{
+      "type":"structure",
+      "required":["RuleIdentifier"],
+      "members":{
+        "RuleIdentifier":{
+          "shape":"RuleIdentifier",
+          "documentation":"<p> The identifier (name or ARN) of the organization telemetry rule to delete. </p>"
+        }
+      }
+    },
+    "DeleteTelemetryRuleInput":{
+      "type":"structure",
+      "required":["RuleIdentifier"],
+      "members":{
+        "RuleIdentifier":{
+          "shape":"RuleIdentifier",
+          "documentation":"<p> The identifier (name or ARN) of the telemetry rule to delete. </p>"
+        }
+      }
+    },
+    "DestinationType":{
+      "type":"string",
+      "enum":["cloud-watch-logs"]
     },
     "FailureReason":{"type":"string"},
     "GetTelemetryEvaluationStatusForOrganizationOutput":{
@@ -189,6 +526,80 @@
         }
       }
     },
+    "GetTelemetryRuleForOrganizationInput":{
+      "type":"structure",
+      "required":["RuleIdentifier"],
+      "members":{
+        "RuleIdentifier":{
+          "shape":"RuleIdentifier",
+          "documentation":"<p> The identifier (name or ARN) of the organization telemetry rule to retrieve. </p>"
+        }
+      }
+    },
+    "GetTelemetryRuleForOrganizationOutput":{
+      "type":"structure",
+      "members":{
+        "RuleName":{
+          "shape":"RuleName",
+          "documentation":"<p> The name of the organization telemetry rule. </p>"
+        },
+        "RuleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the organization telemetry rule. </p>"
+        },
+        "CreatedTimeStamp":{
+          "shape":"Long",
+          "documentation":"<p> The timestamp when the organization telemetry rule was created. </p>"
+        },
+        "LastUpdateTimeStamp":{
+          "shape":"Long",
+          "documentation":"<p> The timestamp when the organization telemetry rule was last updated. </p>"
+        },
+        "TelemetryRule":{
+          "shape":"TelemetryRule",
+          "documentation":"<p> The configuration details of the organization telemetry rule. </p>"
+        }
+      }
+    },
+    "GetTelemetryRuleInput":{
+      "type":"structure",
+      "required":["RuleIdentifier"],
+      "members":{
+        "RuleIdentifier":{
+          "shape":"RuleIdentifier",
+          "documentation":"<p> The identifier (name or ARN) of the telemetry rule to retrieve. </p>"
+        }
+      }
+    },
+    "GetTelemetryRuleOutput":{
+      "type":"structure",
+      "members":{
+        "RuleName":{
+          "shape":"RuleName",
+          "documentation":"<p> The name of the telemetry rule. </p>"
+        },
+        "RuleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the telemetry rule. </p>"
+        },
+        "CreatedTimeStamp":{
+          "shape":"Long",
+          "documentation":"<p> The timestamp when the telemetry rule was created. </p>"
+        },
+        "LastUpdateTimeStamp":{
+          "shape":"Long",
+          "documentation":"<p> The timestamp when the telemetry rule was last updated. </p>"
+        },
+        "TelemetryRule":{
+          "shape":"TelemetryRule",
+          "documentation":"<p> The configuration details of the telemetry rule. </p>"
+        }
+      }
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
     "InternalServerException":{
       "type":"structure",
       "members":{
@@ -210,7 +621,7 @@
       "members":{
         "AccountIdentifiers":{
           "shape":"AccountIdentifiers",
-          "documentation":"<p> A list of AWS account IDs used to filter the resources to those associated with the specified accounts. </p>"
+          "documentation":"<p> A list of Amazon Web Services accounts used to filter the resources to those associated with the specified accounts. </p>"
         },
         "ResourceIdentifierPrefix":{
           "shape":"ResourceIdentifierPrefix",
@@ -249,7 +660,7 @@
       "members":{
         "TelemetryConfigurations":{
           "shape":"TelemetryConfigurations",
-          "documentation":"<p> A list of telemetry configurations for AWS resources supported by telemetry config in the organization. </p>"
+          "documentation":"<p> A list of telemetry configurations for Amazon Web Services resources supported by telemetry config in the organization. </p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -297,11 +708,111 @@
       "members":{
         "TelemetryConfigurations":{
           "shape":"TelemetryConfigurations",
-          "documentation":"<p> A list of telemetry configurations for AWS resources supported by telemetry config in the caller's account. </p>"
+          "documentation":"<p> A list of telemetry configurations for Amazon Web Services resources supported by telemetry config in the caller's account. </p>"
         },
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p> The token for the next set of items to return. A previous call generates this token. </p>"
+        }
+      }
+    },
+    "ListTagsForResourceInput":{
+      "type":"structure",
+      "required":["ResourceARN"],
+      "members":{
+        "ResourceARN":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the telemetry rule resource whose tags you want to list. </p>"
+        }
+      }
+    },
+    "ListTagsForResourceOutput":{
+      "type":"structure",
+      "required":["Tags"],
+      "members":{
+        "Tags":{
+          "shape":"TagMapOutput",
+          "documentation":"<p> The list of tags associated with the telemetry rule resource. </p>"
+        }
+      }
+    },
+    "ListTelemetryRulesForOrganizationInput":{
+      "type":"structure",
+      "members":{
+        "RuleNamePrefix":{
+          "shape":"String",
+          "documentation":"<p> A string to filter organization telemetry rules whose names begin with the specified prefix. </p>"
+        },
+        "SourceAccountIds":{
+          "shape":"AccountIdentifiers",
+          "documentation":"<p> The list of account IDs to filter organization telemetry rules by their source accounts. </p>"
+        },
+        "SourceOrganizationUnitIds":{
+          "shape":"OrganizationUnitIdentifiers",
+          "documentation":"<p> The list of organizational unit IDs to filter organization telemetry rules by their source organizational units. </p>"
+        },
+        "MaxResults":{
+          "shape":"ListTelemetryRulesForOrganizationMaxResults",
+          "documentation":"<p> The maximum number of organization telemetry rules to return in a single call. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token for the next set of results. A previous call generates this token. </p>"
+        }
+      }
+    },
+    "ListTelemetryRulesForOrganizationMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListTelemetryRulesForOrganizationOutput":{
+      "type":"structure",
+      "members":{
+        "TelemetryRuleSummaries":{
+          "shape":"TelemetryRuleSummaries",
+          "documentation":"<p> A list of organization telemetry rule summaries. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A token to resume pagination of results. </p>"
+        }
+      }
+    },
+    "ListTelemetryRulesInput":{
+      "type":"structure",
+      "members":{
+        "RuleNamePrefix":{
+          "shape":"String",
+          "documentation":"<p> A string to filter telemetry rules whose names begin with the specified prefix. </p>"
+        },
+        "MaxResults":{
+          "shape":"ListTelemetryRulesMaxResults",
+          "documentation":"<p> The maximum number of telemetry rules to return in a single call. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token for the next set of results. A previous call generates this token. </p>"
+        }
+      }
+    },
+    "ListTelemetryRulesMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListTelemetryRulesOutput":{
+      "type":"structure",
+      "members":{
+        "TelemetryRuleSummaries":{
+          "shape":"TelemetryRuleSummaries",
+          "documentation":"<p> A list of telemetry rule summaries. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A token to resume pagination of results. </p>"
         }
       }
     },
@@ -310,11 +821,38 @@
       "box":true
     },
     "NextToken":{"type":"string"},
+    "OrganizationUnitIdentifier":{
+      "type":"string",
+      "pattern":"ou-[0-9a-z]{4,32}-[a-z0-9]{8,32}"
+    },
+    "OrganizationUnitIdentifiers":{
+      "type":"list",
+      "member":{"shape":"OrganizationUnitIdentifier"},
+      "min":1
+    },
+    "ResourceArn":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"arn:aws:([a-zA-Z0-9\\-]+):([a-z0-9\\-]+)?:([0-9]{12})?:(.+)"
+    },
     "ResourceIdentifier":{"type":"string"},
     "ResourceIdentifierPrefix":{
       "type":"string",
       "max":768,
       "min":3
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p> The specified resource (such as a telemetry rule) could not be found. </p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
     },
     "ResourceType":{
       "type":"string",
@@ -327,8 +865,43 @@
     "ResourceTypes":{
       "type":"list",
       "member":{"shape":"ResourceType"},
-      "max":5,
+      "max":9,
       "min":1
+    },
+    "RetentionPeriodInDays":{
+      "type":"integer",
+      "box":true,
+      "max":3653,
+      "min":1
+    },
+    "RuleIdentifier":{
+      "type":"string",
+      "max":1011,
+      "min":1
+    },
+    "RuleName":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[0-9A-Za-z-]+"
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"},
+        "amznErrorType":{
+          "shape":"String",
+          "documentation":"<p> The name of the exception. </p>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        }
+      },
+      "documentation":"<p> The requested operation would exceed the allowed quota for the specified resource type. </p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
     },
     "Status":{
       "type":"string",
@@ -349,17 +922,40 @@
       "min":1,
       "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
     },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":50,
+      "min":1
+    },
     "TagMapInput":{
       "type":"map",
       "key":{"shape":"TagKey"},
       "value":{"shape":"TagValue"},
       "max":50,
-      "min":0
+      "min":1
     },
     "TagMapOutput":{
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"String"}
+    },
+    "TagResourceInput":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "Tags"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the telemetry rule resource to tag. </p>"
+        },
+        "Tags":{
+          "shape":"TagMapInput",
+          "documentation":"<p> The key-value pairs to add or update for the telemetry rule resource. </p>"
+        }
+      }
     },
     "TagValue":{
       "type":"string",
@@ -380,7 +976,7 @@
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p> The type of resource, for example <code>AWS::EC2::Instance</code>. </p>"
+          "documentation":"<p> The type of resource, for example <code>Amazon Web Services::EC2::Instance</code>. </p>"
         },
         "ResourceIdentifier":{
           "shape":"ResourceIdentifier",
@@ -406,6 +1002,89 @@
       "type":"list",
       "member":{"shape":"TelemetryConfiguration"}
     },
+    "TelemetryDestinationConfiguration":{
+      "type":"structure",
+      "members":{
+        "DestinationType":{
+          "shape":"DestinationType",
+          "documentation":"<p> The type of destination for the telemetry data (e.g., \"Amazon CloudWatch Logs\", \"S3\"). </p>"
+        },
+        "DestinationPattern":{
+          "shape":"String",
+          "documentation":"<p> The pattern used to generate the destination path or name, supporting macros like &lt;resourceId&gt; and &lt;accountId&gt;. </p>"
+        },
+        "RetentionInDays":{
+          "shape":"RetentionPeriodInDays",
+          "documentation":"<p> The number of days to retain the telemetry data in the destination. </p>"
+        },
+        "VPCFlowLogParameters":{
+          "shape":"VPCFlowLogParameters",
+          "documentation":"<p> Configuration parameters specific to VPC Flow Logs when VPC is the resource type. </p>"
+        }
+      },
+      "documentation":"<p> Configuration specifying where and how telemetry data should be delivered for Amazon Web Services resources. </p>"
+    },
+    "TelemetryRule":{
+      "type":"structure",
+      "required":["TelemetryType"],
+      "members":{
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p> The type of Amazon Web Services resource to configure telemetry for (e.g., \"AWS::EC2::VPC\"). </p>"
+        },
+        "TelemetryType":{
+          "shape":"TelemetryType",
+          "documentation":"<p> The type of telemetry to collect (Logs, Metrics, or Traces). </p>"
+        },
+        "DestinationConfiguration":{
+          "shape":"TelemetryDestinationConfiguration",
+          "documentation":"<p> Configuration specifying where and how the telemetry data should be delivered. </p>"
+        },
+        "Scope":{
+          "shape":"String",
+          "documentation":"<p> The organizational scope to which the rule applies, specified using accounts or organizational units. </p>"
+        },
+        "SelectionCriteria":{
+          "shape":"String",
+          "documentation":"<p> Criteria for selecting which resources the rule applies to, such as resource tags. </p>"
+        }
+      },
+      "documentation":"<p> Defines how telemetry should be configured for specific Amazon Web Services resources. </p>"
+    },
+    "TelemetryRuleSummaries":{
+      "type":"list",
+      "member":{"shape":"TelemetryRuleSummary"}
+    },
+    "TelemetryRuleSummary":{
+      "type":"structure",
+      "members":{
+        "RuleName":{
+          "shape":"RuleName",
+          "documentation":"<p> The name of the telemetry rule. </p>"
+        },
+        "RuleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the telemetry rule. </p>"
+        },
+        "CreatedTimeStamp":{
+          "shape":"Long",
+          "documentation":"<p> The timestamp when the telemetry rule was created. </p>"
+        },
+        "LastUpdateTimeStamp":{
+          "shape":"Long",
+          "documentation":"<p> The timestamp when the telemetry rule was last modified. </p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p> The type of Amazon Web Services resource the rule applies to. </p>"
+        },
+        "TelemetryType":{
+          "shape":"TelemetryType",
+          "documentation":"<p> The type of telemetry (Logs, Metrics, or Traces) the rule configures. </p>"
+        }
+      },
+      "documentation":"<p> A summary of a telemetry rule's key properties. </p>"
+    },
     "TelemetryState":{
       "type":"string",
       "enum":[
@@ -422,6 +1101,105 @@
         "Traces"
       ]
     },
+    "TooManyRequestsException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p> The request throughput limit was exceeded. </p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "UntagResourceInput":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "TagKeys"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the telemetry rule resource to remove tags from. </p>"
+        },
+        "TagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p> The list of tag keys to remove from the telemetry rule resource. </p>"
+        }
+      }
+    },
+    "UpdateTelemetryRuleForOrganizationInput":{
+      "type":"structure",
+      "required":[
+        "RuleIdentifier",
+        "Rule"
+      ],
+      "members":{
+        "RuleIdentifier":{
+          "shape":"RuleIdentifier",
+          "documentation":"<p> The identifier (name or ARN) of the organization telemetry rule to update. </p>"
+        },
+        "Rule":{
+          "shape":"TelemetryRule",
+          "documentation":"<p> The new configuration details for the organization telemetry rule, including resource type, telemetry type, and destination configuration. </p>"
+        }
+      }
+    },
+    "UpdateTelemetryRuleForOrganizationOutput":{
+      "type":"structure",
+      "members":{
+        "RuleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the updated organization telemetry rule. </p>"
+        }
+      }
+    },
+    "UpdateTelemetryRuleInput":{
+      "type":"structure",
+      "required":[
+        "RuleIdentifier",
+        "Rule"
+      ],
+      "members":{
+        "RuleIdentifier":{
+          "shape":"RuleIdentifier",
+          "documentation":"<p> The identifier (name or ARN) of the telemetry rule to update. </p>"
+        },
+        "Rule":{
+          "shape":"TelemetryRule",
+          "documentation":"<p> The new configuration details for the telemetry rule. </p>"
+        }
+      }
+    },
+    "UpdateTelemetryRuleOutput":{
+      "type":"structure",
+      "members":{
+        "RuleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the updated telemetry rule. </p>"
+        }
+      }
+    },
+    "VPCFlowLogParameters":{
+      "type":"structure",
+      "members":{
+        "LogFormat":{
+          "shape":"String",
+          "documentation":"<p> The format in which VPC Flow Log entries should be logged. </p>"
+        },
+        "TrafficType":{
+          "shape":"String",
+          "documentation":"<p> The type of traffic to log (ACCEPT, REJECT, or ALL). </p>"
+        },
+        "MaxAggregationInterval":{
+          "shape":"Integer",
+          "documentation":"<p> The maximum interval in seconds between the capture of flow log records. </p>"
+        }
+      },
+      "documentation":"<p> Configuration parameters specific to VPC Flow Logs. </p>"
+    },
     "ValidationException":{
       "type":"structure",
       "members":{
@@ -435,5 +1213,5 @@
       "exception":true
     }
   },
-  "documentation":"<p> Amazon CloudWatch Obsersavability Admin to control temletry config for your AWS Organization or account. Telemetry config conﬁg to discover and understand the state of telemetry conﬁguration for your AWS resources from a central view in the CloudWatch console. Telemetry conﬁg simpliﬁes the process of auditing your telemetry collection conﬁgurations across multiple resource types across your AWS Organization or account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/telemetry-config-cloudwatch.html\">Auditing CloudWatch telemetry conﬁgurations</a> in the CloudWatch User Guide.</p> <p>For information on the permissions you need to use this API, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/auth-and-access-control-cw.html\">Identity and access management for Amazon CloudWatch</a> in the CloudWatch User Guide.</p>"
+  "documentation":"<p> You can use Amazon CloudWatch Observability Admin to discover and understand the state of telemetry configuration in CloudWatch for your Amazon Web Services Organization or account. This simplifies the process of auditing your telemetry collection configurations across multiple resource types within your Amazon Web Services Organization or account. By providing a consolidated view, it allows you to easily review and manage telemetry settings, helping you ensure proper monitoring and data collection across your Amazon Web Services environment. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/telemetry-config-cloudwatch.html\">Auditing CloudWatch telemetry conﬁgurations</a> in the CloudWatch User Guide.</p> <p>For information on the permissions you need to use this API, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/auth-and-access-control-cw.html\">Identity and access management for Amazon CloudWatch</a> in the CloudWatch User Guide.</p>"
 }

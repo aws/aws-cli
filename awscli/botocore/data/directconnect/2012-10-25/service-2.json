@@ -147,7 +147,7 @@
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
-      "documentation":"<p>Associates a MAC Security (MACsec) Connection Key Name (CKN)/ Connectivity Association Key (CAK) pair with an Direct Connect dedicated connection.</p> <p>You must supply either the <code>secretARN,</code> or the CKN/CAK (<code>ckn</code> and <code>cak</code>) pair in the request.</p> <p>For information about MAC Security (MACsec) key considerations, see <a href=\"https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-mac-sec-getting-started.html#mac-sec-key-consideration\">MACsec pre-shared CKN/CAK key considerations </a> in the <i>Direct Connect User Guide</i>.</p>"
+      "documentation":"<p>Associates a MAC Security (MACsec) Connection Key Name (CKN)/ Connectivity Association Key (CAK) pair with a Direct Connect connection.</p> <p>You must supply either the <code>secretARN,</code> or the CKN/CAK (<code>ckn</code> and <code>cak</code>) pair in the request.</p> <p>For information about MAC Security (MACsec) key considerations, see <a href=\"https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-mac-sec-getting-started.html#mac-sec-key-consideration\">MACsec pre-shared CKN/CAK key considerations </a> in the <i>Direct Connect User Guide</i>.</p>"
     },
     "AssociateVirtualInterface":{
       "name":"AssociateVirtualInterface",
@@ -775,7 +775,7 @@
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
-      "documentation":"<p>Removes the association between a MAC Security (MACsec) security key and an Direct Connect dedicated connection.</p>"
+      "documentation":"<p>Removes the association between a MAC Security (MACsec) security key and a Direct Connect connection.</p>"
     },
     "ListVirtualInterfaceTestHistory":{
       "name":"ListVirtualInterfaceTestHistory",
@@ -861,7 +861,7 @@
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
-      "documentation":"<p>Updates the Direct Connect dedicated connection configuration.</p> <p>You can update the following parameters for a connection:</p> <ul> <li> <p>The connection name</p> </li> <li> <p>The connection's MAC Security (MACsec) encryption mode.</p> </li> </ul>"
+      "documentation":"<p>Updates the Direct Connect connection configuration.</p> <p>You can update the following parameters for a connection:</p> <ul> <li> <p>The connection name</p> </li> <li> <p>The connection's MAC Security (MACsec) encryption mode.</p> </li> </ul>"
     },
     "UpdateDirectConnectGateway":{
       "name":"UpdateDirectConnectGateway",
@@ -1156,19 +1156,19 @@
       "members":{
         "connectionId":{
           "shape":"ConnectionId",
-          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).</p> <p>You can use <a>DescribeConnections</a> or <a>DescribeLags</a> to retrieve connection ID.</p>"
+          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), interconnect (dxcon-xxxx), or LAG (dxlag-xxxx).</p> <p>You can use <a>DescribeConnections</a>, <a>DescribeInterconnects</a>, or <a>DescribeLags</a> to retrieve connection ID.</p>"
         },
         "secretARN":{
           "shape":"SecretARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the MAC Security (MACsec) secret key to associate with the dedicated connection.</p> <p>You can use <a>DescribeConnections</a> or <a>DescribeLags</a> to retrieve the MAC Security (MACsec) secret key.</p> <p>If you use this request parameter, you do not use the <code>ckn</code> and <code>cak</code> request parameters.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the MAC Security (MACsec) secret key to associate with the connection.</p> <p>You can use <a>DescribeConnections</a> or <a>DescribeLags</a> to retrieve the MAC Security (MACsec) secret key.</p> <p>If you use this request parameter, you do not use the <code>ckn</code> and <code>cak</code> request parameters.</p>"
         },
         "ckn":{
           "shape":"Ckn",
-          "documentation":"<p>The MAC Security (MACsec) CKN to associate with the dedicated connection.</p> <p>You can create the CKN/CAK pair using an industry standard tool.</p> <p> The valid values are 64 hexadecimal characters (0-9, A-E).</p> <p>If you use this request parameter, you must use the <code>cak</code> request parameter and not use the <code>secretARN</code> request parameter.</p>"
+          "documentation":"<p>The MAC Security (MACsec) CKN to associate with the connection.</p> <p>You can create the CKN/CAK pair using an industry standard tool.</p> <p> The valid values are 64 hexadecimal characters (0-9, A-E).</p> <p>If you use this request parameter, you must use the <code>cak</code> request parameter and not use the <code>secretARN</code> request parameter.</p>"
         },
         "cak":{
           "shape":"Cak",
-          "documentation":"<p>The MAC Security (MACsec) CAK to associate with the dedicated connection.</p> <p>You can create the CKN/CAK pair using an industry standard tool.</p> <p> The valid values are 64 hexadecimal characters (0-9, A-E).</p> <p>If you use this request parameter, you must use the <code>ckn</code> request parameter and not use the <code>secretARN</code> request parameter.</p>"
+          "documentation":"<p>The MAC Security (MACsec) CAK to associate with the connection.</p> <p>You can create the CKN/CAK pair using an industry standard tool.</p> <p> The valid values are 64 hexadecimal characters (0-9, A-E).</p> <p>If you use this request parameter, you must use the <code>ckn</code> request parameter and not use the <code>secretARN</code> request parameter.</p>"
         }
       }
     },
@@ -1177,11 +1177,11 @@
       "members":{
         "connectionId":{
           "shape":"ConnectionId",
-          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).</p>"
+          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), interconnect (dxcon-xxxx), or LAG (dxlag-xxxx).</p>"
         },
         "macSecKeys":{
           "shape":"MacSecKeyList",
-          "documentation":"<p>The MAC Security (MACsec) security keys associated with the dedicated connection.</p>"
+          "documentation":"<p>The MAC Security (MACsec) security keys associated with the connection.</p>"
         }
       }
     },
@@ -1535,6 +1535,10 @@
         "macSecKeys":{
           "shape":"MacSecKeyList",
           "documentation":"<p>The MAC Security (MACsec) security keys associated with the connection.</p>"
+        },
+        "partnerInterconnectMacSecCapable":{
+          "shape":"PartnerInterconnectMacSecCapable",
+          "documentation":"<p>Indicates whether the interconnect hosting this connection supports MAC Security (MACsec).</p>"
         }
       },
       "documentation":"<p>Information about an Direct Connect connection.</p>"
@@ -1637,7 +1641,7 @@
         },
         "requestMACSec":{
           "shape":"RequestMACSec",
-          "documentation":"<p>Indicates whether you want the connection to support MAC Security (MACsec).</p> <p>MAC Security (MACsec) is only available on dedicated connections. For information about MAC Security (MACsec) prerequisties, see <a href=\"https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-mac-sec-getting-started.html#mac-sec-prerequisites\">MACsec prerequisties</a> in the <i>Direct Connect User Guide</i>.</p>"
+          "documentation":"<p>Indicates whether you want the connection to support MAC Security (MACsec).</p> <p>MAC Security (MACsec) is unavailable on hosted connections. For information about MAC Security (MACsec) prerequisites, see <a href=\"https://docs.aws.amazon.com/directconnect/latest/UserGuide/MACSec.html\">MAC Security in Direct Connect</a> in the <i>Direct Connect User Guide</i>.</p>"
         }
       }
     },
@@ -1769,6 +1773,10 @@
         "providerName":{
           "shape":"ProviderName",
           "documentation":"<p>The name of the service provider associated with the interconnect.</p>"
+        },
+        "requestMACSec":{
+          "shape":"RequestMACSec",
+          "documentation":"<p>Indicates whether you want the interconnect to support MAC Security (MACsec).</p>"
         }
       }
     },
@@ -2647,7 +2655,7 @@
       "members":{
         "connectionId":{
           "shape":"ConnectionId",
-          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).</p> <p>You can use <a>DescribeConnections</a> or <a>DescribeLags</a> to retrieve connection ID.</p>"
+          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), interconnect (dxcon-xxxx), or LAG (dxlag-xxxx).</p> <p>You can use <a>DescribeConnections</a>, <a>DescribeInterconnects</a>, or <a>DescribeLags</a> to retrieve connection ID.</p>"
         },
         "secretARN":{
           "shape":"SecretARN",
@@ -2660,18 +2668,17 @@
       "members":{
         "connectionId":{
           "shape":"ConnectionId",
-          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).</p>"
+          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), interconnect (dxcon-xxxx), or LAG (dxlag-xxxx).</p>"
         },
         "macSecKeys":{
           "shape":"MacSecKeyList",
-          "documentation":"<p>The MAC Security (MACsec) security keys no longer associated with the dedicated connection.</p>"
+          "documentation":"<p>The MAC Security (MACsec) security keys no longer associated with the connection.</p>"
         }
       }
     },
     "DuplicateTagKeysException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A tag key was specified more than once.</p>",
       "exception":true
     },
@@ -2759,6 +2766,22 @@
         "providerName":{
           "shape":"ProviderName",
           "documentation":"<p>The name of the service provider associated with the interconnect.</p>"
+        },
+        "macSecCapable":{
+          "shape":"MacSecCapable",
+          "documentation":"<p>Indicates whether the interconnect supports MAC Security (MACsec).</p>"
+        },
+        "portEncryptionStatus":{
+          "shape":"PortEncryptionStatus",
+          "documentation":"<p>The MAC Security (MACsec) port link status.</p> <p>The valid values are <code>Encryption Up</code>, which means that there is an active Connection Key Name, or <code>Encryption Down</code>.</p>"
+        },
+        "encryptionMode":{
+          "shape":"EncryptionMode",
+          "documentation":"<p>The MAC Security (MACsec) encryption mode.</p> <p>The valid values are <code>no_encrypt</code>, <code>should_encrypt</code>, and <code>must_encrypt</code>.</p>"
+        },
+        "macSecKeys":{
+          "shape":"MacSecKeyList",
+          "documentation":"<p>The MAC Security (MACsec) security keys.</p>"
         }
       },
       "documentation":"<p>Information about an interconnect.</p>"
@@ -3376,6 +3399,7 @@
     },
     "OwnerAccount":{"type":"string"},
     "PaginationToken":{"type":"string"},
+    "PartnerInterconnectMacSecCapable":{"type":"boolean"},
     "PartnerName":{"type":"string"},
     "Platform":{"type":"string"},
     "PortEncryptionStatus":{"type":"string"},
@@ -3562,8 +3586,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -3578,8 +3601,7 @@
     "TestId":{"type":"string"},
     "TooManyTagsException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You have reached the limit on the number of tags that can be assigned.</p>",
       "exception":true
     },
@@ -3602,8 +3624,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateConnectionRequest":{
       "type":"structure",
@@ -3611,7 +3632,7 @@
       "members":{
         "connectionId":{
           "shape":"ConnectionId",
-          "documentation":"<p>The ID of the dedicated connection.</p> <p>You can use <a>DescribeConnections</a> to retrieve the connection ID.</p>"
+          "documentation":"<p>The ID of the connection.</p> <p>You can use <a>DescribeConnections</a> to retrieve the connection ID.</p>"
         },
         "connectionName":{
           "shape":"ConnectionName",
@@ -3879,6 +3900,7 @@
         "pending",
         "available",
         "down",
+        "testing",
         "deleting",
         "deleted",
         "rejected",

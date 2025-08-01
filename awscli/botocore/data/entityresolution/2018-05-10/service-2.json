@@ -68,7 +68,7 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Creates an <code>IdMappingWorkflow</code> object which stores the configuration of the data processing job to be run. Each <code>IdMappingWorkflow</code> must have a unique workflow name. To modify an existing workflow, use the <code>UpdateIdMappingWorkflow</code> API.</p>"
+      "documentation":"<p>Creates an <code>IdMappingWorkflow</code> object which stores the configuration of the data processing job to be run. Each <code>IdMappingWorkflow</code> must have a unique workflow name. To modify an existing workflow, use the UpdateIdMappingWorkflow API.</p>"
     },
     "CreateIdNamespace":{
       "name":"CreateIdNamespace",
@@ -87,7 +87,7 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Creates an ID namespace object which will help customers provide metadata explaining their dataset and how to use it. Each ID namespace must have a unique name. To modify an existing ID namespace, use the <code>UpdateIdNamespace</code> API.</p>"
+      "documentation":"<p>Creates an ID namespace object which will help customers provide metadata explaining their dataset and how to use it. Each ID namespace must have a unique name. To modify an existing ID namespace, use the UpdateIdNamespace API.</p>"
     },
     "CreateMatchingWorkflow":{
       "name":"CreateMatchingWorkflow",
@@ -106,7 +106,7 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Creates a <code>MatchingWorkflow</code> object which stores the configuration of the data processing job to be run. It is important to note that there should not be a pre-existing <code>MatchingWorkflow</code> with the same name. To modify an existing workflow, utilize the <code>UpdateMatchingWorkflow</code> API.</p>"
+      "documentation":"<p>Creates a matching workflow that defines the configuration for a data processing job. The workflow name must be unique. To modify an existing workflow, use <code>UpdateMatchingWorkflow</code>. </p> <important> <p>For workflows where <code>resolutionType</code> is ML_MATCHING, incremental processing is not supported. </p> </important>"
     },
     "CreateSchemaMapping":{
       "name":"CreateSchemaMapping",
@@ -647,7 +647,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Updates an existing <code>IdMappingWorkflow</code>. This method is identical to <code>CreateIdMappingWorkflow</code>, except it uses an HTTP <code>PUT</code> request instead of a <code>POST</code> request, and the <code>IdMappingWorkflow</code> must already exist for the method to succeed.</p>",
+      "documentation":"<p>Updates an existing <code>IdMappingWorkflow</code>. This method is identical to CreateIdMappingWorkflow, except it uses an HTTP <code>PUT</code> request instead of a <code>POST</code> request, and the <code>IdMappingWorkflow</code> must already exist for the method to succeed.</p>",
       "idempotent":true
     },
     "UpdateIdNamespace":{
@@ -685,7 +685,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Updates an existing <code>MatchingWorkflow</code>. This method is identical to <code>CreateMatchingWorkflow</code>, except it uses an HTTP <code>PUT</code> request instead of a <code>POST</code> request, and the <code>MatchingWorkflow</code> must already exist for the method to succeed.</p>",
+      "documentation":"<p>Updates an existing matching workflow. The workflow must already exist for this operation to succeed.</p> <important> <p>For workflows where <code>resolutionType</code> is ML_MATCHING, incremental processing is not supported. </p> </important>",
       "idempotent":true
     },
     "UpdateSchemaMapping":{
@@ -900,7 +900,7 @@
         },
         "outputSourceConfig":{
           "shape":"IdMappingWorkflowOutputSourceConfig",
-          "documentation":"<p>A list of <code>IdMappingWorkflowOutputSource</code> objects, each of which contains fields <code>OutputS3Path</code> and <code>Output</code>.</p>"
+          "documentation":"<p>A list of <code>IdMappingWorkflowOutputSource</code> objects, each of which contains fields <code>outputS3Path</code> and <code>KMSArn</code>.</p>"
         },
         "idMappingTechniques":{
           "shape":"IdMappingTechniques",
@@ -943,7 +943,7 @@
         },
         "outputSourceConfig":{
           "shape":"IdMappingWorkflowOutputSourceConfig",
-          "documentation":"<p>A list of <code>IdMappingWorkflowOutputSource</code> objects, each of which contains fields <code>OutputS3Path</code> and <code>Output</code>.</p>"
+          "documentation":"<p>A list of <code>IdMappingWorkflowOutputSource</code> objects, each of which contains fields <code>outputS3Path</code> and <code>KMSArn</code>.</p>"
         },
         "idMappingTechniques":{
           "shape":"IdMappingTechniques",
@@ -1068,7 +1068,7 @@
         },
         "outputSourceConfig":{
           "shape":"OutputSourceConfig",
-          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>OutputS3Path</code>, <code>ApplyNormalization</code>, and <code>Output</code>.</p>"
+          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>outputS3Path</code>, <code>applyNormalization</code>, <code>KMSArn</code>, and <code>output</code>.</p>"
         },
         "resolutionTechniques":{
           "shape":"ResolutionTechniques",
@@ -1076,7 +1076,7 @@
         },
         "incrementalRunConfig":{
           "shape":"IncrementalRunConfig",
-          "documentation":"<p>An object which defines an incremental run type and has only <code>incrementalRunType</code> as a field.</p>"
+          "documentation":"<p>Optional. An object that defines the incremental run type. This object contains only the <code>incrementalRunType</code> field, which appears as \"Automatic\" in the console. </p> <important> <p>For workflows where <code>resolutionType</code> is <code>ML_MATCHING</code>, incremental processing is not supported. </p> </important>"
         },
         "roleArn":{
           "shape":"String",
@@ -1117,7 +1117,7 @@
         },
         "outputSourceConfig":{
           "shape":"OutputSourceConfig",
-          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>OutputS3Path</code>, <code>ApplyNormalization</code>, and <code>Output</code>.</p>"
+          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>outputS3Path</code>, <code>applyNormalization</code>, <code>KMSArn</code>, and <code>output</code>.</p>"
         },
         "resolutionTechniques":{
           "shape":"ResolutionTechniques",
@@ -1377,8 +1377,7 @@
     },
     "Document":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true
     },
     "EntityName":{
@@ -1604,7 +1603,7 @@
         },
         "outputSourceConfig":{
           "shape":"IdMappingWorkflowOutputSourceConfig",
-          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>OutputS3Path</code> and <code>KMSArn</code>.</p>"
+          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>outputS3Path</code> and <code>KMSArn</code>.</p>"
         },
         "idMappingTechniques":{
           "shape":"IdMappingTechniques",
@@ -1830,7 +1829,7 @@
         },
         "outputSourceConfig":{
           "shape":"OutputSourceConfig",
-          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>OutputS3Path</code>, <code>ApplyNormalization</code>, and <code>Output</code>.</p>"
+          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>outputS3Path</code>, <code>applyNormalization</code>, <code>KMSArn</code>, and <code>output</code>.</p>"
         },
         "resolutionTechniques":{
           "shape":"ResolutionTechniques",
@@ -2096,7 +2095,7 @@
           "documentation":"<p>Customer KMS ARN for encryption at rest. If not provided, system will use an Entity Resolution managed KMS key.</p>"
         }
       },
-      "documentation":"<p>An object containing <code>KMSArn</code>, <code>OutputS3Path</code>, and <code>RoleARN</code>.</p>"
+      "documentation":"<p>An object containing <code>KMSArn</code>, <code>outputS3Path</code>, and <code>roleARN</code>.</p>"
     },
     "IdMappingJobOutputSourceConfig":{
       "type":"list",
@@ -2128,7 +2127,7 @@
         },
         "attributeMatchingModel":{
           "shape":"AttributeMatchingModel",
-          "documentation":"<p>The comparison type. You can either choose <code>ONE_TO_ONE</code> or <code>MANY_TO_MANY</code> as the <code>attributeMatchingModel</code>. </p> <p>If you choose <code>MANY_TO_MANY</code>, the system can match attributes across the sub-types of an attribute type. For example, if the value of the <code>Email</code> field of Profile A matches the value of the <code>BusinessEmail</code> field of Profile B, the two profiles are matched on the <code>Email</code> attribute type. </p> <p>If you choose <code>ONE_TO_ONE</code>, the system can only match attributes if the sub-types are an exact match. For example, for the <code>Email</code> attribute type, the system will only consider it a match if the value of the <code>Email</code> field of Profile A matches the value of the <code>Email</code> field of Profile B.</p>"
+          "documentation":"<p>The comparison type. You can either choose <code>ONE_TO_ONE</code> or <code>MANY_TO_MANY</code> as the <code>attributeMatchingModel</code>. </p> <p>If you choose <code>ONE_TO_ONE</code>, the system can only match attributes if the sub-types are an exact match. For example, for the <code>Email</code> attribute type, the system will only consider it a match if the value of the <code>Email</code> field of Profile A matches the value of the <code>Email</code> field of Profile B.</p> <p>If you choose <code>MANY_TO_MANY</code>, the system can match attributes across the sub-types of an attribute type. For example, if the value of the <code>Email</code> field of Profile A matches the value of the <code>BusinessEmail</code> field of Profile B, the two profiles are matched on the <code>Email</code> attribute type. </p>"
         },
         "recordMatchingModel":{
           "shape":"RecordMatchingModel",
@@ -2190,7 +2189,7 @@
           "documentation":"<p>The type of ID namespace. There are two types: <code>SOURCE</code> and <code>TARGET</code>. </p> <p>The <code>SOURCE</code> contains configurations for <code>sourceId</code> data that will be processed in an ID mapping workflow. </p> <p>The <code>TARGET</code> contains a configuration of <code>targetId</code> which all <code>sourceIds</code> will resolve to.</p>"
         }
       },
-      "documentation":"<p>An object containing <code>InputSourceARN</code>, <code>SchemaName</code>, and <code>Type</code>.</p>"
+      "documentation":"<p>An object containing <code>inputSourceARN</code>, <code>schemaName</code>, and <code>type</code>.</p>"
     },
     "IdMappingWorkflowInputSourceConfig":{
       "type":"list",
@@ -2304,7 +2303,7 @@
           "documentation":"<p>An object which defines any additional configurations required by the provider service.</p>"
         }
       },
-      "documentation":"<p>An object containing <code>IdMappingType</code>, <code>ProviderProperties</code>, and <code>RuleBasedProperties</code>.</p>"
+      "documentation":"<p>An object containing <code>idMappingType</code>, <code>providerProperties</code>, and <code>ruleBasedProperties</code>.</p>"
     },
     "IdNamespaceIdMappingWorkflowPropertiesList":{
       "type":"list",
@@ -2325,7 +2324,7 @@
           "documentation":"<p>The name of the schema.</p>"
         }
       },
-      "documentation":"<p>An object containing <code>InputSourceARN</code> and <code>SchemaName</code>.</p>"
+      "documentation":"<p>An object containing <code>inputSourceARN</code> and <code>schemaName</code>.</p>"
     },
     "IdNamespaceInputSourceConfig":{
       "type":"list",
@@ -2394,10 +2393,10 @@
       "members":{
         "incrementalRunType":{
           "shape":"IncrementalRunType",
-          "documentation":"<p>The type of incremental run. It takes only one value: <code>IMMEDIATE</code>.</p>"
+          "documentation":"<p>The type of incremental run. The only valid value is <code>IMMEDIATE</code>. This appears as \"Automatic\" in the console.</p> <important> <p>For workflows where <code>resolutionType</code> is <code>ML_MATCHING</code>, incremental processing is not supported. </p> </important>"
         }
       },
-      "documentation":"<p>An object which defines an incremental run type and has only <code>incrementalRunType</code> as a field.</p>"
+      "documentation":"<p>Optional. An object that defines the incremental run type. This object contains only the <code>incrementalRunType</code> field, which appears as \"Automatic\" in the console. </p> <important> <p>For workflows where <code>resolutionType</code> is <code>ML_MATCHING</code>, incremental processing is not supported. </p> </important>"
     },
     "IncrementalRunType":{
       "type":"string",
@@ -2423,7 +2422,7 @@
           "documentation":"<p>Normalizes the attributes defined in the schema in the input data. For example, if an attribute has an <code>AttributeType</code> of <code>PHONE_NUMBER</code>, and the data in the input table is in a format of 1234567890, Entity Resolution will normalize this field in the output to (123)-456-7890.</p>"
         }
       },
-      "documentation":"<p>An object containing <code>InputSourceARN</code>, <code>SchemaName</code>, and <code>ApplyNormalization</code>.</p>"
+      "documentation":"<p>An object containing <code>inputSourceARN</code>, <code>schemaName</code>, and <code>applyNormalization</code>.</p>"
     },
     "InputSourceConfig":{
       "type":"list",
@@ -2489,7 +2488,7 @@
           "documentation":"<p>The total number of <code>matchID</code>s generated.</p>"
         }
       },
-      "documentation":"<p>An object containing <code>InputRecords</code>, <code>TotalRecordsProcessed</code>, <code>MatchIDs</code>, and <code>RecordsNotProcessed</code>.</p>"
+      "documentation":"<p>An object containing <code>inputRecords</code>, <code>totalRecordsProcessed</code>, <code>matchIDs</code>, and <code>recordsNotProcessed</code>.</p>"
     },
     "JobOutputSource":{
       "type":"structure",
@@ -2511,7 +2510,7 @@
           "documentation":"<p>Customer KMS ARN for encryption at rest. If not provided, system will use an Entity Resolution managed KMS key.</p>"
         }
       },
-      "documentation":"<p>An object containing <code>KMSArn</code>, <code>OutputS3Path</code>, and <code>RoleArn</code>.</p>"
+      "documentation":"<p>An object containing <code>KMSArn</code>, <code>outputS3Path</code>, and <code>roleArn</code>.</p>"
     },
     "JobOutputSourceConfig":{
       "type":"list",
@@ -2553,7 +2552,7 @@
           "documentation":"<p>The time at which the job has finished.</p>"
         }
       },
-      "documentation":"<p>An object containing the <code>JobId</code>, <code>Status</code>, <code>StartTime</code>, and <code>EndTime</code> of a job.</p>"
+      "documentation":"<p>An object containing the <code>jobId</code>, <code>status</code>, <code>startTime</code>, and <code>endTime</code> of a job.</p>"
     },
     "KMSArn":{
       "type":"string",
@@ -2742,7 +2741,7 @@
       "members":{
         "workflowSummaries":{
           "shape":"MatchingWorkflowList",
-          "documentation":"<p>A list of <code>MatchingWorkflowSummary</code> objects, each of which contain the fields <code>WorkflowName</code>, <code>WorkflowArn</code>, <code>CreatedAt</code>, and <code>UpdatedAt</code>.</p>"
+          "documentation":"<p>A list of <code>MatchingWorkflowSummary</code> objects, each of which contain the fields <code>workflowName</code>, <code>workflowArn</code>, <code>resolutionType</code>, <code>createdAt</code>, and <code>updatedAt</code>.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -2948,7 +2947,7 @@
           "documentation":"<p>The method that has been specified for data matching, either using matching provided by Entity Resolution or through a provider service.</p>"
         }
       },
-      "documentation":"<p>A list of <code>MatchingWorkflowSummary</code> objects, each of which contain the fields <code>WorkflowName</code>, <code>WorkflowArn</code>, <code>CreatedAt</code>, <code>UpdatedAt</code>.</p>"
+      "documentation":"<p>A list of <code>MatchingWorkflowSummary</code> objects, each of which contain the fields <code>workflowName</code>, <code>workflowArn</code>, <code>resolutionType</code>, <code>createdAt</code>, <code>updatedAt</code>.</p>"
     },
     "NamespaceProviderProperties":{
       "type":"structure",
@@ -2963,7 +2962,7 @@
           "documentation":"<p>An object which defines any additional configurations required by the provider service.</p>"
         }
       },
-      "documentation":"<p>An object containing <code>ProviderConfiguration</code> and <code>ProviderServiceArn</code>.</p>"
+      "documentation":"<p>An object containing <code>providerConfiguration</code> and <code>providerServiceArn</code>.</p>"
     },
     "NamespaceRuleBasedProperties":{
       "type":"structure",
@@ -2978,7 +2977,7 @@
         },
         "attributeMatchingModel":{
           "shape":"AttributeMatchingModel",
-          "documentation":"<p>The comparison type. You can either choose <code>ONE_TO_ONE</code> or <code>MANY_TO_MANY</code> as the <code>attributeMatchingModel</code>. </p> <p>If you choose <code>MANY_TO_MANY</code>, the system can match attributes across the sub-types of an attribute type. For example, if the value of the <code>Email</code> field of Profile A matches the value of <code>BusinessEmail</code> field of Profile B, the two profiles are matched on the <code>Email</code> attribute type. </p> <p>If you choose <code>ONE_TO_ONE</code>, the system can only match attributes if the sub-types are an exact match. For example, for the <code>Email</code> attribute type, the system will only consider it a match if the value of the <code>Email</code> field of Profile A matches the value of the <code>Email</code> field of Profile B.</p>"
+          "documentation":"<p>The comparison type. You can either choose <code>ONE_TO_ONE</code> or <code>MANY_TO_MANY</code> as the <code>attributeMatchingModel</code>. </p> <p>If you choose <code>ONE_TO_ONE</code>, the system can only match attributes if the sub-types are an exact match. For example, for the <code>Email</code> attribute type, the system will only consider it a match if the value of the <code>Email</code> field of Profile A matches the value of the <code>Email</code> field of Profile B.</p> <p>If you choose <code>MANY_TO_MANY</code>, the system can match attributes across the sub-types of an attribute type. For example, if the value of the <code>Email</code> field of Profile A matches the value of <code>BusinessEmail</code> field of Profile B, the two profiles are matched on the <code>Email</code> attribute type. </p>"
         },
         "recordMatchingModels":{
           "shape":"RecordMatchingModelList",
@@ -3383,7 +3382,11 @@
         },
         "ruleBasedProperties":{
           "shape":"RuleBasedProperties",
-          "documentation":"<p>An object which defines the list of matching rules to run and has a field <code>Rules</code>, which is a list of rule objects.</p>"
+          "documentation":"<p>An object which defines the list of matching rules to run and has a field <code>rules</code>, which is a list of rule objects.</p>"
+        },
+        "ruleConditionProperties":{
+          "shape":"RuleConditionProperties",
+          "documentation":"<p>An object containing the <code>rules</code> for a matching workflow.</p>"
         },
         "providerProperties":{
           "shape":"ProviderProperties",
@@ -3434,7 +3437,7 @@
           "documentation":"<p>A list of <code>MatchingKeys</code>. The <code>MatchingKeys</code> must have been defined in the <code>SchemaMapping</code>. Two records are considered to match according to this rule if all of the <code>MatchingKeys</code> match.</p>"
         }
       },
-      "documentation":"<p>An object containing <code>RuleName</code>, and <code>MatchingKeys</code>.</p>"
+      "documentation":"<p>An object containing the <code>ruleName</code> and <code>matchingKeys</code>.</p>"
     },
     "RuleBasedProperties":{
       "type":"structure",
@@ -3449,20 +3452,66 @@
         },
         "attributeMatchingModel":{
           "shape":"AttributeMatchingModel",
-          "documentation":"<p>The comparison type. You can either choose <code>ONE_TO_ONE</code> or <code>MANY_TO_MANY</code> as the <code>attributeMatchingModel</code>. </p> <p>If you choose <code>MANY_TO_MANY</code>, the system can match attributes across the sub-types of an attribute type. For example, if the value of the <code>Email</code> field of Profile A and the value of <code>BusinessEmail</code> field of Profile B matches, the two profiles are matched on the <code>Email</code> attribute type. </p> <p>If you choose <code>ONE_TO_ONE</code>, the system can only match attributes if the sub-types are an exact match. For example, for the <code>Email</code> attribute type, the system will only consider it a match if the value of the <code>Email</code> field of Profile A matches the value of the <code>Email</code> field of Profile B.</p>"
+          "documentation":"<p>The comparison type. You can choose <code>ONE_TO_ONE</code> or <code>MANY_TO_MANY</code> as the <code>attributeMatchingModel</code>. </p> <p>If you choose <code>ONE_TO_ONE</code>, the system can only match attributes if the sub-types are an exact match. For example, for the <code>Email</code> attribute type, the system will only consider it a match if the value of the <code>Email</code> field of Profile A matches the value of the <code>Email</code> field of Profile B.</p> <p>If you choose <code>MANY_TO_MANY</code>, the system can match attributes across the sub-types of an attribute type. For example, if the value of the <code>Email</code> field of Profile A and the value of <code>BusinessEmail</code> field of Profile B matches, the two profiles are matched on the <code>Email</code> attribute type. </p>"
         },
         "matchPurpose":{
           "shape":"MatchPurpose",
           "documentation":"<p> An indicator of whether to generate IDs and index the data or not.</p> <p>If you choose <code>IDENTIFIER_GENERATION</code>, the process generates IDs and indexes the data.</p> <p>If you choose <code>INDEXING</code>, the process indexes the data without generating IDs.</p>"
         }
       },
-      "documentation":"<p>An object which defines the list of matching rules to run in a matching workflow. RuleBasedProperties contain a <code>Rules</code> field, which is a list of rule objects.</p>"
+      "documentation":"<p>An object which defines the list of matching rules to run in a matching workflow. </p>"
     },
     "RuleBasedPropertiesRulesList":{
       "type":"list",
       "member":{"shape":"Rule"},
       "max":25,
       "min":1
+    },
+    "RuleCondition":{
+      "type":"structure",
+      "required":[
+        "ruleName",
+        "condition"
+      ],
+      "members":{
+        "ruleName":{
+          "shape":"RuleConditionRuleNameString",
+          "documentation":"<p>A name for the matching rule.</p> <p>For example: <code>Rule1</code> </p>"
+        },
+        "condition":{
+          "shape":"RuleConditionConditionString",
+          "documentation":"<p>A statement that specifies the conditions for a matching rule.</p> <p>If your data is accurate, use an Exact matching function: <code>Exact</code> or <code>ExactManyToMany</code>. </p> <p>If your data has variations in spelling or pronunciation, use a Fuzzy matching function: <code>Cosine</code>, <code>Levenshtein</code>, or <code>Soundex</code>. </p> <p>Use operators if you want to combine (<code>AND</code>), separate (<code>OR</code>), or group matching functions <code>(...)</code>.</p> <p>For example: <code>(Cosine(a, 10) AND Exact(b, true)) OR ExactManyToMany(c, d)</code> </p>"
+        }
+      },
+      "documentation":"<p>An object that defines the <code>ruleCondition</code> and the <code>ruleName</code> to use in a matching workflow.</p>"
+    },
+    "RuleConditionConditionString":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
+    "RuleConditionProperties":{
+      "type":"structure",
+      "required":["rules"],
+      "members":{
+        "rules":{
+          "shape":"RuleConditionPropertiesRulesList",
+          "documentation":"<p> A list of rule objects, each of which have fields <code>ruleName</code> and <code>condition</code>. </p>"
+        }
+      },
+      "documentation":"<p>The properties of a rule condition that provides the ability to use more complex syntax.</p>"
+    },
+    "RuleConditionPropertiesRulesList":{
+      "type":"list",
+      "member":{"shape":"RuleCondition"},
+      "max":25,
+      "min":1
+    },
+    "RuleConditionRuleNameString":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":"[a-zA-Z_0-9- ]*"
     },
     "RuleMatchingKeysList":{
       "type":"list",
@@ -3593,7 +3642,7 @@
           "documentation":"<p>Specifies whether the schema mapping has been applied to a workflow.</p>"
         }
       },
-      "documentation":"<p>An object containing <code>SchemaName</code>, <code>SchemaArn</code>, <code>CreatedAt</code>, and<code>UpdatedAt</code>.</p>"
+      "documentation":"<p>An object containing <code>schemaName</code>, <code>schemaArn</code>, <code>createdAt</code>, <code>updatedAt</code>, and <code>hasWorkflows</code>.</p>"
     },
     "Schemas":{
       "type":"list",
@@ -3738,8 +3787,7 @@
     },
     "TagResourceOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -3793,8 +3841,7 @@
     },
     "UntagResourceOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateIdMappingWorkflowInput":{
       "type":"structure",
@@ -3820,7 +3867,7 @@
         },
         "outputSourceConfig":{
           "shape":"IdMappingWorkflowOutputSourceConfig",
-          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>OutputS3Path</code> and <code>KMSArn</code>.</p>"
+          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>outputS3Path</code> and <code>KMSArn</code>.</p>"
         },
         "idMappingTechniques":{
           "shape":"IdMappingTechniques",
@@ -3859,7 +3906,7 @@
         },
         "outputSourceConfig":{
           "shape":"IdMappingWorkflowOutputSourceConfig",
-          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>OutputS3Path</code> and <code>KMSArn</code>.</p>"
+          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>outputS3Path</code> and <code>KMSArn</code>.</p>"
         },
         "idMappingTechniques":{
           "shape":"IdMappingTechniques",
@@ -3973,7 +4020,7 @@
         },
         "outputSourceConfig":{
           "shape":"OutputSourceConfig",
-          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>OutputS3Path</code>, <code>ApplyNormalization</code>, and <code>Output</code>.</p>"
+          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>outputS3Path</code>, <code>applyNormalization</code>, <code>KMSArn</code>, and <code>output</code>.</p>"
         },
         "resolutionTechniques":{
           "shape":"ResolutionTechniques",
@@ -3981,7 +4028,7 @@
         },
         "incrementalRunConfig":{
           "shape":"IncrementalRunConfig",
-          "documentation":"<p>An object which defines an incremental run type and has only <code>incrementalRunType</code> as a field.</p>"
+          "documentation":"<p>Optional. An object that defines the incremental run type. This object contains only the <code>incrementalRunType</code> field, which appears as \"Automatic\" in the console. </p> <important> <p>For workflows where <code>resolutionType</code> is <code>ML_MATCHING</code>, incremental processing is not supported. </p> </important>"
         },
         "roleArn":{
           "shape":"String",
@@ -4013,7 +4060,7 @@
         },
         "outputSourceConfig":{
           "shape":"OutputSourceConfig",
-          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>OutputS3Path</code>, <code>ApplyNormalization</code>, and <code>Output</code>.</p>"
+          "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>outputS3Path</code>, <code>applyNormalization</code>, <code>KMSArn</code>, and <code>output</code>.</p>"
         },
         "resolutionTechniques":{
           "shape":"ResolutionTechniques",

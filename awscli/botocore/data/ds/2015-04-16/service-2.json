@@ -193,6 +193,25 @@
       ],
       "documentation":"<p>Creates a Simple AD directory. For more information, see <a href=\"https://docs.aws.amazon.com/directoryservice/latest/admin-guide/directory_simple_ad.html\">Simple Active Directory</a> in the <i>Directory Service Admin Guide</i>.</p> <p>Before you call <code>CreateDirectory</code>, ensure that all of the required permissions have been explicitly granted through a policy. For details about what permissions are required to run the <code>CreateDirectory</code> operation, see <a href=\"http://docs.aws.amazon.com/directoryservice/latest/admin-guide/UsingWithDS_IAM_ResourcePermissions.html\">Directory Service API Permissions: Actions, Resources, and Conditions Reference</a>.</p>"
     },
+    "CreateHybridAD":{
+      "name":"CreateHybridAD",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateHybridADRequest"},
+      "output":{"shape":"CreateHybridADResult"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServiceException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"DirectoryLimitExceededException"},
+        {"shape":"ADAssessmentLimitExceededException"},
+        {"shape":"EntityDoesNotExistException"}
+      ],
+      "documentation":"<p>Creates a hybrid directory that connects your self-managed Active Directory (AD) infrastructure and Amazon Web Services.</p> <p>You must have a successful directory assessment using <a>StartADAssessment</a> to validate your environment compatibility before you use this operation.</p> <p>Updates are applied asynchronously. Use <a>DescribeDirectories</a> to monitor the progress of directory creation.</p>"
+    },
     "CreateLogSubscription":{
       "name":"CreateLogSubscription",
       "http":{
@@ -262,6 +281,23 @@
         {"shape":"UnsupportedOperationException"}
       ],
       "documentation":"<p>Directory Service for Microsoft Active Directory allows you to configure trust relationships. For example, you can establish a trust between your Managed Microsoft AD directory, and your existing self-managed Microsoft Active Directory. This would allow you to provide users and groups access to resources in either domain, with a single set of credentials.</p> <p>This action initiates the creation of the Amazon Web Services side of a trust relationship between an Managed Microsoft AD directory and an external domain. You can create either a forest trust or an external trust.</p>"
+    },
+    "DeleteADAssessment":{
+      "name":"DeleteADAssessment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteADAssessmentRequest"},
+      "output":{"shape":"DeleteADAssessmentResult"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServiceException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"EntityDoesNotExistException"}
+      ],
+      "documentation":"<p>Deletes a directory assessment and all associated data. This operation permanently removes the assessment results, validation reports, and configuration information.</p> <p>You cannot delete system-initiated assessments. You can delete customer-created assessments even if they are in progress.</p>"
     },
     "DeleteConditionalForwarder":{
       "name":"DeleteConditionalForwarder",
@@ -380,6 +416,23 @@
         {"shape":"ServiceException"}
       ],
       "documentation":"<p>Removes the specified directory as a publisher to the specified Amazon SNS topic.</p>"
+    },
+    "DescribeADAssessment":{
+      "name":"DescribeADAssessment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeADAssessmentRequest"},
+      "output":{"shape":"DescribeADAssessmentResult"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServiceException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"EntityDoesNotExistException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a directory assessment, including its current status, validation results, and configuration details. Use this operation to monitor assessment progress and review results.</p>"
     },
     "DescribeCertificate":{
       "name":"DescribeCertificate",
@@ -502,6 +555,24 @@
         {"shape":"ServiceException"}
       ],
       "documentation":"<p>Obtains information about which Amazon SNS topics receive status messages from the specified directory.</p> <p>If no input parameters are provided, such as DirectoryId or TopicName, this request describes all of the associations in the account.</p>"
+    },
+    "DescribeHybridADUpdate":{
+      "name":"DescribeHybridADUpdate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeHybridADUpdateRequest"},
+      "output":{"shape":"DescribeHybridADUpdateResult"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServiceException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"DirectoryDoesNotExistException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidNextTokenException"}
+      ],
+      "documentation":"<p>Retrieves information about update activities for a hybrid directory. This operation provides details about configuration changes, administrator account updates, and self-managed instance settings (IDs and DNS IPs).</p>"
     },
     "DescribeLDAPSSettings":{
       "name":"DescribeLDAPSSettings",
@@ -839,6 +910,23 @@
       ],
       "documentation":"<p>Obtains the manual snapshot limits for a directory.</p>"
     },
+    "ListADAssessments":{
+      "name":"ListADAssessments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListADAssessmentsRequest"},
+      "output":{"shape":"ListADAssessmentsResult"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServiceException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"DirectoryDoesNotExistException"}
+      ],
+      "documentation":"<p>Retrieves a list of directory assessments for the specified directory or all assessments in your account. Use this operation to monitor assessment status and manage multiple assessments.</p>"
+    },
     "ListCertificates":{
       "name":"ListCertificates",
       "http":{
@@ -1085,6 +1173,24 @@
       ],
       "documentation":"<p>Shares a specified directory (<code>DirectoryId</code>) in your Amazon Web Services account (directory owner) with another Amazon Web Services account (directory consumer). With this operation you can use your directory from any Amazon Web Services account and from any Amazon VPC within an Amazon Web Services Region.</p> <p>When you share your Managed Microsoft AD directory, Directory Service creates a shared directory in the directory consumer account. This shared directory contains the metadata to provide access to the directory within the directory owner account. The shared directory is visible in all VPCs in the directory consumer account.</p> <p>The <code>ShareMethod</code> parameter determines whether the specified directory can be shared between Amazon Web Services accounts inside the same Amazon Web Services organization (<code>ORGANIZATIONS</code>). It also determines whether you can share the directory with any other Amazon Web Services account either inside or outside of the organization (<code>HANDSHAKE</code>).</p> <p>The <code>ShareNotes</code> parameter is only used when <code>HANDSHAKE</code> is called, which sends a directory sharing request to the directory consumer. </p>"
     },
+    "StartADAssessment":{
+      "name":"StartADAssessment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartADAssessmentRequest"},
+      "output":{"shape":"StartADAssessmentResult"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServiceException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"DirectoryDoesNotExistException"},
+        {"shape":"ADAssessmentLimitExceededException"}
+      ],
+      "documentation":"<p>Initiates a directory assessment to validate your self-managed AD environment for hybrid domain join. The assessment checks compatibility and connectivity of the self-managed AD environment.</p> <p>A directory assessment is automatically created when you create a hybrid directory. There are two types of assessments: <code>CUSTOMER</code> and <code>SYSTEM</code>. Your Amazon Web Services account has a limit of 100 <code>CUSTOMER</code> directory assessments.</p> <p>The assessment process typically takes 30 minutes or more to complete. The assessment process is asynchronous and you can monitor it with <code>DescribeADAssessment</code>.</p> <p>The <code>InstanceIds</code> must have a one-to-one correspondence with <code>CustomerDnsIps</code>, meaning that if the IP address for instance i-10243410 is 10.24.34.100 and the IP address for instance i-10243420 is 10.24.34.200, then the input arrays must maintain the same order relationship, either [10.24.34.100, 10.24.34.200] paired with [i-10243410, i-10243420] or [10.24.34.200, 10.24.34.100] paired with [i-10243420, i-10243410].</p> <p>Note: You must provide exactly one <code>DirectoryId</code> or <code>AssessmentConfiguration</code>.</p>"
+    },
     "StartSchemaExtension":{
       "name":"StartSchemaExtension",
       "http":{
@@ -1158,6 +1264,24 @@
         {"shape":"ServiceException"}
       ],
       "documentation":"<p> Updates the directory for a particular update type. </p>"
+    },
+    "UpdateHybridAD":{
+      "name":"UpdateHybridAD",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateHybridADRequest"},
+      "output":{"shape":"UpdateHybridADResult"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServiceException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"DirectoryDoesNotExistException"},
+        {"shape":"ADAssessmentLimitExceededException"}
+      ],
+      "documentation":"<p>Updates the configuration of an existing hybrid directory. You can recover hybrid directory administrator account or modify self-managed instance settings.</p> <p>Updates are applied asynchronously. Use <a>DescribeHybridADUpdate</a> to monitor the progress of configuration changes.</p> <p>The <code>InstanceIds</code> must have a one-to-one correspondence with <code>CustomerDnsIps</code>, meaning that if the IP address for instance i-10243410 is 10.24.34.100 and the IP address for instance i-10243420 is 10.24.34.200, then the input arrays must maintain the same order relationship, either [10.24.34.100, 10.24.34.200] paired with [i-10243410, i-10243420] or [10.24.34.200, 10.24.34.100] paired with [i-10243420, i-10243410].</p> <note> <p>You must provide at least one update to <a>UpdateHybridADRequest$HybridAdministratorAccountUpdate</a> or <a>UpdateHybridADRequest$SelfManagedInstancesSettings</a>.</p> </note>"
     },
     "UpdateNumberOfDomainControllers":{
       "name":"UpdateNumberOfDomainControllers",
@@ -1249,6 +1373,15 @@
     }
   },
   "shapes":{
+    "ADAssessmentLimitExceededException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ExceptionMessage"},
+        "RequestId":{"shape":"RequestId"}
+      },
+      "documentation":"<p>A directory assessment is automatically created when you create a hybrid directory. There are two types of assessments: <code>CUSTOMER</code> and <code>SYSTEM</code>. Your Amazon Web Services account has a limit of 100 <code>CUSTOMER</code> directory assessments.</p> <p>If you attempt to create a hybrid directory; and you already have 100 <code>CUSTOMER</code> directory assessments;, you will encounter an error. Delete assessments to free up capacity before trying again.</p> <p>You can request an increase to your <code>CUSTOMER</code> directory assessment quota by contacting customer support or delete existing CUSTOMER directory assessments; to free up capacity.</p>",
+      "exception":true
+    },
     "AcceptSharedDirectoryRequest":{
       "type":"structure",
       "required":["SharedDirectoryId"],
@@ -1361,6 +1494,230 @@
       "max":62,
       "min":1,
       "pattern":"^(?!D-|d-)([\\da-zA-Z]+)([-]*[\\da-zA-Z])*"
+    },
+    "Assessment":{
+      "type":"structure",
+      "members":{
+        "AssessmentId":{
+          "shape":"AssessmentId",
+          "documentation":"<p>The unique identifier of the directory assessment.</p>"
+        },
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the directory associated with this assessment.</p>"
+        },
+        "DnsName":{
+          "shape":"DirectoryName",
+          "documentation":"<p>The fully qualified domain name (FQDN) of the Active Directory domain being assessed.</p>"
+        },
+        "StartTime":{
+          "shape":"AssessmentStartTime",
+          "documentation":"<p>The date and time when the assessment was initiated.</p>"
+        },
+        "LastUpdateDateTime":{
+          "shape":"LastUpdateDateTime",
+          "documentation":"<p>The date and time when the assessment status was last updated.</p>"
+        },
+        "Status":{
+          "shape":"AssessmentStatus",
+          "documentation":"<p>The current status of the assessment. Valid values include <code>SUCCESS</code>, <code>FAILED</code>, <code>PENDING</code>, and <code>IN_PROGRESS</code>.</p>"
+        },
+        "StatusCode":{
+          "shape":"AssessmentStatusCode",
+          "documentation":"<p>A detailed status code providing additional information about the assessment state.</p>"
+        },
+        "StatusReason":{
+          "shape":"AssessmentStatusReason",
+          "documentation":"<p>A human-readable description of the current assessment status, including any error details or progress information.</p>"
+        },
+        "CustomerDnsIps":{
+          "shape":"CustomerDnsIps",
+          "documentation":"<p>The IP addresses of the DNS servers or domain controllers in your self-managed AD environment.</p>"
+        },
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>Contains Amazon VPC information for the <code>StartADAssessment</code> operation. </p>"
+        },
+        "SubnetIds":{
+          "shape":"SubnetIds",
+          "documentation":"<p>A list of subnet identifiers in the Amazon VPC in which the hybrid directory is created.</p>"
+        },
+        "SecurityGroupIds":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>The security groups identifiers attached to the network interfaces.</p>"
+        },
+        "SelfManagedInstanceIds":{
+          "shape":"AssessmentInstanceIds",
+          "documentation":"<p>The identifiers of the self-managed AD instances used to perform the assessment.</p>"
+        },
+        "ReportType":{
+          "shape":"AssessmentReportType",
+          "documentation":"<p>The type of assessment report generated. Valid values are <code>CUSTOMER</code> and <code>SYSTEM</code>.</p>"
+        },
+        "Version":{
+          "shape":"AssessmentVersion",
+          "documentation":"<p>The version of the assessment framework used to evaluate your self-managed AD environment.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about a directory assessment, including configuration parameters, status, and validation results.</p>"
+    },
+    "AssessmentConfiguration":{
+      "type":"structure",
+      "required":[
+        "CustomerDnsIps",
+        "DnsName",
+        "VpcSettings",
+        "InstanceIds"
+      ],
+      "members":{
+        "CustomerDnsIps":{
+          "shape":"CustomerDnsIps",
+          "documentation":"<p>A list of IP addresses for the DNS servers or domain controllers in your self-managed AD that are tested during the assessment.</p>"
+        },
+        "DnsName":{
+          "shape":"DirectoryName",
+          "documentation":"<p>The fully qualified domain name (FQDN) of the self-managed AD domain to assess.</p>"
+        },
+        "VpcSettings":{"shape":"DirectoryVpcSettings"},
+        "InstanceIds":{
+          "shape":"AssessmentInstanceIds",
+          "documentation":"<p>The identifiers of the self-managed instances with SSM that are used to perform connectivity and validation tests.</p>"
+        },
+        "SecurityGroupIds":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>By default, the service attaches a security group to allow network access to the self-managed nodes in your Amazon VPC. You can optionally supply your own security group that allows network traffic to and from your self-managed domain controllers outside of your Amazon VPC. </p>"
+        }
+      },
+      "documentation":"<p>Contains configuration parameters required to perform a directory assessment.</p>"
+    },
+    "AssessmentId":{
+      "type":"string",
+      "pattern":"^da-[0-9a-f]{18}$"
+    },
+    "AssessmentInstanceId":{
+      "type":"string",
+      "pattern":"^(i-[0-9a-f]{8}|i-[0-9a-f]{17}|mi-[0-9a-f]{8}|mi-[0-9a-f]{17})$"
+    },
+    "AssessmentInstanceIds":{
+      "type":"list",
+      "member":{"shape":"AssessmentInstanceId"},
+      "max":2,
+      "min":2
+    },
+    "AssessmentLimit":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "AssessmentReport":{
+      "type":"structure",
+      "members":{
+        "DomainControllerIp":{
+          "shape":"IpAddr",
+          "documentation":"<p>The IP address of the domain controller that was tested during the assessment.</p>"
+        },
+        "Validations":{
+          "shape":"AssessmentValidations",
+          "documentation":"<p>A list of validation results for different test categories performed against this domain controller.</p>"
+        }
+      },
+      "documentation":"<p>Contains the results of validation tests performed against a specific domain controller during a directory assessment.</p>"
+    },
+    "AssessmentReportType":{"type":"string"},
+    "AssessmentReports":{
+      "type":"list",
+      "member":{"shape":"AssessmentReport"}
+    },
+    "AssessmentStartTime":{"type":"timestamp"},
+    "AssessmentStatus":{"type":"string"},
+    "AssessmentStatusCode":{"type":"string"},
+    "AssessmentStatusReason":{"type":"string"},
+    "AssessmentSummary":{
+      "type":"structure",
+      "members":{
+        "AssessmentId":{
+          "shape":"AssessmentId",
+          "documentation":"<p>The unique identifier of the directory assessment.</p>"
+        },
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the directory associated with this assessment.</p>"
+        },
+        "DnsName":{
+          "shape":"DirectoryName",
+          "documentation":"<p>The fully qualified domain name (FQDN) of the Active Directory domain being assessed.</p>"
+        },
+        "StartTime":{
+          "shape":"AssessmentStartTime",
+          "documentation":"<p>The date and time when the assessment was initiated.</p>"
+        },
+        "LastUpdateDateTime":{
+          "shape":"LastUpdateDateTime",
+          "documentation":"<p>The date and time when the assessment status was last updated.</p>"
+        },
+        "Status":{
+          "shape":"AssessmentStatus",
+          "documentation":"<p>The current status of the assessment. Valid values include <code>SUCCESS</code>, <code>FAILED</code>, <code>PENDING</code>, and <code>IN_PROGRESS</code>.</p>"
+        },
+        "CustomerDnsIps":{
+          "shape":"CustomerDnsIps",
+          "documentation":"<p>The IP addresses of the DNS servers or domain controllers in your self-managed AD environment.</p>"
+        },
+        "ReportType":{
+          "shape":"AssessmentReportType",
+          "documentation":"<p>The type of assessment report generated. Valid values include <code>CUSTOMER</code> and <code>SYSTEM</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a directory assessment, providing a high-level overview without detailed validation results.</p>"
+    },
+    "AssessmentValidation":{
+      "type":"structure",
+      "members":{
+        "Category":{
+          "shape":"AssessmentValidationCategory",
+          "documentation":"<p>The category of the validation test.</p>"
+        },
+        "Name":{
+          "shape":"AssessmentValidationName",
+          "documentation":"<p>The name of the specific validation test performed within the category.</p>"
+        },
+        "Status":{
+          "shape":"AssessmentValidationStatus",
+          "documentation":"<p>The result status of the validation test. Valid values include <code>SUCCESS</code>, <code>FAILED</code>, <code>PENDING</code>, and <code>IN_PROGRESS</code>.</p>"
+        },
+        "StatusCode":{
+          "shape":"AssessmentValidationStatusCode",
+          "documentation":"<p>A detailed status code providing additional information about the validation result.</p>"
+        },
+        "StatusReason":{
+          "shape":"AssessmentValidationStatusReason",
+          "documentation":"<p>A human-readable description of the validation result, including any error details or recommendations.</p>"
+        },
+        "StartTime":{
+          "shape":"AssessmentValidationTimeStamp",
+          "documentation":"<p>The date and time when the validation test was started.</p>"
+        },
+        "LastUpdateDateTime":{
+          "shape":"AssessmentValidationTimeStamp",
+          "documentation":"<p>The date and time when the validation test was completed or last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a specific validation test performed during a directory assessment.</p>"
+    },
+    "AssessmentValidationCategory":{"type":"string"},
+    "AssessmentValidationName":{"type":"string"},
+    "AssessmentValidationStatus":{"type":"string"},
+    "AssessmentValidationStatusCode":{"type":"string"},
+    "AssessmentValidationStatusReason":{"type":"string"},
+    "AssessmentValidationTimeStamp":{"type":"timestamp"},
+    "AssessmentValidations":{
+      "type":"list",
+      "member":{"shape":"AssessmentValidation"}
+    },
+    "AssessmentVersion":{"type":"string"},
+    "Assessments":{
+      "type":"list",
+      "member":{"shape":"AssessmentSummary"}
     },
     "Attribute":{
       "type":"structure",
@@ -1884,6 +2241,36 @@
       },
       "documentation":"<p>Contains the results of the <a>CreateDirectory</a> operation.</p>"
     },
+    "CreateHybridADRequest":{
+      "type":"structure",
+      "required":[
+        "SecretArn",
+        "AssessmentId"
+      ],
+      "members":{
+        "SecretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret that contains the credentials for the service account used to join hybrid domain controllers to your self-managed AD domain. This secret is used once and not stored.</p> <p>The secret must contain key-value pairs with keys matching <code>customerAdAdminDomainUsername</code> and <code>customerAdAdminDomainPassword</code>. For example: <code>{\"customerAdAdminDomainUsername\":\"carlos_salazar\",\"customerAdAdminDomainPassword\":\"ExamplePassword123!\"}</code>.</p>"
+        },
+        "AssessmentId":{
+          "shape":"AssessmentId",
+          "documentation":"<p>The unique identifier of the successful directory assessment that validates your self-managed AD environment. You must have a successful directory assessment before you create a hybrid directory.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags to be assigned to the directory. Each tag consists of a key and value pair. You can specify multiple tags as a list.</p>"
+        }
+      }
+    },
+    "CreateHybridADResult":{
+      "type":"structure",
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The unique identifier of the newly created hybrid directory.</p>"
+        }
+      }
+    },
     "CreateLogSubscriptionRequest":{
       "type":"structure",
       "required":[
@@ -2032,6 +2419,12 @@
       "documentation":"<p>The result of a CreateTrust request.</p>"
     },
     "CreatedDateTime":{"type":"timestamp"},
+    "CustomerDnsIps":{
+      "type":"list",
+      "member":{"shape":"IpAddr"},
+      "max":2,
+      "min":2
+    },
     "CustomerId":{
       "type":"string",
       "pattern":"^(\\d{12})$"
@@ -2051,6 +2444,25 @@
         "Enabling",
         "Failed"
       ]
+    },
+    "DeleteADAssessmentRequest":{
+      "type":"structure",
+      "required":["AssessmentId"],
+      "members":{
+        "AssessmentId":{
+          "shape":"AssessmentId",
+          "documentation":"<p>The unique identifier of the directory assessment to delete.</p>"
+        }
+      }
+    },
+    "DeleteADAssessmentResult":{
+      "type":"structure",
+      "members":{
+        "AssessmentId":{
+          "shape":"AssessmentId",
+          "documentation":"<p>The unique identifier of the deleted directory assessment.</p>"
+        }
+      }
     },
     "DeleteAssociatedConditionalForwarder":{"type":"boolean"},
     "DeleteConditionalForwarderRequest":{
@@ -2200,6 +2612,29 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>The result of a DeregisterEventTopic request.</p>"
+    },
+    "DescribeADAssessmentRequest":{
+      "type":"structure",
+      "required":["AssessmentId"],
+      "members":{
+        "AssessmentId":{
+          "shape":"AssessmentId",
+          "documentation":"<p>The identifier of the directory assessment to describe.</p>"
+        }
+      }
+    },
+    "DescribeADAssessmentResult":{
+      "type":"structure",
+      "members":{
+        "Assessment":{
+          "shape":"Assessment",
+          "documentation":"<p>Detailed information about the self-managed instance settings (IDs and DNS IPs).</p>"
+        },
+        "AssessmentReports":{
+          "shape":"AssessmentReports",
+          "documentation":"<p>A list of assessment reports containing validation results for each domain controller and test category. Each report includes specific validation details and outcomes.</p>"
+        }
+      }
     },
     "DescribeCertificateRequest":{
       "type":"structure",
@@ -2396,6 +2831,37 @@
         }
       },
       "documentation":"<p>The result of a DescribeEventTopic request.</p>"
+    },
+    "DescribeHybridADUpdateRequest":{
+      "type":"structure",
+      "required":["DirectoryId"],
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the hybrid directory for which to retrieve update information.</p>"
+        },
+        "UpdateType":{
+          "shape":"HybridUpdateType",
+          "documentation":"<p>The type of update activities to retrieve. Valid values include <code>SelfManagedInstances</code> and <code>HybridAdministratorAccount</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous request to <a>DescribeHybridADUpdate</a>. Pass null if this is the first request.</p>"
+        }
+      }
+    },
+    "DescribeHybridADUpdateResult":{
+      "type":"structure",
+      "members":{
+        "UpdateActivities":{
+          "shape":"HybridUpdateActivities",
+          "documentation":"<p>Information about update activities for the hybrid directory, organized by update type.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If not null, more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent request to retrieve the next set of items.</p>"
+        }
+      }
     },
     "DescribeLDAPSSettingsRequest":{
       "type":"structure",
@@ -2868,6 +3334,10 @@
         "OsVersion":{
           "shape":"OSVersion",
           "documentation":"<p>The operating system (OS) version of the directory.</p>"
+        },
+        "HybridSettings":{
+          "shape":"HybridSettingsDescription",
+          "documentation":"<p>Contains information about the hybrid directory configuration for the directory, including Amazon Web Services System Manager managed node identifiers and DNS IPs.</p>"
         }
       },
       "documentation":"<p>Contains information about an Directory Service directory.</p>"
@@ -3037,7 +3507,7 @@
           "documentation":"<p>The identifiers of the subnets for the directory servers. The two subnets must be in different Availability Zones. Directory Service creates a directory server and a DNS server in each of these subnets.</p>"
         }
       },
-      "documentation":"<p>Contains VPC information for the <a>CreateDirectory</a> or <a>CreateMicrosoftAD</a> operation.</p>"
+      "documentation":"<p>Contains VPC information for the <a>CreateDirectory</a>, <a>CreateMicrosoftAD</a>, or <a>CreateHybridAD</a> operation.</p>"
     },
     "DirectoryVpcSettingsDescription":{
       "type":"structure",
@@ -3434,6 +3904,126 @@
       },
       "documentation":"<p>Contains the results of the <a>GetSnapshotLimits</a> operation.</p>"
     },
+    "HybridAdministratorAccountUpdate":{
+      "type":"structure",
+      "required":["SecretArn"],
+      "members":{
+        "SecretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret that contains the credentials for the AD administrator user, and enables hybrid domain controllers to join the managed AD domain. For example:</p> <p> <code> {\"customerAdAdminDomainUsername\":\"carlos_salazar\",\"customerAdAdminDomainPassword\":\"ExamplePassword123!\"}. </code> </p>"
+        }
+      },
+      "documentation":"<p> Use to recover to the hybrid directory administrator account credentials.</p>"
+    },
+    "HybridCustomerInstancesSettings":{
+      "type":"structure",
+      "required":[
+        "CustomerDnsIps",
+        "InstanceIds"
+      ],
+      "members":{
+        "CustomerDnsIps":{
+          "shape":"CustomerDnsIps",
+          "documentation":"<p>The IP addresses of the DNS servers or domain controllers in your self-managed AD environment.</p>"
+        },
+        "InstanceIds":{
+          "shape":"AssessmentInstanceIds",
+          "documentation":"<p>The identifiers of the self-managed instances with SSM used in hybrid directory.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration settings for self-managed instances with SSM used in hybrid directory operations.</p>"
+    },
+    "HybridSettingsDescription":{
+      "type":"structure",
+      "members":{
+        "SelfManagedDnsIpAddrs":{
+          "shape":"IpAddrs",
+          "documentation":"<p>The IP addresses of the DNS servers in your self-managed AD environment.</p>"
+        },
+        "SelfManagedInstanceIds":{
+          "shape":"AssessmentInstanceIds",
+          "documentation":"<p>The identifiers of the self-managed instances with SSM used for hybrid directory operations.</p>"
+        }
+      },
+      "documentation":"<p>Describes the current hybrid directory configuration settings for a directory.</p>"
+    },
+    "HybridUpdateActivities":{
+      "type":"structure",
+      "members":{
+        "SelfManagedInstances":{
+          "shape":"HybridUpdateInfoEntries",
+          "documentation":"<p>A list of update activities related to the self-managed instances with SSM in the self-managed instances with SSM hybrid directory configuration.</p>"
+        },
+        "HybridAdministratorAccount":{
+          "shape":"HybridUpdateInfoEntries",
+          "documentation":"<p>A list of update activities related to hybrid directory administrator account changes.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about update activities for different components of a hybrid directory.</p>"
+    },
+    "HybridUpdateInfoEntries":{
+      "type":"list",
+      "member":{"shape":"HybridUpdateInfoEntry"}
+    },
+    "HybridUpdateInfoEntry":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"UpdateStatus",
+          "documentation":"<p>The current status of the update activity. Valid values include <code>UPDATED</code>, <code>UPDATING</code>, and <code>UPDATE_FAILED</code>.</p>"
+        },
+        "StatusReason":{
+          "shape":"UpdateStatusReason",
+          "documentation":"<p>A human-readable description of the update status, including any error details or progress information.</p>"
+        },
+        "InitiatedBy":{
+          "shape":"InitiatedBy",
+          "documentation":"<p>Specifies if the update was initiated by the customer or Amazon Web Services.</p>"
+        },
+        "NewValue":{
+          "shape":"HybridUpdateValue",
+          "documentation":"<p>The new configuration values being applied in this update.</p>"
+        },
+        "PreviousValue":{
+          "shape":"HybridUpdateValue",
+          "documentation":"<p>The previous configuration values before this update was applied.</p>"
+        },
+        "StartTime":{
+          "shape":"StartDateTime",
+          "documentation":"<p>The date and time when the update activity was initiated.</p>"
+        },
+        "LastUpdatedDateTime":{
+          "shape":"LastUpdatedDateTime",
+          "documentation":"<p>The date and time when the update activity status was last updated.</p>"
+        },
+        "AssessmentId":{
+          "shape":"AssessmentId",
+          "documentation":"<p>The identifier of the assessment performed to validate this update configuration.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about a specific update activity for a hybrid directory component.</p>"
+    },
+    "HybridUpdateType":{
+      "type":"string",
+      "enum":[
+        "SelfManagedInstances",
+        "HybridAdministratorAccount"
+      ]
+    },
+    "HybridUpdateValue":{
+      "type":"structure",
+      "members":{
+        "InstanceIds":{
+          "shape":"AssessmentInstanceIds",
+          "documentation":"<p>The identifiers of the self-managed instances with SSM in the hybrid directory configuration.</p>"
+        },
+        "DnsIps":{
+          "shape":"CustomerDnsIps",
+          "documentation":"<p>The IP addresses of the DNS servers or domain controllers in the hybrid directory configuration.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration values for a hybrid directory update, including Amazon Web Services System Manager managed node and DNS information.</p>"
+    },
     "IncompatibleSettingsException":{
       "type":"structure",
       "members":{
@@ -3633,6 +4223,7 @@
       "type":"string",
       "enum":["Client"]
     },
+    "LastUpdateDateTime":{"type":"timestamp"},
     "LastUpdatedDateTime":{"type":"timestamp"},
     "LaunchTime":{"type":"timestamp"},
     "LdifContent":{
@@ -3643,6 +4234,36 @@
     "Limit":{
       "type":"integer",
       "min":0
+    },
+    "ListADAssessmentsRequest":{
+      "type":"structure",
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the directory for which to list assessments. If not specified, all assessments in your account are returned.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous request to <a>ListADAssessments</a>. Pass null if this is the first request.</p>"
+        },
+        "Limit":{
+          "shape":"AssessmentLimit",
+          "documentation":"<p>The maximum number of assessment summaries to return.</p>"
+        }
+      }
+    },
+    "ListADAssessmentsResult":{
+      "type":"structure",
+      "members":{
+        "Assessments":{
+          "shape":"Assessments",
+          "documentation":"<p>A list of assessment summaries containing basic information about each directory assessment.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If not null, more results are available. Pass this value for the <code>NextToken</code> parameter in a subsequent request to retrieve the next set of items.</p>"
+        }
+      }
     },
     "ListCertificatesRequest":{
       "type":"structure",
@@ -4338,9 +4959,19 @@
       "type":"list",
       "member":{"shape":"SchemaExtensionInfo"}
     },
+    "SecretArn":{
+      "type":"string",
+      "pattern":"^arn:aws:secretsmanager:[a-z0-9-]+:\\d{12}:secret:[a-zA-Z0-9/_+=.@-]+-[a-zA-Z0-9]{6}$"
+    },
     "SecurityGroupId":{
       "type":"string",
       "pattern":"^(sg-[0-9a-f]{8}|sg-[0-9a-f]{17})$"
+    },
+    "SecurityGroupIds":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "max":1,
+      "min":1
     },
     "SelectiveAuth":{
       "type":"string",
@@ -4667,6 +5298,28 @@
     },
     "SsoEnabled":{"type":"boolean"},
     "StageReason":{"type":"string"},
+    "StartADAssessmentRequest":{
+      "type":"structure",
+      "members":{
+        "AssessmentConfiguration":{
+          "shape":"AssessmentConfiguration",
+          "documentation":"<p>Configuration parameters for the directory assessment, including DNS server information, domain name, Amazon VPC subnet, and Amazon Web Services System Manager managed node details.</p>"
+        },
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the directory for which to perform the assessment. This should be an existing directory. If the assessment is not for an existing directory, this parameter should be omitted.</p>"
+        }
+      }
+    },
+    "StartADAssessmentResult":{
+      "type":"structure",
+      "members":{
+        "AssessmentId":{
+          "shape":"AssessmentId",
+          "documentation":"<p>The unique identifier of the newly started directory assessment. Use this identifier to monitor assessment progress and retrieve results.</p>"
+        }
+      }
+    },
     "StartDateTime":{"type":"timestamp"},
     "StartSchemaExtensionRequest":{
       "type":"structure",
@@ -5015,6 +5668,37 @@
     "UpdateDirectorySetupResult":{
       "type":"structure",
       "members":{}
+    },
+    "UpdateHybridADRequest":{
+      "type":"structure",
+      "required":["DirectoryId"],
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the hybrid directory to update.</p>"
+        },
+        "HybridAdministratorAccountUpdate":{
+          "shape":"HybridAdministratorAccountUpdate",
+          "documentation":"<p>We create a hybrid directory administrator account when we create a hybrid directory. Use <code>HybridAdministratorAccountUpdate</code> to recover the hybrid directory administrator account if you have deleted it.</p> <p>To recover your hybrid directory administrator account, we need temporary access to a user in your self-managed AD with administrator permissions in the form of a secret from Amazon Web Services Secrets Manager. We use these credentials once during recovery and don't store them.</p> <p>If your hybrid directory administrator account exists, then you don’t need to use <code>HybridAdministratorAccountUpdate</code>, even if you have updated your self-managed AD administrator user.</p>"
+        },
+        "SelfManagedInstancesSettings":{
+          "shape":"HybridCustomerInstancesSettings",
+          "documentation":"<p>Updates to the self-managed AD configuration, including DNS server IP addresses and Amazon Web Services System Manager managed node identifiers.</p>"
+        }
+      }
+    },
+    "UpdateHybridADResult":{
+      "type":"structure",
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the updated hybrid directory.</p>"
+        },
+        "AssessmentId":{
+          "shape":"AssessmentId",
+          "documentation":"<p>The identifier of the assessment performed to validate the update configuration. This assessment ensures the updated settings are compatible with your environment.</p>"
+        }
+      }
     },
     "UpdateInfoEntry":{
       "type":"structure",

@@ -22,6 +22,7 @@ import botocore
 import botocore.session
 import pytest
 from botocore import handlers
+from botocore.args import ClientConfigString
 from botocore.awsrequest import AWSRequest
 from botocore.compat import OrderedDict, quote
 from botocore.config import Config
@@ -1861,3 +1862,158 @@ def test_request_validation_mode_member_set_by_user(
         params, checksum_operation_model, context=create_checksum_context()
     )
     assert params["ChecksumMode"] == "FAKE_VALUE"
+
+
+@pytest.mark.parametrize(
+    "signing_name, config_kwargs, auth_options, expected_signature_version",
+    [
+        # Case 1: Signature version explicitly set, no update to the signer.
+        (
+            "my-service",
+            {"signature_version": ClientConfigString("v4")},
+            ["aws.auth#sigv4", "smithy.api#httpBearerAuth"],
+            None,
+        ),
+        # Case 2: Auth scheme preference explicitly set and resolved.
+        (
+            "my-service",
+            {
+                "signature_version": "v4",
+                "auth_scheme_preference": ClientConfigString("httpBearerAuth"),
+            },
+            ["aws.auth#sigv4", "smithy.api#httpBearerAuth"],
+            "bearer",
+        ),
+        # Case 3: Auth scheme preference not explicitly set and resolved to first supported scheme.
+        (
+            "my-service",
+            {
+                "signature_version": "v4",
+                "auth_scheme_preference": "sigv4a,httpBearerAuth",
+            },
+            ["aws.auth#sigv4", "smithy.api#httpBearerAuth"],
+            "bearer",
+        ),
+        # Case 4: Auth scheme preference not supported by service
+        (
+            "my-service",
+            {
+                "signature_version": "v4",
+                "auth_scheme_preference": "scheme1,scheme2",
+            },
+            ["aws.auth#sigv4"],
+            None,
+        ),
+        # Case 5: Service does not have auth trait
+        (
+            "my-service",
+            {"signature_version": "v4"},
+            None,
+            None,
+        ),
+    ],
+)
+def test_set_auth_scheme_preference_signer(
+    monkeypatch,
+    signing_name,
+    config_kwargs,
+    auth_options,
+    expected_signature_version,
+):
+    config = Config(**config_kwargs)
+    context = {"client_config": config, "auth_options": auth_options}
+    signature_version = handlers._set_auth_scheme_preference_signer(
+        context, signing_name
+    )
+    assert (
+        signature_version == expected_signature_version
+    ), f"Expected '{expected_signature_version}' but got '{signature_version}'"
+
+
+@pytest.mark.parametrize(
+    "signing_name, config_kwargs, auth_options, env_token, expected_signature_version",
+    [
+        # Case 1: Bearer token present, no auth scheme preference, resolves to bearer.
+        (
+            "bedrock",
+            {"signature_version": "v4"},
+            ["aws.auth#sigv4", "smithy.api#httpBearerAuth"],
+            "test_token",
+            "bearer",
+        ),
+        # Case 2: Bearer token not present, fallback to default signature version.
+        (
+            "bedrock",
+            {"signature_version": "v4"},
+            ["aws.auth#sigv4", "smithy.api#httpBearerAuth"],
+            None,
+            None,
+        ),
+        # Case 3: Bearer token present, auth preference not set explicitly so token takes precedence.
+        (
+            "bedrock",
+            {
+                "signature_version": "v4",
+                "auth_scheme_preference": "sigv4",
+            },
+            ["aws.auth#sigv4", "smithy.api#httpBearerAuth"],
+            "test_token",
+            "bearer",
+        ),
+        # Case 4: Bearer token present, but auth scheme preference explicitly set to non-bearer.
+        (
+            "bedrock",
+            {
+                "signature_version": "v4",
+                "auth_scheme_preference": ClientConfigString(
+                    "noAuth,httpBearerAuth"
+                ),
+            },
+            ["smithy.api#httpBearerAuth", "smithy.api#noAuth"],
+            "test_token",
+            botocore.UNSIGNED,
+        ),
+        # Case 5: Bearer token present but service does not support bearer auth.
+        (
+            "foo-service",
+            {"signature_version": "v4"},
+            ["aws.auth#sigv4"],
+            "test_token",
+            None,
+        ),
+        # Case 6: Service has 'bedrock' signing name but does not support bearer auth.
+        (
+            "bedrock",
+            {
+                "signature_version": "v4",
+                "auth_scheme_preference": ClientConfigString("httpBearerAuth"),
+            },
+            ["aws.auth#sigv4"],
+            "test_token",
+            None,
+        ),
+    ],
+)
+def test_set_auth_scheme_preference_signer_with_bearer_token(
+    monkeypatch,
+    signing_name,
+    config_kwargs,
+    auth_options,
+    env_token,
+    expected_signature_version,
+):
+    env_var = "AWS_BEARER_TOKEN_BEDROCK"
+    if env_token is not None:
+        monkeypatch.setenv(env_var, env_token)
+    else:
+        monkeypatch.delenv(env_var, raising=False)
+
+    config = Config(**config_kwargs)
+    context = {"client_config": config, "auth_options": auth_options}
+
+    signature_version = handlers._set_auth_scheme_preference_signer(
+        context, signing_name
+    )
+    assert (
+        signature_version == expected_signature_version
+    ), f"Expected '{expected_signature_version}' but got '{signature_version}'"

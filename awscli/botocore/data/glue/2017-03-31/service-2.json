@@ -4372,7 +4372,8 @@
       "type":"string",
       "enum":[
         "performanceTuning.caching",
-        "observations.scope"
+        "observations.scope",
+        "compositeRuleEvaluation.method"
       ]
     },
     "AdditionalOptions":{
@@ -4911,6 +4912,20 @@
         }
       },
       "documentation":"<p>The set of properties required for the the OAuth2 <code>AUTHORIZATION_CODE</code> grant type workflow.</p>"
+    },
+    "AutoDataQuality":{
+      "type":"structure",
+      "members":{
+        "IsEnabled":{
+          "shape":"BooleanValue",
+          "documentation":"<p>Specifies whether automatic data quality evaluation is enabled. When set to <code>true</code>, data quality checks are performed automatically.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The evaluation context for the automatic data quality checks. This defines the scope and parameters for the data quality evaluation.</p>"
+        }
+      },
+      "documentation":"<p>Specifies configuration options for automatic data quality evaluation in Glue jobs. This structure enables automated data quality checks and monitoring during ETL operations, helping to ensure data integrity and reliability without manual intervention.</p>"
     },
     "BackfillError":{
       "type":"structure",
@@ -6216,6 +6231,37 @@
       },
       "documentation":"<p>Specifies a Hudi data source that is registered in the Glue Data Catalog.</p>"
     },
+    "CatalogIcebergSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the Iceberg data source.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        },
+        "AdditionalIcebergOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Specifies additional connection options for the Iceberg data source.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the Iceberg source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an Apache Iceberg data source that is registered in the Glue Data Catalog.</p>"
+    },
     "CatalogIdString":{
       "type":"string",
       "max":255,
@@ -6430,6 +6476,14 @@
         "Table":{
           "shape":"EnclosedInStringProperty",
           "documentation":"<p>The name of the table in the database to read from.</p>"
+        },
+        "PartitionPredicate":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p> Partitions satisfying this predicate are deleted. Files within the retention period in these partitions are not deleted. </p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the catalog source.</p>"
         }
       },
       "documentation":"<p>Specifies a data store in the Glue Data Catalog.</p>"
@@ -6589,10 +6643,6 @@
           "shape":"S3CsvSource",
           "documentation":"<p>Specifies a command-separated value (CSV) data store stored in Amazon S3.</p>"
         },
-        "S3ExcelSource":{
-          "shape":"S3ExcelSource",
-          "documentation":"<p>Defines configuration parameters for reading Excel files from Amazon S3.</p>"
-        },
         "S3JsonSource":{
           "shape":"S3JsonSource",
           "documentation":"<p>Specifies a JSON data store stored in Amazon S3.</p>"
@@ -6633,17 +6683,9 @@
           "shape":"S3GlueParquetTarget",
           "documentation":"<p>Specifies a data target that writes to Amazon S3 in Apache Parquet columnar storage.</p>"
         },
-        "S3HyperDirectTarget":{
-          "shape":"S3HyperDirectTarget",
-          "documentation":"<p>Defines configuration parameters for writing data to Amazon S3 using HyperDirect optimization.</p>"
-        },
         "S3DirectTarget":{
           "shape":"S3DirectTarget",
           "documentation":"<p>Specifies a data target that writes to Amazon S3.</p>"
-        },
-        "S3IcebergDirectTarget":{
-          "shape":"S3IcebergDirectTarget",
-          "documentation":"<p>Defines configuration parameters for writing data to Amazon S3 as an Apache Iceberg table.</p>"
         },
         "ApplyMapping":{
           "shape":"ApplyMapping",
@@ -6773,6 +6815,10 @@
           "shape":"PostgreSQLCatalogTarget",
           "documentation":"<p>Specifies a target that uses Postgres SQL.</p>"
         },
+        "Route":{
+          "shape":"Route",
+          "documentation":"<p>Specifies a route node that directs data to different output paths based on defined filtering conditions.</p>"
+        },
         "DynamicTransform":{
           "shape":"DynamicTransform",
           "documentation":"<p>Specifies a custom visual transform created by a user.</p>"
@@ -6853,6 +6899,34 @@
         "ConnectorDataTarget":{
           "shape":"ConnectorDataTarget",
           "documentation":"<p>Specifies a target generated with standard connection options.</p>"
+        },
+        "S3CatalogIcebergSource":{
+          "shape":"S3CatalogIcebergSource",
+          "documentation":"<p>Specifies an Apache Iceberg data source that is registered in the Glue Data Catalog. The Iceberg data source must be stored in Amazon S3.</p>"
+        },
+        "CatalogIcebergSource":{
+          "shape":"CatalogIcebergSource",
+          "documentation":"<p>Specifies an Apache Iceberg data source that is registered in the Glue Data Catalog.</p>"
+        },
+        "S3IcebergCatalogTarget":{
+          "shape":"S3IcebergCatalogTarget",
+          "documentation":"<p>Specifies an Apache Iceberg catalog target that writes data to Amazon S3 and registers the table in the Glue Data Catalog.</p>"
+        },
+        "S3IcebergDirectTarget":{
+          "shape":"S3IcebergDirectTarget",
+          "documentation":"<p>Defines configuration parameters for writing data to Amazon S3 as an Apache Iceberg table.</p>"
+        },
+        "S3ExcelSource":{
+          "shape":"S3ExcelSource",
+          "documentation":"<p>Defines configuration parameters for reading Excel files from Amazon S3.</p>"
+        },
+        "S3HyperDirectTarget":{
+          "shape":"S3HyperDirectTarget",
+          "documentation":"<p>Defines configuration parameters for writing data to Amazon S3 using HyperDirect optimization.</p>"
+        },
+        "DynamoDBELTConnectorSource":{
+          "shape":"DynamoDBELTConnectorSource",
+          "documentation":"<p>Specifies a DynamoDB ELT connector source for extracting data from DynamoDB tables.</p>"
         }
       },
       "documentation":"<p> <code>CodeGenConfigurationNode</code> enumerates all valid Node types. One and only one of its member variables can be populated.</p>"
@@ -9315,7 +9389,7 @@
         },
         "WorkerType":{
           "shape":"WorkerType",
-          "documentation":"<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p> <ul> <li> <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in the following Amazon Web Services Regions: US East (Ohio), US East (N. Virginia), US West (Oregon), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Canada (Central), Europe (Frankfurt), Europe (Ireland), and Europe (Stockholm).</p> </li> <li> <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs, in the same Amazon Web Services Regions as supported for the <code>G.4X</code> worker type.</p> </li> <li> <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p> </li> <li> <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p> </li> </ul>"
+          "documentation":"<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p> <ul> <li> <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in the following Amazon Web Services Regions: US East (Ohio), US East (N. Virginia), US West (N. California), US West (Oregon), Asia Pacific (Mumbai), Asia Pacific (Seoul), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Canada (Central), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Spain), Europe (Stockholm), and South America (São Paulo).</p> </li> <li> <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs, in the same Amazon Web Services Regions as supported for the <code>G.4X</code> worker type.</p> </li> <li> <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p> </li> <li> <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p> </li> </ul>"
         },
         "CodeGenConfigurationNodes":{
           "shape":"CodeGenConfigurationNodes",
@@ -10207,6 +10281,55 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"String"}
+    },
+    "DDBELTCatalogAdditionalOptions":{
+      "type":"structure",
+      "members":{
+        "DynamodbExport":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies the DynamoDB export configuration for the ELT operation.</p>"
+        },
+        "DynamodbUnnestDDBJson":{
+          "shape":"BooleanValue",
+          "documentation":"<p>Specifies whether to unnest DynamoDB JSON format. When set to <code>true</code>, nested JSON structures in DynamoDB items are flattened.</p>"
+        }
+      },
+      "documentation":"<p>Specifies additional options for DynamoDB ELT catalog operations.</p>"
+    },
+    "DDBELTConnectionOptions":{
+      "type":"structure",
+      "required":["DynamodbTableArn"],
+      "members":{
+        "DynamodbExport":{
+          "shape":"DdbExportType",
+          "documentation":"<p>Specifies the export type for DynamoDB data extraction. This parameter determines how data is exported from the DynamoDB table during the ELT process.</p>"
+        },
+        "DynamodbUnnestDDBJson":{
+          "shape":"BooleanValue",
+          "documentation":"<p>A boolean value that specifies whether to unnest DynamoDB JSON format during data extraction. When set to <code>true</code>, the connector will flatten nested JSON structures from DynamoDB items. When set to <code>false</code>, the original DynamoDB JSON structure is preserved.</p>"
+        },
+        "DynamodbTableArn":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the DynamoDB table to extract data from. This parameter specifies the source table for the ELT operation. </p>"
+        },
+        "DynamodbS3Bucket":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the Amazon S3 bucket used for intermediate storage during the DynamoDB ELT process. This bucket is used to temporarily store exported DynamoDB data before it is processed by the ELT job.</p>"
+        },
+        "DynamodbS3Prefix":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The S3 object key prefix for files stored in the intermediate S3 bucket during the DynamoDB ELT process. This prefix helps organize and identify the temporary files created during data extraction.</p>"
+        },
+        "DynamodbS3BucketOwner":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The Amazon Web Services account ID of the owner of the S3 bucket specified in <code>DynamodbS3Bucket</code>. This parameter is required when the S3 bucket is owned by a different Amazon Web Services account than the one running the ELT job, enabling cross-account access to the intermediate storage bucket.</p>"
+        },
+        "DynamodbStsRoleArn":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Security Token Service (STS) role to assume for accessing DynamoDB and S3 resources during the ELT operation. This role must have the necessary permissions to read from the DynamoDB table and write to the intermediate S3 bucket. </p>"
+        }
+      },
+      "documentation":"<p>Specifies connection options for DynamoDB ELT (Extract, Load, Transform) operations. This structure contains configuration parameters for connecting to and extracting data from DynamoDB tables using the ELT connector.</p>"
     },
     "DQAdditionalOptions":{
       "type":"map",
@@ -11125,6 +11248,13 @@
         }
       },
       "documentation":"<p>Defines column statistics supported for timestamp data columns.</p>"
+    },
+    "DdbExportType":{
+      "type":"string",
+      "enum":[
+        "ddb",
+        "s3"
+      ]
     },
     "DecimalColumnStatisticsData":{
       "type":"structure",
@@ -12291,6 +12421,10 @@
         "RedshiftTmpDir":{
           "shape":"EnclosedInStringProperty",
           "documentation":"<p>The temp directory of the JDBC Redshift source.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the direct JDBC source.</p>"
         }
       },
       "documentation":"<p>Specifies the direct JDBC source connection.</p>"
@@ -12543,9 +12677,36 @@
         "Table":{
           "shape":"EnclosedInStringProperty",
           "documentation":"<p>The name of the table in the database to read from.</p>"
+        },
+        "PitrEnabled":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether Point-in-Time Recovery (PITR) is enabled for the DynamoDB table. When set to <code>true</code>, allows reading from a specific point in time. The default value is <code>false</code>.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"DDBELTCatalogAdditionalOptions",
+          "documentation":"<p>Specifies additional connection options for the DynamoDB data source.</p>"
         }
       },
       "documentation":"<p>Specifies a DynamoDB data source in the Glue Data Catalog.</p>"
+    },
+    "DynamoDBELTConnectorSource":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the DynamoDB ELT connector source.</p>"
+        },
+        "ConnectionOptions":{
+          "shape":"DDBELTConnectionOptions",
+          "documentation":"<p>The connection options for the DynamoDB ELT connector source.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the DynamoDB ELT connector source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a DynamoDB ELT connector source for extracting data from DynamoDB tables.</p>"
     },
     "DynamoDBTarget":{
       "type":"structure",
@@ -16388,6 +16549,10 @@
         "Type":{
           "shape":"ColumnTypeString",
           "documentation":"<p>The hive type for this column in the Glue Studio schema.</p>"
+        },
+        "GlueStudioType":{
+          "shape":"ColumnTypeString",
+          "documentation":"<p>The data type of the column as defined in Glue Studio.</p>"
         }
       },
       "documentation":"<p>Specifies a single column in a Glue schema definition.</p>"
@@ -16556,6 +16721,33 @@
       "max":2048,
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\t]*"
+    },
+    "GroupFilters":{
+      "type":"structure",
+      "required":[
+        "GroupName",
+        "Filters",
+        "LogicalOperator"
+      ],
+      "members":{
+        "GroupName":{
+          "shape":"GenericLimitedString",
+          "documentation":"<p>The name of the filter group.</p>"
+        },
+        "Filters":{
+          "shape":"FilterExpressions",
+          "documentation":"<p>A list of filter expressions that define the conditions for this group.</p>"
+        },
+        "LogicalOperator":{
+          "shape":"FilterLogicalOperator",
+          "documentation":"<p>The logical operator used to combine the filters in this group. Determines whether all filters must match (AND) or any filter can match (OR).</p>"
+        }
+      },
+      "documentation":"<p>Specifies a group of filters with a logical operator that determines how the filters are combined to evaluate routing conditions.</p>"
+    },
+    "GroupFiltersList":{
+      "type":"list",
+      "member":{"shape":"GroupFilters"}
     },
     "HashString":{
       "type":"string",
@@ -17719,7 +17911,7 @@
         },
         "WorkerType":{
           "shape":"WorkerType",
-          "documentation":"<p>The type of predefined worker that is allocated when a job runs. Accepts a value of G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs. Accepts the value Z.2X for Ray jobs.</p> <ul> <li> <p>For the <code>G.1X</code> worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of memory) with 94GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.2X</code> worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of memory) with 138GB disk, and provides 1 executor per worker. We recommend this worker type for workloads such as data transforms, joins, and queries, to offers a scalable and cost effective way to run most jobs.</p> </li> <li> <p>For the <code>G.4X</code> worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of memory) with 256GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs in the following Amazon Web Services Regions: US East (Ohio), US East (N. Virginia), US West (Oregon), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Canada (Central), Europe (Frankfurt), Europe (Ireland), and Europe (Stockholm).</p> </li> <li> <p>For the <code>G.8X</code> worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of memory) with 512GB disk, and provides 1 executor per worker. We recommend this worker type for jobs whose workloads contain your most demanding transforms, aggregations, joins, and queries. This worker type is available only for Glue version 3.0 or later Spark ETL jobs, in the same Amazon Web Services Regions as supported for the <code>G.4X</code> worker type.</p> </li> <li> <p>For the <code>G.025X</code> worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of memory) with 84GB disk, and provides 1 executor per worker. We recommend this worker type for low volume streaming jobs. This worker type is only available for Glue version 3.0 or later streaming jobs.</p> </li> <li> <p>For the <code>Z.2X</code> worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of memory) with 128 GB disk, and provides up to 8 Ray workers based on the autoscaler.</p> </li> </ul>"
+          "documentation":"<p>The type of predefined worker that is allocated when a job runs.</p> <p>Glue provides multiple worker types to accommodate different workload requirements:</p> <p>G Worker Types (General-purpose compute workers):</p> <ul> <li> <p>G.1X: 1 DPU (4 vCPUs, 16 GB memory, 94GB disk)</p> </li> <li> <p>G.2X: 2 DPU (8 vCPUs, 32 GB memory, 138GB disk)</p> </li> <li> <p>G.4X: 4 DPU (16 vCPUs, 64 GB memory, 256GB disk)</p> </li> <li> <p>G.8X: 8 DPU (32 vCPUs, 128 GB memory, 512GB disk)</p> </li> <li> <p>G.12X: 12 DPU (48 vCPUs, 192 GB memory, 768GB disk)</p> </li> <li> <p>G.16X: 16 DPU (64 vCPUs, 256 GB memory, 1024GB disk)</p> </li> </ul> <p>R Worker Types (Memory-optimized workers):</p> <ul> <li> <p>R.1X: 1 M-DPU (4 vCPUs, 32 GB memory)</p> </li> <li> <p>R.2X: 2 M-DPU (8 vCPUs, 64 GB memory)</p> </li> <li> <p>R.4X: 4 M-DPU (16 vCPUs, 128 GB memory)</p> </li> <li> <p>R.8X: 8 M-DPU (32 vCPUs, 256 GB memory)</p> </li> </ul>"
         },
         "NumberOfWorkers":{
           "shape":"NullableInteger",
@@ -18425,6 +18617,10 @@
         "StartingTimestamp":{
           "shape":"Iso8601DateTime",
           "documentation":"<p>The timestamp of the record in the Kinesis data stream to start reading data from. The possible values are a timestamp string in UTC format of the pattern <code>yyyy-mm-ddTHH:MM:SSZ</code> (where Z represents a UTC timezone offset with a +/-. For example: \"2023-04-04T08:00:00+08:00\"). </p>"
+        },
+        "FanoutConsumerARN":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Kinesis Data Streams enhanced fan-out consumer. When specified, enables enhanced fan-out for dedicated throughput and lower latency data consumption.</p>"
         }
       },
       "documentation":"<p>Additional options for the Amazon Kinesis streaming data source.</p>"
@@ -20582,6 +20778,34 @@
         "MaskValue":{
           "shape":"MaskValue",
           "documentation":"<p>Indicates the value that will replace the detected entity. </p>"
+        },
+        "RedactText":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies whether to redact the detected PII text. When set to <code>true</code>, PII content is replaced with redaction characters.</p>"
+        },
+        "RedactChar":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The character used to replace detected PII content when redaction is enabled. The default redaction character is <code>*</code>.</p>"
+        },
+        "MatchPattern":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>A regular expression pattern used to identify additional PII content beyond the standard detection algorithms.</p>"
+        },
+        "NumLeftCharsToExclude":{
+          "shape":"BoxedPositiveInt",
+          "documentation":"<p>The number of characters to exclude from redaction on the left side of detected PII content. This allows preserving context around the sensitive data.</p>"
+        },
+        "NumRightCharsToExclude":{
+          "shape":"BoxedPositiveInt",
+          "documentation":"<p>The number of characters to exclude from redaction on the right side of detected PII content. This allows preserving context around the sensitive data.</p>"
+        },
+        "DetectionParameters":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Additional parameters for configuring PII detection behavior and sensitivity settings.</p>"
+        },
+        "DetectionSensitivity":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The sensitivity level for PII detection. Higher sensitivity levels detect more potential PII but may result in more false positives.</p>"
         }
       },
       "documentation":"<p>Specifies a transform that identifies, removes or masks PII data.</p>"
@@ -20889,8 +21113,11 @@
       "type":"string",
       "enum":[
         "RowAudit",
+        "RowHashing",
         "RowMasking",
+        "RowPartialMasking",
         "ColumnAudit",
+        "ColumnHashing",
         "ColumnMasking"
       ]
     },
@@ -21987,6 +22214,29 @@
       "pattern":"arn:aws:iam::\\d{12}:role/.*"
     },
     "RoleString":{"type":"string"},
+    "Route":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "GroupFiltersList"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the route node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The input connection for the route node.</p>"
+        },
+        "GroupFiltersList":{
+          "shape":"GroupFiltersList",
+          "documentation":"<p>A list of group filters that define the routing conditions and criteria for directing data to different output paths.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a route node that directs data to different output paths based on defined filtering conditions.</p>"
+    },
     "RowTag":{"type":"string"},
     "RuleMetricsMap":{
       "type":"map",
@@ -22134,6 +22384,37 @@
       },
       "documentation":"<p>Specifies a Hudi data source that is registered in the Glue Data Catalog. The Hudi data source must be stored in Amazon S3.</p>"
     },
+    "S3CatalogIcebergSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the Iceberg data source.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        },
+        "AdditionalIcebergOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Specifies additional connection options for the Iceberg data source.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the Iceberg source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an Apache Iceberg data source that is registered in the Glue Data Catalog. The Iceberg data source must be stored in Amazon S3.</p>"
+    },
     "S3CatalogSource":{
       "type":"structure",
       "required":[
@@ -22197,6 +22478,10 @@
         "SchemaChangePolicy":{
           "shape":"CatalogSchemaChangePolicy",
           "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+        },
+        "AutoDataQuality":{
+          "shape":"AutoDataQuality",
+          "documentation":"<p>Specifies whether to automatically enable data quality evaluation for the S3 catalog target. When set to <code>true</code>, data quality checks are performed automatically during the write operation.</p>"
         }
       },
       "documentation":"<p>Specifies a data target that writes to Amazon S3 using the Glue Data Catalog.</p>"
@@ -22325,6 +22610,14 @@
         "SchemaChangePolicy":{
           "shape":"CatalogSchemaChangePolicy",
           "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+        },
+        "AutoDataQuality":{
+          "shape":"AutoDataQuality",
+          "documentation":"<p>Specifies whether to automatically enable data quality evaluation for the S3 Delta catalog target. When set to <code>true</code>, data quality checks are performed automatically during the write operation.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the S3 Delta catalog target.</p>"
         }
       },
       "documentation":"<p>Specifies a target that writes to a Delta Lake data source in the Glue Data Catalog.</p>"
@@ -22374,6 +22667,10 @@
         "SchemaChangePolicy":{
           "shape":"DirectSchemaChangePolicy",
           "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+        },
+        "AutoDataQuality":{
+          "shape":"AutoDataQuality",
+          "documentation":"<p>Specifies whether to automatically enable data quality evaluation for the S3 Delta direct target. When set to <code>true</code>, data quality checks are performed automatically during the write operation.</p>"
         }
       },
       "documentation":"<p>Specifies a target that writes to a Delta Lake data source in Amazon S3.</p>"
@@ -22470,6 +22767,14 @@
         "SchemaChangePolicy":{
           "shape":"DirectSchemaChangePolicy",
           "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+        },
+        "AutoDataQuality":{
+          "shape":"AutoDataQuality",
+          "documentation":"<p>Specifies whether to automatically enable data quality evaluation for the S3 direct target. When set to <code>true</code>, data quality checks are performed automatically during the write operation.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the S3 direct target.</p>"
         }
       },
       "documentation":"<p>Specifies a data target that writes to Amazon S3.</p>"
@@ -22557,7 +22862,7 @@
         },
         "OutputSchemas":{
           "shape":"GlueSchemas",
-          "documentation":"<p>The AWS Glue schemas to apply to the processed data.</p>"
+          "documentation":"<p>The Glue schemas to apply to the processed data.</p>"
         }
       },
       "documentation":"<p>Specifies an S3 Excel data source.</p>"
@@ -22592,11 +22897,15 @@
         },
         "NumberTargetPartitions":{
           "shape":"NumberTargetPartitionsString",
-          "documentation":"<p>Specifies the number of target partitions for Parquet files when writing to Amazon S3 using AWS Glue.</p>"
+          "documentation":"<p>Specifies the number of target partitions for Parquet files when writing to Amazon S3 using Glue.</p>"
         },
         "SchemaChangePolicy":{
           "shape":"DirectSchemaChangePolicy",
           "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+        },
+        "AutoDataQuality":{
+          "shape":"AutoDataQuality",
+          "documentation":"<p>Specifies whether to automatically enable data quality evaluation for the S3 Glue Parquet target. When set to <code>true</code>, data quality checks are performed automatically during the write operation.</p>"
         }
       },
       "documentation":"<p>Specifies a data target that writes to Amazon S3 in Apache Parquet columnar storage.</p>"
@@ -22638,6 +22947,14 @@
         "SchemaChangePolicy":{
           "shape":"CatalogSchemaChangePolicy",
           "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+        },
+        "AutoDataQuality":{
+          "shape":"AutoDataQuality",
+          "documentation":"<p>Specifies whether to automatically enable data quality evaluation for the S3 Hudi catalog target. When set to <code>true</code>, data quality checks are performed automatically during the write operation.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the S3 Hudi catalog target.</p>"
         }
       },
       "documentation":"<p>Specifies a target that writes to a Hudi data source in the Glue Data Catalog.</p>"
@@ -22688,6 +23005,10 @@
         "SchemaChangePolicy":{
           "shape":"DirectSchemaChangePolicy",
           "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+        },
+        "AutoDataQuality":{
+          "shape":"AutoDataQuality",
+          "documentation":"<p>Specifies whether to automatically enable data quality evaluation for the S3 Hudi direct target. When set to <code>true</code>, data quality checks are performed automatically during the write operation.</p>"
         }
       },
       "documentation":"<p>Specifies a target that writes to a Hudi data source in Amazon S3.</p>"
@@ -22738,6 +23059,10 @@
           "shape":"OneInput",
           "documentation":"<p>Specifies the input source for the HyperDirect target.</p>"
         },
+        "Format":{
+          "shape":"TargetFormat",
+          "documentation":"<p>Specifies the data output format for the HyperDirect target.</p>"
+        },
         "PartitionKeys":{
           "shape":"GlueStudioPathList",
           "documentation":"<p>Defines the partitioning strategy for the output data.</p>"
@@ -22753,9 +23078,61 @@
         "SchemaChangePolicy":{
           "shape":"DirectSchemaChangePolicy",
           "documentation":"<p>Defines how schema changes are handled during write operations.</p>"
+        },
+        "AutoDataQuality":{
+          "shape":"AutoDataQuality",
+          "documentation":"<p>Specifies whether to automatically enable data quality evaluation for the S3 Hyper direct target. When set to <code>true</code>, data quality checks are performed automatically during the write operation.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the S3 Hyper direct target.</p>"
         }
       },
       "documentation":"<p>Specifies a HyperDirect data target that writes to Amazon S3.</p>"
+    },
+    "S3IcebergCatalogTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Table",
+        "Database"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the Iceberg catalog target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The input connection for the Iceberg catalog target.</p>"
+        },
+        "PartitionKeys":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>A list of partition keys for the Iceberg table.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table to write to in the catalog.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to write to.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Specifies additional connection options for the Iceberg catalog target.</p>"
+        },
+        "SchemaChangePolicy":{
+          "shape":"CatalogSchemaChangePolicy",
+          "documentation":"<p>The policy for handling schema changes in the catalog target.</p>"
+        },
+        "AutoDataQuality":{
+          "shape":"AutoDataQuality",
+          "documentation":"<p>Specifies whether to automatically enable data quality evaluation for the S3 Iceberg catalog target. When set to <code>true</code>, data quality checks are performed automatically during the write operation.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an Apache Iceberg catalog target that writes data to Amazon S3 and registers the table in the Glue Data Catalog.</p>"
     },
     "S3IcebergDirectTarget":{
       "type":"structure",
@@ -22795,6 +23172,7 @@
           "shape":"DirectSchemaChangePolicy",
           "documentation":"<p>Defines how schema changes are handled when writing data to the Iceberg table.</p>"
         },
+        "AutoDataQuality":{"shape":"AutoDataQuality"},
         "Compression":{
           "shape":"IcebergTargetCompressionType",
           "documentation":"<p>Specifies the compression codec used for Iceberg table files in S3.</p>"
@@ -22802,6 +23180,10 @@
         "NumberTargetPartitions":{
           "shape":"NumberTargetPartitionsString",
           "documentation":"<p>Sets the number of target partitions for distributing Iceberg table files across S3.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the S3 Iceberg direct target.</p>"
         }
       },
       "documentation":"<p>Specifies a target that writes to an Iceberg data source in Amazon S3.</p>"

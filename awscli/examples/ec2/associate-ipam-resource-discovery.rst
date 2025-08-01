@@ -4,7 +4,7 @@ In this example, you are an IPAM delegated admin and a resource discovery has be
 
 Note
 
-* To complete this request, you'll need the resource discovery ID which you can get with `describe-ipam-resource-discoveries <https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-ipam-resource-discoveries.html>`__ and the IPAM ID which you can get with `describe-ipams <https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-ipams.html>`__.
+* To complete this request, you'll need the resource discovery ID which you can get with `describe-ipam-resource-discoveries <https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-ipam-resource-discoveries.html>`__ and the IPAM ID which you can get with `describe-ipams <https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-ipams.html>`__.
 * The resource discovery that you are associating must have first been shared with your account using AWS RAM.
 * The ``--region`` you enter must match the home Region of the IPAM you are associating it with.
 

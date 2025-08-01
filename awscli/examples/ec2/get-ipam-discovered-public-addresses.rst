@@ -1,6 +1,6 @@
 **To view discovered public IP addresses**
 
-In this example, you are an IPAM delegated admin and you want to view the IP addresses of resources discovered by IPAM. You can get the resource discovery ID with `describe-ipam-resource-discoveries <https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-ipam-resource-discoveries.html>`__.
+In this example, you are an IPAM delegated admin and you want to view the IP addresses of resources discovered by IPAM. You can get the resource discovery ID with `describe-ipam-resource-discoveries <https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-ipam-resource-discoveries.html>`__.
 
 The following ``get-ipam-discovered-public-addresses`` example shows the discovered public IP addresses for a resource discovery. ::
 

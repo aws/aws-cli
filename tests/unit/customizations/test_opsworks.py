@@ -32,7 +32,7 @@ class TestOpsWorksBase(unittest.TestCase):
             mock.Mock(wraps=datetime.datetime)
         )
         mocked_datetime = self.datetime_patcher.start()
-        mocked_datetime.utcnow.return_value = datetime.datetime(
+        mocked_datetime.now.return_value = datetime.datetime(
             2013, 8, 9, 23, 42)
 
     def tearDown(self):

@@ -16,13 +16,12 @@ import sys
 import zipfile
 import tempfile
 import contextlib
-from datetime import datetime
 
 from botocore.exceptions import ClientError
 
 from awscli.customizations.codedeploy.utils import validate_s3_location
 from awscli.customizations.commands import BasicCommand
-from awscli.compat import BytesIO, ZIP_COMPRESSION_MODE
+from awscli.compat import BytesIO, ZIP_COMPRESSION_MODE, get_current_datetime
 from awscli.utils import create_nested_client
 
 ONE_MB = 1 << 20
@@ -132,7 +131,7 @@ class Push(BasicCommand):
         if not parsed_args.description:
             parsed_args.description = (
                 'Uploaded by AWS CLI {0} UTC'.format(
-                    datetime.utcnow().isoformat()
+                    get_current_datetime().isoformat()
                 )
             )
 

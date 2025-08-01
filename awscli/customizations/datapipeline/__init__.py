@@ -12,10 +12,11 @@
 # language governing permissions and limitations under the License.
 
 import json
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from awscli.formatter import get_formatter
 from awscli.arguments import CustomArgument
+from awscli.compat import get_current_datetime
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.datapipeline import translator
 from awscli.customizations.datapipeline.createdefaultroles \
@@ -184,7 +185,7 @@ class QueryArgBuilder(object):
     """
     def __init__(self, current_time=None):
         if current_time is None:
-            current_time = datetime.utcnow()
+            current_time = get_current_datetime()
         self.current_time = current_time
 
     def build_query(self, parsed_args):

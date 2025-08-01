@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.28.1
+======
+
+* api-change:``auditmanager``: Added a note to Framework APIs (CreateAssessmentFramework, GetAssessmentFramework, UpdateAssessmentFramework) clarifying that the Controls object returns a partial response when called through Framework APIs. Added documentation that the Framework's controlSources parameter is no longer supported.
+* api-change:``observabilityadmin``: CloudWatch Observability Admin adds the ability to enable telemetry on AWS resources such as Amazon VPCs (Flow Logs) in customers AWS Accounts and Organizations. The release introduces new APIs to manage telemetry rules, which define telemetry settings to be applied on AWS resources.
+* api-change:``pcs``: Add support for IPv6 Networking for Clusters.
+* api-change:``sns``: Amazon SNS support for Amazon SQS fair queues
+* api-change:``aiops``: This release includes fix for InvestigationGroup timestamp conversion issue.
+* api-change:``arc-region-switch``: This is the initial SDK release for Region switch
+* api-change:``acm-pca``: Doc-only update to add more information to GetCertificate action.
+* api-change:``securityhub``: Release new resource detail type CodeRepository
+* api-change:``lightsail``: This release adds support for the Asia Pacific (Jakarta) (ap-southeast-3) Region.
+
+
 2.28.0
 ======
 

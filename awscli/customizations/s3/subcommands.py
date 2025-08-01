@@ -684,7 +684,6 @@ TRANSFER_ARGS = [
     REQUEST_PAYER,
     CHECKSUM_MODE,
     CHECKSUM_ALGORITHM,
-    NO_OVERWRITE,
 ]
 
 
@@ -1073,6 +1072,7 @@ class CpCommand(S3TransferCommand):
             METADATA_DIRECTIVE,
             EXPECTED_SIZE,
             RECURSIVE,
+            NO_OVERWRITE,
         ]
     )
 
@@ -1097,6 +1097,7 @@ class MvCommand(S3TransferCommand):
             METADATA_DIRECTIVE,
             RECURSIVE,
             VALIDATE_SAME_S3_PATHS,
+            NO_OVERWRITE,
         ]
     )
 
@@ -1142,7 +1143,7 @@ class SyncCommand(S3TransferCommand):
             }
         ]
         + TRANSFER_ARGS
-        + [METADATA, COPY_PROPS, METADATA_DIRECTIVE]
+        + [METADATA, COPY_PROPS, METADATA_DIRECTIVE, NO_OVERWRITE]
     )
 
 
@@ -1515,13 +1516,10 @@ class CommandArchitecture:
         Removing no-overwrite params from sync since file to
         be synced are already separated out using sync strategy
         """
+        params = self.parameters.copy()
         if self.cmd == 'sync':
-            return {
-                param: val
-                for param, val in self.parameters.items()
-                if param != 'no_overwrite'
-            }
-        return self.parameters
+            params.pop('no_overwrite', None)
+        return params
 
 
 # TODO: This class is fairly quirky in the sense that it is both a builder
@@ -1586,6 +1584,7 @@ class CommandParameters:
         elif len(paths) == 1:
             self.parameters['dest'] = paths[0]
         self._validate_streaming_paths()
+        self._validate_no_overwrite_for_download_streaming()
         self._validate_path_args()
         self._validate_sse_c_args()
         self._validate_not_s3_express_bucket_for_sync()
@@ -1616,7 +1615,6 @@ class CommandParameters:
             self.parameters['is_stream'] = True
             self.parameters['dir_op'] = False
             self.parameters['only_show_errors'] = True
-            self._validate_no_overwrite_for_download_streaming()
 
     def _validate_path_args(self):
         # If we're using a mv command, you can't copy the object onto itself.
@@ -1851,8 +1849,11 @@ class CommandParameters:
         Raises:
             ParamValidationError: If no-overwrite is specified with a streaming download.
         """
-        params = self.parameters
-        if params['paths_type'] == 's3local' and params.get('no_overwrite'):
+        if (
+            self.parameters['is_stream']
+            and self.parameters.get('no_overwrite')
+            and self.parameters['dest'] == '-'
+        ):
             raise ParamValidationError(
                 "--no-overwrite parameter is not supported for "
                 "streaming downloads"

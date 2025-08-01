@@ -464,9 +464,7 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         fileout = self._get_fileout(fileinfo)
         if os.path.exists(fileout):
             LOGGER.debug(
-                "Warning: Skipping file %s as it already exists on %s",
-                fileinfo.src,
-                fileinfo.dest,
+                f"warning: skipping {fileinfo.src} -> {fileinfo.dest}, file exists at destination"
             )
             return True
         return False
@@ -543,9 +541,7 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
         try:
             client.head_object(Bucket=bucket, Key=key)
             LOGGER.debug(
-                "Warning: Skipping file %s as it already exists on %s",
-                fileinfo.src,
-                fileinfo.dest,
+                f"warning: skipping {fileinfo.src} -> {fileinfo.dest}, file exists at destination"
             )
             return True
         except ClientError as e:

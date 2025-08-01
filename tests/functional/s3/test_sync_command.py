@@ -546,7 +546,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.files.create_file("new_file.txt", "mycontent")
         self.parsed_responses = [
             self.list_objects_response(['file.txt']),
-            self.get_object_response(),
+            {'ETag': '"c8afdb36c52cf4727836669019e69222"'},
         ]
         cmdline = (
             f'{self.prefix} {self.files.rootdir} s3://bucket --no-overwrite'

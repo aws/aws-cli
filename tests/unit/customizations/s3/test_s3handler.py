@@ -681,7 +681,6 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
             self.assertIsInstance(actual_subscriber, ref_subscribers[i])
 
     def test_skip_download_when_no_overwrite_and_file_exists(self):
-        """Testing warn_if_file_exists_with_no_overwrite handler when file exists at destination"""
         self.cli_params['no_overwrite'] = True
         fileinfo = self.create_file_info(self.key)
         with mock.patch('os.path.exists', return_value=True):
@@ -694,7 +693,6 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assert_no_downloads_happened()
 
     def test_proceed_download_when_no_overwrite_and_file_not_exists(self):
-        """Testing warn_if_file_exists_with_no_overwrite handler when file does not exist at destination"""
         self.cli_params['no_overwrite'] = True
         fileinfo = self.create_file_info(self.key)
         with mock.patch('os.path.exists', return_value=False):
@@ -960,7 +958,6 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
             self.assertIsInstance(actual_subscriber, ref_subscribers[i])
 
     def test_skip_copy_with_no_overwrite_and_zero_byte_file_exists(self):
-        """Testing warn_if_zero_byte_file_exists_with_no_overwrite handler when zero byte exists"""
         self.cli_params['no_overwrite'] = True
         fileinfo = FileInfo(
             src=self.source_bucket + "/" + self.source_key,
@@ -980,7 +977,6 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
     def test_proceed_copy_with_no_overwrite_and_zero_byte_file_does_not_exist(
         self,
     ):
-        """Testing warn_if_zero_byte_file_exists_with_no_overwrite handler when zero byte does not exist"""
         self.cli_params['no_overwrite'] = True
         fileinfo = FileInfo(
             src=self.source_bucket + "/" + self.source_key,

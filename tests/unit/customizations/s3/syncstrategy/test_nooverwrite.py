@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -12,99 +12,85 @@
 # language governing permissions and limitations under the License.
 import datetime
 
+import pytest
+
 from awscli.customizations.s3.filegenerator import FileStat
 from awscli.customizations.s3.syncstrategy.nooverwrite import NoOverwriteSync
-from awscli.testutils import unittest
 
 
-class TestNoOverwriteSync(unittest.TestCase):
-    def setUp(self):
-        self.sync_strategy = NoOverwriteSync()
-
-    def test_file_does_not_exist_at_destination(self):
-        """
-        Confirms that files are synced when not present at destination.
-        """
-        time_src = datetime.datetime.now()
-
-        src_file = FileStat(
-            src='',
-            dest='',
-            compare_key='test.py',
-            size=10,
-            last_update=time_src,
-            src_type='s3',
-            dest_type='local',
-            operation_name='download',
-        )
-        dest_file = None
-        should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dest_file
-        )
-        self.assertTrue(should_sync)
-
-    def test_file_exists_at_destination_with_different_key(self):
-        """
-        Confirms that files are synced when key differs.
-        """
-        time_src = datetime.datetime.now()
-
-        src_file = FileStat(
-            src='',
-            dest='',
-            compare_key='test.py',
-            size=10,
-            last_update=time_src,
-            src_type='s3',
-            dest_type='s3',
-            operation_name='copy',
-        )
-        dest_file = FileStat(
-            src='',
-            dest='',
-            compare_key='test1.py',
-            size=100,
-            last_update=time_src,
-            src_type='s3',
-            dest_type='s3',
-            operation_name='',
-        )
-        should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dest_file
-        )
-        self.assertTrue(should_sync)
-
-    def test_file_exists_at_destination_with_same_key(self):
-        """
-        Confirm that files with the same key are not synced.
-        """
-        time_src = datetime.datetime.now()
-
-        src_file = FileStat(
-            src='',
-            dest='',
-            compare_key='test.py',
-            size=10,
-            last_update=time_src,
-            src_type='local',
-            dest_type='s3',
-            operation_name='upload',
-        )
-        dest_file = FileStat(
-            src='',
-            dest='',
-            compare_key='test.py',
-            size=100,
-            last_update=time_src,
-            src_type='local',
-            dest_type='s3',
-            operation_name='',
-        )
-        should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dest_file
-        )
-        self.assertFalse(should_sync)
+@pytest.fixture
+def sync_strategy():
+    return NoOverwriteSync()
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_file_does_not_exist_at_destination(sync_strategy):
+    time_src = datetime.datetime.now()
+
+    src_file = FileStat(
+        src='',
+        dest='',
+        compare_key='test.py',
+        size=10,
+        last_update=time_src,
+        src_type='s3',
+        dest_type='local',
+        operation_name='download',
+    )
+    dest_file = None
+    should_sync = sync_strategy.determine_should_sync(src_file, dest_file)
+    assert should_sync
+
+
+def test_file_exists_at_destination_with_different_key(sync_strategy):
+    time_src = datetime.datetime.now()
+
+    src_file = FileStat(
+        src='',
+        dest='',
+        compare_key='test.py',
+        size=10,
+        last_update=time_src,
+        src_type='s3',
+        dest_type='s3',
+        operation_name='copy',
+    )
+    dest_file = FileStat(
+        src='',
+        dest='',
+        compare_key='test1.py',
+        size=100,
+        last_update=time_src,
+        src_type='s3',
+        dest_type='s3',
+        operation_name='',
+    )
+    should_sync = sync_strategy.determine_should_sync(src_file, dest_file)
+    assert should_sync
+
+
+def test_file_exists_at_destination_with_same_key():
+    sync_strategy = NoOverwriteSync('file_at_src_and_dest')
+    time_src = datetime.datetime.now()
+
+    src_file = FileStat(
+        src='',
+        dest='',
+        compare_key='test.py',
+        size=10,
+        last_update=time_src,
+        src_type='local',
+        dest_type='s3',
+        operation_name='upload',
+    )
+    dest_file = FileStat(
+        src='',
+        dest='',
+        compare_key='test.py',
+        size=100,
+        last_update=time_src,
+        src_type='local',
+        dest_type='s3',
+        operation_name='',
+    )
+    should_sync = sync_strategy.determine_should_sync(src_file, dest_file)
+    assert not should_sync

@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -27,19 +27,19 @@ class NoOverwriteSync(BaseSync):
 
     ARGUMENT = NO_OVERWRITE
 
+    def __init__(self, sync_type='file_not_at_dest'):
+        super().__init__(sync_type)
+
     def determine_should_sync(self, src_file, dest_file):
-        if not dest_file:
-            # Sync if file does not exist at destination
-            return True
-        elif src_file.compare_key != dest_file.compare_key:
-            # Sync if file exists at both source and destination but the
-            # source file's key is different than the destination file's key
-            return True
-        else:
-            # Skip if file exists at both source and destination
+        if self.sync_type == 'file_not_at_dest':
             LOG.debug(
-                "Warning: Skipping file %s as it already exists on %s",
-                src_file.src,
-                src_file.dest,
+                f"syncing: {src_file.src} -> {src_file.dest}, file does not exist at destination"
+            )
+            return True
+        elif self.sync_type == 'file_at_src_and_dest':
+            # Files exist at both locations must not be synced
+            LOG.debug(
+                f"warning: skipping {src_file.src} -> {src_file.dest}, file exists at destination"
             )
             return False
+        return False

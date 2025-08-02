@@ -4,7 +4,7 @@ In this example, you're a IPAM delegated admin who wants to delete an IPAM pool 
 
 To complete this request:
 
-* You'll need the IPAM pool ID which you can get with `describe-ipam-pools <https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-ipam-pools.html>`__. 
+* You'll need the IPAM pool ID which you can get with `describe-ipam-pools <https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-ipam-pools.html>`__. 
 * The ``--region`` must be the IPAM home Region.
 
 The following ``delete-ipam-pool`` example deletes an IPAM pool in your AWS account. ::

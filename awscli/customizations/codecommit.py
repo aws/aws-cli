@@ -16,13 +16,12 @@ import re
 import sys
 import logging
 import fileinput
-import datetime
 
 from botocore.auth import SigV4Auth
 from botocore.awsrequest import AWSRequest
 from botocore.compat import urlsplit
 from awscli.customizations.commands import BasicCommand
-from awscli.compat import NonTranslatedStdout
+from awscli.compat import NonTranslatedStdout, get_current_datetime
 
 logger = logging.getLogger('botocore.credentials')
 
@@ -150,7 +149,7 @@ class CodeCommitGetCommand(BasicCommand):
         request = AWSRequest()
         request.url = url_to_sign
         request.method = 'GIT'
-        now = datetime.datetime.utcnow()
+        now = get_current_datetime()
         request.context['timestamp'] = now.strftime('%Y%m%dT%H%M%S')
         split = urlsplit(request.url)
         # we don't want to include the port number in the signature

@@ -13,6 +13,7 @@
 
 import collections.abc as collections_abc
 import contextlib
+import datetime
 import io
 import locale
 import os
@@ -502,3 +503,13 @@ except ImportError:
         if _id:
             id = _id
         return distname, version, id
+
+
+def get_current_datetime(remove_tzinfo=True):
+    # TODO: Consolidate to botocore.compat.get_current_datetime
+    # after it's had time to bake to avoid import errors with
+    # mismatched versions.
+    datetime_now = datetime.datetime.now(datetime.timezone.utc)
+    if remove_tzinfo:
+        datetime_now = datetime_now.replace(tzinfo=None)
+    return datetime_now

@@ -24,7 +24,7 @@ import textwrap
 
 from botocore.exceptions import ClientError
 
-from awscli.compat import urlopen, ensure_text_type
+from awscli.compat import get_current_datetime, urlopen, ensure_text_type
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import create_client_from_parsed_globals
 
@@ -505,7 +505,7 @@ class OpsWorksRegister(BasicCommand):
             "Resource": arn,
         }
         if timeout is not None:
-            valid_until = datetime.datetime.utcnow() + timeout
+            valid_until = get_current_datetime() + timeout
             statement["Condition"] = {
                 "DateLessThan": {
                     "aws:CurrentTime":

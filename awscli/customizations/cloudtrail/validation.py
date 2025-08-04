@@ -19,7 +19,7 @@ import re
 import sys
 import zlib
 from zlib import error as ZLibError
-from datetime import datetime, timedelta
+from datetime import timedelta
 from dateutil import tz, parser
 
 from pyasn1.error import PyAsn1Error
@@ -29,6 +29,7 @@ from awscli.customizations.cloudtrail.utils import get_trail_by_arn, \
     get_account_id_from_arn
 from awscli.customizations.commands import BasicCommand
 from botocore.exceptions import ClientError
+from awscli.compat import get_current_datetime
 from awscli.schema import ParameterRequiredError
 from awscli.utils import create_nested_client
 
@@ -432,7 +433,7 @@ class DigestTraverser(object):
         :param end_date: Date to stop validating at (inclusive).
         """
         if end_date is None:
-            end_date = datetime.utcnow()
+            end_date = get_current_datetime()
         end_date = normalize_date(end_date)
         start_date = normalize_date(start_date)
         bucket = self.starting_bucket
@@ -735,7 +736,7 @@ class CloudTrailValidateLogs(BasicCommand):
         if args.end_time:
             self.end_time = normalize_date(parse_date(args.end_time))
         else:
-            self.end_time = normalize_date(datetime.utcnow())
+            self.end_time = normalize_date(get_current_datetime())
         if self.start_time > self.end_time:
             raise ValueError(('Invalid time range specified: start-time must '
                               'occur before end-time'))

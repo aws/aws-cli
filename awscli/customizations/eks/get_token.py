@@ -16,12 +16,13 @@ import json
 import os
 import sys
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 from botocore.signers import RequestSigner
 from botocore.model import ServiceId
 
 from awscli.formatter import get_formatter
 from awscli.utils import create_nested_client
+from awscli.compat import get_current_datetime
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print
 from awscli.customizations.utils import validate_mutually_exclusive
@@ -107,7 +108,7 @@ class GetTokenCommand(BasicCommand):
     ]
 
     def get_expiration_time(self):
-        token_expiration = datetime.utcnow() + timedelta(
+        token_expiration = get_current_datetime() + timedelta(
             minutes=TOKEN_EXPIRATION_MINS
         )
         return token_expiration.strftime('%Y-%m-%dT%H:%M:%SZ')

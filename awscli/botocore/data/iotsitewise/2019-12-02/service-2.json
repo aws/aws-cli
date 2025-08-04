@@ -216,7 +216,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ConflictingOperationException"}
       ],
-      "documentation":"<p>Creates an asset model from specified property and hierarchy definitions. You create assets from asset models. With asset models, you can easily create assets of the same type that have standardized definitions. Each asset created from a model inherits the asset model's property and hierarchy definitions. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/define-models.html\">Defining asset models</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>You can create two types of asset models, <code>ASSET_MODEL</code> or <code>COMPONENT_MODEL</code>.</p> <ul> <li> <p> <b>ASSET_MODEL</b> – (default) An asset model that you can use to create assets. Can't be included as a component in another asset model.</p> </li> <li> <p> <b>COMPONENT_MODEL</b> – A reusable component that you can include in the composite models of other asset models. You can't create assets directly from this type of asset model. </p> </li> </ul>",
+      "documentation":"<p>Creates an asset model from specified property and hierarchy definitions. You create assets from asset models. With asset models, you can easily create assets of the same type that have standardized definitions. Each asset created from a model inherits the asset model's property and hierarchy definitions. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/define-models.html\">Defining asset models</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>You can create three types of asset models, <code>ASSET_MODEL</code>, <code>COMPONENT_MODEL</code>, or an <code>INTERFACE</code>.</p> <ul> <li> <p> <b>ASSET_MODEL</b> – (default) An asset model that you can use to create assets. Can't be included as a component in another asset model.</p> </li> <li> <p> <b>COMPONENT_MODEL</b> – A reusable component that you can include in the composite models of other asset models. You can't create assets directly from this type of asset model. </p> </li> <li> <p> <b>INTERFACE</b> – An interface is a type of model that defines a standard structure that can be applied to different asset models.</p> </li> </ul>",
       "endpoint":{"hostPrefix":"api."}
     },
     "CreateAssetModelCompositeModel":{
@@ -457,6 +457,25 @@
       "documentation":"<p>Deletes a composite model. This action can't be undone. You must delete all assets created from a composite model before you can delete the model. Also, you can't delete a composite model if a parent asset model exists that contains a property formula expression that depends on the asset model that you want to delete. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/delete-assets-and-models.html\">Deleting assets and models</a> in the <i>IoT SiteWise User Guide</i>.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
+    "DeleteAssetModelInterfaceRelationship":{
+      "name":"DeleteAssetModelInterfaceRelationship",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/asset-models/{assetModelId}/interface/{interfaceAssetModelId}/asset-model-interface-relationship",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteAssetModelInterfaceRelationshipRequest"},
+      "output":{"shape":"DeleteAssetModelInterfaceRelationshipResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictingOperationException"}
+      ],
+      "documentation":"<p>Deletes an interface relationship between an asset model and an interface asset model.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
     "DeleteComputationModel":{
       "name":"DeleteComputationModel",
       "http":{
@@ -667,7 +686,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves information about an asset model.</p>",
+      "documentation":"<p>Retrieves information about an asset model. This includes details about the asset model's properties, hierarchies, composite models, and any interface relationships if the asset model implements interfaces.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
     "DescribeAssetModelCompositeModel":{
@@ -685,6 +704,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Retrieves information about an asset model composite model (also known as an asset model component). For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/custom-composite-models.html\">Custom composite models (Components)</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
+    "DescribeAssetModelInterfaceRelationship":{
+      "name":"DescribeAssetModelInterfaceRelationship",
+      "http":{
+        "method":"GET",
+        "requestUri":"/asset-models/{assetModelId}/interface/{interfaceAssetModelId}/asset-model-interface-relationship"
+      },
+      "input":{"shape":"DescribeAssetModelInterfaceRelationshipRequest"},
+      "output":{"shape":"DescribeAssetModelInterfaceRelationshipResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves information about an interface relationship between an asset model and an interface asset model.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
     "DescribeAssetProperty":{
@@ -1414,6 +1450,23 @@
       "documentation":"<p>Retrieves a paginated list of gateways.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
+    "ListInterfaceRelationships":{
+      "name":"ListInterfaceRelationships",
+      "http":{
+        "method":"GET",
+        "requestUri":"/interface/{interfaceAssetModelId}/asset-models"
+      },
+      "input":{"shape":"ListInterfaceRelationshipsRequest"},
+      "output":{"shape":"ListInterfaceRelationshipsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of asset models that have a specific interface asset model applied to them.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
     "ListPortals":{
       "name":"ListPortals",
       "http":{
@@ -1500,6 +1553,26 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Retrieves a paginated list of time series (data streams).</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
+    "PutAssetModelInterfaceRelationship":{
+      "name":"PutAssetModelInterfaceRelationship",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/asset-models/{assetModelId}/interface/{interfaceAssetModelId}/asset-model-interface-relationship",
+        "responseCode":202
+      },
+      "input":{"shape":"PutAssetModelInterfaceRelationshipRequest"},
+      "output":{"shape":"PutAssetModelInterfaceRelationshipResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConflictingOperationException"}
+      ],
+      "documentation":"<p>Creates or updates an interface relationship between an asset model and an interface asset model. This operation applies an interface to an asset model.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
     "PutDefaultEncryptionConfiguration":{
@@ -1954,7 +2027,7 @@
           "documentation":"<p>The detailed resource this action resolves to.</p>"
         }
       },
-      "documentation":"<p>Contains the summary of the actions.</p>"
+      "documentation":"<p>Contains the summary of the actions, including information about where the action resolves to.</p>"
     },
     "AdaptiveIngestion":{"type":"boolean"},
     "AggregateType":{
@@ -2620,9 +2693,13 @@
         "path":{
           "shape":"AssetModelPropertyPath",
           "documentation":"<p>The structured path to the property from the root of the asset model.</p>"
+        },
+        "interfaceSummaries":{
+          "shape":"InterfaceSummaries",
+          "documentation":"<p>A list of interface summaries that describe which interfaces this property belongs to, including the interface asset model ID and the corresponding property ID in the interface.</p>"
         }
       },
-      "documentation":"<p>Contains a summary of a property associated with a model.</p>"
+      "documentation":"<p>Contains a summary of a property associated with a model. This includes information about which interfaces the property belongs to, if any.</p>"
     },
     "AssetModelState":{
       "type":"string",
@@ -2713,7 +2790,8 @@
       "type":"string",
       "enum":[
         "ASSET_MODEL",
-        "COMPONENT_MODEL"
+        "COMPONENT_MODEL",
+        "INTERFACE"
       ]
     },
     "AssetModelVersionFilter":{
@@ -4883,6 +4961,7 @@
         }
       }
     },
+    "CreateMissingProperty":{"type":"boolean"},
     "CreatePortalRequest":{
       "type":"structure",
       "required":[
@@ -5345,6 +5424,58 @@
       "type":"structure",
       "required":["assetModelStatus"],
       "members":{
+        "assetModelStatus":{"shape":"AssetModelStatus"}
+      }
+    },
+    "DeleteAssetModelInterfaceRelationshipRequest":{
+      "type":"structure",
+      "required":[
+        "assetModelId",
+        "interfaceAssetModelId"
+      ],
+      "members":{
+        "assetModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model. This can be either the actual ID in UUID format, or else externalId: followed by the external ID.</p>",
+          "location":"uri",
+          "locationName":"assetModelId"
+        },
+        "interfaceAssetModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the interface asset model. This can be either the actual ID in UUID format, or else externalId: followed by the external ID.</p>",
+          "location":"uri",
+          "locationName":"interfaceAssetModelId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DeleteAssetModelInterfaceRelationshipResponse":{
+      "type":"structure",
+      "required":[
+        "assetModelId",
+        "interfaceAssetModelId",
+        "assetModelArn",
+        "assetModelStatus"
+      ],
+      "members":{
+        "assetModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset model.</p>"
+        },
+        "interfaceAssetModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the interface asset model.</p>"
+        },
+        "assetModelArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the asset model, which has the following format. <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset-model/${AssetModelId}</code> </p>"
+        },
         "assetModelStatus":{"shape":"AssetModelStatus"}
       }
     },
@@ -5862,6 +5993,54 @@
         }
       }
     },
+    "DescribeAssetModelInterfaceRelationshipRequest":{
+      "type":"structure",
+      "required":[
+        "assetModelId",
+        "interfaceAssetModelId"
+      ],
+      "members":{
+        "assetModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model. This can be either the actual ID in UUID format, or else externalId: followed by the external ID.</p>",
+          "location":"uri",
+          "locationName":"assetModelId"
+        },
+        "interfaceAssetModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the interface asset model. This can be either the actual ID in UUID format, or else externalId: followed by the external ID.</p>",
+          "location":"uri",
+          "locationName":"interfaceAssetModelId"
+        }
+      }
+    },
+    "DescribeAssetModelInterfaceRelationshipResponse":{
+      "type":"structure",
+      "required":[
+        "assetModelId",
+        "interfaceAssetModelId",
+        "propertyMappings",
+        "hierarchyMappings"
+      ],
+      "members":{
+        "assetModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset model.</p>"
+        },
+        "interfaceAssetModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the interface asset model.</p>"
+        },
+        "propertyMappings":{
+          "shape":"PropertyMappings",
+          "documentation":"<p>A list of property mappings between the interface asset model and the asset model where the interface is applied.</p>"
+        },
+        "hierarchyMappings":{
+          "shape":"HierarchyMappings",
+          "documentation":"<p>A list of hierarchy mappings between the interface asset model and the asset model where the interface is applied.</p>"
+        }
+      }
+    },
     "DescribeAssetModelRequest":{
       "type":"structure",
       "required":["assetModelId"],
@@ -5955,6 +6134,10 @@
         "assetModelVersion":{
           "shape":"Version",
           "documentation":"<p>The version of the asset model. See <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/model-active-version.html\"> Asset model versions</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+        },
+        "interfaceDetails":{
+          "shape":"InterfaceDetails",
+          "documentation":"<p>A list of interface details that describe the interfaces implemented by this asset model, including interface asset model IDs and property mappings.</p>"
         },
         "eTag":{
           "shape":"ETag",
@@ -7258,7 +7441,7 @@
     "Expression":{
       "type":"string",
       "max":1024,
-      "min":1
+      "min":0
     },
     "ExpressionVariable":{
       "type":"structure",
@@ -7785,6 +7968,28 @@
       },
       "documentation":"<p>Contains information for a group identity in an access policy.</p>"
     },
+    "HierarchyMapping":{
+      "type":"structure",
+      "required":[
+        "assetModelHierarchyId",
+        "interfaceAssetModelHierarchyId"
+      ],
+      "members":{
+        "assetModelHierarchyId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the hierarchy in the asset model where the interface is applied.</p>"
+        },
+        "interfaceAssetModelHierarchyId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the hierarchy in the interface asset model.</p>"
+        }
+      },
+      "documentation":"<p>Maps a hierarchy from an interface asset model to a hierarchy in the asset model where the interface is applied.</p>"
+    },
+    "HierarchyMappings":{
+      "type":"list",
+      "member":{"shape":"HierarchyMapping"}
+    },
     "IAMRoleIdentity":{
       "type":"structure",
       "required":["arn"],
@@ -7922,6 +8127,58 @@
       "max":67,
       "min":4,
       "pattern":"^\\$\\{[a-z][a-z0-9_]*\\}"
+    },
+    "InterfaceDetails":{
+      "type":"list",
+      "member":{"shape":"InterfaceRelationship"}
+    },
+    "InterfaceRelationship":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset model that has the interface applied to it.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the relationship between an asset model and an interface asset model that is applied to it.</p>"
+    },
+    "InterfaceRelationshipSummaries":{
+      "type":"list",
+      "member":{"shape":"InterfaceRelationshipSummary"}
+    },
+    "InterfaceRelationshipSummary":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset model that has the interface applied to it.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about an interface relationship, which defines how an interface is applied to an asset model. This summary provides the essential identifiers needed to retrieve detailed information about the relationship.</p>"
+    },
+    "InterfaceSummaries":{
+      "type":"list",
+      "member":{"shape":"InterfaceSummary"}
+    },
+    "InterfaceSummary":{
+      "type":"structure",
+      "required":[
+        "interfaceAssetModelId",
+        "interfaceAssetModelPropertyId"
+      ],
+      "members":{
+        "interfaceAssetModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the interface asset model that contains this property.</p>"
+        },
+        "interfaceAssetModelPropertyId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the property in the interface asset model that corresponds to this property.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about an interface that a property belongs to.</p>"
     },
     "InternalFailureException":{
       "type":"structure",
@@ -8347,7 +8604,7 @@
       "members":{
         "assetModelTypes":{
           "shape":"ListAssetModelsTypeFilter",
-          "documentation":"<p>The type of asset model. If you don't provide an <code>assetModelTypes</code>, all types of asset models are returned.</p> <ul> <li> <p> <b>ASSET_MODEL</b> – An asset model that you can use to create assets. Can't be included as a component in another asset model.</p> </li> <li> <p> <b>COMPONENT_MODEL</b> – A reusable component that you can include in the composite models of other asset models. You can't create assets directly from this type of asset model. </p> </li> </ul>",
+          "documentation":"<p>The type of asset model. If you don't provide an <code>assetModelTypes</code>, all types of asset models are returned.</p> <ul> <li> <p> <b>ASSET_MODEL</b> – An asset model that you can use to create assets. Can't be included as a component in another asset model.</p> </li> <li> <p> <b>COMPONENT_MODEL</b> – A reusable component that you can include in the composite models of other asset models. You can't create assets directly from this type of asset model. </p> </li> <li> <p> <b>INTERFACE</b> – An interface is a type of model that defines a standard structure that can be applied to different asset models.</p> </li> </ul>",
           "location":"querystring",
           "locationName":"assetModelTypes"
         },
@@ -8953,6 +9210,44 @@
         }
       }
     },
+    "ListInterfaceRelationshipsRequest":{
+      "type":"structure",
+      "required":["interfaceAssetModelId"],
+      "members":{
+        "interfaceAssetModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the interface asset model. This can be either the actual ID in UUID format, or else externalId: followed by the external ID.</p>",
+          "location":"uri",
+          "locationName":"interfaceAssetModelId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return for each paginated request. Default: 50</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListInterfaceRelationshipsResponse":{
+      "type":"structure",
+      "required":["interfaceRelationshipSummaries"],
+      "members":{
+        "interfaceRelationshipSummaries":{
+          "shape":"InterfaceRelationshipSummaries",
+          "documentation":"<p>A list that summarizes each interface relationship.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no additional results.</p>"
+        }
+      }
+    },
     "ListPortalsRequest":{
       "type":"structure",
       "members":{
@@ -9171,6 +9466,7 @@
       "min":1,
       "pattern":"[^\\u0000-\\u001F\\u007F]+"
     },
+    "MatchByPropertyName":{"type":"boolean"},
     "MatchedDataBinding":{
       "type":"structure",
       "required":["value"],
@@ -9220,11 +9516,7 @@
     },
     "Metric":{
       "type":"structure",
-      "required":[
-        "expression",
-        "variables",
-        "window"
-      ],
+      "required":["window"],
       "members":{
         "expression":{
           "shape":"Expression",
@@ -9592,6 +9884,46 @@
         "STRUCT"
       ]
     },
+    "PropertyMapping":{
+      "type":"structure",
+      "required":[
+        "assetModelPropertyId",
+        "interfaceAssetModelPropertyId"
+      ],
+      "members":{
+        "assetModelPropertyId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the property in the asset model where the interface is applied.</p>"
+        },
+        "interfaceAssetModelPropertyId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the property in the interface asset model.</p>"
+        }
+      },
+      "documentation":"<p>Maps a property from an interface asset model to a property in the asset model where the interface is applied.</p>"
+    },
+    "PropertyMappingConfiguration":{
+      "type":"structure",
+      "members":{
+        "matchByPropertyName":{
+          "shape":"MatchByPropertyName",
+          "documentation":"<p>If true, properties are matched by name between the interface asset model and the asset model where the interface is applied.</p>"
+        },
+        "createMissingProperty":{
+          "shape":"CreateMissingProperty",
+          "documentation":"<p>If true, missing properties from the interface asset model are automatically created in the asset model where the interface is applied.</p>"
+        },
+        "overrides":{
+          "shape":"PropertyMappings",
+          "documentation":"<p>A list of specific property mappings that override the automatic mapping by name when an interface is applied to an asset model.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration options for mapping properties from an interface asset model to an asset model where the interface is applied.</p>"
+    },
+    "PropertyMappings":{
+      "type":"list",
+      "member":{"shape":"PropertyMapping"}
+    },
     "PropertyNotification":{
       "type":"structure",
       "required":[
@@ -9661,6 +9993,61 @@
       "documentation":"<p>The value type of null asset property data with BAD and UNCERTAIN qualities.</p>"
     },
     "PropertyValueStringValue":{"type":"string"},
+    "PutAssetModelInterfaceRelationshipRequest":{
+      "type":"structure",
+      "required":[
+        "assetModelId",
+        "interfaceAssetModelId",
+        "propertyMappingConfiguration"
+      ],
+      "members":{
+        "assetModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model. This can be either the actual ID in UUID format, or else externalId: followed by the external ID.</p>",
+          "location":"uri",
+          "locationName":"assetModelId"
+        },
+        "interfaceAssetModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the interface asset model. This can be either the actual ID in UUID format, or else externalId: followed by the external ID.</p>",
+          "location":"uri",
+          "locationName":"interfaceAssetModelId"
+        },
+        "propertyMappingConfiguration":{
+          "shape":"PropertyMappingConfiguration",
+          "documentation":"<p>The configuration for mapping properties from the interface asset model to the asset model where the interface is applied. This configuration controls how properties are matched and created during the interface application process.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutAssetModelInterfaceRelationshipResponse":{
+      "type":"structure",
+      "required":[
+        "assetModelId",
+        "interfaceAssetModelId",
+        "assetModelArn",
+        "assetModelStatus"
+      ],
+      "members":{
+        "assetModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset model.</p>"
+        },
+        "interfaceAssetModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the interface asset model.</p>"
+        },
+        "assetModelArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the asset model, which has the following format. <code>arn:${Partition}:iotsitewise:${Region}:${Account}:asset-model/${AssetModelId}</code> </p>"
+        },
+        "assetModelStatus":{"shape":"AssetModelStatus"}
+      }
+    },
     "PutAssetPropertyValueEntries":{
       "type":"list",
       "member":{"shape":"PutAssetPropertyValueEntry"}
@@ -10136,7 +10523,7 @@
           "documentation":"<p>The ID of the computation model.</p>"
         }
       },
-      "documentation":"<p>The resource the action will be taken on.</p>"
+      "documentation":"<p>The resource the action will be taken on. This can include asset-based resources and computation model resources.</p>"
     },
     "TargetResourceType":{
       "type":"string",

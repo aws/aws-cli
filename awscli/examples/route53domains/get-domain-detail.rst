@@ -4,7 +4,7 @@ The following ``get-domain-detail`` command displays detailed information about 
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
-    aws route53domains get-domain-detail \ 
+    aws route53domains get-domain-detail \
         --region us-east-1 \
         --domain-name example.com
 
@@ -77,7 +77,7 @@ Output::
         "RegistrantPrivacy": true,
         "TechPrivacy": true,
         "RegistrarName": "Amazon Registrar, Inc.",
-        "WhoIsServer": "whois.registrar.amazon.com",
+        "WhoIsServer": "whois.registrar.amazon",
         "RegistrarUrl": "http://registrar.amazon.com",
         "AbuseContactEmail": "abuse@registrar.amazon.com",
         "AbuseContactPhone": "+1.2062661000",

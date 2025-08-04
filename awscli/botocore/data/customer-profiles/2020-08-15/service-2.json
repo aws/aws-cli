@@ -2204,6 +2204,40 @@
       },
       "documentation":"<p>The matching criteria to be used during the auto-merging process. </p>"
     },
+    "ContactPreference":{
+      "type":"structure",
+      "members":{
+        "KeyName":{
+          "shape":"name",
+          "documentation":"<p>A searchable, unique identifier of a customer profile.</p>"
+        },
+        "KeyValue":{
+          "shape":"string1To255",
+          "documentation":"<p>The key value used to look up profile based off the keyName.</p>"
+        },
+        "ProfileId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of a customer profile.</p>"
+        },
+        "ContactType":{
+          "shape":"ContactType",
+          "documentation":"<p>The contact type used for engagement. For example: HomePhoneNumber, PersonalEmailAddress.</p>"
+        }
+      },
+      "documentation":"<p>Object that defines users contact preference.</p>"
+    },
+    "ContactType":{
+      "type":"string",
+      "enum":[
+        "PhoneNumber",
+        "MobilePhoneNumber",
+        "HomePhoneNumber",
+        "BusinessPhoneNumber",
+        "EmailAddress",
+        "PersonalEmailAddress",
+        "BusinessEmailAddress"
+      ]
+    },
     "CreateCalculatedAttributeDefinitionRequest":{
       "type":"structure",
       "required":[
@@ -2793,6 +2827,14 @@
         "GenderString":{
           "shape":"sensitiveString1To255",
           "documentation":"<p>An alternative to <code>Gender</code> which accepts any string as input.</p>"
+        },
+        "ProfileType":{
+          "shape":"ProfileType",
+          "documentation":"<p>The type of the profile.</p>"
+        },
+        "EngagementPreferences":{
+          "shape":"EngagementPreferences",
+          "documentation":"<p>Object that defines the preferred methods of engagement, per channel.</p>"
         }
       }
     },
@@ -3562,7 +3604,26 @@
       "max":3,
       "min":1
     },
+    "EmailPreferenceList":{
+      "type":"list",
+      "member":{"shape":"ContactPreference"}
+    },
     "End":{"type":"integer"},
+    "EngagementPreferences":{
+      "type":"structure",
+      "members":{
+        "Phone":{
+          "shape":"PhonePreferenceList",
+          "documentation":"<p>A list of phone-related contact preferences</p>"
+        },
+        "Email":{
+          "shape":"EmailPreferenceList",
+          "documentation":"<p>A list of email-related contact preferences</p>"
+        }
+      },
+      "documentation":"<p>Object that defines users preferred methods of engagement.</p>",
+      "sensitive":true
+    },
     "EstimateStatus":{
       "type":"string",
       "enum":[
@@ -3922,6 +3983,14 @@
         "Attributes":{
           "shape":"AttributeSourceIdMap",
           "documentation":"<p>A unique identifier for the attributes field to be merged.</p>"
+        },
+        "ProfileType":{
+          "shape":"uuid",
+          "documentation":"<p>A unique identifier for the profile type field to be merged.</p>"
+        },
+        "EngagementPreferences":{
+          "shape":"uuid",
+          "documentation":"<p>A unique identifier for the engagement preferences field to be merged.</p>"
         }
       },
       "documentation":"<p>A duplicate customer profile that is to be merged into a main profile. </p>"
@@ -7009,6 +7078,10 @@
       "max":4,
       "min":1
     },
+    "PhonePreferenceList":{
+      "type":"list",
+      "member":{"shape":"ContactPreference"}
+    },
     "Profile":{
       "type":"structure",
       "members":{
@@ -7111,6 +7184,14 @@
         "GenderString":{
           "shape":"sensitiveString1To255",
           "documentation":"<p>An alternative to Gender which accepts any string as input.</p>"
+        },
+        "ProfileType":{
+          "shape":"ProfileType",
+          "documentation":"<p>The type of the profile.</p>"
+        },
+        "EngagementPreferences":{
+          "shape":"EngagementPreferences",
+          "documentation":"<p>The customer or account’s engagement preferences.</p>"
         }
       },
       "documentation":"<p>The standard profile of a customer.</p>"
@@ -7265,6 +7346,11 @@
           "shape":"CustomAttributes",
           "documentation":"<p>A field to describe values to segment on within attributes.</p>",
           "locationName":"Attributes"
+        },
+        "ProfileType":{
+          "shape":"ProfileTypeDimension",
+          "documentation":"<p>A field to describe values to segment on within profile type.</p>",
+          "locationName":"ProfileType"
         }
       },
       "documentation":"<p>The object used to segment on attributes within the customer profile.</p>",
@@ -7372,6 +7458,47 @@
         }
       },
       "documentation":"<p>Object that holds the results for membership.</p>"
+    },
+    "ProfileType":{
+      "type":"string",
+      "enum":[
+        "ACCOUNT_PROFILE",
+        "PROFILE"
+      ],
+      "sensitive":true
+    },
+    "ProfileTypeDimension":{
+      "type":"structure",
+      "required":[
+        "DimensionType",
+        "Values"
+      ],
+      "members":{
+        "DimensionType":{
+          "shape":"ProfileTypeDimensionType",
+          "documentation":"<p>The action to segment on.</p>",
+          "locationName":"DimensionType"
+        },
+        "Values":{
+          "shape":"ProfileTypeValues",
+          "documentation":"<p>The values to apply the DimensionType on.</p>",
+          "locationName":"Values"
+        }
+      },
+      "documentation":"<p>Object to hold the dimension of a profile type field to segment on.</p>"
+    },
+    "ProfileTypeDimensionType":{
+      "type":"string",
+      "enum":[
+        "INCLUSIVE",
+        "EXCLUSIVE"
+      ]
+    },
+    "ProfileTypeValues":{
+      "type":"list",
+      "member":{"shape":"ProfileType"},
+      "max":1,
+      "min":1
     },
     "Profiles":{
       "type":"list",
@@ -9075,6 +9202,14 @@
         "GenderString":{
           "shape":"sensitiveString0To255",
           "documentation":"<p>An alternative to <code>Gender</code> which accepts any string as input.</p>"
+        },
+        "ProfileType":{
+          "shape":"ProfileType",
+          "documentation":"<p>Determines the type of the profile.</p>"
+        },
+        "EngagementPreferences":{
+          "shape":"EngagementPreferences",
+          "documentation":"<p>Object that defines users preferred methods of engagement.</p>"
         }
       }
     },

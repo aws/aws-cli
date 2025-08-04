@@ -446,6 +446,16 @@
       "max":50,
       "min":1
     },
+    "ApplicationConfig":{
+      "type":"structure",
+      "members":{
+        "ContactHandling":{
+          "shape":"ContactHandling",
+          "documentation":"<p>The contact handling configuration for the application.</p>"
+        }
+      },
+      "documentation":"<p>The configuration settings for the application.</p>"
+    },
     "ApplicationName":{
       "type":"string",
       "max":255,
@@ -494,6 +504,10 @@
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the application was last modified.</p>"
+        },
+        "IsService":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the application is a service.</p>"
         }
       },
       "documentation":"<p>Summary information about the Application.</p>"
@@ -522,6 +536,7 @@
       "min":1,
       "pattern":"^(arn:aws:[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:[A-Za-z0-9_/.-]{0,63}:[A-Za-z0-9_/.-]{0,63}:[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,1023}|[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})(:[\\w\\$]+)?$"
     },
+    "Boolean":{"type":"boolean"},
     "ClientAssociationMetadata":{
       "type":"map",
       "key":{"shape":"NonBlankString"},
@@ -532,6 +547,23 @@
       "max":255,
       "min":1,
       "pattern":".*"
+    },
+    "ContactHandling":{
+      "type":"structure",
+      "members":{
+        "Scope":{
+          "shape":"ContactHandlingScope",
+          "documentation":"<p>Indicates whether the application refreshes for each contact or refreshes only with each new browser session.</p>"
+        }
+      },
+      "documentation":"<p>The contact handling configuration for the application.</p>"
+    },
+    "ContactHandlingScope":{
+      "type":"string",
+      "enum":[
+        "CROSS_CONTACTS",
+        "PER_CONTACT"
+      ]
     },
     "CreateApplicationRequest":{
       "type":"structure",
@@ -581,6 +613,22 @@
         "Permissions":{
           "shape":"PermissionList",
           "documentation":"<p>The configuration of events or requests that the application has access to.</p>"
+        },
+        "IsService":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the application is a service.</p>"
+        },
+        "InitializationTimeout":{
+          "shape":"InitializationTimeout",
+          "documentation":"<p>The maximum time in milliseconds allowed to establish a connection with the workspace.</p>"
+        },
+        "ApplicationConfig":{
+          "shape":"ApplicationConfig",
+          "documentation":"<p>The configuration settings for the application.</p>"
+        },
+        "IframeConfig":{
+          "shape":"IframeConfig",
+          "documentation":"<p>The iframe configuration for the application.</p>"
         }
       }
     },
@@ -854,8 +902,7 @@
     },
     "DeleteApplicationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDataIntegrationRequest":{
       "type":"structure",
@@ -871,8 +918,7 @@
     },
     "DeleteDataIntegrationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteEventIntegrationRequest":{
       "type":"structure",
@@ -888,8 +934,7 @@
     },
     "DeleteEventIntegrationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Description":{
       "type":"string",
@@ -1166,6 +1211,22 @@
         "Permissions":{
           "shape":"PermissionList",
           "documentation":"<p>The configuration of events or requests that the application has access to.</p>"
+        },
+        "IsService":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the application is a service.</p>"
+        },
+        "InitializationTimeout":{
+          "shape":"InitializationTimeout",
+          "documentation":"<p>The maximum time in milliseconds allowed to establish a connection with the workspace.</p>"
+        },
+        "ApplicationConfig":{
+          "shape":"ApplicationConfig",
+          "documentation":"<p>The configuration settings for the application.</p>"
+        },
+        "IframeConfig":{
+          "shape":"IframeConfig",
+          "documentation":"<p>The iframe configuration for the application.</p>"
         }
       }
     },
@@ -1278,6 +1339,39 @@
       "max":255,
       "min":1,
       "pattern":".*\\S.*"
+    },
+    "IframeConfig":{
+      "type":"structure",
+      "members":{
+        "Allow":{
+          "shape":"IframePermissionList",
+          "documentation":"<p>The list of features that are allowed in the iframe.</p>"
+        },
+        "Sandbox":{
+          "shape":"IframePermissionList",
+          "documentation":"<p>The list of sandbox attributes for the iframe.</p>"
+        }
+      },
+      "documentation":"<p>The iframe configuration for the application.</p>"
+    },
+    "IframePermission":{
+      "type":"string",
+      "documentation":"<p>A permission for the iframe.</p>",
+      "max":100,
+      "min":1,
+      "pattern":"^[a-z-]+$"
+    },
+    "IframePermissionList":{
+      "type":"list",
+      "member":{"shape":"IframePermission"},
+      "documentation":"<p>A list of permissions for the iframe.</p>",
+      "max":25,
+      "min":0
+    },
+    "InitializationTimeout":{
+      "type":"integer",
+      "max":600000,
+      "min":1
     },
     "InternalServiceError":{
       "type":"structure",
@@ -1742,8 +1836,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -1801,8 +1894,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateApplicationRequest":{
       "type":"structure",
@@ -1841,13 +1933,29 @@
         "Permissions":{
           "shape":"PermissionList",
           "documentation":"<p>The configuration of events or requests that the application has access to.</p>"
+        },
+        "IsService":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the application is a service.</p>",
+          "box":true
+        },
+        "InitializationTimeout":{
+          "shape":"InitializationTimeout",
+          "documentation":"<p>The maximum time in milliseconds allowed to establish a connection with the workspace.</p>"
+        },
+        "ApplicationConfig":{
+          "shape":"ApplicationConfig",
+          "documentation":"<p>The configuration settings for the application.</p>"
+        },
+        "IframeConfig":{
+          "shape":"IframeConfig",
+          "documentation":"<p>The iframe configuration for the application.</p>"
         }
       }
     },
     "UpdateApplicationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateDataIntegrationAssociationRequest":{
       "type":"structure",
@@ -1877,8 +1985,7 @@
     },
     "UpdateDataIntegrationAssociationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateDataIntegrationRequest":{
       "type":"structure",
@@ -1902,8 +2009,7 @@
     },
     "UpdateDataIntegrationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateEventIntegrationRequest":{
       "type":"structure",
@@ -1923,8 +2029,7 @@
     },
     "UpdateEventIntegrationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     }
   },
   "documentation":"<ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_AppIntegrations_Service.html\">Amazon AppIntegrations actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_AppIntegrations_Service.html\">Amazon AppIntegrations data types</a> </p> </li> </ul> <p>The Amazon AppIntegrations service enables you to configure and reuse connections to external applications.</p> <p>For information about how you can use external applications with Amazon Connect, see the following topics in the <i>Amazon Connect Administrator Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/3p-apps.html\">Third-party applications (3p apps) in the agent workspace</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-q-connect.html\">Use Amazon Q in Connect for generative AI–powered agent assistance in real-time</a> </p> </li> </ul>"

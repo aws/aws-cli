@@ -1,32 +1,51 @@
 {
     "testCases": [
         {
-            "documentation": "For region aws-global with FIPS disabled and DualStack disabled",
+            "documentation": "For custom endpoint with region not set and fips disabled",
             "expect": {
                 "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "budgets",
-                                "signingRegion": "us-east-1"
-                            }
-                        ]
-                    },
-                    "url": "https://budgets.amazonaws.com"
+                    "url": "https://example.com"
                 }
             },
             "params": {
-                "Region": "aws-global",
+                "Endpoint": "https://example.com",
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "For custom endpoint with fips enabled",
+            "expect": {
+                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+            },
+            "params": {
+                "Endpoint": "https://example.com",
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "For custom endpoint with fips disabled and dualstack enabled",
+            "expect": {
+                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
+            },
+            "params": {
+                "Endpoint": "https://example.com",
                 "UseFIPS": false,
-                "UseDualStack": false
+                "UseDualStack": true
             }
         },
         {
             "documentation": "For region us-east-1 with FIPS enabled and DualStack enabled",
             "expect": {
                 "endpoint": {
-                    "url": "https://budgets-fips.us-east-1.api.aws"
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    },
+                    "url": "https://budgets-fips.api.aws"
                 }
             },
             "params": {
@@ -39,7 +58,15 @@
             "documentation": "For region us-east-1 with FIPS enabled and DualStack disabled",
             "expect": {
                 "endpoint": {
-                    "url": "https://budgets-fips.us-east-1.amazonaws.com"
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    },
+                    "url": "https://budgets-fips.amazonaws.com"
                 }
             },
             "params": {
@@ -52,6 +79,14 @@
             "documentation": "For region us-east-1 with FIPS disabled and DualStack enabled",
             "expect": {
                 "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    },
                     "url": "https://budgets.us-east-1.api.aws"
                 }
             },
@@ -69,7 +104,6 @@
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "budgets",
                                 "signingRegion": "us-east-1"
                             }
                         ]
@@ -84,14 +118,76 @@
             }
         },
         {
-            "documentation": "For region aws-cn-global with FIPS disabled and DualStack disabled",
+            "documentation": "For region cn-northwest-1 with FIPS enabled and DualStack enabled",
             "expect": {
                 "endpoint": {
                     "properties": {
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "budgets",
+                                "signingRegion": "cn-northwest-1"
+                            }
+                        ]
+                    },
+                    "url": "https://budgets-fips.api.amazonwebservices.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-northwest-1",
+                "UseFIPS": true,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region cn-northwest-1 with FIPS enabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "cn-northwest-1"
+                            }
+                        ]
+                    },
+                    "url": "https://budgets-fips.amazonaws.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-northwest-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region cn-northwest-1 with FIPS disabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "cn-northwest-1"
+                            }
+                        ]
+                    },
+                    "url": "https://budgets.api.amazonwebservices.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-northwest-1",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region cn-northwest-1 with FIPS disabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
                                 "signingRegion": "cn-northwest-1"
                             }
                         ]
@@ -100,142 +196,91 @@
                 }
             },
             "params": {
-                "Region": "aws-cn-global",
+                "Region": "cn-northwest-1",
                 "UseFIPS": false,
                 "UseDualStack": false
             }
         },
         {
-            "documentation": "For region cn-north-1 with FIPS enabled and DualStack enabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://budgets-fips.cn-north-1.api.amazonwebservices.com.cn"
-                }
-            },
-            "params": {
-                "Region": "cn-north-1",
-                "UseFIPS": true,
-                "UseDualStack": true
-            }
-        },
-        {
-            "documentation": "For region cn-north-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://budgets-fips.cn-north-1.amazonaws.com.cn"
-                }
-            },
-            "params": {
-                "Region": "cn-north-1",
-                "UseFIPS": true,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region cn-north-1 with FIPS disabled and DualStack enabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://budgets.cn-north-1.api.amazonwebservices.com.cn"
-                }
-            },
-            "params": {
-                "Region": "cn-north-1",
-                "UseFIPS": false,
-                "UseDualStack": true
-            }
-        },
-        {
-            "documentation": "For region cn-north-1 with FIPS disabled and DualStack disabled",
+            "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack enabled",
             "expect": {
                 "endpoint": {
                     "properties": {
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "budgets",
-                                "signingRegion": "cn-northwest-1"
+                                "signingRegion": "us-gov-west-1"
                             }
                         ]
                     },
-                    "url": "https://budgets.amazonaws.com.cn"
+                    "url": "https://budgets-fips.api.aws"
                 }
             },
             "params": {
-                "Region": "cn-north-1",
-                "UseFIPS": false,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack enabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://budgets-fips.us-gov-east-1.api.aws"
-                }
-            },
-            "params": {
-                "Region": "us-gov-east-1",
+                "Region": "us-gov-west-1",
                 "UseFIPS": true,
                 "UseDualStack": true
             }
         },
         {
-            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://budgets-fips.us-gov-east-1.amazonaws.com"
-                }
-            },
-            "params": {
-                "Region": "us-gov-east-1",
-                "UseFIPS": true,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack enabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://budgets.us-gov-east-1.api.aws"
-                }
-            },
-            "params": {
-                "Region": "us-gov-east-1",
-                "UseFIPS": false,
-                "UseDualStack": true
-            }
-        },
-        {
-            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://budgets.us-gov-east-1.amazonaws.com"
-                }
-            },
-            "params": {
-                "Region": "us-gov-east-1",
-                "UseFIPS": false,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region aws-iso-global with FIPS disabled and DualStack disabled",
+            "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack disabled",
             "expect": {
                 "endpoint": {
                     "properties": {
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "budgets",
-                                "signingRegion": "us-iso-east-1"
+                                "signingRegion": "us-gov-west-1"
                             }
                         ]
                     },
-                    "url": "https://budgets.c2s.ic.gov"
+                    "url": "https://budgets-fips.amazonaws.com"
                 }
             },
             "params": {
-                "Region": "aws-iso-global",
+                "Region": "us-gov-west-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-gov-west-1"
+                            }
+                        ]
+                    },
+                    "url": "https://budgets.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-gov-west-1",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-gov-west-1"
+                            }
+                        ]
+                    },
+                    "url": "https://budgets.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-gov-west-1",
                 "UseFIPS": false,
                 "UseDualStack": false
             }
@@ -255,7 +300,15 @@
             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
             "expect": {
                 "endpoint": {
-                    "url": "https://budgets-fips.us-iso-east-1.c2s.ic.gov"
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-iso-east-1"
+                            }
+                        ]
+                    },
+                    "url": "https://budgets-fips.c2s.ic.gov"
                 }
             },
             "params": {
@@ -283,7 +336,6 @@
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "budgets",
                                 "signingRegion": "us-iso-east-1"
                             }
                         ]
@@ -293,28 +345,6 @@
             },
             "params": {
                 "Region": "us-iso-east-1",
-                "UseFIPS": false,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region aws-iso-b-global with FIPS disabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "budgets",
-                                "signingRegion": "us-isob-east-1"
-                            }
-                        ]
-                    },
-                    "url": "https://budgets.global.sc2s.sgov.gov"
-                }
-            },
-            "params": {
-                "Region": "aws-iso-b-global",
                 "UseFIPS": false,
                 "UseDualStack": false
             }
@@ -334,7 +364,15 @@
             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
             "expect": {
                 "endpoint": {
-                    "url": "https://budgets-fips.us-isob-east-1.sc2s.sgov.gov"
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-isob-east-1"
+                            }
+                        ]
+                    },
+                    "url": "https://budgets-fips.sc2s.sgov.gov"
                 }
             },
             "params": {
@@ -362,7 +400,6 @@
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "budgets",
                                 "signingRegion": "us-isob-east-1"
                             }
                         ]
@@ -377,6 +414,49 @@
             }
         },
         {
+            "documentation": "For region eu-isoe-west-1 with FIPS enabled and DualStack enabled",
+            "expect": {
+                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+            },
+            "params": {
+                "Region": "eu-isoe-west-1",
+                "UseFIPS": true,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region eu-isoe-west-1 with FIPS enabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "eu-isoe-west-1"
+                            }
+                        ]
+                    },
+                    "url": "https://budgets-fips.cloud.adc-e.uk"
+                }
+            },
+            "params": {
+                "Region": "eu-isoe-west-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region eu-isoe-west-1 with FIPS disabled and DualStack enabled",
+            "expect": {
+                "error": "DualStack is enabled but this partition does not support DualStack"
+            },
+            "params": {
+                "Region": "eu-isoe-west-1",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
             "documentation": "For region eu-isoe-west-1 with FIPS disabled and DualStack disabled",
             "expect": {
                 "endpoint": {
@@ -384,7 +464,6 @@
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "budgets",
                                 "signingRegion": "eu-isoe-west-1"
                             }
                         ]
@@ -399,6 +478,49 @@
             }
         },
         {
+            "documentation": "For region us-isof-south-1 with FIPS enabled and DualStack enabled",
+            "expect": {
+                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+            },
+            "params": {
+                "Region": "us-isof-south-1",
+                "UseFIPS": true,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region us-isof-south-1 with FIPS enabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-isof-south-1"
+                            }
+                        ]
+                    },
+                    "url": "https://budgets-fips.csp.hci.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-isof-south-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region us-isof-south-1 with FIPS disabled and DualStack enabled",
+            "expect": {
+                "error": "DualStack is enabled but this partition does not support DualStack"
+            },
+            "params": {
+                "Region": "us-isof-south-1",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
             "documentation": "For region us-isof-south-1 with FIPS disabled and DualStack disabled",
             "expect": {
                 "endpoint": {
@@ -406,7 +528,6 @@
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "budgets",
                                 "signingRegion": "us-isof-south-1"
                             }
                         ]
@@ -418,57 +539,6 @@
                 "Region": "us-isof-south-1",
                 "UseFIPS": false,
                 "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For custom endpoint with region set and fips disabled and dualstack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://example.com"
-                }
-            },
-            "params": {
-                "Region": "us-east-1",
-                "UseFIPS": false,
-                "UseDualStack": false,
-                "Endpoint": "https://example.com"
-            }
-        },
-        {
-            "documentation": "For custom endpoint with region not set and fips disabled and dualstack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://example.com"
-                }
-            },
-            "params": {
-                "UseFIPS": false,
-                "UseDualStack": false,
-                "Endpoint": "https://example.com"
-            }
-        },
-        {
-            "documentation": "For custom endpoint with fips enabled and dualstack disabled",
-            "expect": {
-                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
-            },
-            "params": {
-                "Region": "us-east-1",
-                "UseFIPS": true,
-                "UseDualStack": false,
-                "Endpoint": "https://example.com"
-            }
-        },
-        {
-            "documentation": "For custom endpoint with fips disabled and dualstack enabled",
-            "expect": {
-                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
-            },
-            "params": {
-                "Region": "us-east-1",
-                "UseFIPS": false,
-                "UseDualStack": true,
-                "Endpoint": "https://example.com"
             }
         },
         {

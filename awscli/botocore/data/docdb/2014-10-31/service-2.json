@@ -1426,6 +1426,10 @@
           "shape":"String",
           "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p> <note> <p>When you create a DocumentDB DB cluster with the storage type set to <code>iopt1</code>, the storage type is returned in the response. The storage type isn't returned when you set it to <code>standard</code>.</p> </note>"
         },
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfiguration",
+          "documentation":"<p>Contains the scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
+        },
         "ManageMasterUserPassword":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether to manage the master user password with Amazon Web Services Secrets Manager.</p> <p>Constraint: You can't manage the master user password with Amazon Web Services Secrets Manager if <code>MasterUserPassword</code> is specified.</p>"
@@ -1825,7 +1829,11 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Storage type associated with your cluster</p> <p>Storage type associated with your cluster</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
+          "documentation":"<p>Storage type associated with your cluster</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
+        },
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfigurationInfo",
+          "documentation":"<p>The scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
         },
         "MasterUserSecret":{
           "shape":"ClusterMasterUserSecret",
@@ -2102,7 +2110,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Storage type associated with your cluster snapshot </p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
+          "documentation":"<p>Storage type associated with your cluster snapshot</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
         }
       },
       "documentation":"<p>Detailed information about a cluster snapshot. </p>",
@@ -2231,6 +2239,10 @@
         "SupportsCertificateRotationWithoutRestart":{
           "shape":"BooleanOptional",
           "documentation":"<p>Indicates whether the engine version supports rotating the server certificate without rebooting the DB instance.</p>"
+        },
+        "ServerlessV2FeaturesSupport":{
+          "shape":"ServerlessV2FeaturesSupport",
+          "documentation":"<p>Specifies any Amazon DocumentDB Serverless properties or limits that differ between Amazon DocumentDB engine versions. You can test the values of this attribute when deciding which Amazon DocumentDB version to use in a new or upgraded cluster. You can also retrieve the version of an existing cluster and check whether that version supports certain Amazon DocumentDB Serverless features before you attempt to use those features.</p>"
         }
       },
       "documentation":"<p> Detailed information about an engine version. </p>"
@@ -3190,6 +3202,7 @@
       },
       "documentation":"<p>Represents the input to <a>DescribePendingMaintenanceActions</a>.</p>"
     },
+    "DoubleOptional":{"type":"double"},
     "Endpoint":{
       "type":"structure",
       "members":{
@@ -3489,7 +3502,7 @@
         },
         "GlobalClusterResourceId":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Services Region-unique, immutable identifier for the global database cluster. This identifier is found in CloudTrail log entries whenever the KMS customer master key (CMK) for the cluster is accessed. </p>"
+          "documentation":"<p>The Amazon Web Services RegionRegion-unique, immutable identifier for the global database cluster. This identifier is found in CloudTrail log entries whenever the KMS customer master key (CMK) for the cluster is accessed. </p>"
         },
         "GlobalClusterArn":{
           "shape":"String",
@@ -3561,7 +3574,7 @@
         },
         "Readers":{
           "shape":"ReadersArnList",
-          "documentation":"<p>The Amazon Resource Name (ARN) for each read-only secondary cluster associated with the Aurora global cluster.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for each read-only secondary cluster associated with the Amazon DocumentDB global cluster.</p>"
         },
         "IsWriter":{
           "shape":"Boolean",
@@ -3919,6 +3932,10 @@
         "StorageType":{
           "shape":"String",
           "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
+        },
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfiguration",
+          "documentation":"<p>Contains the scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
         },
         "ManageMasterUserPassword":{
           "shape":"BooleanOptional",
@@ -4585,6 +4602,10 @@
           "shape":"String",
           "documentation":"<p>The name of the DB cluster parameter group to associate with this DB cluster.</p> <p> <i>Type:</i> String.       <i>Required:</i> No.</p> <p>If this argument is omitted, the default DB cluster parameter group is used. If supplied, must match the name of an existing default DB cluster parameter group. The string must consist of from 1 to 255 letters, numbers or hyphens. Its first character must be a letter, and it cannot end with a hyphen or contain two consecutive hyphens.</p>"
         },
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfiguration",
+          "documentation":"<p>Contains the scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
+        },
         "StorageType":{
           "shape":"String",
           "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
@@ -4653,6 +4674,10 @@
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether this cluster can be deleted. If <code>DeletionProtection</code> is enabled, the cluster cannot be deleted unless it is modified and <code>DeletionProtection</code> is disabled. <code>DeletionProtection</code> protects clusters from being accidentally deleted.</p>"
         },
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfiguration",
+          "documentation":"<p>Contains the scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
+        },
         "StorageType":{
           "shape":"String",
           "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
@@ -4701,6 +4726,48 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ServerlessV2FeaturesSupport":{
+      "type":"structure",
+      "members":{
+        "MinCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The minimum number of Amazon DocumentDB capacity units (DCUs) for an instance in an Amazon DocumentDB Serverless cluster. You can specify DCU values in half-step increments, such as 8, 8.5, 9, and so on.</p>"
+        },
+        "MaxCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The maximum number of Amazon DocumentDB capacity units (DCUs) for an instance in an Amazon DocumentDB Serverless cluster. You can specify DCU values in half-step increments, such as 32, 32.5, 33, and so on.</p>"
+        }
+      },
+      "documentation":"<p>Specifies any Amazon DocumentDB Serverless properties or limits that differ between Amazon DocumentDB engine versions. You can test the values of this attribute when deciding which Amazon DocumentDB version to use in a new or upgraded cluster. You can also retrieve the version of an existing cluster and check whether that version supports certain Amazon DocumentDB Serverless features before you attempt to use those features.</p>"
+    },
+    "ServerlessV2ScalingConfiguration":{
+      "type":"structure",
+      "members":{
+        "MinCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The minimum number of Amazon DocumentDB capacity units (DCUs) for an instance in an Amazon DocumentDB Serverless cluster. You can specify DCU values in half-step increments, such as 8, 8.5, 9, and so on.</p>"
+        },
+        "MaxCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The maximum number of Amazon DocumentDB capacity units (DCUs) for an instance in an Amazon DocumentDB Serverless cluster. You can specify DCU values in half-step increments, such as 32, 32.5, 33, and so on.</p>"
+        }
+      },
+      "documentation":"<p>Sets the scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
+    },
+    "ServerlessV2ScalingConfigurationInfo":{
+      "type":"structure",
+      "members":{
+        "MinCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The minimum number of Amazon DocumentDB capacity units (DCUs) for an instance in an Amazon DocumentDB Serverless cluster. You can specify DCU values in half-step increments, such as 8, 8.5, 9, and so on.</p>"
+        },
+        "MaxCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The maximum number of Amazon DocumentDB capacity units (DCUs) for an instance in an Amazon DocumentDB Serverless cluster. You can specify DCU values in half-step increments, such as 32, 32.5, 33, and so on. </p>"
+        }
+      },
+      "documentation":"<p>Retrieves the scaling configuration for an Amazon DocumentDB Serverless cluster.</p>"
     },
     "SharedSnapshotQuotaExceededFault":{
       "type":"structure",

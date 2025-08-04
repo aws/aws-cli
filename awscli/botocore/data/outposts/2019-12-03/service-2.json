@@ -163,6 +163,7 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets information about the specified catalog item.</p>"
@@ -213,6 +214,21 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets information about the specified Outpost.</p>"
+    },
+    "GetOutpostBillingInformation":{
+      "name":"GetOutpostBillingInformation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/outpost/{OutpostIdentifier}/billing-information"
+      },
+      "input":{"shape":"GetOutpostBillingInformationInput"},
+      "output":{"shape":"GetOutpostBillingInformationOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Gets current and historical billing information about the specified Outpost.</p>"
     },
     "GetOutpostInstanceTypes":{
       "name":"GetOutpostInstanceTypes",
@@ -353,6 +369,7 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists the items in the catalog.</p> <p>Use filters to return specific results. If you specify multiple filters, the results include only the resources that match all of the specified filters. For a filter where you can specify multiple values, the results include items that match any of the values that you specify for the filter.</p>"
@@ -1496,13 +1513,49 @@
         "Order":{"shape":"Order"}
       }
     },
+    "GetOutpostBillingInformationInput":{
+      "type":"structure",
+      "required":["OutpostIdentifier"],
+      "members":{
+        "NextToken":{
+          "shape":"Token",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults1000",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "OutpostIdentifier":{
+          "shape":"OutpostIdentifier",
+          "documentation":"<p>The ID or ARN of the Outpost.</p>",
+          "location":"uri",
+          "locationName":"OutpostIdentifier"
+        }
+      }
+    },
+    "GetOutpostBillingInformationOutput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{"shape":"Token"},
+        "Subscriptions":{
+          "shape":"SubscriptionList",
+          "documentation":"<p>The subscription details for the specified Outpost.</p>"
+        },
+        "ContractEndDate":{
+          "shape":"String",
+          "documentation":"<p>The date the current contract term ends for the specified Outpost. You must start the renewal or decommission process at least 5 business days before the current term for your Amazon Web Services Outposts ends. Failing to complete these steps at least 5 business days before the current term ends might result in unanticipated charges.</p>"
+        }
+      }
+    },
     "GetOutpostInput":{
       "type":"structure",
       "required":["OutpostId"],
       "members":{
         "OutpostId":{
           "shape":"OutpostId",
-          "documentation":"<p> The ID or ARN of the Outpost. </p>",
+          "documentation":"<p>The ID or ARN of the Outpost.</p>",
           "location":"uri",
           "locationName":"OutpostId"
         }
@@ -2270,6 +2323,7 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "NullableDouble":{"type":"double"},
     "OpticalStandard":{
       "type":"string",
       "enum":[
@@ -2335,6 +2389,10 @@
       "max":20,
       "min":1,
       "pattern":"oo-[a-f0-9]{17}$"
+    },
+    "OrderIdList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "OrderStatus":{
       "type":"string",
@@ -2871,6 +2929,64 @@
       "max":1000,
       "min":1,
       "pattern":"^[\\S \\n]+$"
+    },
+    "Subscription":{
+      "type":"structure",
+      "members":{
+        "SubscriptionId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the subscription that appears on the Amazon Web Services Billing Center console.</p>"
+        },
+        "SubscriptionType":{
+          "shape":"SubscriptionType",
+          "documentation":"<p>The type of subscription which can be one of the following:</p> <ul> <li> <p> <b>ORIGINAL</b> - The first order on the Amazon Web Services Outposts.</p> </li> <li> <p> <b>RENEWAL</b> - Renewal requests, both month to month and longer term.</p> </li> <li> <p> <b>CAPACITY_INCREASE</b> - Capacity scaling orders.</p> </li> </ul>"
+        },
+        "SubscriptionStatus":{
+          "shape":"SubscriptionStatus",
+          "documentation":"<p>The status of subscription which can be one of the following:</p> <ul> <li> <p> <b>INACTIVE</b> - Subscription requests that are inactive.</p> </li> <li> <p> <b>ACTIVE</b> - Subscription requests that are in progress and have an end date in the future.</p> </li> <li> <p> <b>CANCELLED</b> - Subscription requests that are cancelled.</p> </li> </ul>"
+        },
+        "OrderIds":{
+          "shape":"OrderIdList",
+          "documentation":"<p>The order ID for your subscription.</p>"
+        },
+        "BeginDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>The date your subscription starts.</p>"
+        },
+        "EndDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>The date your subscription ends.</p>"
+        },
+        "MonthlyRecurringPrice":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The amount you are billed each month in the subscription period.</p>"
+        },
+        "UpfrontPrice":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The amount billed when the subscription is created. This is a one-time charge.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about your Amazon Web Services Outposts subscriptions.</p>"
+    },
+    "SubscriptionList":{
+      "type":"list",
+      "member":{"shape":"Subscription"}
+    },
+    "SubscriptionStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE",
+        "CANCELLED"
+      ]
+    },
+    "SubscriptionType":{
+      "type":"string",
+      "enum":[
+        "ORIGINAL",
+        "RENEWAL",
+        "CAPACITY_INCREASE"
+      ]
     },
     "SupportedHardwareType":{
       "type":"string",

@@ -18,7 +18,11 @@ from botocore.exceptions import (
     TokenRetrievalError,
 )
 from botocore.session import Session
-from botocore.tokens import SSOTokenProvider
+from botocore.tokens import (
+    FrozenAuthToken,
+    ScopedEnvTokenProvider,
+    SSOTokenProvider,
+)
 
 from tests import mock
 
@@ -349,3 +353,33 @@ def test_sso_token_provider_refresh(test_case):
     # Pop the documentation to ensure all test fields are handled
     test_case.pop("documentation")
     assert not test_case.keys(), "All fields of test case should be handled"
+
+
+def test_scoped_env_token_provider_returns_token_when_present(monkeypatch):
+    signing_name = 'my-service'
+    token_env_var = 'AWS_BEARER_TOKEN_MY_SERVICE'
+    monkeypatch.setenv(token_env_var, 'env-token-value')
+
+    provider = ScopedEnvTokenProvider(session=mock.Mock())
+    auth_token = provider.load_token(signing_name=signing_name)
+
+    assert isinstance(auth_token, FrozenAuthToken)
+    assert auth_token.token == 'env-token-value'
+
+
+def test_scoped_env_token_provider_returns_none_when_not_found(monkeypatch):
+    signing_name = 'my-service'
+    token_env_var = 'AWS_BEARER_TOKEN_MY_SERVICE'
+    monkeypatch.delenv(token_env_var, raising=False)
+
+    provider = ScopedEnvTokenProvider(session=mock.Mock())
+    auth_token = provider.load_token(signing_name=signing_name)
+
+    assert auth_token is None
+
+
+def test_scoped_env_token_provider_returns_none_when_signing_name_missing():
+    provider = ScopedEnvTokenProvider(session=mock.Mock())
+    auth_token = provider.load_token()
+
+    assert auth_token is None

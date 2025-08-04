@@ -3542,6 +3542,78 @@
       },
       "documentation":"<p>The details of the policy grant.</p>"
     },
+    "AggregationAttributeDisplayValue":{"type":"string"},
+    "AggregationAttributeValue":{"type":"string"},
+    "AggregationDisplayValue":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "AggregationList":{
+      "type":"list",
+      "member":{"shape":"AggregationListItem"},
+      "max":10,
+      "min":1
+    },
+    "AggregationListItem":{
+      "type":"structure",
+      "required":["attribute"],
+      "members":{
+        "attribute":{
+          "shape":"Attribute",
+          "documentation":"<p>An attribute on which to compute aggregations.</p>"
+        },
+        "displayValue":{
+          "shape":"AggregationDisplayValue",
+          "documentation":"<p>The display value of the aggregation list item. Supported values include <code>value</code> and <code>glossaryTerm.name</code>.</p>"
+        }
+      },
+      "documentation":"<p>An aggregation list item.</p>"
+    },
+    "AggregationOutput":{
+      "type":"structure",
+      "members":{
+        "attribute":{
+          "shape":"Attribute",
+          "documentation":"<p>The attribute for this aggregation.</p>"
+        },
+        "displayValue":{
+          "shape":"AggregationDisplayValue",
+          "documentation":"<p>The display value of the aggregation output item.</p>"
+        },
+        "items":{
+          "shape":"AggregationOutputItems",
+          "documentation":"<p>A list of aggregation output items.</p>"
+        }
+      },
+      "documentation":"<p>The aggregation for an attribute.</p>"
+    },
+    "AggregationOutputItem":{
+      "type":"structure",
+      "members":{
+        "count":{
+          "shape":"Integer",
+          "documentation":"<p>The count of the aggregation output item.</p>"
+        },
+        "displayValue":{
+          "shape":"AggregationAttributeDisplayValue",
+          "documentation":"<p>The display value of the aggregation. If the attribute being aggregated corresponds to the id of a public resource, the service automatically resolves the id to the provided display value.</p>"
+        },
+        "value":{
+          "shape":"AggregationAttributeValue",
+          "documentation":"<p>The attribute value of the aggregation output item.</p>"
+        }
+      },
+      "documentation":"<p>An aggregation output item.</p>"
+    },
+    "AggregationOutputItems":{
+      "type":"list",
+      "member":{"shape":"AggregationOutputItem"}
+    },
+    "AggregationOutputList":{
+      "type":"list",
+      "member":{"shape":"AggregationOutput"}
+    },
     "AllDomainUnitsGrantFilter":{
       "type":"structure",
       "members":{
@@ -3740,6 +3812,10 @@
           "shape":"TimeSeriesDataPointSummaryFormOutputList",
           "documentation":"<p>The latest time series data points forms included in the additional attributes of an asset.</p>"
         },
+        "matchRationale":{
+          "shape":"MatchRationale",
+          "documentation":"<p>List of rationales indicating why this item was matched by search.</p>"
+        },
         "readOnlyFormsOutput":{
           "shape":"FormOutputList",
           "documentation":"<p>The read-only forms included in the additional attributes of an inventory asset.</p>"
@@ -3871,6 +3947,10 @@
         "latestTimeSeriesDataPointForms":{
           "shape":"TimeSeriesDataPointSummaryFormOutputList",
           "documentation":"<p>The latest time series data points forms included in the additional attributes of an asset.</p>"
+        },
+        "matchRationale":{
+          "shape":"MatchRationale",
+          "documentation":"<p>List of rationales indicating why this item was matched by search.</p>"
         }
       },
       "documentation":"<p>Additional attributes of an inventory asset.</p>"
@@ -4635,6 +4715,10 @@
           "shape":"RedshiftPropertiesInput",
           "documentation":"<p>The Amazon Redshift properties of a connection.</p>"
         },
+        "s3Properties":{
+          "shape":"S3PropertiesInput",
+          "documentation":"<p>The Amazon S3 properties of a connection.</p>"
+        },
         "sparkEmrProperties":{
           "shape":"SparkEmrPropertiesInput",
           "documentation":"<p>The Spark EMR properties of a connection.</p>"
@@ -4670,6 +4754,10 @@
           "shape":"RedshiftPropertiesOutput",
           "documentation":"<p>The Amazon Redshift properties of a connection.</p>"
         },
+        "s3Properties":{
+          "shape":"S3PropertiesOutput",
+          "documentation":"<p>The Amazon S3 properties of a connection.</p>"
+        },
         "sparkEmrProperties":{
           "shape":"SparkEmrPropertiesOutput",
           "documentation":"<p>The Spark EMR properties of a connection.</p>"
@@ -4700,6 +4788,10 @@
         "redshiftProperties":{
           "shape":"RedshiftPropertiesPatch",
           "documentation":"<p>The Amazon Redshift properties of a connection properties patch.</p>"
+        },
+        "s3Properties":{
+          "shape":"S3PropertiesPatch",
+          "documentation":"<p>The Amazon S3 properties of a connection properties patch.</p>"
         },
         "sparkEmrProperties":{
           "shape":"SparkEmrPropertiesPatch",
@@ -4796,6 +4888,7 @@
         "ORACLE",
         "POSTGRESQL",
         "REDSHIFT",
+        "S3",
         "SAPHANA",
         "SNOWFLAKE",
         "SPARK",
@@ -4927,7 +5020,7 @@
         },
         "externalIdentifier":{
           "shape":"ExternalIdentifier",
-          "documentation":"<p>The external identifier of the asset.</p>"
+          "documentation":"<p>The external identifier of the asset.</p> <p>If the value for the <code>externalIdentifier</code> parameter is specified, it must be a unique value.</p>"
         },
         "formsInput":{
           "shape":"FormInputList",
@@ -6071,7 +6164,6 @@
       "type":"structure",
       "required":[
         "domainIdentifier",
-        "environmentProfileIdentifier",
         "name",
         "projectIdentifier"
       ],
@@ -7592,6 +7684,16 @@
       },
       "documentation":"<p>The data product.</p>"
     },
+    "DataProductItemAdditionalAttributes":{
+      "type":"structure",
+      "members":{
+        "matchRationale":{
+          "shape":"MatchRationale",
+          "documentation":"<p>List of rationales indicating why this item was matched by search.</p>"
+        }
+      },
+      "documentation":"<p>The additional attributes of an Amazon DataZone data product.</p>"
+    },
     "DataProductItemType":{
       "type":"string",
       "enum":["ASSET"]
@@ -7699,6 +7801,10 @@
         "forms":{
           "shape":"Forms",
           "documentation":"<p>The metadata forms of the asset of the data product. </p>"
+        },
+        "matchRationale":{
+          "shape":"MatchRationale",
+          "documentation":"<p>List of rationales indicating why this item was matched by search.</p>"
         }
       },
       "documentation":"<p>The additional attributes of the asset of the data product. </p>"
@@ -7718,6 +7824,10 @@
         "owningProjectId"
       ],
       "members":{
+        "additionalAttributes":{
+          "shape":"DataProductItemAdditionalAttributes",
+          "documentation":"<p>The additional attributes of an Amazon DataZone data product.</p>"
+        },
         "createdAt":{
           "shape":"CreatedAt",
           "documentation":"<p>The timestamp at which the data product was created.</p>"
@@ -10371,7 +10481,7 @@
         },
         "identifier":{
           "shape":"AssetIdentifier",
-          "documentation":"<p>The ID of the Amazon DataZone asset.</p>",
+          "documentation":"<p>The ID of the Amazon DataZone asset.</p> <p>This parameter supports either the value of <code>assetId</code> or <code>externalIdentifier</code> as input. If you are passing the value of <code>externalIdentifier</code>, you must prefix this value with <code>externalIdentifer%2F</code>.</p>",
           "location":"uri",
           "locationName":"identifier"
         },
@@ -13024,6 +13134,10 @@
         "status"
       ],
       "members":{
+        "additionalAttributes":{
+          "shape":"GlossaryItemAdditionalAttributes",
+          "documentation":"<p>The additional attributes of an Amazon DataZone glossary.</p>"
+        },
         "createdAt":{
           "shape":"CreatedAt",
           "documentation":"<p>The timestamp of when the glossary was created.</p>"
@@ -13067,6 +13181,16 @@
       },
       "documentation":"<p>The details of a business glossary.</p>"
     },
+    "GlossaryItemAdditionalAttributes":{
+      "type":"structure",
+      "members":{
+        "matchRationale":{
+          "shape":"MatchRationale",
+          "documentation":"<p>List of rationales indicating why this item was matched by search.</p>"
+        }
+      },
+      "documentation":"<p>The additional attributes of an Amazon DataZone glossary.</p>"
+    },
     "GlossaryName":{
       "type":"string",
       "max":256,
@@ -13094,6 +13218,10 @@
         "status"
       ],
       "members":{
+        "additionalAttributes":{
+          "shape":"GlossaryTermItemAdditionalAttributes",
+          "documentation":"<p>The additional attributes of an Amazon DataZone glossary term.</p>"
+        },
         "createdAt":{
           "shape":"CreatedAt",
           "documentation":"<p>The timestamp of when a business glossary term was created.</p>"
@@ -13144,6 +13272,16 @@
         }
       },
       "documentation":"<p>The details of a business glossary term.</p>"
+    },
+    "GlossaryTermItemAdditionalAttributes":{
+      "type":"structure",
+      "members":{
+        "matchRationale":{
+          "shape":"MatchRationale",
+          "documentation":"<p>List of rationales indicating why this item was matched by search.</p>"
+        }
+      },
+      "documentation":"<p>The additional attributes of an Amazon DataZone glossary term.</p>"
     },
     "GlossaryTermName":{
       "type":"string",
@@ -16324,6 +16462,39 @@
       "max":10,
       "min":0
     },
+    "MatchOffset":{
+      "type":"structure",
+      "members":{
+        "endOffset":{
+          "shape":"Integer",
+          "documentation":"<p>The 0-indexed number indicating the end position (exclusive) of a matched term.</p>"
+        },
+        "startOffset":{
+          "shape":"Integer",
+          "documentation":"<p>The 0-indexed number indicating the start position (inclusive) of a matched term.</p>"
+        }
+      },
+      "documentation":"<p>The offset of a matched term.</p>"
+    },
+    "MatchOffsets":{
+      "type":"list",
+      "member":{"shape":"MatchOffset"}
+    },
+    "MatchRationale":{
+      "type":"list",
+      "member":{"shape":"MatchRationaleItem"}
+    },
+    "MatchRationaleItem":{
+      "type":"structure",
+      "members":{
+        "textMatches":{
+          "shape":"TextMatches",
+          "documentation":"<p>A list of TextMatchItems.</p>"
+        }
+      },
+      "documentation":"<p>A rationale indicating why this item was matched by search. </p>",
+      "union":true
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -18760,6 +18931,12 @@
       },
       "documentation":"<p>The asset statistics from the data source run.</p>"
     },
+    "S3AccessGrantLocationId":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"^[a-zA-Z0-9\\-]+$"
+    },
     "S3Location":{
       "type":"string",
       "max":1024,
@@ -18771,6 +18948,65 @@
       "member":{"shape":"S3Location"},
       "max":20,
       "min":0
+    },
+    "S3PropertiesInput":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3AccessGrantLocationId":{
+          "shape":"S3AccessGrantLocationId",
+          "documentation":"<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties of a connection.</p>"
+        },
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI that's part of the Amazon S3 properties of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 properties of a connection.</p>"
+    },
+    "S3PropertiesOutput":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message that gets displayed.</p>"
+        },
+        "s3AccessGrantLocationId":{
+          "shape":"S3AccessGrantLocationId",
+          "documentation":"<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties of a connection.</p>"
+        },
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI that's part of the Amazon S3 properties of a connection.</p>"
+        },
+        "status":{
+          "shape":"ConnectionStatus",
+          "documentation":"<p>The status of the Amazon S3 connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 properties of a connection.</p>"
+    },
+    "S3PropertiesPatch":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3AccessGrantLocationId":{
+          "shape":"S3AccessGrantLocationId",
+          "documentation":"<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties patch of a connection.</p>"
+        },
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI that's part of the Amazon S3 properties patch of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 properties patch of a connection.</p>"
+    },
+    "S3Uri":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^s3://.+$"
     },
     "SageMakerAssetType":{
       "type":"string",
@@ -18985,6 +19221,10 @@
           "shape":"SearchOutputAdditionalAttributes",
           "documentation":"<p>Specifies additional attributes for the search.</p>"
         },
+        "aggregations":{
+          "shape":"AggregationList",
+          "documentation":"<p>Enables you to specify one or more attributes to compute and return counts grouped by field values.</p>"
+        },
         "domainIdentifier":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of the domain in which to search listings.</p>",
@@ -19008,7 +19248,7 @@
           "documentation":"<p>The details of the search.</p>"
         },
         "searchText":{
-          "shape":"String",
+          "shape":"SearchListingsInputSearchTextString",
           "documentation":"<p>Specifies the text for which to search.</p>"
         },
         "sort":{
@@ -19017,9 +19257,18 @@
         }
       }
     },
+    "SearchListingsInputSearchTextString":{
+      "type":"string",
+      "max":512,
+      "min":0
+    },
     "SearchListingsOutput":{
       "type":"structure",
       "members":{
+        "aggregates":{
+          "shape":"AggregationOutputList",
+          "documentation":"<p>Contains computed counts grouped by field values based on the requested aggregation attributes for the matching listings.</p>"
+        },
         "items":{
           "shape":"SearchResultItems",
           "documentation":"<p>The results of the <code>SearchListings</code> action.</p>"
@@ -19055,7 +19304,8 @@
       "type":"string",
       "enum":[
         "FORMS",
-        "TIME_SERIES_DATA_POINT_FORMS"
+        "TIME_SERIES_DATA_POINT_FORMS",
+        "TEXT_MATCH_RATIONALE"
       ]
     },
     "SearchOutputAdditionalAttributes":{
@@ -19098,7 +19348,7 @@
     },
     "SearchText":{
       "type":"string",
-      "max":4096,
+      "max":512,
       "min":1
     },
     "SearchTypesInput":{
@@ -20596,6 +20846,28 @@
       "member":{"shape":"GlossaryTermId"},
       "max":10,
       "min":1
+    },
+    "TextMatchItem":{
+      "type":"structure",
+      "members":{
+        "attribute":{
+          "shape":"Attribute",
+          "documentation":"<p>The name of the attribute.</p>"
+        },
+        "matchOffsets":{
+          "shape":"MatchOffsets",
+          "documentation":"<p>List of offsets indicating matching terms in the TextMatchItem text.</p>"
+        },
+        "text":{
+          "shape":"String",
+          "documentation":"<p>Snippet of attribute text containing highlighted content.</p>"
+        }
+      },
+      "documentation":"<p>A structure indicating matched terms for an attribute.</p>"
+    },
+    "TextMatches":{
+      "type":"list",
+      "member":{"shape":"TextMatchItem"}
     },
     "ThrottlingException":{
       "type":"structure",

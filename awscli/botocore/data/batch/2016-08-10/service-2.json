@@ -84,6 +84,20 @@
       ],
       "documentation":"<p>Creates an Batch scheduling policy.</p>"
     },
+    "CreateServiceEnvironment":{
+      "name":"CreateServiceEnvironment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/createserviceenvironment"
+      },
+      "input":{"shape":"CreateServiceEnvironmentRequest"},
+      "output":{"shape":"CreateServiceEnvironmentResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Creates a service environment for running service jobs. Service environments define capacity limits for specific service types such as SageMaker Training jobs.</p>"
+    },
     "DeleteComputeEnvironment":{
       "name":"DeleteComputeEnvironment",
       "http":{
@@ -139,6 +153,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Deletes the specified scheduling policy.</p> <p>You can't delete a scheduling policy that's used in any job queues.</p>"
+    },
+    "DeleteServiceEnvironment":{
+      "name":"DeleteServiceEnvironment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/deleteserviceenvironment"
+      },
+      "input":{"shape":"DeleteServiceEnvironmentRequest"},
+      "output":{"shape":"DeleteServiceEnvironmentResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Deletes a Service environment. Before you can delete a service environment, you must first set its state to <code>DISABLED</code> with the <code>UpdateServiceEnvironment</code> API operation and disassociate it from any job queues with the <code>UpdateJobQueue</code> API operation.</p>"
     },
     "DeregisterJobDefinition":{
       "name":"DeregisterJobDefinition",
@@ -238,6 +266,34 @@
       ],
       "documentation":"<p>Describes one or more of your scheduling policies.</p>"
     },
+    "DescribeServiceEnvironments":{
+      "name":"DescribeServiceEnvironments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/describeserviceenvironments"
+      },
+      "input":{"shape":"DescribeServiceEnvironmentsRequest"},
+      "output":{"shape":"DescribeServiceEnvironmentsResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Describes one or more of your service environments.</p>"
+    },
+    "DescribeServiceJob":{
+      "name":"DescribeServiceJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/describeservicejob"
+      },
+      "input":{"shape":"DescribeServiceJobRequest"},
+      "output":{"shape":"DescribeServiceJobResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>The details of a service job.</p>"
+    },
     "GetJobQueueSnapshot":{
       "name":"GetJobQueueSnapshot",
       "http":{
@@ -308,6 +364,20 @@
       ],
       "documentation":"<p>Returns a list of Batch scheduling policies.</p>"
     },
+    "ListServiceJobs":{
+      "name":"ListServiceJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/listservicejobs"
+      },
+      "input":{"shape":"ListServiceJobsRequest"},
+      "output":{"shape":"ListServiceJobsResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Returns a list of service jobs for a specified job queue.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -350,6 +420,20 @@
       ],
       "documentation":"<p>Submits an Batch job from a job definition. Parameters that are specified during <a>SubmitJob</a> override parameters defined in the job definition. vCPU and memory requirements that are specified in the <code>resourceRequirements</code> objects in the job definition are the exception. They can't be overridden this way using the <code>memory</code> and <code>vcpus</code> parameters. Rather, you must specify updates to job definition parameters in a <code>resourceRequirements</code> object that's included in the <code>containerOverrides</code> parameter.</p> <note> <p>Job queues with a scheduling policy are limited to 500 active share identifiers at a time. </p> </note> <important> <p>Jobs that run on Fargate resources can't be guaranteed to run for more than 14 days. This is because, after 14 days, Fargate resources might become unavailable and job might be terminated.</p> </important>"
     },
+    "SubmitServiceJob":{
+      "name":"SubmitServiceJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/submitservicejob"
+      },
+      "input":{"shape":"SubmitServiceJobRequest"},
+      "output":{"shape":"SubmitServiceJobResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Submits a service job to a specified job queue to run on SageMaker AI. A service job is a unit of work that you submit to Batch for execution on SageMaker AI.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -377,6 +461,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Terminates a job in a job queue. Jobs that are in the <code>STARTING</code> or <code>RUNNING</code> state are terminated, which causes them to transition to <code>FAILED</code>. Jobs that have not progressed to the <code>STARTING</code> state are cancelled.</p>"
+    },
+    "TerminateServiceJob":{
+      "name":"TerminateServiceJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/terminateservicejob"
+      },
+      "input":{"shape":"TerminateServiceJobRequest"},
+      "output":{"shape":"TerminateServiceJobResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Terminates a service job in a job queue. </p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -447,6 +545,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Updates a scheduling policy.</p>"
+    },
+    "UpdateServiceEnvironment":{
+      "name":"UpdateServiceEnvironment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/updateserviceenvironment"
+      },
+      "input":{"shape":"UpdateServiceEnvironmentRequest"},
+      "output":{"shape":"UpdateServiceEnvironmentResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Updates a service environment. You can update the state of a service environment from <code>ENABLED</code> to <code>DISABLED</code> to prevent new service jobs from being placed in the service environment.</p>"
     }
   },
   "shapes":{
@@ -688,6 +800,24 @@
     "CancelJobResponse":{
       "type":"structure",
       "members":{}
+    },
+    "CapacityLimit":{
+      "type":"structure",
+      "members":{
+        "maxCapacity":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum capacity available for the service environment. This value represents the maximum amount of resources that can be allocated to service jobs.</p> <p>For example, <code>maxCapacity=50</code>, <code>capacityUnit=NUM_INSTANCES</code>. This indicates that the maximum number of instances that can be run on this service environment is 50. You could then run 5 SageMaker Training jobs that each use 10 instances. However, if you submit another job that requires 10 instances, it will wait in the queue.</p>"
+        },
+        "capacityUnit":{
+          "shape":"String",
+          "documentation":"<p>The unit of measure for the capacity limit. This defines how the maxCapacity value should be interpreted. For <code>SAGEMAKER_TRAINING</code> jobs, use <code>NUM_INSTANCES</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines the capacity limit for a service environment. This structure specifies the maximum amount of resources that can be used by service jobs in the environment.</p>"
+    },
+    "CapacityLimits":{
+      "type":"list",
+      "member":{"shape":"CapacityLimit"}
     },
     "ClientException":{
       "type":"structure",
@@ -1402,8 +1532,7 @@
       "type":"structure",
       "required":[
         "jobQueueName",
-        "priority",
-        "computeEnvironmentOrder"
+        "priority"
       ],
       "members":{
         "jobQueueName":{
@@ -1425,6 +1554,14 @@
         "computeEnvironmentOrder":{
           "shape":"ComputeEnvironmentOrders",
           "documentation":"<p>The set of compute environments mapped to a job queue and their order relative to each other. The job scheduler uses this parameter to determine which compute environment runs a specific job. Compute environments must be in the <code>VALID</code> state before you can associate them with a job queue. You can associate up to three compute environments with a job queue. All of the compute environments must be either EC2 (<code>EC2</code> or <code>SPOT</code>) or Fargate (<code>FARGATE</code> or <code>FARGATE_SPOT</code>); EC2 and Fargate compute environments can't be mixed.</p> <note> <p>All compute environments that are associated with a job queue must share the same architecture. Batch doesn't support mixing compute environment architecture types in a single job queue.</p> </note>"
+        },
+        "serviceEnvironmentOrder":{
+          "shape":"ServiceEnvironmentOrders",
+          "documentation":"<p>A list of service environments that this job queue can use to allocate jobs. All serviceEnvironments must have the same type. A job queue can't have both a serviceEnvironmentOrder and a computeEnvironmentOrder field.</p>"
+        },
+        "jobQueueType":{
+          "shape":"JobQueueType",
+          "documentation":"<p>The type of job queue. For service jobs that run on SageMaker Training, this value is <code>SAGEMAKER_TRAINING</code>. For regular container jobs, this value is <code>EKS</code>, <code>ECS</code>, or <code>ECS_FARGATE</code> depending on the compute environment.</p>"
         },
         "tags":{
           "shape":"TagrisTagsMap",
@@ -1490,6 +1627,53 @@
         }
       }
     },
+    "CreateServiceEnvironmentRequest":{
+      "type":"structure",
+      "required":[
+        "serviceEnvironmentName",
+        "serviceEnvironmentType",
+        "capacityLimits"
+      ],
+      "members":{
+        "serviceEnvironmentName":{
+          "shape":"String",
+          "documentation":"<p>The name for the service environment. It can be up to 128 characters long and can contain letters, numbers, hyphens (-), and underscores (_).</p>"
+        },
+        "serviceEnvironmentType":{
+          "shape":"ServiceEnvironmentType",
+          "documentation":"<p>The type of service environment. For SageMaker Training jobs, specify <code>SAGEMAKER_TRAINING</code>.</p>"
+        },
+        "state":{
+          "shape":"ServiceEnvironmentState",
+          "documentation":"<p>The state of the service environment. Valid values are <code>ENABLED</code> and <code>DISABLED</code>. The default value is <code>ENABLED</code>.</p>"
+        },
+        "capacityLimits":{
+          "shape":"CapacityLimits",
+          "documentation":"<p>The capacity limits for the service environment. The number of instances a job consumes is the total number of instances requested in the submit training job request resource configuration.</p>"
+        },
+        "tags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The tags that you apply to the service environment to help you categorize and organize your resources. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a>.</p>"
+        }
+      }
+    },
+    "CreateServiceEnvironmentResponse":{
+      "type":"structure",
+      "required":[
+        "serviceEnvironmentName",
+        "serviceEnvironmentArn"
+      ],
+      "members":{
+        "serviceEnvironmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service environment.</p>"
+        },
+        "serviceEnvironmentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service environment.</p>"
+        }
+      }
+    },
     "DeleteComputeEnvironmentRequest":{
       "type":"structure",
       "required":["computeEnvironment"],
@@ -1546,6 +1730,20 @@
       "documentation":"<p>Contains the parameters for <code>DeleteSchedulingPolicy</code>.</p>"
     },
     "DeleteSchedulingPolicyResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteServiceEnvironmentRequest":{
+      "type":"structure",
+      "required":["serviceEnvironment"],
+      "members":{
+        "serviceEnvironment":{
+          "shape":"String",
+          "documentation":"<p>The name or ARN of the service environment to delete.</p>"
+        }
+      }
+    },
+    "DeleteServiceEnvironmentResponse":{
       "type":"structure",
       "members":{}
     },
@@ -1752,6 +1950,135 @@
         "schedulingPolicies":{
           "shape":"SchedulingPolicyDetailList",
           "documentation":"<p>The list of scheduling policies.</p>"
+        }
+      }
+    },
+    "DescribeServiceEnvironmentsRequest":{
+      "type":"structure",
+      "members":{
+        "serviceEnvironments":{
+          "shape":"StringList",
+          "documentation":"<p>An array of service environment names or ARN entries.</p>"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results returned by <code>DescribeServiceEnvironments</code> in paginated output. When this parameter is used, <code>DescribeServiceEnvironments</code> only returns <code>maxResults</code> results in a single page and a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>DescribeServiceEnvironments</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>DescribeServiceEnvironments</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated <code>DescribeServiceEnvironments</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>Treat this token as an opaque identifier that's only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        }
+      }
+    },
+    "DescribeServiceEnvironmentsResponse":{
+      "type":"structure",
+      "members":{
+        "serviceEnvironments":{
+          "shape":"ServiceEnvironmentDetailList",
+          "documentation":"<p>The list of service environments that match the request.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>DescribeServiceEnvironments</code> request. When the results of a <code>DescribeServiceEnvironments</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "DescribeServiceJobRequest":{
+      "type":"structure",
+      "required":["jobId"],
+      "members":{
+        "jobId":{
+          "shape":"String",
+          "documentation":"<p>The job ID for the service job to describe.</p>"
+        }
+      }
+    },
+    "DescribeServiceJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "jobName",
+        "jobQueue",
+        "serviceJobType",
+        "startedAt",
+        "status"
+      ],
+      "members":{
+        "attempts":{
+          "shape":"ServiceJobAttemptDetails",
+          "documentation":"<p>A list of job attempts associated with the service job.</p>"
+        },
+        "createdAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job was created.</p>"
+        },
+        "isTerminated":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the service job has been terminated.</p>"
+        },
+        "jobArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service job.</p>"
+        },
+        "jobId":{
+          "shape":"String",
+          "documentation":"<p>The job ID for the service job.</p>"
+        },
+        "jobName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service job.</p>"
+        },
+        "jobQueue":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the job queue that the service job is associated with.</p>"
+        },
+        "latestAttempt":{
+          "shape":"LatestServiceJobAttempt",
+          "documentation":"<p>The latest attempt associated with the service job.</p>"
+        },
+        "retryStrategy":{
+          "shape":"ServiceJobRetryStrategy",
+          "documentation":"<p>The retry strategy to use for failed service jobs that are submitted with this service job.</p>"
+        },
+        "schedulingPriority":{
+          "shape":"Integer",
+          "documentation":"<p>The scheduling priority of the service job. </p>"
+        },
+        "serviceRequestPayload":{
+          "shape":"String",
+          "documentation":"<p>The request, in JSON, for the service that the <code>SubmitServiceJob</code> operation is queueing. </p>"
+        },
+        "serviceJobType":{
+          "shape":"ServiceJobType",
+          "documentation":"<p>The type of service job. For SageMaker Training jobs, this value is <code>SAGEMAKER_TRAINING</code>.</p>"
+        },
+        "shareIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The share identifier for the service job. This is used for fair-share scheduling.</p>"
+        },
+        "startedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job was started.</p>"
+        },
+        "status":{
+          "shape":"ServiceJobStatus",
+          "documentation":"<p>The current status of the service job. </p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A short, human-readable string to provide more details for the current status of the service job.</p>"
+        },
+        "stoppedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job stopped running.</p>"
+        },
+        "tags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The tags that are associated with the service job. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a>.</p>"
+        },
+        "timeoutConfig":{
+          "shape":"ServiceJobTimeout",
+          "documentation":"<p>The timeout configuration for the service job.</p>"
         }
       }
     },
@@ -3086,6 +3413,14 @@
           "shape":"ComputeEnvironmentOrders",
           "documentation":"<p>The compute environments that are attached to the job queue and the order that job placement is preferred. Compute environments are selected for job placement in ascending order.</p>"
         },
+        "serviceEnvironmentOrder":{
+          "shape":"ServiceEnvironmentOrders",
+          "documentation":"<p>The order of the service environment associated with the job queue. Job queues with a higher priority are evaluated first when associated with the same service environment.</p>"
+        },
+        "jobQueueType":{
+          "shape":"JobQueueType",
+          "documentation":"<p>The type of job queue. For service jobs that run on SageMaker Training, this value is <code>SAGEMAKER_TRAINING</code>. For regular container jobs, this value is <code>EKS</code>, <code>ECS</code>, or <code>ECS_FARGATE</code> depending on the compute environment.</p>"
+        },
         "tags":{
           "shape":"TagrisTagsMap",
           "documentation":"<p>The tags that are applied to the job queue. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a> in <i>Batch User Guide</i>.</p>"
@@ -3100,6 +3435,15 @@
     "JobQueueDetailList":{
       "type":"list",
       "member":{"shape":"JobQueueDetail"}
+    },
+    "JobQueueType":{
+      "type":"string",
+      "enum":[
+        "EKS",
+        "ECS",
+        "ECS_FARGATE",
+        "SAGEMAKER_TRAINING"
+      ]
     },
     "JobStateTimeLimitAction":{
       "type":"structure",
@@ -3135,7 +3479,10 @@
     },
     "JobStateTimeLimitActionsAction":{
       "type":"string",
-      "enum":["CANCEL"]
+      "enum":[
+        "CANCEL",
+        "TERMINATE"
+      ]
     },
     "JobStateTimeLimitActionsState":{
       "type":"string",
@@ -3257,6 +3604,16 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "LatestServiceJobAttempt":{
+      "type":"structure",
+      "members":{
+        "serviceResourceId":{
+          "shape":"ServiceResourceId",
+          "documentation":"<p>The service resource identifier associated with the service job attempt.</p>"
+        }
+      },
+      "documentation":"<p>Information about the latest attempt of a service job. A Service job can transition from <code>SCHEDULED</code> back to <code>RUNNABLE</code> state when they encounter capacity constraints.</p>"
     },
     "LaunchTemplateSpecification":{
       "type":"structure",
@@ -3574,6 +3931,45 @@
         "nextToken":{
           "shape":"String",
           "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListSchedulingPolicies</code> request. When the results of a <code>ListSchedulingPolicies</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListServiceJobsRequest":{
+      "type":"structure",
+      "members":{
+        "jobQueue":{
+          "shape":"String",
+          "documentation":"<p>The name or ARN of the job queue with which to list service jobs.</p>"
+        },
+        "jobStatus":{
+          "shape":"ServiceJobStatus",
+          "documentation":"<p>The job status with which to filter service jobs. </p>"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results returned by <code>ListServiceJobs</code> in paginated output. When this parameter is used, <code>ListServiceJobs</code> only returns <code>maxResults</code> results in a single page and a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListServiceJobs</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>ListServiceJobs</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated <code>ListServiceJobs</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>Treat this token as an opaque identifier that's only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        },
+        "filters":{
+          "shape":"ListJobsFilterList",
+          "documentation":"<p>The filters to apply to the service job list query. The filter names and values can be:</p> <ul> <li> <p>name: <code>JOB_STATUS</code> </p> <p>values: <code>SUBMITTED | PENDING | RUNNABLE | STARTING | RUNNING | SUCCEEDED | FAILED | SCHEDULED</code> </p> </li> <li> <p>name: <code>JOB_NAME</code> </p> <p>values: case-insensitive matches for the job name. If a filter value ends with an asterisk (*), it matches any job name that begins with the string before the '*'.</p> </li> </ul>"
+        }
+      }
+    },
+    "ListServiceJobsResponse":{
+      "type":"structure",
+      "required":["jobSummaryList"],
+      "members":{
+        "jobSummaryList":{
+          "shape":"ServiceJobSummaryList",
+          "documentation":"<p>A list of service job summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListServiceJobs</code> request. When the results of a <code>ListServiceJobs</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
       }
     },
@@ -4115,6 +4511,268 @@
       "exception":true,
       "fault":true
     },
+    "ServiceEnvironmentDetail":{
+      "type":"structure",
+      "required":[
+        "serviceEnvironmentName",
+        "serviceEnvironmentArn",
+        "serviceEnvironmentType",
+        "capacityLimits"
+      ],
+      "members":{
+        "serviceEnvironmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service environment.</p>"
+        },
+        "serviceEnvironmentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service environment.</p>"
+        },
+        "serviceEnvironmentType":{
+          "shape":"ServiceEnvironmentType",
+          "documentation":"<p>The type of service environment. For SageMaker Training jobs, this value is <code>SAGEMAKER_TRAINING</code>.</p>"
+        },
+        "state":{
+          "shape":"ServiceEnvironmentState",
+          "documentation":"<p>The state of the service environment. Valid values are <code>ENABLED</code> and <code>DISABLED</code>.</p>"
+        },
+        "status":{
+          "shape":"ServiceEnvironmentStatus",
+          "documentation":"<p>The current status of the service environment.</p>"
+        },
+        "capacityLimits":{
+          "shape":"CapacityLimits",
+          "documentation":"<p>The capacity limits for the service environment. This defines the maximum resources that can be used by service jobs in this environment.</p>"
+        },
+        "tags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The tags associated with the service environment. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a>.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about a service environment, including its configuration, state, and capacity limits.</p>"
+    },
+    "ServiceEnvironmentDetailList":{
+      "type":"list",
+      "member":{"shape":"ServiceEnvironmentDetail"}
+    },
+    "ServiceEnvironmentOrder":{
+      "type":"structure",
+      "required":[
+        "order",
+        "serviceEnvironment"
+      ],
+      "members":{
+        "order":{
+          "shape":"Integer",
+          "documentation":"<p>The order of the service environment. Job queues with a higher priority are evaluated first when associated with the same service environment.</p>"
+        },
+        "serviceEnvironment":{
+          "shape":"String",
+          "documentation":"<p>The name or ARN of the service environment.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the order of a service environment for a job queue. This determines the priority order when multiple service environments are associated with the same job queue.</p>"
+    },
+    "ServiceEnvironmentOrders":{
+      "type":"list",
+      "member":{"shape":"ServiceEnvironmentOrder"}
+    },
+    "ServiceEnvironmentState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ServiceEnvironmentStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "UPDATING",
+        "DELETING",
+        "DELETED",
+        "VALID",
+        "INVALID"
+      ]
+    },
+    "ServiceEnvironmentType":{
+      "type":"string",
+      "enum":["SAGEMAKER_TRAINING"]
+    },
+    "ServiceJobAttemptDetail":{
+      "type":"structure",
+      "members":{
+        "serviceResourceId":{
+          "shape":"ServiceResourceId",
+          "documentation":"<p>The service resource identifier associated with the service job attempt.</p>"
+        },
+        "startedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job attempt was started.</p>"
+        },
+        "stoppedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job attempt stopped running.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A string that provides additional details for the current status of the service job attempt.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about an attempt to run a service job.</p>"
+    },
+    "ServiceJobAttemptDetails":{
+      "type":"list",
+      "member":{"shape":"ServiceJobAttemptDetail"}
+    },
+    "ServiceJobEvaluateOnExit":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"ServiceJobRetryAction",
+          "documentation":"<p>The action to take if the service job exits with the specified condition. Valid values are <code>RETRY</code> and <code>EXIT</code>.</p>"
+        },
+        "onStatusReason":{
+          "shape":"String",
+          "documentation":"<p>Contains a glob pattern to match against the StatusReason returned for a job. The pattern can contain up to 512 characters and can contain all printable characters. It can optionally end with an asterisk (*) so that only the start of the string needs to be an exact match.</p>"
+        }
+      },
+      "documentation":"<p>Specifies conditions for when to exit or retry a service job based on the exit status or status reason.</p>"
+    },
+    "ServiceJobEvaluateOnExitList":{
+      "type":"list",
+      "member":{"shape":"ServiceJobEvaluateOnExit"}
+    },
+    "ServiceJobRetryAction":{
+      "type":"string",
+      "enum":[
+        "RETRY",
+        "EXIT"
+      ]
+    },
+    "ServiceJobRetryStrategy":{
+      "type":"structure",
+      "required":["attempts"],
+      "members":{
+        "attempts":{
+          "shape":"Integer",
+          "documentation":"<p>The number of times to move a service job to <code>RUNNABLE</code> status. You can specify between 1 and 10 attempts.</p>"
+        },
+        "evaluateOnExit":{
+          "shape":"ServiceJobEvaluateOnExitList",
+          "documentation":"<p>Array of <code>ServiceJobEvaluateOnExit</code> objects that specify conditions under which the service job should be retried or failed.</p>"
+        }
+      },
+      "documentation":"<p>The retry strategy for service jobs. This defines how many times to retry a failed service job and under what conditions. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/service-job-retries.html\">Service job retry strategies</a> in the <i>Batch User Guide</i>.</p>"
+    },
+    "ServiceJobStatus":{
+      "type":"string",
+      "enum":[
+        "SUBMITTED",
+        "PENDING",
+        "RUNNABLE",
+        "SCHEDULED",
+        "STARTING",
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
+    "ServiceJobSummary":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "jobName",
+        "serviceJobType"
+      ],
+      "members":{
+        "latestAttempt":{
+          "shape":"LatestServiceJobAttempt",
+          "documentation":"<p>Information about the latest attempt for the service job.</p>"
+        },
+        "createdAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job was created.</p>"
+        },
+        "jobArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service job.</p>"
+        },
+        "jobId":{
+          "shape":"String",
+          "documentation":"<p>The job ID for the service job.</p>"
+        },
+        "jobName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service job.</p>"
+        },
+        "serviceJobType":{
+          "shape":"ServiceJobType",
+          "documentation":"<p>The type of service job. For SageMaker Training jobs, this value is <code>SAGEMAKER_TRAINING</code>.</p>"
+        },
+        "shareIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The share identifier for the job.</p>"
+        },
+        "status":{
+          "shape":"ServiceJobStatus",
+          "documentation":"<p>The current status of the service job. </p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A short string to provide more details on the current status of the service job.</p>"
+        },
+        "startedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job was started.</p>"
+        },
+        "stoppedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job stopped running.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a service job.</p>"
+    },
+    "ServiceJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"ServiceJobSummary"}
+    },
+    "ServiceJobTimeout":{
+      "type":"structure",
+      "members":{
+        "attemptDurationSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum duration in seconds that a service job attempt can run. After this time is reached, Batch terminates the service job attempt.</p>"
+        }
+      },
+      "documentation":"<p>The timeout configuration for service jobs. </p>"
+    },
+    "ServiceJobType":{
+      "type":"string",
+      "enum":["SAGEMAKER_TRAINING"]
+    },
+    "ServiceResourceId":{
+      "type":"structure",
+      "required":[
+        "name",
+        "value"
+      ],
+      "members":{
+        "name":{
+          "shape":"ServiceResourceIdName",
+          "documentation":"<p>The name of the resource identifier. </p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value of the resource identifier. </p>"
+        }
+      },
+      "documentation":"<p>The Batch unique identifier.</p>"
+    },
+    "ServiceResourceIdName":{
+      "type":"string",
+      "enum":["TrainingJobArn"]
+    },
     "ShareAttributes":{
       "type":"structure",
       "required":["shareIdentifier"],
@@ -4236,6 +4894,79 @@
         "jobId":{
           "shape":"String",
           "documentation":"<p>The unique identifier for the job.</p>"
+        }
+      }
+    },
+    "SubmitServiceJobRequest":{
+      "type":"structure",
+      "required":[
+        "jobName",
+        "jobQueue",
+        "serviceRequestPayload",
+        "serviceJobType"
+      ],
+      "members":{
+        "jobName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service job. It can be up to 128 characters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
+        },
+        "jobQueue":{
+          "shape":"String",
+          "documentation":"<p>The job queue into which the service job is submitted. You can specify either the name or the ARN of the queue. The job queue must have the type <code>SAGEMAKER_TRAINING</code>.</p>"
+        },
+        "retryStrategy":{
+          "shape":"ServiceJobRetryStrategy",
+          "documentation":"<p>The retry strategy to use for failed service jobs that are submitted with this service job request. </p>"
+        },
+        "schedulingPriority":{
+          "shape":"Integer",
+          "documentation":"<p>The scheduling priority of the service job. Valid values are integers between 0 and 9999.</p>"
+        },
+        "serviceRequestPayload":{
+          "shape":"String",
+          "documentation":"<p>The request, in JSON, for the service that the SubmitServiceJob operation is queueing. </p>"
+        },
+        "serviceJobType":{
+          "shape":"ServiceJobType",
+          "documentation":"<p>The type of service job. For SageMaker Training jobs, specify <code>SAGEMAKER_TRAINING</code>.</p>"
+        },
+        "shareIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The share identifier for the service job. Don't specify this parameter if the job queue doesn't have a fair- share scheduling policy. If the job queue has a fair-share scheduling policy, then this parameter must be specified.</p>"
+        },
+        "timeoutConfig":{
+          "shape":"ServiceJobTimeout",
+          "documentation":"<p>The timeout configuration for the service job. If none is specified, Batch defers to the default timeout of the underlying service handling the job.</p>"
+        },
+        "tags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The tags that you apply to the service job request. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a>.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>A unique identifier for the request. This token is used to ensure idempotency of requests. If this parameter is specified and two submit requests with identical payloads and <code>clientToken</code>s are received, these requests are considered the same request and the second request is rejected.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "SubmitServiceJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobName",
+        "jobId"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the service job.</p>"
+        },
+        "jobName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service job.</p>"
+        },
+        "jobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the service job.</p>"
         }
       }
     },
@@ -4527,6 +5258,27 @@
       "type":"structure",
       "members":{}
     },
+    "TerminateServiceJobRequest":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "reason"
+      ],
+      "members":{
+        "jobId":{
+          "shape":"String",
+          "documentation":"<p>The service job ID of the service job to terminate.</p>"
+        },
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>A message to attach to the service job that explains the reason for canceling it. This message is returned by <code>DescribeServiceJob</code> operations on the service job.</p>"
+        }
+      }
+    },
+    "TerminateServiceJobResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "Tmpfs":{
       "type":"structure",
       "required":[
@@ -4722,6 +5474,10 @@
           "shape":"ComputeEnvironmentOrders",
           "documentation":"<p>Details the set of compute environments mapped to a job queue and their order relative to each other. This is one of the parameters used by the job scheduler to determine which compute environment runs a given job. Compute environments must be in the <code>VALID</code> state before you can associate them with a job queue. All of the compute environments must be either EC2 (<code>EC2</code> or <code>SPOT</code>) or Fargate (<code>FARGATE</code> or <code>FARGATE_SPOT</code>). EC2 and Fargate compute environments can't be mixed.</p> <note> <p>All compute environments that are associated with a job queue must share the same architecture. Batch doesn't support mixing compute environment architecture types in a single job queue.</p> </note>"
         },
+        "serviceEnvironmentOrder":{
+          "shape":"ServiceEnvironmentOrders",
+          "documentation":"<p>The order of the service environment associated with the job queue. Job queues with a higher priority are evaluated first when associated with the same service environment.</p>"
+        },
         "jobStateTimeLimitActions":{
           "shape":"JobStateTimeLimitActions",
           "documentation":"<p>The set of actions that Batch perform on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after <code>maxTimeSeconds</code> has passed. (<b>Note</b>: The minimum value for maxTimeSeconds is 600 (10 minutes) and its maximum value is 86,400 (24 hours).)</p>"
@@ -4774,6 +5530,41 @@
     "UpdateSchedulingPolicyResponse":{
       "type":"structure",
       "members":{}
+    },
+    "UpdateServiceEnvironmentRequest":{
+      "type":"structure",
+      "required":["serviceEnvironment"],
+      "members":{
+        "serviceEnvironment":{
+          "shape":"String",
+          "documentation":"<p>The name or ARN of the service environment to update.</p>"
+        },
+        "state":{
+          "shape":"ServiceEnvironmentState",
+          "documentation":"<p>The state of the service environment. </p>"
+        },
+        "capacityLimits":{
+          "shape":"CapacityLimits",
+          "documentation":"<p>The capacity limits for the service environment. This defines the maximum resources that can be used by service jobs in this environment.</p>"
+        }
+      }
+    },
+    "UpdateServiceEnvironmentResponse":{
+      "type":"structure",
+      "required":[
+        "serviceEnvironmentName",
+        "serviceEnvironmentArn"
+      ],
+      "members":{
+        "serviceEnvironmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service environment that was updated.</p>"
+        },
+        "serviceEnvironmentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service environment that was updated.</p>"
+        }
+      }
     },
     "UserdataType":{
       "type":"string",

@@ -2481,7 +2481,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Lists the history of SPICE ingestions for a dataset.</p>"
+      "documentation":"<p>Lists the history of SPICE ingestions for a dataset. Limited to 5 TPS per user and 25 TPS per account.</p>"
     },
     "ListNamespaces":{
       "name":"ListNamespaces",
@@ -10314,6 +10314,10 @@
         "FolderArns":{
           "shape":"FolderArnList",
           "documentation":"<p>The Folder ARN of the folder that you want the topic to reside in.</p>"
+        },
+        "CustomInstructions":{
+          "shape":"CustomInstructions",
+          "documentation":"<p>Custom instructions for the topic.</p>"
         }
       }
     },
@@ -10749,6 +10753,22 @@
         }
       },
       "documentation":"<p>A list of custom filter values.</p>"
+    },
+    "CustomInstructions":{
+      "type":"structure",
+      "required":["CustomInstructionsString"],
+      "members":{
+        "CustomInstructionsString":{
+          "shape":"CustomInstructionsString",
+          "documentation":"<p>A text field for providing additional guidance or context for response generation.</p>"
+        }
+      },
+      "documentation":"<p>Instructions that provide additional guidance and context for response generation.</p>"
+    },
+    "CustomInstructionsString":{
+      "type":"string",
+      "max":5000,
+      "sensitive":true
     },
     "CustomLabel":{
       "type":"string",
@@ -12209,6 +12229,10 @@
         "BigQueryParameters":{
           "shape":"BigQueryParameters",
           "documentation":"<p>The parameters that are required to connect to a Google BigQuery data source.</p>"
+        },
+        "ImpalaParameters":{
+          "shape":"ImpalaParameters",
+          "documentation":"<p>The parameters for Impala.</p>"
         }
       },
       "documentation":"<p>The parameters that Amazon QuickSight uses to connect to your underlying data source. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.</p>"
@@ -16933,6 +16957,10 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        },
+        "CustomInstructions":{
+          "shape":"CustomInstructions",
+          "documentation":"<p>Custom instructions for the topic.</p>"
         }
       }
     },
@@ -21255,6 +21283,33 @@
         }
       },
       "documentation":"<p>A static file that contains an image.</p>"
+    },
+    "ImpalaParameters":{
+      "type":"structure",
+      "required":[
+        "Host",
+        "Port",
+        "SqlEndpointPath"
+      ],
+      "members":{
+        "Host":{
+          "shape":"Host",
+          "documentation":"<p>The host name of the Impala data source.</p>"
+        },
+        "Port":{
+          "shape":"Port",
+          "documentation":"<p>The port of the Impala data source.</p>"
+        },
+        "Database":{
+          "shape":"Database",
+          "documentation":"<p>The database of the Impala data source.</p>"
+        },
+        "SqlEndpointPath":{
+          "shape":"SqlEndpointPath",
+          "documentation":"<p>The HTTP path of the Impala data source.</p>"
+        }
+      },
+      "documentation":"<p>The parameters that are required to connect to a Impala data source.</p>"
     },
     "IncludeFolderMembers":{
       "type":"string",
@@ -37293,6 +37348,10 @@
         "Topic":{
           "shape":"TopicDetails",
           "documentation":"<p>The definition of the topic that you want to update.</p>"
+        },
+        "CustomInstructions":{
+          "shape":"CustomInstructions",
+          "documentation":"<p>Custom instructions for the topic.</p>"
         }
       }
     },

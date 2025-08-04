@@ -137,7 +137,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Specifies a security configuration for OpenSearch Serverless. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-saml.html\">SAML authentication for Amazon OpenSearch Serverless</a>. </p>",
+      "documentation":"<p>Specifies a security configuration for OpenSearch Serverless. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-saml.html\">SAML authentication for Amazon OpenSearch Serverless</a>.</p>",
       "idempotent":true
     },
     "CreateSecurityPolicy":{
@@ -1213,11 +1213,15 @@
         },
         "samlOptions":{
           "shape":"SamlConfigOptions",
-          "documentation":"<p>Describes SAML options in in the form of a key-value map. This field is required if you specify <code>saml</code> for the <code>type</code> parameter.</p>"
+          "documentation":"<p>Describes SAML options in in the form of a key-value map. This field is required if you specify <code>SAML</code> for the <code>type</code> parameter.</p>"
         },
         "iamIdentityCenterOptions":{
           "shape":"CreateIamIdentityCenterConfigOptions",
           "documentation":"<p>Describes IAM Identity Center options in the form of a key-value map. This field is required if you specify iamidentitycenter for the type parameter.</p>"
+        },
+        "iamFederationOptions":{
+          "shape":"IamFederationConfigOptions",
+          "documentation":"<p>Describes IAM federation options in the form of a key-value map. This field is required if you specify <code>iamFederation</code> for the <code>type</code> parameter.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -1231,7 +1235,7 @@
       "members":{
         "securityConfigDetail":{
           "shape":"SecurityConfigDetail",
-          "documentation":"<p>Details about the created security configuration. </p>"
+          "documentation":"<p>Details about the created security configuration.</p>"
         }
       }
     },
@@ -1699,6 +1703,20 @@
         }
       }
     },
+    "IamFederationConfigOptions":{
+      "type":"structure",
+      "members":{
+        "groupAttribute":{
+          "shape":"iamFederationGroupAttribute",
+          "documentation":"<p>The group attribute for this IAM federation integration. This attribute is used to map identity provider groups to OpenSearch Serverless permissions.</p>"
+        },
+        "userAttribute":{
+          "shape":"iamFederationUserAttribute",
+          "documentation":"<p>The user attribute for this IAM federation integration. This attribute is used to identify users in the federated authentication process.</p>"
+        }
+      },
+      "documentation":"<p>Describes IAM federation options for an OpenSearch Serverless security configuration in the form of a key-value map. These options define how OpenSearch Serverless integrates with external identity providers using federation.</p>"
+    },
     "IamIdentityCenterApplicationArn":{
       "type":"string",
       "max":1224,
@@ -1945,7 +1963,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>If your initial <code>ListAccessPolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListAccessPolicies</code> operations, which returns results in the next page. </p>"
+          "documentation":"<p>If your initial <code>ListAccessPolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListAccessPolicies</code> operations, which returns results in the next page.</p>"
         },
         "maxResults":{
           "shape":"ListAccessPoliciesRequestMaxResultsInteger",
@@ -1983,7 +2001,7 @@
       "members":{
         "collectionFilters":{
           "shape":"CollectionFilters",
-          "documentation":"<p> A list of filter names and values that you can use for requests.</p>"
+          "documentation":"<p>A list of filter names and values that you can use for requests.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -2071,7 +2089,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>If your initial <code>ListSecurityConfigs</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListSecurityConfigs</code> operations, which returns results in the next page. </p>"
+          "documentation":"<p>If your initial <code>ListSecurityConfigs</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListSecurityConfigs</code> operations, which returns results in the next page.</p>"
         },
         "maxResults":{
           "shape":"ListSecurityConfigsRequestMaxResultsInteger",
@@ -2108,11 +2126,11 @@
         },
         "resource":{
           "shape":"ListSecurityPoliciesRequestResourceList",
-          "documentation":"<p>Resource filters (can be collection or indexes) that policies can apply to. </p>"
+          "documentation":"<p>Resource filters (can be collection or indexes) that policies can apply to.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>If your initial <code>ListSecurityPolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListSecurityPolicies</code> operations, which returns results in the next page. </p>"
+          "documentation":"<p>If your initial <code>ListSecurityPolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListSecurityPolicies</code> operations, which returns results in the next page.</p>"
         },
         "maxResults":{
           "shape":"ListSecurityPoliciesRequestMaxResultsInteger",
@@ -2173,7 +2191,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>If your initial <code>ListVpcEndpoints</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListVpcEndpoints</code> operations, which returns results in the next page. </p>"
+          "documentation":"<p>If your initial <code>ListVpcEndpoints</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListVpcEndpoints</code> operations, which returns results in the next page.</p>"
         },
         "maxResults":{
           "shape":"ListVpcEndpointsRequestMaxResultsInteger",
@@ -2213,7 +2231,7 @@
           "documentation":"<p>Description of the error.</p>"
         }
       },
-      "documentation":"<p>Thrown when the collection you're attempting to create results in a number of search or indexing OCUs that exceeds the account limit. </p>",
+      "documentation":"<p>Thrown when the collection you're attempting to create results in a number of search or indexing OCUs that exceeds the account limit.</p>",
       "exception":true
     },
     "PolicyDescription":{
@@ -2274,7 +2292,7 @@
         },
         "openSearchServerlessEntityId":{
           "shape":"openSearchServerlessEntityId",
-          "documentation":"<p>Custom entity id attribute to override default entity id for this saml integration.</p>"
+          "documentation":"<p>Custom entity ID attribute to override the default entity ID for this SAML integration.</p>"
         },
         "sessionTimeout":{
           "shape":"SamlConfigOptionsSessionTimeoutInteger",
@@ -2321,6 +2339,10 @@
           "shape":"IamIdentityCenterConfigOptions",
           "documentation":"<p>Describes IAM Identity Center options in the form of a key-value map.</p>"
         },
+        "iamFederationOptions":{
+          "shape":"IamFederationConfigOptions",
+          "documentation":"<p>Describes IAM federation options in the form of a key-value map. Contains configuration details about how OpenSearch Serverless integrates with external identity providers through federation.</p>"
+        },
         "createdDate":{
           "shape":"Long",
           "documentation":"<p>The date the configuration was created.</p>"
@@ -2330,7 +2352,7 @@
           "documentation":"<p>The timestamp of when the configuration was last modified.</p>"
         }
       },
-      "documentation":"<p>Details about a security configuration for OpenSearch Serverless. </p>"
+      "documentation":"<p>Details about a security configuration for OpenSearch Serverless.</p>"
     },
     "SecurityConfigId":{
       "type":"string",
@@ -2385,7 +2407,8 @@
       "type":"string",
       "enum":[
         "saml",
-        "iamidentitycenter"
+        "iamidentitycenter",
+        "iamfederation"
       ]
     },
     "SecurityGroupId":{
@@ -2679,7 +2702,7 @@
       "members":{
         "accountSettingsDetail":{
           "shape":"AccountSettingsDetail",
-          "documentation":"<p>OpenSearch Serverless-related settings for the current Amazon Web Services account. </p>"
+          "documentation":"<p>OpenSearch Serverless-related settings for the current Amazon Web Services account.</p>"
         }
       }
     },
@@ -2778,7 +2801,7 @@
       "members":{
         "type":{
           "shape":"LifecyclePolicyType",
-          "documentation":"<p> The type of lifecycle policy.</p>"
+          "documentation":"<p>The type of lifecycle policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
@@ -2839,6 +2862,10 @@
           "shape":"UpdateIamIdentityCenterConfigOptions",
           "documentation":"<p>Describes IAM Identity Center options in the form of a key-value map.</p>"
         },
+        "iamFederationOptions":{
+          "shape":"IamFederationConfigOptions",
+          "documentation":"<p>Describes IAM federation options in the form of a key-value map for updating an existing security configuration. Use this field to modify IAM federation settings for the security configuration.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
@@ -2851,7 +2878,7 @@
       "members":{
         "securityConfigDetail":{
           "shape":"SecurityConfigDetail",
-          "documentation":"<p>Details about the updated security configuration. </p>"
+          "documentation":"<p>Details about the updated security configuration.</p>"
         }
       }
     },
@@ -3110,6 +3137,18 @@
       "min":1,
       "pattern":"vpc-[0-9a-z]*"
     },
+    "iamFederationGroupAttribute":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z][A-Za-z0-9_.:/=+\\-@]*"
+    },
+    "iamFederationUserAttribute":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z][A-Za-z0-9_.:/=+\\-@]*"
+    },
     "openSearchServerlessEntityId":{
       "type":"string",
       "max":1024,
@@ -3135,5 +3174,5 @@
       "pattern":".*[\\w+=,.@-]+.*"
     }
   },
-  "documentation":"<p>Use the Amazon OpenSearch Serverless API to create, configure, and manage OpenSearch Serverless collections and security policies.</p> <p>OpenSearch Serverless is an on-demand, pre-provisioned serverless configuration for Amazon OpenSearch Service. OpenSearch Serverless removes the operational complexities of provisioning, configuring, and tuning your OpenSearch clusters. It enables you to easily search and analyze petabytes of data without having to worry about the underlying infrastructure and data management.</p> <p> To learn more about OpenSearch Serverless, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-overview.html\">What is Amazon OpenSearch Serverless?</a> </p>"
+  "documentation":"<p>Use the Amazon OpenSearch Serverless API to create, configure, and manage OpenSearch Serverless collections and security policies.</p> <p>OpenSearch Serverless is an on-demand, pre-provisioned serverless configuration for Amazon OpenSearch Service. OpenSearch Serverless removes the operational complexities of provisioning, configuring, and tuning your OpenSearch clusters. It enables you to easily search and analyze petabytes of data without having to worry about the underlying infrastructure and data management.</p> <p>To learn more about OpenSearch Serverless, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-overview.html\">What is Amazon OpenSearch Serverless?</a> </p>"
 }

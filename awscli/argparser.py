@@ -113,7 +113,7 @@ class CLIArgParser(argparse.ArgumentParser):
         should raise an exception.
         """
         usage_message = self.format_usage()
-        error_message = f'{self.prog}: ERROR: {message}'
+        error_message = f'{self.prog}: [ERROR]: {message}'
         raise ArgParseException(f'{error_message}\n\n{usage_message}')
 
 

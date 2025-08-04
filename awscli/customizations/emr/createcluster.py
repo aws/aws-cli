@@ -282,7 +282,7 @@ class CreateCluster(Command):
                     )
                 except ValueError:
                     raise ParamValidationError(
-                        'aws: ERROR: invalid json argument for '
+                        'aws: [ERROR]: invalid json argument for '
                         'option --configurations'
                     )
 
@@ -678,7 +678,7 @@ class CreateCluster(Command):
             > constants.MAX_BOOTSTRAP_ACTION_NUMBER
         ):
             raise ParamValidationError(
-                'aws: ERROR: maximum number of '
+                'aws: [ERROR]: maximum number of '
                 'bootstrap actions for a cluster exceeded.'
             )
 

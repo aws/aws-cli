@@ -129,7 +129,7 @@ class ScheduleHBaseBackup(Command):
         type = type.lower()
         if type != constants.FULL and type != constants.INCREMENTAL:
             raise ParamValidationError(
-                'aws: ERROR: invalid type. '
+                'aws: [ERROR]: invalid type. '
                 'type should be either '
                 + constants.FULL
                 + ' or '
@@ -145,7 +145,7 @@ class ScheduleHBaseBackup(Command):
             and unit != constants.DAYS
         ):
             raise ParamValidationError(
-                'aws: ERROR: invalid unit. unit should be one of'
+                'aws: [ERROR]: invalid unit. unit should be one of'
                 ' the following values: '
                 + constants.MINUTES
                 + ', '

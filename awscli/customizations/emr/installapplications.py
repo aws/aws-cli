@@ -67,13 +67,13 @@ class InstallApplications(Command):
             if app_name in constants.APPLICATIONS:
                 if app_name not in self.supported_apps:
                     raise ParamValidationError(
-                        "aws: ERROR: " + app_config['Name'] + " cannot be"
+                        "aws: [ERROR]: " + app_config['Name'] + " cannot be"
                         " installed on a running cluster. 'Name' should be one"
                         " of the following: " + ', '.join(self.supported_apps)
                     )
             else:
                 raise ParamValidationError(
-                    "aws: ERROR: Unknown application: "
+                    "aws: [ERROR]: Unknown application: "
                     + app_config['Name']
                     + ". 'Name' should be one of the following: "
                     + ', '.join(constants.APPLICATIONS)

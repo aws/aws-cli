@@ -270,8 +270,8 @@ class TestBasicCommandFunctionality(unittest.TestCase):
             '<subcommand> [<subcommand> ...] [parameters]',
             p.stderr,
         )
-        # python3: aws: ERROR: the following arguments are required: operation
-        # python2: aws: ERROR: too few arguments
+        # python3: aws: [ERROR]: the following arguments are required: operation
+        # python2: aws: [ERROR]: too few arguments
         # We don't care too much about the specific error message, as long
         # as it says we have a parse error.
         self.assertIn('aws: ERROR', p.stderr)

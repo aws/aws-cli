@@ -18,6 +18,6 @@ class TestDDB(BaseAWSCommandParamsTest):
         _, stderr, _ = self.run_cmd('ddb', expected_rc=252)
         expected = (
             "usage: aws [options] ddb <subcommand> "
-            "[parameters]\naws: ERROR: too few arguments"
+            "[parameters]\naws: [ERROR]: too few arguments"
         )
         self.assertIn(expected, stderr)

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.42.2
+======
+
+* api-change:``bedrock-agentcore``: Remove superfluous field from API
+* api-change:``codeconnections``: New integration with Azure DevOps provider type.
+* api-change:``evs``: TagResource API now throws ServiceQuotaExceededException when the number of tags on the Amazon EVS resource exceeds the maximum allowed. TooManyTagsException is deprecated.
+* api-change:``iotsitewise``: Support Interface for IoT SiteWise Asset Modeling
+* api-change:``sagemaker``: This release adds the ability for customers to attach and detach their EBS volumes to EKS-orchestrated HyperPod cluster nodes.
+
+
 1.42.1
 ======
 

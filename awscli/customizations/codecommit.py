@@ -94,9 +94,11 @@ class CodeCommitGetCommand(BasicCommand):
 
     def _run_main(self, args, parsed_globals):
         git_parameters = self.read_git_parameters()
-        if ('amazon.com' in git_parameters['host'] or
-                'amazonaws.com' in git_parameters['host'] or
-                args.ignore_host_check):
+        from urllib.parse import urlparse
+        host = urlparse(git_parameters['host']).hostname
+        if (host and (host.endswith('amazon.com') or
+                      host.endswith('amazonaws.com') or
+                      args.ignore_host_check)):
             theUrl = self.extract_url(git_parameters)
             region = self.extract_region(git_parameters, parsed_globals)
             signature = self.sign_request(region, theUrl)

@@ -605,7 +605,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_extended_support_and_no_extended_support(self):
         cmd = DEFAULT_CMD + '--extended-support --no-extended-support'
         expected_error_msg = (
-            '\naws: error: cannot use both --extended-support'
+            '\naws: [ERROR]: cannot use both --extended-support'
             ' and --no-extended-support options together.\n'
         )
         result = self.run_cmd(cmd, 252)

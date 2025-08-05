@@ -431,6 +431,62 @@ class BucketLister:
                 )
                 yield source_path, content
 
+    def list_object_versions(
+        self, bucket, prefix=None, page_size=None, extra_args=None
+    ):
+        """
+        List all versions of objects in the bucket.
+
+        This method yields tuples of (source_path, content, version_id) where:
+        source_path is the S3 path of the object (bucket/key)
+        content is the object metadata
+        version_id is the version ID of the object
+
+        :param bucket: The name of the bucket to list versions for.
+        :param prefix: The prefix to filter objects by. If provided, only versions of objects
+                       with keys starting with this prefix will be listed.
+        :param page_size: The number of versions to list per page.
+        :param extra_args: Additional arguments to pass to the list_object_versions_v2 operation.
+        :yields: Tuples of (source_path, content, version_id)
+
+        """
+        kwargs = {
+            'Bucket': bucket,
+            'PaginationConfig': {'PageSize': page_size},
+        }
+        if prefix is not None:
+            kwargs['Prefix'] = prefix
+        if extra_args is not None:
+            kwargs.update(extra_args)
+
+        paginator = self._client.get_paginator('list_object_versions')
+        pages = paginator.paginate(**kwargs)
+        for page in pages:
+            versions = page.get('Versions', [])
+
+            for (
+                source_path,
+                content,
+                version_id,
+            ) in self._process_object_versions(bucket, versions):
+                yield source_path, content, version_id
+
+            delete_markers = page.get('DeleteMarkers', [])
+            for (
+                source_path,
+                content,
+                version_id,
+            ) in self._process_object_versions(bucket, delete_markers):
+                yield source_path, content, version_id
+
+    def _process_object_versions(self, bucket, object_versions):
+        for version in object_versions:
+            source_path = bucket + '/' + version['Key']
+            version['LastModified'] = self._date_parser(
+                version['LastModified']
+            )
+            yield source_path, version, version['VersionId']
+
 
 class PrintTask(
     namedtuple('PrintTask', ['message', 'error', 'total_parts', 'warning'])

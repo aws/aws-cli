@@ -30,7 +30,10 @@ from awscli.customizations.s3.factory import (
     TransferManagerFactory,
 )
 from awscli.customizations.s3.fileformat import FileFormat
-from awscli.customizations.s3.filegenerator import FileGenerator
+from awscli.customizations.s3.filegenerator import (
+    FileGenerator,
+    VersionedFileGenerator,
+)
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.fileinfobuilder import FileInfoBuilder
 from awscli.customizations.s3.filters import create_filter
@@ -642,6 +645,15 @@ BUCKET_REGION = {
     ),
 }
 
+ALL_VERSIONS = {
+    'name': 'all-versions',
+    'action': 'store_true',
+    'help_text': (
+        "Process all versions of objects, including delete markers. For specific objects, "
+        "all versions are included. For buckets/prefixes, all versions of all objects are included."
+    ),
+}
+
 TRANSFER_ARGS = [
     DRYRUN,
     QUIET,
@@ -1104,6 +1116,7 @@ class RmCommand(S3TransferCommand):
         EXCLUDE,
         ONLY_SHOW_ERRORS,
         PAGE_SIZE,
+        ALL_VERSIONS,
     ]
 
 
@@ -1259,7 +1272,11 @@ class CommandArchitecture:
         instruction list because it sends the request to S3 and does not
         yield anything.
         """
-        if self.needs_filegenerator():
+        if self.needs_versiongenerator():
+            self.instructions.append('versioned_file_generator')
+            if self.parameters.get('filters'):
+                self.instructions.append('filters')
+        elif self.needs_filegenerator():
             self.instructions.append('file_generator')
             if self.parameters.get('filters'):
                 self.instructions.append('filters')
@@ -1267,6 +1284,9 @@ class CommandArchitecture:
                 self.instructions.append('comparator')
             self.instructions.append('file_info_builder')
         self.instructions.append('s3_handler')
+
+    def needs_versiongenerator(self):
+        return self.parameters.get('all_versions')
 
     def needs_filegenerator(self):
         return not self.parameters['is_stream']
@@ -1365,8 +1385,14 @@ class CommandArchitecture:
         self._map_request_payer_params(rgen_request_parameters)
         rgen_kwargs['request_parameters'] = rgen_request_parameters
 
-        file_generator = FileGenerator(**fgen_kwargs)
-        rev_generator = FileGenerator(**rgen_kwargs)
+        if self.cmd == 'rm' and self.parameters.get('all_versions'):
+            versioned_file_generator = VersionedFileGenerator(**fgen_kwargs)
+            file_generator = None
+            rev_generator = None
+        else:
+            file_generator = FileGenerator(**fgen_kwargs)
+            rev_generator = FileGenerator(**rgen_kwargs)
+            versioned_file_generator = None
         stream_dest_path, stream_compare_key = find_dest_path_comp_key(files)
         stream_file_info = [
             FileInfo(
@@ -1414,6 +1440,13 @@ class CommandArchitecture:
                 'file_generator': [file_generator],
                 'filters': [create_filter(self.parameters)],
                 'file_info_builder': [file_info_builder],
+                's3_handler': [s3_transfer_handler],
+            }
+        elif self.cmd == 'rm' and self.parameters.get('all_versions'):
+            command_dict = {
+                'setup': [files],
+                'versioned_file_generator': [versioned_file_generator],
+                'filters': [create_filter(self.parameters)],
                 's3_handler': [s3_transfer_handler],
             }
         elif self.cmd == 'rm':

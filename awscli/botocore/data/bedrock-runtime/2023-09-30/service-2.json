@@ -421,6 +421,12 @@
       },
       "documentation":"<p>The Model automatically decides if a tool should be called or whether to generate text instead. For example, <code>{\"auto\" : {}}</code>.</p>"
     },
+    "AutomatedReasoningRuleIdentifier":{
+      "type":"string",
+      "max":12,
+      "min":0,
+      "pattern":"[a-z0-9]{12}"
+    },
     "BidirectionalInputPayloadPart":{
       "type":"structure",
       "members":{
@@ -1359,6 +1365,10 @@
           "shape":"GuardrailContextualGroundingPolicyAssessment",
           "documentation":"<p>The contextual grounding policy used for the guardrail assessment.</p>"
         },
+        "automatedReasoningPolicy":{
+          "shape":"GuardrailAutomatedReasoningPolicyAssessment",
+          "documentation":"<p>The automated reasoning policy assessment results, including logical validation findings for the input content.</p>"
+        },
         "invocationMetrics":{
           "shape":"GuardrailInvocationMetrics",
           "documentation":"<p>The invocation metrics for the guardrail assessment.</p>"
@@ -1379,6 +1389,309 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"GuardrailAssessment"}
+    },
+    "GuardrailAutomatedReasoningDifferenceScenarioList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAutomatedReasoningScenario"},
+      "max":2,
+      "min":0
+    },
+    "GuardrailAutomatedReasoningFinding":{
+      "type":"structure",
+      "members":{
+        "valid":{"shape":"GuardrailAutomatedReasoningValidFinding"},
+        "invalid":{"shape":"GuardrailAutomatedReasoningInvalidFinding"},
+        "satisfiable":{"shape":"GuardrailAutomatedReasoningSatisfiableFinding"},
+        "impossible":{"shape":"GuardrailAutomatedReasoningImpossibleFinding"},
+        "translationAmbiguous":{"shape":"GuardrailAutomatedReasoningTranslationAmbiguousFinding"},
+        "tooComplex":{"shape":"GuardrailAutomatedReasoningTooComplexFinding"},
+        "noTranslations":{"shape":"GuardrailAutomatedReasoningNoTranslationsFinding"}
+      },
+      "documentation":"<p>Represents a logical validation result from automated reasoning policy evaluation. The finding indicates whether claims in the input are logically valid, invalid, satisfiable, impossible, or have other logical issues.</p>",
+      "union":true
+    },
+    "GuardrailAutomatedReasoningFindingList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAutomatedReasoningFinding"}
+    },
+    "GuardrailAutomatedReasoningImpossibleFinding":{
+      "type":"structure",
+      "members":{
+        "translation":{
+          "shape":"GuardrailAutomatedReasoningTranslation",
+          "documentation":"<p>The logical translation of the input that this finding evaluates.</p>"
+        },
+        "contradictingRules":{
+          "shape":"GuardrailAutomatedReasoningRuleList",
+          "documentation":"<p>The automated reasoning policy rules that contradict the claims and/or premises in the input.</p>"
+        },
+        "logicWarning":{
+          "shape":"GuardrailAutomatedReasoningLogicWarning",
+          "documentation":"<p>Indication of a logic issue with the translation without needing to consider the automated reasoning policy rules.</p>"
+        }
+      },
+      "documentation":"<p>Indicates that no valid claims can be made due to logical contradictions in the premises or rules.</p>"
+    },
+    "GuardrailAutomatedReasoningInputTextReference":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"GuardrailAutomatedReasoningStatementNaturalLanguageContent",
+          "documentation":"<p>The specific text from the original input that this reference points to.</p>"
+        }
+      },
+      "documentation":"<p>References a portion of the original input text that corresponds to logical elements.</p>"
+    },
+    "GuardrailAutomatedReasoningInputTextReferenceList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAutomatedReasoningInputTextReference"}
+    },
+    "GuardrailAutomatedReasoningInvalidFinding":{
+      "type":"structure",
+      "members":{
+        "translation":{
+          "shape":"GuardrailAutomatedReasoningTranslation",
+          "documentation":"<p>The logical translation of the input that this finding invalidates.</p>"
+        },
+        "contradictingRules":{
+          "shape":"GuardrailAutomatedReasoningRuleList",
+          "documentation":"<p>The automated reasoning policy rules that contradict the claims in the input.</p>"
+        },
+        "logicWarning":{
+          "shape":"GuardrailAutomatedReasoningLogicWarning",
+          "documentation":"<p>Indication of a logic issue with the translation without needing to consider the automated reasoning policy rules.</p>"
+        }
+      },
+      "documentation":"<p>Indicates that the claims are logically false and contradictory to the established rules or premises.</p>"
+    },
+    "GuardrailAutomatedReasoningLogicWarning":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"GuardrailAutomatedReasoningLogicWarningType",
+          "documentation":"<p>The category of the detected logical issue, such as statements that are always true or always false.</p>"
+        },
+        "premises":{
+          "shape":"GuardrailAutomatedReasoningStatementList",
+          "documentation":"<p>The logical statements that serve as premises under which the claims are validated.</p>"
+        },
+        "claims":{
+          "shape":"GuardrailAutomatedReasoningStatementList",
+          "documentation":"<p>The logical statements that are validated while assuming the policy and premises.</p>"
+        }
+      },
+      "documentation":"<p>Identifies logical issues in the translated statements that exist independent of any policy rules, such as statements that are always true or always false.</p>"
+    },
+    "GuardrailAutomatedReasoningLogicWarningType":{
+      "type":"string",
+      "enum":[
+        "ALWAYS_FALSE",
+        "ALWAYS_TRUE"
+      ]
+    },
+    "GuardrailAutomatedReasoningNoTranslationsFinding":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>Indicates that no relevant logical information could be extracted from the input for validation.</p>"
+    },
+    "GuardrailAutomatedReasoningPoliciesProcessed":{
+      "type":"integer",
+      "box":true
+    },
+    "GuardrailAutomatedReasoningPolicyAssessment":{
+      "type":"structure",
+      "members":{
+        "findings":{
+          "shape":"GuardrailAutomatedReasoningFindingList",
+          "documentation":"<p>List of logical validation results produced by evaluating the input content against automated reasoning policies.</p>"
+        }
+      },
+      "documentation":"<p>Contains the results of automated reasoning policy evaluation, including logical findings about the validity of claims made in the input content.</p>"
+    },
+    "GuardrailAutomatedReasoningPolicyUnitsProcessed":{
+      "type":"integer",
+      "box":true
+    },
+    "GuardrailAutomatedReasoningPolicyVersionArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:automated-reasoning-policy/[a-z0-9]{12}(:([1-9][0-9]{0,11}))?"
+    },
+    "GuardrailAutomatedReasoningRule":{
+      "type":"structure",
+      "members":{
+        "identifier":{
+          "shape":"AutomatedReasoningRuleIdentifier",
+          "documentation":"<p>The unique identifier of the automated reasoning rule.</p>"
+        },
+        "policyVersionArn":{
+          "shape":"GuardrailAutomatedReasoningPolicyVersionArn",
+          "documentation":"<p>The ARN of the automated reasoning policy version that contains this rule.</p>"
+        }
+      },
+      "documentation":"<p>References a specific automated reasoning policy rule that was applied during evaluation.</p>"
+    },
+    "GuardrailAutomatedReasoningRuleList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAutomatedReasoningRule"}
+    },
+    "GuardrailAutomatedReasoningSatisfiableFinding":{
+      "type":"structure",
+      "members":{
+        "translation":{
+          "shape":"GuardrailAutomatedReasoningTranslation",
+          "documentation":"<p>The logical translation of the input that this finding evaluates.</p>"
+        },
+        "claimsTrueScenario":{
+          "shape":"GuardrailAutomatedReasoningScenario",
+          "documentation":"<p>An example scenario demonstrating how the claims could be logically true.</p>"
+        },
+        "claimsFalseScenario":{
+          "shape":"GuardrailAutomatedReasoningScenario",
+          "documentation":"<p>An example scenario demonstrating how the claims could be logically false.</p>"
+        },
+        "logicWarning":{
+          "shape":"GuardrailAutomatedReasoningLogicWarning",
+          "documentation":"<p>Indication of a logic issue with the translation without needing to consider the automated reasoning policy rules.</p>"
+        }
+      },
+      "documentation":"<p>Indicates that the claims could be either true or false depending on additional assumptions not provided in the input.</p>"
+    },
+    "GuardrailAutomatedReasoningScenario":{
+      "type":"structure",
+      "members":{
+        "statements":{
+          "shape":"GuardrailAutomatedReasoningStatementList",
+          "documentation":"<p>List of logical assignments and statements that define this scenario.</p>"
+        }
+      },
+      "documentation":"<p>Represents a logical scenario where claims can be evaluated as true or false, containing specific logical assignments.</p>"
+    },
+    "GuardrailAutomatedReasoningStatement":{
+      "type":"structure",
+      "members":{
+        "logic":{
+          "shape":"GuardrailAutomatedReasoningStatementLogicContent",
+          "documentation":"<p>The formal logical representation of the statement.</p>"
+        },
+        "naturalLanguage":{
+          "shape":"GuardrailAutomatedReasoningStatementNaturalLanguageContent",
+          "documentation":"<p>The natural language explanation of the logical statement.</p>"
+        }
+      },
+      "documentation":"<p>A logical statement that includes both formal logic representation and natural language explanation.</p>"
+    },
+    "GuardrailAutomatedReasoningStatementList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAutomatedReasoningStatement"}
+    },
+    "GuardrailAutomatedReasoningStatementLogicContent":{
+      "type":"string",
+      "max":1000,
+      "min":0,
+      "sensitive":true
+    },
+    "GuardrailAutomatedReasoningStatementNaturalLanguageContent":{
+      "type":"string",
+      "max":1000,
+      "min":0,
+      "sensitive":true
+    },
+    "GuardrailAutomatedReasoningTooComplexFinding":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>Indicates that the input exceeds the processing capacity due to the volume or complexity of the logical information.</p>"
+    },
+    "GuardrailAutomatedReasoningTranslation":{
+      "type":"structure",
+      "members":{
+        "premises":{
+          "shape":"GuardrailAutomatedReasoningStatementList",
+          "documentation":"<p>The logical statements that serve as the foundation or assumptions for the claims.</p>"
+        },
+        "claims":{
+          "shape":"GuardrailAutomatedReasoningStatementList",
+          "documentation":"<p>The logical statements that are being validated against the premises and policy rules.</p>"
+        },
+        "untranslatedPremises":{
+          "shape":"GuardrailAutomatedReasoningInputTextReferenceList",
+          "documentation":"<p>References to portions of the original input text that correspond to the premises but could not be fully translated.</p>"
+        },
+        "untranslatedClaims":{
+          "shape":"GuardrailAutomatedReasoningInputTextReferenceList",
+          "documentation":"<p>References to portions of the original input text that correspond to the claims but could not be fully translated.</p>"
+        },
+        "confidence":{
+          "shape":"GuardrailAutomatedReasoningTranslationConfidence",
+          "documentation":"<p>A confidence score between 0 and 1 indicating how certain the system is about the logical translation.</p>"
+        }
+      },
+      "documentation":"<p>Contains the logical translation of natural language input into formal logical statements, including premises, claims, and confidence scores.</p>"
+    },
+    "GuardrailAutomatedReasoningTranslationAmbiguousFinding":{
+      "type":"structure",
+      "members":{
+        "options":{
+          "shape":"GuardrailAutomatedReasoningTranslationOptionList",
+          "documentation":"<p>Different logical interpretations that were detected during translation of the input.</p>"
+        },
+        "differenceScenarios":{
+          "shape":"GuardrailAutomatedReasoningDifferenceScenarioList",
+          "documentation":"<p>Scenarios showing how the different translation options differ in meaning.</p>"
+        }
+      },
+      "documentation":"<p>Indicates that the input has multiple valid logical interpretations, requiring additional context or clarification.</p>"
+    },
+    "GuardrailAutomatedReasoningTranslationConfidence":{
+      "type":"double",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "GuardrailAutomatedReasoningTranslationList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAutomatedReasoningTranslation"}
+    },
+    "GuardrailAutomatedReasoningTranslationOption":{
+      "type":"structure",
+      "members":{
+        "translations":{
+          "shape":"GuardrailAutomatedReasoningTranslationList",
+          "documentation":"<p>Example translations that provide this possible interpretation of the input.</p>"
+        }
+      },
+      "documentation":"<p>Represents one possible logical interpretation of ambiguous input content.</p>"
+    },
+    "GuardrailAutomatedReasoningTranslationOptionList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAutomatedReasoningTranslationOption"},
+      "max":2,
+      "min":0
+    },
+    "GuardrailAutomatedReasoningValidFinding":{
+      "type":"structure",
+      "members":{
+        "translation":{
+          "shape":"GuardrailAutomatedReasoningTranslation",
+          "documentation":"<p>The logical translation of the input that this finding validates.</p>"
+        },
+        "claimsTrueScenario":{
+          "shape":"GuardrailAutomatedReasoningScenario",
+          "documentation":"<p>An example scenario demonstrating how the claims are logically true.</p>"
+        },
+        "supportingRules":{
+          "shape":"GuardrailAutomatedReasoningRuleList",
+          "documentation":"<p>The automated reasoning policy rules that support why this result is considered valid.</p>"
+        },
+        "logicWarning":{
+          "shape":"GuardrailAutomatedReasoningLogicWarning",
+          "documentation":"<p>Indication of a logic issue with the translation without needing to consider the automated reasoning policy rules.</p>"
+        }
+      },
+      "documentation":"<p>Indicates that the claims are definitively true and logically implied by the premises, with no possible alternative interpretations.</p>"
     },
     "GuardrailConfiguration":{
       "type":"structure",
@@ -2190,6 +2503,14 @@
         "contentPolicyImageUnits":{
           "shape":"GuardrailContentPolicyImageUnitsProcessed",
           "documentation":"<p>The content policy image units processed by the guardrail.</p>"
+        },
+        "automatedReasoningPolicyUnits":{
+          "shape":"GuardrailAutomatedReasoningPolicyUnitsProcessed",
+          "documentation":"<p>The number of text units processed by the automated reasoning policy.</p>"
+        },
+        "automatedReasoningPolicies":{
+          "shape":"GuardrailAutomatedReasoningPoliciesProcessed",
+          "documentation":"<p>The number of automated reasoning policies that were processed during the guardrail evaluation.</p>"
         }
       },
       "documentation":"<p>The details on the use of the guardrail.</p>"

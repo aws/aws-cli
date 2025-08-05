@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.42.3
+======
+
+* api-change:``bedrock``: This release introduces Automated Reasoning checks for Amazon Bedrock Guardrails. The feature adds new APIs for policy building, refinement, version management, and testing. Guardrail APIs now support Automated Reasoning policy configuration and validation output.
+* api-change:``bedrock-runtime``: This release adds support for Automated Reasoning checks output models for the Amazon Bedrock Guardrails ApplyGuardrail API.
+* api-change:``eks``: Add support for deletion protection on EKS clusters
+* api-change:``rds``: Adds a new Aurora Serverless v2 attribute to the DBCluster resource to expose the platform version. Also updates the attribute to be part of both the engine version and platform version descriptions.
+* api-change:``sagemaker``: Add support for SageMaker Hyperpod continuous scaling and custom AMI; Introduce new APIs: ListClusterEvents, DescribeClusterEvent, BatchAddClusterNodes
+
+
 1.42.2
 ======
 

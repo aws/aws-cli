@@ -36,3 +36,4 @@ FULL_OBJECT_CHECKSUM_ARGS = [
 
 USER_AGENT = f's3transfer/{s3transfer.__version__}'
 PROCESS_USER_AGENT = f'{USER_AGENT} processpool'
+MAX_BATCH_SIZE = 1000

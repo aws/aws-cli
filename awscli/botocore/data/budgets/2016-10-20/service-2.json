@@ -30,7 +30,8 @@
         {"shape":"DuplicateRecordException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ServiceQuotaExceededException"}
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"NotFoundException"}
       ],
       "documentation":"<p>Creates a budget and, if included, notifications and subscribers. </p> <important> <p>Only one of <code>BudgetLimit</code> or <code>PlannedBudgetLimits</code> can be present in the syntax at one time. Use the syntax that matches your use case. The Request Syntax section shows the <code>BudgetLimit</code> syntax. For <code>PlannedBudgetLimits</code>, see the <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_budgets_CreateBudget.html#API_CreateBudget_Examples\">Examples</a> section.</p> <p>Similarly, only one set of filter and metric selections can be present in the syntax at one time. Either <code>FilterExpression</code> and <code>Metrics</code> or <code>CostFilters</code> and <code>CostTypes</code>, not both or a different combination. We recommend using <code>FilterExpression</code> and <code>Metrics</code> as they provide more flexible and powerful filtering capabilities. The Request Syntax section shows the <code>FilterExpression</code>/<code>Metrics</code> syntax.</p> </important>"
     },
@@ -694,6 +695,12 @@
         "FORECAST"
       ]
     },
+    "BillingViewArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-z-]*:(billing)::[0-9]{12}:billingview/[a-zA-Z0-9/:_+=.\\-@]{0,75}[a-zA-Z0-9]$"
+    },
     "Budget":{
       "type":"structure",
       "required":[
@@ -759,6 +766,14 @@
         "Metrics":{
           "shape":"Metrics",
           "documentation":"<p>The definition for how the budget data is aggregated.</p>"
+        },
+        "BillingViewArn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a specific billing view. The ARN is used to specify which particular billing view you want to interact with or retrieve information from when making API calls related to Amazon Web Services Billing and Cost Management features. The BillingViewArn can be retrieved by calling the ListBillingViews API.</p>"
+        },
+        "HealthStatus":{
+          "shape":"HealthStatus",
+          "documentation":"<p>The current operational state of a Billing View derived resource.</p>"
         }
       },
       "documentation":"<p>Represents the output of the <code>CreateBudget</code> operation. The content consists of the detailed metadata and data file information, and the current status of the <code>budget</code> object.</p> <p>This is the Amazon Resource Name (ARN) pattern for a budget: </p> <p> <code>arn:aws:budgets::AccountId:budget/budgetName</code> </p>"
@@ -797,6 +812,10 @@
           "documentation":"<p>The history of the cost types for a budget during the specified time period.</p>"
         },
         "TimeUnit":{"shape":"TimeUnit"},
+        "BillingViewArn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a specific billing view. The ARN is used to specify which particular billing view you want to interact with or retrieve information from when making API calls related to Amazon Web Services Billing and Cost Management features. The BillingViewArn can be retrieved by calling the ListBillingViews API.</p>"
+        },
         "BudgetedAndActualAmountsList":{
           "shape":"BudgetedAndActualAmountsList",
           "documentation":"<p>A list of amounts of cost or usage that you created budgets for, which are compared to your actual costs or usage.</p>"
@@ -1744,6 +1763,36 @@
       "member":{"shape":"Group"},
       "max":100,
       "min":1
+    },
+    "HealthStatus":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"HealthStatusValue",
+          "documentation":"<p>The current status of the billing view resource.</p>"
+        },
+        "StatusReason":{
+          "shape":"HealthStatusReason",
+          "documentation":"<p>The reason for the current status.</p> <ul> <li> <p> <code>BILLING_VIEW_NO_ACCESS</code>: The billing view resource does not grant <code>billing:GetBillingViewData</code> permission to this account.</p> </li> <li> <p> <code>BILLING_VIEW_UNHEALTHY</code>: The billing view associated with the budget is unhealthy.</p> </li> <li> <p> <code>FILTER_INVALID</code>: The filter contains reference to an account you do not have access to.</p> </li> </ul>"
+        },
+        "LastUpdatedTime":{"shape":"GenericTimestamp"}
+      },
+      "documentation":"<p>Provides information about the current operational state of a billing view resource, including its ability to access and update based on its associated billing view.</p>"
+    },
+    "HealthStatusReason":{
+      "type":"string",
+      "enum":[
+        "BILLING_VIEW_NO_ACCESS",
+        "BILLING_VIEW_UNHEALTHY",
+        "FILTER_INVALID"
+      ]
+    },
+    "HealthStatusValue":{
+      "type":"string",
+      "enum":[
+        "HEALTHY",
+        "UNHEALTHY"
+      ]
     },
     "HistoricalOptions":{
       "type":"structure",

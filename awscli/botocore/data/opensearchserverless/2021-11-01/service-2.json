@@ -106,6 +106,23 @@
       "documentation":"<p>Creates a new OpenSearch Serverless collection. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html\">Creating and managing Amazon OpenSearch Serverless collections</a>.</p>",
       "idempotent":true
     },
+    "CreateIndex":{
+      "name":"CreateIndex",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIndexRequest"},
+      "output":{"shape":"CreateIndexResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates an index within an OpenSearch Serverless collection. Unlike other OpenSearch indexes, indexes created by this API are automatically configured to conduct automatic semantic enrichment ingestion and search. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html#serverless-semantic-enrichment\">About automatic semantic enrichment</a> in the <i>OpenSearch User Guide</i>.</p>",
+      "idempotent":true
+    },
     "CreateLifecyclePolicy":{
       "name":"CreateLifecyclePolicy",
       "http":{
@@ -208,6 +225,22 @@
       "documentation":"<p>Deletes an OpenSearch Serverless collection. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html\">Creating and managing Amazon OpenSearch Serverless collections</a>.</p>",
       "idempotent":true
     },
+    "DeleteIndex":{
+      "name":"DeleteIndex",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIndexRequest"},
+      "output":{"shape":"DeleteIndexResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes an index from an OpenSearch Serverless collection. Be aware that the index might be configured to conduct automatic semantic enrichment ingestion and search. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html#serverless-semantic-enrichment\">About automatic semantic enrichment</a>.</p>",
+      "idempotent":true
+    },
     "DeleteLifecyclePolicy":{
       "name":"DeleteLifecyclePolicy",
       "http":{
@@ -304,6 +337,21 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Returns account-level settings related to OpenSearch Serverless.</p>"
+    },
+    "GetIndex":{
+      "name":"GetIndex",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIndexRequest"},
+      "output":{"shape":"GetIndexResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves information about an index in an OpenSearch Serverless collection, including its schema definition. The index might be configured to conduct automatic semantic enrichment ingestion and search. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html#serverless-semantic-enrichment\">About automatic semantic enrichment</a>.</p>"
     },
     "GetPoliciesStats":{
       "name":"GetPoliciesStats",
@@ -525,6 +573,22 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Updates an OpenSearch Serverless collection.</p>",
+      "idempotent":true
+    },
+    "UpdateIndex":{
+      "name":"UpdateIndex",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateIndexRequest"},
+      "output":{"shape":"UpdateIndexResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates an existing index in an OpenSearch Serverless collection. This operation allows you to modify the index schema, including adding new fields or changing field mappings. You can also enable automatic semantic enrichment ingestion and search. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html#serverless-semantic-enrichment\">About automatic semantic enrichment</a>.</p>",
       "idempotent":true
     },
     "UpdateLifecyclePolicy":{
@@ -1152,6 +1216,32 @@
       },
       "documentation":"<p>Describes IAM Identity Center options for creating an OpenSearch Serverless security configuration in the form of a key-value map.</p>"
     },
+    "CreateIndexRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "indexName"
+      ],
+      "members":{
+        "id":{
+          "shape":"CollectionId",
+          "documentation":"<p>The unique identifier of the collection in which to create the index.</p>"
+        },
+        "indexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to create. Index names must be lowercase and can't begin with underscores (_) or hyphens (-).</p>"
+        },
+        "indexSchema":{
+          "shape":"IndexSchema",
+          "documentation":"<p>The JSON schema definition for the index, including field mappings and settings.</p>"
+        }
+      }
+    },
+    "CreateIndexResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "CreateLifecyclePolicyRequest":{
       "type":"structure",
       "required":[
@@ -1406,6 +1496,28 @@
         }
       }
     },
+    "DeleteIndexRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "indexName"
+      ],
+      "members":{
+        "id":{
+          "shape":"CollectionId",
+          "documentation":"<p>The unique identifier of the collection containing the index to delete.</p>"
+        },
+        "indexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to delete.</p>"
+        }
+      }
+    },
+    "DeleteIndexResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteLifecyclePolicyRequest":{
       "type":"structure",
       "required":[
@@ -1628,6 +1740,32 @@
         }
       }
     },
+    "GetIndexRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "indexName"
+      ],
+      "members":{
+        "id":{
+          "shape":"CollectionId",
+          "documentation":"<p>The unique identifier of the collection containing the index.</p>"
+        },
+        "indexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to retrieve information about.</p>"
+        }
+      }
+    },
+    "GetIndexResponse":{
+      "type":"structure",
+      "members":{
+        "indexSchema":{
+          "shape":"IndexSchema",
+          "documentation":"<p>The JSON schema definition for the index, including field mappings and settings.</p>"
+        }
+      }
+    },
     "GetPoliciesStatsRequest":{
       "type":"structure",
       "members":{
@@ -1773,6 +1911,13 @@
         "UserName",
         "Email"
       ]
+    },
+    "IndexName":{"type":"string"},
+    "IndexSchema":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true
     },
     "IndexingCapacityValue":{
       "type":"integer",
@@ -2001,7 +2146,7 @@
       "members":{
         "collectionFilters":{
           "shape":"CollectionFilters",
-          "documentation":"<p>A list of filter names and values that you can use for requests.</p>"
+          "documentation":"<p> A list of filter names and values that you can use for requests.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -2126,7 +2271,7 @@
         },
         "resource":{
           "shape":"ListSecurityPoliciesRequestResourceList",
-          "documentation":"<p>Resource filters (can be collection or indexes) that policies can apply to.</p>"
+          "documentation":"<p>Resource filters (can be collection or indexes) that policies can apply to. </p>"
         },
         "nextToken":{
           "shape":"String",
@@ -2191,7 +2336,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>If your initial <code>ListVpcEndpoints</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListVpcEndpoints</code> operations, which returns results in the next page.</p>"
+          "documentation":"<p>If your initial <code>ListVpcEndpoints</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListVpcEndpoints</code> operations, which returns results in the next page. </p>"
         },
         "maxResults":{
           "shape":"ListVpcEndpointsRequestMaxResultsInteger",
@@ -2231,7 +2376,7 @@
           "documentation":"<p>Description of the error.</p>"
         }
       },
-      "documentation":"<p>Thrown when the collection you're attempting to create results in a number of search or indexing OCUs that exceeds the account limit.</p>",
+      "documentation":"<p>Thrown when the collection you're attempting to create results in a number of search or indexing OCUs that exceeds the account limit. </p>",
       "exception":true
     },
     "PolicyDescription":{
@@ -2791,6 +2936,32 @@
       },
       "documentation":"<p>Describes IAM Identity Center options for updating an OpenSearch Serverless security configuration in the form of a key-value map.</p>"
     },
+    "UpdateIndexRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "indexName"
+      ],
+      "members":{
+        "id":{
+          "shape":"CollectionId",
+          "documentation":"<p>The unique identifier of the collection containing the index to update.</p>"
+        },
+        "indexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to update.</p>"
+        },
+        "indexSchema":{
+          "shape":"IndexSchema",
+          "documentation":"<p>The updated JSON schema definition for the index, including field mappings and settings. </p>"
+        }
+      }
+    },
+    "UpdateIndexResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateLifecyclePolicyRequest":{
       "type":"structure",
       "required":[
@@ -2801,7 +2972,7 @@
       "members":{
         "type":{
           "shape":"LifecyclePolicyType",
-          "documentation":"<p>The type of lifecycle policy.</p>"
+          "documentation":"<p> The type of lifecycle policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
@@ -2878,7 +3049,7 @@
       "members":{
         "securityConfigDetail":{
           "shape":"SecurityConfigDetail",
-          "documentation":"<p>Details about the updated security configuration.</p>"
+          "documentation":"<p>Details about the updated security configuration. </p>"
         }
       }
     },

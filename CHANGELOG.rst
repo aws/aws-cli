@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.42.4
+======
+
+* api-change:``appstream``: Added support for G6 instances
+* api-change:``budgets``: Adds support for billing views. Billing views let you control access to cost and usage data through an AWS resource, streamlining the process of sharing cost and usage data across account boundaries. With this release, you can now create and view budgets based on billing views.
+* api-change:``ec2``: Mark Elastic Inference Accelerators and Elastic Graphics Processor parameters as deprecated on the RunInstances and LaunchTemplate APIs.
+* api-change:``opensearchserverless``: Features: add Index APIs in OpenSearchServerless to support managed semantic enrichment
+* api-change:``qbusiness``: Amazon Q Business now supports the GetDocumentContent() API that enables customers to securely access the source documents through clickable citation links at query time
+
+
 1.42.3
 ======
 

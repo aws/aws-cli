@@ -67,6 +67,20 @@
       ],
       "documentation":"<p> Attaches your Amazon Elastic Block Store (Amazon EBS) volume to a node in your EKS-orchestrated HyperPod cluster. </p> <p> This API works with the Amazon Elastic Block Store (Amazon EBS) Container Storage Interface (CSI) driver to manage the lifecycle of persistent storage in your HyperPod EKS clusters. </p>"
     },
+    "BatchAddClusterNodes":{
+      "name":"BatchAddClusterNodes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchAddClusterNodesRequest"},
+      "output":{"shape":"BatchAddClusterNodesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Adds nodes to a HyperPod cluster by incrementing the target count for one or more instance groups. This operation returns a unique <code>NodeLogicalId</code> for each node being added, which can be used to track the provisioning status of the node. This API provides a safer alternative to <code>UpdateCluster</code> for scaling operations by avoiding unintended configuration changes.</p> <note> <p>This API is only supported for clusters using <code>Continuous</code> as the <code>NodeProvisioningMode</code>.</p> </note>"
+    },
     "BatchDeleteClusterNodes":{
       "name":"BatchDeleteClusterNodes",
       "http":{
@@ -1748,6 +1762,19 @@
       ],
       "documentation":"<p>Retrieves information of a SageMaker HyperPod cluster.</p>"
     },
+    "DescribeClusterEvent":{
+      "name":"DescribeClusterEvent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeClusterEventRequest"},
+      "output":{"shape":"DescribeClusterEventResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific event for a given HyperPod cluster. This functionality is only supported when the <code>NodeProvisioningMode</code> is set to <code>Continuous</code>.</p>"
+    },
     "DescribeClusterNode":{
       "name":"DescribeClusterNode",
       "http":{
@@ -2708,6 +2735,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>List the candidates created for the job.</p>"
+    },
+    "ListClusterEvents":{
+      "name":"ListClusterEvents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListClusterEventsRequest"},
+      "output":{"shape":"ListClusterEventsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Retrieves a list of event summaries for a specified HyperPod cluster. The operation supports filtering, sorting, and pagination of results. This functionality is only supported when the <code>NodeProvisioningMode</code> is set to <code>Continuous</code>.</p>"
     },
     "ListClusterNodes":{
       "name":"ListClusterNodes",
@@ -4623,6 +4663,36 @@
         }
       }
     },
+    "AddClusterNodeSpecification":{
+      "type":"structure",
+      "required":[
+        "InstanceGroupName",
+        "IncrementTargetCountBy"
+      ],
+      "members":{
+        "InstanceGroupName":{
+          "shape":"ClusterInstanceGroupName",
+          "documentation":"<p>The name of the instance group to which you want to add nodes.</p>"
+        },
+        "IncrementTargetCountBy":{
+          "shape":"AddClusterNodeSpecificationIncrementTargetCountByInteger",
+          "documentation":"<p>The number of nodes to add to the specified instance group. The total number of nodes across all instance groups in a single request cannot exceed 50.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an instance group and the number of nodes to add to it.</p>"
+    },
+    "AddClusterNodeSpecificationIncrementTargetCountByInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "AddClusterNodeSpecificationList":{
+      "type":"list",
+      "member":{"shape":"AddClusterNodeSpecification"},
+      "max":5,
+      "min":1
+    },
     "AddTagsInput":{
       "type":"structure",
       "required":[
@@ -4654,6 +4724,16 @@
       "member":{"shape":"CodeRepositoryNameOrUrl"},
       "max":3,
       "min":0
+    },
+    "AdditionalEnis":{
+      "type":"structure",
+      "members":{
+        "EfaEnis":{
+          "shape":"EfaEnis",
+          "documentation":"<p>A list of Elastic Fabric Adapter (EFA) ENIs associated with the instance.</p>"
+        }
+      },
+      "documentation":"<p>Information about additional Elastic Network Interfaces (ENIs) associated with an instance.</p>"
     },
     "AdditionalInferenceSpecificationDefinition":{
       "type":"structure",
@@ -6688,6 +6768,94 @@
       "min":1,
       "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9])*"
     },
+    "BatchAddClusterNodesError":{
+      "type":"structure",
+      "required":[
+        "InstanceGroupName",
+        "ErrorCode",
+        "FailedCount"
+      ],
+      "members":{
+        "InstanceGroupName":{
+          "shape":"InstanceGroupName",
+          "documentation":"<p>The name of the instance group for which the error occurred.</p>"
+        },
+        "ErrorCode":{
+          "shape":"BatchAddClusterNodesErrorCode",
+          "documentation":"<p>The error code associated with the failure. Possible values include <code>InstanceGroupNotFound</code> and <code>InvalidInstanceGroupState</code>.</p>"
+        },
+        "FailedCount":{
+          "shape":"BatchAddFailureCount",
+          "documentation":"<p>The number of nodes that failed to be added to the specified instance group.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A descriptive message providing additional details about the error.</p>"
+        }
+      },
+      "documentation":"<p>Information about an error that occurred during the node addition operation.</p>"
+    },
+    "BatchAddClusterNodesErrorCode":{
+      "type":"string",
+      "enum":[
+        "InstanceGroupNotFound",
+        "InvalidInstanceGroupStatus"
+      ]
+    },
+    "BatchAddClusterNodesErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchAddClusterNodesError"}
+    },
+    "BatchAddClusterNodesRequest":{
+      "type":"structure",
+      "required":[
+        "ClusterName",
+        "NodesToAdd"
+      ],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>The name of the HyperPod cluster to which you want to add nodes.</p>"
+        },
+        "ClientToken":{
+          "shape":"BatchAddClusterNodesRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This token is valid for 8 hours. If you retry the request with the same client token within this timeframe and the same parameters, the API returns the same set of <code>NodeLogicalIds</code> with their latest status.</p>",
+          "idempotencyToken":true
+        },
+        "NodesToAdd":{
+          "shape":"AddClusterNodeSpecificationList",
+          "documentation":"<p>A list of instance groups and the number of nodes to add to each. You can specify up to 5 instance groups in a single request, with a maximum of 50 nodes total across all instance groups.</p>"
+        }
+      }
+    },
+    "BatchAddClusterNodesRequestClientTokenString":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"[\\x21-\\x7E]+"
+    },
+    "BatchAddClusterNodesResponse":{
+      "type":"structure",
+      "required":[
+        "Successful",
+        "Failed"
+      ],
+      "members":{
+        "Successful":{
+          "shape":"NodeAdditionResultList",
+          "documentation":"<p>A list of <code>NodeLogicalIDs</code> that were successfully added to the cluster. The <code>NodeLogicalID</code> is unique per cluster and does not change between instance replacements. Each entry includes a <code>NodeLogicalId</code> that can be used to track the node's provisioning status (with <code>DescribeClusterNode</code>), the instance group name, and the current status of the node.</p>"
+        },
+        "Failed":{
+          "shape":"BatchAddClusterNodesErrorList",
+          "documentation":"<p>A list of errors that occurred during the node addition operation. Each entry includes the instance group name, error code, number of failed additions, and an error message.</p>"
+        }
+      }
+    },
+    "BatchAddFailureCount":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "BatchDataCaptureConfig":{
       "type":"structure",
       "required":["DestinationS3Uri"],
@@ -6707,6 +6875,35 @@
         }
       },
       "documentation":"<p>Configuration to control how SageMaker captures inference data for batch transform jobs.</p>"
+    },
+    "BatchDeleteClusterNodeLogicalIdsError":{
+      "type":"structure",
+      "required":[
+        "Code",
+        "Message",
+        "NodeLogicalId"
+      ],
+      "members":{
+        "Code":{
+          "shape":"BatchDeleteClusterNodesErrorCode",
+          "documentation":"<p>The error code associated with the failure. Possible values include <code>NodeLogicalIdNotFound</code>, <code>InvalidNodeStatus</code>, and <code>InternalError</code>.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A descriptive message providing additional details about the error.</p>"
+        },
+        "NodeLogicalId":{
+          "shape":"ClusterNodeLogicalId",
+          "documentation":"<p>The <code>NodeLogicalId</code> of the node that could not be deleted.</p>"
+        }
+      },
+      "documentation":"<p>Information about an error that occurred when attempting to delete a node identified by its <code>NodeLogicalId</code>.</p>"
+    },
+    "BatchDeleteClusterNodeLogicalIdsErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteClusterNodeLogicalIdsError"},
+      "max":99,
+      "min":1
     },
     "BatchDeleteClusterNodesError":{
       "type":"structure",
@@ -6756,6 +6953,10 @@
         "NodeIds":{
           "shape":"ClusterNodeIds",
           "documentation":"<p>A list of node IDs to be deleted from the specified cluster.</p> <note> <ul> <li> <p>For SageMaker HyperPod clusters using the Slurm workload manager, you cannot remove instances that are configured as Slurm controller nodes.</p> </li> <li> <p>If you need to delete more than 99 instances, contact <a href=\"http://aws.amazon.com/contact-us/\">Support</a> for assistance.</p> </li> </ul> </note>"
+        },
+        "NodeLogicalIds":{
+          "shape":"ClusterNodeLogicalIdList",
+          "documentation":"<p>A list of <code>NodeLogicalIds</code> identifying the nodes to be deleted. You can specify up to 50 <code>NodeLogicalIds</code>. You must specify either <code>NodeLogicalIds</code>, <code>InstanceIds</code>, or both, with a combined maximum of 50 identifiers.</p>"
         }
       }
     },
@@ -6769,6 +6970,14 @@
         "Successful":{
           "shape":"ClusterNodeIds",
           "documentation":"<p>A list of node IDs that were successfully deleted from the specified cluster.</p>"
+        },
+        "FailedNodeLogicalIds":{
+          "shape":"BatchDeleteClusterNodeLogicalIdsErrorList",
+          "documentation":"<p>A list of <code>NodeLogicalIds</code> that could not be deleted, along with error information explaining why the deletion failed.</p>"
+        },
+        "SuccessfulNodeLogicalIds":{
+          "shape":"ClusterNodeLogicalIdList",
+          "documentation":"<p>A list of <code>NodeLogicalIds</code> that were successfully deleted from the cluster.</p>"
         }
       }
     },
@@ -7174,9 +7383,30 @@
       },
       "documentation":"<p>The SageMaker Canvas application settings.</p>"
     },
+    "CapacityReservation":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Capacity Reservation.</p>"
+        },
+        "Type":{
+          "shape":"CapacityReservationType",
+          "documentation":"<p>The type of Capacity Reservation. Valid values are <code>ODCR</code> (On-Demand Capacity Reservation) or <code>CRG</code> (Capacity Reservation Group).</p>"
+        }
+      },
+      "documentation":"<p>Information about the Capacity Reservation used by an instance or instance group.</p>"
+    },
     "CapacityReservationPreference":{
       "type":"string",
       "enum":["capacity-reservations-only"]
+    },
+    "CapacityReservationType":{
+      "type":"string",
+      "enum":[
+        "ODCR",
+        "CRG"
+      ]
     },
     "CapacitySize":{
       "type":"structure",
@@ -8070,6 +8300,120 @@
       "max":16384,
       "min":1
     },
+    "ClusterEventDetail":{
+      "type":"structure",
+      "required":[
+        "EventId",
+        "ClusterArn",
+        "ClusterName",
+        "ResourceType",
+        "EventTime"
+      ],
+      "members":{
+        "EventId":{
+          "shape":"EventId",
+          "documentation":"<p>The unique identifier (UUID) of the event.</p>"
+        },
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster associated with the event.</p>"
+        },
+        "ClusterName":{
+          "shape":"ClusterName",
+          "documentation":"<p>The name of the SageMaker HyperPod cluster associated with the event.</p>"
+        },
+        "InstanceGroupName":{
+          "shape":"ClusterInstanceGroupName",
+          "documentation":"<p>The name of the instance group associated with the event, if applicable.</p>"
+        },
+        "InstanceId":{
+          "shape":"String",
+          "documentation":"<p>The EC2 instance ID associated with the event, if applicable.</p>"
+        },
+        "ResourceType":{
+          "shape":"ClusterEventResourceType",
+          "documentation":"<p>The type of resource associated with the event. Valid values are \"Cluster\", \"InstanceGroup\", or \"Instance\".</p>"
+        },
+        "EventTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the event occurred.</p>"
+        },
+        "EventDetails":{
+          "shape":"EventDetails",
+          "documentation":"<p>Additional details about the event, including event-specific metadata.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A human-readable description of the event.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about a specific event in a HyperPod cluster.</p>"
+    },
+    "ClusterEventMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ClusterEventResourceType":{
+      "type":"string",
+      "enum":[
+        "Cluster",
+        "InstanceGroup",
+        "Instance"
+      ]
+    },
+    "ClusterEventSummaries":{
+      "type":"list",
+      "member":{"shape":"ClusterEventSummary"},
+      "max":100,
+      "min":0
+    },
+    "ClusterEventSummary":{
+      "type":"structure",
+      "required":[
+        "EventId",
+        "ClusterArn",
+        "ClusterName",
+        "ResourceType",
+        "EventTime"
+      ],
+      "members":{
+        "EventId":{
+          "shape":"EventId",
+          "documentation":"<p>The unique identifier (UUID) of the event.</p>"
+        },
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster associated with the event.</p>"
+        },
+        "ClusterName":{
+          "shape":"ClusterName",
+          "documentation":"<p>The name of the SageMaker HyperPod cluster associated with the event.</p>"
+        },
+        "InstanceGroupName":{
+          "shape":"ClusterInstanceGroupName",
+          "documentation":"<p>The name of the instance group associated with the event, if applicable.</p>"
+        },
+        "InstanceId":{
+          "shape":"String",
+          "documentation":"<p>The EC2 instance ID associated with the event, if applicable.</p>"
+        },
+        "ResourceType":{
+          "shape":"ClusterEventResourceType",
+          "documentation":"<p>The type of resource associated with the event. Valid values are \"Cluster\", \"InstanceGroup\", or \"Instance\".</p>"
+        },
+        "EventTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the event occurred.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A brief, human-readable description of the event.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an event in a SageMaker HyperPod cluster.</p>"
+    },
     "ClusterInstanceCount":{
       "type":"integer",
       "box":true,
@@ -8134,6 +8478,14 @@
         "ScheduledUpdateConfig":{
           "shape":"ScheduledUpdateConfig",
           "documentation":"<p>The configuration object of the schedule that SageMaker follows when updating the AMI.</p>"
+        },
+        "CurrentImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the Amazon Machine Image (AMI) currently in use by the instance group.</p>"
+        },
+        "DesiredImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the Amazon Machine Image (AMI) desired for the instance group.</p>"
         }
       },
       "documentation":"<p>Details of an instance group in a SageMaker HyperPod cluster.</p>"
@@ -8201,6 +8553,10 @@
         "ScheduledUpdateConfig":{
           "shape":"ScheduledUpdateConfig",
           "documentation":"<p>The configuration object of the schedule that SageMaker uses to update the AMI.</p>"
+        },
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>When configuring your HyperPod cluster, you can specify an image ID using one of the following options:</p> <ul> <li> <p> <code>HyperPodPublicAmiId</code>: Use a HyperPod public AMI</p> </li> <li> <p> <code>CustomAmiId</code>: Use your custom AMI</p> </li> <li> <p> <code>default</code>: Use the default latest system image</p> </li> </ul> <p>f you choose to use a custom AMI (<code>CustomAmiId</code>), ensure it meets the following requirements:</p> <ul> <li> <p>Encryption: The custom AMI must be unencrypted.</p> </li> <li> <p>Ownership: The custom AMI must be owned by the same Amazon Web Services account that is creating the HyperPod cluster.</p> </li> <li> <p>Volume support: Only the primary AMI snapshot volume is supported; additional AMI volumes are not supported.</p> </li> </ul> <p>When updating the instance group's AMI through the <code>UpdateClusterSoftware</code> operation, if an instance group uses a custom AMI, you must provide an <code>ImageId</code> or use the default as input.</p>"
         }
       },
       "documentation":"<p>The specifications of an instance group that you need to define.</p>"
@@ -8239,7 +8595,8 @@
         "Pending",
         "ShuttingDown",
         "SystemUpdating",
-        "DeepHealthCheckInProgress"
+        "DeepHealthCheckInProgress",
+        "NotFound"
       ]
     },
     "ClusterInstanceStatusDetails":{
@@ -8415,6 +8772,24 @@
       "min":1,
       "pattern":"[\\S\\s]+"
     },
+    "ClusterMetadata":{
+      "type":"structure",
+      "members":{
+        "FailureMessage":{
+          "shape":"String",
+          "documentation":"<p>An error message describing why the cluster level operation (such as creating, updating, or deleting) failed.</p>"
+        },
+        "EksRoleAccessEntries":{
+          "shape":"EksRoleAccessEntries",
+          "documentation":"<p>A list of Amazon EKS IAM role ARNs associated with the cluster. This is created by SageMaker HyperPod on your behalf and only applies for EKS-orchestrated clusters.</p>"
+        },
+        "SlrAccessEntry":{
+          "shape":"String",
+          "documentation":"<p>The Service-Linked Role (SLR) associated with the cluster. This is created by SageMaker HyperPod on your behalf and only applies for EKS-orchestrated clusters.</p>"
+        }
+      },
+      "documentation":"<p>Metadata information about a SageMaker HyperPod cluster showing information about the cluster level operations, such as creating, updating, and deleting.</p>"
+    },
     "ClusterName":{
       "type":"string",
       "max":63,
@@ -8437,6 +8812,10 @@
         "InstanceId":{
           "shape":"String",
           "documentation":"<p>The ID of the instance.</p>"
+        },
+        "NodeLogicalId":{
+          "shape":"ClusterNodeLogicalId",
+          "documentation":"<p>A unique identifier for the node that persists throughout its lifecycle, from provisioning request to termination. This identifier can be used to track the node even before it has an assigned <code>InstanceId</code>.</p>"
         },
         "InstanceStatus":{
           "shape":"ClusterInstanceStatusDetails",
@@ -8485,6 +8864,14 @@
         "Placement":{
           "shape":"ClusterInstancePlacement",
           "documentation":"<p>The placement details of the SageMaker HyperPod cluster node.</p>"
+        },
+        "CurrentImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the Amazon Machine Image (AMI) currently in use by the node.</p>"
+        },
+        "DesiredImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the Amazon Machine Image (AMI) desired for the node.</p>"
         }
       },
       "documentation":"<p>Details of an instance (also called a <i>node</i> interchangeably) in a SageMaker HyperPod cluster.</p>"
@@ -8500,6 +8887,22 @@
       "member":{"shape":"ClusterNodeId"},
       "max":3000,
       "min":1
+    },
+    "ClusterNodeLogicalId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9]"
+    },
+    "ClusterNodeLogicalIdList":{
+      "type":"list",
+      "member":{"shape":"ClusterNodeLogicalId"},
+      "max":99,
+      "min":1
+    },
+    "ClusterNodeProvisioningMode":{
+      "type":"string",
+      "enum":["Continuous"]
     },
     "ClusterNodeRecovery":{
       "type":"string",
@@ -8529,6 +8932,10 @@
         "InstanceId":{
           "shape":"String",
           "documentation":"<p>The ID of the instance.</p>"
+        },
+        "NodeLogicalId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier for the node that persists throughout its lifecycle, from provisioning request to termination. This identifier can be used to track the node even before it has an assigned <code>InstanceId</code>. This field is only included when <code>IncludeNodeLogicalIds</code> is set to <code>True</code> in the <code>ListClusterNodes</code> request.</p>"
         },
         "InstanceType":{
           "shape":"ClusterInstanceType",
@@ -10000,6 +10407,10 @@
         "NodeRecovery":{
           "shape":"ClusterNodeRecovery",
           "documentation":"<p>The node recovery mode for the SageMaker HyperPod cluster. When set to <code>Automatic</code>, SageMaker HyperPod will automatically reboot or replace faulty nodes when issues are detected. When set to <code>None</code>, cluster administrators will need to manually manage any faulty cluster instances.</p>"
+        },
+        "NodeProvisioningMode":{
+          "shape":"ClusterNodeProvisioningMode",
+          "documentation":"<p>The mode for provisioning nodes in the cluster. You can specify the following modes:</p> <ul> <li> <p> <b>Continuous</b>: Scaling behavior that enables 1) concurrent operation execution within instance groups, 2) continuous retry mechanisms for failed operations, 3) enhanced customer visibility into cluster events through detailed event streams, 4) partial provisioning capabilities. Your clusters and instance groups remain <code>InService</code> while scaling. This mode is only supported for EKS orchestrated clusters.</p> </li> </ul>"
         }
       }
     },
@@ -14948,6 +15359,32 @@
         }
       }
     },
+    "DescribeClusterEventRequest":{
+      "type":"structure",
+      "required":[
+        "EventId",
+        "ClusterName"
+      ],
+      "members":{
+        "EventId":{
+          "shape":"EventId",
+          "documentation":"<p>The unique identifier (UUID) of the event to describe. This ID can be obtained from the <code>ListClusterEvents</code> operation.</p>"
+        },
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the HyperPod cluster associated with the event.</p>"
+        }
+      }
+    },
+    "DescribeClusterEventResponse":{
+      "type":"structure",
+      "members":{
+        "EventDetails":{
+          "shape":"ClusterEventDetail",
+          "documentation":"<p>Detailed information about the requested cluster event, including event metadata for various resource types such as <code>Cluster</code>, <code>InstanceGroup</code>, <code>Instance</code>, and their associated attributes.</p>"
+        }
+      }
+    },
     "DescribeClusterNodeRequest":{
       "type":"structure",
       "required":["ClusterName"],
@@ -14959,6 +15396,10 @@
         "NodeId":{
           "shape":"ClusterNodeId",
           "documentation":"<p>The ID of the SageMaker HyperPod cluster node.</p>"
+        },
+        "NodeLogicalId":{
+          "shape":"ClusterNodeLogicalId",
+          "documentation":"<p>The logical identifier of the node to describe. You can specify either <code>NodeLogicalId</code> or <code>InstanceId</code>, but not both. <code>NodeLogicalId</code> can be used to describe nodes that are still being provisioned and don't yet have an <code>InstanceId</code> assigned.</p>"
         }
       }
     },
@@ -15026,6 +15467,10 @@
         "NodeRecovery":{
           "shape":"ClusterNodeRecovery",
           "documentation":"<p>The node recovery mode configured for the SageMaker HyperPod cluster.</p>"
+        },
+        "NodeProvisioningMode":{
+          "shape":"ClusterNodeProvisioningMode",
+          "documentation":"<p>The mode used for provisioning nodes in the cluster.</p>"
         }
       }
     },
@@ -20362,6 +20807,10 @@
       "type":"list",
       "member":{"shape":"Edge"}
     },
+    "EfaEnis":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "EfsUid":{
       "type":"string",
       "max":10,
@@ -20373,6 +20822,10 @@
       "max":2048,
       "min":20,
       "pattern":"arn:aws[a-z\\-]*:eks:[a-z0-9\\-]*:[0-9]{12}:cluster\\/[0-9A-Za-z][A-Za-z0-9\\-_]{0,99}"
+    },
+    "EksRoleAccessEntries":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "EmrServerlessComputeConfig":{
       "type":"structure",
@@ -20926,6 +21379,47 @@
         }
       },
       "documentation":"<p>This is an error field object that contains the error code and the reason for an operation failure.</p>"
+    },
+    "EventDetails":{
+      "type":"structure",
+      "members":{
+        "EventMetadata":{
+          "shape":"EventMetadata",
+          "documentation":"<p>Metadata specific to the event, which may include information about the cluster, instance group, or instance involved.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about a specific event, including event metadata.</p>"
+    },
+    "EventId":{
+      "type":"string",
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
+    "EventMetadata":{
+      "type":"structure",
+      "members":{
+        "Cluster":{
+          "shape":"ClusterMetadata",
+          "documentation":"<p>Metadata specific to cluster-level events.</p>"
+        },
+        "InstanceGroup":{
+          "shape":"InstanceGroupMetadata",
+          "documentation":"<p>Metadata specific to instance group-level events.</p>"
+        },
+        "InstanceGroupScaling":{
+          "shape":"InstanceGroupScalingMetadata",
+          "documentation":"<p>Metadata related to instance group scaling events.</p>"
+        },
+        "Instance":{
+          "shape":"InstanceMetadata",
+          "documentation":"<p>Metadata specific to instance-level events.</p>"
+        }
+      },
+      "documentation":"<p>Metadata associated with a cluster event, which may include details about various resource types.</p>",
+      "union":true
+    },
+    "EventSortBy":{
+      "type":"string",
+      "enum":["EventTime"]
     },
     "ExcludeFeaturesAttribute":{
       "type":"string",
@@ -23573,6 +24067,12 @@
       "min":1,
       "pattern":"\\S(.*\\S)?"
     },
+    "ImageId":{
+      "type":"string",
+      "max":21,
+      "min":7,
+      "pattern":"ami-[0-9a-fA-F]{8,17}|default"
+    },
     "ImageName":{
       "type":"string",
       "max":63,
@@ -23797,6 +24297,10 @@
       "type":"integer",
       "box":true,
       "min":0
+    },
+    "IncludeNodeLogicalIdsBoolean":{
+      "type":"boolean",
+      "box":true
     },
     "InferenceComponentArn":{
       "type":"string",
@@ -24563,6 +25067,36 @@
       },
       "documentation":"<p>Defines an instance group for heterogeneous cluster training. When requesting a training job using the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html\">CreateTrainingJob</a> API, you can configure multiple instance groups .</p>"
     },
+    "InstanceGroupMetadata":{
+      "type":"structure",
+      "members":{
+        "FailureMessage":{
+          "shape":"String",
+          "documentation":"<p>An error message describing why the instance group level operation (such as creating, scaling, or deleting) failed.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone where the instance group is located.</p>"
+        },
+        "CapacityReservation":{
+          "shape":"CapacityReservation",
+          "documentation":"<p>Information about the Capacity Reservation used by the instance group.</p>"
+        },
+        "SubnetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the subnet where the instance group is located.</p>"
+        },
+        "SecurityGroupIds":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>A list of security group IDs associated with the instance group.</p>"
+        },
+        "AmiOverride":{
+          "shape":"String",
+          "documentation":"<p>If you use a custom Amazon Machine Image (AMI) for the instance group, this field shows the ID of the custom AMI.</p>"
+        }
+      },
+      "documentation":"<p>Metadata information about an instance group in a SageMaker HyperPod cluster.</p>"
+    },
     "InstanceGroupName":{
       "type":"string",
       "max":64,
@@ -24574,6 +25108,24 @@
       "member":{"shape":"InstanceGroupName"},
       "max":5,
       "min":0
+    },
+    "InstanceGroupScalingMetadata":{
+      "type":"structure",
+      "members":{
+        "InstanceCount":{
+          "shape":"InstanceCount",
+          "documentation":"<p>The current number of instances in the group.</p>"
+        },
+        "TargetCount":{
+          "shape":"TargetCount",
+          "documentation":"<p>The desired number of instances for the group after scaling.</p>"
+        },
+        "FailureMessage":{
+          "shape":"String",
+          "documentation":"<p>An error message describing why the scaling operation failed, if applicable.</p>"
+        }
+      },
+      "documentation":"<p>Metadata information about scaling operations for an instance group.</p>"
     },
     "InstanceGroupStatus":{
       "type":"string",
@@ -24597,6 +25149,36 @@
       "member":{"shape":"InstanceGroup"},
       "max":5,
       "min":0
+    },
+    "InstanceMetadata":{
+      "type":"structure",
+      "members":{
+        "CustomerEni":{
+          "shape":"String",
+          "documentation":"<p>The ID of the customer-managed Elastic Network Interface (ENI) associated with the instance.</p>"
+        },
+        "AdditionalEnis":{
+          "shape":"AdditionalEnis",
+          "documentation":"<p>Information about additional Elastic Network Interfaces (ENIs) associated with the instance.</p>"
+        },
+        "CapacityReservation":{
+          "shape":"CapacityReservation",
+          "documentation":"<p>Information about the Capacity Reservation used by the instance.</p>"
+        },
+        "FailureMessage":{
+          "shape":"String",
+          "documentation":"<p>An error message describing why the instance creation or update failed, if applicable.</p>"
+        },
+        "LcsExecutionState":{
+          "shape":"String",
+          "documentation":"<p>The execution state of the Lifecycle Script (LCS) for the instance.</p>"
+        },
+        "NodeLogicalId":{
+          "shape":"ClusterNodeLogicalId",
+          "documentation":"<p>The unique logical identifier of the node within the cluster. The ID used here is the same object as in the <code>BatchAddClusterNodes</code> API.</p>"
+        }
+      },
+      "documentation":"<p>Metadata information about an instance in a HyperPod cluster.</p>"
     },
     "InstanceMetadataServiceConfiguration":{
       "type":"structure",
@@ -25977,6 +26559,65 @@
         }
       }
     },
+    "ListClusterEventsRequest":{
+      "type":"structure",
+      "required":["ClusterName"],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the HyperPod cluster for which to list events.</p>"
+        },
+        "InstanceGroupName":{
+          "shape":"ClusterInstanceGroupName",
+          "documentation":"<p>The name of the instance group to filter events. If specified, only events related to this instance group are returned.</p>"
+        },
+        "NodeId":{
+          "shape":"ClusterNodeId",
+          "documentation":"<p>The EC2 instance ID to filter events. If specified, only events related to this instance are returned.</p>"
+        },
+        "EventTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start of the time range for filtering events. Only events that occurred after this time are included in the results.</p>"
+        },
+        "EventTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the time range for filtering events. Only events that occurred before this time are included in the results.</p>"
+        },
+        "SortBy":{
+          "shape":"EventSortBy",
+          "documentation":"<p>The field to use for sorting the event list. Currently, the only supported value is <code>EventTime</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The order in which to sort the results. Valid values are <code>Ascending</code> or <code>Descending</code> (the default is <code>Descending</code>).</p>"
+        },
+        "ResourceType":{
+          "shape":"ClusterEventResourceType",
+          "documentation":"<p>The type of resource for which to filter events. Valid values are <code>Cluster</code>, <code>InstanceGroup</code>, or <code>Instance</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"ClusterEventMaxResults",
+          "documentation":"<p>The maximum number of events to return in the response. Valid range is 1 to 100.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to retrieve the next set of results. This token is obtained from the output of a previous <code>ListClusterEvents</code> call.</p>"
+        }
+      }
+    },
+    "ListClusterEventsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to retrieve the next set of results. Include this token in subsequent <code>ListClusterEvents</code> calls to fetch more events.</p>"
+        },
+        "Events":{
+          "shape":"ClusterEventSummaries",
+          "documentation":"<p>A list of event summaries matching the specified criteria.</p>"
+        }
+      }
+    },
     "ListClusterNodesRequest":{
       "type":"structure",
       "required":["ClusterName"],
@@ -26012,6 +26653,10 @@
         "SortOrder":{
           "shape":"SortOrder",
           "documentation":"<p>The sort order for results. The default value is <code>Ascending</code>.</p>"
+        },
+        "IncludeNodeLogicalIds":{
+          "shape":"IncludeNodeLogicalIdsBoolean",
+          "documentation":"<p>Specifies whether to include nodes that are still being provisioned in the response. When set to true, the response includes all nodes regardless of their provisioning status. When set to <code>False</code> (default), only nodes with assigned <code>InstanceIds</code> are returned.</p>"
         }
       }
     },
@@ -32696,6 +33341,33 @@
       "max":8192,
       "min":0,
       "pattern":".*"
+    },
+    "NodeAdditionResult":{
+      "type":"structure",
+      "required":[
+        "NodeLogicalId",
+        "InstanceGroupName",
+        "Status"
+      ],
+      "members":{
+        "NodeLogicalId":{
+          "shape":"ClusterNodeLogicalId",
+          "documentation":"<p>A unique identifier assigned to the node that can be used to track its provisioning status through the <code>DescribeClusterNode</code> operation.</p>"
+        },
+        "InstanceGroupName":{
+          "shape":"ClusterInstanceGroupName",
+          "documentation":"<p>The name of the instance group to which the node was added.</p>"
+        },
+        "Status":{
+          "shape":"ClusterInstanceStatus",
+          "documentation":"<p>The current status of the node. Possible values include <code>Pending</code>, <code>Running</code>, <code>Failed</code>, <code>ShuttingDown</code>, <code>SystemUpdating</code>, <code>DeepHealthCheckInProgress</code>, and <code>NotFound</code>.</p>"
+        }
+      },
+      "documentation":"<p>Information about a node that was successfully added to the cluster.</p>"
+    },
+    "NodeAdditionResultList":{
+      "type":"list",
+      "member":{"shape":"NodeAdditionResult"}
     },
     "NodeUnavailabilityType":{
       "type":"string",
@@ -39768,6 +40440,11 @@
       "type":"string",
       "min":1
     },
+    "TargetCount":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
     "TargetDevice":{
       "type":"string",
       "enum":[
@@ -42523,6 +43200,10 @@
         "DeploymentConfig":{
           "shape":"DeploymentConfiguration",
           "documentation":"<p>The configuration to use when updating the AMI versions.</p>"
+        },
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>When configuring your HyperPod cluster, you can specify an image ID using one of the following options:</p> <ul> <li> <p> <code>HyperPodPublicAmiId</code>: Use a HyperPod public AMI</p> </li> <li> <p> <code>CustomAmiId</code>: Use your custom AMI</p> </li> <li> <p> <code>default</code>: Use the default latest system image</p> </li> </ul> <p>f you choose to use a custom AMI (<code>CustomAmiId</code>), ensure it meets the following requirements:</p> <ul> <li> <p>Encryption: The custom AMI must be unencrypted.</p> </li> <li> <p>Ownership: The custom AMI must be owned by the same Amazon Web Services account that is creating the HyperPod cluster.</p> </li> <li> <p>Volume support: Only the primary AMI snapshot volume is supported; additional AMI volumes are not supported.</p> </li> </ul> <p>When updating the instance group's AMI through the <code>UpdateClusterSoftware</code> operation, if an instance group uses a custom AMI, you must provide an <code>ImageId</code> or use the default as input.</p>"
         }
       }
     },

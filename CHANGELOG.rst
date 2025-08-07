@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.42.5
+======
+
+* api-change:``batch``: This feature allows customers to use AWS Batch with Linux with ARM64 CPU Architecture with Fargate Spot compute support.
+* api-change:``cloudfront``: Added new viewer security policy, TLSv1.3_2025, for CloudFront.
+* api-change:``codebuild``: AWS CodeBuild now supports comment-based pull request control.
+* api-change:``gameliftstreams``: Adds Proton 9.0-2 to the list of runtime environment options available when creating an Amazon GameLift Streams application
+* api-change:``glue``: AWS Glue Data Catalog now supports Iceberg Optimization settings at the Catalog level, and supports new options to control the optimization job run rate.
+* api-change:``guardduty``: Added support for VPC owner account ID associated with DNS request in the GuardDuty finding.
+
+
 1.42.4
 ======
 

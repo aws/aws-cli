@@ -65,7 +65,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p> Attaches your Amazon Elastic Block Store (Amazon EBS) volume to a node in your EKS-orchestrated HyperPod cluster. </p> <p> This API works with the Amazon Elastic Block Store (Amazon EBS) Container Storage Interface (CSI) driver to manage the lifecycle of persistent storage in your HyperPod EKS clusters. </p>"
+      "documentation":"<p> Attaches your Amazon Elastic Block Store (Amazon EBS) volume to a node in your EKS orchestrated HyperPod cluster. </p> <p> This API works with the Amazon Elastic Block Store (Amazon EBS) Container Storage Interface (CSI) driver to manage the lifecycle of persistent storage in your HyperPod EKS clusters. </p>"
     },
     "BatchAddClusterNodes":{
       "name":"BatchAddClusterNodes",
@@ -2369,6 +2369,19 @@
       "output":{"shape":"DescribeProjectOutput"},
       "documentation":"<p>Describes the details of a project.</p>"
     },
+    "DescribeReservedCapacity":{
+      "name":"DescribeReservedCapacity",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeReservedCapacityRequest"},
+      "output":{"shape":"DescribeReservedCapacityResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Retrieves details about a reserved capacity.</p>"
+    },
     "DescribeSpace":{
       "name":"DescribeSpace",
       "http":{
@@ -2515,7 +2528,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p> Detaches your Amazon Elastic Block Store (Amazon EBS) volume from a node in your EKS-orchestrated SageMaker HyperPod cluster.</p> <p> This API works with the Amazon Elastic Block Store (Amazon EBS) Container Storage Interface (CSI) driver to manage the lifecycle of persistent storage in your HyperPod EKS clusters. </p>"
+      "documentation":"<p> Detaches your Amazon Elastic Block Store (Amazon EBS) volume from a node in your EKS orchestrated SageMaker HyperPod cluster.</p> <p> This API works with the Amazon Elastic Block Store (Amazon EBS) Container Storage Interface (CSI) driver to manage the lifecycle of persistent storage in your HyperPod EKS clusters. </p>"
     },
     "DisableSagemakerServicecatalogPortfolio":{
       "name":"DisableSagemakerServicecatalogPortfolio",
@@ -3502,6 +3515,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Lists the trials in your account. Specify an experiment name to limit the list to the trials that are part of that experiment. Specify a trial component name to limit the list to the trials that associated with that trial component. The list can be filtered to show only trials that were created in a specific time range. The list can be sorted by trial name or creation time.</p>"
+    },
+    "ListUltraServersByReservedCapacity":{
+      "name":"ListUltraServersByReservedCapacity",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListUltraServersByReservedCapacityRequest"},
+      "output":{"shape":"ListUltraServersByReservedCapacityResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Lists all UltraServers that are part of a specified reserved capacity.</p>"
     },
     "ListUserProfiles":{
       "name":"ListUserProfiles",
@@ -6751,6 +6777,11 @@
       "box":true,
       "min":0
     },
+    "AvailableSpareInstanceCount":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
     "AwsManagedHumanLoopRequestSource":{
       "type":"string",
       "enum":[
@@ -8316,11 +8347,11 @@
         },
         "ClusterArn":{
           "shape":"ClusterArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster associated with the event.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the HyperPod cluster associated with the event.</p>"
         },
         "ClusterName":{
           "shape":"ClusterName",
-          "documentation":"<p>The name of the SageMaker HyperPod cluster associated with the event.</p>"
+          "documentation":"<p>The name of the HyperPod cluster associated with the event.</p>"
         },
         "InstanceGroupName":{
           "shape":"ClusterInstanceGroupName",
@@ -8332,7 +8363,7 @@
         },
         "ResourceType":{
           "shape":"ClusterEventResourceType",
-          "documentation":"<p>The type of resource associated with the event. Valid values are \"Cluster\", \"InstanceGroup\", or \"Instance\".</p>"
+          "documentation":"<p>The type of resource associated with the event. Valid values are <code>Cluster</code>, <code>InstanceGroup</code>, or <code>Instance</code>.</p>"
         },
         "EventTime":{
           "shape":"Timestamp",
@@ -8385,11 +8416,11 @@
         },
         "ClusterArn":{
           "shape":"ClusterArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster associated with the event.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the HyperPod cluster associated with the event.</p>"
         },
         "ClusterName":{
           "shape":"ClusterName",
-          "documentation":"<p>The name of the SageMaker HyperPod cluster associated with the event.</p>"
+          "documentation":"<p>The name of the HyperPod cluster associated with the event.</p>"
         },
         "InstanceGroupName":{
           "shape":"ClusterInstanceGroupName",
@@ -8397,11 +8428,11 @@
         },
         "InstanceId":{
           "shape":"String",
-          "documentation":"<p>The EC2 instance ID associated with the event, if applicable.</p>"
+          "documentation":"<p>The Amazon Elastic Compute Cloud (EC2) instance ID associated with the event, if applicable.</p>"
         },
         "ResourceType":{
           "shape":"ClusterEventResourceType",
-          "documentation":"<p>The type of resource associated with the event. Valid values are \"Cluster\", \"InstanceGroup\", or \"Instance\".</p>"
+          "documentation":"<p>The type of resource associated with the event. Valid values are <code>Cluster</code>, <code>InstanceGroup</code>, or <code>Instance</code>.</p>"
         },
         "EventTime":{
           "shape":"Timestamp",
@@ -8412,7 +8443,7 @@
           "documentation":"<p>A brief, human-readable description of the event.</p>"
         }
       },
-      "documentation":"<p>A summary of an event in a SageMaker HyperPod cluster.</p>"
+      "documentation":"<p>A summary of an event in a HyperPod cluster.</p>"
     },
     "ClusterInstanceCount":{
       "type":"integer",
@@ -8781,14 +8812,14 @@
         },
         "EksRoleAccessEntries":{
           "shape":"EksRoleAccessEntries",
-          "documentation":"<p>A list of Amazon EKS IAM role ARNs associated with the cluster. This is created by SageMaker HyperPod on your behalf and only applies for EKS-orchestrated clusters.</p>"
+          "documentation":"<p>A list of Amazon EKS IAM role ARNs associated with the cluster. This is created by HyperPod on your behalf and only applies for EKS orchestrated clusters.</p>"
         },
         "SlrAccessEntry":{
           "shape":"String",
-          "documentation":"<p>The Service-Linked Role (SLR) associated with the cluster. This is created by SageMaker HyperPod on your behalf and only applies for EKS-orchestrated clusters.</p>"
+          "documentation":"<p>The Service-Linked Role (SLR) associated with the cluster. This is created by HyperPod on your behalf and only applies for EKS orchestrated clusters.</p>"
         }
       },
-      "documentation":"<p>Metadata information about a SageMaker HyperPod cluster showing information about the cluster level operations, such as creating, updating, and deleting.</p>"
+      "documentation":"<p>Metadata information about a HyperPod cluster showing information about the cluster level operations, such as creating, updating, and deleting.</p>"
     },
     "ClusterName":{
       "type":"string",
@@ -8872,6 +8903,10 @@
         "DesiredImageId":{
           "shape":"ImageId",
           "documentation":"<p>The ID of the Amazon Machine Image (AMI) desired for the node.</p>"
+        },
+        "UltraServerInfo":{
+          "shape":"UltraServerInfo",
+          "documentation":"<p>Contains information about the UltraServer.</p>"
         }
       },
       "documentation":"<p>Details of an instance (also called a <i>node</i> interchangeably) in a SageMaker HyperPod cluster.</p>"
@@ -8952,6 +8987,10 @@
         "InstanceStatus":{
           "shape":"ClusterInstanceStatusDetails",
           "documentation":"<p>The status of the instance.</p>"
+        },
+        "UltraServerInfo":{
+          "shape":"UltraServerInfo",
+          "documentation":"<p>Contains information about the UltraServer.</p>"
         }
       },
       "documentation":"<p>Lists a summary of the properties of an instance (also called a <i>node</i> interchangeably) of a SageMaker HyperPod cluster.</p>"
@@ -9729,6 +9768,11 @@
       "min":0,
       "pattern":".*"
     },
+    "ConfiguredSpareInstanceCount":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -10402,7 +10446,7 @@
         },
         "Orchestrator":{
           "shape":"ClusterOrchestrator",
-          "documentation":"<p>The type of orchestrator to use for the SageMaker HyperPod cluster. Currently, the only supported value is <code>\"eks\"</code>, which is to use an Amazon Elastic Kubernetes Service (EKS) cluster as the orchestrator.</p>"
+          "documentation":"<p>The type of orchestrator to use for the SageMaker HyperPod cluster. Currently, the only supported value is <code>\"eks\"</code>, which is to use an Amazon Elastic Kubernetes Service cluster as the orchestrator.</p>"
         },
         "NodeRecovery":{
           "shape":"ClusterNodeRecovery",
@@ -12949,6 +12993,10 @@
         "TrainingPlanOfferingId":{
           "shape":"TrainingPlanOfferingId",
           "documentation":"<p>The unique identifier of the training plan offering to use for creating this plan.</p>"
+        },
+        "SpareInstanceCountPerUltraServer":{
+          "shape":"SpareInstanceCountPerUltraServer",
+          "documentation":"<p>Number of spare instances to reserve per UltraServer for enhanced resiliency. Default is 1.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -18864,6 +18912,78 @@
         "LastModifiedBy":{"shape":"UserContext"}
       }
     },
+    "DescribeReservedCapacityRequest":{
+      "type":"structure",
+      "required":["ReservedCapacityArn"],
+      "members":{
+        "ReservedCapacityArn":{
+          "shape":"ReservedCapacityArn",
+          "documentation":"<p>ARN of the reserved capacity to describe.</p>"
+        }
+      }
+    },
+    "DescribeReservedCapacityResponse":{
+      "type":"structure",
+      "required":[
+        "ReservedCapacityArn",
+        "InstanceType",
+        "TotalInstanceCount"
+      ],
+      "members":{
+        "ReservedCapacityArn":{
+          "shape":"ReservedCapacityArn",
+          "documentation":"<p>ARN of the reserved capacity.</p>"
+        },
+        "ReservedCapacityType":{
+          "shape":"ReservedCapacityType",
+          "documentation":"<p>The type of reserved capacity.</p>"
+        },
+        "Status":{
+          "shape":"ReservedCapacityStatus",
+          "documentation":"<p>The current status of the reserved capacity.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The Availability Zone where the reserved capacity is provisioned.</p>"
+        },
+        "DurationHours":{
+          "shape":"ReservedCapacityDurationHours",
+          "documentation":"<p>The total duration of the reserved capacity in hours.</p>"
+        },
+        "DurationMinutes":{
+          "shape":"ReservedCapacityDurationMinutes",
+          "documentation":"<p>The number of minutes for the duration of the reserved capacity. For example, if a reserved capacity starts at 08:55 and ends at 11:30, the minutes field would be 35.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the reserved capacity becomes active.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the reserved capacity expires.</p>"
+        },
+        "InstanceType":{
+          "shape":"ReservedCapacityInstanceType",
+          "documentation":"<p>The Amazon EC2 instance type used in the reserved capacity.</p>"
+        },
+        "TotalInstanceCount":{
+          "shape":"TotalInstanceCount",
+          "documentation":"<p>The total number of instances allocated to this reserved capacity.</p>"
+        },
+        "AvailableInstanceCount":{
+          "shape":"AvailableInstanceCount",
+          "documentation":"<p>The number of instances currently available for use in this reserved capacity.</p>"
+        },
+        "InUseInstanceCount":{
+          "shape":"InUseInstanceCount",
+          "documentation":"<p>The number of instances currently in use from this reserved capacity.</p>"
+        },
+        "UltraServerSummary":{
+          "shape":"UltraServerSummary",
+          "documentation":"<p>A summary of the UltraServer associated with this reserved capacity.</p>"
+        }
+      }
+    },
     "DescribeSpaceRequest":{
       "type":"structure",
       "required":[
@@ -19252,6 +19372,18 @@
         "InUseInstanceCount":{
           "shape":"InUseInstanceCount",
           "documentation":"<p>The number of instances currently in use from this training plan.</p>"
+        },
+        "UnhealthyInstanceCount":{
+          "shape":"UnhealthyInstanceCount",
+          "documentation":"<p>The number of instances in the training plan that are currently in an unhealthy state.</p>"
+        },
+        "AvailableSpareInstanceCount":{
+          "shape":"AvailableSpareInstanceCount",
+          "documentation":"<p>The number of available spare instances in the training plan.</p>"
+        },
+        "TotalUltraServerCount":{
+          "shape":"UltraServerCount",
+          "documentation":"<p>The total number of UltraServers reserved to this training plan.</p>"
         },
         "TargetResources":{
           "shape":"SageMakerResourceNames",
@@ -25095,7 +25227,7 @@
           "documentation":"<p>If you use a custom Amazon Machine Image (AMI) for the instance group, this field shows the ID of the custom AMI.</p>"
         }
       },
-      "documentation":"<p>Metadata information about an instance group in a SageMaker HyperPod cluster.</p>"
+      "documentation":"<p>Metadata information about an instance group in a HyperPod cluster.</p>"
     },
     "InstanceGroupName":{
       "type":"string",
@@ -25190,6 +25322,21 @@
         }
       },
       "documentation":"<p>Information on the IMDS configuration of the notebook instance</p>"
+    },
+    "InstancePlacementConfig":{
+      "type":"structure",
+      "members":{
+        "EnableMultipleJobs":{
+          "shape":"Boolean",
+          "documentation":"<p>If set to true, allows multiple jobs to share the same UltraServer instances. If set to false, ensures this job's instances are placed on an UltraServer exclusively, with no other jobs sharing the same UltraServer. Default is false.</p>",
+          "box":true
+        },
+        "PlacementSpecifications":{
+          "shape":"PlacementSpecifications",
+          "documentation":"<p>A list of specifications for how instances should be placed on specific UltraServers. Maximum of 10 items is supported.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for how instances are placed and allocated within UltraServers. This is only applicable for UltraServer capacity.</p>"
     },
     "InstanceType":{
       "type":"string",
@@ -30272,6 +30419,38 @@
         }
       }
     },
+    "ListUltraServersByReservedCapacityRequest":{
+      "type":"structure",
+      "required":["ReservedCapacityArn"],
+      "members":{
+        "ReservedCapacityArn":{
+          "shape":"ReservedCapacityArn",
+          "documentation":"<p>The ARN of the reserved capacity to list UltraServers for.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of UltraServers to return in the response. The default value is 10.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous response was truncated, you receive this token. Use it in your next request to receive the next set of results.</p>"
+        }
+      }
+    },
+    "ListUltraServersByReservedCapacityResponse":{
+      "type":"structure",
+      "required":["UltraServers"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker returns this token. Use it in the next request to retrieve the next set of UltraServers.</p>"
+        },
+        "UltraServers":{
+          "shape":"UltraServers",
+          "documentation":"<p>A list of UltraServers that are part of the specified reserved capacity.</p>"
+        }
+      }
+    },
     "ListUserProfilesRequest":{
       "type":"structure",
       "members":{
@@ -35172,6 +35351,28 @@
       "max":100,
       "min":0
     },
+    "PlacementSpecification":{
+      "type":"structure",
+      "required":["InstanceCount"],
+      "members":{
+        "UltraServerId":{
+          "shape":"String256",
+          "documentation":"<p>The unique identifier of the UltraServer where instances should be placed.</p>"
+        },
+        "InstanceCount":{
+          "shape":"TrainingInstanceCount",
+          "documentation":"<p>The number of ML compute instances required to be placed together on the same UltraServer. Minimum value of 1.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Specifies how instances should be placed on a specific UltraServer.</p>"
+    },
+    "PlacementSpecifications":{
+      "type":"list",
+      "member":{"shape":"PlacementSpecification"},
+      "max":10,
+      "min":0
+    },
     "PlatformIdentifier":{
       "type":"string",
       "max":15,
@@ -37780,7 +37981,8 @@
         "ml.trn1.32xlarge",
         "ml.trn2.48xlarge",
         "ml.p6-b200.48xlarge",
-        "ml.p4de.24xlarge"
+        "ml.p4de.24xlarge",
+        "ml.p6e-gb200.36xlarge"
       ]
     },
     "ReservedCapacityOffering":{
@@ -37790,6 +37992,18 @@
         "InstanceCount"
       ],
       "members":{
+        "ReservedCapacityType":{
+          "shape":"ReservedCapacityType",
+          "documentation":"<p>The type of reserved capacity offering.</p>"
+        },
+        "UltraServerType":{
+          "shape":"UltraServerType",
+          "documentation":"<p>The type of UltraServer included in this reserved capacity offering, such as ml.u-p6e-gb200x72.</p>"
+        },
+        "UltraServerCount":{
+          "shape":"UltraServerCount",
+          "documentation":"<p>The number of UltraServers included in this reserved capacity offering.</p>"
+        },
         "InstanceType":{
           "shape":"ReservedCapacityInstanceType",
           "documentation":"<p>The instance type for the reserved capacity offering.</p>"
@@ -37857,6 +38071,18 @@
           "shape":"ReservedCapacityArn",
           "documentation":"<p>The Amazon Resource Name (ARN); of the reserved capacity.</p>"
         },
+        "ReservedCapacityType":{
+          "shape":"ReservedCapacityType",
+          "documentation":"<p>The type of reserved capacity.</p>"
+        },
+        "UltraServerType":{
+          "shape":"UltraServerType",
+          "documentation":"<p>The type of UltraServer included in this reserved capacity, such as ml.u-p6e-gb200x72.</p>"
+        },
+        "UltraServerCount":{
+          "shape":"UltraServerCount",
+          "documentation":"<p>The number of UltraServers included in this reserved capacity.</p>"
+        },
         "InstanceType":{
           "shape":"ReservedCapacityInstanceType",
           "documentation":"<p>The instance type for the reserved capacity.</p>"
@@ -37891,6 +38117,13 @@
         }
       },
       "documentation":"<p>Details of a reserved capacity for the training plan.</p> <p>For more information about how to reserve GPU capacity for your SageMaker HyperPod clusters using Amazon SageMaker Training Plan, see <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingPlan.html\">CreateTrainingPlan</a> </code>.</p>"
+    },
+    "ReservedCapacityType":{
+      "type":"string",
+      "enum":[
+        "UltraServer",
+        "Instance"
+      ]
     },
     "ResolvedAttributes":{
       "type":"structure",
@@ -38002,6 +38235,10 @@
         "TrainingPlanArn":{
           "shape":"TrainingPlanArn",
           "documentation":"<p>The Amazon Resource Name (ARN); of the training plan to use for this resource configuration.</p>"
+        },
+        "InstancePlacementConfig":{
+          "shape":"InstancePlacementConfig",
+          "documentation":"<p>Configuration for how training job instances are placed and allocated within UltraServers. Only applicable for UltraServer capacity.</p>"
         }
       },
       "documentation":"<p>Describes the resources, including machine learning (ML) compute instances and ML storage volumes, to use for model training. </p>"
@@ -38837,6 +39074,14 @@
           "documentation":"<p>The number of instances you want to reserve in the training plan offerings. This allows you to specify the quantity of compute resources needed for your SageMaker training jobs or SageMaker HyperPod clusters, helping you find reserved capacity offerings that match your requirements.</p>",
           "box":true
         },
+        "UltraServerType":{
+          "shape":"UltraServerType",
+          "documentation":"<p>The type of UltraServer to search for, such as ml.u-p6e-gb200x72.</p>"
+        },
+        "UltraServerCount":{
+          "shape":"UltraServerCount",
+          "documentation":"<p>The number of UltraServers to search for.</p>"
+        },
         "StartTimeAfter":{
           "shape":"Timestamp",
           "documentation":"<p>A filter to search for training plan offerings with a start time after a specified date.</p>"
@@ -39624,6 +39869,11 @@
         }
       },
       "documentation":"<p>The storage settings for a space.</p>"
+    },
+    "SpareInstanceCountPerUltraServer":{
+      "type":"integer",
+      "box":true,
+      "min":0
     },
     "SpawnRate":{
       "type":"integer",
@@ -41306,7 +41556,8 @@
         "ml.r7i.12xlarge",
         "ml.r7i.16xlarge",
         "ml.r7i.24xlarge",
-        "ml.r7i.48xlarge"
+        "ml.r7i.48xlarge",
+        "ml.p6e-gb200.36xlarge"
       ]
     },
     "TrainingInstanceTypes":{
@@ -41840,6 +42091,10 @@
         "InUseInstanceCount":{
           "shape":"InUseInstanceCount",
           "documentation":"<p>The number of instances currently in use from this training plan.</p>"
+        },
+        "TotalUltraServerCount":{
+          "shape":"UltraServerCount",
+          "documentation":"<p>The total number of UltraServers allocated to this training plan.</p>"
         },
         "TargetResources":{
           "shape":"SageMakerResourceNames",
@@ -42940,6 +43195,133 @@
       "box":true,
       "max":4000000,
       "min":10000
+    },
+    "UltraServer":{
+      "type":"structure",
+      "required":[
+        "UltraServerId",
+        "UltraServerType",
+        "AvailabilityZone",
+        "InstanceType",
+        "TotalInstanceCount"
+      ],
+      "members":{
+        "UltraServerId":{
+          "shape":"NonEmptyString256",
+          "documentation":"<p>The unique identifier for the UltraServer.</p>"
+        },
+        "UltraServerType":{
+          "shape":"UltraServerType",
+          "documentation":"<p>The type of UltraServer, such as ml.u-p6e-gb200x72.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The name of the Availability Zone where the UltraServer is provisioned.</p>"
+        },
+        "InstanceType":{
+          "shape":"ReservedCapacityInstanceType",
+          "documentation":"<p>The Amazon EC2 instance type used in the UltraServer.</p>"
+        },
+        "TotalInstanceCount":{
+          "shape":"TotalInstanceCount",
+          "documentation":"<p>The total number of instances in this UltraServer.</p>"
+        },
+        "ConfiguredSpareInstanceCount":{
+          "shape":"ConfiguredSpareInstanceCount",
+          "documentation":"<p>The number of spare instances configured for this UltraServer to provide enhanced resiliency.</p>"
+        },
+        "AvailableInstanceCount":{
+          "shape":"AvailableInstanceCount",
+          "documentation":"<p>The number of instances currently available for use in this UltraServer.</p>"
+        },
+        "InUseInstanceCount":{
+          "shape":"InUseInstanceCount",
+          "documentation":"<p>The number of instances currently in use in this UltraServer.</p>"
+        },
+        "AvailableSpareInstanceCount":{
+          "shape":"AvailableSpareInstanceCount",
+          "documentation":"<p>The number of available spare instances in the UltraServer.</p>"
+        },
+        "UnhealthyInstanceCount":{
+          "shape":"UnhealthyInstanceCount",
+          "documentation":"<p>The number of instances in this UltraServer that are currently in an unhealthy state.</p>"
+        },
+        "HealthStatus":{
+          "shape":"UltraServerHealthStatus",
+          "documentation":"<p>The overall health status of the UltraServer.</p>"
+        }
+      },
+      "documentation":"<p>Represents a high-performance compute server used for distributed training in SageMaker AI. An UltraServer consists of multiple instances within a shared NVLink interconnect domain.</p>"
+    },
+    "UltraServerCount":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "UltraServerHealthStatus":{
+      "type":"string",
+      "enum":[
+        "OK",
+        "Impaired",
+        "Insufficient-Data"
+      ]
+    },
+    "UltraServerInfo":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the UltraServer.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the UltraServer object.</p>"
+    },
+    "UltraServerSummary":{
+      "type":"structure",
+      "required":[
+        "UltraServerType",
+        "InstanceType"
+      ],
+      "members":{
+        "UltraServerType":{
+          "shape":"UltraServerType",
+          "documentation":"<p>The type of UltraServer, such as ml.u-p6e-gb200x72.</p>"
+        },
+        "InstanceType":{
+          "shape":"ReservedCapacityInstanceType",
+          "documentation":"<p>The Amazon EC2 instance type used in the UltraServer.</p>"
+        },
+        "UltraServerCount":{
+          "shape":"UltraServerCount",
+          "documentation":"<p>The number of UltraServers of this type.</p>"
+        },
+        "AvailableSpareInstanceCount":{
+          "shape":"AvailableSpareInstanceCount",
+          "documentation":"<p>The number of available spare instances in the UltraServers.</p>"
+        },
+        "UnhealthyInstanceCount":{
+          "shape":"UnhealthyInstanceCount",
+          "documentation":"<p>The total number of instances across all UltraServers of this type that are currently in an unhealthy state.</p>"
+        }
+      },
+      "documentation":"<p>A summary of UltraServer resources and their current status.</p>"
+    },
+    "UltraServerType":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"ml.[a-z0-9\\-.]+"
+    },
+    "UltraServers":{
+      "type":"list",
+      "member":{"shape":"UltraServer"},
+      "max":100,
+      "min":0
+    },
+    "UnhealthyInstanceCount":{
+      "type":"integer",
+      "box":true,
+      "min":0
     },
     "UnifiedStudioDomainId":{
       "type":"string",

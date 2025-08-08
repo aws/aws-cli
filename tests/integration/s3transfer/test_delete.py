@@ -26,3 +26,22 @@ class TestDeleteObject(BaseTransferManagerIntegTest):
         future.result()
 
         self.assertTrue(self.object_not_exists(key_name))
+
+
+class TestBatchDeleteObject(BaseTransferManagerIntegTest):
+    def test_can_delete_versioned_objects(self):
+        key_name = 'mykey'
+        self.client.put_object(
+            Bucket=self.bucket_name, Key=key_name, Body=b'hello world'
+        )
+        response = self.client.list_object_versions(Bucket=self.bucket_name)
+        version_id = response['Versions'][0]['VersionId']
+        objects = [{'Key': key_name, 'VersionId': version_id}]
+        transfer_manager = self.create_transfer_manager()
+        future = transfer_manager.batch_delete(
+            bucket=self.bucket_name, objects=objects
+        )
+
+        future.result()
+
+        self.assertTrue(self.object_not_exists(key_name))

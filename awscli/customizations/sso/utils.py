@@ -179,13 +179,21 @@ class OpenBrowserHandler(BaseAuthorizationhandler):
     def __call__(
         self, userCode, verificationUri, verificationUriComplete, **kwargs
     ):
-        opening_msg = (
-            f'Attempting to automatically open the SSO authorization page in '
-            f'your default browser.\nIf the browser does not open or you wish '
-            f'to use a different device to authorize this request, open the '
-            f'following URL:\n'
-            f'\n{verificationUri}\n'
-        )
+        if userCode: # only the device code flow supports different devices
+            opening_msg = (
+                f'Attempting to automatically open the SSO authorization page '
+                f'in your default browser.\nIf the browser does not open or '
+                f'you wish to use a different device to authorize this '
+                f'request, open the following URL:\n'
+                f'\n{verificationUri}\n'
+            )
+        else:
+            opening_msg = (
+                f'Attempting to automatically open the SSO authorization page '
+                f'in your default browser.\nIf the browser does not open, open '
+                f'the following URL:\n'
+                f'\n{verificationUri}\n'
+            )
 
         user_code_msg = f'\nThen enter the code:\n\n{userCode}\n'
         uni_print(opening_msg, self._outfile)

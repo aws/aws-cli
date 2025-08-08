@@ -1305,76 +1305,44 @@ class TestBatchS3Handler:
         fileinfos = []
         num_transfers = 5
         for i in range(num_transfers):
-            fileinfo = FileInfo(
+            fileinfo = VersionedFileInfo(
                 src=f'bucket/key{i}',
                 dest=None,
                 operation_name='delete',
                 src_type='s3',
+                version_id=f'version{i}',
             )
-            fileinfo.version_id = f'version{i}'
             fileinfos.append(fileinfo)
 
-        mock_submitter = mock.Mock()
-        mock_submitter.can_submit.return_value = True
-        mock_submitter.submit_batch.return_value = num_transfers
-        self.batch_s3_handler._batch_submitters = [mock_submitter]
-
-        self.batch_s3_handler.call(fileinfos)
-        mock_submitter.submit_batch.assert_called_once()
+        self.batch_s3_handler.call(iter(fileinfos))
+        self.transfer_manager.batch_delete.assert_called_once()
 
     def test_notifies_total_submissions(self):
         fileinfos = []
         num_transfers = 5
         for i in range(num_transfers):
-            fileinfo = FileInfo(
+            fileinfo = VersionedFileInfo(
                 src=f'bucket/key{i}',
                 dest=None,
                 operation_name='delete',
                 src_type='s3',
+                version_id=f'version{i}',
             )
-            fileinfo.version_id = f'version{i}'
             fileinfos.append(fileinfo)
 
-        # Mock the batch delete submitter
-        mock_submitter = mock.Mock()
-        mock_submitter.can_submit.return_value = True
-        mock_submitter.submit_batch.return_value = num_transfers
-        self.batch_s3_handler._batch_submitters = [mock_submitter]
-
-        self.batch_s3_handler.call(fileinfos)
+        self.batch_s3_handler.call(iter(fileinfos))
         assert (
             self.result_recorder.final_expected_files_transferred
             == num_transfers
         )
 
-    def test_call_selects_correct_submitter(self):
-        fileinfo = VersionedFileInfo(
-            src='bucket/key',
-            dest=None,
-            operation_name='delete',
-            src_type='s3',
-            version_id='version123',
-        )
-
-        mock_submitter = mock.Mock()
-        mock_submitter.can_submit.return_value = True
-        mock_submitter.submit_batch.return_value = 1
-        self.batch_s3_handler._batch_submitters = [mock_submitter]
-
-        self.batch_s3_handler.call([fileinfo])
-        mock_submitter.can_submit.assert_called_once_with(fileinfo)
-        mock_submitter.submit_batch.assert_called_once()
-
 
 class TestDeleteBatch:
-    @pytest.fixture(autouse=True)
-    def setUp(self):
+    def test_create_batches_with_multiple_objects(self):
         self.result_queue = queue.Queue()
         self.delete_batch = DeleteBatch(self.result_queue)
         self.bucket = 'mybucket'
         self.key = 'mykey'
-
-    def test_create_batches_with_multiple_objects(self):
         fileinfos = []
         num_objects = MAX_BATCH_SIZE + 5
         for i in range(num_objects):

@@ -120,12 +120,9 @@ class VersionedFileInfo(FileInfo):
 
         :param version_id: The version ID of the S3 object.
         :type version_id: string
-        :param is_delete_marker: Whether this version is a delete marker.
-        :type is_delete_marker: boolean
         """
         super().__init__(**kwargs)
         self.version_id = version_id
-        self.is_delete_marker = is_delete_marker
 
     def is_glacier_compatible(self):
         """

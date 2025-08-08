@@ -431,23 +431,6 @@ class BucketLister:
                 )
                 yield source_path, content
 
-
-class BucketVersionLister:
-    """List object versions in a bucket
-    This class provides functionality to list all versions of objects in a S3 bucket.
-    It can list versions for a specific object (when prefix is provided) or for all
-    objects in the bucket.
-    """
-
-    def __init__(self, client, date_parser=_date_parser):
-        """
-        Initialize a new BucketVersionLister.
-        :param client: The S3 client to use for listing versions.
-        :param date_parser: A function to parse date strings into datetime objects.
-        """
-        self._client = client
-        self._date_parser = date_parser
-
     def list_object_versions(
         self, bucket, prefix=None, page_size=None, extra_args=None
     ):
@@ -479,25 +462,30 @@ class BucketVersionLister:
         paginator = self._client.get_paginator('list_object_versions')
         pages = paginator.paginate(**kwargs)
         for page in pages:
-            # Process versions
             versions = page.get('Versions', [])
-            for version in versions:
-                source_path = bucket + '/' + version['Key']
-                version['LastModified'] = self._date_parser(
-                    version['LastModified']
-                )
-                version['DeleteMarker'] = False
-                yield source_path, version, version['VersionId']
 
-            # Process delete markers
+            for (
+                source_path,
+                content,
+                version_id,
+            ) in self._process_object_versions(bucket, versions):
+                yield source_path, content, version_id
+
             delete_markers = page.get('DeleteMarkers', [])
-            for marker in delete_markers:
-                source_path = bucket + '/' + marker['Key']
-                marker['LastModified'] = self._date_parser(
-                    marker['LastModified']
-                )
-                marker['DeleteMarker'] = True
-                yield source_path, marker, marker['VersionId']
+            for (
+                source_path,
+                content,
+                version_id,
+            ) in self._process_object_versions(bucket, delete_markers):
+                yield source_path, content, version_id
+
+    def _process_object_versions(self, bucket, object_versions):
+        for version in object_versions:
+            source_path = bucket + '/' + version['Key']
+            version['LastModified'] = self._date_parser(
+                version['LastModified']
+            )
+            yield source_path, version, version['VersionId']
 
 
 class PrintTask(

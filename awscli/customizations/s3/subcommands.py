@@ -1385,7 +1385,7 @@ class CommandArchitecture:
         self._map_request_payer_params(rgen_request_parameters)
         rgen_kwargs['request_parameters'] = rgen_request_parameters
 
-        if self.parameters.get('all_versions'):
+        if self.cmd == 'rm' and self.parameters.get('all_versions'):
             versioned_file_generator = VersionedFileGenerator(**fgen_kwargs)
             file_generator = None
             rev_generator = None

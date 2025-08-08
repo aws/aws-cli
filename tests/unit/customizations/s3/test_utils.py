@@ -26,7 +26,6 @@ from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.s3.utils import (
     AppendFilter,
     BucketLister,
-    BucketVersionLister,
     NonSeekableStream,
     RequestParamsMapper,
     S3PathResolver,
@@ -1082,14 +1081,11 @@ class TestBucketVersionLister:
             {'Versions': [versions[1]], 'DeleteMarkers': delete_markers},
         ]
 
-        lister = BucketVersionLister(self.client, self.date_parser)
+        lister = BucketLister(self.client, self.date_parser)
         objects = list(lister.list_object_versions(bucket='foo'))
         expected_version_a = versions[0].copy()
-        expected_version_a['DeleteMarker'] = False
         expected_version_b = versions[1].copy()
-        expected_version_b['DeleteMarker'] = False
         expected_delete_marker_a = delete_markers[0].copy()
-        expected_delete_marker_a['DeleteMarker'] = True
 
         assert objects == [
             ('foo/a', expected_version_a, 'version1'),
@@ -1115,7 +1111,7 @@ class TestBucketVersionLister:
                 'DeleteMarkers': [],
             }
         ]
-        lister = BucketVersionLister(self.client, self.date_parser)
+        lister = BucketLister(self.client, self.date_parser)
         list(
             lister.list_object_versions(
                 bucket='mybucket', extra_args={'RequestPayer': 'requester'}

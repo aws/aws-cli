@@ -656,7 +656,7 @@ class DeleteBatch(BatchBase):
         for fileinfo in fileinfos:
             bucket, key = split_s3_bucket_key(fileinfo.src)
             obj_entry = {'Key': key}
-            if hasattr(fileinfo, 'version_id') and fileinfo.version_id:
+            if getattr(fileinfo, 'version_id', None):
                 obj_entry['VersionId'] = fileinfo.version_id
 
             objects_with_fileinfo.append(
@@ -836,14 +836,14 @@ class DeleteBatchRequestSubmitter:
 
                 # Report success
                 for fileinfo in fileinfos_in_batch:
-                    self._report_sucess(fileinfo)
+                    self._report_success(fileinfo)
 
             except Exception as e:
                 for fileinfo in fileinfos_in_batch:
                     self._report_failure(fileinfo, e)
         return total_objects
 
-    def _report_sucess(self, fileinfo):
+    def _report_success(self, fileinfo):
         src, dest = self._format_src_dest(fileinfo)
         self._result_queue.put(
             SuccessResult(transfer_type='delete', src=src, dest=dest)

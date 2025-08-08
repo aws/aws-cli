@@ -23,7 +23,6 @@ from awscli.customizations.s3.fileinfo import VersionedFileInfo
 from awscli.customizations.s3.utils import (
     EPOCH_TIME,
     BucketLister,
-    BucketVersionLister,
     create_warning,
     find_bucket_key,
     find_dest_path_comp_key,
@@ -414,7 +413,7 @@ class FileGenerator:
 class VersionedFileGenerator:
     """
     This class generates VersionedFileInfo objects for all versions of objects in a bucket.
-    It uses the BucketVersionLister to list all versions and creates appropriate
+    It uses the BucketLister class to list all versions and creates appropriate
     VersionedFileInfo objects for each version.
     """
 
@@ -447,7 +446,7 @@ class VersionedFileGenerator:
         self.request_parameters = {}
         if request_parameters is not None:
             self.request_parameters = request_parameters
-        self._version_lister = BucketVersionLister(client)
+        self._version_lister = BucketLister(client)
 
     def call(self, files):
         """
@@ -466,9 +465,6 @@ class VersionedFileGenerator:
         for src_path, content, version_id in file_iterator:
             dest_path, compare_key = find_dest_path_comp_key(files, src_path)
 
-            # Check if this is a delete marker
-            is_delete_marker = content.get('DeleteMarker', False)
-
             # Create a VersionedFileInfo for this object version
             yield VersionedFileInfo(
                 src=src_path,
@@ -479,10 +475,8 @@ class VersionedFileGenerator:
                 src_type=src_type,
                 dest_type=dest_type,
                 operation_name=self.operation_name,
-                # client=self._client,
                 associated_response_data=content,
                 version_id=version_id,
-                is_delete_marker=is_delete_marker,
             )
 
     def list_object_versions(self, s3_path, dir_op):

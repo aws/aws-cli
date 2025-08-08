@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.42.6
+======
+
+* api-change:``connect``: This release adds a new API GetContactMetrics for Amazon Connect.
+* api-change:``inspector2``: Add CVSSV4 to Vulnerability Search API and update enable/disable account id list length to 5
+* api-change:``iot-data``: Adding DeleteConnection API to IoT Data Plane
+* api-change:``sagemaker``: Adds support for GB200 UltraServers in Amazon SageMaker training jobs, training plans, and HyperPod clusters
+* api-change:``transcribe``: Update documentation to use key ARN only in OutputEncryptionKMSKeyId request parameter
+
+
 1.42.5
 ======
 

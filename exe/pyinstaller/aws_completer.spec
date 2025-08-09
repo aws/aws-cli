@@ -54,7 +54,8 @@ completer_exe = EXE(completer_pyz,
           strip=False,
           upx=True,
           console=True,
-          contents_directory='.')
+          contents_directory='.',
+          target_arch='universal2',)
 coll = COLLECT(completer_exe,
                completer_a.binaries,
                completer_a.zipfiles,

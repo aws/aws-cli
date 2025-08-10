@@ -54,16 +54,16 @@ def run_aws_cli(ctx: Context, aws_cli: str) -> dict:
     sub_command = tokens[1:]
     LOG.debug(f"Running AWS CLI command {sub_command!r}")
     try:
-        output = StringIO()
-        _patch_aws_cli_pager(output)
-        with redirect_stdout(output):
+        buf = StringIO()
+        _patch_aws_cli_pager(buf)
+        with redirect_stdout(buf):
             clidriver = create_clidriver(sub_command)
             return_code = clidriver.main(sub_command)
+            output = buf.getvalue()
             try:
-                parsed_json = json.load(output)
-                return parsed_json
+                return json.loads(output)
             except json.JSONDecodeError:
-                return {"output": output.getvalue()}
+                return {"output": output}
 
     except SystemExit as sys_exit:
         if sys_exit.code != 0:

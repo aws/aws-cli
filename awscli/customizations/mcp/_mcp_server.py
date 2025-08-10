@@ -1,16 +1,16 @@
 import json
 import logging
+import re
 import shlex
-import sys
 from contextlib import redirect_stdout
 
 from mcp.server.fastmcp import FastMCP
 from mcp.server.fastmcp.exceptions import ToolError
 from mcp.server.fastmcp.server import Context
-from pydantic import BaseModel
 
 from awscli.clidriver import create_clidriver
 from awscli.compat import StringIO
+from awscli.help import PosixHelpRenderer
 
 LOG = logging.getLogger(__name__)
 
@@ -26,9 +26,25 @@ def get_aws_cli_mcp_server(*, port: str, host: str) -> FastMCP:
     return mcp_server
 
 
+_CONTROL_SEQUENCE = re.compile("\x1b\\[\\d+m")
+
+
+def _remove_control_sequence(content: str):
+    return _CONTROL_SEQUENCE.sub("", content)
+
+
+def _patch_aws_cli_pager(buf: StringIO):
+    def patched_send_output_to_pager(self, output):
+        content = output.decode('utf-8')
+        buf.write(_remove_control_sequence(content) + "\n")
+        buf.flush()
+        return
+
+    PosixHelpRenderer._send_output_to_pager = patched_send_output_to_pager
+
+
 def run_aws_cli(ctx: Context, aws_cli: str) -> dict:
     """Run the aws cli command and return the JSON response."""
-
     tokens = shlex.split(aws_cli)
     if set(tokens) & set(("|", ">", ">>", "||", "&&", "&")):
         raise ToolError(
@@ -39,6 +55,7 @@ def run_aws_cli(ctx: Context, aws_cli: str) -> dict:
     LOG.debug(f"Running AWS CLI command {sub_command!r}")
     try:
         output = StringIO()
+        _patch_aws_cli_pager(output)
         with redirect_stdout(output):
             clidriver = create_clidriver(sub_command)
             return_code = clidriver.main(sub_command)

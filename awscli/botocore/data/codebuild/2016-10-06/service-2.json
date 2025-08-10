@@ -2122,6 +2122,10 @@
         "scopeConfiguration":{
           "shape":"ScopeConfiguration",
           "documentation":"<p>The scope configuration for global or organization webhooks.</p> <note> <p>Global or organization webhooks are only available for GitHub and Github Enterprise webhooks.</p> </note>"
+        },
+        "pullRequestBuildPolicy":{
+          "shape":"PullRequestBuildPolicy",
+          "documentation":"<p>A PullRequestBuildPolicy object that defines comment-based approval requirements for triggering builds on pull requests. This policy helps control when automated builds are executed based on contributor permissions and approval workflows.</p>"
         }
       }
     },
@@ -4012,6 +4016,52 @@
       },
       "documentation":"<p>Information about the proxy configurations that apply network access control to your reserved capacity instances.</p>"
     },
+    "PullRequestBuildApproverRole":{
+      "type":"string",
+      "enum":[
+        "GITHUB_READ",
+        "GITHUB_TRIAGE",
+        "GITHUB_WRITE",
+        "GITHUB_MAINTAIN",
+        "GITHUB_ADMIN",
+        "GITLAB_GUEST",
+        "GITLAB_PLANNER",
+        "GITLAB_REPORTER",
+        "GITLAB_DEVELOPER",
+        "GITLAB_MAINTAINER",
+        "GITLAB_OWNER",
+        "BITBUCKET_READ",
+        "BITBUCKET_WRITE",
+        "BITBUCKET_ADMIN"
+      ]
+    },
+    "PullRequestBuildApproverRoles":{
+      "type":"list",
+      "member":{"shape":"PullRequestBuildApproverRole"}
+    },
+    "PullRequestBuildCommentApproval":{
+      "type":"string",
+      "enum":[
+        "DISABLED",
+        "ALL_PULL_REQUESTS",
+        "FORK_PULL_REQUESTS"
+      ]
+    },
+    "PullRequestBuildPolicy":{
+      "type":"structure",
+      "required":["requiresCommentApproval"],
+      "members":{
+        "requiresCommentApproval":{
+          "shape":"PullRequestBuildCommentApproval",
+          "documentation":"<p>Specifies when comment-based approval is required before triggering a build on pull requests. This setting determines whether builds run automatically or require explicit approval through comments.</p> <ul> <li> <p> <i>DISABLED</i>: Builds trigger automatically without requiring comment approval</p> </li> <li> <p> <i>ALL_PULL_REQUESTS</i>: All pull requests require comment approval before builds execute (unless contributor is one of the approver roles)</p> </li> <li> <p> <i>FORK_PULL_REQUESTS</i>: Only pull requests from forked repositories require comment approval (unless contributor is one of the approver roles)</p> </li> </ul>"
+        },
+        "approverRoles":{
+          "shape":"PullRequestBuildApproverRoles",
+          "documentation":"<p>List of repository roles that have approval privileges for pull request builds when comment approval is required. Only users with these roles can provide valid comment approvals. If a pull request contributor is one of these roles, their pull request builds will trigger automatically. This field is only applicable when <code>requiresCommentApproval</code> is not <i>DISABLED</i>.</p>"
+        }
+      },
+      "documentation":"<p>Configuration policy that defines comment-based approval requirements for triggering builds on pull requests. This policy helps control when automated builds are executed based on contributor permissions and approval workflows.</p>"
+    },
     "PutResourcePolicyInput":{
       "type":"structure",
       "required":[
@@ -4968,7 +5018,7 @@
         },
         "buildspecOverride":{
           "shape":"String",
-          "documentation":"<p>A buildspec file declaration that overrides the latest one defined in the build project, for this build only. The buildspec defined on the project is not changed.</p> <p>If this value is set, it can be either an inline buildspec definition, the path to an alternate buildspec file relative to the value of the built-in <code>CODEBUILD_SRC_DIR</code> environment variable, or the path to an S3 bucket. The bucket must be in the same Amazon Web Services Region as the build project. Specify the buildspec file using its ARN (for example, <code>arn:aws:s3:::my-codebuild-sample2/buildspec.yml</code>). If this value is not provided or is set to an empty string, the source code must contain a buildspec file in its root directory. For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html#build-spec-ref-name-storage\">Buildspec File Name and Storage Location</a>.</p> <note> <p>Since this property allows you to change the build commands that will run in the container, you should note that an IAM principal with the ability to call this API and set this parameter can override the default settings. Moreover, we encourage that you use a trustworthy buildspec location like a file in your source repository or a Amazon S3 bucket.</p> </note>"
+          "documentation":"<p>A buildspec file declaration that overrides the latest one defined in the build project, for this build only. The buildspec defined on the project is not changed.</p> <p>If this value is set, it can be either an inline buildspec definition, the path to an alternate buildspec file relative to the value of the built-in <code>CODEBUILD_SRC_DIR</code> environment variable, or the path to an S3 bucket. The bucket must be in the same Amazon Web Services Region as the build project. Specify the buildspec file using its ARN (for example, <code>arn:aws:s3:::my-codebuild-sample2/buildspec.yml</code>). If this value is not provided or is set to an empty string, the source code must contain a buildspec file in its root directory. For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html#build-spec-ref-name-storage\">Buildspec File Name and Storage Location</a>.</p> <note> <p>Since this property allows you to change the build commands that will run in the container, you should note that an IAM principal with the ability to call this API and set this parameter can override the default settings. Moreover, we encourage that you use a trustworthy buildspec location like a file in your source repository or a Amazon S3 bucket. Alternatively, you can restrict overrides to the buildspec by using a condition key: <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/action-context-keys.html#action-context-keys-example-overridebuildspec.html\">Prevent unauthorized modifications to project buildspec</a>.</p> </note>"
         },
         "insecureSslOverride":{
           "shape":"WrapperBoolean",
@@ -5572,6 +5622,10 @@
         "buildType":{
           "shape":"WebhookBuildType",
           "documentation":"<p>Specifies the type of build this webhook will trigger.</p> <note> <p> <code>RUNNER_BUILDKITE_BUILD</code> is only available for <code>NO_SOURCE</code> source type projects configured for Buildkite runner builds. For more information about CodeBuild-hosted Buildkite runner builds, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/sample-runner-buildkite.html\">Tutorial: Configure a CodeBuild-hosted Buildkite runner</a> in the <i>CodeBuild user guide</i>.</p> </note>"
+        },
+        "pullRequestBuildPolicy":{
+          "shape":"PullRequestBuildPolicy",
+          "documentation":"<p>A PullRequestBuildPolicy object that defines comment-based approval requirements for triggering builds on pull requests. This policy helps control when automated builds are executed based on contributor permissions and approval workflows.</p>"
         }
       }
     },

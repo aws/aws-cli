@@ -27,7 +27,7 @@
       "errors":[
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Creates an Amazon EVS environment that runs VCF software, such as SDDC Manager, NSX Manager, and vCenter Server.</p> <p>During environment creation, Amazon EVS performs validations on DNS settings, provisions VLAN subnets and hosts, and deploys the supplied version of VCF.</p> <p>It can take several hours to create an environment. After the deployment completes, you can configure VCF according to your unique requirements.</p> <note> <p>You cannot use the <code>dedicatedHostId</code> and <code>placementGroupId</code> parameters together in the same <code>CreateEnvironment</code> action. This results in a <code>ValidationException</code> response.</p> </note> <note> <p>EC2 instances created through Amazon EVS do not support associating an IAM instance profile.</p> </note>",
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Creates an Amazon EVS environment that runs VCF software, such as SDDC Manager, NSX Manager, and vCenter Server.</p> <p>During environment creation, Amazon EVS performs validations on DNS settings, provisions VLAN subnets and hosts, and deploys the supplied version of VCF.</p> <p>It can take several hours to create an environment. After the deployment completes, you can configure VCF in the vSphere user interface according to your needs.</p> <note> <p>You cannot use the <code>dedicatedHostId</code> and <code>placementGroupId</code> parameters together in the same <code>CreateEnvironment</code> action. This results in a <code>ValidationException</code> response.</p> </note></p>",
       "idempotent":true
     },
     "CreateEnvironmentHost":{
@@ -42,7 +42,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Creates an ESXi host and adds it to an Amazon EVS environment. Amazon EVS supports 4-16 hosts per environment.</p> <p>This action can only be used after the Amazon EVS environment is deployed. All Amazon EVS hosts are created with the latest AMI release version for the respective VCF version of the environment.</p> <p>You can use the <code>dedicatedHostId</code> parameter to specify an Amazon EC2 Dedicated Host for ESXi host creation.</p> <p> You can use the <code>placementGroupId</code> parameter to specify a cluster or partition placement group to launch EC2 instances into.</p> <note> <p>You cannot use the <code>dedicatedHostId</code> and <code>placementGroupId</code> parameters together in the same <code>CreateEnvironmentHost</code> action. This results in a <code>ValidationException</code> response.</p> </note> <note> <p>EC2 instances created through Amazon EVS do not support associating an IAM instance profile.</p> </note>",
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Creates an ESXi host and adds it to an Amazon EVS environment. Amazon EVS supports 4-16 hosts per environment.</p> <p>This action can only be used after the Amazon EVS environment is deployed. All Amazon EVS hosts are created with the latest AMI release version for the respective VCF version of the environment. Amazon EVS hosts are commissioned in the SDDC Manager inventory as unassigned hosts.</p> <p>You can use the <code>dedicatedHostId</code> parameter to specify an Amazon EC2 Dedicated Host for ESXi host creation.</p> <p> You can use the <code>placementGroupId</code> parameter to specify a cluster or partition placement group to launch EC2 instances into.</p> <note> <p>You cannot use the <code>dedicatedHostId</code> and <code>placementGroupId</code> parameters together in the same <code>CreateEnvironmentHost</code> action. This results in a <code>ValidationException</code> response.</p> </note></p>",
       "idempotent":true
     },
     "DeleteEnvironment":{
@@ -57,7 +57,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes an Amazon EVS environment.</p> <p>Amazon EVS environments will only be enabled for deletion once the hosts are deleted. You can delete hosts using the <code>DeleteEnvironmentHost</code> action.</p> <p>Environment deletion also deletes the associated Amazon EVS VLAN subnets. Other associated Amazon Web Services resources are not deleted. These resources may continue to incur costs.</p>",
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Deletes an Amazon EVS environment.</p> <p>Amazon EVS environments will only be enabled for deletion once the hosts are deleted. You can delete hosts using the <code>DeleteEnvironmentHost</code> action.</p> <p>Environment deletion also deletes the associated Amazon EVS VLAN subnets. Other associated Amazon Web Services resources are not deleted. These resources may continue to incur costs.</p></p>",
       "idempotent":true
     },
     "DeleteEnvironmentHost":{
@@ -72,7 +72,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes a host from an Amazon EVS environment.</p> <note> <p>Before deleting a host, you must unassign and decommission the host from within the SDDC Manager user interface. Not doing so could impact the availability of your virtual machines or result in data loss.</p> </note>",
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Deletes a host from an Amazon EVS environment.</p> <note> <p>Before deleting a host, you must unassign and decommission the host from within the SDDC Manager user interface. Not doing so could impact the availability of your virtual machines or result in data loss.</p> </note></p>",
       "idempotent":true
     },
     "GetEnvironment":{
@@ -87,7 +87,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a description of the specified environment.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Returns a description of the specified environment.</p></p>"
     },
     "ListEnvironmentHosts":{
       "name":"ListEnvironmentHosts",
@@ -101,7 +101,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>List the hosts within an environment.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>List the hosts within an environment.</p></p>"
     },
     "ListEnvironmentVlans":{
       "name":"ListEnvironmentVlans",
@@ -115,7 +115,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists environment VLANs that are associated with the specified environment.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Lists environment VLANs that are associated with the specified environment.</p></p>"
     },
     "ListEnvironments":{
       "name":"ListEnvironments",
@@ -128,7 +128,7 @@
       "errors":[
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists the Amazon EVS environments in your Amazon Web Services account in the specified Amazon Web Services Region.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Lists the Amazon EVS environments in your Amazon Web Services account in the specified Amazon Web Services Region.</p></p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -141,7 +141,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists the tags for an Amazon EVS resource.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Lists the tags for an Amazon EVS resource.</p></p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -152,11 +152,12 @@
       "input":{"shape":"TagResourceRequest"},
       "output":{"shape":"TagResourceResponse"},
       "errors":[
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"TooManyTagsException"},
         {"shape":"TagPolicyException"}
       ],
-      "documentation":"<p>Associates the specified tags to an Amazon EVS resource with the specified <code>resourceArn</code>. If existing tags on a resource are not specified in the request parameters, they aren't changed. When a resource is deleted, the tags associated with that resource are also deleted. Tags that you create for Amazon EVS resources don't propagate to any other resources associated with the environment. For example, if you tag an environment with this operation, that tag doesn't automatically propagate to the VLAN subnets and hosts associated with the environment.</p>",
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Associates the specified tags to an Amazon EVS resource with the specified <code>resourceArn</code>. If existing tags on a resource are not specified in the request parameters, they aren't changed. When a resource is deleted, the tags associated with that resource are also deleted. Tags that you create for Amazon EVS resources don't propagate to any other resources associated with the environment. For example, if you tag an environment with this operation, that tag doesn't automatically propagate to the VLAN subnets and hosts associated with the environment.</p></p>",
       "idempotent":true
     },
     "UntagResource":{
@@ -171,7 +172,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"TagPolicyException"}
       ],
-      "documentation":"<p>Deletes specified tags from an Amazon EVS resource.</p>",
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Deletes specified tags from an Amazon EVS resource.</p></p>",
       "idempotent":true
     }
   },
@@ -202,7 +203,7 @@
           "documentation":"<p>The time when environment health began to be impaired.</p>"
         }
       },
-      "documentation":"<p>A check on the environment to identify environment health and validate VMware VCF licensing compliance.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>A check on the environment to identify environment health and validate VMware VCF licensing compliance.</p></p>"
     },
     "CheckResult":{
       "type":"string",
@@ -244,7 +245,7 @@
           "documentation":"<p>The unique IDs for private route server peers.</p>"
         }
       },
-      "documentation":"<p>The connectivity configuration for the environment. Amazon EVS requires that you specify two route server peer IDs. During environment creation, the route server endpoints peer with the NSX uplink VLAN for connectivity to the NSX overlay network.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>The connectivity configuration for the environment. Amazon EVS requires that you specify two route server peer IDs. During environment creation, the route server endpoints peer with the NSX uplink VLAN for connectivity to the NSX overlay network.</p></p>"
     },
     "CreateEnvironmentHostRequest":{
       "type":"structure",
@@ -319,7 +320,7 @@
         },
         "vpcId":{
           "shape":"VpcId",
-          "documentation":"<p>A unique ID for the VPC that connects to the environment control plane for service access.</p> <p>Amazon EVS requires that all VPC subnets exist in a single Availability Zone in a Region where the service is available.</p> <p>The VPC that you select must have a valid DHCP option set with domain name, at least two DNS servers, and an NTP server. These settings are used to configure your VCF appliances and hosts.</p> <p>If you plan to use HCX over the internet, choose a VPC that has a primary CIDR block and a /28 secondary CIDR block from an IPAM pool. Make sure that your VPC also has an attached internet gateway.</p> <p>Amazon EVS does not support the following Amazon Web Services networking options for NSX overlay connectivity: cross-Region VPC peering, Amazon S3 gateway endpoints, or Amazon Web Services Direct Connect virtual private gateway associations.</p>"
+          "documentation":"<p>A unique ID for the VPC that the environment is deployed inside.</p> <p>Amazon EVS requires that all VPC subnets exist in a single Availability Zone in a Region where the service is available.</p> <p>The VPC that you specify must have a valid DHCP option set with domain name, at least two DNS servers, and an NTP server. These settings are used to configure your VCF appliances and hosts. The VPC cannot be used with any other deployed Amazon EVS environment. Amazon EVS does not provide multi-VPC support for environments at this time.</p> <p>Amazon EVS does not support the following Amazon Web Services networking options for NSX overlay connectivity: cross-Region VPC peering, Amazon S3 gateway endpoints, or Amazon Web Services Direct Connect virtual private gateway associations.</p> <note> <p>Ensure that you specify a VPC that is adequately sized to accommodate the {evws} subnets.</p> </note>"
         },
         "serviceAccessSubnetId":{
           "shape":"SubnetId",
@@ -331,23 +332,23 @@
         },
         "termsAccepted":{
           "shape":"Boolean",
-          "documentation":"<p>Customer confirmation that the customer has purchased and maintains sufficient VCF software licenses to cover all physical processor cores in the environment, in compliance with VMware's licensing requirements and terms of use.</p>"
+          "documentation":"<p>Customer confirmation that the customer has purchased and will continue to maintain the required number of VCF software licenses to cover all physical processor cores in the Amazon EVS environment. Information about your VCF software in Amazon EVS will be shared with Broadcom to verify license compliance. Amazon EVS does not validate license keys. To validate license keys, visit the Broadcom support portal.</p>"
         },
         "licenseInfo":{
           "shape":"LicenseInfoList",
-          "documentation":"<p>The license information that Amazon EVS requires to create an environment. Amazon EVS requires two license keys: a VCF solution key and a vSAN license key. VCF licenses must have sufficient core entitlements to cover vCPU core and vSAN storage capacity needs.</p> <p>VCF licenses can be used for only one Amazon EVS environment. Amazon EVS does not support reuse of VCF licenses for multiple environments.</p> <p>VCF license information can be retrieved from the Broadcom portal.</p>"
+          "documentation":"<p>The license information that Amazon EVS requires to create an environment. Amazon EVS requires two license keys: a VCF solution key and a vSAN license key. The VCF solution key must cover a minimum of 256 cores. The vSAN license key must provide at least 110 TiB of vSAN capacity.</p> <p>VCF licenses can be used for only one Amazon EVS environment. Amazon EVS does not support reuse of VCF licenses for multiple environments.</p> <p>VCF license information can be retrieved from the Broadcom portal.</p>"
         },
         "initialVlans":{
           "shape":"InitialVlans",
-          "documentation":"<p>The initial VLAN subnets for the environment. You must specify a non-overlapping CIDR block for each VLAN subnet.</p>"
+          "documentation":"<p>The initial VLAN subnets for the Amazon EVS environment.</p> <note> <p>For each Amazon EVS VLAN subnet, you must specify a non-overlapping CIDR block. Amazon EVS VLAN subnets have a minimum CIDR block size of /28 and a maximum size of /24.</p> </note>"
         },
         "hosts":{
           "shape":"HostInfoForCreateList",
-          "documentation":"<p>The ESXi hosts to add to the environment. Amazon EVS requires that you provide details for a minimum of 4 hosts during environment creation.</p> <p>For each host, you must provide the desired hostname, EC2 SSH key, and EC2 instance type. Optionally, you can also provide a partition or cluster placement group to use, or use Amazon EC2 Dedicated Hosts.</p>"
+          "documentation":"<p>The ESXi hosts to add to the environment. Amazon EVS requires that you provide details for a minimum of 4 hosts during environment creation.</p> <p>For each host, you must provide the desired hostname, EC2 SSH keypair name, and EC2 instance type. Optionally, you can also provide a partition or cluster placement group to use, or use Amazon EC2 Dedicated Hosts.</p>"
         },
         "connectivityInfo":{
           "shape":"ConnectivityInfo",
-          "documentation":"<p> The connectivity configuration for the environment. Amazon EVS requires that you specify two route server peer IDs. During environment creation, the route server endpoints peer with the NSX edges over the NSX, providing BGP dynamic routing for overlay networks.</p>"
+          "documentation":"<p> The connectivity configuration for the environment. Amazon EVS requires that you specify two route server peer IDs. During environment creation, the route server endpoints peer with the NSX edges over the NSX uplink subnet, providing BGP-based dynamic routing for overlay networks.</p>"
         },
         "vcfHostnames":{
           "shape":"VcfHostnames",
@@ -478,11 +479,11 @@
         },
         "termsAccepted":{
           "shape":"Boolean",
-          "documentation":"<p>Customer confirmation that the customer has purchased and maintains sufficient VCF software licenses to cover all physical processor cores in the environment, in compliance with VMware's licensing requirements and terms of use.</p>"
+          "documentation":"<p>Customer confirmation that the customer has purchased and will continue to maintain the required number of VCF software licenses to cover all physical processor cores in the Amazon EVS environment. Information about your VCF software in Amazon EVS will be shared with Broadcom to verify license compliance. Amazon EVS does not validate license keys. To validate license keys, visit the Broadcom support portal. </p>"
         },
         "licenseInfo":{
           "shape":"LicenseInfoList",
-          "documentation":"<p> The license information that Amazon EVS requires to create an environment. Amazon EVS requires two license keys: a VCF solution key and a vSAN license key.</p>"
+          "documentation":"<p> The license information that Amazon EVS requires to create an environment. Amazon EVS requires two license keys: a VCF solution key and a vSAN license key. The VCF solution key must cover a minimum of 256 cores. The vSAN license key must provide at least 110 TiB of vSAN capacity.</p>"
         },
         "siteId":{
           "shape":"String",
@@ -517,7 +518,7 @@
           "documentation":"<p>The VCF credentials that are stored as Amazon EVS managed secrets in Amazon Web Services Secrets Manager.</p> <p>Amazon EVS stores credentials that are needed to install vCenter Server, NSX, and SDDC Manager.</p>"
         }
       },
-      "documentation":"<p>An object that represents an Amazon EVS environment.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>An object that represents an Amazon EVS environment.</p></p>"
     },
     "EnvironmentId":{
       "type":"string",
@@ -579,7 +580,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) that is associated with the environment.</p>"
         }
       },
-      "documentation":"<p>A list of environments with summarized environment details.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>A list of environments with summarized environment details.</p></p>"
     },
     "EnvironmentSummaryList":{
       "type":"list",
@@ -656,7 +657,7 @@
           "documentation":"<p>The elastic network interfaces that are attached to the host.</p>"
         }
       },
-      "documentation":"<p>An ESXi host that runs on an Amazon EC2 bare metal instance. Four hosts are created in an Amazon EVS environment during environment creation. You can add hosts to an environment using the <code>CreateEnvironmentHost</code> operation. Amazon EVS supports 4-16 hosts per environment.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>An ESXi host that runs on an Amazon EC2 bare metal instance. Four hosts are created in an Amazon EVS environment during environment creation. You can add hosts to an environment using the <code>CreateEnvironmentHost</code> operation. Amazon EVS supports 4-16 hosts per environment.</p></p>"
     },
     "HostInfoForCreate":{
       "type":"structure",
@@ -687,7 +688,7 @@
           "documentation":"<p>The unique ID of the Amazon EC2 Dedicated Host.</p>"
         }
       },
-      "documentation":"<p>An object that represents a host.</p> <note> <p>You cannot use <code>dedicatedHostId</code> and <code>placementGroupId</code> together in the same <code>HostInfoForCreate</code>object. This results in a <code>ValidationException</code> response.</p> </note>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>An object that represents a host.</p> <note> <p>You cannot use <code>dedicatedHostId</code> and <code>placementGroupId</code> together in the same <code>HostInfoForCreate</code>object. This results in a <code>ValidationException</code> response.</p> </note></p>"
     },
     "HostInfoForCreateList":{
       "type":"list",
@@ -721,10 +722,10 @@
       "members":{
         "cidr":{
           "shape":"Cidr",
-          "documentation":"<p> The CIDR block that you provide to create a VLAN subnet. VLAN CIDR blocks must not overlap with other subnets in the VPC.</p>"
+          "documentation":"<p> The CIDR block that you provide to create an Amazon EVS VLAN subnet. Amazon EVS VLAN subnets have a minimum CIDR block size of /28 and a maximum size of /24. Amazon EVS VLAN subnet CIDR blocks must not overlap with other subnets in the VPC.</p>"
         }
       },
-      "documentation":"<p>An object that represents an initial VLAN subnet for the environment. Amazon EVS creates initial VLAN subnets when you first create the environment. You must specify a non-overlapping CIDR block for each VLAN subnet. Amazon EVS creates the following 10 VLAN subnets: host management VLAN, vMotion VLAN, vSAN VLAN, VTEP VLAN, Edge VTEP VLAN, Management VM VLAN, HCX uplink VLAN, NSX uplink VLAN, expansion VLAN 1, expansion VLAN 2.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>An object that represents an initial VLAN subnet for the Amazon EVS environment. Amazon EVS creates initial VLAN subnets when you first create the environment. Amazon EVS creates the following 10 VLAN subnets: host management VLAN, vMotion VLAN, vSAN VLAN, VTEP VLAN, Edge VTEP VLAN, Management VM VLAN, HCX uplink VLAN, NSX uplink VLAN, expansion VLAN 1, expansion VLAN 2.</p> <note> <p>For each Amazon EVS VLAN subnet, you must specify a non-overlapping CIDR block. Amazon EVS VLAN subnets have a minimum CIDR block size of /28 and a maximum size of /24.</p> </note></p>"
     },
     "InitialVlans":{
       "type":"structure",
@@ -743,7 +744,7 @@
       "members":{
         "vmkManagement":{
           "shape":"InitialVlanInfo",
-          "documentation":"<p> The VMkernel management VLAN subnet. This VLAN subnet carries traffic for managing ESXi hosts and communicating with VMware vCenter Server.</p>"
+          "documentation":"<p> The host VMkernel management VLAN subnet. This VLAN subnet carries traffic for managing ESXi hosts and communicating with VMware vCenter Server.</p>"
         },
         "vmManagement":{
           "shape":"InitialVlanInfo",
@@ -782,7 +783,7 @@
           "documentation":"<p>An additional VLAN subnet that can be used to extend VCF capabilities once configured. For example, you can configure an expansion VLAN subnet to use NSX Federation for centralized management and synchronization of multiple NSX deployments across different locations.</p>"
         }
       },
-      "documentation":"<p>The initial VLAN subnets for the environment. You must specify a non-overlapping CIDR block for each VLAN subnet.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>The initial VLAN subnets for the environment. Amazon EVS VLAN subnets have a minimum CIDR block size of /28 and a maximum size of /24. Amazon EVS VLAN subnet CIDR blocks must not overlap with other subnets in the VPC.</p></p>"
     },
     "InstanceType":{
       "type":"string",
@@ -811,14 +812,14 @@
       "members":{
         "solutionKey":{
           "shape":"SolutionKey",
-          "documentation":"<p> The VCF solution key. This license unlocks VMware VCF product features, including vSphere, NSX, SDDC Manager, and vCenter Server.</p>"
+          "documentation":"<p> The VCF solution key. This license unlocks VMware VCF product features, including vSphere, NSX, SDDC Manager, and vCenter Server. The VCF solution key must cover a minimum of 256 cores.</p>"
         },
         "vsanKey":{
           "shape":"VSanLicenseKey",
-          "documentation":"<p> The VSAN license key. This license unlocks vSAN features.</p>"
+          "documentation":"<p> The VSAN license key. This license unlocks vSAN features. The vSAN license key must provide at least 110 TiB of vSAN capacity.</p>"
         }
       },
-      "documentation":"<p> The license information that Amazon EVS requires to create an environment. Amazon EVS requires two license keys: a VCF solution key and a vSAN license key.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p> The license information that Amazon EVS requires to create an environment. Amazon EVS requires two license keys: a VCF solution key and a vSAN license key.</p></p>"
     },
     "LicenseInfoList":{
       "type":"list",
@@ -951,7 +952,7 @@
           "documentation":"<p>The unique ID of the elastic network interface.</p>"
         }
       },
-      "documentation":"<p>An elastic network interface (ENI) that connects hosts to the VLAN subnets. Amazon EVS provisions two identically configured ENIs in the VMkernel management subnet during host creation. One ENI is active, and the other is in standby mode for automatic switchover during a failure scenario.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>An elastic network interface (ENI) that connects hosts to the VLAN subnets. Amazon EVS provisions two identically configured ENIs in the VMkernel management subnet during host creation. One ENI is active, and the other is in standby mode for automatic switchover during a failure scenario.</p></p>"
     },
     "NetworkInterfaceId":{
       "type":"string",
@@ -1026,7 +1027,7 @@
           "documentation":"<p> The Amazon Resource Name (ARN) of the secret.</p>"
         }
       },
-      "documentation":"<p>A managed secret that contains the credentials for installing vCenter Server, NSX, and SDDC Manager. During environment creation, the Amazon EVS control plane uses Amazon Web Services Secrets Manager to create, encrypt, validate, and store secrets. If you choose to delete your environment, Amazon EVS also deletes the secrets that are associated with your environment. Amazon EVS does not provide managed rotation of secrets. We recommend that you rotate secrets regularly to ensure that secrets are not long-lived.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>A managed secret that contains the credentials for installing vCenter Server, NSX, and SDDC Manager. During environment creation, the Amazon EVS control plane uses Amazon Web Services Secrets Manager to create, encrypt, validate, and store secrets. If you choose to delete your environment, Amazon EVS also deletes the secrets that are associated with your environment. Amazon EVS does not provide managed rotation of secrets. We recommend that you rotate secrets regularly to ensure that secrets are not long-lived.</p></p>"
     },
     "SecretList":{
       "type":"list",
@@ -1052,7 +1053,19 @@
           "documentation":"<p>The security groups that allow service access.</p>"
         }
       },
-      "documentation":"<p>The security groups that allow traffic between the Amazon EVS control plane and your VPC for Amazon EVS service access. If a security group is not specified, Amazon EVS uses the default security group in your account for service access.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>The security groups that allow traffic between the Amazon EVS control plane and your VPC for Amazon EVS service access. If a security group is not specified, Amazon EVS uses the default security group in your account for service access.</p></p>"
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Describes the error encountered.</p>"
+        }
+      },
+      "documentation":"<p>The number of one or more Amazon EVS resources exceeds the maximum allowed. For a list of Amazon EVS quotas, see <a href=\"https://docs.aws.amazon.com/evs/latest/userguide/service-quotas-evs.html\">Amazon EVS endpoints and quotas</a> in the <i>Amazon EVS User Guide</i>. Delete some resources or request an increase in your service quota. To request an increase, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html\">Amazon Web Services Service Quotas</a> in the <i>Amazon Web Services General Reference Guide</i>. </p>",
+      "exception":true
     },
     "SolutionKey":{
       "type":"string",
@@ -1087,7 +1100,7 @@
           "documentation":"<p>Describes the error encountered</p>"
         }
       },
-      "documentation":"<p>The request doesn't comply with IAM tag policy. Correct your request and then retry it.</p>",
+      "documentation":"<p><note> <p> <code>TagPolicyException</code> is deprecated. See <a href=\"https://docs.aws.amazon.com/evs/latest/APIReference/API_ValidationException.html\"> <code>ValidationException</code> </a> instead.</p> </note> <p>The request doesn't comply with IAM tag policy. Correct your request and then retry it.</p></p>",
       "exception":true
     },
     "TagResourceRequest":{
@@ -1109,8 +1122,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -1145,7 +1157,7 @@
           "documentation":"<p>Describes the error encountered.</p>"
         }
       },
-      "documentation":"<p>A service resource associated with the request has more than 200 tags.</p>",
+      "documentation":"<p><note> <p> <code>TooManyTagsException</code> is deprecated. See <a href=\"https://docs.aws.amazon.com/evs/latest/APIReference/API_ServiceQuotaExceededException.html\"> <code>ServiceQuotaExceededException</code> </a> instead.</p> </note> <p>A service resource associated with the request has more than 200 tags.</p></p>",
       "exception":true
     },
     "UntagResourceRequest":{
@@ -1167,8 +1179,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "VSanLicenseKey":{
       "type":"string",
@@ -1213,7 +1224,7 @@
           "documentation":"<p> A message describing why the field failed validation.</p>"
         }
       },
-      "documentation":"<p>Stores information about a field passed inside a request that resulted in an exception.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Stores information about a field passed inside a request that resulted in an exception.</p></p>"
     },
     "ValidationExceptionFieldList":{
       "type":"list",
@@ -1279,7 +1290,7 @@
           "documentation":"<p>The hostname for VMware Cloud Builder.</p>"
         }
       },
-      "documentation":"<p>The DNS hostnames that Amazon EVS uses to install VMware vCenter Server, NSX, SDDC Manager, and Cloud Builder. Each hostname must be unique, and resolve to a domain name that you've registered in your DNS service of choice. Hostnames cannot be changed.</p> <p>VMware VCF requires the deployment of two NSX Edge nodes, and three NSX Manager virtual machines.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>The DNS hostnames that Amazon EVS uses to install VMware vCenter Server, NSX, SDDC Manager, and Cloud Builder. Each hostname must be unique, and resolve to a domain name that you've registered in your DNS service of choice. Hostnames cannot be changed.</p> <p>VMware VCF requires the deployment of two NSX Edge nodes, and three NSX Manager virtual machines.</p></p>"
     },
     "VcfVersion":{
       "type":"string",
@@ -1294,7 +1305,7 @@
         },
         "cidr":{
           "shape":"Cidr",
-          "documentation":"<p> The CIDR block of the VLAN.</p>"
+          "documentation":"<p>The CIDR block of the VLAN. Amazon EVS VLAN subnets have a minimum CIDR block size of /28 and a maximum size of /24.</p>"
         },
         "availabilityZone":{
           "shape":"String",
@@ -1325,7 +1336,7 @@
           "documentation":"<p>The state details of the VLAN.</p>"
         }
       },
-      "documentation":"<p>The VLANs that Amazon EVS creates during environment creation.</p>"
+      "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>The VLANs that Amazon EVS creates during environment creation.</p></p>"
     },
     "VlanId":{
       "type":"integer",
@@ -1352,5 +1363,5 @@
       "pattern":"vpc-[a-f0-9]{8}([a-f0-9]{9})?"
     }
   },
-  "documentation":"<p>Amazon Elastic VMware Service (Amazon EVS) is a service that you can use to deploy a VMware Cloud Foundation (VCF) software environment directly on EC2 bare metal instances within an Amazon Virtual Private Cloud (VPC).</p> <p>Workloads running on Amazon EVS are fully compatible with workloads running on any standard VMware vSphere environment. This means that you can migrate any VMware-based workload to Amazon EVS without workload modification.</p>"
+  "documentation":"<p><note> <p>Amazon EVS is in public preview release and is subject to change.</p> </note> <p>Amazon Elastic VMware Service (Amazon EVS) is a service that you can use to deploy a VMware Cloud Foundation (VCF) software environment directly on EC2 bare metal instances within an Amazon Virtual Private Cloud (VPC).</p> <p>Workloads running on Amazon EVS are fully compatible with workloads running on any standard VMware vSphere environment. This means that you can migrate any VMware-based workload to Amazon EVS without workload modification.</p></p>"
 }

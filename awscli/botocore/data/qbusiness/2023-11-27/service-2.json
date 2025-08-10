@@ -333,7 +333,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Subscribes an IAM Identity Center user or a group to a pricing tier for an Amazon Q Business application.</p> <p>Amazon Q Business offers two subscription tiers: <code>Q_LITE</code> and <code>Q_BUSINESS</code>. Subscription tier determines feature access for the user. For more information on subscriptions and pricing tiers, see <a href=\"https://aws.amazon.com/q/business/pricing/\">Amazon Q Business pricing</a>.</p>",
+      "documentation":"<p>Subscribes an IAM Identity Center user or a group to a pricing tier for an Amazon Q Business application.</p> <p>Amazon Q Business offers two subscription tiers: <code>Q_LITE</code> and <code>Q_BUSINESS</code>. Subscription tier determines feature access for the user. For more information on subscriptions and pricing tiers, see <a href=\"https://aws.amazon.com/q/business/pricing/\">Amazon Q Business pricing</a>.</p> <note> <p>For an example IAM role policy for assigning subscriptions, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/setting-up.html#permissions\">Set up required permissions</a> in the Amazon Q Business User Guide.</p> </note>",
       "idempotent":true
     },
     "CreateUser":{
@@ -745,6 +745,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Gets information about an existing Amazon Q Business data source connector.</p>"
+    },
+    "GetDocumentContent":{
+      "name":"GetDocumentContent",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{applicationId}/index/{indexId}/documents/{documentId}/content",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDocumentContentRequest"},
+      "output":{"shape":"GetDocumentContentResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the content of a document that was ingested into Amazon Q Business. This API validates user authorization against document ACLs before returning a pre-signed URL for secure document access. You can download or view source documents referenced in chat responses through the URL.</p>"
     },
     "GetGroup":{
       "name":"GetGroup",
@@ -4944,7 +4962,7 @@
           "documentation":"<p>The path to the document in an Amazon S3 bucket.</p>"
         }
       },
-      "documentation":"<p>The contents of a document.</p>",
+      "documentation":"<p>The contents of a document.</p> <note> <p>Documents have size limitations. The maximum file size for a document is 50 MB. The maximum amount of text that can be extracted from a single document is 5 MB. For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/doc-types.html\">Supported document formats in Amazon Q Business</a>.</p> </note>",
       "union":true
     },
     "DocumentContentOperator":{
@@ -5552,6 +5570,63 @@
         "mediaExtractionConfiguration":{
           "shape":"MediaExtractionConfiguration",
           "documentation":"<p>The configuration for extracting information from media in documents for the data source. </p>"
+        }
+      }
+    },
+    "GetDocumentContentRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "indexId",
+        "documentId"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application containing the document. This ensures the request is scoped to the correct application environment and its associated security policies.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "indexId":{
+          "shape":"IndexId",
+          "documentation":"<p>The identifier of the index where documents are indexed.</p>",
+          "location":"uri",
+          "locationName":"indexId"
+        },
+        "dataSourceId":{
+          "shape":"DataSourceId",
+          "documentation":"<p>The identifier of the data source from which the document was ingested. This field is not present if the document is ingested by directly calling the BatchPutDocument API. If the document is from a file-upload data source, the datasource will be \"uploaded-docs-file-stat-datasourceid\".</p>",
+          "location":"querystring",
+          "locationName":"dataSourceId"
+        },
+        "documentId":{
+          "shape":"DocumentId",
+          "documentation":"<p>The unique identifier of the document that is indexed via BatchPutDocument API or file-upload or connector sync. It is also found in chat or chatSync response.</p>",
+          "location":"uri",
+          "locationName":"documentId"
+        },
+        "outputFormat":{
+          "shape":"OutputFormat",
+          "documentation":"<p>Raw document outputFormat.</p>",
+          "location":"querystring",
+          "locationName":"outputFormat"
+        }
+      }
+    },
+    "GetDocumentContentResponse":{
+      "type":"structure",
+      "required":[
+        "presignedUrl",
+        "mimeType"
+      ],
+      "members":{
+        "presignedUrl":{
+          "shape":"String",
+          "documentation":"<p>A pre-signed URL that provides temporary access to download the document content directly from Amazon Q Business. The URL expires after 5 minutes for security purposes. This URL is generated only after successful ACL validation.</p>"
+        },
+        "mimeType":{
+          "shape":"String",
+          "documentation":"<p>The MIME type of the document content (e.g., application/pdf, text/plain, application/vnd.openxmlformats-officedocument.wordprocessingml.document).</p>"
         }
       }
     },
@@ -7714,6 +7789,10 @@
       "min":1,
       "pattern":"(http://|https://)[a-zA-Z0-9-_.]+(?::[0-9]{1,5})?"
     },
+    "OutputFormat":{
+      "type":"string",
+      "enum":["RAW"]
+    },
     "Payload":{
       "type":"string",
       "sensitive":true
@@ -8628,6 +8707,18 @@
         "textMessageSegments":{
           "shape":"TextSegmentList",
           "documentation":"<p>A text extract from a source document that is used for source attribution.</p>"
+        },
+        "documentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the source document used in the citation, obtained from the Amazon Q Business index during chat response generation. This ID is used as input to the <code>GetDocumentContent</code> API to retrieve the actual document content for user verification.</p>"
+        },
+        "indexId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the index containing the source document's metadata and access control information. This links the citation back to the specific Amazon Q Business index where the document's searchable content and permissions are stored.</p>"
+        },
+        "datasourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the data source from which the document was ingested. This field is not present if the document is ingested by directly calling the BatchPutDocument API (similar to checkDocumentAccess). If the document is from a file-upload data source, the datasource will be \"uploaded-docs-file-stat-datasourceid\".</p>"
         }
       },
       "documentation":"<p>The documents used to generate an Amazon Q Business web experience response.</p>"

@@ -241,7 +241,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ClientException"},
         {"shape":"ServerException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"}
       ],
       "documentation":"<p>Deletes an Amazon EKS cluster control plane.</p> <p>If you have active services in your cluster that are associated with a load balancer, you must delete those services before deleting the cluster so that the load balancers are deleted properly. Otherwise, you can have orphaned resources in your VPC that prevent you from being able to delete the VPC. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/delete-cluster.html\">Deleting a cluster</a> in the <i>Amazon EKS User Guide</i>.</p> <p>If you have managed node groups or Fargate profiles attached to the cluster, you must delete them first. For more information, see <code>DeleteNodgroup</code> and <code>DeleteFargateProfile</code>.</p>"
     },
@@ -1740,6 +1741,10 @@
         "storageConfig":{
           "shape":"StorageConfigResponse",
           "documentation":"<p>Indicates the current configuration of the block storage capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. If the block storage capability is enabled, EKS Auto Mode will create and delete EBS volumes in your Amazon Web Services account. For more information, see EKS Auto Mode block storage capability in the <i>Amazon EKS User Guide</i>.</p>"
+        },
+        "deletionProtection":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>The current deletion protection setting for the cluster. When <code>true</code>, deletion protection is enabled and the cluster cannot be deleted until protection is disabled. When <code>false</code>, the cluster can be deleted normally. This setting only applies to clusters in an active state.</p>"
         }
       },
       "documentation":"<p>An object representing an Amazon EKS cluster.</p>"
@@ -2201,6 +2206,10 @@
         "storageConfig":{
           "shape":"StorageConfigRequest",
           "documentation":"<p>Enable or disable the block storage capability of EKS Auto Mode when creating your EKS Auto Mode cluster. If the block storage capability is enabled, EKS Auto Mode will create and delete EBS volumes in your Amazon Web Services account.</p>"
+        },
+        "deletionProtection":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether to enable deletion protection for the cluster. When enabled, the cluster cannot be deleted unless deletion protection is first disabled. This helps prevent accidental cluster deletion. Default value is <code>false</code>.</p>"
         }
       }
     },
@@ -5672,7 +5681,11 @@
           "shape":"StorageConfigRequest",
           "documentation":"<p>Update the configuration of the block storage capability of your EKS Auto Mode cluster. For example, enable the capability.</p>"
         },
-        "remoteNetworkConfig":{"shape":"RemoteNetworkConfigRequest"}
+        "remoteNetworkConfig":{"shape":"RemoteNetworkConfigRequest"},
+        "deletionProtection":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether to enable or disable deletion protection for the cluster. When enabled (<code>true</code>), the cluster cannot be deleted until deletion protection is explicitly disabled. When disabled (<code>false</code>), the cluster can be deleted normally.</p>"
+        }
       }
     },
     "UpdateClusterConfigResponse":{
@@ -5917,7 +5930,8 @@
         "ComputeConfig",
         "StorageConfig",
         "KubernetesNetworkConfig",
-        "RemoteNetworkConfig"
+        "RemoteNetworkConfig",
+        "DeletionProtection"
       ]
     },
     "UpdateParams":{
@@ -6010,7 +6024,8 @@
         "UpgradePolicyUpdate",
         "ZonalShiftConfigUpdate",
         "AutoModeUpdate",
-        "RemoteNetworkConfigUpdate"
+        "RemoteNetworkConfigUpdate",
+        "DeletionProtectionUpdate"
       ]
     },
     "UpgradePolicyRequest":{

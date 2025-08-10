@@ -2,6 +2,73 @@
 CHANGELOG
 =========
 
+2.28.6
+======
+
+* api-change:``connect``: This release adds a new API GetContactMetrics for Amazon Connect.
+* api-change:``sagemaker``: Adds support for GB200 UltraServers in Amazon SageMaker training jobs, training plans, and HyperPod clusters
+* api-change:``iot-data``: Adding DeleteConnection API to IoT Data Plane
+* api-change:``inspector2``: Add CVSSV4 to Vulnerability Search API and update enable/disable account id list length to 5
+* api-change:``transcribe``: Update documentation to use key ARN only in OutputEncryptionKMSKeyId request parameter
+
+
+2.28.5
+======
+
+* api-change:``glue``: AWS Glue Data Catalog now supports Iceberg Optimization settings at the Catalog level, and supports new options to control the optimization job run rate.
+* api-change:``gameliftstreams``: Adds Proton 9.0-2 to the list of runtime environment options available when creating an Amazon GameLift Streams application
+* api-change:``guardduty``: Added support for VPC owner account ID associated with DNS request in the GuardDuty finding.
+* api-change:``codebuild``: AWS CodeBuild now supports comment-based pull request control.
+* api-change:``cloudfront``: Added new viewer security policy, TLSv1.3_2025, for CloudFront.
+* api-change:``batch``: This feature allows customers to use AWS Batch with Linux with ARM64 CPU Architecture with Fargate Spot compute support.
+
+
+2.28.4
+======
+
+* api-change:``budgets``: Adds support for billing views. Billing views let you control access to cost and usage data through an AWS resource, streamlining the process of sharing cost and usage data across account boundaries. With this release, you can now create and view budgets based on billing views.
+* api-change:``appstream``: Added support for G6 instances
+* api-change:``ec2``: Mark Elastic Inference Accelerators and Elastic Graphics Processor parameters as deprecated on the RunInstances and LaunchTemplate APIs.
+* api-change:``opensearchserverless``: Features: add Index APIs in OpenSearchServerless to support managed semantic enrichment
+* enhancement:openssl: Update bundled OpenSSL version to 1.1.1zc for Linux installers
+* api-change:``qbusiness``: Amazon Q Business now supports the GetDocumentContent() API that enables customers to securely access the source documents through clickable citation links at query time
+
+
+2.28.3
+======
+
+* api-change:``sagemaker``: Add support for SageMaker Hyperpod continuous scaling and custom AMI; Introduce new APIs: ListClusterEvents, DescribeClusterEvent, BatchAddClusterNodes
+* api-change:``rds``: Adds a new Aurora Serverless v2 attribute to the DBCluster resource to expose the platform version. Also updates the attribute to be part of both the engine version and platform version descriptions.
+* api-change:``bedrock-runtime``: This release adds support for Automated Reasoning checks output models for the Amazon Bedrock Guardrails ApplyGuardrail API.
+* api-change:``bedrock``: This release introduces Automated Reasoning checks for Amazon Bedrock Guardrails. The feature adds new APIs for policy building, refinement, version management, and testing. Guardrail APIs now support Automated Reasoning policy configuration and validation output.
+* api-change:``eks``: Add support for deletion protection on EKS clusters
+
+
+2.28.2
+======
+
+* api-change:``sagemaker``: This release adds the ability for customers to attach and detach their EBS volumes to EKS-orchestrated HyperPod cluster nodes.
+* api-change:``iotsitewise``: Support Interface for IoT SiteWise Asset Modeling
+* enhancement:``awscrt``: Update awscrt version to 0.27.5.
+* api-change:``codeconnections``: New integration with Azure DevOps provider type.
+* api-change:``bedrock-agentcore``: Remove superfluous field from API
+* api-change:``evs``: TagResource API now throws ServiceQuotaExceededException when the number of tags on the Amazon EVS resource exceeds the maximum allowed. TooManyTagsException is deprecated.
+
+
+2.28.1
+======
+
+* api-change:``auditmanager``: Added a note to Framework APIs (CreateAssessmentFramework, GetAssessmentFramework, UpdateAssessmentFramework) clarifying that the Controls object returns a partial response when called through Framework APIs. Added documentation that the Framework's controlSources parameter is no longer supported.
+* api-change:``observabilityadmin``: CloudWatch Observability Admin adds the ability to enable telemetry on AWS resources such as Amazon VPCs (Flow Logs) in customers AWS Accounts and Organizations. The release introduces new APIs to manage telemetry rules, which define telemetry settings to be applied on AWS resources.
+* api-change:``pcs``: Add support for IPv6 Networking for Clusters.
+* api-change:``sns``: Amazon SNS support for Amazon SQS fair queues
+* api-change:``aiops``: This release includes fix for InvestigationGroup timestamp conversion issue.
+* api-change:``arc-region-switch``: This is the initial SDK release for Region switch
+* api-change:``acm-pca``: Doc-only update to add more information to GetCertificate action.
+* api-change:``securityhub``: Release new resource detail type CodeRepository
+* api-change:``lightsail``: This release adds support for the Asia Pacific (Jakarta) (ap-southeast-3) Region.
+
+
 2.28.0
 ======
 

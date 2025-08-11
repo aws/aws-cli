@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.42.7
+======
+
+* api-change:``bedrock``: This release includes model updates and enhanced SDK documentation for union fields in automated reasoning policy components. Added docs cover policy definitions, mutations (add/update for rules/types/variables), build assets, workflow sources, test results, and tag exception handling.
+* api-change:``cognito-idp``: Remove SigV4 auth requirement for GetTokensFromRefreshToken
+* api-change:``connect``: Updating SearchUserHierarchyGroups API
+* api-change:``deadline``: Adds support for Wait and Save feature in service-managed fleets
+* api-change:``ec2``: This release adds AvailabilityZoneId support for CreateVolume, DescribeVolume, LaunchTemplates, RunInstances, DescribeInstances, CreateDefaultSubnet, SpotInstances, and CreateDefaultSubnet APIs.
+* api-change:``evs``: Update for general availability of Amazon Elastic VMware Service (EVS).
+* api-change:``lambda``: Doc-only update for Lambda that updates the maximum payload size for response streaming invocations to 200 MB.
+* api-change:``quicksight``: Add RowAxisDisplayOptions and ColumnAxisDisplayOptions to HeatMapConfiguration, add Actions to PluginVisual, increase limit for CalculatedFields list
+* api-change:``sso-admin``: Added support for managing user background session for applications
+
+
 1.42.6
 ======
 

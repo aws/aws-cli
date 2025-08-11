@@ -673,6 +673,23 @@
       ],
       "documentation":"<p>Retrieves details about an application grant.</p>"
     },
+    "GetApplicationSessionConfiguration":{
+      "name":"GetApplicationSessionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetApplicationSessionConfigurationRequest"},
+      "output":{"shape":"GetApplicationSessionConfigurationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves the session configuration for an application in IAM Identity Center.</p> <p>The session configuration determines how users can access an application. This includes whether user background sessions are enabled. User background sessions allow users to start a job on a supported Amazon Web Services managed application without having to remain signed in to an active session while the job runs.</p>"
+    },
     "GetInlinePolicyForPermissionSet":{
       "name":"GetInlinePolicyForPermissionSet",
       "http":{
@@ -802,8 +819,8 @@
       "output":{"shape":"ListApplicationAccessScopesResponse"},
       "errors":[
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
@@ -853,8 +870,8 @@
       "output":{"shape":"ListApplicationAuthenticationMethodsResponse"},
       "errors":[
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
@@ -870,8 +887,8 @@
       "output":{"shape":"ListApplicationGrantsResponse"},
       "errors":[
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
@@ -1132,6 +1149,25 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Creates a configuration for an application to use grants. Conceptually grants are authorization to request actions related to tokens. This configuration will be used when parties are requesting and receiving tokens during the trusted identity propagation process. For more information on the IAM Identity Center supported grant workflows, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/customermanagedapps-saml2-oauth2.html\">SAML 2.0 and OAuth 2.0</a>.</p> <p>A grant is created between your applications and Identity Center instance which enables an application to use specified mechanisms to obtain tokens. These tokens are used by your applications to gain access to Amazon Web Services resources on behalf of users. The following elements are within these exchanges:</p> <ul> <li> <p> <b>Requester</b> - The application requesting access to Amazon Web Services resources.</p> </li> <li> <p> <b>Subject</b> - Typically the user that is requesting access to Amazon Web Services resources.</p> </li> <li> <p> <b>Grant</b> - Conceptually, a grant is authorization to access Amazon Web Services resources. These grants authorize token generation for authenticating access to the requester and for the request to make requests on behalf of the subjects. There are four types of grants:</p> <ul> <li> <p> <b>AuthorizationCode</b> - Allows an application to request authorization through a series of user-agent redirects.</p> </li> <li> <p> <b>JWT bearer </b> - Authorizes an application to exchange a JSON Web Token that came from an external identity provider. To learn more, see <a href=\"https://datatracker.ietf.org/doc/html/rfc6749\">RFC 6479</a>.</p> </li> <li> <p> <b>Refresh token</b> - Enables application to request new access tokens to replace expiring or expired access tokens.</p> </li> <li> <p> <b>Exchange token</b> - A grant that requests tokens from the authorization server by providing a ‘subject’ token with access scope authorizing trusted identity propagation to this application. To learn more, see <a href=\"https://datatracker.ietf.org/doc/html/rfc8693\">RFC 8693</a>.</p> </li> </ul> </li> <li> <p> <b>Authorization server</b> - IAM Identity Center requests tokens.</p> </li> </ul> <p>User credentials are never shared directly within these exchanges. Instead, applications use grants to request access tokens from IAM Identity Center. For more information, see <a href=\"https://datatracker.ietf.org/doc/html/rfc6749\">RFC 6479</a>.</p> <p class=\"title\"> <b>Use cases</b> </p> <ul> <li> <p>Connecting to custom applications.</p> </li> <li> <p>Configuring an Amazon Web Services service to make calls to another Amazon Web Services services using JWT tokens.</p> </li> </ul>",
+      "idempotent":true
+    },
+    "PutApplicationSessionConfiguration":{
+      "name":"PutApplicationSessionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutApplicationSessionConfigurationRequest"},
+      "output":{"shape":"PutApplicationSessionConfigurationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the session configuration for an application in IAM Identity Center.</p> <p>The session configuration determines how users can access an application. This includes whether user background sessions are enabled. User background sessions allow users to start a job on a supported Amazon Web Services managed application without having to remain signed in to an active session while the job runs.</p>",
       "idempotent":true
     },
     "PutInlinePolicyToPermissionSet":{
@@ -1489,8 +1525,7 @@
     },
     "ActorPolicyDocument":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true
     },
     "Application":{
@@ -1505,7 +1540,7 @@
           "documentation":"<p>The ARN of the application provider for this application.</p>"
         },
         "Name":{
-          "shape":"NameType",
+          "shape":"ApplicationNameType",
           "documentation":"<p>The name of the application.</p>"
         },
         "ApplicationAccount":{
@@ -1683,8 +1718,7 @@
     },
     "AttachCustomerManagedPolicyReferenceToPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AttachManagedPolicyToPermissionSetRequest":{
       "type":"structure",
@@ -1710,8 +1744,7 @@
     },
     "AttachManagedPolicyToPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AttachedManagedPolicy":{
       "type":"structure",
@@ -1885,8 +1918,7 @@
     },
     "CreateApplicationAssignmentResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CreateApplicationRequest":{
       "type":"structure",
@@ -1959,8 +1991,7 @@
     },
     "CreateInstanceAccessControlAttributeConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CreateInstanceRequest":{
       "type":"structure",
@@ -2183,8 +2214,7 @@
     },
     "DeleteApplicationAssignmentResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteApplicationAuthenticationMethodRequest":{
       "type":"structure",
@@ -2232,8 +2262,7 @@
     },
     "DeleteApplicationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteInlinePolicyFromPermissionSetRequest":{
       "type":"structure",
@@ -2254,8 +2283,7 @@
     },
     "DeleteInlinePolicyFromPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteInstanceAccessControlAttributeConfigurationRequest":{
       "type":"structure",
@@ -2269,8 +2297,7 @@
     },
     "DeleteInstanceAccessControlAttributeConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteInstanceRequest":{
       "type":"structure",
@@ -2284,8 +2311,7 @@
     },
     "DeleteInstanceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletePermissionSetRequest":{
       "type":"structure",
@@ -2306,8 +2332,7 @@
     },
     "DeletePermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletePermissionsBoundaryFromPermissionSetRequest":{
       "type":"structure",
@@ -2328,8 +2353,7 @@
     },
     "DeletePermissionsBoundaryFromPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteTrustedTokenIssuerRequest":{
       "type":"structure",
@@ -2343,8 +2367,7 @@
     },
     "DeleteTrustedTokenIssuerResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeAccountAssignmentCreationStatusRequest":{
       "type":"structure",
@@ -2491,7 +2514,7 @@
           "documentation":"<p>The ARN of the application provider under which the operation will run.</p>"
         },
         "Name":{
-          "shape":"NameType",
+          "shape":"ApplicationNameType",
           "documentation":"<p>The application name.</p>"
         },
         "ApplicationAccount":{
@@ -2698,8 +2721,7 @@
     },
     "DetachCustomerManagedPolicyReferenceFromPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DetachManagedPolicyFromPermissionSetRequest":{
       "type":"structure",
@@ -2725,8 +2747,7 @@
     },
     "DetachManagedPolicyFromPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisplayData":{
       "type":"structure",
@@ -2860,6 +2881,25 @@
         "Grant":{
           "shape":"Grant",
           "documentation":"<p>A structure that describes the requested grant.</p>"
+        }
+      }
+    },
+    "GetApplicationSessionConfigurationRequest":{
+      "type":"structure",
+      "required":["ApplicationArn"],
+      "members":{
+        "ApplicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the application for which to retrieve the session configuration.</p>"
+        }
+      }
+    },
+    "GetApplicationSessionConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "UserBackgroundSessionApplicationStatus":{
+          "shape":"UserBackgroundSessionApplicationStatus",
+          "documentation":"<p>The status of user background sessions for the application. </p>"
         }
       }
     },
@@ -4163,8 +4203,7 @@
     },
     "PutApplicationAssignmentConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "PutApplicationAuthenticationMethodRequest":{
       "type":"structure",
@@ -4210,6 +4249,24 @@
         }
       }
     },
+    "PutApplicationSessionConfigurationRequest":{
+      "type":"structure",
+      "required":["ApplicationArn"],
+      "members":{
+        "ApplicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the application for which to update the session configuration.</p>"
+        },
+        "UserBackgroundSessionApplicationStatus":{
+          "shape":"UserBackgroundSessionApplicationStatus",
+          "documentation":"<p>The status of user background sessions for the application.</p>"
+        }
+      }
+    },
+    "PutApplicationSessionConfigurationResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "PutInlinePolicyToPermissionSetRequest":{
       "type":"structure",
       "required":[
@@ -4234,8 +4291,7 @@
     },
     "PutInlinePolicyToPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "PutPermissionsBoundaryToPermissionSetRequest":{
       "type":"structure",
@@ -4261,8 +4317,7 @@
     },
     "PutPermissionsBoundaryToPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Reason":{
       "type":"string",
@@ -4276,8 +4331,7 @@
     },
     "RefreshTokenGrant":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A structure that defines configuration settings for an application that supports the OAuth 2.0 Refresh Token Grant. For more, see <a href=\"https://datatracker.ietf.org/doc/html/rfc6749#section-1.5\">RFC 6749</a>.</p>"
     },
     "RelayState":{
@@ -4465,8 +4519,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -4507,8 +4560,7 @@
     },
     "TokenExchangeGrant":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A structure that defines configuration settings for an application that supports the OAuth 2.0 Token Exchange Grant. For more information, see <a href=\"https://datatracker.ietf.org/doc/html/rfc8693\">RFC 8693</a>.</p>"
     },
     "TokenIssuerAudience":{
@@ -4618,8 +4670,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateApplicationPortalOptions":{
       "type":"structure",
@@ -4656,8 +4707,7 @@
     },
     "UpdateApplicationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateInstanceAccessControlAttributeConfigurationRequest":{
       "type":"structure",
@@ -4678,8 +4728,7 @@
     },
     "UpdateInstanceAccessControlAttributeConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateInstanceRequest":{
       "type":"structure",
@@ -4700,8 +4749,7 @@
     },
     "UpdateInstanceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdatePermissionSetRequest":{
       "type":"structure",
@@ -4734,8 +4782,7 @@
     },
     "UpdatePermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateTrustedTokenIssuerRequest":{
       "type":"structure",
@@ -4757,8 +4804,14 @@
     },
     "UpdateTrustedTokenIssuerResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
+    },
+    "UserBackgroundSessionApplicationStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "ValidationException":{
       "type":"structure",

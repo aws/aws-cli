@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.42.8
+======
+
+* api-change:``backupsearch``: Using recommended smithy trait to generate regional endpoints for Backup Search
+* api-change:``codebuild``: AWS CodeBuild now supports PullRequestBuildPolicy in webhook object.
+* api-change:``ec2``: Release to allow route table association with a PublicIpv4Pool.
+* api-change:``organizations``: This release introduces 2 new APIs in Organizations: 1. ListAccountsWithInvalidEffectivePolicy 2. ListEffectivePolicyValidationErrors
+* api-change:``sagemaker``: IAM Identity Center trusted identity propagation is now supported in SageMaker Studio.
+* api-change:``transcribe``: AWS HealthScribe now supports specifying preferred patient pronouns through the MedicalScribeContext parameter for use in the generated clinical notes.
+
+
 1.42.7
 ======
 

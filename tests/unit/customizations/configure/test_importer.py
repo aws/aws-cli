@@ -99,7 +99,7 @@ class TestConfigureImportCommand(unittest.TestCase):
         try:
             with self.assertRaises(ValueError) as cm:
                 self.import_command(args=['--csv', 'temp_creds.csv'], parsed_globals=None)
-            self.assertIn("file://", str(cm.exception))
+            self.assertIn("without the 'file://' prefix", str(cm.exception))
         finally:
             os.remove('temp_creds.csv')
 

@@ -108,7 +108,7 @@
         {"shape":"AccessPointAlreadyOwnedByYou"},
         {"shape":"TooManyAccessPoints"}
       ],
-      "documentation":"<p>Creates an S3 access point and attaches it to an Amazon FSx volume. For FSx for OpenZFS file systems, the volume must be hosted on a high-availability file system, either Single-AZ or Multi-AZ. For more information, see <a href=\"fsx/latest/OpenZFSGuide/s3accesspoints-for-FSx.html\">Accessing your data using access points</a> in the Amazon FSx for OpenZFS User Guide. </p> <p>The requester requires the following permissions to perform these actions:</p> <ul> <li> <p> <code>fsx:CreateAndAttachS3AccessPoint</code> </p> </li> <li> <p> <code>s3:CreateAccessPoint</code> </p> </li> <li> <p> <code>s3:GetAccessPoint</code> </p> </li> <li> <p> <code>s3:PutAccessPointPolicy</code> </p> </li> <li> <p> <code>s3:DeleteAccessPoint</code> </p> </li> </ul> <p>The following actions are related to <code>CreateAndAttachS3AccessPoint</code>:</p> <ul> <li> <p> <a>DescribeS3AccessPointAttachments</a> </p> </li> <li> <p> <a>DetachAndDeleteS3AccessPoint</a> </p> </li> </ul>"
+      "documentation":"<p>Creates an S3 access point and attaches it to an Amazon FSx volume. For FSx for OpenZFS file systems, the volume must be hosted on a high-availability file system, either Single-AZ or Multi-AZ. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/s3accesspoints-for-FSx.html\">Accessing your data using Amazon S3 access points</a>. in the Amazon FSx for OpenZFS User Guide. </p> <p>The requester requires the following permissions to perform these actions:</p> <ul> <li> <p> <code>fsx:CreateAndAttachS3AccessPoint</code> </p> </li> <li> <p> <code>s3:CreateAccessPoint</code> </p> </li> <li> <p> <code>s3:GetAccessPoint</code> </p> </li> <li> <p> <code>s3:PutAccessPointPolicy</code> </p> </li> <li> <p> <code>s3:DeleteAccessPoint</code> </p> </li> </ul> <p>The following actions are related to <code>CreateAndAttachS3AccessPoint</code>:</p> <ul> <li> <p> <a>DescribeS3AccessPointAttachments</a> </p> </li> <li> <p> <a>DetachAndDeleteS3AccessPoint</a> </p> </li> </ul>"
     },
     "CreateBackup":{
       "name":"CreateBackup",
@@ -380,7 +380,7 @@
         {"shape":"ServiceLimitExceeded"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Deletes a file system. After deletion, the file system no longer exists, and its data is gone. Any existing automatic backups and snapshots are also deleted.</p> <p>To delete an Amazon FSx for NetApp ONTAP file system, first delete all the volumes and storage virtual machines (SVMs) on the file system. Then provide a <code>FileSystemId</code> value to the <code>DeleteFileSystem</code> operation.</p> <p>Before deleting an Amazon FSx for OpenZFS file system, make sure that there aren't any Amazon S3 access points attached to any volume. For more information on how to list S3 access points that are attached to volumes, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/access-points-list\">Listing S3 access point attachments</a>. For more information on how to delete S3 access points, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/delete-points-list\">Deleting an S3 access point attachment</a>.</p> <p>By default, when you delete an Amazon FSx for Windows File Server file system, a final backup is created upon deletion. This final backup isn't subject to the file system's retention policy, and must be manually deleted.</p> <p>To delete an Amazon FSx for Lustre file system, first <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/unmounting-fs.html\">unmount</a> it from every connected Amazon EC2 instance, then provide a <code>FileSystemId</code> value to the <code>DeleteFileSystem</code> operation. By default, Amazon FSx will not take a final backup when the <code>DeleteFileSystem</code> operation is invoked. On file systems not linked to an Amazon S3 bucket, set <code>SkipFinalBackup</code> to <code>false</code> to take a final backup of the file system you are deleting. Backups cannot be enabled on S3-linked file systems. To ensure all of your data is written back to S3 before deleting your file system, you can either monitor for the <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/monitoring-cloudwatch.html#auto-import-export-metrics\">AgeOfOldestQueuedMessage</a> metric to be zero (if using automatic export) or you can run an <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/export-data-repo-task-dra.html\">export data repository task</a>. If you have automatic export enabled and want to use an export data repository task, you have to disable automatic export before executing the export data repository task.</p> <p>The <code>DeleteFileSystem</code> operation returns while the file system has the <code>DELETING</code> status. You can check the file system deletion status by calling the <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_DescribeFileSystems.html\">DescribeFileSystems</a> operation, which returns a list of file systems in your account. If you pass the file system ID for a deleted file system, the <code>DescribeFileSystems</code> operation returns a <code>FileSystemNotFound</code> error.</p> <note> <p>If a data repository task is in a <code>PENDING</code> or <code>EXECUTING</code> state, deleting an Amazon FSx for Lustre file system will fail with an HTTP status code 400 (Bad Request).</p> </note> <important> <p>The data in a deleted file system is also deleted and can't be recovered by any means.</p> </important>",
+      "documentation":"<p>Deletes a file system. After deletion, the file system no longer exists, and its data is gone. Any existing automatic backups and snapshots are also deleted.</p> <p>To delete an Amazon FSx for NetApp ONTAP file system, first delete all the volumes and storage virtual machines (SVMs) on the file system. Then provide a <code>FileSystemId</code> value to the <code>DeleteFileSystem</code> operation.</p> <p>Before deleting an Amazon FSx for OpenZFS file system, make sure that there aren't any Amazon S3 access points attached to any volume. For more information on how to list S3 access points that are attached to volumes, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/access-points-list.html\">Listing S3 access point attachments</a>. For more information on how to delete S3 access points, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/delete-access-point.html\">Deleting an S3 access point attachment</a>.</p> <p>By default, when you delete an Amazon FSx for Windows File Server file system, a final backup is created upon deletion. This final backup isn't subject to the file system's retention policy, and must be manually deleted.</p> <p>To delete an Amazon FSx for Lustre file system, first <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/unmounting-fs.html\">unmount</a> it from every connected Amazon EC2 instance, then provide a <code>FileSystemId</code> value to the <code>DeleteFileSystem</code> operation. By default, Amazon FSx will not take a final backup when the <code>DeleteFileSystem</code> operation is invoked. On file systems not linked to an Amazon S3 bucket, set <code>SkipFinalBackup</code> to <code>false</code> to take a final backup of the file system you are deleting. Backups cannot be enabled on S3-linked file systems. To ensure all of your data is written back to S3 before deleting your file system, you can either monitor for the <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/monitoring-cloudwatch.html#auto-import-export-metrics\">AgeOfOldestQueuedMessage</a> metric to be zero (if using automatic export) or you can run an <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/export-data-repo-task-dra.html\">export data repository task</a>. If you have automatic export enabled and want to use an export data repository task, you have to disable automatic export before executing the export data repository task.</p> <p>The <code>DeleteFileSystem</code> operation returns while the file system has the <code>DELETING</code> status. You can check the file system deletion status by calling the <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_DescribeFileSystems.html\">DescribeFileSystems</a> operation, which returns a list of file systems in your account. If you pass the file system ID for a deleted file system, the <code>DescribeFileSystems</code> operation returns a <code>FileSystemNotFound</code> error.</p> <note> <p>If a data repository task is in a <code>PENDING</code> or <code>EXECUTING</code> state, deleting an Amazon FSx for Lustre file system will fail with an HTTP status code 400 (Bad Request).</p> </note> <important> <p>The data in a deleted file system is also deleted and can't be recovered by any means.</p> </important>",
       "idempotent":true
     },
     "DeleteSnapshot":{
@@ -794,7 +794,7 @@
         {"shape":"MissingFileSystemConfiguration"},
         {"shape":"ServiceLimitExceeded"}
       ],
-      "documentation":"<p>Use this operation to update the configuration of an existing Amazon FSx file system. You can update multiple properties in a single request.</p> <p>For FSx for Windows File Server file systems, you can update the following properties:</p> <ul> <li> <p> <code>AuditLogConfiguration</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>SelfManagedActiveDirectoryConfiguration</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>StorageType</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for Lustre file systems, you can update the following properties:</p> <ul> <li> <p> <code>AutoImportPolicy</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DataCompressionType</code> </p> </li> <li> <p> <code>FileSystemTypeVersion</code> </p> </li> <li> <p> <code>LogConfiguration</code> </p> </li> <li> <p> <code>LustreReadCacheConfiguration</code> </p> </li> <li> <p> <code>LustreRootSquashConfiguration</code> </p> </li> <li> <p> <code>MetadataConfiguration</code> </p> </li> <li> <p> <code>PerUnitStorageThroughput</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for ONTAP file systems, you can update the following properties:</p> <ul> <li> <p> <code>AddRouteTableIds</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>FsxAdminPassword</code> </p> </li> <li> <p> <code>HAPairs</code> </p> </li> <li> <p> <code>RemoveRouteTableIds</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacityPerHAPair</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for OpenZFS file systems, you can update the following properties:</p> <ul> <li> <p> <code>AddRouteTableIds</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>CopyTagsToBackups</code> </p> </li> <li> <p> <code>CopyTagsToVolumes</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>ReadCacheConfiguration</code> </p> </li> <li> <p> <code>RemoveRouteTableIds</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul>"
+      "documentation":"<p>Use this operation to update the configuration of an existing Amazon FSx file system. You can update multiple properties in a single request.</p> <p>For FSx for Windows File Server file systems, you can update the following properties:</p> <ul> <li> <p> <code>AuditLogConfiguration</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>SelfManagedActiveDirectoryConfiguration</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>StorageType</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for Lustre file systems, you can update the following properties:</p> <ul> <li> <p> <code>AutoImportPolicy</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DataCompressionType</code> </p> </li> <li> <p> <code>FileSystemTypeVersion</code> </p> </li> <li> <p> <code>LogConfiguration</code> </p> </li> <li> <p> <code>LustreReadCacheConfiguration</code> </p> </li> <li> <p> <code>LustreRootSquashConfiguration</code> </p> </li> <li> <p> <code>MetadataConfiguration</code> </p> </li> <li> <p> <code>PerUnitStorageThroughput</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for ONTAP file systems, you can update the following properties:</p> <ul> <li> <p> <code>AddRouteTableIds</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>FsxAdminPassword</code> </p> </li> <li> <p> <code>HAPairs</code> </p> </li> <li> <p> <code>RemoveRouteTableIds</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacityPerHAPair</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for OpenZFS file systems, you can update the following properties:</p> <ul> <li> <p> <code>AddRouteTableIds</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>CopyTagsToBackups</code> </p> </li> <li> <p> <code>CopyTagsToVolumes</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>EndpointIpv6AddressRange</code> </p> </li> <li> <p> <code>ReadCacheConfiguration</code> </p> </li> <li> <p> <code>RemoveRouteTableIds</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul>"
     },
     "UpdateSharedVpcConfiguration":{
       "name":"UpdateSharedVpcConfiguration",
@@ -1831,6 +1831,10 @@
         "StorageCapacity":{
           "shape":"StorageCapacity",
           "documentation":"<p>Sets the storage capacity of the OpenZFS file system that you're creating from a backup, in gibibytes (GiB). Valid values are from 64 GiB up to 524,288 GiB (512 TiB). However, the value that you specify must be equal to or greater than the backup's storage capacity value. If you don't use the <code>StorageCapacity</code> parameter, the default is the backup's <code>StorageCapacity</code> value.</p> <p>If used to create a file system other than OpenZFS, you must provide a value that matches the backup's <code>StorageCapacity</code> value. If you provide any other value, Amazon FSx responds with an HTTP status code 400 Bad Request. </p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Sets the network type for the Amazon FSx for OpenZFS file system that you're creating from a backup.</p>"
         }
       },
       "documentation":"<p>The request object for the <code>CreateFileSystemFromBackup</code> operation.</p>"
@@ -2020,6 +2024,10 @@
           "shape":"IpAddressRange",
           "documentation":"<p>(Multi-AZ only) Specifies the IP address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /28 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables, as long as they don't overlap with any subnet.</p>"
         },
+        "EndpointIpv6AddressRange":{
+          "shape":"Ipv6AddressRange",
+          "documentation":"<p>(Multi-AZ only) Specifies the IP address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /118 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables, as long as they don't overlap with any subnet.</p>"
+        },
         "RouteTableIds":{
           "shape":"RouteTableIds",
           "documentation":"<p>(Multi-AZ only) Specifies the route tables in which Amazon FSx creates the rules for routing traffic to the correct file server. You should specify all virtual private cloud (VPC) route tables associated with the subnets in which your clients are located. By default, Amazon FSx selects your VPC's default route table.</p>"
@@ -2081,6 +2089,10 @@
         "OpenZFSConfiguration":{
           "shape":"CreateFileSystemOpenZFSConfiguration",
           "documentation":"<p>The OpenZFS configuration for the file system that's being created.</p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The network type of the Amazon FSx file system that you are creating. Valid values are <code>IPV4</code> (which supports IPv4 only) and <code>DUAL</code> (for dual-stack mode, which supports both IPv4 and IPv6). The default is <code>IPV4</code>. Supported only for Amazon FSx for OpenZFS file systems.</p>"
         }
       },
       "documentation":"<p>The request object used to create a new Amazon FSx file system.</p>"
@@ -3923,6 +3935,10 @@
         "OpenZFSConfiguration":{
           "shape":"OpenZFSFileSystemConfiguration",
           "documentation":"<p>The configuration for this Amazon FSx for OpenZFS file system.</p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The network type of the file system.</p>"
         }
       },
       "documentation":"<p>A description of a specific Amazon FSx file system.</p>"
@@ -4297,15 +4313,21 @@
     },
     "IpAddress":{
       "type":"string",
-      "max":15,
-      "min":7,
-      "pattern":"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+      "max":45,
+      "min":1,
+      "pattern":"(^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$|^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$)"
     },
     "IpAddressRange":{
       "type":"string",
       "max":17,
       "min":9,
       "pattern":"^[^\\u0000\\u0085\\u2028\\u2029\\r\\n]{9,17}$"
+    },
+    "Ipv6AddressRange":{
+      "type":"string",
+      "max":43,
+      "min":4,
+      "pattern":"^[^\\u0000\\u0085\\u2028\\u2029\\r\\n]{4,43}$"
     },
     "JunctionPath":{
       "type":"string",
@@ -4636,6 +4658,13 @@
       "documentation":"<p>A list of network interface IDs.</p>",
       "max":50
     },
+    "NetworkType":{
+      "type":"string",
+      "enum":[
+        "IPV4",
+        "DUAL"
+      ]
+    },
     "NextToken":{
       "type":"string",
       "documentation":"<p>(Optional) Opaque pagination token returned from a previous operation (String). If present, this token indicates from what point you can continue processing the request, where the previous <code>NextToken</code> value left off.</p>",
@@ -4916,6 +4945,10 @@
           "shape":"IpAddressRange",
           "documentation":"<p>(Multi-AZ only) Specifies the IP address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /28 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables.</p>"
         },
+        "EndpointIpv6AddressRange":{
+          "shape":"Ipv6AddressRange",
+          "documentation":"<p>(Multi-AZ only) Specifies the IP address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /118 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables, as long as they don't overlap with any subnet.</p>"
+        },
         "RouteTableIds":{
           "shape":"RouteTableIds",
           "documentation":"<p>(Multi-AZ only) The VPC route tables in which your file system's endpoints are created.</p>"
@@ -4923,6 +4956,10 @@
         "EndpointIpAddress":{
           "shape":"IpAddress",
           "documentation":"<p>The IP address of the endpoint that is used to access data or to manage the file system.</p>"
+        },
+        "EndpointIpv6Address":{
+          "shape":"IpAddress",
+          "documentation":"<p>The IPv6 address of the endpoint that is used to access data or to manage the file system.</p>"
         },
         "ReadCacheConfiguration":{
           "shape":"OpenZFSReadCacheConfiguration",
@@ -6475,6 +6512,10 @@
         "ReadCacheConfiguration":{
           "shape":"OpenZFSReadCacheConfiguration",
           "documentation":"<p> The configuration for the optional provisioned SSD read cache on file systems that use the Intelligent-Tiering storage class.</p>"
+        },
+        "EndpointIpv6AddressRange":{
+          "shape":"Ipv6AddressRange",
+          "documentation":"<p>(Multi-AZ only) Specifies the IP address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /118 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables, as long as they don't overlap with any subnet.</p>"
         }
       },
       "documentation":"<p>The configuration updates for an Amazon FSx for OpenZFS file system.</p>"
@@ -6510,6 +6551,10 @@
         "FileSystemTypeVersion":{
           "shape":"FileSystemTypeVersion",
           "documentation":"<p>The Lustre version you are updating an FSx for Lustre file system to. Valid values are <code>2.12</code> and <code>2.15</code>. The value you choose must be newer than the file system's current Lustre version.</p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Changes the network type of an FSx for OpenZFS file system.</p>"
         }
       },
       "documentation":"<p>The request object for the <code>UpdateFileSystem</code> operation.</p>"

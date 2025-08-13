@@ -158,6 +158,27 @@
       "documentation":"<p>Cancels the subscription to the specified asset.</p>",
       "idempotent":true
     },
+    "CreateAccountPool":{
+      "name":"CreateAccountPool",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/account-pools",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateAccountPoolInput"},
+      "output":{"shape":"CreateAccountPoolOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Creates an account pool. </p>"
+    },
     "CreateAsset":{
       "name":"CreateAsset",
       "http":{
@@ -701,6 +722,26 @@
       "documentation":"<p>Creates a user profile in Amazon DataZone.</p>",
       "idempotent":true
     },
+    "DeleteAccountPool":{
+      "name":"DeleteAccountPool",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/account-pools/{identifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAccountPoolInput"},
+      "output":{"shape":"DeleteAccountPoolOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes an account pool.</p>",
+      "idempotent":true
+    },
     "DeleteAsset":{
       "name":"DeleteAsset",
       "http":{
@@ -1206,6 +1247,25 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Disassociates the environment role in Amazon DataZone.</p>"
+    },
+    "GetAccountPool":{
+      "name":"GetAccountPool",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/account-pools/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAccountPoolInput"},
+      "output":{"shape":"GetAccountPoolOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets the details of the account pool.</p>"
     },
     "GetAsset":{
       "name":"GetAsset",
@@ -1858,6 +1918,43 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Gets a user profile in Amazon DataZone.</p>"
+    },
+    "ListAccountPools":{
+      "name":"ListAccountPools",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/account-pools",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAccountPoolsInput"},
+      "output":{"shape":"ListAccountPoolsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists existing account pools.</p>"
+    },
+    "ListAccountsInAccountPool":{
+      "name":"ListAccountsInAccountPool",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/account-pools/{identifier}/accounts",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAccountsInAccountPoolInput"},
+      "output":{"shape":"ListAccountsInAccountPoolOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists the accounts in the specified account pool.</p>"
     },
     "ListAssetFilters":{
       "name":"ListAssetFilters",
@@ -2787,6 +2884,28 @@
       "documentation":"<p>Untags a resource in Amazon DataZone.</p>",
       "idempotent":true
     },
+    "UpdateAccountPool":{
+      "name":"UpdateAccountPool",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/account-pools/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAccountPoolInput"},
+      "output":{"shape":"UpdateAccountPoolOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Updates the account pool.</p>",
+      "idempotent":true
+    },
     "UpdateAssetFilter":{
       "name":"UpdateAssetFilter",
       "http":{
@@ -3420,6 +3539,104 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "AccountInfo":{
+      "type":"structure",
+      "required":[
+        "awsAccountId",
+        "supportedRegions"
+      ],
+      "members":{
+        "awsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The account ID.</p>"
+        },
+        "awsAccountName":{
+          "shape":"AwsAccountName",
+          "documentation":"<p>The account name.</p>"
+        },
+        "supportedRegions":{
+          "shape":"AwsRegionList",
+          "documentation":"<p>The regions supported for an account within an account pool. </p>"
+        }
+      },
+      "documentation":"<p>The account information within an account pool.</p>"
+    },
+    "AccountInfoList":{
+      "type":"list",
+      "member":{"shape":"AccountInfo"},
+      "max":25,
+      "min":1
+    },
+    "AccountPoolId":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "AccountPoolList":{
+      "type":"list",
+      "member":{"shape":"AccountPoolId"},
+      "max":10,
+      "min":1
+    },
+    "AccountPoolName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[\\w -]+$",
+      "sensitive":true
+    },
+    "AccountPoolSummaries":{
+      "type":"list",
+      "member":{"shape":"AccountPoolSummary"}
+    },
+    "AccountPoolSummary":{
+      "type":"structure",
+      "members":{
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the account pool.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit.</p>"
+        },
+        "id":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool.</p>"
+        },
+        "name":{
+          "shape":"AccountPoolName",
+          "documentation":"<p>The name of the account pool.</p>"
+        },
+        "resolutionStrategy":{
+          "shape":"ResolutionStrategy",
+          "documentation":"<p>The mechanism used to resolve the account selection from the account pool.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user who updated the account pool.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the account pool.</p>"
+    },
+    "AccountSource":{
+      "type":"structure",
+      "members":{
+        "accounts":{
+          "shape":"AccountInfoList",
+          "documentation":"<p>The static list of accounts within an account pool.</p>"
+        },
+        "customAccountPoolHandler":{
+          "shape":"CustomAccountPoolHandler",
+          "documentation":"<p>The custom Amazon Web Services Lambda handler within an account pool.</p>"
+        }
+      },
+      "documentation":"<p>The source of accounts for the account pool. In the current release, it's either a static list of accounts provided by the customer or a custom Amazon Web Services Lambda handler. </p>",
+      "union":true
     },
     "ActionLink":{
       "type":"string",
@@ -4355,6 +4572,12 @@
       "type":"string",
       "pattern":"^\\d{12}$"
     },
+    "AwsAccountName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "sensitive":true
+    },
     "AwsConsoleLinkParameters":{
       "type":"structure",
       "members":{
@@ -4394,6 +4617,12 @@
     "AwsRegion":{
       "type":"string",
       "pattern":"^[a-z]{2}-[a-z]{4,10}-\\d$"
+    },
+    "AwsRegionList":{
+      "type":"list",
+      "member":{"shape":"AwsRegion"},
+      "max":3,
+      "min":1
     },
     "BasicAuthenticationCredentials":{
       "type":"structure",
@@ -4897,6 +5126,92 @@
         "VERTICA",
         "WORKFLOWS_MWAA"
       ]
+    },
+    "CreateAccountPoolInput":{
+      "type":"structure",
+      "required":[
+        "accountSource",
+        "domainIdentifier",
+        "name",
+        "resolutionStrategy"
+      ],
+      "members":{
+        "accountSource":{
+          "shape":"AccountSource",
+          "documentation":"<p>The source of accounts for the account pool. In the current release, it's either a static list of accounts provided by the customer or a custom Amazon Web Services Lambda handler. </p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the account pool.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the account pool is created.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "name":{
+          "shape":"AccountPoolName",
+          "documentation":"<p>The name of the account pool.</p>"
+        },
+        "resolutionStrategy":{
+          "shape":"ResolutionStrategy",
+          "documentation":"<p>The mechanism used to resolve the account selection from the account pool.</p>"
+        }
+      }
+    },
+    "CreateAccountPoolOutput":{
+      "type":"structure",
+      "required":[
+        "accountSource",
+        "createdBy"
+      ],
+      "members":{
+        "accountSource":{
+          "shape":"AccountSource",
+          "documentation":"<p>The source of accounts for the account pool. In the current release, it's either a static list of accounts provided by the customer or a custom Amazon Web Services Lambda handler. </p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which the account pool was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the account pool.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the account pool.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the account pool is created.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain where the account pool is created.</p>"
+        },
+        "id":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which the account pool was last updated.</p>"
+        },
+        "name":{
+          "shape":"AccountPoolName",
+          "documentation":"<p>The name of the account pool.</p>"
+        },
+        "resolutionStrategy":{
+          "shape":"ResolutionStrategy",
+          "documentation":"<p>The mechanism used to resolve the account selection from the account pool.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user who last updated the account pool.</p>"
+        }
+      }
     },
     "CreateAssetFilterInput":{
       "type":"structure",
@@ -7589,6 +7904,21 @@
       "min":1,
       "pattern":"cron\\((\\b[0-5]?[0-9]\\b) (\\b2[0-3]\\b|\\b[0-1]?[0-9]\\b) ([-?*,/\\dLW]){1,83} ([-*,/\\d]|[a-zA-Z]{3}){1,23} ([-?#*,/\\dL]|[a-zA-Z]{3}){1,13} ([^\\)]+)\\)"
     },
+    "CustomAccountPoolHandler":{
+      "type":"structure",
+      "required":["lambdaFunctionArn"],
+      "members":{
+        "lambdaExecutionRoleArn":{
+          "shape":"LambdaExecutionRoleArn",
+          "documentation":"<p>The ARN of the IAM role that enables Amazon SageMaker Unified Studio to invoke the Amazon Web Services Lambda funtion if the account source is the custom account pool handler.</p>"
+        },
+        "lambdaFunctionArn":{
+          "shape":"LambdaFunctionArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Lambda function for the custom Amazon Web Services Lambda handler.</p>"
+        }
+      },
+      "documentation":"<p>The custom Amazon Web Services Lambda handler within an account pool.</p>"
+    },
     "CustomParameter":{
       "type":"structure",
       "required":[
@@ -8236,6 +8566,32 @@
       "max":4096,
       "min":1,
       "sensitive":true
+    },
+    "DeleteAccountPoolInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the account pool is deleted.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool to be deleted.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "DeleteAccountPoolOutput":{
+      "type":"structure",
+      "members":{
+      }
     },
     "DeleteAssetFilterInput":{
       "type":"structure",
@@ -9649,12 +10005,14 @@
     "EnvironmentConfiguration":{
       "type":"structure",
       "required":[
-        "awsAccount",
-        "awsRegion",
         "environmentBlueprintId",
         "name"
       ],
       "members":{
+        "accountPools":{
+          "shape":"AccountPoolList",
+          "documentation":"<p>The account pools used by a custom project profile.</p>"
+        },
         "awsAccount":{
           "shape":"AwsAccount",
           "documentation":"<p>The Amazon Web Services account of the environment.</p>"
@@ -9764,6 +10122,10 @@
         "environmentParameters":{
           "shape":"EnvironmentParametersList",
           "documentation":"<p>The environment parameters.</p>"
+        },
+        "environmentResolvedAccount":{
+          "shape":"EnvironmentResolvedAccount",
+          "documentation":"<p>Specifies the account/Region that is to be used during project creation for a particular blueprint.</p>"
         }
       },
       "documentation":"<p>The environment configuration user parameters.</p>"
@@ -9914,6 +10276,28 @@
         }
       },
       "documentation":"<p>The details of an environment profile.</p>"
+    },
+    "EnvironmentResolvedAccount":{
+      "type":"structure",
+      "required":[
+        "awsAccountId",
+        "regionName"
+      ],
+      "members":{
+        "awsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the resolved account.</p>"
+        },
+        "regionName":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The name of the resolved Region.</p>"
+        },
+        "sourceAccountPoolId":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the account/Region that is to be used during project creation for a particular blueprint.</p>"
     },
     "EnvironmentStatus":{
       "type":"string",
@@ -10381,6 +10765,80 @@
       "value":{"shape":"FormEntryOutput"},
       "max":10,
       "min":0
+    },
+    "GetAccountPoolInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain in which the account pool lives whose details are to be displayed.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool whose details are to be displayed.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetAccountPoolOutput":{
+      "type":"structure",
+      "required":[
+        "accountSource",
+        "createdBy"
+      ],
+      "members":{
+        "accountSource":{
+          "shape":"AccountSource",
+          "documentation":"<p>The source of accounts for the account pool. In the current release, it's either a static list of accounts provided by the customer or a custom Amazon Web Services Lambda handler. </p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which the account pool was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the account pool.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the account pool.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain in which the account pool lives whose details are to be displayed.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The domain unit ID of the account pool.</p>"
+        },
+        "id":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which the account pool was last updated.</p>"
+        },
+        "name":{
+          "shape":"AccountPoolName",
+          "documentation":"<p>The name of the account pool.</p>"
+        },
+        "resolutionStrategy":{
+          "shape":"ResolutionStrategy",
+          "documentation":"<p>The mechanism used to resolve the account selection from the account pool.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user who last updated the account pool.</p>"
+        }
+      }
     },
     "GetAssetFilterInput":{
       "type":"structure",
@@ -14125,6 +14583,14 @@
       },
       "documentation":"<p>The Lake Formation configuration of the Data Lake blueprint.</p>"
     },
+    "LambdaExecutionRoleArn":{
+      "type":"string",
+      "pattern":"^arn:aws[^:]*:iam::\\d{12}:(role|role/service-role)/[\\w+=,.@-]*$"
+    },
+    "LambdaFunctionArn":{
+      "type":"string",
+      "pattern":"^arn:(?:aws|aws-cn|aws-us-gov):lambda:(?:[a-z]{2}(?:-gov)?-[a-z]+-\\d{1,}):(\\d{12}):function:[a-zA-Z0-9-_]+(?::[a-zA-Z0-9-_]+)?(?:\\$[\\w-]+)?$"
+    },
     "LastName":{
       "type":"string",
       "sensitive":true
@@ -14456,6 +14922,107 @@
     "LineageSyncScheduleScheduleString":{
       "type":"string",
       "pattern":"^cron\\((\\b[0-5]?[0-9]\\b) (\\b2[0-3]\\b|\\b[0-1]?[0-9]\\b) ([-?*,/\\dLW]){1,83} ([-*,/\\d]|[a-zA-Z]{3}){1,23} ([-?#*,/\\dL]|[a-zA-Z]{3}){1,13} ([^\\)]+)\\)$"
+    },
+    "ListAccountPoolsInput":{
+      "type":"structure",
+      "required":["domainIdentifier"],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where exsting account pools are to be listed.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of account pools to return in a single call to ListAccountPools. When the number of account pools to be listed is greater than the value of MaxResults, the response contains a NextToken value that you can use in a subsequent call to ListAccountPools to list the next set of account pools.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "name":{
+          "shape":"AccountPoolName",
+          "documentation":"<p>The name of the account pool to be listed.</p>",
+          "location":"querystring",
+          "locationName":"name"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of account pools is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of account pools, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListAccountPools to list the next set of account pools.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortBy":{
+          "shape":"SortFieldAccountPool",
+          "documentation":"<p>The sort by mechanism in which the existing account pools are to be listed.</p>",
+          "location":"querystring",
+          "locationName":"sortBy"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order in which the existing account pools are to be listed.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        }
+      }
+    },
+    "ListAccountPoolsOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"AccountPoolSummaries",
+          "documentation":"<p>The results of the ListAccountPools operation.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of account pools is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of account pools, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListAccountPools to list the next set of account pools.</p>"
+        }
+      }
+    },
+    "ListAccountsInAccountPoolInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain in which the accounts in the specified account pool are to be listed.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool whose accounts are to be listed.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of accounts to return in a single call to ListAccountsInAccountPool. When the number of accounts to be listed is greater than the value of MaxResults, the response contains a NextToken value that you can use in a subsequent call to ListAccountsInAccountPool to list the next set of accounts.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of accounts is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of accounts, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListAccountsInAccountPool to list the next set of accounts.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAccountsInAccountPoolOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"AccountInfoList",
+          "documentation":"<p>The results of the ListAccountsInAccountPool operation.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of accounts is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of accounts, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListAccountsInAccountPool to list the next set of accounts.</p>"
+        }
+      }
     },
     "ListAssetFiltersInput":{
       "type":"structure",
@@ -18533,6 +19100,10 @@
       "max":5,
       "min":1
     },
+    "ResolutionStrategy":{
+      "type":"string",
+      "enum":["MANUAL"]
+    },
     "Resource":{
       "type":"structure",
       "required":[
@@ -19606,6 +20177,10 @@
       "type":"string",
       "max":100000,
       "min":1
+    },
+    "SortFieldAccountPool":{
+      "type":"string",
+      "enum":["NAME"]
     },
     "SortFieldConnection":{
       "type":"string",
@@ -21208,6 +21783,96 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "UpdateAccountPoolInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "accountSource":{
+          "shape":"AccountSource",
+          "documentation":"<p>The source of accounts for the account pool. In the current release, it's either a static list of accounts provided by the customer or a custom Amazon Web Services Lambda handler. </p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the account pool that is to be udpated.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID where the account pool that is to be updated lives.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool that is to be updated.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "name":{
+          "shape":"AccountPoolName",
+          "documentation":"<p>The name of the account pool that is to be updated.</p>"
+        },
+        "resolutionStrategy":{
+          "shape":"ResolutionStrategy",
+          "documentation":"<p>The mechanism used to resolve the account selection from the account pool.</p>"
+        }
+      }
+    },
+    "UpdateAccountPoolOutput":{
+      "type":"structure",
+      "required":[
+        "accountSource",
+        "createdBy"
+      ],
+      "members":{
+        "accountSource":{
+          "shape":"AccountSource",
+          "documentation":"<p>The source of accounts for the account pool. In the current release, it's either a static list of accounts provided by the customer or a custom Amazon Web Services Lambda handler. </p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which the account pool was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the account pool.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the account pool that is to be udpated.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID where the account pool that is to be updated lives.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The domain ID in which the account pool that is to be updated lives.</p>"
+        },
+        "id":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool that is to be updated.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which the account pool was last updated.</p>"
+        },
+        "name":{
+          "shape":"AccountPoolName",
+          "documentation":"<p>The name of the account pool that is to be updated.</p>"
+        },
+        "resolutionStrategy":{
+          "shape":"ResolutionStrategy",
+          "documentation":"<p>The mechanism used to resolve the account selection from the account pool.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user who last updated the account pool.</p>"
+        }
       }
     },
     "UpdateAssetFilterInput":{

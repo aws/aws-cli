@@ -4561,6 +4561,12 @@
     }
   },
   "shapes":{
+    "AcceleratorsAmount":{
+      "type":"integer",
+      "box":true,
+      "max":10000000,
+      "min":0
+    },
     "Accept":{
       "type":"string",
       "max":256,
@@ -9645,6 +9651,18 @@
         "Count":{
           "shape":"InstanceCount",
           "documentation":"<p>The number of instances to add to the instance group of a SageMaker HyperPod cluster.</p>"
+        },
+        "Accelerators":{
+          "shape":"AcceleratorsAmount",
+          "documentation":"<p>The number of accelerators to allocate. If you don't specify a value for vCPU and MemoryInGiB, SageMaker AI automatically allocates ratio-based values for those parameters based on the number of accelerators you provide. For example, if you allocate 16 out of 32 total accelerators, SageMaker AI uses the ratio of 0.5 and allocates values to vCPU and MemoryInGiB.</p>"
+        },
+        "VCpu":{
+          "shape":"VCpuAmount",
+          "documentation":"<p>The number of vCPU to allocate. If you specify a value only for vCPU, SageMaker AI automatically allocates ratio-based values for MemoryInGiB based on this vCPU parameter. For example, if you allocate 20 out of 40 total vCPU, SageMaker AI uses the ratio of 0.5 and allocates values to MemoryInGiB. Accelerators are set to 0.</p>"
+        },
+        "MemoryInGiB":{
+          "shape":"MemoryInGiBAmount",
+          "documentation":"<p>The amount of memory in GiB to allocate. If you specify a value only for this parameter, SageMaker AI automatically allocates a ratio-based value for vCPU based on this memory that you provide. For example, if you allocate 200 out of 400 total memory in GiB, SageMaker AI uses the ratio of 0.5 and allocates values to vCPU. Accelerators are set to 0.</p>"
         }
       },
       "documentation":"<p>Configuration of the resources used for the compute allocation definition.</p>"
@@ -30769,6 +30787,12 @@
       "max":10,
       "min":1
     },
+    "MemoryInGiBAmount":{
+      "type":"float",
+      "box":true,
+      "max":10000000,
+      "min":0
+    },
     "MemoryInMb":{
       "type":"integer",
       "box":true,
@@ -45250,6 +45274,12 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "VCpuAmount":{
+      "type":"float",
+      "box":true,
+      "max":10000000,
+      "min":0
     },
     "ValidationFraction":{
       "type":"float",

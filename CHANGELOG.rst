@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.28.9
+======
+
+* api-change:``datazone``: Adds support for account pools and project profile account decoupling
+* api-change:``security-ir``: Added support for Organizational Unit-level Membership configuration and the ability to resume a cancelled membership.
+* api-change:``braket``: Add support for Braket program sets.
+* api-change:``partnercentral-selling``: Add Tagging Support for Opportunity resources
+* api-change:``fsx``: Add Dual-Stack support for Amazon FSx for OpenZFS file systems
+* api-change:``sagemaker``: This release introduces compute quota for GPU, Trainium accelerators, vCPU, and vCPU memory utilization across teams in HyperPod clusters
+
+
 2.28.8
 ======
 

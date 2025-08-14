@@ -57,6 +57,7 @@ SuccessResult = _create_new_result_cls('SuccessResult')
 FailureResult = _create_new_result_cls('FailureResult', ['exception'])
 
 DryRunResult = _create_new_result_cls('DryRunResult')
+SkipFileResult = _create_new_result_cls('SkipFileResult')
 
 ErrorResult = namedtuple('ErrorResult', ['exception'])
 
@@ -128,9 +129,16 @@ class DoneResultSubscriber(BaseResultSubscriber, OnDoneFilteredSubscriber):
             self._result_queue.put(error_result_cls(exception=e))
         elif self._is_precondition_failed(e):
             LOGGER.debug(
-                "Warning: Skipping file %s as it already exists on %s",
+                "warning: skipping file %s as it already exists on %s",
                 self._src,
                 self._dest,
+            )
+            self._result_queue.put(
+                SkipFileResult(
+                    transfer_type=self._transfer_type,
+                    src=self._src,
+                    dest=self._dest,
+                )
             )
         else:
             self._result_queue.put(
@@ -167,6 +175,7 @@ class ResultRecorder(BaseResultHandler):
         self.files_transferred = 0
         self.files_failed = 0
         self.files_warned = 0
+        self.files_skipped = 0
         self.errors = 0
         self.expected_bytes_transferred = 0
         self.expected_files_transferred = 0
@@ -184,6 +193,7 @@ class ResultRecorder(BaseResultHandler):
             SuccessResult: self._record_success_result,
             FailureResult: self._record_failure_result,
             WarningResult: self._record_warning_result,
+            SkipFileResult: self._record_skipped_file_result,
             ErrorResult: self._record_error_result,
             CtrlCResult: self._record_error_result,
             FinalTotalSubmissionsResult: self._record_final_expected_files,
@@ -299,6 +309,10 @@ class ResultRecorder(BaseResultHandler):
         self.files_failed += 1
         self.files_transferred += 1
 
+    def _record_skipped_file_result(self, result, **kwargs):
+        self.files_skipped += 1
+        self.files_transferred += 1
+
     def _record_warning_result(self, **kwargs):
         self.files_warned += 1
 
@@ -359,6 +373,7 @@ class ResultPrinter(BaseResultHandler):
             SuccessResult: self._print_success,
             FailureResult: self._print_failure,
             WarningResult: self._print_warning,
+            SkipFileResult: self._print_noop,
             ErrorResult: self._print_error,
             CtrlCResult: self._print_ctrl_c,
             DryRunResult: self._print_dry_run,
@@ -435,6 +450,7 @@ class ResultPrinter(BaseResultHandler):
         self._add_progress_if_needed()
 
     def _add_progress_if_needed(self):
+        LOGGER.debug("Remaining Progrss %s", self._has_remaining_progress())
         if self._has_remaining_progress():
             self._print_progress()
 
@@ -446,7 +462,6 @@ class ResultPrinter(BaseResultHandler):
                 - self._result_recorder.files_transferred
             )
         )
-
         # Create the display statement.
         if self._result_recorder.expected_bytes_transferred > 0:
             bytes_completed = human_readable_size(
@@ -504,6 +519,10 @@ class ResultPrinter(BaseResultHandler):
         return print_statement + ending_char
 
     def _has_remaining_progress(self):
+        LOGGER.debug(
+            "Expected Files %s",
+            self._result_recorder.expected_totals_are_final(),
+        )
         if not self._result_recorder.expected_totals_are_final():
             return True
         actual = self._result_recorder.files_transferred

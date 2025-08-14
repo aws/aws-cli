@@ -25,7 +25,8 @@
       "output":{"shape":"BatchExecuteStatementOutput"},
       "errors":[
         {"shape":"RequestLimitExceeded"},
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This operation allows you to perform batch reads or writes on data stored in DynamoDB, using PartiQL. Each read statement in a <code>BatchExecuteStatement</code> must specify an equality condition on all key attributes. This enforces that each <code>SELECT</code> statement in a batch returns at most a single item. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ql-reference.multiplestatements.batching.html\">Running batch operations with PartiQL for DynamoDB </a>.</p> <note> <p>The entire batch must consist of either read statements or write statements, you cannot mix both in one batch.</p> </note> <important> <p>A HTTP 200 response does not mean that all statements in the BatchExecuteStatement succeeded. Error details for individual statements can be found under the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchStatementResponse.html#DDB-Type-BatchStatementResponse-Error\">Error</a> field of the <code>BatchStatementResponse</code> for each statement.</p> </important>"
     },
@@ -41,7 +42,8 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"RequestLimitExceeded"},
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>The <code>BatchGetItem</code> operation returns the attributes of one or more items from one or more tables. You identify requested items by primary key.</p> <p>A single operation can retrieve up to 16 MB of data, which can contain as many as 100 items. <code>BatchGetItem</code> returns a partial result if the response size limit is exceeded, the table's provisioned throughput is exceeded, more than 1MB per partition is requested, or an internal processing failure occurs. If a partial result is returned, the operation returns a value for <code>UnprocessedKeys</code>. You can use this value to retry the operation starting with the next item to get.</p> <important> <p>If you request more than 100 items, <code>BatchGetItem</code> returns a <code>ValidationException</code> with the message \"Too many items requested for the BatchGetItem call.\"</p> </important> <p>For example, if you ask to retrieve 100 items, but each individual item is 300 KB in size, the system returns 52 items (so as not to exceed the 16 MB limit). It also returns an appropriate <code>UnprocessedKeys</code> value so you can get the next page of results. If desired, your application can include its own logic to assemble the pages of results into one dataset.</p> <p>If <i>none</i> of the items can be processed due to insufficient provisioned throughput on all of the tables in the request, then <code>BatchGetItem</code> returns a <code>ProvisionedThroughputExceededException</code>. If <i>at least one</i> of the items is successfully processed, then <code>BatchGetItem</code> completes successfully, while returning the keys of the unread items in <code>UnprocessedKeys</code>.</p> <important> <p>If DynamoDB returns any unprocessed items, you should retry the batch operation on those items. However, <i>we strongly recommend that you use an exponential backoff algorithm</i>. If you retry the batch operation immediately, the underlying read or write requests can still fail due to throttling on the individual tables. If you delay the batch operation using exponential backoff, the individual requests in the batch are much more likely to succeed.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ErrorHandling.html#BatchOperations\">Batch Operations and Error Handling</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> </important> <p>By default, <code>BatchGetItem</code> performs eventually consistent reads on every table in the request. If you want strongly consistent reads instead, you can set <code>ConsistentRead</code> to <code>true</code> for any or all tables.</p> <p>In order to minimize response latency, <code>BatchGetItem</code> may retrieve items in parallel.</p> <p>When designing your application, keep in mind that DynamoDB does not return items in any particular order. To help parse the response by item, include the primary key values for the items in your request in the <code>ProjectionExpression</code> parameter.</p> <p>If a requested item does not exist, it is not returned in the result. Requests for nonexistent items consume the minimum read capacity units according to the type of read. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithTables.html#CapacityUnitCalculations\">Working with Tables</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> <note> <p> <code>BatchGetItem</code> will result in a <code>ValidationException</code> if the same key is specified multiple times.</p> </note>",
       "endpointdiscovery":{},
@@ -63,7 +65,8 @@
         {"shape":"ItemCollectionSizeLimitExceededException"},
         {"shape":"RequestLimitExceeded"},
         {"shape":"InternalServerError"},
-        {"shape":"ReplicatedWriteConflictException"}
+        {"shape":"ReplicatedWriteConflictException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>The <code>BatchWriteItem</code> operation puts or deletes multiple items in one or more tables. A single call to <code>BatchWriteItem</code> can transmit up to 16MB of data over the network, consisting of up to 25 item put or delete operations. While individual items can be up to 400 KB once stored, it's important to note that an item's representation might be greater than 400KB while being sent in DynamoDB's JSON format for the API call. For more details on this distinction, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html\">Naming Rules and Data Types</a>.</p> <note> <p> <code>BatchWriteItem</code> cannot update items. If you perform a <code>BatchWriteItem</code> operation on an existing item, that item's values will be overwritten by the operation and it will appear like it was updated. To update items, we recommend you use the <code>UpdateItem</code> action.</p> </note> <p>The individual <code>PutItem</code> and <code>DeleteItem</code> operations specified in <code>BatchWriteItem</code> are atomic; however <code>BatchWriteItem</code> as a whole is not. If any requested operations fail because the table's provisioned throughput is exceeded or an internal processing failure occurs, the failed operations are returned in the <code>UnprocessedItems</code> response parameter. You can investigate and optionally resend the requests. Typically, you would call <code>BatchWriteItem</code> in a loop. Each iteration would check for unprocessed items and submit a new <code>BatchWriteItem</code> request with those unprocessed items until all items have been processed.</p> <p>For tables and indexes with provisioned capacity, if none of the items can be processed due to insufficient provisioned throughput on all of the tables in the request, then <code>BatchWriteItem</code> returns a <code>ProvisionedThroughputExceededException</code>. For all tables and indexes, if none of the items can be processed due to other throttling scenarios (such as exceeding partition level limits), then <code>BatchWriteItem</code> returns a <code>ThrottlingException</code>.</p> <important> <p>If DynamoDB returns any unprocessed items, you should retry the batch operation on those items. However, <i>we strongly recommend that you use an exponential backoff algorithm</i>. If you retry the batch operation immediately, the underlying read or write requests can still fail due to throttling on the individual tables. If you delay the batch operation using exponential backoff, the individual requests in the batch are much more likely to succeed.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ErrorHandling.html#Programming.Errors.BatchOperations\">Batch Operations and Error Handling</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> </important> <p>With <code>BatchWriteItem</code>, you can efficiently write or delete large amounts of data, such as from Amazon EMR, or copy data from another database into DynamoDB. In order to improve performance with these large-scale operations, <code>BatchWriteItem</code> does not behave in the same way as individual <code>PutItem</code> and <code>DeleteItem</code> calls would. For example, you cannot specify conditions on individual put and delete requests, and <code>BatchWriteItem</code> does not return deleted items in the response.</p> <p>If you use a programming language that supports concurrency, you can use threads to write items in parallel. Your application must include the necessary logic to manage the threads. With languages that don't support threading, you must update or delete the specified items one at a time. In both situations, <code>BatchWriteItem</code> performs the specified put and delete operations in parallel, giving you the power of the thread pool approach without having to introduce complexity into your application.</p> <p>Parallel processing reduces latency, but each specified put and delete request consumes the same number of write capacity units whether it is processed in parallel or not. Delete operations on nonexistent items consume one write capacity unit.</p> <p>If one or more of the following is true, DynamoDB rejects the entire batch write operation:</p> <ul> <li> <p>One or more tables specified in the <code>BatchWriteItem</code> request does not exist.</p> </li> <li> <p>Primary key attributes specified on an item in the request do not match those in the corresponding table's primary key schema.</p> </li> <li> <p>You try to perform multiple operations on the same item in the same <code>BatchWriteItem</code> request. For example, you cannot put and delete the same item in the same <code>BatchWriteItem</code> request. </p> </li> <li> <p> Your request contains at least two items with identical hash and range keys (which essentially is two put operations). </p> </li> <li> <p>There are more than 25 requests in the batch.</p> </li> <li> <p>Any individual item in a batch exceeds 400 KB.</p> </li> <li> <p>The total request size exceeds 16 MB.</p> </li> <li> <p>Any individual items with keys exceeding the key length limits. For a partition key, the limit is 2048 bytes and for a sort key, the limit is 1024 bytes.</p> </li> </ul>",
       "endpointdiscovery":{},
@@ -156,7 +159,8 @@
         {"shape":"TransactionConflictException"},
         {"shape":"RequestLimitExceeded"},
         {"shape":"InternalServerError"},
-        {"shape":"ReplicatedWriteConflictException"}
+        {"shape":"ReplicatedWriteConflictException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes a single item in a table by primary key. You can perform a conditional delete operation that deletes the item if it exists, or if it has an expected attribute value.</p> <p>In addition to deleting an item, you can also return the item's attribute values in the same operation, using the <code>ReturnValues</code> parameter.</p> <p>Unless you specify conditions, the <code>DeleteItem</code> is an idempotent operation; running it multiple times on the same item or attribute does <i>not</i> result in an error response.</p> <p>Conditional deletes are useful for deleting items only if specific conditions are met. If those conditions are met, DynamoDB performs the delete. Otherwise, the item is not deleted.</p>",
       "endpointdiscovery":{}
@@ -432,7 +436,8 @@
         {"shape":"TransactionConflictException"},
         {"shape":"RequestLimitExceeded"},
         {"shape":"InternalServerError"},
-        {"shape":"DuplicateItemException"}
+        {"shape":"DuplicateItemException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This operation allows you to perform reads and singleton writes on data stored in DynamoDB, using PartiQL.</p> <p>For PartiQL reads (<code>SELECT</code> statement), if the total number of processed items exceeds the maximum dataset size limit of 1 MB, the read stops and results are returned to the user as a <code>LastEvaluatedKey</code> value to continue the read in a subsequent operation. If the filter criteria in <code>WHERE</code> clause does not match any data, the read will return an empty result set.</p> <p>A single <code>SELECT</code> statement response can return up to the maximum number of items (if using the Limit parameter) or a maximum of 1 MB of data (and then apply any filtering to the results using <code>WHERE</code> clause). If <code>LastEvaluatedKey</code> is present in the response, you need to paginate the result set. If <code>NextToken</code> is present, you need to paginate the result set and include <code>NextToken</code>.</p>"
     },
@@ -451,7 +456,8 @@
         {"shape":"IdempotentParameterMismatchException"},
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"RequestLimitExceeded"},
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This operation allows you to perform transactional reads or writes on data stored in DynamoDB, using PartiQL.</p> <note> <p>The entire transaction must consist of either read statements or write statements, you cannot mix both in one transaction. The EXISTS function is an exception and can be used to check the condition of specific attributes of the item in a similar manner to <code>ConditionCheck</code> in the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transaction-apis.html#transaction-apis-txwriteitems\">TransactWriteItems</a> API.</p> </note>"
     },
@@ -485,7 +491,8 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"RequestLimitExceeded"},
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>The <code>GetItem</code> operation returns a set of attributes for the item with the given primary key. If there is no matching item, <code>GetItem</code> does not return any data and there will be no <code>Item</code> element in the response.</p> <p> <code>GetItem</code> provides an eventually consistent read by default. If your application requires a strongly consistent read, set <code>ConsistentRead</code> to <code>true</code>. Although a strongly consistent read might take more time than an eventually consistent read, it always returns the last updated value.</p>",
       "endpointdiscovery":{}
@@ -638,7 +645,8 @@
         {"shape":"TransactionConflictException"},
         {"shape":"RequestLimitExceeded"},
         {"shape":"InternalServerError"},
-        {"shape":"ReplicatedWriteConflictException"}
+        {"shape":"ReplicatedWriteConflictException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Creates a new item, or replaces an old item with a new item. If an item that has the same primary key as the new item already exists in the specified table, the new item completely replaces the existing item. You can perform a conditional put operation (add a new item if one with the specified primary key doesn't exist), or replace an existing item if it has certain attribute values. You can return the item's attribute values in the same operation, using the <code>ReturnValues</code> parameter.</p> <p>When you add an item, the primary key attributes are the only required attributes. </p> <p>Empty String and Binary attribute values are allowed. Attribute values of type String and Binary must have a length greater than zero if the attribute is used as a key attribute for a table or index. Set type attributes cannot be empty. </p> <p>Invalid Requests with empty values will be rejected with a <code>ValidationException</code> exception.</p> <note> <p>To prevent a new item from replacing an existing item, use a conditional expression that contains the <code>attribute_not_exists</code> function with the name of the attribute being used as the partition key for the table. Since every record must contain that attribute, the <code>attribute_not_exists</code> function will only succeed if no matching item exists.</p> </note> <p>For more information about <code>PutItem</code>, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html\">Working with Items</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>",
       "endpointdiscovery":{}
@@ -673,7 +681,8 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"RequestLimitExceeded"},
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>You must provide the name of the partition key attribute and a single value for that attribute. <code>Query</code> returns all items with that partition key value. Optionally, you can provide a sort key attribute and use a comparison operator to refine the search results.</p> <p>Use the <code>KeyConditionExpression</code> parameter to provide a specific value for the partition key. The <code>Query</code> operation will return all of the items from the table or index with that partition key value. You can optionally narrow the scope of the <code>Query</code> operation by specifying a sort key value and a comparison operator in <code>KeyConditionExpression</code>. To further refine the <code>Query</code> results, you can optionally provide a <code>FilterExpression</code>. A <code>FilterExpression</code> determines which items within the results should be returned to you. All of the other results are discarded. </p> <p> A <code>Query</code> operation always returns a result set. If no matching items are found, the result set will be empty. Queries that do not return results consume the minimum number of read capacity units for that type of read operation. </p> <note> <p> DynamoDB calculates the number of read capacity units consumed based on item size, not on the amount of data that is returned to an application. The number of capacity units consumed will be the same whether you request all of the attributes (the default behavior) or just some of them (using a projection expression). The number will also be the same whether or not you use a <code>FilterExpression</code>. </p> </note> <p> <code>Query</code> results are always sorted by the sort key value. If the data type of the sort key is Number, the results are returned in numeric order; otherwise, the results are returned in order of UTF-8 bytes. By default, the sort order is ascending. To reverse the order, set the <code>ScanIndexForward</code> parameter to false. </p> <p> A single <code>Query</code> operation will read up to the maximum number of items set (if using the <code>Limit</code> parameter) or a maximum of 1 MB of data and then apply any filtering to the results using <code>FilterExpression</code>. If <code>LastEvaluatedKey</code> is present in the response, you will need to paginate the result set. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.html#Query.Pagination\">Paginating the Results</a> in the <i>Amazon DynamoDB Developer Guide</i>. </p> <p> <code>FilterExpression</code> is applied after a <code>Query</code> finishes, but before the results are returned. A <code>FilterExpression</code> cannot contain partition key or sort key attributes. You need to specify those attributes in the <code>KeyConditionExpression</code>. </p> <note> <p> A <code>Query</code> operation can return an empty result set and a <code>LastEvaluatedKey</code> if all the items read for the page of results are filtered out. </p> </note> <p>You can query a table, a local secondary index, or a global secondary index. For a query on a table or on a local secondary index, you can set the <code>ConsistentRead</code> parameter to <code>true</code> and obtain a strongly consistent result. Global secondary indexes support eventually consistent reads only, so do not specify <code>ConsistentRead</code> when querying a global secondary index.</p>",
       "endpointdiscovery":{}
@@ -729,7 +738,8 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"RequestLimitExceeded"},
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>The <code>Scan</code> operation returns one or more items and item attributes by accessing every item in a table or a secondary index. To have DynamoDB return fewer items, you can provide a <code>FilterExpression</code> operation.</p> <p>If the total size of scanned items exceeds the maximum dataset size limit of 1 MB, the scan completes and results are returned to the user. The <code>LastEvaluatedKey</code> value is also returned and the requestor can use the <code>LastEvaluatedKey</code> to continue the scan in a subsequent operation. Each scan response also includes number of items that were scanned (ScannedCount) as part of the request. If using a <code>FilterExpression</code>, a scan result can result in no items meeting the criteria and the <code>Count</code> will result in zero. If you did not use a <code>FilterExpression</code> in the scan request, then <code>Count</code> is the same as <code>ScannedCount</code>.</p> <note> <p> <code>Count</code> and <code>ScannedCount</code> only return the count of items specific to a single scan request and, unless the table is less than 1MB, do not represent the total number of items in the table. </p> </note> <p>A single <code>Scan</code> operation first reads up to the maximum number of items set (if using the <code>Limit</code> parameter) or a maximum of 1 MB of data and then applies any filtering to the results if a <code>FilterExpression</code> is provided. If <code>LastEvaluatedKey</code> is present in the response, pagination is required to complete the full table scan. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html#Scan.Pagination\">Paginating the Results</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> <p> <code>Scan</code> operations proceed sequentially; however, for faster performance on a large table or secondary index, applications can request a parallel <code>Scan</code> operation by providing the <code>Segment</code> and <code>TotalSegments</code> parameters. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html#Scan.ParallelScan\">Parallel Scan</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> <p>By default, a <code>Scan</code> uses eventually consistent reads when accessing the items in a table. Therefore, the results from an eventually consistent <code>Scan</code> may not include the latest item changes at the time the scan iterates through each item in the table. If you require a strongly consistent read of each item as the scan iterates through the items in the table, you can set the <code>ConsistentRead</code> parameter to true. Strong consistency only relates to the consistency of the read at the item level.</p> <note> <p> DynamoDB does not provide snapshot isolation for a scan operation when the <code>ConsistentRead</code> parameter is set to true. Thus, a DynamoDB scan operation does not guarantee that all reads in a scan see a consistent snapshot of the table when the scan operation was requested. </p> </note>",
       "endpointdiscovery":{}
@@ -763,7 +773,8 @@
         {"shape":"TransactionCanceledException"},
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"RequestLimitExceeded"},
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p> <code>TransactGetItems</code> is a synchronous operation that atomically retrieves multiple items from one or more tables (but not from indexes) in a single account and Region. A <code>TransactGetItems</code> call can contain up to 100 <code>TransactGetItem</code> objects, each of which contains a <code>Get</code> structure that specifies an item to retrieve from a table in the account and Region. A call to <code>TransactGetItems</code> cannot retrieve items from tables in more than one Amazon Web Services account or Region. The aggregate size of the items in the transaction cannot exceed 4 MB.</p> <p>DynamoDB rejects the entire <code>TransactGetItems</code> request if any of the following is true:</p> <ul> <li> <p>A conflicting operation is in the process of updating an item to be read.</p> </li> <li> <p>There is insufficient provisioned capacity for the transaction to be completed.</p> </li> <li> <p>There is a user error, such as an invalid data format.</p> </li> <li> <p>The aggregate size of the items in the transaction exceeded 4 MB.</p> </li> </ul>",
       "endpointdiscovery":{},
@@ -786,7 +797,8 @@
         {"shape":"IdempotentParameterMismatchException"},
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"RequestLimitExceeded"},
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p> <code>TransactWriteItems</code> is a synchronous write operation that groups up to 100 action requests. These actions can target items in different tables, but not in different Amazon Web Services accounts or Regions, and no two actions can target the same item. For example, you cannot both <code>ConditionCheck</code> and <code>Update</code> the same item. The aggregate size of the items in the transaction cannot exceed 4 MB.</p> <p>The actions are completed atomically so that either all of them succeed, or all of them fail. They are defined by the following objects:</p> <ul> <li> <p> <code>Put</code>  —   Initiates a <code>PutItem</code> operation to write a new item. This structure specifies the primary key of the item to be written, the name of the table to write it in, an optional condition expression that must be satisfied for the write to succeed, a list of the item's attributes, and a field indicating whether to retrieve the item's attributes if the condition is not met.</p> </li> <li> <p> <code>Update</code>  —   Initiates an <code>UpdateItem</code> operation to update an existing item. This structure specifies the primary key of the item to be updated, the name of the table where it resides, an optional condition expression that must be satisfied for the update to succeed, an expression that defines one or more attributes to be updated, and a field indicating whether to retrieve the item's attributes if the condition is not met.</p> </li> <li> <p> <code>Delete</code>  —   Initiates a <code>DeleteItem</code> operation to delete an existing item. This structure specifies the primary key of the item to be deleted, the name of the table where it resides, an optional condition expression that must be satisfied for the deletion to succeed, and a field indicating whether to retrieve the item's attributes if the condition is not met.</p> </li> <li> <p> <code>ConditionCheck</code>  —   Applies a condition to an item that is not being modified by the transaction. This structure specifies the primary key of the item to be checked, the name of the table where it resides, a condition expression that must be satisfied for the transaction to succeed, and a field indicating whether to retrieve the item's attributes if the condition is not met.</p> </li> </ul> <p>DynamoDB rejects the entire <code>TransactWriteItems</code> request if any of the following is true:</p> <ul> <li> <p>A condition in one of the condition expressions is not met.</p> </li> <li> <p>An ongoing operation is in the process of updating the same item.</p> </li> <li> <p>There is insufficient provisioned capacity for the transaction to be completed.</p> </li> <li> <p>An item size becomes too large (bigger than 400 KB), a local secondary index (LSI) becomes too large, or a similar validation error occurs because of changes made by the transaction.</p> </li> <li> <p>The aggregate size of the items in the transaction exceeds 4 MB.</p> </li> <li> <p>There is a user error, such as an invalid data format.</p> </li> </ul>",
       "endpointdiscovery":{},
@@ -893,7 +905,8 @@
         {"shape":"TransactionConflictException"},
         {"shape":"RequestLimitExceeded"},
         {"shape":"InternalServerError"},
-        {"shape":"ReplicatedWriteConflictException"}
+        {"shape":"ReplicatedWriteConflictException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Edits an existing item's attributes, or adds a new item to the table if it does not already exist. You can put, delete, or add attribute values. You can also perform a conditional update on an existing item (insert a new attribute name-value pair if it doesn't exist, or replace an existing name-value pair if it has certain expected attribute values).</p> <p>You can also return the item's attribute values in the same <code>UpdateItem</code> operation using the <code>ReturnValues</code> parameter.</p>",
       "endpointdiscovery":{}
@@ -1249,6 +1262,7 @@
       },
       "documentation":"<p>Represents the settings of a target tracking scaling policy that will be modified.</p>"
     },
+    "AvailabilityErrorMessage":{"type":"string"},
     "Backfilling":{"type":"boolean"},
     "BackupArn":{
       "type":"string",
@@ -1861,6 +1875,13 @@
         "DISABLE"
       ]
     },
+    "ContributorInsightsMode":{
+      "type":"string",
+      "enum":[
+        "ACCESSED_AND_THROTTLED_KEYS",
+        "THROTTLED_KEYS"
+      ]
+    },
     "ContributorInsightsRule":{
       "type":"string",
       "pattern":"[A-Za-z0-9][A-Za-z0-9\\-\\_\\.]{0,126}[A-Za-z0-9]"
@@ -1897,6 +1918,10 @@
         "ContributorInsightsStatus":{
           "shape":"ContributorInsightsStatus",
           "documentation":"<p>Describes the current status for contributor insights for the given table and index, if applicable.</p>"
+        },
+        "ContributorInsightsMode":{
+          "shape":"ContributorInsightsMode",
+          "documentation":"<p>Indicates the current mode of CloudWatch Contributor Insights, specifying whether it tracks all access and throttled events or throttled events only for the DynamoDB table or index.</p>"
         }
       },
       "documentation":"<p>Represents a Contributor Insights summary entry.</p>"
@@ -2465,6 +2490,10 @@
         "FailureException":{
           "shape":"FailureException",
           "documentation":"<p>Returns information about the last failure that was encountered.</p> <p>The most common exceptions for a FAILED status are:</p> <ul> <li> <p>LimitExceededException - Per-account Amazon CloudWatch Contributor Insights rule limit reached. Please disable Contributor Insights for other tables/indexes OR disable Contributor Insights rules before retrying.</p> </li> <li> <p>AccessDeniedException - Amazon CloudWatch Contributor Insights rules cannot be modified due to insufficient permissions.</p> </li> <li> <p>AccessDeniedException - Failed to create service-linked role for Contributor Insights due to insufficient permissions.</p> </li> <li> <p>InternalServerError - Failed to create Amazon CloudWatch Contributor Insights rules. Please retry request.</p> </li> </ul>"
+        },
+        "ContributorInsightsMode":{
+          "shape":"ContributorInsightsMode",
+          "documentation":"<p>The mode of CloudWatch Contributor Insights for DynamoDB that determines which events are emitted. Can be set to track all access and throttled events or throttled events only.</p>"
         }
       }
     },
@@ -4658,9 +4687,13 @@
         "message":{
           "shape":"ErrorMessage",
           "documentation":"<p>You exceeded your maximum allowed provisioned throughput.</p>"
+        },
+        "ThrottlingReasons":{
+          "shape":"ThrottlingReasonList",
+          "documentation":"<p>A list of <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ThrottlingReason.html\">ThrottlingReason</a> that provide detailed diagnostic information about why the request was throttled. </p>"
         }
       },
-      "documentation":"<p>Your request rate is too high. The Amazon Web Services SDKs for DynamoDB automatically retry requests that receive this exception. Your request is eventually successful, unless your retry queue is too large to finish. Reduce the frequency of requests and use exponential backoff. For more information, go to <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.Errors.html#Programming.Errors.RetryAndBackoff\">Error Retries and Exponential Backoff</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>",
+      "documentation":"<p>The request was denied due to request throttling. For detailed information about why the request was throttled and the ARN of the impacted resource, find the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ThrottlingReason.html\">ThrottlingReason</a> field in the returned exception. The Amazon Web Services SDKs for DynamoDB automatically retry requests that receive this exception. Your request is eventually successful, unless your retry queue is too large to finish. Reduce the frequency of requests and use exponential backoff. For more information, go to <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.Errors.html#Programming.Errors.RetryAndBackoff\">Error Retries and Exponential Backoff</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>",
       "exception":true
     },
     "ProvisionedThroughputOverride":{
@@ -4927,6 +4960,7 @@
       },
       "documentation":"<p>Represents the output of a <code>Query</code> operation.</p>"
     },
+    "Reason":{"type":"string"},
     "RecoveryPeriodInDays":{
       "type":"integer",
       "max":35,
@@ -5351,11 +5385,16 @@
     "RequestLimitExceeded":{
       "type":"structure",
       "members":{
-        "message":{"shape":"ErrorMessage"}
+        "message":{"shape":"ErrorMessage"},
+        "ThrottlingReasons":{
+          "shape":"ThrottlingReasonList",
+          "documentation":"<p>A list of <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ThrottlingReason.html\">ThrottlingReason</a> that provide detailed diagnostic information about why the request was throttled. </p>"
+        }
       },
-      "documentation":"<p>Throughput exceeds the current throughput quota for your account. Please contact <a href=\"https://aws.amazon.com/support\">Amazon Web ServicesSupport</a> to request a quota increase.</p>",
+      "documentation":"<p>Throughput exceeds the current throughput quota for your account. For detailed information about why the request was throttled and the ARN of the impacted resource, find the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ThrottlingReason.html\">ThrottlingReason</a> field in the returned exception. Contact <a href=\"https://aws.amazon.com/support\">Amazon Web ServicesSupport</a> to request a quota increase.</p>",
       "exception":true
     },
+    "Resource":{"type":"string"},
     "ResourceArnString":{
       "type":"string",
       "max":1283,
@@ -6206,6 +6245,37 @@
       "max":256,
       "min":0
     },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"AvailabilityErrorMessage"},
+        "throttlingReasons":{
+          "shape":"ThrottlingReasonList",
+          "documentation":"<p>A list of <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ThrottlingReason.html\">ThrottlingReason</a> that provide detailed diagnostic information about why the request was throttled. </p>"
+        }
+      },
+      "documentation":"<p>The request was denied due to request throttling. For detailed information about why the request was throttled and the ARN of the impacted resource, find the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ThrottlingReason.html\">ThrottlingReason</a> field in the returned exception.</p>",
+      "exception":true,
+      "synthetic":true
+    },
+    "ThrottlingReason":{
+      "type":"structure",
+      "members":{
+        "reason":{
+          "shape":"Reason",
+          "documentation":"<p>The reason for throttling. The throttling reason follows a specific format: <code>ResourceType+OperationType+LimitType</code>:</p> <ul> <li> <p>Resource Type (What is being throttled): Table or Index</p> </li> <li> <p>Operation Type (What kind of operation): Read or Write</p> </li> <li> <p>Limit Type (Why the throttling occurred):</p> <ul> <li> <p> <code>ProvisionedThroughputExceeded</code>: The request rate is exceeding the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/provisioned-capacity-mode.html\">provisioned throughput capacity</a> (read or write capacity units) configured for a table or a global secondary index (GSI) in provisioned capacity mode.</p> </li> <li> <p> <code>AccountLimitExceeded</code>: The request rate has caused a table or global secondary index (GSI) in on-demand mode to exceed the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ServiceQuotas.html#default-limits-throughput\">per-table account-level service quotas</a> for read/write throughput in the current Amazon Web Services Region. </p> </li> <li> <p> <code>KeyRangeThroughputExceeded</code>: The request rate directed at a specific partition key value has exceeded the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html\">internal partition-level throughput limits</a>, indicating uneven access patterns across the table's or GSI's key space.</p> </li> <li> <p> <code>MaxOnDemandThroughputExceeded</code>: The request rate has exceeded the <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/on-demand-capacity-mode-max-throughput.html\">configured maximum throughput limits</a> set for a table or index in on-demand capacity mode.</p> </li> </ul> </li> </ul> <p>Examples of complete throttling reasons:</p> <ul> <li> <p>TableReadProvisionedThroughputExceeded</p> </li> <li> <p>IndexWriteAccountLimitExceeded</p> </li> </ul> <p>This helps identify exactly what resource is being throttled, what type of operation caused it, and why the throttling occurred.</p>"
+        },
+        "resource":{
+          "shape":"Resource",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the DynamoDB table or index that experienced the throttling event.</p>"
+        }
+      },
+      "documentation":"<p>Represents the specific reason why a DynamoDB request was throttled and the ARN of the impacted resource. This helps identify exactly what resource is being throttled, what type of operation caused it, and why the throttling occurred.</p>"
+    },
+    "ThrottlingReasonList":{
+      "type":"list",
+      "member":{"shape":"ThrottlingReason"}
+    },
     "TimeRangeLowerBound":{"type":"timestamp"},
     "TimeRangeUpperBound":{"type":"timestamp"},
     "TimeToLiveAttributeName":{
@@ -6491,6 +6561,10 @@
         "ContributorInsightsAction":{
           "shape":"ContributorInsightsAction",
           "documentation":"<p>Represents the contributor insights action.</p>"
+        },
+        "ContributorInsightsMode":{
+          "shape":"ContributorInsightsMode",
+          "documentation":"<p>Specifies whether to track all access and throttled events or throttled events only for the DynamoDB table or index.</p>"
         }
       }
     },
@@ -6508,6 +6582,10 @@
         "ContributorInsightsStatus":{
           "shape":"ContributorInsightsStatus",
           "documentation":"<p>The status of contributor insights</p>"
+        },
+        "ContributorInsightsMode":{
+          "shape":"ContributorInsightsMode",
+          "documentation":"<p>The updated mode of CloudWatch Contributor Insights that determines whether to monitor all access and throttled events or to track throttled events exclusively.</p>"
         }
       }
     },

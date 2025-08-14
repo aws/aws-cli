@@ -290,7 +290,7 @@
       "errors":[
         {"shape":"InvalidInput"}
       ],
-      "documentation":"<p>Lists summary information about the namespaces that were created by the current Amazon Web Services account.</p>"
+      "documentation":"<p>Lists summary information about the namespaces that were created by the current Amazon Web Services account and shared with the current Amazon Web Services account.</p>"
     },
     "ListOperations":{
       "name":"ListOperations",
@@ -454,7 +454,7 @@
         {"shape":"InvalidInput"},
         {"shape":"ServiceNotFound"}
       ],
-      "documentation":"<p>Submits a request to perform the following operations:</p> <ul> <li> <p>Update the TTL setting for existing <code>DnsRecords</code> configurations</p> </li> <li> <p>Add, update, or delete <code>HealthCheckConfig</code> for a specified service</p> <note> <p>You can't add, update, or delete a <code>HealthCheckCustomConfig</code> configuration.</p> </note> </li> </ul> <p>For public and private DNS namespaces, note the following:</p> <ul> <li> <p>If you omit any existing <code>DnsRecords</code> or <code>HealthCheckConfig</code> configurations from an <code>UpdateService</code> request, the configurations are deleted from the service.</p> </li> <li> <p>If you omit an existing <code>HealthCheckCustomConfig</code> configuration from an <code>UpdateService</code> request, the configuration isn't deleted from the service.</p> </li> </ul> <p>When you update settings for a service, Cloud Map also updates the corresponding settings in all the records and health checks that were created by using the specified service.</p>"
+      "documentation":"<p>Submits a request to perform the following operations:</p> <ul> <li> <p>Update the TTL setting for existing <code>DnsRecords</code> configurations</p> </li> <li> <p>Add, update, or delete <code>HealthCheckConfig</code> for a specified service</p> <note> <p>You can't add, update, or delete a <code>HealthCheckCustomConfig</code> configuration.</p> </note> </li> </ul> <p>For public and private DNS namespaces, note the following:</p> <ul> <li> <p>If you omit any existing <code>DnsRecords</code> or <code>HealthCheckConfig</code> configurations from an <code>UpdateService</code> request, the configurations are deleted from the service.</p> </li> <li> <p>If you omit an existing <code>HealthCheckCustomConfig</code> configuration from an <code>UpdateService</code> request, the configuration isn't deleted from the service.</p> </li> </ul> <note> <p>You can't call <code>UpdateService</code> and update settings in the following scenarios:</p> <ul> <li> <p>When the service is associated with an HTTP namespace</p> </li> <li> <p>When the service is associated with a shared namespace and contains instances that were registered by Amazon Web Services accounts other than the account making the <code>UpdateService</code> call</p> </li> </ul> </note> <p>When you update settings for a service, Cloud Map also updates the corresponding settings in all the records and health checks that were created by using the specified service.</p>"
     },
     "UpdateServiceAttributes":{
       "name":"UpdateServiceAttributes",
@@ -473,6 +473,11 @@
     }
   },
   "shapes":{
+    "AWSAccountId":{
+      "type":"string",
+      "max":12,
+      "min":12
+    },
     "AmazonResourceName":{
       "type":"string",
       "max":1011,
@@ -618,8 +623,8 @@
           "documentation":"<p>The name that you want to assign to the service.</p> <note> <p>Do not include sensitive information in the name if the namespace is discoverable by public DNS queries.</p> </note> <p>If you want Cloud Map to create an <code>SRV</code> record when you register an instance and you're using a system that requires a specific <code>SRV</code> format, such as <a href=\"http://www.haproxy.org/\">HAProxy</a>, specify the following for <code>Name</code>:</p> <ul> <li> <p>Start the name with an underscore (_), such as <code>_exampleservice</code>.</p> </li> <li> <p>End the name with <i>._protocol</i>, such as <code>._tcp</code>.</p> </li> </ul> <p>When you register an instance, Cloud Map creates an <code>SRV</code> record and assigns a name to the record by concatenating the service name and the namespace name (for example,</p> <p> <code>_exampleservice._tcp.example.com</code>).</p> <note> <p>For services that are accessible by DNS queries, you can't create multiple services with names that differ only by case (such as EXAMPLE and example). Otherwise, these services have the same DNS name and can't be distinguished. However, if you use a namespace that's only accessible by API calls, then you can create services that with names that differ only by case.</p> </note>"
         },
         "NamespaceId":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the namespace that you want to use to create the service. The namespace ID must be specified, but it can be specified either here or in the <code>DnsConfig</code> object.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the namespace that you want to use to create the service. For namespaces shared with your Amazon Web Services account, specify the namespace ARN. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         },
         "CreatorRequestId":{
           "shape":"ResourceId",
@@ -681,8 +686,8 @@
       "required":["Id"],
       "members":{
         "Id":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the namespace that you want to delete.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the namespace that you want to delete.</p>"
         }
       }
     },
@@ -703,8 +708,8 @@
       ],
       "members":{
         "ServiceId":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the service from which the attributes will be deleted.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service from which the attributes will be deleted. For services created in a namespace shared with your Amazon Web Services account, specify the service ARN. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         },
         "Attributes":{
           "shape":"ServiceAttributeKeyList",
@@ -714,23 +719,21 @@
     },
     "DeleteServiceAttributesResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteServiceRequest":{
       "type":"structure",
       "required":["Id"],
       "members":{
         "Id":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the service that you want to delete.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service that you want to delete. If the namespace associated with the service is shared with your Amazon Web Services account, specify the service ARN. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a>.</p>"
         }
       }
     },
     "DeleteServiceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeregisterInstanceRequest":{
       "type":"structure",
@@ -740,8 +743,8 @@
       ],
       "members":{
         "ServiceId":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the service that the instance is associated with.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service that the instance is associated with. If the namespace associated with the service is shared with your account, specify the service ARN. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         },
         "InstanceId":{
           "shape":"ResourceId",
@@ -767,7 +770,7 @@
       "members":{
         "NamespaceName":{
           "shape":"NamespaceName",
-          "documentation":"<p>The <code>HttpName</code> name of the namespace. It's found in the <code>HttpProperties</code> member of the <code>Properties</code> member of the namespace. In most cases, <code>Name</code> and <code>HttpName</code> match. However, if you reuse <code>Name</code> for namespace creation, a generated hash is added to <code>HttpName</code> to distinguish the two.</p>"
+          "documentation":"<p>The <code>HttpName</code> name of the namespace. The <code>HttpName</code> is found in the <code>HttpProperties</code> member of the <code>Properties</code> member of the namespace. In most cases, <code>Name</code> and <code>HttpName</code> match. However, if you reuse <code>Name</code> for namespace creation, a generated hash is added to <code>HttpName</code> to distinguish the two.</p>"
         },
         "ServiceName":{
           "shape":"ServiceName",
@@ -788,6 +791,10 @@
         "HealthStatus":{
           "shape":"HealthStatusFilter",
           "documentation":"<p>The health status of the instances that you want to discover. This parameter is ignored for services that don't have a health check configured, and all instances are returned.</p> <dl> <dt>HEALTHY</dt> <dd> <p>Returns healthy instances.</p> </dd> <dt>UNHEALTHY</dt> <dd> <p>Returns unhealthy instances.</p> </dd> <dt>ALL</dt> <dd> <p>Returns all instances.</p> </dd> <dt>HEALTHY_OR_ELSE_ALL</dt> <dd> <p>Returns healthy instances, unless none are reporting a healthy state. In that case, return all instances. This is also called failing open.</p> </dd> </dl>"
+        },
+        "OwnerAccount":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the namespace associated with the instance, as specified in the namespace <code>ResourceOwner</code> field. For instances associated with namespaces that are shared with your account, you must specify an <code>OwnerAccount</code>.</p>"
         }
       }
     },
@@ -813,11 +820,15 @@
       "members":{
         "NamespaceName":{
           "shape":"NamespaceName",
-          "documentation":"<p>The <code>HttpName</code> name of the namespace. It's found in the <code>HttpProperties</code> member of the <code>Properties</code> member of the namespace.</p>"
+          "documentation":"<p>The <code>HttpName</code> name of the namespace. The <code>HttpName</code> is found in the <code>HttpProperties</code> member of the <code>Properties</code> member of the namespace.</p>"
         },
         "ServiceName":{
           "shape":"ServiceName",
           "documentation":"<p>The name of the service that you specified when you registered the instance.</p>"
+        },
+        "OwnerAccount":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the namespace associated with the instance, as specified in the namespace <code>ResourceOwner</code> field. For instances associated with namespaces that are shared with your account, you must specify an <code>OwnerAccount</code>. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         }
       }
     },
@@ -908,7 +919,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"},
         "DuplicateOperationId":{
-          "shape":"ResourceId",
+          "shape":"OperationId",
           "documentation":"<p>The ID of the operation that's already in progress.</p>"
         }
       },
@@ -947,8 +958,8 @@
       ],
       "members":{
         "ServiceId":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the service that the instance is associated with.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service that the instance is associated with. For services created in a shared namespace, specify the service ARN. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         },
         "InstanceId":{
           "shape":"ResourceId",
@@ -959,6 +970,10 @@
     "GetInstanceResponse":{
       "type":"structure",
       "members":{
+        "ResourceOwner":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that created the namespace that contains the service that the instance is associated with. If this isn't your account ID, it's the ID of the account that shared the namespace with your account.</p>"
+        },
         "Instance":{
           "shape":"Instance",
           "documentation":"<p>A complex type that contains information about a specified instance.</p>"
@@ -970,8 +985,8 @@
       "required":["ServiceId"],
       "members":{
         "ServiceId":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the service that the instance is associated with.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service that the instance is associated with. For services created in a shared namespace, specify the service ARN. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         },
         "Instances":{
           "shape":"InstanceIdList",
@@ -1005,8 +1020,8 @@
       "required":["Id"],
       "members":{
         "Id":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the namespace that you want to get information about.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the namespace that you want to get information about. For namespaces shared with your Amazon Web Services account, specify the namespace ARN. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i> </p>"
         }
       }
     },
@@ -1024,8 +1039,12 @@
       "required":["OperationId"],
       "members":{
         "OperationId":{
-          "shape":"ResourceId",
+          "shape":"OperationId",
           "documentation":"<p>The ID of the operation that you want to get more information about.</p>"
+        },
+        "OwnerAccount":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the namespace associated with the operation, as specified in the namespace <code>ResourceOwner</code> field. For operations associated with namespaces that are shared with your account, you must specify an <code>OwnerAccount</code>.</p>"
         }
       }
     },
@@ -1043,8 +1062,8 @@
       "required":["ServiceId"],
       "members":{
         "ServiceId":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the service that you want to get attributes for.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service that you want to get attributes for. For services created in a namespace shared with your Amazon Web Services account, specify the service ARN. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         }
       }
     },
@@ -1062,8 +1081,8 @@
       "required":["Id"],
       "members":{
         "Id":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the service that you want to get settings for.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service that you want to get settings for. For services created by consumers in a shared namespace, specify the service ARN. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         }
       }
     },
@@ -1141,7 +1160,7 @@
         },
         "NamespaceName":{
           "shape":"NamespaceNameHttp",
-          "documentation":"<p> <code/> <code/> <code/> </p> <p>The <code>HttpName</code> name of the namespace. It's found in the <code>HttpProperties</code> member of the <code>Properties</code> member of the namespace.</p>"
+          "documentation":"<p>The <code>HttpName</code> name of the namespace. It's found in the <code>HttpProperties</code> member of the <code>Properties</code> member of the namespace.</p>"
         },
         "ServiceName":{
           "shape":"ServiceName",
@@ -1198,6 +1217,10 @@
         "Attributes":{
           "shape":"Attributes",
           "documentation":"<p>A string map that contains the following information for the service that you specify in <code>ServiceId</code>:</p> <ul> <li> <p>The attributes that apply to the records that are defined in the service. </p> </li> <li> <p>For each attribute, the applicable value.</p> </li> </ul> <note> <p>Do not include sensitive information in the attributes if the namespace is discoverable by public DNS queries.</p> </note> <p>Supported attribute keys include the following:</p> <dl> <dt>AWS_ALIAS_DNS_NAME</dt> <dd> <p>If you want Cloud Map to create a Route 53 alias record that routes traffic to an Elastic Load Balancing load balancer, specify the DNS name that's associated with the load balancer. For information about how to get the DNS name, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_AliasTarget.html#Route53-Type-AliasTarget-DNSName\">AliasTarget-&gt;DNSName</a> in the <i>Route 53 API Reference</i>.</p> <p>Note the following:</p> <ul> <li> <p>The configuration for the service that's specified by <code>ServiceId</code> must include settings for an <code>A</code> record, an <code>AAAA</code> record, or both.</p> </li> <li> <p>In the service that's specified by <code>ServiceId</code>, the value of <code>RoutingPolicy</code> must be <code>WEIGHTED</code>.</p> </li> <li> <p>If the service that's specified by <code>ServiceId</code> includes <code>HealthCheckConfig</code> settings, Cloud Map creates the health check, but it won't associate the health check with the alias record.</p> </li> <li> <p>Auto naming currently doesn't support creating alias records that route traffic to Amazon Web Services resources other than ELB load balancers.</p> </li> <li> <p>If you specify a value for <code>AWS_ALIAS_DNS_NAME</code>, don't specify values for any of the <code>AWS_INSTANCE</code> attributes.</p> </li> </ul> </dd> <dt>AWS_EC2_INSTANCE_ID</dt> <dd> <p> <i>HTTP namespaces only.</i> The Amazon EC2 instance ID for the instance. The <code>AWS_INSTANCE_IPV4</code> attribute contains the primary private IPv4 address.</p> </dd> <dt>AWS_INIT_HEALTH_STATUS</dt> <dd> <p>If the service configuration includes <code>HealthCheckCustomConfig</code>, you can optionally use <code>AWS_INIT_HEALTH_STATUS</code> to specify the initial status of the custom health check, <code>HEALTHY</code> or <code>UNHEALTHY</code>. If you don't specify a value for <code>AWS_INIT_HEALTH_STATUS</code>, the initial status is <code>HEALTHY</code>.</p> </dd> <dt>AWS_INSTANCE_CNAME</dt> <dd> <p>If the service configuration includes a <code>CNAME</code> record, the domain name that you want Route 53 to return in response to DNS queries (for example, <code>example.com</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>CNAME</code> record.</p> </dd> <dt>AWS_INSTANCE_IPV4</dt> <dd> <p>If the service configuration includes an <code>A</code> record, the IPv4 address that you want Route 53 to return in response to DNS queries (for example, <code>192.0.2.44</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>A</code> record. If the service includes settings for an <code>SRV</code> record, you must specify a value for <code>AWS_INSTANCE_IPV4</code>, <code>AWS_INSTANCE_IPV6</code>, or both.</p> </dd> <dt>AWS_INSTANCE_IPV6</dt> <dd> <p>If the service configuration includes an <code>AAAA</code> record, the IPv6 address that you want Route 53 to return in response to DNS queries (for example, <code>2001:0db8:85a3:0000:0000:abcd:0001:2345</code>).</p> <p>This value is required if the service specified by <code>ServiceId</code> includes settings for an <code>AAAA</code> record. If the service includes settings for an <code>SRV</code> record, you must specify a value for <code>AWS_INSTANCE_IPV4</code>, <code>AWS_INSTANCE_IPV6</code>, or both.</p> </dd> <dt>AWS_INSTANCE_PORT</dt> <dd> <p>If the service includes an <code>SRV</code> record, the value that you want Route 53 to return for the port.</p> <p>If the service includes <code>HealthCheckConfig</code>, the port on the endpoint that you want Route 53 to send requests to. </p> <p>This value is required if you specified settings for an <code>SRV</code> record or a Route 53 health check when you created the service.</p> </dd> </dl>"
+        },
+        "CreatedByAccount":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that registered the instance. If this isn't your account ID, it's the ID of the account that shared the namespace with your account or the ID of another account with which the namespace has been shared. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>A complex type that contains information about an instance that Cloud Map creates when you submit a <code>RegisterInstance</code> request.</p>"
@@ -1235,6 +1258,10 @@
         "Attributes":{
           "shape":"Attributes",
           "documentation":"<p>A string map that contains the following information:</p> <ul> <li> <p>The attributes that are associated with the instance. </p> </li> <li> <p>For each attribute, the applicable value.</p> </li> </ul> <p>Supported attribute keys include the following:</p> <dl> <dt>AWS_ALIAS_DNS_NAME</dt> <dd> <p>For an alias record that routes traffic to an Elastic Load Balancing load balancer, the DNS name that's associated with the load balancer. </p> </dd> <dt>AWS_EC2_INSTANCE_ID (HTTP namespaces only)</dt> <dd> <p>The Amazon EC2 instance ID for the instance. When the <code>AWS_EC2_INSTANCE_ID</code> attribute is specified, then the <code>AWS_INSTANCE_IPV4</code> attribute contains the primary private IPv4 address.</p> </dd> <dt>AWS_INIT_HEALTH_STATUS</dt> <dd> <p>If the service configuration includes <code>HealthCheckCustomConfig</code>, you can optionally use <code>AWS_INIT_HEALTH_STATUS</code> to specify the initial status of the custom health check, <code>HEALTHY</code> or <code>UNHEALTHY</code>. If you don't specify a value for <code>AWS_INIT_HEALTH_STATUS</code>, the initial status is <code>HEALTHY</code>.</p> </dd> <dt>AWS_INSTANCE_CNAME</dt> <dd> <p>For a <code>CNAME</code> record, the domain name that Route 53 returns in response to DNS queries (for example, <code>example.com</code>).</p> </dd> <dt>AWS_INSTANCE_IPV4</dt> <dd> <p>For an <code>A</code> record, the IPv4 address that Route 53 returns in response to DNS queries (for example, <code>192.0.2.44</code>).</p> </dd> <dt>AWS_INSTANCE_IPV6</dt> <dd> <p>For an <code>AAAA</code> record, the IPv6 address that Route 53 returns in response to DNS queries (for example, <code>2001:0db8:85a3:0000:0000:abcd:0001:2345</code>).</p> </dd> <dt>AWS_INSTANCE_PORT</dt> <dd> <p>For an <code>SRV</code> record, the value that Route 53 returns for the port. In addition, if the service includes <code>HealthCheckConfig</code>, the port on the endpoint that Route 53 sends requests to.</p> </dd> </dl>"
+        },
+        "CreatedByAccount":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that registered the instance. If this isn't your account ID, it's the ID of the account that shared the namespace with your account or the ID of another account with which the namespace has been shared. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>A complex type that contains information about the instances that you registered by using a specified service.</p>"
@@ -1256,8 +1283,8 @@
       "required":["ServiceId"],
       "members":{
         "ServiceId":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the service that you want to list instances for.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service that you want to list instances for. For services created in a shared namespace, specify the service ARN. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -1272,6 +1299,10 @@
     "ListInstancesResponse":{
       "type":"structure",
       "members":{
+        "ResourceOwner":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that created the namespace that contains the specified service. If this isn't your account ID, it's the ID of the account that shared the namespace with your account.</p>"
+        },
         "Instances":{
           "shape":"InstanceSummaryList",
           "documentation":"<p>Summary information about the instances that are associated with the specified service.</p>"
@@ -1408,6 +1439,10 @@
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) that Cloud Map assigns to the namespace when you create it.</p>"
         },
+        "ResourceOwner":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that created the namespace. If this isn't your account ID, it's the ID of the account that shared the namespace with your account. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
+        },
         "Name":{
           "shape":"NamespaceName",
           "documentation":"<p>The name of the namespace, such as <code>example.com</code>.</p>"
@@ -1464,15 +1499,15 @@
       "members":{
         "Name":{
           "shape":"NamespaceFilterName",
-          "documentation":"<p>Specify the namespaces that you want to get using one of the following.</p> <ul> <li> <p> <code>TYPE</code>: Gets the namespaces of the specified type.</p> </li> <li> <p> <code>NAME</code>: Gets the namespaces with the specified name.</p> </li> <li> <p> <code>HTTP_NAME</code>: Gets the namespaces with the specified HTTP name.</p> </li> </ul>"
+          "documentation":"<p>Specify the namespaces that you want to get using one of the following.</p> <ul> <li> <p> <code>TYPE</code>: Gets the namespaces of the specified type.</p> </li> <li> <p> <code>NAME</code>: Gets the namespaces with the specified name.</p> </li> <li> <p> <code>HTTP_NAME</code>: Gets the namespaces with the specified HTTP name.</p> </li> <li> <p> <code>RESOURCE_OWNER</code>: Gets the namespaces created by your Amazon Web Services account or by other accounts. This can be used to filter for shared namespaces. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p> </li> </ul>"
         },
         "Values":{
           "shape":"FilterValues",
-          "documentation":"<p>Specify the values that are applicable to the value that you specify for <code>Name</code>.</p> <ul> <li> <p> <code>TYPE</code>: Specify <code>HTTP</code>, <code>DNS_PUBLIC</code>, or <code>DNS_PRIVATE</code>.</p> </li> <li> <p> <code>NAME</code>: Specify the name of the namespace, which is found in <code>Namespace.Name</code>.</p> </li> <li> <p> <code>HTTP_NAME</code>: Specify the HTTP name of the namespace, which is found in <code>Namespace.Properties.HttpProperties.HttpName</code>.</p> </li> </ul>"
+          "documentation":"<p>Specify the values that are applicable to the value that you specify for <code>Name</code>.</p> <ul> <li> <p> <code>TYPE</code>: Specify <code>HTTP</code>, <code>DNS_PUBLIC</code>, or <code>DNS_PRIVATE</code>.</p> </li> <li> <p> <code>NAME</code>: Specify the name of the namespace, which is found in <code>Namespace.Name</code>.</p> </li> <li> <p> <code>HTTP_NAME</code>: Specify the HTTP name of the namespace, which is found in <code>Namespace.Properties.HttpProperties.HttpName</code>.</p> </li> <li> <p> <code>RESOURCE_OWNER</code>: Specify one of <code>SELF</code> or <code>OTHER_ACCOUNTS</code>. <code>SELF</code> can be used to filter namespaces created by you and <code>OTHER_ACCOUNTS</code> can be used to filter namespaces shared with you that were created by other accounts.</p> </li> </ul>"
         },
         "Condition":{
           "shape":"FilterCondition",
-          "documentation":"<p>Specify the operator that you want to use to determine whether a namespace matches the specified value. Valid values for <code>Condition</code> are one of the following.</p> <ul> <li> <p> <code>EQ</code>: When you specify <code>EQ</code> for <code>Condition</code>, you can specify only one value. <code>EQ</code> is supported for <code>TYPE</code>, <code>NAME</code>, and <code>HTTP_NAME</code>. <code>EQ</code> is the default condition and can be omitted.</p> </li> <li> <p> <code>BEGINS_WITH</code>: When you specify <code>BEGINS_WITH</code> for <code>Condition</code>, you can specify only one value. <code>BEGINS_WITH</code> is supported for <code>TYPE</code>, <code>NAME</code>, and <code>HTTP_NAME</code>.</p> </li> </ul>"
+          "documentation":"<p>Specify the operator that you want to use to determine whether a namespace matches the specified value. Valid values for <code>Condition</code> are one of the following.</p> <ul> <li> <p> <code>EQ</code>: When you specify <code>EQ</code> for <code>Condition</code>, you can specify only one value. <code>EQ</code> is supported for <code>TYPE</code>, <code>NAME</code>, <code>RESOURCE_OWNER</code> and <code>HTTP_NAME</code>. <code>EQ</code> is the default condition and can be omitted.</p> </li> <li> <p> <code>BEGINS_WITH</code>: When you specify <code>BEGINS_WITH</code> for <code>Condition</code>, you can specify only one value. <code>BEGINS_WITH</code> is supported for <code>TYPE</code>, <code>NAME</code>, and <code>HTTP_NAME</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>A complex type that identifies the namespaces that you want to list. You can choose to list public or private namespaces.</p>"
@@ -1482,7 +1517,8 @@
       "enum":[
         "TYPE",
         "NAME",
-        "HTTP_NAME"
+        "HTTP_NAME",
+        "RESOURCE_OWNER"
       ]
     },
     "NamespaceFilters":{
@@ -1497,12 +1533,12 @@
     "NamespaceNameHttp":{
       "type":"string",
       "max":1024,
-      "pattern":"^[!-~]{1,1024}$"
+      "pattern":"^(?!arn:)[!-~]{1,1024}$"
     },
     "NamespaceNamePrivate":{
       "type":"string",
       "max":253,
-      "pattern":"^[!-~]{1,253}$"
+      "pattern":"^(?!arn:)[!-~]{1,253}$"
     },
     "NamespaceNamePublic":{
       "type":"string",
@@ -1545,6 +1581,10 @@
         "Arn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) that Cloud Map assigns to the namespace when you create it.</p>"
+        },
+        "ResourceOwner":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that created the namespace. If this isn't your account ID, it's the ID of the account that shared the namespace with your account. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         },
         "Name":{
           "shape":"NamespaceName",
@@ -1591,6 +1631,10 @@
         "Id":{
           "shape":"OperationId",
           "documentation":"<p>The ID of the operation that you want to get information about.</p>"
+        },
+        "OwnerAccount":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the namespace associated with the operation.</p>"
         },
         "Type":{
           "shape":"OperationType",
@@ -1861,8 +1905,8 @@
       ],
       "members":{
         "ServiceId":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the service that you want to use for settings for the instance.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service that you want to use for settings for the instance. For services created in a shared namespace, specify the service ARN. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         },
         "InstanceId":{
           "shape":"InstanceId",
@@ -1974,6 +2018,10 @@
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) that Cloud Map assigns to the service when you create it.</p>"
         },
+        "ResourceOwner":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that created the namespace with which the service is associated. If this isn't your account ID, it is the ID of the account that shared the namespace with your account. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
+        },
         "Name":{
           "shape":"ServiceName",
           "documentation":"<p>The name of the service.</p>"
@@ -2013,6 +2061,10 @@
         "CreatorRequestId":{
           "shape":"ResourceId",
           "documentation":"<p>A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. <code>CreatorRequestId</code> can be any unique string (for example, a date/timestamp).</p>"
+        },
+        "CreatedByAccount":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that created the service. If this isn't your account ID, it is the ID of account of the namespace owner or of another account with which the namespace has been shared. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>A complex type that contains information about the specified service.</p>"
@@ -2028,6 +2080,10 @@
         "ServiceId":{
           "shape":"ResourceId",
           "documentation":"<p>The ID of the existing service.</p>"
+        },
+        "ServiceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the existing service.</p>"
         }
       },
       "documentation":"<p>The service can't be created because a service with the same name already exists.</p>",
@@ -2053,6 +2109,10 @@
         "ServiceArn":{
           "shape":"Arn",
           "documentation":"<p>The ARN of the service that the attributes are associated with.</p>"
+        },
+        "ResourceOwner":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that created the namespace with which the service is associated. If this isn't your account ID, it is the ID of the account that shared the namespace with your account. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         },
         "Attributes":{
           "shape":"ServiceAttributesMap",
@@ -2103,22 +2163,25 @@
       "members":{
         "Name":{
           "shape":"ServiceFilterName",
-          "documentation":"<p>Specify <code>NAMESPACE_ID</code>.</p>"
+          "documentation":"<p>Specify the services that you want to get using one of the following.</p> <ul> <li> <p> <code>NAMESPACE_ID</code>: Gets the services associated with the specified namespace.</p> </li> <li> <p> <code>RESOURCE_OWNER</code>: Gets the services associated with the namespaces created by your Amazon Web Services account or by other accounts. This can be used to filter for services created in a shared namespace. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p> </li> </ul>"
         },
         "Values":{
           "shape":"FilterValues",
-          "documentation":"<p>The values that are applicable to the value that you specify for <code>Condition</code> to filter the list of services.</p>"
+          "documentation":"<p>The values that are applicable to the value that you specify for <code>Condition</code> to filter the list of services.</p> <ul> <li> <p> <b>NAMESPACE_ID</b>: Specify one namespace ID or ARN. Specify the namespace ARN for namespaces that are shared with your Amazon Web Services account.</p> </li> <li> <p> <b>RESOURCE_OWNER</b>: Specify one of <code>SELF</code> or <code>OTHER_ACCOUNTS</code>. <code>SELF</code> can be used to filter services associated with namespaces created by you and <code>OTHER_ACCOUNTS</code> can be used to filter services associated with namespaces that were shared with you.</p> </li> </ul>"
         },
         "Condition":{
           "shape":"FilterCondition",
-          "documentation":"<p>The operator that you want to use to determine whether a service is returned by <code>ListServices</code>. Valid values for <code>Condition</code> include the following:</p> <ul> <li> <p> <code>EQ</code>: When you specify <code>EQ</code>, specify one namespace ID for <code>Values</code>. <code>EQ</code> is the default condition and can be omitted.</p> </li> </ul>"
+          "documentation":"<p>The operator that you want to use to determine whether a service is returned by <code>ListServices</code>. Valid values for <code>Condition</code> include the following:</p> <ul> <li> <p> <code>EQ</code>: When you specify <code>EQ</code>, specify one value. <code>EQ</code> is the default condition and can be omitted.</p> </li> </ul>"
         }
       },
       "documentation":"<p>A complex type that lets you specify the namespaces that you want to list services for.</p>"
     },
     "ServiceFilterName":{
       "type":"string",
-      "enum":["NAMESPACE_ID"]
+      "enum":[
+        "NAMESPACE_ID",
+        "RESOURCE_OWNER"
+      ]
     },
     "ServiceFilters":{
       "type":"list",
@@ -2151,6 +2214,10 @@
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) that Cloud Map assigns to the service when you create it.</p>"
         },
+        "ResourceOwner":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that created the namespace with which the service is associated. If this isn't your account ID, it is the ID of the account that shared the namespace with your account. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
+        },
         "Name":{
           "shape":"ServiceName",
           "documentation":"<p>The name of the service.</p>"
@@ -2182,6 +2249,10 @@
         "CreateDate":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that the service was created.</p>"
+        },
+        "CreatedByAccount":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that created the service. If this isn't your account ID, it is the account ID of the namespace owner or of another account with which the namespace has been shared. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>A complex type that contains information about a specified service.</p>"
@@ -2252,8 +2323,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -2292,8 +2362,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateHttpNamespaceRequest":{
       "type":"structure",
@@ -2303,8 +2372,8 @@
       ],
       "members":{
         "Id":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the namespace that you want to update.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the namespace that you want to update.</p>"
         },
         "UpdaterRequestId":{
           "shape":"ResourceId",
@@ -2335,8 +2404,8 @@
       ],
       "members":{
         "ServiceId":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the service that includes the configuration for the custom health check that you want to change the status for.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service that includes the configuration for the custom health check that you want to change the status for. For services created in a shared namespace, specify the service ARN. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i>.</p>"
         },
         "InstanceId":{
           "shape":"ResourceId",
@@ -2356,8 +2425,8 @@
       ],
       "members":{
         "Id":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the namespace that you want to update.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the namespace that you want to update.</p>"
         },
         "UpdaterRequestId":{
           "shape":"ResourceId",
@@ -2387,8 +2456,8 @@
       ],
       "members":{
         "Id":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the namespace being updated.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the namespace being updated.</p>"
         },
         "UpdaterRequestId":{
           "shape":"ResourceId",
@@ -2418,8 +2487,8 @@
       ],
       "members":{
         "ServiceId":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the service that you want to update.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service that you want to update. For services created in a namespace shared with your Amazon Web Services account, specify the service ARN.</p>"
         },
         "Attributes":{
           "shape":"ServiceAttributesMap",
@@ -2429,8 +2498,7 @@
     },
     "UpdateServiceAttributesResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateServiceRequest":{
       "type":"structure",
@@ -2440,8 +2508,8 @@
       ],
       "members":{
         "Id":{
-          "shape":"ResourceId",
-          "documentation":"<p>The ID of the service that you want to update.</p>"
+          "shape":"Arn",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service that you want to update. If the namespace associated with the service is shared with your Amazon Web Services account, specify the service ARN. For more information about shared namespaces, see <a href=\"https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html\">Cross-account Cloud Map namespace sharing</a> in the <i>Cloud Map Developer Guide</i> </p>"
         },
         "Service":{
           "shape":"ServiceChange",

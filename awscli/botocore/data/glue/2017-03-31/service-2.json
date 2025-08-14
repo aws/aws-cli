@@ -569,6 +569,24 @@
       ],
       "documentation":"<p>Creates a new development endpoint.</p>"
     },
+    "CreateGlueIdentityCenterConfiguration":{
+      "name":"CreateGlueIdentityCenterConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateGlueIdentityCenterConfigurationRequest"},
+      "output":{"shape":"CreateGlueIdentityCenterConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"AlreadyExistsException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Creates a new Glue Identity Center configuration to enable integration between Glue and Amazon Web Services IAM Identity Center for authentication and authorization.</p>"
+    },
     "CreateIntegration":{
       "name":"CreateIntegration",
       "http":{
@@ -1109,6 +1127,24 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>Deletes a specified development endpoint.</p>"
+    },
+    "DeleteGlueIdentityCenterConfiguration":{
+      "name":"DeleteGlueIdentityCenterConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteGlueIdentityCenterConfigurationRequest"},
+      "output":{"shape":"DeleteGlueIdentityCenterConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Deletes the existing Glue Identity Center configuration, removing the integration between Glue and Amazon Web Services IAM Identity Center.</p>"
     },
     "DeleteIntegration":{
       "name":"DeleteIntegration",
@@ -2017,6 +2053,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>This API is used to query preview data from a given connection type or from a native Amazon S3 based Glue Data Catalog.</p> <p>Returns records as an array of JSON blobs. Each record is formatted using Jackson JsonNode based on the field type defined by the <code>DescribeEntity</code> API.</p> <p>Spark connectors generate schemas according to the same data type mapping as in the <code>DescribeEntity</code> API. Spark connectors convert data to the appropriate data types matching the schema when returning rows.</p>"
+    },
+    "GetGlueIdentityCenterConfiguration":{
+      "name":"GetGlueIdentityCenterConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetGlueIdentityCenterConfigurationRequest"},
+      "output":{"shape":"GetGlueIdentityCenterConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Retrieves the current Glue Identity Center configuration details, including the associated Identity Center instance and application information.</p>"
     },
     "GetIntegrationResourceProperty":{
       "name":"GetIntegrationResourceProperty",
@@ -4028,6 +4082,24 @@
       ],
       "documentation":"<p>Updates a specified development endpoint.</p>"
     },
+    "UpdateGlueIdentityCenterConfiguration":{
+      "name":"UpdateGlueIdentityCenterConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateGlueIdentityCenterConfigurationRequest"},
+      "output":{"shape":"UpdateGlueIdentityCenterConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Updates the existing Glue Identity Center configuration, allowing modification of scopes and permissions for the integration.</p>"
+    },
     "UpdateIntegrationResourceProperty":{
       "name":"UpdateIntegrationResourceProperty",
       "http":{
@@ -4700,6 +4772,11 @@
       "max":256,
       "min":1,
       "pattern":"[a-zA-Z0-9.-]*"
+    },
+    "ApplicationArn":{
+      "type":"string",
+      "max":1224,
+      "min":10
     },
     "ApplyMapping":{
       "type":"structure",
@@ -9079,6 +9156,31 @@
         }
       }
     },
+    "CreateGlueIdentityCenterConfigurationRequest":{
+      "type":"structure",
+      "required":["InstanceArn"],
+      "members":{
+        "InstanceArn":{
+          "shape":"IdentityCenterInstanceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity Center instance to be associated with the Glue configuration.</p>"
+        },
+        "Scopes":{
+          "shape":"IdentityCenterScopesList",
+          "documentation":"<p>A list of Identity Center scopes that define the permissions and access levels for the Glue configuration.</p>"
+        }
+      },
+      "documentation":"<p>Request to create a new Glue Identity Center configuration.</p>"
+    },
+    "CreateGlueIdentityCenterConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ApplicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity Center application that was created for the Glue configuration.</p>"
+        }
+      },
+      "documentation":"<p>Response from creating a new Glue Identity Center configuration.</p>"
+    },
     "CreateGrokClassifierRequest":{
       "type":"structure",
       "required":[
@@ -11558,6 +11660,16 @@
     "DeleteDevEndpointResponse":{
       "type":"structure",
       "members":{}
+    },
+    "DeleteGlueIdentityCenterConfigurationRequest":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Request to delete the existing Glue Identity Center configuration.</p>"
+    },
+    "DeleteGlueIdentityCenterConfigurationResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Response from deleting the Glue Identity Center configuration.</p>"
     },
     "DeleteIntegrationRequest":{
       "type":"structure",
@@ -14713,6 +14825,29 @@
         }
       }
     },
+    "GetGlueIdentityCenterConfigurationRequest":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Request to retrieve the Glue Identity Center configuration.</p>"
+    },
+    "GetGlueIdentityCenterConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ApplicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity Center application associated with the Glue configuration.</p>"
+        },
+        "InstanceArn":{
+          "shape":"IdentityCenterInstanceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity Center instance associated with the Glue configuration.</p>"
+        },
+        "Scopes":{
+          "shape":"OrchestrationStringList",
+          "documentation":"<p>A list of Identity Center scopes that define the permissions and access levels for the Glue configuration.</p>"
+        }
+      },
+      "documentation":"<p>Response containing the Glue Identity Center configuration details.</p>"
+    },
     "GetIntegrationResourcePropertyRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -17280,6 +17415,21 @@
       },
       "documentation":"<p>The same unique identifier was associated with two different records.</p>",
       "exception":true
+    },
+    "IdentityCenterInstanceArn":{
+      "type":"string",
+      "max":1224,
+      "min":10
+    },
+    "IdentityCenterScope":{
+      "type":"string",
+      "max":50
+    },
+    "IdentityCenterScopesList":{
+      "type":"list",
+      "member":{"shape":"IdentityCenterScope"},
+      "max":50,
+      "min":1
     },
     "IdleTimeout":{
       "type":"integer",
@@ -27162,6 +27312,21 @@
     "UpdateDevEndpointResponse":{
       "type":"structure",
       "members":{}
+    },
+    "UpdateGlueIdentityCenterConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "Scopes":{
+          "shape":"IdentityCenterScopesList",
+          "documentation":"<p>A list of Identity Center scopes that define the updated permissions and access levels for the Glue configuration.</p>"
+        }
+      },
+      "documentation":"<p>Request to update an existing Glue Identity Center configuration.</p>"
+    },
+    "UpdateGlueIdentityCenterConfigurationResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Response from updating an existing Glue Identity Center configuration.</p>"
     },
     "UpdateGrokClassifierRequest":{
       "type":"structure",

@@ -109,3 +109,37 @@ class FileInfo:
         # restored back to S3.
         # 'Restore' looks like: 'ongoing-request="false", expiry-date="..."'
         return 'ongoing-request="false"' in response_data.get('Restore', '')
+
+
+class VersionedFileInfo(FileInfo):
+    def __init__(self, version_id=None, is_delete_marker=False, **kwargs):
+        """
+        This class extends FileInfo to include version information for S3 objects.
+        It is specifically designed for operations that need to work with versioned
+        S3 objects, such as deleting all versions of an object.
+
+        :param version_id: The version ID of the S3 object.
+        :type version_id: string
+        """
+        super().__init__(**kwargs)
+        self.version_id = version_id
+
+    def is_glacier_compatible(self):
+        """
+        Determines glacier compatibility for versioned S3 objects, with special handling for delete operations.
+
+        This method overrides the parent FileInfo.is_glacier_compatible() to provide enhanced
+        compatibility checking for S3 objects stored in glacier storage classes
+        when versioning is enabled on the bucket.
+
+        This method override allows delete operations to proceed on versioned glacier objects.
+        Since delete operations on glacier objects succeed regardless of storage class
+
+        :rtype: bool
+        :returns: True if the operation can proceed on glacier objects (specifically for delete
+                operations on versioned objects), False if the operation would fail due to
+                glacier storage class restrictions
+        """
+        if self.operation_name == 'delete':
+            return True
+        return super().is_glacier_compatible()

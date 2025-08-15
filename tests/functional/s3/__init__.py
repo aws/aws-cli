@@ -257,6 +257,74 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
             self.complete_mpu_response(),
         ]
 
+    def list_object_versions_request(
+        self, bucket, prefix=None, **override_kwargs
+    ):
+        params = {
+            'Bucket': bucket,
+        }
+        if prefix is not None:
+            params['Prefix'] = prefix
+        params.update(override_kwargs)
+        return 'ListObjectVersions', params
+
+    def list_object_versions_response(self, keys, **override_kwargs):
+        versions = []
+        delete_markers = []
+        for key in keys:
+            version = {
+                'Key': key,
+                'VersionId': 'version1',
+                'LastModified': '00:00:00Z',
+                'Size': 100,
+                'ETag': '"foo-1"',
+                'IsLatest': False,
+            }
+            delete_marker = {
+                'Key': key,
+                'VersionId': 'deletemarker1',
+                'LastModified': '00:00:00Z',
+                'IsLatest': True,
+            }
+            if override_kwargs:
+                version.update(override_kwargs)
+                delete_marker.update(override_kwargs)
+
+            versions.append(version)
+            delete_markers.append(delete_marker)
+        return {'Versions': versions, 'DeleteMarkers': delete_markers}
+
+    def delete_objects_request(
+        self, bucket, objects_to_delete, **override_kwargs
+    ):
+        params = {
+            'Bucket': bucket,
+            'Delete': {
+                'Objects': objects_to_delete,
+                'Quiet': False,
+            },
+        }
+        params.update(override_kwargs)
+        return 'DeleteObjects', params
+
+    def delete_objects_response(self, keys, **override_kwargs):
+        deleted = []
+
+        for key in keys:
+            # Create deleted entries for each version that was deleted
+            deleted_objects = [
+                {'Key': key, 'VersionId': 'version1'},
+                {'Key': key, 'VersionId': 'deletemarker1'},
+            ]
+
+            if override_kwargs:
+                for obj in deleted_objects:
+                    obj.update(override_kwargs)
+
+            deleted.extend(deleted_objects)
+
+        return {'Deleted': deleted}
+
 
 class BaseS3CLIRunnerTest(unittest.TestCase):
     def setUp(self):

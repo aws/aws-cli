@@ -24,7 +24,7 @@ from s3transfer.constants import (
     MB,
 )
 from s3transfer.copies import CopySubmissionTask
-from s3transfer.delete import DeleteSubmissionTask
+from s3transfer.delete import BatchDeleteSubmissionTask, DeleteSubmissionTask
 from s3transfer.download import DownloadSubmissionTask
 from s3transfer.exceptions import CancelledError, FatalError
 from s3transfer.futures import (
@@ -664,6 +664,26 @@ class TransferManager:
             self._submission_executor.shutdown()
             self._request_executor.shutdown()
             self._io_executor.shutdown()
+
+    def batch_delete(self, bucket, objects, extra_args=None, subscribers=None):
+        """Delete multiple S3 objects in batches"""
+        if extra_args is None:
+            extra_args = {}
+        if subscribers is None:
+            subscribers = []
+        # Version ID is not included in input shape.
+        allowed_delete_objects_args = [
+            arg for arg in self.ALLOWED_DELETE_ARGS if arg != 'VersionId'
+        ]
+        self._validate_all_known_args(extra_args, allowed_delete_objects_args)
+        self._validate_if_bucket_supported(bucket)
+        call_args = CallArgs(
+            bucket=bucket,
+            objects=objects,
+            extra_args=extra_args,
+            subscribers=subscribers,
+        )
+        return self._submit_transfer(call_args, BatchDeleteSubmissionTask)
 
 
 class TransferCoordinatorController:

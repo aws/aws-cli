@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.28.11
+=======
+
+* api-change:``amp``: Add Resource-based Policy APIs for Amazon Prometheus
+* api-change:``glue``: AWS Glue Zero ETL now supports On-demand snapshot load
+* api-change:``bedrock-agent``: This release adds support for saving Bedrock Flows while node configuration is still in progress, even if the Flow is not yet able to be invoked
+
+
 2.28.10
 =======
 

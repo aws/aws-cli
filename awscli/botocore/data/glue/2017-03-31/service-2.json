@@ -8254,6 +8254,7 @@
       "max":20,
       "min":1
     },
+    "ContinuousSync":{"type":"boolean"},
     "Crawl":{
       "type":"structure",
       "members":{
@@ -17643,6 +17644,10 @@
         "SourceProperties":{
           "shape":"IntegrationSourcePropertiesMap",
           "documentation":"<p> A collection of key-value pairs that specify additional properties for the integration source. These properties provide configuration options that can be used to customize the behavior of the ODB source during data integration operations. </p>"
+        },
+        "ContinuousSync":{
+          "shape":"ContinuousSync",
+          "documentation":"<p>Enables continuous synchronization for on-demand data extractions from SaaS applications to Amazon Web Services data services like Amazon Redshift and Amazon S3.</p>"
         }
       },
       "documentation":"<p>Properties associated with the integration.</p>"
@@ -17725,7 +17730,7 @@
         },
         "FunctionSpec":{
           "shape":"String128",
-          "documentation":"<p>Specifies the function used to partition data on the target. The only accepted value for this parameter is `'identity'` (string). The `'identity'` function ensures that the data partitioning on the target follows the same scheme as the source. In other words, the partitioning structure of the source data is preserved in the target destination.</p>"
+          "documentation":"<p>Specifies the function used to partition data on the target. The accepted values for this parameter are:</p> <ul> <li> <p> <code>identity</code> - Uses source values directly without transformation</p> </li> <li> <p> <code>year</code> - Extracts the year from timestamp values (e.g., 2023)</p> </li> <li> <p> <code>month</code> - Extracts the month from timestamp values (e.g., 2023-01)</p> </li> <li> <p> <code>day</code> - Extracts the day from timestamp values (e.g., 2023-01-15)</p> </li> <li> <p> <code>hour</code> - Extracts the hour from timestamp values (e.g., 2023-01-15-14)</p> </li> </ul>"
         },
         "ConversionSpec":{
           "shape":"String128",
@@ -20297,6 +20302,7 @@
           "shape":"String2048",
           "documentation":"<p>Selects source tables for the integration using Maxwell filter syntax.</p>"
         },
+        "IntegrationConfig":{"shape":"IntegrationConfig"},
         "IntegrationName":{
           "shape":"String128",
           "documentation":"<p>A unique name for an integration in Glue.</p>"
@@ -20361,7 +20367,8 @@
         "DataFilter":{
           "shape":"String2048",
           "documentation":"<p>Selects source tables for the integration using Maxwell filter syntax.</p>"
-        }
+        },
+        "IntegrationConfig":{"shape":"IntegrationConfig"}
       }
     },
     "MongoDBTarget":{

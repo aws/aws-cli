@@ -450,7 +450,7 @@ class ResultPrinter(BaseResultHandler):
         self._add_progress_if_needed()
 
     def _add_progress_if_needed(self):
-        LOGGER.debug("Remaining Progrss %s",self._has_remaining_progress())
+        LOGGER.debug("Remaining Progrss %s", self._has_remaining_progress())
         if self._has_remaining_progress():
             self._print_progress()
 
@@ -519,11 +519,15 @@ class ResultPrinter(BaseResultHandler):
         return print_statement + ending_char
 
     def _has_remaining_progress(self):
-        LOGGER.debug("Expected Files %s", self._result_recorder.expected_totals_are_final())
+        LOGGER.debug(
+            "Expected Files %s",
+            self._result_recorder.expected_totals_are_final(),
+        )
         if not self._result_recorder.expected_totals_are_final():
             return True
         actual = self._result_recorder.files_transferred
         expected = self._result_recorder.expected_files_transferred
+        LOGGER.debug("Actual %s Expected %s", actual, expected)
         return actual != expected
 
     def _print_to_out_file(self, statement):

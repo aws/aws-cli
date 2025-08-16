@@ -27,7 +27,7 @@ class BaseSelectTest(BaseAWSCommandParamsTest):
 
 class TestSelect(BaseSelectTest):
     def setUp(self):
-        super(TestSelect, self).setUp()
+        super().setUp()
         self.parsed_response = {
             "Count": 1,
             "Items": [{"foo": {"S": "spam"}}],
@@ -509,7 +509,7 @@ class TestSelect(BaseSelectTest):
 
 class TestSelectPagination(BaseSelectTest):
     def setUp(self):
-        super(TestSelectPagination, self).setUp()
+        super().setUp()
         self.parsed_responses = [
             {
                 "Count": 1,
@@ -617,8 +617,8 @@ class TestSelectPagination(BaseSelectTest):
             command, expected_params, expected_rc=0
         )
         expected_response = {
-            'Count': 0,
+            'Count': 1,
             'Items': [{'foo': 2}],
-            'ScannedCount': 0,
+            'ScannedCount': 1,
         }
         self.assert_yaml_response_equal(stdout, expected_response)

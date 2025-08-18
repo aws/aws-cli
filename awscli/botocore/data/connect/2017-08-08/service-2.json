@@ -627,9 +627,10 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServiceException"},
         {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Adds a new participant into an on-going chat contact. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-customize-flow.html\">Customize chat flow experiences by integrating custom participants</a>.</p>"
+      "documentation":"<p>Adds a new participant into an on-going chat contact or webRTC call. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-customize-flow.html\">Customize chat flow experiences by integrating custom participants</a> or <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-multiuser-inapp.html\">Enable multi-user web, in-app, and video calling</a>.</p>"
     },
     "CreatePersistentContactAssociation":{
       "name":"CreatePersistentContactAssociation",
@@ -2182,7 +2183,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Gets the real-time metric data from the specified Amazon Connect instance.</p> <p>For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <note> <p>When you make a successful API request, you can expect the following metric values in the response:</p> <ol> <li> <p> <b>Metric value is null</b>: The calculation cannot be performed due to divide by zero or insufficient data</p> </li> <li> <p> <b>Metric value is a number (including 0) of defined type</b>: The number provided is the calculation result</p> </li> <li> <p> <b>MetricResult list is empty</b>: The request cannot find any data in the system</p> </li> </ol> <p>The following guidelines can help you work with the API:</p> <ul> <li> <p>Each dimension in the metric response must contain a value</p> </li> <li> <p>Each item in MetricResult must include all requested metrics</p> </li> <li> <p>If the response is slow due to large result sets, try these approaches:</p> <ul> <li> <p>Narrow the time range of your request</p> </li> <li> <p>Add filters to reduce the amount of data returned</p> </li> </ul> </li> </ul> </note>"
+      "documentation":"<p>Gets the real-time metric data from the specified Amazon Connect instance.</p> <p>For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <note> <p>When you make a successful API request, you can expect the following metric values in the response:</p> <ol> <li> <p> <b>Metric value is null</b>: The calculation cannot be performed due to divide by zero or insufficient data</p> </li> <li> <p> <b>Metric value is a number (including 0) of defined type</b>: The number provided is the calculation result</p> </li> <li> <p> <b>MetricResult list is empty</b>: The request cannot find any data in the system</p> </li> </ol> <p>The following guidelines can help you work with the API:</p> <ul> <li> <p>Each dimension in the metric response must contain a value</p> </li> <li> <p>Each item in MetricResult must include all requested metrics</p> </li> <li> <p>If the response is slow due to large result sets, try these approaches:</p> <ul> <li> <p>Add filters to reduce the amount of data returned</p> </li> </ul> </li> </ul> </note>"
     },
     "GetCurrentUserData":{
       "name":"GetCurrentUserData",
@@ -8660,7 +8661,7 @@
         },
         "ContactId":{
           "shape":"ContactId",
-          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect. Only contacts in the CHAT channel are supported.</p>"
+          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect. Supports contacts in the CHAT channel and VOICE (WebRTC) channels. For WebRTC calls, this should be the initial contact ID that was generated when the contact was first created (from the StartWebRTCContact API) in the VOICE channel</p>"
         },
         "ClientToken":{
           "shape":"ClientToken",
@@ -8669,7 +8670,7 @@
         },
         "ParticipantDetails":{
           "shape":"ParticipantDetailsToAdd",
-          "documentation":"<p>Information identifying the participant.</p> <important> <p>The only Valid value for <code>ParticipantRole</code> is <code>CUSTOM_BOT</code>. </p> <p> <code>DisplayName</code> is <b>Required</b>.</p> </important>"
+          "documentation":"<p>Information identifying the participant.</p> <important> <p>The only valid value for <code>ParticipantRole</code> is <code>CUSTOM_BOT</code> for chat contact and <code>CUSTOMER</code> for voice contact.</p> </important>"
         }
       }
     },
@@ -18430,7 +18431,8 @@
         "DisplayName":{
           "shape":"DisplayName",
           "documentation":"<p>The display name of the participant.</p>"
-        }
+        },
+        "ParticipantCapabilities":{"shape":"ParticipantCapabilities"}
       },
       "documentation":"<p>The details to add for the participant.</p>"
     },

@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.42.12
+=======
+
+* api-change:``batch``: Added default_x86_64 and default_arm64 as values to the instanceTypes field.
+* api-change:``bcm-dashboards``: Billing and Cost Management Dashboards enables users to create dashboards that combine multiple visualizations of cost and usage data. Users can create, manage, and share dashboards. Tags are also available for dashboards.
+* api-change:``connect``: Amazon Connect Service Feature: Add support to enable multi-user in-app, web, and video calling.
+* api-change:``connectparticipant``: Amazon Connect Service Feature: Add support to enable multi-user in-app, web, and video calling.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``s3control``: Adds support for Compute checksum functionality in Amazon S3 Batch Operations. You can now calculate checksums for a list of objects using supported algorithms in Amazon S3, without requiring a restore or download
+* api-change:``sagemaker``: Customer managed keys now available for volume encryption of SageMaker HyperPod clusters.
+
+
 1.42.11
 =======
 

@@ -154,10 +154,9 @@ class ConfigureMFALoginCommand(BasicCommand):
                 target_profile = self._generate_profile_name_from_mfa(mfa_serial)
             else:
                 target_profile = "session-temp"
-            if sys.stdin.isatty():
-                target_profile = self._prompter.get_value(
-                    target_profile, 'Profile to update'
-                )
+            target_profile = self._prompter.get_value(
+                target_profile, 'Profile to update'
+            )
         return target_profile
 
     def _run_main(self, parsed_args, parsed_globals):
@@ -187,8 +186,8 @@ class ConfigureMFALoginCommand(BasicCommand):
             # Get credentials
             credentials = session.get_credentials()
             if credentials is None:
-                # If no credentials found and using default profile and running interactively, prompt for them
-                if source_profile == 'default' and sys.stdin.isatty():
+                # If no credentials found and using default profile, prompt for them
+                if source_profile == 'default':
                     return self._handle_missing_default_profile(
                         parsed_args, duration_seconds
                     )
@@ -200,8 +199,8 @@ class ConfigureMFALoginCommand(BasicCommand):
 
             source_config = session.get_scoped_config()
         except ProfileNotFound:
-            # If default profile not found and running interactively, prompt for credentials
-            if source_profile == 'default' and sys.stdin.isatty():
+            # If default profile not found, prompt for credentials
+            if source_profile == 'default':
                 return self._handle_missing_default_profile(
                     parsed_args, duration_seconds
                 )
@@ -221,26 +220,18 @@ class ConfigureMFALoginCommand(BasicCommand):
             'mfa_serial'
         )
         if not mfa_serial:
-            if sys.stdin.isatty():
-                mfa_serial = self._prompter.get_credential_value(
-                    'None', 'mfa_serial', 'MFA serial number or ARN'
-                )
-                if not mfa_serial:
-                    sys.stderr.write("MFA serial number or ARN is required\n")
-                    return 1
-            else:
+            mfa_serial = self._prompter.get_credential_value(
+                'None', 'mfa_serial', 'MFA serial number or ARN'
+            )
+            if not mfa_serial:
                 sys.stderr.write("MFA serial number or ARN is required\n")
                 return 1
 
         # Get MFA token code
-        if sys.stdin.isatty():
-            token_code = self._prompter.get_credential_value(
-                'None', 'mfa_token', 'MFA token code'
-            )
-            if not token_code:
-                sys.stderr.write("MFA token code is required\n")
-                return 1
-        else:
+        token_code = self._prompter.get_credential_value(
+            'None', 'mfa_token', 'MFA token code'
+        )
+        if not token_code:
             sys.stderr.write("MFA token code is required\n")
             return 1
 

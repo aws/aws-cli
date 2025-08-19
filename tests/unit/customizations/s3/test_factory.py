@@ -231,6 +231,7 @@ class TestTransferManagerFactory(unittest.TestCase):
             max_concurrent_requests=20,
             max_queue_size=5000,
             max_bandwidth=10 * MB,
+            io_chunksize=1 * MB,
         )
         transfer_manager = self.factory.create_transfer_manager(
             self.params, self.runtime_config
@@ -240,6 +241,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assertEqual(transfer_manager.config.max_request_concurrency, 20)
         self.assertEqual(transfer_manager.config.max_request_queue_size, 5000)
         self.assertEqual(transfer_manager.config.max_bandwidth, 10 * MB)
+        self.assertEqual(transfer_manager.config.io_chunksize, 1 * MB)
         # These configurations are hardcoded and not configurable but
         # we just want to make sure they are being set by the factory.
         self.assertEqual(

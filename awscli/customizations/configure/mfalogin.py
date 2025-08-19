@@ -165,7 +165,7 @@ class ConfigureMFALoginCommand(BasicCommand):
 
     def _write_temporary_credentials(self, temp_credentials, target_profile):
         """Write temporary credentials to the credentials file."""
-        credentials_file = os.path.expanduser('~/.aws/credentials')
+        credentials_file = os.path.expanduser(self._session.get_config_variable('credentials_file'))
 
         credential_values = {
             '__section__': target_profile,

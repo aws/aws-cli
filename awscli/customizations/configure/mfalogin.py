@@ -51,35 +51,15 @@ class ConfigureMFALoginCommand(BasicCommand):
     """Configures MFA login for AWS CLI by creating temporary credentials."""
 
     NAME = 'mfa-login'
-    DESCRIPTION = (
-        'Sets up temporary credentials for MFA authentication. '
-        'This command creates a new profile with temporary credentials '
-        'obtained using the AWS STS get-session-token API.'
+    DESCRIPTION = BasicCommand.FROM_FILE(
+        'configure', 'mfa-login', '_description.rst'
     )
     SYNOPSIS = (
         'aws configure mfa-login [--profile profile-name] '
         '[--update-profile profile-to-update] [--duration-seconds seconds] '
         '[--serial-number mfa-serial-number]'
     )
-    EXAMPLES = (
-        'To create a new profile with temporary credentials::\n'
-        '\n'
-        '    $ aws configure mfa-login\n'
-        '    MFA serial number or ARN: arn:aws:iam::123456789012:mfa/user\n'
-        '    MFA token code: 123456\n'
-        '    Profile to update [session-12345]:\n'
-        '\n'
-        'To update an existing profile with temporary credentials::\n'
-        '\n'
-        '    $ aws configure mfa-login --profile myprofile --update-profile mytemp\n'
-        '    MFA token code: 123456\n'
-        '\n'
-        'To specify the MFA device serial number or ARN directly::\n'
-        '\n'
-        '    $ aws configure mfa-login --serial-number arn:aws:iam::123456789012:mfa/user\n'
-        '    MFA token code: 123456\n'
-        '    Profile to update [session-12345]:\n'
-    )
+    EXAMPLES = BasicCommand.FROM_FILE('configure', 'mfa-login', '_examples.rst')
     ARG_TABLE = [
         {
             'name': 'profile',
@@ -102,11 +82,12 @@ class ConfigureMFALoginCommand(BasicCommand):
             'name': 'duration-seconds',
             'help_text': (
                 'The duration, in seconds, that the credentials should remain valid. '
-                'Default is 43200 seconds (12 hours).'
+                'Minimum is 900 seconds (15 minutes), maximum is 129600 seconds (36 hours).'
             ),
             'action': 'store',
             'required': False,
             'cli_type_name': 'integer',
+            'default': 43200,
         },
         {
             'name': 'serial-number',
@@ -220,9 +201,7 @@ class ConfigureMFALoginCommand(BasicCommand):
         source_profile = parsed_globals.profile or 'default'
 
         # Get duration seconds
-        duration_seconds = (
-            parsed_args.duration_seconds or 43200
-        )  # Default 12 hours
+        duration_seconds = parsed_args.duration_seconds
 
         # Create a new session with the specified profile
         try:

@@ -102,6 +102,7 @@ class ConfigureCommand(BasicCommand):
         # (logical_name, config_name, prompt_text)
         ('aws_access_key_id', "AWS Access Key ID"),
         ('aws_secret_access_key', "AWS Secret Access Key"),
+        ('aws_session_token', "AWS Session Token"),
         ('region', "Default region name"),
         ('output', "Default output format"),
     ]
@@ -115,17 +116,13 @@ class ConfigureCommand(BasicCommand):
             config_writer = ConfigFileWriter()
         self._config_writer = config_writer
 
+    def _needs_session_token(self, new_values):
+        """Check if session token is needed based on access key ID."""
+        access_key = new_values.get('aws_access_key_id')
+        return access_key and access_key.startswith('ASIA')
+
     def _run_main(self, parsed_args, parsed_globals):
         # Called when invoked with no args "aws configure"
-        # Check if there are any remaining unparsed arguments that might be invalid subcommands
-        if hasattr(parsed_args, 'remaining') and parsed_args.remaining:
-            sys.stderr.write(
-                f"Invalid subcommand: {' '.join(parsed_args.remaining)}\n"
-            )
-            sys.stderr.write(
-                "Valid subcommands are: list, get, set, add-model, import, list-profiles, sso, sso-session, mfa-login, export-credentials\n"
-            )
-            return 1
 
         new_values = {}
         # This is the config from the config file scoped to a specific
@@ -135,10 +132,11 @@ class ConfigureCommand(BasicCommand):
         except ProfileNotFound:
             config = {}
 
-        # Track if we need to prompt for session token
-        needs_session_token = False
-
         for config_name, prompt_text in self.VALUES_TO_PROMPT:
+            # Skip session token if not needed
+            if config_name == 'aws_session_token' and not self._needs_session_token(new_values):
+                continue
+                
             current_value = config.get(config_name)
             new_value = self._prompter.get_value(
                 current_value, config_name, prompt_text
@@ -146,32 +144,10 @@ class ConfigureCommand(BasicCommand):
             if new_value is not None and new_value != current_value:
                 new_values[config_name] = new_value
 
-            # Check if this is a temporary credential (starts with ASIA)
-            if (
-                config_name == 'aws_access_key_id'
-                and new_value
-                and new_value.startswith('ASIA')
-            ):
-                needs_session_token = True
-
-            # Prompt for session token after secret key but before region
-            if config_name == 'aws_secret_access_key' and needs_session_token:
-                session_token_current = config.get('aws_session_token')
-                session_token_new = self._prompter.get_value(
-                    session_token_current,
-                    'aws_session_token',
-                    'AWS Session Token',
-                )
-                if (
-                    session_token_new is not None
-                    and session_token_new != session_token_current
-                ):
-                    new_values['aws_session_token'] = session_token_new
-
         # Remove session token for non-temporary credentials
         if (
             'aws_access_key_id' in new_values
-            and not needs_session_token
+            and not self._needs_session_token(new_values)
             and config.get('aws_session_token')
         ):
             new_values['aws_session_token'] = None

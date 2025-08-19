@@ -259,7 +259,7 @@ class ConfigureMFALoginCommand(BasicCommand):
                 'None', 'mfa_serial', 'MFA serial number or ARN'
             )
             if not mfa_serial:
-                sys.stderr.write("MFA serial number or ARN is required\n")
+                sys.stderr.write("MFA serial number or MFA device ARN is required\n")
                 return 1
 
         # Get MFA token code

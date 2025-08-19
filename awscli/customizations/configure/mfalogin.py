@@ -134,19 +134,40 @@ class ConfigureMFALoginCommand(BasicCommand):
         session = botocore.session.Session()
         return profile_name in session.available_profiles
 
+    def _generate_profile_name_from_mfa(self, mfa_serial):
+        """Generate a deterministic profile name from MFA serial/ARN."""
+        if mfa_serial.startswith('arn:aws:iam::'):
+            # Parse ARN: arn:aws:iam::123456789012:mfa/device-name
+            parts = mfa_serial.split(':')
+            account_id = parts[4]
+            device_name = parts[5].split('/')[-1]  # Get device name after 'mfa/'
+            return f"{account_id}-{device_name}"
+        else:
+            # Assume it's just a serial number
+            return f"session-{mfa_serial}"
+
+    def _get_target_profile(self, parsed_args, mfa_serial=None):
+        """Get or generate the target profile name."""
+        target_profile = parsed_args.update_profile
+        if not target_profile:
+            if mfa_serial:
+                target_profile = self._generate_profile_name_from_mfa(mfa_serial)
+            else:
+                target_profile = "session-temp"
+            if sys.stdin.isatty():
+                target_profile = self._prompter.get_value(
+                    target_profile, 'Profile to update'
+                )
+        return target_profile
+
     def _run_main(self, parsed_args, parsed_globals):
         # Get the source profile for credentials
         source_profile = parsed_globals.profile or 'default'
-
-        # Get the target profile to update
-        target_profile = parsed_args.update_profile
 
         # Get duration seconds
         duration_seconds = (
             parsed_args.duration_seconds or 43200
         )  # Default 12 hours
-
-        # Import here to avoid circular imports
 
         # Create a new session with the specified profile
         try:
@@ -223,16 +244,8 @@ class ConfigureMFALoginCommand(BasicCommand):
             sys.stderr.write("MFA token code is required\n")
             return 1
 
-        # If no target profile is specified, generate a default name
-        if not target_profile:
-            random_suffix = ''.join(
-                random.choices(string.ascii_lowercase + string.digits, k=5)
-            )
-            target_profile = f"session-{random_suffix}"
-            if sys.stdin.isatty():
-                target_profile = self._prompter.get_value(
-                    target_profile, 'Profile to update'
-                )
+        # Get the target profile name
+        target_profile = self._get_target_profile(parsed_args, mfa_serial)
 
         # Call STS to get temporary credentials
         try:
@@ -327,16 +340,8 @@ class ConfigureMFALoginCommand(BasicCommand):
             sys.stderr.write("MFA token code is required\n")
             return 1
 
-        # Generate target profile name if not specified
-        target_profile = parsed_args.update_profile
-        if not target_profile:
-            random_suffix = ''.join(
-                random.choices(string.ascii_lowercase + string.digits, k=5)
-            )
-            target_profile = f"session-{random_suffix}"
-            target_profile = self._prompter.get_value(
-                target_profile, 'Profile to update'
-            )
+        # Get the target profile name
+        target_profile = self._get_target_profile(parsed_args, mfa_serial)
 
         # Create a temporary session with the provided credentials
         session = botocore.session.Session()

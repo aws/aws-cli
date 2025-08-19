@@ -376,7 +376,7 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
                 'os.path.expanduser', return_value='/tmp/credentials'
             ):
                 with mock.patch('sys.stdout'):
-                    rc = self.command._handle_missing_default_profile(
+                    rc = self.command._handle_interactive_prompting(
                         self.parsed_args, 43200
                     )
 
@@ -400,7 +400,7 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
         )
 
         with mock.patch('sys.stderr') as mock_stderr:
-            rc = self.command._handle_missing_default_profile(
+            rc = self.command._handle_interactive_prompting(
                 self.parsed_args, 43200
             )
 
@@ -417,7 +417,7 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
         ]
 
         with mock.patch('sys.stderr') as mock_stderr:
-            rc = self.command._handle_missing_default_profile(
+            rc = self.command._handle_interactive_prompting(
                 self.parsed_args, 43200
             )
 
@@ -469,7 +469,7 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
 
         with mock.patch('botocore.session.Session', return_value=mock_session):
             with mock.patch('sys.stderr') as mock_stderr:
-                rc = self.command._handle_missing_default_profile(
+                rc = self.command._handle_interactive_prompting(
                     self.parsed_args, 43200
                 )
 
@@ -529,7 +529,7 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
         self.prompter.get_credential_value.return_value = ''  # Empty string
 
         with mock.patch('sys.stderr') as mock_stderr:
-            rc = self.command._handle_missing_default_profile(
+            rc = self.command._handle_interactive_prompting(
                 self.parsed_args, 43200
             )
 

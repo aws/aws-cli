@@ -101,6 +101,14 @@ class ConfigureMFALoginCommand(BasicCommand):
         },
     ]
 
+    # Values to prompt for during interactive setup
+    VALUES_TO_PROMPT = [
+        ('aws_access_key_id', 'AWS Access Key ID'),
+        ('aws_secret_access_key', 'AWS Secret Access Key'),
+        ('mfa_serial', 'MFA serial number or ARN'),
+        ('mfa_token', 'MFA token code'),
+    ]
+
     def __init__(self, session, prompter=None, config_writer=None):
         super().__init__(session)
         if prompter is None:
@@ -246,7 +254,7 @@ class ConfigureMFALoginCommand(BasicCommand):
         session, source_config = self._setup_session_with_profile(source_profile)
         if session is None:
             if source_profile == 'default':
-                return self._handle_missing_default_profile(parsed_args, duration_seconds)
+                return self._handle_interactive_prompting(parsed_args, duration_seconds)
             return 1
 
         # Resolve MFA serial number
@@ -275,57 +283,40 @@ class ConfigureMFALoginCommand(BasicCommand):
             response['Credentials'], target_profile
         )
 
-    def _handle_missing_default_profile(self, parsed_args, duration_seconds):
-        """Handle the case where no default profile exists by prompting for credentials."""
+    def _handle_interactive_prompting(self, parsed_args, duration_seconds):
+        """Handle the case where no default profile exists, and there is no profile explicitly named as a configuration source"""
         sys.stdout.write(
-            "No default profile found. Please provide your AWS credentials:\n"
+            "Please provide your AWS credentials:\n"
         )
 
-        # Prompt for access key ID
-        access_key = self._prompter.get_credential_value(
-            'None', 'aws_access_key_id', 'AWS Access Key ID'
-        )
-        if not access_key or access_key == 'None':
-            sys.stderr.write("AWS Access Key ID is required\n")
-            return 1
-
-        # Prompt for secret access key
-        secret_key = self._prompter.get_credential_value(
-            'None', 'aws_secret_access_key', 'AWS Secret Access Key'
-        )
-        if not secret_key or secret_key == 'None':
-            sys.stderr.write("AWS Secret Access Key is required\n")
-            return 1
-
-        # Get MFA serial number
-        mfa_serial = parsed_args.serial_number
-        if not mfa_serial:
-            mfa_serial = self._prompter.get_credential_value(
-                'None', 'mfa_serial', 'MFA serial number or ARN'
+        values = {}
+        for config_name, prompt_text in self.VALUES_TO_PROMPT:
+            if config_name == 'mfa_serial' and parsed_args.serial_number:
+                values[config_name] = parsed_args.serial_number
+                continue
+                
+            value = self._prompter.get_credential_value(
+                'None', config_name, prompt_text
             )
-            if not mfa_serial:
-                sys.stderr.write("MFA serial number or ARN is required\n")
+            if not value or value == 'None':
+                sys.stderr.write(f"{prompt_text} is required\n")
                 return 1
-
-        # Get MFA token code
-        token_code = self._get_mfa_token()
-        if not token_code:
-            return 1
+            values[config_name] = value
 
         # Get the target profile name
-        target_profile = self._get_target_profile(parsed_args, mfa_serial)
+        target_profile = self._get_target_profile(parsed_args, values['mfa_serial'])
 
         # Create STS client with the provided credentials
         session = botocore.session.Session()
         sts_client = session.create_client(
             'sts',
-            aws_access_key_id=access_key,
-            aws_secret_access_key=secret_key,
+            aws_access_key_id=values['aws_access_key_id'],
+            aws_secret_access_key=values['aws_secret_access_key'],
         )
 
         # Call STS to get temporary credentials
         response = self._call_sts_get_session_token(
-            sts_client, duration_seconds, mfa_serial, token_code
+            sts_client, duration_seconds, values['mfa_serial'], values['mfa_token']
         )
         if not response:
             return 1

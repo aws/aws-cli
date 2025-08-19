@@ -159,6 +159,62 @@ class ConfigureMFALoginCommand(BasicCommand):
             )
         return target_profile
 
+    def _get_mfa_token(self):
+        """Prompt for MFA token code."""
+        token_code = self._prompter.get_credential_value(
+            'None', 'mfa_token', 'MFA token code'
+        )
+        if not token_code:
+            sys.stderr.write("MFA token code is required\n")
+            return None
+        return token_code
+
+    def _call_sts_get_session_token(self, sts_client, duration_seconds, mfa_serial, token_code):
+        """Call STS to get temporary credentials."""
+        try:
+            response = sts_client.get_session_token(
+                DurationSeconds=duration_seconds,
+                SerialNumber=mfa_serial,
+                TokenCode=token_code,
+            )
+            return response
+        except ClientError as e:
+            sys.stderr.write(f"An error occurred: {e}\n")
+            return None
+
+    def _write_temporary_credentials(self, temp_credentials, target_profile):
+        """Write temporary credentials to the credentials file."""
+        credentials_file = os.path.expanduser('~/.aws/credentials')
+
+        credential_values = {
+            '__section__': target_profile,
+            'aws_access_key_id': temp_credentials['AccessKeyId'],
+            'aws_secret_access_key': temp_credentials['SecretAccessKey'],
+            'aws_session_token': temp_credentials['SessionToken'],
+        }
+
+        try:
+            expiration_time = temp_credentials['Expiration'].strftime(
+                '%Y-%m-%d %H:%M:%S UTC'
+            )
+        except AttributeError:
+            expiration_time = str(temp_credentials['Expiration'])
+
+        credential_values['#expiration'] = (
+            f"# Credentials expire at: {expiration_time}"
+        )
+
+        self._config_writer.update_config(credential_values, credentials_file)
+
+        sys.stdout.write(
+            f"Temporary credentials written to profile '{target_profile}'\n"
+        )
+        sys.stdout.write(f"Credentials will expire at {expiration_time}\n")
+        sys.stdout.write(
+            f"To use these credentials, specify --profile {target_profile} when running AWS CLI commands\n"
+        )
+        return 0
+
     def _run_main(self, parsed_args, parsed_globals):
         # Get the source profile for credentials
         source_profile = parsed_globals.profile or 'default'
@@ -228,68 +284,25 @@ class ConfigureMFALoginCommand(BasicCommand):
                 return 1
 
         # Get MFA token code
-        token_code = self._prompter.get_credential_value(
-            'None', 'mfa_token', 'MFA token code'
-        )
+        token_code = self._get_mfa_token()
         if not token_code:
-            sys.stderr.write("MFA token code is required\n")
             return 1
 
         # Get the target profile name
         target_profile = self._get_target_profile(parsed_args, mfa_serial)
 
         # Call STS to get temporary credentials
-        try:
-            sts_client = session.create_client('sts')
-            response = sts_client.get_session_token(
-                DurationSeconds=duration_seconds,
-                SerialNumber=mfa_serial,
-                TokenCode=token_code,
-            )
-        except ClientError as e:
-            sys.stderr.write(f"An error occurred: {e}\n")
+        sts_client = session.create_client('sts')
+        response = self._call_sts_get_session_token(
+            sts_client, duration_seconds, mfa_serial, token_code
+        )
+        if not response:
             return 1
 
-        # Extract credentials from response
-        temp_credentials = response['Credentials']
-
-        # Write credentials to the credentials file
-        credentials_file = os.path.expanduser('~/.aws/credentials')
-
-        # Prepare the values to write
-        credential_values = {
-            '__section__': target_profile,
-            'aws_access_key_id': temp_credentials['AccessKeyId'],
-            'aws_secret_access_key': temp_credentials['SecretAccessKey'],
-            'aws_session_token': temp_credentials['SessionToken'],
-        }
-
-        # Get expiration time as a string
-        try:
-            expiration_time = temp_credentials['Expiration'].strftime(
-                '%Y-%m-%d %H:%M:%S UTC'
-            )
-        except Exception:
-            # Handle case where Expiration might not be a datetime object
-            expiration_time = str(temp_credentials['Expiration'])
-
-        # Add expiration as a comment in the config file
-        credential_values['#expiration'] = (
-            f"# Credentials expire at: {expiration_time}"
+        # Write credentials and return
+        return self._write_temporary_credentials(
+            response['Credentials'], target_profile
         )
-
-        # Write to credentials file
-        self._config_writer.update_config(credential_values, credentials_file)
-
-        sys.stdout.write(
-            f"Temporary credentials written to profile '{target_profile}'\n"
-        )
-        sys.stdout.write(f"Credentials will expire at {expiration_time}\n")
-        sys.stdout.write(
-            f"To use these credentials, specify --profile {target_profile} when running AWS CLI commands\n"
-        )
-
-        return 0
 
     def _handle_missing_default_profile(self, parsed_args, duration_seconds):
         """Handle the case where no default profile exists by prompting for credentials."""
@@ -324,73 +337,29 @@ class ConfigureMFALoginCommand(BasicCommand):
                 return 1
 
         # Get MFA token code
-        token_code = self._prompter.get_credential_value(
-            'None', 'mfa_token', 'MFA token code'
-        )
+        token_code = self._get_mfa_token()
         if not token_code:
-            sys.stderr.write("MFA token code is required\n")
             return 1
 
         # Get the target profile name
         target_profile = self._get_target_profile(parsed_args, mfa_serial)
 
-        # Create a temporary session with the provided credentials
+        # Create STS client with the provided credentials
         session = botocore.session.Session()
+        sts_client = session.create_client(
+            'sts',
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key,
+        )
 
-        try:
-            # Create STS client with the provided credentials
-            sts_client = session.create_client(
-                'sts',
-                aws_access_key_id=access_key,
-                aws_secret_access_key=secret_key,
-            )
-
-            # Call STS to get temporary credentials
-            response = sts_client.get_session_token(
-                DurationSeconds=duration_seconds,
-                SerialNumber=mfa_serial,
-                TokenCode=token_code,
-            )
-        except ClientError as e:
-            sys.stderr.write(f"An error occurred: {e}\n")
+        # Call STS to get temporary credentials
+        response = self._call_sts_get_session_token(
+            sts_client, duration_seconds, mfa_serial, token_code
+        )
+        if not response:
             return 1
 
-        # Extract credentials from response
-        temp_credentials = response['Credentials']
-
-        # Write credentials to the credentials file
-        credentials_file = os.path.expanduser('~/.aws/credentials')
-
-        # Prepare the values to write
-        credential_values = {
-            '__section__': target_profile,
-            'aws_access_key_id': temp_credentials['AccessKeyId'],
-            'aws_secret_access_key': temp_credentials['SecretAccessKey'],
-            'aws_session_token': temp_credentials['SessionToken'],
-        }
-
-        # Get expiration time as a string
-        try:
-            expiration_time = temp_credentials['Expiration'].strftime(
-                '%Y-%m-%d %H:%M:%S UTC'
-            )
-        except Exception:
-            expiration_time = str(temp_credentials['Expiration'])
-
-        # Add expiration as a comment in the config file
-        credential_values['#expiration'] = (
-            f"# Credentials expire at: {expiration_time}"
+        # Write credentials and return
+        return self._write_temporary_credentials(
+            response['Credentials'], target_profile
         )
-
-        # Write to credentials file
-        self._config_writer.update_config(credential_values, credentials_file)
-
-        sys.stdout.write(
-            f"Temporary credentials written to profile '{target_profile}'\n"
-        )
-        sys.stdout.write(f"Credentials will expire at {expiration_time}\n")
-        sys.stdout.write(
-            f"To use these credentials, specify --profile {target_profile} when running AWS CLI commands\n"
-        )
-
-        return 0

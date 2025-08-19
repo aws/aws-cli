@@ -163,6 +163,48 @@ class ConfigureMFALoginCommand(BasicCommand):
             sys.stderr.write(f"An error occurred: {e}\n")
             return None
 
+    def _setup_session_with_profile(self, source_profile):
+        """Setup and validate session with the given profile."""
+        try:
+            session = botocore.session.Session(profile=source_profile)
+            
+            if (source_profile not in session.available_profiles 
+                and source_profile != 'default'):
+                sys.stderr.write(f"The profile ({source_profile}) could not be found. \n")
+                return None, None
+            
+            credentials = session.get_credentials()
+            if credentials is None:
+                if source_profile == 'default':
+                    return None, None  # Signal to handle missing default profile
+                else:
+                    sys.stderr.write(f"Unable to locate credentials for profile {source_profile}\n")
+                    return None, None
+            
+            return session, session.get_scoped_config()
+            
+        except ProfileNotFound:
+            if source_profile == 'default':
+                return None, None  # Signal to handle missing default profile
+            else:
+                sys.stderr.write(f"The profile ({source_profile}) could not be found. \n")
+                return None, None
+        except Exception as e:
+            sys.stderr.write(f"Error accessing profile {source_profile}: {str(e)}\n")
+            return None, None
+
+    def _resolve_mfa_serial(self, parsed_args, source_config):
+        """Resolve MFA serial from args, config, or prompt."""
+        mfa_serial = parsed_args.serial_number or source_config.get('mfa_serial')
+        if not mfa_serial:
+            mfa_serial = self._prompter.get_credential_value(
+                'None', 'mfa_serial', 'MFA serial number or ARN'
+            )
+            if not mfa_serial:
+                sys.stderr.write("MFA serial number or MFA device ARN is required\n")
+                return None
+        return mfa_serial
+
     def _write_temporary_credentials(self, temp_credentials, target_profile):
         """Write temporary credentials to the credentials file."""
         credentials_file = os.path.expanduser(self._session.get_config_variable('credentials_file'))
@@ -181,8 +223,8 @@ class ConfigureMFALoginCommand(BasicCommand):
         except AttributeError:
             expiration_time = str(temp_credentials['Expiration'])
 
-        credential_values['#expiration'] = (
-            f"# Credentials expire at: {expiration_time}"
+        credential_values['#Credentials expire at: '] = (
+            f"{expiration_time}"
         )
 
         self._config_writer.update_config(credential_values, credentials_file)
@@ -197,70 +239,20 @@ class ConfigureMFALoginCommand(BasicCommand):
         return 0
 
     def _run_main(self, parsed_args, parsed_globals):
-        # Get the source profile for credentials
         source_profile = parsed_globals.profile or 'default'
-
-        # Get duration seconds
         duration_seconds = parsed_args.duration_seconds
 
-        # Create a new session with the specified profile
-        try:
-            # Use botocore's native profile handling
-            session = botocore.session.Session(profile=source_profile)
-
-            # Check if profile exists
-            if (
-                source_profile not in session.available_profiles
-                and source_profile != 'default'
-            ):
-                sys.stderr.write(
-                    f"The profile ({source_profile}) could not be found. \n"
-                )
-                return 1
-
-            # Get credentials
-            credentials = session.get_credentials()
-            if credentials is None:
-                # If no credentials found and using default profile, prompt for them
-                if source_profile == 'default':
-                    return self._handle_missing_default_profile(
-                        parsed_args, duration_seconds
-                    )
-                else:
-                    sys.stderr.write(
-                        f"Unable to locate credentials for profile {source_profile}\n"
-                    )
-                    return 1
-
-            source_config = session.get_scoped_config()
-        except ProfileNotFound:
-            # If default profile not found, prompt for credentials
+        # Setup session and validate profile
+        session, source_config = self._setup_session_with_profile(source_profile)
+        if session is None:
             if source_profile == 'default':
-                return self._handle_missing_default_profile(
-                    parsed_args, duration_seconds
-                )
-            else:
-                sys.stderr.write(
-                    f"The profile ({source_profile}) could not be found. \n"
-                )
-                return 1
-        except Exception as e:
-            sys.stderr.write(
-                f"Error accessing profile {source_profile}: {str(e)}\n"
-            )
+                return self._handle_missing_default_profile(parsed_args, duration_seconds)
             return 1
 
-        # Get MFA serial number
-        mfa_serial = parsed_args.serial_number or source_config.get(
-            'mfa_serial'
-        )
+        # Resolve MFA serial number
+        mfa_serial = self._resolve_mfa_serial(parsed_args, source_config)
         if not mfa_serial:
-            mfa_serial = self._prompter.get_credential_value(
-                'None', 'mfa_serial', 'MFA serial number or ARN'
-            )
-            if not mfa_serial:
-                sys.stderr.write("MFA serial number or MFA device ARN is required\n")
-                return 1
+            return 1
 
         # Get MFA token code
         token_code = self._get_mfa_token()

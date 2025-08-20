@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.28.14
+=======
+
+* api-change:``pinpoint-sms-voice-v2``: This change added InternationalSendingEnbaled as part of describe/Update/Request phone number API response, and as part of update/Request phone number API request
+* api-change:``cognito-idp``: This release adds support for the new Terms APIs which allow displaying Terms of Use and Privacy Policy on the Managed Login user-registration page.
+* api-change:``eks``: EKS Add-ons Custom Namespace Support
+* api-change:``billing``: Clarify IPv4 and IPv6 endpoints
+* api-change:``kinesisanalyticsv2``: Adds Key Management Service (KMS) support allowing customer-managed key (CMK) encryption for Flink application data.
+* api-change:``sagemaker``: This release adds 1/ Launch ml.p5.4xlarge instance in Processing jobs, Training jobs and Training Plan 2/ Makes S3Uri to be required for S3FileSystem and S3FileSystemConfig.
+* api-change:``datazone``: This release supports policy grant identifier for cloud formation integration
+* api-change:``route53-recovery-control-config``: Remove incorrect endpoint tests
+* api-change:``bedrock-runtime``: Launch CountTokens API to allow token counting
+* api-change:``detective``: Remove incorrect endpoint tests
+* api-change:``dynamodb``: Remove incorrect endpoint tests
+
+
 2.28.13
 =======
 

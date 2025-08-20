@@ -159,6 +159,7 @@ def test_lint_pagination_configs(operation_name, page_config, service_model):
     _validate_operation_has_output(operation_name, service_model)
     _validate_input_keys_match(operation_name, page_config, service_model)
     _validate_output_keys_match(operation_name, page_config, service_model)
+    _validate_new_numeric_keys(operation_name, page_config, service_model)
 
 
 def _validate_known_pagination_keys(page_config):

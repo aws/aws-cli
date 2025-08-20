@@ -1166,6 +1166,10 @@
         "podIdentityAssociations":{
           "shape":"StringList",
           "documentation":"<p>An array of EKS Pod Identity associations owned by the add-on. Each association maps a role to a service account in a namespace in the cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html\">Attach an IAM Role to an Amazon EKS add-on using EKS Pod Identity</a> in the <i>Amazon EKS User Guide</i>.</p>"
+        },
+        "namespaceConfig":{
+          "shape":"AddonNamespaceConfigResponse",
+          "documentation":"<p>The namespace configuration for the addon. This specifies the Kubernetes namespace where the addon is installed.</p>"
         }
       },
       "documentation":"<p>An Amazon EKS add-on. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html\">Amazon EKS add-ons</a> in the <i>Amazon EKS User Guide</i>.</p>"
@@ -1224,6 +1228,10 @@
         "marketplaceInformation":{
           "shape":"MarketplaceInformation",
           "documentation":"<p>Information about the add-on from the Amazon Web Services Marketplace.</p>"
+        },
+        "defaultNamespace":{
+          "shape":"String",
+          "documentation":"<p>The default Kubernetes namespace where this addon is typically installed if no custom namespace is specified.</p>"
         }
       },
       "documentation":"<p>Information about an add-on.</p>"
@@ -1264,6 +1272,26 @@
     "AddonIssueList":{
       "type":"list",
       "member":{"shape":"AddonIssue"}
+    },
+    "AddonNamespaceConfigRequest":{
+      "type":"structure",
+      "members":{
+        "namespace":{
+          "shape":"namespace",
+          "documentation":"<p>The name of the Kubernetes namespace to install the addon in. Must be a valid RFC 1123 DNS label.</p>"
+        }
+      },
+      "documentation":"<p>The namespace configuration request object for specifying a custom namespace when creating an addon.</p>"
+    },
+    "AddonNamespaceConfigResponse":{
+      "type":"structure",
+      "members":{
+        "namespace":{
+          "shape":"namespace",
+          "documentation":"<p>The name of the Kubernetes namespace where the addon is installed.</p>"
+        }
+      },
+      "documentation":"<p>The namespace configuration response object containing information about the namespace where an addon is installed.</p>"
     },
     "AddonPodIdentityAssociations":{
       "type":"structure",
@@ -2121,6 +2149,10 @@
         "podIdentityAssociations":{
           "shape":"AddonPodIdentityAssociationsList",
           "documentation":"<p>An array of EKS Pod Identity associations to be created. Each association maps a Kubernetes service account to an IAM role.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html\">Attach an IAM Role to an Amazon EKS add-on using EKS Pod Identity</a> in the <i>Amazon EKS User Guide</i>.</p>"
+        },
+        "namespaceConfig":{
+          "shape":"AddonNamespaceConfigRequest",
+          "documentation":"<p>The namespace configuration for the addon. If specified, this will override the default namespace for the addon.</p>"
         }
       }
     },
@@ -6167,6 +6199,11 @@
       "type":"map",
       "key":{"shape":"labelKey"},
       "value":{"shape":"labelValue"}
+    },
+    "namespace":{
+      "type":"string",
+      "max":63,
+      "min":1
     },
     "requiredClaimsKey":{
       "type":"string",

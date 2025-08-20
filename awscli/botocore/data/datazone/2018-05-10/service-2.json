@@ -5,11 +5,13 @@
     "endpointPrefix":"datazone",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon DataZone",
     "serviceId":"DataZone",
     "signatureVersion":"v4",
     "signingName":"datazone",
-    "uid":"datazone-2018-05-10"
+    "uid":"datazone-2018-05-10",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AcceptPredictions":{
@@ -3693,8 +3695,7 @@
     },
     "AddEntityOwnerOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AddPolicyGrantInput":{
       "type":"structure",
@@ -3747,6 +3748,10 @@
     "AddPolicyGrantOutput":{
       "type":"structure",
       "members":{
+        "grantId":{
+          "shape":"GrantIdentifier",
+          "documentation":"<p>The ID of the policy grant that was added to a specified entity.</p>"
+        }
       }
     },
     "AddToProjectMemberPoolPolicyGrantDetail":{
@@ -3833,14 +3838,12 @@
     },
     "AllDomainUnitsGrantFilter":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The grant filter for all domain units.</p>"
     },
     "AllUsersGrantFilter":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The all users grant filter.</p>"
     },
     "ApplicableAssetTypes":{
@@ -4373,8 +4376,7 @@
     },
     "AssociateEnvironmentRoleOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AthenaPropertiesInput":{
       "type":"structure",
@@ -4688,8 +4690,7 @@
     },
     "CancelMetadataGenerationRunOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CancelSubscriptionInput":{
       "type":"structure",
@@ -7197,8 +7198,7 @@
     },
     "CreateProjectMembershipOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CreateProjectOutput":{
       "type":"structure",
@@ -8590,8 +8590,7 @@
     },
     "DeleteAccountPoolOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAssetFilterInput":{
       "type":"structure",
@@ -8644,8 +8643,7 @@
     },
     "DeleteAssetOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAssetTypeInput":{
       "type":"structure",
@@ -8670,8 +8668,7 @@
     },
     "DeleteAssetTypeOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteConnectionInput":{
       "type":"structure",
@@ -8726,8 +8723,7 @@
     },
     "DeleteDataProductOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDataSourceInput":{
       "type":"structure",
@@ -8922,8 +8918,7 @@
     },
     "DeleteDomainUnitOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteEnvironmentActionInput":{
       "type":"structure",
@@ -8976,8 +8971,7 @@
     },
     "DeleteEnvironmentBlueprintConfigurationOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteEnvironmentInput":{
       "type":"structure",
@@ -9044,8 +9038,7 @@
     },
     "DeleteFormTypeOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteGlossaryInput":{
       "type":"structure",
@@ -9070,8 +9063,7 @@
     },
     "DeleteGlossaryOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteGlossaryTermInput":{
       "type":"structure",
@@ -9096,8 +9088,7 @@
     },
     "DeleteGlossaryTermOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteListingInput":{
       "type":"structure",
@@ -9122,8 +9113,7 @@
     },
     "DeleteListingOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteProjectInput":{
       "type":"structure",
@@ -9180,13 +9170,11 @@
     },
     "DeleteProjectMembershipOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteProjectOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteProjectProfileInput":{
       "type":"structure",
@@ -9211,8 +9199,7 @@
     },
     "DeleteProjectProfileOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteRuleInput":{
       "type":"structure",
@@ -9237,8 +9224,7 @@
     },
     "DeleteRuleOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteSubscriptionGrantInput":{
       "type":"structure",
@@ -9415,8 +9401,7 @@
     },
     "DeleteTimeSeriesDataPointsOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Deployment":{
       "type":"structure",
@@ -9563,8 +9548,7 @@
     },
     "DisassociateEnvironmentRoleOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DomainDescription":{
       "type":"string",
@@ -14137,6 +14121,10 @@
         "USER_MANAGED"
       ]
     },
+    "GrantIdentifier":{
+      "type":"string",
+      "pattern":"^[A-Za-z0-9+/]{10}$"
+    },
     "GrantedEntity":{
       "type":"structure",
       "members":{
@@ -17843,6 +17831,10 @@
           "shape":"PolicyGrantDetail",
           "documentation":"<p>The details of the policy grant member.</p>"
         },
+        "grantId":{
+          "shape":"GrantIdentifier",
+          "documentation":"<p>The ID of the policy grant.</p>"
+        },
         "principal":{
           "shape":"PolicyGrantPrincipal",
           "documentation":"<p>The principal of the policy grant member.</p>"
@@ -19037,8 +19029,7 @@
     },
     "RemoveEntityOwnerOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RemovePolicyGrantInput":{
       "type":"structure",
@@ -19073,6 +19064,10 @@
           "location":"uri",
           "locationName":"entityType"
         },
+        "grantIdentifier":{
+          "shape":"GrantIdentifier",
+          "documentation":"<p>The ID of the policy grant that is to be removed from a specified entity.</p>"
+        },
         "policyType":{
           "shape":"ManagedPolicyType",
           "documentation":"<p>The type of the policy that you want to remove.</p>"
@@ -19085,8 +19080,7 @@
     },
     "RemovePolicyGrantOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RequestReason":{
       "type":"string",
@@ -21362,8 +21356,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -21755,8 +21748,7 @@
     },
     "Unit":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The details of the policy of creating an environment.</p>"
     },
     "UntagResourceRequest":{
@@ -21782,8 +21774,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateAccountPoolInput":{
       "type":"structure",

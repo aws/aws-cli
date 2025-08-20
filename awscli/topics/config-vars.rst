@@ -65,7 +65,7 @@ Variable             Option      Config Entry          Environment Variable  Des
 ==================== =========== ===================== ===================== ============================
 profile              --profile   N/A                   AWS_PROFILE           Default profile name
 -------------------- ----------- --------------------- --------------------- ----------------------------
-region               --region    region                AWS_DEFAULT_REGION    Default AWS Region
+region               --region    region                AWS_REGION            Default AWS Region
 -------------------- ----------- --------------------- --------------------- ----------------------------
 output               --output    output                AWS_DEFAULT_OUTPUT    Default output style
 -------------------- ----------- --------------------- --------------------- ----------------------------
@@ -94,6 +94,12 @@ The valid values of the ``output`` configuration variable are:
 * json
 * table
 * text
+
+**Environment Variable Notes:**
+
+The environment variables listed above are the recommended modern alternatives. 
+For backwards compatibility, some legacy environment variables are also supported 
+(see "Legacy Environment Variables" section below).
 
 ``cli_timestamp_format`` controls the format of timestamps displayed by the AWS CLI.
 The valid values of the ``cli_timestamp_format`` configuration variable are:
@@ -135,6 +141,27 @@ The above configuration values have the following precedence:
 * Command line options
 * Environment variables
 * Configuration file
+
+
+Legacy Environment Variables
+============================
+
+The following environment variables are supported for backwards compatibility 
+but are not recommended for new applications. These variables may be deprecated 
+in future versions of the AWS CLI.
+
+=========================== ============================== ======================================
+Variable                    Legacy Environment Variable    Preferred Alternative
+=========================== ============================== ======================================
+region                      AWS_DEFAULT_REGION             AWS_REGION
+=========================== ============================== ======================================
+
+**Important Notes:**
+
+* If both the preferred and legacy environment variables are set, the preferred variable takes precedence.
+* For example, if both ``AWS_REGION`` and ``AWS_DEFAULT_REGION`` are set, ``AWS_REGION`` will be used.
+* New applications should use the preferred environment variables listed in the General Options table above.
+* Legacy variables are maintained for backwards compatibility with existing scripts and applications.
 
 
 Credentials

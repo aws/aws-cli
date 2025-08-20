@@ -253,6 +253,10 @@ class StreamingChecksumBody(StreamingBody):
             error_msg = f"Expected checksum {self._expected} did not match calculated checksum: {self._checksum.b64digest()}"
             raise FlexibleChecksumError(error_msg=error_msg)
 
+    @property
+    def checksum(self):
+        return self._checksum
+
 
 def resolve_checksum_context(request, operation_model, params):
     resolve_request_checksum_algorithm(request, operation_model, params)

@@ -8,35 +8,47 @@ from botocore.httpchecksum import (
 )
 
 
-class StreamingChecksumBody:
-    def __init__(self, stream, starting_index, checksum_validator):
+class PartStreamingChecksumBody:
+    def __init__(self, stream, starting_index, full_object_checksum):
         self._stream = stream
         self._starting_index = starting_index
         self._checksum = _CRC_CHECKSUM_CLS[
-            checksum_validator.checksum_algorithm
+            full_object_checksum.checksum_algorithm
         ]()
-        self._checksum_validator = checksum_validator
+        self._full_object_checksum = full_object_checksum
+        # If the underlying stream already has a checksum object
+        # it's updating (eg `botocore.httpchecksum.StreamingChecksumBody`),
+        # reuse its calculated value.
+        self._should_update = not hasattr(self._stream, 'checksum')
 
     def read(self, *args, **kwargs):
         value = self._stream.read(*args, **kwargs)
-        self._checksum.update(value)
+        if self._should_update:
+            self._checksum.update(value)
         if not value:
-            self._checksum_validator.set_part_checksums(
-                self._starting_index, self._checksum.int_crc
-            )
+            self._set_part_checksum()
         return value
 
+    def _set_part_checksum(self):
+        if self._should_update:
+            value = self._checksum.int_crc
+        else:
+            value = self._stream.checksum.int_crc
+        self._full_object_checksum.set_part_checksum(
+            self._starting_index, value,
+        )
 
-class ChecksumValidator:
-    def __init__(self, stored_checksum, content_length):
-        self.checksum_algorithm = list(stored_checksum.keys())[0]
-        self._checksum_value = stored_checksum[self.checksum_algorithm]
+
+class FullObjectChecksum:
+    def __init__(self, checksum_algorithm, content_length):
+        self.checksum_algorithm = checksum_algorithm
+        self._content_length = content_length
         self._combine_function = _CRC_CHECKSUM_TO_COMBINE_FUNCTION[
             self.checksum_algorithm
         ]
+        self._stored_checksum = None
         self._part_checksums = None
         self._calculated_checksum = None
-        self._content_length = content_length
 
     @cached_property
     def calculated_checksum(self):
@@ -44,7 +56,10 @@ class ChecksumValidator:
             self._combine_part_checksums()
         return self._calculated_checksum
 
-    def set_part_checksums(self, offset, checksum):
+    def set_stored_checksum(self, stored_checksum):
+        self._stored_checksum = stored_checksum
+
+    def set_part_checksum(self, offset, checksum):
         if self._part_checksums is None:
             self._part_checksums = {}
         self._part_checksums[offset] = checksum
@@ -69,11 +84,10 @@ class ChecksumValidator:
         ).decode('ascii')
 
     def validate(self):
-        if not self._checksum_value:
-            return
-        if self.calculated_checksum != self._checksum_value:
-            raise Exception(
-                f"stored: {self._checksum_value} != calculated: {self.calculated_checksum}"
+        if self.calculated_checksum != self._stored_checksum:
+            raise ValueError(
+                f"Calculated checksum {self.calculated_checksum} does not match "
+                f"stored checksum {self._stored_checksum}"
             )
 
 

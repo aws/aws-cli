@@ -2,6 +2,89 @@
 CHANGELOG
 =========
 
+2.28.13
+=======
+
+* api-change:``cleanrooms``: Support error message configuration for analysis templates
+* api-change:``ec2``: Add support for "warning" volume status.
+* api-change:``polly``: Added support for new output format - Opus.
+
+
+2.28.12
+=======
+
+* api-change:``connect``: Amazon Connect Service Feature: Add support to enable multi-user in-app, web, and video calling.
+* api-change:``sagemaker``: Customer managed keys now available for volume encryption of SageMaker HyperPod clusters.
+* api-change:``batch``: Added default_x86_64 and default_arm64 as values to the instanceTypes field.
+* api-change:``bcm-dashboards``: Billing and Cost Management Dashboards enables users to create dashboards that combine multiple visualizations of cost and usage data. Users can create, manage, and share dashboards. Tags are also available for dashboards.
+* api-change:``connectparticipant``: Amazon Connect Service Feature: Add support to enable multi-user in-app, web, and video calling.
+* api-change:``s3control``: Adds support for Compute checksum functionality in Amazon S3 Batch Operations. You can now calculate checksums for a list of objects using supported algorithms in Amazon S3, without requiring a restore or download
+
+
+2.28.11
+=======
+
+* api-change:``amp``: Add Resource-based Policy APIs for Amazon Prometheus
+* api-change:``glue``: AWS Glue Zero ETL now supports On-demand snapshot load
+* api-change:``bedrock-agent``: This release adds support for saving Bedrock Flows while node configuration is still in progress, even if the Flow is not yet able to be invoked
+
+
+2.28.10
+=======
+
+* api-change:``ec2``: This release adds ModifyInstanceConnectEndpoint API to update configurations on existing EC2 Instance Connect Endpoints and improves IPv6 support through dualstack DNS names for EC2 Instance Connect Endpoints.
+* enhancement:configure: Improved error messaging for `aws configure import --csv` command to clarify file
+* api-change:``dynamodb``: This release 1/ Adds support for throttled keys mode for CloudWatch Contributor Insights, 2/ Adds throttling reasons to exceptions across dataplane APIs. 3/ Explicitly models ThrottlingException as a class in statically typed languages. Refer to the launch day blog post for more details.
+* api-change:``pcs``: Updated the regex pattern and description of iamInstanceProfileArn in the CreateComputeNodeGroup and UpdateComputeNodeGroup API actions. Name and path requirements apply to the ARN of the IAM role associated with the instance profile and not the ARN of the instance profile.
+* api-change:``fsx``: Amazon FSx for NetApp ONTAP 2nd generation file systems now support decreasing SSD storage capacity.
+* api-change:``glue``: AWS Glue now supports Trusted Identity Propagation.
+* api-change:``medialive``: CMAF Ingest output groups in MediaLive can now accept one additional destination url for single pipeline channels and up to two additional destination urls for standard channels.
+* api-change:``workspaces``: New APIs introduced to import WorkSpaces BYOL image using a new process that leveraged EC2 Image Builder. WorkSpaces tests and fixes your image's compatibility issues and supports customized VM images.
+* api-change:``directconnect``: Added pagination support for DescribeHostedConnections, DescribeVirtualInterfaces, DescribeConnections, DescribeInterconnects, DescribeLags. Added asnLong support for BGP peer operations which supports a large range.
+* api-change:``guardduty``: Added support for entity lists.
+* api-change:``arc-region-switch``: Endpoint rule test and documentation update.
+* api-change:``servicediscovery``: Added support for cross account through Id parameter overloading with ARN and allow owner account for some APIs instead of ARN
+* api-change:``bcm-recommended-actions``: Initial SDK release for AWS Billing and Cost Management Recommended Actions.
+* api-change:``qapps``: Documentation update for Amazon Q Apps API Reference
+
+
+2.28.9
+======
+
+* api-change:``datazone``: Adds support for account pools and project profile account decoupling
+* api-change:``security-ir``: Added support for Organizational Unit-level Membership configuration and the ability to resume a cancelled membership.
+* api-change:``braket``: Add support for Braket program sets.
+* api-change:``partnercentral-selling``: Add Tagging Support for Opportunity resources
+* api-change:``fsx``: Add Dual-Stack support for Amazon FSx for OpenZFS file systems
+* api-change:``sagemaker``: This release introduces compute quota for GPU, Trainium accelerators, vCPU, and vCPU memory utilization across teams in HyperPod clusters
+
+
+2.28.8
+======
+
+* api-change:``organizations``: This release introduces 2 new APIs in Organizations: 1. ListAccountsWithInvalidEffectivePolicy 2. ListEffectivePolicyValidationErrors
+* api-change:``sagemaker``: IAM Identity Center trusted identity propagation is now supported in SageMaker Studio.
+* api-change:``transcribe``: AWS HealthScribe now supports specifying preferred patient pronouns through the MedicalScribeContext parameter for use in the generated clinical notes.
+* api-change:``ec2``: Release to allow route table association with a PublicIpv4Pool.
+* api-change:``codebuild``: AWS CodeBuild now supports PullRequestBuildPolicy in webhook object.
+* api-change:``backupsearch``: Using recommended smithy trait to generate regional endpoints for Backup Search
+
+
+2.28.7
+======
+
+* enhancement:``sso``: Clarify ``aws sso login`` to only suggest a different device when using ``--use-device-code``.
+* api-change:``evs``: Update for general availability of Amazon Elastic VMware Service (EVS).
+* api-change:``bedrock``: This release includes model updates and enhanced SDK documentation for union fields in automated reasoning policy components. Added docs cover policy definitions, mutations (add/update for rules/types/variables), build assets, workflow sources, test results, and tag exception handling.
+* api-change:``ec2``: This release adds AvailabilityZoneId support for CreateVolume, DescribeVolume, LaunchTemplates, RunInstances, DescribeInstances, CreateDefaultSubnet, SpotInstances, and CreateDefaultSubnet APIs.
+* api-change:``lambda``: Doc-only update for Lambda that updates the maximum payload size for response streaming invocations to 200 MB.
+* api-change:``quicksight``: Add RowAxisDisplayOptions and ColumnAxisDisplayOptions to HeatMapConfiguration, add Actions to PluginVisual, increase limit for CalculatedFields list
+* api-change:``cognito-idp``: Remove SigV4 auth requirement for GetTokensFromRefreshToken
+* api-change:``sso-admin``: Added support for managing user background session for applications
+* api-change:``deadline``: Adds support for Wait and Save feature in service-managed fleets
+* api-change:``connect``: Updating SearchUserHierarchyGroups API
+
+
 2.28.6
 ======
 

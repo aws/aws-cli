@@ -21084,6 +21084,11 @@
           "shape": "CmafTimedMetadataPassthrough",
           "locationName": "timedMetadataPassthrough",
           "documentation": "Set to enabled to pass through ID3 metadata from the input sources."
+        },
+        "AdditionalDestinations": {
+          "shape": "__listOfAdditionalDestinations",
+          "locationName": "additionalDestinations",
+          "documentation": "Optional an array of additional destinational HTTP destinations for the OutputGroup outputs"
         }
       },
       "documentation": "Cmaf Ingest Group Settings",
@@ -25748,7 +25753,7 @@
           "documentation": "Configures whether MediaLive will write AFD values into the video.\nAUTO: MediaLive will try to preserve the input AFD value (in cases where multiple AFD values are valid).\nFIXED: the AFD value will be the value configured in the fixedAfd parameter.\nNONE: MediaLive won't write AFD into the video"
         },
         "BufSize": {
-          "shape": "__integerMin50000Max16000000",
+          "shape": "__integerMin50000Max24000000",
           "locationName": "bufSize",
           "documentation": "The size of the buffer (HRD buffer model) in bits."
         },
@@ -25793,7 +25798,7 @@
           "documentation": "Sets the amount of lookahead. A value of LOW can decrease latency and memory usage. A value of HIGH can produce better quality for certain content."
         },
         "MaxBitrate": {
-          "shape": "__integerMin50000Max8000000",
+          "shape": "__integerMin50000Max12000000",
           "locationName": "maxBitrate",
           "documentation": "The maximum bitrate to assign.\nFor recommendations, see the description for qvbrQualityLevel."
         },
@@ -25828,7 +25833,7 @@
           "documentation": "Configures the timecode burn-in feature. If you enable this feature, the timecode will become part of the video."
         },
         "Bitrate": {
-          "shape": "__integerMin50000Max8000000",
+          "shape": "__integerMin50000Max12000000",
           "locationName": "bitrate",
           "documentation": "Average bitrate in bits/second. Required when the rate control mode is CBR. Not used for QVBR."
         },
@@ -28401,17 +28406,17 @@
       "max": 16000,
       "documentation": "Placeholder documentation for __integerMin40Max16000"
     },
-    "__integerMin50000Max16000000": {
+    "__integerMin50000Max24000000": {
       "type": "integer",
       "min": 50000,
-      "max": 16000000,
-      "documentation": "Placeholder documentation for __integerMin50000Max16000000"
+      "max": 24000000,
+      "documentation": "Placeholder documentation for __integerMin50000Max24000000"
     },
-    "__integerMin50000Max8000000": {
+    "__integerMin50000Max12000000": {
       "type": "integer",
       "min": 50000,
-      "max": 8000000,
-      "documentation": "Placeholder documentation for __integerMin50000Max8000000"
+      "max": 12000000,
+      "documentation": "Placeholder documentation for __integerMin50000Max12000000"
     },
     "__listOfDescribeChannelPlacementGroupSummary": {
       "type": "list",
@@ -29277,6 +29282,27 @@
         "CBR",
         "QVBR"
       ]
+    },
+    "AdditionalDestinations": {
+      "type": "structure",
+      "members": {
+        "Destination": {
+          "shape": "OutputLocationRef",
+          "locationName": "destination",
+          "documentation": "The destination location"
+        }
+      },
+      "documentation": "Additional output destinations for a CMAF Ingest output group",
+      "required": [
+        "Destination"
+      ]
+    },
+    "__listOfAdditionalDestinations": {
+      "type": "list",
+      "member": {
+        "shape": "AdditionalDestinations"
+      },
+      "documentation": "Placeholder documentation for __listOfAdditionalDestinations"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

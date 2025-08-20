@@ -624,6 +624,20 @@
       ],
       "documentation":"<p>Retrieves a list that describes the connection aliases used for cross-Region redirection. For more information, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/cross-region-redirection.html\"> Cross-Region Redirection for Amazon WorkSpaces</a>.</p>"
     },
+    "DescribeCustomWorkspaceImageImport":{
+      "name":"DescribeCustomWorkspaceImageImport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCustomWorkspaceImageImportRequest"},
+      "output":{"shape":"DescribeCustomWorkspaceImageImportResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves information about a WorkSpace BYOL image being imported via ImportCustomWorkspaceImage.</p>"
+    },
     "DescribeImageAssociations":{
       "name":"DescribeImageAssociations",
       "http":{
@@ -891,6 +905,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Imports client branding. Client branding allows you to customize your WorkSpace's client login portal. You can tailor your login portal company logo, the support email address, support link, link to reset password, and a custom message for users trying to sign in.</p> <p>After you import client branding, the default branding experience for the specified platform type is replaced with the imported experience</p> <note> <ul> <li> <p>You must specify at least one platform type when importing client branding.</p> </li> <li> <p>You can import up to 6 MB of data with each request. If your request exceeds this limit, you can import client branding for different platform types using separate requests.</p> </li> <li> <p>In each platform type, the <code>SupportEmail</code> and <code>SupportLink</code> parameters are mutually exclusive. You can specify only one parameter for each platform type, but not both.</p> </li> <li> <p>Imported data can take up to a minute to appear in the WorkSpaces client.</p> </li> </ul> </note>"
+    },
+    "ImportCustomWorkspaceImage":{
+      "name":"ImportCustomWorkspaceImage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ImportCustomWorkspaceImageRequest"},
+      "output":{"shape":"ImportCustomWorkspaceImageResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValuesException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ResourceLimitExceededException"}
+      ],
+      "documentation":"<p>Imports the specified Windows 10 or 11 Bring Your Own License (BYOL) image into Amazon WorkSpaces using EC2 Image Builder. The image must be an already licensed image that is in your Amazon Web Services account, and you must own the image. For more information about creating BYOL images, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html\"> Bring Your Own Windows Desktop Licenses</a>. </p>"
     },
     "ImportWorkspaceImage":{
       "name":"ImportWorkspaceImage",
@@ -2751,6 +2783,41 @@
         }
       }
     },
+    "CustomImageProtocol":{
+      "type":"string",
+      "enum":[
+        "PCOIP",
+        "DCV",
+        "BYOP"
+      ]
+    },
+    "CustomWorkspaceImageImportErrorDetails":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code that is returned for the image import.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ImageErrorMessage",
+          "documentation":"<p>The text of the error message that is returned for the image import.</p>"
+        }
+      },
+      "documentation":"<p>Describes in-depth details about the error. These details include the possible causes of the error and troubleshooting information.</p>"
+    },
+    "CustomWorkspaceImageImportErrorDetailsList":{
+      "type":"list",
+      "member":{"shape":"CustomWorkspaceImageImportErrorDetails"}
+    },
+    "CustomWorkspaceImageImportState":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "ERROR"
+      ]
+    },
     "DataReplication":{
       "type":"string",
       "enum":[
@@ -3131,6 +3198,10 @@
         "DedicatedTenancyAccountType":{
           "shape":"DedicatedTenancyAccountType",
           "documentation":"<p>The type of linked account.</p>"
+        },
+        "Message":{
+          "shape":"Message",
+          "documentation":"<p>The text message to describe the status of BYOL.</p>"
         }
       }
     },
@@ -3399,6 +3470,53 @@
         "NextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return. </p>"
+        }
+      }
+    },
+    "DescribeCustomWorkspaceImageImportRequest":{
+      "type":"structure",
+      "required":["ImageId"],
+      "members":{
+        "ImageId":{
+          "shape":"WorkspaceImageId",
+          "documentation":"<p>The identifier of the WorkSpace image.</p>"
+        }
+      }
+    },
+    "DescribeCustomWorkspaceImageImportResult":{
+      "type":"structure",
+      "members":{
+        "ImageId":{
+          "shape":"WorkspaceImageId",
+          "documentation":"<p>The identifier of the WorkSpace image.</p>"
+        },
+        "InfrastructureConfigurationArn":{
+          "shape":"InfrastructureConfigurationArn",
+          "documentation":"<p>The infrastructure configuration ARN that specifies how the WorkSpace image is built.</p>"
+        },
+        "State":{
+          "shape":"CustomWorkspaceImageImportState",
+          "documentation":"<p>The state of the WorkSpace image.</p>"
+        },
+        "Created":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the WorkSpace image import was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the WorkSpace image import was last updated.</p>"
+        },
+        "ImageSource":{
+          "shape":"ImageSourceIdentifier",
+          "documentation":"<p>Describes the image import source.</p>"
+        },
+        "ImageBuilderInstanceId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The image builder instance ID of the WorkSpace image.</p>"
+        },
+        "ErrorDetails":{
+          "shape":"CustomWorkspaceImageImportErrorDetailsList",
+          "documentation":"<p>Describes in-depth details about the error. These details include the possible causes of the error and troubleshooting information.</p>"
         }
       }
     },
@@ -3999,12 +4117,23 @@
       "type":"string",
       "pattern":"^ami\\-([a-f0-9]{8}|[a-f0-9]{17})$"
     },
+    "Ec2ImportTaskId":{
+      "type":"string",
+      "max":28,
+      "min":19,
+      "pattern":"^import-ami\\-([a-zA-Z0-9]{8}|[a-zA-Z0-9]{17})$"
+    },
     "EndpointEncryptionMode":{
       "type":"string",
       "enum":[
         "STANDARD_TLS",
         "FIPS_VALIDATED"
       ]
+    },
+    "ErrorCode":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "ErrorDetails":{
       "type":"structure",
@@ -4189,6 +4318,24 @@
       "type":"list",
       "member":{"shape":"ImageAssociatedResourceType"}
     },
+    "ImageBuildVersionArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws(?:-[a-z-]+)?):image/[a-z0-9-_]+/(?:(?:([0-9]+|x)\\.([0-9]+|x)\\.([0-9]+|x))|(?:[0-9]+\\.[0-9]+\\.[0-9]+/[0-9]+))$"
+    },
+    "ImageComputeType":{
+      "type":"string",
+      "enum":[
+        "BASE",
+        "GRAPHICS_G4DN"
+      ]
+    },
+    "ImageErrorMessage":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "ImagePermission":{
       "type":"structure",
       "members":{
@@ -4240,6 +4387,25 @@
     "ImageResourceAssociationList":{
       "type":"list",
       "member":{"shape":"ImageResourceAssociation"}
+    },
+    "ImageSourceIdentifier":{
+      "type":"structure",
+      "members":{
+        "Ec2ImportTaskId":{
+          "shape":"Ec2ImportTaskId",
+          "documentation":"<p>The EC2 import task ID to import the image from the Amazon EC2 VM import process.</p>"
+        },
+        "ImageBuildVersionArn":{
+          "shape":"ImageBuildVersionArn",
+          "documentation":"<p>The ARN of the EC2 Image Builder image.</p>"
+        },
+        "Ec2ImageId":{
+          "shape":"Ec2ImageId",
+          "documentation":"<p>The identifier of the EC2 image.</p>"
+        }
+      },
+      "documentation":"<p>Describes the image import source.</p>",
+      "union":true
     },
     "ImageType":{
       "type":"string",
@@ -4311,6 +4477,70 @@
         }
       }
     },
+    "ImportCustomWorkspaceImageRequest":{
+      "type":"structure",
+      "required":[
+        "ImageName",
+        "ImageDescription",
+        "ComputeType",
+        "Protocol",
+        "ImageSource",
+        "InfrastructureConfigurationArn",
+        "Platform",
+        "OsVersion"
+      ],
+      "members":{
+        "ImageName":{
+          "shape":"WorkspaceImageName",
+          "documentation":"<p>The name of the WorkSpace image.</p>"
+        },
+        "ImageDescription":{
+          "shape":"WorkspaceImageDescription",
+          "documentation":"<p>The description of the WorkSpace image.</p>"
+        },
+        "ComputeType":{
+          "shape":"ImageComputeType",
+          "documentation":"<p>The supported compute type for the WorkSpace image.</p>"
+        },
+        "Protocol":{
+          "shape":"CustomImageProtocol",
+          "documentation":"<p>The supported protocol for the WorkSpace image. Windows 11 does not support PCOIP protocol.</p>"
+        },
+        "ImageSource":{
+          "shape":"ImageSourceIdentifier",
+          "documentation":"<p>The options for image import source.</p>"
+        },
+        "InfrastructureConfigurationArn":{
+          "shape":"InfrastructureConfigurationArn",
+          "documentation":"<p>The infrastructure configuration ARN that specifies how the WorkSpace image is built.</p>"
+        },
+        "Platform":{
+          "shape":"Platform",
+          "documentation":"<p>The platform for the WorkSpace image source.</p>"
+        },
+        "OsVersion":{
+          "shape":"OSVersion",
+          "documentation":"<p>The OS version for the WorkSpace image source.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The resource tags. Each WorkSpaces resource can have a maximum of 50 tags.</p>"
+        }
+      }
+    },
+    "ImportCustomWorkspaceImageResult":{
+      "type":"structure",
+      "members":{
+        "ImageId":{
+          "shape":"WorkspaceImageId",
+          "documentation":"<p>The identifier of the WorkSpace image.</p>"
+        },
+        "State":{
+          "shape":"CustomWorkspaceImageImportState",
+          "documentation":"<p>The state of the WorkSpace image.</p>"
+        }
+      }
+    },
     "ImportWorkspaceImageRequest":{
       "type":"structure",
       "required":[
@@ -4360,6 +4590,12 @@
       "members":{},
       "documentation":"<p>The specified application is not compatible with the resource.</p>",
       "exception":true
+    },
+    "InfrastructureConfigurationArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws):infrastructure-configuration/[a-z0-9-_]+$"
     },
     "InternalServerException":{
       "type":"structure",
@@ -4634,6 +4870,7 @@
       "type":"integer",
       "min":0
     },
+    "Message":{"type":"string"},
     "MicrosoftEntraConfig":{
       "type":"structure",
       "members":{
@@ -4730,7 +4967,12 @@
     },
     "ModifyAccountResult":{
       "type":"structure",
-      "members":{}
+      "members":{
+        "Message":{
+          "shape":"Message",
+          "documentation":"<p>The text message to describe the status of BYOL modification.</p>"
+        }
+      }
     },
     "ModifyCertificateBasedAuthPropertiesRequest":{
       "type":"structure",
@@ -4960,6 +5202,13 @@
       "type":"string",
       "min":1
     },
+    "OSVersion":{
+      "type":"string",
+      "enum":[
+        "Windows_10",
+        "Windows_11"
+      ]
+    },
     "OperatingSystem":{
       "type":"structure",
       "members":{
@@ -5058,6 +5307,10 @@
     "PendingCreateStandbyWorkspacesRequestList":{
       "type":"list",
       "member":{"shape":"PendingCreateStandbyWorkspacesRequest"}
+    },
+    "Platform":{
+      "type":"string",
+      "enum":["WINDOWS"]
     },
     "PoolsRunningMode":{
       "type":"string",

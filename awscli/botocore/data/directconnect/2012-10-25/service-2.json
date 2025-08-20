@@ -747,7 +747,7 @@
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
-      "documentation":"<p>Displays all virtual interfaces for an Amazon Web Services account. Virtual interfaces deleted fewer than 15 minutes before you make the request are also returned. If you specify a connection ID, only the virtual interfaces associated with the connection are returned. If you specify a virtual interface ID, then only a single virtual interface is returned.</p> <p>A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer network.</p>"
+      "documentation":"<p>Displays all virtual interfaces for an Amazon Web Services account. Virtual interfaces deleted fewer than 15 minutes before you make the request are also returned. If you specify a connection ID, only the virtual interfaces associated with the connection are returned. If you specify a virtual interface ID, then only a single virtual interface is returned.</p> <p>A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer network.</p> <ul> <li> <p>If you're using an <code>asn</code>, the response includes ASN value in both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> <li> <p>If you're using <code>asnLong</code>, the response returns a value of <code>0</code> (zero) for the <code>asn</code> attribute because it exceeds the highest ASN value of 2,147,483,647 that it can support</p> </li> </ul>"
     },
     "DisassociateConnectionFromLag":{
       "name":"DisassociateConnectionFromLag",
@@ -1267,7 +1267,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The long ASN for the BGP peer. The valid range is from 1 to 4294967294 for BGP configuration. </p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "authKey":{
           "shape":"BGPAuthKey",
@@ -1569,6 +1573,10 @@
         "connections":{
           "shape":"ConnectionList",
           "documentation":"<p>The connections.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
       }
     },
@@ -1911,7 +1919,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The long ASN for the BGP peer to be deleted from a Direct Connect virtual interface. The valid range is from 1 to 4294967294 for BGP configuration. </p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "customerAddress":{
           "shape":"CustomerAddress",
@@ -2097,6 +2109,14 @@
         "connectionId":{
           "shape":"ConnectionId",
           "documentation":"<p>The ID of the connection.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
         }
       }
     },
@@ -2264,6 +2284,14 @@
         "connectionId":{
           "shape":"ConnectionId",
           "documentation":"<p>The ID of the interconnect or LAG.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
         }
       }
     },
@@ -2300,6 +2328,14 @@
         "interconnectId":{
           "shape":"InterconnectId",
           "documentation":"<p>The ID of the interconnect.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
         }
       }
     },
@@ -2309,6 +2345,14 @@
         "lagId":{
           "shape":"LagId",
           "documentation":"<p>The ID of the LAG.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
         }
       }
     },
@@ -2395,6 +2439,14 @@
         "virtualInterfaceId":{
           "shape":"VirtualInterfaceId",
           "documentation":"<p>The ID of the virtual interface.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
         }
       }
     },
@@ -2419,7 +2471,7 @@
         },
         "amazonSideAsn":{
           "shape":"LongAsn",
-          "documentation":"<p>The autonomous system number (ASN) for the Amazon side of the connection.</p>"
+          "documentation":"<p>The autonomous system number (AS) for the Amazon side of the connection.</p>"
         },
         "ownerAccount":{
           "shape":"OwnerAccount",
@@ -2810,6 +2862,10 @@
         "interconnects":{
           "shape":"InterconnectList",
           "documentation":"<p>The interconnects.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
       }
     },
@@ -2928,6 +2984,10 @@
         "lags":{
           "shape":"LagList",
           "documentation":"<p>The LAGs.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
       }
     },
@@ -3076,7 +3136,11 @@
       "members":{
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The long ASN for a new BGP peer. The valid range is from 1 to 4294967294.</p>"
         },
         "authKey":{
           "shape":"BGPAuthKey",
@@ -3101,8 +3165,7 @@
       "type":"structure",
       "required":[
         "virtualInterfaceName",
-        "vlan",
-        "asn"
+        "vlan"
       ],
       "members":{
         "virtualInterfaceName":{
@@ -3115,7 +3178,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note> <p>The valid values are 1-2147483646.</p>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The long ASN for a new private virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "mtu":{
           "shape":"MTU",
@@ -3160,8 +3227,7 @@
       "type":"structure",
       "required":[
         "virtualInterfaceName",
-        "vlan",
-        "asn"
+        "vlan"
       ],
       "members":{
         "virtualInterfaceName":{
@@ -3174,7 +3240,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note> <p>The valid values are 1-2147483646.</p>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The ASN when allocating a new private virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "mtu":{
           "shape":"MTU",
@@ -3207,8 +3277,7 @@
       "type":"structure",
       "required":[
         "virtualInterfaceName",
-        "vlan",
-        "asn"
+        "vlan"
       ],
       "members":{
         "virtualInterfaceName":{
@@ -3221,7 +3290,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The long ASN for a new public virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "authKey":{
           "shape":"BGPAuthKey",
@@ -3254,8 +3327,7 @@
       "type":"structure",
       "required":[
         "virtualInterfaceName",
-        "vlan",
-        "asn"
+        "vlan"
       ],
       "members":{
         "virtualInterfaceName":{
@@ -3268,7 +3340,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note> <p>The valid values are 1-2147483646.</p>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The ASN when allocating a new public virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "authKey":{
           "shape":"BGPAuthKey",
@@ -3310,7 +3386,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The long ASN for a new transit virtual interface.The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "mtu":{
           "shape":"MTU",
@@ -3360,7 +3440,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note> <p>The valid values are 1-2147483646.</p>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The ASN when allocating a new transit virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "mtu":{
           "shape":"MTU",
@@ -3808,11 +3892,15 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The long ASN for the virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "amazonSideAsn":{
           "shape":"LongAsn",
-          "documentation":"<p>The autonomous system number (ASN) for the Amazon side of the connection.</p>"
+          "documentation":"<p>The autonomous system number (AS) for the Amazon side of the connection.</p>"
         },
         "authKey":{
           "shape":"BGPAuthKey",
@@ -3956,6 +4044,10 @@
         "virtualInterfaces":{
           "shape":"VirtualInterfaceList",
           "documentation":"<p>The virtual interfaces</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
       }
     },

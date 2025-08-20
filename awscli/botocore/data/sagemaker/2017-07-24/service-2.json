@@ -4561,6 +4561,12 @@
     }
   },
   "shapes":{
+    "AcceleratorsAmount":{
+      "type":"integer",
+      "box":true,
+      "max":10000000,
+      "min":0
+    },
     "Accept":{
       "type":"string",
       "max":256,
@@ -8321,6 +8327,15 @@
         "VolumeSizeInGB":{
           "shape":"ClusterEbsVolumeSizeInGB",
           "documentation":"<p>The size in gigabytes (GB) of the additional EBS volume to be attached to the instances in the SageMaker HyperPod cluster instance group. The additional EBS volume is attached to each instance within the SageMaker HyperPod cluster instance group and mounted to <code>/opt/sagemaker</code>.</p>"
+        },
+        "VolumeKmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ID of a KMS key to encrypt the Amazon EBS volume.</p>"
+        },
+        "RootVolume":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the configuration is for the cluster's root or secondary Amazon EBS volume. You can specify two <code>ClusterEbsVolumeConfig</code> fields to configure both the root and secondary volumes. Set the value to <code>True</code> if you'd like to provide your own customer managed Amazon Web Services KMS key to encrypt the root volume. When <code>True</code>:</p> <ul> <li> <p>The configuration is applied to the root volume.</p> </li> <li> <p>You can't specify the <code>VolumeSizeInGB</code> field. The size of the root volume is determined for you.</p> </li> <li> <p>You must specify a KMS key ID for <code>VolumeKmsKeyId</code> to encrypt the root volume with your own KMS key instead of an Amazon Web Services owned KMS key.</p> </li> </ul> <p>Otherwise, by default, the value is <code>False</code>, and the following applies:</p> <ul> <li> <p>The configuration is applied to the secondary volume, while the root volume is encrypted with an Amazon Web Services owned key.</p> </li> <li> <p>You must specify the <code>VolumeSizeInGB</code> field.</p> </li> <li> <p>You can optionally specify the <code>VolumeKmsKeyId</code> to encrypt the secondary volume with your own KMS key instead of an Amazon Web Services owned KMS key.</p> </li> </ul>",
+          "box":true
         }
       },
       "documentation":"<p>Defines the configuration for attaching an additional Amazon Elastic Block Store (EBS) volume to each instance of the SageMaker HyperPod cluster instance group. To learn more, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-release-notes.html#sagemaker-hyperpod-release-notes-20240620\">SageMaker HyperPod release notes: June 20, 2024</a>.</p>"
@@ -8668,6 +8683,7 @@
         "ml.p4d.24xlarge",
         "ml.p4de.24xlarge",
         "ml.p5.48xlarge",
+        "ml.p6e-gb200.36xlarge",
         "ml.trn1.32xlarge",
         "ml.trn1n.32xlarge",
         "ml.g5.xlarge",
@@ -9645,6 +9661,18 @@
         "Count":{
           "shape":"InstanceCount",
           "documentation":"<p>The number of instances to add to the instance group of a SageMaker HyperPod cluster.</p>"
+        },
+        "Accelerators":{
+          "shape":"AcceleratorsAmount",
+          "documentation":"<p>The number of accelerators to allocate. If you don't specify a value for vCPU and MemoryInGiB, SageMaker AI automatically allocates ratio-based values for those parameters based on the number of accelerators you provide. For example, if you allocate 16 out of 32 total accelerators, SageMaker AI uses the ratio of 0.5 and allocates values to vCPU and MemoryInGiB.</p>"
+        },
+        "VCpu":{
+          "shape":"VCpuAmount",
+          "documentation":"<p>The number of vCPU to allocate. If you specify a value only for vCPU, SageMaker AI automatically allocates ratio-based values for MemoryInGiB based on this vCPU parameter. For example, if you allocate 20 out of 40 total vCPU, SageMaker AI uses the ratio of 0.5 and allocates values to MemoryInGiB. Accelerators are set to 0.</p>"
+        },
+        "MemoryInGiB":{
+          "shape":"MemoryInGiBAmount",
+          "documentation":"<p>The amount of memory in GiB to allocate. If you specify a value only for this parameter, SageMaker AI automatically allocates a ratio-based value for vCPU based on this memory that you provide. For example, if you allocate 200 out of 400 total memory in GiB, SageMaker AI uses the ratio of 0.5 and allocates values to vCPU. Accelerators are set to 0.</p>"
         }
       },
       "documentation":"<p>Configuration of the resources used for the compute allocation definition.</p>"
@@ -11695,7 +11723,7 @@
         },
         "LabelAttributeName":{
           "shape":"LabelAttributeName",
-          "documentation":"<p>The attribute name to use for the label in the output manifest file. This is the key for the key/value pair formed with the label that a worker assigns to the object. The <code>LabelAttributeName</code> must meet the following requirements.</p> <ul> <li> <p>The name can't end with \"-metadata\". </p> </li> <li> <p>If you are using one of the following <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-task-types.html\">built-in task types</a>, the attribute name <i>must</i> end with \"-ref\". If the task type you are using is not listed below, the attribute name <i>must not</i> end with \"-ref\".</p> <ul> <li> <p>Image semantic segmentation (<code>SemanticSegmentation)</code>, and adjustment (<code>AdjustmentSemanticSegmentation</code>) and verification (<code>VerificationSemanticSegmentation</code>) labeling jobs for this task type.</p> </li> <li> <p>Video frame object detection (<code>VideoObjectDetection</code>), and adjustment and verification (<code>AdjustmentVideoObjectDetection</code>) labeling jobs for this task type.</p> </li> <li> <p>Video frame object tracking (<code>VideoObjectTracking</code>), and adjustment and verification (<code>AdjustmentVideoObjectTracking</code>) labeling jobs for this task type.</p> </li> <li> <p>3D point cloud semantic segmentation (<code>3DPointCloudSemanticSegmentation</code>), and adjustment and verification (<code>Adjustment3DPointCloudSemanticSegmentation</code>) labeling jobs for this task type. </p> </li> <li> <p>3D point cloud object tracking (<code>3DPointCloudObjectTracking</code>), and adjustment and verification (<code>Adjustment3DPointCloudObjectTracking</code>) labeling jobs for this task type. </p> </li> </ul> </li> </ul> <p/> <important> <p>If you are creating an adjustment or verification labeling job, you must use a <i>different</i> <code>LabelAttributeName</code> than the one used in the original labeling job. The original labeling job is the Ground Truth labeling job that produced the labels that you want verified or adjusted. To learn more about adjustment and verification labeling jobs, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-verification-data.html\">Verify and Adjust Labels</a>.</p> </important>"
+          "documentation":"<p>The attribute name to use for the label in the output manifest file. This is the key for the key/value pair formed with the label that a worker assigns to the object. The <code>LabelAttributeName</code> must meet the following requirements.</p> <ul> <li> <p>The name can't end with \"-metadata\". </p> </li> <li> <p>If you are using one of the following <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-task-types.html\">built-in task types</a>, the attribute name <i>must</i> end with \"-ref\". If the task type you are using is not listed below, the attribute name <i>must not</i> end with \"-ref\".</p> <ul> <li> <p>Verification (<code>VerificationSemanticSegmentation</code>) labeling jobs for this task type.</p> </li> <li> <p>Video frame object detection (<code>VideoObjectDetection</code>), and adjustment and verification (<code>AdjustmentVideoObjectDetection</code>) labeling jobs for this task type.</p> </li> <li> <p>Video frame object tracking (<code>VideoObjectTracking</code>), and adjustment and verification (<code>AdjustmentVideoObjectTracking</code>) labeling jobs for this task type.</p> </li> <li> <p>3D point cloud semantic segmentation (<code>3DPointCloudSemanticSegmentation</code>), and adjustment and verification (<code>Adjustment3DPointCloudSemanticSegmentation</code>) labeling jobs for this task type. </p> </li> <li> <p>3D point cloud object tracking (<code>3DPointCloudObjectTracking</code>), and adjustment and verification (<code>Adjustment3DPointCloudObjectTracking</code>) labeling jobs for this task type. </p> </li> </ul> </li> </ul> <p/> <important> <p>If you are creating an adjustment or verification labeling job, you must use a <i>different</i> <code>LabelAttributeName</code> than the one used in the original labeling job. The original labeling job is the Ground Truth labeling job that produced the labels that you want verified or adjusted. To learn more about adjustment and verification labeling jobs, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-verification-data.html\">Verify and Adjust Labels</a>.</p> </important>"
         },
         "InputConfig":{
           "shape":"LabelingJobInputConfig",
@@ -15099,6 +15127,10 @@
         "Status":{
           "shape":"AppStatus",
           "documentation":"<p>The status.</p>"
+        },
+        "EffectiveTrustedIdentityPropagationStatus":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>The effective status of Trusted Identity Propagation (TIP) for this application. When enabled, user identities from IAM Identity Center are being propagated through the application to TIP enabled Amazon Web Services services. When disabled, standard IAM role-based access is used. </p>"
         },
         "RecoveryMode":{
           "shape":"Boolean",
@@ -20296,6 +20328,10 @@
           "shape":"ExecutionRoleIdentityConfig",
           "documentation":"<p>The configuration for attaching a SageMaker AI user profile name to the execution role as a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_monitor.html\">sts:SourceIdentity key</a>.</p>"
         },
+        "TrustedIdentityPropagationSettings":{
+          "shape":"TrustedIdentityPropagationSettings",
+          "documentation":"<p>The Trusted Identity Propagation (TIP) settings for the SageMaker domain. These settings determine how user identities from IAM Identity Center are propagated through the domain to TIP enabled Amazon Web Services services.</p>"
+        },
         "DockerSettings":{
           "shape":"DockerSettings",
           "documentation":"<p>A collection of settings that configure the domain's Docker interaction.</p>"
@@ -20325,6 +20361,10 @@
         "SecurityGroupIds":{
           "shape":"DomainSecurityGroupIds",
           "documentation":"<p>The security groups for the Amazon Virtual Private Cloud that the <code>Domain</code> uses for communication between Domain-level apps and user apps.</p>"
+        },
+        "TrustedIdentityPropagationSettings":{
+          "shape":"TrustedIdentityPropagationSettings",
+          "documentation":"<p>The Trusted Identity Propagation (TIP) settings for the SageMaker domain. These settings determine how user identities from IAM Identity Center are propagated through the domain to TIP enabled Amazon Web Services services.</p>"
         },
         "DockerSettings":{
           "shape":"DockerSettings",
@@ -30756,6 +30796,12 @@
       "member":{"shape":"MemberDefinition"},
       "max":10,
       "min":1
+    },
+    "MemoryInGiBAmount":{
+      "type":"float",
+      "box":true,
+      "max":10000000,
+      "min":0
     },
     "MemoryInMb":{
       "type":"integer",
@@ -43073,6 +43119,17 @@
       },
       "documentation":"<p>A summary of the properties of a trial. To get the complete set of properties, call the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeTrial.html\">DescribeTrial</a> API and provide the <code>TrialName</code>.</p>"
     },
+    "TrustedIdentityPropagationSettings":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>The status of Trusted Identity Propagation (TIP) at the SageMaker domain level. </p> <p>When disabled, standard IAM role-based access is used. </p> <p>When enabled:</p> <ul> <li> <p>User identities from IAM Identity Center are propagated through the application to TIP enabled Amazon Web Services services.</p> </li> <li> <p>New applications or existing applications that are automatically patched, will use the domain level configuration.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The Trusted Identity Propagation (TIP) settings for the SageMaker domain. These settings determine how user identities from IAM Identity Center are propagated through the domain to TIP enabled Amazon Web Services services.</p>"
+    },
     "TtlDuration":{
       "type":"structure",
       "members":{
@@ -45227,6 +45284,12 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "VCpuAmount":{
+      "type":"float",
+      "box":true,
+      "max":10000000,
+      "min":0
     },
     "ValidationFraction":{
       "type":"float",

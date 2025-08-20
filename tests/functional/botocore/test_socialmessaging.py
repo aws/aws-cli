@@ -32,7 +32,7 @@ def _get_all_xform_operations():
 
 XFORM_OPERATIONS = _get_all_xform_operations()
 
-
+@pytest.mark.validates_models
 @pytest.mark.parametrize("operation, replacement", XFORM_OPERATIONS)
 def test_known_replacements(operation, replacement):
     # Validates that if a replacement shows up in the lowercased version of an

@@ -169,6 +169,21 @@
       ],
       "documentation":"<p>Generates sample findings of types specified by the list of finding types. If 'NULL' is specified for <code>findingTypes</code>, the API generates sample findings of all supported finding types.</p>"
     },
+    "CreateThreatEntitySet":{
+      "name":"CreateThreatEntitySet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/detector/{detectorId}/threatentityset",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateThreatEntitySetRequest"},
+      "output":{"shape":"CreateThreatEntitySetResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Creates a new threat entity set. In a threat entity set, you can provide known malicious IP addresses and domains for your Amazon Web Services environment. GuardDuty generates findings based on the entries in the threat entity sets. Only users of the administrator account can manage entity sets, which automatically apply to member accounts.</p>"
+    },
     "CreateThreatIntelSet":{
       "name":"CreateThreatIntelSet",
       "http":{
@@ -184,6 +199,21 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Creates a new ThreatIntelSet. ThreatIntelSets consist of known malicious IP addresses. GuardDuty generates findings based on ThreatIntelSets. Only users of the administrator account can use this operation.</p>"
+    },
+    "CreateTrustedEntitySet":{
+      "name":"CreateTrustedEntitySet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/detector/{detectorId}/trustedentityset",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateTrustedEntitySetRequest"},
+      "output":{"shape":"CreateTrustedEntitySetResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Creates a new trusted entity set. In the trusted entity set, you can provide IP addresses and domains that you believe are secure for communication in your Amazon Web Services environment. GuardDuty will not generate findings for the entries that are specified in a trusted entity set. At any given time, you can have only one trusted entity set. </p> <p>Only users of the administrator account can manage the entity sets, which automatically apply to member accounts.</p>"
     },
     "DeclineInvitations":{
       "name":"DeclineInvitations",
@@ -306,6 +336,21 @@
       ],
       "documentation":"<p>Deletes the publishing definition with the specified <code>destinationId</code>.</p>"
     },
+    "DeleteThreatEntitySet":{
+      "name":"DeleteThreatEntitySet",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/detector/{detectorId}/threatentityset/{threatEntitySetId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteThreatEntitySetRequest"},
+      "output":{"shape":"DeleteThreatEntitySetResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Deletes the threat entity set that is associated with the specified <code>threatEntitySetId</code>.</p>"
+    },
     "DeleteThreatIntelSet":{
       "name":"DeleteThreatIntelSet",
       "http":{
@@ -320,6 +365,21 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Deletes the ThreatIntelSet specified by the ThreatIntelSet ID.</p>"
+    },
+    "DeleteTrustedEntitySet":{
+      "name":"DeleteTrustedEntitySet",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/detector/{detectorId}/trustedentityset/{trustedEntitySetId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteTrustedEntitySetRequest"},
+      "output":{"shape":"DeleteTrustedEntitySetResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Deletes the trusted entity set that is associated with the specified <code>trustedEntitySetId</code>.</p>"
     },
     "DescribeMalwareScans":{
       "name":"DescribeMalwareScans",
@@ -671,6 +731,21 @@
       ],
       "documentation":"<p>Provides the number of days left for each data source used in the free trial period.</p>"
     },
+    "GetThreatEntitySet":{
+      "name":"GetThreatEntitySet",
+      "http":{
+        "method":"GET",
+        "requestUri":"/detector/{detectorId}/threatentityset/{threatEntitySetId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetThreatEntitySetRequest"},
+      "output":{"shape":"GetThreatEntitySetResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Retrieves the threat entity set associated with the specified <code>threatEntitySetId</code>.</p>"
+    },
     "GetThreatIntelSet":{
       "name":"GetThreatIntelSet",
       "http":{
@@ -685,6 +760,21 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Retrieves the ThreatIntelSet that is specified by the ThreatIntelSet ID.</p>"
+    },
+    "GetTrustedEntitySet":{
+      "name":"GetTrustedEntitySet",
+      "http":{
+        "method":"GET",
+        "requestUri":"/detector/{detectorId}/trustedentityset/{trustedEntitySetId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTrustedEntitySetRequest"},
+      "output":{"shape":"GetTrustedEntitySetResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Retrieves the trusted entity set associated with the specified <code>trustedEntitySetId</code>.</p>"
     },
     "GetUsageStatistics":{
       "name":"GetUsageStatistics",
@@ -883,6 +973,21 @@
       ],
       "documentation":"<p>Lists tags for a resource. Tagging is currently supported for detectors, finding filters, IP sets, threat intel sets, and publishing destination, with a limit of 50 tags per resource. When invoked, this operation returns all assigned tags for a given resource.</p>"
     },
+    "ListThreatEntitySets":{
+      "name":"ListThreatEntitySets",
+      "http":{
+        "method":"GET",
+        "requestUri":"/detector/{detectorId}/threatentityset",
+        "responseCode":200
+      },
+      "input":{"shape":"ListThreatEntitySetsRequest"},
+      "output":{"shape":"ListThreatEntitySetsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Lists the threat entity sets associated with the specified GuardDuty detector ID. If you use this operation from a member account, the threat entity sets that are returned as a response, belong to the administrator account.</p>"
+    },
     "ListThreatIntelSets":{
       "name":"ListThreatIntelSets",
       "http":{
@@ -897,6 +1002,21 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Lists the ThreatIntelSets of the GuardDuty service specified by the detector ID. If you use this operation from a member account, the ThreatIntelSets associated with the administrator account are returned.</p>"
+    },
+    "ListTrustedEntitySets":{
+      "name":"ListTrustedEntitySets",
+      "http":{
+        "method":"GET",
+        "requestUri":"/detector/{detectorId}/trustedentityset",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTrustedEntitySetsRequest"},
+      "output":{"shape":"ListTrustedEntitySetsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Lists the trusted entity sets associated with the specified GuardDuty detector ID. If you use this operation from a member account, the trusted entity sets that are returned as a response, belong to the administrator account.</p>"
     },
     "StartMalwareScan":{
       "name":"StartMalwareScan",
@@ -1128,6 +1248,21 @@
       ],
       "documentation":"<p>Updates information about the publishing destination specified by the <code>destinationId</code>.</p>"
     },
+    "UpdateThreatEntitySet":{
+      "name":"UpdateThreatEntitySet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/detector/{detectorId}/threatentityset/{threatEntitySetId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateThreatEntitySetRequest"},
+      "output":{"shape":"UpdateThreatEntitySetResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Updates the threat entity set associated with the specified <code>threatEntitySetId</code>.</p>"
+    },
     "UpdateThreatIntelSet":{
       "name":"UpdateThreatIntelSet",
       "http":{
@@ -1143,6 +1278,21 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Updates the ThreatIntelSet specified by the ThreatIntelSet ID.</p>"
+    },
+    "UpdateTrustedEntitySet":{
+      "name":"UpdateTrustedEntitySet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/detector/{detectorId}/trustedentityset/{trustedEntitySetId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateTrustedEntitySetRequest"},
+      "output":{"shape":"UpdateTrustedEntitySetResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Updates the trusted entity set associated with the specified <code>trustedEntitySetId</code>.</p>"
     }
   },
   "shapes":{
@@ -2756,6 +2906,71 @@
       "type":"structure",
       "members":{}
     },
+    "CreateThreatEntitySetRequest":{
+      "type":"structure",
+      "required":[
+        "DetectorId",
+        "Name",
+        "Format",
+        "Location",
+        "Activate"
+      ],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty account for which you want to create a threat entity set.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>A user-friendly name to identify the threat entity set.</p> <p> <b>List naming constraints</b> - The name of your list can include lowercase letters, uppercase letters, numbers, dash (-), and underscore (_).</p>",
+          "locationName":"name"
+        },
+        "Format":{
+          "shape":"ThreatEntitySetFormat",
+          "documentation":"<p>The format of the file that contains the threat entity set.</p>",
+          "locationName":"format"
+        },
+        "Location":{
+          "shape":"Location",
+          "documentation":"<p>The URI of the file that contains the threat entity set.</p>",
+          "locationName":"location"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"ExpectedBucketOwner",
+          "documentation":"<p>The Amazon Web Services account ID that owns the Amazon S3 bucket specified in the <b>location</b> parameter.</p>",
+          "locationName":"expectedBucketOwner"
+        },
+        "Activate":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean value that indicates whether GuardDuty should start using the uploaded threat entity set to generate findings.</p>",
+          "locationName":"activate"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The idempotency token for the create request.</p>",
+          "idempotencyToken":true,
+          "locationName":"clientToken"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to be added to a new threat entity set resource.</p>",
+          "locationName":"tags"
+        }
+      }
+    },
+    "CreateThreatEntitySetResponse":{
+      "type":"structure",
+      "required":["ThreatEntitySetId"],
+      "members":{
+        "ThreatEntitySetId":{
+          "shape":"String",
+          "documentation":"<p>The ID returned by GuardDuty after creation of the threat entity set resource.</p>",
+          "locationName":"threatEntitySetId"
+        }
+      }
+    },
     "CreateThreatIntelSetRequest":{
       "type":"structure",
       "required":[
@@ -2768,7 +2983,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty account for which you want to create a <code>ThreatIntelSet</code>.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty account for which you want to create a <code>threatIntelSet</code>.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2818,6 +3033,71 @@
           "shape":"String",
           "documentation":"<p>The ID of the ThreatIntelSet resource.</p>",
           "locationName":"threatIntelSetId"
+        }
+      }
+    },
+    "CreateTrustedEntitySetRequest":{
+      "type":"structure",
+      "required":[
+        "DetectorId",
+        "Name",
+        "Format",
+        "Location",
+        "Activate"
+      ],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty account for which you want to create a trusted entity set.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>A user-friendly name to identify the trusted entity set.</p> <p> <b>List naming constraints</b> - The name of your list can include lowercase letters, uppercase letters, numbers, dash (-), and underscore (_).</p>",
+          "locationName":"name"
+        },
+        "Format":{
+          "shape":"TrustedEntitySetFormat",
+          "documentation":"<p>The format of the file that contains the trusted entity set.</p>",
+          "locationName":"format"
+        },
+        "Location":{
+          "shape":"Location",
+          "documentation":"<p>The URI of the file that contains the trusted entity set.</p>",
+          "locationName":"location"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"ExpectedBucketOwner",
+          "documentation":"<p>The Amazon Web Services account ID that owns the Amazon S3 bucket specified in the <b>location</b> parameter.</p>",
+          "locationName":"expectedBucketOwner"
+        },
+        "Activate":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean value that indicates whether GuardDuty is to start using the uploaded trusted entity set.</p>",
+          "locationName":"activate"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The idempotency token for the create request.</p>",
+          "idempotencyToken":true,
+          "locationName":"clientToken"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to be added to a new trusted entity set resource.</p>",
+          "locationName":"tags"
+        }
+      }
+    },
+    "CreateTrustedEntitySetResponse":{
+      "type":"structure",
+      "required":["TrustedEntitySetId"],
+      "members":{
+        "TrustedEntitySetId":{
+          "shape":"String",
+          "documentation":"<p>The ID returned by GuardDuty after creation of the trusted entity set resource.</p>",
+          "locationName":"trustedEntitySetId"
         }
       }
     },
@@ -3204,6 +3484,31 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteThreatEntitySetRequest":{
+      "type":"structure",
+      "required":[
+        "DetectorId",
+        "ThreatEntitySetId"
+      ],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the detector associated with the threat entity set resource.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        },
+        "ThreatEntitySetId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID that helps GuardDuty identify which threat entity set needs to be deleted.</p>",
+          "location":"uri",
+          "locationName":"threatEntitySetId"
+        }
+      }
+    },
+    "DeleteThreatEntitySetResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteThreatIntelSetRequest":{
       "type":"structure",
       "required":[
@@ -3226,6 +3531,31 @@
       }
     },
     "DeleteThreatIntelSetResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteTrustedEntitySetRequest":{
+      "type":"structure",
+      "required":[
+        "DetectorId",
+        "TrustedEntitySetId"
+      ],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the detector associated with the trusted entity set resource.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        },
+        "TrustedEntitySetId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID that helps GuardDuty identify which trusted entity set needs to be deleted.</p>",
+          "location":"uri",
+          "locationName":"trustedEntitySetId"
+        }
+      }
+    },
+    "DeleteTrustedEntitySetResponse":{
       "type":"structure",
       "members":{}
     },
@@ -4136,6 +4466,12 @@
         }
       },
       "documentation":"<p>Contains information about the reason that the finding was generated.</p>"
+    },
+    "ExpectedBucketOwner":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^[0-9]+$"
     },
     "FargateDetails":{
       "type":"structure",
@@ -5136,6 +5472,83 @@
         }
       }
     },
+    "GetThreatEntitySetRequest":{
+      "type":"structure",
+      "required":[
+        "DetectorId",
+        "ThreatEntitySetId"
+      ],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the detector associated with the threat entity set resource.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        },
+        "ThreatEntitySetId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID that helps GuardDuty identify the threat entity set.</p>",
+          "location":"uri",
+          "locationName":"threatEntitySetId"
+        }
+      }
+    },
+    "GetThreatEntitySetResponse":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Format",
+        "Location",
+        "Status"
+      ],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the threat entity set associated with the specified <code>threatEntitySetId</code>.</p>",
+          "locationName":"name"
+        },
+        "Format":{
+          "shape":"ThreatEntitySetFormat",
+          "documentation":"<p>The format of the file that contains the threat entity set.</p>",
+          "locationName":"format"
+        },
+        "Location":{
+          "shape":"Location",
+          "documentation":"<p>The URI of the file that contains the threat entity set.</p>",
+          "locationName":"location"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"ExpectedBucketOwner",
+          "documentation":"<p>The Amazon Web Services account ID that owns the Amazon S3 bucket specified in the <b>location</b> parameter.</p>",
+          "locationName":"expectedBucketOwner"
+        },
+        "Status":{
+          "shape":"ThreatEntitySetStatus",
+          "documentation":"<p>The status of the associated threat entity set.</p>",
+          "locationName":"status"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with the threat entity set resource.</p>",
+          "locationName":"tags"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the associated threat entity set was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the associated threat entity set was updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "ErrorDetails":{
+          "shape":"String",
+          "documentation":"<p>The error details when the status is shown as <code>ERROR</code>.</p>",
+          "locationName":"errorDetails"
+        }
+      }
+    },
     "GetThreatIntelSetRequest":{
       "type":"structure",
       "required":[
@@ -5195,6 +5608,83 @@
           "shape":"AccountId",
           "documentation":"<p>The Amazon Web Services account ID that owns the Amazon S3 bucket specified in the <b>location</b> parameter. This field appears in the response only if it was provided during ThreatIntelSet creation or update.</p>",
           "locationName":"expectedBucketOwner"
+        }
+      }
+    },
+    "GetTrustedEntitySetRequest":{
+      "type":"structure",
+      "required":[
+        "DetectorId",
+        "TrustedEntitySetId"
+      ],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the GuardDuty detector associated with this trusted entity set.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        },
+        "TrustedEntitySetId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID that helps GuardDuty identify the trusted entity set.</p>",
+          "location":"uri",
+          "locationName":"trustedEntitySetId"
+        }
+      }
+    },
+    "GetTrustedEntitySetResponse":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Format",
+        "Location",
+        "Status"
+      ],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the threat entity set associated with the specified <code>trustedEntitySetId</code>.</p>",
+          "locationName":"name"
+        },
+        "Format":{
+          "shape":"TrustedEntitySetFormat",
+          "documentation":"<p>The format of the file that contains the trusted entity set.</p>",
+          "locationName":"format"
+        },
+        "Location":{
+          "shape":"Location",
+          "documentation":"<p>The URI of the file that contains the trusted entity set.</p>",
+          "locationName":"location"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"ExpectedBucketOwner",
+          "documentation":"<p>The Amazon Web Services account ID that owns the Amazon S3 bucket specified in the <b>location</b> parameter.</p>",
+          "locationName":"expectedBucketOwner"
+        },
+        "Status":{
+          "shape":"TrustedEntitySetStatus",
+          "documentation":"<p>The status of the associated trusted entity set.</p>",
+          "locationName":"status"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with trusted entity set resource.</p>",
+          "locationName":"tags"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the associated trusted entity set was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the associated trusted entity set was updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "ErrorDetails":{
+          "shape":"String",
+          "documentation":"<p>The error details when the status is shown as <code>ERROR</code>.</p>",
+          "locationName":"errorDetails"
         }
       }
     },
@@ -6501,6 +6991,46 @@
         }
       }
     },
+    "ListThreatEntitySetsRequest":{
+      "type":"structure",
+      "required":["DetectorId"],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the GuardDuty detector that is associated with this threat entity set.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>You can use this parameter to indicate the maximum number of items you want in the response. The default value is 50.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill nextToken in the request with the value of NextToken from the previous response to continue listing data.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListThreatEntitySetsResponse":{
+      "type":"structure",
+      "required":["ThreatEntitySetIds"],
+      "members":{
+        "ThreatEntitySetIds":{
+          "shape":"ThreatEntitySetIds",
+          "documentation":"<p>The IDs of the threat entity set resources.</p>",
+          "locationName":"threatEntitySetIds"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination parameter to be used on the next list operation to retrieve more items.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "ListThreatIntelSetsRequest":{
       "type":"structure",
       "required":["DetectorId"],
@@ -6533,6 +7063,46 @@
           "shape":"ThreatIntelSetIds",
           "documentation":"<p>The IDs of the ThreatIntelSet resources.</p>",
           "locationName":"threatIntelSetIds"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination parameter to be used on the next list operation to retrieve more items.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListTrustedEntitySetsRequest":{
+      "type":"structure",
+      "required":["DetectorId"],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the GuardDuty detector that is associated with this threat entity set.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>You can use this parameter to indicate the maximum number of items you want in the response. The default value is 50.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill nextToken in the request with the value of NextToken from the previous response to continue listing data.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListTrustedEntitySetsResponse":{
+      "type":"structure",
+      "required":["TrustedEntitySetIds"],
+      "members":{
+        "TrustedEntitySetIds":{
+          "shape":"TrustedEntitySetIds",
+          "documentation":"<p>The IDs of the trusted entity set resources.</p>",
+          "locationName":"trustedEntitySetIds"
         },
         "NextToken":{
           "shape":"String",
@@ -9604,6 +10174,39 @@
       },
       "documentation":"<p>Contains details about identified threats organized by threat name.</p>"
     },
+    "ThreatEntitySetFormat":{
+      "type":"string",
+      "enum":[
+        "TXT",
+        "STIX",
+        "OTX_CSV",
+        "ALIEN_VAULT",
+        "PROOF_POINT",
+        "FIRE_EYE"
+      ],
+      "max":300,
+      "min":1
+    },
+    "ThreatEntitySetIds":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":50,
+      "min":0
+    },
+    "ThreatEntitySetStatus":{
+      "type":"string",
+      "enum":[
+        "INACTIVE",
+        "ACTIVATING",
+        "ACTIVE",
+        "DEACTIVATING",
+        "ERROR",
+        "DELETE_PENDING",
+        "DELETED"
+      ],
+      "max":300,
+      "min":1
+    },
     "ThreatIntelSetFormat":{
       "type":"string",
       "enum":[
@@ -9713,6 +10316,39 @@
         }
       },
       "documentation":"<p>Represents the reason the scan was triggered.</p>"
+    },
+    "TrustedEntitySetFormat":{
+      "type":"string",
+      "enum":[
+        "TXT",
+        "STIX",
+        "OTX_CSV",
+        "ALIEN_VAULT",
+        "PROOF_POINT",
+        "FIRE_EYE"
+      ],
+      "max":300,
+      "min":1
+    },
+    "TrustedEntitySetIds":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":50,
+      "min":0
+    },
+    "TrustedEntitySetStatus":{
+      "type":"string",
+      "enum":[
+        "INACTIVE",
+        "ACTIVATING",
+        "ACTIVE",
+        "DEACTIVATING",
+        "ERROR",
+        "DELETE_PENDING",
+        "DELETED"
+      ],
+      "max":300,
+      "min":1
     },
     "UnarchiveFindingsRequest":{
       "type":"structure",
@@ -10157,6 +10793,51 @@
       },
       "documentation":"<p>Information about the protected S3 bucket resource.</p>"
     },
+    "UpdateThreatEntitySetRequest":{
+      "type":"structure",
+      "required":[
+        "DetectorId",
+        "ThreatEntitySetId"
+      ],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the GuardDuty detector associated with the threat entity set that you want to update.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        },
+        "ThreatEntitySetId":{
+          "shape":"String",
+          "documentation":"<p>The ID returned by GuardDuty after updating the threat entity set resource.</p>",
+          "location":"uri",
+          "locationName":"threatEntitySetId"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>A user-friendly name to identify the trusted entity set.</p> <p> <b>List naming constraints</b> - The name of your list can include lowercase letters, uppercase letters, numbers, dash (-), and underscore (_).</p>",
+          "locationName":"name"
+        },
+        "Location":{
+          "shape":"Location",
+          "documentation":"<p>The URI of the file that contains the trusted entity set.</p>",
+          "locationName":"location"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"ExpectedBucketOwner",
+          "documentation":"<p>The Amazon Web Services account ID that owns the Amazon S3 bucket specified in the <b>location</b> parameter.</p>",
+          "locationName":"expectedBucketOwner"
+        },
+        "Activate":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean value that indicates whether GuardDuty is to start using this updated threat entity set. After you update an entity set, you will need to activate it again. It might take up to 15 minutes for the updated entity set to be effective.</p>",
+          "locationName":"activate"
+        }
+      }
+    },
+    "UpdateThreatEntitySetResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "UpdateThreatIntelSetRequest":{
       "type":"structure",
       "required":[
@@ -10199,6 +10880,51 @@
       }
     },
     "UpdateThreatIntelSetResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateTrustedEntitySetRequest":{
+      "type":"structure",
+      "required":[
+        "DetectorId",
+        "TrustedEntitySetId"
+      ],
+      "members":{
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the GuardDuty detector associated with the threat entity set that you want to update.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+          "location":"uri",
+          "locationName":"detectorId"
+        },
+        "TrustedEntitySetId":{
+          "shape":"String",
+          "documentation":"<p>The ID returned by GuardDuty after updating the trusted entity set resource.</p>",
+          "location":"uri",
+          "locationName":"trustedEntitySetId"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>A user-friendly name to identify the trusted entity set.</p> <p> <b>List naming constraints</b> - The name of your list can include lowercase letters, uppercase letters, numbers, dash (-), and underscore (_).</p>",
+          "locationName":"name"
+        },
+        "Location":{
+          "shape":"Location",
+          "documentation":"<p>The URI of the file that contains the trusted entity set.</p>",
+          "locationName":"location"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"ExpectedBucketOwner",
+          "documentation":"<p>The Amazon Web Services account ID that owns the Amazon S3 bucket specified in the <b>location</b> parameter.</p>",
+          "locationName":"expectedBucketOwner"
+        },
+        "Activate":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean value that indicates whether GuardDuty is to start using this updated trusted entity set. After you update an entity set, you will need to activate it again. It might take up to 15 minutes for the updated entity set to be effective.</p>",
+          "locationName":"activate"
+        }
+      }
+    },
+    "UpdateTrustedEntitySetResponse":{
       "type":"structure",
       "members":{}
     },

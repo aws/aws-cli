@@ -2,6 +2,41 @@
 CHANGELOG
 =========
 
+2.28.15
+=======
+
+* api-change:``greengrassv2``: Remove incorrect endpoint tests
+* api-change:``ecr-public``: Remove incorrect endpoint tests
+* api-change:``iotthingsgraph``: Remove incorrect endpoint tests
+* api-change:``cloudhsm``: Remove incorrect endpoint tests
+* api-change:``lookoutmetrics``: Remove incorrect endpoint tests
+* api-change:``ebs``: Remove incorrect endpoint tests
+* api-change:``backup-gateway``: Remove incorrect endpoint tests
+* api-change:``iotevents``: Remove incorrect endpoint tests
+* api-change:``lexv2-runtime``: Remove incorrect endpoint tests
+* api-change:``glue``: Added support for preprocessing queries in Data Quality operations through new DataQualityGlueTable structure.
+* api-change:``panorama``: Remove incorrect endpoint tests
+* api-change:``ssm-contacts``: Doc-only updates for Incident Manager Contacts August 2025
+* api-change:``es``: Remove incorrect endpoint tests
+* api-change:``mediapackage``: Remove incorrect endpoint tests
+* api-change:``kinesis-video-signaling``: Remove incorrect endpoint tests
+* api-change:``guardduty``: Remove Pattern trait from email field
+* api-change:``managedblockchain``: Remove incorrect endpoint tests
+* api-change:``pinpoint-email``: Remove incorrect endpoint tests
+* api-change:``appfabric``: Remove incorrect endpoint tests
+* api-change:``gameliftstreams``: The default application in a stream group can now be changed at any time using UpdateStreamGroup to update the DefaultApplicationIdentifier.
+* api-change:``iotdeviceadvisor``: Remove incorrect endpoint tests
+* api-change:``apigatewaymanagementapi``: Remove incorrect endpoint tests
+* api-change:``comprehend``: Remove incorrect endpoint tests
+* api-change:``s3outposts``: Remove incorrect endpoint tests
+* api-change:``ecs``: This is a documentation only release that adds additional information for the update-service request parameters.
+* api-change:``forecastquery``: Remove incorrect endpoint tests
+* api-change:``iotevents-data``: Remove incorrect endpoint tests
+* api-change:``cognito-identity``: Remove incorrect endpoint tests
+* api-change:``resource-groups``: Remove incorrect endpoint tests
+* api-change:``elasticbeanstalk``: Remove incorrect endpoint tests
+
+
 2.28.14
 =======
 

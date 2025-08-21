@@ -361,7 +361,16 @@ class CreateMultipartUploadTask(Task):
 class CompleteMultipartUploadTask(Task):
     """Task to complete a multipart upload"""
 
-    def _main(self, client, bucket, key, upload_id, parts, extra_args):
+    def _main(
+        self,
+        client,
+        bucket,
+        key,
+        upload_id,
+        parts,
+        extra_args,
+        full_object_checksum,
+    ):
         """
         :param client: The client to use when calling CompleteMultipartUpload
         :param bucket: The name of the bucket to upload to
@@ -376,6 +385,11 @@ class CompleteMultipartUploadTask(Task):
         :param extra_args:  A dictionary of any extra arguments that may be
             used in completing the multipart transfer.
         """
+        if full_object_checksum:
+            extra_args['ChecksumType'] = "FULL_OBJECT"
+            extra_args[full_object_checksum.checksum_algorithm] = (
+                full_object_checksum.calculated_checksum
+            )
         client.complete_multipart_upload(
             Bucket=bucket,
             Key=key,

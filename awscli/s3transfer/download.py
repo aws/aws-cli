@@ -17,8 +17,8 @@ import threading
 from botocore.exceptions import ClientError
 from s3transfer.checksums import (
     CRC_CHECKSUMS,
-    PartStreamingChecksumBody,
     FullObjectChecksum,
+    PartStreamingChecksumBody,
 )
 from s3transfer.compat import seekable
 from s3transfer.exceptions import RetriesExceededError, S3DownloadFailedError
@@ -601,12 +601,8 @@ class DownloadSubmissionTask(SubmissionTask):
             return
         for crc_checksum in CRC_CHECKSUMS:
             if checksum_value := response.get(crc_checksum):
-                transfer_meta.provide_checksum_algorithm(
-                    crc_checksum
-                )
-                transfer_meta.provide_stored_checksum(
-                    checksum_value
-                )
+                transfer_meta.provide_checksum_algorithm(crc_checksum)
+                transfer_meta.provide_stored_checksum(checksum_value)
                 return
 
 
@@ -651,14 +647,15 @@ class GetObjectTask(Task):
                 response = client.get_object(
                     Bucket=bucket, Key=key, **extra_args
                 )
-                streaming_body = StreamReaderProgress(
-                    response['Body'], callbacks
-                )
                 if full_object_checksum:
                     streaming_body = PartStreamingChecksumBody(
-                        streaming_body,
+                        response['Body'],
                         start_index,
                         full_object_checksum,
+                    )
+                else:
+                    streaming_body = StreamReaderProgress(
+                        response['Body'], callbacks
                     )
                 if bandwidth_limiter:
                     streaming_body = (

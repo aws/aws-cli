@@ -12,30 +12,31 @@ class PartStreamingChecksumBody:
     def __init__(self, stream, starting_index, full_object_checksum):
         self._stream = stream
         self._starting_index = starting_index
-        self._checksum = _CRC_CHECKSUM_CLS[
+        self._checksum = CRC_CHECKSUM_CLS[
             full_object_checksum.checksum_algorithm
         ]()
         self._full_object_checksum = full_object_checksum
         # If the underlying stream already has a checksum object
         # it's updating (eg `botocore.httpchecksum.StreamingChecksumBody`),
         # reuse its calculated value.
-        self._should_update = not hasattr(self._stream, 'checksum')
+        self._reuse_checksum = hasattr(self._stream, 'checksum')
 
     def read(self, *args, **kwargs):
         value = self._stream.read(*args, **kwargs)
-        if self._should_update:
+        if not self._reuse_checksum:
             self._checksum.update(value)
         if not value:
             self._set_part_checksum()
         return value
 
     def _set_part_checksum(self):
-        if self._should_update:
+        if not self._reuse_checksum:
             value = self._checksum.int_crc
         else:
             value = self._stream.checksum.int_crc
         self._full_object_checksum.set_part_checksum(
-            self._starting_index, value,
+            self._starting_index,
+            value,
         )
 
 
@@ -167,7 +168,7 @@ _CRC_CHECKSUM_TO_COMBINE_FUNCTION = {
 }
 
 
-_CRC_CHECKSUM_CLS = {
+CRC_CHECKSUM_CLS = {
     "ChecksumCRC64NVME": CrtCrc64NvmeChecksum,
     "ChecksumCRC32C": CrtCrc32cChecksum,
     "ChecksumCRC32": CrtCrc32Checksum,

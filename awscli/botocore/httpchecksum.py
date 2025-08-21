@@ -166,6 +166,7 @@ class AwsChunkedWrapper:
         self._raw = raw
         self._checksum_name = checksum_name
         self._checksum_cls = checksum_cls
+        self._reuse_checksum = hasattr(self._raw, 'checksum')
         self._reset()
 
         if chunk_size is None:
@@ -176,8 +177,10 @@ class AwsChunkedWrapper:
         self._remaining = b""
         self._complete = False
         self._checksum = None
-        if self._checksum_cls:
+        if self._checksum_cls and not self._reuse_checksum:
             self._checksum = self._checksum_cls()
+        if self._reuse_checksum:
+            self._checksum = self._raw.checksum
 
     def seek(self, offset, whence=0):
         if offset != 0 or whence != 0:
@@ -220,7 +223,7 @@ class AwsChunkedWrapper:
         hex_len = hex(len(raw_chunk))[2:].encode("ascii")
         self._complete = not raw_chunk
 
-        if self._checksum:
+        if self._checksum and not self._reuse_checksum:
             self._checksum.update(raw_chunk)
 
         if self._checksum and self._complete:

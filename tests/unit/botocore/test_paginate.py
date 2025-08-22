@@ -1089,7 +1089,7 @@ class TestMultipleResultKeys(unittest.TestCase):
         # they were in the original (first) response.
         self.assertEqual(complete, {"Users": ["User2"], "Groups": ""})
 
-    def test_resume_with_secondary_result_as_integer(self):
+    def test_resume_with_secondary_result_does_not_reset_integer(self):
         self.method.return_value = {"Users": ["User1", "User2"], "Groups": 123}
         starting_token = encode_token(
             {"Marker": None, "boto_truncate_amount": 1}
@@ -1098,9 +1098,9 @@ class TestMultipleResultKeys(unittest.TestCase):
             PaginationConfig={'MaxItems': 1, 'StartingToken': starting_token}
         )
         complete = pages.build_full_result()
-        # Note that the secondary keys ("Groups") becomes zero because
-        # they were in the original (first) response.
-        self.assertEqual(complete, {"Users": ["User2"], "Groups": 0})
+        # Note that we don't reset numeric secondary keys, for DynamoDB's
+        # Count/ScannedCount since the server still evaluates those items
+        self.assertEqual(complete, {"Users": ["User2"], "Groups": 123})
 
 
 class TestMultipleInputKeys(unittest.TestCase):

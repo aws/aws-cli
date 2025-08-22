@@ -1,5 +1,6 @@
 # -*- mode: python -*-
 import platform
+import os
 
 block_cipher = None
 exe_name = "aws_completer"
@@ -55,7 +56,7 @@ completer_exe = EXE(completer_pyz,
           upx=True,
           console=True,
           contents_directory='.',
-          target_arch='universal2',)
+          target_arch='universal2' if os.environ.get('BUILD_UNIVERSAL_BINARY') == '1' else None,)
 coll = COLLECT(completer_exe,
                completer_a.binaries,
                completer_a.zipfiles,

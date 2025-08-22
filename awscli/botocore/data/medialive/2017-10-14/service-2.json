@@ -6891,6 +6891,11 @@
           "shape": "__integerMin0",
           "locationName": "yPosition",
           "documentation": "Specifies the vertical position of the caption relative to the top of the output in pixels. A value of 10 would result in the captions starting 10 pixels from the top of the output. If no explicit yPosition is provided, the caption will be positioned towards the bottom of the output.  All burn-in and DVB-Sub font settings must match."
+        },
+        "SubtitleRows": {
+          "shape": "BurnInDestinationSubtitleRows",
+          "locationName": "subtitleRows",
+          "documentation": "Applies only when the input captions are Teletext and the output captions are DVB-Sub or Burn-In. Choose the number of lines for the captions bitmap. The captions bitmap is 700 wide × 576 high and will be laid over the video. For example, a value of 16 divides the bitmap into 16 lines, with each line 36 pixels high (16 × 36 = 576). The default is 24 (24 pixels high). Enter the same number in every encode in every output that converts the same Teletext source to DVB-Sub or Burn-in."
         }
       },
       "documentation": "Burn In Destination Settings"
@@ -9777,6 +9782,11 @@
           "shape": "__integerMin0",
           "locationName": "yPosition",
           "documentation": "Specifies the vertical position of the caption relative to the top of the output in pixels. A value of 10 would result in the captions starting 10 pixels from the top of the output. If no explicit yPosition is provided, the caption will be positioned towards the bottom of the output.  This option is not valid for source captions that are STL, 608/embedded or teletext.  These source settings are already pre-defined by the caption stream.  All burn-in and DVB-Sub font settings must match."
+        },
+        "SubtitleRows": {
+          "shape": "DvbSubDestinationSubtitleRows",
+          "locationName": "subtitleRows",
+          "documentation": "Applies only when the input captions are Teletext and the output captions are DVB-Sub or Burn-In. Choose the number of lines for the captions bitmap. The captions bitmap is 700 wide × 576 high and will be laid over the video. For example, a value of 16 divides the bitmap into 16 lines, with each line 36 pixels high (16 × 36 = 576). The default is 24 (24 pixels high). Enter the same number in every encode in every output that converts the same Teletext source to DVB-Sub or Burn-in."
         }
       },
       "documentation": "Dvb Sub Destination Settings"
@@ -29303,6 +29313,24 @@
         "shape": "AdditionalDestinations"
       },
       "documentation": "Placeholder documentation for __listOfAdditionalDestinations"
+    },
+    "BurnInDestinationSubtitleRows": {
+      "type": "string",
+      "documentation": "Burn In Destination Subtitle Rows",
+      "enum": [
+        "ROWS_16",
+        "ROWS_20",
+        "ROWS_24"
+      ]
+    },
+    "DvbSubDestinationSubtitleRows": {
+      "type": "string",
+      "documentation": "Dvb Sub Destination Subtitle Rows",
+      "enum": [
+        "ROWS_16",
+        "ROWS_20",
+        "ROWS_24"
+      ]
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

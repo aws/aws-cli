@@ -2,6 +2,33 @@
 CHANGELOG
 =========
 
+2.28.16
+=======
+
+* api-change:``qldb``: Remove incorrect endpoint tests
+* bugfix:``dynamodb``: Correct Scan and Scanned Count values when resuming a scan or query with a ``--starting-token``
+* api-change:``elb``: Remove incorrect endpoint tests
+* api-change:``route53-recovery-readiness``: Remove incorrect endpoint tests
+* api-change:``medialive``: AWS Elemental MediaLive now has a field called "SubtitleRows" for controlling subtitle row count for DVB-Sub and Burn-In captions outputs
+* api-change:``marketplacecommerceanalytics``: Remove incorrect endpoint tests
+* enhancement:Python: Update bundled Python interpreter to 3.13.7
+* api-change:``sagemaker-a2i-runtime``: Remove incorrect endpoint tests
+* api-change:``proton``: Remove incorrect endpoint tests
+* api-change:``clouddirectory``: Remove incorrect endpoint tests
+* api-change:``qconnect``: Releasing model ID support for UpdateAIPrompt
+* api-change:``healthlake``: Remove incorrect endpoint tests
+* api-change:``cognito-sync``: Remove incorrect endpoint tests
+* api-change:``wafv2``: test and verified, safe to release
+* api-change:``sagemaker``: Launch SageMaker Notebook Instances support for AL2023 along with P6-B200 instance type and Rootless Docker support for SageMaker Studio.
+* api-change:``memorydb``: Remove incorrect endpoint tests
+* api-change:``iotanalytics``: Remove incorrect endpoint tests
+* api-change:``synthetics``: Added multi browser support for synthetics canaries, Increased ephemeral storage limit from 5GB to 10GB
+* api-change:``docdb``: Remove incorrect endpoint tests
+* api-change:``macie2``: Remove incorrect endpoint tests
+* api-change:``rds``: Updates Amazon RDS documentation for Db2 read-only replicas.
+* api-change:``simspaceweaver``: Remove incorrect endpoint tests
+
+
 2.28.15
 =======
 

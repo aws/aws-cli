@@ -2,6 +2,53 @@
 CHANGELOG
 =========
 
+1.42.17
+=======
+
+* api-change:``appflow``: Remove incorrect endpoint tests
+* api-change:``b2bi``: Updated APIs to support custom validation rules.
+* api-change:``chime-sdk-media-pipelines``: Remove incorrect endpoint tests
+* api-change:``chime-sdk-messaging``: Remove incorrect endpoint tests
+* api-change:``cloudsearch``: Remove incorrect endpoint tests
+* api-change:``cloudtrail-data``: Remove incorrect endpoint tests
+* api-change:``codeartifact``: Remove incorrect endpoint tests
+* api-change:``codeguru-security``: Documentation update to notify users of the discontinuation of Amazon CodeGuru Security.
+* api-change:``codestar-notifications``: Remove incorrect endpoint tests
+* api-change:``cur``: Remove incorrect endpoint tests
+* api-change:``datazone``: Releasing the following features - Asset classification that lets users use restricted terms for classifying assets if they have the right permissions. Also adding a new enum value "Moving" to project status.
+* api-change:``dax``: Remove incorrect endpoint tests
+* api-change:``devops-guru``: Remove incorrect endpoint tests
+* api-change:``ec2``: Added IPv6 support for AWS Client VPN.
+* api-change:``emr-containers``: Remove incorrect endpoint tests
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``finspace-data``: Remove incorrect endpoint tests
+* api-change:``forecast``: Remove incorrect endpoint tests
+* api-change:``iotfleethub``: Remove incorrect endpoint tests
+* api-change:``kendra``: Remove incorrect endpoint tests
+* api-change:``kinesisanalytics``: Remove incorrect endpoint tests
+* api-change:``kinesis-video-archived-media``: Remove incorrect endpoint tests
+* api-change:``lex-runtime``: Remove incorrect endpoint tests
+* api-change:``lookoutequipment``: Remove incorrect endpoint tests
+* api-change:``mediaconvert``: This release adds support for input rendition selection for HLS input, adds new Share API to enable sharing jobs with AWS Support for support investigations, and adds INCLUDE_AS_TS to iFrameOnlyManifest setting for HLS outputs.
+* api-change:``mediapackage-vod``: Remove incorrect endpoint tests
+* api-change:``mediastore``: Remove incorrect endpoint tests
+* api-change:``personalize-runtime``: Remove incorrect endpoint tests
+* api-change:``qbusiness``: The Amazon Q Business GetDocumentContent operation now supports retrieval of the extracted text content in JSON format.
+* api-change:``resourcegroupstaggingapi``: Remove incorrect endpoint tests
+* api-change:``sagemaker-edge``: Remove incorrect endpoint tests
+* api-change:``sagemaker-featurestore-runtime``: Remove incorrect endpoint tests
+* api-change:``sagemaker-runtime``: Remove incorrect endpoint tests
+* api-change:``serverlessrepo``: Remove incorrect endpoint tests
+* api-change:``shield``: Remove incorrect endpoint tests
+* api-change:``snowball``: Remove incorrect endpoint tests
+* api-change:``sqs``: Documentation update for Amazon SQS Supports Large Payload Message feature
+* api-change:``support``: Remove incorrect endpoint tests
+* api-change:``support-app``: Remove incorrect endpoint tests
+* api-change:``timestream-influxdb``: Add MAINTENANCE status for DbInstance and DbCluster
+* api-change:``translate``: Remove incorrect endpoint tests
+* api-change:``wellarchitected``: Remove incorrect endpoint tests
+
+
 1.42.16
 =======
 

@@ -119,6 +119,26 @@
       ],
       "documentation":"<p>Associates the environment role in Amazon DataZone.</p>"
     },
+    "AssociateGovernedTerms":{
+      "name":"AssociateGovernedTerms",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/associate-governed-terms",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateGovernedTermsInput"},
+      "output":{"shape":"AssociateGovernedTermsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Associates governed terms with an asset.</p>"
+    },
     "CancelMetadataGenerationRun":{
       "name":"CancelMetadataGenerationRun",
       "http":{
@@ -1249,6 +1269,26 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Disassociates the environment role in Amazon DataZone.</p>"
+    },
+    "DisassociateGovernedTerms":{
+      "name":"DisassociateGovernedTerms",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/disassociate-governed-terms",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateGovernedTermsInput"},
+      "output":{"shape":"DisassociateGovernedTermsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Disassociates restricted terms from an asset.</p>"
     },
     "GetAccountPool":{
       "name":"GetAccountPool",
@@ -3998,6 +4038,10 @@
           "shape":"GlossaryTerms",
           "documentation":"<p>The glossary terms attached to the Amazon DataZone inventory asset.</p>"
         },
+        "governedGlossaryTerms":{
+          "shape":"AssetItemGovernedGlossaryTermsList",
+          "documentation":"<p>The restricted glossary terms accociated with an asset.</p>"
+        },
         "identifier":{
           "shape":"AssetIdentifier",
           "documentation":"<p>the identifier of the Amazon DataZone inventory asset.</p>"
@@ -4043,6 +4087,12 @@
       },
       "documentation":"<p>The additional attributes of an inventory asset.</p>"
     },
+    "AssetItemGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":20,
+      "min":0
+    },
     "AssetListing":{
       "type":"structure",
       "members":{
@@ -4069,6 +4119,10 @@
         "glossaryTerms":{
           "shape":"DetailedGlossaryTerms",
           "documentation":"<p>The glossary terms attached to an asset published in an Amazon DataZone catalog. </p>"
+        },
+        "governedGlossaryTerms":{
+          "shape":"AssetListingGovernedGlossaryTermsList",
+          "documentation":"<p>The restricted glossary terms associated with an asset.</p>"
         },
         "latestTimeSeriesDataPointForms":{
           "shape":"TimeSeriesDataPointSummaryFormOutputList",
@@ -4098,6 +4152,12 @@
         }
       },
       "documentation":"<p>The details of an asset published in an Amazon DataZone catalog. </p>"
+    },
+    "AssetListingGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"DetailedGlossaryTerm"},
+      "max":20,
+      "min":0
     },
     "AssetListingItem":{
       "type":"structure",
@@ -4129,6 +4189,10 @@
         "glossaryTerms":{
           "shape":"DetailedGlossaryTerms",
           "documentation":"<p>Glossary terms attached to the inventory asset.</p>"
+        },
+        "governedGlossaryTerms":{
+          "shape":"AssetListingItemGovernedGlossaryTermsList",
+          "documentation":"<p>The restricted glossary terms associated with an asset.</p>"
         },
         "listingCreatedBy":{
           "shape":"CreatedBy",
@@ -4174,6 +4238,12 @@
         }
       },
       "documentation":"<p>Additional attributes of an inventory asset.</p>"
+    },
+    "AssetListingItemGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"DetailedGlossaryTerm"},
+      "max":20,
+      "min":0
     },
     "AssetName":{
       "type":"string",
@@ -4375,6 +4445,49 @@
       }
     },
     "AssociateEnvironmentRoleOutput":{
+      "type":"structure",
+      "members":{}
+    },
+    "AssociateGovernedTermsInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType",
+        "governedGlossaryTerms"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where governed terms are to be associated with an asset.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"EntityIdentifier",
+          "documentation":"<p>The ID of the asset with which you want to associate a governed term.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"GovernedEntityType",
+          "documentation":"<p>The type of the asset with which you want to associate a governed term.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "governedGlossaryTerms":{
+          "shape":"AssociateGovernedTermsInputGovernedGlossaryTermsList",
+          "documentation":"<p>The glossary terms in a restricted glossary.</p>"
+        }
+      }
+    },
+    "AssociateGovernedTermsInputGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":5,
+      "min":1
+    },
+    "AssociateGovernedTermsOutput":{
       "type":"structure",
       "members":{}
     },
@@ -5417,6 +5530,10 @@
           "shape":"GlossaryTerms",
           "documentation":"<p>The glossary terms that are attached to the created asset.</p>"
         },
+        "governedGlossaryTerms":{
+          "shape":"CreateAssetOutputGovernedGlossaryTermsList",
+          "documentation":"<p>The glossary terms in a restricted glossary.</p>"
+        },
         "id":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the created asset.</p>"
@@ -5458,6 +5575,12 @@
           "documentation":"<p>The revision type of the asset.</p>"
         }
       }
+    },
+    "CreateAssetOutputGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":20,
+      "min":0
     },
     "CreateAssetRevisionInput":{
       "type":"structure",
@@ -5559,6 +5682,10 @@
           "shape":"GlossaryTerms",
           "documentation":"<p>The glossary terms that were attached to the asset as part of asset revision.</p>"
         },
+        "governedGlossaryTerms":{
+          "shape":"CreateAssetRevisionOutputGovernedGlossaryTermsList",
+          "documentation":"<p>The glossary terms in a restricted glossary.</p>"
+        },
         "id":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset revision.</p>"
@@ -5600,6 +5727,12 @@
           "documentation":"<p>The revision type of the asset.</p>"
         }
       }
+    },
+    "CreateAssetRevisionOutputGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":20,
+      "min":0
     },
     "CreateAssetTypeInput":{
       "type":"structure",
@@ -6870,6 +7003,10 @@
         "status":{
           "shape":"GlossaryStatus",
           "documentation":"<p>The status of this business glossary.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restriction of the restricted glossary.</p>"
         }
       }
     },
@@ -6905,6 +7042,10 @@
         "status":{
           "shape":"GlossaryStatus",
           "documentation":"<p>The status of this business glossary.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restriction of the restricted glossary.</p>"
         }
       }
     },
@@ -7004,6 +7145,10 @@
         "termRelations":{
           "shape":"TermRelations",
           "documentation":"<p>The term relations of this business glossary term.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restriction of the restricted glossary.</p>"
         }
       }
     },
@@ -9550,6 +9695,49 @@
       "type":"structure",
       "members":{}
     },
+    "DisassociateGovernedTermsInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType",
+        "governedGlossaryTerms"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to disassociate restricted terms from an asset.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"EntityIdentifier",
+          "documentation":"<p>The ID of an asset from which you want to disassociate restricted terms.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"GovernedEntityType",
+          "documentation":"<p>The type of the asset from which you want to disassociate restricted terms.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "governedGlossaryTerms":{
+          "shape":"DisassociateGovernedTermsInputGovernedGlossaryTermsList",
+          "documentation":"<p>The restricted glossary terms that you want to disassociate from an asset.</p>"
+        }
+      }
+    },
+    "DisassociateGovernedTermsInputGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":5,
+      "min":1
+    },
+    "DisassociateGovernedTermsOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "DomainDescription":{
       "type":"string",
       "sensitive":true
@@ -10984,6 +11172,10 @@
           "shape":"GlossaryTerms",
           "documentation":"<p>The business glossary terms attached to the asset.</p>"
         },
+        "governedGlossaryTerms":{
+          "shape":"GetAssetOutputGovernedGlossaryTermsList",
+          "documentation":"<p>The restricted glossary terms attached to an asset.</p>"
+        },
         "id":{
           "shape":"AssetId",
           "documentation":"<p>The ID of the asset.</p>"
@@ -11021,6 +11213,12 @@
           "documentation":"<p>The revision of the asset type.</p>"
         }
       }
+    },
+    "GetAssetOutputGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":20,
+      "min":0
     },
     "GetAssetTypeInput":{
       "type":"structure",
@@ -12270,6 +12468,10 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The Amazon DataZone user who updated the business glossary.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restriction of the restricted glossary.</p>"
         }
       }
     },
@@ -12351,6 +12553,10 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The Amazon DataZone user who updated the business glossary term.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restriction of a term within a restricted glossary.</p>"
         }
       }
     },
@@ -13619,6 +13825,10 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The Amazon DataZone user who updated the business glossary.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restrictions associated with a goverened glossary term.</p>"
         }
       },
       "documentation":"<p>The details of a business glossary.</p>"
@@ -13711,6 +13921,10 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The Amazon DataZone user who updated the business glossary term.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restrictions associated with a goverened glossary term.</p>"
         }
       },
       "documentation":"<p>The details of a business glossary term.</p>"
@@ -13742,6 +13956,16 @@
       "type":"list",
       "member":{"shape":"GlossaryTermId"},
       "max":20,
+      "min":1
+    },
+    "GlossaryUsageRestriction":{
+      "type":"string",
+      "enum":["ASSET_GOVERNED_TERMS"]
+    },
+    "GlossaryUsageRestrictions":{
+      "type":"list",
+      "member":{"shape":"GlossaryUsageRestriction"},
+      "max":1,
       "min":1
     },
     "GlueConnection":{
@@ -14120,6 +14344,10 @@
         "AWS_MANAGED",
         "USER_MANAGED"
       ]
+    },
+    "GovernedEntityType":{
+      "type":"string",
+      "enum":["ASSET"]
     },
     "GrantIdentifier":{
       "type":"string",
@@ -18141,7 +18369,8 @@
         "DELETING",
         "DELETE_FAILED",
         "UPDATING",
-        "UPDATE_FAILED"
+        "UPDATE_FAILED",
+        "MOVING"
       ]
     },
     "ProjectSummaries":{
@@ -22759,6 +22988,10 @@
         "status":{
           "shape":"GlossaryStatus",
           "documentation":"<p>The status to be updated as part of the <code>UpdateGlossary</code> action.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restriction of the restricted glossary.</p>"
         }
       }
     },
@@ -22848,6 +23081,10 @@
         "termRelations":{
           "shape":"TermRelations",
           "documentation":"<p>The term relations to be updated as part of the <code>UpdateGlossaryTerm</code> action.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restriction of a term within a restricted glossary.</p>"
         }
       }
     },

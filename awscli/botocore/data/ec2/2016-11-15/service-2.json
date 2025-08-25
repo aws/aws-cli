@@ -12666,6 +12666,11 @@
           "documentation":"<p>The IP address of the client.</p>",
           "locationName":"clientIp"
         },
+        "ClientIpv6Address":{
+          "shape":"String",
+          "documentation":"<p>The IPv6 address assigned to the client connection when using a dual-stack Client VPN endpoint. This field is only populated when the endpoint is configured for dual-stack addressing, and the client is using IPv6 for connectivity.</p>",
+          "locationName":"clientIpv6Address"
+        },
         "CommonName":{
           "shape":"String",
           "documentation":"<p>The common name associated with the client. This is either the name of the client certificate, or the Active Directory user name.</p>",
@@ -12850,6 +12855,16 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the client VPN session is disconnected after the maximum <code>sessionTimeoutHours</code> is reached. If <code>true</code>, users are prompted to reconnect client VPN. If <code>false</code>, client VPN attempts to reconnect automatically. The default value is <code>true</code>.</p>",
           "locationName":"disconnectOnSessionTimeout"
+        },
+        "EndpointIpAddressType":{
+          "shape":"EndpointIpAddressType",
+          "documentation":"<p>The IP address type of the Client VPN endpoint. Possible values are <code>ipv4</code> for IPv4 addressing only, <code>ipv6</code> for IPv6 addressing only, or <code>dual-stack </code>for both IPv4 and IPv6 addressing.</p>",
+          "locationName":"endpointIpAddressType"
+        },
+        "TrafficIpAddressType":{
+          "shape":"TrafficIpAddressType",
+          "documentation":"<p>The IP address type of the Client VPN endpoint. Possible values are either <code>ipv4</code> for IPv4 addressing only, <code>ipv6</code> for IPv6 addressing only, or <code>dual-stack</code> for both IPv4 and IPv6 addressing.</p>",
+          "locationName":"trafficIpAddressType"
         }
       },
       "documentation":"<p>Describes a Client VPN endpoint.</p>"
@@ -14023,7 +14038,6 @@
     "CreateClientVpnEndpointRequest":{
       "type":"structure",
       "required":[
-        "ClientCidrBlock",
         "ServerCertificateArn",
         "AuthenticationOptions",
         "ConnectionLogOptions"
@@ -14112,6 +14126,14 @@
         "DisconnectOnSessionTimeout":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the client VPN session is disconnected after the maximum timeout specified in <code>SessionTimeoutHours</code> is reached. If <code>true</code>, users are prompted to reconnect client VPN. If <code>false</code>, client VPN attempts to reconnect automatically. The default value is <code>true</code>.</p>"
+        },
+        "EndpointIpAddressType":{
+          "shape":"EndpointIpAddressType",
+          "documentation":"<p>The IP address type for the Client VPN endpoint. Valid values are <code>ipv4</code> (default) for IPv4 addressing only, <code>ipv6</code> for IPv6 addressing only, or <code>dual-stack</code> for both IPv4 and IPv6 addressing. When set to <code>dual-stack,</code> clients can connect to the endpoint using either IPv4 or IPv6 addresses..</p>"
+        },
+        "TrafficIpAddressType":{
+          "shape":"TrafficIpAddressType",
+          "documentation":"<p>The IP address type for traffic within the Client VPN tunnel. Valid values are <code>ipv4</code> (default) for IPv4 traffic only, <code>ipv6</code> for IPv6 addressing only, or <code>dual-stack</code> for both IPv4 and IPv6 traffic. When set to <code>dual-stack</code>, clients can access both IPv4 and IPv6 resources through the VPN .</p>"
         }
       }
     },
@@ -32179,6 +32201,14 @@
       "enum":[
         "unlimited",
         "limited"
+      ]
+    },
+    "EndpointIpAddressType":{
+      "type":"string",
+      "enum":[
+        "ipv4",
+        "ipv6",
+        "dual-stack"
       ]
     },
     "EndpointSet":{
@@ -63119,6 +63149,14 @@
       "enum":[
         "ingress",
         "egress"
+      ]
+    },
+    "TrafficIpAddressType":{
+      "type":"string",
+      "enum":[
+        "ipv4",
+        "ipv6",
+        "dual-stack"
       ]
     },
     "TrafficMirrorFilter":{

@@ -261,6 +261,48 @@
       ],
       "documentation": "Create a new transcoding queue. For information about queues, see Working With Queues in the User Guide at https://docs.aws.amazon.com/mediaconvert/latest/ug/working-with-queues.html"
     },
+    "CreateResourceShare": {
+      "name": "CreateResourceShare",
+      "http": {
+        "method": "POST",
+        "requestUri": "/2017-08-29/resourceShares",
+        "responseCode": 202
+      },
+      "input": {
+        "shape": "CreateResourceShareRequest"
+      },
+      "output": {
+        "shape": "CreateResourceShareResponse",
+        "documentation": "Share request accepted and queued, or resource is already shared with the specified support case"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "The service can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "The service encountered an unexpected condition and can't fulfill your request."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permissions for this action with the credentials you sent."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The resource you requested doesn't exist."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Too many requests have been sent in too short of a time. The service limits the rate at which it will accept requests."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The service couldn't complete your request because there is a conflict with the current state of the resource."
+        }
+      ],
+      "documentation": "Create a new resource share request for MediaConvert resources with AWS Support."
+    },
     "DeleteJobTemplate": {
       "name": "DeleteJobTemplate",
       "http": {
@@ -1300,7 +1342,7 @@
     },
     "AacCodecProfile": {
       "type": "string",
-      "documentation": "Specify the AAC profile. For the widest player compatibility and where higher bitrates are acceptable: Keep the default profile, LC (AAC-LC) For improved audio performance at lower bitrates: Choose HEV1 or HEV2. HEV1 (AAC-HE v1) adds spectral band replication to improve speech audio at low bitrates. HEV2 (AAC-HE v2) adds parametric stereo, which optimizes for encoding stereo audio at very low bitrates.",
+      "documentation": "Specify the AAC profile. For the widest player compatibility and where higher bitrates are acceptable: Keep the default profile, LC (AAC-LC) For improved audio performance at lower bitrates: Choose HEV1 or HEV2. HEV1 (AAC-HE v1) adds spectral band replication to improve speech audio at low bitrates. HEV2 (AAC-HE v2) adds parametric stereo, which optimizes for encoding stereo audio at very low bitrates. For improved audio quality at lower bitrates, adaptive audio bitrate switching, and loudness control: Choose XHE.",
       "enum": [
         "LC",
         "HEV1",
@@ -1359,7 +1401,7 @@
         "CodecProfile": {
           "shape": "AacCodecProfile",
           "locationName": "codecProfile",
-          "documentation": "Specify the AAC profile. For the widest player compatibility and where higher bitrates are acceptable: Keep the default profile, LC (AAC-LC) For improved audio performance at lower bitrates: Choose HEV1 or HEV2. HEV1 (AAC-HE v1) adds spectral band replication to improve speech audio at low bitrates. HEV2 (AAC-HE v2) adds parametric stereo, which optimizes for encoding stereo audio at very low bitrates."
+          "documentation": "Specify the AAC profile. For the widest player compatibility and where higher bitrates are acceptable: Keep the default profile, LC (AAC-LC) For improved audio performance at lower bitrates: Choose HEV1 or HEV2. HEV1 (AAC-HE v1) adds spectral band replication to improve speech audio at low bitrates. HEV2 (AAC-HE v2) adds parametric stereo, which optimizes for encoding stereo audio at very low bitrates. For improved audio quality at lower bitrates, adaptive audio bitrate switching, and loudness control: Choose XHE."
         },
         "CodingMode": {
           "shape": "AacCodingMode",
@@ -4292,6 +4334,29 @@
           "documentation": "You can use queues to manage the resources that are available to your AWS account for running multiple transcoding jobs at the same time. If you don't specify a queue, the service sends all jobs through the default queue. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/working-with-queues.html."
         }
       }
+    },
+    "CreateResourceShareRequest": {
+      "type": "structure",
+      "members": {
+        "JobId": {
+          "shape": "__string",
+          "locationName": "jobId",
+          "documentation": "Specify MediaConvert Job ID or ARN to share"
+        },
+        "SupportCaseId": {
+          "shape": "__string",
+          "locationName": "supportCaseId",
+          "documentation": "AWS Support case identifier"
+        }
+      },
+      "required": [
+        "SupportCaseId",
+        "JobId"
+      ]
+    },
+    "CreateResourceShareResponse": {
+      "type": "structure",
+      "members": {}
     },
     "DashAdditionalManifest": {
       "type": "structure",
@@ -7649,9 +7714,10 @@
     },
     "HlsIFrameOnlyManifest": {
       "type": "string",
-      "documentation": "Choose Include to have MediaConvert generate a child manifest that lists only the I-frames for this rendition, in addition to your regular manifest for this rendition. You might use this manifest as part of a workflow that creates preview functions for your video. MediaConvert adds both the I-frame only child manifest and the regular child manifest to the parent manifest. When you don't need the I-frame only child manifest, keep the default value Exclude.",
+      "documentation": "Generate a variant manifest that lists only the I-frames for this rendition. You might use this manifest as part of a workflow that creates preview functions for your video. MediaConvert adds both the I-frame only variant manifest and the regular variant manifest to the multivariant manifest. To have MediaConvert write a variant manifest that references I-frames from your output content using EXT-X-BYTERANGE tags: Choose Include. To have MediaConvert output I-frames as single frame TS files and a corresponding variant manifest that references them: Choose Include as TS. When you don't need the I-frame only variant manifest: Keep the default value, Exclude.",
       "enum": [
         "INCLUDE",
+        "INCLUDE_AS_TS",
         "EXCLUDE"
       ]
     },
@@ -7842,7 +7908,7 @@
         "IFrameOnlyManifest": {
           "shape": "HlsIFrameOnlyManifest",
           "locationName": "iFrameOnlyManifest",
-          "documentation": "Choose Include to have MediaConvert generate a child manifest that lists only the I-frames for this rendition, in addition to your regular manifest for this rendition. You might use this manifest as part of a workflow that creates preview functions for your video. MediaConvert adds both the I-frame only child manifest and the regular child manifest to the parent manifest. When you don't need the I-frame only child manifest, keep the default value Exclude."
+          "documentation": "Generate a variant manifest that lists only the I-frames for this rendition. You might use this manifest as part of a workflow that creates preview functions for your video. MediaConvert adds both the I-frame only variant manifest and the regular variant manifest to the multivariant manifest. To have MediaConvert write a variant manifest that references I-frames from your output content using EXT-X-BYTERANGE tags: Choose Include. To have MediaConvert output I-frames as single frame TS files and a corresponding variant manifest that references them: Choose Include as TS. When you don't need the I-frame only variant manifest: Keep the default value, Exclude."
         },
         "SegmentModifier": {
           "shape": "__string",
@@ -8220,7 +8286,7 @@
         "AuthConnectionArn": {
           "shape": "__stringPatternArnAwsAZ09EventsAZ090912ConnectionAZAZ09AF0936",
           "locationName": "authConnectionArn",
-          "documentation": "Specify the ARN (Amazon Resource Name) of an EventBridge Connection to authenticate with your TAMS server. The EventBridge Connection stores your authentication credentials securely. MediaConvert assumes your job's IAM role to access this connection, so ensure the role has the events:RetrieveConnectionCredentials, secretsmanager:DescribeSecret, and secretsmanager:GetSecretValue permissions. Format: arn:aws:events:region:account-id:connection/connection-name/unique-id"
+          "documentation": "Specify the ARN (Amazon Resource Name) of an EventBridge Connection to authenticate with your TAMS server. The EventBridge Connection stores your authentication credentials securely. MediaConvert assumes your job's IAM role to access this connection, so ensure the role has the events:RetrieveConnectionCredentials, secretsmanager:DescribeSecret, and secretsmanager:GetSecretValue permissions. Format: arn:aws:events:region:account-id:connection/connection-name/unique-id This setting is required when you include TAMS settings in your job."
         },
         "GapHandling": {
           "shape": "TamsGapHandling",
@@ -8230,12 +8296,12 @@
         "SourceId": {
           "shape": "__string",
           "locationName": "sourceId",
-          "documentation": "Specify the unique identifier for the media source in your TAMS server. MediaConvert uses this source ID to locate the appropriate flows containing the media segments you want to process. The source ID corresponds to a specific media source registered in your TAMS server. This source must be of type urn:x-nmos:format:multi, and can can reference multiple flows for audio, video, or combined audio/video content. MediaConvert automatically selects the highest quality flows available for your job. This setting is required when include TAMS settings in your job."
+          "documentation": "Specify the unique identifier for the media source in your TAMS server. MediaConvert uses this source ID to locate the appropriate flows containing the media segments you want to process. The source ID corresponds to a specific media source registered in your TAMS server. This source must be of type urn:x-nmos:format:multi, and can can reference multiple flows for audio, video, or combined audio/video content. MediaConvert automatically selects the highest quality flows available for your job. This setting is required when you include TAMS settings in your job."
         },
         "Timerange": {
           "shape": "__stringPattern019090190908019090190908",
           "locationName": "timerange",
-          "documentation": "Specify the time range of media segments to retrieve from your TAMS server. MediaConvert fetches only the segments that fall within this range. Use the format specified by your TAMS server implementation. This must be two timestamp values with the format {sign?}{seconds}:{nanoseconds}, separated by an underscore, surrounded by either parentheses or square brackets.  Example: [15:0_35:0) This setting is required when include TAMS settings in your job."
+          "documentation": "Specify the time range of media segments to retrieve from your TAMS server. MediaConvert fetches only the segments that fall within this range. Use the format specified by your TAMS server implementation. This must be two timestamp values with the format {sign?}{seconds}:{nanoseconds}, separated by an underscore, surrounded by either parentheses or square brackets.  Example: [15:0_35:0) This setting is required when you include TAMS settings in your job."
         }
       },
       "documentation": "Specify a Time Addressable Media Store (TAMS) server as an input source. TAMS is an open-source API specification that provides access to time-segmented media content. Use TAMS to retrieve specific time ranges from live or archived media streams. When you specify TAMS settings, MediaConvert connects to your TAMS server, retrieves the media segments for your specified time range, and processes them as a single input. This enables workflows like extracting clips from live streams or processing specific portions of archived content. To use TAMS, you must: 1. Have access to a TAMS-compliant server 2. Specify the server URL in the Input file URL field 3. Provide the required SourceId and Timerange parameters 4. Configure authentication, if your TAMS server requires it"
@@ -8549,6 +8615,11 @@
           "locationName": "jobTemplate",
           "documentation": "The job template that the job is created from, if it is created from a job template."
         },
+        "LastShareDetails": {
+          "shape": "__string",
+          "locationName": "lastShareDetails",
+          "documentation": "Contains information about the most recent share attempt for the job. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/creating-resource-share.html"
+        },
         "Messages": {
           "shape": "JobMessages",
           "locationName": "messages",
@@ -8588,6 +8659,11 @@
           "shape": "JobSettings",
           "locationName": "settings",
           "documentation": "JobSettings contains all the transcode settings for a job."
+        },
+        "ShareStatus": {
+          "shape": "ShareStatus",
+          "locationName": "shareStatus",
+          "documentation": "A job's share status can be NOT_SHARED, INITIATED, or SHARED"
         },
         "SimulateReservedQueue": {
           "shape": "SimulateReservedQueue",
@@ -10200,9 +10276,22 @@
       },
       "documentation": "These settings relate to your QuickTime MOV output container."
     },
+    "Mp2AudioDescriptionMix": {
+      "type": "string",
+      "documentation": "Choose BROADCASTER_MIXED_AD when the input contains pre-mixed main audio + audio description (AD) as a stereo pair. The value for AudioType will be set to 3, which signals to downstream systems that this stream contains \"broadcaster mixed AD\". Note that the input received by the encoder must contain pre-mixed audio; the encoder does not perform the mixing. When you choose BROADCASTER_MIXED_AD, the encoder ignores any values you provide in AudioType and FollowInputAudioType. Choose NONE when the input does not contain pre-mixed audio + audio description (AD). In this case, the encoder will use any values you provide for AudioType and FollowInputAudioType.",
+      "enum": [
+        "BROADCASTER_MIXED_AD",
+        "NONE"
+      ]
+    },
     "Mp2Settings": {
       "type": "structure",
       "members": {
+        "AudioDescriptionMix": {
+          "shape": "Mp2AudioDescriptionMix",
+          "locationName": "audioDescriptionMix",
+          "documentation": "Choose BROADCASTER_MIXED_AD when the input contains pre-mixed main audio + audio description (AD) as a stereo pair. The value for AudioType will be set to 3, which signals to downstream systems that this stream contains \"broadcaster mixed AD\". Note that the input received by the encoder must contain pre-mixed audio; the encoder does not perform the mixing. When you choose BROADCASTER_MIXED_AD, the encoder ignores any values you provide in AudioType and FollowInputAudioType. Choose NONE when the input does not contain pre-mixed audio + audio description (AD). In this case, the encoder will use any values you provide for AudioType and FollowInputAudioType."
+        },
         "Bitrate": {
           "shape": "__integerMin32000Max384000",
           "locationName": "bitrate",
@@ -12361,6 +12450,14 @@
       },
       "documentation": "A service override applied by MediaConvert to the settings that you have configured. If you see any overrides, we recommend that you contact AWS Support."
     },
+    "ShareStatus": {
+      "type": "string",
+      "enum": [
+        "NOT_SHARED",
+        "INITIATED",
+        "SHARED"
+      ]
+    },
     "SimulateReservedQueue": {
       "type": "string",
       "documentation": "Enable this setting when you run a test job to estimate how many reserved transcoding slots (RTS) you need. When this is enabled, MediaConvert runs your job from an on-demand queue with similar performance to what you will see with one RTS in a reserved queue. This setting is disabled by default.",
@@ -13778,9 +13875,27 @@
           "shape": "InputSampleRange",
           "locationName": "sampleRange",
           "documentation": "If the sample range metadata in your input video is accurate, or if you don't know about sample range, keep the default value, Follow, for this setting. When you do, the service automatically detects your input sample range. If your input video has metadata indicating the wrong sample range, specify the accurate sample range here. When you do, MediaConvert ignores any sample range information in the input metadata. Regardless of whether MediaConvert uses the input sample range or the sample range that you specify, MediaConvert uses the sample range for transcoding and also writes it to the output metadata."
+        },
+        "SelectorType": {
+          "shape": "VideoSelectorType",
+          "locationName": "selectorType",
+          "documentation": "Choose the video selector type for your HLS input. Use to specify which video rendition MediaConvert uses from your HLS input. To have MediaConvert automatically use the highest bitrate rendition from your HLS input: Keep the default value, Auto. To manually specify a rendition: Choose Stream. Then enter the unique stream number in the Streams array, starting at 1, corresponding to the stream order in the manifest."
+        },
+        "Streams": {
+          "shape": "__listOf__integerMin1Max2147483647",
+          "locationName": "streams",
+          "documentation": "Specify a stream for MediaConvert to use from your HLS input. Enter an integer corresponding to the stream order in your HLS manifest."
         }
       },
       "documentation": "Input video selectors contain the video settings for the input. Each of your inputs can have up to one video selector."
+    },
+    "VideoSelectorType": {
+      "type": "string",
+      "documentation": "Choose the video selector type for your HLS input. Use to specify which video rendition MediaConvert uses from your HLS input. To have MediaConvert automatically use the highest bitrate rendition from your HLS input: Keep the default value, Auto. To manually specify a rendition: Choose Stream. Then enter the unique stream number in the Streams array, starting at 1, corresponding to the stream order in the manifest.",
+      "enum": [
+        "AUTO",
+        "STREAM"
+      ]
     },
     "VideoTimecodeInsertion": {
       "type": "string",

@@ -94,8 +94,6 @@ from awscli.customizations.kinesis import (
 from awscli.customizations.kms import register_fix_kms_create_grant_docs
 from awscli.customizations.lightsail import initialize as lightsail_initialize
 from awscli.customizations.logs import register_logs_commands
-from awscli.customizations.opsworks import initialize as opsworks_init
-from awscli.customizations.opsworkscm import register_alias_opsworks_cm
 from awscli.customizations.paginate import register_pagination
 from awscli.customizations.putmetricdata import register_put_metric_data
 from awscli.customizations.quicksight import (
@@ -199,7 +197,6 @@ def awscli_initialize(event_handlers):
     register_get_status(event_handlers)
     register_rename_config(event_handlers)
     register_timestamp_format(event_handlers)
-    opsworks_init(event_handlers)
     register_lambda_create_function(event_handlers)
     register_fix_kms_create_grant_docs(event_handlers)
     register_create_hosted_zone_doc_fix(event_handlers)
@@ -219,7 +216,6 @@ def awscli_initialize(event_handlers):
     register_gamelift_commands(event_handlers)
     register_ec2_page_size_injector(event_handlers)
     cloudformation_init(event_handlers)
-    register_alias_opsworks_cm(event_handlers)
     register_servicecatalog_commands(event_handlers)
     register_translate_import_terminology(event_handlers)
     register_history_mode(event_handlers)

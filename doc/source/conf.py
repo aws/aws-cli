@@ -341,7 +341,6 @@ man_pages = [
         '',
         1,
     ),
-    ('reference/opsworks/index', 'aws-opsworks', 'AWS OpsWorks', '', 1),
     (
         'reference/rds/index',
         'aws-rds',

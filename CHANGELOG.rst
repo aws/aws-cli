@@ -2,6 +2,41 @@
 CHANGELOG
 =========
 
+2.28.18
+=======
+
+* api-change:``mq``: Remove incorrect endpoint tests
+* api-change:``dlm``: Remove incorrect endpoint tests
+* api-change:``connectparticipant``: Amazon Connect Participant Service: Remove unused fields from WebRTCConnection
+* api-change:``waf-regional``: Remove incorrect endpoint tests
+* api-change:``rbin``: Remove incorrect endpoint tests
+* api-change:``arc-zonal-shift``: This release adds new API options to enable allowed windows and multiple alarms for practice runs.
+* api-change:``ram``: Remove incorrect endpoint tests
+* api-change:``elastictranscoder``: Remove incorrect endpoint tests
+* api-change:``route53-recovery-cluster``: Remove incorrect endpoint tests
+* api-change:``apprunner``: Remove incorrect endpoint tests
+* api-change:``lookoutvision``: Remove incorrect endpoint tests
+* api-change:``personalize-events``: Remove incorrect endpoint tests
+* api-change:``codestar-connections``: Remove incorrect endpoint tests
+* api-change:``ec2``: Add new APIs for viewing how your shared AMIs are used by other accounts, and identify resources in your account that are dependent on particular AMIs
+* api-change:``geo-routes``: Added RouteFerryNotice PotentialViolatedVehicleRestrictionUsage value for CalculateRoutes. This value indicates when the Route is potentially forbidden for the given vehicle profile.
+* api-change:``greengrass``: Remove incorrect endpoint tests
+* api-change:``sagemaker-geospatial``: Remove incorrect endpoint tests
+* api-change:``globalaccelerator``: Remove incorrect endpoint tests
+* api-change:``identitystore``: Remove incorrect endpoint tests
+* api-change:``signer``: Remove incorrect endpoint tests
+* api-change:``kafka``: Remove incorrect endpoint tests
+* api-change:``codecommit``: Remove incorrect endpoint tests
+* api-change:``pinpoint``: Remove incorrect endpoint tests
+* api-change:``iotsecuretunneling``: Remove incorrect endpoint tests
+* api-change:``finspace``: Remove incorrect endpoint tests
+* api-change:``mgh``: Remove incorrect endpoint tests
+* api-change:``comprehendmedical``: Remove incorrect endpoint tests
+* api-change:``migration-hub-refactor-spaces``: Remove incorrect endpoint tests
+* api-change:``glacier``: Remove incorrect endpoint tests
+* api-change:``servicecatalog-appregistry``: Remove incorrect endpoint tests
+
+
 2.28.17
 =======
 

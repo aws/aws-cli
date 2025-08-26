@@ -790,6 +790,16 @@
       "output":{"shape":"CreateImageResult"},
       "documentation":"<p>Creates an Amazon EBS-backed AMI from an Amazon EBS-backed instance that is either running or stopped.</p> <p>If you customized your instance with instance store volumes or Amazon EBS volumes in addition to the root device volume, the new AMI contains block device mapping information for those volumes. When you launch an instance from this new AMI, the instance automatically launches with those additional volumes.</p> <p>The location of the source instance determines where you can create the snapshots of the AMI:</p> <ul> <li> <p>If the source instance is in a Region, you must create the snapshots in the same Region as the instance.</p> </li> <li> <p>If the source instance is in a Local Zone, you can create the snapshots in the same Local Zone or in its parent Region.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-ebs.html\">Create an Amazon EBS-backed AMI</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
+    "CreateImageUsageReport":{
+      "name":"CreateImageUsageReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateImageUsageReportRequest"},
+      "output":{"shape":"CreateImageUsageReportResult"},
+      "documentation":"<p>Creates a report that shows how your image is used across other Amazon Web Services accounts. The report provides visibility into which accounts are using the specified image, and how many resources (EC2 instances or launch templates) are referencing it.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-ami-usage.html\">View your AMI usage</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
     "CreateInstanceConnectEndpoint":{
       "name":"CreateInstanceConnectEndpoint",
       "http":{
@@ -1634,6 +1644,16 @@
       "input":{"shape":"DeleteFpgaImageRequest"},
       "output":{"shape":"DeleteFpgaImageResult"},
       "documentation":"<p>Deletes the specified Amazon FPGA Image (AFI).</p>"
+    },
+    "DeleteImageUsageReport":{
+      "name":"DeleteImageUsageReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteImageUsageReportRequest"},
+      "output":{"shape":"DeleteImageUsageReportResult"},
+      "documentation":"<p>Deletes the specified image usage report.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-ami-usage.html\">View your AMI usage</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DeleteInstanceConnectEndpoint":{
       "name":"DeleteInstanceConnectEndpoint",
@@ -2878,6 +2898,36 @@
       "input":{"shape":"DescribeImageAttributeRequest"},
       "output":{"shape":"ImageAttribute"},
       "documentation":"<p>Describes the specified attribute of the specified AMI. You can specify only one attribute at a time.</p> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
+    },
+    "DescribeImageReferences":{
+      "name":"DescribeImageReferences",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeImageReferencesRequest"},
+      "output":{"shape":"DescribeImageReferencesResult"},
+      "documentation":"<p>Describes your Amazon Web Services resources that are referencing the specified images. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-ami-references.html\">Identiy your resources referencing selected AMIs</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "DescribeImageUsageReportEntries":{
+      "name":"DescribeImageUsageReportEntries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeImageUsageReportEntriesRequest"},
+      "output":{"shape":"DescribeImageUsageReportEntriesResult"},
+      "documentation":"<p>Describes the entries in image usage reports, showing how your images are used across other Amazon Web Services accounts.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-ami-usage.html\">View your AMI usage</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "DescribeImageUsageReports":{
+      "name":"DescribeImageUsageReports",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeImageUsageReportsRequest"},
+      "output":{"shape":"DescribeImageUsageReportsResult"},
+      "documentation":"<p>Describes the configuration and status of image usage reports, filtered by report IDs or image IDs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-ami-usage.html\">View your AMI usage</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DescribeImages":{
       "name":"DescribeImages",
@@ -14831,6 +14881,53 @@
         }
       }
     },
+    "CreateImageUsageReportRequest":{
+      "type":"structure",
+      "required":[
+        "ImageId",
+        "ResourceTypes"
+      ],
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the image to report on.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "ResourceTypes":{
+          "shape":"ImageUsageResourceTypeRequestList",
+          "documentation":"<p>The resource types to include in the report.</p>",
+          "locationName":"ResourceType"
+        },
+        "AccountIds":{
+          "shape":"ImageUsageReportUserIdStringList",
+          "documentation":"<p>The Amazon Web Services account IDs to include in the report. To include all accounts, omit this parameter.</p>",
+          "locationName":"AccountId"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the report on creation. The <code>ResourceType</code> must be set to <code>image-usage-report</code>; any other value will cause the report creation to fail.</p> <p>To tag a report after it has been created, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateTags.html\">CreateTags</a>.</p>",
+          "locationName":"TagSpecification"
+        }
+      }
+    },
+    "CreateImageUsageReportResult":{
+      "type":"structure",
+      "members":{
+        "ReportId":{
+          "shape":"ImageUsageReportId",
+          "documentation":"<p>The ID of the report.</p>",
+          "locationName":"reportId"
+        }
+      }
+    },
     "CreateInstanceConnectEndpointRequest":{
       "type":"structure",
       "required":["SubnetId"],
@@ -19368,6 +19465,30 @@
         }
       }
     },
+    "DeleteImageUsageReportRequest":{
+      "type":"structure",
+      "required":["ReportId"],
+      "members":{
+        "ReportId":{
+          "shape":"ImageUsageReportId",
+          "documentation":"<p>The ID of the report to delete.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteImageUsageReportResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"return"
+        }
+      }
+    },
     "DeleteInstanceConnectEndpointRequest":{
       "type":"structure",
       "required":["InstanceConnectEndpointId"],
@@ -23639,6 +23760,171 @@
         }
       },
       "documentation":"<p>Contains the parameters for DescribeImageAttribute.</p>"
+    },
+    "DescribeImageReferencesImageIdStringList":{
+      "type":"list",
+      "member":{"shape":"ImageId"},
+      "max":10,
+      "min":1
+    },
+    "DescribeImageReferencesMaxResults":{
+      "type":"integer",
+      "min":5
+    },
+    "DescribeImageReferencesRequest":{
+      "type":"structure",
+      "required":["ImageIds"],
+      "members":{
+        "ImageIds":{
+          "shape":"DescribeImageReferencesImageIdStringList",
+          "documentation":"<p>The IDs of the images to check for resource references.</p>",
+          "locationName":"ImageId"
+        },
+        "IncludeAllResourceTypes":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to check all supported Amazon Web Services resource types for image references. When specified, default values are applied for <code>ResourceTypeOptions</code>. For the default values, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-ami-references-works.html\">How AMI reference checks work</a> in the <i>Amazon EC2 User Guide</i>. If you also specify <code>ResourceTypes</code> with <code>ResourceTypeOptions</code>, your specified values override the default values.</p> <p>Supported resource types: <code>ec2:Instance</code> | <code>ec2:LaunchTemplate</code> | <code>ssm:Parameter</code> | <code>imagebuilder:ImageRecipe</code> | <code>imagebuilder:ContainerRecipe</code> </p> <p>Either <code>IncludeAllResourceTypes</code> or <code>ResourceTypes</code> must be specified.</p>"
+        },
+        "ResourceTypes":{
+          "shape":"ResourceTypeRequestList",
+          "documentation":"<p>The Amazon Web Services resource types to check for image references.</p> <p>Either <code>IncludeAllResourceTypes</code> or <code>ResourceTypes</code> must be specified.</p>",
+          "locationName":"ResourceType"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"DescribeImageReferencesMaxResults",
+          "documentation":"<p> The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>. </p>"
+        }
+      }
+    },
+    "DescribeImageReferencesResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>",
+          "locationName":"nextToken"
+        },
+        "ImageReferences":{
+          "shape":"ImageReferenceList",
+          "documentation":"<p>The resources that are referencing the specified images.</p>",
+          "locationName":"imageReferenceSet"
+        }
+      }
+    },
+    "DescribeImageUsageReportEntriesMaxResults":{
+      "type":"integer",
+      "min":1
+    },
+    "DescribeImageUsageReportEntriesRequest":{
+      "type":"structure",
+      "members":{
+        "ImageIds":{
+          "shape":"DescribeImageUsageReportsImageIdStringList",
+          "documentation":"<p>The IDs of the images for filtering the report entries. If specified, only report entries containing these images are returned.</p>",
+          "locationName":"ImageId"
+        },
+        "ReportIds":{
+          "shape":"ImageUsageReportIdStringList",
+          "documentation":"<p>The IDs of the usage reports.</p>",
+          "locationName":"ReportId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>account-id</code> - A 12-digit Amazon Web Services account ID.</p> </li> <li> <p> <code>creation-time</code> - The time when the report was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2025-11-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2025-11-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>resource-type</code> - The resource type (<code>ec2:Instance</code> | <code>ec2:LaunchTemplate</code>).</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"DescribeImageUsageReportEntriesMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        }
+      }
+    },
+    "DescribeImageUsageReportEntriesResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>",
+          "locationName":"nextToken"
+        },
+        "ImageUsageReportEntries":{
+          "shape":"ImageUsageReportEntryList",
+          "documentation":"<p>The content of the usage reports.</p>",
+          "locationName":"imageUsageReportEntrySet"
+        }
+      }
+    },
+    "DescribeImageUsageReportsImageIdStringList":{
+      "type":"list",
+      "member":{"shape":"ImageId"},
+      "max":200,
+      "min":0
+    },
+    "DescribeImageUsageReportsMaxResults":{
+      "type":"integer",
+      "min":1
+    },
+    "DescribeImageUsageReportsRequest":{
+      "type":"structure",
+      "members":{
+        "ImageIds":{
+          "shape":"DescribeImageUsageReportsImageIdStringList",
+          "documentation":"<p>The IDs of the images for filtering the reports. If specified, only reports containing these images are returned.</p>",
+          "locationName":"ImageId"
+        },
+        "ReportIds":{
+          "shape":"ImageUsageReportIdStringList",
+          "documentation":"<p>The IDs of the image usage reports.</p>",
+          "locationName":"ReportId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>creation-time</code> - The time when the report was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2025-11-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2025-11-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>state</code> - The state of the report (<code>available</code> | <code>pending</code> | <code>error</code>).</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"DescribeImageUsageReportsMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        }
+      }
+    },
+    "DescribeImageUsageReportsResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>",
+          "locationName":"nextToken"
+        },
+        "ImageUsageReports":{
+          "shape":"ImageUsageReportList",
+          "documentation":"<p>The image usage reports.</p>",
+          "locationName":"imageUsageReportSet"
+        }
+      }
     },
     "DescribeImagesRequest":{
       "type":"structure",
@@ -28543,7 +28829,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>vpc-endpoint-id</code> - The ID of the VPC endpoint.</p> </li> <li> <p> <code>associated-resource-accessibility</code> - The association state. When the state is <code>accessible</code>, it returns <code>AVAILABLE</code>. When the state is <code>inaccessible</code>, it returns <code>PENDING</code> or <code>FAILED</code>.</p> </li> <li> <p> <code>association-id</code> - The ID of the VPC endpoint association.</p> </li> <li> <p> <code>associated-resource-id</code> - The ID of the associated resource configuration.</p> </li> <li> <p> <code>service-network-arn</code> - The Amazon Resource Name (ARN) of the associated service network. Only VPC endpoints of type service network will be returned.</p> </li> <li> <p> <code>resource-configuration-group-arn</code> - The Amazon Resource Name (ARN) of the resource configuration of type GROUP.</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>vpc-endpoint-id</code> - The ID of the VPC endpoint.</p> </li> <li> <p> <code>associated-resource-accessibility</code> - The association state. When the state is <code>accessible</code>, it returns <code>AVAILABLE</code>. When the state is <code>inaccessible</code>, it returns <code>PENDING</code> or <code>FAILED</code>.</p> </li> <li> <p> <code>association-id</code> - The ID of the VPC endpoint association.</p> </li> <li> <p> <code>associated-resource-id</code> - The ID of the associated resource configuration.</p> </li> <li> <p> <code>service-network-arn</code> - The Amazon Resource Name (ARN) of the associated service network. Only VPC endpoints of type service network will be returned.</p> </li> <li> <p> <code>resource-configuration-group-arn</code> - The Amazon Resource Name (ARN) of the resource configuration of type GROUP.</p> </li> <li> <p> <code>service-network-resource-association-id</code> - The ID of the association.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -33466,7 +33752,7 @@
       "members":{
         "ActivityStatus":{
           "shape":"FleetActivityStatus",
-          "documentation":"<p>The progress of the EC2 Fleet. If there is an error, the status is <code>error</code>. After all requests are placed, the status is <code>pending_fulfillment</code>. If the size of the EC2 Fleet is equal to or greater than its target capacity, the status is <code>fulfilled</code>. If the size of the EC2 Fleet is decreased, the status is <code>pending_termination</code> while instances are terminating.</p>",
+          "documentation":"<p>The progress of the EC2 Fleet.</p> <p>For fleets of type <code>instant</code>, the status is <code>fulfilled</code> after all requests are placed, regardless of whether target capacity is met (this is the only possible status for <code>instant</code> fleets).</p> <p>For fleets of type <code>request</code> or <code>maintain</code>, the status is <code>pending_fulfillment</code> after all requests are placed, <code>fulfilled</code> when the fleet size meets or exceeds target capacity, <code>pending_termination</code> while instances are terminating when fleet size is decreased, and <code>error</code> if there's an error.</p>",
           "locationName":"activityStatus"
         },
         "CreateTime":{
@@ -37775,6 +38061,51 @@
         "locationName":"item"
       }
     },
+    "ImageReference":{
+      "type":"structure",
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the referenced image.</p>",
+          "locationName":"imageId"
+        },
+        "ResourceType":{
+          "shape":"ImageReferenceResourceType",
+          "documentation":"<p>The type of resource referencing the image.</p>",
+          "locationName":"resourceType"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource referencing the image.</p>",
+          "locationName":"arn"
+        }
+      },
+      "documentation":"<p>A resource that is referencing an image.</p>"
+    },
+    "ImageReferenceList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageReference",
+        "locationName":"item"
+      }
+    },
+    "ImageReferenceOptionName":{
+      "type":"string",
+      "enum":[
+        "state-name",
+        "version-depth"
+      ]
+    },
+    "ImageReferenceResourceType":{
+      "type":"string",
+      "enum":[
+        "ec2:Instance",
+        "ec2:LaunchTemplate",
+        "ssm:Parameter",
+        "imagebuilder:ImageRecipe",
+        "imagebuilder:ContainerRecipe"
+      ]
+    },
     "ImageState":{
       "type":"string",
       "enum":[
@@ -37795,6 +38126,218 @@
         "kernel",
         "ramdisk"
       ]
+    },
+    "ImageUsageReport":{
+      "type":"structure",
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the image that was specified when the report was created.</p>",
+          "locationName":"imageId"
+        },
+        "ReportId":{
+          "shape":"ImageUsageReportId",
+          "documentation":"<p>The ID of the report.</p>",
+          "locationName":"reportId"
+        },
+        "ResourceTypes":{
+          "shape":"ImageUsageResourceTypeList",
+          "documentation":"<p>The resource types that were specified when the report was created.</p>",
+          "locationName":"resourceTypeSet"
+        },
+        "AccountIds":{
+          "shape":"UserIdList",
+          "documentation":"<p>The IDs of the Amazon Web Services accounts that were specified when the report was created.</p>",
+          "locationName":"accountIdSet"
+        },
+        "State":{
+          "shape":"ImageUsageReportState",
+          "documentation":"<p>The current state of the report. Possible values:</p> <ul> <li> <p> <code>available</code> - The report is available to view.</p> </li> <li> <p> <code>pending</code> - The report is being created and not available to view.</p> </li> <li> <p> <code>error</code> - The report could not be created.</p> </li> </ul>",
+          "locationName":"state"
+        },
+        "StateReason":{
+          "shape":"ImageUsageReportStateReason",
+          "documentation":"<p>Provides additional details when the report is in an <code>error</code> state.</p>",
+          "locationName":"stateReason"
+        },
+        "CreationTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the report was created.</p>",
+          "locationName":"creationTime"
+        },
+        "ExpirationTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when Amazon EC2 will delete the report (30 days after the report was created).</p>",
+          "locationName":"expirationTime"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Any tags assigned to the report.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>The configuration and status of an image usage report.</p>"
+    },
+    "ImageUsageReportEntry":{
+      "type":"structure",
+      "members":{
+        "ResourceType":{
+          "shape":"ImageUsageResourceTypeName",
+          "documentation":"<p>The type of resource (<code>ec2:Instance</code> or <code>ec2:LaunchTemplate</code>).</p>",
+          "locationName":"resourceType"
+        },
+        "ReportId":{
+          "shape":"ImageUsageReportId",
+          "documentation":"<p>The ID of the report.</p>",
+          "locationName":"reportId"
+        },
+        "UsageCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of times resources of this type reference this image in the account.</p>",
+          "locationName":"usageCount"
+        },
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the account that uses the image.</p>",
+          "locationName":"accountId"
+        },
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the image.</p>",
+          "locationName":"imageId"
+        },
+        "ReportCreationTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time the report creation was initiated.</p>",
+          "locationName":"reportCreationTime"
+        }
+      },
+      "documentation":"<p>A single entry in an image usage report, detailing how an image is being used by a specific Amazon Web Services account and resource type.</p>"
+    },
+    "ImageUsageReportEntryList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageUsageReportEntry",
+        "locationName":"item"
+      }
+    },
+    "ImageUsageReportId":{"type":"string"},
+    "ImageUsageReportIdStringList":{
+      "type":"list",
+      "member":{"shape":"ImageUsageReportId"},
+      "max":200,
+      "min":0
+    },
+    "ImageUsageReportList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageUsageReport",
+        "locationName":"item"
+      }
+    },
+    "ImageUsageReportState":{"type":"string"},
+    "ImageUsageReportStateReason":{"type":"string"},
+    "ImageUsageReportUserIdStringList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"UserId"
+      },
+      "max":200,
+      "min":0
+    },
+    "ImageUsageResourceType":{
+      "type":"structure",
+      "members":{
+        "ResourceType":{
+          "shape":"ImageUsageResourceTypeName",
+          "documentation":"<p>The resource type.</p> <p>Valid values: <code>ec2:Instance</code> | <code>ec2:LaunchTemplate</code> </p>",
+          "locationName":"resourceType"
+        },
+        "ResourceTypeOptions":{
+          "shape":"ImageUsageResourceTypeOptionList",
+          "documentation":"<p>The options that affect the scope of the report. Valid only when <code>ResourceType</code> is <code>ec2:LaunchTemplate</code>.</p>",
+          "locationName":"resourceTypeOptionSet"
+        }
+      },
+      "documentation":"<p>A resource type to include in the report. Associated options can also be specified if the resource type is a launch template.</p>"
+    },
+    "ImageUsageResourceTypeList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageUsageResourceType",
+        "locationName":"item"
+      }
+    },
+    "ImageUsageResourceTypeName":{"type":"string"},
+    "ImageUsageResourceTypeOption":{
+      "type":"structure",
+      "members":{
+        "OptionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the option.</p>",
+          "locationName":"optionName"
+        },
+        "OptionValues":{
+          "shape":"ImageUsageResourceTypeOptionValuesList",
+          "documentation":"<p>The number of launch template versions to check.</p>",
+          "locationName":"optionValueSet"
+        }
+      },
+      "documentation":"<p>The options that affect the scope of the report.</p>"
+    },
+    "ImageUsageResourceTypeOptionList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageUsageResourceTypeOption",
+        "locationName":"item"
+      }
+    },
+    "ImageUsageResourceTypeOptionRequest":{
+      "type":"structure",
+      "members":{
+        "OptionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the option.</p> <p>Valid value: <code>version-depth</code> - The number of launch template versions to check.</p>"
+        },
+        "OptionValues":{
+          "shape":"ImageUsageResourceTypeOptionValuesList",
+          "documentation":"<p>A value for the specified option.</p> <p>Valid values: Integers between <code>1</code> and <code>10000</code> </p> <p>Default: <code>20</code> </p>",
+          "locationName":"OptionValue"
+        }
+      },
+      "documentation":"<p>The options that affect the scope of the report.</p>"
+    },
+    "ImageUsageResourceTypeOptionRequestList":{
+      "type":"list",
+      "member":{"shape":"ImageUsageResourceTypeOptionRequest"}
+    },
+    "ImageUsageResourceTypeOptionValue":{"type":"string"},
+    "ImageUsageResourceTypeOptionValuesList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageUsageResourceTypeOptionValue",
+        "locationName":"item"
+      }
+    },
+    "ImageUsageResourceTypeRequest":{
+      "type":"structure",
+      "members":{
+        "ResourceType":{
+          "shape":"ImageUsageResourceTypeName",
+          "documentation":"<p>The resource type.</p> <p>Valid values: <code>ec2:Instance</code> | <code>ec2:LaunchTemplate</code> </p>"
+        },
+        "ResourceTypeOptions":{
+          "shape":"ImageUsageResourceTypeOptionRequestList",
+          "documentation":"<p>The options that affect the scope of the report. Valid only when <code>ResourceType</code> is <code>ec2:LaunchTemplate</code>.</p>",
+          "locationName":"ResourceTypeOption"
+        }
+      },
+      "documentation":"<p>A resource type to include in the report. Associated options can also be specified if the resource type is a launch template.</p>"
+    },
+    "ImageUsageResourceTypeRequestList":{
+      "type":"list",
+      "member":{"shape":"ImageUsageResourceTypeRequest"}
     },
     "ImdsSupportValues":{
       "type":"string",
@@ -56989,6 +57532,7 @@
         "fpga-image",
         "host-reservation",
         "image",
+        "image-usage-report",
         "import-image-task",
         "import-snapshot-task",
         "instance",
@@ -57069,6 +57613,49 @@
         "capacity-block",
         "mac-modification-task"
       ]
+    },
+    "ResourceTypeOption":{
+      "type":"structure",
+      "members":{
+        "OptionName":{
+          "shape":"ImageReferenceOptionName",
+          "documentation":"<p>The name of the option.</p> <ul> <li> <p>For <code>ec2:Instance</code>:</p> <p>Specify <code>state-name</code> - The current state of the EC2 instance.</p> </li> <li> <p>For <code>ec2:LaunchTemplate</code>:</p> <p>Specify <code>version-depth</code> - The number of launch template versions to check, starting from the most recent version.</p> </li> </ul>"
+        },
+        "OptionValues":{
+          "shape":"ResourceTypeOptionValuesList",
+          "documentation":"<p>A value for the specified option.</p> <ul> <li> <p>For <code>state-name</code>:</p> <ul> <li> <p>Valid values: <code>pending</code> | <code>running</code> | <code>shutting-down</code> | <code>terminated</code> | <code>stopping</code> | <code>stopped</code> </p> </li> <li> <p>Default: All states</p> </li> </ul> </li> <li> <p>For <code>version-depth</code>:</p> <ul> <li> <p>Valid values: Integers between <code>1</code> and <code>10000</code> </p> </li> <li> <p>Default: <code>10</code> </p> </li> </ul> </li> </ul>",
+          "locationName":"OptionValue"
+        }
+      },
+      "documentation":"<p>The options that affect the scope of the response.</p>"
+    },
+    "ResourceTypeOptionList":{
+      "type":"list",
+      "member":{"shape":"ResourceTypeOption"}
+    },
+    "ResourceTypeOptionValue":{"type":"string"},
+    "ResourceTypeOptionValuesList":{
+      "type":"list",
+      "member":{"shape":"ResourceTypeOptionValue"}
+    },
+    "ResourceTypeRequest":{
+      "type":"structure",
+      "members":{
+        "ResourceType":{
+          "shape":"ImageReferenceResourceType",
+          "documentation":"<p>The resource type.</p>"
+        },
+        "ResourceTypeOptions":{
+          "shape":"ResourceTypeOptionList",
+          "documentation":"<p>The options that affect the scope of the response. Valid only when <code>ResourceType</code> is <code>ec2:Instance</code> or <code>ec2:LaunchTemplate</code>.</p>",
+          "locationName":"ResourceTypeOption"
+        }
+      },
+      "documentation":"<p>A resource type to check for image references. Associated options can also be specified if the resource type is an EC2 instance or launch template.</p>"
+    },
+    "ResourceTypeRequestList":{
+      "type":"list",
+      "member":{"shape":"ResourceTypeRequest"}
     },
     "ResponseError":{
       "type":"structure",
@@ -65879,6 +66466,13 @@
       "type":"list",
       "member":{
         "shape":"UserIdGroupPair",
+        "locationName":"item"
+      }
+    },
+    "UserIdList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
         "locationName":"item"
       }
     },

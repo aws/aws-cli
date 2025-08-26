@@ -177,6 +177,25 @@
         }
       ]
     },
+    "ImageUsageReportAvailable": {
+      "operation": "DescribeImageUsageReports",
+      "maxAttempts": 40,
+      "delay": 15,
+      "acceptors": [
+        {
+          "state": "success",
+          "matcher": "pathAll",
+          "argument": "ImageUsageReports[].State",
+          "expected": "available"
+        },
+        {
+          "state": "failure",
+          "matcher": "pathAny",
+          "argument": "ImageUsageReports[].State",
+          "expected": "failed"
+        }
+      ]
+    },
     "InstanceRunning": {
       "delay": 15,
       "operation": "DescribeInstances",

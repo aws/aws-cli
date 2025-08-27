@@ -2,6 +2,46 @@
 CHANGELOG
 =========
 
+1.42.19
+=======
+
+* api-change:``amplifybackend``: Remove incorrect endpoint tests
+* api-change:``application-insights``: Remove incorrect endpoint tests
+* api-change:``batch``: Added ECS_AL2023_NVIDIA as an option for Ec2Configuration.imageType.
+* api-change:``chime``: Remove incorrect endpoint tests
+* api-change:``chime-sdk-identity``: Remove incorrect endpoint tests
+* api-change:``chime-sdk-meetings``: Remove incorrect endpoint tests
+* api-change:``chime-sdk-voice``: Remove incorrect endpoint tests
+* api-change:``codeguruprofiler``: Remove incorrect endpoint tests
+* api-change:``datapipeline``: Remove incorrect endpoint tests
+* api-change:``discovery``: Remove incorrect endpoint tests
+* api-change:``ds``: Add APIs for CA AutoEnrollment support: DescribeCAEnrollmentPolicy, EnableCAEnrollmentPolicy and DisableCAEnrollmentPolicy.
+* api-change:``eks``: Add support for on-demand refresh of EKS cluster insights
+* api-change:``elasticache``: Remove incorrect endpoint tests
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``evidently``: Remove incorrect endpoint tests
+* api-change:``frauddetector``: Remove incorrect endpoint tests
+* api-change:``inspector``: Remove incorrect endpoint tests
+* api-change:``kinesisvideo``: Remove incorrect endpoint tests
+* api-change:``kinesis-video-media``: Remove incorrect endpoint tests
+* api-change:``lakeformation``: Remove incorrect endpoint tests
+* api-change:``lex-models``: Remove incorrect endpoint tests
+* api-change:``migrationhub-config``: Remove incorrect endpoint tests
+* api-change:``neptune-graph``: Add StartGraph and StopGraph operations to Neptune Analytics
+* api-change:``personalize``: Remove incorrect endpoint tests
+* api-change:``pi``: Remove incorrect endpoint tests
+* api-change:``qldb-session``: Remove incorrect endpoint tests
+* api-change:``redshift``: Remove incorrect endpoint tests
+* api-change:``robomaker``: Remove incorrect endpoint tests
+* api-change:``sagemaker``: This release adds support for AutoScaling on SageMaker HyperPod.
+* api-change:``schemas``: Remove incorrect endpoint tests
+* api-change:``snow-device-management``: Remove incorrect endpoint tests
+* api-change:``timestream-write``: Remove incorrect endpoint tests
+* api-change:``voice-id``: Remove incorrect endpoint tests
+* api-change:``workdocs``: Remove incorrect endpoint tests
+* api-change:``workmail``: Remove incorrect endpoint tests
+
+
 1.42.18
 =======
 

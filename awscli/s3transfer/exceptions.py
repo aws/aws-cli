@@ -39,3 +39,7 @@ class FatalError(CancelledError):
     """A CancelledError raised from an error in the TransferManager"""
 
     pass
+
+
+class S3ValidationError(Exception):
+    pass

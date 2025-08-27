@@ -20,7 +20,11 @@ from io import BytesIO
 
 from botocore.exceptions import ClientError
 from s3transfer.compat import SOCKET_ERROR
-from s3transfer.exceptions import RetriesExceededError, S3DownloadFailedError
+from s3transfer.exceptions import (
+    RetriesExceededError,
+    S3DownloadFailedError,
+    S3ValidationError,
+)
 from s3transfer.manager import TransferConfig, TransferManager
 
 from tests import (
@@ -109,7 +113,7 @@ class BaseDownloadTest(BaseGeneralInterfaceTest):
         self.stubber.add_response(**head_response)
 
     def add_successful_get_object_responses(
-        self, expected_params=None, expected_ranges=None
+        self, expected_params=None, expected_ranges=None, extras=None
     ):
         # Add all get_object responses needed to complete the download.
         # Should account for both ranged and nonranged downloads.
@@ -124,6 +128,8 @@ class BaseDownloadTest(BaseGeneralInterfaceTest):
                     stubbed_response['expected_params']['Range'] = (
                         expected_ranges[i]
                     )
+                if extras:
+                    stubbed_response['service_response'].update(extras[i])
             self.stubber.add_response(**stubbed_response)
 
     def add_n_retryable_get_object_responses(self, n, num_reads=0):
@@ -511,9 +517,12 @@ class TestRangedDownload(BaseDownloadTest):
             'RequestPayer': 'requester',
         }
         expected_ranges = ['bytes=0-3', 'bytes=4-7', 'bytes=8-']
+        stubbed_ranges = ['bytes 0-3/10', 'bytes 4-7/10', 'bytes 8-9/10']
         self.add_head_object_response(expected_params)
         self.add_successful_get_object_responses(
-            {**expected_params, 'IfMatch': self.etag}, expected_ranges
+            {**expected_params, 'IfMatch': self.etag},
+            expected_ranges,
+            [{"ContentRange": r} for r in stubbed_ranges],
         )
 
         future = self.manager.download(
@@ -546,6 +555,28 @@ class TestRangedDownload(BaseDownloadTest):
         # Ensure that the contents are correct
         with open(self.filename, 'rb') as f:
             self.assertEqual(self.content, f.read())
+
+    def test_download_raises_if_content_range_mismatch(self):
+        expected_params = {
+            'Bucket': self.bucket,
+            'Key': self.key,
+        }
+        expected_ranges = ['bytes=0-3', 'bytes=4-7', 'bytes=8-']
+        # Note that the final retrieved range should be `bytes 8-9/10`.
+        stubbed_ranges = ['bytes 0-3/10', 'bytes 4-7/10', 'bytes 7-8/10']
+        self.add_head_object_response(expected_params)
+        self.add_successful_get_object_responses(
+            {**expected_params, 'IfMatch': self.etag},
+            expected_ranges,
+            [{"ContentRange": r} for r in stubbed_ranges],
+        )
+
+        future = self.manager.download(
+            self.bucket, self.key, self.filename, self.extra_args
+        )
+        with self.assertRaises(S3ValidationError) as e:
+            future.result()
+        self.assertIn('does not match content range', str(e.exception))
 
     def test_download_raises_if_etag_validation_fails(self):
         expected_params = {

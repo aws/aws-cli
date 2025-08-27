@@ -2,6 +2,165 @@
 CHANGELOG
 =========
 
+2.28.18
+=======
+
+* api-change:``mq``: Remove incorrect endpoint tests
+* api-change:``dlm``: Remove incorrect endpoint tests
+* api-change:``connectparticipant``: Amazon Connect Participant Service: Remove unused fields from WebRTCConnection
+* api-change:``waf-regional``: Remove incorrect endpoint tests
+* api-change:``rbin``: Remove incorrect endpoint tests
+* api-change:``arc-zonal-shift``: This release adds new API options to enable allowed windows and multiple alarms for practice runs.
+* api-change:``ram``: Remove incorrect endpoint tests
+* api-change:``elastictranscoder``: Remove incorrect endpoint tests
+* api-change:``route53-recovery-cluster``: Remove incorrect endpoint tests
+* api-change:``apprunner``: Remove incorrect endpoint tests
+* api-change:``lookoutvision``: Remove incorrect endpoint tests
+* api-change:``personalize-events``: Remove incorrect endpoint tests
+* api-change:``codestar-connections``: Remove incorrect endpoint tests
+* api-change:``ec2``: Add new APIs for viewing how your shared AMIs are used by other accounts, and identify resources in your account that are dependent on particular AMIs
+* api-change:``geo-routes``: Added RouteFerryNotice PotentialViolatedVehicleRestrictionUsage value for CalculateRoutes. This value indicates when the Route is potentially forbidden for the given vehicle profile.
+* api-change:``greengrass``: Remove incorrect endpoint tests
+* api-change:``sagemaker-geospatial``: Remove incorrect endpoint tests
+* api-change:``globalaccelerator``: Remove incorrect endpoint tests
+* api-change:``identitystore``: Remove incorrect endpoint tests
+* api-change:``signer``: Remove incorrect endpoint tests
+* api-change:``kafka``: Remove incorrect endpoint tests
+* api-change:``codecommit``: Remove incorrect endpoint tests
+* api-change:``pinpoint``: Remove incorrect endpoint tests
+* api-change:``iotsecuretunneling``: Remove incorrect endpoint tests
+* api-change:``finspace``: Remove incorrect endpoint tests
+* api-change:``mgh``: Remove incorrect endpoint tests
+* api-change:``comprehendmedical``: Remove incorrect endpoint tests
+* api-change:``migration-hub-refactor-spaces``: Remove incorrect endpoint tests
+* api-change:``glacier``: Remove incorrect endpoint tests
+* api-change:``servicecatalog-appregistry``: Remove incorrect endpoint tests
+
+
+2.28.17
+=======
+
+* api-change:``ec2``: Added IPv6 support for AWS Client VPN.
+* api-change:``lookoutequipment``: Remove incorrect endpoint tests
+* api-change:``kinesis-video-archived-media``: Remove incorrect endpoint tests
+* api-change:``dax``: Remove incorrect endpoint tests
+* api-change:``kendra``: Remove incorrect endpoint tests
+* api-change:``devops-guru``: Remove incorrect endpoint tests
+* api-change:``sagemaker-edge``: Remove incorrect endpoint tests
+* api-change:``personalize-runtime``: Remove incorrect endpoint tests
+* api-change:``forecast``: Remove incorrect endpoint tests
+* api-change:``codeartifact``: Remove incorrect endpoint tests
+* api-change:``snowball``: Remove incorrect endpoint tests
+* api-change:``kinesisanalytics``: Remove incorrect endpoint tests
+* api-change:``emr-containers``: Remove incorrect endpoint tests
+* api-change:``translate``: Remove incorrect endpoint tests
+* api-change:``finspace-data``: Remove incorrect endpoint tests
+* api-change:``cloudsearch``: Remove incorrect endpoint tests
+* api-change:``iotfleethub``: Remove incorrect endpoint tests
+* api-change:``chime-sdk-media-pipelines``: Remove incorrect endpoint tests
+* api-change:``appflow``: Remove incorrect endpoint tests
+* api-change:``chime-sdk-messaging``: Remove incorrect endpoint tests
+* api-change:``mediastore``: Remove incorrect endpoint tests
+* api-change:``resourcegroupstaggingapi``: Remove incorrect endpoint tests
+* api-change:``mediapackage-vod``: Remove incorrect endpoint tests
+* api-change:``sqs``: Documentation update for Amazon SQS Supports Large Payload Message feature
+* api-change:``cloudtrail-data``: Remove incorrect endpoint tests
+* api-change:``support-app``: Remove incorrect endpoint tests
+* api-change:``wellarchitected``: Remove incorrect endpoint tests
+* api-change:``sagemaker-featurestore-runtime``: Remove incorrect endpoint tests
+* api-change:``shield``: Remove incorrect endpoint tests
+* api-change:``codestar-notifications``: Remove incorrect endpoint tests
+* api-change:``serverlessrepo``: Remove incorrect endpoint tests
+* api-change:``lex-runtime``: Remove incorrect endpoint tests
+* api-change:``b2bi``: Updated APIs to support custom validation rules.
+* api-change:``mediaconvert``: This release adds support for input rendition selection for HLS input, adds new Share API to enable sharing jobs with AWS Support for support investigations, and adds INCLUDE_AS_TS to iFrameOnlyManifest setting for HLS outputs.
+* api-change:``timestream-influxdb``: Add MAINTENANCE status for DbInstance and DbCluster
+* api-change:``cur``: Remove incorrect endpoint tests
+* api-change:``support``: Remove incorrect endpoint tests
+* api-change:``datazone``: Releasing the following features - Asset classification that lets users use restricted terms for classifying assets if they have the right permissions. Also adding a new enum value "Moving" to project status.
+* api-change:``qbusiness``: The Amazon Q Business GetDocumentContent operation now supports retrieval of the extracted text content in JSON format.
+* api-change:``sagemaker-runtime``: Remove incorrect endpoint tests
+* api-change:``codeguru-security``: Documentation update to notify users of the discontinuation of Amazon CodeGuru Security.
+
+
+2.28.16
+=======
+
+* api-change:``qldb``: Remove incorrect endpoint tests
+* bugfix:``dynamodb``: Correct Scan and Scanned Count values when resuming a scan or query with a ``--starting-token``
+* api-change:``elb``: Remove incorrect endpoint tests
+* api-change:``route53-recovery-readiness``: Remove incorrect endpoint tests
+* api-change:``medialive``: AWS Elemental MediaLive now has a field called "SubtitleRows" for controlling subtitle row count for DVB-Sub and Burn-In captions outputs
+* api-change:``marketplacecommerceanalytics``: Remove incorrect endpoint tests
+* enhancement:Python: Update bundled Python interpreter to 3.13.7
+* api-change:``sagemaker-a2i-runtime``: Remove incorrect endpoint tests
+* api-change:``proton``: Remove incorrect endpoint tests
+* api-change:``clouddirectory``: Remove incorrect endpoint tests
+* api-change:``qconnect``: Releasing model ID support for UpdateAIPrompt
+* api-change:``healthlake``: Remove incorrect endpoint tests
+* api-change:``cognito-sync``: Remove incorrect endpoint tests
+* api-change:``wafv2``: test and verified, safe to release
+* api-change:``sagemaker``: Launch SageMaker Notebook Instances support for AL2023 along with P6-B200 instance type and Rootless Docker support for SageMaker Studio.
+* api-change:``memorydb``: Remove incorrect endpoint tests
+* api-change:``iotanalytics``: Remove incorrect endpoint tests
+* api-change:``synthetics``: Added multi browser support for synthetics canaries, Increased ephemeral storage limit from 5GB to 10GB
+* api-change:``docdb``: Remove incorrect endpoint tests
+* api-change:``macie2``: Remove incorrect endpoint tests
+* api-change:``rds``: Updates Amazon RDS documentation for Db2 read-only replicas.
+* api-change:``simspaceweaver``: Remove incorrect endpoint tests
+
+
+2.28.15
+=======
+
+* api-change:``greengrassv2``: Remove incorrect endpoint tests
+* api-change:``ecr-public``: Remove incorrect endpoint tests
+* api-change:``iotthingsgraph``: Remove incorrect endpoint tests
+* api-change:``cloudhsm``: Remove incorrect endpoint tests
+* api-change:``lookoutmetrics``: Remove incorrect endpoint tests
+* api-change:``ebs``: Remove incorrect endpoint tests
+* api-change:``backup-gateway``: Remove incorrect endpoint tests
+* api-change:``iotevents``: Remove incorrect endpoint tests
+* api-change:``lexv2-runtime``: Remove incorrect endpoint tests
+* api-change:``glue``: Added support for preprocessing queries in Data Quality operations through new DataQualityGlueTable structure.
+* api-change:``panorama``: Remove incorrect endpoint tests
+* api-change:``ssm-contacts``: Doc-only updates for Incident Manager Contacts August 2025
+* api-change:``es``: Remove incorrect endpoint tests
+* api-change:``mediapackage``: Remove incorrect endpoint tests
+* api-change:``kinesis-video-signaling``: Remove incorrect endpoint tests
+* api-change:``guardduty``: Remove Pattern trait from email field
+* api-change:``managedblockchain``: Remove incorrect endpoint tests
+* api-change:``pinpoint-email``: Remove incorrect endpoint tests
+* api-change:``appfabric``: Remove incorrect endpoint tests
+* api-change:``gameliftstreams``: The default application in a stream group can now be changed at any time using UpdateStreamGroup to update the DefaultApplicationIdentifier.
+* api-change:``iotdeviceadvisor``: Remove incorrect endpoint tests
+* api-change:``apigatewaymanagementapi``: Remove incorrect endpoint tests
+* api-change:``comprehend``: Remove incorrect endpoint tests
+* api-change:``s3outposts``: Remove incorrect endpoint tests
+* api-change:``ecs``: This is a documentation only release that adds additional information for the update-service request parameters.
+* api-change:``forecastquery``: Remove incorrect endpoint tests
+* api-change:``iotevents-data``: Remove incorrect endpoint tests
+* api-change:``cognito-identity``: Remove incorrect endpoint tests
+* api-change:``resource-groups``: Remove incorrect endpoint tests
+* api-change:``elasticbeanstalk``: Remove incorrect endpoint tests
+
+
+2.28.14
+=======
+
+* api-change:``pinpoint-sms-voice-v2``: This change added InternationalSendingEnbaled as part of describe/Update/Request phone number API response, and as part of update/Request phone number API request
+* api-change:``cognito-idp``: This release adds support for the new Terms APIs which allow displaying Terms of Use and Privacy Policy on the Managed Login user-registration page.
+* api-change:``eks``: EKS Add-ons Custom Namespace Support
+* api-change:``billing``: Clarify IPv4 and IPv6 endpoints
+* api-change:``kinesisanalyticsv2``: Adds Key Management Service (KMS) support allowing customer-managed key (CMK) encryption for Flink application data.
+* api-change:``sagemaker``: This release adds 1/ Launch ml.p5.4xlarge instance in Processing jobs, Training jobs and Training Plan 2/ Makes S3Uri to be required for S3FileSystem and S3FileSystemConfig.
+* api-change:``datazone``: This release supports policy grant identifier for cloud formation integration
+* api-change:``route53-recovery-control-config``: Remove incorrect endpoint tests
+* api-change:``bedrock-runtime``: Launch CountTokens API to allow token counting
+* api-change:``detective``: Remove incorrect endpoint tests
+* api-change:``dynamodb``: Remove incorrect endpoint tests
+
+
 2.28.13
 =======
 

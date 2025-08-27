@@ -406,20 +406,6 @@
       },
       "documentation":"<p>Connection credentials. </p>"
     },
-    "ConnectionData":{
-      "type":"structure",
-      "members":{
-        "Attendee":{
-          "shape":"Attendee",
-          "documentation":"<p>The attendee information, including attendee ID and join token.</p>"
-        },
-        "Meeting":{
-          "shape":"Meeting",
-          "documentation":"<p>A meeting created using the Amazon Chime SDK.</p>"
-        }
-      },
-      "documentation":"<p>Information required to join the call.</p>"
-    },
     "ConnectionType":{
       "type":"string",
       "enum":[
@@ -475,7 +461,7 @@
           "documentation":"<p>Creates the participant's connection credentials. The authentication token associated with the participant's connection.</p>"
         },
         "WebRTCConnection":{
-          "shape":"ConnectionData",
+          "shape":"WebRTCConnection",
           "documentation":"<p>Creates the participant's WebRTC connection data required for the client application (mobile application or website) to connect to the call. </p>"
         }
       }
@@ -665,6 +651,10 @@
         }
       }
     },
+    "GuidString":{
+      "type":"string",
+      "pattern":"[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}"
+    },
     "ISO8601Datetime":{"type":"string"},
     "Instant":{
       "type":"string",
@@ -745,55 +735,6 @@
       "max":100,
       "min":0
     },
-    "MediaPlacement":{
-      "type":"structure",
-      "members":{
-        "AudioHostUrl":{
-          "shape":"URI",
-          "documentation":"<p>The audio host URL.</p>"
-        },
-        "AudioFallbackUrl":{
-          "shape":"URI",
-          "documentation":"<p>The audio fallback URL.</p>"
-        },
-        "SignalingUrl":{
-          "shape":"URI",
-          "documentation":"<p>The signaling URL.</p>"
-        },
-        "TurnControlUrl":{
-          "shape":"URI",
-          "documentation":"<p>The turn control URL.</p>"
-        },
-        "EventIngestionUrl":{
-          "shape":"URI",
-          "documentation":"<p>The event ingestion URL to which you send client meeting events.</p>"
-        }
-      },
-      "documentation":"<p>A set of endpoints used by clients to connect to the media service group for an Amazon Chime SDK meeting.</p>"
-    },
-    "MediaRegion":{"type":"string"},
-    "Meeting":{
-      "type":"structure",
-      "members":{
-        "MediaRegion":{
-          "shape":"MediaRegion",
-          "documentation":"<p>The Amazon Web Services Region in which you create the meeting.</p>"
-        },
-        "MediaPlacement":{
-          "shape":"MediaPlacement",
-          "documentation":"<p>The media placement for the meeting.</p>"
-        },
-        "MeetingFeatures":{
-          "shape":"MeetingFeaturesConfiguration",
-          "documentation":"<p>The configuration settings of the features available to a meeting.</p>"
-        },
-        "MeetingId":{
-          "shape":"MeetingId",
-          "documentation":"<p>The Amazon Chime SDK meeting ID.</p>"
-        }
-      },
-      "documentation":"<p>A meeting created using the Amazon Chime SDK.</p>"
-    },
     "MeetingFeatureStatus":{
       "type":"string",
       "enum":[
@@ -811,7 +752,6 @@
       },
       "documentation":"<p>The configuration settings of the features available to a meeting.</p>"
     },
-    "MeetingId":{"type":"string"},
     "Message":{"type":"string"},
     "MessageMetadata":{
       "type":"structure",
@@ -1267,6 +1207,54 @@
       "min":1
     },
     "ViewVersion":{"type":"integer"},
+    "WebRTCConnection":{
+      "type":"structure",
+      "members":{
+        "Attendee":{"shape":"Attendee"},
+        "Meeting":{
+          "shape":"WebRTCMeeting",
+          "documentation":"<p>A meeting created using the Amazon Chime SDK.</p>"
+        }
+      },
+      "documentation":"<p>Creates the participant’s WebRTC connection data required for the client application (mobile or web) to connect to the call.</p>"
+    },
+    "WebRTCMediaPlacement":{
+      "type":"structure",
+      "members":{
+        "AudioHostUrl":{
+          "shape":"URI",
+          "documentation":"<p>The audio host URL.</p>"
+        },
+        "AudioFallbackUrl":{
+          "shape":"URI",
+          "documentation":"<p>The audio fallback URL.</p>"
+        },
+        "SignalingUrl":{
+          "shape":"URI",
+          "documentation":"<p>The signaling URL.</p>"
+        },
+        "EventIngestionUrl":{
+          "shape":"URI",
+          "documentation":"<p>The event ingestion URL to which you send client meeting events.</p>"
+        }
+      },
+      "documentation":"<p>A set of endpoints used by clients to connect to the media service group for an Amazon Chime SDK meeting.</p>"
+    },
+    "WebRTCMeeting":{
+      "type":"structure",
+      "members":{
+        "MediaPlacement":{
+          "shape":"WebRTCMediaPlacement",
+          "documentation":"<p>The media placement for the meeting.</p>"
+        },
+        "MeetingFeatures":{"shape":"MeetingFeaturesConfiguration"},
+        "MeetingId":{
+          "shape":"GuidString",
+          "documentation":"<p>The Amazon Chime SDK meeting ID.</p>"
+        }
+      },
+      "documentation":"<p>A meeting created using the Amazon Chime SDK.</p>"
+    },
     "Websocket":{
       "type":"structure",
       "members":{

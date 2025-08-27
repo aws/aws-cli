@@ -5,11 +5,13 @@
     "endpointPrefix":"ebs",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"Amazon EBS",
     "serviceFullName":"Amazon Elastic Block Store",
     "serviceId":"EBS",
     "signatureVersion":"v4",
-    "uid":"ebs-2019-11-02"
+    "uid":"ebs-2019-11-02",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CompleteSnapshot":{
@@ -103,7 +105,8 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Writes a block of data to a snapshot. If the specified block contains data, the existing data is overwritten. The target snapshot must be in the <code>pending</code> state.</p> <p>Data written to a snapshot must be aligned with 512-KiB sectors.</p> <note> <p>You should always retry requests that receive server (<code>5xx</code>) error responses, and <code>ThrottlingException</code> and <code>RequestThrottledException</code> client error responses. For more information see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html\">Error retries</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </note>",
-      "authtype":"v4-unsigned-body"
+      "authtype":"v4-unsigned-body",
+      "unsignedPayload":true
     },
     "StartSnapshot":{
       "name":"StartSnapshot",

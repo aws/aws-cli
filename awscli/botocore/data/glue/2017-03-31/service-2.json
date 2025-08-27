@@ -268,7 +268,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"ResourceNumberLimitExceededException"}
       ],
-      "documentation":"<p>Annotate datapoints over time for a specific data quality statistic.</p>"
+      "documentation":"<p>Annotate datapoints over time for a specific data quality statistic. The API requires both profileID and statisticID as part of the InclusionAnnotation input. The API only works for a single statisticId across multiple profiles.</p>"
     },
     "BatchStopJobRun":{
       "name":"BatchStopJobRun",
@@ -5599,7 +5599,7 @@
       "members":{
         "InclusionAnnotations":{
           "shape":"InclusionAnnotationList",
-          "documentation":"<p>A list of <code>DatapointInclusionAnnotation</code>'s.</p>"
+          "documentation":"<p>A list of <code>DatapointInclusionAnnotation</code>'s. The InclusionAnnotations must contain a profileId and statisticId. If there are multiple InclusionAnnotations, the list must refer to a single statisticId across multiple profileIds.</p>"
         },
         "ClientToken":{
           "shape":"HashString",
@@ -10731,6 +10731,40 @@
       },
       "documentation":"<p>Additional run options you can specify for an evaluation run.</p>"
     },
+    "DataQualityGlueTable":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName"
+      ],
+      "members":{
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>A database name in the Glue Data Catalog.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>A table name in the Glue Data Catalog.</p>"
+        },
+        "CatalogId":{
+          "shape":"NameString",
+          "documentation":"<p>A unique identifier for the Glue Data Catalog.</p>"
+        },
+        "ConnectionName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the connection to the Glue Data Catalog.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"GlueTableAdditionalOptions",
+          "documentation":"<p>Additional options for the table. Currently there are two keys supported:</p> <ul> <li> <p> <code>pushDownPredicate</code>: to filter on partitions without having to list and read all the files in your dataset.</p> </li> <li> <p> <code>catalogPartitionPredicate</code>: to use server-side partition pruning using partition indexes in the Glue Data Catalog.</p> </li> </ul>"
+        },
+        "PreProcessingQuery":{
+          "shape":"PreProcessingQueryString",
+          "documentation":"<p>SQL Query of SparkSQL format that can be used to pre-process the data for the table in Glue Data Catalog, before running the Data Quality Operation.</p>"
+        }
+      },
+      "documentation":"<p>The database and table in the Glue Data Catalog that is used for input or output data for Data Quality Operations.</p>"
+    },
     "DataQualityMetricValues":{
       "type":"structure",
       "members":{
@@ -11172,11 +11206,14 @@
     },
     "DataSource":{
       "type":"structure",
-      "required":["GlueTable"],
       "members":{
         "GlueTable":{
           "shape":"GlueTable",
           "documentation":"<p>An Glue table.</p>"
+        },
+        "DataQualityGlueTable":{
+          "shape":"DataQualityGlueTable",
+          "documentation":"<p>An Glue table for Data Quality Operations.</p>"
         }
       },
       "documentation":"<p>A data source (an Glue table) for which you want data quality results.</p>"
@@ -21425,6 +21462,13 @@
         }
       },
       "documentation":"<p>Specifies a target that uses Postgres SQL.</p>"
+    },
+    "PreProcessingQueryString":{
+      "type":"string",
+      "documentation":"<p>SQL Query of SparkSQL format that can be used to pre-process data before running Data Quality Operations.</p>",
+      "max":51200,
+      "min":0,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
     },
     "Predecessor":{
       "type":"structure",

@@ -468,6 +468,7 @@
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
         {"shape":"LicenseNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
@@ -2558,7 +2559,7 @@
         },
         "documents":{
           "shape":"Documents",
-          "documentation":"<p>One or more documents to add to the index.</p>"
+          "documentation":"<p>One or more documents to add to the index.</p> <important> <p>Ensure that the name of your document doesn't contain any confidential information. Amazon Q Business returns document names in chat responses and citations when relevant.</p> </important>"
         },
         "roleArn":{
           "shape":"RoleArn",
@@ -2595,7 +2596,7 @@
       "members":{
         "blockedPhrases":{
           "shape":"BlockedPhrases",
-          "documentation":"<p>A list of phrases blocked from a Amazon Q Business web experience chat.</p>"
+          "documentation":"<p>A list of phrases blocked from a Amazon Q Business web experience chat.</p> <note> <p>Each phrase can contain a maximum of 36 characters. The list can contain a maximum of 20 phrases.</p> </note>"
         },
         "systemMessageOverride":{
           "shape":"SystemMessageOverride",
@@ -3520,7 +3521,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role with permission to access the data source and required resources.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role with permission to access the data source and required resources. This field is required for all connector types except custom connectors, where it is optional.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -3833,7 +3834,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the service role attached to your web experience.</p> <note> <p>You must provide this value if you're using IAM Identity Center to manage end user access to your application. If you're using legacy identity management to manage user access, you don't need to provide this value.</p> </note>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service role attached to your web experience.</p> <note> <p>The <code>roleArn</code> parameter is required when your Amazon Q Business application is created with IAM Identity Center. It is not required for SAML-based applications.</p> </note>"
         },
         "tags":{
           "shape":"Tags",
@@ -5607,7 +5608,7 @@
         },
         "outputFormat":{
           "shape":"OutputFormat",
-          "documentation":"<p>Raw document outputFormat.</p>",
+          "documentation":"<p>Document outputFormat. Defaults to RAW if not selected.</p>",
           "location":"querystring",
           "locationName":"outputFormat"
         }
@@ -5626,7 +5627,7 @@
         },
         "mimeType":{
           "shape":"String",
-          "documentation":"<p>The MIME type of the document content (e.g., application/pdf, text/plain, application/vnd.openxmlformats-officedocument.wordprocessingml.document).</p>"
+          "documentation":"<p>The MIME type of the document content. When outputFormat is RAW, this corresponds to the original document's MIME type (e.g., application/pdf, text/plain, application/vnd.openxmlformats-officedocument.wordprocessingml.document). When outputFormat is EXTRACTED, the MIME type is always application/json.</p>"
         }
       }
     },
@@ -7323,7 +7324,9 @@
     },
     "MaxResults":{
       "type":"integer",
-      "box":true
+      "box":true,
+      "max":100,
+      "min":1
     },
     "MaxResultsIntegerForGetTopicConfigurations":{
       "type":"integer",
@@ -7791,7 +7794,10 @@
     },
     "OutputFormat":{
       "type":"string",
-      "enum":["RAW"]
+      "enum":[
+        "RAW",
+        "EXTRACTED"
+      ]
     },
     "Payload":{
       "type":"string",
@@ -8597,7 +8603,8 @@
         "attributeFilter":{"shape":"AttributeFilter"},
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return.</p>"
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "box":true
         },
         "nextToken":{
           "shape":"NextToken",

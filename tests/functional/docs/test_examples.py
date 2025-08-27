@@ -46,7 +46,6 @@ COMMAND_EXAMPLES = {
     'swf': ['deprecate-domain', 'describe-domain'],
     'sqs': ['create-queue', 'get-queue-attributes'],
     'emr': ['add-steps', 'create-default-roles', 'describe-cluster', 'schedule-hbase-backup'],
-    'opsworks': ['register'],
 }
 _dname = os.path.dirname
 EXAMPLES_DIR = os.path.join(

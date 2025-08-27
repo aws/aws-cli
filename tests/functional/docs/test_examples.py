@@ -50,7 +50,6 @@ COMMAND_EXAMPLES = {
         'describe-cluster',
         'schedule-hbase-backup',
     ],
-    'opsworks': ['register'],
 }
 _dname = os.path.dirname
 EXAMPLES_DIR = os.path.join(
@@ -91,7 +90,7 @@ def _get_all_doc_examples():
         for filename in filenames:
             full_path = os.path.join(root, filename)
             if filename.startswith('.'):
-                #Ignore hidden files as it starts with "."
+                # Ignore hidden files as it starts with "."
                 continue
             if not filename.endswith('.rst'):
                 other_doc_examples.append(full_path)

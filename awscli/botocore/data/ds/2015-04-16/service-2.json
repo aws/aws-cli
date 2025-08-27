@@ -434,6 +434,22 @@
       ],
       "documentation":"<p>Retrieves detailed information about a directory assessment, including its current status, validation results, and configuration details. Use this operation to monitor assessment progress and review results.</p>"
     },
+    "DescribeCAEnrollmentPolicy":{
+      "name":"DescribeCAEnrollmentPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCAEnrollmentPolicyRequest"},
+      "output":{"shape":"DescribeCAEnrollmentPolicyResult"},
+      "errors":[
+        {"shape":"DirectoryDoesNotExistException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about the certificate authority (CA) enrollment policy for the specified directory. This policy determines how client certificates are automatically enrolled and managed through Amazon Web Services Private Certificate Authority. </p>"
+    },
     "DescribeCertificate":{
       "name":"DescribeCertificate",
       "http":{
@@ -700,6 +716,26 @@
       ],
       "documentation":"<p> Describes the updates of a directory for a particular update type. </p>"
     },
+    "DisableCAEnrollmentPolicy":{
+      "name":"DisableCAEnrollmentPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisableCAEnrollmentPolicyRequest"},
+      "output":{"shape":"DisableCAEnrollmentPolicyResult"},
+      "errors":[
+        {"shape":"DirectoryDoesNotExistException"},
+        {"shape":"DirectoryUnavailableException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"DisableAlreadyInProgressException"},
+        {"shape":"EntityDoesNotExistException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Disables the certificate authority (CA) enrollment policy for the specified directory. This stops automatic certificate enrollment and management for domain-joined clients, but does not affect existing certificates.</p> <important> <p>Disabling the CA enrollment policy prevents new certificates from being automatically enrolled, but existing certificates remain valid and functional until they expire.</p> </important>"
+    },
     "DisableClientAuthentication":{
       "name":"DisableClientAuthentication",
       "http":{
@@ -787,6 +823,27 @@
         {"shape":"ServiceException"}
       ],
       "documentation":"<p>Disables single-sign on for a directory.</p>"
+    },
+    "EnableCAEnrollmentPolicy":{
+      "name":"EnableCAEnrollmentPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableCAEnrollmentPolicyRequest"},
+      "output":{"shape":"EnableCAEnrollmentPolicyResult"},
+      "errors":[
+        {"shape":"DirectoryDoesNotExistException"},
+        {"shape":"DirectoryUnavailableException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"EntityAlreadyExistsException"},
+        {"shape":"EntityDoesNotExistException"},
+        {"shape":"EnableAlreadyInProgressException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Enables certificate authority (CA) enrollment policy for the specified directory. This allows domain-joined clients to automatically request and receive certificates from the specified Amazon Web Services Private Certificate Authority.</p> <note> <p>Before enabling CA enrollment, ensure that the PCA connector is properly configured and accessible from the directory. The connector must be in an active state and have the necessary permissions.</p> </note>"
     },
     "EnableClientAuthentication":{
       "name":"EnableClientAuthentication",
@@ -1762,6 +1819,18 @@
       "type":"list",
       "member":{"shape":"AvailabilityZone"}
     },
+    "CaEnrollmentPolicyStatus":{
+      "type":"string",
+      "enum":[
+        "InProgress",
+        "Success",
+        "Failed",
+        "Disabling",
+        "Disabled",
+        "Impaired"
+      ]
+    },
+    "CaEnrollmentPolicyStatusReason":{"type":"string"},
     "CancelSchemaExtensionRequest":{
       "type":"structure",
       "required":[
@@ -2635,6 +2704,43 @@
           "documentation":"<p>A list of assessment reports containing validation results for each domain controller and test category. Each report includes specific validation details and outcomes.</p>"
         }
       }
+    },
+    "DescribeCAEnrollmentPolicyRequest":{
+      "type":"structure",
+      "required":["DirectoryId"],
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the directory for which to retrieve the CA enrollment policy information.</p>"
+        }
+      },
+      "documentation":"<p>Contains the inputs for the <a>DescribeCAEnrollmentPolicy</a> operation.</p>"
+    },
+    "DescribeCAEnrollmentPolicyResult":{
+      "type":"structure",
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the directory associated with this CA enrollment policy.</p>"
+        },
+        "PcaConnectorArn":{
+          "shape":"PcaConnectorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Private Certificate Authority (PCA) connector that is configured for automatic certificate enrollment in this directory.</p>"
+        },
+        "CaEnrollmentPolicyStatus":{
+          "shape":"CaEnrollmentPolicyStatus",
+          "documentation":"<p>The current status of the CA enrollment policy. This indicates if automatic certificate enrollment is currently active, inactive, or in a transitional state.</p> <p>Valid values:</p> <ul> <li> <p> <code>IN_PROGRESS</code> - The policy is being activated T</p> </li> <li> <p> <code>SUCCESS</code> - The policy is active and automatic certificate enrollment is operational</p> </li> <li> <p> <code>FAILED</code> - The policy activation or deactivation failed</p> </li> <li> <p> <code>DISABLING</code> - The policy is being deactivated</p> </li> <li> <p> <code>DISABLED</code> - The policy is inactive and automatic certificate enrollment is not available</p> </li> <li> <p> <code>IMPAIRED</code> - Network connectivity is impaired.</p> </li> </ul>"
+        },
+        "LastUpdatedDateTime":{
+          "shape":"LastUpdatedDateTime",
+          "documentation":"<p>The date and time when the CA enrollment policy was last modified or updated.</p>"
+        },
+        "CaEnrollmentPolicyStatusReason":{
+          "shape":"CaEnrollmentPolicyStatusReason",
+          "documentation":"<p>Additional information explaining the current status of the CA enrollment policy, particularly useful when the policy is in an error or transitional state.</p>"
+        }
+      },
+      "documentation":"<p>Contains the results of the <a>DescribeCAEnrollmentPolicy</a> operation.</p>"
     },
     "DescribeCertificateRequest":{
       "type":"structure",
@@ -3531,6 +3637,31 @@
       },
       "documentation":"<p>Contains information about the directory.</p>"
     },
+    "DisableAlreadyInProgressException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ExceptionMessage"},
+        "RequestId":{"shape":"RequestId"}
+      },
+      "documentation":"<p>A disable operation for CA enrollment policy is already in progress for this directory.</p>",
+      "exception":true
+    },
+    "DisableCAEnrollmentPolicyRequest":{
+      "type":"structure",
+      "required":["DirectoryId"],
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the directory for which to disable the CA enrollment policy.</p>"
+        }
+      },
+      "documentation":"<p>Contains the inputs for the <a>DisableCAEnrollmentPolicy</a> operation.</p>"
+    },
+    "DisableCAEnrollmentPolicyResult":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Contains the results of the <a>DisableCAEnrollmentPolicy</a> operation.</p>"
+    },
     "DisableClientAuthenticationRequest":{
       "type":"structure",
       "required":[
@@ -3711,6 +3842,38 @@
     "DomainControllers":{
       "type":"list",
       "member":{"shape":"DomainController"}
+    },
+    "EnableAlreadyInProgressException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ExceptionMessage"},
+        "RequestId":{"shape":"RequestId"}
+      },
+      "documentation":"<p>An enable operation for CA enrollment policy is already in progress for this directory.</p>",
+      "exception":true
+    },
+    "EnableCAEnrollmentPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "DirectoryId",
+        "PcaConnectorArn"
+      ],
+      "members":{
+        "DirectoryId":{
+          "shape":"DirectoryId",
+          "documentation":"<p>The identifier of the directory for which to enable the CA enrollment policy.</p>"
+        },
+        "PcaConnectorArn":{
+          "shape":"PcaConnectorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Private Certificate Authority (PCA) connector to use for automatic certificate enrollment. This connector must be properly configured and accessible from the directory.</p> <p>The ARN format is: <code>arn:aws:pca-connector-ad:<i>region</i>:<i>account-id</i>:connector/<i>connector-id</i> </code> </p>"
+        }
+      },
+      "documentation":"<p>Contains the inputs for the <a>EnableCAEnrollmentPolicy</a> operation.</p>"
+    },
+    "EnableCAEnrollmentPolicyResult":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Contains the results of the <a>EnableCAEnrollmentPolicy</a> operation.</p>"
     },
     "EnableClientAuthenticationRequest":{
       "type":"structure",
@@ -4539,6 +4702,10 @@
       "type":"string",
       "pattern":"(?=^.{8,64}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9\\s])(?=.*[a-z])|(?=.*[^A-Za-z0-9\\s])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9\\s]))^.*",
       "sensitive":true
+    },
+    "PcaConnectorArn":{
+      "type":"string",
+      "pattern":"^arn:[\\w-]+:pca-connector-ad:[\\w-]+:[0-9]+:connector\\/[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
     },
     "PortNumber":{
       "type":"integer",

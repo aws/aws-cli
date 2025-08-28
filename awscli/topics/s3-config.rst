@@ -30,6 +30,8 @@ command set:
   size that the CLI uses for multipart transfers of individual files.
 * ``max_bandwidth`` - The maximum bandwidth that will be consumed for uploading
   and downloading data to and from Amazon S3.
+* ``io_chunksize`` - The maximum size of read parts that can be queued in-memory
+  to be written for a download.
 
 For experimental ``s3`` configuration values, see the the
 `Experimental Configuration Values <#experimental-configuration-values>`__
@@ -206,6 +208,26 @@ how many threads are currently running. So if a high ``max_concurrent_requests``
 value is set and a low ``max_bandwidth`` value is set, it may result in
 threads having to wait unnecessarily which can lead to excess resource
 consumption and connection timeouts.
+
+
+io_chunksize
+------------
+
+**Default** - ``256KB``
+
+When a GET request is called for downloads, the response contains a file-like
+object that streams data fetched from S3. Chunks are read from the stream and
+queued in-memory for writes. ``io_chunksize`` configures the maximum size of
+elements in the IO queue. This value can be specified using the same semantics
+as ``multipart_threshold``, that is either as the number of bytes as an
+integer, or using a size suffix.
+
+Increasing this value may result in higher overall throughput by preventing
+blocking in cases where large objects are downloaded in environments where
+network speed exceeds disk write speed. It is recommended to only configure
+``io_chunksize`` if overall download throughput is constrained by writes.
+In cases where network IO is the bottleneck, it is recommended to configure
+``max_concurrent_requests`` instead.
 
 
 use_accelerate_endpoint

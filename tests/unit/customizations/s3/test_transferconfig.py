@@ -149,6 +149,7 @@ class TestConvertToS3TransferConfig:
             'max_bandwidth': 1024 * 1024,
             'addressing_style': 'path',
             'use_accelerate_endpoint': True,
+            'io_chunksize': 1024 * 1024,
             # This is a TransferConfig only option, it should
             # just be ignored if it's in the ~/.aws/config for now.
             'max_in_memory_upload_chunks': 1000,
@@ -161,4 +162,5 @@ class TestConvertToS3TransferConfig:
         assert result.max_request_concurrency == 3
         assert result.max_request_queue_size == 4
         assert result.max_bandwidth == 1024 * 1024
+        assert result.io_chunksize == 1024 * 1024
         assert result.max_in_memory_upload_chunks != 1000

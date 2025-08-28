@@ -2,6 +2,47 @@
 CHANGELOG
 =========
 
+1.42.20
+=======
+
+* api-change:``applicationcostprofiler``: Remove incorrect endpoint tests
+* api-change:``apprunner``: Doc only updates for APIs and and datatypes related to IPAddressType and Subnets for IPv6 dualstack support.
+* api-change:``autoscaling-plans``: Remove incorrect endpoint tests
+* api-change:``cloud9``: Remove incorrect endpoint tests
+* api-change:``cloudhsmv2``: Remove incorrect endpoint tests
+* api-change:``cloudsearchdomain``: Remove incorrect endpoint tests
+* api-change:``codedeploy``: Remove incorrect endpoint tests
+* api-change:``codeguru-reviewer``: Remove incorrect endpoint tests
+* api-change:``connect``: AgentStatusDrillDown feature in GetCurrentMetricData API. Adding AGENT_STATUS as filter and grouping in GetCurrentMetricData API
+* api-change:``databrew``: Remove incorrect endpoint tests
+* api-change:``dynamodb``: Remove incorrect endpoint tests
+* api-change:``ec2``: This release adds support for copying Amazon EBS snapshot and AMIs to and from Local Zones.
+* api-change:``ec2-instance-connect``: Remove incorrect endpoint tests
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``fis``: Remove incorrect endpoint tests
+* api-change:``fms``: Remove incorrect endpoint tests
+* api-change:``geo-maps``: Remove incorrect endpoint tests
+* api-change:``glue``: Adding support to fetch TargetDatabase field during GetDatabases with AttributesToGet
+* api-change:``healthlake``: Add ValidationLevel parameter to StartFHIRImportJob API, allowing users to specify a FHIR validation level for their asynchronous import jobs.
+* api-change:``machinelearning``: Remove incorrect endpoint tests
+* api-change:``mediastore-data``: Remove incorrect endpoint tests
+* api-change:``mturk``: Remove incorrect endpoint tests
+* api-change:``omics``: Adds Amazon ECR pull through cache support to AWS HealthOmics, so you can more easily use container images from external sources.
+* api-change:``osis``: Remove incorrect endpoint tests
+* api-change:``pinpoint-sms-voice``: Remove incorrect endpoint tests
+* api-change:``rds``: Added RDS HTTP Endpoint feature support flag to DescribeOrderableDBInstanceOptions API
+* api-change:``route53domains``: Remove incorrect endpoint tests
+* api-change:``savingsplans``: Remove incorrect endpoint tests
+* api-change:``scheduler``: Remove incorrect endpoint tests
+* api-change:``ses``: Remove incorrect endpoint tests
+* api-change:``ssm-sap``: Added support for Configuration Checks on SAP HANA Applications.
+* api-change:``sso``: Remove incorrect endpoint tests
+* api-change:``timestream-query``: Remove incorrect endpoint tests
+* api-change:``waf``: Remove incorrect endpoint tests
+* api-change:``workmailmessageflow``: Remove incorrect endpoint tests
+* api-change:``xray``: Remove incorrect endpoint tests
+
+
 1.42.19
 =======
 

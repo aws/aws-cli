@@ -28841,7 +28841,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>vpc-endpoint-id</code> - The ID of the VPC endpoint.</p> </li> <li> <p> <code>associated-resource-accessibility</code> - The association state. When the state is <code>accessible</code>, it returns <code>AVAILABLE</code>. When the state is <code>inaccessible</code>, it returns <code>PENDING</code> or <code>FAILED</code>.</p> </li> <li> <p> <code>association-id</code> - The ID of the VPC endpoint association.</p> </li> <li> <p> <code>associated-resource-id</code> - The ID of the associated resource configuration.</p> </li> <li> <p> <code>service-network-arn</code> - The Amazon Resource Name (ARN) of the associated service network. Only VPC endpoints of type service network will be returned.</p> </li> <li> <p> <code>resource-configuration-group-arn</code> - The Amazon Resource Name (ARN) of the resource configuration of type GROUP.</p> </li> <li> <p> <code>service-network-resource-association-id</code> - The ID of the association.</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>vpc-endpoint-id</code> - The ID of the VPC endpoint.</p> </li> <li> <p> <code>associated-resource-accessibility</code> - The association state. When the state is <code>accessible</code>, it returns <code>AVAILABLE</code>. When the state is <code>inaccessible</code>, it returns <code>PENDING</code> or <code>FAILED</code>.</p> </li> <li> <p> <code>association-id</code> - The ID of the VPC endpoint association.</p> </li> <li> <p> <code>associated-resource-id</code> - The ID of the associated resource configuration.</p> </li> <li> <p> <code>service-network-arn</code> - The Amazon Resource Name (ARN) of the associated service network. Only VPC endpoints of type service network will be returned.</p> </li> <li> <p> <code>resource-configuration-group-arn</code> - The Amazon Resource Name (ARN) of the resource configuration of type GROUP.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -49693,7 +49693,7 @@
         },
         "DefaultRouteTablePropagation":{
           "shape":"DefaultRouteTablePropagationValue",
-          "documentation":"<p>Enable or disable automatic propagation of routes to the default propagation route table.</p>"
+          "documentation":"<p>Indicates whether resource attachments automatically propagate routes to the default propagation route table. Enabled by default. If <code>defaultRouteTablePropagation</code> is set to <code>enable</code>, Amazon Web Services Transit Gateway will create the default transit gateway route table.</p>"
         },
         "PropagationDefaultRouteTableId":{
           "shape":"TransitGatewayRouteTableId",
@@ -58476,7 +58476,8 @@
       "enum":[
         "CreateRouteTable",
         "CreateRoute",
-        "EnableVgwRoutePropagation"
+        "EnableVgwRoutePropagation",
+        "Advertisement"
       ]
     },
     "RouteServer":{
@@ -58990,7 +58991,8 @@
       "type":"string",
       "enum":[
         "active",
-        "blackhole"
+        "blackhole",
+        "filtered"
       ]
     },
     "RouteTable":{
@@ -64935,7 +64937,7 @@
         },
         "DefaultRouteTableAssociation":{
           "shape":"DefaultRouteTableAssociationValue",
-          "documentation":"<p>Indicates whether resource attachments are automatically associated with the default association route table. Enabled by default. If <code>defaultRouteTableAssociation</code> is set to <code>enable</code>, Amazon Web Services Transit Gateway will create the default transit gateway route table.</p>",
+          "documentation":"<p>Indicates whether resource attachments are automatically associated with the default association route table. Enabled by default. Either <code>defaultRouteTableAssociation</code> or <code>defaultRouteTablePropagation</code> must be set to <code>enable</code> for Amazon Web Services Transit Gateway to create the default transit gateway route table.</p>",
           "locationName":"defaultRouteTableAssociation"
         },
         "AssociationDefaultRouteTableId":{
@@ -64945,7 +64947,7 @@
         },
         "DefaultRouteTablePropagation":{
           "shape":"DefaultRouteTablePropagationValue",
-          "documentation":"<p>Indicates whether resource attachments automatically propagate routes to the default propagation route table. Enabled by default. If <code>defaultRouteTablePropagation</code> is set to <code>enable</code>, Amazon Web Services Transit Gateway will create the default transit gateway route table.</p>",
+          "documentation":"<p>Indicates whether resource attachments automatically propagate routes to the default propagation route table. Enabled by default. If <code>defaultRouteTablePropagation</code> is set to <code>enable</code>, Amazon Web Services Transit Gateway creates the default transit gateway route table.</p>",
           "locationName":"defaultRouteTablePropagation"
         },
         "PropagationDefaultRouteTableId":{

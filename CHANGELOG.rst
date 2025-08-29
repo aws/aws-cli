@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.42.21
+=======
+
+* api-change:``bedrock-runtime``: Fixed stop sequence limit for converse API.
+* api-change:``ec2``: Release shows new route types such as filtered and advertisement.
+* api-change:``xray``: AWS X-Ray Features: Support Sampling Rate Boost On Anomaly
+
+
 1.42.20
 =======
 

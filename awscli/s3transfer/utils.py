@@ -24,6 +24,7 @@ from collections import defaultdict
 from botocore.exceptions import IncompleteReadError, ReadTimeoutError
 from botocore.httpchecksum import DEFAULT_CHECKSUM_ALGORITHM, AwsChunkedWrapper
 from botocore.utils import is_s3express_bucket
+from s3transfer.checksums import CRC_CHECKSUM_CLS
 from s3transfer.compat import SOCKET_ERROR, fallocate, rename_file
 from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS
 
@@ -267,6 +268,7 @@ class OSUtils:
         full_file_size,
         callbacks,
         close_callbacks=None,
+        full_object_checksum=None,
     ):
         return ReadFileChunk(
             fileobj,
@@ -275,6 +277,7 @@ class OSUtils:
             callbacks=callbacks,
             enable_callbacks=False,
             close_callbacks=close_callbacks,
+            full_object_checksum=full_object_checksum,
         )
 
     def open(self, filename, mode):
@@ -413,6 +416,7 @@ class ReadFileChunk:
         callbacks=None,
         enable_callbacks=True,
         close_callbacks=None,
+        full_object_checksum=None,
     ):
         """
 
@@ -465,6 +469,10 @@ class ReadFileChunk:
         self._close_callbacks = close_callbacks
         if close_callbacks is None:
             self._close_callbacks = close_callbacks
+        self._full_object_checksum = full_object_checksum
+        self._checksum = CRC_CHECKSUM_CLS[
+            self._full_object_checksum.checksum_algorithm
+        ]()
 
     @classmethod
     def from_filename(
@@ -505,6 +513,10 @@ class ReadFileChunk:
         file_size = os.fstat(f.fileno()).st_size
         return cls(f, chunk_size, file_size, callbacks, enable_callbacks)
 
+    @property
+    def checksum(self):
+        return self._checksum
+
     def _calculate_file_size(
         self, fileobj, requested_size, start_byte, actual_file_size
     ):
@@ -519,6 +531,13 @@ class ReadFileChunk:
             amount_to_read = min(amount_left, amount)
         data = self._fileobj.read(amount_to_read)
         self._amount_read += len(data)
+        if self._checksum:
+            self._checksum.update(data)
+            if self._amount_read == self._size:
+                self._full_object_checksum.set_part_checksum(
+                    self._start_byte,
+                    self._checksum.int_crc,
+                )
         if self._callbacks is not None and self._callbacks_enabled:
             invoke_progress_callbacks(self._callbacks, len(data))
         return data
@@ -825,3 +844,7 @@ def set_default_checksum_algorithm(extra_args):
     if any(checksum in extra_args for checksum in FULL_OBJECT_CHECKSUM_ARGS):
         return
     extra_args.setdefault("ChecksumAlgorithm", DEFAULT_CHECKSUM_ALGORITHM)
+
+
+def set_default_checksum_type(extra_args):
+    extra_args.setdefault("ChecksumType", "FULL_OBJECT")

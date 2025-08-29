@@ -43,6 +43,7 @@ from s3transfer.utils import (
     TaskSemaphore,
     get_callbacks,
     set_default_checksum_algorithm,
+    set_default_checksum_type,
     signal_not_transferring,
     signal_transferring,
 )
@@ -521,6 +522,7 @@ class TransferManager:
             == "when_supported"
         ):
             set_default_checksum_algorithm(extra_args)
+            set_default_checksum_type(extra_args)
 
     def _submit_transfer(
         self, call_args, submission_task_cls, extra_main_kwargs=None

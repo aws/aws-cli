@@ -128,6 +128,8 @@ class TransferMeta(BaseTransferMeta):
         self._size = None
         self._user_context = {}
         self._etag = None
+        self._stored_checksum = None
+        self._checksum_algorithm = None
 
     @property
     def call_args(self):
@@ -153,6 +155,20 @@ class TransferMeta(BaseTransferMeta):
     def etag(self):
         """The etag of the stored object for validating multipart downloads"""
         return self._etag
+
+    @property
+    def stored_checksum(self):
+        return self._stored_checksum
+
+    @property
+    def checksum_algorithm(self):
+        return self._checksum_algorithm
+
+    def provide_stored_checksum(self, checksum):
+        self._stored_checksum = checksum
+
+    def provide_checksum_algorithm(self, algorithm):
+        self._checksum_algorithm = algorithm
 
     def provide_transfer_size(self, size):
         """A method to provide the size of a transfer request

@@ -15,6 +15,11 @@ import logging
 import threading
 
 from botocore.exceptions import ClientError
+from s3transfer.checksums import (
+    CRC_CHECKSUMS,
+    FullObjectChecksum,
+    PartStreamingChecksumBody,
+)
 from s3transfer.compat import seekable
 from s3transfer.exceptions import RetriesExceededError, S3DownloadFailedError
 from s3transfer.futures import IN_MEMORY_DOWNLOAD_TAG
@@ -136,6 +141,14 @@ class DownloadOutputManager:
         :returns: A final task to completed in the io executor
         """
         raise NotImplementedError('must implement get_final_io_task()')
+
+    def get_validate_checksum_task(self, full_object_checksum):
+        return ValidateChecksumTask(
+            transfer_coordinator=self._transfer_coordinator,
+            main_kwargs={
+                'full_object_checksum': full_object_checksum,
+            },
+        )
 
     def _get_fileobj_from_filename(self, filename):
         f = DeferredOpenFile(
@@ -350,10 +363,12 @@ class DownloadSubmissionTask(SubmissionTask):
         if (
             transfer_future.meta.size is None
             or transfer_future.meta.etag is None
+            or transfer_future.meta.stored_checksum is None
         ):
             response = client.head_object(
                 Bucket=transfer_future.meta.call_args.bucket,
                 Key=transfer_future.meta.call_args.key,
+                ChecksumMode="ENABLED",
                 **transfer_future.meta.call_args.extra_args,
             )
             # If a size was not provided figure out the size for the
@@ -364,6 +379,8 @@ class DownloadSubmissionTask(SubmissionTask):
             # Provide an etag to ensure a stored object is not modified
             # during a multipart download.
             transfer_future.meta.provide_object_etag(response.get('ETag'))
+            # Provide checksum
+            self._provide_checksum_to_meta(response, transfer_future.meta)
 
         download_output_manager = self._get_download_output_manager_cls(
             transfer_future, osutil
@@ -480,6 +497,23 @@ class DownloadSubmissionTask(SubmissionTask):
                 download_output_manager, io_executor
             )
         )
+        #
+        full_object_checksum = None
+        if transfer_future.meta.stored_checksum:
+            full_object_checksum = FullObjectChecksum(
+                transfer_future.meta.checksum_algorithm,
+                transfer_future.meta.size,
+            )
+            full_object_checksum.set_stored_checksum(
+                transfer_future.meta.stored_checksum,
+            )
+        validate_checksum_invoker = CountCallbackInvoker(
+            self._get_validate_checksum_task(
+                download_output_manager,
+                io_executor,
+                full_object_checksum,
+            )
+        )
         for i in range(num_parts):
             # Calculate the range parameter
             range_parameter = calculate_range_parameter(
@@ -494,6 +528,7 @@ class DownloadSubmissionTask(SubmissionTask):
                 extra_args['IfMatch'] = transfer_future.meta.etag
             extra_args.update(call_args.extra_args)
             finalize_download_invoker.increment()
+            validate_checksum_invoker.increment()
             # Submit the ranged downloads
             self._transfer_coordinator.submit(
                 request_executor,
@@ -511,12 +546,35 @@ class DownloadSubmissionTask(SubmissionTask):
                         'download_output_manager': download_output_manager,
                         'io_chunksize': config.io_chunksize,
                         'bandwidth_limiter': bandwidth_limiter,
+                        'full_object_checksum': full_object_checksum,
                     },
-                    done_callbacks=[finalize_download_invoker.decrement],
+                    done_callbacks=[
+                        validate_checksum_invoker.decrement,
+                        finalize_download_invoker.decrement,
+                    ],
                 ),
                 tag=get_object_tag,
             )
+        validate_checksum_invoker.finalize()
         finalize_download_invoker.finalize()
+
+    def _get_validate_checksum_task(
+        self,
+        download_manager,
+        io_executor,
+        full_object_checksum,
+    ):
+        if full_object_checksum is None:
+            task = CompleteDownloadNOOPTask(
+                transfer_coordinator=self._transfer_coordinator,
+            )
+        else:
+            task = download_manager.get_validate_checksum_task(
+                full_object_checksum,
+            )
+        return FunctionContainer(
+            self._transfer_coordinator.submit, io_executor, task
+        )
 
     def _get_final_io_task_submission_callback(
         self, download_manager, io_executor
@@ -536,6 +594,17 @@ class DownloadSubmissionTask(SubmissionTask):
         range_param = f'bytes={start_range}-{end_range}'
         return range_param
 
+    def _provide_checksum_to_meta(self, response, transfer_meta):
+        checksum_type = response.get("ChecksumType")
+        if not checksum_type or checksum_type != "FULL_OBJECT":
+            # transfer_meta.provide_stored_checksum({})
+            return
+        for crc_checksum in CRC_CHECKSUMS:
+            if checksum_value := response.get(crc_checksum):
+                transfer_meta.provide_checksum_algorithm(crc_checksum)
+                transfer_meta.provide_stored_checksum(checksum_value)
+                return
+
 
 class GetObjectTask(Task):
     def _main(
@@ -551,6 +620,7 @@ class GetObjectTask(Task):
         io_chunksize,
         start_index=0,
         bandwidth_limiter=None,
+        full_object_checksum=None,
     ):
         """Downloads an object and places content into io queue
 
@@ -577,9 +647,16 @@ class GetObjectTask(Task):
                 response = client.get_object(
                     Bucket=bucket, Key=key, **extra_args
                 )
-                streaming_body = StreamReaderProgress(
-                    response['Body'], callbacks
-                )
+                if full_object_checksum:
+                    streaming_body = PartStreamingChecksumBody(
+                        response['Body'],
+                        start_index,
+                        full_object_checksum,
+                    )
+                else:
+                    streaming_body = StreamReaderProgress(
+                        response['Body'], callbacks
+                    )
                 if bandwidth_limiter:
                     streaming_body = (
                         bandwidth_limiter.get_bandwith_limited_stream(
@@ -831,3 +908,8 @@ class DeferQueue:
             del self._pending_offsets[next_write_offset]
             self._next_offset += len(next_write)
         return writes
+
+
+class ValidateChecksumTask(Task):
+    def _main(self, full_object_checksum):
+        full_object_checksum.validate()

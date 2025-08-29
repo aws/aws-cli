@@ -13,6 +13,11 @@
 import math
 from io import BytesIO
 
+from s3transfer.checksums import (
+    CRC_CHECKSUMS,
+    FullObjectChecksum,
+    PartStreamingChecksumBody,
+)
 from s3transfer.compat import readable, seekable
 from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS
 from s3transfer.futures import IN_MEMORY_UPLOAD_TAG
@@ -272,7 +277,9 @@ class UploadFilenameInputManager(UploadInputManager):
             close_callbacks=close_callbacks,
         )
 
-    def yield_upload_part_bodies(self, transfer_future, chunksize):
+    def yield_upload_part_bodies(
+        self, transfer_future, chunksize, full_object_checksum
+    ):
         full_file_size = transfer_future.meta.size
         num_parts = self._get_num_parts(transfer_future, chunksize)
         for part_number in range(1, num_parts + 1):
@@ -300,6 +307,7 @@ class UploadFilenameInputManager(UploadInputManager):
                 full_file_size=full_size,
                 callbacks=callbacks,
                 close_callbacks=close_callbacks,
+                full_object_checksum=full_object_checksum,
             )
             yield part_number, read_file_chunk
 
@@ -676,6 +684,16 @@ class UploadSubmissionTask(SubmissionTask):
                     "Checksum", ""
                 )
 
+        full_object_checksum = None
+        if (
+            f"Checksum{call_args.extra_args['ChecksumAlgorithm']}"
+            in CRC_CHECKSUMS
+        ):
+            full_object_checksum = FullObjectChecksum(
+                f"Checksum{call_args.extra_args['ChecksumAlgorithm']}",
+                transfer_future.meta.size,
+            )
+
         create_multipart_extra_args = self._extra_create_multipart_args(
             call_args.extra_args
         )
@@ -708,7 +726,9 @@ class UploadSubmissionTask(SubmissionTask):
         adjuster = ChunksizeAdjuster()
         chunksize = adjuster.adjust_chunksize(config.multipart_chunksize, size)
         part_iterator = upload_input_manager.yield_upload_part_bodies(
-            transfer_future, chunksize
+            transfer_future,
+            chunksize,
+            full_object_checksum,
         )
 
         for part_number, fileobj in part_iterator:
@@ -724,6 +744,7 @@ class UploadSubmissionTask(SubmissionTask):
                             'key': call_args.key,
                             'part_number': part_number,
                             'extra_args': extra_part_args,
+                            # 'full_object_checksum': full_object_checksum,
                         },
                         pending_main_kwargs={
                             'upload_id': create_multipart_future
@@ -746,6 +767,7 @@ class UploadSubmissionTask(SubmissionTask):
                     'bucket': call_args.bucket,
                     'key': call_args.key,
                     'extra_args': complete_multipart_extra_args,
+                    'full_object_checksum': full_object_checksum,
                 },
                 pending_main_kwargs={
                     'upload_id': create_multipart_future,
@@ -800,7 +822,14 @@ class UploadPartTask(Task):
     """Task to upload a part in a multipart upload"""
 
     def _main(
-        self, client, fileobj, bucket, key, upload_id, part_number, extra_args
+        self,
+        client,
+        fileobj,
+        bucket,
+        key,
+        upload_id,
+        part_number,
+        extra_args,
     ):
         """
         :param client: The client to use when calling PutObject

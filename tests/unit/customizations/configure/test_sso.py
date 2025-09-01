@@ -787,6 +787,8 @@ class PTKStubber:
     _ALLOWED_SELECT_MENU_KWARGS = {
         "display_format",
         "max_height",
+        "enable_filter",
+        "no_results_message",
     }
 
     def __init__(self, user_inputs=None):
@@ -1524,6 +1526,66 @@ class TestConfigureSSOCommand:
         sso_cmd = sso_cmd_factory(session=session)
         assert sso_cmd(args, parsed_globals) == 0
 
+    def test_multiple_accounts_uses_filterable_menu(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        aws_config,
+        stub_sso_list_roles,
+        stub_sso_list_accounts,
+        mock_do_sso_login,
+        botocore_session,
+        args,
+        parsed_globals,
+        configure_sso_legacy_inputs,
+        capsys,
+    ):
+        """Test that multiple accounts selection shows filter instructions"""
+        inputs = configure_sso_legacy_inputs
+        selected_account_id = inputs.account_id_select.answer["accountId"]
+        ptk_stubber.user_inputs = inputs
+
+        stub_sso_list_accounts(inputs.account_id_select.expected_choices)
+        stub_sso_list_roles(
+            inputs.role_name_select.expected_choices,
+            expected_account_id=selected_account_id,
+        )
+
+        sso_cmd(args, parsed_globals)
+
+        # Verify the filter instructions are shown for multiple accounts
+        stdout = capsys.readouterr().out
+        assert "Use arrow keys to navigate, type to filter" in stdout
+        assert "There are 2 AWS accounts available to you" in stdout
+
+    def test_single_account_does_not_use_filterable_menu(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        aws_config,
+        stub_simple_single_item_sso_responses,
+        mock_do_sso_login,
+        botocore_session,
+        args,
+        parsed_globals,
+        configure_sso_legacy_inputs,
+        account_id,
+        role_name,
+        capsys,
+    ):
+        """Test that single account does not show filter instructions"""
+        inputs = configure_sso_legacy_inputs
+        inputs.skip_account_and_role_selection()
+        ptk_stubber.user_inputs = inputs
+        stub_simple_single_item_sso_responses(account_id, role_name)
+
+        sso_cmd(args, parsed_globals)
+
+        # Verify the filter instructions are NOT shown for single account
+        stdout = capsys.readouterr().out
+        assert "Use arrow keys to navigate, type to filter" not in stdout
+        assert "The only AWS account available to you is" in stdout
+
     def test_single_account_single_role_device_code_fallback(
         self,
         sso_cmd,
@@ -1709,7 +1771,7 @@ class TestPrintConclusion:
     def test_print_conclusion_default_profile_with_credentials(
         self, sso_cmd, capsys
     ):
-        sso_cmd._print_conclusion(True, 'default')
+        sso_cmd._print_conclusion(True, "default")
         captured = capsys.readouterr()
         assert (
             "The AWS CLI is now configured to use the default profile."
@@ -1744,7 +1806,7 @@ class TestPrintConclusion:
     def test_print_conclusion_default_profile_case_insensitive(
         selfself, sso_cmd, capsys
     ):
-        sso_cmd._print_conclusion(True, 'DEFAULT')
+        sso_cmd._print_conclusion(True, "DEFAULT")
         captured = capsys.readouterr()
         assert (
             "The AWS CLI is now configured to use the default profile."
@@ -1930,9 +1992,7 @@ class TestPTKPrompt(unittest.TestCase):
 
     def test_can_provide_toolbar(self):
         toolbar = "Toolbar content"
-        self.prompter.get_value(
-            "default_value", "Prompt Text", toolbar=toolbar
-        )
+        self.prompter.get_value("default_value", "Prompt Text", toolbar=toolbar)
         self.assert_expected_toolbar(toolbar)
 
     def test_can_provide_prompt_format(self):

@@ -121,6 +121,16 @@ class ConfigureCommand(BasicCommand):
         access_key = new_values.get('aws_access_key_id')
         return access_key and access_key.startswith('ASIA')
 
+    def _should_prompt_for_session_token(self, new_values, config):
+        """Determine if we should prompt for session token."""
+        # Don't prompt if explicitly switching to long-term credentials
+        new_access_key = new_values.get('aws_access_key_id')
+        if new_access_key and not self._needs_session_token(new_values):
+            return False
+        
+        # Prompt if needed for temporary credentials or if already exists
+        return self._needs_session_token(new_values) or config.get('aws_session_token')
+
     def _run_main(self, parsed_args, parsed_globals):
         # Called when invoked with no args "aws configure"
 
@@ -133,8 +143,7 @@ class ConfigureCommand(BasicCommand):
             config = {}
 
         for config_name, prompt_text in self.VALUES_TO_PROMPT:
-            # Skip session token if not needed
-            if config_name == 'aws_session_token' and not self._needs_session_token(new_values):
+            if config_name == 'aws_session_token' and not self._should_prompt_for_session_token(new_values, config):
                 continue
                 
             current_value = config.get(config_name)

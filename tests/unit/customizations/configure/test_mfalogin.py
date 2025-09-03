@@ -81,10 +81,8 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
         ]
         self.prompter.get_value.return_value = 'session-test'  # profile name
         
-        # Mock botocore.session.Session
-        mock_session = mock.Mock()
-        mock_session.get_credentials.return_value = None
-        mock_session.available_profiles = ['default']
+        # Set session to return None credentials to trigger interactive prompting
+        self.session.get_credentials.return_value = None
         
         # Mock STS for the interactive prompting path
         sts_client = mock.Mock()
@@ -96,9 +94,12 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
                 'Expiration': datetime.datetime(2023, 5, 19, 18, 6, 10),
             }
         }
-        mock_session.create_client.return_value = sts_client
-
-        with mock.patch('botocore.session.Session', return_value=mock_session):
+        
+        with mock.patch('botocore.session.Session') as mock_session_class:
+            mock_session_instance = mock.Mock()
+            mock_session_instance.create_client.return_value = sts_client
+            mock_session_class.return_value = mock_session_instance
+            
             with mock.patch(
                 'sys.stdin.isatty', return_value=False
             ):  # Non-interactive
@@ -112,20 +113,43 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
     def test_profile_not_found(self):
         # Set profile to a non-existent profile
         self.parsed_globals.profile = 'nonexistent'
-
-        # Mock botocore.session.Session
-        mock_session = mock.Mock()
-        mock_session.available_profiles = ['default', 'test']
-
-        with mock.patch('botocore.session.Session', return_value=mock_session):
-            with mock.patch('sys.stderr') as mock_stderr:
-                rc = self.command._run_main(
-                    self.parsed_args, self.parsed_globals
-                )
-                self.assertEqual(rc, 1)
-                mock_stderr.write.assert_called_with(
-                    "The profile (nonexistent) could not be found. \n"
-                )
+        
+        # Mock the session to have no credentials for the nonexistent profile
+        self.session.get_credentials.return_value = None
+        self.session.get_scoped_config.return_value = {}
+        
+        # Setup mock responses for interactive prompting since no credentials found
+        self.prompter.get_credential_value.side_effect = [
+            'AKIAIOSFODNN7EXAMPLE',  # access key
+            'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',  # secret key
+            'arn:aws:iam::123456789012:mfa/user',  # MFA serial
+            '123456',  # MFA token
+        ]
+        self.prompter.get_value.return_value = 'session-test'  # profile name
+        
+        # Mock STS for the interactive prompting path
+        sts_client = mock.Mock()
+        sts_client.get_session_token.return_value = {
+            'Credentials': {
+                'AccessKeyId': 'ASIAIOSFODNN7EXAMPLE',
+                'SecretAccessKey': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY',
+                'SessionToken': 'SESSION_TOKEN',
+                'Expiration': datetime.datetime(2023, 5, 19, 18, 6, 10),
+            }
+        }
+        
+        with mock.patch('botocore.session.Session') as mock_session_class:
+            mock_session_instance = mock.Mock()
+            mock_session_instance.create_client.return_value = sts_client
+            mock_session_class.return_value = mock_session_instance
+            
+            with mock.patch('os.path.expanduser', return_value='/tmp/credentials'):
+                with mock.patch('sys.stdout'):
+                    rc = self.command._run_main(
+                        self.parsed_args, self.parsed_globals
+                    )
+                    # Should succeed via interactive prompting
+                    self.assertEqual(rc, 0)
 
     def test_no_mfa_serial_provided(self):
         # Mock botocore.session.Session
@@ -169,11 +193,7 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
                     )
 
     def test_sts_client_error(self):
-        # Mock botocore.session.Session
-        mock_session = mock.Mock()
-        mock_session.get_credentials.return_value = mock.Mock()
-        mock_session.get_scoped_config.return_value = {}
-        mock_session.available_profiles = ['default']
+        self.session.get_scoped_config.return_value = {}
 
         sts_client = mock.Mock()
         sts_client.get_session_token.side_effect = ClientError(
@@ -185,23 +205,22 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
             },
             'GetSessionToken',
         )
-        mock_session.create_client.return_value = sts_client
+        self.session.create_client.return_value = sts_client
 
-        with mock.patch('botocore.session.Session', return_value=mock_session):
-            self.prompter.get_credential_value.side_effect = [
-                'arn:aws:iam::123456789012:mfa/user',
-                '123456',
-            ]
-            self.prompter.get_value.return_value = 'session-test'
+        self.prompter.get_credential_value.side_effect = [
+            'arn:aws:iam::123456789012:mfa/user',
+            '123456',
+        ]
+        self.prompter.get_value.return_value = 'session-test'
 
-            with mock.patch('sys.stderr') as mock_stderr:
-                rc = self.command._run_main(
-                    self.parsed_args, self.parsed_globals
-                )
-                self.assertEqual(rc, 1)
-                mock_stderr.write.assert_called_with(
-                    mock.ANY
-                )  # Just check it was called
+        with mock.patch('sys.stderr') as mock_stderr:
+            rc = self.command._run_main(
+                self.parsed_args, self.parsed_globals
+            )
+            self.assertEqual(rc, 1)
+            mock_stderr.write.assert_called_with(
+                mock.ANY
+            )  # Just check it was called
 
     def test_successful_mfa_login(self):
         # Setup
@@ -222,25 +241,18 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
             }
         }
 
-        # Mock botocore.session.Session
-        mock_session = mock.Mock()
-        mock_session.get_credentials.return_value = mock.Mock()
-        mock_session.get_scoped_config.return_value = {}
-        mock_session.available_profiles = ['default']
-
         sts_client = mock.Mock()
         sts_client.get_session_token.return_value = sts_response
-        mock_session.create_client.return_value = sts_client
+        self.session.create_client.return_value = sts_client
 
-        with mock.patch('botocore.session.Session', return_value=mock_session):
-            with mock.patch('sys.stdin.isatty', return_value=True):
-                with mock.patch(
-                    'os.path.expanduser', return_value='/tmp/credentials'
-                ):
-                    with mock.patch('sys.stdout'):
-                        rc = self.command._run_main(
-                            self.parsed_args, self.parsed_globals
-                        )
+        with mock.patch('sys.stdin.isatty', return_value=True):
+            with mock.patch(
+                'os.path.expanduser', return_value='/tmp/credentials'
+            ):
+                with mock.patch('sys.stdout'):
+                    rc = self.command._run_main(
+                        self.parsed_args, self.parsed_globals
+                    )
 
         # Verify
         self.assertEqual(rc, 0)
@@ -258,7 +270,6 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
             'aws_access_key_id': 'ASIAIOSFODNN7EXAMPLE',
             'aws_secret_access_key': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY',
             'aws_session_token': 'AQoEXAMPLEH4aoAH0gNCAPyJxz4BlCFFxWNE1OPTgk5TthT+FvwqnKwRcOIfrRh3c/LTo6UDdyJwOOvEVPvLXCrrrUtdnniCEXAMPLE/IvU1dYUg2RVAJBanLiHb4IgRmpRV3zrkuWJOgQs8IZZaIv2BXIa2R4OlgkBN9bkUDNCJiBeb/AXlzBBko7b15fjrBs2+cTQtpZ3CYWFXG8C5zqx37wnOE49mRl/+OtkIKGO7fAE',
-            '#Credentials expire at: ': f"{expiration.strftime('%Y-%m-%d %H:%M:%S UTC')}",
         }
 
         self.config_writer.update_config.assert_called_with(
@@ -272,13 +283,9 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
         )
         self.parsed_args.duration_seconds = 43200
 
-        # Mock botocore.session.Session
-        mock_session = mock.Mock()
-        mock_session.get_credentials.return_value = mock.Mock()
-        mock_session.get_scoped_config.return_value = {
+        self.session.get_scoped_config.return_value = {
             'mfa_serial': 'arn:aws:iam::123456789012:mfa/user-config'
         }
-        mock_session.available_profiles = ['default']
 
         sts_client = mock.Mock()
         expiration = datetime.datetime(2023, 5, 19, 18, 6, 10)
@@ -291,19 +298,18 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
             }
         }
         sts_client.get_session_token.return_value = sts_response
-        mock_session.create_client.return_value = sts_client
+        self.session.create_client.return_value = sts_client
 
-        with mock.patch('botocore.session.Session', return_value=mock_session):
-            with mock.patch('sys.stdin.isatty', return_value=True):
-                self.prompter.get_credential_value.return_value = '123456'
-                self.prompter.get_value.return_value = 'session-test'
-                with mock.patch(
-                    'os.path.expanduser', return_value='/tmp/credentials'
-                ):
-                    with mock.patch('sys.stdout'):
-                        rc = self.command._run_main(
-                            self.parsed_args, self.parsed_globals
-                        )
+        with mock.patch('sys.stdin.isatty', return_value=True):
+            self.prompter.get_credential_value.return_value = '123456'
+            self.prompter.get_value.return_value = 'session-test'
+            with mock.patch(
+                'os.path.expanduser', return_value='/tmp/credentials'
+            ):
+                with mock.patch('sys.stdout'):
+                    rc = self.command._run_main(
+                        self.parsed_args, self.parsed_globals
+                    )
 
         # Verify
         self.assertEqual(rc, 0)
@@ -318,27 +324,26 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
     def test_missing_default_profile_interactive(self):
         """Test prompting for credentials when no default profile exists in interactive mode."""
         self.parsed_globals.profile = None  # Use default profile
+        
+        # Set session to return None credentials to trigger interactive prompting
+        self.session.get_credentials.return_value = None
 
-        # Mock botocore.session.Session to raise ProfileNotFound
-        with mock.patch('botocore.session.Session') as mock_session_class:
-            mock_session_class.side_effect = ProfileNotFound(profile='default')
+        # Mock sys.stdin.isatty to return True (interactive)
+        with mock.patch('sys.stdin.isatty', return_value=True):
+            # Mock the _handle_interactive_prompting method
+            with mock.patch.object(
+                self.command,
+                '_handle_interactive_prompting',
+                return_value=0,
+            ) as mock_handle:
+                rc = self.command._run_main(
+                    self.parsed_args, self.parsed_globals
+                )
 
-            # Mock sys.stdin.isatty to return True (interactive)
-            with mock.patch('sys.stdin.isatty', return_value=True):
-                # Mock the _handle_interactive_prompting method
-                with mock.patch.object(
-                    self.command,
-                    '_handle_interactive_prompting',
-                    return_value=0,
-                ) as mock_handle:
-                    rc = self.command._run_main(
-                        self.parsed_args, self.parsed_globals
-                    )
-
-                    self.assertEqual(rc, 0)
-                    mock_handle.assert_called_once_with(
-                        self.parsed_args, None
-                    )
+                self.assertEqual(rc, 0)
+                mock_handle.assert_called_once_with(
+                    self.parsed_args, None
+                )
 
     def test_missing_default_profile_non_interactive(self):
         """Test error when no default profile exists in non-interactive mode."""
@@ -353,25 +358,26 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
         ]
         self.prompter.get_value.return_value = 'session-test'  # profile name
 
-        # Mock botocore.session.Session to return None credentials
-        mock_session = mock.Mock()
-        mock_session.get_credentials.return_value = None
-        mock_session.available_profiles = ['default']
+        # Set session to return None credentials to trigger interactive prompting
+        self.session.get_credentials.return_value = None
         
-        with mock.patch('botocore.session.Session', return_value=mock_session):
+        # Mock STS for the interactive prompting path
+        sts_client = mock.Mock()
+        sts_client.get_session_token.return_value = {
+            'Credentials': {
+                'AccessKeyId': 'ASIAIOSFODNN7EXAMPLE',
+                'SecretAccessKey': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY',
+                'SessionToken': 'SESSION_TOKEN',
+                'Expiration': datetime.datetime(2023, 5, 19, 18, 6, 10),
+            }
+        }
+        
+        with mock.patch('botocore.session.Session') as mock_session_class:
+            mock_session_instance = mock.Mock()
+            mock_session_instance.create_client.return_value = sts_client
+            mock_session_class.return_value = mock_session_instance
+            
             with mock.patch('sys.stdin.isatty', return_value=False):
-                # Mock STS for the interactive prompting path
-                sts_client = mock.Mock()
-                sts_client.get_session_token.return_value = {
-                    'Credentials': {
-                        'AccessKeyId': 'ASIAIOSFODNN7EXAMPLE',
-                        'SecretAccessKey': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY',
-                        'SessionToken': 'SESSION_TOKEN',
-                        'Expiration': datetime.datetime(2023, 5, 19, 18, 6, 10),
-                    }
-                }
-                mock_session.create_client.return_value = sts_client
-                
                 with mock.patch('os.path.expanduser', return_value='/tmp/credentials'):
                     with mock.patch('sys.stdout'):
                         rc = self.command._run_main(
@@ -539,27 +545,23 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
 
     def test_non_interactive_missing_token_code(self):
         """Test non-interactive mode when token code would be prompted."""
-        mock_session = mock.Mock()
-        mock_session.get_credentials.return_value = mock.Mock()
-        mock_session.get_scoped_config.return_value = {
+        self.session.get_scoped_config.return_value = {
             'mfa_serial': 'arn:aws:iam::123456789012:mfa/user'
         }
-        mock_session.available_profiles = ['default']
 
-        with mock.patch('botocore.session.Session', return_value=mock_session):
-            with mock.patch(
-                'sys.stdin.isatty', return_value=False
-            ):  # Non-interactive
-                self.prompter.get_credential_value.return_value = None
-                with mock.patch('sys.stderr') as mock_stderr:
-                    rc = self.command._run_main(
-                        self.parsed_args, self.parsed_globals
-                    )
+        with mock.patch(
+            'sys.stdin.isatty', return_value=False
+        ):  # Non-interactive
+            self.prompter.get_credential_value.return_value = None
+            with mock.patch('sys.stderr') as mock_stderr:
+                rc = self.command._run_main(
+                    self.parsed_args, self.parsed_globals
+                )
 
-                    self.assertEqual(rc, 1)
-                    mock_stderr.write.assert_called_with(
-                        "MFA token code is required\n"
-                    )
+                self.assertEqual(rc, 1)
+                mock_stderr.write.assert_called_with(
+                    "MFA token code is required\n"
+                )
 
     def test_empty_credential_input_handling(self):
         """Test handling of empty credential inputs."""

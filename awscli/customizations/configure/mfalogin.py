@@ -113,7 +113,7 @@ class ConfigureMFALoginCommand(BasicCommand):
 
     def _generate_profile_name_from_mfa(self, mfa_serial):
         """Generate a deterministic profile name from MFA serial/ARN."""
-        if mfa_serial.startswith('arn:aws:iam::'):
+        if isinstance(mfa_serial, str) and mfa_serial.startswith('arn:aws:iam::'):
             # Parse ARN: arn:aws:iam::123456789012:mfa/device-name
             parts = mfa_serial.split(':')
             account_id = parts[4]
@@ -158,8 +158,6 @@ class ConfigureMFALoginCommand(BasicCommand):
         except ClientError as e:
             sys.stderr.write(f"An error occurred: {e}\n")
             return None
-
-
 
     def _resolve_mfa_serial(self, parsed_args, source_config):
         """Resolve MFA serial from args, config, or prompt."""

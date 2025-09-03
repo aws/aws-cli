@@ -4377,6 +4377,10 @@
         "EngineLifecycleSupport":{
           "shape":"String",
           "documentation":"<p>The life cycle type for this DB cluster.</p> <note> <p>By default, this value is set to <code>open-source-rds-extended-support</code>, which enrolls your DB cluster into Amazon RDS Extended Support. At the end of standard support, you can avoid charges for Extended Support by setting the value to <code>open-source-rds-extended-support-disabled</code>. In this case, creating the DB cluster will fail if the DB major version is past its end of standard support date.</p> </note> <p>You can use this setting to enroll your DB cluster into Amazon RDS Extended Support. With RDS Extended Support, you can run the selected major engine version on your DB cluster past the end of standard support for that engine version. For more information, see the following sections:</p> <ul> <li> <p>Amazon Aurora - <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/extended-support.html\">Amazon RDS Extended Support with Amazon Aurora</a> in the <i>Amazon Aurora User Guide</i> </p> </li> <li> <p>Amazon RDS - <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/extended-support.html\">Amazon RDS Extended Support with Amazon RDS</a> in the <i>Amazon RDS User Guide</i> </p> </li> </ul> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>Valid Values: <code>open-source-rds-extended-support | open-source-rds-extended-support-disabled</code> </p> <p>Default: <code>open-source-rds-extended-support</code> </p>"
+        },
+        "MasterUserAuthenticationType":{
+          "shape":"MasterUserAuthenticationType",
+          "documentation":"<p>Specifies the authentication type for the master user. With IAM master user authentication, you can configure the master DB user with IAM database authentication when you create a DB cluster.</p> <p>You can specify one of the following values:</p> <ul> <li> <p> <code>password</code> - Use standard database authentication with a password.</p> </li> <li> <p> <code>iam-db-auth</code> - Use IAM database authentication for the master user.</p> </li> </ul> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>This option is only valid for RDS for PostgreSQL and Aurora PostgreSQL engines.</p>"
         }
       },
       "documentation":"<p/>"
@@ -4711,6 +4715,10 @@
         "EngineLifecycleSupport":{
           "shape":"String",
           "documentation":"<p>The life cycle type for this DB instance.</p> <note> <p>By default, this value is set to <code>open-source-rds-extended-support</code>, which enrolls your DB instance into Amazon RDS Extended Support. At the end of standard support, you can avoid charges for Extended Support by setting the value to <code>open-source-rds-extended-support-disabled</code>. In this case, creating the DB instance will fail if the DB major version is past its end of standard support date.</p> </note> <p>This setting applies only to RDS for MySQL and RDS for PostgreSQL. For Amazon Aurora DB instances, the life cycle type is managed by the DB cluster.</p> <p>You can use this setting to enroll your DB instance into Amazon RDS Extended Support. With RDS Extended Support, you can run the selected major engine version on your DB instance past the end of standard support for that engine version. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/extended-support.html\">Amazon RDS Extended Support with Amazon RDS</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Valid Values: <code>open-source-rds-extended-support | open-source-rds-extended-support-disabled</code> </p> <p>Default: <code>open-source-rds-extended-support</code> </p>"
+        },
+        "MasterUserAuthenticationType":{
+          "shape":"MasterUserAuthenticationType",
+          "documentation":"<p>Specifies the authentication type for the master user. With IAM master user authentication, you can configure the master DB user with IAM database authentication when you create a DB instance.</p> <p>You can specify one of the following values:</p> <ul> <li> <p> <code>password</code> - Use standard database authentication with a password.</p> </li> <li> <p> <code>iam-db-auth</code> - Use IAM database authentication for the master user.</p> </li> </ul> <p>This option is only valid for RDS for PostgreSQL and Aurora PostgreSQL engines.</p>"
         }
       },
       "documentation":"<p/>"
@@ -12045,6 +12053,13 @@
       "max":340,
       "min":1
     },
+    "MasterUserAuthenticationType":{
+      "type":"string",
+      "enum":[
+        "password",
+        "iam-db-auth"
+      ]
+    },
     "MasterUserSecret":{
       "type":"structure",
       "members":{
@@ -12414,7 +12429,7 @@
         },
         "DatabaseInsightsMode":{
           "shape":"DatabaseInsightsMode",
-          "documentation":"<p>Specifies the mode of Database Insights to enable for the DB cluster.</p> <p>If you change the value from <code>standard</code> to <code>advanced</code>, you must set the <code>PerformanceInsightsEnabled</code> parameter to <code>true</code> and the <code>PerformanceInsightsRetentionPeriod</code> parameter to 465.</p> <p>If you change the value from <code>advanced</code> to <code>standard</code>, you must set the <code>PerformanceInsightsEnabled</code> parameter to <code>false</code>.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>Specifies the mode of Database Insights to enable for the DB cluster.</p> <p>If you change the value from <code>standard</code> to <code>advanced</code>, you must set the <code>PerformanceInsightsEnabled</code> parameter to <code>true</code> and the <code>PerformanceInsightsRetentionPeriod</code> parameter to 465.</p> <p>If you change the value from <code>advanced</code> to <code>standard</code>, you can set the <code>PerformanceInsightsEnabled</code> parameter to <code>true</code> to collect detailed database counter and per-query metrics.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
@@ -12468,6 +12483,10 @@
         "CACertificateIdentifier":{
           "shape":"String",
           "documentation":"<p>The CA certificate identifier to use for the DB cluster's server certificate.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html\">Using SSL/TLS to encrypt a connection to a DB instance</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Valid for Cluster Type: Multi-AZ DB clusters</p>"
+        },
+        "MasterUserAuthenticationType":{
+          "shape":"MasterUserAuthenticationType",
+          "documentation":"<p>Specifies the authentication type for the master user. With IAM master user authentication, you can change the master DB user to use IAM database authentication.</p> <p>You can specify one of the following values:</p> <ul> <li> <p> <code>password</code> - Use standard database authentication with a password.</p> </li> <li> <p> <code>iam-db-auth</code> - Use IAM database authentication for the master user.</p> </li> </ul> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>This option is only valid for RDS for PostgreSQL and Aurora PostgreSQL engines.</p>"
         }
       },
       "documentation":"<p/>"
@@ -12775,6 +12794,10 @@
         "MultiTenant":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether the to convert your DB instance from the single-tenant conﬁguration to the multi-tenant conﬁguration. This parameter is supported only for RDS for Oracle CDB instances.</p> <p>During the conversion, RDS creates an initial tenant database and associates the DB name, master user name, character set, and national character set metadata with this database. The tags associated with the instance also propagate to the initial tenant database. You can add more tenant databases to your DB instance by using the <code>CreateTenantDatabase</code> operation.</p> <important> <p>The conversion to the multi-tenant configuration is permanent and irreversible, so you can't later convert back to the single-tenant configuration. When you specify this parameter, you must also specify <code>ApplyImmediately</code>.</p> </important>"
+        },
+        "MasterUserAuthenticationType":{
+          "shape":"MasterUserAuthenticationType",
+          "documentation":"<p>Specifies the authentication type for the master user. With IAM master user authentication, you can change the master DB user to use IAM database authentication.</p> <p>You can specify one of the following values:</p> <ul> <li> <p> <code>password</code> - Use standard database authentication with a password.</p> </li> <li> <p> <code>iam-db-auth</code> - Use IAM database authentication for the master user.</p> </li> </ul> <p>This option is only valid for RDS for PostgreSQL and Aurora PostgreSQL engines.</p>"
         }
       },
       "documentation":"<p/>"

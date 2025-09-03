@@ -853,7 +853,8 @@
       "documentation": "<p>Optional. The authentication strategy used to secure the broker. The default is SIMPLE.</p>",
       "enum": [
         "SIMPLE",
-        "LDAP"
+        "LDAP",
+        "CONFIG_MANAGED"
       ]
     },
     "AvailabilityZone": {
@@ -1347,13 +1348,12 @@
         "Users": {
           "shape": "__listOfUser",
           "locationName": "users",
-          "documentation": "<p>The list of broker users (persons or applications) who can access queues and topics. For Amazon MQ for RabbitMQ brokers, one and only one administrative user is accepted and created when a broker is first provisioned. All subsequent broker users are created by making RabbitMQ API calls directly to brokers or via the RabbitMQ web console.</p>"
+          "documentation": "<p>The list of broker users (persons or applications) who can access queues and topics. For Amazon MQ for RabbitMQ brokers, an administrative user is required if using simple authentication and authorization. For brokers using OAuth2, this user is optional. When provided, one and only one administrative user is accepted and created when a broker is first provisioned. All subsequent broker users are created by making RabbitMQ API calls directly to brokers or via the RabbitMQ web console.</p>"
         }
       },
       "documentation": "<p>Creates a broker.</p>",
       "required": [
         "HostInstanceType",
-        "Users",
         "BrokerName",
         "DeploymentMode",
         "EngineType",
@@ -1473,7 +1473,7 @@
         "Users": {
           "shape": "__listOfUser",
           "locationName": "users",
-          "documentation": "<p>The list of broker users (persons or applications) who can access queues and topics. For Amazon MQ for RabbitMQ brokers, one and only one administrative user is accepted and created when a broker is first provisioned. All subsequent broker users are created by making RabbitMQ API calls directly to brokers or via the RabbitMQ web console.</p>"
+          "documentation": "<p>The list of broker users (persons or applications) who can access queues and topics. For Amazon MQ for RabbitMQ brokers, an administrative user is required if using simple authentication and authorization. For brokers using OAuth2, this user is optional. When provided, one and only one administrative user is accepted and created when a broker is first provisioned. All subsequent broker users are created by making RabbitMQ API calls directly to brokers or via the RabbitMQ web console.</p>"
         },
         "DataReplicationMode": {
           "shape": "DataReplicationMode",
@@ -1489,7 +1489,6 @@
       "documentation": "<p>Creates a broker using the specified properties.</p>",
       "required": [
         "HostInstanceType",
-        "Users",
         "BrokerName",
         "DeploymentMode",
         "EngineType",

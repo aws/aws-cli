@@ -159,40 +159,7 @@ class ConfigureMFALoginCommand(BasicCommand):
             sys.stderr.write(f"An error occurred: {e}\n")
             return None
 
-    def _setup_session_with_profile(self, source_profile):
-        """Setup and validate session with the given profile."""
-        try:
-            # Use existing session if source_profile matches the CLI's profile
-            cli_profile = self._session.get_config_variable('profile') or 'default'
-            if source_profile == cli_profile:
-                session = self._session
-            else:
-                session = botocore.session.Session(profile=source_profile)
-            
-            if (source_profile not in session.available_profiles 
-                and source_profile != 'default'):
-                sys.stderr.write(f"The profile ({source_profile}) could not be found. \n")
-                return None, None
-            
-            credentials = session.get_credentials()
-            if credentials is None:
-                if source_profile == 'default':
-                    return None, None  # Signal to handle missing default profile
-                else:
-                    sys.stderr.write(f"Unable to locate credentials for profile {source_profile}\n")
-                    return None, None
-            
-            return session, session.get_scoped_config()
-            
-        except ProfileNotFound:
-            if source_profile == 'default':
-                return None, None  # Signal to handle missing default profile
-            else:
-                sys.stderr.write(f"The profile ({source_profile}) could not be found. \n")
-                return None, None
-        except Exception as e:
-            sys.stderr.write(f"Error accessing profile {source_profile}: {str(e)}\n")
-            return None, None
+
 
     def _resolve_mfa_serial(self, parsed_args, source_config):
         """Resolve MFA serial from args, config, or prompt."""
@@ -236,15 +203,14 @@ class ConfigureMFALoginCommand(BasicCommand):
         return 0
 
     def _run_main(self, parsed_args, parsed_globals):
-        source_profile = parsed_globals.profile or 'default'
         duration_seconds = parsed_args.duration_seconds
 
-        # Setup session and validate profile
-        session, source_config = self._setup_session_with_profile(source_profile)
-        if session is None:
-            if source_profile == 'default':
-                return self._handle_interactive_prompting(parsed_args, duration_seconds)
-            return 1
+        # Use the CLI session directly
+        credentials = self._session.get_credentials()
+        if credentials is None:
+            return self._handle_interactive_prompting(parsed_args, duration_seconds)
+        
+        source_config = self._session.get_scoped_config()
 
         # Resolve MFA serial number
         mfa_serial = self._resolve_mfa_serial(parsed_args, source_config)
@@ -260,7 +226,7 @@ class ConfigureMFALoginCommand(BasicCommand):
         target_profile = self._get_target_profile(parsed_args, mfa_serial)
 
         # Call STS to get temporary credentials
-        sts_client = session.create_client('sts')
+        sts_client = self._session.create_client('sts')
         response = self._call_sts_get_session_token(
             sts_client, duration_seconds, mfa_serial, token_code
         )

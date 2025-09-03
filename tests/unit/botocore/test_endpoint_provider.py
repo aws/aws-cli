@@ -14,6 +14,7 @@
 import json
 import logging
 import os
+from unittest.mock import Mock, patch
 
 import pytest
 from botocore.endpoint_provider import (
@@ -22,6 +23,7 @@ from botocore.endpoint_provider import (
     ErrorRule,
     RuleCreator,
     RuleSet,
+    RuleSetEndpoint,
     RuleSetStandardLibary,
     TreeRule,
 )
@@ -486,3 +488,78 @@ def test_auth_schemes_conversion_first_authtype_unknown(
 def test_get_attr(rule_lib, value, path, expected_value):
     result = rule_lib.get_attr(value, path)
     assert result == expected_value
+
+@pytest.mark.parametrize(
+    "use_ssl, endpoint_url, provider_params, expected_url",
+    [
+        # use_ssl=True, endpoint_url="http://..." → HTTP
+        (
+            True,
+            'http://custom.com',
+            {'Endpoint': 'http://custom.com'},
+            'http://custom.com',
+        ),
+        # use_ssl=True, endpoint_url="https://..." → HTTPS
+        (
+            True,
+            'https://custom.com',
+            {'Endpoint': 'https://custom.com'},
+            'https://custom.com',
+        ),
+        # use_ssl=False, endpoint_url="http://..." → HTTP
+        (
+            False,
+            'http://custom.com',
+            {'Endpoint': 'http://custom.com'},
+            'http://custom.com',
+        ),
+        # use_ssl=False, endpoint_url="https://..." → HTTPS
+        (
+            False,
+            'https://custom.com',
+            {'Endpoint': 'https://custom.com'},
+            'https://custom.com',
+        ),
+        # use_ssl=True, no endpoint → HTTPS
+        (
+            True,
+            'https://s3-test-only-domain.amazonaws.com',
+            {},
+            'https://s3-test-only-domain.amazonaws.com',
+        ),
+        # use_ssl=False, no endpoint → HTTP (downgrade)
+        (
+            False,
+            'https://s3-test-only-domain.amazonaws.com',
+            {},
+            'http://s3-test-only-domain.amazonaws.com',
+        ),
+    ],
+)
+def test_construct_endpoint_parametrized(
+    use_ssl, endpoint_url, provider_params, expected_url
+):
+    resolver = EndpointRulesetResolver(
+        endpoint_ruleset_data={
+            'version': '1.0',
+            'parameters': {},
+            'rules': [],
+        },
+        partition_data={},
+        service_model=None,
+        builtins={},
+        client_context=None,
+        event_emitter=None,
+        use_ssl=use_ssl,
+        requested_auth_scheme=None,
+    )
+
+    with patch.object(resolver._provider, 'resolve_endpoint') as mock_resolve:
+        mock_resolve.return_value = RuleSetEndpoint(
+            url=endpoint_url, properties={}, headers={}
+        )
+        with patch.object(
+            resolver, '_get_provider_params', return_value=provider_params
+        ):
+            result = resolver.construct_endpoint(None, None, None)
+            assert result.url == expected_url

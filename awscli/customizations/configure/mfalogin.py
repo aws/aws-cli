@@ -62,13 +62,6 @@ class ConfigureMFALoginCommand(BasicCommand):
     EXAMPLES = BasicCommand.FROM_FILE('configure', 'mfa-login', '_examples.rst')
     ARG_TABLE = [
         {
-            'name': 'profile',
-            'help_text': ('Use a specific profile from your credential file.'),
-            'action': 'store',
-            'required': False,
-            'cli_type_name': 'string',
-        },
-        {
             'name': 'update-profile',
             'help_text': (
                 'The profile to update with temporary credentials. '
@@ -117,11 +110,6 @@ class ConfigureMFALoginCommand(BasicCommand):
         if config_writer is None:
             config_writer = ConfigFileWriter()
         self._config_writer = config_writer
-
-    def _check_profile_exists(self, profile_name):
-        """Check if a profile exists using botocore's native profile handling."""
-        session = botocore.session.Session()
-        return profile_name in session.available_profiles
 
     def _generate_profile_name_from_mfa(self, mfa_serial):
         """Generate a deterministic profile name from MFA serial/ARN."""
@@ -174,7 +162,12 @@ class ConfigureMFALoginCommand(BasicCommand):
     def _setup_session_with_profile(self, source_profile):
         """Setup and validate session with the given profile."""
         try:
-            session = botocore.session.Session(profile=source_profile)
+            # Use existing session if source_profile matches the CLI's profile
+            cli_profile = self._session.get_config_variable('profile') or 'default'
+            if source_profile == cli_profile:
+                session = self._session
+            else:
+                session = botocore.session.Session(profile=source_profile)
             
             if (source_profile not in session.available_profiles 
                 and source_profile != 'default'):
@@ -230,10 +223,6 @@ class ConfigureMFALoginCommand(BasicCommand):
             )
         except AttributeError:
             expiration_time = str(temp_credentials['Expiration'])
-
-        credential_values['#Credentials expire at: '] = (
-            f"{expiration_time}"
-        )
 
         self._config_writer.update_config(credential_values, credentials_file)
 

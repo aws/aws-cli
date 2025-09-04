@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.28.24
+=======
+
+* api-change:``ec2``: Add m8i, m8i-flex and i8ge instance types.
+* api-change:``cloudformation``: ListHookResults API now supports retrieving invocation results for all CloudFormation Hooks (previously limited to create change set and Cloud Control operations) with new optional parameters for filtering by Hook status and ARN.
+* api-change:``cleanrooms``: Add support for configurable compute sizes for PySpark jobs.
+* api-change:``rds``: Added new EndpointNetworkType and TargetConnectionNetworkType fields in Proxy APIs to support IPv6
+* api-change:``verifiedpermissions``: Amazon Verified Permissions / Features : Adds support for datetime and duration attribute values.
+* api-change:``opensearchserverless``: Add support for Federal Information Processing Standards (FIPS) and Federal Risk and Authorization Management Program (FedRAMP) compliance
+
+
 2.28.23
 =======
 

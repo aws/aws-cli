@@ -4987,7 +4987,11 @@
           "shape":"DBProxyEndpointTargetRole",
           "documentation":"<p>The role of the DB proxy endpoint. The role determines whether the endpoint can be used for read/write or only read operations. The default is <code>READ_WRITE</code>. The only role that proxies for RDS for Microsoft SQL Server support is <code>READ_WRITE</code>.</p>"
         },
-        "Tags":{"shape":"TagList"}
+        "Tags":{"shape":"TagList"},
+        "EndpointNetworkType":{
+          "shape":"EndpointNetworkType",
+          "documentation":"<p>The network type of the DB proxy endpoint. The network type determines the IP version that the proxy endpoint supports.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> - The proxy endpoint supports IPv4 only.</p> </li> <li> <p> <code>IPV6</code> - The proxy endpoint supports IPv6 only.</p> </li> <li> <p> <code>DUAL</code> - The proxy endpoint supports both IPv4 and IPv6.</p> </li> </ul> <p>Default: <code>IPV4</code> </p> <p>Constraints:</p> <ul> <li> <p>If you specify <code>IPV6</code> or <code>DUAL</code>, the VPC and all subnets must have an IPv6 CIDR block.</p> </li> <li> <p>If you specify <code>IPV6</code> or <code>DUAL</code>, the VPC tenancy cannot be <code>dedicated</code>.</p> </li> </ul>"
+        }
       }
     },
     "CreateDBProxyEndpointResponse":{
@@ -5048,6 +5052,14 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An optional set of key-value pairs to associate arbitrary data of your choosing with the proxy.</p>"
+        },
+        "EndpointNetworkType":{
+          "shape":"EndpointNetworkType",
+          "documentation":"<p>The network type of the DB proxy endpoint. The network type determines the IP version that the proxy endpoint supports.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> - The proxy endpoint supports IPv4 only.</p> </li> <li> <p> <code>IPV6</code> - The proxy endpoint supports IPv6 only.</p> </li> <li> <p> <code>DUAL</code> - The proxy endpoint supports both IPv4 and IPv6.</p> </li> </ul> <p>Default: <code>IPV4</code> </p> <p>Constraints:</p> <ul> <li> <p>If you specify <code>IPV6</code> or <code>DUAL</code>, the VPC and all subnets must have an IPv6 CIDR block.</p> </li> <li> <p>If you specify <code>IPV6</code> or <code>DUAL</code>, the VPC tenancy cannot be <code>dedicated</code>.</p> </li> </ul>"
+        },
+        "TargetConnectionNetworkType":{
+          "shape":"TargetConnectionNetworkType",
+          "documentation":"<p>The network type that the proxy uses to connect to the target database. The network type determines the IP version that the proxy uses for connections to the database.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> - The proxy connects to the database using IPv4 only.</p> </li> <li> <p> <code>IPV6</code> - The proxy connects to the database using IPv6 only.</p> </li> </ul> <p>Default: <code>IPV4</code> </p> <p>Constraints:</p> <ul> <li> <p>If you specify <code>IPV6</code>, the database must support dual-stack mode. RDS doesn't support IPv6-only databases.</p> </li> <li> <p>All targets registered with the proxy must be compatible with the specified network type.</p> </li> </ul>"
         }
       }
     },
@@ -7673,6 +7685,14 @@
         "UpdatedDate":{
           "shape":"TStamp",
           "documentation":"<p>The date and time when the proxy was last updated.</p>"
+        },
+        "EndpointNetworkType":{
+          "shape":"EndpointNetworkType",
+          "documentation":"<p>The network type of the DB proxy endpoint. The network type determines the IP version that the proxy endpoint supports.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> - The proxy endpoint supports IPv4 only.</p> </li> <li> <p> <code>IPV6</code> - The proxy endpoint supports IPv6 only.</p> </li> <li> <p> <code>DUAL</code> - The proxy endpoint supports both IPv4 and IPv6.</p> </li> </ul>"
+        },
+        "TargetConnectionNetworkType":{
+          "shape":"TargetConnectionNetworkType",
+          "documentation":"<p>The network type that the proxy uses to connect to the target database. The network type determines the IP version that the proxy uses for connections to the database.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> - The proxy connects to the database using IPv4 only.</p> </li> <li> <p> <code>IPV6</code> - The proxy connects to the database using IPv6 only.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The data structure representing a proxy managed by the RDS Proxy.</p> <p>This data type is used as a response element in the <code>DescribeDBProxies</code> action.</p>"
@@ -7734,6 +7754,10 @@
         "IsDefault":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether this endpoint is the default endpoint for the associated DB proxy. Default DB proxy endpoints always have read/write capability. Other endpoints that you associate with the DB proxy can be either read/write or read-only.</p>"
+        },
+        "EndpointNetworkType":{
+          "shape":"EndpointNetworkType",
+          "documentation":"<p>The network type of the DB proxy endpoint. The network type determines the IP version that the proxy endpoint supports.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> - The proxy endpoint supports IPv4 only.</p> </li> <li> <p> <code>IPV6</code> - The proxy endpoint supports IPv6 only.</p> </li> <li> <p> <code>DUAL</code> - The proxy endpoint supports both IPv4 and IPv6.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The data structure representing an endpoint associated with a DB proxy. RDS automatically creates one endpoint for each DB proxy. For Aurora DB clusters, you can associate additional endpoints with the same DB proxy. These endpoints can be read/write or read-only. They can also reside in different VPCs than the associated DB proxy.</p> <p>This data type is used as a response element in the <code>DescribeDBProxyEndpoints</code> operation.</p>"
@@ -10745,6 +10769,14 @@
         }
       },
       "documentation":"<p>This data type represents the information you need to connect to an Amazon RDS DB instance. This data type is used as a response element in the following actions:</p> <ul> <li> <p> <code>CreateDBInstance</code> </p> </li> <li> <p> <code>DescribeDBInstances</code> </p> </li> <li> <p> <code>DeleteDBInstance</code> </p> </li> </ul> <p>For the data structure that represents Amazon Aurora DB cluster endpoints, see <code>DBClusterEndpoint</code>.</p>"
+    },
+    "EndpointNetworkType":{
+      "type":"string",
+      "enum":[
+        "IPV4",
+        "IPV6",
+        "DUAL"
+      ]
     },
     "Engine":{
       "type":"string",
@@ -16824,6 +16856,13 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "TargetConnectionNetworkType":{
+      "type":"string",
+      "enum":[
+        "IPV4",
+        "IPV6"
+      ]
     },
     "TargetDBClusterParameterGroupName":{
       "type":"string",

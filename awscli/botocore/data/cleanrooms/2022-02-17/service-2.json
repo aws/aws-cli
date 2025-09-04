@@ -8604,6 +8604,10 @@
         "error":{
           "shape":"ProtectedJobError",
           "documentation":"<p> The error from the protected job.</p>"
+        },
+        "computeConfiguration":{
+          "shape":"ProtectedJobComputeConfiguration",
+          "documentation":"<p>The compute configuration for the protected job.</p>"
         }
       },
       "documentation":"<p>The parameters for an Clean Rooms protected job.</p>"
@@ -8611,6 +8615,17 @@
     "ProtectedJobAnalysisType":{
       "type":"string",
       "enum":["DIRECT_ANALYSIS"]
+    },
+    "ProtectedJobComputeConfiguration":{
+      "type":"structure",
+      "members":{
+        "worker":{
+          "shape":"ProtectedJobWorkerComputeConfiguration",
+          "documentation":"<p>The worker configuration for the compute environment.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the compute resources for a PySpark job.</p>",
+      "union":true
     },
     "ProtectedJobConfigurationDetails":{
       "type":"structure",
@@ -8924,6 +8939,37 @@
     "ProtectedJobType":{
       "type":"string",
       "enum":["PYSPARK"]
+    },
+    "ProtectedJobWorkerComputeConfiguration":{
+      "type":"structure",
+      "required":[
+        "type",
+        "number"
+      ],
+      "members":{
+        "type":{
+          "shape":"ProtectedJobWorkerComputeType",
+          "documentation":"<p>The worker compute configuration type.</p>"
+        },
+        "number":{
+          "shape":"ProtectedJobWorkerComputeConfigurationNumberInteger",
+          "documentation":"<p>The number of workers for a PySpark job.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the compute resources for a PySpark job.</p>"
+    },
+    "ProtectedJobWorkerComputeConfigurationNumberInteger":{
+      "type":"integer",
+      "box":true,
+      "max":128,
+      "min":4
+    },
+    "ProtectedJobWorkerComputeType":{
+      "type":"string",
+      "enum":[
+        "CR.1X",
+        "CR.4X"
+      ]
     },
     "ProtectedQuery":{
       "type":"structure",
@@ -9901,6 +9947,10 @@
         "resultConfiguration":{
           "shape":"ProtectedJobResultConfigurationInput",
           "documentation":"<p>The details needed to write the job results.</p>"
+        },
+        "computeConfiguration":{
+          "shape":"ProtectedJobComputeConfiguration",
+          "documentation":"<p>The compute configuration for the protected job.</p>"
         }
       }
     },
@@ -10655,7 +10705,7 @@
         },
         "number":{
           "shape":"WorkerComputeConfigurationNumberInteger",
-          "documentation":"<p> The number of workers.</p>"
+          "documentation":"<p> The number of workers.</p> <p>SQL queries support a minimum value of 2 and a maximum value of 400. </p> <p>PySpark jobs support a minimum value of 4 and a maximum value of 128.</p>"
         }
       },
       "documentation":"<p> The configuration of the compute resources for workers running an analysis with the Clean Rooms SQL analytics engine.</p>"

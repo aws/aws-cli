@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.28.25
+=======
+
+* api-change:``sagemaker``: Release IPv6 support with dualstack in SageMaker Notebooks, Tiered Storage Checkpointing Support in SageMaker HyperPod and P5.4xlarge instance type for SageMaker Hosting.
+* api-change:``ecs``: This is a documentation only release that adds additional information for Amazon ECS Availability Zone rebalancing.
+* api-change:``pcs``: Documentation-only update to add AccountingStorageEnforce to SlurmCustomSetting.
+
+
 2.28.24
 =======
 

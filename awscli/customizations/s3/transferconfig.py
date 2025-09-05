@@ -45,8 +45,9 @@ class RuntimeConfig:
         'max_queue_size',
         'max_bandwidth',
         'target_bandwidth',
+        'io_chunksize',
     ]
-    HUMAN_READABLE_SIZES = ['multipart_chunksize', 'multipart_threshold']
+    HUMAN_READABLE_SIZES = ['multipart_chunksize', 'multipart_threshold', 'io_chunksize']
     HUMAN_READABLE_RATES = ['max_bandwidth', 'target_bandwidth']
     SUPPORTED_CHOICES = {
         'preferred_transfer_client': [
@@ -206,6 +207,7 @@ def create_transfer_config_from_runtime_config(runtime_config):
         'multipart_threshold': 'multipart_threshold',
         'multipart_chunksize': 'multipart_chunksize',
         'max_bandwidth': 'max_bandwidth',
+        'io_chunksize': 'io_chunksize',
     }
     kwargs = {}
     for key, value in runtime_config.items():

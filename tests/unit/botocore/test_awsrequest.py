@@ -399,6 +399,33 @@ class TestAWSHTTPConnection(unittest.TestCase):
             response = conn.getresponse()
             self.assertEqual(response.status, 500)
 
+    def test_expect_100_sends_connection_header_optional_continue(self):
+        # When using squid as an HTTP proxy, it will also send
+        # a Connection: keep-alive header back with the 100 continue
+        # response.  We need to ensure we handle this case.
+        with mock.patch('urllib3.util.wait_for_read') as wait_mock:
+            # Shows the server first sending a 100 continue response
+            # then a 500 response.  We're picking 500 to confirm we
+            # actually parse the response instead of getting the
+            # default status of 200 which happens when we can't parse
+            # the response.
+            s = FakeSocket(
+                b'HTTP/1.1 100\r\n'  # HTTP/<version> 100\r\n - excluding reason "Continue"
+                b'Connection: keep-alive\r\n'
+                b'\r\n'
+                b'HTTP/1.1 500 Internal Service Error\r\n'
+            )
+            conn = AWSHTTPConnection('s3.amazonaws.com', 443)
+            conn.sock = s
+            wait_mock.return_value = True
+            conn.request(
+                'GET', '/bucket/foo', b'body', {'Expect': b'100-continue'}
+            )
+            # Assert that we waited for the 100-continue response
+            self.assertEqual(wait_mock.call_count, 1)
+            response = conn.getresponse()
+            self.assertEqual(response.status, 500)
+
     def test_expect_100_continue_sends_307(self):
         # This is the case where we send a 100 continue and the server
         # immediately sends a 307

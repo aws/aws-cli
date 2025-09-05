@@ -31,7 +31,7 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a cluster in your account. Amazon Web Services PCS creates the cluster controller in a service-owned account. The cluster controller communicates with the cluster resources in your account. The subnets and security groups for the cluster must already exist before you use this API action.</p> <note> <p>It takes time for Amazon Web Services PCS to create the cluster. The cluster is in a <code>Creating</code> state until it is ready to use. There can only be 1 cluster in a <code>Creating</code> state per Amazon Web Services Region per Amazon Web Services account. <code>CreateCluster</code> fails with a <code>ServiceQuotaExceededException</code> if there is already a cluster in a <code>Creating</code> state.</p> </note>",
+      "documentation":"<p>Creates a cluster in your account. PCS creates the cluster controller in a service-owned account. The cluster controller communicates with the cluster resources in your account. The subnets and security groups for the cluster must already exist before you use this API action.</p> <note> <p>It takes time for PCS to create the cluster. The cluster is in a <code>Creating</code> state until it is ready to use. There can only be 1 cluster in a <code>Creating</code> state per Amazon Web Services Region per Amazon Web Services account. <code>CreateCluster</code> fails with a <code>ServiceQuotaExceededException</code> if there is already a cluster in a <code>Creating</code> state.</p> </note>",
       "idempotent":true
     },
     "CreateComputeNodeGroup":{
@@ -51,7 +51,7 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a managed set of compute nodes. You associate a compute node group with a cluster through 1 or more Amazon Web Services PCS queues or as part of the login fleet. A compute node group includes the definition of the compute properties and lifecycle management. Amazon Web Services PCS uses the information you provide to this API action to launch compute nodes in your account. You can only specify subnets in the same Amazon VPC as your cluster. You receive billing charges for the compute nodes that Amazon Web Services PCS launches in your account. You must already have a launch template before you call this API. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html\">Launch an instance from a launch template</a> in the <i>Amazon Elastic Compute Cloud User Guide for Linux Instances</i>.</p>",
+      "documentation":"<p>Creates a managed set of compute nodes. You associate a compute node group with a cluster through 1 or more PCS queues or as part of the login fleet. A compute node group includes the definition of the compute properties and lifecycle management. PCS uses the information you provide to this API action to launch compute nodes in your account. You can only specify subnets in the same Amazon VPC as your cluster. You receive billing charges for the compute nodes that PCS launches in your account. You must already have a launch template before you call this API. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html\">Launch an instance from a launch template</a> in the <i>Amazon Elastic Compute Cloud User Guide for Linux Instances</i>.</p>",
       "idempotent":true
     },
     "CreateQueue":{
@@ -128,7 +128,7 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Deletes a job queue. If the compute node group associated with this queue isn't associated with any other queues, Amazon Web Services PCS terminates all the compute nodes for this queue.</p>",
+      "documentation":"<p>Deletes a job queue. If the compute node group associated with this queue isn't associated with any other queues, PCS terminates all the compute nodes for this queue.</p>",
       "idempotent":true
     },
     "GetCluster":{
@@ -250,7 +250,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of all tags on an Amazon Web Services PCS resource.</p>"
+      "documentation":"<p>Returns a list of all tags on an PCS resource.</p>"
     },
     "RegisterComputeNodeGroupInstance":{
       "name":"RegisterComputeNodeGroupInstance",
@@ -264,7 +264,7 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p><important> <p>This API action isn't intended for you to use.</p> </important> <p>Amazon Web Services PCS uses this API action to register the compute nodes it launches in your account.</p></p>"
+      "documentation":"<p><important> <p>This API action isn't intended for you to use.</p> </important> <p>PCS uses this API action to register the compute nodes it launches in your account.</p></p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -277,7 +277,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Adds or edits tags on an Amazon Web Services PCS resource. Each tag consists of a tag key and a tag value. The tag key and tag value are case-sensitive strings. The tag value can be an empty (null) string. To add a tag, specify a new tag key and a tag value. To edit a tag, specify an existing tag key and a new tag value.</p>",
+      "documentation":"<p>Adds or edits tags on an PCS resource. Each tag consists of a tag key and a tag value. The tag key and tag value are case-sensitive strings. The tag value can be an empty (null) string. To add a tag, specify a new tag key and a tag value. To edit a tag, specify an existing tag key and a new tag value.</p>",
       "idempotent":true
     },
     "UntagResource":{
@@ -290,7 +290,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes tags from an Amazon Web Services PCS resource. To delete a tag, specify the tag key and the Amazon Resource Name (ARN) of the Amazon Web Services PCS resource.</p>",
+      "documentation":"<p>Deletes tags from an PCS resource. To delete a tag, specify the tag key and the Amazon Resource Name (ARN) of the PCS resource.</p>",
       "idempotent":true
     },
     "UpdateComputeNodeGroup":{
@@ -631,7 +631,7 @@
         },
         "amiId":{
           "shape":"AmiId",
-          "documentation":"<p>The ID of the Amazon Machine Image (AMI) that Amazon Web Services PCS uses to launch instances. If not provided, Amazon Web Services PCS uses the AMI ID specified in the custom launch template.</p>"
+          "documentation":"<p>The ID of the Amazon Machine Image (AMI) that PCS uses to launch instances. If not provided, PCS uses the AMI ID specified in the custom launch template.</p>"
         },
         "subnetIds":{
           "shape":"SubnetIdList",
@@ -858,7 +858,7 @@
         },
         "amiId":{
           "shape":"AmiId",
-          "documentation":"<p> The ID of the Amazon Machine Image (AMI) that Amazon Web Services PCS uses to launch compute nodes (Amazon EC2 instances). If you don't provide this value, Amazon Web Services PCS uses the AMI ID specified in the custom launch template.</p>"
+          "documentation":"<p> The ID of the Amazon Machine Image (AMI) that PCS uses to launch compute nodes (Amazon EC2 instances). If you don't provide this value, PCS uses the AMI ID specified in the custom launch template.</p>"
         },
         "subnetIds":{
           "shape":"StringList",
@@ -955,7 +955,7 @@
           "documentation":"<p>The version of the EC2 launch template to use to provision instances.</p>"
         }
       },
-      "documentation":"<p>An Amazon EC2 launch template Amazon Web Services PCS uses to launch compute nodes.</p>"
+      "documentation":"<p>An Amazon EC2 launch template PCS uses to launch compute nodes.</p>"
     },
     "DeleteClusterRequest":{
       "type":"structure",
@@ -1158,10 +1158,10 @@
       "members":{
         "instanceType":{
           "shape":"String",
-          "documentation":"<p>The EC2 instance type that Amazon Web Services PCS can provision in the compute node group.</p> <p> Example: <code>t2.xlarge</code> </p>"
+          "documentation":"<p>The EC2 instance type that PCS can provision in the compute node group.</p> <p> Example: <code>t2.xlarge</code> </p>"
         }
       },
-      "documentation":"<p>An EC2 instance configuration Amazon Web Services PCS uses to launch compute nodes.</p>"
+      "documentation":"<p>An EC2 instance configuration PCS uses to launch compute nodes.</p>"
     },
     "InstanceList":{
       "type":"list",
@@ -1181,7 +1181,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>Amazon Web Services PCS can't process your request right now. Try again later.</p>",
+      "documentation":"<p>PCS can't process your request right now. Try again later.</p>",
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
@@ -1314,7 +1314,7 @@
       "members":{
         "subnetIds":{
           "shape":"SubnetIdList",
-          "documentation":"<p>The ID of the subnet where Amazon Web Services PCS creates an Elastic Network Interface (ENI) to enable communication between managed controllers and Amazon Web Services PCS resources. The subnet must have an available IP address, cannot reside in AWS Outposts, AWS Wavelength, or an AWS Local Zone.</p> <p> Example: <code>subnet-abcd1234</code> </p>"
+          "documentation":"<p>The ID of the subnet where PCS creates an Elastic Network Interface (ENI) to enable communication between managed controllers and PCS resources. The subnet must have an available IP address, cannot reside in Outposts, Wavelength, or an Amazon Web Services Local Zone.</p> <p> Example: <code>subnet-abcd1234</code> </p>"
         },
         "securityGroupIds":{
           "shape":"SecurityGroupIdList",
@@ -1617,11 +1617,11 @@
       "members":{
         "type":{
           "shape":"SchedulerType",
-          "documentation":"<p>The software Amazon Web Services PCS uses to manage cluster scaling and job scheduling.</p>"
+          "documentation":"<p>The software PCS uses to manage cluster scaling and job scheduling.</p>"
         },
         "version":{
           "shape":"String",
-          "documentation":"<p>The version of the specified scheduling software that Amazon Web Services PCS uses to manage cluster scaling and job scheduling. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/slurm-versions.html\">Slurm versions in Amazon Web Services PCS</a> in the <i>Amazon Web Services PCS User Guide</i>.</p> <p>Valid Values: <code>23.11 | 24.05 | 24.11</code> </p>"
+          "documentation":"<p>The version of the specified scheduling software that PCS uses to manage cluster scaling and job scheduling. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/slurm-versions.html\">Slurm versions in PCS</a> in the <i>PCS User Guide</i>.</p> <p>Valid Values: <code>23.11 | 24.05 | 24.11</code> </p>"
         }
       },
       "documentation":"<p>The cluster management and job scheduling software associated with the cluster.</p>"
@@ -1635,11 +1635,11 @@
       "members":{
         "type":{
           "shape":"SchedulerType",
-          "documentation":"<p>The software Amazon Web Services PCS uses to manage cluster scaling and job scheduling.</p>"
+          "documentation":"<p>The software PCS uses to manage cluster scaling and job scheduling.</p>"
         },
         "version":{
           "shape":"String",
-          "documentation":"<p>The version of the specified scheduling software that Amazon Web Services PCS uses to manage cluster scaling and job scheduling. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/slurm-versions.html\">Slurm versions in Amazon Web Services PCS</a> in the <i>Amazon Web Services PCS User Guide</i>.</p> <p>Valid Values: <code>23.11 | 24.05 | 24.11</code> </p>"
+          "documentation":"<p>The version of the specified scheduling software that PCS uses to manage cluster scaling and job scheduling. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/slurm-versions.html\">Slurm versions in PCS</a> in the <i>PCS User Guide</i>.</p> <p>Valid Values: <code>23.11 | 24.05 | 24.11</code> </p>"
         }
       },
       "documentation":"<p>The cluster management and job scheduling software associated with the cluster.</p>"
@@ -1723,7 +1723,7 @@
       "members":{
         "parameterName":{
           "shape":"String",
-          "documentation":"<p>Amazon Web Services PCS supports configuration of the following Slurm parameters:</p> <ul> <li> <p>For <b>clusters</b> </p> <ul> <li> <p> <a href=\"https://slurm.schedmd.com/slurm.conf.html#OPT_Prolog_1\"> <code>Prolog</code> </a> </p> </li> <li> <p> <a href=\"https://slurm.schedmd.com/slurm.conf.html#OPT_Epilog_1\"> <code>Epilog</code> </a> </p> </li> <li> <p> <a href=\"https://slurm.schedmd.com/slurm.conf.html#OPT_SelectTypeParameters\"> <code>SelectTypeParameters</code> </a> </p> </li> </ul> </li> <li> <p>For <b>compute node groups</b> </p> <ul> <li> <p> <a href=\"https://slurm.schedmd.com/slurm.conf.html#OPT_Weight\"> <code>Weight</code> </a> </p> </li> <li> <p> <a href=\"https://slurm.schedmd.com/slurm.conf.html#OPT_Weight\"> <code>RealMemory</code> </a> </p> </li> </ul> </li> </ul>"
+          "documentation":"<p>PCS supports configuration of the following Slurm parameters:</p> <ul> <li> <p>For <b>clusters</b> </p> <ul> <li> <p> <a href=\"https://slurm.schedmd.com/slurm.conf.html#OPT_Prolog_1\"> <code>Prolog</code> </a> </p> </li> <li> <p> <a href=\"https://slurm.schedmd.com/slurm.conf.html#OPT_Epilog_1\"> <code>Epilog</code> </a> </p> </li> <li> <p> <a href=\"https://slurm.schedmd.com/slurm.conf.html#OPT_SelectTypeParameters\"> <code>SelectTypeParameters</code> </a> </p> </li> <li> <p> <a href=\"https://slurm.schedmd.com/slurm.conf.html#OPT_AccountingStorageEnforce\"> <code>AccountingStorageEnforce</code> </a> </p> <important> <p>PCS supports a subset of the options for <code>AccountingStorageEnforce</code>. For more information, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/slurm-accounting.html\">Slurm accounting in PCS</a> in the <i>PCS User Guide</i>.</p> </important> </li> </ul> </li> <li> <p>For <b>compute node groups</b> </p> <ul> <li> <p> <a href=\"https://slurm.schedmd.com/slurm.conf.html#OPT_Weight\"> <code>Weight</code> </a> </p> </li> <li> <p> <a href=\"https://slurm.schedmd.com/slurm.conf.html#OPT_Weight\"> <code>RealMemory</code> </a> </p> </li> </ul> </li> </ul>"
         },
         "parameterValue":{
           "shape":"String",
@@ -1853,7 +1853,7 @@
         },
         "amiId":{
           "shape":"AmiId",
-          "documentation":"<p>The ID of the Amazon Machine Image (AMI) that Amazon Web Services PCS uses to launch instances. If not provided, Amazon Web Services PCS uses the AMI ID specified in the custom launch template.</p>"
+          "documentation":"<p>The ID of the Amazon Machine Image (AMI) that PCS uses to launch instances. If not provided, PCS uses the AMI ID specified in the custom launch template.</p>"
         },
         "subnetIds":{
           "shape":"StringList",
@@ -1984,5 +1984,5 @@
       ]
     }
   },
-  "documentation":"<p>Amazon Web Services Parallel Computing Service (Amazon Web Services PCS) is a managed service that makes it easier for you to run and scale your high performance computing (HPC) workloads, and build scientific and engineering models on Amazon Web Services using Slurm. For more information, see the <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide\">Amazon Web Services Parallel Computing Service User Guide</a>.</p> <p>This reference describes the actions and data types of the service management API. You can use the Amazon Web Services SDKs to call the API actions in software, or use the Command Line Interface (CLI) to call the API actions manually. These API actions manage the service through an Amazon Web Services account.</p> <p>The API actions operate on Amazon Web Services PCS resources. A <i>resource</i> is an entity in Amazon Web Services that you can work with. Amazon Web Services services create resources when you use the features of the service. Examples of Amazon Web Services PCS resources include clusters, compute node groups, and queues. For more information about resources in Amazon Web Services, see <a href=\"https://docs.aws.amazon.com/resource-explorer/latest/userguide/getting-started-terms-and-concepts.html#term-resource\">Resource</a> in the <i>Resource Explorer User Guide</i>. </p> <p>An Amazon Web Services PCS <i>compute node</i> is an Amazon EC2 instance. You don't launch compute nodes directly. Amazon Web Services PCS uses configuration information that you provide to launch compute nodes in your Amazon Web Services account. You receive billing charges for your running compute nodes. Amazon Web Services PCS automatically terminates your compute nodes when you delete the Amazon Web Services PCS resources related to those compute nodes.</p>"
+  "documentation":"<p>Parallel Computing Service (PCS) is a managed service that makes it easier for you to run and scale your high performance computing (HPC) workloads, and build scientific and engineering models on Amazon Web Services using Slurm. For more information, see the <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide\">Parallel Computing Service User Guide</a>.</p> <p>This reference describes the actions and data types of the service management API. You can use the Amazon Web Services SDKs to call the API actions in software, or use the Command Line Interface (CLI) to call the API actions manually. These API actions manage the service through an Amazon Web Services account.</p> <p>The API actions operate on PCS resources. A <i>resource</i> is an entity in Amazon Web Services that you can work with. Amazon Web Services services create resources when you use the features of the service. Examples of PCS resources include clusters, compute node groups, and queues. For more information about resources in Amazon Web Services, see <a href=\"https://docs.aws.amazon.com/resource-explorer/latest/userguide/getting-started-terms-and-concepts.html#term-resource\">Resource</a> in the <i>Resource Explorer User Guide</i>. </p> <p>An PCS <i>compute node</i> is an Amazon EC2 instance. You don't launch compute nodes directly. PCS uses configuration information that you provide to launch compute nodes in your Amazon Web Services account. You receive billing charges for your running compute nodes. PCS automatically terminates your compute nodes when you delete the PCS resources related to those compute nodes.</p>"
 }

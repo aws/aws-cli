@@ -64,6 +64,7 @@ def add_timestamp_parser(session):
         # parser (which parses to a datetime.datetime object) with the
         # identity function which prints the date exactly the same as it comes
         # across the wire.
+        # TODO create an inner function that wraps identity here. it'll signal to print the runtime check.
         timestamp_parser = identity
     elif timestamp_format == 'iso8601':
         timestamp_parser = iso_format

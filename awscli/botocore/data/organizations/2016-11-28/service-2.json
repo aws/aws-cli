@@ -535,7 +535,7 @@
         {"shape":"UnsupportedAPIEndpointException"},
         {"shape":"PolicyChangesInProgressException"}
       ],
-      "documentation":"<p>Disables an organizational policy type in a root. A policy of a certain type can be attached to entities in a root only if that type is enabled in the root. After you perform this operation, you no longer can attach policies of the specified type to that root or to any organizational unit (OU) or account in that root. You can undo this by using the <a>EnablePolicyType</a> operation.</p> <p>This is an asynchronous request that Amazon Web Services performs in the background. If you disable a policy type for a root, it still appears enabled for the organization if <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_support-all-features.html\">all features</a> are enabled for the organization. Amazon Web Services recommends that you first use <a>ListRoots</a> to see the status of policy types for a specified root, and then use this operation.</p> <p>This operation can be called only from the organization's management account or by a member account that is a delegated administrator.</p> <p> To view the status of available policy types in the organization, use <a>DescribeOrganization</a>.</p>"
+      "documentation":"<p>Disables an organizational policy type in a root. A policy of a certain type can be attached to entities in a root only if that type is enabled in the root. After you perform this operation, you no longer can attach policies of the specified type to that root or to any organizational unit (OU) or account in that root. You can undo this by using the <a>EnablePolicyType</a> operation.</p> <p>This is an asynchronous request that Amazon Web Services performs in the background. If you disable a policy type for a root, it still appears enabled for the organization if <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_support-all-features.html\">all features</a> are enabled for the organization. Amazon Web Services recommends that you first use <a>ListRoots</a> to see the status of policy types for a specified root, and then use this operation.</p> <p>This operation can be called only from the organization's management account or by a member account that is a delegated administrator.</p> <p> To view the status of available policy types in the organization, use <a>ListRoots</a>.</p>"
     },
     "EnableAWSServiceAccess":{
       "name":"EnableAWSServiceAccess",
@@ -598,7 +598,7 @@
         {"shape":"UnsupportedAPIEndpointException"},
         {"shape":"PolicyChangesInProgressException"}
       ],
-      "documentation":"<p>Enables a policy type in a root. After you enable a policy type in a root, you can attach policies of that type to the root, any organizational unit (OU), or account in that root. You can undo this by using the <a>DisablePolicyType</a> operation.</p> <p>This is an asynchronous request that Amazon Web Services performs in the background. Amazon Web Services recommends that you first use <a>ListRoots</a> to see the status of policy types for a specified root, and then use this operation.</p> <p>This operation can be called only from the organization's management account or by a member account that is a delegated administrator.</p> <p>You can enable a policy type in a root only if that policy type is available in the organization. To view the status of available policy types in the organization, use <a>DescribeOrganization</a>.</p>"
+      "documentation":"<p>Enables a policy type in a root. After you enable a policy type in a root, you can attach policies of that type to the root, any organizational unit (OU), or account in that root. You can undo this by using the <a>DisablePolicyType</a> operation.</p> <p>This is an asynchronous request that Amazon Web Services performs in the background. Amazon Web Services recommends that you first use <a>ListRoots</a> to see the status of policy types for a specified root, and then use this operation.</p> <p>This operation can be called only from the organization's management account or by a member account that is a delegated administrator.</p> <p>You can enable a policy type in a root only if that policy type is available in the organization. To view the status of available policy types in the organization, use <a>ListRoots</a>.</p>"
     },
     "InviteAccountToOrganization":{
       "name":"InviteAccountToOrganization",
@@ -1210,7 +1210,11 @@
         },
         "Status":{
           "shape":"AccountStatus",
-          "documentation":"<p>The status of the account in the organization.</p>"
+          "documentation":"<p>The status of the account in the organization.</p> <important> <p>The <code>Status</code> parameter in the <code>Account</code> object will be retired on September 9, 2026. Although both the account <code>State</code> and account <code>Status</code> parameters are currently available in the Organizations APIs (<code>DescribeAccount</code>, <code>ListAccounts</code>, <code>ListAccountsForParent</code>), we recommend that you update your scripts or other code to use the <code>State</code> parameter instead of <code>Status</code> before September 9, 2026.</p> </important>"
+        },
+        "State":{
+          "shape":"AccountState",
+          "documentation":"<p>Each state represents a specific phase in the account lifecycle. Use this information to manage account access, automate workflows, or trigger actions based on account state changes.</p> <p>For more information about account states and their implications, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_account_state.html\">Monitor the state of your Amazon Web Services accounts </a> in the <i>Organizations User Guide</i>.</p>"
         },
         "JoinedMethod":{
           "shape":"AccountJoinedMethod",
@@ -1285,6 +1289,16 @@
       },
       "documentation":"<p>You can't invite an existing account to your organization until you verify that you own the email address associated with the management account. For more information, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_create.html#about-email-verification\">Email address verification</a> in the <i>Organizations User Guide</i>.</p>",
       "exception":true
+    },
+    "AccountState":{
+      "type":"string",
+      "enum":[
+        "PENDING_ACTIVATION",
+        "ACTIVE",
+        "SUSPENDED",
+        "PENDING_CLOSURE",
+        "CLOSED"
+      ]
     },
     "AccountStatus":{
       "type":"string",
@@ -1853,7 +1867,7 @@
       "members":{
         "Account":{
           "shape":"Account",
-          "documentation":"<p>A structure that contains information about the requested account.</p>"
+          "documentation":"<p>A structure that contains information about the requested account.</p> <important> <p>The <code>Status</code> parameter in the API response will be retired on September 9, 2026. Although both the account <code>State</code> and account <code>Status</code> parameters are currently available in the Organizations APIs (<code>DescribeAccount</code>, <code>ListAccounts</code>, <code>ListAccountsForParent</code>), we recommend that you update your scripts or other code to use the <code>State</code> parameter instead of <code>Status</code> before September 9, 2026.</p> </important>"
         }
       }
     },
@@ -2565,7 +2579,7 @@
       "members":{
         "Accounts":{
           "shape":"Accounts",
-          "documentation":"<p>A list of the accounts in the specified root or OU.</p>"
+          "documentation":"<p>A list of the accounts in the specified root or OU.</p> <important> <p>The <code>Status</code> parameter in the API response will be retired on September 9, 2026. Although both the account <code>State</code> and account <code>Status</code> parameters are currently available in the Organizations APIs (<code>DescribeAccount</code>, <code>ListAccounts</code>, <code>ListAccountsForParent</code>), we recommend that you update your scripts or other code to use the <code>State</code> parameter instead of <code>Status</code> before September 9, 2026.</p> </important>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -2591,7 +2605,7 @@
       "members":{
         "Accounts":{
           "shape":"Accounts",
-          "documentation":"<p>A list of objects in the organization.</p>"
+          "documentation":"<p>A list of objects in the organization.</p> <important> <p>The <code>Status</code> parameter in the API response will be retired on September 9, 2026. Although both the account <code>State</code> and account <code>Status</code> parameters are currently available in the Organizations APIs (<code>DescribeAccount</code>, <code>ListAccounts</code>, <code>ListAccountsForParent</code>), we recommend that you update your scripts or other code to use the <code>State</code> parameter instead of <code>Status</code> before September 9, 2026.</p> </important>"
         },
         "NextToken":{
           "shape":"NextToken",

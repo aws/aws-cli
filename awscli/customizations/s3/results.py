@@ -311,7 +311,6 @@ class ResultRecorder(BaseResultHandler):
 
     def _record_skipped_file_result(self, result, **kwargs):
         self.files_skipped += 1
-        # self.files_transferred += 1
 
     def _record_warning_result(self, **kwargs):
         self.files_warned += 1
@@ -466,12 +465,19 @@ class ResultPrinter(BaseResultHandler):
 
     def _print_progress(self, **kwargs):
         # Get all of the statistics in the correct form.
+
+        # For downloads, we know how many are skipped in advanced due to listing directory.
+        # so expected already takes into account the skips
+
+        # For uploads, we only know after the transfer, so expected does not take into account the skips
+
         remaining_files = self._get_expected_total(
             str(
                 self._result_recorder.expected_files_transferred
-                - self._result_recorder.files_transferred
+                - (self._result_recorder.files_transferred + self._result_recorder.files_skipped)
             )
         )
+        LOGGER.debug(f"expected files transferred={self._result_recorder.expected_files_transferred}, files_transferred={self._result_recorder.files_transferred}, files_skipped={self._result_recorder.files_skipped}")
 
         # Create the display statement.
         if self._result_recorder.expected_bytes_transferred > 0:

@@ -462,16 +462,10 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         if not self._cli_params.get('no_overwrite'):
             return False
         fileout = self._get_fileout(fileinfo)
-        result_kwargs = {
-            'transfer_type': 'download',
-            'src': fileinfo.src,
-            'dest': fileinfo.dest,
-        }
         if os.path.exists(fileout):
             LOGGER.debug(
                 f"warning: skipping {fileinfo.src} -> {fileinfo.dest}, file exists at destination"
             )
-            self._result_queue.put(SkipFileResult(**result_kwargs))
             return True
         return False
 

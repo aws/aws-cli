@@ -121,6 +121,23 @@
         "expected" : "ResourceNotFoundException"
       } ]
     },
+    "GraphStopped" : {
+      "description" : "Wait until Graph is Stopped",
+      "delay" : 20,
+      "maxAttempts" : 90,
+      "operation" : "GetGraph",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "STOPPED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status != 'STOPPING'",
+        "state" : "failure",
+        "expected" : true
+      } ]
+    },
     "ImportTaskCancelled" : {
       "description" : "Wait until Import Task is Cancelled",
       "delay" : 60,

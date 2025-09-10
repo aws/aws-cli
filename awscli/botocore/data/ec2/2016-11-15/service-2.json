@@ -598,7 +598,7 @@
       },
       "input":{"shape":"CopyImageRequest"},
       "output":{"shape":"CopyImageResult"},
-      "documentation":"<p>Initiates an AMI copy operation. You can copy an AMI from one Region to another, or from a Region to an Outpost. You can't copy an AMI from an Outpost to a Region, from one Outpost to another, or within the same Outpost. To copy an AMI to another partition, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateStoreImageTask.html\">CreateStoreImageTask</a>.</p> <p>When you copy an AMI from one Region to another, the destination Region is the current Region.</p> <p>When you copy an AMI from a Region to an Outpost, specify the ARN of the Outpost as the destination. Backing snapshots copied to an Outpost are encrypted by default using the default encryption key for the Region or the key that you specify. Outposts do not support unencrypted snapshots.</p> <p>For information about the prerequisites when copying an AMI, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/CopyingAMIs.html\">Copy an Amazon EC2 AMI</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Initiates an AMI copy operation. You must specify the source AMI ID and both the source and destination locations. The copy operation must be initiated in the destination Region.</p> <p class=\"title\"> <b>CopyImage supports the following source to destination copies:</b> </p> <ul> <li> <p>Region to Region</p> </li> <li> <p>Region to Outpost</p> </li> <li> <p>Parent Region to Local Zone</p> </li> <li> <p>Local Zone to parent Region</p> </li> <li> <p>Between Local Zones with the same parent Region (only supported for certain Local Zones)</p> </li> </ul> <p class=\"title\"> <b>CopyImage does not support the following source to destination copies:</b> </p> <ul> <li> <p>Local Zone to non-parent Regions</p> </li> <li> <p>Between Local Zones with different parent Regions</p> </li> <li> <p>Local Zone to Outpost</p> </li> <li> <p>Outpost to Local Zone</p> </li> <li> <p>Outpost to Region</p> </li> <li> <p>Between Outposts</p> </li> <li> <p>Within same Outpost</p> </li> <li> <p>Cross-partition copies (use <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateStoreImageTask.html\">CreateStoreImageTask</a> instead)</p> </li> </ul> <p class=\"title\"> <b>Destination specification</b> </p> <ul> <li> <p>Region to Region: The destination Region is the Region in which you initiate the copy operation.</p> </li> <li> <p>Region to Outpost: Specify the destination using the <code>DestinationOutpostArn</code> parameter (the ARN of the Outpost)</p> </li> <li> <p>Region to Local Zone, and Local Zone to Local Zone copies: Specify the destination using the <code>DestinationAvailabilityZone</code> parameter (the name of the destination Local Zone) or <code>DestinationAvailabilityZoneId</code> parameter (the ID of the destination Local Zone).</p> </li> </ul> <p class=\"title\"> <b>Snapshot encryption</b> </p> <ul> <li> <p>Region to Outpost: Backing snapshots copied to an Outpost are encrypted by default using the default encryption key for the Region or the key that you specify. Outposts do not support unencrypted snapshots.</p> </li> <li> <p>Region to Local Zone, and Local Zone to Local Zone: Not all Local Zones require encrypted snapshots. In Local Zones that require encrypted snapshots, backing snapshots are automatically encrypted during copy. In Local Zones where encryption is not required, snapshots retain their original encryption state (encrypted or unencrypted) by default.</p> </li> </ul> <p>For more information, including the required permissions for copying an AMI, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/CopyingAMIs.html\">Copy an Amazon EC2 AMI</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "CopySnapshot":{
       "name":"CopySnapshot",
@@ -608,7 +608,7 @@
       },
       "input":{"shape":"CopySnapshotRequest"},
       "output":{"shape":"CopySnapshotResult"},
-      "documentation":"<p>Copies a point-in-time snapshot of an EBS volume and stores it in Amazon S3. You can copy a snapshot within the same Region, from one Region to another, or from a Region to an Outpost. You can't copy a snapshot from an Outpost to a Region, from one Outpost to another, or within the same Outpost.</p> <p>You can use the snapshot to create EBS volumes or Amazon Machine Images (AMIs).</p> <p>When copying snapshots to a Region, copies of encrypted EBS snapshots remain encrypted. Copies of unencrypted snapshots remain unencrypted, unless you enable encryption for the snapshot copy operation. By default, encrypted snapshot copies use the default KMS key; however, you can specify a different KMS key. To copy an encrypted snapshot that has been shared from another account, you must have permissions for the KMS key used to encrypt the snapshot.</p> <p>Snapshots copied to an Outpost are encrypted by default using the default encryption key for the Region, or a different key that you specify in the request using <b>KmsKeyId</b>. Outposts do not support unencrypted snapshots. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/snapshots-outposts.html#ami\">Amazon EBS local snapshots on Outposts</a> in the <i>Amazon EBS User Guide</i>.</p> <p>Snapshots created by copying another snapshot have an arbitrary volume ID that should not be used for any purpose.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-copy-snapshot.html\">Copy an Amazon EBS snapshot</a> in the <i>Amazon EBS User Guide</i>.</p>"
+      "documentation":"<p>Creates an exact copy of an Amazon EBS snapshot.</p> <p>The location of the source snapshot determines whether you can copy it or not, and the allowed destinations for the snapshot copy.</p> <ul> <li> <p>If the source snapshot is in a Region, you can copy it within that Region, to another Region, to an Outpost associated with that Region, or to a Local Zone in that Region.</p> </li> <li> <p>If the source snapshot is in a Local Zone, you can copy it within that Local Zone, to another Local Zone in the same zone group, or to the parent Region of the Local Zone.</p> </li> <li> <p>If the source snapshot is on an Outpost, you can't copy it.</p> </li> </ul> <p>When copying snapshots to a Region, copies of encrypted EBS snapshots remain encrypted. Copies of unencrypted snapshots remain unencrypted, unless you enable encryption for the snapshot copy operation. By default, encrypted snapshot copies use the default KMS key; however, you can specify a different KMS key. To copy an encrypted snapshot that has been shared from another account, you must have permissions for the KMS key used to encrypt the snapshot.</p> <p>Snapshots copied to an Outpost are encrypted by default using the default encryption key for the Region, or a different key that you specify in the request using <b>KmsKeyId</b>. Outposts do not support unencrypted snapshots. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/snapshots-outposts.html#ami\">Amazon EBS local snapshots on Outposts</a> in the <i>Amazon EBS User Guide</i>.</p> <note> <p>Snapshots copies have an arbitrary source volume ID. Do not use this volume ID for any purpose.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-copy-snapshot.html\">Copy an Amazon EBS snapshot</a> in the <i>Amazon EBS User Guide</i>.</p>"
     },
     "CreateCapacityReservation":{
       "name":"CreateCapacityReservation",
@@ -798,7 +798,7 @@
       },
       "input":{"shape":"CreateImageUsageReportRequest"},
       "output":{"shape":"CreateImageUsageReportResult"},
-      "documentation":"<p>Creates a report that shows how your image is used across other Amazon Web Services accounts. The report provides visibility into which accounts are using the specified image, and how many resources (EC2 instances or launch templates) are referencing it.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-ami-usage.html\">View your AMI usage</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Creates a report that shows how your image is used across other Amazon Web Services accounts. The report provides visibility into which accounts are using the specified image, and how many resources (EC2 instances or launch templates) are referencing it.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/your-ec2-ami-usage.html\">View your AMI usage</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "CreateInstanceConnectEndpoint":{
       "name":"CreateInstanceConnectEndpoint",
@@ -1653,7 +1653,7 @@
       },
       "input":{"shape":"DeleteImageUsageReportRequest"},
       "output":{"shape":"DeleteImageUsageReportResult"},
-      "documentation":"<p>Deletes the specified image usage report.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-ami-usage.html\">View your AMI usage</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Deletes the specified image usage report.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/your-ec2-ami-usage.html\">View your AMI usage</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DeleteInstanceConnectEndpoint":{
       "name":"DeleteInstanceConnectEndpoint",
@@ -2907,7 +2907,7 @@
       },
       "input":{"shape":"DescribeImageReferencesRequest"},
       "output":{"shape":"DescribeImageReferencesResult"},
-      "documentation":"<p>Describes your Amazon Web Services resources that are referencing the specified images. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-ami-references.html\">Identiy your resources referencing selected AMIs</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Describes your Amazon Web Services resources that are referencing the specified images.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-ami-references.html\">Identify your resources referencing specified AMIs</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DescribeImageUsageReportEntries":{
       "name":"DescribeImageUsageReportEntries",
@@ -2917,7 +2917,7 @@
       },
       "input":{"shape":"DescribeImageUsageReportEntriesRequest"},
       "output":{"shape":"DescribeImageUsageReportEntriesResult"},
-      "documentation":"<p>Describes the entries in image usage reports, showing how your images are used across other Amazon Web Services accounts.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-ami-usage.html\">View your AMI usage</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Describes the entries in image usage reports, showing how your images are used across other Amazon Web Services accounts.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/your-ec2-ami-usage.html\">View your AMI usage</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DescribeImageUsageReports":{
       "name":"DescribeImageUsageReports",
@@ -2927,7 +2927,7 @@
       },
       "input":{"shape":"DescribeImageUsageReportsRequest"},
       "output":{"shape":"DescribeImageUsageReportsResult"},
-      "documentation":"<p>Describes the configuration and status of image usage reports, filtered by report IDs or image IDs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-ami-usage.html\">View your AMI usage</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Describes the configuration and status of image usage reports, filtered by report IDs or image IDs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/your-ec2-ami-usage.html\">View your AMI usage</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DescribeImages":{
       "name":"DescribeImages",
@@ -9904,6 +9904,13 @@
       },
       "documentation":"<p>ENA Express is compatible with both TCP and UDP transport protocols. When it's enabled, TCP traffic automatically uses it. However, some UDP-based applications are designed to handle network packets that are out of order, without a need for retransmission, such as live video broadcasting or other near-real-time applications. For UDP traffic, you can specify whether to use ENA Express, based on your application environment needs.</p>"
     },
+    "AttachmentLimitType":{
+      "type":"string",
+      "enum":[
+        "shared",
+        "dedicated"
+      ]
+    },
     "AttachmentStatus":{
       "type":"string",
       "enum":[
@@ -10494,7 +10501,7 @@
         },
         "DeviceName":{
           "shape":"String",
-          "documentation":"<p>The device name (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p>",
+          "documentation":"<p>The device name. For available device names, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/device_naming.html\">Device names for volumes</a>.</p>",
           "locationName":"deviceName"
         },
         "VirtualName":{
@@ -13567,11 +13574,11 @@
         },
         "Description":{
           "shape":"String",
-          "documentation":"<p>A description for the new AMI in the destination Region.</p>"
+          "documentation":"<p>A description for the new AMI.</p>"
         },
         "Encrypted":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the destination snapshots of the copied image should be encrypted. You can encrypt a copy of an unencrypted snapshot, but you cannot create an unencrypted copy of an encrypted snapshot. The default KMS key for Amazon EBS is used unless you specify a non-default Key Management Service (KMS) KMS key using <code>KmsKeyId</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIEncryption.html\">Use encryption with EBS-backed AMIs</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "documentation":"<p>Specifies whether to encrypt the snapshots of the copied image.</p> <p>You can encrypt a copy of an unencrypted snapshot, but you cannot create an unencrypted copy of an encrypted snapshot. The default KMS key for Amazon EBS is used unless you specify a non-default Key Management Service (KMS) KMS key using <code>KmsKeyId</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIEncryption.html\">Use encryption with EBS-backed AMIs</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"encrypted"
         },
         "KmsKeyId":{
@@ -13581,7 +13588,7 @@
         },
         "Name":{
           "shape":"String",
-          "documentation":"<p>The name of the new AMI in the destination Region.</p>"
+          "documentation":"<p>The name of the new AMI.</p>"
         },
         "SourceImageId":{
           "shape":"String",
@@ -13593,11 +13600,11 @@
         },
         "DestinationOutpostArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Outpost to which to copy the AMI. Only specify this parameter when copying an AMI from an Amazon Web Services Region to an Outpost. The AMI must be in the Region of the destination Outpost. You cannot copy an AMI from an Outpost to a Region, from one Outpost to another, or within the same Outpost.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/snapshots-outposts.html#copy-amis\">Copy AMIs from an Amazon Web Services Region to an Outpost</a> in the <i>Amazon EBS User Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Outpost for the new AMI.</p> <p>Only specify this parameter when copying an AMI from an Amazon Web Services Region to an Outpost. The AMI must be in the Region of the destination Outpost. You can't copy an AMI from an Outpost to a Region, from one Outpost to another, or within the same Outpost.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/snapshots-outposts.html#copy-amis\">Copy AMIs from an Amazon Web Services Region to an Outpost</a> in the <i>Amazon EBS User Guide</i>.</p> <p>Only one of <code>DestinationAvailabilityZone</code>, <code>DestinationAvailabilityZoneId</code>, or <code>DestinationOutpostArn</code> can be specified.</p>"
         },
         "CopyImageTags":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether to include your user-defined AMI tags when copying the AMI.</p> <p>The following tags will not be copied:</p> <ul> <li> <p>System tags (prefixed with <code>aws:</code>)</p> </li> <li> <p>For public and shared AMIs, user-defined tags that are attached by other Amazon Web Services accounts</p> </li> </ul> <p>Default: Your user-defined AMI tags are not copied.</p>"
+          "documentation":"<p>Specifies whether to copy your user-defined AMI tags to the new AMI.</p> <p>The following tags are not be copied:</p> <ul> <li> <p>System tags (prefixed with <code>aws:</code>)</p> </li> <li> <p>For public and shared AMIs, user-defined tags that are attached by other Amazon Web Services accounts</p> </li> </ul> <p>Default: Your user-defined AMI tags are not copied.</p>"
         },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
@@ -13606,7 +13613,15 @@
         },
         "SnapshotCopyCompletionDurationMinutes":{
           "shape":"Long",
-          "documentation":"<p>Specify a completion duration, in 15 minute increments, to initiate a time-based AMI copy. The specified completion duration applies to each of the snapshots associated with the AMI. Each snapshot associated with the AMI will be completed within the specified completion duration, with copy throughput automatically adjusted for each snapshot based on its size to meet the timing target.</p> <p>If you do not specify a value, the AMI copy operation is completed on a best-effort basis.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/time-based-copies.html\">Time-based copies for Amazon EBS snapshots and EBS-backed AMIs</a>.</p>"
+          "documentation":"<p>Specify a completion duration, in 15 minute increments, to initiate a time-based AMI copy. The specified completion duration applies to each of the snapshots associated with the AMI. Each snapshot associated with the AMI will be completed within the specified completion duration, with copy throughput automatically adjusted for each snapshot based on its size to meet the timing target.</p> <p>If you do not specify a value, the AMI copy operation is completed on a best-effort basis.</p> <note> <p>This parameter is not supported when copying an AMI to or from a Local Zone, or to an Outpost.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/time-based-copies.html\">Time-based copies for Amazon EBS snapshots and EBS-backed AMIs</a>.</p>"
+        },
+        "DestinationAvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Local Zone for the new AMI (for example, <code>cn-north-1-pkx-1a</code>).</p> <p>Only one of <code>DestinationAvailabilityZone</code>, <code>DestinationAvailabilityZoneId</code>, or <code>DestinationOutpostArn</code> can be specified.</p>"
+        },
+        "DestinationAvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Local Zone for the new AMI (for example, <code>cnn1-pkx1-az1</code>).</p> <p>Only one of <code>DestinationAvailabilityZone</code>, <code>DestinationAvailabilityZoneId</code>, or <code>DestinationOutpostArn</code> can be specified.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -13640,7 +13655,7 @@
         },
         "DestinationOutpostArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Outpost to which to copy the snapshot. Only specify this parameter when copying a snapshot from an Amazon Web Services Region to an Outpost. The snapshot must be in the Region for the destination Outpost. You cannot copy a snapshot from an Outpost to a Region, from one Outpost to another, or within the same Outpost.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/snapshots-outposts.html#copy-snapshots\"> Copy snapshots from an Amazon Web Services Region to an Outpost</a> in the <i>Amazon EBS User Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Outpost to which to copy the snapshot.</p> <note> <p>Only supported when copying a snapshot to an Outpost.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/snapshots-outposts.html#copy-snapshots\"> Copy snapshots from an Amazon Web Services Region to an Outpost</a> in the <i>Amazon EBS User Guide</i>.</p>"
         },
         "DestinationRegion":{
           "shape":"String",
@@ -13677,7 +13692,11 @@
         },
         "CompletionDurationMinutes":{
           "shape":"SnapshotCompletionDurationMinutesRequest",
-          "documentation":"<p>Specify a completion duration, in 15 minute increments, to initiate a time-based snapshot copy. Time-based snapshot copy operations complete within the specified duration. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/time-based-copies.html\"> Time-based copies</a>.</p> <p>If you do not specify a value, the snapshot copy operation is completed on a best-effort basis.</p>"
+          "documentation":"<note> <p>Not supported when copying snapshots to or from Local Zones or Outposts.</p> </note> <p>Specify a completion duration, in 15 minute increments, to initiate a time-based snapshot copy. Time-based snapshot copy operations complete within the specified duration. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/time-based-copies.html\"> Time-based copies</a>.</p> <p>If you do not specify a value, the snapshot copy operation is completed on a best-effort basis.</p>"
+        },
+        "DestinationAvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Local Zone, for example, <code>cn-north-1-pkx-1a</code> to which to copy the snapshot.</p> <note> <p>Only supported when copying a snapshot to a Local Zone.</p> </note>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -24454,7 +24473,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters. Filter names and values are case-sensitive.</p> <ul> <li> <p> <code>auto-recovery-supported</code> - Indicates whether Amazon CloudWatch action based recovery is supported (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>bare-metal</code> - Indicates whether it is a bare metal instance type (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>burstable-performance-supported</code> - Indicates whether the instance type is a burstable performance T instance type (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>current-generation</code> - Indicates whether this instance type is the latest generation instance type of an instance family (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>dedicated-hosts-supported</code> - Indicates whether the instance type supports Dedicated Hosts. (<code>true</code> | <code>false</code>)</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-bandwidth-in-mbps</code> - The baseline bandwidth performance for an EBS-optimized instance type, in Mbps.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-iops</code> - The baseline input/output storage operations per second for an EBS-optimized instance type.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-throughput-in-mbps</code> - The baseline throughput performance for an EBS-optimized instance type, in MB/s.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-bandwidth-in-mbps</code> - The maximum bandwidth performance for an EBS-optimized instance type, in Mbps.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-iops</code> - The maximum input/output storage operations per second for an EBS-optimized instance type.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-throughput-in-mbps</code> - The maximum throughput performance for an EBS-optimized instance type, in MB/s.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-support</code> - Indicates whether the instance type is EBS-optimized (<code>supported</code> | <code>unsupported</code> | <code>default</code>).</p> </li> <li> <p> <code>ebs-info.encryption-support</code> - Indicates whether EBS encryption is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>ebs-info.nvme-support</code> - Indicates whether non-volatile memory express (NVMe) is supported for EBS volumes (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>free-tier-eligible</code> - A Boolean that indicates whether this instance type can be used under the Amazon Web Services Free Tier (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hibernation-supported</code> - Indicates whether On-Demand hibernation is supported (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor (<code>nitro</code> | <code>xen</code>).</p> </li> <li> <p> <code>instance-storage-info.disk.count</code> - The number of local disks.</p> </li> <li> <p> <code>instance-storage-info.disk.size-in-gb</code> - The storage size of each instance storage disk, in GB.</p> </li> <li> <p> <code>instance-storage-info.disk.type</code> - The storage technology for the local instance storage disks (<code>hdd</code> | <code>ssd</code>).</p> </li> <li> <p> <code>instance-storage-info.encryption-support</code> - Indicates whether data is encrypted at rest (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>instance-storage-info.nvme-support</code> - Indicates whether non-volatile memory express (NVMe) is supported for instance store (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>instance-storage-info.total-size-in-gb</code> - The total amount of storage available from all local instance storage, in GB.</p> </li> <li> <p> <code>instance-storage-supported</code> - Indicates whether the instance type has local instance storage (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>instance-type</code> - The instance type (for example <code>c5.2xlarge</code> or c5*).</p> </li> <li> <p> <code>memory-info.size-in-mib</code> - The memory size.</p> </li> <li> <p> <code>network-info.bandwidth-weightings</code> - For instances that support bandwidth weighting to boost performance (<code>default</code>, <code>vpc-1</code>, <code>ebs-1</code>).</p> </li> <li> <p> <code>network-info.efa-info.maximum-efa-interfaces</code> - The maximum number of Elastic Fabric Adapters (EFAs) per instance.</p> </li> <li> <p> <code>network-info.efa-supported</code> - Indicates whether the instance type supports Elastic Fabric Adapter (EFA) (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.ena-support</code> - Indicates whether Elastic Network Adapter (ENA) is supported or required (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>network-info.flexible-ena-queues-support</code> - Indicates whether an instance supports flexible ENA queues (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>network-info.encryption-in-transit-supported</code> - Indicates whether the instance type automatically encrypts in-transit traffic between instances (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.ipv4-addresses-per-interface</code> - The maximum number of private IPv4 addresses per network interface.</p> </li> <li> <p> <code>network-info.ipv6-addresses-per-interface</code> - The maximum number of private IPv6 addresses per network interface.</p> </li> <li> <p> <code>network-info.ipv6-supported</code> - Indicates whether the instance type supports IPv6 (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.maximum-network-cards</code> - The maximum number of network cards per instance.</p> </li> <li> <p> <code>network-info.maximum-network-interfaces</code> - The maximum number of network interfaces per instance.</p> </li> <li> <p> <code>network-info.network-performance</code> - The network performance (for example, \"25 Gigabit\").</p> </li> <li> <p> <code>nitro-enclaves-support</code> - Indicates whether Nitro Enclaves is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>nitro-tpm-support</code> - Indicates whether NitroTPM is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>nitro-tpm-info.supported-versions</code> - The supported NitroTPM version (<code>2.0</code>).</p> </li> <li> <p> <code>processor-info.supported-architecture</code> - The CPU architecture (<code>arm64</code> | <code>i386</code> | <code>x86_64</code>).</p> </li> <li> <p> <code>processor-info.sustained-clock-speed-in-ghz</code> - The CPU clock speed, in GHz.</p> </li> <li> <p> <code>processor-info.supported-features</code> - The supported CPU features (<code>amd-sev-snp</code>).</p> </li> <li> <p> <code>reboot-migration-support</code> - Indicates whether enabling reboot migration is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>supported-boot-mode</code> - The boot mode (<code>legacy-bios</code> | <code>uefi</code>).</p> </li> <li> <p> <code>supported-root-device-type</code> - The root device type (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>supported-usage-class</code> - The usage class (<code>on-demand</code> | <code>spot</code> | <code>capacity-block</code>).</p> </li> <li> <p> <code>supported-virtualization-type</code> - The virtualization type (<code>hvm</code> | <code>paravirtual</code>).</p> </li> <li> <p> <code>vcpu-info.default-cores</code> - The default number of cores for the instance type.</p> </li> <li> <p> <code>vcpu-info.default-threads-per-core</code> - The default number of threads per core for the instance type.</p> </li> <li> <p> <code>vcpu-info.default-vcpus</code> - The default number of vCPUs for the instance type.</p> </li> <li> <p> <code>vcpu-info.valid-cores</code> - The number of cores that can be configured for the instance type.</p> </li> <li> <p> <code>vcpu-info.valid-threads-per-core</code> - The number of threads per core that can be configured for the instance type. For example, \"1\" or \"1,2\".</p> </li> </ul>",
+          "documentation":"<p>One or more filters. Filter names and values are case-sensitive.</p> <ul> <li> <p> <code>auto-recovery-supported</code> - Indicates whether Amazon CloudWatch action based recovery is supported (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>bare-metal</code> - Indicates whether it is a bare metal instance type (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>burstable-performance-supported</code> - Indicates whether the instance type is a burstable performance T instance type (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>current-generation</code> - Indicates whether this instance type is the latest generation instance type of an instance family (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>dedicated-hosts-supported</code> - Indicates whether the instance type supports Dedicated Hosts. (<code>true</code> | <code>false</code>)</p> </li> <li> <p> <code>ebs-info.attachment-limit-type</code> - The type of Amazon EBS volume attachment limit (<code>shared</code> | <code>dedicated</code>).</p> </li> <li> <p> <code>ebs-info.maximum-ebs-attachments</code> - The maximum number of Amazon EBS volumes that can be attached to the instance type.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-bandwidth-in-mbps</code> - The baseline bandwidth performance for an EBS-optimized instance type, in Mbps.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-iops</code> - The baseline input/output storage operations per second for an EBS-optimized instance type.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-throughput-in-mbps</code> - The baseline throughput performance for an EBS-optimized instance type, in MB/s.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-bandwidth-in-mbps</code> - The maximum bandwidth performance for an EBS-optimized instance type, in Mbps.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-iops</code> - The maximum input/output storage operations per second for an EBS-optimized instance type.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-throughput-in-mbps</code> - The maximum throughput performance for an EBS-optimized instance type, in MB/s.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-support</code> - Indicates whether the instance type is EBS-optimized (<code>supported</code> | <code>unsupported</code> | <code>default</code>).</p> </li> <li> <p> <code>ebs-info.encryption-support</code> - Indicates whether EBS encryption is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>ebs-info.nvme-support</code> - Indicates whether non-volatile memory express (NVMe) is supported for EBS volumes (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>free-tier-eligible</code> - A Boolean that indicates whether this instance type can be used under the Amazon Web Services Free Tier (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hibernation-supported</code> - Indicates whether On-Demand hibernation is supported (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor (<code>nitro</code> | <code>xen</code>).</p> </li> <li> <p> <code>instance-storage-info.disk.count</code> - The number of local disks.</p> </li> <li> <p> <code>instance-storage-info.disk.size-in-gb</code> - The storage size of each instance storage disk, in GB.</p> </li> <li> <p> <code>instance-storage-info.disk.type</code> - The storage technology for the local instance storage disks (<code>hdd</code> | <code>ssd</code>).</p> </li> <li> <p> <code>instance-storage-info.encryption-support</code> - Indicates whether data is encrypted at rest (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>instance-storage-info.nvme-support</code> - Indicates whether non-volatile memory express (NVMe) is supported for instance store (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>instance-storage-info.total-size-in-gb</code> - The total amount of storage available from all local instance storage, in GB.</p> </li> <li> <p> <code>instance-storage-supported</code> - Indicates whether the instance type has local instance storage (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>instance-type</code> - The instance type (for example <code>c5.2xlarge</code> or c5*).</p> </li> <li> <p> <code>memory-info.size-in-mib</code> - The memory size.</p> </li> <li> <p> <code>network-info.bandwidth-weightings</code> - For instances that support bandwidth weighting to boost performance (<code>default</code>, <code>vpc-1</code>, <code>ebs-1</code>).</p> </li> <li> <p> <code>network-info.efa-info.maximum-efa-interfaces</code> - The maximum number of Elastic Fabric Adapters (EFAs) per instance.</p> </li> <li> <p> <code>network-info.efa-supported</code> - Indicates whether the instance type supports Elastic Fabric Adapter (EFA) (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.ena-support</code> - Indicates whether Elastic Network Adapter (ENA) is supported or required (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>network-info.flexible-ena-queues-support</code> - Indicates whether an instance supports flexible ENA queues (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>network-info.encryption-in-transit-supported</code> - Indicates whether the instance type automatically encrypts in-transit traffic between instances (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.ipv4-addresses-per-interface</code> - The maximum number of private IPv4 addresses per network interface.</p> </li> <li> <p> <code>network-info.ipv6-addresses-per-interface</code> - The maximum number of private IPv6 addresses per network interface.</p> </li> <li> <p> <code>network-info.ipv6-supported</code> - Indicates whether the instance type supports IPv6 (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.maximum-network-cards</code> - The maximum number of network cards per instance.</p> </li> <li> <p> <code>network-info.maximum-network-interfaces</code> - The maximum number of network interfaces per instance.</p> </li> <li> <p> <code>network-info.network-performance</code> - The network performance (for example, \"25 Gigabit\").</p> </li> <li> <p> <code>nitro-enclaves-support</code> - Indicates whether Nitro Enclaves is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>nitro-tpm-support</code> - Indicates whether NitroTPM is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>nitro-tpm-info.supported-versions</code> - The supported NitroTPM version (<code>2.0</code>).</p> </li> <li> <p> <code>processor-info.supported-architecture</code> - The CPU architecture (<code>arm64</code> | <code>i386</code> | <code>x86_64</code>).</p> </li> <li> <p> <code>processor-info.sustained-clock-speed-in-ghz</code> - The CPU clock speed, in GHz.</p> </li> <li> <p> <code>processor-info.supported-features</code> - The supported CPU features (<code>amd-sev-snp</code>).</p> </li> <li> <p> <code>reboot-migration-support</code> - Indicates whether enabling reboot migration is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>supported-boot-mode</code> - The boot mode (<code>legacy-bios</code> | <code>uefi</code>).</p> </li> <li> <p> <code>supported-root-device-type</code> - The root device type (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>supported-usage-class</code> - The usage class (<code>on-demand</code> | <code>spot</code> | <code>capacity-block</code>).</p> </li> <li> <p> <code>supported-virtualization-type</code> - The virtualization type (<code>hvm</code> | <code>paravirtual</code>).</p> </li> <li> <p> <code>vcpu-info.default-cores</code> - The default number of cores for the instance type.</p> </li> <li> <p> <code>vcpu-info.default-threads-per-core</code> - The default number of threads per core for the instance type.</p> </li> <li> <p> <code>vcpu-info.default-vcpus</code> - The default number of vCPUs for the instance type.</p> </li> <li> <p> <code>vcpu-info.valid-cores</code> - The number of cores that can be configured for the instance type.</p> </li> <li> <p> <code>vcpu-info.valid-threads-per-core</code> - The number of threads per core that can be configured for the instance type. For example, \"1\" or \"1,2\".</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -28829,7 +28848,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>vpc-endpoint-id</code> - The ID of the VPC endpoint.</p> </li> <li> <p> <code>associated-resource-accessibility</code> - The association state. When the state is <code>accessible</code>, it returns <code>AVAILABLE</code>. When the state is <code>inaccessible</code>, it returns <code>PENDING</code> or <code>FAILED</code>.</p> </li> <li> <p> <code>association-id</code> - The ID of the VPC endpoint association.</p> </li> <li> <p> <code>associated-resource-id</code> - The ID of the associated resource configuration.</p> </li> <li> <p> <code>service-network-arn</code> - The Amazon Resource Name (ARN) of the associated service network. Only VPC endpoints of type service network will be returned.</p> </li> <li> <p> <code>resource-configuration-group-arn</code> - The Amazon Resource Name (ARN) of the resource configuration of type GROUP.</p> </li> <li> <p> <code>service-network-resource-association-id</code> - The ID of the association.</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>vpc-endpoint-id</code> - The ID of the VPC endpoint.</p> </li> <li> <p> <code>associated-resource-accessibility</code> - The association state. When the state is <code>accessible</code>, it returns <code>AVAILABLE</code>. When the state is <code>inaccessible</code>, it returns <code>PENDING</code> or <code>FAILED</code>.</p> </li> <li> <p> <code>association-id</code> - The ID of the VPC endpoint association.</p> </li> <li> <p> <code>associated-resource-id</code> - The ID of the associated resource configuration.</p> </li> <li> <p> <code>service-network-arn</code> - The Amazon Resource Name (ARN) of the associated service network. Only VPC endpoints of type service network will be returned.</p> </li> <li> <p> <code>resource-configuration-group-arn</code> - The Amazon Resource Name (ARN) of the resource configuration of type GROUP.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -31157,6 +31176,16 @@
           "shape":"EbsNvmeSupport",
           "documentation":"<p>Indicates whether non-volatile memory express (NVMe) is supported.</p>",
           "locationName":"nvmeSupport"
+        },
+        "MaximumEbsAttachments":{
+          "shape":"MaximumEbsAttachments",
+          "documentation":"<p>Indicates the maximum number of Amazon EBS volumes that can be attached to the instance type. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/volume_limits.html\">Amazon EBS volume limits for Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"maximumEbsAttachments"
+        },
+        "AttachmentLimitType":{
+          "shape":"AttachmentLimitType",
+          "documentation":"<p>Indicates whether the instance type features a shared or dedicated Amazon EBS volume attachment limit. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/volume_limits.html\">Amazon EBS volume limits for Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"attachmentLimitType"
         }
       },
       "documentation":"<p>Describes the Amazon EBS features supported by the instance type.</p>"
@@ -39665,7 +39694,7 @@
       "members":{
         "DeviceName":{
           "shape":"String",
-          "documentation":"<p>The device name (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p>",
+          "documentation":"<p>The device name.</p>",
           "locationName":"deviceName"
         },
         "Ebs":{
@@ -39688,7 +39717,7 @@
       "members":{
         "DeviceName":{
           "shape":"String",
-          "documentation":"<p>The device name (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p>",
+          "documentation":"<p>The device name. For available device names, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/device_naming.html\">Device names for volumes</a>.</p>",
           "locationName":"deviceName"
         },
         "Ebs":{
@@ -42443,7 +42472,64 @@
         "c8gn.metal-24xl",
         "c8gn.metal-48xl",
         "f2.6xlarge",
-        "p6e-gb200.36xlarge"
+        "p6e-gb200.36xlarge",
+        "g6f.large",
+        "g6f.xlarge",
+        "g6f.2xlarge",
+        "g6f.4xlarge",
+        "gr6f.4xlarge",
+        "p5.4xlarge",
+        "r8i.large",
+        "r8i.xlarge",
+        "r8i.2xlarge",
+        "r8i.4xlarge",
+        "r8i.8xlarge",
+        "r8i.12xlarge",
+        "r8i.16xlarge",
+        "r8i.24xlarge",
+        "r8i.32xlarge",
+        "r8i.48xlarge",
+        "r8i.96xlarge",
+        "r8i.metal-48xl",
+        "r8i.metal-96xl",
+        "r8i-flex.large",
+        "r8i-flex.xlarge",
+        "r8i-flex.2xlarge",
+        "r8i-flex.4xlarge",
+        "r8i-flex.8xlarge",
+        "r8i-flex.12xlarge",
+        "r8i-flex.16xlarge",
+        "m8i.large",
+        "m8i.xlarge",
+        "m8i.2xlarge",
+        "m8i.4xlarge",
+        "m8i.8xlarge",
+        "m8i.12xlarge",
+        "m8i.16xlarge",
+        "m8i.24xlarge",
+        "m8i.32xlarge",
+        "m8i.48xlarge",
+        "m8i.96xlarge",
+        "m8i.metal-48xl",
+        "m8i.metal-96xl",
+        "m8i-flex.large",
+        "m8i-flex.xlarge",
+        "m8i-flex.2xlarge",
+        "m8i-flex.4xlarge",
+        "m8i-flex.8xlarge",
+        "m8i-flex.12xlarge",
+        "m8i-flex.16xlarge",
+        "i8ge.large",
+        "i8ge.xlarge",
+        "i8ge.2xlarge",
+        "i8ge.3xlarge",
+        "i8ge.6xlarge",
+        "i8ge.12xlarge",
+        "i8ge.18xlarge",
+        "i8ge.24xlarge",
+        "i8ge.48xlarge",
+        "i8ge.metal-24xl",
+        "i8ge.metal-48xl"
       ]
     },
     "InstanceTypeHypervisor":{
@@ -47480,6 +47566,7 @@
       "min":0
     },
     "MaximumBandwidthInMbps":{"type":"integer"},
+    "MaximumEbsAttachments":{"type":"integer"},
     "MaximumEfaInterfaces":{"type":"integer"},
     "MaximumEnaQueueCount":{"type":"integer"},
     "MaximumEnaQueueCountPerInterface":{"type":"integer"},
@@ -49681,7 +49768,7 @@
         },
         "DefaultRouteTablePropagation":{
           "shape":"DefaultRouteTablePropagationValue",
-          "documentation":"<p>Enable or disable automatic propagation of routes to the default propagation route table.</p>"
+          "documentation":"<p>Indicates whether resource attachments automatically propagate routes to the default propagation route table. Enabled by default. If <code>defaultRouteTablePropagation</code> is set to <code>enable</code>, Amazon Web Services Transit Gateway will create the default transit gateway route table.</p>"
         },
         "PropagationDefaultRouteTableId":{
           "shape":"TransitGatewayRouteTableId",
@@ -53683,7 +53770,7 @@
       "members":{
         "AvailabilityZoneId":{
           "shape":"AvailabilityZoneId",
-          "documentation":"<p>The ID of the Availability Zone of the instance.</p> <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> can be specified, but not both. If neither is specified, Amazon EC2 automatically selects an Availability Zone based on the load balancing criteria for the Region.</p> <p>This parameter is not supported for <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateFleet\">CreateFleet</a>.</p>",
+          "documentation":"<p>The ID of the Availability Zone of the instance.</p> <p>On input, you can specify <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code>, but not both. If you specify neither one, Amazon EC2 automatically selects an Availability Zone for you.</p> <p>This parameter is not supported for <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateFleet\">CreateFleet</a>.</p>",
           "locationName":"availabilityZoneId"
         },
         "Affinity":{
@@ -53693,7 +53780,7 @@
         },
         "GroupName":{
           "shape":"PlacementGroupName",
-          "documentation":"<p>The name of the placement group that the instance is in. If you specify <code>GroupName</code>, you can't specify <code>GroupId</code>.</p>",
+          "documentation":"<p>The name of the placement group that the instance is in.</p> <p>On input, you can specify <code>GroupId</code> or <code>GroupName</code>, but not both.</p>",
           "locationName":"groupName"
         },
         "PartitionNumber":{
@@ -53718,17 +53805,17 @@
         },
         "HostResourceGroupArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the host resource group in which to launch the instances.</p> <p>If you specify this parameter, either omit the <b>Tenancy</b> parameter or set it to <code>host</code>.</p> <p>This parameter is not supported for <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateFleet\">CreateFleet</a>.</p>",
+          "documentation":"<p>The ARN of the host resource group in which to launch the instances.</p> <p>On input, if you specify this parameter, either omit the <b>Tenancy</b> parameter or set it to <code>host</code>.</p> <p>This parameter is not supported for <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateFleet\">CreateFleet</a>.</p>",
           "locationName":"hostResourceGroupArn"
         },
         "GroupId":{
           "shape":"PlacementGroupId",
-          "documentation":"<p>The ID of the placement group that the instance is in. If you specify <code>GroupId</code>, you can't specify <code>GroupName</code>.</p>",
+          "documentation":"<p>The ID of the placement group that the instance is in.</p> <p>On input, you can specify <code>GroupId</code> or <code>GroupName</code>, but not both.</p>",
           "locationName":"groupId"
         },
         "AvailabilityZone":{
           "shape":"String",
-          "documentation":"<p>The Availability Zone of the instance.</p> <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> can be specified, but not both. If neither is specified, Amazon EC2 automatically selects an Availability Zone based on the load balancing criteria for the Region.</p> <p>This parameter is not supported for <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateFleet\">CreateFleet</a>.</p>",
+          "documentation":"<p>The Availability Zone of the instance.</p> <p>On input, you can specify <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code>, but not both. If you specify neither one, Amazon EC2 automatically selects an Availability Zone for you.</p> <p>This parameter is not supported for <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateFleet\">CreateFleet</a>.</p>",
           "locationName":"availabilityZone"
         }
       },
@@ -58464,7 +58551,8 @@
       "enum":[
         "CreateRouteTable",
         "CreateRoute",
-        "EnableVgwRoutePropagation"
+        "EnableVgwRoutePropagation",
+        "Advertisement"
       ]
     },
     "RouteServer":{
@@ -58978,7 +59066,8 @@
       "type":"string",
       "enum":[
         "active",
-        "blackhole"
+        "blackhole",
+        "filtered"
       ]
     },
     "RouteTable":{
@@ -64923,7 +65012,7 @@
         },
         "DefaultRouteTableAssociation":{
           "shape":"DefaultRouteTableAssociationValue",
-          "documentation":"<p>Indicates whether resource attachments are automatically associated with the default association route table. Enabled by default. If <code>defaultRouteTableAssociation</code> is set to <code>enable</code>, Amazon Web Services Transit Gateway will create the default transit gateway route table.</p>",
+          "documentation":"<p>Indicates whether resource attachments are automatically associated with the default association route table. Enabled by default. Either <code>defaultRouteTableAssociation</code> or <code>defaultRouteTablePropagation</code> must be set to <code>enable</code> for Amazon Web Services Transit Gateway to create the default transit gateway route table.</p>",
           "locationName":"defaultRouteTableAssociation"
         },
         "AssociationDefaultRouteTableId":{
@@ -64933,7 +65022,7 @@
         },
         "DefaultRouteTablePropagation":{
           "shape":"DefaultRouteTablePropagationValue",
-          "documentation":"<p>Indicates whether resource attachments automatically propagate routes to the default propagation route table. Enabled by default. If <code>defaultRouteTablePropagation</code> is set to <code>enable</code>, Amazon Web Services Transit Gateway will create the default transit gateway route table.</p>",
+          "documentation":"<p>Indicates whether resource attachments automatically propagate routes to the default propagation route table. Enabled by default. If <code>defaultRouteTablePropagation</code> is set to <code>enable</code>, Amazon Web Services Transit Gateway creates the default transit gateway route table.</p>",
           "locationName":"defaultRouteTablePropagation"
         },
         "PropagationDefaultRouteTableId":{

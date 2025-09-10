@@ -239,8 +239,8 @@
       "input":{"shape":"ExecuteQueryInput"},
       "output":{"shape":"ExecuteQueryOutput"},
       "errors":[
-        {"shape":"UnprocessableException"},
         {"shape":"ThrottlingException"},
+        {"shape":"UnprocessableException"},
         {"shape":"ValidationException"},
         {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
@@ -608,6 +608,27 @@
         "ApiType":{"value":"ControlPlane"}
       }
     },
+    "StartGraph":{
+      "name":"StartGraph",
+      "http":{
+        "method":"POST",
+        "requestUri":"/graphs/{graphIdentifier}/start",
+        "responseCode":200
+      },
+      "input":{"shape":"StartGraphInput"},
+      "output":{"shape":"StartGraphOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Starts the specific graph.</p>",
+      "staticContextParams":{
+        "ApiType":{"value":"ControlPlane"}
+      }
+    },
     "StartImportTask":{
       "name":"StartImportTask",
       "http":{
@@ -625,6 +646,27 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Import data into existing Neptune Analytics graph from Amazon Simple Storage Service (S3). The graph needs to be empty and in the AVAILABLE state.</p>",
+      "staticContextParams":{
+        "ApiType":{"value":"ControlPlane"}
+      }
+    },
+    "StopGraph":{
+      "name":"StopGraph",
+      "http":{
+        "method":"POST",
+        "requestUri":"/graphs/{graphIdentifier}/stop",
+        "responseCode":200
+      },
+      "input":{"shape":"StopGraphInput"},
+      "output":{"shape":"StopGraphOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Stops the specific graph.</p>",
       "staticContextParams":{
         "ApiType":{"value":"ControlPlane"}
       }
@@ -1412,8 +1454,7 @@
     },
     "Document":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true
     },
     "DocumentValuedMap":{
@@ -2233,7 +2274,10 @@
         "UPDATING",
         "SNAPSHOTTING",
         "FAILED",
-        "IMPORTING"
+        "IMPORTING",
+        "STARTING",
+        "STOPPING",
+        "STOPPED"
       ]
     },
     "GraphSummary":{
@@ -3276,6 +3320,85 @@
       "max":1024,
       "min":1
     },
+    "StartGraphInput":{
+      "type":"structure",
+      "required":["graphIdentifier"],
+      "members":{
+        "graphIdentifier":{
+          "shape":"GraphIdentifier",
+          "documentation":"<p>The unique identifier of the Neptune Analytics graph.</p>",
+          "location":"uri",
+          "locationName":"graphIdentifier"
+        }
+      }
+    },
+    "StartGraphOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "arn"
+      ],
+      "members":{
+        "id":{
+          "shape":"GraphId",
+          "documentation":"<p>The unique identifier of the graph.</p>"
+        },
+        "name":{
+          "shape":"GraphName",
+          "documentation":"<p>The name of the graph.</p>"
+        },
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The ARN associated with the graph.</p>"
+        },
+        "status":{
+          "shape":"GraphStatus",
+          "documentation":"<p>The status of the graph.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason that the graph has this status.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the graph was created.</p>"
+        },
+        "provisionedMemory":{
+          "shape":"ProvisionedMemory",
+          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p>"
+        },
+        "endpoint":{
+          "shape":"String",
+          "documentation":"<p>The graph endpoint.</p>"
+        },
+        "publicConnectivity":{
+          "shape":"Boolean",
+          "documentation":"<p>If <code>true</code>, the graph has a public endpoint, otherwise not.</p>"
+        },
+        "vectorSearchConfiguration":{"shape":"VectorSearchConfiguration"},
+        "replicaCount":{
+          "shape":"ReplicaCount",
+          "documentation":"<p>The number of replicas for the graph.</p>"
+        },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ID of the KMS key used to encrypt and decrypt graph data.</p>"
+        },
+        "sourceSnapshotId":{
+          "shape":"SnapshotId",
+          "documentation":"<p>The ID of the snapshot from which the graph was created, if it was created from a snapshot.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>If <code>true</code>, deletion protection is enabled for the graph.</p>"
+        },
+        "buildNumber":{
+          "shape":"String",
+          "documentation":"<p>The build number of the graph.</p>"
+        }
+      }
+    },
     "StartImportTaskInput":{
       "type":"structure",
       "required":[
@@ -3357,6 +3480,85 @@
         "importOptions":{"shape":"ImportOptions"}
       }
     },
+    "StopGraphInput":{
+      "type":"structure",
+      "required":["graphIdentifier"],
+      "members":{
+        "graphIdentifier":{
+          "shape":"GraphIdentifier",
+          "documentation":"<p>The unique identifier of the Neptune Analytics graph.</p>",
+          "location":"uri",
+          "locationName":"graphIdentifier"
+        }
+      }
+    },
+    "StopGraphOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "arn"
+      ],
+      "members":{
+        "id":{
+          "shape":"GraphId",
+          "documentation":"<p>The unique identifier of the graph.</p>"
+        },
+        "name":{
+          "shape":"GraphName",
+          "documentation":"<p>The name of the graph.</p>"
+        },
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The ARN associated with the graph.</p>"
+        },
+        "status":{
+          "shape":"GraphStatus",
+          "documentation":"<p>The status of the graph.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason that the graph has this status.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the graph was created.</p>"
+        },
+        "provisionedMemory":{
+          "shape":"ProvisionedMemory",
+          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p>"
+        },
+        "endpoint":{
+          "shape":"String",
+          "documentation":"<p>The graph endpoint.</p>"
+        },
+        "publicConnectivity":{
+          "shape":"Boolean",
+          "documentation":"<p>If true, the graph has a public endpoint, otherwise not.</p>"
+        },
+        "vectorSearchConfiguration":{"shape":"VectorSearchConfiguration"},
+        "replicaCount":{
+          "shape":"ReplicaCount",
+          "documentation":"<p>The number of replicas for the graph.</p>"
+        },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ID of the KMS key used to encrypt and decrypt graph data.</p>"
+        },
+        "sourceSnapshotId":{
+          "shape":"SnapshotId",
+          "documentation":"<p>The ID of the snapshot from which the graph was created, if it was created from a snapshot.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>If <code>true</code>, deletion protection is enabled for the graph.</p>"
+        },
+        "buildNumber":{
+          "shape":"String",
+          "documentation":"<p>The build number of the graph.</p>"
+        }
+      }
+    },
     "String":{"type":"string"},
     "SubnetId":{
       "type":"string",
@@ -3412,8 +3614,7 @@
     },
     "TagResourceOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -3495,8 +3696,7 @@
     },
     "UntagResourceOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateGraphInput":{
       "type":"structure",

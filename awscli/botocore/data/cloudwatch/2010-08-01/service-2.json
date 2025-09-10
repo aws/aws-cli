@@ -100,6 +100,23 @@
       ],
       "documentation":"<p>Permanently deletes the metric stream that you specify.</p>"
     },
+    "DescribeAlarmContributors":{
+      "name":"DescribeAlarmContributors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAlarmContributorsInput"},
+      "output":{
+        "shape":"DescribeAlarmContributorsOutput",
+        "resultWrapper":"DescribeAlarmContributorsResult"
+      },
+      "errors":[
+        {"shape":"InvalidNextToken"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns the information of the current alarm contributors that are in <code>ALARM</code> state. This operation returns details about the individual time series that contribute to the alarm's state.</p>"
+    },
     "DescribeAlarmHistory":{
       "name":"DescribeAlarmHistory",
       "http":{
@@ -679,6 +696,43 @@
       "max":1600,
       "min":1
     },
+    "AlarmContributor":{
+      "type":"structure",
+      "required":[
+        "ContributorId",
+        "ContributorAttributes",
+        "StateReason"
+      ],
+      "members":{
+        "ContributorId":{
+          "shape":"ContributorId",
+          "documentation":"<p>The unique identifier for this alarm contributor.</p>"
+        },
+        "ContributorAttributes":{
+          "shape":"ContributorAttributes",
+          "documentation":"<p>A map of attributes that describe the contributor, such as metric dimensions and other identifying characteristics.</p>"
+        },
+        "StateReason":{
+          "shape":"StateReason",
+          "documentation":"<p>An explanation for the contributor's current state, providing context about why it is in its current condition.</p>"
+        },
+        "StateTransitionedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the contributor last transitioned to its current state.</p>"
+        }
+      },
+      "documentation":"<p>Represents an individual contributor to a multi-timeseries alarm, containing information about a specific time series and its contribution to the alarm's state.</p>",
+      "xmlOrder":[
+        "ContributorId",
+        "ContributorAttributes",
+        "StateReason",
+        "StateTransitionedTimestamp"
+      ]
+    },
+    "AlarmContributors":{
+      "type":"list",
+      "member":{"shape":"AlarmContributor"}
+    },
     "AlarmDescription":{
       "type":"string",
       "max":1024,
@@ -690,6 +744,10 @@
         "AlarmName":{
           "shape":"AlarmName",
           "documentation":"<p>The descriptive name for the alarm.</p>"
+        },
+        "AlarmContributorId":{
+          "shape":"ContributorId",
+          "documentation":"<p>The unique identifier of the alarm contributor associated with this history item, if applicable.</p>"
         },
         "AlarmType":{
           "shape":"AlarmType",
@@ -710,6 +768,10 @@
         "HistoryData":{
           "shape":"HistoryData",
           "documentation":"<p>Data about the alarm, in JSON format.</p>"
+        },
+        "AlarmContributorAttributes":{
+          "shape":"ContributorAttributes",
+          "documentation":"<p>A map of attributes that describe the alarm contributor associated with this history item, providing context about the contributor's characteristics at the time of the event.</p>"
         }
       },
       "documentation":"<p>Represents the history of a specific alarm.</p>"
@@ -856,6 +918,16 @@
       "type":"list",
       "member":{"shape":"AnomalyDetector"}
     },
+    "AttributeName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "AttributeValue":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "AwsQueryErrorMessage":{"type":"string"},
     "BatchFailures":{
       "type":"list",
@@ -998,6 +1070,17 @@
       },
       "documentation":"<p>This operation attempted to create a resource that already exists.</p>",
       "exception":true
+    },
+    "ContributorAttributes":{
+      "type":"map",
+      "key":{"shape":"AttributeName"},
+      "value":{"shape":"AttributeValue"},
+      "max":30
+    },
+    "ContributorId":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "Counts":{
       "type":"list",
@@ -1248,12 +1331,44 @@
       "type":"structure",
       "members":{}
     },
+    "DescribeAlarmContributorsInput":{
+      "type":"structure",
+      "required":["AlarmName"],
+      "members":{
+        "AlarmName":{
+          "shape":"AlarmName",
+          "documentation":"<p>The name of the alarm for which to retrieve contributor information.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token returned by a previous call to indicate that there is more data available.</p>"
+        }
+      }
+    },
+    "DescribeAlarmContributorsOutput":{
+      "type":"structure",
+      "required":["AlarmContributors"],
+      "members":{
+        "AlarmContributors":{
+          "shape":"AlarmContributors",
+          "documentation":"<p>A list of alarm contributors that provide details about the individual time series contributing to the alarm's state.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token that marks the start of the next batch of returned results.</p>"
+        }
+      }
+    },
     "DescribeAlarmHistoryInput":{
       "type":"structure",
       "members":{
         "AlarmName":{
           "shape":"AlarmName",
           "documentation":"<p>The name of the alarm.</p>"
+        },
+        "AlarmContributorId":{
+          "shape":"ContributorId",
+          "documentation":"<p>The unique identifier of a specific alarm contributor to filter the alarm history results.</p>"
         },
         "AlarmTypes":{
           "shape":"AlarmTypes",
@@ -1990,7 +2105,9 @@
       "enum":[
         "ConfigurationUpdate",
         "StateUpdate",
-        "Action"
+        "Action",
+        "AlarmContributorStateUpdate",
+        "AlarmContributorAction"
       ]
     },
     "HistorySummary":{
@@ -3277,7 +3394,7 @@
         },
         "ApplyOnTransformedLogs":{
           "shape":"InsightRuleOnTransformedLogs",
-          "documentation":"<p>Specify <code>true</code> to have this rule evalute log events after they have been transformed by <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html\">Log transformation</a>. If you specify <code>true</code>, then the log events in log groups that have transformers will be evaluated by Contributor Insights after being transformed. Log groups that don't have transformers will still have their original log events evaluated by Contributor Insights.</p> <p>The default is <code>false</code> </p> <note> <p>If a log group has a transformer, and transformation fails for some log events, those log events won't be evaluated by Contributor Insights. For information about investigating log transformation failures, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Transformation-Errors-Metrics.html\">Transformation metrics and errors</a>.</p> </note>"
+          "documentation":"<p>Specify <code>true</code> to have this rule evaluate log events after they have been transformed by <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html\">Log transformation</a>. If you specify <code>true</code>, then the log events in log groups that have transformers will be evaluated by Contributor Insights after being transformed. Log groups that don't have transformers will still have their original log events evaluated by Contributor Insights.</p> <p>The default is <code>false</code> </p> <note> <p>If a log group has a transformer, and transformation fails for some log events, those log events won't be evaluated by Contributor Insights. For information about investigating log transformation failures, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Transformation-Errors-Metrics.html\">Transformation metrics and errors</a>.</p> </note>"
         }
       }
     },

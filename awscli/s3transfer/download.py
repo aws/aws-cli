@@ -16,7 +16,11 @@ import threading
 
 from botocore.exceptions import ClientError
 from s3transfer.compat import seekable
-from s3transfer.exceptions import RetriesExceededError, S3DownloadFailedError
+from s3transfer.exceptions import (
+    RetriesExceededError,
+    S3DownloadFailedError,
+    S3ValidationError,
+)
 from s3transfer.futures import IN_MEMORY_DOWNLOAD_TAG
 from s3transfer.tasks import SubmissionTask, Task
 from s3transfer.utils import (
@@ -577,6 +581,10 @@ class GetObjectTask(Task):
                 response = client.get_object(
                     Bucket=bucket, Key=key, **extra_args
                 )
+                self._validate_content_range(
+                    extra_args.get('Range'),
+                    response.get('ContentRange'),
+                )
                 streaming_body = StreamReaderProgress(
                     response['Body'], callbacks
                 )
@@ -633,6 +641,27 @@ class GetObjectTask(Task):
 
     def _handle_io(self, download_output_manager, fileobj, chunk, index):
         download_output_manager.queue_file_io_task(fileobj, chunk, index)
+
+    def _validate_content_range(self, requested_range, content_range):
+        if not requested_range or not content_range:
+            return
+        # Unparsed `ContentRange` looks like `bytes 0-8388607/39542919`,
+        # where `0-8388607` is the fetched range and `39542919` is
+        # the total object size.
+        response_range, total_size = content_range.split('/')
+        # Subtract `1` because range is 0-indexed.
+        final_byte = str(int(total_size) - 1)
+        # If it's the last part, the requested range will not include
+        # the final byte, eg `bytes=33554432-`.
+        if requested_range.endswith('-'):
+            requested_range += final_byte
+        # Request looks like `bytes=0-8388607`.
+        # Parsed response looks like `bytes 0-8388607`.
+        if requested_range[6:] != response_range[6:]:
+            raise S3ValidationError(
+                f"Requested range: `{requested_range[6:]}` does not match "
+                f"content range in response: `{response_range[6:]}`"
+            )
 
 
 class ImmediatelyWriteIOGetObjectTask(GetObjectTask):

@@ -453,7 +453,8 @@ class ResultPrinter(BaseResultHandler):
         # Reset to zero because done statements are printed with new lines
         # meaning there are no carriage returns to take into account when
         # printing the next line.
-        self._progress_length = 0
+        if reset_progress_length:
+            self._progress_length = 0
         self._add_progress_if_needed()
 
     def _add_progress_if_needed(self):

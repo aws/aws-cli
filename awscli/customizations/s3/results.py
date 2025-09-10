@@ -462,6 +462,7 @@ class ResultPrinter(BaseResultHandler):
             self._print_progress()
         else:
             LOGGER.debug(f"No progress remaining, length: {self._progress_length}")
+            self._clear_progress_if_no_more_expected_transfers(ending_char='\r')
 
     def _print_progress(self, **kwargs):
         # Get all of the statistics in the correct form.
@@ -542,9 +543,9 @@ class ResultPrinter(BaseResultHandler):
     def _print_to_error_file(self, statement):
         uni_print(statement, self._error_file)
 
-    def _clear_progress_if_no_more_expected_transfers(self, **kwargs):
+    def _clear_progress_if_no_more_expected_transfers(self, ending_char='\n', **kwargs):
         if self._progress_length and not self._has_remaining_progress():
-            uni_print(self._adjust_statement_padding(''), self._out_file)
+            uni_print(self._adjust_statement_padding('', ending_char=ending_char), self._out_file)
             LOGGER.debug("Cleared progress;")
 
 

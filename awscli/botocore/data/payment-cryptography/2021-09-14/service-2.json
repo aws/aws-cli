@@ -15,6 +15,25 @@
     "uid":"payment-cryptography-2021-09-14"
   },
   "operations":{
+    "AddKeyReplicationRegions":{
+      "name":"AddKeyReplicationRegions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AddKeyReplicationRegionsInput"},
+      "output":{"shape":"AddKeyReplicationRegionsOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Adds replication Amazon Web Services Regions to an existing Amazon Web Services Payment Cryptography key, enabling the key to be used for cryptographic operations in additional Amazon Web Services Regions.</p> <p>Multi-region keys allow you to use the same key material across multiple Amazon Web Services Regions, providing lower latency for applications distributed across regions. When you add Replication Regions, Amazon Web Services Payment Cryptography securely replicates the key material to the specified Amazon Web Services Regions.</p> <p>The key must be in an active state to add Replication Regions. You can add multiple regions in a single operation, and the key will be available for use in those regions once replication is complete.</p> <p> <b>Cross-account use:</b> This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_RemoveKeyReplicationRegions.html\">RemoveKeyReplicationRegions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_EnableDefaultKeyReplicationRegions.html\">EnableDefaultKeyReplicationRegions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_GetDefaultKeyReplicationRegions.html\">GetDefaultKeyReplicationRegions</a> </p> </li> </ul>"
+    },
     "CreateAlias":{
       "name":"CreateAlias",
       "http":{
@@ -96,6 +115,44 @@
       "documentation":"<p>Deletes the key material and metadata associated with Amazon Web Services Payment Cryptography key.</p> <p>Key deletion is irreversible. After a key is deleted, you can't perform cryptographic operations using the key. For example, you can't decrypt data that was encrypted by a deleted Amazon Web Services Payment Cryptography key, and the data may become unrecoverable. Because key deletion is destructive, Amazon Web Services Payment Cryptography has a safety mechanism to prevent accidental deletion of a key. When you call this operation, Amazon Web Services Payment Cryptography disables the specified key but doesn't delete it until after a waiting period set using <code>DeleteKeyInDays</code>. The default waiting period is 7 days. During the waiting period, the <code>KeyState</code> is <code>DELETE_PENDING</code>. After the key is deleted, the <code>KeyState</code> is <code>DELETE_COMPLETE</code>.</p> <p>You should delete a key only when you are sure that you don't need to use it anymore and no other parties are utilizing this key. If you aren't sure, consider deactivating it instead by calling <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_StopKeyUsage.html\">StopKeyUsage</a>.</p> <p> <b>Cross-account use:</b> This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_RestoreKey.html\">RestoreKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_StartKeyUsage.html\">StartKeyUsage</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_StopKeyUsage.html\">StopKeyUsage</a> </p> </li> </ul>",
       "idempotent":true
     },
+    "DisableDefaultKeyReplicationRegions":{
+      "name":"DisableDefaultKeyReplicationRegions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisableDefaultKeyReplicationRegionsInput"},
+      "output":{"shape":"DisableDefaultKeyReplicationRegionsOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Disables multi-region key replication settings for the specified Amazon Web Services Regions in your account, preventing new keys from being automatically replicated to those regions.</p> <p>After disabling default replication for specific regions, new keys created in your account will not be automatically replicated to those regions. You can still manually add replication to those regions for individual keys using the AddKeyReplicationRegions operation.</p> <p>This operation does not affect existing keys or their current replication configuration.</p> <p> <b>Cross-account use:</b> This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_EnableDefaultKeyReplicationRegions.html\">EnableDefaultKeyReplicationRegions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_GetDefaultKeyReplicationRegions.html\">GetDefaultKeyReplicationRegions</a> </p> </li> </ul>"
+    },
+    "EnableDefaultKeyReplicationRegions":{
+      "name":"EnableDefaultKeyReplicationRegions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableDefaultKeyReplicationRegionsInput"},
+      "output":{"shape":"EnableDefaultKeyReplicationRegionsOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Enables multi-region key replication settings for your account, causing new keys to be automatically replicated to the specified Amazon Web Services Regions when created.</p> <p>When default Replication Regions are enabled, any new keys created in your account will automatically be replicated to these regions unless you explicitly override this behavior during key creation. This simplifies key management for applications that operate across multiple regions.</p> <p>Existing keys are not affected by this operation - only keys created after enabling default replication will be automatically replicated.</p> <p> <b>Cross-account use:</b> This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_DisableDefaultKeyReplicationRegions.html\">DisableDefaultKeyReplicationRegions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_GetDefaultKeyReplicationRegions.html\">GetDefaultKeyReplicationRegions</a> </p> </li> </ul>"
+    },
     "ExportKey":{
       "name":"ExportKey",
       "http":{
@@ -133,6 +190,25 @@
       ],
       "documentation":"<p>Gets the Amazon Web Services Payment Cryptography key associated with the alias.</p> <p> <b>Cross-account use:</b> This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_CreateAlias.html\">CreateAlias</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_DeleteAlias.html\">DeleteAlias</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_ListAliases.html\">ListAliases</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_UpdateAlias.html\">UpdateAlias</a> </p> </li> </ul>"
     },
+    "GetDefaultKeyReplicationRegions":{
+      "name":"GetDefaultKeyReplicationRegions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDefaultKeyReplicationRegionsInput"},
+      "output":{"shape":"GetDefaultKeyReplicationRegionsOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the list of regions where default key replication is currently enabled for your account.</p> <p>This operation returns the current configuration of default Replication Regions. New keys created in your account will be automatically replicated to these regions unless explicitly overridden during key creation.</p> <p> <b>Cross-account use:</b> This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_EnableDefaultKeyReplicationRegions.html\">EnableDefaultKeyReplicationRegions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_DisableDefaultKeyReplicationRegions.html\">DisableDefaultKeyReplicationRegions</a> </p> </li> </ul>"
+    },
     "GetKey":{
       "name":"GetKey",
       "http":{
@@ -149,7 +225,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Gets the key material for an Amazon Web Services Payment Cryptography key, including the immutable and mutable data specified when the key was created.</p> <p> <b>Cross-account use:</b> This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_CreateKey.html\">CreateKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_DeleteKey.html\">DeleteKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_ListKeys.html\">ListKeys</a> </p> </li> </ul>"
+      "documentation":"<p>Gets the key metadata for an Amazon Web Services Payment Cryptography key, including the immutable and mutable attributes specified when the key was created. Returns key metadata including attributes, state, and timestamps, but does not return the actual cryptographic key material.</p> <p> <b>Cross-account use:</b> This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_CreateKey.html\">CreateKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_DeleteKey.html\">DeleteKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_ListKeys.html\">ListKeys</a> </p> </li> </ul>"
     },
     "GetParametersForExport":{
       "name":"GetParametersForExport",
@@ -283,6 +359,25 @@
       ],
       "documentation":"<p>Lists the tags for an Amazon Web Services resource.</p> <p>This is a paginated operation, which means that each response might contain only a subset of all the tags. When the response contains only a subset of tags, it includes a <code>NextToken</code> value. Use this value in a subsequent <code>ListTagsForResource</code> request to get more tags. When you receive a response with no NextToken (or an empty or null value), that means there are no more tags to get.</p> <p> <b>Cross-account use:</b> This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_TagResource.html\">TagResource</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_UntagResource.html\">UntagResource</a> </p> </li> </ul>"
     },
+    "RemoveKeyReplicationRegions":{
+      "name":"RemoveKeyReplicationRegions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RemoveKeyReplicationRegionsInput"},
+      "output":{"shape":"RemoveKeyReplicationRegionsOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Removes Replication Regions from an existing Amazon Web Services Payment Cryptography key, disabling the key's availability for cryptographic operations in the specified Amazon Web Services Regions.</p> <p>When you remove Replication Regions, the key material is securely deleted from those regions and can no longer be used for cryptographic operations there. This operation is irreversible for the specified Amazon Web Services Regions.</p> <p>Ensure that no active cryptographic operations or applications depend on the key in the regions you're removing before performing this operation.</p> <p> <b>Cross-account use:</b> This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_AddKeyReplicationRegions.html\">AddKeyReplicationRegions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_DisableDefaultKeyReplicationRegions.html\">DisableDefaultKeyReplicationRegions</a> </p> </li> </ul>"
+    },
     "RestoreKey":{
       "name":"RestoreKey",
       "http":{
@@ -408,8 +503,37 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "documentation":"<p>You do not have sufficient access to perform this action.</p> <p>This exception is thrown when the caller lacks the necessary IAM permissions to perform the requested operation. Verify that your IAM policy includes the required permissions for the specific Amazon Web Services Payment Cryptography action you're attempting.</p>",
       "exception":true
+    },
+    "AddKeyReplicationRegionsInput":{
+      "type":"structure",
+      "required":[
+        "KeyIdentifier",
+        "ReplicationRegions"
+      ],
+      "members":{
+        "KeyIdentifier":{
+          "shape":"KeyArnOrKeyAliasType",
+          "documentation":"<p>The key identifier (ARN or alias) of the key for which to add replication regions.</p> <p>This key must exist and be in a valid state for replication operations.</p>"
+        },
+        "ReplicationRegions":{
+          "shape":"Regions",
+          "documentation":"<p>The list of Amazon Web Services Regions to add to the key's replication configuration.</p> <p>Each region must be a valid Amazon Web Services Region where Amazon Web Services Payment Cryptography is available. The key will be replicated to these regions, allowing cryptographic operations to be performed closer to your applications.</p>"
+        }
+      },
+      "documentation":"<p>Input parameters for adding replication regions to a specific key.</p>"
+    },
+    "AddKeyReplicationRegionsOutput":{
+      "type":"structure",
+      "required":["Key"],
+      "members":{
+        "Key":{
+          "shape":"Key",
+          "documentation":"<p>The updated key metadata after adding the replication regions.</p> <p>This includes the current state of the key and its replication configuration.</p>"
+        }
+      },
+      "documentation":"<p>Output from adding replication regions to a key.</p>"
     },
     "Alias":{
       "type":"structure",
@@ -444,15 +568,14 @@
       "type":"string",
       "max":32768,
       "min":1,
-      "pattern":"[^\\[;\\]<>]+",
-      "sensitive":true
+      "pattern":"[^\\[;\\]<>]+"
     },
     "ConflictException":{
       "type":"structure",
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>This request can cause an inconsistent state for the resource.</p>",
+      "documentation":"<p>This request can cause an inconsistent state for the resource.</p> <p>The requested operation conflicts with the current state of the resource. For example, attempting to delete a key that is currently being used, or trying to create a resource that already exists.</p>",
       "exception":true
     },
     "CreateAliasInput":{
@@ -509,7 +632,8 @@
         "DeriveKeyUsage":{
           "shape":"DeriveKeyUsage",
           "documentation":"<p>The intended cryptographic usage of keys derived from the ECC key pair to be created.</p> <p>After creating an ECC key pair, you cannot change the intended cryptographic usage of keys derived from it using ECDH.</p>"
-        }
+        },
+        "ReplicationRegions":{"shape":"Regions"}
       }
     },
     "CreateKeyOutput":{
@@ -534,8 +658,7 @@
     },
     "DeleteAliasOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteKeyInput":{
       "type":"structure",
@@ -601,6 +724,50 @@
       },
       "documentation":"<p>The shared information used when deriving a key using ECDH.</p>",
       "union":true
+    },
+    "DisableDefaultKeyReplicationRegionsInput":{
+      "type":"structure",
+      "required":["ReplicationRegions"],
+      "members":{
+        "ReplicationRegions":{
+          "shape":"Regions",
+          "documentation":"<p>The list of Amazon Web Services Regions to remove from the account's default replication regions.</p> <p>New keys created after this operation will not automatically be replicated to these regions, though existing keys with replication to these regions will be unaffected.</p>"
+        }
+      },
+      "documentation":"<p>Input parameters for disabling default key replication regions for the account.</p>"
+    },
+    "DisableDefaultKeyReplicationRegionsOutput":{
+      "type":"structure",
+      "required":["EnabledReplicationRegions"],
+      "members":{
+        "EnabledReplicationRegions":{
+          "shape":"Regions",
+          "documentation":"<p>The remaining list of regions where default key replication is still enabled for the account.</p> <p>This reflects the account's default replication configuration after removing the specified regions.</p>"
+        }
+      },
+      "documentation":"<p>Output from disabling default key replication regions for the account.</p>"
+    },
+    "EnableDefaultKeyReplicationRegionsInput":{
+      "type":"structure",
+      "required":["ReplicationRegions"],
+      "members":{
+        "ReplicationRegions":{
+          "shape":"Regions",
+          "documentation":"<p>The list of Amazon Web Services Regions to enable as default replication regions for the account.</p> <p>New keys created in this account will automatically be replicated to these regions unless explicitly overridden during key creation.</p>"
+        }
+      },
+      "documentation":"<p>Input parameters for enabling default key replication regions for the account.</p>"
+    },
+    "EnableDefaultKeyReplicationRegionsOutput":{
+      "type":"structure",
+      "required":["EnabledReplicationRegions"],
+      "members":{
+        "EnabledReplicationRegions":{
+          "shape":"Regions",
+          "documentation":"<p>The complete list of regions where default key replication is now enabled for the account.</p> <p>This includes both previously enabled regions and the newly added regions from this operation.</p>"
+        }
+      },
+      "documentation":"<p>Output from enabling default key replication regions for the account.</p>"
     },
     "EvenHexLengthBetween16And32":{
       "type":"string",
@@ -754,7 +921,7 @@
     },
     "ExportTokenId":{
       "type":"string",
-      "pattern":"export-token-[0-9a-zA-Z]{16,64}"
+      "pattern":"(export-token-[0-9a-zA-Z]{16,64})?"
     },
     "ExportTr31KeyBlock":{
       "type":"structure",
@@ -827,6 +994,22 @@
         }
       }
     },
+    "GetDefaultKeyReplicationRegionsInput":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Input parameters for retrieving the account's default key replication regions. This operation requires no input parameters.</p>"
+    },
+    "GetDefaultKeyReplicationRegionsOutput":{
+      "type":"structure",
+      "required":["EnabledReplicationRegions"],
+      "members":{
+        "EnabledReplicationRegions":{
+          "shape":"Regions",
+          "documentation":"<p>The list of regions where default key replication is currently enabled for the account.</p> <p>New keys created in this account will automatically be replicated to these regions unless explicitly configured otherwise during key creation.</p>"
+        }
+      },
+      "documentation":"<p>Output containing the account's current default key replication configuration.</p>"
+    },
     "GetKeyInput":{
       "type":"structure",
       "required":["KeyIdentifier"],
@@ -843,7 +1026,7 @@
       "members":{
         "Key":{
           "shape":"Key",
-          "documentation":"<p>The key material, including the immutable and mutable data for the key.</p>"
+          "documentation":"<p>Contains the key metadata, including both immutable and mutable attributes for the key, but does not include actual cryptographic key material.</p>"
         }
       }
     },
@@ -1074,7 +1257,8 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Assigns one or more tags to the Amazon Web Services Payment Cryptography key. Use this parameter to tag a key when it is imported. To tag an existing Amazon Web Services Payment Cryptography key, use the <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_TagResource.html\">TagResource</a> operation.</p> <p>Each tag consists of a tag key and a tag value. Both the tag key and the tag value are required, but the tag value can be an empty (null) string. You can't have more than one tag on an Amazon Web Services Payment Cryptography key with the same tag key. If you specify an existing tag key with a different tag value, Amazon Web Services Payment Cryptography replaces the current tag value with the specified one.</p> <important> <p>Don't include personal, confidential or sensitive information in this field. This field may be displayed in plaintext in CloudTrail logs and other output.</p> </important> <note> <p>Tagging or untagging an Amazon Web Services Payment Cryptography key can allow or deny permission to the key.</p> </note>"
-        }
+        },
+        "ReplicationRegions":{"shape":"Regions"}
       }
     },
     "ImportKeyMaterial":{
@@ -1120,7 +1304,7 @@
     },
     "ImportTokenId":{
       "type":"string",
-      "pattern":"import-token-[0-9a-zA-Z]{16,64}"
+      "pattern":"(import-token-[0-9a-zA-Z]{16,64})?"
     },
     "ImportTr31KeyBlock":{
       "type":"structure",
@@ -1182,7 +1366,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The request processing has failed because of an unknown error, exception, or failure.</p>",
+      "documentation":"<p>The request processing has failed because of an unknown error, exception, or failure.</p> <p>This indicates a server-side error within the Amazon Web Services Payment Cryptography service. If this error persists, contact support for assistance.</p>",
       "exception":true,
       "fault":true
     },
@@ -1255,6 +1439,19 @@
         "DeriveKeyUsage":{
           "shape":"DeriveKeyUsage",
           "documentation":"<p>The cryptographic usage of an ECDH derived key as deﬁned in section A.5.2 of the TR-31 spec.</p>"
+        },
+        "MultiRegionKeyType":{
+          "shape":"MultiRegionKeyType",
+          "documentation":"<p>Indicates whether this key is a multi-region key and its role in the multi-region key hierarchy.</p> <p>Multi-region keys allow the same key material to be used across multiple Amazon Web Services Regions. This field specifies whether the key is a primary key (which can be replicated to other regions) or a replica key (which is a copy of a primary key in another region).</p>"
+        },
+        "PrimaryRegion":{"shape":"Region"},
+        "ReplicationStatus":{
+          "shape":"ReplicationStatus",
+          "documentation":"<p>Information about the replication status of the key across different regions.</p> <p>This field provides details about the current state of key replication, including any status messages or operational information. It helps track the progress and health of key replication operations.</p>"
+        },
+        "UsingDefaultReplicationRegions":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this key is using the account's default replication regions configuration.</p> <p>When set to <code>true</code>, the key automatically replicates to the regions specified in the account's default replication settings. When set to <code>false</code>, the key has a custom replication configuration that overrides the account defaults.</p>"
         }
       },
       "documentation":"<p>Metadata about an Amazon Web Services Payment Cryptography key.</p>"
@@ -1287,6 +1484,7 @@
     },
     "KeyArnOrKeyAliasType":{
       "type":"string",
+      "documentation":"<p>A key identifier that can be either a key ARN or an alias name. This allows flexible key identification in operations.</p> <p>When using a key ARN, it must be a fully qualified ARN in the format: <code>arn:aws:payment-cryptography:region:account:key/key-id</code>.</p> <p>When using an alias, it must begin with <code>alias/</code> followed by the alias name.</p> <important> <p>Do not include confidential or sensitive information in this field. This field may be displayed in plaintext in CloudTrail logs and other output.</p> </important>",
       "max":322,
       "min":7,
       "pattern":"arn:aws:payment-cryptography:[a-z]{2}-[a-z]{1,16}-[0-9]+:[0-9]{12}:(key/[0-9a-zA-Z]{16,64}|alias/[a-zA-Z0-9/_-]+)$|^alias/[a-zA-Z0-9/_-]+"
@@ -1349,7 +1547,8 @@
       "enum":[
         "CMAC",
         "ANSI_X9_24",
-        "HMAC"
+        "HMAC",
+        "SHA_1"
       ]
     },
     "KeyClass":{
@@ -1450,6 +1649,16 @@
         "AWS_PAYMENT_CRYPTOGRAPHY"
       ]
     },
+    "KeyReplicationState":{
+      "type":"string",
+      "documentation":"<p>Defines the replication state of a key</p>",
+      "enum":[
+        "IN_PROGRESS",
+        "DELETE_IN_PROGRESS",
+        "FAILED",
+        "SYNCHRONIZED"
+      ]
+    },
     "KeyState":{
       "type":"string",
       "documentation":"<p>Defines the state of a key</p>",
@@ -1494,7 +1703,9 @@
         "Enabled":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether the key is enabled. </p>"
-        }
+        },
+        "MultiRegionKeyType":{"shape":"MultiRegionKeyType"},
+        "PrimaryRegion":{"shape":"Region"}
       },
       "documentation":"<p>Metadata about an Amazon Web Services Payment Cryptography key.</p>"
     },
@@ -1636,6 +1847,14 @@
       "max":100,
       "min":1
     },
+    "MultiRegionKeyType":{
+      "type":"string",
+      "documentation":"<p>Defines the replication type of a key</p>",
+      "enum":[
+        "PRIMARY",
+        "REPLICA"
+      ]
+    },
     "NextToken":{
       "type":"string",
       "max":8192,
@@ -1652,7 +1871,7 @@
       "type":"string",
       "max":108,
       "min":1,
-      "pattern":"[0-9A-Z]+",
+      "pattern":"[0-9a-zA-Z]+",
       "sensitive":true
     },
     "OptionalBlocks":{
@@ -1661,6 +1880,62 @@
       "value":{"shape":"OptionalBlockValue"}
     },
     "PrimitiveBoolean":{"type":"boolean"},
+    "Region":{
+      "type":"string",
+      "documentation":"<p>An Amazon Web Services Region identifier in the standard format (e.g., <code>us-east-1</code>, <code>eu-west-1</code>).</p> <p>Used to specify regions for key replication operations. The region must be a valid Amazon Web Services Region where Amazon Web Services Payment Cryptography is available.</p>",
+      "pattern":"[a-z]{2}-[a-z]{1,16}-[0-9]+"
+    },
+    "Regions":{
+      "type":"list",
+      "member":{"shape":"Region"},
+      "documentation":"<p>A list of Amazon Web Services Regions for key replication operations.</p> <p>Each region in the list must be a valid Amazon Web Services Region identifier where Amazon Web Services Payment Cryptography is available. This list is used to specify which regions should be added to or removed from a key's replication configuration.</p>"
+    },
+    "RemoveKeyReplicationRegionsInput":{
+      "type":"structure",
+      "required":[
+        "KeyIdentifier",
+        "ReplicationRegions"
+      ],
+      "members":{
+        "KeyIdentifier":{
+          "shape":"KeyArnOrKeyAliasType",
+          "documentation":"<p>The key identifier (ARN or alias) of the key from which to remove replication regions.</p> <p>This key must exist and have replication enabled in the specified regions.</p>"
+        },
+        "ReplicationRegions":{
+          "shape":"Regions",
+          "documentation":"<p>The list of Amazon Web Services Regions to remove from the key's replication configuration.</p> <p>The key will no longer be available for cryptographic operations in these regions after removal. Ensure no active operations depend on the key in these regions before removal.</p>"
+        }
+      },
+      "documentation":"<p>Input parameters for removing replication regions from a specific key.</p>"
+    },
+    "RemoveKeyReplicationRegionsOutput":{
+      "type":"structure",
+      "required":["Key"],
+      "members":{
+        "Key":{
+          "shape":"Key",
+          "documentation":"<p>The updated key metadata after removing the replication regions.</p> <p>This reflects the current state of the key and its updated replication configuration.</p>"
+        }
+      },
+      "documentation":"<p>Output from removing replication regions from a key.</p>"
+    },
+    "ReplicationStatus":{
+      "type":"map",
+      "key":{"shape":"Region"},
+      "value":{"shape":"ReplicationStatusType"}
+    },
+    "ReplicationStatusType":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{"shape":"KeyReplicationState"},
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>A message that provides additional information about the current replication status of the key.</p> <p>This field contains details about any issues or progress updates related to key replication operations. It may include information about replication failures, synchronization status, or other operational details.</p>"
+        }
+      },
+      "documentation":"<p>Represents the replication status information for a key in a replication region.</p> <p>This structure contains details about the current state of key replication, including any status messages and operational information about the replication process.</p>"
+    },
     "ResourceArn":{
       "type":"string",
       "max":150,
@@ -1672,10 +1947,10 @@
       "members":{
         "ResourceId":{
           "shape":"String",
-          "documentation":"<p>The string for the exception.</p>"
+          "documentation":"<p>The identifier of the resource that was not found.</p> <p>This field contains the specific resource identifier (such as a key ARN or alias name) that could not be located.</p>"
         }
       },
-      "documentation":"<p>The request was denied due to an invalid resource error.</p>",
+      "documentation":"<p>The request was denied due to resource not found.</p> <p>The specified key, alias, or other resource does not exist in your account or region. Verify that the resource identifier is correct and that the resource exists in the expected region.</p>",
       "exception":true
     },
     "RestoreKeyInput":{
@@ -1721,7 +1996,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>This request would cause a service quota to be exceeded.</p>",
+      "documentation":"<p>This request would cause a service quota to be exceeded.</p> <p>You have reached the maximum number of keys, aliases, or other resources allowed in your account. Review your current usage and consider deleting unused resources or requesting a quota increase.</p>",
       "exception":true
     },
     "ServiceUnavailableException":{
@@ -1729,7 +2004,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The service cannot complete the request.</p>",
+      "documentation":"<p>The service cannot complete the request.</p> <p>The Amazon Web Services Payment Cryptography service is temporarily unavailable. This is typically a temporary condition - retry your request after a brief delay.</p>",
       "exception":true,
       "fault":true
     },
@@ -1842,8 +2117,7 @@
     },
     "TagResourceOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -1861,7 +2135,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "documentation":"<p>The request was denied due to request throttling.</p> <p>You have exceeded the rate limits for Amazon Web Services Payment Cryptography API calls. Implement exponential backoff and retry logic in your application to handle throttling gracefully.</p>",
       "exception":true
     },
     "Timestamp":{"type":"timestamp"},
@@ -1869,7 +2143,7 @@
       "type":"string",
       "max":9984,
       "min":56,
-      "pattern":"[0-9A-Z]+",
+      "pattern":"[0-9a-zA-Z]+",
       "sensitive":true
     },
     "Tr34KeyBlockFormat":{
@@ -1925,8 +2199,7 @@
     },
     "UntagResourceOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateAliasInput":{
       "type":"structure",
@@ -1957,7 +2230,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The request was denied due to an invalid request error.</p>",
+      "documentation":"<p>The request was denied due to an invalid request error.</p> <p>One or more parameters in your request are invalid. Check the parameter values, formats, and constraints specified in the API documentation.</p>",
       "exception":true
     },
     "WrappedKey":{

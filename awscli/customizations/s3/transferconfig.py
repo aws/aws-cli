@@ -30,6 +30,7 @@ DEFAULTS = {
     'max_bandwidth': None,
     'preferred_transfer_client': constants.AUTO_RESOLVE_TRANSFER_CLIENT,
     'target_bandwidth': None,
+    'io_chunksize': 256 * 1024,
 }
 
 

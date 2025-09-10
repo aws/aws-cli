@@ -538,17 +538,11 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
 
         bucket, key = find_bucket_key(fileinfo.dest)
         client = fileinfo.source_client
-        result_kwargs = {
-            'transfer_type': 'copy',
-            'src': fileinfo.src,
-            'dest': fileinfo.dest,
-        }
         try:
             client.head_object(Bucket=bucket, Key=key)
             LOGGER.debug(
                 f"warning: skipping {fileinfo.src} -> {fileinfo.dest}, file exists at destination"
             )
-            self._result_queue.put(SkipFileResult(**result_kwargs))
             return True
         except ClientError as e:
             if e.response['Error']['Code'] == '404':

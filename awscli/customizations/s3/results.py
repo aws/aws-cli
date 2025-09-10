@@ -57,6 +57,7 @@ SuccessResult = _create_new_result_cls('SuccessResult')
 FailureResult = _create_new_result_cls('FailureResult', ['exception'])
 
 DryRunResult = _create_new_result_cls('DryRunResult')
+SkipFileResult = _create_new_result_cls('SkipFileResult')
 
 ErrorResult = namedtuple('ErrorResult', ['exception'])
 
@@ -132,6 +133,13 @@ class DoneResultSubscriber(BaseResultSubscriber, OnDoneFilteredSubscriber):
                 self._src,
                 self._dest,
             )
+            self._result_queue.put(
+                SkipFileResult(
+                    transfer_type=self._transfer_type,
+                    src=self._src,
+                    dest=self._dest,
+                )
+            )
         else:
             self._result_queue.put(
                 FailureResult(
@@ -167,6 +175,7 @@ class ResultRecorder(BaseResultHandler):
         self.files_transferred = 0
         self.files_failed = 0
         self.files_warned = 0
+        self.files_skipped = 0
         self.errors = 0
         self.expected_bytes_transferred = 0
         self.expected_files_transferred = 0
@@ -184,6 +193,7 @@ class ResultRecorder(BaseResultHandler):
             SuccessResult: self._record_success_result,
             FailureResult: self._record_failure_result,
             WarningResult: self._record_warning_result,
+            SkipFileResult: self._record_skipped_file_result,
             ErrorResult: self._record_error_result,
             CtrlCResult: self._record_error_result,
             FinalTotalSubmissionsResult: self._record_final_expected_files,
@@ -299,6 +309,10 @@ class ResultRecorder(BaseResultHandler):
         self.files_failed += 1
         self.files_transferred += 1
 
+    def _record_skipped_file_result(self, result, **kwargs):
+        self.files_skipped += 1
+        # self.files_transferred += 1
+
     def _record_warning_result(self, **kwargs):
         self.files_warned += 1
 
@@ -359,6 +373,7 @@ class ResultPrinter(BaseResultHandler):
             SuccessResult: self._print_success,
             FailureResult: self._print_failure,
             WarningResult: self._print_warning,
+            SkipFileResult: self._print_skip,
             ErrorResult: self._print_error,
             CtrlCResult: self._print_ctrl_c,
             DryRunResult: self._print_dry_run,
@@ -374,6 +389,11 @@ class ResultPrinter(BaseResultHandler):
     def _print_noop(self, **kwargs):
         # If the result does not have a handler, then do nothing with it.
         pass
+
+    def _print_skip(self, **kwargs):
+        # First, try to print nothing but call redisplay progress for consistency
+        # if that doesn't work, can try printing all spaces with carriage return line ending
+        self._redisplay_progress()
 
     def _print_dry_run(self, result, **kwargs):
         statement = self.DRY_RUN_FORMAT.format(
@@ -519,6 +539,7 @@ class ResultPrinter(BaseResultHandler):
     def _clear_progress_if_no_more_expected_transfers(self, **kwargs):
         if self._progress_length and not self._has_remaining_progress():
             uni_print(self._adjust_statement_padding(''), self._out_file)
+            LOGGER.debug("Cleared progress;")
 
 
 class NoProgressResultPrinter(ResultPrinter):

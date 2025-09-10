@@ -460,6 +460,8 @@ class ResultPrinter(BaseResultHandler):
     def _add_progress_if_needed(self):
         if self._has_remaining_progress():
             self._print_progress()
+        else:
+            LOGGER.debug(f"No progress remaining, length: {self._progress_length}")
 
     def _print_progress(self, **kwargs):
         # Get all of the statistics in the correct form.
@@ -529,8 +531,9 @@ class ResultPrinter(BaseResultHandler):
     def _has_remaining_progress(self):
         if not self._result_recorder.expected_totals_are_final():
             return True
-        actual = self._result_recorder.files_transferred
+        actual = self._result_recorder.files_transferred + self._result_recorder.files_skipped
         expected = self._result_recorder.expected_files_transferred
+        LOGGER.debug(f"Result recorder expected totals not final. Actual={actual}, expected={expected}")
         return actual != expected
 
     def _print_to_out_file(self, statement):

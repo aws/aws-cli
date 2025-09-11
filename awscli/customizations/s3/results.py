@@ -390,10 +390,7 @@ class ResultPrinter(BaseResultHandler):
         pass
 
     def _print_skip(self, **kwargs):
-        # First, try to print nothing but call redisplay progress for consistency
-        # if that doesn't work, can try printing all spaces with carriage return line ending
-
-        # specify False for reset progress length since this result printer doesnt print newline
+        # Don't reset progress length since this result printer doesn't print a newline
         self._redisplay_progress(reset_progress_length=False)
 
     def _print_dry_run(self, result, **kwargs):

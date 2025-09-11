@@ -457,24 +457,16 @@ class ResultPrinter(BaseResultHandler):
         if self._has_remaining_progress():
             self._print_progress()
         else:
-            LOGGER.debug(f"No progress remaining, length: {self._progress_length}")
             self._clear_progress_if_no_more_expected_transfers(ending_char='\r')
 
     def _print_progress(self, **kwargs):
-        # Get all of the statistics in the correct form.
-
-        # For downloads, we know how many are skipped in advanced due to listing directory.
-        # so expected already takes into account the skips
-
-        # For uploads, we only know after the transfer, so expected does not take into account the skips
-
+        # Get all the statistics in the correct form.
         remaining_files = self._get_expected_total(
             str(
                 self._result_recorder.expected_files_transferred
                 - (self._result_recorder.files_transferred + self._result_recorder.files_skipped)
             )
         )
-        LOGGER.debug(f"expected files transferred={self._result_recorder.expected_files_transferred}, files_transferred={self._result_recorder.files_transferred}, files_skipped={self._result_recorder.files_skipped}")
 
         # Create the display statement.
         if self._result_recorder.expected_bytes_transferred > 0:
@@ -537,7 +529,6 @@ class ResultPrinter(BaseResultHandler):
             return True
         actual = self._result_recorder.files_transferred + self._result_recorder.files_skipped
         expected = self._result_recorder.expected_files_transferred
-        LOGGER.debug(f"Result recorder expected totals not final. Actual={actual}, expected={expected}")
         return actual != expected
 
     def _print_to_out_file(self, statement):
@@ -549,7 +540,6 @@ class ResultPrinter(BaseResultHandler):
     def _clear_progress_if_no_more_expected_transfers(self, ending_char='\n', **kwargs):
         if self._progress_length and not self._has_remaining_progress():
             uni_print(self._adjust_statement_padding('', ending_char=ending_char), self._out_file)
-            LOGGER.debug("Cleared progress;")
 
 
 class NoProgressResultPrinter(ResultPrinter):

@@ -30,7 +30,7 @@ from awscli.customizations.s3.results import (
     ResultPrinter,
     ResultProcessor,
     ResultRecorder,
-    SuccessResult, SkipFileResult,
+    SuccessResult,
 )
 from awscli.customizations.s3.subscribers import (
     CopyPropsSubscriberFactory,

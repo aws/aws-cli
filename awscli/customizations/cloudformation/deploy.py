@@ -339,6 +339,9 @@ class DeployCommand(BasicCommand):
                 tags=tags
             )
         except exceptions.ChangeEmptyError as ex:
+            # TODO print the runtime check for cli v2 breakage. technically won't be breaking if --fail-on-empty-changeset is
+            # explicitly provided. but we cannot differentiate between whether fail-on-empty-changeset is true because it's default
+            # or because it's explicitly specified.
             if fail_on_empty_changeset:
                 raise
             write_exception(ex, outfile=get_stdout_text_writer())

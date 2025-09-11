@@ -514,7 +514,11 @@ class EndpointRulesetResolver:
         LOG.debug(f'Endpoint provider result: {provider_result.url}')
 
         # The endpoint provider does not support non-secure transport.
-        if not self._use_ssl and provider_result.url.startswith('https://'):
+        if (
+                not self._use_ssl
+                and provider_result.url.startswith('https://')
+                and 'Endpoint' not in provider_params
+        ):
             provider_result = provider_result._replace(
                 url=f'http://{provider_result.url[8:]}'
             )

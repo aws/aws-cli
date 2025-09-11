@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.30.0
+======
+
+* feature:installer: Added universal binary support for AWS CLI v2 on macOS
+* api-change:``evs``: CreateEnvironment API now supports parameters (isHcxPublic & hcxNetworkAclId) for HCX migration via public internet, adding flexibility for migration scenarios. New APIs have been added for associating (AssociateEipToVlan) & disassociating (DisassociateEipFromVlan) Elastic IP (EIP) addresses.
+* api-change:``amp``: Add Vended Logs APIs for Amazon Prometheus Managed Collector
+* api-change:``quicksight``: This release adds support for Account level custom permissions, additional Dashboard Options, and Null support for Q&A.
+* api-change:``guardduty``: Updated Java SDK implementation of entity set status in GuardDuty API.
+* api-change:``datazone``: adding IAM principal id to IAM user profile details
+* api-change:``emr-containers``: Added nodeLabel support in container provider to aid hardware isolation support for virtual cluster and security configuration.
+* api-change:``medialive``: AWS Elemental MediaLive adds a new feature in MediaPackage output group that enables MediaPackage V2 users to control HLS-related parameters directly in MediaLive. These parameter settings are then reflected in MediaPackage outputs, providing more streamlined control over HLS configurations.
+* api-change:``ecs``: This release supports hook details for Amazon ECS lifecycle hooks.
+* api-change:``rds``: Adds support for end-to-end IAM authentication in RDS Proxy for MySQL, MariaDB, and PostgreSQL engines.
+
+
 2.29.1
 ======
 

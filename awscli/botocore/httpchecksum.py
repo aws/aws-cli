@@ -75,6 +75,10 @@ class Crc32Checksum(BaseChecksum):
     def digest(self):
         return self._int_crc32.to_bytes(4, byteorder="big")
 
+    @property
+    def int_crc(self):
+        return self._int_crc32
+
 
 class CrtCrc32Checksum(BaseChecksum):
     # Note: This class is only used if the CRT is available
@@ -87,6 +91,10 @@ class CrtCrc32Checksum(BaseChecksum):
 
     def digest(self):
         return self._int_crc32.to_bytes(4, byteorder="big")
+
+    @property
+    def int_crc(self):
+        return self._int_crc32
 
 
 class CrtCrc32cChecksum(BaseChecksum):
@@ -101,6 +109,10 @@ class CrtCrc32cChecksum(BaseChecksum):
     def digest(self):
         return self._int_crc32c.to_bytes(4, byteorder="big")
 
+    @property
+    def int_crc(self):
+        return self._int_crc32
+
 
 class CrtCrc64NvmeChecksum(BaseChecksum):
     # Note: This class is only used if the CRT is available
@@ -113,6 +125,10 @@ class CrtCrc64NvmeChecksum(BaseChecksum):
 
     def digest(self):
         return self._int_crc64nvme.to_bytes(8, byteorder="big")
+
+    @property
+    def int_crc(self):
+        return self._int_crc32
 
 
 class Sha1Checksum(BaseChecksum):

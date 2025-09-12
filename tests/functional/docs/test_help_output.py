@@ -24,10 +24,41 @@ at the man output, we look one step before at the generated rst output
 
 import os
 
+import pytest
+
 from awscli.alias import AliasLoader
 from awscli.compat import StringIO
-from awscli.testutils import BaseAWSHelpOutputTest, FileCreator, mock
+from awscli.testutils import (
+    BaseAWSHelpOutputTest,
+    BaseCLIDriverTest,
+    CapturedOutput,
+    CapturedRenderer,
+    FileCreator,
+    capture_output,
+    create_clidriver,
+    mock,
+)
 from tests import CLIRunner
+
+COMMAND_ARGS = [
+    ["ec2", "create-launch-template-version", "help"],
+    ["help"],
+    ["s3", "help"],
+]
+
+COMMAND_ARGS_EXPECTED_URL_SUFFIXES = [
+    "/reference/ec2/create-launch-template-version.html",
+    "/index.html",
+    "/reference/s3/index.html",
+]
+
+
+def make_command_args():
+    yield from COMMAND_ARGS
+
+
+def make_command_args_with_expected_url():
+    yield from zip(COMMAND_ARGS, COMMAND_ARGS_EXPECTED_URL_SUFFIXES)
 
 
 class TestHelpOutput(BaseAWSHelpOutputTest):
@@ -217,7 +248,9 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
         self.assertEqual(cr, 252)
         # We should see an error message complaining about
         # an invalid choice because the operation has been removed.
-        self.assertIn('argument operation: Found invalid choice', stderr.getvalue())
+        self.assertIn(
+            'argument operation: Found invalid choice', stderr.getvalue()
+        )
 
     def test_ses_deprecated_commands(self):
         self.driver.main(['ses', 'help'])
@@ -386,7 +419,7 @@ class TestCanDocumentAsRequired(BaseAWSHelpOutputTest):
         # This param is already marked as required, but to be
         # explicit this is repeated here to make it more clear.
         def doc_as_required(argument_table, **kwargs):
-            arg = argument_table['volume-arns']
+            arg = argument_table['volume-arns']  # noqa: F841
 
         self.driver.session.register(
             'building-argument-table', doc_as_required
@@ -444,18 +477,18 @@ class TestIotData(BaseAWSHelpOutputTest):
 
 class TestAliases(BaseAWSHelpOutputTest):
     def setUp(self):
-        super(TestAliases, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.alias_file = self.files.create_file('alias', '[toplevel]\n')
         self.driver.alias_loader = AliasLoader(self.alias_file)
 
     def tearDown(self):
-        super(TestAliases, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def add_alias(self, alias_name, alias_value):
         with open(self.alias_file, 'a+') as f:
-            f.write('%s = %s\n' % (alias_name, alias_value))
+            f.write(f'{alias_name} = {alias_value}\n')
 
     def test_alias_not_in_main_help(self):
         self.add_alias('my-alias', 'ec2 describe-regions')
@@ -468,6 +501,61 @@ class TestStreamingOutputHelp(BaseAWSHelpOutputTest):
         self.driver.main(['s3api', 'get-object', 'help'])
         self.assert_not_contains('outfile <value>')
         self.assert_contains('<outfile>')
+
+
+def runner(config_file=None):
+    runner = CLIRunner()
+
+    # Add the PATH to the environment variables so that that posix help
+    # renderers can find either the groff or mandoc executables required to
+    # render the help pages for posix environments
+    if "PATH" in os.environ:
+        runner.env["PATH"] = os.environ["PATH"]
+
+    if config_file is not None:
+        runner.env['AWS_CONFIG_FILE'] = config_file
+
+    return runner
+
+
+@pytest.fixture
+def runner_url():
+    file_creator = FileCreator()
+    return runner(
+        file_creator.create_file(
+            'config', '[default]\n' 'cli_help_output = url\n'
+        )
+    )
+
+
+@pytest.fixture
+def runner_browser():
+    file_creator = FileCreator()
+    return runner(
+        file_creator.create_file(
+            'config', '[default]\n' 'cli_help_output = browser\n'
+        )
+    )
+
+
+class TestUrlOutputHelp:
+    @pytest.mark.parametrize(
+        "command_args,expected_url_suffix",
+        make_command_args_with_expected_url(),
+    )
+    @mock.patch('awscli.help.get_renderer')
+    def test_docs_prints_url(
+        self, mock_get_renderer, command_args, expected_url_suffix, runner_url
+    ):
+        renderer = CapturedRenderer()
+        mock_get_renderer.return_value = renderer
+
+        runner_url.run(command_args)
+        assert (
+            "https://awscli.amazonaws.com/v2/documentation/api/"
+            in renderer.rendered_contents
+        )
+        assert expected_url_suffix in renderer.rendered_contents
 
 
 # Use this test class for "help" cases that require the default renderer
@@ -485,3 +573,16 @@ class TestHelpOutputDefaultRenderer:
 
         result = runner.run(["ec2", "create-launch-template-version", "help"])
         assert 'exceeds the line-length-limit' not in result.stderr
+
+
+class TestHelpOutputBrowserRenderer:
+    @pytest.mark.parametrize("command_args", make_command_args())
+    @mock.patch("awscli.help.webbrowser.open_new_tab")
+    def test_docs_opens_browser(
+        self, mock_open_new_tab, command_args, runner_browser
+    ):
+        runner_result = runner_browser.run(command_args)
+        assert (
+            "Opening help file in the default browser." in runner_result.stdout
+        )
+        mock_open_new_tab.assert_called_once()

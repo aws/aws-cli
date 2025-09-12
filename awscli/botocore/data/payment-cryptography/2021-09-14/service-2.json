@@ -190,6 +190,24 @@
       ],
       "documentation":"<p>Gets the Amazon Web Services Payment Cryptography key associated with the alias.</p> <p> <b>Cross-account use:</b> This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_CreateAlias.html\">CreateAlias</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_DeleteAlias.html\">DeleteAlias</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_ListAliases.html\">ListAliases</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_UpdateAlias.html\">UpdateAlias</a> </p> </li> </ul>"
     },
+    "GetCertificateSigningRequest":{
+      "name":"GetCertificateSigningRequest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCertificateSigningRequestInput"},
+      "output":{"shape":"GetCertificateSigningRequestOutput"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Used to retrieve the public key for a keypair.</p>"
+    },
     "GetDefaultKeyReplicationRegions":{
       "name":"GetDefaultKeyReplicationRegions",
       "http":{
@@ -563,6 +581,90 @@
     "Boolean":{
       "type":"boolean",
       "box":true
+    },
+    "CertificateSigningRequestType":{
+      "type":"string",
+      "max":32768,
+      "min":1,
+      "pattern":"[^\\[;\\]<>]+",
+      "sensitive":true
+    },
+    "CertificateSubjectType":{
+      "type":"structure",
+      "required":["CommonName"],
+      "members":{
+        "CommonName":{
+          "shape":"CertificateSubjectTypeCommonNameString",
+          "documentation":"<p>Common Name to be used in the certificate signing request</p>"
+        },
+        "OrganizationUnit":{
+          "shape":"CertificateSubjectTypeOrganizationUnitString",
+          "documentation":"<p>Organization Unit to be used in the certificate signing request</p>"
+        },
+        "Organization":{
+          "shape":"CertificateSubjectTypeOrganizationString",
+          "documentation":"<p>Organization to be used in the certificate signing request</p>"
+        },
+        "City":{
+          "shape":"CertificateSubjectTypeCityString",
+          "documentation":"<p>City to be used in the certificate signing request</p>"
+        },
+        "Country":{
+          "shape":"CertificateSubjectTypeCountryString",
+          "documentation":"<p>Country to be used in the certificate signing request</p>"
+        },
+        "StateOrProvince":{
+          "shape":"CertificateSubjectTypeStateOrProvinceString",
+          "documentation":"<p>State Or Province to be used in the certificate signing request</p>"
+        },
+        "EmailAddress":{
+          "shape":"CertificateSubjectTypeEmailAddressString",
+          "documentation":"<p>Email to be used in the certificate signing request</p>"
+        }
+      },
+      "documentation":"<p>Metadata used in generating the CSR</p>"
+    },
+    "CertificateSubjectTypeCityString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z]+"
+    },
+    "CertificateSubjectTypeCommonNameString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z]+"
+    },
+    "CertificateSubjectTypeCountryString":{
+      "type":"string",
+      "max":2,
+      "min":2,
+      "pattern":"[A-Za-z]+"
+    },
+    "CertificateSubjectTypeEmailAddressString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*"
+    },
+    "CertificateSubjectTypeOrganizationString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z]+"
+    },
+    "CertificateSubjectTypeOrganizationUnitString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z]+"
+    },
+    "CertificateSubjectTypeStateOrProvinceString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z]+"
     },
     "CertificateType":{
       "type":"string",
@@ -943,7 +1045,6 @@
       "required":[
         "CertificateAuthorityPublicKeyIdentifier",
         "WrappingKeyCertificate",
-        "ExportToken",
         "KeyBlockFormat"
       ],
       "members":{
@@ -958,6 +1059,14 @@
         "ExportToken":{
           "shape":"ExportTokenId",
           "documentation":"<p>The export token to initiate key export from Amazon Web Services Payment Cryptography. It also contains the signing key certificate that will sign the wrapped key during TR-34 key block generation. Call <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_GetParametersForExport.html\">GetParametersForExport</a> to receive an export token. It expires after 30 days. You can use the same export token to export multiple keys from the same service account.</p>"
+        },
+        "SigningKeyIdentifier":{
+          "shape":"KeyArnOrKeyAliasType",
+          "documentation":"<p>Key Identifier used for signing the export key</p>"
+        },
+        "SigningKeyCertificate":{
+          "shape":"CertificateType",
+          "documentation":"<p>Certificate used for signing the export key</p>"
         },
         "KeyBlockFormat":{
           "shape":"Tr34KeyBlockFormat",
@@ -991,6 +1100,38 @@
         "Alias":{
           "shape":"Alias",
           "documentation":"<p>The alias of the Amazon Web Services Payment Cryptography key.</p>"
+        }
+      }
+    },
+    "GetCertificateSigningRequestInput":{
+      "type":"structure",
+      "required":[
+        "KeyIdentifier",
+        "SigningAlgorithm",
+        "CertificateSubject"
+      ],
+      "members":{
+        "KeyIdentifier":{
+          "shape":"KeyArnOrKeyAliasType",
+          "documentation":"<p>Asymmetric key used for generating the certificate signing request</p>"
+        },
+        "SigningAlgorithm":{
+          "shape":"SigningAlgorithmType",
+          "documentation":"<p>Algorithm used to generate the certificate signing request</p>"
+        },
+        "CertificateSubject":{
+          "shape":"CertificateSubjectType",
+          "documentation":"<p>Certificate subject data</p>"
+        }
+      }
+    },
+    "GetCertificateSigningRequestOutput":{
+      "type":"structure",
+      "required":["CertificateSigningRequest"],
+      "members":{
+        "CertificateSigningRequest":{
+          "shape":"CertificateSigningRequestType",
+          "documentation":"<p>Certificate signing request</p>"
         }
       }
     },
@@ -1329,7 +1470,6 @@
       "required":[
         "CertificateAuthorityPublicKeyIdentifier",
         "SigningKeyCertificate",
-        "ImportToken",
         "WrappedKeyBlock",
         "KeyBlockFormat"
       ],
@@ -1345,6 +1485,14 @@
         "ImportToken":{
           "shape":"ImportTokenId",
           "documentation":"<p>The import token that initiates key import using the asymmetric TR-34 key exchange method into Amazon Web Services Payment Cryptography. It expires after 30 days. You can use the same import token to import multiple keys to the same service account.</p>"
+        },
+        "WrappingKeyIdentifier":{
+          "shape":"KeyArnOrKeyAliasType",
+          "documentation":"<p>Key Identifier used for unwrapping the import key</p>"
+        },
+        "WrappingKeyCertificate":{
+          "shape":"CertificateType",
+          "documentation":"<p>Key Identifier used for unwrapping the import key</p>"
         },
         "WrappedKeyBlock":{
           "shape":"Tr34WrappedKeyBlock",
@@ -1704,7 +1852,10 @@
           "shape":"Boolean",
           "documentation":"<p>Specifies whether the key is enabled. </p>"
         },
-        "MultiRegionKeyType":{"shape":"MultiRegionKeyType"},
+        "MultiRegionKeyType":{
+          "shape":"MultiRegionKeyType",
+          "documentation":"<p>Indicates whether this key is a multi-region key and its role in the multi-region key hierarchy.</p> <p>Multi-region keys allow the same key material to be used across multiple Amazon Web Services Regions. This field specifies whether the key is a primary key (which can be replicated to other regions) or a replica key (which is a copy of a primary key in another region).</p>"
+        },
         "PrimaryRegion":{"shape":"Region"}
       },
       "documentation":"<p>Metadata about an Amazon Web Services Payment Cryptography key.</p>"
@@ -1928,7 +2079,10 @@
       "type":"structure",
       "required":["Status"],
       "members":{
-        "Status":{"shape":"KeyReplicationState"},
+        "Status":{
+          "shape":"KeyReplicationState",
+          "documentation":"<p>The current status of key replication in this region.</p> <p>This field indicates whether the key replication is in progress, completed successfully, or has encountered an error. Possible values include states such as SYNCRHONIZED, IN_PROGRESS, DELETE_IN_PROGRESS, or FAILED. This provides visibility into the replication process for monitoring and troubleshooting purposes.</p>"
+        },
         "StatusMessage":{
           "shape":"String",
           "documentation":"<p>A message that provides additional information about the current replication status of the key.</p> <p>This field contains details about any issues or progress updates related to key replication operations. It may include information about replication failures, synchronization status, or other operational details.</p>"
@@ -2013,6 +2167,16 @@
       "max":2048,
       "min":2,
       "pattern":"(?:[0-9a-fA-F][0-9a-fA-F])+"
+    },
+    "SigningAlgorithmType":{
+      "type":"string",
+      "documentation":"<p>Defines the Algorithm used to generate the certificate signing request</p>",
+      "enum":[
+        "SHA224",
+        "SHA256",
+        "SHA384",
+        "SHA512"
+      ]
     },
     "StartKeyUsageInput":{
       "type":"structure",

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.30.1
+======
+
+* enhancement:``s3``: Expose S3 transfer config's ``io_chunksize`` in shared config file
+* api-change:``payment-cryptography``: Add support for certificates to be signed by 3rd party certificate authorities.  New API GetCertificateSigningRequest API and support for providing certificates at run-time for tr-34 import/export
+
+
 2.30.0
 ======
 

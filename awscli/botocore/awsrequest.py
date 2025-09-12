@@ -221,7 +221,7 @@ class AWSConnection:
         parts = maybe_status_line.split(None, 2)
         # Check for HTTP/<version> 100 Continue\r\n
         return (
-            len(parts) >= 3
+            len(parts) >= 2
             and parts[0].startswith(b'HTTP/')
             and parts[1] == b'100'
         )

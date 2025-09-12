@@ -30,35 +30,66 @@ from awscli.alias import AliasLoader
 from awscli.compat import StringIO
 from awscli.testutils import (
     BaseAWSHelpOutputTest,
-    BaseCLIDriverTest,
-    CapturedOutput,
     CapturedRenderer,
     FileCreator,
-    capture_output,
-    create_clidriver,
     mock,
 )
 from tests import CLIRunner
 
-COMMAND_ARGS = [
-    ["ec2", "create-launch-template-version", "help"],
-    ["help"],
-    ["s3", "help"],
+COMMAND_ARGS_TEST_DATA = [
+    {
+        'command_args': ["ec2", "create-launch-template-version", "help"],
+        'expected_url_suffix': "/reference/ec2/create-launch-template-version.html",
+    },
+    {
+        'command_args': ["help"],
+        'expected_url_suffix': "/index.html",
+    },
+    {
+        'command_args': ["s3", "help"],
+        'expected_url_suffix': "/reference/s3/index.html",
+    },
 ]
 
-COMMAND_ARGS_EXPECTED_URL_SUFFIXES = [
-    "/reference/ec2/create-launch-template-version.html",
-    "/index.html",
-    "/reference/s3/index.html",
-]
+
+def create_cases():
+    for test_data in COMMAND_ARGS_TEST_DATA:
+        yield pytest.param(test_data, id="-".join(test_data['command_args']))
 
 
-def make_command_args():
-    yield from COMMAND_ARGS
+def runner(config_file=None):
+    runner = CLIRunner()
+
+    # Add the PATH to the environment variables so that that posix help
+    # renderers can find either the groff or mandoc executables required to
+    # render the help pages for posix environments
+    if "PATH" in os.environ:
+        runner.env["PATH"] = os.environ["PATH"]
+
+    if config_file is not None:
+        runner.env['AWS_CONFIG_FILE'] = config_file
+
+    return runner
 
 
-def make_command_args_with_expected_url():
-    yield from zip(COMMAND_ARGS, COMMAND_ARGS_EXPECTED_URL_SUFFIXES)
+@pytest.fixture
+def runner_url():
+    file_creator = FileCreator()
+    return runner(
+        file_creator.create_file(
+            'config', '[default]\n' 'cli_help_output = url\n'
+        )
+    )
+
+
+@pytest.fixture
+def runner_browser():
+    file_creator = FileCreator()
+    return runner(
+        file_creator.create_file(
+            'config', '[default]\n' 'cli_help_output = browser\n'
+        )
+    )
 
 
 class TestHelpOutput(BaseAWSHelpOutputTest):
@@ -503,59 +534,22 @@ class TestStreamingOutputHelp(BaseAWSHelpOutputTest):
         self.assert_contains('<outfile>')
 
 
-def runner(config_file=None):
-    runner = CLIRunner()
-
-    # Add the PATH to the environment variables so that that posix help
-    # renderers can find either the groff or mandoc executables required to
-    # render the help pages for posix environments
-    if "PATH" in os.environ:
-        runner.env["PATH"] = os.environ["PATH"]
-
-    if config_file is not None:
-        runner.env['AWS_CONFIG_FILE'] = config_file
-
-    return runner
-
-
-@pytest.fixture
-def runner_url():
-    file_creator = FileCreator()
-    return runner(
-        file_creator.create_file(
-            'config', '[default]\n' 'cli_help_output = url\n'
-        )
-    )
-
-
-@pytest.fixture
-def runner_browser():
-    file_creator = FileCreator()
-    return runner(
-        file_creator.create_file(
-            'config', '[default]\n' 'cli_help_output = browser\n'
-        )
-    )
-
-
 class TestUrlOutputHelp:
     @pytest.mark.parametrize(
-        "command_args,expected_url_suffix",
-        make_command_args_with_expected_url(),
+        "test_case",
+        create_cases(),
     )
     @mock.patch('awscli.help.get_renderer')
-    def test_docs_prints_url(
-        self, mock_get_renderer, command_args, expected_url_suffix, runner_url
-    ):
+    def test_docs_prints_url(self, mock_get_renderer, test_case, runner_url):
         renderer = CapturedRenderer()
         mock_get_renderer.return_value = renderer
 
-        runner_url.run(command_args)
+        runner_url.run(test_case['command_args'])
         assert (
             "https://awscli.amazonaws.com/v2/documentation/api/"
             in renderer.rendered_contents
         )
-        assert expected_url_suffix in renderer.rendered_contents
+        assert test_case['expected_url_suffix'] in renderer.rendered_contents
 
 
 # Use this test class for "help" cases that require the default renderer
@@ -576,12 +570,12 @@ class TestHelpOutputDefaultRenderer:
 
 
 class TestHelpOutputBrowserRenderer:
-    @pytest.mark.parametrize("command_args", make_command_args())
+    @pytest.mark.parametrize("test_case", create_cases())
     @mock.patch("awscli.help.webbrowser.open_new_tab")
     def test_docs_opens_browser(
-        self, mock_open_new_tab, command_args, runner_browser
+        self, mock_open_new_tab, test_case, runner_browser
     ):
-        runner_result = runner_browser.run(command_args)
+        runner_result = runner_browser.run(test_case['command_args'])
         assert (
             "Opening help file in the default browser." in runner_result.stdout
         )

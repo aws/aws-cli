@@ -37,6 +37,7 @@ from awscli.customizations.s3.subscribers import (
     DeleteSourceFileSubscriber,
     DeleteSourceObjectSubscriber,
     DirectoryCreatorSubscriber,
+    ProvideChecksumSubscriber,
     ProvideETagSubscriber,
     ProvideLastModifiedTimeSubscriber,
     ProvideSizeSubscriber,
@@ -421,6 +422,9 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
             subscribers.append(
                 DeleteSourceObjectSubscriber(fileinfo.source_client)
             )
+        subscribers.append(
+            ProvideChecksumSubscriber(fileinfo.associated_response_data)
+        )
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.src)

@@ -15,6 +15,7 @@ import logging
 import threading
 
 from botocore.exceptions import ClientError
+from s3transfer.checksums import provide_checksum_to_meta
 from s3transfer.compat import seekable
 from s3transfer.exceptions import (
     RetriesExceededError,
@@ -354,10 +355,12 @@ class DownloadSubmissionTask(SubmissionTask):
         if (
             transfer_future.meta.size is None
             or transfer_future.meta.etag is None
+            or not transfer_future.meta.checksum_is_provided
         ):
             response = client.head_object(
                 Bucket=transfer_future.meta.call_args.bucket,
                 Key=transfer_future.meta.call_args.key,
+                ChecksumMode="ENABLED",
                 **transfer_future.meta.call_args.extra_args,
             )
             # If a size was not provided figure out the size for the
@@ -368,6 +371,8 @@ class DownloadSubmissionTask(SubmissionTask):
             # Provide an etag to ensure a stored object is not modified
             # during a multipart download.
             transfer_future.meta.provide_object_etag(response.get('ETag'))
+            # Provide stored checksum value and algorithm.
+            provide_checksum_to_meta(response, transfer_future.meta)
 
         download_output_manager = self._get_download_output_manager_cls(
             transfer_future, osutil

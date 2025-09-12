@@ -122,12 +122,22 @@ class TransferFuture(BaseTransferFuture):
 class TransferMeta(BaseTransferMeta):
     """Holds metadata about the TransferFuture"""
 
+    _UNPROVIDED = object()
+
     def __init__(self, call_args=None, transfer_id=None):
         self._call_args = call_args
         self._transfer_id = transfer_id
         self._size = None
         self._user_context = {}
         self._etag = None
+
+        # These values are provided via initial HeadObject requests
+        # when downloading objects. But they're not guaranteed to be
+        # in the response, in which case `None` values will be provided.
+        # A sentinel value is set as the default so we can disambiguate
+        # between "no value provided yet" and "explicit `None` value provided".
+        self._stored_checksum = self._UNPROVIDED
+        self._checksum_algorithm = self._UNPROVIDED
 
     @property
     def call_args(self):
@@ -154,6 +164,24 @@ class TransferMeta(BaseTransferMeta):
         """The etag of the stored object for validating multipart downloads"""
         return self._etag
 
+    @property
+    def stored_checksum(self):
+        if self._stored_checksum is self._UNPROVIDED:
+            return None
+        return self._stored_checksum
+
+    @property
+    def checksum_algorithm(self):
+        if self._checksum_algorithm is self._UNPROVIDED:
+            return None
+        return self._checksum_algorithm
+
+    def checksum_is_provided(self):
+        return (
+            self._stored_checksum is not self._UNPROVIDED
+            and self._checksum_algorithm is not self._UNPROVIDED
+        )
+
     def provide_transfer_size(self, size):
         """A method to provide the size of a transfer request
 
@@ -171,6 +199,12 @@ class TransferMeta(BaseTransferMeta):
         the etag as the value to GetObject requests.
         """
         self._etag = etag
+
+    def provide_stored_checksum(self, stored_checksum):
+        self._stored_checksum = stored_checksum
+
+    def provide_checksum_algorithm(self, checksum_algorithm):
+        self._checksum_algorithm = checksum_algorithm
 
 
 class TransferCoordinator:

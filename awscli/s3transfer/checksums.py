@@ -18,6 +18,20 @@ subject to abrupt breaking changes. Please do not use them directly.
 from copy import copy
 
 
+def provide_checksum_to_meta(response, transfer_meta):
+    stored_checksum = None
+    checksum_algorithm = None
+    checksum_type = response.get("ChecksumType")
+    if checksum_type and checksum_type == "FULL_OBJECT":
+        for crc_checksum in _CRC_CHECKSUM_TO_COMBINE_FUNCTION.keys():
+            if checksum_value := response.get(crc_checksum):
+                stored_checksum = checksum_value
+                checksum_algorithm = crc_checksum
+                break
+    transfer_meta.provide_checksum_algorithm(checksum_algorithm)
+    transfer_meta.provide_stored_checksum(stored_checksum)
+
+
 def combine_crc32(crc1, crc2, len2):
     """Combine two CRC32 values.
 

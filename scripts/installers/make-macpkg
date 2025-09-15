@@ -30,18 +30,6 @@ def select_distribution_path():
     base = os.path.join(PKG_DIR, 'distribution.xml')
     uni = os.path.join(PKG_DIR, 'distribution.universal.xml')
     is_universal = os.environ.get('BUILD_UNIVERSAL_BINARY') == '1'
-
-    print(f"PKG_DIR: {PKG_DIR}")
-    print(f"Base path: {base}")
-    print(f"Universal path: {uni}")
-    print(f"BUILD_UNIVERSAL_BINARY: {os.environ.get('BUILD_UNIVERSAL_BINARY')}")
-    print(f"Is universal build: {is_universal}")
-    print(f"Selected path: {uni if is_universal else base}")
-
-    # Also verify files exist
-    print(f"Base exists: {os.path.exists(base)}")
-    print(f"Universal exists: {os.path.exists(uni)}")
-
     return uni if is_universal else base
 
 def make_pkg(pkg_name, src_exe):

@@ -20,17 +20,13 @@ ROOT = os.path.dirname(
 PKG_DIR = os.path.join(ROOT, 'macpkg')
 SCRIPTS_DIR = os.path.join(PKG_DIR, 'scripts')
 RESOURCES_DIR = os.path.join(PKG_DIR, 'resources')
+DISTRIBUTION_PATH = os.path.join(PKG_DIR, 'distribution.xml')
 
 TEMP_PKG_NAME = 'aws-cli.pkg'
 PKG_NAME = 'AWS-CLI-Installer.pkg'
 EXE_ZIP_NAME = 'awscli-exe.zip'
 EXE_NAME = 'aws'
 
-def select_distribution_path():
-    base = os.path.join(PKG_DIR, 'distribution.xml')
-    uni = os.path.join(PKG_DIR, 'distribution.universal.xml')
-    is_universal = os.environ.get('BUILD_UNIVERSAL_BINARY') == '1'
-    return uni if is_universal else base
 
 def make_pkg(pkg_name, src_exe):
     with tmp_dir() as workdir:
@@ -64,8 +60,6 @@ def do_make_pkg(workdir, pkg_name):
         )
     )
 
-    dist_path = select_distribution_path()
-
     with tmp_dir() as formatted_resource_dir:
         render_resources(
             formatted_resource_dir, RESOURCES_DIR, {'version': version}
@@ -73,7 +67,7 @@ def do_make_pkg(workdir, pkg_name):
         print(
             run(
                 ('productbuild --distribution %s --resources %s %s')
-                % (dist_path, formatted_resource_dir, PKG_NAME),
+                % (DISTRIBUTION_PATH, formatted_resource_dir, PKG_NAME),
                 cwd=workdir,
             )
         )

@@ -19,7 +19,7 @@ import base64
 from copy import copy
 from functools import cached_property
 
-from botocore.httpchecksum import CrtCrc32cChecksum
+from botocore.httpchecksum import CrtCrc32Checksum
 
 
 class PartStreamingChecksumBody:
@@ -82,18 +82,24 @@ class FullObjectChecksum:
     def _combine_part_checksums(self):
         if self._part_checksums is None:
             return
-        sorted_keys = sorted(self._part_checksums.keys())
-        combined = self._part_checksums[sorted_keys[0]]
-        for i, offset in enumerate(sorted_keys[1:]):
+
+        sorted_offsets = sorted(self._part_checksums.keys())
+        # Initialize the combined checksum to the first part's checksum value.
+        combined = self._part_checksums[sorted_offsets[0]]
+        # To calculate part length, take the current offset and subtract from
+        # the next offset. If the current offset is the start of the last part,
+        # then subtract from the total content length. eg,
+        # (8388608, 16777216)
+        # (16777216, self._content_length)
+        remaining_offsets = sorted_offsets[1:]
+        next_offsets = sorted_offsets[2:] + [self._content_length]
+        for offset, next_offset in zip(remaining_offsets, next_offsets):
             part_checksum = self._part_checksums[offset]
-            if i + 1 == len(sorted_keys) - 1:
-                next_offset = self._content_length
-            else:
-                next_offset = sorted_keys[i + 2]
             offset_len = next_offset - offset
             combined = self._combine_function(
                 combined, part_checksum, offset_len
             )
+
         self._calculated_checksum = base64.b64encode(
             combined.to_bytes(4, byteorder='big')
         ).decode('ascii')
@@ -111,7 +117,7 @@ def provide_checksum_to_meta(response, transfer_meta):
     checksum_algorithm = None
     checksum_type = response.get("ChecksumType")
     if checksum_type and checksum_type == "FULL_OBJECT":
-        for crc_checksum in _CRC_CHECKSUM_TO_COMBINE_FUNCTION.keys():
+        for crc_checksum in CRC_CHECKSUMS:
             if checksum_value := response.get(crc_checksum):
                 stored_checksum = checksum_value
                 checksum_algorithm = crc_checksum
@@ -199,3 +205,6 @@ _CRC_CHECKSUM_TO_COMBINE_FUNCTION = {
 CRC_CHECKSUM_CLS = {
     "ChecksumCRC32": CrtCrc32Checksum,
 }
+
+
+CRC_CHECKSUMS = _CRC_CHECKSUM_TO_COMBINE_FUNCTION.keys()

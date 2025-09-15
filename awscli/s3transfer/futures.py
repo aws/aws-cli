@@ -176,6 +176,7 @@ class TransferMeta(BaseTransferMeta):
             return None
         return self._checksum_algorithm
 
+    @property
     def checksum_is_provided(self):
         return (
             self._stored_checksum is not self._UNPROVIDED

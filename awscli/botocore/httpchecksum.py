@@ -241,6 +241,10 @@ class StreamingChecksumBody(StreamingBody):
         self._checksum = checksum
         self._expected = expected
 
+    @property
+    def checksum(self):
+        return self._checksum
+
     def read(self, amt=None):
         chunk = super().read(amt=amt)
         self._checksum.update(chunk)

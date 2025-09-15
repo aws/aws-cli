@@ -20,7 +20,6 @@ ROOT = os.path.dirname(
 PKG_DIR = os.path.join(ROOT, 'macpkg')
 SCRIPTS_DIR = os.path.join(PKG_DIR, 'scripts')
 RESOURCES_DIR = os.path.join(PKG_DIR, 'resources')
-DISTRIBUTION_PATH = os.path.join(PKG_DIR, 'distribution.xml')
 
 TEMP_PKG_NAME = 'aws-cli.pkg'
 PKG_NAME = 'AWS-CLI-Installer.pkg'
@@ -77,9 +76,7 @@ def do_make_pkg(workdir, pkg_name):
         )
     )
 
-    dist_src = select_distribution_path()
-    workdir_distribution = os.path.join(workdir, 'distribution.xml')
-    shutil.copyfile(dist_src, workdir_distribution)
+    dist_path = select_distribution_path()
 
     with tmp_dir() as formatted_resource_dir:
         render_resources(
@@ -88,7 +85,7 @@ def do_make_pkg(workdir, pkg_name):
         print(
             run(
                 ('productbuild --distribution %s --resources %s %s')
-                % (workdir_distribution, formatted_resource_dir, PKG_NAME),
+                % (dist_path, formatted_resource_dir, PKG_NAME),
                 cwd=workdir,
             )
         )

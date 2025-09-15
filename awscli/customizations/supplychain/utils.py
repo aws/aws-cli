@@ -12,6 +12,8 @@
 # language governing permissions and limitations under the License.
 
 import json
+import base64
+import hashlib
 from xml.etree import ElementTree as ET
 from xml.dom import minidom
 
@@ -77,6 +79,16 @@ def get_ssm_client(session, parsed_globals):
     """Get a Systems Manager client with the appropriate configuration"""
     return session.create_client(
         'ssm',
+        region_name=parsed_globals.region,
+        endpoint_url=parsed_globals.endpoint_url,
+        verify=parsed_globals.verify_ssl
+    )
+
+
+def get_kms_client(session, parsed_globals):
+    """Get a KMS client with the appropriate configuration"""
+    return session.create_client(
+        'kms',
         region_name=parsed_globals.region,
         endpoint_url=parsed_globals.endpoint_url,
         verify=parsed_globals.verify_ssl
@@ -279,3 +291,143 @@ def validate_policy(policy_data):
             raise ValueError(f"Invalid action in rule {rule['id']}: {rule['action']}")
 
     return True
+
+
+def create_kms_signing_key(kms_client, alias=None, description=None):
+    """Create a new KMS key for signing attestations"""
+    response = kms_client.create_key(
+        KeyUsage='SIGN_VERIFY',
+        KeySpec='RSA_2048',
+        Description=description or 'AWS Supply Chain Attestation Signing Key',
+        Tags=[
+            {'TagKey': 'Purpose', 'TagValue': 'SupplyChainAttestation'},
+            {'TagKey': 'CreatedBy', 'TagValue': 'aws-cli-supplychain'}
+        ]
+    )
+
+    key_id = response['KeyMetadata']['KeyId']
+
+    if alias:
+        # Ensure alias starts with 'alias/'
+        if not alias.startswith('alias/'):
+            alias = f'alias/{alias}'
+        kms_client.create_alias(
+            AliasName=alias,
+            TargetKeyId=key_id
+        )
+
+    return key_id
+
+
+def sign_with_kms(kms_client, key_id, message, algorithm='RSASSA_PSS_SHA_256'):
+    """Sign a message using KMS"""
+    # KMS requires a hash for certain algorithms
+    if 'SHA_256' in algorithm:
+        message_hash = hashlib.sha256(message.encode()).digest()
+    elif 'SHA_384' in algorithm:
+        message_hash = hashlib.sha384(message.encode()).digest()
+    elif 'SHA_512' in algorithm:
+        message_hash = hashlib.sha512(message.encode()).digest()
+    else:
+        message_hash = hashlib.sha256(message.encode()).digest()
+
+    response = kms_client.sign(
+        KeyId=key_id,
+        Message=message_hash,
+        MessageType='DIGEST',
+        SigningAlgorithm=algorithm
+    )
+
+    return base64.b64encode(response['Signature']).decode('utf-8')
+
+
+def sign_with_x509(cert_path, key_path, message, key_password=None):
+    """Sign a message using X.509 certificate and private key"""
+    try:
+        from cryptography import x509
+        from cryptography.hazmat.primitives import hashes, serialization
+        from cryptography.hazmat.primitives.asymmetric import padding
+        from cryptography.hazmat.backends import default_backend
+    except ImportError:
+        raise ImportError(
+            "X.509 signing requires the 'cryptography' package. "
+            "Install it with: pip install cryptography"
+        )
+
+    # Load certificate
+    with open(cert_path, 'rb') as f:
+        cert = x509.load_pem_x509_certificate(f.read(), default_backend())
+
+    # Load private key
+    with open(key_path, 'rb') as f:
+        key_data = f.read()
+        if key_password:
+            key = serialization.load_pem_private_key(
+                key_data,
+                password=key_password.encode(),
+                backend=default_backend()
+            )
+        else:
+            key = serialization.load_pem_private_key(
+                key_data,
+                password=None,
+                backend=default_backend()
+            )
+
+    # Sign the message
+    signature = key.sign(
+        message.encode(),
+        padding.PSS(
+            mgf=padding.MGF1(hashes.SHA256()),
+            salt_length=padding.PSS.MAX_LENGTH
+        ),
+        hashes.SHA256()
+    )
+
+    return base64.b64encode(signature).decode('utf-8')
+
+
+def create_jws_envelope(payload, signature, cert_chain=None, key_id=None):
+    """Create a JSON Web Signature envelope"""
+    # Create protected header
+    protected_header = {
+        "alg": "RS256",
+        "typ": "application/vnd.in-toto+json"
+    }
+
+    if key_id:
+        protected_header["kid"] = key_id
+
+    # Encode header and payload in URL-safe base64
+    protected = base64.urlsafe_b64encode(
+        json.dumps(protected_header).encode()
+    ).decode('utf-8').rstrip('=')
+
+    payload_encoded = base64.urlsafe_b64encode(
+        payload.encode()
+    ).decode('utf-8').rstrip('=')
+
+    # Convert signature to URL-safe base64
+    sig_urlsafe = signature.replace('+', '-').replace('/', '_').rstrip('=')
+
+    jws = {
+        "payload": payload_encoded,
+        "signatures": [{
+            "protected": protected,
+            "signature": sig_urlsafe
+        }]
+    }
+
+    if cert_chain:
+        jws["signatures"][0]["header"] = {"x5c": cert_chain}
+
+    return jws
+
+
+def create_dsse_envelope(payload_type, payload, signatures):
+    """Create a DSSE (Dead Simple Signing Envelope)"""
+    return {
+        "payloadType": payload_type,
+        "payload": base64.b64encode(payload.encode()).decode('utf-8'),
+        "signatures": signatures
+    }

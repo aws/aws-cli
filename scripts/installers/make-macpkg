@@ -59,6 +59,20 @@ def do_make_pkg(workdir, pkg_name):
             cwd=workdir,
         )
     )
+
+    with open(DISTRIBUTION_PATH) as f:
+        distribution_content = f.read()
+
+    if os.environ.get('BUILD_UNIVERSAL_BINARY') == '1':
+        distribution_content = distribution_content.replace(
+            '<options customize="always" require-scripts="false" />',
+            '<options customize="always" require-scripts="false" hostArchitectures="x86_64,arm64" />'
+        )
+
+    workdir_distribution = os.path.join(workdir, 'distribution.xml')
+    with open(workdir_distribution, 'w') as f:
+        f.write(distribution_content)
+
     with tmp_dir() as formatted_resource_dir:
         render_resources(
             formatted_resource_dir, RESOURCES_DIR, {'version': version}
@@ -66,7 +80,7 @@ def do_make_pkg(workdir, pkg_name):
         print(
             run(
                 ('productbuild --distribution %s --resources %s %s')
-                % (DISTRIBUTION_PATH, formatted_resource_dir, PKG_NAME),
+                % (workdir_distribution, formatted_resource_dir, PKG_NAME),
                 cwd=workdir,
             )
         )

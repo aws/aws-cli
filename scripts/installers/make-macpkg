@@ -27,6 +27,10 @@ PKG_NAME = 'AWS-CLI-Installer.pkg'
 EXE_ZIP_NAME = 'awscli-exe.zip'
 EXE_NAME = 'aws'
 
+def select_distribution_path():
+    base = os.path.join(PKG_DIR, 'distribution.xml')
+    uni = os.path.join(PKG_DIR, 'distribution.universal.xml')
+    return uni if os.environ.get('BUILD_UNIVERSAL_BINARY') == '1' else base
 
 def make_pkg(pkg_name, src_exe):
     with tmp_dir() as workdir:
@@ -60,18 +64,9 @@ def do_make_pkg(workdir, pkg_name):
         )
     )
 
-    with open(DISTRIBUTION_PATH) as f:
-        distribution_content = f.read()
-
-    if os.environ.get('BUILD_UNIVERSAL_BINARY') == '1':
-        distribution_content = distribution_content.replace(
-            '<options customize="always" require-scripts="false" />',
-            '<options customize="always" require-scripts="false" hostArchitectures="x86_64,arm64" />'
-        )
-
+    dist_src = select_distribution_path()
     workdir_distribution = os.path.join(workdir, 'distribution.xml')
-    with open(workdir_distribution, 'w') as f:
-        f.write(distribution_content)
+    shutil.copyfile(dist_src, workdir_distribution)
 
     with tmp_dir() as formatted_resource_dir:
         render_resources(

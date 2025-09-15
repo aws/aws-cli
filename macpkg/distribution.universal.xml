@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="1">
+    <pkg-ref id="com.amazon.aws.cli2"/>
+    <title>AWS Command Line Interface</title>
+    <license file="LICENSE.txt" />
+    <readme file="README.html" mimetype="text/html" />
+    <installation-check script="checkOsVersion();"/>
+    <script>
+    <![CDATA[
+    function checkOsVersion() {
+      if(system.compareVersions(system.version.ProductVersion, '11.0.0') < 0) {
+        my.result.type = 'Warning';
+        my.result.message = 'On November 13, 2024, the AWS CLI v2 dropped support for macOS 10.15. Please upgrade to macOS 11 or later to use up-to-date versions of AWS CLI v2. For more information, please visit: https://aws.amazon.com/blogs/developer/macos-support-policy-updates-for-the-aws-cli-v2/';
+        return false;
+      }
+      return true;
+    }
+    ]]>
+    </script>
+    <domains enable_anywhere="true" enable_currentUserHome="true" enable_localSystem="true" />
+    <options customize="always" require-scripts="false" hostArchitectures="x86_64,arm64" />
+    <choices-outline>
+      <line choice="default"/>
+    </choices-outline>
+    <choice title="AWS CLI v2" id="default" customLocation="/usr/local">
+        <pkg-ref id="com.amazon.aws.cli2"/>
+    </choice>
+    <pkg-ref id="com.amazon.aws.cli2">aws-cli.pkg</pkg-ref>
+</installer-gui-script>

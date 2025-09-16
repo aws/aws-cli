@@ -20,6 +20,7 @@ from copy import copy
 from functools import cached_property
 
 from botocore.httpchecksum import CrtCrc32Checksum
+from s3transfer.exceptions import S3ValidationError
 
 
 class PartStreamingChecksumBody:
@@ -34,6 +35,10 @@ class PartStreamingChecksumBody:
         # it's updating (eg `botocore.httpchecksum.StreamingChecksumBody`),
         # reuse its calculated value.
         self._reuse_checksum = hasattr(self._stream, 'checksum')
+
+    @property
+    def checksum(self):
+        return self._checksum
 
     def read(self, *args, **kwargs):
         value = self._stream.read(*args, **kwargs)
@@ -106,7 +111,7 @@ class FullObjectChecksum:
 
     def validate(self):
         if self.calculated_checksum != self._stored_checksum:
-            raise ValueError(
+            raise S3ValidationError(
                 f"Calculated checksum {self.calculated_checksum} does not match "
                 f"stored checksum {self._stored_checksum}"
             )

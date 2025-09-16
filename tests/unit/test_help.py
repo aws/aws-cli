@@ -15,16 +15,21 @@ import os
 import signal
 import sys
 
+from awscli import (
+    _DEFAULT_BASE_REMOTE_URL,
+)
 from awscli.argparser import HELP_BLURB, ArgParseException
 from awscli.compat import StringIO
 from awscli.help import (
     ExecutableNotFoundError,
     HelpCommand,
     PosixHelpRenderer,
+    PosixPagingHelpRenderer,
     ProviderHelpCommand,
     TopicHelpCommand,
     TopicListerCommand,
     WindowsHelpRenderer,
+    WindowsPagingHelpRenderer,
 )
 from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 
@@ -288,6 +293,10 @@ class TestProviderHelpCommand(TestHelpCommandBase):
         )
         self.assertEqual(subcommand_table['topic-name-2'].name, 'topic-name-2')
 
+    def test_url(self):
+        self.assertIn(_DEFAULT_BASE_REMOTE_URL, self.cmd.url)
+        self.assertIn("/index.html", self.cmd.url)
+
 
 class TestTopicListerCommand(TestHelpCommandBase):
     def setUp(self):
@@ -312,3 +321,7 @@ class TestTopicHelpCommand(TestHelpCommandBase):
 
     def test_name(self):
         self.assertEqual(self.cmd.name, self.name)
+
+    def test_url(self):
+        self.assertIn(_DEFAULT_BASE_REMOTE_URL, self.cmd.url)
+        self.assertIn("/topic/topic-name-1.html", self.cmd.url)

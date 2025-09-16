@@ -13,6 +13,25 @@
     "uid":"observabilityadmin-2018-05-10"
   },
   "operations":{
+    "CreateCentralizationRuleForOrganization":{
+      "name":"CreateCentralizationRuleForOrganization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateCentralizationRuleForOrganization",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateCentralizationRuleForOrganizationInput"},
+      "output":{"shape":"CreateCentralizationRuleForOrganizationOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Creates a centralization rule that applies across an Amazon Web Services Organization. This operation can only be called by the organization's management account or a delegated administrator account.</p>"
+    },
     "CreateTelemetryRule":{
       "name":"CreateTelemetryRule",
       "http":{
@@ -51,6 +70,23 @@
       ],
       "documentation":"<p> Creates a telemetry rule that applies across an Amazon Web Services Organization. This operation can only be called by the organization's management account or a delegated administrator account. </p>"
     },
+    "DeleteCentralizationRuleForOrganization":{
+      "name":"DeleteCentralizationRuleForOrganization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteCentralizationRuleForOrganization",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteCentralizationRuleForOrganizationInput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Deletes an organization-wide centralization rule. This operation can only be called by the organization's management account or a delegated administrator account.</p>"
+    },
     "DeleteTelemetryRule":{
       "name":"DeleteTelemetryRule",
       "http":{
@@ -84,6 +120,24 @@
         {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p> Deletes an organization-wide telemetry rule. This operation can only be called by the organization's management account or a delegated administrator account. </p>"
+    },
+    "GetCentralizationRuleForOrganization":{
+      "name":"GetCentralizationRuleForOrganization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetCentralizationRuleForOrganization",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCentralizationRuleForOrganizationInput"},
+      "output":{"shape":"GetCentralizationRuleForOrganizationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Retrieves the details of a specific organization centralization rule. This operation can only be called by the organization's management account or a delegated administrator account.</p>"
     },
     "GetTelemetryEvaluationStatus":{
       "name":"GetTelemetryEvaluationStatus",
@@ -151,6 +205,23 @@
         {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p> Retrieves the details of a specific organization telemetry rule. This operation can only be called by the organization's management account or a delegated administrator account. </p>"
+    },
+    "ListCentralizationRulesForOrganization":{
+      "name":"ListCentralizationRulesForOrganization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListCentralizationRulesForOrganization",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCentralizationRulesForOrganizationInput"},
+      "output":{"shape":"ListCentralizationRulesForOrganizationOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Lists all centralization rules in your organization. This operation can only be called by the organization's management account or a delegated administrator account.</p>"
     },
     "ListResourceTelemetry":{
       "name":"ListResourceTelemetry",
@@ -333,6 +404,25 @@
       ],
       "documentation":"<p> Removes tags from a telemetry rule resource. </p>"
     },
+    "UpdateCentralizationRuleForOrganization":{
+      "name":"UpdateCentralizationRuleForOrganization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateCentralizationRuleForOrganization",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateCentralizationRuleForOrganizationInput"},
+      "output":{"shape":"UpdateCentralizationRuleForOrganizationOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Updates an existing centralization rule that applies across an Amazon Web Services Organization. This operation can only be called by the organization's management account or a delegated administrator account.</p>"
+    },
     "UpdateTelemetryRule":{
       "name":"UpdateTelemetryRule",
       "http":{
@@ -403,6 +493,124 @@
       "max":10,
       "min":1
     },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "CentralizationFailureReason":{
+      "type":"string",
+      "enum":[
+        "TRUSTED_ACCESS_NOT_ENABLED",
+        "DESTINATION_ACCOUNT_NOT_IN_ORGANIZATION",
+        "INTERNAL_SERVER_ERROR"
+      ]
+    },
+    "CentralizationRule":{
+      "type":"structure",
+      "required":[
+        "Source",
+        "Destination"
+      ],
+      "members":{
+        "Source":{
+          "shape":"CentralizationRuleSource",
+          "documentation":"<p>Configuration determining the source of the telemetry data to be centralized.</p>"
+        },
+        "Destination":{
+          "shape":"CentralizationRuleDestination",
+          "documentation":"<p>Configuration determining where the telemetry data should be centralized, backed up, as well as encryption configuration for the primary and backup destinations.</p>"
+        }
+      },
+      "documentation":"<p>Defines how telemetry data should be centralized across an Amazon Web Services Organization, including source and destination configurations.</p>"
+    },
+    "CentralizationRuleDestination":{
+      "type":"structure",
+      "required":["Region"],
+      "members":{
+        "Region":{
+          "shape":"Region",
+          "documentation":"<p>The primary destination region to which telemetry data should be centralized.</p>"
+        },
+        "Account":{
+          "shape":"AccountIdentifier",
+          "documentation":"<p>The destination account (within the organization) to which the telemetry data should be centralized.</p>"
+        },
+        "DestinationLogsConfiguration":{
+          "shape":"DestinationLogsConfiguration",
+          "documentation":"<p>Log specific configuration for centralization destination log groups.</p>"
+        }
+      },
+      "documentation":"<p>Configuration specifying the primary destination for centralized telemetry data.</p>"
+    },
+    "CentralizationRuleSource":{
+      "type":"structure",
+      "required":["Regions"],
+      "members":{
+        "Regions":{
+          "shape":"Regions",
+          "documentation":"<p>The list of source regions from which telemetry data should be centralized.</p>"
+        },
+        "Scope":{
+          "shape":"SourceFilterString",
+          "documentation":"<p>The organizational scope from which telemetry data should be centralized, specified using organization id, accounts or organizational unit ids.</p>"
+        },
+        "SourceLogsConfiguration":{
+          "shape":"SourceLogsConfiguration",
+          "documentation":"<p>Log specific configuration for centralization source log groups.</p>"
+        }
+      },
+      "documentation":"<p>Configuration specifying the source of telemetry data to be centralized.</p>"
+    },
+    "CentralizationRuleSummaries":{
+      "type":"list",
+      "member":{"shape":"CentralizationRuleSummary"}
+    },
+    "CentralizationRuleSummary":{
+      "type":"structure",
+      "members":{
+        "RuleName":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the organization centralization rule.</p>"
+        },
+        "RuleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the organization centralization rule.</p>"
+        },
+        "CreatorAccountId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Account that created the organization centralization rule.</p>"
+        },
+        "CreatedTimeStamp":{
+          "shape":"Long",
+          "documentation":"<p>The timestamp when the organization centralization rule was created.</p>"
+        },
+        "CreatedRegion":{
+          "shape":"Region",
+          "documentation":"<p>The Amazon Web Services region where the organization centralization rule was created.</p>"
+        },
+        "LastUpdateTimeStamp":{
+          "shape":"Long",
+          "documentation":"<p>The timestamp when the organization centralization rule was last updated.</p>"
+        },
+        "RuleHealth":{
+          "shape":"RuleHealth",
+          "documentation":"<p>The health status of the organization centralization rule.</p>"
+        },
+        "FailureReason":{
+          "shape":"CentralizationFailureReason",
+          "documentation":"<p>The reason why an organization centralization rule is marked UNHEALTHY.</p>"
+        },
+        "DestinationAccountId":{
+          "shape":"String",
+          "documentation":"<p>The primary destination account of the organization centralization rule.</p>"
+        },
+        "DestinationRegion":{
+          "shape":"Region",
+          "documentation":"<p>The primary destination region of the organization centralization rule.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a centralization rule's key properties and status.</p>"
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -414,6 +622,36 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "CreateCentralizationRuleForOrganizationInput":{
+      "type":"structure",
+      "required":[
+        "RuleName",
+        "Rule"
+      ],
+      "members":{
+        "RuleName":{
+          "shape":"RuleName",
+          "documentation":"<p>A unique name for the organization-wide centralization rule being created.</p>"
+        },
+        "Rule":{
+          "shape":"CentralizationRule",
+          "documentation":"<p>The configuration details for the organization-wide centralization rule, including the source configuration and the destination configuration to centralize telemetry data across the organization.</p>"
+        },
+        "Tags":{
+          "shape":"TagMapInput",
+          "documentation":"<p>The key-value pairs to associate with the organization telemetry rule resource for categorization and management purposes.</p>"
+        }
+      }
+    },
+    "CreateCentralizationRuleForOrganizationOutput":{
+      "type":"structure",
+      "members":{
+        "RuleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created organization centralization rule.</p>"
+        }
+      }
     },
     "CreateTelemetryRuleForOrganizationInput":{
       "type":"structure",
@@ -475,6 +713,16 @@
         }
       }
     },
+    "DeleteCentralizationRuleForOrganizationInput":{
+      "type":"structure",
+      "required":["RuleIdentifier"],
+      "members":{
+        "RuleIdentifier":{
+          "shape":"RuleIdentifier",
+          "documentation":"<p>The identifier (name or ARN) of the organization centralization rule to delete.</p>"
+        }
+      }
+    },
     "DeleteTelemetryRuleForOrganizationInput":{
       "type":"structure",
       "required":["RuleIdentifier"],
@@ -495,11 +743,97 @@
         }
       }
     },
+    "DestinationLogsConfiguration":{
+      "type":"structure",
+      "members":{
+        "LogsEncryptionConfiguration":{
+          "shape":"LogsEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for centralization destination log groups.</p>"
+        },
+        "BackupConfiguration":{
+          "shape":"LogsBackupConfiguration",
+          "documentation":"<p>Configuration defining the backup region and an optional KMS key for the backup destination.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for centralization destination log groups, including encryption and backup settings.</p>"
+    },
     "DestinationType":{
       "type":"string",
       "enum":["cloud-watch-logs"]
     },
+    "EncryptedLogGroupStrategy":{
+      "type":"string",
+      "enum":[
+        "ALLOW",
+        "SKIP"
+      ]
+    },
+    "EncryptionConflictResolutionStrategy":{
+      "type":"string",
+      "enum":[
+        "ALLOW",
+        "SKIP"
+      ]
+    },
+    "EncryptionStrategy":{
+      "type":"string",
+      "enum":[
+        "CUSTOMER_MANAGED",
+        "AWS_OWNED"
+      ]
+    },
     "FailureReason":{"type":"string"},
+    "GetCentralizationRuleForOrganizationInput":{
+      "type":"structure",
+      "required":["RuleIdentifier"],
+      "members":{
+        "RuleIdentifier":{
+          "shape":"RuleIdentifier",
+          "documentation":"<p>The identifier (name or ARN) of the organization centralization rule to retrieve.</p>"
+        }
+      }
+    },
+    "GetCentralizationRuleForOrganizationOutput":{
+      "type":"structure",
+      "members":{
+        "RuleName":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the organization centralization rule.</p>"
+        },
+        "RuleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the organization centralization rule.</p>"
+        },
+        "CreatorAccountId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Account that created the organization centralization rule.</p>"
+        },
+        "CreatedTimeStamp":{
+          "shape":"Long",
+          "documentation":"<p>The timestamp when the organization centralization rule was created.</p>"
+        },
+        "CreatedRegion":{
+          "shape":"Region",
+          "documentation":"<p>The Amazon Web Services region where the organization centralization rule was created.</p>"
+        },
+        "LastUpdateTimeStamp":{
+          "shape":"Long",
+          "documentation":"<p>The timestamp when the organization centralization rule was last updated.</p>"
+        },
+        "RuleHealth":{
+          "shape":"RuleHealth",
+          "documentation":"<p>The health status of the organization centralization rule.</p>"
+        },
+        "FailureReason":{
+          "shape":"CentralizationFailureReason",
+          "documentation":"<p>The reason why an organization centralization rule is marked UNHEALTHY.</p>"
+        },
+        "CentralizationRule":{
+          "shape":"CentralizationRule",
+          "documentation":"<p>The configuration details for the organization centralization rule.</p>"
+        }
+      }
+    },
     "GetTelemetryEvaluationStatusForOrganizationOutput":{
       "type":"structure",
       "members":{
@@ -615,6 +949,51 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "ListCentralizationRulesForOrganizationInput":{
+      "type":"structure",
+      "members":{
+        "RuleNamePrefix":{
+          "shape":"ListCentralizationRulesForOrganizationInputRuleNamePrefixString",
+          "documentation":"<p>A string to filter organization centralization rules whose names begin with the specified prefix.</p>"
+        },
+        "AllRegions":{
+          "shape":"Boolean",
+          "documentation":"<p>A flag determining whether to return organization centralization rules from all regions or only the current region.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListCentralizationRulesForOrganizationMaxResults",
+          "documentation":"<p>The maximum number of organization centralization rules to return in a single call.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. A previous call generates this token.</p>"
+        }
+      }
+    },
+    "ListCentralizationRulesForOrganizationInputRuleNamePrefixString":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "ListCentralizationRulesForOrganizationMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListCentralizationRulesForOrganizationOutput":{
+      "type":"structure",
+      "members":{
+        "CentralizationRuleSummaries":{
+          "shape":"CentralizationRuleSummaries",
+          "documentation":"<p>A list of centralization rule summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to resume pagination of results.</p>"
+        }
+      }
     },
     "ListResourceTelemetryForOrganizationInput":{
       "type":"structure",
@@ -816,6 +1195,45 @@
         }
       }
     },
+    "LogsBackupConfiguration":{
+      "type":"structure",
+      "required":["Region"],
+      "members":{
+        "Region":{
+          "shape":"Region",
+          "documentation":"<p>Logs specific backup destination region within the primary destination account to which log data should be centralized.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>KMS Key arn belonging to the primary destination account and backup region, to encrypt newly created central log groups in the backup destination.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for backing up centralized log data to a secondary region.</p>"
+    },
+    "LogsEncryptionConfiguration":{
+      "type":"structure",
+      "required":["EncryptionStrategy"],
+      "members":{
+        "EncryptionStrategy":{
+          "shape":"EncryptionStrategy",
+          "documentation":"<p>Configuration that determines the encryption strategy of the destination log groups. CUSTOMER_MANAGED uses the configured KmsKeyArn to encrypt newly created destination log groups.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>KMS Key arn belonging to the primary destination account and region, to encrypt newly created central log groups in the primary destination.</p>"
+        },
+        "EncryptionConflictResolutionStrategy":{
+          "shape":"EncryptionConflictResolutionStrategy",
+          "documentation":"<p>Conflict resolution strategy for centralization if the encryption strategy is set to CUSTOMER_MANAGED and the destination log group is encrypted with an AWS_OWNED KMS Key. ALLOW lets centralization go through while SKIP prevents centralization into the destination log group.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for encrypting centralized log groups. This configuration is only applied to destination log groups for which the corresponding source log groups are encrypted using Customer Managed KMS Keys.</p>"
+    },
+    "LogsFilterString":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
     "Long":{
       "type":"long",
       "box":true
@@ -830,11 +1248,20 @@
       "member":{"shape":"OrganizationUnitIdentifier"},
       "min":1
     },
+    "Region":{
+      "type":"string",
+      "min":1
+    },
+    "Regions":{
+      "type":"list",
+      "member":{"shape":"Region"},
+      "min":1
+    },
     "ResourceArn":{
       "type":"string",
       "max":1011,
       "min":1,
-      "pattern":"arn:aws:([a-zA-Z0-9\\-]+):([a-z0-9\\-]+)?:([0-9]{12})?:(.+)"
+      "pattern":"arn:aws([a-z0-9\\-]+)?:([a-zA-Z0-9\\-]+):([a-z0-9\\-]+)?:([0-9]{12})?:(.+)"
     },
     "ResourceIdentifier":{"type":"string"},
     "ResourceIdentifierPrefix":{
@@ -874,6 +1301,14 @@
       "max":3653,
       "min":1
     },
+    "RuleHealth":{
+      "type":"string",
+      "enum":[
+        "Healthy",
+        "Unhealthy",
+        "Provisioning"
+      ]
+    },
     "RuleIdentifier":{
       "type":"string",
       "max":1011,
@@ -883,7 +1318,7 @@
       "type":"string",
       "max":100,
       "min":1,
-      "pattern":"[0-9A-Za-z-]+"
+      "pattern":"[0-9A-Za-z-_.#/]+"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -902,6 +1337,29 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SourceFilterString":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
+    "SourceLogsConfiguration":{
+      "type":"structure",
+      "required":[
+        "LogGroupSelectionCriteria",
+        "EncryptedLogGroupStrategy"
+      ],
+      "members":{
+        "LogGroupSelectionCriteria":{
+          "shape":"LogsFilterString",
+          "documentation":"<p>The selection criteria that specifies which source log groups to centralize. The selection criteria uses the same format as OAM link filters.</p>"
+        },
+        "EncryptedLogGroupStrategy":{
+          "shape":"EncryptedLogGroupStrategy",
+          "documentation":"<p>A strategy determining whether to centralize source log groups that are encrypted with customer managed KMS keys (CMK). ALLOW will consider CMK encrypted source log groups for centralization while SKIP will skip CMK encrypted source log groups from centralization.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for selecting and handling source log groups for centralization.</p>"
     },
     "Status":{
       "type":"string",
@@ -1127,6 +1585,32 @@
         "TagKeys":{
           "shape":"TagKeyList",
           "documentation":"<p> The list of tag keys to remove from the telemetry rule resource. </p>"
+        }
+      }
+    },
+    "UpdateCentralizationRuleForOrganizationInput":{
+      "type":"structure",
+      "required":[
+        "RuleIdentifier",
+        "Rule"
+      ],
+      "members":{
+        "RuleIdentifier":{
+          "shape":"RuleIdentifier",
+          "documentation":"<p>The identifier (name or ARN) of the organization centralization rule to update.</p>"
+        },
+        "Rule":{
+          "shape":"CentralizationRule",
+          "documentation":"<p>The configuration details for the organization-wide centralization rule, including the source configuration and the destination configuration to centralize telemetry data across the organization.</p>"
+        }
+      }
+    },
+    "UpdateCentralizationRuleForOrganizationOutput":{
+      "type":"structure",
+      "members":{
+        "RuleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated organization centralization rule.</p>"
         }
       }
     },

@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.30.3
+======
+
+* api-change:``logs``: Cloudwatch Logs added support for 2 new API parameters in metric and subscription filter APIs to filter log events based on system field values and emit system field values as dimensions and send them to customer destination as additional metadata.
+* enhancement:``configure``: Added the new ``aws configure mfa-login`` command, which creates a profile with temporary credentials corresponding to an IAM user with an MFA code.
+* api-change:``ivs-realtime``: IVS now offers customers the ability to control the positioning of participants in both grid and PiP layouts based on custom attribute values in participant tokens.
+* api-change:``osis``: Adds support for cross-account ingestion for push-based sources. This includes resource policies for sharing pipelines across accounts and features for managing pipeline endpoints which enable accessing pipelines across different VPCs, including VPCs in other accounts.
+* enhancement:macOS: Added explicit architecture support in PKG installer for universal builds on Macs to prevent Rosetta requirement prompt.
+* api-change:``budgets``: Add support for custom time periods in budget configuration
+* enhancement:``configure``: Added support for temporary credentials with ``aws configure``. The CLI will prompt for an ``aws_session_token`` if the provided access key ID is temporary.
+
+
 2.30.2
 ======
 

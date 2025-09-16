@@ -166,18 +166,21 @@ class TransferMeta(BaseTransferMeta):
 
     @property
     def stored_checksum(self):
+        """Stored full object checksum value, if any"""
         if self._stored_checksum is self._UNPROVIDED:
             return None
         return self._stored_checksum
 
     @property
     def checksum_algorithm(self):
+        """Algorithm used to compute stored full object checksum, if any"""
         if self._checksum_algorithm is self._UNPROVIDED:
             return None
         return self._checksum_algorithm
 
     @property
     def checksum_is_provided(self):
+        """Boolean used to check if checksum properties have been provided"""
         return (
             self._stored_checksum is not self._UNPROVIDED
             and self._checksum_algorithm is not self._UNPROVIDED
@@ -202,9 +205,21 @@ class TransferMeta(BaseTransferMeta):
         self._etag = etag
 
     def provide_stored_checksum(self, stored_checksum):
+        """A method to provide the stored checksum of a transfer request
+
+        By providing this value with `checksum_algorithm`, the TransferManager
+        will validate multipart downloads by calculating the
+        full object checksum and comparing it to the stored checksum.
+        """
         self._stored_checksum = stored_checksum
 
     def provide_checksum_algorithm(self, checksum_algorithm):
+        """A method to provide the checksum algorithm of a transfer request
+
+        By providing this value with `stored_checksum`, the TransferManager
+        will validate multipart downloads by calculating the
+        full object checksum and comparing it to the stored checksum.
+        """
         self._checksum_algorithm = checksum_algorithm
 
 

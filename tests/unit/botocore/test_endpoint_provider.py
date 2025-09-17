@@ -16,6 +16,7 @@ import logging
 import os
 
 import pytest
+
 from botocore.endpoint_provider import (
     EndpointProvider,
     EndpointRule,
@@ -23,7 +24,7 @@ from botocore.endpoint_provider import (
     RuleCreator,
     RuleSet,
     RuleSetStandardLibary,
-    TreeRule,
+    TreeRule, RuleSetEndpoint,
 )
 from botocore.exceptions import (
     EndpointResolutionError,

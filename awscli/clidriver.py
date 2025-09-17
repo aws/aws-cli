@@ -15,8 +15,6 @@ import signal
 import sys
 
 import botocore.session
-from awscli.customizations.utils import uni_print
-from awscli.migrationcheckers import MIGRATION_CHECKERS
 from botocore.compat import OrderedDict, copy_kwargs
 from botocore.exceptions import (
     NoCredentialsError,
@@ -223,22 +221,17 @@ class CLIDriver:
         parser = self._create_parser(command_table)
         self._add_aliases(command_table, parser)
         parsed_args, remaining = parser.parse_known_args(args)
-        migration_warnings_printed = False
         try:
             # Because _handle_top_level_args emits events, it's possible
             # that exceptions can be raised, which should have the same
             # general exception handling logic as calling into the
             # command table.  This is why it's in the try/except clause.
-            self._handle_top_level_args(parsed_args)
+            self._handle_top_level_args(parsed_args, remaining)
             self._emit_session_event(parsed_args)
             HISTORY_RECORDER.record(
                 'CLI_VERSION', self.session.user_agent(), 'CLI'
             )
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
-            if parsed_args.migrate_v2:
-                self._detect_command_migration_breakage(parsed_args, remaining, command_table)
-                self._print_migration_warnings()
-                migration_warnings_printed = True
             return command_table[parsed_args.command](remaining, parsed_args)
         except UnknownArgumentError as e:
             sys.stderr.write("usage: %s\n" % USAGE)
@@ -267,8 +260,6 @@ class CLIDriver:
         except Exception as e:
             LOG.debug("Exception caught in main()", exc_info=True)
             LOG.debug("Exiting with rc 255")
-            if parsed_args.migrate_v2 and not migration_warnings_printed:
-                self._print_migration_warnings()
             write_exception(e, outfile=get_stderr_text_writer())
             return 255
 
@@ -289,8 +280,8 @@ class CLIDriver:
         sys.stderr.write(msg)
         sys.stderr.write('\n')
 
-    def _handle_top_level_args(self, args):
-        emit_top_level_args_parsed_event(self.session, args)
+    def _handle_top_level_args(self, args, remaining):
+        emit_top_level_args_parsed_event(self.session, args, remaining, self._get_argument_table())
         if args.profile:
             self.session.set_config_variable('profile', args.profile)
         if args.region:
@@ -319,19 +310,6 @@ class CLIDriver:
             self.session.set_stream_logger(
                 logger_name='awscli', log_level=logging.ERROR
             )
-
-    def _detect_command_migration_breakage(self, parsed_args, remaining, command_table):
-        if parsed_args.command == 'ecr' and remaining[0] == 'get-login':
-            MIGRATION_CHECKERS['ecr_get_login'].triggered = True
-
-
-    def _print_migration_warnings(self):
-        migration_warnings = []
-        for key, value in MIGRATION_CHECKERS.items():
-            if value.triggered:
-                migration_warnings.append(value.warning_message)
-        for warning in migration_warnings:
-            uni_print(f"AWS CLI v2 MIGRATION WARNING: {warning}")
 
 
 class ServiceCommand(CLICommand):

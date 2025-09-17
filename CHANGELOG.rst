@@ -2,6 +2,86 @@
 CHANGELOG
 =========
 
+2.30.4
+======
+
+* api-change:``ec2``: Add mac-m4.metal and mac-m4pro.metal instance types.
+* api-change:``pcs``: Add support for Amazon EC2 Capacity Blocks for ML
+* api-change:``network-firewall``: Network Firewall now prevents TLS handshakes with the target server until after the Server Name Indication (SNI) has been seen and verified. The monitoring dashboard now provides deeper insights into PrivateLink endpoint candidates and offers filters based on IP addresses and protocol.
+
+
+2.30.3
+======
+
+* api-change:``logs``: Cloudwatch Logs added support for 2 new API parameters in metric and subscription filter APIs to filter log events based on system field values and emit system field values as dimensions and send them to customer destination as additional metadata.
+* enhancement:``configure``: Added the new ``aws configure mfa-login`` command, which creates a profile with temporary credentials corresponding to an IAM user with an MFA code.
+* api-change:``ivs-realtime``: IVS now offers customers the ability to control the positioning of participants in both grid and PiP layouts based on custom attribute values in participant tokens.
+* api-change:``osis``: Adds support for cross-account ingestion for push-based sources. This includes resource policies for sharing pipelines across accounts and features for managing pipeline endpoints which enable accessing pipelines across different VPCs, including VPCs in other accounts.
+* enhancement:macOS: Added explicit architecture support in PKG installer for universal builds on Macs to prevent Rosetta requirement prompt.
+* api-change:``budgets``: Add support for custom time periods in budget configuration
+* enhancement:``configure``: Added support for temporary credentials with ``aws configure``. The CLI will prompt for an ``aws_session_token`` if the provided access key ID is temporary.
+
+
+2.30.2
+======
+
+* api-change:``medical-imaging``: Added support for OpenID Connect (OIDC) custom authorizer
+* api-change:``s3control``: Introduce three new encryption filters: EncryptionType (SSE-S3, SSE-KMS, DSSE-KMS, SSE-C, NOT-SSE), KmsKeyArn (for SSE-KMS and DSSE-KMS), and BucketKeyEnabled (for SSE-KMS).
+* api-change:``sms``: The sms client has been removed following the deprecation of the service.
+* api-change:``ce``: Added endpoint support for eusc-de-east-1 region.
+* api-change:``observabilityadmin``: CloudWatch Observability Admin adds the ability to enable telemetry centralization in customers' Organizations. The release introduces new APIs to manage centralization rules, which define settings to replicate telemetry data to a central destination in the customers' Organization.
+
+
+2.30.1
+======
+
+* enhancement:``s3``: Expose S3 transfer config's ``io_chunksize`` in shared config file
+* api-change:``payment-cryptography``: Add support for certificates to be signed by 3rd party certificate authorities.  New API GetCertificateSigningRequest API and support for providing certificates at run-time for tr-34 import/export
+
+
+2.30.0
+======
+
+* feature:installer: Added universal binary support for AWS CLI v2 on macOS
+* api-change:``evs``: CreateEnvironment API now supports parameters (isHcxPublic & hcxNetworkAclId) for HCX migration via public internet, adding flexibility for migration scenarios. New APIs have been added for associating (AssociateEipToVlan) & disassociating (DisassociateEipFromVlan) Elastic IP (EIP) addresses.
+* api-change:``amp``: Add Vended Logs APIs for Amazon Prometheus Managed Collector
+* api-change:``quicksight``: This release adds support for Account level custom permissions, additional Dashboard Options, and Null support for Q&A.
+* api-change:``guardduty``: Updated Java SDK implementation of entity set status in GuardDuty API.
+* api-change:``datazone``: adding IAM principal id to IAM user profile details
+* api-change:``emr-containers``: Added nodeLabel support in container provider to aid hardware isolation support for virtual cluster and security configuration.
+* api-change:``medialive``: AWS Elemental MediaLive adds a new feature in MediaPackage output group that enables MediaPackage V2 users to control HLS-related parameters directly in MediaLive. These parameter settings are then reflected in MediaPackage outputs, providing more streamlined control over HLS configurations.
+* api-change:``ecs``: This release supports hook details for Amazon ECS lifecycle hooks.
+* api-change:``rds``: Adds support for end-to-end IAM authentication in RDS Proxy for MySQL, MariaDB, and PostgreSQL engines.
+
+
+2.29.1
+======
+
+* api-change:``networkflowmonitor``: Added new enum value (AWS::Region) for type field under MonitorLocalResource and MonitorRemoteResource. Workload Insights and Monitor top contributors queries now support a new DestinationCategory (INTER_REGION).
+* api-change:``payment-cryptography``: AWS Payment Cryptography Service now supports Multi-Region key replication. Customers can choose to automatically distribute keys across AWS Regions.
+
+
+2.29.0
+======
+
+* api-change:``autoscaling``: Added WaitForTransitioningInstances parameter to the CancelInstanceRefresh API, allowing the caller to cancel an instance refresh without waiting for on-going launches and terminations.
+* api-change:``mediapackagev2``: Added CUE tag SCTE output to MediaPackageV2 HLS and LL-HLS manifests.
+* api-change:``sagemaker``: Released IPv6 support with dual-stack domain options on SageMaker Studio and introduced support for p6-b200.48xlarge instance type on SageMaker Studio for JupyterLab and CodeEditor applications.
+* api-change:``datazone``: Adds support for custom blueprints
+* api-change:``cloudwatch``: Added a new API - DescribeAlarmContributors API, to retrieve alarm contributors in ALARM state. Added support in DescribeAlarmHistory API to query alarm contributor history
+* feature:s3 download: Validate requested range matches content range in response for multipart downloads
+* api-change:``connect``: SDK release for user defined predefined attributes.
+* api-change:``organizations``: Documentation updates for AWS Organizations APIs.
+
+
+2.28.26
+=======
+
+* api-change:``s3``: This release includes backward compatibility work on the "Expires" parameter.
+* api-change:``iotsitewise``: Add ComputationModelVersion support in IoT SiteWise APIs
+* api-change:``securityhub``: This release adds the RESOURCE_NOT_FOUND error code as a possible value in responses to the following operations: BatchGetStandardsControlAssociations, BatchUpdateStandardsControlAssociations, and BatchGetSecurityControls.
+
+
 2.28.25
 =======
 

@@ -5008,7 +5008,6 @@
       "required":[
         "DBProxyName",
         "EngineFamily",
-        "Auth",
         "RoleArn",
         "VpcSubnetIds"
       ],
@@ -5020,6 +5019,10 @@
         "EngineFamily":{
           "shape":"EngineFamily",
           "documentation":"<p>The kinds of databases that the proxy can connect to. This value determines which database network protocol the proxy recognizes when it interprets network traffic to and from the database. For Aurora MySQL, RDS for MariaDB, and RDS for MySQL databases, specify <code>MYSQL</code>. For Aurora PostgreSQL and RDS for PostgreSQL databases, specify <code>POSTGRESQL</code>. For RDS for Microsoft SQL Server, specify <code>SQLSERVER</code>.</p>"
+        },
+        "DefaultAuthScheme":{
+          "shape":"DefaultAuthScheme",
+          "documentation":"<p>The default authentication scheme that the proxy uses for client connections to the proxy and connections from the proxy to the underlying database. Valid values are <code>NONE</code> and <code>IAM_AUTH</code>. When set to <code>IAM_AUTH</code>, the proxy uses end-to-end IAM authentication to connect to the database. If you don't specify <code>DefaultAuthScheme</code> or specify this parameter as <code>NONE</code>, you must specify the <code>Auth</code> option.</p>"
         },
         "Auth":{
           "shape":"UserAuthConfigList",
@@ -7654,6 +7657,10 @@
           "shape":"StringList",
           "documentation":"<p>The EC2 subnet IDs for the proxy.</p>"
         },
+        "DefaultAuthScheme":{
+          "shape":"String",
+          "documentation":"<p>The default authentication scheme that the proxy uses for client connections to the proxy and connections from the proxy to the underlying database. Valid values are <code>NONE</code> and <code>IAM_AUTH</code>. When set to <code>IAM_AUTH</code>, the proxy uses end-to-end IAM authentication to connect to the database. </p>"
+        },
         "Auth":{
           "shape":"UserAuthConfigInfoList",
           "documentation":"<p>One or more data structures specifying the authorization mechanism to connect to the associated RDS DB instance or Aurora DB cluster.</p>"
@@ -8766,6 +8773,13 @@
       "enum":[
         "standard",
         "advanced"
+      ]
+    },
+    "DefaultAuthScheme":{
+      "type":"string",
+      "enum":[
+        "IAM_AUTH",
+        "NONE"
       ]
     },
     "DeleteBlueGreenDeploymentRequest":{
@@ -12896,6 +12910,10 @@
         "NewDBProxyName":{
           "shape":"String",
           "documentation":"<p>The new identifier for the <code>DBProxy</code>. An identifier must begin with a letter and must contain only ASCII letters, digits, and hyphens; it can't end with a hyphen or contain two consecutive hyphens.</p>"
+        },
+        "DefaultAuthScheme":{
+          "shape":"DefaultAuthScheme",
+          "documentation":"<p>The default authentication scheme that the proxy uses for client connections to the proxy and connections from the proxy to the underlying database. Valid values are <code>NONE</code> and <code>IAM_AUTH</code>. When set to <code>IAM_AUTH</code>, the proxy uses end-to-end IAM authentication to connect to the database.</p>"
         },
         "Auth":{
           "shape":"UserAuthConfigList",
@@ -17214,7 +17232,9 @@
     },
     "UserAuthConfigList":{
       "type":"list",
-      "member":{"shape":"UserAuthConfig"}
+      "member":{"shape":"UserAuthConfig"},
+      "max":200,
+      "min":0
     },
     "ValidDBInstanceModificationsMessage":{
       "type":"structure",

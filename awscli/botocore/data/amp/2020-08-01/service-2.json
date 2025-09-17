@@ -245,6 +245,24 @@
       "documentation":"<p>The <code>DeleteScraper</code> operation deletes one scraper, and stops any metrics collection that the scraper performs.</p>",
       "idempotent":true
     },
+    "DeleteScraperLoggingConfiguration":{
+      "name":"DeleteScraperLoggingConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/scrapers/{scraperId}/logging-configuration",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteScraperLoggingConfigurationRequest"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes the logging configuration for a Amazon Managed Service for Prometheus scraper.</p>",
+      "idempotent":true
+    },
     "DeleteWorkspace":{
       "name":"DeleteWorkspace",
       "http":{
@@ -369,6 +387,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>The <code>DescribeScraper</code> operation displays information about an existing scraper.</p>"
+    },
+    "DescribeScraperLoggingConfiguration":{
+      "name":"DescribeScraperLoggingConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/scrapers/{scraperId}/logging-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeScraperLoggingConfigurationRequest"},
+      "output":{"shape":"DescribeScraperLoggingConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Describes the logging configuration for a Amazon Managed Service for Prometheus scraper.</p>"
     },
     "DescribeWorkspace":{
       "name":"DescribeWorkspace",
@@ -650,6 +685,25 @@
       "documentation":"<p>Updates an existing scraper.</p> <p>You can't use this function to update the source from which the scraper is collecting metrics. To change the source, delete the scraper and create a new one.</p>",
       "idempotent":true
     },
+    "UpdateScraperLoggingConfiguration":{
+      "name":"UpdateScraperLoggingConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/scrapers/{scraperId}/logging-configuration",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateScraperLoggingConfigurationRequest"},
+      "output":{"shape":"UpdateScraperLoggingConfigurationResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the logging configuration for a Amazon Managed Service for Prometheus scraper.</p>",
+      "idempotent":true
+    },
     "UpdateWorkspaceAlias":{
       "name":"UpdateWorkspaceAlias",
       "http":{
@@ -795,6 +849,16 @@
       "type":"string",
       "documentation":"<p>The ARN of an EKS cluster.</p>",
       "pattern":"arn:aws[-a-z]*:eks:[-a-z0-9]+:[0-9]{12}:cluster/.+"
+    },
+    "ComponentConfig":{
+      "type":"structure",
+      "members":{
+        "options":{
+          "shape":"StringMap",
+          "documentation":"<p>Configuration options for the scraper component.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for a scraper component.</p>"
     },
     "ConflictException":{
       "type":"structure",
@@ -1225,6 +1289,25 @@
       },
       "documentation":"<p>Represents the input of a <code>DeleteRuleGroupsNamespace</code> operation.</p>"
     },
+    "DeleteScraperLoggingConfigurationRequest":{
+      "type":"structure",
+      "required":["scraperId"],
+      "members":{
+        "scraperId":{
+          "shape":"ScraperId",
+          "documentation":"<p>The ID of the scraper whose logging configuration will be deleted.</p>",
+          "location":"uri",
+          "locationName":"scraperId"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the request is processed exactly once.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
     "DeleteScraperRequest":{
       "type":"structure",
       "required":["scraperId"],
@@ -1420,6 +1503,50 @@
       },
       "documentation":"<p>Represents the output of a <code>DescribeRuleGroupsNamespace</code> operation.</p>"
     },
+    "DescribeScraperLoggingConfigurationRequest":{
+      "type":"structure",
+      "required":["scraperId"],
+      "members":{
+        "scraperId":{
+          "shape":"ScraperId",
+          "documentation":"<p>The ID of the scraper whose logging configuration will be described.</p>",
+          "location":"uri",
+          "locationName":"scraperId"
+        }
+      }
+    },
+    "DescribeScraperLoggingConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "status",
+        "scraperId",
+        "loggingDestination",
+        "scraperComponents",
+        "modifiedAt"
+      ],
+      "members":{
+        "status":{
+          "shape":"ScraperLoggingConfigurationStatus",
+          "documentation":"<p>The status of the scraper logging configuration.</p>"
+        },
+        "scraperId":{
+          "shape":"ScraperId",
+          "documentation":"<p>The ID of the scraper.</p>"
+        },
+        "loggingDestination":{
+          "shape":"ScraperLoggingDestination",
+          "documentation":"<p>The destination where scraper logs are sent.</p>"
+        },
+        "scraperComponents":{
+          "shape":"ScraperComponents",
+          "documentation":"<p>The list of scraper components configured for logging.</p>"
+        },
+        "modifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the logging configuration was last modified.</p>"
+        }
+      }
+    },
     "DescribeScraperRequest":{
       "type":"structure",
       "required":["scraperId"],
@@ -1544,8 +1671,7 @@
     },
     "GetDefaultScraperConfigurationRequest":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Represents the input of a <code>GetDefaultScraperConfiguration</code> operation.</p>"
     },
     "GetDefaultScraperConfigurationResponse":{
@@ -2221,7 +2347,7 @@
     "RuleGroupsNamespaceName":{
       "type":"string",
       "documentation":"<p>The name of the namespace that the rule group belong to.</p>",
-      "max":64,
+      "max":128,
       "min":1,
       "pattern":".*[0-9A-Za-z][-.0-9A-Z_a-z]*.*"
     },
@@ -2316,6 +2442,34 @@
       "type":"string",
       "documentation":"<p>An ARN identifying a scrape configuration.</p>"
     },
+    "ScraperComponent":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"ScraperComponentType",
+          "documentation":"<p>The type of the scraper component.</p>"
+        },
+        "config":{
+          "shape":"ComponentConfig",
+          "documentation":"<p>The configuration settings for the scraper component.</p>"
+        }
+      },
+      "documentation":"<p>A component of a Amazon Managed Service for Prometheus scraper that can be configured for logging.</p>"
+    },
+    "ScraperComponentType":{
+      "type":"string",
+      "enum":[
+        "SERVICE_DISCOVERY",
+        "COLLECTOR",
+        "EXPORTER"
+      ]
+    },
+    "ScraperComponents":{
+      "type":"list",
+      "member":{"shape":"ScraperComponent"},
+      "min":1
+    },
     "ScraperDescription":{
       "type":"structure",
       "required":[
@@ -2405,6 +2559,43 @@
       "max":64,
       "min":1,
       "pattern":"[0-9A-Za-z][-.0-9A-Z_a-z]*"
+    },
+    "ScraperLoggingConfigurationStatus":{
+      "type":"structure",
+      "required":["statusCode"],
+      "members":{
+        "statusCode":{
+          "shape":"ScraperLoggingConfigurationStatusCode",
+          "documentation":"<p>The status code of the scraper logging configuration.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current status of the scraper logging configuration.</p>"
+        }
+      },
+      "documentation":"<p>The status of a scraper logging configuration.</p>"
+    },
+    "ScraperLoggingConfigurationStatusCode":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "CREATION_FAILED",
+        "UPDATE_FAILED"
+      ]
+    },
+    "ScraperLoggingDestination":{
+      "type":"structure",
+      "members":{
+        "cloudWatchLogs":{
+          "shape":"CloudWatchLogDestination",
+          "documentation":"<p>The CloudWatch Logs configuration for the scraper logging destination.</p>"
+        }
+      },
+      "documentation":"<p>The destination where scraper logs are sent.</p>",
+      "union":true
     },
     "ScraperStatus":{
       "type":"structure",
@@ -2569,6 +2760,11 @@
       "min":1
     },
     "String":{"type":"string"},
+    "StringMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
     "SubnetId":{
       "type":"string",
       "documentation":"<p>ID of a VPC subnet.</p>",
@@ -2628,8 +2824,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -2692,8 +2887,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateLoggingConfigurationRequest":{
       "type":"structure",
@@ -2762,6 +2956,39 @@
         "status":{
           "shape":"QueryLoggingConfigurationStatus",
           "documentation":"<p>The current status of the query logging configuration.</p>"
+        }
+      }
+    },
+    "UpdateScraperLoggingConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "scraperId",
+        "loggingDestination"
+      ],
+      "members":{
+        "scraperId":{
+          "shape":"ScraperId",
+          "documentation":"<p>The ID of the scraper whose logging configuration will be updated.</p>",
+          "location":"uri",
+          "locationName":"scraperId"
+        },
+        "loggingDestination":{
+          "shape":"ScraperLoggingDestination",
+          "documentation":"<p>The destination where scraper logs will be sent.</p>"
+        },
+        "scraperComponents":{
+          "shape":"ScraperComponents",
+          "documentation":"<p>The list of scraper components to configure for logging.</p>"
+        }
+      }
+    },
+    "UpdateScraperLoggingConfigurationResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"ScraperLoggingConfigurationStatus",
+          "documentation":"<p>The status of the updated scraper logging configuration.</p>"
         }
       }
     },

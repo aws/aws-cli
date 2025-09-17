@@ -226,7 +226,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a transit gateway attachment from a Network Firewall. Either the firewall owner or the transit gateway owner can delete the attachment.</p> <important> <p>After you delete a transit gateway attachment, raffic will no longer flow through the firewall endpoints.</p> </important> <p>After you initiate the delete operation, use <a>DescribeFirewall</a> to monitor the deletion status.</p>"
+      "documentation":"<p>Deletes a transit gateway attachment from a Network Firewall. Either the firewall owner or the transit gateway owner can delete the attachment.</p> <important> <p>After you delete a transit gateway attachment, traffic will no longer flow through the firewall endpoints.</p> </important> <p>After you initiate the delete operation, use <a>DescribeFirewall</a> to monitor the deletion status.</p>"
     },
     "DeleteResourcePolicy":{
       "name":"DeleteResourcePolicy",
@@ -695,7 +695,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Rejects a transit gateway attachment request for Network Firewall. When you reject the attachment request, Network Firewall cancels the creation of routing components between the transit gateway and firewall endpoints.</p> <p>Only the firewall owner can reject the attachment. After rejection, no traffic will flow through the firewall endpoints for this attachment.</p> <p>Use <a>DescribeFirewall</a> to monitor the rejection status. To accept the attachment instead of rejecting it, use <a>AcceptNetworkFirewallTransitGatewayAttachment</a>.</p> <note> <p>Once rejected, you cannot reverse this action. To establish connectivity, you must create a new transit gateway-attached firewall.</p> </note>"
+      "documentation":"<p>Rejects a transit gateway attachment request for Network Firewall. When you reject the attachment request, Network Firewall cancels the creation of routing components between the transit gateway and firewall endpoints.</p> <p>Only the transit gateway owner can reject the attachment. After rejection, no traffic will flow through the firewall endpoints for this attachment.</p> <p>Use <a>DescribeFirewall</a> to monitor the rejection status. To accept the attachment instead of rejecting it, use <a>AcceptNetworkFirewallTransitGatewayAttachment</a>.</p> <note> <p>Once rejected, you cannot reverse this action. To establish connectivity, you must create a new transit gateway-attached firewall.</p> </note>"
     },
     "StartAnalysisReport":{
       "name":"StartAnalysisReport",
@@ -1522,7 +1522,7 @@
         },
         "AvailabilityZoneMappings":{
           "shape":"AvailabilityZoneMappings",
-          "documentation":"<p>Required. The Availability Zones where you want to create firewall endpoints for a transit gateway-attached firewall. You must specify at least one Availability Zone. Consider enabling the firewall in every Availability Zone where you have workloads to maintain Availability Zone independence.</p> <p>You can modify Availability Zones later using <a>AssociateAvailabilityZones</a> or <a>DisassociateAvailabilityZones</a>, but this may briefly disrupt traffic. The <code>AvailabilityZoneChangeProtection</code> setting controls whether you can make these modifications.</p>"
+          "documentation":"<p>Required. The Availability Zones where you want to create firewall endpoints for a transit gateway-attached firewall. You must specify at least one Availability Zone. Consider enabling the firewall in every Availability Zone where you have workloads to maintain Availability Zone isolation.</p> <p>You can modify Availability Zones later using <a>AssociateAvailabilityZones</a> or <a>DisassociateAvailabilityZones</a>, but this may briefly disrupt traffic. The <code>AvailabilityZoneChangeProtection</code> setting controls whether you can make these modifications.</p>"
         },
         "AvailabilityZoneChangeProtection":{
           "shape":"Boolean",
@@ -2410,6 +2410,7 @@
     },
     "Domain":{"type":"string"},
     "EnableMonitoringDashboard":{"type":"boolean"},
+    "EnableTLSSessionHolding":{"type":"boolean"},
     "EnabledAnalysisType":{
       "type":"string",
       "enum":[
@@ -2594,6 +2595,10 @@
         "PolicyVariables":{
           "shape":"PolicyVariables",
           "documentation":"<p>Contains variables that you can use to override default Suricata settings in your firewall policy.</p>"
+        },
+        "EnableTLSSessionHolding":{
+          "shape":"EnableTLSSessionHolding",
+          "documentation":"<p>When true, prevents TCP and TLS packets from reaching destination servers until TLS Inspection has evaluated Server Name Indication (SNI) rules. Requires an associated TLS Inspection configuration.</p>"
         }
       },
       "documentation":"<p>The firewall policy defines the behavior of a firewall using a collection of stateless and stateful rule groups and other settings. You can use one firewall policy for multiple firewalls. </p> <p>This, along with <a>FirewallPolicyResponse</a>, define the policy. You can retrieve all objects for a firewall policy by calling <a>DescribeFirewallPolicy</a>.</p>"

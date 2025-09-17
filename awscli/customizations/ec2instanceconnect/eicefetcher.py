@@ -108,9 +108,7 @@ class InstanceConnectEndpointRequestFetcher:
             if page_result:
                 for eice in page_result:
                     if eice['SubnetId'] == subnet_id:
-                        logger.debug(
-                            f"Using EICE based on subnet: {instance_connect_endpoints[0]}"
-                        )
+                        logger.debug(f"Using EICE based on subnet: {eice}")
                         return eice
 
         if instance_connect_endpoints:

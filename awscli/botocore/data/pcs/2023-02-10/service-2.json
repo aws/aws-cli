@@ -639,7 +639,7 @@
         },
         "purchaseOption":{
           "shape":"PurchaseOption",
-          "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. Amazon Web Services PCS supports On-Demand and Spot instances. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Instance purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. If you don't provide this option, it defaults to On-Demand.</p>"
+          "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. PCS supports On-Demand Instances, Spot Instances, and Amazon EC2 Capacity Blocks for ML. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Amazon EC2 billing and purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about PCS support for Capacity Blocks, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-blocks.html\">Using Amazon EC2 Capacity Blocks for ML with PCS</a> in the <i>PCS User Guide</i>. If you don't provide this option, it defaults to On-Demand.</p>"
         },
         "customLaunchTemplate":{"shape":"CustomLaunchTemplate"},
         "iamInstanceProfileArn":{
@@ -649,7 +649,7 @@
         "scalingConfiguration":{"shape":"ScalingConfiguration"},
         "instanceConfigs":{
           "shape":"InstanceList",
-          "documentation":"<p>A list of EC2 instance configurations that Amazon Web Services PCS can provision in the compute node group.</p>"
+          "documentation":"<p>A list of EC2 instance configurations that PCS can provision in the compute node group.</p>"
         },
         "spotOptions":{"shape":"SpotOptions"},
         "slurmConfiguration":{"shape":"ComputeNodeGroupSlurmConfiguration"},
@@ -866,7 +866,7 @@
         },
         "purchaseOption":{
           "shape":"PurchaseOption",
-          "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. Amazon Web Services PCS supports On-Demand and Spot instances. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Instance purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. If you don't provide this option, it defaults to On-Demand.</p>"
+          "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. PCS supports On-Demand Instances, Spot Instances, and Amazon EC2 Capacity Blocks for ML. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Amazon EC2 billing and purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about PCS support for Capacity Blocks, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-blocks.html\">Using Amazon EC2 Capacity Blocks for ML with PCS</a> in the <i>PCS User Guide</i>. If you don't provide this option, it defaults to On-Demand.</p>"
         },
         "customLaunchTemplate":{"shape":"CustomLaunchTemplate"},
         "iamInstanceProfileArn":{
@@ -879,7 +879,7 @@
         },
         "instanceConfigs":{
           "shape":"InstanceList",
-          "documentation":"<p>A list of EC2 instance configurations that Amazon Web Services PCS can provision in the compute node group.</p>"
+          "documentation":"<p>A list of EC2 instance configurations that PCS can provision in the compute node group.</p>"
         },
         "spotOptions":{"shape":"SpotOptions"},
         "slurmConfiguration":{
@@ -1332,7 +1332,7 @@
       "members":{
         "subnetIds":{
           "shape":"SubnetIdList",
-          "documentation":"<p>The list of subnet IDs where Amazon Web Services PCS creates an Elastic Network Interface (ENI) to enable communication between managed controllers and Amazon Web Services PCS resources. Subnet IDs have the form <code>subnet-0123456789abcdef0</code>.</p> <p>Subnets can't be in Outposts, Wavelength or an Amazon Web Services Local Zone.</p> <note> <p>Amazon Web Services PCS currently supports only 1 subnet in this list.</p> </note>"
+          "documentation":"<p>The list of subnet IDs where PCS creates an Elastic Network Interface (ENI) to enable communication between managed controllers and PCS resources. Subnet IDs have the form <code>subnet-0123456789abcdef0</code>.</p> <p>Subnets can't be in Outposts, Wavelength or an Amazon Web Services Local Zone.</p> <note> <p>PCS currently supports only 1 subnet in this list.</p> </note>"
         },
         "securityGroupIds":{
           "shape":"SecurityGroupIdList",
@@ -1349,7 +1349,8 @@
       "type":"string",
       "enum":[
         "ONDEMAND",
-        "SPOT"
+        "SPOT",
+        "CAPACITY_BLOCK"
       ]
     },
     "Queue":{
@@ -1705,7 +1706,7 @@
       "members":{
         "secretArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the the shared Slurm key.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the shared Slurm key.</p>"
         },
         "secretVersion":{
           "shape":"String",
@@ -1749,7 +1750,7 @@
       "members":{
         "allocationStrategy":{
           "shape":"SpotAllocationStrategy",
-          "documentation":"<p>The Amazon EC2 allocation strategy Amazon Web Services PCS uses to provision EC2 instances. Amazon Web Services PCS supports <b>lowest price</b>, <b>capacity optimized</b>, and <b>price capacity optimized</b>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet-allocation-strategy.html\">Use allocation strategies to determine how EC2 Fleet or Spot Fleet fulfills Spot and On-Demand capacity</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. If you don't provide this option, it defaults to <b>price capacity optimized</b>.</p>"
+          "documentation":"<p>The Amazon EC2 allocation strategy PCS uses to provision EC2 instances. PCS supports <b>lowest price</b>, <b>capacity optimized</b>, and <b>price capacity optimized</b>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet-allocation-strategy.html\">Use allocation strategies to determine how EC2 Fleet or Spot Fleet fulfills Spot and On-Demand capacity</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. If you don't provide this option, it defaults to <b>price capacity optimized</b>.</p>"
         }
       },
       "documentation":"<p>Additional configuration when you specify <code>SPOT</code> as the <code>purchaseOption</code> for the <code>CreateComputeNodeGroup</code> API action.</p>"
@@ -1862,7 +1863,7 @@
         "customLaunchTemplate":{"shape":"CustomLaunchTemplate"},
         "purchaseOption":{
           "shape":"PurchaseOption",
-          "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. Amazon Web Services PCS supports On-Demand and Spot instances. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Instance purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. If you don't provide this option, it defaults to On-Demand.</p>"
+          "documentation":"<p>Specifies how EC2 instances are purchased on your behalf. PCS supports On-Demand Instances, Spot Instances, and Amazon EC2 Capacity Blocks for ML. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html\">Amazon EC2 billing and purchasing options</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about PCS support for Capacity Blocks, see <a href=\"https://docs.aws.amazon.com/pcs/latest/userguide/capacity-blocks.html\">Using Amazon EC2 Capacity Blocks for ML with PCS</a> in the <i>PCS User Guide</i>. If you don't provide this option, it defaults to On-Demand.</p>"
         },
         "spotOptions":{"shape":"SpotOptions"},
         "scalingConfiguration":{

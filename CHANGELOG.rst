@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.30.4
+======
+
+* api-change:``ec2``: Add mac-m4.metal and mac-m4pro.metal instance types.
+* api-change:``pcs``: Add support for Amazon EC2 Capacity Blocks for ML
+* api-change:``network-firewall``: Network Firewall now prevents TLS handshakes with the target server until after the Server Name Indication (SNI) has been seen and verified. The monitoring dashboard now provides deeper insights into PrivateLink endpoint candidates and offers filters based on IP addresses and protocol.
+
+
 2.30.3
 ======
 

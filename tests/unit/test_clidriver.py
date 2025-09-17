@@ -91,6 +91,11 @@ GET_DATA = {
             "connect-timeout": {
                 "type": "int",
                 "help": ""
+            },
+            "migrate-v2": {
+                "action": "store_true",
+                "dest": "migrate_v2",
+                "help": "",
             }
         }
     },

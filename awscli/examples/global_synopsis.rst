@@ -12,3 +12,4 @@
 [--ca-bundle <value>]
 [--cli-read-timeout <value>]
 [--cli-connect-timeout <value>]
+[--migrate-v2]

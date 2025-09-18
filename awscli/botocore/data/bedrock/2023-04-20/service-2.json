@@ -445,6 +445,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
+        {"shape":"ResourceInUseException"},
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes an Automated Reasoning policy build workflow and its associated artifacts. This permanently removes the workflow history and any generated assets.</p>",
@@ -2477,6 +2478,12 @@
       "min":1,
       "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:automated-reasoning-policy/[a-z0-9]{12}(:([1-9][0-9]{0,11}))?"
     },
+    "AutomatedReasoningPolicyBuildDocumentBlob":{
+      "type":"blob",
+      "max":5000000,
+      "min":1,
+      "sensitive":true
+    },
     "AutomatedReasoningPolicyBuildDocumentContentType":{
       "type":"string",
       "enum":[
@@ -2641,7 +2648,7 @@
       ],
       "members":{
         "document":{
-          "shape":"AutomatedReasoningPolicyBuildWorkflowDocumentDocumentBlob",
+          "shape":"AutomatedReasoningPolicyBuildDocumentBlob",
           "documentation":"<p>The actual content of the source document that will be analyzed to extract policy rules and concepts.</p>"
         },
         "documentContentType":{
@@ -2658,11 +2665,6 @@
         }
       },
       "documentation":"<p>Represents a source document used in the policy build workflow, containing the content and metadata needed for policy generation.</p>"
-    },
-    "AutomatedReasoningPolicyBuildWorkflowDocumentDocumentBlob":{
-      "type":"blob",
-      "max":4500000,
-      "min":1
     },
     "AutomatedReasoningPolicyBuildWorkflowDocumentList":{
       "type":"list",
@@ -12524,10 +12526,6 @@
         "confidenceThreshold":{
           "shape":"AutomatedReasoningCheckTranslationConfidence",
           "documentation":"<p>The updated minimum confidence level for logic validation. If null is provided, the threshold will be removed.</p>"
-        },
-        "kmsKeyArn":{
-          "shape":"KmsKeyArn",
-          "documentation":"<p>The KMS key ARN for encrypting the test at rest. If not provided, the key will not be updated. Use <code>DISCARD</code> to remove the key.</p>"
         },
         "clientRequestToken":{
           "shape":"IdempotencyToken",

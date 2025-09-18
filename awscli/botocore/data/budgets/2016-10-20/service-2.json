@@ -25,6 +25,7 @@
       "output":{"shape":"CreateBudgetResponse"},
       "errors":[
         {"shape":"InvalidParameterException"},
+        {"shape":"BillingViewHealthStatusException"},
         {"shape":"InternalErrorException"},
         {"shape":"CreationLimitExceededException"},
         {"shape":"DuplicateRecordException"},
@@ -425,6 +426,7 @@
       "errors":[
         {"shape":"InternalErrorException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"BillingViewHealthStatusException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
@@ -700,6 +702,14 @@
       "max":2048,
       "min":20,
       "pattern":"^arn:aws[a-z-]*:(billing)::[0-9]{12}:billingview/[a-zA-Z0-9/:_\\+=\\.\\-@]{0,75}[a-zA-Z0-9]$"
+    },
+    "BillingViewHealthStatusException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p> The billing view status must be HEALTHY to perform this action. Try again when the status is HEALTHY. </p>",
+      "exception":true
     },
     "Budget":{
       "type":"structure",

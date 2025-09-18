@@ -73,9 +73,8 @@ def get_renderer(help_output):
     else:
         if help_output == "browser":
             return PosixBrowserHelpRenderer()
-        if help_output == "url":
+        elif help_output == "url":
             return PosixPagingHelpRenderer()
-
         return PosixHelpRenderer()
 
 

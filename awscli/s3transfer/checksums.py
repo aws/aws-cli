@@ -16,11 +16,14 @@ subject to abrupt breaking changes. Please do not use them directly.
 """
 
 import base64
+import logging
 from copy import copy
 from functools import cached_property
 
 from botocore.httpchecksum import CrtCrc32Checksum
 from s3transfer.exceptions import S3ValidationError
+
+logger = logging.getLogger(__name__)
 
 
 class PartStreamingChecksumBody:
@@ -115,6 +118,10 @@ class FullObjectChecksum:
                 f"Calculated checksum {self.calculated_checksum} does not match "
                 f"stored checksum {self._stored_checksum}"
             )
+        logger.debug(
+            f"Successfully validated stored checksum {self._stored_checksum} "
+            f"against calculated checksum {self.calculated_checksum}"
+        )
 
 
 def provide_checksum_to_meta(response, transfer_meta):

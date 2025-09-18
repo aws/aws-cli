@@ -43,6 +43,7 @@ from awscli.customizations.s3.subscribers import (
     DeleteSourceFileSubscriber,
     DeleteSourceObjectSubscriber,
     DirectoryCreatorSubscriber,
+    ProvideChecksumSubscriber,
     ProvideETagSubscriber,
     ProvideLastModifiedTimeSubscriber,
     ProvideSizeSubscriber,
@@ -524,6 +525,7 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
             QueuedResultSubscriber,
             DirectoryCreatorSubscriber,
             ProvideLastModifiedTimeSubscriber,
+            ProvideChecksumSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,
         ]
@@ -670,6 +672,7 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
             DirectoryCreatorSubscriber,
             ProvideLastModifiedTimeSubscriber,
             DeleteSourceObjectSubscriber,
+            ProvideChecksumSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,
         ]

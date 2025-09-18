@@ -51,6 +51,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
                     {
                         'Bucket': 'bucket',
                         'Key': 'key.txt',
+                        'ChecksumMode': 'ENABLED',
                     },
                 )
             ]
@@ -144,6 +145,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
                         'Bucket': 'mybucket',
                         'Key': 'mykey',
                         'RequestPayer': 'requester',
+                        'ChecksumMode': 'ENABLED',
                     },
                 ),
                 (
@@ -179,7 +181,10 @@ class TestMvCommand(BaseS3TransferCommandTest):
         self.assert_operations_called(
             [
                 self.head_object_request(
-                    'sourcebucket', 'sourcekey', RequestPayer='requester'
+                    'sourcebucket',
+                    'sourcekey',
+                    RequestPayer='requester',
+                    **{'ChecksumMode': 'ENABLED'},
                 ),
                 self.copy_object_request(
                     'sourcebucket',
@@ -216,7 +221,9 @@ class TestMvCommand(BaseS3TransferCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                self.head_object_request('sourcebucket', 'sourcekey'),
+                self.head_object_request(
+                    'sourcebucket', 'sourcekey', **{'ChecksumMode': 'ENABLED'}
+                ),
                 self.get_object_tagging_request('sourcebucket', 'sourcekey'),
                 self.create_mpu_request('bucket', 'key', Metadata=metadata),
                 self.upload_part_copy_request(
@@ -269,7 +276,9 @@ class TestMvCommand(BaseS3TransferCommandTest):
         self.run_cmd(cmdline, expected_rc=1)
         self.assert_operations_called(
             [
-                self.head_object_request('sourcebucket', 'sourcekey'),
+                self.head_object_request(
+                    'sourcebucket', 'sourcekey', **{'ChecksumMode': 'ENABLED'}
+                ),
                 self.get_object_tagging_request('sourcebucket', 'sourcekey'),
                 self.create_mpu_request('bucket', 'key', Metadata=metadata),
                 self.upload_part_copy_request(

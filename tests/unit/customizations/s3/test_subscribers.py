@@ -35,6 +35,7 @@ from awscli.customizations.s3.subscribers import (
     DeleteSourceObjectSubscriber,
     DirectoryCreatorSubscriber,
     OnDoneFilteredSubscriber,
+    ProvideChecksumSubscriber,
     ProvideETagSubscriber,
     ProvideLastModifiedTimeSubscriber,
     ProvideSizeSubscriber,
@@ -99,6 +100,59 @@ class TestProvideEtagSubscriber:
         assert not hasattr(crt_transfer_future.meta, 'etag')
 
         assert "Not providing object ETag." in caplog.text
+
+
+class TestProvideChecksumSubscriber:
+    @pytest.mark.parametrize(
+        "response,expected_checksum,expected_algorithm",
+        [
+            (
+                {"ChecksumType": "FULL_OBJECT", "ChecksumCRC32": "foobar"},
+                "foobar",
+                "ChecksumCRC32",
+            ),
+            (
+                {"ChecksumType": "COMPOSITE", "ChecksumCRC32": "foobar"},
+                None,
+                None,
+            ),
+            (
+                {"ChecksumType": "FULL_OBJECT", "ChecksumSHA256": "foobar"},
+                None,
+                None,
+            ),
+        ],
+    )
+    def test_checksum_set(
+        self, response, expected_checksum, expected_algorithm
+    ):
+        transfer_meta = TransferMeta()
+        transfer_future = mock.Mock(spec=TransferFuture)
+        transfer_future.meta = transfer_meta
+        assert transfer_meta.checksum_is_provided is False
+
+        subscriber = ProvideChecksumSubscriber(response)
+        subscriber.on_queued(transfer_future)
+        assert transfer_meta.stored_checksum == expected_checksum
+        assert transfer_meta.checksum_algorithm == expected_algorithm
+        assert transfer_meta.checksum_is_provided is True
+
+    def test_does_not_try_to_set_checksum_on_crt_transfer_future(self, caplog):
+        caplog.set_level(logging.DEBUG)
+        crt_transfer_future = mock.Mock(spec=CRTTransferFuture)
+        crt_transfer_future.meta = CRTTransferMeta()
+
+        subscriber = ProvideChecksumSubscriber(
+            {
+                "ChecksumType": "FULL_OBJECT",
+                "ChecksumCRC32": "foobar",
+            }
+        )
+        subscriber.on_queued(crt_transfer_future)
+        assert not hasattr(crt_transfer_future.meta, 'stored_checksum')
+        assert not hasattr(crt_transfer_future.meta, 'checksum_algorithm')
+
+        assert "Not providing stored checksum." in caplog.text
 
 
 class OnDoneFilteredRecordingSubscriber(OnDoneFilteredSubscriber):

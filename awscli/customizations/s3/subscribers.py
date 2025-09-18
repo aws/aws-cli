@@ -16,6 +16,7 @@ import os
 import time
 
 from botocore.utils import percent_encode_sequence
+from s3transfer.checksums import provide_checksum_to_meta
 from s3transfer.subscribers import BaseSubscriber
 
 from awscli.customizations.s3 import utils
@@ -96,6 +97,26 @@ class ProvideETagSubscriber(BaseSubscriber):
                 'Not providing object ETag. Future: %s does not offer'
                 'the capability to notify the ETag of an object',
                 future,
+            )
+
+
+class ProvideChecksumSubscriber(BaseSubscriber):
+    """
+    A subscriber which provides the object stored checksum and algorithm.
+    """
+
+    def __init__(self, response_data):
+        self.response_data = response_data
+
+    def on_queued(self, future, **kwargs):
+        if hasattr(future.meta, 'provide_stored_checksum') and hasattr(
+            future.meta, 'provide_checksum_algorithm'
+        ):
+            provide_checksum_to_meta(self.response_data, future.meta)
+        else:
+            LOGGER.debug(
+                f"Not providing stored checksum. Future: {future} does not "
+                "offer the capability to notify the checksum of an object",
             )
 
 

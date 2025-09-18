@@ -169,6 +169,27 @@ class TestTransferMeta(unittest.TestCase):
         self.transfer_meta.user_context['foo'] = 'bar'
         self.assertEqual(self.transfer_meta.user_context, {'foo': 'bar'})
 
+    def test_checksum(self):
+        self.transfer_meta.provide_stored_checksum('foo')
+        self.transfer_meta.provide_checksum_algorithm('bar')
+        self.assertEqual(self.transfer_meta.stored_checksum, 'foo')
+        self.assertEqual(self.transfer_meta.checksum_algorithm, 'bar')
+        self.assertTrue(self.transfer_meta.checksum_is_provided)
+
+    def test_checksum_not_provided(self):
+        self.assertFalse(self.transfer_meta.checksum_is_provided)
+        transfer_meta_with_checksum = TransferMeta()
+        transfer_meta_with_checksum.provide_stored_checksum('foo')
+        self.assertFalse(transfer_meta_with_checksum.checksum_is_provided)
+        transfer_meta_with_algorithm = TransferMeta()
+        transfer_meta_with_algorithm.provide_checksum_algorithm('bar')
+        self.assertFalse(transfer_meta_with_algorithm.checksum_is_provided)
+
+    def test_checksum_provided_none(self):
+        self.transfer_meta.provide_stored_checksum(None)
+        self.transfer_meta.provide_checksum_algorithm(None)
+        self.assertTrue(self.transfer_meta.checksum_is_provided)
+
 
 class TestTransferCoordinator(unittest.TestCase):
     def setUp(self):

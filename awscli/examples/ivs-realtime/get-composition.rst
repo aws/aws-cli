@@ -51,9 +51,10 @@ Output::
             ],
             "layout": {
                 "grid": {
-                    "featuredParticipantAttribute": ""
+                    "featuredParticipantAttribute": "",
                     "gridGap": 2,
                     "omitStoppedVideo": false,
+                    "participantOrderAttribute": "",
                     "videoAspectRatio": "VIDEO",
                     "videoFillMode": ""
                 }
@@ -65,7 +66,7 @@ Output::
         }
     }
 
-For more information, see `IVS Composite Recording | Real-Time Streaming <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon IVS Real-Time Streaming User Guide*.
+For more information, see `IVS Composite Recording | Real-Time Streaming <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon Interactive Video Service User Guide*.
 
 **Example 2: To get a composition with PiP layout**
 
@@ -123,6 +124,7 @@ Output::
                     "featuredParticipantAttribute": "abcdefg",
                     "gridGap": 0,
                     "omitStoppedVideo": false,
+                    "participantOrderAttribute": "",
                     "pipBehavior": "STATIC",
                     "pipOffset": 0,
                     "pipParticipantAttribute": "",
@@ -137,7 +139,7 @@ Output::
         }
     }
 
-For more information, see `IVS Composite Recording | Real-Time Streaming <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon IVS Real-Time Streaming User Guide*.
+For more information, see `IVS Composite Recording | Real-Time Streaming <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon Interactive Video Service User Guide*.
 
 **Example 3: To get a composition with thumbnail recording enabled**
 
@@ -203,6 +205,7 @@ Output::
                     "featuredParticipantAttribute": ""
                     "gridGap": 2,
                     "omitStoppedVideo": false,
+                    "participantOrderAttribute": "",
                     "videoAspectRatio": "VIDEO",
                     "videoFillMode": ""                }
             },
@@ -213,4 +216,4 @@ Output::
         }
     }
 
-For more information, see `IVS Composite Recording | Real-Time Streaming <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon IVS Real-Time Streaming User Guide*.
+For more information, see `IVS Composite Recording | Real-Time Streaming <https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/rt-composite-recording.html>`__ in the *Amazon Interactive Video Service User Guide*.

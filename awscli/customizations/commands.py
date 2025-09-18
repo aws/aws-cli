@@ -381,6 +381,10 @@ class BasicHelp(HelpCommand):
 
     @property
     def url(self):
+        # If the operation command has a subcommand table with commands
+        # in it, treat it as a service command as opposed to an operation
+        # command. This is to support things like a customization command
+        # that rely on the `BasicHelp` object.
         if len(self.command_table) > 0:
             return f"{self._base_remote_url}/reference/{self.event_class.replace('.', '/')}/index.html"
         return f"{self._base_remote_url}/reference/{self.event_class.replace('.', '/')}.html"

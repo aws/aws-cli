@@ -33,8 +33,9 @@ from s3transfer.download import (
     IORenameFileTask,
     IOStreamingWriteTask,
     IOWriteTask,
+    ValidateChecksumTask,
 )
-from s3transfer.exceptions import RetriesExceededError
+from s3transfer.exceptions import RetriesExceededError, S3ValidationError
 from s3transfer.futures import IN_MEMORY_DOWNLOAD_TAG, BoundedExecutor
 from s3transfer.utils import CallArgs, OSUtils
 
@@ -48,6 +49,7 @@ from tests import (
     mock,
     unittest,
 )
+from tests.unit.s3transfer.test_checksums import mock_full_object_checksum
 
 
 class DownloadException(Exception):
@@ -187,6 +189,14 @@ class TestDownloadFilenameOutputManager(BaseDownloadOutputManagerTest):
 
         io_write_task()
         self.assertEqual(fileobj.writes, [(3, 'foo')])
+
+    def test_get_validate_checksum_task(self):
+        self.assertIsInstance(
+            self.download_output_manager.get_validate_checksum_task(
+                mock.Mock()
+            ),
+            ValidateChecksumTask,
+        )
 
 
 class TestDownloadSpecialFilenameOutputManager(BaseDownloadOutputManagerTest):
@@ -397,6 +407,7 @@ class TestDownloadSubmissionTask(BaseSubmissionTaskTest):
         self.bucket = 'mybucket'
         self.key = 'mykey'
         self.etag = 'myetag'
+        self.checksum_crc32 = 'AUwfuQ=='
         self.extra_args = {'IfMatch': self.etag}
         self.subscribers = []
 
@@ -568,6 +579,44 @@ class TestDownloadSubmissionTask(BaseSubmissionTaskTest):
         # to that task submission.
         self.assert_tag_for_get_object(IN_MEMORY_DOWNLOAD_TAG)
 
+    def test_full_object_checksum_validation(self):
+        self.wrap_executor_in_recorder()
+        self.configure_for_ranged_get()
+        self.stubber.add_response(
+            'head_object',
+            {
+                'ContentLength': len(self.content),
+                'ETag': self.etag,
+                'ChecksumCRC32': self.checksum_crc32,
+                'ChecksumType': 'FULL_OBJECT',
+            },
+        )
+        self.add_get_responses()
+
+        self.submission_task = self.get_download_submission_task()
+        self.wait_and_assert_completed_successfully(self.submission_task)
+
+    def test_full_object_checksum_validation_raises(self):
+        self.wrap_executor_in_recorder()
+        self.configure_for_ranged_get()
+        self.stubber.add_response(
+            'head_object',
+            {
+                'ContentLength': len(self.content),
+                'ETag': self.etag,
+                'ChecksumCRC32': 'badchecksum',
+                'ChecksumType': 'FULL_OBJECT',
+            },
+        )
+        self.add_get_responses()
+
+        self.submission_task = self.get_download_submission_task()
+        with self.assertRaisesRegex(
+            S3ValidationError, r'does not match stored checksum'
+        ):
+            self.submission_task()
+            self.transfer_future.result()
+
 
 class TestGetObjectTask(BaseTaskTest):
     def setUp(self):
@@ -682,6 +731,25 @@ class TestGetObjectTask(BaseTaskTest):
         self.assertEqual(
             bandwidth_limiter.get_bandwith_limited_stream.call_args_list,
             [mock.call(mock.ANY, self.transfer_coordinator)],
+        )
+
+    def test_uses_full_object_checksum(self):
+        full_object_checksum = mock.Mock()
+        full_object_checksum.checksum_algorithm = 'ChecksumCRC32'
+
+        self.stubber.add_response(
+            'get_object',
+            service_response={'Body': self.stream},
+            expected_params={'Bucket': self.bucket, 'Key': self.key},
+        )
+        task = self.get_download_task(
+            full_object_checksum=full_object_checksum
+        )
+        task()
+
+        self.stubber.assert_no_pending_responses()
+        full_object_checksum.set_part_checksum.assert_called_once_with(
+            0, 21766073
         )
 
     def test_retries_succeeds(self):
@@ -882,6 +950,17 @@ class TestIOCloseTask(BaseIOTaskTest):
             task = self.get_task(IOCloseTask, main_kwargs={'fileobj': f})
             task()
             self.assertTrue(f.closed)
+
+
+class TestValidateChecksumTask(BaseIOTaskTest):
+    def test_main(self):
+        mock_full_object_checksum = mock.Mock()
+        task = self.get_task(
+            ValidateChecksumTask,
+            main_kwargs={'full_object_checksum': mock_full_object_checksum},
+        )
+        task()
+        mock_full_object_checksum.validate.assert_called_once()
 
 
 class TestDownloadChunkIterator(unittest.TestCase):

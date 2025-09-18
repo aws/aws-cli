@@ -576,6 +576,7 @@ class DownloadSubmissionTask(SubmissionTask):
         if full_object_checksum is None:
             task = CompleteDownloadNOOPTask(
                 transfer_coordinator=self._transfer_coordinator,
+                is_final=False,
             )
         else:
             task = download_manager.get_validate_checksum_task(

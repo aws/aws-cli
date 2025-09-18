@@ -93,6 +93,7 @@ from tests.utils.s3transfer import (
     RecordingSubscriber,
     FileSizeProvider,
     ETagProvider,
+    ChecksumProvider,
     RecordingOSUtils,
     RecordingExecutor,
     TransferCoordinatorWithInterrupt,

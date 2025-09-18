@@ -29,6 +29,7 @@ from s3transfer.manager import TransferConfig, TransferManager
 
 from tests import (
     BaseGeneralInterfaceTest,
+    ChecksumProvider,
     ETagProvider,
     FileSizeProvider,
     NonSeekableWriter,
@@ -311,6 +312,7 @@ class BaseDownloadTest(BaseGeneralInterfaceTest):
         call_kwargs['subscribers'] = [
             FileSizeProvider(len(self.content)),
             ETagProvider(self.etag),
+            ChecksumProvider({}),
         ]
 
         future = self.manager.download(**call_kwargs)

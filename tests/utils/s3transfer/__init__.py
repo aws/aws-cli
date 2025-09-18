@@ -23,6 +23,7 @@ from unittest import mock  # noqa: F401
 
 import botocore.session
 from botocore.stub import Stubber
+from s3transfer.checksums import provide_checksum_to_meta
 from s3transfer.futures import (
     IN_MEMORY_DOWNLOAD_TAG,
     IN_MEMORY_UPLOAD_TAG,
@@ -160,6 +161,14 @@ class ETagProvider:
 
     def on_queued(self, future, **kwargs):
         future.meta.provide_object_etag(self.etag)
+
+
+class ChecksumProvider:
+    def __init__(self, response_data):
+        self.response_data = response_data
+
+    def on_queued(self, future, **kwargs):
+        provide_checksum_to_meta(self.response_data, future.meta)
 
 
 class FileCreator:

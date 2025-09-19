@@ -15,16 +15,21 @@ import os
 import signal
 import sys
 
+from awscli import (
+    _DEFAULT_BASE_REMOTE_URL,
+)
 from awscli.argparser import HELP_BLURB, ArgParseException
 from awscli.compat import StringIO
 from awscli.help import (
     ExecutableNotFoundError,
     HelpCommand,
     PosixHelpRenderer,
+    PosixPagingHelpRenderer,
     ProviderHelpCommand,
     TopicHelpCommand,
     TopicListerCommand,
     WindowsHelpRenderer,
+    WindowsPagingHelpRenderer,
 )
 from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 
@@ -197,7 +202,7 @@ class TestHelpCommand(TestHelpCommandBase):
     """
 
     def setUp(self):
-        super(TestHelpCommand, self).setUp()
+        super().setUp()
         self.doc_handler_mock = mock.Mock()
         self.subcommand_mock = mock.Mock()
         self.renderer = mock.Mock()
@@ -232,7 +237,7 @@ class TestHelpCommand(TestHelpCommandBase):
 
 class TestProviderHelpCommand(TestHelpCommandBase):
     def setUp(self):
-        super(TestProviderHelpCommand, self).setUp()
+        super().setUp()
         self.session.provider = None
         self.command_table = {}
         self.arg_table = {}
@@ -261,7 +266,7 @@ class TestProviderHelpCommand(TestHelpCommandBase):
 
     def tearDown(self):
         self.json_patch.stop()
-        super(TestProviderHelpCommand, self).tearDown()
+        super().tearDown()
 
     def test_related_items(self):
         self.assertEqual(self.cmd.related_items, ['aws help topics'])
@@ -288,10 +293,14 @@ class TestProviderHelpCommand(TestHelpCommandBase):
         )
         self.assertEqual(subcommand_table['topic-name-2'].name, 'topic-name-2')
 
+    def test_url(self):
+        self.assertIn(_DEFAULT_BASE_REMOTE_URL, self.cmd.url)
+        self.assertIn("/index.html", self.cmd.url)
+
 
 class TestTopicListerCommand(TestHelpCommandBase):
     def setUp(self):
-        super(TestTopicListerCommand, self).setUp()
+        super().setUp()
         self.cmd = TopicListerCommand(self.session)
 
     def test_event_class(self):
@@ -303,7 +312,7 @@ class TestTopicListerCommand(TestHelpCommandBase):
 
 class TestTopicHelpCommand(TestHelpCommandBase):
     def setUp(self):
-        super(TestTopicHelpCommand, self).setUp()
+        super().setUp()
         self.name = 'topic-name-1'
         self.cmd = TopicHelpCommand(self.session, self.name)
 
@@ -312,3 +321,7 @@ class TestTopicHelpCommand(TestHelpCommandBase):
 
     def test_name(self):
         self.assertEqual(self.cmd.name, self.name)
+
+    def test_url(self):
+        self.assertIn(_DEFAULT_BASE_REMOTE_URL, self.cmd.url)
+        self.assertIn("/topic/topic-name-1.html", self.cmd.url)

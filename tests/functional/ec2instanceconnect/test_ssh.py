@@ -176,6 +176,39 @@ def get_describe_eice_response():
     """
 
 
+def get_describe_eice_response_with_state(state):
+    return f"""
+    <DescribeInstanceConnectEndpointsResponse xmlns="http://ec2.amazonaws.com/doc/2016-11-15/">
+        <instanceConnectEndpointSet>
+            <item>
+                <dnsName>dns.com</dnsName>
+                <fipsDnsName>fips.dns.com</fipsDnsName>
+                <instanceConnectEndpointId>eice-123</instanceConnectEndpointId>
+                <state>{state}</state>
+                <subnetId>subnet-123</subnetId>
+                <vpcId>vpc-123</vpcId>
+            </item>
+        </instanceConnectEndpointSet>
+    </DescribeInstanceConnectEndpointsResponse>
+    """
+
+
+def get_describe_eice_response_create_complete():
+    return get_describe_eice_response_with_state("create-complete")
+
+
+def get_describe_eice_response_update_in_progress():
+    return get_describe_eice_response_with_state("update-in-progress")
+
+
+def get_describe_eice_response_update_complete():
+    return get_describe_eice_response_with_state("update-complete")
+
+
+def get_describe_eice_response_update_failed():
+    return get_describe_eice_response_with_state("update-failed")
+
+
 @pytest.fixture
 def describe_eice_response():
     return get_describe_eice_response()
@@ -184,7 +217,15 @@ def describe_eice_response():
 def get_request_params_for_describe_eice():
     return {
         'Filters': [
-            {'Name': 'state', 'Values': ['create-complete']},
+            {
+                'Name': 'state',
+                'Values': [
+                    'create-complete',
+                    'update-in-progress',
+                    'update-failed',
+                    'update-complete',
+                ],
+            },
             {'Name': 'vpc-id', 'Values': ['vpc-123']},
         ]
     }
@@ -192,7 +233,17 @@ def get_request_params_for_describe_eice():
 
 def get_request_params_for_describe_eice_with_eice_id():
     return {
-        'Filters': [{'Name': 'state', 'Values': ['create-complete']}],
+        'Filters': [
+            {
+                'Name': 'state',
+                'Values': [
+                    'create-complete',
+                    'update-in-progress',
+                    'update-failed',
+                    'update-complete',
+                ],
+            }
+        ],
         'InstanceConnectEndpointIds': ['eice-12345'],
     }
 
@@ -567,6 +618,118 @@ class TestSSHCommand:
                     'ec2-user@1.10.10.10',
                 ],
                 id='Open-Tunnel: use provided ip',
+            ),
+            pytest.param(
+                get_describe_private_instance_response(),
+                get_describe_eice_response_create_complete(),
+                get_request_params_for_describe_eice(),
+                [
+                    "ec2-instance-connect",
+                    "ssh",
+                    "--instance-id",
+                    "i-123",
+                    "--private-key-file",
+                    "/tmp/ssh-file",
+                ],
+                [
+                    'ssh',
+                    '-o',
+                    'ServerAliveInterval=5',
+                    '-p',
+                    '22',
+                    '-i',
+                    '/tmp/ssh-file',
+                    '-o',
+                    'ProxyCommand=aws ec2-instance-connect open-tunnel --instance-id i-123 '
+                    '--private-ip-address 10.0.0.0 --remote-port 22 '
+                    '--instance-connect-endpoint-id eice-123 --instance-connect-endpoint-dns-name dns.com',
+                    'ec2-user@10.0.0.0',
+                ],
+                id='Open-Tunnel: connect via eice in create-complete',
+            ),
+            pytest.param(
+                get_describe_private_instance_response(),
+                get_describe_eice_response_update_in_progress(),
+                get_request_params_for_describe_eice(),
+                [
+                    "ec2-instance-connect",
+                    "ssh",
+                    "--instance-id",
+                    "i-123",
+                    "--private-key-file",
+                    "/tmp/ssh-file",
+                ],
+                [
+                    'ssh',
+                    '-o',
+                    'ServerAliveInterval=5',
+                    '-p',
+                    '22',
+                    '-i',
+                    '/tmp/ssh-file',
+                    '-o',
+                    'ProxyCommand=aws ec2-instance-connect open-tunnel --instance-id i-123 '
+                    '--private-ip-address 10.0.0.0 --remote-port 22 '
+                    '--instance-connect-endpoint-id eice-123 --instance-connect-endpoint-dns-name dns.com',
+                    'ec2-user@10.0.0.0',
+                ],
+                id='Open-Tunnel: connect via eice in update-in-progress',
+            ),
+            pytest.param(
+                get_describe_private_instance_response(),
+                get_describe_eice_response_update_complete(),
+                get_request_params_for_describe_eice(),
+                [
+                    "ec2-instance-connect",
+                    "ssh",
+                    "--instance-id",
+                    "i-123",
+                    "--private-key-file",
+                    "/tmp/ssh-file",
+                ],
+                [
+                    'ssh',
+                    '-o',
+                    'ServerAliveInterval=5',
+                    '-p',
+                    '22',
+                    '-i',
+                    '/tmp/ssh-file',
+                    '-o',
+                    'ProxyCommand=aws ec2-instance-connect open-tunnel --instance-id i-123 '
+                    '--private-ip-address 10.0.0.0 --remote-port 22 '
+                    '--instance-connect-endpoint-id eice-123 --instance-connect-endpoint-dns-name dns.com',
+                    'ec2-user@10.0.0.0',
+                ],
+                id='Open-Tunnel: connect via eice in update-complete',
+            ),
+            pytest.param(
+                get_describe_private_instance_response(),
+                get_describe_eice_response_update_failed(),
+                get_request_params_for_describe_eice(),
+                [
+                    "ec2-instance-connect",
+                    "ssh",
+                    "--instance-id",
+                    "i-123",
+                    "--private-key-file",
+                    "/tmp/ssh-file",
+                ],
+                [
+                    'ssh',
+                    '-o',
+                    'ServerAliveInterval=5',
+                    '-p',
+                    '22',
+                    '-i',
+                    '/tmp/ssh-file',
+                    '-o',
+                    'ProxyCommand=aws ec2-instance-connect open-tunnel --instance-id i-123 '
+                    '--private-ip-address 10.0.0.0 --remote-port 22 '
+                    '--instance-connect-endpoint-id eice-123 --instance-connect-endpoint-dns-name dns.com',
+                    'ec2-user@10.0.0.0',
+                ],
+                id='Open-Tunnel: connect via eice in update-failed',
             ),
             pytest.param(
                 get_describe_public_instance_response(),

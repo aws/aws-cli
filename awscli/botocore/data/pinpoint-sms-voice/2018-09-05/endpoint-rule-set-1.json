@@ -32,38 +32,32 @@
         {
             "conditions": [
                 {
-                    "fn": "aws.partition",
+                    "fn": "isSet",
                     "argv": [
                         {
-                            "ref": "Region"
+                            "ref": "Endpoint"
                         }
-                    ],
-                    "assign": "PartitionResult"
+                    ]
                 }
             ],
-            "type": "tree",
             "rules": [
                 {
                     "conditions": [
                         {
-                            "fn": "isSet",
+                            "fn": "booleanEquals",
                             "argv": [
                                 {
-                                    "ref": "Endpoint"
-                                }
+                                    "ref": "UseFIPS"
+                                },
+                                true
                             ]
-                        },
-                        {
-                            "fn": "parseURL",
-                            "argv": [
-                                {
-                                    "ref": "Endpoint"
-                                }
-                            ],
-                            "assign": "url"
                         }
                     ],
-                    "type": "tree",
+                    "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                    "type": "error"
+                },
+                {
+                    "conditions": [],
                     "rules": [
                         {
                             "conditions": [
@@ -71,19 +65,200 @@
                                     "fn": "booleanEquals",
                                     "argv": [
                                         {
-                                            "ref": "UseFIPS"
+                                            "ref": "UseDualStack"
                                         },
                                         true
                                     ]
                                 }
                             ],
-                            "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                            "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
                             "type": "error"
                         },
                         {
                             "conditions": [],
-                            "type": "tree",
+                            "endpoint": {
+                                "url": {
+                                    "ref": "Endpoint"
+                                },
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        }
+                    ],
+                    "type": "tree"
+                }
+            ],
+            "type": "tree"
+        },
+        {
+            "conditions": [],
+            "rules": [
+                {
+                    "conditions": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                }
+                            ]
+                        }
+                    ],
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "aws.partition",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ],
+                                    "assign": "PartitionResult"
+                                }
+                            ],
                             "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseFIPS"
+                                                },
+                                                true
+                                            ]
+                                        },
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        true,
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsFIPS"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        true,
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsDualStack"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://sms-voice.pinpoint-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                                            "type": "error"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseFIPS"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsFIPS"
+                                                            ]
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://sms-voice.pinpoint-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "FIPS is enabled but this partition does not support FIPS",
+                                            "type": "error"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
                                 {
                                     "conditions": [
                                         {
@@ -96,214 +271,80 @@
                                             ]
                                         }
                                     ],
-                                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
-                                    "type": "error"
-                                },
-                                {
-                                    "conditions": [],
-                                    "endpoint": {
-                                        "url": {
-                                            "ref": "Endpoint"
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        true,
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsDualStack"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://sms-voice.pinpoint.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                }
+                                            ],
+                                            "type": "tree"
                                         },
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "conditions": [
-                        {
-                            "fn": "booleanEquals",
-                            "argv": [
-                                {
-                                    "ref": "UseFIPS"
-                                },
-                                true
-                            ]
-                        },
-                        {
-                            "fn": "booleanEquals",
-                            "argv": [
-                                {
-                                    "ref": "UseDualStack"
-                                },
-                                true
-                            ]
-                        }
-                    ],
-                    "type": "tree",
-                    "rules": [
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        true,
                                         {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "supportsFIPS"
-                                            ]
+                                            "conditions": [],
+                                            "error": "DualStack is enabled but this partition does not support DualStack",
+                                            "type": "error"
                                         }
-                                    ]
+                                    ],
+                                    "type": "tree"
                                 },
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        true,
-                                        {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "supportsDualStack"
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ],
-                            "type": "tree",
-                            "rules": [
                                 {
                                     "conditions": [],
-                                    "endpoint": {
-                                        "url": "https://sms-voice.pinpoint-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
-                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
-                            "type": "error"
-                        }
-                    ]
-                },
-                {
-                    "conditions": [
-                        {
-                            "fn": "booleanEquals",
-                            "argv": [
-                                {
-                                    "ref": "UseFIPS"
-                                },
-                                true
-                            ]
-                        }
-                    ],
-                    "type": "tree",
-                    "rules": [
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        true,
+                                    "rules": [
                                         {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "supportsFIPS"
-                                            ]
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://sms-voice.pinpoint.{Region}.{PartitionResult#dnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
                                         }
-                                    ]
+                                    ],
+                                    "type": "tree"
                                 }
                             ],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [],
-                                    "endpoint": {
-                                        "url": "https://sms-voice.pinpoint-fips.{Region}.{PartitionResult#dnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
-                            "error": "FIPS is enabled but this partition does not support FIPS",
-                            "type": "error"
-                        }
-                    ]
-                },
-                {
-                    "conditions": [
-                        {
-                            "fn": "booleanEquals",
-                            "argv": [
-                                {
-                                    "ref": "UseDualStack"
-                                },
-                                true
-                            ]
+                            "type": "tree"
                         }
                     ],
-                    "type": "tree",
-                    "rules": [
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        true,
-                                        {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "supportsDualStack"
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [],
-                                    "endpoint": {
-                                        "url": "https://sms-voice.pinpoint.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
-                            "error": "DualStack is enabled but this partition does not support DualStack",
-                            "type": "error"
-                        }
-                    ]
+                    "type": "tree"
                 },
                 {
                     "conditions": [],
-                    "endpoint": {
-                        "url": "https://sms-voice.pinpoint.{Region}.{PartitionResult#dnsSuffix}",
-                        "properties": {},
-                        "headers": {}
-                    },
-                    "type": "endpoint"
+                    "error": "Invalid Configuration: Missing Region",
+                    "type": "error"
                 }
-            ]
+            ],
+            "type": "tree"
         }
     ]
 }

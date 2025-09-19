@@ -11187,6 +11187,11 @@
           "shape": "__integerMin1Max51",
           "locationName": "minQp",
           "documentation": "Sets the minimum QP. If you aren't familiar with quantization adjustment, leave the field empty. MediaLive will\napply an appropriate value."
+        },
+        "MinBitrate": {
+          "shape": "__integerMin0",
+          "locationName": "minBitrate",
+          "documentation": "Used for QVBR rate control mode only.\nOptional.\nEnter a minimum bitrate if you want to keep the output bitrate about a threshold, in order to prevent the downstream system from de-allocating network bandwidth for this output."
         }
       },
       "documentation": "H264 Settings"
@@ -11570,6 +11575,26 @@
           "shape": "H265Deblocking",
           "locationName": "deblocking",
           "documentation": "Enable or disable the deblocking filter for this codec. The filter reduces blocking artifacts at block boundaries,\nwhich improves overall video quality. If the filter is disabled, visible block edges might appear in the output,\nespecially at lower bitrates."
+        },
+        "GopBReference": {
+          "shape": "H265GopBReference",
+          "locationName": "gopBReference",
+          "documentation": "Allows the encoder to use a B-Frame as a reference frame as well.\nENABLED: B-frames will also serve as reference frames.\nDISABLED: B-frames won't be reference frames.\nMust be DISABLED if resolution is greater than 1080p or when using tiled hevc encoding."
+        },
+        "GopNumBFrames": {
+          "shape": "__integerMin0Max3",
+          "locationName": "gopNumBFrames",
+          "documentation": "Sets the number of B-frames between reference frames.\nSet to 2 if resolution is greater than 1080p or when using tiled hevc encoding."
+        },
+        "MinBitrate": {
+          "shape": "__integerMin0Max40000000",
+          "locationName": "minBitrate",
+          "documentation": "Used for QVBR rate control mode only.\nOptional.\nEnter a minimum bitrate if you want to keep the output bitrate about a threshold, in order to prevent the downstream system from de-allocating network bandwidth for this output."
+        },
+        "SubgopLength": {
+          "shape": "H265SubGopLength",
+          "locationName": "subgopLength",
+          "documentation": "Sets the number of B-frames in each sub-GOP.\nFIXED: Use the value in Num B-frames.\nDYNAMIC: Optimizes the number of B-frames in each sub-GOP to improve visual quality.\nMust be FIXED if resolution is greater than 1080p or when using tiled hevc encoding."
         }
       },
       "documentation": "H265 Settings",
@@ -25862,6 +25887,11 @@
           "shape": "Av1RateControlMode",
           "locationName": "rateControlMode",
           "documentation": "Rate control mode.\n\nQVBR: Quality will match the specified quality level except when it is constrained by the\nmaximum bitrate.  Recommended if you or your viewers pay for bandwidth.\n\nCBR: Quality varies, depending on the video complexity. Recommended only if you distribute\nyour assets to devices that cannot handle variable bitrates."
+        },
+        "MinBitrate": {
+          "shape": "__integerMin0Max8000000",
+          "locationName": "minBitrate",
+          "documentation": "Used for QVBR rate control mode only.\nOptional.\nEnter a minimum bitrate if you want to keep the output bitrate about a threshold, in order to prevent the downstream system from de-allocating network bandwidth for this output."
         }
       },
       "documentation": "Av1 Settings",
@@ -29397,6 +29427,40 @@
         }
       },
       "documentation": "Media Package V2 Group Settings"
+    },
+    "H265GopBReference": {
+      "type": "string",
+      "documentation": "H265 Gop BReference",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
+      ]
+    },
+    "H265SubGopLength": {
+      "type": "string",
+      "documentation": "H265 Sub Gop Length",
+      "enum": [
+        "DYNAMIC",
+        "FIXED"
+      ]
+    },
+    "__integerMin0Max3": {
+      "type": "integer",
+      "min": 0,
+      "max": 3,
+      "documentation": "Placeholder documentation for __integerMin0Max3"
+    },
+    "__integerMin0Max40000000": {
+      "type": "integer",
+      "min": 0,
+      "max": 40000000,
+      "documentation": "Placeholder documentation for __integerMin0Max40000000"
+    },
+    "__integerMin0Max8000000": {
+      "type": "integer",
+      "min": 0,
+      "max": 8000000,
+      "documentation": "Placeholder documentation for __integerMin0Max8000000"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

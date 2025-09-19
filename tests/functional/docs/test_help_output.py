@@ -217,7 +217,9 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
         self.assertEqual(cr, 252)
         # We should see an error message complaining about
         # an invalid choice because the operation has been removed.
-        self.assertIn('argument operation: Found invalid choice', stderr.getvalue())
+        self.assertIn(
+            'argument operation: Found invalid choice', stderr.getvalue()
+        )
 
     def test_ses_deprecated_commands(self):
         self.driver.main(['ses', 'help'])
@@ -386,7 +388,7 @@ class TestCanDocumentAsRequired(BaseAWSHelpOutputTest):
         # This param is already marked as required, but to be
         # explicit this is repeated here to make it more clear.
         def doc_as_required(argument_table, **kwargs):
-            arg = argument_table['volume-arns']
+            arg = argument_table['volume-arns']  # noqa: F841
 
         self.driver.session.register(
             'building-argument-table', doc_as_required
@@ -444,18 +446,18 @@ class TestIotData(BaseAWSHelpOutputTest):
 
 class TestAliases(BaseAWSHelpOutputTest):
     def setUp(self):
-        super(TestAliases, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.alias_file = self.files.create_file('alias', '[toplevel]\n')
         self.driver.alias_loader = AliasLoader(self.alias_file)
 
     def tearDown(self):
-        super(TestAliases, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def add_alias(self, alias_name, alias_value):
         with open(self.alias_file, 'a+') as f:
-            f.write('%s = %s\n' % (alias_name, alias_value))
+            f.write(f'{alias_name} = {alias_value}\n')
 
     def test_alias_not_in_main_help(self):
         self.add_alias('my-alias', 'ec2 describe-regions')

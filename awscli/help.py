@@ -15,21 +15,22 @@ import os
 import platform
 import shlex
 import sys
-from subprocess import PIPE, Popen
 import tempfile
 import webbrowser
+from subprocess import PIPE, Popen
 
+from botocore.exceptions import ProfileNotFound
 from docutils.core import publish_string
 from docutils.writers import (
     html4css1,
     manpage,
 )
+
 from awscli import (
     _DEFAULT_BASE_REMOTE_URL,
 )
 from awscli.argparser import ArgTableArgParser
 from awscli.argprocess import ParamShorthandParser
-from botocore.exceptions import ProfileNotFound
 from awscli.bcdoc import docevents
 from awscli.bcdoc.restdoc import ReSTDocument
 from awscli.bcdoc.textwriter import TextWriter
@@ -52,8 +53,8 @@ TOPIC_PATH = 'topic'
 
 class ExecutableNotFoundError(Exception):
     def __init__(self, executable_name):
-        super(ExecutableNotFoundError, self).__init__(
-            'Could not find executable named "%s"' % executable_name
+        super().__init__(
+            f'Could not find executable named "{executable_name}"'
         )
 
 
@@ -62,7 +63,7 @@ def get_renderer(help_output):
     Return the appropriate HelpRenderer implementation for the
     current platform.
     """
-    
+
     if platform.system() == 'Windows':
         if help_output == "browser":
             return WindowsBrowserHelpRenderer()
@@ -76,6 +77,7 @@ def get_renderer(help_output):
             return PosixPagingHelpRenderer()
 
         return PosixHelpRenderer()
+
 
 class HelpRenderer:
     """
@@ -103,7 +105,6 @@ class HelpRenderer:
         method.
         """
         raise NotImplementedError
-
 
     def _popen(self, *args, **kwargs):
         return Popen(*args, **kwargs)
@@ -175,7 +176,9 @@ class BrowserHelpRenderer(HelpRenderer):
         self._send_output_to_browser(output)
 
     def _send_output_to_browser(self, output):
-        html_file = tempfile.NamedTemporaryFile("wb", suffix=".html", delete=False)
+        html_file = tempfile.NamedTemporaryFile(
+            "wb", suffix=".html", delete=False
+        )
         html_file.write(output)
         html_file.close()
 
@@ -198,7 +201,7 @@ class PosixPagingHelpRenderer(PagingHelpRenderer):
         cmdline = self.get_pager_cmdline()
         if not self._exists_on_path(cmdline[0]):
             LOG.debug(
-                "Pager '%s' not found in PATH, printing raw help." % cmdline[0]
+                f"Pager '{cmdline[0]}' not found in PATH, printing raw help."
             )
             self.output_stream.write(output.decode('utf-8') + "\n")
             self.output_stream.flush()
@@ -235,7 +238,7 @@ class PosixHelpRenderer(PosixPagingHelpRenderer):
     Render help content on a Posix-like system.  This includes
     Linux and MacOS X.
     """
- 
+
     def _convert_doc_content(self, contents):
         settings_overrides = self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES.copy()
         settings_overrides["report_level"] = 3
@@ -262,9 +265,7 @@ class PosixBrowserHelpRenderer(BrowserHelpRenderer):
     Linux and MacOS X.
     """
 
-    PAGER = 'less -R'
-
-    def _convert_doc_content(self, contents, output_format='ascii'):
+    def _convert_doc_content(self, contents):
         settings_overrides = self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES.copy()
         settings_overrides["report_level"] = 3
         man_contents = publish_string(
@@ -292,6 +293,7 @@ class PosixBrowserHelpRenderer(BrowserHelpRenderer):
                 for p in os.environ.get('PATH', '').split(os.pathsep)
             ]
         )
+
 
 class WindowsPagingHelpRenderer(PagingHelpRenderer):
     """Render help content on a Windows platform."""
@@ -388,12 +390,13 @@ class HelpCommand:
         self._base_remote_url = _DEFAULT_BASE_REMOTE_URL
 
         try:
-            self._help_output_format = self.session.get_config_variable("cli_help_output")
+            self._help_output_format = self.session.get_config_variable(
+                "cli_help_output"
+            )
         except ProfileNotFound:
             self._help_output_format = None
 
         self.renderer = get_renderer(self._help_output_format)
-
 
     @property
     def event_class(self):
@@ -542,6 +545,7 @@ class ServiceHelpCommand(HelpCommand):
     def url(self):
         return f"{self._base_remote_url}/{REF_PATH}/{self.name}/index.html"
 
+
 class OperationHelpCommand(HelpCommand):
     """Implements operation level help.
 
@@ -575,7 +579,7 @@ class TopicListerCommand(HelpCommand):
     EventHandlerClass = TopicListerDocumentEventHandler
 
     def __init__(self, session):
-        super(TopicListerCommand, self).__init__(session, None, {}, {})
+        super().__init__(session, None, {}, {})
 
     @property
     def event_class(self):
@@ -594,7 +598,7 @@ class TopicHelpCommand(HelpCommand):
     EventHandlerClass = TopicDocumentEventHandler
 
     def __init__(self, session, topic_name):
-        super(TopicHelpCommand, self).__init__(session, None, {}, {})
+        super().__init__(session, None, {}, {})
         self._topic_name = topic_name
 
     @property

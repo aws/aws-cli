@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.30.6
+======
+
+* api-change:``config``: Add UNKNOWN state to RemediationExecutionState and add IN_PROGRESS/EXITED/UNKNOWN states to RemediationExecutionStepState.
+* api-change:``license-manager-user-subscriptions``: Added support for cross-account Active Directories.
+* enhancement:ec2-instance-connect: Allow ec2-instance-connect ssh and open-tunnel commands to connect to update-complete, update-in-progress, and update-failed EC2 Instance Connect Endpoints. Fixes `#9715 <https://github.com/aws/aws-cli/issues/9715>`__
+* api-change:``kendra-ranking``: Model whitespace change - no client difference
+* api-change:``bedrock-agentcore-control``: Add tagging and VPC support to AgentCore Runtime, Code Interpreter, and Browser resources. Add support for configuring request headers in Runtime. Fix AgentCore Runtime shape names.
+* api-change:``medialive``: Add MinBitrate for QVBR mode under H264/H265/AV1 output codec. Add GopBReference, GopNumBFrames, SubGopLength fields under H265 output codec.
+* api-change:``connect``: This release adds a persistent connection field to UserPhoneConfig that maintains agent's softphone media connection for faster call connections.
+* api-change:``sqs``: Update invalid character handling documentation for SQS SendMessage API
+
+
 2.30.5
 ======
 

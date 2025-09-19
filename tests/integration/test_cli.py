@@ -156,7 +156,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertIn(
             "The filter 'bad-filter' is invalid",
             p.stderr,
-            "stdout: %s, stderr: %s" % (p.stdout, p.stderr),
+            f"stdout: {p.stdout}, stderr: {p.stderr}",
         )
 
     def test_param_with_file(self):
@@ -166,7 +166,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         with open(param_file, 'w') as f:
             f.write('[{"Name": "instance-id", "Values": ["i-123"]}]')
         self.addCleanup(os.remove, param_file)
-        p = aws('ec2 describe-instances --filters file://%s' % param_file)
+        p = aws(f'ec2 describe-instances --filters file://{param_file}')
         self.assertEqual(p.rc, 0)
         self.assertIn('Reservations', p.json)
 
@@ -181,8 +181,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
             bucket=bucket_name, key='foobar', content='foobar contents'
         )
         p = aws(
-            's3api get-object --bucket %s --key foobar %s'
-            % (bucket_name, os.path.join(d, 'foobar'))
+            f's3api get-object --bucket {bucket_name} --key foobar {os.path.join(d, "foobar")}'
         )
         self.assertEqual(p.rc, 0)
         with open(os.path.join(d, 'foobar')) as f:
@@ -208,16 +207,15 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         )
 
         p = aws(
-            's3api get-object --bucket %s --key foo %s'
-            % (bucket_name, os.path.join(d, 'foo')),
+            f's3api get-object --bucket {bucket_name} --key foo {os.path.join(d, "foo")}',
             env_vars=env_vars,
         )
         # Should have credential issues.
         self.assertEqual(p.rc, 254)
 
         p = aws(
-            's3api get-object --bucket %s --key foo '
-            '%s --no-sign-request' % (bucket_name, os.path.join(d, 'foo')),
+            f's3api get-object --bucket {bucket_name} --key foo '
+            f'{os.path.join(d, "foo")} --no-sign-request',
             env_vars=env_vars,
         )
 
@@ -238,10 +236,10 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.put_object(
             bucket=bucket_name, key='foobar', content='foobar contents'
         )
-        p = aws('s3api list-objects --bucket %s --no-paginate' % bucket_name)
+        p = aws(f's3api list-objects --bucket {bucket_name} --no-paginate')
         self.assertEqual(p.rc, 0, p.stdout + p.stderr)
 
-        p = aws('s3api list-objects --bucket %s' % bucket_name)
+        p = aws(f's3api list-objects --bucket {bucket_name}')
         self.assertEqual(p.rc, 0, p.stdout + p.stderr)
 
     def test_top_level_options_debug(self):
@@ -458,8 +456,8 @@ class TestGlobalArgs(BaseS3CLICommand):
         self.put_object(bucket_name, 'foo2.txt', contents=b'bar')
         self.put_object(bucket_name, 'foo3.txt', contents=b'bar')
         p = aws(
-            's3api list-objects --bucket %s '
-            '--no-paginate --output json' % bucket_name
+            f's3api list-objects --bucket {bucket_name} '
+            '--no-paginate --output json'
         )
         # A really simple way to check that --no-paginate was
         # honored is to see if we have all the mirrored input
@@ -476,8 +474,8 @@ class TestGlobalArgs(BaseS3CLICommand):
         self.put_object(bucket_name, 'foo2.txt', contents=b'bar')
         self.put_object(bucket_name, 'foo3.txt', contents=b'bar')
         p = aws(
-            's3api list-objects --bucket %s '
-            '--max-keys 1 --no-paginate --output json' % bucket_name
+            f's3api list-objects --bucket {bucket_name} '
+            '--max-keys 1 --no-paginate --output json'
         )
         self.assert_no_errors(p)
         response_json = p.json
@@ -489,8 +487,8 @@ class TestGlobalArgs(BaseS3CLICommand):
         self.put_object(bucket_name, 'foo2.txt', contents=b'bar')
         self.put_object(bucket_name, 'foo3.txt', contents=b'bar')
         p = aws(
-            's3api list-objects --bucket %s '
-            '--max-items 1 --output json' % bucket_name
+            f's3api list-objects --bucket {bucket_name} '
+            '--max-items 1 --output json'
         )
         self.assert_no_errors(p)
         response_json = p.json
@@ -500,8 +498,8 @@ class TestGlobalArgs(BaseS3CLICommand):
         bucket_name = self.create_bucket()
         self.put_object(bucket_name, 'foo.txt', contents=b'bar')
         p = aws(
-            's3api list-objects --bucket %s '
-            '--query Contents[].Key --output json' % bucket_name
+            f's3api list-objects --bucket {bucket_name} '
+            '--query Contents[].Key --output json'
         )
         self.assert_no_errors(p)
         response_json = p.json
@@ -522,8 +520,7 @@ class TestGlobalArgs(BaseS3CLICommand):
         env['AWS_ACCESS_KEY_ID'] = 'foo'
         env['AWS_SECRET_ACCESS_KEY'] = 'bar'
         p = aws(
-            's3api head-object --bucket %s --key public --no-sign-request'
-            % bucket_name,
+            f's3api head-object --bucket {bucket_name} --key public --no-sign-request',
             env_vars=env,
         )
         self.assert_no_errors(p)
@@ -532,8 +529,7 @@ class TestGlobalArgs(BaseS3CLICommand):
         # Should fail because we're not signing the request but the object is
         # private.
         p = aws(
-            's3api head-object --bucket %s --key private --no-sign-request'
-            % bucket_name,
+            f's3api head-object --bucket {bucket_name} --key private --no-sign-request',
             env_vars=env,
         )
         self.assertEqual(p.rc, 254)

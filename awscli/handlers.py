@@ -116,6 +116,7 @@ from awscli.customizations.sessionmanager import register_ssm_session
 from awscli.customizations.sms_voice import register_sms_voice_hide
 from awscli.customizations.socialmessaging import register_alias_socialmessaging_command
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
+from awscli.customizations.supplychain import initialize as supplychain_initialize
 from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.translate import (
     register_translate_import_terminology,
@@ -177,6 +178,7 @@ def awscli_initialize(event_handlers):
     emrcontainers_initialize(event_handlers)
     eks_initialize(event_handlers)
     ecs_initialize(event_handlers)
+    supplychain_initialize(event_handlers)
     register_cloudsearchdomain(event_handlers)
     register_generate_cli_skeleton(event_handlers)
     register_assume_role_provider(event_handlers)

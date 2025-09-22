@@ -278,6 +278,7 @@ class TestCliDriver:
     def setup_method(self):
         self.session = FakeSession()
         self.session.set_config_variable('cli_auto_prompt', 'off')
+        self.session.set_config_variable('cli_help_output', None)
         self.driver = CLIDriver(session=self.session)
 
     def test_session_can_be_passed_in(self):
@@ -412,6 +413,7 @@ class TestCliDriverHooks(unittest.TestCase):
     def setUp(self):
         self.session = FakeSession()
         self.session.set_config_variable('cli_auto_prompt', 'off')
+        self.session.set_config_variable('cli_help_output', None)
         self.emitter = mock.Mock()
         self.emitter.emit.return_value = []
         self.stdout = StringIO()
@@ -958,6 +960,7 @@ class TestServiceCommand(unittest.TestCase):
     def setUp(self):
         self.name = 'foo'
         self.session = FakeSession()
+        self.session.set_config_variable('cli_help_output', None)
         self.cmd = ServiceCommand(self.name, self.session)
 
     def test_can_access_subcommand_table(self):

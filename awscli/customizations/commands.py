@@ -210,7 +210,7 @@ class BasicCommand(CLICommand):
             else:
                 return rc
 
-    def _validate_value_against_schema(self, model, value):  ## noqa: F811
+    def _validate_value_against_schema(self, model, value):  # noqa: F811
         validate_parameters(value, model)
 
     def _should_allow_plugins_override(self, param, value):
@@ -379,6 +379,16 @@ class BasicHelp(HelpCommand):
     def event_class(self):
         return '.'.join(self.obj.lineage_names)
 
+    @property
+    def url(self):
+        # If the operation command has a subcommand table with commands
+        # in it, treat it as a service command as opposed to an operation
+        # command. This is to support things like a customization command
+        # that rely on the `BasicHelp` object.
+        if len(self.command_table) > 0:
+            return f"{self._base_remote_url}/reference/{self.event_class.replace('.', '/')}/index.html"
+        return f"{self._base_remote_url}/reference/{self.event_class.replace('.', '/')}.html"
+
     def _get_doc_contents(self, attr_name):
         value = getattr(self, attr_name)
         if isinstance(value, BasicCommand.FROM_FILE):
@@ -404,7 +414,12 @@ class BasicHelp(HelpCommand):
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
         docevents.generate_events(self.session, self)
-        self.renderer.render(self.doc.getvalue())
+
+        if self._help_output_format == 'url':
+            self.renderer.render(self.url.encode())
+        else:
+            self.renderer.render(self.doc.getvalue())
+
         instance.unregister()
 
 

@@ -335,6 +335,17 @@ class ResultPrinter(BaseResultHandler):
         :type error_file: file-like obj
         :param error_file: Location to write warnings and errors.
             By default, the location is sys.stderr.
+
+        :type frequency: int
+        :param frequency: Frequency in seconds to print progress.
+            By default, prints progress in real time.
+
+        :type oneline: boolean
+        :param oneline: Indicates if progress should be on one line.
+            By default, prints progress on one line, overwriting previous
+            progress message. Setting to False prints each progress
+            message on a new line.
+
         """
         self._result_recorder = result_recorder
         self._out_file = out_file

@@ -337,7 +337,7 @@
         {"shape":"ConflictException"},
         {"shape":"BadRequestException"}
       ],
-      "documentation":"<p>Gets details about the maintenance configuration of a table. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-maintenance.html\">S3 Tables maintenance</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableMaintenanceConfiguration</code> permission to use this operation. </p> </dd> </dl>"
+      "documentation":"<p>Gets details about the maintenance configuration of a table. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-maintenance.html\">S3 Tables maintenance</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <ul> <li> <p>You must have the <code>s3tables:GetTableMaintenanceConfiguration</code> permission to use this operation. </p> </li> <li> <p>You must have the <code>s3tables:GetTableData</code> permission to use set the compaction strategy to <code>sort</code> or <code>zorder</code>.</p> </li> </ul> </dd> </dl>"
     },
     "GetTableMaintenanceJobStatus":{
       "name":"GetTableMaintenanceJobStatus",
@@ -1413,9 +1413,22 @@
         "targetFileSizeMB":{
           "shape":"PositiveInteger",
           "documentation":"<p>The target file size for the table in MB.</p>"
+        },
+        "strategy":{
+          "shape":"IcebergCompactionStrategy",
+          "documentation":"<p>The compaction strategy to use for the table. This determines how files are selected and combined during compaction operations.</p>"
         }
       },
       "documentation":"<p>Contains details about the compaction settings for an Iceberg table.</p>"
+    },
+    "IcebergCompactionStrategy":{
+      "type":"string",
+      "enum":[
+        "auto",
+        "binpack",
+        "sort",
+        "z-order"
+      ]
     },
     "IcebergMetadata":{
       "type":"structure",

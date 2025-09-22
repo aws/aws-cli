@@ -327,7 +327,7 @@ class BasicCommand(CLICommand):
         lineage = ' '.join([c.name for c in self.lineage])
         error_msg = (
             f"usage: aws [options] {lineage} <subcommand> "
-            "[parameters]\naws: error: too few arguments"
+            "[parameters]\naws: [ERROR]: too few arguments"
         )
         raise ParamValidationError(error_msg)
 

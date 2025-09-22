@@ -2,6 +2,46 @@
 CHANGELOG
 =========
 
+2.27.41
+=======
+
+* api-change:``s3tables``: S3 Tables now supports sort and z-order compaction strategies for Iceberg tables in addition to binpack.
+* api-change:``workspaces-instances``: Added support for Amazon WorkSpaces Instances API
+* api-change:``glue``: AWS Glue now supports sort and z-order strategy for managed automated compaction for Iceberg tables in addition to binpack.
+
+
+2.27.40
+=======
+
+* api-change:``geo-places``: Geocode, ReverseGeocode, and GetPlace APIs added Intersections and SecondaryAddresses. To use, add to the AdditionalFeatures list in your request. This provides info about nearby intersections and secondary addresses that are associated with a main address. Also added MainAddress and ParsedQuery.
+* api-change:``ecs``: Add ECS support for Windows Server 2025
+* api-change:``bedrock``: Add support for tiers in Content Filters and Denied Topics for Amazon Bedrock Guardrails.
+* api-change:``mediaconvert``: This release adds a new SPECIFIED_OPTIMAL option for handling DDS when using DVB-Sub with high resolution video.
+* api-change:``glue``: AWS Glue Data Quality now provides aggregated metrics in evaluation results when publishAggregatedMetrics with row-level results are enabled. These metrics include summary statistics showing total counts of processed, passed, and failed rows and rules in a single view.
+
+
+2.27.39
+=======
+
+* api-change:``payment-cryptography-data``: Additional support for managing HMAC keys that adheres to changes documented in X9.143-2021 and provides better interoperability for key import/export
+* api-change:``bedrock``: This release of the SDK has the API and documentation for the createcustommodel API. This feature lets you copy a trained model into Amazon Bedrock for inference.
+* api-change:``lambda``: Support Schema Registry feature for Kafka Event Source Mapping. Customers can now configure a Schema Registry to enable schema validation and filtering for Avro, Protobuf, and JSON-formatted events in Lambda for Kafka Event Source.
+* api-change:``emr-serverless``: This release adds the capability to enable IAM IdentityCenter Trusted Identity Propagation for users running Interactive Sessions on EMR Serverless Applications.
+* api-change:``payment-cryptography``: Additional support for managing HMAC keys that adheres to changes documented in X9.143-2021 and provides better interoperability for key import/export
+* api-change:``sagemaker``: This release introduces alternative support for utilizing CFN templates from S3 for SageMaker Projects.
+
+
+2.27.38
+=======
+
+* api-change:``logs``: Added CloudWatch Logs Transformer support for converting CloudTrail, VPC Flow, EKS Audit, AWS WAF and Route53 Resolver logs to OCSF v1.1 format.
+* api-change:``autoscaling``: Add IncludeInstances parameter to DescribeAutoScalingGroups API
+* api-change:``imagebuilder``: Added paginators for ``imagebuilder``.
+* api-change:``s3``: Added support for renaming objects within the same bucket using the new RenameObject API.
+* api-change:``sagemaker``: Add support for p6-b200 instance type for SageMaker Hyperpod
+* api-change:``aiops``: This is the initial SDK release for Amazon AI Operations (AIOps). AIOps is a generative AI-powered assistant that helps you respond to incidents in your system by scanning your system's telemetry and quickly surface suggestions that might be related to your issue.
+
+
 2.27.37
 =======
 

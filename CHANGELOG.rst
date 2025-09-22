@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.30.7
+======
+
+* api-change:``imagebuilder``: Version ARNs are no longer required for the EC2 Image Builder list-image-build-version, list-component-build-version, and list-workflow-build-version APIs. Calling these APIs without the ARN returns all build versions for the given resource type in the requesting account.
+* api-change:``pinpoint-sms-voice``: Update pinpoint-sms-voice client and endpoint tests to latest version.
+* api-change:``eks``: Adds support for RepairConfig overrides and configurations in EKS Managed Node Groups.
+* api-change:``batch``: Starting in JAN 2026, AWS Batch will change the default AMI for new Amazon ECS compute environments from Amazon Linux 2 to Amazon Linux 2023. We recommend migrating AWS Batch Amazon ECS compute environments to Amazon Linux 2023 to maintain optimal performance and security.
+
+
 2.30.6
 ======
 

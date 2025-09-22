@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import time
+
 from s3transfer.exceptions import CancelledError, FatalError
 
 from awscli.compat import StringIO, queue
@@ -783,6 +785,199 @@ class BaseResultPrinterTest(unittest.TestCase):
         )
 
 
+class TestResultPrinterMultiline(BaseResultPrinterTest):
+    def setUp(self):
+        # Overload the ResultPrinter to set oneline=False
+        super().setUp()
+        self.result_printer = ResultPrinter(
+            result_recorder=self.result_recorder,
+            out_file=self.out_file,
+            error_file=self.error_file,
+            oneline=False,
+        )
+        self.maxDiff = None
+
+    def test_progress(self):
+        mb = 1024 * 1024
+
+        self.result_recorder.expected_bytes_transferred = 20 * mb
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.final_expected_files_transferred = 4
+        self.result_recorder.bytes_transferred = mb
+        self.result_recorder.files_transferred = 1
+
+        progress_result = self.get_progress_result()
+        self.result_printer(progress_result)
+        ref_progress_statement = (
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) '
+            'remaining\n'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
+
+    def test_success_with_progress(self):
+        mb = 1024 * 1024
+
+        progress_result = self.get_progress_result()
+
+        # Add the first progress update and print it out
+        self.result_recorder.expected_bytes_transferred = 20 * mb
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.final_expected_files_transferred = 4
+        self.result_recorder.bytes_transferred = mb
+        self.result_recorder.files_transferred = 1
+        self.result_printer(progress_result)
+
+        # Add a success result and print it out.
+        transfer_type = 'upload'
+        src = 'file'
+        dest = 's3://mybucket/mykey'
+        success_result = SuccessResult(
+            transfer_type=transfer_type, src=src, dest=dest
+        )
+
+        self.result_recorder.files_transferred += 1
+        self.result_printer(success_result)
+
+        # The statement should consist of:
+        # * The first progress statement
+        # * The success statement
+        # * And the progress again since the transfer is still ongoing
+        # These lines will not have any padding
+        ref_statement = (
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\n'
+            'upload: file to s3://mybucket/mykey\n'
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 2 file(s) remaining\n'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_statement)
+
+    def test_progress_then_more_progress(self):
+        mb = 1024 * 1024
+
+        progress_result = self.get_progress_result()
+
+        # Add the first progress update and print it out
+        self.result_recorder.expected_bytes_transferred = 20 * mb
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.final_expected_files_transferred = 4
+        self.result_recorder.bytes_transferred = mb
+        self.result_recorder.files_transferred = 1
+
+        self.result_printer(progress_result)
+        ref_progress_statement = (
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\n'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
+
+        # Add the second progress update
+        self.result_recorder.bytes_transferred += mb
+        self.result_printer(progress_result)
+
+        # The result should be the combination of the two
+        ref_progress_statement = (
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\n'
+            'Completed 2.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\n'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
+
+
+class TestResultPrinterFrequency(BaseResultPrinterTest):
+    def setUp(self):
+        # Overload the ResultPrinter to set oneline=False
+        super().setUp()
+        self.result_printer = ResultPrinter(
+            result_recorder=self.result_recorder,
+            out_file=self.out_file,
+            error_file=self.error_file,
+            oneline=False,
+            frequency=2,
+        )
+        self.maxDiff = None
+
+    def test_progress(self):
+        mb = 1024 * 1024
+
+        self.result_recorder.expected_bytes_transferred = 20 * mb
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.final_expected_files_transferred = 4
+        self.result_recorder.bytes_transferred = mb
+        self.result_recorder.files_transferred = 1
+
+        progress_result = self.get_progress_result()
+        self.result_printer(progress_result)
+        ref_progress_statement = (
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\n'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
+
+    def test_progress_then_more_progress(self):
+        now = time.time()
+
+        mb = 1024 * 1024
+
+        progress_result = self.get_progress_result()
+
+        # Add the first progress update and print it out
+        self.result_recorder.expected_bytes_transferred = 20 * mb
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.final_expected_files_transferred = 4
+        self.result_recorder.bytes_transferred = mb
+        self.result_recorder.files_transferred = 1
+
+        self.result_printer(progress_result)
+        ref_progress_statement = (
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\n'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
+
+        # Add the second progress update
+        self.result_recorder.bytes_transferred += mb
+        self.assertFalse(self.result_printer._first)
+        with mock.patch(
+            "awscli.customizations.s3.results.time.time"
+        ) as mock_time:
+            mock_time.return_value = now + 3
+            self.result_printer(progress_result)
+            # The result should be the combination of the two
+            ref_progress_statement = (
+                'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\n'
+                'Completed 2.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\n'
+            )
+            self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
+
+    def test_progress_then_no_more_progress(self):
+        """Check for progress at a time before the frequency minimum"""
+        now = time.time()
+
+        mb = 1024 * 1024
+
+        progress_result = self.get_progress_result()
+
+        # Add the first progress update and print it out
+        self.result_recorder.expected_bytes_transferred = 20 * mb
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.final_expected_files_transferred = 4
+        self.result_recorder.bytes_transferred = mb
+        self.result_recorder.files_transferred = 1
+
+        self.result_printer(progress_result)
+        ref_progress_statement = (
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\n'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
+
+        # Add the second progress update
+        self.result_recorder.bytes_transferred += mb
+        self.assertFalse(self.result_printer._first)
+        with mock.patch(
+            "awscli.customizations.s3.results.time.time"
+        ) as mock_time:
+            mock_time.return_value = now + 1
+            self.result_printer(progress_result)
+            # The result should be the combination of the two
+            ref_progress_statement = 'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\n'
+            self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
+
+
 class TestResultPrinter(BaseResultPrinterTest):
     def test_unknown_result_object(self):
         self.result_printer(object())
@@ -1496,7 +1691,7 @@ class TestResultPrinter(BaseResultPrinterTest):
 
 class TestNoProgressResultPrinter(BaseResultPrinterTest):
     def setUp(self):
-        super(TestNoProgressResultPrinter, self).setUp()
+        super().setUp()
         self.result_printer = NoProgressResultPrinter(
             result_recorder=self.result_recorder,
             out_file=self.out_file,
@@ -1568,7 +1763,7 @@ class TestNoProgressResultPrinter(BaseResultPrinterTest):
 
 class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):
     def setUp(self):
-        super(TestOnlyShowErrorsResultPrinter, self).setUp()
+        super().setUp()
         self.result_printer = OnlyShowErrorsResultPrinter(
             result_recorder=self.result_recorder,
             out_file=self.out_file,

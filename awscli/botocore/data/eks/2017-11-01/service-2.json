@@ -4688,9 +4688,55 @@
         "enabled":{
           "shape":"BoxedBoolean",
           "documentation":"<p>Specifies whether to enable node auto repair for the node group. Node auto repair is disabled by default.</p>"
+        },
+        "maxUnhealthyNodeThresholdCount":{
+          "shape":"NonZeroInteger",
+          "documentation":"<p>Specify a count threshold of unhealthy nodes, above which node auto repair actions will stop. When using this, you cannot also set <code>maxUnhealthyNodeThresholdPercentage</code> at the same time.</p>"
+        },
+        "maxUnhealthyNodeThresholdPercentage":{
+          "shape":"PercentCapacity",
+          "documentation":"<p>Specify a percentage threshold of unhealthy nodes, above which node auto repair actions will stop. When using this, you cannot also set <code>maxUnhealthyNodeThresholdCount</code> at the same time.</p>"
+        },
+        "maxParallelNodesRepairedCount":{
+          "shape":"NonZeroInteger",
+          "documentation":"<p>Specify the maximum number of nodes that can be repaired concurrently or in parallel, expressed as a count of unhealthy nodes. This gives you finer-grained control over the pace of node replacements. When using this, you cannot also set <code>maxParallelNodesRepairedPercentage</code> at the same time.</p>"
+        },
+        "maxParallelNodesRepairedPercentage":{
+          "shape":"PercentCapacity",
+          "documentation":"<p>Specify the maximum number of nodes that can be repaired concurrently or in parallel, expressed as a percentage of unhealthy nodes. This gives you finer-grained control over the pace of node replacements. When using this, you cannot also set <code>maxParallelNodesRepairedCount</code> at the same time.</p>"
+        },
+        "nodeRepairConfigOverrides":{
+          "shape":"NodeRepairConfigOverridesList",
+          "documentation":"<p>Specify granular overrides for specific repair actions. These overrides control the repair action and the repair delay time before a node is considered eligible for repair. If you use this, you must specify all the values.</p>"
         }
       },
       "documentation":"<p>The node auto repair configuration for the node group.</p>"
+    },
+    "NodeRepairConfigOverrides":{
+      "type":"structure",
+      "members":{
+        "nodeMonitoringCondition":{
+          "shape":"String",
+          "documentation":"<p>Specify an unhealthy condition reported by the node monitoring agent that this override would apply to.</p>"
+        },
+        "nodeUnhealthyReason":{
+          "shape":"String",
+          "documentation":"<p>Specify a reason reported by the node monitoring agent that this override would apply to.</p>"
+        },
+        "minRepairWaitTimeMins":{
+          "shape":"NonZeroInteger",
+          "documentation":"<p>Specify the minimum time in minutes to wait before attempting to repair a node with this specific <code>nodeMonitoringCondition</code> and <code>nodeUnhealthyReason</code>.</p>"
+        },
+        "repairAction":{
+          "shape":"RepairAction",
+          "documentation":"<p>Specify the repair action to take for nodes when all of the specified conditions are met.</p>"
+        }
+      },
+      "documentation":"<p>Specify granular overrides for specific repair actions. These overrides control the repair action and the repair delay time before a node is considered eligible for repair. If you use this, you must specify all the values.</p>"
+    },
+    "NodeRepairConfigOverridesList":{
+      "type":"list",
+      "member":{"shape":"NodeRepairConfigOverrides"}
     },
     "Nodegroup":{
       "type":"structure",
@@ -5293,6 +5339,14 @@
       "type":"list",
       "member":{"shape":"RemotePodNetwork"},
       "max":1
+    },
+    "RepairAction":{
+      "type":"string",
+      "enum":[
+        "Replace",
+        "Reboot",
+        "NoAction"
+      ]
     },
     "ResolveConflicts":{
       "type":"string",
@@ -6061,7 +6115,8 @@
         "StorageConfig",
         "KubernetesNetworkConfig",
         "RemoteNetworkConfig",
-        "DeletionProtection"
+        "DeletionProtection",
+        "NodeRepairConfig"
       ]
     },
     "UpdateParams":{

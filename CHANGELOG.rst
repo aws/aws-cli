@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.31.0
+======
+
+* enhancement:help: Update message formatting when entering an invalid command to improve identification of an error (aws/aws-cli`#9737 <https://github.com/aws/aws-cli/issues/9737>`__)
+* api-change:``cleanrooms``: Added support for running incremental ID mapping for rule-based workflows.
+* api-change:``ec2``: Add Amazon EC2 R8gn instance types
+* enhancement:documentation: Display required constraints to top level and nested parameters (aws/aws-cli`#9463 <https://github.com/aws/aws-cli/issues/9463>`__, aws/aws-cli`#9491 <https://github.com/aws/aws-cli/issues/9491>`__)
+* enhancement:help: Reduce output from help when entering an invalid command (aws/aws-cli`#9457 <https://github.com/aws/aws-cli/issues/9457>`__)
+* enhancement:documentation: Add documentation for API parameter constraints (aws/aws-cli`#9444 <https://github.com/aws/aws-cli/issues/9444>`__)
+* enhancement:``s3``: Add controls over progress status message frequency and multiline printing (aws/aws-cli`#9545 <https://github.com/aws/aws-cli/issues/9545>`__)
+* enhancement:configuration: Improve accessibility of table output for ``configure list`` command (aws/aws-cli`#9547 <https://github.com/aws/aws-cli/issues/9547>`__)
+* api-change:``sso-oidc``: This release includes exception definition and documentation updates.
+* api-change:``sso-admin``: Add support for encryption at rest with Customer Managed KMS Key in AWS IAM Identity Center
+* api-change:``ssm``: Added Dualstack support to GetDeployablePatchSnapshotForInstance
+* api-change:``entityresolution``: Support incremental id mapping workflow for AWS Entity Resolution
+* feature:help: Add ability to view help in a web browser or print the URL to the remote documentation website (aws/aws-cli`#9496 <https://github.com/aws/aws-cli/issues/9496>`__)
+
+
 2.30.7
 ======
 

@@ -1273,6 +1273,7 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
@@ -1391,12 +1392,20 @@
     "AccessDeniedException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"AccessDeniedExceptionMessage"}
+        "Message":{"shape":"AccessDeniedExceptionMessage"},
+        "Reason":{
+          "shape":"AccessDeniedExceptionReason",
+          "documentation":"<p>The reason for the access denied exception.</p>"
+        }
       },
       "documentation":"<p>You do not have sufficient access to perform this action.</p>",
       "exception":true
     },
     "AccessDeniedExceptionMessage":{"type":"string"},
+    "AccessDeniedExceptionReason":{
+      "type":"string",
+      "enum":["KMS_AccessDeniedException"]
+    },
     "AccountAssignment":{
       "type":"structure",
       "members":{
@@ -2606,6 +2615,14 @@
         "Status":{
           "shape":"InstanceStatus",
           "documentation":"<p>The status of the instance. </p>"
+        },
+        "StatusReason":{
+          "shape":"Reason",
+          "documentation":"<p>Provides additional context about the current status of the IAM Identity Center instance. This field is particularly useful when an instance is in a non-ACTIVE state, such as CREATE_FAILED. When an instance fails to create or update, this field contains information about the cause, which may include issues with KMS key configuration, permission problems with the specified KMS key, or service-related errors. </p>"
+        },
+        "EncryptionConfigurationDetails":{
+          "shape":"EncryptionConfigurationDetails",
+          "documentation":"<p>Contains the encryption configuration for your IAM Identity Center instance, including the encryption status, KMS key type, and KMS key ARN.</p>"
         }
       }
     },
@@ -2772,6 +2789,43 @@
       "max":100,
       "min":1,
       "pattern":"(-?)P(?=\\d|T\\d)(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)([DW]))?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?)?"
+    },
+    "EncryptionConfiguration":{
+      "type":"structure",
+      "required":["KeyType"],
+      "members":{
+        "KeyType":{
+          "shape":"KmsKeyType",
+          "documentation":"<p>The type of KMS key used for encryption.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt data. Required when KeyType is CUSTOMER_MANAGED_KEY. Cannot be specified when KeyType is AWS_OWNED_KMS_KEY.</p>"
+        }
+      },
+      "documentation":"<p> A structure that specifies the KMS key type and KMS key ARN used to encrypt data in your IAM Identity Center instance.</p>"
+    },
+    "EncryptionConfigurationDetails":{
+      "type":"structure",
+      "members":{
+        "KeyType":{
+          "shape":"KmsKeyType",
+          "documentation":"<p>The type of KMS key used for encryption.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key currently used to encrypt data in your IAM Identity Center instance. </p>"
+        },
+        "EncryptionStatus":{
+          "shape":"KmsKeyStatus",
+          "documentation":"<p>The current status of encryption configuration.</p>"
+        },
+        "EncryptionStatusReason":{
+          "shape":"Reason",
+          "documentation":"<p>Provides additional context about the current encryption status. This field is particularly useful when the encryption status is UPDATE_FAILED. When encryption configuration update fails, this field contains information about the cause, which may include KMS key access issues, key not found errors, invalid key configuration, key in an invalid state, or a disabled key. </p>"
+        }
+      },
+      "documentation":"<p>The encryption configuration of your IAM Identity Center instance, including the key type, KMS key ARN, and current encryption status. </p>"
     },
     "FederationProtocol":{
       "type":"string",
@@ -3090,6 +3144,10 @@
         "Status":{
           "shape":"InstanceStatus",
           "documentation":"<p>The current status of this Identity Center instance.</p>"
+        },
+        "StatusReason":{
+          "shape":"Reason",
+          "documentation":"<p>Provides additional context about the current status of the IAM Identity Center instance. This field is particularly useful when an instance is in a non-ACTIVE state, such as CREATE_FAILED. When an instance creation fails, this field contains information about the cause, which may include issues with KMS key configuration or insufficient permissions. </p>"
         }
       },
       "documentation":"<p>Provides information about the IAM Identity Center instance.</p>"
@@ -3098,6 +3156,7 @@
       "type":"string",
       "enum":[
         "CREATE_IN_PROGRESS",
+        "CREATE_FAILED",
         "DELETE_IN_PROGRESS",
         "ACTIVE"
       ]
@@ -3131,6 +3190,27 @@
         }
       },
       "documentation":"<p>A structure that defines configuration settings for an application that supports the JWT Bearer Token Authorization Grant. The <code>AuthorizedAudience</code> field is the aud claim. For more information, see <a href=\"https://datatracker.ietf.org/doc/html/rfc7523\">RFC 7523</a>.</p>"
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-[bcd]):kms:([a-z]{2,}(-[a-z0-9]+)+){1}:[0-9]{12}:key/(mrk-[a-f0-9]{32}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
+    },
+    "KmsKeyStatus":{
+      "type":"string",
+      "enum":[
+        "UPDATING",
+        "ENABLED",
+        "UPDATE_FAILED"
+      ]
+    },
+    "KmsKeyType":{
+      "type":"string",
+      "enum":[
+        "AWS_OWNED_KMS_KEY",
+        "CUSTOMER_MANAGED_KEY"
+      ]
     },
     "ListAccountAssignmentCreationStatusRequest":{
       "type":"structure",
@@ -4343,10 +4423,18 @@
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"ResourceNotFoundMessage"}
+        "Message":{"shape":"ResourceNotFoundMessage"},
+        "Reason":{
+          "shape":"ResourceNotFoundExceptionReason",
+          "documentation":"<p>The reason for the resource not found exception.</p>"
+        }
       },
       "documentation":"<p>Indicates that a requested resource is not found.</p>",
       "exception":true
+    },
+    "ResourceNotFoundExceptionReason":{
+      "type":"string",
+      "enum":["KMS_NotFoundException"]
     },
     "ResourceNotFoundMessage":{"type":"string"},
     "ResourceServerConfig":{
@@ -4546,12 +4634,20 @@
     "ThrottlingException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"ThrottlingExceptionMessage"}
+        "Message":{"shape":"ThrottlingExceptionMessage"},
+        "Reason":{
+          "shape":"ThrottlingExceptionReason",
+          "documentation":"<p>The reason for the throttling exception.</p>"
+        }
       },
       "documentation":"<p>Indicates that the principal has crossed the throttling limits of the API operations.</p>",
       "exception":true
     },
     "ThrottlingExceptionMessage":{"type":"string"},
+    "ThrottlingExceptionReason":{
+      "type":"string",
+      "enum":["KMS_ThrottlingException"]
+    },
     "Token":{
       "type":"string",
       "max":2048,
@@ -4732,10 +4828,7 @@
     },
     "UpdateInstanceRequest":{
       "type":"structure",
-      "required":[
-        "Name",
-        "InstanceArn"
-      ],
+      "required":["InstanceArn"],
       "members":{
         "Name":{
           "shape":"NameType",
@@ -4744,6 +4837,10 @@
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the instance of IAM Identity Center under which the operation will run. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Specifies the encryption configuration for your IAM Identity Center instance. You can use this to configure customer managed KMS keys (CMK) or Amazon Web Services owned KMS keys for encrypting your instance data.</p>"
         }
       }
     },
@@ -4816,12 +4913,24 @@
     "ValidationException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"ValidationExceptionMessage"}
+        "Message":{"shape":"ValidationExceptionMessage"},
+        "Reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The reason for the validation exception.</p>"
+        }
       },
       "documentation":"<p>The request failed because it contains a syntax error.</p>",
       "exception":true
     },
-    "ValidationExceptionMessage":{"type":"string"}
+    "ValidationExceptionMessage":{"type":"string"},
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "KMS_InvalidKeyUsageException",
+        "KMS_InvalidStateException",
+        "KMS_DisabledException"
+      ]
+    }
   },
   "documentation":"<p>IAM Identity Center is the Amazon Web Services solution for connecting your workforce users to Amazon Web Services managed applications and other Amazon Web Services resources. You can connect your existing identity provider and synchronize users and groups from your directory, or create and manage your users directly in IAM Identity Center. You can then use IAM Identity Center for either or both of the following:</p> <ul> <li> <p>User access to applications</p> </li> <li> <p>User access to Amazon Web Services accounts</p> </li> </ul> <p>This guide provides information about single sign-on operations that you can use for access to applications and Amazon Web Services accounts. For information about IAM Identity Center features, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html\">IAM Identity Center User Guide</a>.</p> <note> <p>IAM Identity Center uses the <code>sso</code> and <code>identitystore</code> API namespaces.</p> </note> <p>Many API operations for IAM Identity Center rely on identifiers for users and groups, known as principals. For more information about how to work with principals and principal IDs in IAM Identity Center, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">Identity Store API Reference</a>.</p> <note> <p>Amazon Web Services provides SDKs that consist of libraries and sample code for various programming languages and platforms (Java, Ruby, .Net, iOS, Android, and more). The SDKs provide a convenient way to create programmatic access to IAM Identity Center and other Amazon Web Services services. For more information about the Amazon Web Services SDKs, including how to download and install them, see <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>.</p> </note>"
 }

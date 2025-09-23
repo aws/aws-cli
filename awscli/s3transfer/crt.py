@@ -45,7 +45,7 @@ from botocore.config import Config
 from botocore.exceptions import NoCredentialsError
 from botocore.useragent import register_feature_id
 from botocore.utils import ArnParser, InvalidArnException, is_s3express_bucket
-from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS, GB, MB
+from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS, MB
 from s3transfer.exceptions import TransferNotDoneError
 from s3transfer.futures import BaseTransferFuture, BaseTransferMeta
 from s3transfer.utils import CallArgs, OSUtils, get_callbacks
@@ -155,9 +155,9 @@ def create_s3_crt_client(
     target_gbps = _get_crt_throughput_target_gbps(
         provided_throughput_target_bytes=target_throughput
     )
-    fio_options = fio_options or {}
-    if disk_throughput := fio_options.get('disk_throughput_gbps'):
-        fio_options['disk_throughput_gbps'] = disk_throughput * 8 / GB
+    crt_fio_options = None
+    if fio_options:
+        crt_fio_options = S3FileIoOptions(**fio_options)
     return S3Client(
         bootstrap=bootstrap,
         region=region,
@@ -167,7 +167,7 @@ def create_s3_crt_client(
         tls_connection_options=tls_connection_options,
         throughput_target_gbps=target_gbps,
         enable_s3express=True,
-        fio_options=S3FileIoOptions(**fio_options),
+        fio_options=crt_fio_options,
     )
 
 

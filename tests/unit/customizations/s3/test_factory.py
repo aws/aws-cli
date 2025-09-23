@@ -13,7 +13,7 @@
 import awscrt.s3
 import pytest
 import s3transfer.crt
-from awscrt.s3 import S3RequestTlsMode
+from awscrt.s3 import S3FileIoOptions, S3RequestTlsMode
 from botocore.config import Config
 from botocore.credentials import Credentials
 from botocore.httpsession import DEFAULT_CA_BUNDLE
@@ -482,6 +482,27 @@ class TestTransferManagerFactory(unittest.TestCase):
         )
         self.assert_is_crt_manager(transfer_manager)
         self.assert_expected_throughput_target_gbps(mock_crt_client, 8)
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_fio_options_configure_for_crt_manager(self, mock_crt_client):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt',
+            should_stream=True,
+            disk_throughput='5GB/s',
+            direct_io=True,
+        )
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config
+        )
+        expected_fio_options = S3FileIoOptions(
+            should_stream=True,
+            disk_throughput_gbps=40.0,
+            direct_io=True,
+        )
+        self.assert_is_crt_manager(transfer_manager)
+        self.assertEqual(
+            mock_crt_client.call_args[1]['fio_options'], expected_fio_options
+        )
 
     @mock.patch('s3transfer.crt.get_recommended_throughput_target_gbps')
     @mock.patch('s3transfer.crt.S3Client')

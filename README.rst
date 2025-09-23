@@ -1,3 +1,8 @@
+.. image:: https://raw.githubusercontent.com/Safouene1/support-palestine-banner/master/banner-support.svg
+   :alt: Support Palestine
+   :target: https://github.com/Safouene1/support-palestine-banner/blob/master/Markdown-pages/Support.md
+   :width: 100%
+
 aws-cli
 =======
 

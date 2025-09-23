@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.42.37
+=======
+
+* api-change:``cleanrooms``: Added support for running incremental ID mapping for rule-based workflows.
+* api-change:``ec2``: Add Amazon EC2 R8gn instance types
+* api-change:``entityresolution``: Support incremental id mapping workflow for AWS Entity Resolution
+* api-change:``ssm``: Added Dualstack support to GetDeployablePatchSnapshotForInstance
+* api-change:``sso-admin``: Add support for encryption at rest with Customer Managed KMS Key in AWS IAM Identity Center
+* api-change:``sso-oidc``: This release includes exception definition and documentation updates.
+
+
 1.42.36
 =======
 

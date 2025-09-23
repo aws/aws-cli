@@ -41,27 +41,23 @@ class ConfigureListCommand(BasicCommand):
         'To show your current configuration values::\n'
         '\n'
         '  $ aws configure list\n'
-        '        Name                    Value             Type    Location\n'
-        '        ----                    -----             ----    --------\n'
-        '     profile                <not set>             None    None\n'
-        '  access_key     ****************ABCD      config_file    ~/.aws/config\n'
-        '  secret_key     ****************ABCD      config_file    ~/.aws/config\n'
-        '      region                us-west-2              env    AWS_DEFAULT_REGION\n'
+        '  NAME       : VALUE                    : TYPE             : LOCATION\n'
+        '  profile    : <not set>                : None             : None\n'
+        '  access_key : ****************ABCD     : config_file      : ~/.aws/config\n'
+        '  secret_key : ****************ABCD     : config_file      : ~/.aws/config\n'
+        '  region     : us-west-2                : env              : AWS_DEFAULT_REGION\n'
         '\n'
     )
 
     def __init__(self, session, stream=None):
-        super(ConfigureListCommand, self).__init__(session)
+        super().__init__(session)
         if stream is None:
             stream = sys.stdout
         self._stream = stream
 
     def _run_main(self, args, parsed_globals):
         self._display_config_value(
-            ConfigValue('Value', 'Type', 'Location'), 'Name'
-        )
-        self._display_config_value(
-            ConfigValue('-----', '----', '--------'), '----'
+            ConfigValue('VALUE', 'TYPE', 'LOCATION'), 'NAME'
         )
 
         if parsed_globals and parsed_globals.profile is not None:
@@ -80,13 +76,10 @@ class ConfigureListCommand(BasicCommand):
 
     def _display_config_value(self, config_value, config_name):
         self._stream.write(
-            '%10s %24s %16s    %s\n'
-            % (
-                config_name,
-                config_value.value,
-                config_value.config_type,
-                config_value.config_variable,
-            )
+            f'{config_name:<10} : '
+            f'{config_value.value:<24} : '
+            f'{str(config_value.config_type):<16} : '
+            f'{str(config_value.config_variable)}\n'
         )
 
     def _lookup_credentials(self):

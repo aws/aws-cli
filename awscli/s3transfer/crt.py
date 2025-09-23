@@ -132,6 +132,9 @@ def create_s3_crt_client(
         * path/to/cert/bundle.pem - A filename of the CA cert bundle to
             use. Specify this argument if you want to use a custom CA cert
             bundle instead of the default one on your system.
+
+    :type fio_options: Optional[dict]
+    :param fio_options: Kwargs to use to build an `awscrt.s3.S3FileIoOptions`.
     """
 
     event_loop_group = EventLoopGroup(num_threads)

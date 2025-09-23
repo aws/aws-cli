@@ -138,6 +138,14 @@ class TransferManagerFactory:
             create_crt_client_kwargs['crt_credentials_provider'] = (
                 crt_credentials_provider
             )
+        fio_options = {}
+        if (val := runtime_config.get('should_stream')) is not None:
+            fio_options['should_stream'] = val
+        if (val := runtime_config.get('disk_throughput')) is not None:
+            fio_options['disk_throughput_gbps'] = val
+        if (val := runtime_config.get('direct_io')) is not None:
+            fio_options['direct_io'] = val
+        create_crt_client_kwargs['fio_options'] = fio_options
 
         return create_s3_crt_client(**create_crt_client_kwargs)
 

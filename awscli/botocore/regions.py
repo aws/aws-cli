@@ -41,6 +41,7 @@ from botocore.exceptions import (
     UnsupportedS3ControlArnError,
     UnsupportedS3ControlConfigurationError,
 )
+from botocore.useragent import register_feature_id
 from botocore.utils import ensure_boolean, instance_cache
 
 LOG = logging.getLogger(__name__)
@@ -560,6 +561,7 @@ class EndpointRulesetResolver:
 
             if param_val is not None:
                 provider_params[param_name] = param_val
+                self._register_endpoint_feature_ids(param_name, param_val)
 
         return provider_params
 
@@ -837,3 +839,9 @@ class EndpointRulesetResolver:
             if msg == 'EndpointId must be a valid host label.':
                 return InvalidEndpointConfigurationError(msg=msg)
         return None
+
+    def _register_endpoint_feature_ids(self, param_name, param_val):
+        if param_name == 'AccountIdEndpointMode':
+            register_feature_id(f'ACCOUNT_ID_MODE_{param_val.upper()}')
+        elif param_name == 'AccountId':
+            register_feature_id('RESOLVED_ACCOUNT_ID')

@@ -535,7 +535,7 @@
         {"shape":"UnsupportedAPIEndpointException"},
         {"shape":"PolicyChangesInProgressException"}
       ],
-      "documentation":"<p>Disables an organizational policy type in a root. A policy of a certain type can be attached to entities in a root only if that type is enabled in the root. After you perform this operation, you no longer can attach policies of the specified type to that root or to any organizational unit (OU) or account in that root. You can undo this by using the <a>EnablePolicyType</a> operation.</p> <p>This is an asynchronous request that Amazon Web Services performs in the background. If you disable a policy type for a root, it still appears enabled for the organization if <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_support-all-features.html\">all features</a> are enabled for the organization. Amazon Web Services recommends that you first use <a>ListRoots</a> to see the status of policy types for a specified root, and then use this operation.</p> <p>This operation can be called only from the organization's management account or by a member account that is a delegated administrator.</p> <p> To view the status of available policy types in the organization, use <a>DescribeOrganization</a>.</p>"
+      "documentation":"<p>Disables an organizational policy type in a root. A policy of a certain type can be attached to entities in a root only if that type is enabled in the root. After you perform this operation, you no longer can attach policies of the specified type to that root or to any organizational unit (OU) or account in that root. You can undo this by using the <a>EnablePolicyType</a> operation.</p> <p>This is an asynchronous request that Amazon Web Services performs in the background. If you disable a policy type for a root, it still appears enabled for the organization if <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_support-all-features.html\">all features</a> are enabled for the organization. Amazon Web Services recommends that you first use <a>ListRoots</a> to see the status of policy types for a specified root, and then use this operation.</p> <p>This operation can be called only from the organization's management account or by a member account that is a delegated administrator.</p> <p> To view the status of available policy types in the organization, use <a>ListRoots</a>.</p>"
     },
     "EnableAWSServiceAccess":{
       "name":"EnableAWSServiceAccess",
@@ -598,7 +598,7 @@
         {"shape":"UnsupportedAPIEndpointException"},
         {"shape":"PolicyChangesInProgressException"}
       ],
-      "documentation":"<p>Enables a policy type in a root. After you enable a policy type in a root, you can attach policies of that type to the root, any organizational unit (OU), or account in that root. You can undo this by using the <a>DisablePolicyType</a> operation.</p> <p>This is an asynchronous request that Amazon Web Services performs in the background. Amazon Web Services recommends that you first use <a>ListRoots</a> to see the status of policy types for a specified root, and then use this operation.</p> <p>This operation can be called only from the organization's management account or by a member account that is a delegated administrator.</p> <p>You can enable a policy type in a root only if that policy type is available in the organization. To view the status of available policy types in the organization, use <a>DescribeOrganization</a>.</p>"
+      "documentation":"<p>Enables a policy type in a root. After you enable a policy type in a root, you can attach policies of that type to the root, any organizational unit (OU), or account in that root. You can undo this by using the <a>DisablePolicyType</a> operation.</p> <p>This is an asynchronous request that Amazon Web Services performs in the background. Amazon Web Services recommends that you first use <a>ListRoots</a> to see the status of policy types for a specified root, and then use this operation.</p> <p>This operation can be called only from the organization's management account or by a member account that is a delegated administrator.</p> <p>You can enable a policy type in a root only if that policy type is available in the organization. To view the status of available policy types in the organization, use <a>ListRoots</a>.</p>"
     },
     "InviteAccountToOrganization":{
       "name":"InviteAccountToOrganization",
@@ -696,6 +696,26 @@
       ],
       "documentation":"<p>Lists the accounts in an organization that are contained by the specified target root or organizational unit (OU). If you specify the root, you get a list of all the accounts that aren't in any OU. If you specify an OU, you get a list of all the accounts in only that OU and not in any child OUs. To get a list of all accounts in the organization, use the <a>ListAccounts</a> operation.</p> <note> <p>Always check the <code>NextToken</code> response parameter for a <code>null</code> value when calling a <code>List*</code> operation. These operations can occasionally return an empty set of results even when there are more results available. The <code>NextToken</code> response parameter value is <code>null</code> <i>only</i> when there are no more results to display.</p> </note> <p>This operation can be called only from the organization's management account or by a member account that is a delegated administrator.</p>"
     },
+    "ListAccountsWithInvalidEffectivePolicy":{
+      "name":"ListAccountsWithInvalidEffectivePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAccountsWithInvalidEffectivePolicyRequest"},
+      "output":{"shape":"ListAccountsWithInvalidEffectivePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"AWSOrganizationsNotInUseException"},
+        {"shape":"ConstraintViolationException"},
+        {"shape":"EffectivePolicyNotFoundException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"UnsupportedAPIEndpointException"}
+      ],
+      "documentation":"<p>Lists all the accounts in an organization that have invalid effective policies. An <i>invalid effective policy</i> is an <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_effective.html\">effective policy</a> that fails validation checks, resulting in the effective policy not being fully enforced on all the intended accounts within an organization.</p> <p>This operation can be called only from the organization's management account or by a member account that is a delegated administrator.</p>"
+    },
     "ListChildren":{
       "name":"ListChildren",
       "http":{
@@ -771,6 +791,27 @@
         {"shape":"UnsupportedAPIEndpointException"}
       ],
       "documentation":"<p>List the Amazon Web Services services for which the specified account is a delegated administrator.</p> <p>This operation can be called only from the organization's management account or by a member account that is a delegated administrator.</p>"
+    },
+    "ListEffectivePolicyValidationErrors":{
+      "name":"ListEffectivePolicyValidationErrors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEffectivePolicyValidationErrorsRequest"},
+      "output":{"shape":"ListEffectivePolicyValidationErrorsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"AWSOrganizationsNotInUseException"},
+        {"shape":"ConstraintViolationException"},
+        {"shape":"EffectivePolicyNotFoundException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"AccountNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"UnsupportedAPIEndpointException"}
+      ],
+      "documentation":"<p>Lists all the validation errors on an <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_effective.html\">effective policy</a> for a specified account and policy type.</p> <p>This operation can be called only from the organization's management account or by a member account that is a delegated administrator.</p>"
     },
     "ListHandshakesForAccount":{
       "name":"ListHandshakesForAccount",
@@ -1169,7 +1210,11 @@
         },
         "Status":{
           "shape":"AccountStatus",
-          "documentation":"<p>The status of the account in the organization.</p>"
+          "documentation":"<p>The status of the account in the organization.</p> <important> <p>The <code>Status</code> parameter in the <code>Account</code> object will be retired on September 9, 2026. Although both the account <code>State</code> and account <code>Status</code> parameters are currently available in the Organizations APIs (<code>DescribeAccount</code>, <code>ListAccounts</code>, <code>ListAccountsForParent</code>), we recommend that you update your scripts or other code to use the <code>State</code> parameter instead of <code>Status</code> before September 9, 2026.</p> </important>"
+        },
+        "State":{
+          "shape":"AccountState",
+          "documentation":"<p>Each state represents a specific phase in the account lifecycle. Use this information to manage account access, automate workflows, or trigger actions based on account state changes.</p> <p>For more information about account states and their implications, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_account_state.html\">Monitor the state of your Amazon Web Services accounts </a> in the <i>Organizations User Guide</i>.</p>"
         },
         "JoinedMethod":{
           "shape":"AccountJoinedMethod",
@@ -1244,6 +1289,16 @@
       },
       "documentation":"<p>You can't invite an existing account to your organization until you verify that you own the email address associated with the management account. For more information, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_create.html#about-email-verification\">Email address verification</a> in the <i>Organizations User Guide</i>.</p>",
       "exception":true
+    },
+    "AccountState":{
+      "type":"string",
+      "enum":[
+        "PENDING_ACTIVATION",
+        "ACTIVE",
+        "SUSPENDED",
+        "PENDING_CLOSURE",
+        "CLOSED"
+      ]
     },
     "AccountStatus":{
       "type":"string",
@@ -1812,7 +1867,7 @@
       "members":{
         "Account":{
           "shape":"Account",
-          "documentation":"<p>A structure that contains information about the requested account.</p>"
+          "documentation":"<p>A structure that contains information about the requested account.</p> <important> <p>The <code>Status</code> parameter in the API response will be retired on September 9, 2026. Although both the account <code>State</code> and account <code>Status</code> parameters are currently available in the Organizations APIs (<code>DescribeAccount</code>, <code>ListAccounts</code>, <code>ListAccountsForParent</code>), we recommend that you update your scripts or other code to use the <code>State</code> parameter instead of <code>Status</code> before September 9, 2026.</p> </important>"
         }
       }
     },
@@ -2075,6 +2130,32 @@
         "SECURITYHUB_POLICY"
       ]
     },
+    "EffectivePolicyValidationError":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code for the validation error. For example, <code>ELEMENTS_TOO_MANY</code>.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The error message for the validation error.</p>"
+        },
+        "PathToError":{
+          "shape":"PathToError",
+          "documentation":"<p>The path within the effective policy where the validation error occurred.</p>"
+        },
+        "ContributingPolicies":{
+          "shape":"PolicyIds",
+          "documentation":"<p>The individual policies <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_inheritance_mgmt.html\">inherited</a> and <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_policies_attach.html\">attached</a> to the account which contributed to the validation error.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the validation errors that occurred when generating or enforcing an <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_effective.html\">effective policy</a>, such as which policies contributed to the error and location of the error.</p>"
+    },
+    "EffectivePolicyValidationErrors":{
+      "type":"list",
+      "member":{"shape":"EffectivePolicyValidationError"}
+    },
     "Email":{
       "type":"string",
       "max":64,
@@ -2149,6 +2230,8 @@
       "type":"list",
       "member":{"shape":"EnabledServicePrincipal"}
     },
+    "ErrorCode":{"type":"string"},
+    "ErrorMessage":{"type":"string"},
     "ExceptionMessage":{"type":"string"},
     "ExceptionType":{"type":"string"},
     "FinalizingOrganizationException":{
@@ -2496,7 +2579,7 @@
       "members":{
         "Accounts":{
           "shape":"Accounts",
-          "documentation":"<p>A list of the accounts in the specified root or OU.</p>"
+          "documentation":"<p>A list of the accounts in the specified root or OU.</p> <important> <p>The <code>Status</code> parameter in the API response will be retired on September 9, 2026. Although both the account <code>State</code> and account <code>Status</code> parameters are currently available in the Organizations APIs (<code>DescribeAccount</code>, <code>ListAccounts</code>, <code>ListAccountsForParent</code>), we recommend that you update your scripts or other code to use the <code>State</code> parameter instead of <code>Status</code> before September 9, 2026.</p> </important>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -2522,7 +2605,42 @@
       "members":{
         "Accounts":{
           "shape":"Accounts",
-          "documentation":"<p>A list of objects in the organization.</p>"
+          "documentation":"<p>A list of objects in the organization.</p> <important> <p>The <code>Status</code> parameter in the API response will be retired on September 9, 2026. Although both the account <code>State</code> and account <code>Status</code> parameters are currently available in the Organizations APIs (<code>DescribeAccount</code>, <code>ListAccounts</code>, <code>ListAccountsForParent</code>), we recommend that you update your scripts or other code to use the <code>State</code> parameter instead of <code>Status</code> before September 9, 2026.</p> </important>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.</p>"
+        }
+      }
+    },
+    "ListAccountsWithInvalidEffectivePolicyRequest":{
+      "type":"structure",
+      "required":["PolicyType"],
+      "members":{
+        "PolicyType":{
+          "shape":"EffectivePolicyType",
+          "documentation":"<p>The type of policy that you want information about. You can specify one of the following values:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_declarative.html\">DECLARATIVE_POLICY_EC2</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html\">BACKUP_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html\">TAG_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_chatbot.html\">CHATBOT_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html\">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_security_hub.html\">SECURITYHUB_POLICY</a> </p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
+        }
+      }
+    },
+    "ListAccountsWithInvalidEffectivePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "Accounts":{
+          "shape":"Accounts",
+          "documentation":"<p>The accounts in the organization which have an invalid effective policy for the specified policy type.</p>"
+        },
+        "PolicyType":{
+          "shape":"EffectivePolicyType",
+          "documentation":"<p>The specified policy type. One of the following values:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_declarative.html\">DECLARATIVE_POLICY_EC2</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html\">BACKUP_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html\">TAG_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_chatbot.html\">CHATBOT_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html\">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_security_hub.html\">SECURITYHUB_POLICY</a> </p> </li> </ul>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -2656,6 +2774,60 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.</p>"
+        }
+      }
+    },
+    "ListEffectivePolicyValidationErrorsRequest":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "PolicyType"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that you want details about. Specifying an organization root or organizational unit (OU) as the target is not supported.</p>"
+        },
+        "PolicyType":{
+          "shape":"EffectivePolicyType",
+          "documentation":"<p>The type of policy that you want information about. You can specify one of the following values:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_declarative.html\">DECLARATIVE_POLICY_EC2</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html\">BACKUP_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html\">TAG_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_chatbot.html\">CHATBOT_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html\">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_security_hub.html\">SECURITYHUB_POLICY</a> </p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the maximum you specify, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that Organizations might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
+        }
+      }
+    },
+    "ListEffectivePolicyValidationErrorsResponse":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the specified account.</p>"
+        },
+        "PolicyType":{
+          "shape":"EffectivePolicyType",
+          "documentation":"<p>The specified policy type. One of the following values:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_declarative.html\">DECLARATIVE_POLICY_EC2</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_backup.html\">BACKUP_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html\">TAG_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_chatbot.html\">CHATBOT_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html\">AISERVICES_OPT_OUT_POLICY</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_security_hub.html\">SECURITYHUB_POLICY</a> </p> </li> </ul>"
+        },
+        "Path":{
+          "shape":"Path",
+          "documentation":"<p>The path in the organization where the specified account exists.</p>"
+        },
+        "EvaluationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the latest effective policy was generated for the specified account.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.</p>"
+        },
+        "EffectivePolicyValidationErrors":{
+          "shape":"EffectivePolicyValidationErrors",
+          "documentation":"<p>The <code>EffectivePolicyValidationError</code> object contains details about the validation errors that occurred when generating or enforcing an effective policy, such as which policies contributed to the error and location of the error.</p>"
         }
       }
     },
@@ -3131,6 +3303,11 @@
       "type":"list",
       "member":{"shape":"Parent"}
     },
+    "Path":{
+      "type":"string",
+      "pattern":"^(o-[a-z0-9]{10,32}\\/r-[0-9a-z]{4,32}(\\/ou\\-[0-9a-z]{4,32}-[a-z0-9]{8,32})*(\\/\\d{12})*)\\/"
+    },
+    "PathToError":{"type":"string"},
     "Policies":{
       "type":"list",
       "member":{"shape":"PolicySummary"}
@@ -3175,6 +3352,10 @@
       "type":"string",
       "max":130,
       "pattern":"^p-[0-9a-zA-Z_]{8,128}$"
+    },
+    "PolicyIds":{
+      "type":"list",
+      "member":{"shape":"PolicyId"}
     },
     "PolicyInUseException":{
       "type":"structure",

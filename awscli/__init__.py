@@ -20,7 +20,7 @@ import importlib.abc
 import os
 import sys
 
-__version__ = '2.27.41'
+__version__ = '2.30.7'
 
 #
 # Get our data path to be added to botocore's search path
@@ -94,7 +94,7 @@ class TopLevelImportAliasFinder(importlib.abc.MetaPathFinder):
                 finder_name = finder.__class__.__name__
             full_cls_name = f'{finder.__module__}.{finder_name}'
             if full_cls_name in cls._TARGET_FINDERS:
-                meta_path[i] = cls(finder)
+                meta_path.insert(i, cls(finder))
                 return
 
     def find_spec(self, fullname, path, target=None):

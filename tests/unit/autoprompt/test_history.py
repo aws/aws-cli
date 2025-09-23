@@ -29,9 +29,10 @@ class TestHistoryCompleter(unittest.TestCase):
     def setUp(self):
         self.strings = [
             'chime associate-phone-number-with-user',
-            'opsworks-cm associate-node',
             'deploy add-tags-to-on-premises-instances',
             's3 ls',
+            'ecs get-task-protection',
+            'ecr get-lifecycle-policy-preview',
         ]
         self.buffer = mock.Mock(spec=Buffer)
         history = mock.Mock(spec=History)
@@ -46,6 +47,18 @@ class TestHistoryCompleter(unittest.TestCase):
             list(strings),
             [
                 Completion(
+                    text='ecr get-lifecycle-policy-preview',
+                    start_position=0,
+                    display=FormattedText(
+                        [('', 'ecr get-lifecycle-policy-preview')]
+                    ),
+                ),
+                Completion(
+                    text='ecs get-task-protection',
+                    start_position=0,
+                    display=FormattedText([('', 'ecs get-task-protection')]),
+                ),
+                Completion(
                     text='s3 ls',
                     start_position=0,
                     display=FormattedText([('', 's3 ls')]),
@@ -55,13 +68,6 @@ class TestHistoryCompleter(unittest.TestCase):
                     start_position=0,
                     display=FormattedText(
                         [('', 'deploy add-tags-to-on-premises-instances')]
-                    ),
-                ),
-                Completion(
-                    text='opsworks-cm associate-node',
-                    start_position=0,
-                    display=FormattedText(
-                        [('', 'opsworks-cm associate-node')]
                     ),
                 ),
                 Completion(
@@ -75,23 +81,21 @@ class TestHistoryCompleter(unittest.TestCase):
         )
 
     def test_get_completions_with_fuzzy_search(self):
-        document = Document('omine')
+        document = Document('ecgpr')
         strings = self.completer.get_completions(document)
         self.assertEqual(
             list(strings),
             [
                 Completion(
-                    text='opsworks-cm associate-node',
+                    text='ecs get-task-protection',
                     start_position=-5,
-                    display=FormattedText(
-                        [('', 'opsworks-cm associate-node')]
-                    ),
+                    display=FormattedText([('', 'ecs get-task-protection')]),
                 ),
                 Completion(
-                    text='deploy add-tags-to-on-premises-instances',
+                    text='ecr get-lifecycle-policy-preview',
                     start_position=-5,
                     display=FormattedText(
-                        [('', 'deploy add-tags-to-on-premises-instances')]
+                        [('', 'ecr get-lifecycle-policy-preview')]
                     ),
                 ),
             ],

@@ -40,7 +40,7 @@
         {"shape":"ClientException"},
         {"shape":"ServerException"}
       ],
-      "documentation":"<p>Creates an Batch compute environment. You can create <code>MANAGED</code> or <code>UNMANAGED</code> compute environments. <code>MANAGED</code> compute environments can use Amazon EC2 or Fargate resources. <code>UNMANAGED</code> compute environments can only use EC2 resources.</p> <p>In a managed compute environment, Batch manages the capacity and instance types of the compute resources within the environment. This is based on the compute resource specification that you define or the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html\">launch template</a> that you specify when you create the compute environment. Either, you can choose to use EC2 On-Demand Instances and EC2 Spot Instances. Or, you can use Fargate and Fargate Spot capacity in your managed compute environment. You can optionally set a maximum price so that Spot Instances only launch when the Spot Instance price is less than a specified percentage of the On-Demand price.</p> <note> <p>Multi-node parallel jobs aren't supported on Spot Instances.</p> </note> <p>In an unmanaged compute environment, you can manage your own EC2 compute resources and have flexibility with how you configure your compute resources. For example, you can use custom AMIs. However, you must verify that each of your AMIs meet the Amazon ECS container instance AMI specification. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/container_instance_AMIs.html\">container instance AMIs</a> in the <i>Amazon Elastic Container Service Developer Guide</i>. After you created your unmanaged compute environment, you can use the <a>DescribeComputeEnvironments</a> operation to find the Amazon ECS cluster that's associated with it. Then, launch your container instances into that Amazon ECS cluster. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html\">Launching an Amazon ECS container instance</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <note> <p>To create a compute environment that uses EKS resources, the caller must have permissions to call <code>eks:DescribeCluster</code>.</p> </note> <note> <p>Batch doesn't automatically upgrade the AMIs in a compute environment after it's created. For example, it also doesn't update the AMIs in your compute environment when a newer version of the Amazon ECS optimized AMI is available. You're responsible for the management of the guest operating system. This includes any updates and security patches. You're also responsible for any additional application software or utilities that you install on the compute resources. There are two ways to use a new AMI for your Batch jobs. The original method is to complete these steps:</p> <ol> <li> <p>Create a new compute environment with the new AMI.</p> </li> <li> <p>Add the compute environment to an existing job queue.</p> </li> <li> <p>Remove the earlier compute environment from your job queue.</p> </li> <li> <p>Delete the earlier compute environment.</p> </li> </ol> <p>In April 2022, Batch added enhanced support for updating compute environments. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a>. To use the enhanced updating of compute environments to update AMIs, follow these rules:</p> <ul> <li> <p>Either don't set the service role (<code>serviceRole</code>) parameter or set it to the <b>AWSBatchServiceRole</b> service-linked role.</p> </li> <li> <p>Set the allocation strategy (<code>allocationStrategy</code>) parameter to <code>BEST_FIT_PROGRESSIVE</code>, <code>SPOT_CAPACITY_OPTIMIZED</code>, or <code>SPOT_PRICE_CAPACITY_OPTIMIZED</code>.</p> </li> <li> <p>Set the update to latest image version (<code>updateToLatestImageVersion</code>) parameter to <code>true</code>. The <code>updateToLatestImageVersion</code> parameter is used when you update a compute environment. This parameter is ignored when you create a compute environment.</p> </li> <li> <p>Don't specify an AMI ID in <code>imageId</code>, <code>imageIdOverride</code> (in <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_Ec2Configuration.html\"> <code>ec2Configuration</code> </a>), or in the launch template (<code>launchTemplate</code>). In that case, Batch selects the latest Amazon ECS optimized AMI that's supported by Batch at the time the infrastructure update is initiated. Alternatively, you can specify the AMI ID in the <code>imageId</code> or <code>imageIdOverride</code> parameters, or the launch template identified by the <code>LaunchTemplate</code> properties. Changing any of these properties starts an infrastructure update. If the AMI ID is specified in the launch template, it can't be replaced by specifying an AMI ID in either the <code>imageId</code> or <code>imageIdOverride</code> parameters. It can only be replaced by specifying a different launch template, or if the launch template version is set to <code>$Default</code> or <code>$Latest</code>, by setting either a new default version for the launch template (if <code>$Default</code>) or by adding a new version to the launch template (if <code>$Latest</code>).</p> </li> </ul> <p>If these rules are followed, any update that starts an infrastructure update causes the AMI ID to be re-selected. If the <code>version</code> setting in the launch template (<code>launchTemplate</code>) is set to <code>$Latest</code> or <code>$Default</code>, the latest or default version of the launch template is evaluated up at the time of the infrastructure update, even if the <code>launchTemplate</code> wasn't updated.</p> </note>"
+      "documentation":"<p>Creates an Batch compute environment. You can create <code>MANAGED</code> or <code>UNMANAGED</code> compute environments. <code>MANAGED</code> compute environments can use Amazon EC2 or Fargate resources. <code>UNMANAGED</code> compute environments can only use EC2 resources.</p> <p>In a managed compute environment, Batch manages the capacity and instance types of the compute resources within the environment. This is based on the compute resource specification that you define or the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html\">launch template</a> that you specify when you create the compute environment. Either, you can choose to use EC2 On-Demand Instances and EC2 Spot Instances. Or, you can use Fargate and Fargate Spot capacity in your managed compute environment. You can optionally set a maximum price so that Spot Instances only launch when the Spot Instance price is less than a specified percentage of the On-Demand price.</p> <p>In an unmanaged compute environment, you can manage your own EC2 compute resources and have flexibility with how you configure your compute resources. For example, you can use custom AMIs. However, you must verify that each of your AMIs meet the Amazon ECS container instance AMI specification. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/container_instance_AMIs.html\">container instance AMIs</a> in the <i>Amazon Elastic Container Service Developer Guide</i>. After you created your unmanaged compute environment, you can use the <a>DescribeComputeEnvironments</a> operation to find the Amazon ECS cluster that's associated with it. Then, launch your container instances into that Amazon ECS cluster. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html\">Launching an Amazon ECS container instance</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <note> <p>Batch doesn't automatically upgrade the AMIs in a compute environment after it's created. For more information on how to update a compute environment's AMI, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> </note>"
     },
     "CreateConsumableResource":{
       "name":"CreateConsumableResource",
@@ -83,6 +83,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Creates an Batch scheduling policy.</p>"
+    },
+    "CreateServiceEnvironment":{
+      "name":"CreateServiceEnvironment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/createserviceenvironment"
+      },
+      "input":{"shape":"CreateServiceEnvironmentRequest"},
+      "output":{"shape":"CreateServiceEnvironmentResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Creates a service environment for running service jobs. Service environments define capacity limits for specific service types such as SageMaker Training jobs.</p>"
     },
     "DeleteComputeEnvironment":{
       "name":"DeleteComputeEnvironment",
@@ -139,6 +153,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Deletes the specified scheduling policy.</p> <p>You can't delete a scheduling policy that's used in any job queues.</p>"
+    },
+    "DeleteServiceEnvironment":{
+      "name":"DeleteServiceEnvironment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/deleteserviceenvironment"
+      },
+      "input":{"shape":"DeleteServiceEnvironmentRequest"},
+      "output":{"shape":"DeleteServiceEnvironmentResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Deletes a Service environment. Before you can delete a service environment, you must first set its state to <code>DISABLED</code> with the <code>UpdateServiceEnvironment</code> API operation and disassociate it from any job queues with the <code>UpdateJobQueue</code> API operation.</p>"
     },
     "DeregisterJobDefinition":{
       "name":"DeregisterJobDefinition",
@@ -238,6 +266,34 @@
       ],
       "documentation":"<p>Describes one or more of your scheduling policies.</p>"
     },
+    "DescribeServiceEnvironments":{
+      "name":"DescribeServiceEnvironments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/describeserviceenvironments"
+      },
+      "input":{"shape":"DescribeServiceEnvironmentsRequest"},
+      "output":{"shape":"DescribeServiceEnvironmentsResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Describes one or more of your service environments.</p>"
+    },
+    "DescribeServiceJob":{
+      "name":"DescribeServiceJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/describeservicejob"
+      },
+      "input":{"shape":"DescribeServiceJobRequest"},
+      "output":{"shape":"DescribeServiceJobResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>The details of a service job.</p>"
+    },
     "GetJobQueueSnapshot":{
       "name":"GetJobQueueSnapshot",
       "http":{
@@ -308,6 +364,20 @@
       ],
       "documentation":"<p>Returns a list of Batch scheduling policies.</p>"
     },
+    "ListServiceJobs":{
+      "name":"ListServiceJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/listservicejobs"
+      },
+      "input":{"shape":"ListServiceJobsRequest"},
+      "output":{"shape":"ListServiceJobsResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Returns a list of service jobs for a specified job queue.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -350,6 +420,20 @@
       ],
       "documentation":"<p>Submits an Batch job from a job definition. Parameters that are specified during <a>SubmitJob</a> override parameters defined in the job definition. vCPU and memory requirements that are specified in the <code>resourceRequirements</code> objects in the job definition are the exception. They can't be overridden this way using the <code>memory</code> and <code>vcpus</code> parameters. Rather, you must specify updates to job definition parameters in a <code>resourceRequirements</code> object that's included in the <code>containerOverrides</code> parameter.</p> <note> <p>Job queues with a scheduling policy are limited to 500 active share identifiers at a time. </p> </note> <important> <p>Jobs that run on Fargate resources can't be guaranteed to run for more than 14 days. This is because, after 14 days, Fargate resources might become unavailable and job might be terminated.</p> </important>"
     },
+    "SubmitServiceJob":{
+      "name":"SubmitServiceJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/submitservicejob"
+      },
+      "input":{"shape":"SubmitServiceJobRequest"},
+      "output":{"shape":"SubmitServiceJobResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Submits a service job to a specified job queue to run on SageMaker AI. A service job is a unit of work that you submit to Batch for execution on SageMaker AI.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -377,6 +461,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Terminates a job in a job queue. Jobs that are in the <code>STARTING</code> or <code>RUNNING</code> state are terminated, which causes them to transition to <code>FAILED</code>. Jobs that have not progressed to the <code>STARTING</code> state are cancelled.</p>"
+    },
+    "TerminateServiceJob":{
+      "name":"TerminateServiceJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/terminateservicejob"
+      },
+      "input":{"shape":"TerminateServiceJobRequest"},
+      "output":{"shape":"TerminateServiceJobResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Terminates a service job in a job queue. </p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -447,6 +545,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Updates a scheduling policy.</p>"
+    },
+    "UpdateServiceEnvironment":{
+      "name":"UpdateServiceEnvironment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/updateserviceenvironment"
+      },
+      "input":{"shape":"UpdateServiceEnvironmentRequest"},
+      "output":{"shape":"UpdateServiceEnvironmentResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Updates a service environment. You can update the state of a service environment from <code>ENABLED</code> to <code>DISABLED</code> to prevent new service jobs from being placed in the service environment.</p>"
     }
   },
   "shapes":{
@@ -687,8 +799,25 @@
     },
     "CancelJobResponse":{
       "type":"structure",
+      "members":{}
+    },
+    "CapacityLimit":{
+      "type":"structure",
       "members":{
-      }
+        "maxCapacity":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum capacity available for the service environment. This value represents the maximum amount of resources that can be allocated to service jobs.</p> <p>For example, <code>maxCapacity=50</code>, <code>capacityUnit=NUM_INSTANCES</code>. This indicates that the maximum number of instances that can be run on this service environment is 50. You could then run 5 SageMaker Training jobs that each use 10 instances. However, if you submit another job that requires 10 instances, it will wait in the queue.</p>"
+        },
+        "capacityUnit":{
+          "shape":"String",
+          "documentation":"<p>The unit of measure for the capacity limit. This defines how the maxCapacity value should be interpreted. For <code>SAGEMAKER_TRAINING</code> jobs, use <code>NUM_INSTANCES</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines the capacity limit for a service environment. This structure specifies the maximum amount of resources that can be used by service jobs in the environment.</p>"
+    },
+    "CapacityLimits":{
+      "type":"list",
+      "member":{"shape":"CapacityLimit"}
     },
     "ClientException":{
       "type":"structure",
@@ -814,7 +943,7 @@
       "members":{
         "type":{
           "shape":"CRType",
-          "documentation":"<p>The type of compute environment: <code>EC2</code>, <code>SPOT</code>, <code>FARGATE</code>, or <code>FARGATE_SPOT</code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html\">Compute environments</a> in the <i>Batch User Guide</i>.</p> <p> If you choose <code>SPOT</code>, you must also specify an Amazon EC2 Spot Fleet role with the <code>spotIamFleetRole</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/spot_fleet_IAM_role.html\">Amazon EC2 spot fleet role</a> in the <i>Batch User Guide</i>.</p>"
+          "documentation":"<p>The type of compute environment: <code>EC2</code>, <code>SPOT</code>, <code>FARGATE</code>, or <code>FARGATE_SPOT</code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html\">Compute environments</a> in the <i>Batch User Guide</i>.</p> <p> If you choose <code>SPOT</code>, you must also specify an Amazon EC2 Spot Fleet role with the <code>spotIamFleetRole</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/spot_fleet_IAM_role.html\">Amazon EC2 spot fleet role</a> in the <i>Batch User Guide</i>.</p> <note> <p>Multi-node parallel jobs aren't supported on Spot Instances.</p> </note>"
         },
         "allocationStrategy":{
           "shape":"CRAllocationStrategy",
@@ -834,7 +963,7 @@
         },
         "instanceTypes":{
           "shape":"StringList",
-          "documentation":"<p>The instances types that can be launched. You can specify instance families to launch any instance type within those families (for example, <code>c5</code> or <code>p3</code>), or you can specify specific sizes within a family (such as <code>c5.8xlarge</code>). You can also choose <code>optimal</code> to select instance types (from the C4, M4, and R4 instance families) that match the demand of your job queues.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note> <note> <p>When you create a compute environment, the instance types that you select for the compute environment must share the same architecture. For example, you can't mix x86 and ARM instances in the same compute environment.</p> </note> <note> <p>Currently, <code>optimal</code> uses instance types from the C4, M4, and R4 instance families. In Regions that don't have instance types from those instance families, instance types from the C5, M5, and R5 instance families are used.</p> </note>"
+          "documentation":"<p>The instances types that can be launched. You can specify instance families to launch any instance type within those families (for example, <code>c5</code> or <code>p3</code>), or you can specify specific sizes within a family (such as <code>c5.8xlarge</code>). </p> <p>Batch can select the instance type for you if you choose one of the following:</p> <ul> <li> <p> <code>optimal</code> to select instance types (from the <code>c4</code>, <code>m4</code>, <code>r4</code>, <code>c5</code>, <code>m5</code>, and <code>r5</code> instance families) that match the demand of your job queues. </p> </li> <li> <p> <code>default_x86_64</code> to choose x86 based instance types (from the <code>m6i</code>, <code>c6i</code>, <code>r6i</code>, and <code>c7i</code> instance families) that matches the resource demands of the job queue.</p> </li> <li> <p> <code>default_arm64</code> to choose x86 based instance types (from the <code>m6g</code>, <code>c6g</code>, <code>r6g</code>, and <code>c7g</code> instance families) that matches the resource demands of the job queue.</p> </li> </ul> <note> <p>Starting on 11/01/2025 the behavior of <code>optimal</code> is going to be changed to match <code>default_x86_64</code>. During the change your instance families could be updated to a newer generation. You do not need to perform any actions for the upgrade to happen. For more information about change, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/optimal-default-instance-troubleshooting.html\">Optimal instance type configuration to receive automatic instance family updates</a>.</p> </note> <note> <p>Instance family availability varies by Amazon Web Services Region. For example, some Amazon Web Services Regions may not have any fourth generation instance families but have fifth and sixth generation instance families.</p> <p>When using <code>default_x86_64</code> or <code>default_arm64</code> instance bundles, Batch selects instance families based on a balance of cost-effectiveness and performance. While newer generation instances often provide better price-performance, Batch may choose an earlier generation instance family if it provides the optimal combination of availability, cost, and performance for your workload. For example, in an Amazon Web Services Region where both c6i and c7i instances are available, Batch might select c6i instances if they offer better cost-effectiveness for your specific job requirements. For more information on Batch instance types and Amazon Web Services Region availability, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/instance-type-compute-table.html\">Instance type compute table</a> in the <i>Batch User Guide</i>.</p> <p>Batch periodically updates your instances in default bundles to newer, more cost-effective options. Updates happen automatically without requiring any action from you. Your workloads continue running during updates with no interruption </p> </note> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note> <note> <p>When you create a compute environment, the instance types that you select for the compute environment must share the same architecture. For example, you can't mix x86 and ARM instances in the same compute environment.</p> </note>"
         },
         "imageId":{
           "shape":"String",
@@ -914,7 +1043,7 @@
         },
         "instanceTypes":{
           "shape":"StringList",
-          "documentation":"<p>The instances types that can be launched. You can specify instance families to launch any instance type within those families (for example, <code>c5</code> or <code>p3</code>), or you can specify specific sizes within a family (such as <code>c5.8xlarge</code>). You can also choose <code>optimal</code> to select instance types (from the C4, M4, and R4 instance families) that match the demand of your job queues.</p> <p>When updating a compute environment, changing this setting requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note> <note> <p>When you create a compute environment, the instance types that you select for the compute environment must share the same architecture. For example, you can't mix x86 and ARM instances in the same compute environment.</p> </note> <note> <p>Currently, <code>optimal</code> uses instance types from the C4, M4, and R4 instance families. In Regions that don't have instance types from those instance families, instance types from the C5, M5, and R5 instance families are used.</p> </note>"
+          "documentation":"<p>The instances types that can be launched. You can specify instance families to launch any instance type within those families (for example, <code>c5</code> or <code>p3</code>), or you can specify specific sizes within a family (such as <code>c5.8xlarge</code>). </p> <p>Batch can select the instance type for you if you choose one of the following:</p> <ul> <li> <p> <code>optimal</code> to select instance types (from the <code>c4</code>, <code>m4</code>, <code>r4</code>, <code>c5</code>, <code>m5</code>, and <code>r5</code> instance families) that match the demand of your job queues. </p> </li> <li> <p> <code>default_x86_64</code> to choose x86 based instance types (from the <code>m6i</code>, <code>c6i</code>, <code>r6i</code>, and <code>c7i</code> instance families) that matches the resource demands of the job queue.</p> </li> <li> <p> <code>default_arm64</code> to choose x86 based instance types (from the <code>m6g</code>, <code>c6g</code>, <code>r6g</code>, and <code>c7g</code> instance families) that matches the resource demands of the job queue.</p> </li> </ul> <note> <p>Starting on 11/01/2025 the behavior of <code>optimal</code> is going to be changed to match <code>default_x86_64</code>. During the change your instance families could be updated to a newer generation. You do not need to perform any actions for the upgrade to happen. For more information about change, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/optimal-default-instance-troubleshooting.html\">Optimal instance type configuration to receive automatic instance family updates</a>.</p> </note> <note> <p>Instance family availability varies by Amazon Web Services Region. For example, some Amazon Web Services Regions may not have any fourth generation instance families but have fifth and sixth generation instance families.</p> <p>When using <code>default_x86_64</code> or <code>default_arm64</code> instance bundles, Batch selects instance families based on a balance of cost-effectiveness and performance. While newer generation instances often provide better price-performance, Batch may choose an earlier generation instance family if it provides the optimal combination of availability, cost, and performance for your workload. For example, in an Amazon Web Services Region where both c6i and c7i instances are available, Batch might select c6i instances if they offer better cost-effectiveness for your specific job requirements. For more information on Batch instance types and Amazon Web Services Region availability, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/instance-type-compute-table.html\">Instance type compute table</a> in the <i>Batch User Guide</i>.</p> <p>Batch periodically updates your instances in default bundles to newer, more cost-effective options. Updates happen automatically without requiring any action from you. Your workloads continue running during updates with no interruption </p> </note> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note> <note> <p>When you create a compute environment, the instance types that you select for the compute environment must share the same architecture. For example, you can't mix x86 and ARM instances in the same compute environment.</p> </note>"
         },
         "ec2KeyPair":{
           "shape":"String",
@@ -1338,7 +1467,7 @@
         },
         "eksConfiguration":{
           "shape":"EksConfiguration",
-          "documentation":"<p>The details for the Amazon EKS cluster that supports the compute environment.</p>"
+          "documentation":"<p>The details for the Amazon EKS cluster that supports the compute environment.</p> <note> <p>To create a compute environment that uses EKS resources, the caller must have permissions to call <code>eks:DescribeCluster</code>.</p> </note>"
         },
         "context":{
           "shape":"String",
@@ -1403,8 +1532,7 @@
       "type":"structure",
       "required":[
         "jobQueueName",
-        "priority",
-        "computeEnvironmentOrder"
+        "priority"
       ],
       "members":{
         "jobQueueName":{
@@ -1426,6 +1554,14 @@
         "computeEnvironmentOrder":{
           "shape":"ComputeEnvironmentOrders",
           "documentation":"<p>The set of compute environments mapped to a job queue and their order relative to each other. The job scheduler uses this parameter to determine which compute environment runs a specific job. Compute environments must be in the <code>VALID</code> state before you can associate them with a job queue. You can associate up to three compute environments with a job queue. All of the compute environments must be either EC2 (<code>EC2</code> or <code>SPOT</code>) or Fargate (<code>FARGATE</code> or <code>FARGATE_SPOT</code>); EC2 and Fargate compute environments can't be mixed.</p> <note> <p>All compute environments that are associated with a job queue must share the same architecture. Batch doesn't support mixing compute environment architecture types in a single job queue.</p> </note>"
+        },
+        "serviceEnvironmentOrder":{
+          "shape":"ServiceEnvironmentOrders",
+          "documentation":"<p>A list of service environments that this job queue can use to allocate jobs. All serviceEnvironments must have the same type. A job queue can't have both a serviceEnvironmentOrder and a computeEnvironmentOrder field.</p>"
+        },
+        "jobQueueType":{
+          "shape":"JobQueueType",
+          "documentation":"<p>The type of job queue. For service jobs that run on SageMaker Training, this value is <code>SAGEMAKER_TRAINING</code>. For regular container jobs, this value is <code>EKS</code>, <code>ECS</code>, or <code>ECS_FARGATE</code> depending on the compute environment.</p>"
         },
         "tags":{
           "shape":"TagrisTagsMap",
@@ -1491,6 +1627,53 @@
         }
       }
     },
+    "CreateServiceEnvironmentRequest":{
+      "type":"structure",
+      "required":[
+        "serviceEnvironmentName",
+        "serviceEnvironmentType",
+        "capacityLimits"
+      ],
+      "members":{
+        "serviceEnvironmentName":{
+          "shape":"String",
+          "documentation":"<p>The name for the service environment. It can be up to 128 characters long and can contain letters, numbers, hyphens (-), and underscores (_).</p>"
+        },
+        "serviceEnvironmentType":{
+          "shape":"ServiceEnvironmentType",
+          "documentation":"<p>The type of service environment. For SageMaker Training jobs, specify <code>SAGEMAKER_TRAINING</code>.</p>"
+        },
+        "state":{
+          "shape":"ServiceEnvironmentState",
+          "documentation":"<p>The state of the service environment. Valid values are <code>ENABLED</code> and <code>DISABLED</code>. The default value is <code>ENABLED</code>.</p>"
+        },
+        "capacityLimits":{
+          "shape":"CapacityLimits",
+          "documentation":"<p>The capacity limits for the service environment. The number of instances a job consumes is the total number of instances requested in the submit training job request resource configuration.</p>"
+        },
+        "tags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The tags that you apply to the service environment to help you categorize and organize your resources. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a>.</p>"
+        }
+      }
+    },
+    "CreateServiceEnvironmentResponse":{
+      "type":"structure",
+      "required":[
+        "serviceEnvironmentName",
+        "serviceEnvironmentArn"
+      ],
+      "members":{
+        "serviceEnvironmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service environment.</p>"
+        },
+        "serviceEnvironmentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service environment.</p>"
+        }
+      }
+    },
     "DeleteComputeEnvironmentRequest":{
       "type":"structure",
       "required":["computeEnvironment"],
@@ -1504,8 +1687,7 @@
     },
     "DeleteComputeEnvironmentResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteConsumableResourceRequest":{
       "type":"structure",
@@ -1519,8 +1701,7 @@
     },
     "DeleteConsumableResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteJobQueueRequest":{
       "type":"structure",
@@ -1535,8 +1716,7 @@
     },
     "DeleteJobQueueResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteSchedulingPolicyRequest":{
       "type":"structure",
@@ -1551,8 +1731,21 @@
     },
     "DeleteSchedulingPolicyResponse":{
       "type":"structure",
+      "members":{}
+    },
+    "DeleteServiceEnvironmentRequest":{
+      "type":"structure",
+      "required":["serviceEnvironment"],
       "members":{
+        "serviceEnvironment":{
+          "shape":"String",
+          "documentation":"<p>The name or ARN of the service environment to delete.</p>"
+        }
       }
+    },
+    "DeleteServiceEnvironmentResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeregisterJobDefinitionRequest":{
       "type":"structure",
@@ -1566,8 +1759,7 @@
     },
     "DeregisterJobDefinitionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeComputeEnvironmentsRequest":{
       "type":"structure",
@@ -1761,6 +1953,135 @@
         }
       }
     },
+    "DescribeServiceEnvironmentsRequest":{
+      "type":"structure",
+      "members":{
+        "serviceEnvironments":{
+          "shape":"StringList",
+          "documentation":"<p>An array of service environment names or ARN entries.</p>"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results returned by <code>DescribeServiceEnvironments</code> in paginated output. When this parameter is used, <code>DescribeServiceEnvironments</code> only returns <code>maxResults</code> results in a single page and a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>DescribeServiceEnvironments</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>DescribeServiceEnvironments</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated <code>DescribeServiceEnvironments</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>Treat this token as an opaque identifier that's only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        }
+      }
+    },
+    "DescribeServiceEnvironmentsResponse":{
+      "type":"structure",
+      "members":{
+        "serviceEnvironments":{
+          "shape":"ServiceEnvironmentDetailList",
+          "documentation":"<p>The list of service environments that match the request.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>DescribeServiceEnvironments</code> request. When the results of a <code>DescribeServiceEnvironments</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "DescribeServiceJobRequest":{
+      "type":"structure",
+      "required":["jobId"],
+      "members":{
+        "jobId":{
+          "shape":"String",
+          "documentation":"<p>The job ID for the service job to describe.</p>"
+        }
+      }
+    },
+    "DescribeServiceJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "jobName",
+        "jobQueue",
+        "serviceJobType",
+        "startedAt",
+        "status"
+      ],
+      "members":{
+        "attempts":{
+          "shape":"ServiceJobAttemptDetails",
+          "documentation":"<p>A list of job attempts associated with the service job.</p>"
+        },
+        "createdAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job was created.</p>"
+        },
+        "isTerminated":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the service job has been terminated.</p>"
+        },
+        "jobArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service job.</p>"
+        },
+        "jobId":{
+          "shape":"String",
+          "documentation":"<p>The job ID for the service job.</p>"
+        },
+        "jobName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service job.</p>"
+        },
+        "jobQueue":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the job queue that the service job is associated with.</p>"
+        },
+        "latestAttempt":{
+          "shape":"LatestServiceJobAttempt",
+          "documentation":"<p>The latest attempt associated with the service job.</p>"
+        },
+        "retryStrategy":{
+          "shape":"ServiceJobRetryStrategy",
+          "documentation":"<p>The retry strategy to use for failed service jobs that are submitted with this service job.</p>"
+        },
+        "schedulingPriority":{
+          "shape":"Integer",
+          "documentation":"<p>The scheduling priority of the service job. </p>"
+        },
+        "serviceRequestPayload":{
+          "shape":"String",
+          "documentation":"<p>The request, in JSON, for the service that the <code>SubmitServiceJob</code> operation is queueing. </p>"
+        },
+        "serviceJobType":{
+          "shape":"ServiceJobType",
+          "documentation":"<p>The type of service job. For SageMaker Training jobs, this value is <code>SAGEMAKER_TRAINING</code>.</p>"
+        },
+        "shareIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The share identifier for the service job. This is used for fair-share scheduling.</p>"
+        },
+        "startedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job was started.</p>"
+        },
+        "status":{
+          "shape":"ServiceJobStatus",
+          "documentation":"<p>The current status of the service job. </p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A short, human-readable string to provide more details for the current status of the service job.</p>"
+        },
+        "stoppedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job stopped running.</p>"
+        },
+        "tags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The tags that are associated with the service job. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a>.</p>"
+        },
+        "timeoutConfig":{
+          "shape":"ServiceJobTimeout",
+          "documentation":"<p>The timeout configuration for the service job.</p>"
+        }
+      }
+    },
     "Device":{
       "type":"structure",
       "required":["hostPath"],
@@ -1857,7 +2178,7 @@
       "members":{
         "imageType":{
           "shape":"ImageType",
-          "documentation":"<p>The image type to match with the instance type to select an AMI. The supported values are different for <code>ECS</code> and <code>EKS</code> resources.</p> <dl> <dt>ECS</dt> <dd> <p>If the <code>imageIdOverride</code> parameter isn't specified, then a recent <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#al2ami\">Amazon ECS-optimized Amazon Linux 2 AMI</a> (<code>ECS_AL2</code>) is used. If a new image type is specified in an update, but neither an <code>imageId</code> nor a <code>imageIdOverride</code> parameter is specified, then the latest Amazon ECS optimized AMI for that image type that's supported by Batch is used.</p> <dl> <dt>ECS_AL2</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#al2ami\">Amazon Linux 2</a>: Default for all non-GPU instance families.</p> </dd> <dt>ECS_AL2_NVIDIA</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#gpuami\">Amazon Linux 2 (GPU)</a>: Default for all GPU instance families (for example <code>P4</code> and <code>G4</code>) and can be used for all non Amazon Web Services Graviton-based instance types.</p> </dd> <dt>ECS_AL2023</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html\">Amazon Linux 2023</a>: Batch supports Amazon Linux 2023.</p> <note> <p>Amazon Linux 2023 does not support <code>A1</code> instances.</p> </note> </dd> <dt>ECS_AL1</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#alami\">Amazon Linux</a>. Amazon Linux has reached the end-of-life of standard support. For more information, see <a href=\"http://aws.amazon.com/amazon-linux-ami/\">Amazon Linux AMI</a>.</p> </dd> </dl> </dd> <dt>EKS</dt> <dd> <p>If the <code>imageIdOverride</code> parameter isn't specified, then a recent <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html\">Amazon EKS-optimized Amazon Linux AMI</a> (<code>EKS_AL2</code>) is used. If a new image type is specified in an update, but neither an <code>imageId</code> nor a <code>imageIdOverride</code> parameter is specified, then the latest Amazon EKS optimized AMI for that image type that Batch supports is used.</p> <dl> <dt>EKS_AL2</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html\">Amazon Linux 2</a>: Default for all non-GPU instance families.</p> </dd> <dt>EKS_AL2_NVIDIA</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html\">Amazon Linux 2 (accelerated)</a>: Default for all GPU instance families (for example, <code>P4</code> and <code>G4</code>) and can be used for all non Amazon Web Services Graviton-based instance types.</p> </dd> </dl> </dd> </dl>"
+          "documentation":"<p>The image type to match with the instance type to select an AMI. The supported values are different for <code>ECS</code> and <code>EKS</code> resources.</p> <dl> <dt>ECS</dt> <dd> <p>If the <code>imageIdOverride</code> parameter isn't specified, then a recent <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#al2ami\">Amazon ECS-optimized Amazon Linux 2 AMI</a> (<code>ECS_AL2</code>) is used. If a new image type is specified in an update, but neither an <code>imageId</code> nor a <code>imageIdOverride</code> parameter is specified, then the latest Amazon ECS optimized AMI for that image type that's supported by Batch is used.</p> <important> <p>Amazon Web Services will end support for Amazon ECS optimized AL2-optimized and AL2-accelerated AMIs. Starting in January 2026, Batch will change the default AMI for new Amazon ECS compute environments from Amazon Linux 2 to Amazon Linux 2023. We recommend migrating Batch Amazon ECS compute environments to Amazon Linux 2023 to maintain optimal performance and security. For more information on upgrading from AL2 to AL2023, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/ecs-migration-2023.html\">How to migrate from ECS AL2 to ECS AL2023</a> in the <i>Batch User Guide</i>.</p> </important> <dl> <dt>ECS_AL2</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#al2ami\">Amazon Linux 2</a>: Default for all non-GPU instance families.</p> </dd> <dt>ECS_AL2_NVIDIA</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#gpuami\">Amazon Linux 2 (GPU)</a>: Default for all GPU instance families (for example <code>P4</code> and <code>G4</code>) and can be used for all non Amazon Web Services Graviton-based instance types.</p> </dd> <dt>ECS_AL2023</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html\">Amazon Linux 2023</a>: Batch supports Amazon Linux 2023.</p> <note> <p>Amazon Linux 2023 does not support <code>A1</code> instances.</p> </note> </dd> <dt>ECS_AL2023_NVIDIA</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#gpuami\">Amazon Linux 2023 (GPU)</a>: For all GPU instance families and can be used for all non Amazon Web Services Graviton-based instance types.</p> <note> <p>ECS_AL2023_NVIDIA doesn't support <code>p3</code> and <code>g3</code> instance types.</p> </note> </dd> </dl> </dd> <dt>EKS</dt> <dd> <p>If the <code>imageIdOverride</code> parameter isn't specified, then a recent <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html\">Amazon EKS-optimized Amazon Linux AMI</a> (<code>EKS_AL2</code>) is used. If a new image type is specified in an update, but neither an <code>imageId</code> nor a <code>imageIdOverride</code> parameter is specified, then the latest Amazon EKS optimized AMI for that image type that Batch supports is used.</p> <important> <p>Starting end of October 2025 Amazon EKS optimized Amazon Linux 2023 AMIs will be the default on Batch for EKS versions prior to 1.33. Starting from Kubernetes version 1.33, EKS optimized Amazon Linux 2023 AMIs will be the default when it becomes supported on Batch.</p> <p>Amazon Web Services will end support for Amazon EKS AL2-optimized and AL2-accelerated AMIs, starting 11/26/25. You can continue using Batch-provided Amazon EKS optimized Amazon Linux 2 AMIs on your Amazon EKS compute environments beyond the 11/26/25 end-of-support date, these compute environments will no longer receive any new software updates, security patches, or bug fixes from Amazon Web Services. For more information on upgrading from AL2 to AL2023, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/eks-migration-2023.html\">How to upgrade from EKS AL2 to EKS AL2023</a> in the <i>Batch User Guide</i>.</p> </important> <dl> <dt>EKS_AL2</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html\">Amazon Linux 2</a>: Default for all non-GPU instance families.</p> </dd> <dt>EKS_AL2_NVIDIA</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html\">Amazon Linux 2 (accelerated)</a>: Default for all GPU instance families (for example, <code>P4</code> and <code>G4</code>) and can be used for all non Amazon Web Services Graviton-based instance types.</p> </dd> <dt>EKS_AL2023</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html\">Amazon Linux 2023</a>: Batch supports Amazon Linux 2023.</p> <note> <p>Amazon Linux 2023 does not support <code>A1</code> instances.</p> </note> </dd> <dt>EKS_AL2023_NVIDIA</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html\">Amazon Linux 2023 (accelerated)</a>: GPU instance families and can be used for all non Amazon Web Services Graviton-based instance types.</p> </dd> </dl> </dd> </dl>"
         },
         "imageIdOverride":{
           "shape":"ImageIdOverride",
@@ -1934,7 +2255,7 @@
         },
         "ipcMode":{
           "shape":"String",
-          "documentation":"<p>The IPC resource namespace to use for the containers in the task.</p>"
+          "documentation":"<p>The IPC resource namespace to use for the containers in the task. The valid values are <code>host</code>, <code>task</code>, or <code>none</code>. For more information see <code>ipcMode</code> in <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_EcsTaskProperties.html\">EcsTaskProperties</a>.</p>"
         },
         "taskRoleArn":{
           "shape":"String",
@@ -1942,7 +2263,7 @@
         },
         "pidMode":{
           "shape":"String",
-          "documentation":"<p>The process namespace to use for the containers in the task.</p>"
+          "documentation":"<p>The process namespace to use for the containers in the task. The valid values are <code>host</code>, or <code>task</code>. For more information see <code>pidMode</code> in <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_EcsTaskProperties.html\">EcsTaskProperties</a>.</p>"
         },
         "networkConfiguration":{
           "shape":"NetworkConfiguration",
@@ -3092,6 +3413,14 @@
           "shape":"ComputeEnvironmentOrders",
           "documentation":"<p>The compute environments that are attached to the job queue and the order that job placement is preferred. Compute environments are selected for job placement in ascending order.</p>"
         },
+        "serviceEnvironmentOrder":{
+          "shape":"ServiceEnvironmentOrders",
+          "documentation":"<p>The order of the service environment associated with the job queue. Job queues with a higher priority are evaluated first when associated with the same service environment.</p>"
+        },
+        "jobQueueType":{
+          "shape":"JobQueueType",
+          "documentation":"<p>The type of job queue. For service jobs that run on SageMaker Training, this value is <code>SAGEMAKER_TRAINING</code>. For regular container jobs, this value is <code>EKS</code>, <code>ECS</code>, or <code>ECS_FARGATE</code> depending on the compute environment.</p>"
+        },
         "tags":{
           "shape":"TagrisTagsMap",
           "documentation":"<p>The tags that are applied to the job queue. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a> in <i>Batch User Guide</i>.</p>"
@@ -3106,6 +3435,15 @@
     "JobQueueDetailList":{
       "type":"list",
       "member":{"shape":"JobQueueDetail"}
+    },
+    "JobQueueType":{
+      "type":"string",
+      "enum":[
+        "EKS",
+        "ECS",
+        "ECS_FARGATE",
+        "SAGEMAKER_TRAINING"
+      ]
     },
     "JobStateTimeLimitAction":{
       "type":"structure",
@@ -3141,7 +3479,10 @@
     },
     "JobStateTimeLimitActionsAction":{
       "type":"string",
-      "enum":["CANCEL"]
+      "enum":[
+        "CANCEL",
+        "TERMINATE"
+      ]
     },
     "JobStateTimeLimitActionsState":{
       "type":"string",
@@ -3264,6 +3605,16 @@
       "max":256,
       "min":1
     },
+    "LatestServiceJobAttempt":{
+      "type":"structure",
+      "members":{
+        "serviceResourceId":{
+          "shape":"ServiceResourceId",
+          "documentation":"<p>The service resource identifier associated with the service job attempt.</p>"
+        }
+      },
+      "documentation":"<p>Information about the latest attempt of a service job. A Service job can transition from <code>SCHEDULED</code> back to <code>RUNNABLE</code> state when they encounter capacity constraints.</p>"
+    },
     "LaunchTemplateSpecification":{
       "type":"structure",
       "members":{
@@ -3282,6 +3633,10 @@
         "overrides":{
           "shape":"LaunchTemplateSpecificationOverrideList",
           "documentation":"<p>A launch template to use in place of the default launch template. You must specify either the launch template ID or launch template name in the request, but not both.</p> <p>You can specify up to ten (10) launch template overrides that are associated to unique instance types or families for each compute environment.</p> <note> <p>To unset all override templates for a compute environment, you can pass an empty array to the <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_UpdateComputeEnvironment.html\">UpdateComputeEnvironment.overrides</a> parameter, or not include the <code>overrides</code> parameter when submitting the <code>UpdateComputeEnvironment</code> API operation.</p> </note>"
+        },
+        "userdataType":{
+          "shape":"UserdataType",
+          "documentation":"<p>The EKS node initialization process to use. You only need to specify this value if you are using a custom AMI. The default value is <code>EKS_BOOTSTRAP_SH</code>. If <i>imageType</i> is a custom AMI based on EKS_AL2023 or EKS_AL2023_NVIDIA then you must choose <code>EKS_NODEADM</code>.</p>"
         }
       },
       "documentation":"<p>An object that represents a launch template that's associated with a compute resource. You must specify either the launch template ID or launch template name in the request, but not both.</p> <p>If security groups are specified using both the <code>securityGroupIds</code> parameter of <code>CreateComputeEnvironment</code> and the launch template, the values in the <code>securityGroupIds</code> parameter of <code>CreateComputeEnvironment</code> will be used.</p> <note> <p>This object isn't applicable to jobs that are running on Fargate resources.</p> </note>"
@@ -3303,7 +3658,11 @@
         },
         "targetInstanceTypes":{
           "shape":"StringList",
-          "documentation":"<p>The instance type or family that this override launch template should be applied to.</p> <p>This parameter is required when defining a launch template override.</p> <p>Information included in this parameter must meet the following requirements:</p> <ul> <li> <p>Must be a valid Amazon EC2 instance type or family.</p> </li> <li> <p> <code>optimal</code> isn't allowed.</p> </li> <li> <p> <code>targetInstanceTypes</code> can target only instance types and families that are included within the <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_ComputeResource.html#Batch-Type-ComputeResource-instanceTypes\"> <code>ComputeResource.instanceTypes</code> </a> set. <code>targetInstanceTypes</code> doesn't need to include all of the instances from the <code>instanceType</code> set, but at least a subset. For example, if <code>ComputeResource.instanceTypes</code> includes <code>[m5, g5]</code>, <code>targetInstanceTypes</code> can include <code>[m5.2xlarge]</code> and <code>[m5.large]</code> but not <code>[c5.large]</code>.</p> </li> <li> <p> <code>targetInstanceTypes</code> included within the same launch template override or across launch template overrides can't overlap for the same compute environment. For example, you can't define one launch template override to target an instance family and another define an instance type within this same family.</p> </li> </ul>"
+          "documentation":"<p>The instance type or family that this override launch template should be applied to.</p> <p>This parameter is required when defining a launch template override.</p> <p>Information included in this parameter must meet the following requirements:</p> <ul> <li> <p>Must be a valid Amazon EC2 instance type or family.</p> </li> <li> <p>The following Batch <code>InstanceTypes</code> are not allowed: <code>optimal</code>, <code>default_x86_64</code>, and <code>default_arm64</code>.</p> </li> <li> <p> <code>targetInstanceTypes</code> can target only instance types and families that are included within the <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_ComputeResource.html#Batch-Type-ComputeResource-instanceTypes\"> <code>ComputeResource.instanceTypes</code> </a> set. <code>targetInstanceTypes</code> doesn't need to include all of the instances from the <code>instanceType</code> set, but at least a subset. For example, if <code>ComputeResource.instanceTypes</code> includes <code>[m5, g5]</code>, <code>targetInstanceTypes</code> can include <code>[m5.2xlarge]</code> and <code>[m5.large]</code> but not <code>[c5.large]</code>.</p> </li> <li> <p> <code>targetInstanceTypes</code> included within the same launch template override or across launch template overrides can't overlap for the same compute environment. For example, you can't define one launch template override to target an instance family and another define an instance type within this same family.</p> </li> </ul>"
+        },
+        "userdataType":{
+          "shape":"UserdataType",
+          "documentation":"<p>The EKS node initialization process to use. You only need to specify this value if you are using a custom AMI. The default value is <code>EKS_BOOTSTRAP_SH</code>. If <i>imageType</i> is a custom AMI based on EKS_AL2023 or EKS_AL2023_NVIDIA then you must choose <code>EKS_NODEADM</code>.</p>"
         }
       },
       "documentation":"<p>An object that represents a launch template to use in place of the default launch template. You must specify either the launch template ID or launch template name in the request, but not both.</p> <p>If security groups are specified using both the <code>securityGroupIds</code> parameter of <code>CreateComputeEnvironment</code> and the launch template, the values in the <code>securityGroupIds</code> parameter of <code>CreateComputeEnvironment</code> will be used.</p> <p>You can define up to ten (10) overrides for each compute environment.</p> <note> <p>This object isn't applicable to jobs that are running on Fargate resources.</p> </note> <note> <p>To unset all override templates for a compute environment, you can pass an empty array to the <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_UpdateComputeEnvironment.html\">UpdateComputeEnvironment.overrides</a> parameter, or not include the <code>overrides</code> parameter when submitting the <code>UpdateComputeEnvironment</code> API operation.</p> </note>"
@@ -3575,6 +3934,45 @@
         }
       }
     },
+    "ListServiceJobsRequest":{
+      "type":"structure",
+      "members":{
+        "jobQueue":{
+          "shape":"String",
+          "documentation":"<p>The name or ARN of the job queue with which to list service jobs.</p>"
+        },
+        "jobStatus":{
+          "shape":"ServiceJobStatus",
+          "documentation":"<p>The job status with which to filter service jobs. </p>"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results returned by <code>ListServiceJobs</code> in paginated output. When this parameter is used, <code>ListServiceJobs</code> only returns <code>maxResults</code> results in a single page and a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListServiceJobs</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>ListServiceJobs</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated <code>ListServiceJobs</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>Treat this token as an opaque identifier that's only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        },
+        "filters":{
+          "shape":"ListJobsFilterList",
+          "documentation":"<p>The filter to apply to the query. Only one filter can be used at a time. When the filter is used, <code>jobStatus</code> is ignored. The results are sorted by the <code>createdAt</code> field, with the most recent jobs being first.</p> <dl> <dt>JOB_NAME</dt> <dd> <p>The value of the filter is a case-insensitive match for the job name. If the value ends with an asterisk (*), the filter matches any job name that begins with the string before the '*'. This corresponds to the <code>jobName</code> value. For example, <code>test1</code> matches both <code>Test1</code> and <code>test1</code>, and <code>test1*</code> matches both <code>test1</code> and <code>Test10</code>. When the <code>JOB_NAME</code> filter is used, the results are grouped by the job name and version.</p> </dd> <dt>BEFORE_CREATED_AT</dt> <dd> <p>The value for the filter is the time that's before the job was created. This corresponds to the <code>createdAt</code> value. The value is a string representation of the number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970.</p> </dd> <dt>AFTER_CREATED_AT</dt> <dd> <p>The value for the filter is the time that's after the job was created. This corresponds to the <code>createdAt</code> value. The value is a string representation of the number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970.</p> </dd> </dl>"
+        }
+      }
+    },
+    "ListServiceJobsResponse":{
+      "type":"structure",
+      "required":["jobSummaryList"],
+      "members":{
+        "jobSummaryList":{
+          "shape":"ServiceJobSummaryList",
+          "documentation":"<p>A list of service job summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListServiceJobs</code> request. When the results of a <code>ListServiceJobs</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -3619,7 +4017,7 @@
       "members":{
         "logDriver":{
           "shape":"LogDriver",
-          "documentation":"<p>The log driver to use for the container. The valid values that are listed for this parameter are log drivers that the Amazon ECS container agent can communicate with by default.</p> <p>The supported log drivers are <code>awslogs</code>, <code>fluentd</code>, <code>gelf</code>, <code>json-file</code>, <code>journald</code>, <code>logentries</code>, <code>syslog</code>, and <code>splunk</code>.</p> <note> <p>Jobs that are running on Fargate resources are restricted to the <code>awslogs</code> and <code>splunk</code> log drivers.</p> </note> <dl> <dt>awsfirelens</dt> <dd> <p>Specifies the firelens logging driver. For more information on configuring Firelens, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html\">Send Amazon ECS logs to an Amazon Web Services service or Amazon Web Services Partner</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </dd> <dt>awslogs</dt> <dd> <p>Specifies the Amazon CloudWatch Logs logging driver. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using_awslogs.html\">Using the awslogs log driver</a> in the <i>Batch User Guide</i> and <a href=\"https://docs.docker.com/config/containers/logging/awslogs/\">Amazon CloudWatch Logs logging driver</a> in the Docker documentation.</p> </dd> <dt>fluentd</dt> <dd> <p>Specifies the Fluentd logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/fluentd/\">Fluentd logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>gelf</dt> <dd> <p>Specifies the Graylog Extended Format (GELF) logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/gelf/\">Graylog Extended Format logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>journald</dt> <dd> <p>Specifies the journald logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/journald/\">Journald logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>json-file</dt> <dd> <p>Specifies the JSON file logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/json-file/\">JSON File logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>splunk</dt> <dd> <p>Specifies the Splunk logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/splunk/\">Splunk logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>syslog</dt> <dd> <p>Specifies the syslog logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/syslog/\">Syslog logging driver</a> in the <i>Docker documentation</i>.</p> </dd> </dl> <note> <p>If you have a custom driver that's not listed earlier that you want to work with the Amazon ECS container agent, you can fork the Amazon ECS container agent project that's <a href=\"https://github.com/aws/amazon-ecs-agent\">available on GitHub</a> and customize it to work with that driver. We encourage you to submit pull requests for changes that you want to have included. However, Amazon Web Services doesn't currently support running modified copies of this software.</p> </note> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: <code>sudo docker version | grep \"Server API version\"</code> </p>"
+          "documentation":"<p>The log driver to use for the container. The valid values that are listed for this parameter are log drivers that the Amazon ECS container agent can communicate with by default.</p> <p>The supported log drivers are <code>awsfirelens</code>, <code>awslogs</code>, <code>fluentd</code>, <code>gelf</code>, <code>json-file</code>, <code>journald</code>, <code>logentries</code>, <code>syslog</code>, and <code>splunk</code>.</p> <note> <p>Jobs that are running on Fargate resources are restricted to the <code>awslogs</code> and <code>splunk</code> log drivers.</p> </note> <dl> <dt>awsfirelens</dt> <dd> <p>Specifies the firelens logging driver. For more information on configuring Firelens, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_firelens.html\">Send Amazon ECS logs to an Amazon Web Services service or Amazon Web Services Partner</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </dd> <dt>awslogs</dt> <dd> <p>Specifies the Amazon CloudWatch Logs logging driver. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using_awslogs.html\">Using the awslogs log driver</a> in the <i>Batch User Guide</i> and <a href=\"https://docs.docker.com/config/containers/logging/awslogs/\">Amazon CloudWatch Logs logging driver</a> in the Docker documentation.</p> </dd> <dt>fluentd</dt> <dd> <p>Specifies the Fluentd logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/fluentd/\">Fluentd logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>gelf</dt> <dd> <p>Specifies the Graylog Extended Format (GELF) logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/gelf/\">Graylog Extended Format logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>journald</dt> <dd> <p>Specifies the journald logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/journald/\">Journald logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>json-file</dt> <dd> <p>Specifies the JSON file logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/json-file/\">JSON File logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>splunk</dt> <dd> <p>Specifies the Splunk logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/splunk/\">Splunk logging driver</a> in the <i>Docker documentation</i>.</p> </dd> <dt>syslog</dt> <dd> <p>Specifies the syslog logging driver. For more information including usage and options, see <a href=\"https://docs.docker.com/config/containers/logging/syslog/\">Syslog logging driver</a> in the <i>Docker documentation</i>.</p> </dd> </dl> <note> <p>If you have a custom driver that's not listed earlier that you want to work with the Amazon ECS container agent, you can fork the Amazon ECS container agent project that's <a href=\"https://github.com/aws/amazon-ecs-agent\">available on GitHub</a> and customize it to work with that driver. We encourage you to submit pull requests for changes that you want to have included. However, Amazon Web Services doesn't currently support running modified copies of this software.</p> </note> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: <code>sudo docker version | grep \"Server API version\"</code> </p>"
         },
         "options":{
           "shape":"LogConfigurationOptionsMap",
@@ -4027,11 +4425,11 @@
       "members":{
         "operatingSystemFamily":{
           "shape":"String",
-          "documentation":"<p>The operating system for the compute environment. Valid values are: <code>LINUX</code> (default), <code>WINDOWS_SERVER_2019_CORE</code>, <code>WINDOWS_SERVER_2019_FULL</code>, <code>WINDOWS_SERVER_2022_CORE</code>, and <code>WINDOWS_SERVER_2022_FULL</code>.</p> <note> <p>The following parameters can’t be set for Windows containers: <code>linuxParameters</code>, <code>privileged</code>, <code>user</code>, <code>ulimits</code>, <code>readonlyRootFilesystem</code>, and <code>efsVolumeConfiguration</code>.</p> </note> <note> <p>The Batch Scheduler checks the compute environments that are attached to the job queue before registering a task definition with Fargate. In this scenario, the job queue is where the job is submitted. If the job requires a Windows container and the first compute environment is <code>LINUX</code>, the compute environment is skipped and the next compute environment is checked until a Windows-based compute environment is found.</p> </note> <note> <p>Fargate Spot is not supported for <code>ARM64</code> and Windows-based containers on Fargate. A job queue will be blocked if a Fargate <code>ARM64</code> or Windows job is submitted to a job queue with only Fargate Spot compute environments. However, you can attach both <code>FARGATE</code> and <code>FARGATE_SPOT</code> compute environments to the same job queue.</p> </note>"
+          "documentation":"<p>The operating system for the compute environment. Valid values are: <code>LINUX</code> (default), <code>WINDOWS_SERVER_2019_CORE</code>, <code>WINDOWS_SERVER_2019_FULL</code>, <code>WINDOWS_SERVER_2022_CORE</code>, and <code>WINDOWS_SERVER_2022_FULL</code>.</p> <note> <p>The following parameters can’t be set for Windows containers: <code>linuxParameters</code>, <code>privileged</code>, <code>user</code>, <code>ulimits</code>, <code>readonlyRootFilesystem</code>, and <code>efsVolumeConfiguration</code>.</p> </note> <note> <p>The Batch Scheduler checks the compute environments that are attached to the job queue before registering a task definition with Fargate. In this scenario, the job queue is where the job is submitted. If the job requires a Windows container and the first compute environment is <code>LINUX</code>, the compute environment is skipped and the next compute environment is checked until a Windows-based compute environment is found.</p> </note> <note> <p>Fargate Spot is not supported on Windows-based containers on Fargate. A job queue will be blocked if a Windows job is submitted to a job queue with only Fargate Spot compute environments. However, you can attach both <code>FARGATE</code> and <code>FARGATE_SPOT</code> compute environments to the same job queue.</p> </note>"
         },
         "cpuArchitecture":{
           "shape":"String",
-          "documentation":"<p> The vCPU architecture. The default value is <code>X86_64</code>. Valid values are <code>X86_64</code> and <code>ARM64</code>.</p> <note> <p>This parameter must be set to <code>X86_64</code> for Windows containers.</p> </note> <note> <p>Fargate Spot is not supported for <code>ARM64</code> and Windows-based containers on Fargate. A job queue will be blocked if a Fargate <code>ARM64</code> or Windows job is submitted to a job queue with only Fargate Spot compute environments. However, you can attach both <code>FARGATE</code> and <code>FARGATE_SPOT</code> compute environments to the same job queue.</p> </note>"
+          "documentation":"<p>The vCPU architecture. The default value is <code>X86_64</code>. Valid values are <code>X86_64</code> and <code>ARM64</code>.</p> <note> <p>This parameter must be set to <code>X86_64</code> for Windows containers.</p> </note> <note> <p>Fargate Spot is not supported on Windows-based containers on Fargate. A job queue will be blocked if a Windows job is submitted to a job queue with only Fargate Spot compute environments. However, you can attach both <code>FARGATE</code> and <code>FARGATE_SPOT</code> compute environments to the same job queue.</p> </note>"
         }
       },
       "documentation":"<p> An object that represents the compute environment architecture for Batch jobs on Fargate. </p>"
@@ -4113,13 +4511,275 @@
       "exception":true,
       "fault":true
     },
+    "ServiceEnvironmentDetail":{
+      "type":"structure",
+      "required":[
+        "serviceEnvironmentName",
+        "serviceEnvironmentArn",
+        "serviceEnvironmentType",
+        "capacityLimits"
+      ],
+      "members":{
+        "serviceEnvironmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service environment.</p>"
+        },
+        "serviceEnvironmentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service environment.</p>"
+        },
+        "serviceEnvironmentType":{
+          "shape":"ServiceEnvironmentType",
+          "documentation":"<p>The type of service environment. For SageMaker Training jobs, this value is <code>SAGEMAKER_TRAINING</code>.</p>"
+        },
+        "state":{
+          "shape":"ServiceEnvironmentState",
+          "documentation":"<p>The state of the service environment. Valid values are <code>ENABLED</code> and <code>DISABLED</code>.</p>"
+        },
+        "status":{
+          "shape":"ServiceEnvironmentStatus",
+          "documentation":"<p>The current status of the service environment.</p>"
+        },
+        "capacityLimits":{
+          "shape":"CapacityLimits",
+          "documentation":"<p>The capacity limits for the service environment. This defines the maximum resources that can be used by service jobs in this environment.</p>"
+        },
+        "tags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The tags associated with the service environment. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a>.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about a service environment, including its configuration, state, and capacity limits.</p>"
+    },
+    "ServiceEnvironmentDetailList":{
+      "type":"list",
+      "member":{"shape":"ServiceEnvironmentDetail"}
+    },
+    "ServiceEnvironmentOrder":{
+      "type":"structure",
+      "required":[
+        "order",
+        "serviceEnvironment"
+      ],
+      "members":{
+        "order":{
+          "shape":"Integer",
+          "documentation":"<p>The order of the service environment. Job queues with a higher priority are evaluated first when associated with the same service environment.</p>"
+        },
+        "serviceEnvironment":{
+          "shape":"String",
+          "documentation":"<p>The name or ARN of the service environment.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the order of a service environment for a job queue. This determines the priority order when multiple service environments are associated with the same job queue.</p>"
+    },
+    "ServiceEnvironmentOrders":{
+      "type":"list",
+      "member":{"shape":"ServiceEnvironmentOrder"}
+    },
+    "ServiceEnvironmentState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ServiceEnvironmentStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "UPDATING",
+        "DELETING",
+        "DELETED",
+        "VALID",
+        "INVALID"
+      ]
+    },
+    "ServiceEnvironmentType":{
+      "type":"string",
+      "enum":["SAGEMAKER_TRAINING"]
+    },
+    "ServiceJobAttemptDetail":{
+      "type":"structure",
+      "members":{
+        "serviceResourceId":{
+          "shape":"ServiceResourceId",
+          "documentation":"<p>The service resource identifier associated with the service job attempt.</p>"
+        },
+        "startedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job attempt was started.</p>"
+        },
+        "stoppedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job attempt stopped running.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A string that provides additional details for the current status of the service job attempt.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about an attempt to run a service job.</p>"
+    },
+    "ServiceJobAttemptDetails":{
+      "type":"list",
+      "member":{"shape":"ServiceJobAttemptDetail"}
+    },
+    "ServiceJobEvaluateOnExit":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"ServiceJobRetryAction",
+          "documentation":"<p>The action to take if the service job exits with the specified condition. Valid values are <code>RETRY</code> and <code>EXIT</code>.</p>"
+        },
+        "onStatusReason":{
+          "shape":"String",
+          "documentation":"<p>Contains a glob pattern to match against the StatusReason returned for a job. The pattern can contain up to 512 characters and can contain all printable characters. It can optionally end with an asterisk (*) so that only the start of the string needs to be an exact match.</p>"
+        }
+      },
+      "documentation":"<p>Specifies conditions for when to exit or retry a service job based on the exit status or status reason.</p>"
+    },
+    "ServiceJobEvaluateOnExitList":{
+      "type":"list",
+      "member":{"shape":"ServiceJobEvaluateOnExit"}
+    },
+    "ServiceJobRetryAction":{
+      "type":"string",
+      "enum":[
+        "RETRY",
+        "EXIT"
+      ]
+    },
+    "ServiceJobRetryStrategy":{
+      "type":"structure",
+      "required":["attempts"],
+      "members":{
+        "attempts":{
+          "shape":"Integer",
+          "documentation":"<p>The number of times to move a service job to <code>RUNNABLE</code> status. You can specify between 1 and 10 attempts.</p>"
+        },
+        "evaluateOnExit":{
+          "shape":"ServiceJobEvaluateOnExitList",
+          "documentation":"<p>Array of <code>ServiceJobEvaluateOnExit</code> objects that specify conditions under which the service job should be retried or failed.</p>"
+        }
+      },
+      "documentation":"<p>The retry strategy for service jobs. This defines how many times to retry a failed service job and under what conditions. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/service-job-retries.html\">Service job retry strategies</a> in the <i>Batch User Guide</i>.</p>"
+    },
+    "ServiceJobStatus":{
+      "type":"string",
+      "enum":[
+        "SUBMITTED",
+        "PENDING",
+        "RUNNABLE",
+        "SCHEDULED",
+        "STARTING",
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
+    "ServiceJobSummary":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "jobName",
+        "serviceJobType"
+      ],
+      "members":{
+        "latestAttempt":{
+          "shape":"LatestServiceJobAttempt",
+          "documentation":"<p>Information about the latest attempt for the service job.</p>"
+        },
+        "createdAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job was created.</p>"
+        },
+        "jobArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service job.</p>"
+        },
+        "jobId":{
+          "shape":"String",
+          "documentation":"<p>The job ID for the service job.</p>"
+        },
+        "jobName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service job.</p>"
+        },
+        "serviceJobType":{
+          "shape":"ServiceJobType",
+          "documentation":"<p>The type of service job. For SageMaker Training jobs, this value is <code>SAGEMAKER_TRAINING</code>.</p>"
+        },
+        "shareIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The share identifier for the job.</p>"
+        },
+        "status":{
+          "shape":"ServiceJobStatus",
+          "documentation":"<p>The current status of the service job. </p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A short string to provide more details on the current status of the service job.</p>"
+        },
+        "startedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job was started.</p>"
+        },
+        "stoppedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job stopped running.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a service job.</p>"
+    },
+    "ServiceJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"ServiceJobSummary"}
+    },
+    "ServiceJobTimeout":{
+      "type":"structure",
+      "members":{
+        "attemptDurationSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum duration in seconds that a service job attempt can run. After this time is reached, Batch terminates the service job attempt.</p>"
+        }
+      },
+      "documentation":"<p>The timeout configuration for service jobs. </p>"
+    },
+    "ServiceJobType":{
+      "type":"string",
+      "enum":["SAGEMAKER_TRAINING"]
+    },
+    "ServiceResourceId":{
+      "type":"structure",
+      "required":[
+        "name",
+        "value"
+      ],
+      "members":{
+        "name":{
+          "shape":"ServiceResourceIdName",
+          "documentation":"<p>The name of the resource identifier. </p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value of the resource identifier. </p>"
+        }
+      },
+      "documentation":"<p>The Batch unique identifier.</p>"
+    },
+    "ServiceResourceIdName":{
+      "type":"string",
+      "enum":["TrainingJobArn"]
+    },
     "ShareAttributes":{
       "type":"structure",
       "required":["shareIdentifier"],
       "members":{
         "shareIdentifier":{
           "shape":"String",
-          "documentation":"<p>A share identifier or share identifier prefix. If the string ends with an asterisk (*), this entry specifies the weight factor to use for share identifiers that start with that prefix. The list of share identifiers in a fair-share policy can't overlap. For example, you can't have one that specifies a <code>shareIdentifier</code> of <code>UserA*</code> and another that specifies a <code>shareIdentifier</code> of <code>UserA-1</code>.</p> <p>There can be no more than 500 share identifiers active in a job queue.</p> <p>The string is limited to 255 alphanumeric characters, and can be followed by an asterisk (*).</p>"
+          "documentation":"<p>A share identifier or share identifier prefix. If the string ends with an asterisk (*), this entry specifies the weight factor to use for share identifiers that start with that prefix. The list of share identifiers in a fair-share policy can't overlap. For example, you can't have one that specifies a <code>shareIdentifier</code> of <code>UserA*</code> and another that specifies a <code>shareIdentifier</code> of <code>UserA1</code>.</p> <p>There can be no more than 500 share identifiers active in a job queue.</p> <p>The string is limited to 255 alphanumeric characters, and can be followed by an asterisk (*).</p>"
         },
         "weightFactor":{
           "shape":"Float",
@@ -4237,6 +4897,79 @@
         }
       }
     },
+    "SubmitServiceJobRequest":{
+      "type":"structure",
+      "required":[
+        "jobName",
+        "jobQueue",
+        "serviceRequestPayload",
+        "serviceJobType"
+      ],
+      "members":{
+        "jobName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service job. It can be up to 128 characters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
+        },
+        "jobQueue":{
+          "shape":"String",
+          "documentation":"<p>The job queue into which the service job is submitted. You can specify either the name or the ARN of the queue. The job queue must have the type <code>SAGEMAKER_TRAINING</code>.</p>"
+        },
+        "retryStrategy":{
+          "shape":"ServiceJobRetryStrategy",
+          "documentation":"<p>The retry strategy to use for failed service jobs that are submitted with this service job request. </p>"
+        },
+        "schedulingPriority":{
+          "shape":"Integer",
+          "documentation":"<p>The scheduling priority of the service job. Valid values are integers between 0 and 9999.</p>"
+        },
+        "serviceRequestPayload":{
+          "shape":"String",
+          "documentation":"<p>The request, in JSON, for the service that the SubmitServiceJob operation is queueing. </p>"
+        },
+        "serviceJobType":{
+          "shape":"ServiceJobType",
+          "documentation":"<p>The type of service job. For SageMaker Training jobs, specify <code>SAGEMAKER_TRAINING</code>.</p>"
+        },
+        "shareIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The share identifier for the service job. Don't specify this parameter if the job queue doesn't have a fair-share scheduling policy. If the job queue has a fair-share scheduling policy, then this parameter must be specified.</p>"
+        },
+        "timeoutConfig":{
+          "shape":"ServiceJobTimeout",
+          "documentation":"<p>The timeout configuration for the service job. If none is specified, Batch defers to the default timeout of the underlying service handling the job.</p>"
+        },
+        "tags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The tags that you apply to the service job request. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a>.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>A unique identifier for the request. This token is used to ensure idempotency of requests. If this parameter is specified and two submit requests with identical payloads and <code>clientToken</code>s are received, these requests are considered the same request and the second request is rejected.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "SubmitServiceJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobName",
+        "jobId"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the service job.</p>"
+        },
+        "jobName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service job.</p>"
+        },
+        "jobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the service job.</p>"
+        }
+      }
+    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -4270,8 +5003,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -4524,8 +5256,28 @@
     },
     "TerminateJobResponse":{
       "type":"structure",
+      "members":{}
+    },
+    "TerminateServiceJobRequest":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "reason"
+      ],
       "members":{
+        "jobId":{
+          "shape":"String",
+          "documentation":"<p>The service job ID of the service job to terminate.</p>"
+        },
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>A message to attach to the service job that explains the reason for canceling it. This message is returned by <code>DescribeServiceJob</code> operations on the service job.</p>"
+        }
       }
+    },
+    "TerminateServiceJobResponse":{
+      "type":"structure",
+      "members":{}
     },
     "Tmpfs":{
       "type":"structure",
@@ -4604,8 +5356,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateComputeEnvironmentRequest":{
       "type":"structure",
@@ -4673,7 +5424,7 @@
         },
         "clientToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p>If this parameter is specified and two update requests with identical payloads and <code>clientToken</code>s are received, these requests are considered the same request and the second request is rejected. A <code>clientToken</code> is valid for 8 hours or until one hour after the consumable resource is deleted, whichever is less.</p>",
+          "documentation":"<p>If this parameter is specified and two update requests with identical payloads and <code>clientToken</code>s are received, these requests are considered the same request. Both requests will succeed, but the update will only happen once. A <code>clientToken</code> is valid for 8 hours.</p>",
           "idempotencyToken":true
         }
       }
@@ -4723,6 +5474,10 @@
           "shape":"ComputeEnvironmentOrders",
           "documentation":"<p>Details the set of compute environments mapped to a job queue and their order relative to each other. This is one of the parameters used by the job scheduler to determine which compute environment runs a given job. Compute environments must be in the <code>VALID</code> state before you can associate them with a job queue. All of the compute environments must be either EC2 (<code>EC2</code> or <code>SPOT</code>) or Fargate (<code>FARGATE</code> or <code>FARGATE_SPOT</code>). EC2 and Fargate compute environments can't be mixed.</p> <note> <p>All compute environments that are associated with a job queue must share the same architecture. Batch doesn't support mixing compute environment architecture types in a single job queue.</p> </note>"
         },
+        "serviceEnvironmentOrder":{
+          "shape":"ServiceEnvironmentOrders",
+          "documentation":"<p>The order of the service environment associated with the job queue. Job queues with a higher priority are evaluated first when associated with the same service environment.</p>"
+        },
         "jobStateTimeLimitActions":{
           "shape":"JobStateTimeLimitActions",
           "documentation":"<p>The set of actions that Batch perform on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after <code>maxTimeSeconds</code> has passed. (<b>Note</b>: The minimum value for maxTimeSeconds is 600 (10 minutes) and its maximum value is 86,400 (24 hours).)</p>"
@@ -4748,7 +5503,7 @@
       "members":{
         "terminateJobsOnUpdate":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether jobs are automatically terminated when the computer environment infrastructure is updated. The default value is <code>false</code>.</p>"
+          "documentation":"<p>Specifies whether jobs are automatically terminated when the compute environment infrastructure is updated. The default value is <code>false</code>.</p>"
         },
         "jobExecutionTimeoutMinutes":{
           "shape":"JobExecutionTimeoutMinutes",
@@ -4774,8 +5529,49 @@
     },
     "UpdateSchedulingPolicyResponse":{
       "type":"structure",
+      "members":{}
+    },
+    "UpdateServiceEnvironmentRequest":{
+      "type":"structure",
+      "required":["serviceEnvironment"],
       "members":{
+        "serviceEnvironment":{
+          "shape":"String",
+          "documentation":"<p>The name or ARN of the service environment to update.</p>"
+        },
+        "state":{
+          "shape":"ServiceEnvironmentState",
+          "documentation":"<p>The state of the service environment. </p>"
+        },
+        "capacityLimits":{
+          "shape":"CapacityLimits",
+          "documentation":"<p>The capacity limits for the service environment. This defines the maximum resources that can be used by service jobs in this environment.</p>"
+        }
       }
+    },
+    "UpdateServiceEnvironmentResponse":{
+      "type":"structure",
+      "required":[
+        "serviceEnvironmentName",
+        "serviceEnvironmentArn"
+      ],
+      "members":{
+        "serviceEnvironmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service environment that was updated.</p>"
+        },
+        "serviceEnvironmentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service environment that was updated.</p>"
+        }
+      }
+    },
+    "UserdataType":{
+      "type":"string",
+      "enum":[
+        "EKS_BOOTSTRAP_SH",
+        "EKS_NODEADM"
+      ]
     },
     "Volume":{
       "type":"structure",

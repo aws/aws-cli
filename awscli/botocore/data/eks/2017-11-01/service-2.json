@@ -241,7 +241,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ClientException"},
         {"shape":"ServerException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"}
       ],
       "documentation":"<p>Deletes an Amazon EKS cluster control plane.</p> <p>If you have active services in your cluster that are associated with a load balancer, you must delete those services before deleting the cluster so that the load balancers are deleted properly. Otherwise, you can have orphaned resources in your VPC that prevent you from being able to delete the VPC. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/delete-cluster.html\">Deleting a cluster</a> in the <i>Amazon EKS User Guide</i>.</p> <p>If you have managed node groups or Fargate profiles attached to the cluster, you must delete them first. For more information, see <code>DeleteNodgroup</code> and <code>DeleteFargateProfile</code>.</p>"
     },
@@ -486,6 +487,22 @@
         {"shape":"InvalidParameterException"}
       ],
       "documentation":"<p>Returns details about an insight that you specify using its ID.</p>"
+    },
+    "DescribeInsightsRefresh":{
+      "name":"DescribeInsightsRefresh",
+      "http":{
+        "method":"GET",
+        "requestUri":"/clusters/{name}/insights-refresh"
+      },
+      "input":{"shape":"DescribeInsightsRefreshRequest"},
+      "output":{"shape":"DescribeInsightsRefreshResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Returns the status of the latest on-demand cluster insights refresh operation.</p>"
     },
     "DescribeNodegroup":{
       "name":"DescribeNodegroup",
@@ -794,6 +811,22 @@
         {"shape":"ResourcePropagationDelayException"}
       ],
       "documentation":"<p>Connects a Kubernetes cluster to the Amazon EKS control plane. </p> <p>Any Kubernetes cluster can be connected to the Amazon EKS control plane to view current information about the cluster and its nodes. </p> <p>Cluster connection requires two steps. First, send a <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_RegisterClusterRequest.html\"> <code>RegisterClusterRequest</code> </a> to add it to the Amazon EKS control plane.</p> <p>Second, a <a href=\"https://amazon-eks.s3.us-west-2.amazonaws.com/eks-connector/manifests/eks-connector/latest/eks-connector.yaml\">Manifest</a> containing the <code>activationID</code> and <code>activationCode</code> must be applied to the Kubernetes cluster through it's native provider to provide visibility.</p> <p>After the manifest is updated and applied, the connected cluster is visible to the Amazon EKS control plane. If the manifest isn't applied within three days, the connected cluster will no longer be visible and must be deregistered using <code>DeregisterCluster</code>.</p>"
+    },
+    "StartInsightsRefresh":{
+      "name":"StartInsightsRefresh",
+      "http":{
+        "method":"POST",
+        "requestUri":"/clusters/{name}/insights-refresh"
+      },
+      "input":{"shape":"StartInsightsRefreshRequest"},
+      "output":{"shape":"StartInsightsRefreshResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Initiates an on-demand refresh operation for cluster insights, getting the latest analysis outside of the standard refresh schedule.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1165,6 +1198,10 @@
         "podIdentityAssociations":{
           "shape":"StringList",
           "documentation":"<p>An array of EKS Pod Identity associations owned by the add-on. Each association maps a role to a service account in a namespace in the cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html\">Attach an IAM Role to an Amazon EKS add-on using EKS Pod Identity</a> in the <i>Amazon EKS User Guide</i>.</p>"
+        },
+        "namespaceConfig":{
+          "shape":"AddonNamespaceConfigResponse",
+          "documentation":"<p>The namespace configuration for the addon. This specifies the Kubernetes namespace where the addon is installed.</p>"
         }
       },
       "documentation":"<p>An Amazon EKS add-on. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html\">Amazon EKS add-ons</a> in the <i>Amazon EKS User Guide</i>.</p>"
@@ -1223,6 +1260,10 @@
         "marketplaceInformation":{
           "shape":"MarketplaceInformation",
           "documentation":"<p>Information about the add-on from the Amazon Web Services Marketplace.</p>"
+        },
+        "defaultNamespace":{
+          "shape":"String",
+          "documentation":"<p>The default Kubernetes namespace where this addon is typically installed if no custom namespace is specified.</p>"
         }
       },
       "documentation":"<p>Information about an add-on.</p>"
@@ -1263,6 +1304,26 @@
     "AddonIssueList":{
       "type":"list",
       "member":{"shape":"AddonIssue"}
+    },
+    "AddonNamespaceConfigRequest":{
+      "type":"structure",
+      "members":{
+        "namespace":{
+          "shape":"namespace",
+          "documentation":"<p>The name of the Kubernetes namespace to install the addon in. Must be a valid RFC 1123 DNS label.</p>"
+        }
+      },
+      "documentation":"<p>The namespace configuration request object for specifying a custom namespace when creating an addon.</p>"
+    },
+    "AddonNamespaceConfigResponse":{
+      "type":"structure",
+      "members":{
+        "namespace":{
+          "shape":"namespace",
+          "documentation":"<p>The name of the Kubernetes namespace where the addon is installed.</p>"
+        }
+      },
+      "documentation":"<p>The namespace configuration response object containing information about the namespace where an addon is installed.</p>"
     },
     "AddonPodIdentityAssociations":{
       "type":"structure",
@@ -1740,6 +1801,10 @@
         "storageConfig":{
           "shape":"StorageConfigResponse",
           "documentation":"<p>Indicates the current configuration of the block storage capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. If the block storage capability is enabled, EKS Auto Mode will create and delete EBS volumes in your Amazon Web Services account. For more information, see EKS Auto Mode block storage capability in the <i>Amazon EKS User Guide</i>.</p>"
+        },
+        "deletionProtection":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>The current deletion protection setting for the cluster. When <code>true</code>, deletion protection is enabled and the cluster cannot be deleted until protection is disabled. When <code>false</code>, the cluster can be deleted normally. This setting only applies to clusters in an active state.</p>"
         }
       },
       "documentation":"<p>An object representing an Amazon EKS cluster.</p>"
@@ -2116,6 +2181,10 @@
         "podIdentityAssociations":{
           "shape":"AddonPodIdentityAssociationsList",
           "documentation":"<p>An array of EKS Pod Identity associations to be created. Each association maps a Kubernetes service account to an IAM role.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html\">Attach an IAM Role to an Amazon EKS add-on using EKS Pod Identity</a> in the <i>Amazon EKS User Guide</i>.</p>"
+        },
+        "namespaceConfig":{
+          "shape":"AddonNamespaceConfigRequest",
+          "documentation":"<p>The namespace configuration for the addon. If specified, this will override the default namespace for the addon.</p>"
         }
       }
     },
@@ -2201,6 +2270,10 @@
         "storageConfig":{
           "shape":"StorageConfigRequest",
           "documentation":"<p>Enable or disable the block storage capability of EKS Auto Mode when creating your EKS Auto Mode cluster. If the block storage capability is enabled, EKS Auto Mode will create and delete EBS volumes in your Amazon Web Services account.</p>"
+        },
+        "deletionProtection":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether to enable deletion protection for the cluster. When enabled, the cluster cannot be deleted unless deletion protection is first disabled. This helps prevent accidental cluster deletion. Default value is <code>false</code>.</p>"
         }
       }
     },
@@ -3072,6 +3145,39 @@
         }
       }
     },
+    "DescribeInsightsRefreshRequest":{
+      "type":"structure",
+      "required":["clusterName"],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the cluster associated with the insights refresh operation.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "DescribeInsightsRefreshResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The message associated with the insights refresh operation.</p>"
+        },
+        "status":{
+          "shape":"InsightsRefreshStatus",
+          "documentation":"<p>The current status of the insights refresh operation.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the insights refresh operation started.</p>"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the insights refresh operation ended.</p>"
+        }
+      }
+    },
     "DescribeNodegroupRequest":{
       "type":"structure",
       "required":[
@@ -3763,6 +3869,14 @@
         }
       },
       "documentation":"<p>The criteria to use for the insights.</p>"
+    },
+    "InsightsRefreshStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "FAILED",
+        "COMPLETED"
+      ]
     },
     "Integer":{"type":"integer"},
     "InvalidParameterException":{
@@ -4574,9 +4688,55 @@
         "enabled":{
           "shape":"BoxedBoolean",
           "documentation":"<p>Specifies whether to enable node auto repair for the node group. Node auto repair is disabled by default.</p>"
+        },
+        "maxUnhealthyNodeThresholdCount":{
+          "shape":"NonZeroInteger",
+          "documentation":"<p>Specify a count threshold of unhealthy nodes, above which node auto repair actions will stop. When using this, you cannot also set <code>maxUnhealthyNodeThresholdPercentage</code> at the same time.</p>"
+        },
+        "maxUnhealthyNodeThresholdPercentage":{
+          "shape":"PercentCapacity",
+          "documentation":"<p>Specify a percentage threshold of unhealthy nodes, above which node auto repair actions will stop. When using this, you cannot also set <code>maxUnhealthyNodeThresholdCount</code> at the same time.</p>"
+        },
+        "maxParallelNodesRepairedCount":{
+          "shape":"NonZeroInteger",
+          "documentation":"<p>Specify the maximum number of nodes that can be repaired concurrently or in parallel, expressed as a count of unhealthy nodes. This gives you finer-grained control over the pace of node replacements. When using this, you cannot also set <code>maxParallelNodesRepairedPercentage</code> at the same time.</p>"
+        },
+        "maxParallelNodesRepairedPercentage":{
+          "shape":"PercentCapacity",
+          "documentation":"<p>Specify the maximum number of nodes that can be repaired concurrently or in parallel, expressed as a percentage of unhealthy nodes. This gives you finer-grained control over the pace of node replacements. When using this, you cannot also set <code>maxParallelNodesRepairedCount</code> at the same time.</p>"
+        },
+        "nodeRepairConfigOverrides":{
+          "shape":"NodeRepairConfigOverridesList",
+          "documentation":"<p>Specify granular overrides for specific repair actions. These overrides control the repair action and the repair delay time before a node is considered eligible for repair. If you use this, you must specify all the values.</p>"
         }
       },
       "documentation":"<p>The node auto repair configuration for the node group.</p>"
+    },
+    "NodeRepairConfigOverrides":{
+      "type":"structure",
+      "members":{
+        "nodeMonitoringCondition":{
+          "shape":"String",
+          "documentation":"<p>Specify an unhealthy condition reported by the node monitoring agent that this override would apply to.</p>"
+        },
+        "nodeUnhealthyReason":{
+          "shape":"String",
+          "documentation":"<p>Specify a reason reported by the node monitoring agent that this override would apply to.</p>"
+        },
+        "minRepairWaitTimeMins":{
+          "shape":"NonZeroInteger",
+          "documentation":"<p>Specify the minimum time in minutes to wait before attempting to repair a node with this specific <code>nodeMonitoringCondition</code> and <code>nodeUnhealthyReason</code>.</p>"
+        },
+        "repairAction":{
+          "shape":"RepairAction",
+          "documentation":"<p>Specify the repair action to take for nodes when all of the specified conditions are met.</p>"
+        }
+      },
+      "documentation":"<p>Specify granular overrides for specific repair actions. These overrides control the repair action and the repair delay time before a node is considered eligible for repair. If you use this, you must specify all the values.</p>"
+    },
+    "NodeRepairConfigOverridesList":{
+      "type":"list",
+      "member":{"shape":"NodeRepairConfigOverrides"}
     },
     "Nodegroup":{
       "type":"structure",
@@ -5180,6 +5340,14 @@
       "member":{"shape":"RemotePodNetwork"},
       "max":1
     },
+    "RepairAction":{
+      "type":"string",
+      "enum":[
+        "Replace",
+        "Reboot",
+        "NoAction"
+      ]
+    },
     "ResolveConflicts":{
       "type":"string",
       "enum":[
@@ -5326,6 +5494,31 @@
       "error":{"httpStatusCode":503},
       "exception":true,
       "fault":true
+    },
+    "StartInsightsRefreshRequest":{
+      "type":"structure",
+      "required":["clusterName"],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the cluster for the refresh insights operation.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "StartInsightsRefreshResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The message associated with the insights refresh operation.</p>"
+        },
+        "status":{
+          "shape":"InsightsRefreshStatus",
+          "documentation":"<p>The current status of the insights refresh operation.</p>"
+        }
+      }
     },
     "StorageConfigRequest":{
       "type":"structure",
@@ -5672,7 +5865,11 @@
           "shape":"StorageConfigRequest",
           "documentation":"<p>Update the configuration of the block storage capability of your EKS Auto Mode cluster. For example, enable the capability.</p>"
         },
-        "remoteNetworkConfig":{"shape":"RemoteNetworkConfigRequest"}
+        "remoteNetworkConfig":{"shape":"RemoteNetworkConfigRequest"},
+        "deletionProtection":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether to enable or disable deletion protection for the cluster. When enabled (<code>true</code>), the cluster cannot be deleted until deletion protection is explicitly disabled. When disabled (<code>false</code>), the cluster can be deleted normally.</p>"
+        }
       }
     },
     "UpdateClusterConfigResponse":{
@@ -5917,7 +6114,9 @@
         "ComputeConfig",
         "StorageConfig",
         "KubernetesNetworkConfig",
-        "RemoteNetworkConfig"
+        "RemoteNetworkConfig",
+        "DeletionProtection",
+        "NodeRepairConfig"
       ]
     },
     "UpdateParams":{
@@ -6010,7 +6209,8 @@
         "UpgradePolicyUpdate",
         "ZonalShiftConfigUpdate",
         "AutoModeUpdate",
-        "RemoteNetworkConfigUpdate"
+        "RemoteNetworkConfigUpdate",
+        "DeletionProtectionUpdate"
       ]
     },
     "UpgradePolicyRequest":{
@@ -6152,6 +6352,11 @@
       "type":"map",
       "key":{"shape":"labelKey"},
       "value":{"shape":"labelValue"}
+    },
+    "namespace":{
+      "type":"string",
+      "max":63,
+      "min":1
     },
     "requiredClaimsKey":{
       "type":"string",

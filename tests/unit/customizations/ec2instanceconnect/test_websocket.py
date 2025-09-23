@@ -52,15 +52,7 @@ from awscli.customizations.ec2instanceconnect.websocket import (
     WebsocketManager,
     WindowsStdinStdoutIO,
 )
-
-skip_if_windows = pytest.mark.skipif(
-    platform.system() not in ['Darwin', 'Linux'],
-    reason="This test does not run on windows.",
-)
-if_windows = pytest.mark.skipif(
-    platform.system() in ['Darwin', 'Linux'],
-    reason="This test only runs on windows.",
-)
+from tests.markers import if_windows, skip_if_windows
 
 
 class TestWebsocketIO:

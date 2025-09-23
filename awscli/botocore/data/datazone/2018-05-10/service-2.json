@@ -5,11 +5,13 @@
     "endpointPrefix":"datazone",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon DataZone",
     "serviceId":"DataZone",
     "signatureVersion":"v4",
     "signingName":"datazone",
-    "uid":"datazone-2018-05-10"
+    "uid":"datazone-2018-05-10",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AcceptPredictions":{
@@ -117,6 +119,26 @@
       ],
       "documentation":"<p>Associates the environment role in Amazon DataZone.</p>"
     },
+    "AssociateGovernedTerms":{
+      "name":"AssociateGovernedTerms",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/associate-governed-terms",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateGovernedTermsInput"},
+      "output":{"shape":"AssociateGovernedTermsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Associates governed terms with an asset.</p>"
+    },
     "CancelMetadataGenerationRun":{
       "name":"CancelMetadataGenerationRun",
       "http":{
@@ -135,7 +157,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Cancels the metadata generation run.</p>"
+      "documentation":"<p>Cancels the metadata generation run.</p> <p>Prerequisites:</p> <ul> <li> <p>The run must exist and be in a cancelable status (e.g., SUBMITTED, IN_PROGRESS). </p> </li> <li> <p>Runs in SUCCEEDED status cannot be cancelled.</p> </li> <li> <p>User must have access to the run and cancel permissions.</p> </li> </ul>"
     },
     "CancelSubscription":{
       "name":"CancelSubscription",
@@ -158,6 +180,27 @@
       "documentation":"<p>Cancels the subscription to the specified asset.</p>",
       "idempotent":true
     },
+    "CreateAccountPool":{
+      "name":"CreateAccountPool",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/account-pools",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateAccountPoolInput"},
+      "output":{"shape":"CreateAccountPoolOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Creates an account pool. </p>"
+    },
     "CreateAsset":{
       "name":"CreateAsset",
       "http":{
@@ -177,7 +220,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Creates an asset in Amazon DataZone catalog.</p>",
+      "documentation":"<p>Creates an asset in Amazon DataZone catalog.</p> <p>Before creating assets, make sure that the following requirements are met:</p> <ul> <li> <p> <code>--domain-identifier</code> must refer to an existing domain.</p> </li> <li> <p> <code>--owning-project-identifier</code> must be a valid project within the domain.</p> </li> <li> <p>Asset type must be created beforehand using <code>create-asset-type</code>, or be a supported system-defined type. For more information, see <a href=\"https://docs.aws.amazon.com/cli/latest/reference/datazone/create-asset-type.html\">create-asset-type</a>.</p> </li> <li> <p> <code>--type-revision</code> (if used) must match a valid revision of the asset type.</p> </li> <li> <p>Form type must exist and be associated with the asset type. Use <code>create-form-type</code> to define. For more information, see <a href=\"https://docs.aws.amazon.com/cli/latest/reference/datazone/create-form-type.html\">create-form-type</a>.</p> </li> <li> <p>Form content must include all required fields as per the form schema (e.g., <code>bucketArn</code>).</p> </li> </ul> <p>You must invoke the following pre-requisite commands before invoking this API:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/datazone/latest/APIReference/API_CreateFormType.html\">CreateFormType</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/datazone/latest/APIReference/API_CreateAssetType.html\">CreateAssetType</a> </p> </li> </ul>",
       "idempotent":true
     },
     "CreateAssetFilter":{
@@ -199,7 +242,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Creates a data asset filter.</p>",
+      "documentation":"<p>Creates a data asset filter.</p> <p>Asset filters provide a sophisticated way to create controlled views of data assets by selecting specific columns or applying row-level filters. This capability is crucial for organizations that need to share data while maintaining security and privacy controls. For example, your database might be filtered to show only non-PII fields to certain users, or sales data might be filtered by region for different regional teams. Asset filters enable fine-grained access control while maintaining a single source of truth.</p> <p>Prerequisites:</p> <ul> <li> <p>A valid domain (<code>--domain-identifier</code>) must exist. </p> </li> <li> <p>A data asset (<code>--asset-identifier</code>) must already be created under that domain.</p> </li> <li> <p>The asset must have the referenced columns available in its schema for column-based filtering.</p> </li> <li> <p>You cannot specify both (<code>columnConfiguration</code>, <code>rowConfiguration</code>)at the same time.</p> </li> </ul>",
       "idempotent":true
     },
     "CreateAssetRevision":{
@@ -220,7 +263,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Creates a revision of the asset.</p>",
+      "documentation":"<p>Creates a revision of the asset.</p> <p>Asset revisions represent new versions of existing assets, capturing changes to either the underlying data or its metadata. They maintain a historical record of how assets evolve over time, who made changes, and when those changes occurred. This versioning capability is crucial for governance and compliance, allowing organizations to track changes, understand their impact, and roll back if necessary.</p> <p>Prerequisites:</p> <ul> <li> <p>Asset must already exist in the domain with identifier. </p> </li> <li> <p>The form type with correct revision must be registered in the same domain.</p> </li> <li> <p>The form content must include all required fields (e.g., <code>bucketArn</code> for <code>S3ObjectCollectionForm</code>).</p> </li> <li> <p>The owning project of the original asset must still exist and be active.</p> </li> <li> <p>User must have write access to the project and domain.</p> </li> </ul>",
       "idempotent":true
     },
     "CreateAssetType":{
@@ -241,7 +284,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Creates a custom asset type.</p>"
+      "documentation":"<p>Creates a custom asset type.</p> <p>Prerequisites:</p> <ul> <li> <p>The form type with <code>typeIdentifier</code> and <code>typeRevision</code> must exist and be published. </p> </li> <li> <p>You must have <code>CreateAssetType</code> permissions.</p> </li> <li> <p>The domain-identifier and owning-project-identifier must be valid and active.</p> </li> <li> <p>The name of the asset type must be unique within the domain — duplicate names will cause failure.</p> </li> <li> <p>JSON input must be valid — incorrect formatting causes Invalid JSON errors.</p> </li> </ul>"
     },
     "CreateConnection":{
       "name":"CreateConnection",
@@ -284,7 +327,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Creates a data product.</p>",
+      "documentation":"<p>Creates a data product.</p> <p>A data product is a comprehensive package that combines data assets with their associated metadata, documentation, and access controls. It's designed to serve specific business needs or use cases, making it easier for users to find and consume data appropriately. Data products include important information about data quality, freshness, and usage guidelines, effectively bridging the gap between data producers and consumers while ensuring proper governance.</p> <p>Prerequisites:</p> <ul> <li> <p>The domain must exist and be accessible. </p> </li> <li> <p>The owning project must be valid and active.</p> </li> <li> <p>The name must be unique within the domain (no existing data product with the same name).</p> </li> <li> <p>User must have create permissions for data products in the project.</p> </li> <li> <p>The domain must have Amazon DataZone publishing enabled.</p> </li> </ul>",
       "idempotent":true
     },
     "CreateDataProductRevision":{
@@ -305,7 +348,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Creates a data product revision.</p>",
+      "documentation":"<p>Creates a data product revision.</p> <p>Prerequisites:</p> <ul> <li> <p>The original data product must exist in the given domain. </p> </li> <li> <p>User must have permissions on the data product.</p> </li> <li> <p>The domain must be valid and accessible.</p> </li> <li> <p>The new revision name must comply with naming constraints (if required).</p> </li> </ul>",
       "idempotent":true
     },
     "CreateDataSource":{
@@ -413,6 +456,27 @@
       ],
       "documentation":"<p>Creates an action for the environment, for example, creates a console link for an analytics tool that is available in this environment.</p>"
     },
+    "CreateEnvironmentBlueprint":{
+      "name":"CreateEnvironmentBlueprint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/environment-blueprints",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateEnvironmentBlueprintInput"},
+      "output":{"shape":"CreateEnvironmentBlueprintOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Creates a Amazon DataZone blueprint.</p>"
+    },
     "CreateEnvironmentProfile":{
       "name":"CreateEnvironmentProfile",
       "http":{
@@ -452,7 +516,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Creates a metadata form type.</p>"
+      "documentation":"<p>Creates a metadata form type.</p> <p>Prerequisites:</p> <ul> <li> <p>The domain must exist and be in an <code>ENABLED</code> state. </p> </li> <li> <p>The owning project must exist and be accessible.</p> </li> <li> <p>The name must be unique within the domain.</p> </li> </ul>"
     },
     "CreateGlossary":{
       "name":"CreateGlossary",
@@ -472,7 +536,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Creates an Amazon DataZone business glossary.</p>",
+      "documentation":"<p>Creates an Amazon DataZone business glossary.</p> <p>Specifies that this is a create glossary policy.</p> <p>A glossary serves as the central repository for business terminology and definitions within an organization. It helps establish and maintain a common language across different departments and teams, reducing miscommunication and ensuring consistent interpretation of business concepts. Glossaries can include hierarchical relationships between terms, cross-references, and links to actual data assets, making them invaluable for both business users and technical teams trying to understand and use data correctly.</p> <p>Prerequisites:</p> <ul> <li> <p>Domain must exist and be in an active state. </p> </li> <li> <p>Owning project must exist and be accessible by the caller.</p> </li> <li> <p>The glossary name must be unique within the domain.</p> </li> </ul>",
       "idempotent":true
     },
     "CreateGlossaryTerm":{
@@ -494,7 +558,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Creates a business glossary term.</p>",
+      "documentation":"<p>Creates a business glossary term.</p> <p>A glossary term represents an individual entry within the Amazon DataZone glossary, serving as a standardized definition for a specific business concept or data element. Each term can include rich metadata such as detailed definitions, synonyms, related terms, and usage examples. Glossary terms can be linked directly to data assets, providing business context to technical data elements. This linking capability helps users understand the business meaning of data fields and ensures consistent interpretation across different systems and teams. Terms can also have relationships with other terms, creating a semantic network that reflects the complexity of business concepts.</p> <p>Prerequisites:</p> <ul> <li> <p>Domain must exist. </p> </li> <li> <p>Glossary must exist and be in an ENABLED state.</p> </li> <li> <p>The term name must be unique within the glossary.</p> </li> <li> <p>Ensure term does not conflict with existing terms in hierarchy.</p> </li> </ul>",
       "idempotent":true
     },
     "CreateGroupProfile":{
@@ -701,6 +765,26 @@
       "documentation":"<p>Creates a user profile in Amazon DataZone.</p>",
       "idempotent":true
     },
+    "DeleteAccountPool":{
+      "name":"DeleteAccountPool",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/account-pools/{identifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAccountPoolInput"},
+      "output":{"shape":"DeleteAccountPoolOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes an account pool.</p>",
+      "idempotent":true
+    },
     "DeleteAsset":{
       "name":"DeleteAsset",
       "http":{
@@ -719,7 +803,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Deletes an asset in Amazon DataZone.</p>",
+      "documentation":"<p>Deletes an asset in Amazon DataZone.</p> <ul> <li> <p>--domain-identifier must refer to a valid and existing domain. </p> </li> <li> <p>--identifier must refer to an existing asset in the specified domain.</p> </li> <li> <p>Asset must not be referenced in any existing asset filters.</p> </li> <li> <p>Asset must not be linked to any draft or published data product.</p> </li> <li> <p>User must have delete permissions for the domain and project.</p> </li> </ul>",
       "idempotent":true
     },
     "DeleteAssetFilter":{
@@ -739,7 +823,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Deletes an asset filter.</p>",
+      "documentation":"<p>Deletes an asset filter.</p> <p>Prerequisites:</p> <ul> <li> <p>The asset filter must exist. </p> </li> <li> <p>The domain and asset must not have been deleted.</p> </li> <li> <p>Ensure the --identifier refers to a valid filter ID.</p> </li> </ul>",
       "idempotent":true
     },
     "DeleteAssetType":{
@@ -760,7 +844,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Deletes an asset type in Amazon DataZone.</p>"
+      "documentation":"<p>Deletes an asset type in Amazon DataZone.</p> <p>Prerequisites:</p> <ul> <li> <p>The asset type must exist in the domain. </p> </li> <li> <p>You must have DeleteAssetType permission.</p> </li> <li> <p>The asset type must not be in use (e.g., assigned to any asset). If used, deletion will fail.</p> </li> <li> <p>You should retrieve the asset type using get-asset-type to confirm its presence before deletion.</p> </li> </ul>"
     },
     "DeleteConnection":{
       "name":"DeleteConnection",
@@ -800,7 +884,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Deletes a data product in Amazon DataZone.</p>",
+      "documentation":"<p>Deletes a data product in Amazon DataZone.</p> <p>Prerequisites:</p> <ul> <li> <p>The data product must exist and not be deleted or archived. </p> </li> <li> <p>The user must have delete permissions for the data product.</p> </li> <li> <p>Ensure there are no active dependencies (e.g., published links, assets using the product).</p> </li> <li> <p>Domain and project must be active.</p> </li> </ul>",
       "idempotent":true
     },
     "DeleteDataSource":{
@@ -906,6 +990,26 @@
       "documentation":"<p>Deletes an action for the environment, for example, deletes a console link for an analytics tool that is available in this environment.</p>",
       "idempotent":true
     },
+    "DeleteEnvironmentBlueprint":{
+      "name":"DeleteEnvironmentBlueprint",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/environment-blueprints/{identifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteEnvironmentBlueprintInput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes a blueprint in Amazon DataZone.</p>",
+      "idempotent":true
+    },
     "DeleteEnvironmentBlueprintConfiguration":{
       "name":"DeleteEnvironmentBlueprintConfiguration",
       "http":{
@@ -962,7 +1066,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Delets and metadata form type in Amazon DataZone.</p>"
+      "documentation":"<p>Deletes and metadata form type in Amazon DataZone.</p> <p>Prerequisites:</p> <ul> <li> <p>The form type must exist in the domain. </p> </li> <li> <p>The form type must not be in use by any asset types or assets.</p> </li> <li> <p>The domain must be valid and accessible.</p> </li> <li> <p>User must have delete permissions on the form type.</p> </li> <li> <p>Any dependencies (such as linked asset types) must be removed first.</p> </li> </ul>"
     },
     "DeleteGlossary":{
       "name":"DeleteGlossary",
@@ -982,7 +1086,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Deletes a business glossary in Amazon DataZone.</p>",
+      "documentation":"<p>Deletes a business glossary in Amazon DataZone.</p> <p>Prerequisites:</p> <ul> <li> <p>The glossary must be in DISABLED state. </p> </li> <li> <p>The glossary must not have any glossary terms associated with it.</p> </li> <li> <p>The glossary must exist in the specified domain.</p> </li> <li> <p>The caller must have the <code>datazone:DeleteGlossary</code> permission in the domain and glossary.</p> </li> <li> <p>There should be no active assets or metadata linked to the glossary.</p> </li> </ul>",
       "idempotent":true
     },
     "DeleteGlossaryTerm":{
@@ -1003,7 +1107,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Deletes a business glossary term in Amazon DataZone.</p>",
+      "documentation":"<p>Deletes a business glossary term in Amazon DataZone.</p> <p>Prerequisites:</p> <ul> <li> <p>Glossary term must exist and be active. </p> </li> <li> <p>The term must not be linked to other assets or child terms.</p> </li> <li> <p>Caller must have delete permissions in the domain/glossary.</p> </li> <li> <p>Ensure all associations (such as to assets or parent terms) are removed before deletion.</p> </li> </ul>",
       "idempotent":true
     },
     "DeleteListing":{
@@ -1207,6 +1311,45 @@
       ],
       "documentation":"<p>Disassociates the environment role in Amazon DataZone.</p>"
     },
+    "DisassociateGovernedTerms":{
+      "name":"DisassociateGovernedTerms",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/disassociate-governed-terms",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateGovernedTermsInput"},
+      "output":{"shape":"DisassociateGovernedTermsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Disassociates restricted terms from an asset.</p>"
+    },
+    "GetAccountPool":{
+      "name":"GetAccountPool",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/account-pools/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAccountPoolInput"},
+      "output":{"shape":"GetAccountPoolOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets the details of the account pool.</p>"
+    },
     "GetAsset":{
       "name":"GetAsset",
       "http":{
@@ -1224,7 +1367,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Gets an Amazon DataZone asset.</p>"
+      "documentation":"<p>Gets an Amazon DataZone asset.</p> <p>An asset is the fundamental building block in Amazon DataZone, representing any data resource that needs to be cataloged and managed. It can take many forms, from Amazon S3 buckets and database tables to dashboards and machine learning models. Each asset contains comprehensive metadata about the resource, including its location, schema, ownership, and lineage information. Assets are essential for organizing and managing data resources across an organization, making them discoverable and usable while maintaining proper governance.</p> <p>Before using the Amazon DataZone GetAsset command, ensure the following prerequisites are met:</p> <ul> <li> <p>Domain identifier must exist and be valid</p> </li> <li> <p>Asset identifier must exist</p> </li> <li> <p>User must have the required permissions to perform the action</p> </li> </ul>"
     },
     "GetAssetFilter":{
       "name":"GetAssetFilter",
@@ -1243,7 +1386,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Gets an asset filter.</p>"
+      "documentation":"<p>Gets an asset filter.</p> <p>Prerequisites:</p> <ul> <li> <p>Domain (<code>--domain-identifier</code>), asset (<code>--asset-identifier</code>), and filter (<code>--identifier</code>) must all exist. </p> </li> <li> <p>The asset filter should not have been deleted.</p> </li> <li> <p>The asset must still exist (since the filter is linked to it).</p> </li> </ul>"
     },
     "GetAssetType":{
       "name":"GetAssetType",
@@ -1262,7 +1405,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Gets an Amazon DataZone asset type.</p>"
+      "documentation":"<p>Gets an Amazon DataZone asset type.</p> <p>Asset types define the categories and characteristics of different kinds of data assets within Amazon DataZone.. They determine what metadata fields are required, what operations are possible, and how the asset integrates with other Amazon Web Services services. Asset types can range from built-in types like Amazon S3 buckets and Amazon Web Services Glue tables to custom types defined for specific organizational needs. Understanding asset types is crucial for properly organizing and managing different kinds of data resources.</p> <p>Prerequisites:</p> <ul> <li> <p>The asset type with identifier must exist in the domain. ResourceNotFoundException.</p> </li> <li> <p>You must have the GetAssetType permission.</p> </li> <li> <p>Ensure the domain-identifier value is correct and accessible.</p> </li> </ul>"
     },
     "GetConnection":{
       "name":"GetConnection",
@@ -1300,7 +1443,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Gets the data product.</p>"
+      "documentation":"<p>Gets the data product.</p> <p>Prerequisites:</p> <ul> <li> <p>The data product ID must exist. </p> </li> <li> <p>The domain must be valid and accessible.</p> </li> <li> <p>User must have read or discovery permissions for the data product.</p> </li> </ul>"
     },
     "GetDataSource":{
       "name":"GetDataSource",
@@ -1514,7 +1657,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Gets a metadata form type in Amazon DataZone.</p>"
+      "documentation":"<p>Gets a metadata form type in Amazon DataZone.</p> <p>Form types define the structure and validation rules for collecting metadata about assets in Amazon DataZone. They act as templates that ensure consistent metadata capture across similar types of assets, while allowing for customization to meet specific organizational needs. Form types can include required fields, validation rules, and dependencies, helping maintain high-quality metadata that makes data assets more discoverable and usable.</p> <ul> <li> <p>The form type with the specified identifier must exist in the given domain. </p> </li> <li> <p>The domain must be valid and active.</p> </li> <li> <p>User must have permission on the form type.</p> </li> <li> <p>The form type should not be deleted or in an invalid state.</p> </li> </ul>"
     },
     "GetGlossary":{
       "name":"GetGlossary",
@@ -1533,7 +1676,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Gets a business glossary in Amazon DataZone.</p>"
+      "documentation":"<p>Gets a business glossary in Amazon DataZone.</p> <p>Prerequisites:</p> <ul> <li> <p>The specified glossary ID must exist and be associated with the given domain. </p> </li> <li> <p>The caller must have the <code>datazone:GetGlossary</code> permission on the domain.</p> </li> </ul>"
     },
     "GetGlossaryTerm":{
       "name":"GetGlossaryTerm",
@@ -1552,7 +1695,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Gets a business glossary term in Amazon DataZone.</p>"
+      "documentation":"<p>Gets a business glossary term in Amazon DataZone.</p> <p>Prerequisites:</p> <ul> <li> <p>Glossary term with identifier must exist in the domain. </p> </li> <li> <p>User must have permission on the glossary term.</p> </li> <li> <p>Domain must be accessible and active.</p> </li> </ul>"
     },
     "GetGroupProfile":{
       "name":"GetGroupProfile",
@@ -1686,7 +1829,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Gets a metadata generation run in Amazon DataZone.</p>"
+      "documentation":"<p>Gets a metadata generation run in Amazon DataZone.</p> <p>Prerequisites:</p> <ul> <li> <p>Valid domain and run identifier. </p> </li> <li> <p>The metadata generation run must exist.</p> </li> <li> <p>User must have read access to the metadata run.</p> </li> </ul>"
     },
     "GetProject":{
       "name":"GetProject",
@@ -1859,6 +2002,43 @@
       ],
       "documentation":"<p>Gets a user profile in Amazon DataZone.</p>"
     },
+    "ListAccountPools":{
+      "name":"ListAccountPools",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/account-pools",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAccountPoolsInput"},
+      "output":{"shape":"ListAccountPoolsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists existing account pools.</p>"
+    },
+    "ListAccountsInAccountPool":{
+      "name":"ListAccountsInAccountPool",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/account-pools/{identifier}/accounts",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAccountsInAccountPoolInput"},
+      "output":{"shape":"ListAccountsInAccountPoolOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists the accounts in the specified account pool.</p>"
+    },
     "ListAssetFilters":{
       "name":"ListAssetFilters",
       "http":{
@@ -1876,7 +2056,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Lists asset filters.</p>"
+      "documentation":"<p>Lists asset filters.</p> <p>Prerequisites:</p> <ul> <li> <p>A valid domain and asset must exist. </p> </li> <li> <p>The asset must have at least one filter created to return results. </p> </li> </ul>"
     },
     "ListAssetRevisions":{
       "name":"ListAssetRevisions",
@@ -1895,7 +2075,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Lists the revisions for the asset.</p>"
+      "documentation":"<p>Lists the revisions for the asset.</p> <p>Prerequisites:</p> <ul> <li> <p>The asset must exist in the domain. </p> </li> <li> <p>There must be at least one revision of the asset (which happens automatically after creation).</p> </li> <li> <p>The domain must be valid and active.</p> </li> <li> <p>User must have permissions on the asset and domain.</p> </li> </ul>"
     },
     "ListConnections":{
       "name":"ListConnections",
@@ -1932,7 +2112,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Lists data product revisions.</p>"
+      "documentation":"<p>Lists data product revisions.</p> <p>Prerequisites:</p> <ul> <li> <p>The data product ID must exist within the domain. </p> </li> <li> <p>User must have view permissions on the data product.</p> </li> <li> <p>The domain must be in a valid and accessible state.</p> </li> </ul>"
     },
     "ListDataSourceRunActivities":{
       "name":"ListDataSourceRunActivities",
@@ -2219,7 +2399,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Lists all metadata generation runs.</p>"
+      "documentation":"<p>Lists all metadata generation runs.</p> <p>Metadata generation runs represent automated processes that leverage AI/ML capabilities to create or enhance asset metadata at scale. This feature helps organizations maintain comprehensive and consistent metadata across large numbers of assets without manual intervention. It can automatically generate business descriptions, tags, and other metadata elements, significantly reducing the time and effort required for metadata management while improving consistency and completeness.</p> <p>Prerequisites:</p> <ul> <li> <p>Valid domain identifier. </p> </li> <li> <p>User must have access to metadata generation runs in the domain.</p> </li> </ul>"
     },
     "ListNotifications":{
       "name":"ListNotifications",
@@ -2629,7 +2809,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Searches for assets in Amazon DataZone.</p>"
+      "documentation":"<p>Searches for assets in Amazon DataZone.</p> <p>Search in Amazon DataZone is a powerful capability that enables users to discover and explore data assets, glossary terms, and data products across their organization. It provides both basic and advanced search functionality, allowing users to find resources based on names, descriptions, metadata, and other attributes. Search can be scoped to specific types of resources (like assets, glossary terms, or data products) and can be filtered using various criteria such as creation date, owner, or status. The search functionality is essential for making the wealth of data resources in an organization discoverable and usable, helping users find the right data for their needs quickly and efficiently.</p> <p>Many search commands in Amazon DataZone are paginated, including <code>search</code> and <code>search-types</code>. When the result set is large, Amazon DataZone returns a <code>nextToken</code> in the response. This token can be used to retrieve the next page of results. </p> <p>Prerequisites:</p> <ul> <li> <p>The --domain-identifier must refer to an existing Amazon DataZone domain. </p> </li> <li> <p>--search-scope must be one of: ASSET, GLOSSARY_TERM, DATA_PRODUCT, or GLOSSARY.</p> </li> <li> <p>The user must have search permissions in the specified domain.</p> </li> <li> <p>If using --filters, ensure that the JSON is well-formed and that each filter includes valid attribute and value keys. </p> </li> <li> <p>For paginated results, be prepared to use --next-token to fetch additional pages.</p> </li> </ul>"
     },
     "SearchGroupProfiles":{
       "name":"SearchGroupProfiles",
@@ -2684,7 +2864,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Searches for types in Amazon DataZone.</p>"
+      "documentation":"<p>Searches for types in Amazon DataZone.</p> <p>Prerequisites:</p> <ul> <li> <p>The --domain-identifier must refer to an existing Amazon DataZone domain. </p> </li> <li> <p>--search-scope must be one of the valid values including: ASSET_TYPE, GLOSSARY_TERM_TYPE, DATA_PRODUCT_TYPE.</p> </li> <li> <p>The --managed flag must be present without a value.</p> </li> <li> <p>The user must have permissions for form or asset types in the domain.</p> </li> <li> <p>If using --filters, ensure that the JSON is valid.</p> </li> <li> <p>Filters contain correct structure (attribute, value, operator).</p> </li> </ul>"
     },
     "SearchUserProfiles":{
       "name":"SearchUserProfiles",
@@ -2746,7 +2926,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Starts the metadata generation run.</p>",
+      "documentation":"<p>Starts the metadata generation run.</p> <p>Prerequisites:</p> <ul> <li> <p>Asset must be created and belong to the specified domain and project. </p> </li> <li> <p>Asset type must be supported for metadata generation (e.g., Amazon Web Services Glue table).</p> </li> <li> <p>Asset must have a structured schema with valid rows and columns.</p> </li> <li> <p>Valid values for --type: BUSINESS_DESCRIPTIONS, BUSINESS_NAMES.</p> </li> <li> <p>The user must have permission to run metadata generation in the domain/project.</p> </li> </ul>",
       "idempotent":true
     },
     "TagResource":{
@@ -2787,6 +2967,28 @@
       "documentation":"<p>Untags a resource in Amazon DataZone.</p>",
       "idempotent":true
     },
+    "UpdateAccountPool":{
+      "name":"UpdateAccountPool",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/account-pools/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAccountPoolInput"},
+      "output":{"shape":"UpdateAccountPoolOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Updates the account pool.</p>",
+      "idempotent":true
+    },
     "UpdateAssetFilter":{
       "name":"UpdateAssetFilter",
       "http":{
@@ -2805,7 +3007,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Updates an asset filter.</p>",
+      "documentation":"<p>Updates an asset filter.</p> <p>Prerequisites:</p> <ul> <li> <p>The domain, asset, and asset filter identifier must all exist. </p> </li> <li> <p>The asset must contain the columns being referenced in the update.</p> </li> <li> <p>If applying a row filter, ensure the column referenced in the expression exists in the asset schema.</p> </li> </ul>",
       "idempotent":true
     },
     "UpdateConnection":{
@@ -2935,6 +3137,28 @@
       ],
       "documentation":"<p>Updates an environment action.</p>"
     },
+    "UpdateEnvironmentBlueprint":{
+      "name":"UpdateEnvironmentBlueprint",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/environment-blueprints/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateEnvironmentBlueprintInput"},
+      "output":{"shape":"UpdateEnvironmentBlueprintOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Updates an environment blueprint in Amazon DataZone.</p>",
+      "idempotent":true
+    },
     "UpdateEnvironmentProfile":{
       "name":"UpdateEnvironmentProfile",
       "http":{
@@ -2974,7 +3198,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Updates the business glossary in Amazon DataZone.</p>",
+      "documentation":"<p>Updates the business glossary in Amazon DataZone.</p> <p>Prerequisites:</p> <ul> <li> <p>The glossary must exist in the given domain. </p> </li> <li> <p>The caller must have the <code>datazone:UpdateGlossary</code> permission to update it.</p> </li> <li> <p>When updating the name, the new name must be unique within the domain.</p> </li> <li> <p>The glossary must not be deleted or in a terminal state.</p> </li> </ul>",
       "idempotent":true
     },
     "UpdateGlossaryTerm":{
@@ -2995,7 +3219,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Updates a business glossary term in Amazon DataZone.</p>",
+      "documentation":"<p>Updates a business glossary term in Amazon DataZone.</p> <p>Prerequisites:</p> <ul> <li> <p>Glossary term must exist in the specified domain. </p> </li> <li> <p>New name must not conflict with existing terms in the same glossary.</p> </li> <li> <p>User must have permissions on the term.</p> </li> <li> <p>The term must not be in DELETED status.</p> </li> </ul>",
       "idempotent":true
     },
     "UpdateGroupProfile":{
@@ -3421,6 +3645,104 @@
       },
       "exception":true
     },
+    "AccountInfo":{
+      "type":"structure",
+      "required":[
+        "awsAccountId",
+        "supportedRegions"
+      ],
+      "members":{
+        "awsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The account ID.</p>"
+        },
+        "awsAccountName":{
+          "shape":"AwsAccountName",
+          "documentation":"<p>The account name.</p>"
+        },
+        "supportedRegions":{
+          "shape":"AwsRegionList",
+          "documentation":"<p>The regions supported for an account within an account pool. </p>"
+        }
+      },
+      "documentation":"<p>The account information within an account pool.</p>"
+    },
+    "AccountInfoList":{
+      "type":"list",
+      "member":{"shape":"AccountInfo"},
+      "max":25,
+      "min":1
+    },
+    "AccountPoolId":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "AccountPoolList":{
+      "type":"list",
+      "member":{"shape":"AccountPoolId"},
+      "max":10,
+      "min":1
+    },
+    "AccountPoolName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[\\w -]+$",
+      "sensitive":true
+    },
+    "AccountPoolSummaries":{
+      "type":"list",
+      "member":{"shape":"AccountPoolSummary"}
+    },
+    "AccountPoolSummary":{
+      "type":"structure",
+      "members":{
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the account pool.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit.</p>"
+        },
+        "id":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool.</p>"
+        },
+        "name":{
+          "shape":"AccountPoolName",
+          "documentation":"<p>The name of the account pool.</p>"
+        },
+        "resolutionStrategy":{
+          "shape":"ResolutionStrategy",
+          "documentation":"<p>The mechanism used to resolve the account selection from the account pool.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user who updated the account pool.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the account pool.</p>"
+    },
+    "AccountSource":{
+      "type":"structure",
+      "members":{
+        "accounts":{
+          "shape":"AccountInfoList",
+          "documentation":"<p>The static list of accounts within an account pool.</p>"
+        },
+        "customAccountPoolHandler":{
+          "shape":"CustomAccountPoolHandler",
+          "documentation":"<p>The custom Amazon Web Services Lambda handler within an account pool.</p>"
+        }
+      },
+      "documentation":"<p>The source of accounts for the account pool. In the current release, it's either a static list of accounts provided by the customer or a custom Amazon Web Services Lambda handler. </p>",
+      "union":true
+    },
     "ActionLink":{
       "type":"string",
       "sensitive":true
@@ -3476,8 +3798,7 @@
     },
     "AddEntityOwnerOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AddPolicyGrantInput":{
       "type":"structure",
@@ -3530,6 +3851,10 @@
     "AddPolicyGrantOutput":{
       "type":"structure",
       "members":{
+        "grantId":{
+          "shape":"GrantIdentifier",
+          "documentation":"<p>The ID of the policy grant that was added to a specified entity.</p>"
+        }
       }
     },
     "AddToProjectMemberPoolPolicyGrantDetail":{
@@ -3542,16 +3867,86 @@
       },
       "documentation":"<p>The details of the policy grant.</p>"
     },
-    "AllDomainUnitsGrantFilter":{
+    "AggregationAttributeDisplayValue":{"type":"string"},
+    "AggregationAttributeValue":{"type":"string"},
+    "AggregationDisplayValue":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "AggregationList":{
+      "type":"list",
+      "member":{"shape":"AggregationListItem"},
+      "max":10,
+      "min":1
+    },
+    "AggregationListItem":{
+      "type":"structure",
+      "required":["attribute"],
+      "members":{
+        "attribute":{
+          "shape":"Attribute",
+          "documentation":"<p>An attribute on which to compute aggregations.</p>"
+        },
+        "displayValue":{
+          "shape":"AggregationDisplayValue",
+          "documentation":"<p>The display value of the aggregation list item. Supported values include <code>value</code> and <code>glossaryTerm.name</code>.</p>"
+        }
+      },
+      "documentation":"<p>An aggregation list item.</p>"
+    },
+    "AggregationOutput":{
       "type":"structure",
       "members":{
+        "attribute":{
+          "shape":"Attribute",
+          "documentation":"<p>The attribute for this aggregation.</p>"
+        },
+        "displayValue":{
+          "shape":"AggregationDisplayValue",
+          "documentation":"<p>The display value of the aggregation output item.</p>"
+        },
+        "items":{
+          "shape":"AggregationOutputItems",
+          "documentation":"<p>A list of aggregation output items.</p>"
+        }
       },
+      "documentation":"<p>The aggregation for an attribute.</p>"
+    },
+    "AggregationOutputItem":{
+      "type":"structure",
+      "members":{
+        "count":{
+          "shape":"Integer",
+          "documentation":"<p>The count of the aggregation output item.</p>"
+        },
+        "displayValue":{
+          "shape":"AggregationAttributeDisplayValue",
+          "documentation":"<p>The display value of the aggregation. If the attribute being aggregated corresponds to the id of a public resource, the service automatically resolves the id to the provided display value.</p>"
+        },
+        "value":{
+          "shape":"AggregationAttributeValue",
+          "documentation":"<p>The attribute value of the aggregation output item.</p>"
+        }
+      },
+      "documentation":"<p>An aggregation output item.</p>"
+    },
+    "AggregationOutputItems":{
+      "type":"list",
+      "member":{"shape":"AggregationOutputItem"}
+    },
+    "AggregationOutputList":{
+      "type":"list",
+      "member":{"shape":"AggregationOutput"}
+    },
+    "AllDomainUnitsGrantFilter":{
+      "type":"structure",
+      "members":{},
       "documentation":"<p>The grant filter for all domain units.</p>"
     },
     "AllUsersGrantFilter":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The all users grant filter.</p>"
     },
     "ApplicableAssetTypes":{
@@ -3706,6 +4101,10 @@
           "shape":"GlossaryTerms",
           "documentation":"<p>The glossary terms attached to the Amazon DataZone inventory asset.</p>"
         },
+        "governedGlossaryTerms":{
+          "shape":"AssetItemGovernedGlossaryTermsList",
+          "documentation":"<p>The restricted glossary terms accociated with an asset.</p>"
+        },
         "identifier":{
           "shape":"AssetIdentifier",
           "documentation":"<p>the identifier of the Amazon DataZone inventory asset.</p>"
@@ -3740,12 +4139,22 @@
           "shape":"TimeSeriesDataPointSummaryFormOutputList",
           "documentation":"<p>The latest time series data points forms included in the additional attributes of an asset.</p>"
         },
+        "matchRationale":{
+          "shape":"MatchRationale",
+          "documentation":"<p>List of rationales indicating why this item was matched by search.</p>"
+        },
         "readOnlyFormsOutput":{
           "shape":"FormOutputList",
           "documentation":"<p>The read-only forms included in the additional attributes of an inventory asset.</p>"
         }
       },
       "documentation":"<p>The additional attributes of an inventory asset.</p>"
+    },
+    "AssetItemGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":20,
+      "min":0
     },
     "AssetListing":{
       "type":"structure",
@@ -3773,6 +4182,10 @@
         "glossaryTerms":{
           "shape":"DetailedGlossaryTerms",
           "documentation":"<p>The glossary terms attached to an asset published in an Amazon DataZone catalog. </p>"
+        },
+        "governedGlossaryTerms":{
+          "shape":"AssetListingGovernedGlossaryTermsList",
+          "documentation":"<p>The restricted glossary terms associated with an asset.</p>"
         },
         "latestTimeSeriesDataPointForms":{
           "shape":"TimeSeriesDataPointSummaryFormOutputList",
@@ -3802,6 +4215,12 @@
         }
       },
       "documentation":"<p>The details of an asset published in an Amazon DataZone catalog. </p>"
+    },
+    "AssetListingGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"DetailedGlossaryTerm"},
+      "max":20,
+      "min":0
     },
     "AssetListingItem":{
       "type":"structure",
@@ -3833,6 +4252,10 @@
         "glossaryTerms":{
           "shape":"DetailedGlossaryTerms",
           "documentation":"<p>Glossary terms attached to the inventory asset.</p>"
+        },
+        "governedGlossaryTerms":{
+          "shape":"AssetListingItemGovernedGlossaryTermsList",
+          "documentation":"<p>The restricted glossary terms associated with an asset.</p>"
         },
         "listingCreatedBy":{
           "shape":"CreatedBy",
@@ -3871,9 +4294,19 @@
         "latestTimeSeriesDataPointForms":{
           "shape":"TimeSeriesDataPointSummaryFormOutputList",
           "documentation":"<p>The latest time series data points forms included in the additional attributes of an asset.</p>"
+        },
+        "matchRationale":{
+          "shape":"MatchRationale",
+          "documentation":"<p>List of rationales indicating why this item was matched by search.</p>"
         }
       },
       "documentation":"<p>Additional attributes of an inventory asset.</p>"
+    },
+    "AssetListingItemGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"DetailedGlossaryTerm"},
+      "max":20,
+      "min":0
     },
     "AssetName":{
       "type":"string",
@@ -4076,8 +4509,50 @@
     },
     "AssociateEnvironmentRoleOutput":{
       "type":"structure",
+      "members":{}
+    },
+    "AssociateGovernedTermsInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType",
+        "governedGlossaryTerms"
+      ],
       "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where governed terms are to be associated with an asset.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"EntityIdentifier",
+          "documentation":"<p>The ID of the asset with which you want to associate a governed term.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"GovernedEntityType",
+          "documentation":"<p>The type of the asset with which you want to associate a governed term.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "governedGlossaryTerms":{
+          "shape":"AssociateGovernedTermsInputGovernedGlossaryTermsList",
+          "documentation":"<p>The glossary terms in a restricted glossary.</p>"
+        }
       }
+    },
+    "AssociateGovernedTermsInputGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":5,
+      "min":1
+    },
+    "AssociateGovernedTermsOutput":{
+      "type":"structure",
+      "members":{}
     },
     "AthenaPropertiesInput":{
       "type":"structure",
@@ -4275,6 +4750,12 @@
       "type":"string",
       "pattern":"^\\d{12}$"
     },
+    "AwsAccountName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "sensitive":true
+    },
     "AwsConsoleLinkParameters":{
       "type":"structure",
       "members":{
@@ -4314,6 +4795,12 @@
     "AwsRegion":{
       "type":"string",
       "pattern":"^[a-z]{2}-[a-z]{4,10}-\\d$"
+    },
+    "AwsRegionList":{
+      "type":"list",
+      "member":{"shape":"AwsRegion"},
+      "max":3,
+      "min":1
     },
     "BasicAuthenticationCredentials":{
       "type":"structure",
@@ -4379,8 +4866,7 @@
     },
     "CancelMetadataGenerationRunOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CancelSubscriptionInput":{
       "type":"structure",
@@ -4635,6 +5121,10 @@
           "shape":"RedshiftPropertiesInput",
           "documentation":"<p>The Amazon Redshift properties of a connection.</p>"
         },
+        "s3Properties":{
+          "shape":"S3PropertiesInput",
+          "documentation":"<p>The Amazon S3 properties of a connection.</p>"
+        },
         "sparkEmrProperties":{
           "shape":"SparkEmrPropertiesInput",
           "documentation":"<p>The Spark EMR properties of a connection.</p>"
@@ -4670,6 +5160,10 @@
           "shape":"RedshiftPropertiesOutput",
           "documentation":"<p>The Amazon Redshift properties of a connection.</p>"
         },
+        "s3Properties":{
+          "shape":"S3PropertiesOutput",
+          "documentation":"<p>The Amazon S3 properties of a connection.</p>"
+        },
         "sparkEmrProperties":{
           "shape":"SparkEmrPropertiesOutput",
           "documentation":"<p>The Spark EMR properties of a connection.</p>"
@@ -4700,6 +5194,10 @@
         "redshiftProperties":{
           "shape":"RedshiftPropertiesPatch",
           "documentation":"<p>The Amazon Redshift properties of a connection properties patch.</p>"
+        },
+        "s3Properties":{
+          "shape":"S3PropertiesPatch",
+          "documentation":"<p>The Amazon S3 properties of a connection properties patch.</p>"
         },
         "sparkEmrProperties":{
           "shape":"SparkEmrPropertiesPatch",
@@ -4796,6 +5294,7 @@
         "ORACLE",
         "POSTGRESQL",
         "REDSHIFT",
+        "S3",
         "SAPHANA",
         "SNOWFLAKE",
         "SPARK",
@@ -4804,6 +5303,92 @@
         "VERTICA",
         "WORKFLOWS_MWAA"
       ]
+    },
+    "CreateAccountPoolInput":{
+      "type":"structure",
+      "required":[
+        "accountSource",
+        "domainIdentifier",
+        "name",
+        "resolutionStrategy"
+      ],
+      "members":{
+        "accountSource":{
+          "shape":"AccountSource",
+          "documentation":"<p>The source of accounts for the account pool. In the current release, it's either a static list of accounts provided by the customer or a custom Amazon Web Services Lambda handler. </p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the account pool.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the account pool is created.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "name":{
+          "shape":"AccountPoolName",
+          "documentation":"<p>The name of the account pool.</p>"
+        },
+        "resolutionStrategy":{
+          "shape":"ResolutionStrategy",
+          "documentation":"<p>The mechanism used to resolve the account selection from the account pool.</p>"
+        }
+      }
+    },
+    "CreateAccountPoolOutput":{
+      "type":"structure",
+      "required":[
+        "accountSource",
+        "createdBy"
+      ],
+      "members":{
+        "accountSource":{
+          "shape":"AccountSource",
+          "documentation":"<p>The source of accounts for the account pool. In the current release, it's either a static list of accounts provided by the customer or a custom Amazon Web Services Lambda handler. </p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which the account pool was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the account pool.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the account pool.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the account pool is created.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain where the account pool is created.</p>"
+        },
+        "id":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which the account pool was last updated.</p>"
+        },
+        "name":{
+          "shape":"AccountPoolName",
+          "documentation":"<p>The name of the account pool.</p>"
+        },
+        "resolutionStrategy":{
+          "shape":"ResolutionStrategy",
+          "documentation":"<p>The mechanism used to resolve the account selection from the account pool.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user who last updated the account pool.</p>"
+        }
+      }
     },
     "CreateAssetFilterInput":{
       "type":"structure",
@@ -4927,7 +5512,7 @@
         },
         "externalIdentifier":{
           "shape":"ExternalIdentifier",
-          "documentation":"<p>The external identifier of the asset.</p>"
+          "documentation":"<p>The external identifier of the asset.</p> <p>If the value for the <code>externalIdentifier</code> parameter is specified, it must be a unique value.</p>"
         },
         "formsInput":{
           "shape":"FormInputList",
@@ -5008,6 +5593,10 @@
           "shape":"GlossaryTerms",
           "documentation":"<p>The glossary terms that are attached to the created asset.</p>"
         },
+        "governedGlossaryTerms":{
+          "shape":"CreateAssetOutputGovernedGlossaryTermsList",
+          "documentation":"<p>The glossary terms in a restricted glossary.</p>"
+        },
         "id":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the created asset.</p>"
@@ -5049,6 +5638,12 @@
           "documentation":"<p>The revision type of the asset.</p>"
         }
       }
+    },
+    "CreateAssetOutputGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":20,
+      "min":0
     },
     "CreateAssetRevisionInput":{
       "type":"structure",
@@ -5150,6 +5745,10 @@
           "shape":"GlossaryTerms",
           "documentation":"<p>The glossary terms that were attached to the asset as part of asset revision.</p>"
         },
+        "governedGlossaryTerms":{
+          "shape":"CreateAssetRevisionOutputGovernedGlossaryTermsList",
+          "documentation":"<p>The glossary terms in a restricted glossary.</p>"
+        },
         "id":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset revision.</p>"
@@ -5191,6 +5790,12 @@
           "documentation":"<p>The revision type of the asset.</p>"
         }
       }
+    },
+    "CreateAssetRevisionOutputGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":20,
+      "min":0
     },
     "CreateAssetTypeInput":{
       "type":"structure",
@@ -6067,11 +6672,93 @@
         }
       }
     },
+    "CreateEnvironmentBlueprintInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "name",
+        "provisioningProperties"
+      ],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the Amazon DataZone blueprint.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the domain in which this blueprint is created.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "name":{
+          "shape":"EnvironmentBlueprintName",
+          "documentation":"<p>The name of this Amazon DataZone blueprint.</p>"
+        },
+        "provisioningProperties":{
+          "shape":"ProvisioningProperties",
+          "documentation":"<p>The provisioning properties of this Amazon DataZone blueprint.</p>"
+        },
+        "userParameters":{
+          "shape":"CustomParameterList",
+          "documentation":"<p>The user parameters of this Amazon DataZone blueprint.</p>"
+        }
+      }
+    },
+    "CreateEnvironmentBlueprintOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "provider",
+        "provisioningProperties"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which the environment blueprint was created.</p>"
+        },
+        "deploymentProperties":{
+          "shape":"DeploymentProperties",
+          "documentation":"<p>The deployment properties of this Amazon DataZone blueprint.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of this Amazon DataZone blueprint.</p>"
+        },
+        "glossaryTerms":{
+          "shape":"GlossaryTerms",
+          "documentation":"<p>The glossary terms attached to this Amazon DataZone blueprint.</p>"
+        },
+        "id":{
+          "shape":"EnvironmentBlueprintId",
+          "documentation":"<p>The ID of this Amazon DataZone blueprint.</p>"
+        },
+        "name":{
+          "shape":"EnvironmentBlueprintName",
+          "documentation":"<p>The name of this Amazon DataZone blueprint.</p>"
+        },
+        "provider":{
+          "shape":"String",
+          "documentation":"<p>The provider of this Amazon DataZone blueprint.</p>"
+        },
+        "provisioningProperties":{
+          "shape":"ProvisioningProperties",
+          "documentation":"<p>The provisioning properties of this Amazon DataZone blueprint.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of when this blueprint was updated.</p>"
+        },
+        "userParameters":{
+          "shape":"CustomParameterList",
+          "documentation":"<p>The user parameters of this Amazon DataZone blueprint.</p>"
+        }
+      }
+    },
     "CreateEnvironmentInput":{
       "type":"structure",
       "required":[
         "domainIdentifier",
-        "environmentProfileIdentifier",
         "name",
         "projectIdentifier"
       ],
@@ -6462,6 +7149,10 @@
         "status":{
           "shape":"GlossaryStatus",
           "documentation":"<p>The status of this business glossary.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restriction of the restricted glossary.</p>"
         }
       }
     },
@@ -6497,6 +7188,10 @@
         "status":{
           "shape":"GlossaryStatus",
           "documentation":"<p>The status of this business glossary.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restriction of the restricted glossary.</p>"
         }
       }
     },
@@ -6596,6 +7291,10 @@
         "termRelations":{
           "shape":"TermRelations",
           "documentation":"<p>The term relations of this business glossary term.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restriction of the restricted glossary.</p>"
         }
       }
     },
@@ -6790,8 +7489,7 @@
     },
     "CreateProjectMembershipOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CreateProjectOutput":{
       "type":"structure",
@@ -7497,6 +8195,21 @@
       "min":1,
       "pattern":"cron\\((\\b[0-5]?[0-9]\\b) (\\b2[0-3]\\b|\\b[0-1]?[0-9]\\b) ([-?*,/\\dLW]){1,83} ([-*,/\\d]|[a-zA-Z]{3}){1,23} ([-?#*,/\\dL]|[a-zA-Z]{3}){1,13} ([^\\)]+)\\)"
     },
+    "CustomAccountPoolHandler":{
+      "type":"structure",
+      "required":["lambdaFunctionArn"],
+      "members":{
+        "lambdaExecutionRoleArn":{
+          "shape":"LambdaExecutionRoleArn",
+          "documentation":"<p>The ARN of the IAM role that enables Amazon SageMaker Unified Studio to invoke the Amazon Web Services Lambda funtion if the account source is the custom account pool handler.</p>"
+        },
+        "lambdaFunctionArn":{
+          "shape":"LambdaFunctionArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Lambda function for the custom Amazon Web Services Lambda handler.</p>"
+        }
+      },
+      "documentation":"<p>The custom Amazon Web Services Lambda handler within an account pool.</p>"
+    },
     "CustomParameter":{
       "type":"structure",
       "required":[
@@ -7523,6 +8236,10 @@
         "isOptional":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether the custom parameter is optional.</p>"
+        },
+        "isUpdateSupported":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether a parameter value can be updated after creation. </p>"
         },
         "keyName":{
           "shape":"CustomParameterKeyNameString",
@@ -7591,6 +8308,16 @@
         }
       },
       "documentation":"<p>The data product.</p>"
+    },
+    "DataProductItemAdditionalAttributes":{
+      "type":"structure",
+      "members":{
+        "matchRationale":{
+          "shape":"MatchRationale",
+          "documentation":"<p>List of rationales indicating why this item was matched by search.</p>"
+        }
+      },
+      "documentation":"<p>The additional attributes of an Amazon DataZone data product.</p>"
     },
     "DataProductItemType":{
       "type":"string",
@@ -7699,6 +8426,10 @@
         "forms":{
           "shape":"Forms",
           "documentation":"<p>The metadata forms of the asset of the data product. </p>"
+        },
+        "matchRationale":{
+          "shape":"MatchRationale",
+          "documentation":"<p>List of rationales indicating why this item was matched by search.</p>"
         }
       },
       "documentation":"<p>The additional attributes of the asset of the data product. </p>"
@@ -7718,6 +8449,10 @@
         "owningProjectId"
       ],
       "members":{
+        "additionalAttributes":{
+          "shape":"DataProductItemAdditionalAttributes",
+          "documentation":"<p>The additional attributes of an Amazon DataZone data product.</p>"
+        },
         "createdAt":{
           "shape":"CreatedAt",
           "documentation":"<p>The timestamp at which the data product was created.</p>"
@@ -8127,6 +8862,31 @@
       "min":1,
       "sensitive":true
     },
+    "DeleteAccountPoolInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the account pool is deleted.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool to be deleted.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "DeleteAccountPoolOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteAssetFilterInput":{
       "type":"structure",
       "required":[
@@ -8178,8 +8938,7 @@
     },
     "DeleteAssetOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAssetTypeInput":{
       "type":"structure",
@@ -8204,8 +8963,7 @@
     },
     "DeleteAssetTypeOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteConnectionInput":{
       "type":"structure",
@@ -8260,8 +9018,7 @@
     },
     "DeleteDataProductOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDataSourceInput":{
       "type":"structure",
@@ -8456,8 +9213,7 @@
     },
     "DeleteDomainUnitOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteEnvironmentActionInput":{
       "type":"structure",
@@ -8510,7 +9266,27 @@
     },
     "DeleteEnvironmentBlueprintConfigurationOutput":{
       "type":"structure",
+      "members":{}
+    },
+    "DeleteEnvironmentBlueprintInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
       "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which the blueprint is deleted.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"EnvironmentBlueprintId",
+          "documentation":"<p>The ID of the blueprint that is deleted.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
       }
     },
     "DeleteEnvironmentInput":{
@@ -8578,8 +9354,7 @@
     },
     "DeleteFormTypeOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteGlossaryInput":{
       "type":"structure",
@@ -8604,8 +9379,7 @@
     },
     "DeleteGlossaryOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteGlossaryTermInput":{
       "type":"structure",
@@ -8630,8 +9404,7 @@
     },
     "DeleteGlossaryTermOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteListingInput":{
       "type":"structure",
@@ -8656,8 +9429,7 @@
     },
     "DeleteListingOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteProjectInput":{
       "type":"structure",
@@ -8714,13 +9486,11 @@
     },
     "DeleteProjectMembershipOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteProjectOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteProjectProfileInput":{
       "type":"structure",
@@ -8745,8 +9515,7 @@
     },
     "DeleteProjectProfileOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteRuleInput":{
       "type":"structure",
@@ -8771,8 +9540,7 @@
     },
     "DeleteRuleOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteSubscriptionGrantInput":{
       "type":"structure",
@@ -8949,8 +9717,7 @@
     },
     "DeleteTimeSeriesDataPointsOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Deployment":{
       "type":"structure",
@@ -9097,8 +9864,50 @@
     },
     "DisassociateEnvironmentRoleOutput":{
       "type":"structure",
+      "members":{}
+    },
+    "DisassociateGovernedTermsInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType",
+        "governedGlossaryTerms"
+      ],
       "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to disassociate restricted terms from an asset.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"EntityIdentifier",
+          "documentation":"<p>The ID of an asset from which you want to disassociate restricted terms.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"GovernedEntityType",
+          "documentation":"<p>The type of the asset from which you want to disassociate restricted terms.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "governedGlossaryTerms":{
+          "shape":"DisassociateGovernedTermsInputGovernedGlossaryTermsList",
+          "documentation":"<p>The restricted glossary terms that you want to disassociate from an asset.</p>"
+        }
       }
+    },
+    "DisassociateGovernedTermsInputGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":5,
+      "min":1
+    },
+    "DisassociateGovernedTermsOutput":{
+      "type":"structure",
+      "members":{}
     },
     "DomainDescription":{
       "type":"string",
@@ -9539,12 +10348,14 @@
     "EnvironmentConfiguration":{
       "type":"structure",
       "required":[
-        "awsAccount",
-        "awsRegion",
         "environmentBlueprintId",
         "name"
       ],
       "members":{
+        "accountPools":{
+          "shape":"AccountPoolList",
+          "documentation":"<p>The account pools used by a custom project profile.</p>"
+        },
         "awsAccount":{
           "shape":"AwsAccount",
           "documentation":"<p>The Amazon Web Services account of the environment.</p>"
@@ -9654,6 +10465,10 @@
         "environmentParameters":{
           "shape":"EnvironmentParametersList",
           "documentation":"<p>The environment parameters.</p>"
+        },
+        "environmentResolvedAccount":{
+          "shape":"EnvironmentResolvedAccount",
+          "documentation":"<p>Specifies the account/Region that is to be used during project creation for a particular blueprint.</p>"
         }
       },
       "documentation":"<p>The environment configuration user parameters.</p>"
@@ -9804,6 +10619,28 @@
         }
       },
       "documentation":"<p>The details of an environment profile.</p>"
+    },
+    "EnvironmentResolvedAccount":{
+      "type":"structure",
+      "required":[
+        "awsAccountId",
+        "regionName"
+      ],
+      "members":{
+        "awsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the resolved account.</p>"
+        },
+        "regionName":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The name of the resolved Region.</p>"
+        },
+        "sourceAccountPoolId":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the account/Region that is to be used during project creation for a particular blueprint.</p>"
     },
     "EnvironmentStatus":{
       "type":"string",
@@ -10272,6 +11109,80 @@
       "max":10,
       "min":0
     },
+    "GetAccountPoolInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain in which the account pool lives whose details are to be displayed.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool whose details are to be displayed.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetAccountPoolOutput":{
+      "type":"structure",
+      "required":[
+        "accountSource",
+        "createdBy"
+      ],
+      "members":{
+        "accountSource":{
+          "shape":"AccountSource",
+          "documentation":"<p>The source of accounts for the account pool. In the current release, it's either a static list of accounts provided by the customer or a custom Amazon Web Services Lambda handler. </p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which the account pool was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the account pool.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the account pool.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain in which the account pool lives whose details are to be displayed.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The domain unit ID of the account pool.</p>"
+        },
+        "id":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which the account pool was last updated.</p>"
+        },
+        "name":{
+          "shape":"AccountPoolName",
+          "documentation":"<p>The name of the account pool.</p>"
+        },
+        "resolutionStrategy":{
+          "shape":"ResolutionStrategy",
+          "documentation":"<p>The mechanism used to resolve the account selection from the account pool.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user who last updated the account pool.</p>"
+        }
+      }
+    },
     "GetAssetFilterInput":{
       "type":"structure",
       "required":[
@@ -10371,7 +11282,7 @@
         },
         "identifier":{
           "shape":"AssetIdentifier",
-          "documentation":"<p>The ID of the Amazon DataZone asset.</p>",
+          "documentation":"<p>The ID of the Amazon DataZone asset.</p> <p>This parameter supports either the value of <code>assetId</code> or <code>externalIdentifier</code> as input. If you are passing the value of <code>externalIdentifier</code>, you must prefix this value with <code>externalIdentifer%2F</code>.</p>",
           "location":"uri",
           "locationName":"identifier"
         },
@@ -10432,6 +11343,10 @@
           "shape":"GlossaryTerms",
           "documentation":"<p>The business glossary terms attached to the asset.</p>"
         },
+        "governedGlossaryTerms":{
+          "shape":"GetAssetOutputGovernedGlossaryTermsList",
+          "documentation":"<p>The restricted glossary terms attached to an asset.</p>"
+        },
         "id":{
           "shape":"AssetId",
           "documentation":"<p>The ID of the asset.</p>"
@@ -10469,6 +11384,12 @@
           "documentation":"<p>The revision of the asset type.</p>"
         }
       }
+    },
+    "GetAssetOutputGovernedGlossaryTermsList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":20,
+      "min":0
     },
     "GetAssetTypeInput":{
       "type":"structure",
@@ -11718,6 +12639,10 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The Amazon DataZone user who updated the business glossary.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restriction of the restricted glossary.</p>"
         }
       }
     },
@@ -11799,6 +12724,10 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The Amazon DataZone user who updated the business glossary term.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restriction of a term within a restricted glossary.</p>"
         }
       }
     },
@@ -13004,6 +13933,11 @@
         }
       }
     },
+    "GlobalParameterMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
     "GlossaryDescription":{
       "type":"string",
       "max":4096,
@@ -13024,6 +13958,10 @@
         "status"
       ],
       "members":{
+        "additionalAttributes":{
+          "shape":"GlossaryItemAdditionalAttributes",
+          "documentation":"<p>The additional attributes of an Amazon DataZone glossary.</p>"
+        },
         "createdAt":{
           "shape":"CreatedAt",
           "documentation":"<p>The timestamp of when the glossary was created.</p>"
@@ -13063,9 +14001,23 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The Amazon DataZone user who updated the business glossary.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restrictions associated with a goverened glossary term.</p>"
         }
       },
       "documentation":"<p>The details of a business glossary.</p>"
+    },
+    "GlossaryItemAdditionalAttributes":{
+      "type":"structure",
+      "members":{
+        "matchRationale":{
+          "shape":"MatchRationale",
+          "documentation":"<p>List of rationales indicating why this item was matched by search.</p>"
+        }
+      },
+      "documentation":"<p>The additional attributes of an Amazon DataZone glossary.</p>"
     },
     "GlossaryName":{
       "type":"string",
@@ -13094,6 +14046,10 @@
         "status"
       ],
       "members":{
+        "additionalAttributes":{
+          "shape":"GlossaryTermItemAdditionalAttributes",
+          "documentation":"<p>The additional attributes of an Amazon DataZone glossary term.</p>"
+        },
         "createdAt":{
           "shape":"CreatedAt",
           "documentation":"<p>The timestamp of when a business glossary term was created.</p>"
@@ -13141,9 +14097,23 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The Amazon DataZone user who updated the business glossary term.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restrictions associated with a goverened glossary term.</p>"
         }
       },
       "documentation":"<p>The details of a business glossary term.</p>"
+    },
+    "GlossaryTermItemAdditionalAttributes":{
+      "type":"structure",
+      "members":{
+        "matchRationale":{
+          "shape":"MatchRationale",
+          "documentation":"<p>List of rationales indicating why this item was matched by search.</p>"
+        }
+      },
+      "documentation":"<p>The additional attributes of an Amazon DataZone glossary term.</p>"
     },
     "GlossaryTermName":{
       "type":"string",
@@ -13162,6 +14132,16 @@
       "type":"list",
       "member":{"shape":"GlossaryTermId"},
       "max":20,
+      "min":1
+    },
+    "GlossaryUsageRestriction":{
+      "type":"string",
+      "enum":["ASSET_GOVERNED_TERMS"]
+    },
+    "GlossaryUsageRestrictions":{
+      "type":"list",
+      "member":{"shape":"GlossaryUsageRestriction"},
+      "max":1,
       "min":1
     },
     "GlueConnection":{
@@ -13541,6 +14521,14 @@
         "USER_MANAGED"
       ]
     },
+    "GovernedEntityType":{
+      "type":"string",
+      "enum":["ASSET"]
+    },
+    "GrantIdentifier":{
+      "type":"string",
+      "pattern":"^[A-Za-z0-9+/]{10}$"
+    },
     "GrantedEntity":{
       "type":"structure",
       "members":{
@@ -13768,6 +14756,10 @@
         "arn":{
           "shape":"String",
           "documentation":"<p>The ARN of an IAM user profile in Amazon DataZone.</p>"
+        },
+        "principalId":{
+          "shape":"String",
+          "documentation":"<p>Principal ID of the IAM user.</p>"
         }
       },
       "documentation":"<p>The details of an IAM user profile in Amazon DataZone.</p>"
@@ -13986,6 +14978,14 @@
         }
       },
       "documentation":"<p>The Lake Formation configuration of the Data Lake blueprint.</p>"
+    },
+    "LambdaExecutionRoleArn":{
+      "type":"string",
+      "pattern":"^arn:aws[^:]*:iam::\\d{12}:(role|role/service-role)/[\\w+=,.@-]*$"
+    },
+    "LambdaFunctionArn":{
+      "type":"string",
+      "pattern":"^arn:(?:aws|aws-cn|aws-us-gov):lambda:(?:[a-z]{2}(?:-gov)?-[a-z]+-\\d{1,}):(\\d{12}):function:[a-zA-Z0-9-_]+(?::[a-zA-Z0-9-_]+)?(?:\\$[\\w-]+)?$"
     },
     "LastName":{
       "type":"string",
@@ -14318,6 +15318,107 @@
     "LineageSyncScheduleScheduleString":{
       "type":"string",
       "pattern":"^cron\\((\\b[0-5]?[0-9]\\b) (\\b2[0-3]\\b|\\b[0-1]?[0-9]\\b) ([-?*,/\\dLW]){1,83} ([-*,/\\d]|[a-zA-Z]{3}){1,23} ([-?#*,/\\dL]|[a-zA-Z]{3}){1,13} ([^\\)]+)\\)$"
+    },
+    "ListAccountPoolsInput":{
+      "type":"structure",
+      "required":["domainIdentifier"],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where exsting account pools are to be listed.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of account pools to return in a single call to ListAccountPools. When the number of account pools to be listed is greater than the value of MaxResults, the response contains a NextToken value that you can use in a subsequent call to ListAccountPools to list the next set of account pools.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "name":{
+          "shape":"AccountPoolName",
+          "documentation":"<p>The name of the account pool to be listed.</p>",
+          "location":"querystring",
+          "locationName":"name"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of account pools is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of account pools, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListAccountPools to list the next set of account pools.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortBy":{
+          "shape":"SortFieldAccountPool",
+          "documentation":"<p>The sort by mechanism in which the existing account pools are to be listed.</p>",
+          "location":"querystring",
+          "locationName":"sortBy"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order in which the existing account pools are to be listed.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        }
+      }
+    },
+    "ListAccountPoolsOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"AccountPoolSummaries",
+          "documentation":"<p>The results of the ListAccountPools operation.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of account pools is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of account pools, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListAccountPools to list the next set of account pools.</p>"
+        }
+      }
+    },
+    "ListAccountsInAccountPoolInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain in which the accounts in the specified account pool are to be listed.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool whose accounts are to be listed.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of accounts to return in a single call to ListAccountsInAccountPool. When the number of accounts to be listed is greater than the value of MaxResults, the response contains a NextToken value that you can use in a subsequent call to ListAccountsInAccountPool to list the next set of accounts.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of accounts is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of accounts, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListAccountsInAccountPool to list the next set of accounts.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAccountsInAccountPoolOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"AccountInfoList",
+          "documentation":"<p>The results of the ListAccountsInAccountPool operation.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of accounts is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of accounts, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListAccountsInAccountPool to list the next set of accounts.</p>"
+        }
+      }
     },
     "ListAssetFiltersInput":{
       "type":"structure",
@@ -16324,6 +17425,39 @@
       "max":10,
       "min":0
     },
+    "MatchOffset":{
+      "type":"structure",
+      "members":{
+        "endOffset":{
+          "shape":"Integer",
+          "documentation":"<p>The 0-indexed number indicating the end position (exclusive) of a matched term.</p>"
+        },
+        "startOffset":{
+          "shape":"Integer",
+          "documentation":"<p>The 0-indexed number indicating the start position (inclusive) of a matched term.</p>"
+        }
+      },
+      "documentation":"<p>The offset of a matched term.</p>"
+    },
+    "MatchOffsets":{
+      "type":"list",
+      "member":{"shape":"MatchOffset"}
+    },
+    "MatchRationale":{
+      "type":"list",
+      "member":{"shape":"MatchRationaleItem"}
+    },
+    "MatchRationaleItem":{
+      "type":"structure",
+      "members":{
+        "textMatches":{
+          "shape":"TextMatches",
+          "documentation":"<p>A list of TextMatchItems.</p>"
+        }
+      },
+      "documentation":"<p>A rationale indicating why this item was matched by search. </p>",
+      "union":true
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -17056,7 +18190,7 @@
         },
         "createGlossary":{
           "shape":"CreateGlossaryPolicyGrantDetail",
-          "documentation":"<p>Specifies that this is a create glossary policy.</p>"
+          "documentation":"<p> Specifies that this is a create glossary policy.</p>"
         },
         "createProject":{
           "shape":"CreateProjectPolicyGrantDetail",
@@ -17104,6 +18238,10 @@
         "detail":{
           "shape":"PolicyGrantDetail",
           "documentation":"<p>The details of the policy grant member.</p>"
+        },
+        "grantId":{
+          "shape":"GrantIdentifier",
+          "documentation":"<p>The ID of the policy grant.</p>"
         },
         "principal":{
           "shape":"PolicyGrantPrincipal",
@@ -17411,7 +18549,8 @@
         "DELETING",
         "DELETE_FAILED",
         "UPDATING",
-        "UPDATE_FAILED"
+        "UPDATE_FAILED",
+        "MOVING"
       ]
     },
     "ProjectSummaries":{
@@ -17565,6 +18704,10 @@
         "environmentRolePermissionBoundary":{
           "shape":"PolicyArn",
           "documentation":"<p>The environment role permissions boundary.</p>"
+        },
+        "globalParameters":{
+          "shape":"GlobalParameterMap",
+          "documentation":"<p>Region-agnostic environment blueprint parameters. </p>"
         },
         "manageAccessRoleArn":{
           "shape":"RoleArn",
@@ -18299,8 +19442,7 @@
     },
     "RemoveEntityOwnerOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RemovePolicyGrantInput":{
       "type":"structure",
@@ -18335,6 +19477,10 @@
           "location":"uri",
           "locationName":"entityType"
         },
+        "grantIdentifier":{
+          "shape":"GrantIdentifier",
+          "documentation":"<p>The ID of the policy grant that is to be removed from a specified entity.</p>"
+        },
         "policyType":{
           "shape":"ManagedPolicyType",
           "documentation":"<p>The type of the policy that you want to remove.</p>"
@@ -18347,8 +19493,7 @@
     },
     "RemovePolicyGrantOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RequestReason":{
       "type":"string",
@@ -18361,6 +19506,10 @@
       "member":{"shape":"MetadataFormReference"},
       "max":5,
       "min":1
+    },
+    "ResolutionStrategy":{
+      "type":"string",
+      "enum":["MANUAL"]
     },
     "Resource":{
       "type":"structure",
@@ -18760,6 +19909,12 @@
       },
       "documentation":"<p>The asset statistics from the data source run.</p>"
     },
+    "S3AccessGrantLocationId":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"^[a-zA-Z0-9\\-]+$"
+    },
     "S3Location":{
       "type":"string",
       "max":1024,
@@ -18771,6 +19926,65 @@
       "member":{"shape":"S3Location"},
       "max":20,
       "min":0
+    },
+    "S3PropertiesInput":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3AccessGrantLocationId":{
+          "shape":"S3AccessGrantLocationId",
+          "documentation":"<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties of a connection.</p>"
+        },
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI that's part of the Amazon S3 properties of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 properties of a connection.</p>"
+    },
+    "S3PropertiesOutput":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message that gets displayed.</p>"
+        },
+        "s3AccessGrantLocationId":{
+          "shape":"S3AccessGrantLocationId",
+          "documentation":"<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties of a connection.</p>"
+        },
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI that's part of the Amazon S3 properties of a connection.</p>"
+        },
+        "status":{
+          "shape":"ConnectionStatus",
+          "documentation":"<p>The status of the Amazon S3 connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 properties of a connection.</p>"
+    },
+    "S3PropertiesPatch":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3AccessGrantLocationId":{
+          "shape":"S3AccessGrantLocationId",
+          "documentation":"<p>The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties patch of a connection.</p>"
+        },
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI that's part of the Amazon S3 properties patch of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 properties patch of a connection.</p>"
+    },
+    "S3Uri":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^s3://.+$"
     },
     "SageMakerAssetType":{
       "type":"string",
@@ -18985,6 +20199,10 @@
           "shape":"SearchOutputAdditionalAttributes",
           "documentation":"<p>Specifies additional attributes for the search.</p>"
         },
+        "aggregations":{
+          "shape":"AggregationList",
+          "documentation":"<p>Enables you to specify one or more attributes to compute and return counts grouped by field values.</p>"
+        },
         "domainIdentifier":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of the domain in which to search listings.</p>",
@@ -19008,7 +20226,7 @@
           "documentation":"<p>The details of the search.</p>"
         },
         "searchText":{
-          "shape":"String",
+          "shape":"SearchListingsInputSearchTextString",
           "documentation":"<p>Specifies the text for which to search.</p>"
         },
         "sort":{
@@ -19017,9 +20235,18 @@
         }
       }
     },
+    "SearchListingsInputSearchTextString":{
+      "type":"string",
+      "max":512,
+      "min":0
+    },
     "SearchListingsOutput":{
       "type":"structure",
       "members":{
+        "aggregates":{
+          "shape":"AggregationOutputList",
+          "documentation":"<p>Contains computed counts grouped by field values based on the requested aggregation attributes for the matching listings.</p>"
+        },
         "items":{
           "shape":"SearchResultItems",
           "documentation":"<p>The results of the <code>SearchListings</code> action.</p>"
@@ -19055,7 +20282,8 @@
       "type":"string",
       "enum":[
         "FORMS",
-        "TIME_SERIES_DATA_POINT_FORMS"
+        "TIME_SERIES_DATA_POINT_FORMS",
+        "TEXT_MATCH_RATIONALE"
       ]
     },
     "SearchOutputAdditionalAttributes":{
@@ -19098,7 +20326,7 @@
     },
     "SearchText":{
       "type":"string",
-      "max":4096,
+      "max":512,
       "min":1
     },
     "SearchTypesInput":{
@@ -19356,6 +20584,10 @@
       "type":"string",
       "max":100000,
       "min":1
+    },
+    "SortFieldAccountPool":{
+      "type":"string",
+      "enum":["NAME"]
     },
     "SortFieldConnection":{
       "type":"string",
@@ -20196,7 +21428,7 @@
         },
         "updatedAt":{
           "shape":"UpdatedAt",
-          "documentation":"<p>The timestampf of when the subscription grant was updated.</p>"
+          "documentation":"<p>The timestamp of when the subscription grant was updated.</p>"
         },
         "updatedBy":{
           "shape":"UpdatedBy",
@@ -20537,8 +21769,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -20596,6 +21827,28 @@
       "member":{"shape":"GlossaryTermId"},
       "max":10,
       "min":1
+    },
+    "TextMatchItem":{
+      "type":"structure",
+      "members":{
+        "attribute":{
+          "shape":"Attribute",
+          "documentation":"<p>The name of the attribute.</p>"
+        },
+        "matchOffsets":{
+          "shape":"MatchOffsets",
+          "documentation":"<p>List of offsets indicating matching terms in the TextMatchItem text.</p>"
+        },
+        "text":{
+          "shape":"String",
+          "documentation":"<p>Snippet of attribute text containing highlighted content.</p>"
+        }
+      },
+      "documentation":"<p>A structure indicating matched terms for an attribute.</p>"
+    },
+    "TextMatches":{
+      "type":"list",
+      "member":{"shape":"TextMatchItem"}
     },
     "ThrottlingException":{
       "type":"structure",
@@ -20908,8 +22161,7 @@
     },
     "Unit":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The details of the policy of creating an environment.</p>"
     },
     "UntagResourceRequest":{
@@ -20935,7 +22187,96 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
+      "members":{}
+    },
+    "UpdateAccountPoolInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
       "members":{
+        "accountSource":{
+          "shape":"AccountSource",
+          "documentation":"<p>The source of accounts for the account pool. In the current release, it's either a static list of accounts provided by the customer or a custom Amazon Web Services Lambda handler. </p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the account pool that is to be udpated.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID where the account pool that is to be updated lives.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool that is to be updated.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "name":{
+          "shape":"AccountPoolName",
+          "documentation":"<p>The name of the account pool that is to be updated.</p>"
+        },
+        "resolutionStrategy":{
+          "shape":"ResolutionStrategy",
+          "documentation":"<p>The mechanism used to resolve the account selection from the account pool.</p>"
+        }
+      }
+    },
+    "UpdateAccountPoolOutput":{
+      "type":"structure",
+      "required":[
+        "accountSource",
+        "createdBy"
+      ],
+      "members":{
+        "accountSource":{
+          "shape":"AccountSource",
+          "documentation":"<p>The source of accounts for the account pool. In the current release, it's either a static list of accounts provided by the customer or a custom Amazon Web Services Lambda handler. </p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which the account pool was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the account pool.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the account pool that is to be udpated.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID where the account pool that is to be updated lives.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The domain ID in which the account pool that is to be updated lives.</p>"
+        },
+        "id":{
+          "shape":"AccountPoolId",
+          "documentation":"<p>The ID of the account pool that is to be updated.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which the account pool was last updated.</p>"
+        },
+        "name":{
+          "shape":"AccountPoolName",
+          "documentation":"<p>The name of the account pool that is to be updated.</p>"
+        },
+        "resolutionStrategy":{
+          "shape":"ResolutionStrategy",
+          "documentation":"<p>The mechanism used to resolve the account selection from the account pool.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user who last updated the account pool.</p>"
+        }
       }
     },
     "UpdateAssetFilterInput":{
@@ -21519,6 +22860,90 @@
         }
       }
     },
+    "UpdateEnvironmentBlueprintInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description to be updated as part of the <code>UpdateEnvironmentBlueprint</code> action.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain in which an environment blueprint is to be updated.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"EnvironmentBlueprintId",
+          "documentation":"<p>The identifier of the environment blueprint to be updated.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "provisioningProperties":{
+          "shape":"ProvisioningProperties",
+          "documentation":"<p>The provisioning properties to be updated as part of the <code>UpdateEnvironmentBlueprint</code> action.</p>"
+        },
+        "userParameters":{
+          "shape":"CustomParameterList",
+          "documentation":"<p>The user parameters to be updated as part of the <code>UpdateEnvironmentBlueprint</code> action.</p>"
+        }
+      }
+    },
+    "UpdateEnvironmentBlueprintOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "provider",
+        "provisioningProperties"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of when the environment blueprint was created.</p>"
+        },
+        "deploymentProperties":{
+          "shape":"DeploymentProperties",
+          "documentation":"<p>The deployment properties to be updated as part of the <code>UpdateEnvironmentBlueprint</code> action.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description to be updated as part of the <code>UpdateEnvironmentBlueprint</code> action.</p>"
+        },
+        "glossaryTerms":{
+          "shape":"GlossaryTerms",
+          "documentation":"<p>The glossary terms to be updated as part of the <code>UpdateEnvironmentBlueprint</code> action.</p>"
+        },
+        "id":{
+          "shape":"EnvironmentBlueprintId",
+          "documentation":"<p>The identifier of the blueprint to be updated.</p>"
+        },
+        "name":{
+          "shape":"EnvironmentBlueprintName",
+          "documentation":"<p>The name to be updated as part of the <code>UpdateEnvironmentBlueprint</code> action.</p>"
+        },
+        "provider":{
+          "shape":"String",
+          "documentation":"<p>The provider of the blueprint to be udpated.</p>"
+        },
+        "provisioningProperties":{
+          "shape":"ProvisioningProperties",
+          "documentation":"<p>The provisioning properties to be updated as part of the <code>UpdateEnvironmentBlueprint</code> action.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of when the blueprint was updated.</p>"
+        },
+        "userParameters":{
+          "shape":"CustomParameterList",
+          "documentation":"<p>The user parameters to be updated as part of the <code>UpdateEnvironmentBlueprint</code> action.</p>"
+        }
+      }
+    },
     "UpdateEnvironmentInput":{
       "type":"structure",
       "required":[
@@ -21831,6 +23256,10 @@
         "status":{
           "shape":"GlossaryStatus",
           "documentation":"<p>The status to be updated as part of the <code>UpdateGlossary</code> action.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restriction of the restricted glossary.</p>"
         }
       }
     },
@@ -21920,6 +23349,10 @@
         "termRelations":{
           "shape":"TermRelations",
           "documentation":"<p>The term relations to be updated as part of the <code>UpdateGlossaryTerm</code> action.</p>"
+        },
+        "usageRestrictions":{
+          "shape":"GlossaryUsageRestrictions",
+          "documentation":"<p>The usage restriction of a term within a restricted glossary.</p>"
         }
       }
     },
@@ -21986,6 +23419,10 @@
           "documentation":"<p>The ID of the Amazon DataZone domain where a project is being updated.</p>",
           "location":"uri",
           "locationName":"domainIdentifier"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit.</p>"
         },
         "environmentDeploymentDetails":{
           "shape":"EnvironmentDeploymentDetails",

@@ -43,6 +43,7 @@ KNOWN_EXTRA_OUTPUT_KEYS = [
     'cloudfront.ListDistributionsByConnectionMode.DistributionList',
     'cloudfront.ListInvalidations.InvalidationList',
     'cloudfront.ListInvalidationsForDistributionTenant.InvalidationList',
+    'cloudfront.ListOriginAccessControls.OriginAccessControlList',
     'cloudfront.ListPublicKeys.PublicKeyList',
     'cloudfront.ListStreamingDistributions.StreamingDistributionList',
     'cloudfront.ListKeyValueStores.KeyValueStoreList',
@@ -116,9 +117,6 @@ KNOWN_EXTRA_OUTPUT_KEYS = [
     's3.ListParts.UploadId',
     's3.ListParts.AbortRuleId',
     's3.ListParts.RequestCharged',
-    'sms.GetReplicationRuns.replicationJob',
-    'sms.GetServers.lastModifiedOn',
-    'sms.GetServers.serverCatalogStatus',
     'storagegateway.DescribeTapeRecoveryPoints.GatewayARN',
     'storagegateway.DescribeVTLDevices.GatewayARN',
     'storagegateway.ListVolumes.GatewayARN',
@@ -130,6 +128,10 @@ KNOWN_EXTRA_OUTPUT_KEYS = [
     'xray.GetTraceSummaries.TracesProcessedCount',
     'xray.GetTraceSummaries.ApproximateTime',
 ]
+KNOWN_PAGINATORS_WITH_INTEGER_OUTPUTS = (
+    ('dynamodb', 'Query'),
+    ('dynamodb', 'Scan'),
+)
 
 
 def _pagination_configs():
@@ -149,11 +151,12 @@ def _pagination_configs():
 )
 def test_lint_pagination_configs(operation_name, page_config, service_model):
     _validate_known_pagination_keys(page_config)
-    _valiate_result_key_exists(page_config)
+    _validate_result_key_exists(page_config)
     _validate_referenced_operation_exists(operation_name, service_model)
     _validate_operation_has_output(operation_name, service_model)
     _validate_input_keys_match(operation_name, page_config, service_model)
     _validate_output_keys_match(operation_name, page_config, service_model)
+    _validate_new_numeric_keys(operation_name, page_config, service_model)
 
 
 def _validate_known_pagination_keys(page_config):
@@ -164,7 +167,7 @@ def _validate_known_pagination_keys(page_config):
             )
 
 
-def _valiate_result_key_exists(page_config):
+def _validate_result_key_exists(page_config):
     if 'result_key' not in page_config:
         raise AssertionError(
             "Required key 'result_key' is missing "
@@ -257,6 +260,30 @@ def _validate_output_keys_match(operation_name, page_config, service_model):
                 ', '.join(output_members),
             )
         )
+
+
+def _validate_new_numeric_keys(operation_name, page_config, service_model):
+    output_shape = service_model.operation_model(operation_name).output_shape
+    for key in _get_list_value(page_config, 'result_key'):
+        current_shape = output_shape
+        if '.' in key:  # result_key is a JMESPath expression
+            for part in key.split('.'):
+                current_shape = current_shape.members[part]
+        elif key in output_shape.members:
+            current_shape = output_shape.members[key]
+
+        if (
+            getattr(current_shape, 'type_name', None) == 'integer'
+            and (service_model.service_name, operation_name)
+            not in KNOWN_PAGINATORS_WITH_INTEGER_OUTPUTS
+        ):
+            raise AssertionError(
+                f'There is a new operation {operation_name} for service '
+                f'{service_model.service_name} that is configured to sum '
+                'integer outputs across pages. Verify that this behavior is '
+                'correct before allow-listing, since whether or not it is '
+                'appropriate to sum depends on the subject matter.'
+            )
 
 
 def _looks_like_jmespath(expression):

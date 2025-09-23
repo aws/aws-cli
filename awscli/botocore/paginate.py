@@ -411,7 +411,12 @@ class PageIterator:
             elif isinstance(sample, str):
                 empty_value = ''
             elif isinstance(sample, (int, float)):
-                empty_value = 0
+                # Even though we may be resuming from a truncated page, we
+                # still start from the actual numeric secondary result. For
+                # DynamoDB's Count/ScannedCount, this will still show how many
+                # items the server evaluated, even if the client is truncating
+                # due to a StartingToken.
+                empty_value = sample
             else:
                 empty_value = None
             set_value_from_jmespath(parsed, token.expression, empty_value)

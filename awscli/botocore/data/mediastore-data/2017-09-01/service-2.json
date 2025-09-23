@@ -4,12 +4,14 @@
     "apiVersion":"2017-09-01",
     "endpointPrefix":"data.mediastore",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"MediaStore Data",
     "serviceFullName":"AWS Elemental MediaStore Data Plane",
     "serviceId":"MediaStore Data",
     "signatureVersion":"v4",
     "signingName":"mediastore",
-    "uid":"mediastore-data-2017-09-01"
+    "uid":"mediastore-data-2017-09-01",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "DeleteObject":{
@@ -85,7 +87,8 @@
         {"shape":"InternalServerError"}
       ],
       "documentation":"<p>Uploads an object to the specified path. Object sizes are limited to 25 MB for standard upload availability and 10 MB for streaming upload availability.</p>",
-      "authtype":"v4-unsigned-body"
+      "authtype":"v4-unsigned-body",
+      "unsignedPayload":true
     }
   },
   "shapes":{
@@ -120,8 +123,7 @@
     },
     "DeleteObjectResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeObjectRequest":{
       "type":"structure",

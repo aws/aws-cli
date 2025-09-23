@@ -213,6 +213,17 @@ class CreateCluster(Command):
             'schema': argumentschema.AUTO_TERMINATION_POLICY_SCHEMA,
             'help_text': helptext.AUTO_TERMINATION_POLICY,
         },
+        {
+            'name': 'extended-support',
+            'action': 'store_true',
+            'group_name': 'extended-support',
+            'help_text': helptext.EXTENDED_SUPPORT,
+        },
+        {
+            'name': 'no-extended-support',
+            'action': 'store_true',
+            'group_name': 'extended-support',
+        },
     ]
     SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.txt')
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
@@ -513,6 +524,14 @@ class CreateCluster(Command):
 
         if parsed_args.step_concurrency_level is not None:
             params['StepConcurrencyLevel'] = parsed_args.step_concurrency_level
+
+        if parsed_args.extended_support or parsed_args.no_extended_support:
+            params['ExtendedSupport'] = emrutils.apply_boolean_options(
+                parsed_args.extended_support,
+                '--extended-support',
+                parsed_args.no_extended_support,
+                '--no-extended-support',
+            )
 
         if parsed_args.managed_scaling_policy is not None:
             emrutils.apply_dict(

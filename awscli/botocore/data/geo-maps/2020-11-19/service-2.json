@@ -74,6 +74,7 @@
       "output":{"shape":"GetTileResponse"},
       "errors":[
         {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
@@ -119,23 +120,27 @@
     "CompactOverlay":{
       "type":"string",
       "max":7000,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "CountryCode":{
       "type":"string",
       "max":3,
       "min":2,
-      "pattern":"([A-Z]{2}|[A-Z]{3})"
+      "pattern":"([A-Z]{2}|[A-Z]{3})",
+      "sensitive":true
     },
     "DistanceMeters":{
       "type":"long",
       "max":4294967295,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "GeoJsonOverlay":{
       "type":"string",
       "max":7000,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "GetGlyphsRequest":{
       "type":"structure",
@@ -337,7 +342,7 @@
           "locationName":"lang"
         },
         "Padding":{
-          "shape":"Integer",
+          "shape":"SensitiveInteger",
           "documentation":"<p>Applies additional space (in pixels) around overlay feature to prevent them from being cut or obscured.</p> <note> <p>Value for max and min is determined by:</p> <p>Min: <code>1</code> </p> <p>Max: <code>min(height, width)/4</code> </p> </note> <p>Example: <code>100</code> </p>",
           "location":"querystring",
           "locationName":"padding"
@@ -401,19 +406,22 @@
       "type":"integer",
       "box":true,
       "max":1400,
-      "min":64
+      "min":64,
+      "sensitive":true
     },
     "GetStaticMapRequestWidthInteger":{
       "type":"integer",
       "box":true,
       "max":1400,
-      "min":64
+      "min":64,
+      "sensitive":true
     },
     "GetStaticMapRequestZoomFloat":{
       "type":"float",
       "box":true,
       "max":20,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "GetStaticMapResponse":{
       "type":"structure",
@@ -551,15 +559,18 @@
     },
     "GetTileRequestXString":{
       "type":"string",
-      "pattern":".*\\d+.*"
+      "pattern":".*\\d+.*",
+      "sensitive":true
     },
     "GetTileRequestYString":{
       "type":"string",
-      "pattern":".*\\d+.*"
+      "pattern":".*\\d+.*",
+      "sensitive":true
     },
     "GetTileRequestZString":{
       "type":"string",
-      "pattern":".*\\d+.*"
+      "pattern":".*\\d+.*",
+      "sensitive":true
     },
     "GetTileResponse":{
       "type":"structure",
@@ -595,10 +606,6 @@
         }
       },
       "payload":"Blob"
-    },
-    "Integer":{
-      "type":"integer",
-      "box":true
     },
     "InternalServerException":{
       "type":"structure",
@@ -646,13 +653,31 @@
     "PositionListString":{
       "type":"string",
       "min":7,
-      "pattern":"(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?)(,(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?))*"
+      "pattern":"(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?)(,(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?))*",
+      "sensitive":true
     },
     "PositionString":{
       "type":"string",
       "max":36,
       "min":3,
-      "pattern":"-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?"
+      "pattern":"-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?",
+      "sensitive":true
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>Exception thrown when the associated resource could not be found.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
     },
     "ScaleBarUnit":{
       "type":"string",
@@ -662,6 +687,11 @@
         "Miles",
         "MilesKilometers"
       ]
+    },
+    "SensitiveInteger":{
+      "type":"integer",
+      "box":true,
+      "sensitive":true
     },
     "StaticMapStyle":{
       "type":"string",

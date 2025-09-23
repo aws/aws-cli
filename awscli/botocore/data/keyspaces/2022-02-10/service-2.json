@@ -461,6 +461,60 @@
       "box":true,
       "min":1
     },
+    "CdcPropagateTags":{
+      "type":"string",
+      "enum":[
+        "TABLE",
+        "NONE"
+      ]
+    },
+    "CdcSpecification":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"CdcStatus",
+          "documentation":"<p>The status of the CDC stream. You can enable or disable a stream for a table.</p>"
+        },
+        "viewType":{
+          "shape":"ViewType",
+          "documentation":"<p>The view type specifies the changes Amazon Keyspaces records for each changed row in the stream. After you create the stream, you can't make changes to this selection. </p> <p>The options are:</p> <ul> <li> <p> <code>NEW_AND_OLD_IMAGES</code> - both versions of the row, before and after the change. This is the default.</p> </li> <li> <p> <code>NEW_IMAGE</code> - the version of the row after the change.</p> </li> <li> <p> <code>OLD_IMAGE</code> - the version of the row before the change.</p> </li> <li> <p> <code>KEYS_ONLY</code> - the partition and clustering keys of the row that was changed.</p> </li> </ul>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags (key-value pairs) that you want to apply to the stream.</p>"
+        },
+        "propagateTags":{
+          "shape":"CdcPropagateTags",
+          "documentation":"<p>Specifies that the stream inherits the tags from the table.</p>"
+        }
+      },
+      "documentation":"<p>The settings for the CDC stream of a table. For more information about CDC streams, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/cdc.html\">Working with change data capture (CDC) streams in Amazon Keyspaces</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+    },
+    "CdcSpecificationSummary":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"CdcStatus",
+          "documentation":"<p>The status of the CDC stream. Specifies if the table has a CDC stream.</p>"
+        },
+        "viewType":{
+          "shape":"ViewType",
+          "documentation":"<p>The view type specifies the changes Amazon Keyspaces records for each changed row in the stream. This setting can't be changed, after the stream has been created. </p> <p>The options are:</p> <ul> <li> <p> <code>NEW_AND_OLD_IMAGES</code> - both versions of the row, before and after the change. This is the default.</p> </li> <li> <p> <code>NEW_IMAGE</code> - the version of the row after the change.</p> </li> <li> <p> <code>OLD_IMAGE</code> - the version of the row before the change.</p> </li> <li> <p> <code>KEYS_ONLY</code> - the partition and clustering keys of the row that was changed.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The settings of the CDC stream of the table. For more information about CDC streams, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/cdc.html\">Working with change data capture (CDC) streams in Amazon Keyspaces</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+    },
+    "CdcStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "ENABLING",
+        "DISABLED",
+        "DISABLING"
+      ]
+    },
     "ClientSideTimestamps":{
       "type":"structure",
       "required":["status"],
@@ -630,6 +684,10 @@
         "replicaSpecifications":{
           "shape":"ReplicaSpecificationList",
           "documentation":"<p>The optional Amazon Web Services Region specific settings of a multi-Region table. These settings overwrite the general settings of the table for the specified Region. </p> <p>For a multi-Region table in provisioned capacity mode, you can configure the table's read capacity differently for each Region's replica. The write capacity, however, remains synchronized between all replicas to ensure that there's enough capacity to replicate writes across all Regions. To define the read capacity for a table replica in a specific Region, you can do so by configuring the following parameters.</p> <ul> <li> <p> <code>region</code>: The Region where these settings are applied. (Required)</p> </li> <li> <p> <code>readCapacityUnits</code>: The provisioned read capacity units. (Optional)</p> </li> <li> <p> <code>readCapacityAutoScaling</code>: The read capacity auto scaling settings for the table. (Optional) </p> </li> </ul>"
+        },
+        "cdcSpecification":{
+          "shape":"CdcSpecification",
+          "documentation":"<p>The CDC stream settings of the table.</p>"
         }
       }
     },
@@ -979,6 +1037,14 @@
         "replicaSpecifications":{
           "shape":"ReplicaSpecificationSummaryList",
           "documentation":"<p>Returns the Amazon Web Services Region specific settings of all Regions a multi-Region table is replicated in.</p>"
+        },
+        "latestStreamArn":{
+          "shape":"StreamArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the stream.</p>"
+        },
+        "cdcSpecification":{
+          "shape":"CdcSpecificationSummary",
+          "documentation":"<p>The CDC stream settings of the table.</p>"
         }
       }
     },
@@ -1534,6 +1600,12 @@
       "type":"list",
       "member":{"shape":"StaticColumn"}
     },
+    "StreamArn":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"arn:(aws[a-zA-Z0-9-]*):cassandra:.+.*"
+    },
     "String":{"type":"string"},
     "TableName":{
       "type":"string",
@@ -1807,6 +1879,10 @@
         "replicaSpecifications":{
           "shape":"ReplicaSpecificationList",
           "documentation":"<p>The Region specific settings of a multi-Regional table.</p>"
+        },
+        "cdcSpecification":{
+          "shape":"CdcSpecification",
+          "documentation":"<p>The CDC stream settings of the table.</p>"
         }
       }
     },
@@ -1830,6 +1906,15 @@
       },
       "documentation":"<p>The operation failed due to an invalid or malformed request.</p>",
       "exception":true
+    },
+    "ViewType":{
+      "type":"string",
+      "enum":[
+        "NEW_IMAGE",
+        "OLD_IMAGE",
+        "KEYS_ONLY",
+        "NEW_AND_OLD_IMAGES"
+      ]
     },
     "kmsKeyARN":{
       "type":"string",

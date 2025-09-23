@@ -27,7 +27,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Returns attributes for one or more collections, including the collection endpoint and the OpenSearch Dashboards endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html\">Creating and managing Amazon OpenSearch Serverless collections</a>.</p>"
+      "documentation":"<p>Returns attributes for one or more collections, including the collection endpoint, the OpenSearch Dashboards endpoint, and FIPS-compliant endpoints. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html\">Creating and managing Amazon OpenSearch Serverless collections</a>.</p>"
     },
     "BatchGetEffectiveLifecyclePolicy":{
       "name":"BatchGetEffectiveLifecyclePolicy",
@@ -97,13 +97,30 @@
       "input":{"shape":"CreateCollectionRequest"},
       "output":{"shape":"CreateCollectionResponse"},
       "errors":[
-        {"shape":"OcuLimitExceededException"},
         {"shape":"InternalServerException"},
+        {"shape":"OcuLimitExceededException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates a new OpenSearch Serverless collection. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html\">Creating and managing Amazon OpenSearch Serverless collections</a>.</p>",
+      "idempotent":true
+    },
+    "CreateIndex":{
+      "name":"CreateIndex",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIndexRequest"},
+      "output":{"shape":"CreateIndexResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates an index within an OpenSearch Serverless collection. Unlike other OpenSearch indexes, indexes created by this API are automatically configured to conduct automatic semantic enrichment ingestion and search. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html#serverless-semantic-enrichment\">About automatic semantic enrichment</a> in the <i>OpenSearch User Guide</i>.</p>",
       "idempotent":true
     },
     "CreateLifecyclePolicy":{
@@ -137,7 +154,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Specifies a security configuration for OpenSearch Serverless. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-saml.html\">SAML authentication for Amazon OpenSearch Serverless</a>. </p>",
+      "documentation":"<p>Specifies a security configuration for OpenSearch Serverless. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-saml.html\">SAML authentication for Amazon OpenSearch Serverless</a>.</p>",
       "idempotent":true
     },
     "CreateSecurityPolicy":{
@@ -184,8 +201,8 @@
       "output":{"shape":"DeleteAccessPolicyResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes an OpenSearch Serverless access policy. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-data-access.html\">Data access control for Amazon OpenSearch Serverless</a>.</p>",
@@ -201,11 +218,27 @@
       "output":{"shape":"DeleteCollectionResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes an OpenSearch Serverless collection. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html\">Creating and managing Amazon OpenSearch Serverless collections</a>.</p>",
+      "idempotent":true
+    },
+    "DeleteIndex":{
+      "name":"DeleteIndex",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIndexRequest"},
+      "output":{"shape":"DeleteIndexResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes an index from an OpenSearch Serverless collection. Be aware that the index might be configured to conduct automatic semantic enrichment ingestion and search. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html#serverless-semantic-enrichment\">About automatic semantic enrichment</a>.</p>",
       "idempotent":true
     },
     "DeleteLifecyclePolicy":{
@@ -218,8 +251,8 @@
       "output":{"shape":"DeleteLifecyclePolicyResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes an OpenSearch Serverless lifecycle policy. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-lifecycle.html#serverless-lifecycle-delete\">Deleting data lifecycle policies</a>.</p>",
@@ -235,8 +268,8 @@
       "output":{"shape":"DeleteSecurityConfigResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes a security configuration for OpenSearch Serverless. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-saml.html\">SAML authentication for Amazon OpenSearch Serverless</a>.</p>",
@@ -252,8 +285,8 @@
       "output":{"shape":"DeleteSecurityPolicyResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes an OpenSearch Serverless security policy.</p>",
@@ -269,8 +302,8 @@
       "output":{"shape":"DeleteVpcEndpointResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes an OpenSearch Serverless-managed interface endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-vpc.html\">Access Amazon OpenSearch Serverless using an interface endpoint</a>.</p>",
@@ -304,6 +337,21 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Returns account-level settings related to OpenSearch Serverless.</p>"
+    },
+    "GetIndex":{
+      "name":"GetIndex",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIndexRequest"},
+      "output":{"shape":"GetIndexResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves information about an index in an OpenSearch Serverless collection, including its schema definition. The index might be configured to conduct automatic semantic enrichment ingestion and search. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html#serverless-semantic-enrichment\">About automatic semantic enrichment</a>.</p>"
     },
     "GetPoliciesStats":{
       "name":"GetPoliciesStats",
@@ -457,8 +505,8 @@
       "output":{"shape":"TagResourceResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
@@ -474,8 +522,8 @@
       "output":{"shape":"UntagResourceResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Removes a tag or set of tags from an OpenSearch Serverless resource. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/tag-collection.html\">Tagging Amazon OpenSearch Serverless collections</a>.</p>"
@@ -490,8 +538,8 @@
       "output":{"shape":"UpdateAccessPolicyResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Updates an OpenSearch Serverless access policy. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-data-access.html\">Data access control for Amazon OpenSearch Serverless</a>.</p>",
@@ -527,6 +575,22 @@
       "documentation":"<p>Updates an OpenSearch Serverless collection.</p>",
       "idempotent":true
     },
+    "UpdateIndex":{
+      "name":"UpdateIndex",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateIndexRequest"},
+      "output":{"shape":"UpdateIndexResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates an existing index in an OpenSearch Serverless collection. This operation allows you to modify the index schema, including adding new fields or changing field mappings. You can also enable automatic semantic enrichment ingestion and search. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html#serverless-semantic-enrichment\">About automatic semantic enrichment</a>.</p>",
+      "idempotent":true
+    },
     "UpdateLifecyclePolicy":{
       "name":"UpdateLifecyclePolicy",
       "http":{
@@ -537,8 +601,8 @@
       "output":{"shape":"UpdateLifecyclePolicyResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
@@ -555,8 +619,8 @@
       "output":{"shape":"UpdateSecurityConfigResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Updates a security configuration for OpenSearch Serverless. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-saml.html\">SAML authentication for Amazon OpenSearch Serverless</a>.</p>",
@@ -572,8 +636,8 @@
       "output":{"shape":"UpdateSecurityPolicyResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
@@ -861,6 +925,10 @@
           "shape":"String",
           "documentation":"<p>Collection-specific endpoint used to access OpenSearch Dashboards.</p>"
         },
+        "fipsEndpoints":{
+          "shape":"FipsEndpoints",
+          "documentation":"<p>FIPS-compliant endpoints for the collection. These endpoints use FIPS 140-3 validated cryptographic modules and are required for federal government workloads that must comply with FedRAMP security standards.</p>"
+        },
         "failureCode":{
           "shape":"String",
           "documentation":"<p>A failure code associated with the request.</p>"
@@ -870,7 +938,7 @@
           "documentation":"<p>A message associated with the failure code.</p>"
         }
       },
-      "documentation":"<p>Details about each OpenSearch Serverless collection, including the collection endpoint and the OpenSearch Dashboards endpoint.</p>"
+      "documentation":"<p>Details about each OpenSearch Serverless collection, including the collection endpoint, the OpenSearch Dashboards endpoint, and FIPS-compliant endpoints for federal government workloads.</p>"
     },
     "CollectionDetails":{
       "type":"list",
@@ -1152,6 +1220,31 @@
       },
       "documentation":"<p>Describes IAM Identity Center options for creating an OpenSearch Serverless security configuration in the form of a key-value map.</p>"
     },
+    "CreateIndexRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "indexName"
+      ],
+      "members":{
+        "id":{
+          "shape":"CollectionId",
+          "documentation":"<p>The unique identifier of the collection in which to create the index.</p>"
+        },
+        "indexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to create. Index names must be lowercase and can't begin with underscores (_) or hyphens (-).</p>"
+        },
+        "indexSchema":{
+          "shape":"IndexSchema",
+          "documentation":"<p>The JSON schema definition for the index, including field mappings and settings.</p>"
+        }
+      }
+    },
+    "CreateIndexResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "CreateLifecyclePolicyRequest":{
       "type":"structure",
       "required":[
@@ -1213,11 +1306,15 @@
         },
         "samlOptions":{
           "shape":"SamlConfigOptions",
-          "documentation":"<p>Describes SAML options in in the form of a key-value map. This field is required if you specify <code>saml</code> for the <code>type</code> parameter.</p>"
+          "documentation":"<p>Describes SAML options in in the form of a key-value map. This field is required if you specify <code>SAML</code> for the <code>type</code> parameter.</p>"
         },
         "iamIdentityCenterOptions":{
           "shape":"CreateIamIdentityCenterConfigOptions",
           "documentation":"<p>Describes IAM Identity Center options in the form of a key-value map. This field is required if you specify iamidentitycenter for the type parameter.</p>"
+        },
+        "iamFederationOptions":{
+          "shape":"IamFederationConfigOptions",
+          "documentation":"<p>Describes IAM federation options in the form of a key-value map. This field is required if you specify <code>iamFederation</code> for the <code>type</code> parameter.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -1231,7 +1328,7 @@
       "members":{
         "securityConfigDetail":{
           "shape":"SecurityConfigDetail",
-          "documentation":"<p>Details about the created security configuration. </p>"
+          "documentation":"<p>Details about the created security configuration.</p>"
         }
       }
     },
@@ -1357,8 +1454,7 @@
     },
     "DeleteAccessPolicyResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteCollectionDetail":{
       "type":"structure",
@@ -1402,6 +1498,27 @@
         }
       }
     },
+    "DeleteIndexRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "indexName"
+      ],
+      "members":{
+        "id":{
+          "shape":"CollectionId",
+          "documentation":"<p>The unique identifier of the collection containing the index to delete.</p>"
+        },
+        "indexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to delete.</p>"
+        }
+      }
+    },
+    "DeleteIndexResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteLifecyclePolicyRequest":{
       "type":"structure",
       "required":[
@@ -1426,8 +1543,7 @@
     },
     "DeleteLifecyclePolicyResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteSecurityConfigRequest":{
       "type":"structure",
@@ -1446,8 +1562,7 @@
     },
     "DeleteSecurityConfigResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteSecurityPolicyRequest":{
       "type":"structure",
@@ -1473,8 +1588,7 @@
     },
     "DeleteSecurityPolicyResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteVpcEndpointDetail":{
       "type":"structure",
@@ -1520,8 +1634,7 @@
     },
     "Document":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true
     },
     "EffectiveLifecyclePolicyDetail":{
@@ -1584,6 +1697,20 @@
       "type":"list",
       "member":{"shape":"EffectiveLifecyclePolicyErrorDetail"}
     },
+    "FipsEndpoints":{
+      "type":"structure",
+      "members":{
+        "collectionEndpoint":{
+          "shape":"String",
+          "documentation":"<p>FIPS-compliant collection endpoint used to submit index, search, and data upload requests to an OpenSearch Serverless collection. This endpoint uses FIPS 140-3 validated cryptography and is required for federal government workloads.</p>"
+        },
+        "dashboardEndpoint":{
+          "shape":"String",
+          "documentation":"<p>FIPS-compliant endpoint used to access OpenSearch Dashboards. This endpoint uses FIPS 140-3 validated cryptography and is required for federal government workloads that need dashboard visualization capabilities.</p>"
+        }
+      },
+      "documentation":"<p>FIPS-compliant endpoint URLs for an OpenSearch Serverless collection. These endpoints ensure all data transmission uses FIPS 140-3 validated cryptographic implementations, meeting federal security requirements for government workloads.</p>"
+    },
     "GetAccessPolicyRequest":{
       "type":"structure",
       "required":[
@@ -1612,8 +1739,7 @@
     },
     "GetAccountSettingsRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetAccountSettingsResponse":{
       "type":"structure",
@@ -1624,10 +1750,35 @@
         }
       }
     },
-    "GetPoliciesStatsRequest":{
+    "GetIndexRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "indexName"
+      ],
+      "members":{
+        "id":{
+          "shape":"CollectionId",
+          "documentation":"<p>The unique identifier of the collection containing the index.</p>"
+        },
+        "indexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to retrieve information about.</p>"
+        }
+      }
+    },
+    "GetIndexResponse":{
       "type":"structure",
       "members":{
+        "indexSchema":{
+          "shape":"IndexSchema",
+          "documentation":"<p>The JSON schema definition for the index, including field mappings and settings.</p>"
+        }
       }
+    },
+    "GetPoliciesStatsRequest":{
+      "type":"structure",
+      "members":{}
     },
     "GetPoliciesStatsResponse":{
       "type":"structure",
@@ -1699,6 +1850,20 @@
         }
       }
     },
+    "IamFederationConfigOptions":{
+      "type":"structure",
+      "members":{
+        "groupAttribute":{
+          "shape":"iamFederationGroupAttribute",
+          "documentation":"<p>The group attribute for this IAM federation integration. This attribute is used to map identity provider groups to OpenSearch Serverless permissions.</p>"
+        },
+        "userAttribute":{
+          "shape":"iamFederationUserAttribute",
+          "documentation":"<p>The user attribute for this IAM federation integration. This attribute is used to identify users in the federated authentication process.</p>"
+        }
+      },
+      "documentation":"<p>Describes IAM federation options for an OpenSearch Serverless security configuration in the form of a key-value map. These options define how OpenSearch Serverless integrates with external identity providers using federation.</p>"
+    },
     "IamIdentityCenterApplicationArn":{
       "type":"string",
       "max":1224,
@@ -1755,6 +1920,12 @@
         "UserName",
         "Email"
       ]
+    },
+    "IndexName":{"type":"string"},
+    "IndexSchema":{
+      "type":"structure",
+      "members":{},
+      "document":true
     },
     "IndexingCapacityValue":{
       "type":"integer",
@@ -1945,7 +2116,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>If your initial <code>ListAccessPolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListAccessPolicies</code> operations, which returns results in the next page. </p>"
+          "documentation":"<p>If your initial <code>ListAccessPolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListAccessPolicies</code> operations, which returns results in the next page.</p>"
         },
         "maxResults":{
           "shape":"ListAccessPoliciesRequestMaxResultsInteger",
@@ -2071,7 +2242,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>If your initial <code>ListSecurityConfigs</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListSecurityConfigs</code> operations, which returns results in the next page. </p>"
+          "documentation":"<p>If your initial <code>ListSecurityConfigs</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListSecurityConfigs</code> operations, which returns results in the next page.</p>"
         },
         "maxResults":{
           "shape":"ListSecurityConfigsRequestMaxResultsInteger",
@@ -2112,7 +2283,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>If your initial <code>ListSecurityPolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListSecurityPolicies</code> operations, which returns results in the next page. </p>"
+          "documentation":"<p>If your initial <code>ListSecurityPolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListSecurityPolicies</code> operations, which returns results in the next page.</p>"
         },
         "maxResults":{
           "shape":"ListSecurityPoliciesRequestMaxResultsInteger",
@@ -2274,7 +2445,7 @@
         },
         "openSearchServerlessEntityId":{
           "shape":"openSearchServerlessEntityId",
-          "documentation":"<p>Custom entity id attribute to override default entity id for this saml integration.</p>"
+          "documentation":"<p>Custom entity ID attribute to override the default entity ID for this SAML integration.</p>"
         },
         "sessionTimeout":{
           "shape":"SamlConfigOptionsSessionTimeoutInteger",
@@ -2321,6 +2492,10 @@
           "shape":"IamIdentityCenterConfigOptions",
           "documentation":"<p>Describes IAM Identity Center options in the form of a key-value map.</p>"
         },
+        "iamFederationOptions":{
+          "shape":"IamFederationConfigOptions",
+          "documentation":"<p>Describes IAM federation options in the form of a key-value map. Contains configuration details about how OpenSearch Serverless integrates with external identity providers through federation.</p>"
+        },
         "createdDate":{
           "shape":"Long",
           "documentation":"<p>The date the configuration was created.</p>"
@@ -2330,7 +2505,7 @@
           "documentation":"<p>The timestamp of when the configuration was last modified.</p>"
         }
       },
-      "documentation":"<p>Details about a security configuration for OpenSearch Serverless. </p>"
+      "documentation":"<p>Details about a security configuration for OpenSearch Serverless.</p>"
     },
     "SecurityConfigId":{
       "type":"string",
@@ -2385,7 +2560,8 @@
       "type":"string",
       "enum":[
         "saml",
-        "iamidentitycenter"
+        "iamidentitycenter",
+        "iamfederation"
       ]
     },
     "SecurityGroupId":{
@@ -2537,7 +2713,6 @@
     "SubnetIds":{
       "type":"list",
       "member":{"shape":"SubnetId"},
-      "max":6,
       "min":1
     },
     "Tag":{
@@ -2588,8 +2763,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -2621,8 +2795,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateAccessPolicyRequest":{
       "type":"structure",
@@ -2679,7 +2852,7 @@
       "members":{
         "accountSettingsDetail":{
           "shape":"AccountSettingsDetail",
-          "documentation":"<p>OpenSearch Serverless-related settings for the current Amazon Web Services account. </p>"
+          "documentation":"<p>OpenSearch Serverless-related settings for the current Amazon Web Services account.</p>"
         }
       }
     },
@@ -2768,6 +2941,31 @@
       },
       "documentation":"<p>Describes IAM Identity Center options for updating an OpenSearch Serverless security configuration in the form of a key-value map.</p>"
     },
+    "UpdateIndexRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "indexName"
+      ],
+      "members":{
+        "id":{
+          "shape":"CollectionId",
+          "documentation":"<p>The unique identifier of the collection containing the index to update.</p>"
+        },
+        "indexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to update.</p>"
+        },
+        "indexSchema":{
+          "shape":"IndexSchema",
+          "documentation":"<p>The updated JSON schema definition for the index, including field mappings and settings. </p>"
+        }
+      }
+    },
+    "UpdateIndexResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "UpdateLifecyclePolicyRequest":{
       "type":"structure",
       "required":[
@@ -2838,6 +3036,10 @@
         "iamIdentityCenterOptionsUpdates":{
           "shape":"UpdateIamIdentityCenterConfigOptions",
           "documentation":"<p>Describes IAM Identity Center options in the form of a key-value map.</p>"
+        },
+        "iamFederationOptions":{
+          "shape":"IamFederationConfigOptions",
+          "documentation":"<p>Describes IAM federation options in the form of a key-value map for updating an existing security configuration. Use this field to modify IAM federation settings for the security configuration.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -3110,6 +3312,18 @@
       "min":1,
       "pattern":"vpc-[0-9a-z]*"
     },
+    "iamFederationGroupAttribute":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z][A-Za-z0-9_.:/=+\\-@]*"
+    },
+    "iamFederationUserAttribute":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z][A-Za-z0-9_.:/=+\\-@]*"
+    },
     "openSearchServerlessEntityId":{
       "type":"string",
       "max":1024,
@@ -3135,5 +3349,5 @@
       "pattern":".*[\\w+=,.@-]+.*"
     }
   },
-  "documentation":"<p>Use the Amazon OpenSearch Serverless API to create, configure, and manage OpenSearch Serverless collections and security policies.</p> <p>OpenSearch Serverless is an on-demand, pre-provisioned serverless configuration for Amazon OpenSearch Service. OpenSearch Serverless removes the operational complexities of provisioning, configuring, and tuning your OpenSearch clusters. It enables you to easily search and analyze petabytes of data without having to worry about the underlying infrastructure and data management.</p> <p> To learn more about OpenSearch Serverless, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-overview.html\">What is Amazon OpenSearch Serverless?</a> </p>"
+  "documentation":"<p>Use the Amazon OpenSearch Serverless API to create, configure, and manage OpenSearch Serverless collections and security policies.</p> <p>OpenSearch Serverless is an on-demand, pre-provisioned serverless configuration for Amazon OpenSearch Service. OpenSearch Serverless removes the operational complexities of provisioning, configuring, and tuning your OpenSearch clusters. It enables you to easily search and analyze petabytes of data without having to worry about the underlying infrastructure and data management.</p> <p>To learn more about OpenSearch Serverless, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-overview.html\">What is Amazon OpenSearch Serverless?</a> </p>"
 }

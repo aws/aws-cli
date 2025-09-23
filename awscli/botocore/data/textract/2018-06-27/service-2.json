@@ -5,11 +5,13 @@
     "endpointPrefix":"textract",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"Amazon Textract",
     "serviceId":"Textract",
     "signatureVersion":"v4",
     "targetPrefix":"Textract",
-    "uid":"textract-2018-06-27"
+    "uid":"textract-2018-06-27",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AnalyzeDocument":{
@@ -428,7 +430,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Starts the asynchronous detection of text in a document. Amazon Textract can detect lines of text and the words that make up a line of text.</p> <p> <code>StartDocumentTextDetection</code> can analyze text in documents that are in JPEG, PNG, TIFF, and PDF format. The documents are stored in an Amazon S3 bucket. Use <a>DocumentLocation</a> to specify the bucket name and file name of the document. </p> <p> <code>StartTextDetection</code> returns a job identifier (<code>JobId</code>) that you use to get the results of the operation. When text detection is finished, Amazon Textract publishes a completion status to the Amazon Simple Notification Service (Amazon SNS) topic that you specify in <code>NotificationChannel</code>. To get the results of the text detection operation, first check that the status value published to the Amazon SNS topic is <code>SUCCEEDED</code>. If so, call <a>GetDocumentTextDetection</a>, and pass the job identifier (<code>JobId</code>) from the initial call to <code>StartDocumentTextDetection</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/textract/latest/dg/how-it-works-detecting.html\">Document Text Detection</a>.</p>"
+      "documentation":"<p>Starts the asynchronous detection of text in a document. Amazon Textract can detect lines of text and the words that make up a line of text.</p> <p> <code>StartDocumentTextDetection</code> can analyze text in documents that are in JPEG, PNG, TIFF, and PDF format. The documents are stored in an Amazon S3 bucket. Use <a>DocumentLocation</a> to specify the bucket name and file name of the document. </p> <p> <code>StartDocumentTextDetection</code> returns a job identifier (<code>JobId</code>) that you use to get the results of the operation. When text detection is finished, Amazon Textract publishes a completion status to the Amazon Simple Notification Service (Amazon SNS) topic that you specify in <code>NotificationChannel</code>. To get the results of the text detection operation, first check that the status value published to the Amazon SNS topic is <code>SUCCEEDED</code>. If so, call <a>GetDocumentTextDetection</a>, and pass the job identifier (<code>JobId</code>) from the initial call to <code>StartDocumentTextDetection</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/textract/latest/dg/how-it-works-detecting.html\">Document Text Detection</a>.</p>"
     },
     "StartExpenseAnalysis":{
       "name":"StartExpenseAnalysis",
@@ -541,8 +543,7 @@
   "shapes":{
     "AccessDeniedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You aren't authorized to perform the action. Use the Amazon Resource Name (ARN) of an authorized user or IAM role to perform the operation.</p>",
       "exception":true
     },
@@ -838,6 +839,7 @@
         }
       }
     },
+    "Angle":{"type":"float"},
     "AutoUpdate":{
       "type":"string",
       "enum":[
@@ -847,8 +849,7 @@
     },
     "BadDocumentException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Amazon Textract isn't able to read the document. For more information on the document limits in Amazon Textract, see <a>limits</a>.</p>",
       "exception":true
     },
@@ -857,7 +858,7 @@
       "members":{
         "BlockType":{
           "shape":"BlockType",
-          "documentation":"<p>The type of text item that's recognized. In operations for text detection, the following types are returned:</p> <ul> <li> <p> <i>PAGE</i> - Contains a list of the LINE <code>Block</code> objects that are detected on a document page.</p> </li> <li> <p> <i>WORD</i> - A word detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p> <i>LINE</i> - A string of tab-delimited, contiguous words that are detected on a document page.</p> </li> </ul> <p>In text analysis operations, the following types are returned:</p> <ul> <li> <p> <i>PAGE</i> - Contains a list of child <code>Block</code> objects that are detected on a document page.</p> </li> <li> <p> <i>KEY_VALUE_SET</i> - Stores the KEY and VALUE <code>Block</code> objects for linked text that's detected on a document page. Use the <code>EntityType</code> field to determine if a KEY_VALUE_SET object is a KEY <code>Block</code> object or a VALUE <code>Block</code> object. </p> </li> <li> <p> <i>WORD</i> - A word that's detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p> <i>LINE</i> - A string of tab-delimited, contiguous words that are detected on a document page.</p> </li> <li> <p> <i>TABLE</i> - A table that's detected on a document page. A table is grid-based information with two or more rows or columns, with a cell span of one row and one column each. </p> </li> <li> <p> <i>TABLE_TITLE</i> - The title of a table. A title is typically a line of text above or below a table, or embedded as the first row of a table. </p> </li> <li> <p> <i>TABLE_FOOTER</i> - The footer associated with a table. A footer is typically a line or lines of text below a table or embedded as the last row of a table. </p> </li> <li> <p> <i>CELL</i> - A cell within a detected table. The cell is the parent of the block that contains the text in the cell.</p> </li> <li> <p> <i>MERGED_CELL</i> - A cell in a table whose content spans more than one row or column. The <code>Relationships</code> array for this cell contain data from individual cells.</p> </li> <li> <p> <i>SELECTION_ELEMENT</i> - A selection element such as an option button (radio button) or a check box that's detected on a document page. Use the value of <code>SelectionStatus</code> to determine the status of the selection element.</p> </li> <li> <p> <i>SIGNATURE</i> - The location and confidence score of a signature detected on a document page. Can be returned as part of a Key-Value pair or a detected cell.</p> </li> <li> <p> <i>QUERY</i> - A question asked during the call of AnalyzeDocument. Contains an alias and an ID that attaches it to its answer.</p> </li> <li> <p> <i>QUERY_RESULT</i> - A response to a question asked during the call of analyze document. Comes with an alias and ID for ease of locating in a response. Also contains location and confidence score.</p> </li> </ul> <p>The following BlockTypes are only returned for Amazon Textract Layout.</p> <ul> <li> <p> <code>LAYOUT_TITLE</code> - The main title of the document.</p> </li> <li> <p> <code>LAYOUT_HEADER</code> - Text located in the top margin of the document.</p> </li> <li> <p> <code>LAYOUT_FOOTER</code> - Text located in the bottom margin of the document.</p> </li> <li> <p> <code>LAYOUT_SECTION_HEADER</code> - The titles of sections within a document.</p> </li> <li> <p> <code>LAYOUT_PAGE_NUMBER</code> - The page number of the documents.</p> </li> <li> <p> <code>LAYOUT_LIST</code> - Any information grouped together in list form. </p> </li> <li> <p> <code>LAYOUT_FIGURE</code> - Indicates the location of an image in a document.</p> </li> <li> <p> <code>LAYOUT_TABLE</code> - Indicates the location of a table in the document.</p> </li> <li> <p> <code>LAYOUT_KEY_VALUE</code> - Indicates the location of form key-values in a document.</p> </li> <li> <p> <code>LAYOUT_TEXT</code> - Text that is present typically as a part of paragraphs in documents.</p> </li> </ul>"
+          "documentation":"<p>The type of text item that's recognized. In operations for text detection, the following types are returned:</p> <ul> <li> <p> <i>PAGE</i> - Contains a list of the LINE <code>Block</code> objects that are detected on a document page.</p> </li> <li> <p> <i>WORD</i> - A word detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p> <i>LINE</i> - A string of space-delimited, contiguous words that are detected on a document page.</p> </li> </ul> <p>In text analysis operations, the following types are returned:</p> <ul> <li> <p> <i>PAGE</i> - Contains a list of child <code>Block</code> objects that are detected on a document page.</p> </li> <li> <p> <i>KEY_VALUE_SET</i> - Stores the KEY and VALUE <code>Block</code> objects for linked text that's detected on a document page. Use the <code>EntityType</code> field to determine if a KEY_VALUE_SET object is a KEY <code>Block</code> object or a VALUE <code>Block</code> object. </p> </li> <li> <p> <i>WORD</i> - A word that's detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p> <i>LINE</i> - A string of tab-delimited, contiguous words that are detected on a document page.</p> </li> <li> <p> <i>TABLE</i> - A table that's detected on a document page. A table is grid-based information with two or more rows or columns, with a cell span of one row and one column each. </p> </li> <li> <p> <i>TABLE_TITLE</i> - The title of a table. A title is typically a line of text above or below a table, or embedded as the first row of a table. </p> </li> <li> <p> <i>TABLE_FOOTER</i> - The footer associated with a table. A footer is typically a line or lines of text below a table or embedded as the last row of a table. </p> </li> <li> <p> <i>CELL</i> - A cell within a detected table. The cell is the parent of the block that contains the text in the cell.</p> </li> <li> <p> <i>MERGED_CELL</i> - A cell in a table whose content spans more than one row or column. The <code>Relationships</code> array for this cell contain data from individual cells.</p> </li> <li> <p> <i>SELECTION_ELEMENT</i> - A selection element such as an option button (radio button) or a check box that's detected on a document page. Use the value of <code>SelectionStatus</code> to determine the status of the selection element.</p> </li> <li> <p> <i>SIGNATURE</i> - The location and confidence score of a signature detected on a document page. Can be returned as part of a Key-Value pair or a detected cell.</p> </li> <li> <p> <i>QUERY</i> - A question asked during the call of AnalyzeDocument. Contains an alias and an ID that attaches it to its answer.</p> </li> <li> <p> <i>QUERY_RESULT</i> - A response to a question asked during the call of analyze document. Comes with an alias and ID for ease of locating in a response. Also contains location and confidence score.</p> </li> </ul> <p>The following BlockTypes are only returned for Amazon Textract Layout.</p> <ul> <li> <p> <code>LAYOUT_TITLE</code> - The main title of the document.</p> </li> <li> <p> <code>LAYOUT_HEADER</code> - Text located in the top margin of the document.</p> </li> <li> <p> <code>LAYOUT_FOOTER</code> - Text located in the bottom margin of the document.</p> </li> <li> <p> <code>LAYOUT_SECTION_HEADER</code> - The titles of sections within a document.</p> </li> <li> <p> <code>LAYOUT_PAGE_NUMBER</code> - The page number of the documents.</p> </li> <li> <p> <code>LAYOUT_LIST</code> - Any information grouped together in list form. </p> </li> <li> <p> <code>LAYOUT_FIGURE</code> - Indicates the location of an image in a document.</p> </li> <li> <p> <code>LAYOUT_TABLE</code> - Indicates the location of a table in the document.</p> </li> <li> <p> <code>LAYOUT_KEY_VALUE</code> - Indicates the location of form key-values in a document.</p> </li> <li> <p> <code>LAYOUT_TEXT</code> - Text that is present typically as a part of paragraphs in documents.</p> </li> </ul>"
         },
         "Confidence":{
           "shape":"Percent",
@@ -981,8 +982,7 @@
     },
     "ConflictException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Updating or deleting a resource can cause an inconsistent state.</p>",
       "exception":true
     },
@@ -1099,8 +1099,7 @@
     },
     "DeleteAdapterResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAdapterVersionRequest":{
       "type":"structure",
@@ -1121,8 +1120,7 @@
     },
     "DeleteAdapterVersionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DetectDocumentTextRequest":{
       "type":"structure",
@@ -1233,8 +1231,7 @@
     },
     "DocumentTooLargeException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The document can't be processed because it's too large. The maximum document size for synchronous operations 10 MB. The maximum document size for asynchronous operations is 500 MB for PDF files.</p>",
       "exception":true
     },
@@ -1441,6 +1438,10 @@
         "Polygon":{
           "shape":"Polygon",
           "documentation":"<p>Within the bounding box, a fine-grained polygon around the recognized item.</p>"
+        },
+        "RotationAngle":{
+          "shape":"Angle",
+          "documentation":"<p>Provides a numerical value corresponding to the rotation of the text.</p>"
         }
       },
       "documentation":"<p>Information about where the following items are located on a document page: detected page, text, key-value pairs, tables, table cells, and selection elements.</p>"
@@ -1884,8 +1885,7 @@
     },
     "IdempotentParameterMismatchException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A <code>ClientRequestToken</code> input parameter was reused with an operation, but at least one of the other input parameters is different from the previous call to the operation. </p>",
       "exception":true
     },
@@ -1930,37 +1930,32 @@
     },
     "InternalServerError":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Amazon Textract experienced a service issue. Try your call again.</p>",
       "exception":true,
       "fault":true
     },
     "InvalidJobIdException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An invalid job identifier was passed to an asynchronous analysis operation.</p>",
       "exception":true
     },
     "InvalidKMSKeyException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> Indicates you do not have decrypt permissions with the KMS key entered, or the KMS key was entered incorrectly. </p>",
       "exception":true
     },
     "InvalidParameterException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An input parameter violated a constraint. For example, in synchronous operations, an <code>InvalidParameterException</code> exception occurs when neither of the <code>S3Object</code> or <code>Bytes</code> values are supplied in the <code>Document</code> request parameter. Validate your parameter before calling the API operation again.</p>",
       "exception":true
     },
     "InvalidS3ObjectException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Amazon Textract is unable to access the S3 object that's specified in the request. for more information, <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-access-control.html\">Configure Access to Amazon S3</a> For troubleshooting information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/troubleshooting.html\">Troubleshooting Amazon S3</a> </p>",
       "exception":true
     },
@@ -2085,8 +2080,7 @@
     },
     "LimitExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An Amazon Textract service limit was exceeded. For example, if you start too many asynchronous jobs concurrently, calls to start operations (<code>StartDocumentTextDetection</code>, for example) raise a LimitExceededException exception (HTTP status code: 400) until the number of concurrently running jobs is below the Amazon Textract service limit. </p>",
       "exception":true
     },
@@ -2343,8 +2337,7 @@
     },
     "ProvisionedThroughputExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The number of requests exceeded your throughput limit. If you want to increase this limit, contact Amazon Textract.</p>",
       "exception":true
     },
@@ -2434,8 +2427,7 @@
     },
     "ResourceNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> Returned when an operation tried to access a nonexistent resource. </p>",
       "exception":true
     },
@@ -2460,7 +2452,7 @@
         },
         "Name":{
           "shape":"S3ObjectName",
-          "documentation":"<p>The file name of the input document. Synchronous operations can use image files that are in JPEG or PNG format. Asynchronous operations also support PDF and TIFF format files.</p>"
+          "documentation":"<p>The file name of the input document. Image files may be in PDF, TIFF, JPEG, or PNG format.</p>"
         },
         "Version":{
           "shape":"S3ObjectVersion",
@@ -2496,8 +2488,7 @@
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Returned when a request cannot be completed as it would exceed a maximum service quota.</p>",
       "exception":true
     },
@@ -2737,8 +2728,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -2755,8 +2745,7 @@
     },
     "ThrottlingException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Amazon Textract is temporarily unable to process the request. Try your call again.</p>",
       "exception":true,
       "fault":true
@@ -2785,8 +2774,7 @@
     },
     "UnsupportedDocumentException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The format of the input document isn't supported. Documents for operations can be in PNG, JPEG, PDF, or TIFF format.</p>",
       "exception":true
     },
@@ -2809,8 +2797,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateAdapterRequest":{
       "type":"structure",
@@ -2865,8 +2852,7 @@
     },
     "ValidationException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> Indicates that a request was not valid. Check request for proper formatting. </p>",
       "exception":true
     },

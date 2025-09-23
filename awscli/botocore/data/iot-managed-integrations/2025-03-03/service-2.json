@@ -13,6 +13,62 @@
     "uid":"iot-managed-integrations-2025-03-03"
   },
   "operations":{
+    "CreateAccountAssociation":{
+      "name":"CreateAccountAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/account-associations",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateAccountAssociationRequest"},
+      "output":{"shape":"CreateAccountAssociationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a new account association via the destination id.</p>"
+    },
+    "CreateCloudConnector":{
+      "name":"CreateCloudConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cloud-connectors",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateCloudConnectorRequest"},
+      "output":{"shape":"CreateCloudConnectorResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a C2C (cloud-to-cloud) connector.</p>"
+    },
+    "CreateConnectorDestination":{
+      "name":"CreateConnectorDestination",
+      "http":{
+        "method":"POST",
+        "requestUri":"/connector-destinations",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateConnectorDestinationRequest"},
+      "output":{"shape":"CreateConnectorDestinationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Create a connector destination for connecting a cloud-to-cloud (C2C) connector to the customer's Amazon Web Services account.</p>"
+    },
     "CreateCredentialLocker":{
       "name":"CreateCredentialLocker",
       "http":{
@@ -122,8 +178,10 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
+        {"shape":"UnauthorizedException"},
         {"shape":"ConflictException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Create an over-the-air (OTA) task to update a device.</p>"
     },
@@ -161,9 +219,65 @@
         {"shape":"UnauthorizedException"},
         {"shape":"ConflictException"},
         {"shape":"ServiceUnavailableException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Create a provisioning profile for a device to execute the provisioning flows using a provisioning template. The provisioning template is a document that defines the set of resources and policies applied to a device during the provisioning process.</p>"
+    },
+    "DeleteAccountAssociation":{
+      "name":"DeleteAccountAssociation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/account-associations/{AccountAssociationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAccountAssociationRequest"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Remove a third party account and related devices from an end user.</p>",
+      "idempotent":true
+    },
+    "DeleteCloudConnector":{
+      "name":"DeleteCloudConnector",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/cloud-connectors/{Identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteCloudConnectorRequest"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Delete a cloud connector.</p>",
+      "idempotent":true
+    },
+    "DeleteConnectorDestination":{
+      "name":"DeleteConnectorDestination",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/connector-destinations/{Identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteConnectorDestinationRequest"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Delete a connector destination for connecting a cloud-to-cloud (C2C) connector to the customer's Amazon Web Services account.</p>",
+      "idempotent":true
     },
     "DeleteCredentialLocker":{
       "name":"DeleteCredentialLocker",
@@ -272,7 +386,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Delete the over-the-air (OTA) task.</p>",
       "idempotent":true
@@ -314,6 +429,79 @@
       ],
       "documentation":"<p>Delete a provisioning profile.</p>",
       "idempotent":true
+    },
+    "DeregisterAccountAssociation":{
+      "name":"DeregisterAccountAssociation",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/managed-thing-associations/deregister",
+        "responseCode":200
+      },
+      "input":{"shape":"DeregisterAccountAssociationRequest"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deregisters an account association, removing the connection between a managed thing and a third-party account.</p>",
+      "idempotent":true
+    },
+    "GetAccountAssociation":{
+      "name":"GetAccountAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/account-associations/{AccountAssociationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAccountAssociationRequest"},
+      "output":{"shape":"GetAccountAssociationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get an account association for an Amazon Web Services account linked to a customer-managed destination.</p>"
+    },
+    "GetCloudConnector":{
+      "name":"GetCloudConnector",
+      "http":{
+        "method":"GET",
+        "requestUri":"/cloud-connectors/{Identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCloudConnectorRequest"},
+      "output":{"shape":"GetCloudConnectorResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets all the information about a connector for a connector developer.</p>"
+    },
+    "GetConnectorDestination":{
+      "name":"GetConnectorDestination",
+      "http":{
+        "method":"GET",
+        "requestUri":"/connector-destinations/{Identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConnectorDestinationRequest"},
+      "output":{"shape":"GetConnectorDestinationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get a connector destination of a cloud-to-cloud (C2C) connector connecting to a customer's Amazon Web Services account.</p>"
     },
     "GetCredentialLocker":{
       "name":"GetCredentialLocker",
@@ -527,7 +715,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Get the metadata information for a managed thing.</p>"
+      "documentation":"<p>Get the metadata information for a managed thing.</p> <note> <p>The <code>managedThing</code> <code>metadata</code> parameter is used for associating attributes with a <code>managedThing</code> that can be used for grouping over-the-air (OTA) tasks. Name value pairs in <code>metadata</code> can be used in the <code>OtaTargetQueryString</code> parameter for the <code>CreateOtaTask</code> API operation.</p> </note>"
     },
     "GetManagedThingState":{
       "name":"GetManagedThingState",
@@ -661,6 +849,58 @@
       ],
       "documentation":"<p>Gets a schema version with the provided information.</p>"
     },
+    "ListAccountAssociations":{
+      "name":"ListAccountAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/account-associations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAccountAssociationsRequest"},
+      "output":{"shape":"ListAccountAssociationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists all account associations, with optional filtering by connector destination ID.</p>"
+    },
+    "ListCloudConnectors":{
+      "name":"ListCloudConnectors",
+      "http":{
+        "method":"GET",
+        "requestUri":"/cloud-connectors",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCloudConnectorsRequest"},
+      "output":{"shape":"ListCloudConnectorsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of connectors based on permissions. </p>"
+    },
+    "ListConnectorDestinations":{
+      "name":"ListConnectorDestinations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/connector-destinations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConnectorDestinationsRequest"},
+      "output":{"shape":"ListConnectorDestinationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists all connector destinations, with optional filtering by cloud connector ID.</p>"
+    },
     "ListCredentialLockers":{
       "name":"ListCredentialLockers",
       "http":{
@@ -696,6 +936,45 @@
       ],
       "documentation":"<p> List all destination names under one Amazon Web Services account.</p>"
     },
+    "ListDeviceDiscoveries":{
+      "name":"ListDeviceDiscoveries",
+      "http":{
+        "method":"GET",
+        "requestUri":"/device-discoveries",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDeviceDiscoveriesRequest"},
+      "output":{"shape":"ListDeviceDiscoveriesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists all device discovery tasks, with optional filtering by type and status.</p>"
+    },
+    "ListDiscoveredDevices":{
+      "name":"ListDiscoveredDevices",
+      "http":{
+        "method":"GET",
+        "requestUri":"/device-discoveries/{Identifier}/devices",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDiscoveredDevicesRequest"},
+      "output":{"shape":"ListDiscoveredDevicesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists all devices discovered during a specific device discovery task.</p>"
+    },
     "ListEventLogConfigurations":{
       "name":"ListEventLogConfigurations",
       "http":{
@@ -712,6 +991,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>List all event log configurations for an account.</p>"
+    },
+    "ListManagedThingAccountAssociations":{
+      "name":"ListManagedThingAccountAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/managed-thing-associations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListManagedThingAccountAssociationsRequest"},
+      "output":{"shape":"ListManagedThingAccountAssociationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists all account associations for a specific managed thing.</p>"
     },
     "ListManagedThingSchemas":{
       "name":"ListManagedThingSchemas",
@@ -750,7 +1046,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>List all of the associations and statuses for a managed thing by its owner.</p>"
+      "documentation":"<p>Listing all managed things with provision for filters.</p>"
     },
     "ListNotificationConfigurations":{
       "name":"ListNotificationConfigurations",
@@ -799,7 +1095,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>List all of the over-the-air (OTA) task executions.</p>"
     },
@@ -816,7 +1113,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>List all of the over-the-air (OTA) tasks.</p>"
     },
@@ -857,6 +1155,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists schema versions with the provided information.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>List tags for the specified resource.</p>"
     },
     "PutDefaultEncryptionConfiguration":{
       "name":"PutDefaultEncryptionConfiguration",
@@ -916,6 +1231,26 @@
       "documentation":"<p>Set the runtime log configuration for a specific managed thing or for all managed things as a group.</p>",
       "idempotent":true
     },
+    "RegisterAccountAssociation":{
+      "name":"RegisterAccountAssociation",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/managed-thing-associations/register",
+        "responseCode":201
+      },
+      "input":{"shape":"RegisterAccountAssociationRequest"},
+      "output":{"shape":"RegisterAccountAssociationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Registers an account association with a managed thing, establishing a connection between a device and a third-party account.</p>",
+      "idempotent":true
+    },
     "RegisterCustomEndpoint":{
       "name":"RegisterCustomEndpoint",
       "http":{
@@ -954,6 +1289,26 @@
       "documentation":"<p>Reset a runtime log configuration for a specific managed thing or for all managed things as a group.</p>",
       "idempotent":true
     },
+    "SendConnectorEvent":{
+      "name":"SendConnectorEvent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/connector-event/{ConnectorId}",
+        "responseCode":202
+      },
+      "input":{"shape":"SendConnectorEventRequest"},
+      "output":{"shape":"SendConnectorEventResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Relays third-party device events for a connector such as a new device or a device state change event.</p>",
+      "idempotent":true
+    },
     "SendManagedThingCommand":{
       "name":"SendManagedThingCommand",
       "http":{
@@ -967,11 +1322,31 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
+        {"shape":"UnauthorizedException"},
         {"shape":"ServiceUnavailableException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Send the command to the device represented by the managed thing. </p>"
+    },
+    "StartAccountAssociationRefresh":{
+      "name":"StartAccountAssociationRefresh",
+      "http":{
+        "method":"POST",
+        "requestUri":"/account-associations/{AccountAssociationId}/refresh",
+        "responseCode":200
+      },
+      "input":{"shape":"StartAccountAssociationRefreshRequest"},
+      "output":{"shape":"StartAccountAssociationRefreshResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Initiates a refresh of an existing account association to update its authorization and connection status.</p>"
     },
     "StartDeviceDiscovery":{
       "name":"StartDeviceDiscovery",
@@ -992,7 +1367,101 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> During user-guided setup, this is used to start device discovery. The authentication material (install code) is passed as a message to the controller telling it to start the discovery.</p>"
+      "documentation":"<p> This API is used to start device discovery for hub-connected and third-party-connected devices. The authentication material (install code) is passed as a message to the controller telling it to start the discovery.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Add tags for the specified resource.</p>",
+      "idempotent":true
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Remove tags for the specified resource.</p>",
+      "idempotent":true
+    },
+    "UpdateAccountAssociation":{
+      "name":"UpdateAccountAssociation",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/account-associations/{AccountAssociationId}",
+        "responseCode":204
+      },
+      "input":{"shape":"UpdateAccountAssociationRequest"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates the properties of an existing account association.</p>",
+      "idempotent":true
+    },
+    "UpdateCloudConnector":{
+      "name":"UpdateCloudConnector",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/cloud-connectors/{Identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateCloudConnectorRequest"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Update an existing cloud connector.</p>",
+      "idempotent":true
+    },
+    "UpdateConnectorDestination":{
+      "name":"UpdateConnectorDestination",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/connector-destinations/{Identifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"UpdateConnectorDestinationRequest"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates the properties of an existing connector destination.</p>",
+      "idempotent":true
     },
     "UpdateDestination":{
       "name":"UpdateDestination",
@@ -1140,6 +1609,78 @@
       },
       "exception":true
     },
+    "AccountAssociationArn":{
+      "type":"string",
+      "max":1011,
+      "min":67,
+      "pattern":"arn:aws:iotmanagedintegrations:[0-9a-zA-Z-]+:[0-9]+:account-association/[0-9a-zA-Z]+"
+    },
+    "AccountAssociationDescription":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"[A-Za-z0-9-_ ]+"
+    },
+    "AccountAssociationErrorMessage":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"[A-Za-z0-9-_ ]+"
+    },
+    "AccountAssociationId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[0-9a-zA-Z]+"
+    },
+    "AccountAssociationItem":{
+      "type":"structure",
+      "required":[
+        "AccountAssociationId",
+        "AssociationState"
+      ],
+      "members":{
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The unique identifier of the account association.</p>"
+        },
+        "AssociationState":{
+          "shape":"AssociationState",
+          "documentation":"<p>The current state of the account association, indicating its status in the association lifecycle.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"AccountAssociationErrorMessage",
+          "documentation":"<p>The error message explaining any issues with the account association, if applicable.</p>"
+        },
+        "ConnectorDestinationId":{
+          "shape":"ConnectorDestinationId",
+          "documentation":"<p>The identifier of the connector destination associated with this account association.</p>"
+        },
+        "Name":{
+          "shape":"AccountAssociationName",
+          "documentation":"<p>The name of the account association.</p>"
+        },
+        "Description":{
+          "shape":"AccountAssociationDescription",
+          "documentation":"<p>A description of the account association.</p>"
+        },
+        "Arn":{
+          "shape":"AccountAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the account association.</p>"
+        }
+      },
+      "documentation":"<p>Structure containing information about an account association, including its identifier, state, and related metadata.</p>"
+    },
+    "AccountAssociationListDefinition":{
+      "type":"list",
+      "member":{"shape":"AccountAssociationItem"}
+    },
+    "AccountAssociationName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9-_ ]+"
+    },
     "ActionName":{
       "type":"string",
       "max":128,
@@ -1162,6 +1703,16 @@
       "min":5,
       "pattern":"([A-Za-z0-9!#$%&()*\\+\\-;<=>?@^_`{|}~])+"
     },
+    "AssociationState":{
+      "type":"string",
+      "enum":[
+        "ASSOCIATION_IN_PROGRESS",
+        "ASSOCIATION_FAILED",
+        "ASSOCIATION_SUCCEEDED",
+        "ASSOCIATION_DELETING",
+        "REFRESH_TOKEN_EXPIRED"
+      ]
+    },
     "AttributeName":{
       "type":"string",
       "max":128,
@@ -1174,20 +1725,52 @@
       "min":0,
       "pattern":".*[a-zA-Z0-9_.,@/:#-]*.*"
     },
+    "AuthConfig":{
+      "type":"structure",
+      "members":{
+        "oAuth":{
+          "shape":"OAuthConfig",
+          "documentation":"<p>The OAuth configuration settings used for authentication with the third-party service.</p>"
+        }
+      },
+      "documentation":"<p>The authentication configuration details for a connector destination, including OAuth settings and other authentication parameters.</p>"
+    },
+    "AuthConfigUpdate":{
+      "type":"structure",
+      "members":{
+        "oAuthUpdate":{
+          "shape":"OAuthUpdate",
+          "documentation":"<p>The updated OAuth configuration settings for the authentication configuration.</p>"
+        }
+      },
+      "documentation":"<p>The updated authentication configuration details for a connector destination.</p>"
+    },
     "AuthMaterialString":{
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"[0-9A-Za-z!#$%&()*\\+\\-;<=>?@^_`{|}~\\/: ]+",
+      "pattern":"[0-9A-Za-z!#$%&()*\\+\\-;<=>?@^_`{|}~\\/: {},\\\\\"]+",
       "sensitive":true
     },
     "AuthMaterialType":{
       "type":"string",
       "enum":[
+        "CUSTOM_PROTOCOL_QR_BAR_CODE",
         "WIFI_SETUP_QR_BAR_CODE",
         "ZWAVE_QR_BAR_CODE",
-        "ZIGBEE_QR_BAR_CODE"
+        "ZIGBEE_QR_BAR_CODE",
+        "DISCOVERED_DEVICE"
       ]
+    },
+    "AuthType":{
+      "type":"string",
+      "enum":["OAUTH"]
+    },
+    "AuthUrl":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}([-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
     },
     "BaseRatePerMinute":{
       "type":"integer",
@@ -1300,7 +1883,7 @@
     "CapabilityReportCapabilities":{
       "type":"list",
       "member":{"shape":"CapabilityReportCapability"},
-      "max":50,
+      "max":40,
       "min":0
     },
     "CapabilityReportCapability":{
@@ -1367,7 +1950,7 @@
     "CapabilityReportEndpoints":{
       "type":"list",
       "member":{"shape":"CapabilityReportEndpoint"},
-      "max":50,
+      "max":40,
       "min":0
     },
     "CapabilityReportEvents":{
@@ -1387,6 +1970,45 @@
       "max":10,
       "min":1,
       "pattern":"1\\.0\\.0"
+    },
+    "CapabilitySchemaItem":{
+      "type":"structure",
+      "required":[
+        "Format",
+        "CapabilityId",
+        "ExtrinsicId",
+        "ExtrinsicVersion",
+        "Schema"
+      ],
+      "members":{
+        "Format":{
+          "shape":"SchemaVersionFormat",
+          "documentation":"<p>The format of the capability schema, which defines how the schema is structured and interpreted.</p>"
+        },
+        "CapabilityId":{
+          "shape":"SchemaVersionedId",
+          "documentation":"<p>The unique identifier of the capability defined in the schema.</p>"
+        },
+        "ExtrinsicId":{
+          "shape":"ExtrinsicSchemaId",
+          "documentation":"<p>The external identifier for the capability, used when referencing the capability outside of the AWS ecosystem.</p>"
+        },
+        "ExtrinsicVersion":{
+          "shape":"MatterCapabilityReportClusterRevisionId",
+          "documentation":"<p>The version of the external capability definition, used to track compatibility with external systems.</p>"
+        },
+        "Schema":{
+          "shape":"ValidationSchema",
+          "documentation":"<p>The actual schema definition that describes the capability's properties, actions, and events.</p>"
+        }
+      },
+      "documentation":"<p>Structure representing a capability schema item that defines the functionality and features supported by a managed thing.</p>"
+    },
+    "CapabilitySchemas":{
+      "type":"list",
+      "member":{"shape":"CapabilitySchemaItem"},
+      "max":40,
+      "min":0
     },
     "CapabilityVersion":{
       "type":"string",
@@ -1413,6 +2035,31 @@
       "max":64,
       "min":1,
       "pattern":"[a-zA-Z0-9=_-]+"
+    },
+    "CloudConnectorDescription":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[0-9A-Za-z_\\- ]+"
+    },
+    "CloudConnectorId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9-_]+"
+    },
+    "CloudConnectorType":{
+      "type":"string",
+      "enum":[
+        "LISTED",
+        "UNLISTED"
+      ]
+    },
+    "ClusterId":{
+      "type":"string",
+      "max":24,
+      "min":1,
+      "pattern":"0[xX][0-9a-fA-F]+$|^[0-9]+"
     },
     "CommandCapabilities":{
       "type":"list",
@@ -1540,9 +2187,56 @@
     "ConnectivityTimestamp":{"type":"timestamp"},
     "ConnectorAssociationId":{
       "type":"string",
+      "deprecated":true,
+      "deprecatedMessage":"ConnectorAssociationId is deprecated",
+      "deprecatedSince":"2025-06-25",
       "max":64,
       "min":1,
       "pattern":"[0-9a-zA-Z]+"
+    },
+    "ConnectorDestinationDescription":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[0-9A-Za-z_\\- ]+"
+    },
+    "ConnectorDestinationId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9-_]+"
+    },
+    "ConnectorDestinationListDefinition":{
+      "type":"list",
+      "member":{"shape":"ConnectorDestinationSummary"}
+    },
+    "ConnectorDestinationName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9-_ ]+"
+    },
+    "ConnectorDestinationSummary":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ConnectorDestinationName",
+          "documentation":"<p>The display name of the connector destination.</p>"
+        },
+        "Description":{
+          "shape":"ConnectorDestinationDescription",
+          "documentation":"<p>A description of the connector destination.</p>"
+        },
+        "CloudConnectorId":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The identifier of the cloud connector associated with this connector destination.</p>"
+        },
+        "Id":{
+          "shape":"ConnectorDestinationId",
+          "documentation":"<p>The unique identifier of the connector destination.</p>"
+        }
+      },
+      "documentation":"<p>Structure containing summary information about a connector destination, which defines how a cloud-to-cloud connector connects to a customer's AWS account.</p>"
     },
     "ConnectorDeviceId":{
       "type":"string",
@@ -1551,11 +2245,236 @@
       "pattern":"[a-zA-Z0-9_.,@-]+",
       "sensitive":true
     },
-    "ConnectorPolicyId":{
+    "ConnectorDeviceName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\p{L}\\p{N} ._-]+",
+      "sensitive":true
+    },
+    "ConnectorEventMessage":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\sa-zA-Z0-9_.,@-]+",
+      "sensitive":true
+    },
+    "ConnectorEventOperation":{
+      "type":"string",
+      "enum":[
+        "DEVICE_COMMAND_RESPONSE",
+        "DEVICE_DISCOVERY",
+        "DEVICE_EVENT",
+        "DEVICE_COMMAND_REQUEST"
+      ]
+    },
+    "ConnectorEventOperationVersion":{
+      "type":"string",
+      "max":6,
+      "min":1,
+      "pattern":"[0-9.]+",
+      "sensitive":true
+    },
+    "ConnectorEventStatusCode":{
+      "type":"integer",
+      "box":true,
+      "max":550,
+      "min":100,
+      "sensitive":true
+    },
+    "ConnectorId":{
       "type":"string",
       "max":64,
       "min":1,
       "pattern":"[A-Za-z0-9-_]+"
+    },
+    "ConnectorItem":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "EndpointConfig"
+      ],
+      "members":{
+        "Name":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the C2C connector.</p>"
+        },
+        "EndpointConfig":{
+          "shape":"EndpointConfig",
+          "documentation":"<p>The configuration details for the cloud connector endpoint, including connection parameters and authentication requirements.</p>"
+        },
+        "Description":{
+          "shape":"CloudConnectorDescription",
+          "documentation":"<p>A description of the C2C connector.</p>"
+        },
+        "EndpointType":{
+          "shape":"EndpointType",
+          "documentation":"<p>The type of endpoint used for the C2C connector.</p>"
+        },
+        "Id":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The identifier of the C2C connector.</p>"
+        },
+        "Type":{
+          "shape":"CloudConnectorType",
+          "documentation":"<p>The type of cloud connector created.</p>"
+        }
+      },
+      "documentation":"<p>Structure describing a connector.</p>"
+    },
+    "ConnectorList":{
+      "type":"list",
+      "member":{"shape":"ConnectorItem"}
+    },
+    "ConnectorPolicyId":{
+      "type":"string",
+      "deprecated":true,
+      "deprecatedMessage":"ConnectorPolicyId is deprecated",
+      "deprecatedSince":"2025-06-25",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9-_]+"
+    },
+    "CreateAccountAssociationRequest":{
+      "type":"structure",
+      "required":["ConnectorDestinationId"],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>An idempotency token. If you retry a request that completed successfully initially using the same client token and parameters, then the retry attempt will succeed without performing any further actions.</p>",
+          "idempotencyToken":true
+        },
+        "ConnectorDestinationId":{
+          "shape":"ConnectorDestinationId",
+          "documentation":"<p>The identifier of the connector destination.</p>"
+        },
+        "Name":{
+          "shape":"AccountAssociationName",
+          "documentation":"<p>The name of the destination for the new account association.</p>"
+        },
+        "Description":{
+          "shape":"AccountAssociationDescription",
+          "documentation":"<p>A description of the account association request.</p>"
+        },
+        "Tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A set of key/value pairs that are used to manage the account association.</p>"
+        }
+      }
+    },
+    "CreateAccountAssociationResponse":{
+      "type":"structure",
+      "required":[
+        "OAuthAuthorizationUrl",
+        "AccountAssociationId",
+        "AssociationState"
+      ],
+      "members":{
+        "OAuthAuthorizationUrl":{
+          "shape":"OAuthAuthorizationUrl",
+          "documentation":"<p>Third-party IoT platform OAuth authorization server URL backed with all the required parameters to perform end-user authentication.</p>"
+        },
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The identifier for the account association request.</p>"
+        },
+        "AssociationState":{
+          "shape":"AssociationState",
+          "documentation":"<p>The current state of the account association request.</p>"
+        },
+        "Arn":{
+          "shape":"AccountAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the account association.</p>"
+        }
+      }
+    },
+    "CreateCloudConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "EndpointConfig"
+      ],
+      "members":{
+        "Name":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the C2C connector.</p>"
+        },
+        "EndpointConfig":{
+          "shape":"EndpointConfig",
+          "documentation":"<p>The configuration details for the cloud connector endpoint, including connection parameters and authentication requirements.</p>"
+        },
+        "Description":{
+          "shape":"CloudConnectorDescription",
+          "documentation":"<p>A description of the C2C connector.</p>"
+        },
+        "EndpointType":{
+          "shape":"EndpointType",
+          "documentation":"<p>The type of endpoint used for the cloud connector, which defines how the connector communicates with external services.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>An idempotency token. If you retry a request that completed successfully initially using the same client token and parameters, then the retry attempt will succeed without performing any further actions.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateCloudConnectorResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The unique identifier assigned to the newly created cloud connector.</p>"
+        }
+      }
+    },
+    "CreateConnectorDestinationRequest":{
+      "type":"structure",
+      "required":[
+        "CloudConnectorId",
+        "AuthType",
+        "AuthConfig",
+        "SecretsManager"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ConnectorDestinationName",
+          "documentation":"<p>The display name of the connector destination.</p>"
+        },
+        "Description":{
+          "shape":"ConnectorDestinationDescription",
+          "documentation":"<p>A description of the connector destination.</p>"
+        },
+        "CloudConnectorId":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The identifier of the C2C connector.</p>"
+        },
+        "AuthType":{
+          "shape":"AuthType",
+          "documentation":"<p>The authentication type used for the connector destination, which determines how credentials and access are managed.</p>"
+        },
+        "AuthConfig":{
+          "shape":"AuthConfig",
+          "documentation":"<p>The authentication configuration details for the connector destination, including OAuth settings and other authentication parameters.</p>"
+        },
+        "SecretsManager":{
+          "shape":"SecretsManager",
+          "documentation":"<p>The AWS Secrets Manager configuration used to securely store and manage sensitive information for the connector destination.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>An idempotency token. If you retry a request that completed successfully initially using the same client token and parameters, then the retry attempt will succeed without performing any further actions.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateConnectorDestinationResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ConnectorDestinationId",
+          "documentation":"<p>The identifier of the C2C connector destination creation request.</p>"
+        }
+      }
     },
     "CreateCredentialLockerRequest":{
       "type":"structure",
@@ -1628,7 +2547,10 @@
         },
         "Tags":{
           "shape":"TagsMap",
-          "documentation":"<p>A set of key/value pairs that are used to manage the destination.</p>"
+          "documentation":"<p>A set of key/value pairs that are used to manage the destination.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Tags have been deprecated from this api",
+          "deprecatedSince":"06-25-2025"
         }
       }
     },
@@ -1724,6 +2646,10 @@
           "shape":"CapabilityReport",
           "documentation":"<p>A report of the capabilities for the managed thing.</p>"
         },
+        "CapabilitySchemas":{
+          "shape":"CapabilitySchemas",
+          "documentation":"<p>The capability schemas that define the functionality and features supported by the managed thing, including device capabilities and their associated properties.</p>"
+        },
         "Capabilities":{
           "shape":"Capabilities",
           "documentation":"<p>The capabilities of the device such as light bulb.</p>"
@@ -1743,7 +2669,7 @@
         },
         "MetaData":{
           "shape":"MetaData",
-          "documentation":"<p>The metadata for the managed thing.</p>"
+          "documentation":"<p>The metadata for the managed thing.</p> <note> <p>The <code>managedThing</code> <code>metadata</code> parameter is used for associating attributes with a <code>managedThing</code> that can be used for grouping over-the-air (OTA) tasks. Name value pairs in <code>metadata</code> can be used in the <code>OtaTargetQueryString</code> parameter for the <code>CreateOtaTask</code> API operation.</p> </note>"
         }
       }
     },
@@ -1786,7 +2712,10 @@
         },
         "Tags":{
           "shape":"TagsMap",
-          "documentation":"<p>A set of key/value pairs that are used to manage the notification configuration.</p>"
+          "documentation":"<p>A set of key/value pairs that are used to manage the notification configuration.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Tags has been deprecated from this api",
+          "deprecatedSince":"06-25-2025"
         }
       }
     },
@@ -2002,6 +2931,61 @@
       },
       "documentation":"<p>Structure describing one Credential Locker.</p>"
     },
+    "CustomProtocolDetail":{
+      "type":"map",
+      "key":{"shape":"CustomProtocolDetailKey"},
+      "value":{"shape":"CustomProtocolDetailValue"},
+      "max":50,
+      "min":0
+    },
+    "CustomProtocolDetailKey":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9 _.-]+"
+    },
+    "CustomProtocolDetailValue":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[a-zA-Z0-9 _.{}:\"-]+"
+    },
+    "DeleteAccountAssociationRequest":{
+      "type":"structure",
+      "required":["AccountAssociationId"],
+      "members":{
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The unique identifier of the account association to be deleted.</p>",
+          "location":"uri",
+          "locationName":"AccountAssociationId"
+        }
+      }
+    },
+    "DeleteCloudConnectorRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The identifier of the cloud connector.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        }
+      }
+    },
+    "DeleteConnectorDestinationRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"ConnectorDestinationId",
+          "documentation":"<p>The identifier of the connector destination.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        }
+      }
+    },
     "DeleteCredentialLockerRequest":{
       "type":"structure",
       "required":["Identifier"],
@@ -2119,6 +3103,24 @@
       "type":"string",
       "enum":["KINESIS"]
     },
+    "DeregisterAccountAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "ManagedThingId",
+        "AccountAssociationId"
+      ],
+      "members":{
+        "ManagedThingId":{
+          "shape":"ManagedThingId",
+          "documentation":"<p>The identifier of the managed thing to be deregistered from the account association.</p>"
+        },
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The unique identifier of the account association to be deregistered.</p>"
+        }
+      },
+      "documentation":"<p>Request for deregister a managed thing from account association</p>"
+    },
     "DestinationCreatedAt":{"type":"timestamp"},
     "DestinationDescription":{
       "type":"string",
@@ -2163,6 +3165,36 @@
       "documentation":"<p>Structure describing a destination for IoT managed integrations to deliver notifications for a device.</p>"
     },
     "DestinationUpdatedAt":{"type":"timestamp"},
+    "Device":{
+      "type":"structure",
+      "required":[
+        "ConnectorDeviceId",
+        "CapabilityReport"
+      ],
+      "members":{
+        "ConnectorDeviceId":{
+          "shape":"ConnectorDeviceId",
+          "documentation":"<p>The device id as defined by the connector.</p> <note> <p>This parameter is used for cloud-to-cloud devices only.</p> </note>"
+        },
+        "ConnectorDeviceName":{
+          "shape":"ConnectorDeviceName",
+          "documentation":"<p>The name of the device as defined by the connector.</p>"
+        },
+        "CapabilityReport":{
+          "shape":"MatterCapabilityReport",
+          "documentation":"<p>The capability report for the device.</p>"
+        },
+        "CapabilitySchemas":{
+          "shape":"CapabilitySchemas",
+          "documentation":"<p>Report of all capabilities supported by the device.</p>"
+        },
+        "DeviceMetadata":{
+          "shape":"DeviceMetadata",
+          "documentation":"<p>The metadata attributes for a device.</p>"
+        }
+      },
+      "documentation":"<p>Describe the device using the relevant metadata and supported clusters for device discovery.</p>"
+    },
     "DeviceDiscoveryArn":{
       "type":"string",
       "pattern":"arn:aws:iotmanagedintegrations:[0-9a-zA-Z-]+:[0-9]+:device-discovery/[0-9a-zA-Z]+"
@@ -2173,6 +3205,10 @@
       "min":1,
       "pattern":"[A-Za-z0-9]+"
     },
+    "DeviceDiscoveryListDefinition":{
+      "type":"list",
+      "member":{"shape":"DeviceDiscoverySummary"}
+    },
     "DeviceDiscoveryStatus":{
       "type":"string",
       "enum":[
@@ -2181,6 +3217,30 @@
         "FAILED",
         "TIMED_OUT"
       ]
+    },
+    "DeviceDiscoverySummary":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"DeviceDiscoveryId",
+          "documentation":"<p>The unique identifier of the device discovery job.</p>"
+        },
+        "DiscoveryType":{
+          "shape":"DiscoveryType",
+          "documentation":"<p>The type of discovery process used to find devices.</p>"
+        },
+        "Status":{
+          "shape":"DeviceDiscoveryStatus",
+          "documentation":"<p>The current status of the device discovery job.</p>"
+        }
+      },
+      "documentation":"<p>Structure containing summary information about a device discovery job, including its identifier, type, and status.</p>"
+    },
+    "DeviceMetadata":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true
     },
     "DeviceSpecificKey":{
       "type":"string",
@@ -2195,11 +3255,19 @@
       "min":0,
       "pattern":"[a-zA-Z0-9=_. ,@\\+\\-/]+"
     },
+    "DeviceTypeList":{
+      "type":"list",
+      "member":{"shape":"DeviceType"}
+    },
     "DeviceTypes":{
       "type":"list",
       "member":{"shape":"DeviceType"},
       "max":50,
       "min":0
+    },
+    "Devices":{
+      "type":"list",
+      "member":{"shape":"Device"}
     },
     "DisconnectReasonValue":{
       "type":"string",
@@ -2220,6 +3288,53 @@
         "NONE"
       ]
     },
+    "DiscoveredAt":{"type":"timestamp"},
+    "DiscoveredDeviceListDefinition":{
+      "type":"list",
+      "member":{"shape":"DiscoveredDeviceSummary"}
+    },
+    "DiscoveredDeviceSummary":{
+      "type":"structure",
+      "members":{
+        "ConnectorDeviceId":{
+          "shape":"ConnectorDeviceId",
+          "documentation":"<p>The third-party device identifier as defined by the connector. This identifier must not contain personal identifiable information (PII).</p>"
+        },
+        "ConnectorDeviceName":{
+          "shape":"ConnectorDeviceName",
+          "documentation":"<p>The name of the device as defined by the connector or third-party system.</p>"
+        },
+        "DeviceTypes":{
+          "shape":"DeviceTypeList",
+          "documentation":"<p>The list of device types or categories that the discovered device belongs to.</p>"
+        },
+        "ManagedThingId":{
+          "shape":"ManagedThingId",
+          "documentation":"<p>The identifier of the managed thing created for this discovered device, if one exists.</p>"
+        },
+        "Modification":{
+          "shape":"DiscoveryModification",
+          "documentation":"<p>The status of the discovered device, indicating whether it has been added, removed, or modified since the last discovery.</p>"
+        },
+        "DiscoveredAt":{
+          "shape":"DiscoveredAt",
+          "documentation":"<p>The timestamp indicating when the device was discovered.</p>"
+        },
+        "Brand":{
+          "shape":"Brand",
+          "documentation":"<p>The brand of the discovered device.</p>"
+        },
+        "Model":{
+          "shape":"Model",
+          "documentation":"<p>The model of the discovered device.</p>"
+        },
+        "AuthenticationMaterial":{
+          "shape":"AuthMaterialString",
+          "documentation":"<p>The authentication material required for connecting to the discovered device, such as credentials or tokens.</p>"
+        }
+      },
+      "documentation":"<p>Structure containing summary information about a device discovered during a device discovery job.</p>"
+    },
     "DiscoveryAuthMaterialString":{
       "type":"string",
       "max":64,
@@ -2232,14 +3347,29 @@
       "enum":["ZWAVE_INSTALL_CODE"]
     },
     "DiscoveryFinishedAt":{"type":"timestamp"},
+    "DiscoveryModification":{
+      "type":"string",
+      "enum":[
+        "DISCOVERED",
+        "UPDATED",
+        "NO_CHANGE"
+      ]
+    },
     "DiscoveryStartedAt":{"type":"timestamp"},
     "DiscoveryType":{
       "type":"string",
       "enum":[
         "ZWAVE",
         "ZIGBEE",
-        "CLOUD"
+        "CLOUD",
+        "CUSTOM"
       ]
+    },
+    "DisplayName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9-_ ]+"
     },
     "DurationInMinutes":{
       "type":"integer",
@@ -2261,13 +3391,35 @@
       "min":1,
       "pattern":"[A-Za-z0-9._@-]+"
     },
+    "EndpointConfig":{
+      "type":"structure",
+      "members":{
+        "lambda":{
+          "shape":"LambdaConfig",
+          "documentation":"<p>The Lambda function configuration for the endpoint, used when the endpoint communicates through an AWS Lambda function.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for an endpoint, which defines how to connect to and communicate with external services.</p>"
+    },
     "EndpointId":{
       "type":"string",
       "max":64,
       "min":1,
       "pattern":"[0-9a-zA-Z]+"
     },
+    "EndpointSemanticTag":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[0-9a-zA-Z._-]+"
+    },
+    "EndpointType":{
+      "type":"string",
+      "enum":["LAMBDA"]
+    },
     "ErrorMessage":{"type":"string"},
+    "ErrorResourceId":{"type":"string"},
+    "ErrorResourceType":{"type":"string"},
     "EventLogConfigurationListDefinition":{
       "type":"list",
       "member":{"shape":"EventLogConfigurationSummary"}
@@ -2305,11 +3457,13 @@
       "enum":[
         "DEVICE_COMMAND",
         "DEVICE_COMMAND_REQUEST",
+        "DEVICE_DISCOVERY_STATUS",
         "DEVICE_EVENT",
         "DEVICE_LIFE_CYCLE",
         "DEVICE_STATE",
         "DEVICE_OTA",
         "CONNECTOR_ASSOCIATION",
+        "ACCOUNT_ASSOCIATION",
         "CONNECTOR_ERROR_REPORT"
       ]
     },
@@ -2334,6 +3488,164 @@
         }
       },
       "documentation":"<p>Structure representing exponential rate of rollout for an over-the-air (OTA) task.</p>"
+    },
+    "ExtrinsicSchemaId":{
+      "type":"string",
+      "max":10,
+      "min":1,
+      "pattern":"0[xX][0-9a-fA-F]+$|^[0-9]+"
+    },
+    "GetAccountAssociationRequest":{
+      "type":"structure",
+      "required":["AccountAssociationId"],
+      "members":{
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The unique identifier of the account association to retrieve.</p>",
+          "location":"uri",
+          "locationName":"AccountAssociationId"
+        }
+      }
+    },
+    "GetAccountAssociationResponse":{
+      "type":"structure",
+      "required":[
+        "AccountAssociationId",
+        "AssociationState",
+        "OAuthAuthorizationUrl"
+      ],
+      "members":{
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The unique identifier of the retrieved account association.</p>"
+        },
+        "AssociationState":{
+          "shape":"AssociationState",
+          "documentation":"<p>The current status state for the account association.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"AccountAssociationErrorMessage",
+          "documentation":"<p>The error message explaining the current account association error.</p>"
+        },
+        "ConnectorDestinationId":{
+          "shape":"ConnectorDestinationId",
+          "documentation":"<p>The identifier of the connector destination associated with this account association.</p>"
+        },
+        "Name":{
+          "shape":"AccountAssociationName",
+          "documentation":"<p>The name of the account association.</p>"
+        },
+        "Description":{
+          "shape":"AccountAssociationDescription",
+          "documentation":"<p>The description of the account association.</p>"
+        },
+        "Arn":{
+          "shape":"AccountAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the account association.</p>"
+        },
+        "OAuthAuthorizationUrl":{
+          "shape":"OAuthAuthorizationUrl",
+          "documentation":"<p>Third party IoT platform OAuth authorization server URL backed with all the required parameters to perform end-user authentication.</p>"
+        },
+        "Tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A set of key/value pairs that are used to manage the account association.</p>"
+        }
+      }
+    },
+    "GetCloudConnectorRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The identifier of the C2C connector.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        }
+      }
+    },
+    "GetCloudConnectorResponse":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "EndpointConfig"
+      ],
+      "members":{
+        "Name":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the C2C connector.</p>"
+        },
+        "EndpointConfig":{
+          "shape":"EndpointConfig",
+          "documentation":"<p>The configuration details for the cloud connector endpoint, including connection parameters and authentication requirements.</p>"
+        },
+        "Description":{
+          "shape":"CloudConnectorDescription",
+          "documentation":"<p>A description of the C2C connector.</p>"
+        },
+        "EndpointType":{
+          "shape":"EndpointType",
+          "documentation":"<p>The type of endpoint used for the cloud connector, which defines how the connector communicates with external services.</p>"
+        },
+        "Id":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The unique identifier of the cloud connector.</p>"
+        },
+        "Type":{
+          "shape":"CloudConnectorType",
+          "documentation":"<p>The type of cloud connector created.</p>"
+        }
+      }
+    },
+    "GetConnectorDestinationRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"ConnectorDestinationId",
+          "documentation":"<p>The identifier of the C2C connector destination.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        }
+      }
+    },
+    "GetConnectorDestinationResponse":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ConnectorDestinationName",
+          "documentation":"<p>The display name of the connector destination.</p>"
+        },
+        "Description":{
+          "shape":"ConnectorDestinationDescription",
+          "documentation":"<p>A description of the connector destination.</p>"
+        },
+        "CloudConnectorId":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The identifier of the C2C connector.</p>"
+        },
+        "Id":{
+          "shape":"ConnectorDestinationId",
+          "documentation":"<p>The unique identifier of the connector destination.</p>"
+        },
+        "AuthType":{
+          "shape":"AuthType",
+          "documentation":"<p>The authentication type used for the connector destination, which determines how credentials and access are managed.</p>"
+        },
+        "AuthConfig":{
+          "shape":"AuthConfig",
+          "documentation":"<p>The authentication configuration details for the connector destination, including OAuth settings and other authentication parameters.</p>"
+        },
+        "SecretsManager":{
+          "shape":"SecretsManager",
+          "documentation":"<p>The AWS Secrets Manager configuration used to securely store and manage sensitive information for the connector destination.</p>"
+        },
+        "OAuthCompleteRedirectUrl":{
+          "shape":"OAuthCompleteRedirectUrl",
+          "documentation":"<p>The URL where users are redirected after completing the OAuth authorization process for the connector destination.</p>"
+        }
+      }
     },
     "GetCredentialLockerRequest":{
       "type":"structure",
@@ -2458,7 +3770,10 @@
         },
         "Tags":{
           "shape":"TagsMap",
-          "documentation":"<p>A set of key/value pairs that are used to manage the customer-managed destination.</p>"
+          "documentation":"<p>A set of key/value pairs that are used to manage the customer-managed destination.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Tags has been deprecated from this api",
+          "deprecatedSince":"06-25-2025"
         }
       }
     },
@@ -2510,7 +3825,14 @@
         },
         "ConnectorAssociationId":{
           "shape":"ConnectorAssociationId",
-          "documentation":"<p>The ID tracking the current discovery process for one connector association.</p>"
+          "documentation":"<p>The ID tracking the current discovery process for one connector association.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"ConnectorAssociationId has been deprecated",
+          "deprecatedSince":"2025-06-25"
+        },
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The identifier of the account association used for the device discovery.</p>"
         },
         "FinishedAt":{
           "shape":"DiscoveryFinishedAt",
@@ -2518,7 +3840,10 @@
         },
         "Tags":{
           "shape":"TagsMap",
-          "documentation":"<p>A set of key/value pairs that are used to manage the device discovery request.</p>"
+          "documentation":"<p>A set of key/value pairs that are used to manage the device discovery request.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Tags have been deprecated from this api",
+          "deprecatedSince":"06-25-2025"
         }
       }
     },
@@ -2729,7 +4054,14 @@
         },
         "ConnectorPolicyId":{
           "shape":"ConnectorPolicyId",
-          "documentation":"<p>The id of the connector policy.</p> <note> <p>This parameter is used for cloud-to-cloud devices only.</p> </note>"
+          "documentation":"<p>The id of the connector policy.</p> <note> <p>This parameter is used for cloud-to-cloud devices only.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"ConnectorPolicyId is deprecated",
+          "deprecatedSince":"2025-06-25"
+        },
+        "ConnectorDestinationId":{
+          "shape":"ConnectorDestinationId",
+          "documentation":"<p>The identifier of the connector destination associated with this managed thing.</p>"
         },
         "ConnectorDeviceId":{
           "shape":"ConnectorDeviceId",
@@ -2832,7 +4164,10 @@
         },
         "Tags":{
           "shape":"TagsMap",
-          "documentation":"<p>A set of key/value pairs that are used to manage the notification configuration.</p>"
+          "documentation":"<p>A set of key/value pairs that are used to manage the notification configuration.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Tags has been deprecated for this api",
+          "deprecatedSince":"06-25-2025"
         }
       }
     },
@@ -2945,6 +4280,10 @@
         "Status":{
           "shape":"OtaStatus",
           "documentation":"<p>The status of the over-the-air (OTA) task.</p>"
+        },
+        "Tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A set of key/value pairs that are used to manage the over-the-air (OTA) task.</p>"
         }
       }
     },
@@ -3130,13 +4469,172 @@
       "pattern":"[0-9]+",
       "sensitive":true
     },
+    "InvalidRequestException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request is not valid.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "IoTManagedIntegrationsResourceARN":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"arn:aws:iotmanagedintegrations:[0-9a-zA-Z-]+:[0-9]+:(managed-thing|provisioning-profile|ota-task|credential-locker|account-association)/[0-9a-zA-Z]+"
+    },
     "KmsKeyArn":{
       "type":"string",
       "max":200,
       "min":1,
       "pattern":"arn:aws:kms:[0-9a-zA-Z-]+:[0-9]+:key/[0-9a-zA-Z-]+"
     },
+    "LambdaArn":{
+      "type":"string",
+      "pattern":"(arn:aws:lambda:[0-9a-zA-Z-]+:[0-9]+:function:)?([a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?)"
+    },
+    "LambdaConfig":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"LambdaArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function used as an endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Configuration details for an AWS Lambda function used as an endpoint for a cloud connector.</p>"
+    },
     "LastUpdatedAt":{"type":"timestamp"},
+    "LimitExceededException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request exceeds a service limit or quota. Adjust your request parameters and try again.</p>",
+      "error":{
+        "httpStatusCode":410,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ListAccountAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "ConnectorDestinationId":{
+          "shape":"ConnectorDestinationId",
+          "documentation":"<p>The identifier of the connector destination to filter account associations by.</p>",
+          "location":"querystring",
+          "locationName":"ConnectorDestinationId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of account associations to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination of results.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListAccountAssociationsResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"AccountAssociationListDefinition",
+          "documentation":"<p>The list of account associations that match the specified criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination of results when there are more account associations than can be returned in a single response.</p>"
+        }
+      }
+    },
+    "ListCloudConnectorsRequest":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"CloudConnectorType",
+          "documentation":"<p>The type of cloud connectors to filter by when listing available connectors.</p>",
+          "location":"querystring",
+          "locationName":"Type"
+        },
+        "LambdaArn":{
+          "shape":"LambdaArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function to filter cloud connectors by.</p>",
+          "location":"querystring",
+          "locationName":"LambdaArn"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return at one time.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListCloudConnectorsResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"ConnectorList",
+          "documentation":"<p>The list of connectors.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListConnectorDestinationsRequest":{
+      "type":"structure",
+      "members":{
+        "CloudConnectorId":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The identifier of the cloud connector to filter connector destinations by.</p>",
+          "location":"querystring",
+          "locationName":"CloudConnectorId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination of results.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of connector destinations to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        }
+      }
+    },
+    "ListConnectorDestinationsResponse":{
+      "type":"structure",
+      "members":{
+        "ConnectorDestinationList":{
+          "shape":"ConnectorDestinationListDefinition",
+          "documentation":"<p>The list of connector destinations that match the specified criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination of results when there are more connector destinations than can be returned in a single response.</p>"
+        }
+      }
+    },
     "ListCredentialLockersRequest":{
       "type":"structure",
       "members":{
@@ -3197,6 +4695,85 @@
         }
       }
     },
+    "ListDeviceDiscoveriesRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination of results.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of device discovery jobs to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "TypeFilter":{
+          "shape":"DiscoveryType",
+          "documentation":"<p>The discovery type to filter device discovery jobs by.</p>",
+          "location":"querystring",
+          "locationName":"TypeFilter"
+        },
+        "StatusFilter":{
+          "shape":"DeviceDiscoveryStatus",
+          "documentation":"<p>The status to filter device discovery jobs by.</p>",
+          "location":"querystring",
+          "locationName":"StatusFilter"
+        }
+      }
+    },
+    "ListDeviceDiscoveriesResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"DeviceDiscoveryListDefinition",
+          "documentation":"<p>The list of device discovery jobs that match the specified criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination of results when there are more device discovery jobs than can be returned in a single response.</p>"
+        }
+      }
+    },
+    "ListDiscoveredDevicesRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"DeviceDiscoveryId",
+          "documentation":"<p>The identifier of the device discovery job to list discovered devices for.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination of results.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of discovered devices to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        }
+      }
+    },
+    "ListDiscoveredDevicesResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"DiscoveredDeviceListDefinition",
+          "documentation":"<p>The list of discovered devices that match the specified criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination of results when there are more discovered devices than can be returned in a single response.</p>"
+        }
+      }
+    },
     "ListEventLogConfigurationsRequest":{
       "type":"structure",
       "members":{
@@ -3224,6 +4801,48 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>A token that can be used to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListManagedThingAccountAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "ManagedThingId":{
+          "shape":"ManagedThingId",
+          "documentation":"<p>The identifier of the managed thing to list account associations for.</p>",
+          "location":"querystring",
+          "locationName":"ManagedThingId"
+        },
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The identifier of the account association to filter results by. When specified, only associations with this account association ID will be returned.</p>",
+          "location":"querystring",
+          "locationName":"AccountAssociationId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of account associations to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination of results.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListManagedThingAccountAssociationsResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"ManagedThingAssociationList",
+          "documentation":"<p>The list of managed thing associations that match the specified criteria, including the managed thing ID and account association ID for each association.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A token used for pagination of results when there are more account associations than can be returned in a single response.</p>"
         }
       }
     },
@@ -3306,8 +4925,23 @@
         "ConnectorPolicyIdFilter":{
           "shape":"ConnectorPolicyId",
           "documentation":"<p>Filter on a connector policy id for a managed thing.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"ConnectorPolicyIdFilter is deprecated",
+          "deprecatedSince":"06-25-2025",
           "location":"querystring",
           "locationName":"ConnectorPolicyIdFilter"
+        },
+        "ConnectorDestinationIdFilter":{
+          "shape":"ConnectorDestinationId",
+          "documentation":"<p>Filter managed things by the connector destination ID they are associated with.</p>",
+          "location":"querystring",
+          "locationName":"ConnectorDestinationIdFilter"
+        },
+        "ConnectorDeviceIdFilter":{
+          "shape":"ConnectorDeviceId",
+          "documentation":"<p>Filter managed things by the connector device ID they are associated with. When specified, only managed things with this connector device ID will be returned.</p>",
+          "location":"querystring",
+          "locationName":"ConnectorDeviceIdFilter"
         },
         "SerialNumberFilter":{
           "shape":"SerialNumber",
@@ -3566,6 +5200,27 @@
         }
       }
     },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"IoTManagedIntegrationsResourceARN",
+          "documentation":"<p>The ARN of the resource for which to list tags.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A set of key/value pairs that are used to manage the resource.</p>"
+        }
+      }
+    },
     "LocalStoreFileRotationMaxBytes":{
       "type":"integer",
       "box":true
@@ -3601,6 +5256,24 @@
       "max":1011,
       "min":32,
       "pattern":"arn:aws:iotmanagedintegrations:[0-9a-zA-Z-]+:[0-9]+:managed-thing/([0-9a-zA-Z:_-])+"
+    },
+    "ManagedThingAssociation":{
+      "type":"structure",
+      "members":{
+        "ManagedThingId":{
+          "shape":"ManagedThingId",
+          "documentation":"<p>The identifier of the managed thing in the association.</p>"
+        },
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The identifier of the account association in the association.</p>"
+        }
+      },
+      "documentation":"<p>Structure representing an association between a managed thing and an account association, which connects a device to a third-party account.</p>"
+    },
+    "ManagedThingAssociationList":{
+      "type":"list",
+      "member":{"shape":"ManagedThingAssociation"}
     },
     "ManagedThingId":{
       "type":"string",
@@ -3663,7 +5336,14 @@
         },
         "ConnectorPolicyId":{
           "shape":"ConnectorPolicyId",
-          "documentation":"<p>The id of the connector policy.</p> <note> <p>This parameter is used for cloud-to-cloud devices only.</p> </note>"
+          "documentation":"<p>The id of the connector policy.</p> <note> <p>This parameter is used for cloud-to-cloud devices only.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"ConnectorPolicyId has been deprecated",
+          "deprecatedSince":"06-25-2025"
+        },
+        "ConnectorDestinationId":{
+          "shape":"ConnectorDestinationId",
+          "documentation":"<p>The identifier of the connector destination associated with this managed thing, if applicable.</p>"
         },
         "Model":{
           "shape":"Model",
@@ -3711,6 +5391,301 @@
         }
       },
       "documentation":"<p>Structure representing one managed thing.</p>"
+    },
+    "MatterAttributeId":{
+      "type":"string",
+      "max":24,
+      "min":1,
+      "pattern":"0[xX][0-9a-fA-F]+$|^[0-9]+"
+    },
+    "MatterAttributes":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true,
+      "sensitive":true
+    },
+    "MatterCapabilityReport":{
+      "type":"structure",
+      "required":[
+        "version",
+        "endpoints"
+      ],
+      "members":{
+        "version":{
+          "shape":"CapabilityReportVersion",
+          "documentation":"<p>The version of the capability report.</p>"
+        },
+        "nodeId":{
+          "shape":"NodeId",
+          "documentation":"<p>The numeric identifier of the node.</p>"
+        },
+        "endpoints":{
+          "shape":"MatterCapabilityReportEndpoints",
+          "documentation":"<p>The endpoints used in the capability report.</p>"
+        }
+      },
+      "documentation":"<p>Matter based capability report.</p>"
+    },
+    "MatterCapabilityReportAttribute":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"MatterAttributeId",
+          "documentation":"<p>The id of the Matter attribute.</p>"
+        },
+        "name":{
+          "shape":"ActionName",
+          "documentation":"<p>Name for the Amazon Web Services Matter capability report attribute.</p>"
+        },
+        "value":{
+          "shape":"MatterCapabilityReportAttributeValue",
+          "documentation":"<p>Value for the Amazon Web Services Matter capability report attribute.</p>"
+        }
+      },
+      "documentation":"<p>Matter attribute used in capability report.</p>"
+    },
+    "MatterCapabilityReportAttributeValue":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true
+    },
+    "MatterCapabilityReportAttributes":{
+      "type":"list",
+      "member":{"shape":"MatterCapabilityReportAttribute"},
+      "max":100,
+      "min":0
+    },
+    "MatterCapabilityReportCluster":{
+      "type":"structure",
+      "required":[
+        "id",
+        "revision"
+      ],
+      "members":{
+        "id":{
+          "shape":"ClusterId",
+          "documentation":"<p>The id of the Amazon Web Services Matter capability report cluster.</p>"
+        },
+        "revision":{
+          "shape":"MatterCapabilityReportClusterRevisionId",
+          "documentation":"<p>The id of the revision for the Amazon Web Services Matter capability report.</p>"
+        },
+        "publicId":{
+          "shape":"SchemaVersionedId",
+          "documentation":"<p>The id of the schema version.</p>"
+        },
+        "name":{
+          "shape":"CapabilityName",
+          "documentation":"<p>The capability name used in the Amazon Web Services Matter capability report.</p>"
+        },
+        "specVersion":{
+          "shape":"SpecVersion",
+          "documentation":"<p>The spec version used in the Amazon Web Services Matter capability report.</p>"
+        },
+        "attributes":{
+          "shape":"MatterCapabilityReportAttributes",
+          "documentation":"<p>The attributes of the Amazon Web Services Matter capability report.</p>"
+        },
+        "commands":{
+          "shape":"MatterCapabilityReportCommands",
+          "documentation":"<p>The commands used with the Amazon Web Services Matter capability report.</p>"
+        },
+        "events":{
+          "shape":"MatterCapabilityReportEvents",
+          "documentation":"<p>The events used with the Amazon Web Services Matter capability report.</p>"
+        },
+        "featureMap":{
+          "shape":"MatterCapabilityReportFeatureMap",
+          "documentation":"<p>32 bit-map used to indicate which features a cluster supports.</p>"
+        },
+        "generatedCommands":{
+          "shape":"MatterCapabilityReportGeneratedCommands",
+          "documentation":"<p>Matter clusters used in capability report.</p>"
+        },
+        "fabricIndex":{
+          "shape":"MatterCapabilityReportFabricIndex",
+          "documentation":"<p>The fabric index for the Amazon Web Services Matter capability report.</p>"
+        }
+      },
+      "documentation":"<p>Capability used in Matter capability report.</p>"
+    },
+    "MatterCapabilityReportClusterRevisionId":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "MatterCapabilityReportClusters":{
+      "type":"list",
+      "member":{"shape":"MatterCapabilityReportCluster"},
+      "max":50,
+      "min":0
+    },
+    "MatterCapabilityReportCommands":{
+      "type":"list",
+      "member":{"shape":"MatterCommandId"},
+      "max":100,
+      "min":0
+    },
+    "MatterCapabilityReportEndpoint":{
+      "type":"structure",
+      "required":[
+        "id",
+        "deviceTypes",
+        "clusters"
+      ],
+      "members":{
+        "id":{
+          "shape":"EndpointId",
+          "documentation":"<p>The id of the Amazon Web Services Matter capability report endpoint.</p>"
+        },
+        "deviceTypes":{
+          "shape":"DeviceTypes",
+          "documentation":"<p>The type of device.</p>"
+        },
+        "clusters":{
+          "shape":"MatterCapabilityReportClusters",
+          "documentation":"<p>Matter clusters used in capability report.</p>"
+        },
+        "parts":{
+          "shape":"MatterCapabilityReportEndpointParts",
+          "documentation":"<p>Heirachy of child endpoints contained in the given endpoint.</p>"
+        },
+        "semanticTags":{
+          "shape":"MatterCapabilityReportEndpointSemanticTags",
+          "documentation":"<p>Semantic information related to endpoint.</p>"
+        },
+        "clientClusters":{
+          "shape":"MatterCapabilityReportEndpointClientClusters",
+          "documentation":"<p>Semantic information related to endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Matter endpoint used in capability report.</p>"
+    },
+    "MatterCapabilityReportEndpointClientClusters":{
+      "type":"list",
+      "member":{"shape":"ClusterId"},
+      "max":32,
+      "min":0
+    },
+    "MatterCapabilityReportEndpointParts":{
+      "type":"list",
+      "member":{"shape":"EndpointId"},
+      "max":32,
+      "min":0
+    },
+    "MatterCapabilityReportEndpointSemanticTags":{
+      "type":"list",
+      "member":{"shape":"EndpointSemanticTag"},
+      "max":32,
+      "min":0
+    },
+    "MatterCapabilityReportEndpoints":{
+      "type":"list",
+      "member":{"shape":"MatterCapabilityReportEndpoint"},
+      "max":50,
+      "min":0
+    },
+    "MatterCapabilityReportEvents":{
+      "type":"list",
+      "member":{"shape":"MatterEventId"},
+      "max":100,
+      "min":0
+    },
+    "MatterCapabilityReportFabricIndex":{
+      "type":"integer",
+      "box":true,
+      "max":4096,
+      "min":0
+    },
+    "MatterCapabilityReportFeatureMap":{
+      "type":"long",
+      "box":true,
+      "max":4294967295,
+      "min":0
+    },
+    "MatterCapabilityReportGeneratedCommands":{
+      "type":"list",
+      "member":{"shape":"MatterCommandId"},
+      "max":50,
+      "min":0
+    },
+    "MatterCluster":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"ClusterId",
+          "documentation":"<p>The cluster id.</p>"
+        },
+        "attributes":{
+          "shape":"MatterAttributes",
+          "documentation":"<p>The Matter attributes.</p>"
+        },
+        "commands":{
+          "shape":"MatterCommands",
+          "documentation":"<p>Describe the Matter commands with the Matter command identifier mapped to the command fields.</p>"
+        },
+        "events":{
+          "shape":"MatterEvents",
+          "documentation":"<p>Describe the Matter events with the Matter event identifier mapped to the event fields.</p>"
+        }
+      },
+      "documentation":"<p>Describe a Matter cluster with an id, and the relevant attributes, commands, and events.</p>"
+    },
+    "MatterClusters":{
+      "type":"list",
+      "member":{"shape":"MatterCluster"},
+      "max":5,
+      "min":1
+    },
+    "MatterCommandId":{
+      "type":"string",
+      "max":24,
+      "min":1,
+      "pattern":"0[xX][0-9a-fA-F]+$|^[0-9]+"
+    },
+    "MatterCommands":{
+      "type":"map",
+      "key":{"shape":"MatterCommandId"},
+      "value":{"shape":"MatterFields"},
+      "max":5,
+      "min":1
+    },
+    "MatterEndpoint":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"EndpointId",
+          "documentation":"<p>The Matter endpoint id.</p>"
+        },
+        "clusters":{
+          "shape":"MatterClusters",
+          "documentation":"<p>A list of Matter clusters for a managed thing.</p>"
+        }
+      },
+      "documentation":"<p>Structure describing a managed thing.</p>"
+    },
+    "MatterEventId":{
+      "type":"string",
+      "max":24,
+      "min":1,
+      "pattern":"0[xX][0-9a-fA-F]+$|^[0-9]+"
+    },
+    "MatterEvents":{
+      "type":"map",
+      "key":{"shape":"MatterEventId"},
+      "value":{"shape":"MatterFields"},
+      "max":5,
+      "min":1
+    },
+    "MatterFields":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true,
+      "sensitive":true
     },
     "MaxResults":{
       "type":"integer",
@@ -3799,6 +5774,68 @@
       "max":100,
       "min":1
     },
+    "OAuthAuthorizationUrl":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"(https)://.*",
+      "sensitive":true
+    },
+    "OAuthCompleteRedirectUrl":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"(http|https)://.*"
+    },
+    "OAuthConfig":{
+      "type":"structure",
+      "required":[
+        "authUrl",
+        "tokenUrl",
+        "tokenEndpointAuthenticationScheme"
+      ],
+      "members":{
+        "authUrl":{
+          "shape":"AuthUrl",
+          "documentation":"<p>The authorization URL for the OAuth service, where users are directed to authenticate and authorize access.</p>"
+        },
+        "tokenUrl":{
+          "shape":"TokenUrl",
+          "documentation":"<p>The token URL for the OAuth service, where authorization codes are exchanged for access tokens.</p>"
+        },
+        "scope":{
+          "shape":"String",
+          "documentation":"<p>The OAuth scopes requested during authorization, which define the permissions granted to the application.</p>"
+        },
+        "tokenEndpointAuthenticationScheme":{
+          "shape":"TokenEndpointAuthenticationScheme",
+          "documentation":"<p>The authentication scheme used when requesting tokens from the token endpoint.</p>"
+        },
+        "oAuthCompleteRedirectUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL where users are redirected after completing the OAuth authorization process.</p>"
+        },
+        "proactiveRefreshTokenRenewal":{
+          "shape":"ProactiveRefreshTokenRenewal",
+          "documentation":"<p>Configuration for proactively refreshing OAuth tokens before they expire.</p>"
+        }
+      },
+      "documentation":"<p>Configuration details for OAuth authentication with a third-party service.</p>"
+    },
+    "OAuthUpdate":{
+      "type":"structure",
+      "members":{
+        "oAuthCompleteRedirectUrl":{
+          "shape":"String",
+          "documentation":"<p>The updated URL where users are redirected after completing the OAuth authorization process.</p>"
+        },
+        "proactiveRefreshTokenRenewal":{
+          "shape":"ProactiveRefreshTokenRenewal",
+          "documentation":"<p>Updated configuration for proactively refreshing OAuth tokens before they expire.</p>"
+        }
+      },
+      "documentation":"<p>Structure containing updated OAuth configuration settings.</p>"
+    },
     "OtaDescription":{
       "type":"string",
       "max":256,
@@ -3843,7 +5880,7 @@
     "OtaTaskArn":{
       "type":"string",
       "max":1011,
-      "min":0,
+      "min":32,
       "pattern":"arn:aws:iotmanagedintegrations:[0-9a-zA-Z-]+:[0-9]+:ota-task/[0-9a-zA-Z]+"
     },
     "OtaTaskConfigurationId":{
@@ -4058,6 +6095,25 @@
       "min":1,
       "pattern":"[A-Za-z0-9]+"
     },
+    "ProactiveRefreshTokenRenewal":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether proactive refresh token renewal is enabled.</p>"
+        },
+        "DaysBeforeRenewal":{
+          "shape":"ProactiveRefreshTokenRenewalDaysBeforeRenewalInteger",
+          "documentation":"<p>The days before token expiration when the system should attempt to renew the token, specified in days.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for proactively refreshing OAuth tokens before they expire.</p>"
+    },
+    "ProactiveRefreshTokenRenewalDaysBeforeRenewalInteger":{
+      "type":"integer",
+      "box":true,
+      "min":30
+    },
     "PropertyName":{
       "type":"string",
       "max":128,
@@ -4220,6 +6276,45 @@
       }
     },
     "QueuedAt":{"type":"timestamp"},
+    "RegisterAccountAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "ManagedThingId",
+        "AccountAssociationId",
+        "DeviceDiscoveryId"
+      ],
+      "members":{
+        "ManagedThingId":{
+          "shape":"ManagedThingId",
+          "documentation":"<p>The identifier of the managed thing to register with the account association.</p>"
+        },
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The identifier of the account association to register with the managed thing.</p>"
+        },
+        "DeviceDiscoveryId":{
+          "shape":"DeviceDiscoveryId",
+          "documentation":"<p>The identifier of the device discovery job associated with this registration.</p>"
+        }
+      }
+    },
+    "RegisterAccountAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The identifier of the account association that was registered.</p>"
+        },
+        "DeviceDiscoveryId":{
+          "shape":"DeviceDiscoveryId",
+          "documentation":"<p>The identifier of the device discovery job associated with this registration.</p>"
+        },
+        "ManagedThingId":{
+          "shape":"ManagedThingId",
+          "documentation":"<p>The identifier of the managed thing that was registered with the account association.</p>"
+        }
+      }
+    },
     "RegisterCustomEndpointRequest":{
       "type":"structure",
       "members":{
@@ -4250,7 +6345,15 @@
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"ErrorMessage"}
+        "Message":{"shape":"ErrorMessage"},
+        "ResourceId":{
+          "shape":"ErrorResourceId",
+          "documentation":"<p>Id of the affected resource</p>"
+        },
+        "ResourceType":{
+          "shape":"ErrorResourceType",
+          "documentation":"<p>Type of the affected resource</p>"
+        }
       },
       "documentation":"<p>The specified resource does not exist.</p>",
       "error":{
@@ -4383,14 +6486,14 @@
     "SchemaId":{
       "type":"string",
       "max":128,
-      "min":1,
-      "pattern":"[a-zA-Z0-9./]+"
+      "min":3,
+      "pattern":"[a-zA-Z0-9.]+"
     },
     "SchemaVersionDescription":{
       "type":"string",
-      "max":256,
-      "min":1,
-      "pattern":"[a-zA-Z0-9., ]+"
+      "max":2048,
+      "min":10,
+      "pattern":"[a-zA-Z0-9.,/ -]+"
     },
     "SchemaVersionFormat":{
       "type":"string",
@@ -4436,9 +6539,9 @@
     },
     "SchemaVersionNamespaceName":{
       "type":"string",
-      "max":256,
-      "min":1,
-      "pattern":"[a-z]+"
+      "max":12,
+      "min":3,
+      "pattern":"[a-z0-9]+"
     },
     "SchemaVersionSchema":{
       "type":"structure",
@@ -4455,9 +6558,9 @@
     },
     "SchemaVersionVersion":{
       "type":"string",
-      "max":256,
-      "min":1,
-      "pattern":"(\\d+\\.\\d+|\\$latest)"
+      "max":12,
+      "min":3,
+      "pattern":"(\\d+\\.\\d+(\\.\\d+)?|\\$latest)"
     },
     "SchemaVersionVisibility":{
       "type":"string",
@@ -4469,8 +6572,103 @@
     "SchemaVersionedId":{
       "type":"string",
       "max":128,
-      "min":1,
-      "pattern":"[a-zA-Z0-9.\\/]+(@(\\d+\\.\\d+|\\$latest))?"
+      "min":7,
+      "pattern":"[a-zA-Z0-9.]+@(\\d+\\.\\d+(\\.\\d+)?|\\$latest)"
+    },
+    "SecretsManager":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "versionId"
+      ],
+      "members":{
+        "arn":{
+          "shape":"SecretsManagerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Secrets Manager secret.</p>"
+        },
+        "versionId":{
+          "shape":"SecretsManagerVersionId",
+          "documentation":"<p>The version ID of the AWS Secrets Manager secret.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for AWS Secrets Manager, used to securely store and manage sensitive information for connector destinations.</p>"
+    },
+    "SecretsManagerArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws:secretsmanager:[0-9a-zA-Z-]{1,32}:\\d{12}:secret:[A-Za-z0-9/_+=.@-]{8,520}"
+    },
+    "SecretsManagerVersionId":{
+      "type":"string",
+      "max":64,
+      "min":32,
+      "pattern":"[a-zA-Z0-9-_]+"
+    },
+    "SendConnectorEventRequest":{
+      "type":"structure",
+      "required":[
+        "ConnectorId",
+        "Operation"
+      ],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The id of the connector between the third-party cloud provider and IoT managed integrations.</p>",
+          "location":"uri",
+          "locationName":"ConnectorId"
+        },
+        "UserId":{
+          "shape":"ThirdPartyUserId",
+          "documentation":"<p>The id of the third-party cloud provider.</p>"
+        },
+        "Operation":{
+          "shape":"ConnectorEventOperation",
+          "documentation":"<p>The Open Connectivity Foundation (OCF) operation requested to be performed on the managed thing.</p> <note> <p>The field op can have a value of \"I\" or \"U\". The field \"cn\" will contain the capability types.</p> </note>"
+        },
+        "OperationVersion":{
+          "shape":"ConnectorEventOperationVersion",
+          "documentation":"<p>The Open Connectivity Foundation (OCF) security specification version for the operation being requested on the managed thing. For more information, see <a href=\"https://openconnectivity.org/specs/OCF_Security_Specification_v1.0.0.pdf\">OCF Security Specification</a>.</p>"
+        },
+        "StatusCode":{
+          "shape":"ConnectorEventStatusCode",
+          "documentation":"<p>The status code of the Open Connectivity Foundation (OCF) operation being performed on the managed thing.</p>"
+        },
+        "Message":{
+          "shape":"ConnectorEventMessage",
+          "documentation":"<p>The device state change event payload.</p> <p>This parameter will include the following three fields:</p> <ul> <li> <p> <code>uri</code>: <code>schema auc://&lt;PARTNER-DEVICE-ID&gt;/ResourcePath</code> (The <code>Resourcepath</code> corresponds to an OCF resource.)</p> </li> <li> <p> <code>op</code>: For device state changes, this field must populate as <code>n+d</code>.</p> </li> <li> <p> <code>cn</code>: The content depends on the OCF resource referenced in <code>ResourcePath</code>.</p> </li> </ul>"
+        },
+        "DeviceDiscoveryId":{
+          "shape":"DeviceDiscoveryId",
+          "documentation":"<p>The id for the device discovery job.</p>"
+        },
+        "ConnectorDeviceId":{
+          "shape":"ConnectorDeviceId",
+          "documentation":"<p>The third-party device id as defined by the connector. This device id must not contain personal identifiable information (PII).</p> <note> <p>This parameter is used for cloud-to-cloud devices only.</p> </note>"
+        },
+        "TraceId":{
+          "shape":"TraceId",
+          "documentation":"<p>The trace request identifier used to correlate a command request and response. This is specified by the device owner, but will be generated by IoT managed integrations if not provided by the device owner.</p>"
+        },
+        "Devices":{
+          "shape":"Devices",
+          "documentation":"<p>The list of devices.</p>"
+        },
+        "MatterEndpoint":{
+          "shape":"MatterEndpoint",
+          "documentation":"<p>The device endpoint.</p>"
+        }
+      }
+    },
+    "SendConnectorEventResponse":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The id of the connector between the third-party cloud provider and IoT managed integrations.</p>"
+        }
+      }
     },
     "SendManagedThingCommandRequest":{
       "type":"structure",
@@ -4491,7 +6689,14 @@
         },
         "ConnectorAssociationId":{
           "shape":"ConnectorAssociationId",
-          "documentation":"<p>The ID tracking the current discovery process for one connector association.</p>"
+          "documentation":"<p>The ID tracking the current discovery process for one connector association.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"ConnectorAssociationId has been deprecated",
+          "deprecatedSince":"06-25-2025"
+        },
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The identifier of the account association to use when sending a command to a managed thing.</p>"
         }
       }
     },
@@ -4542,7 +6747,35 @@
     },
     "SmartHomeResourceType":{
       "type":"string",
-      "pattern":"[*]$|^(managed-thing|credential-locker|provisioning-profile|ota-task)"
+      "pattern":"[*]$|^(managed-thing|credential-locker|provisioning-profile|ota-task|account-association)"
+    },
+    "SpecVersion":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"\\d+\\.\\d+"
+    },
+    "StartAccountAssociationRefreshRequest":{
+      "type":"structure",
+      "required":["AccountAssociationId"],
+      "members":{
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The unique identifier of the account association to refresh.</p>",
+          "location":"uri",
+          "locationName":"AccountAssociationId"
+        }
+      }
+    },
+    "StartAccountAssociationRefreshResponse":{
+      "type":"structure",
+      "required":["OAuthAuthorizationUrl"],
+      "members":{
+        "OAuthAuthorizationUrl":{
+          "shape":"OAuthAuthorizationUrl",
+          "documentation":"<p>Third-party IoT platform OAuth authorization server URL with all required parameters to perform end-user authentication during the refresh process.</p>"
+        }
+      }
     },
     "StartDeviceDiscoveryRequest":{
       "type":"structure",
@@ -4550,7 +6783,11 @@
       "members":{
         "DiscoveryType":{
           "shape":"DiscoveryType",
-          "documentation":"<p>The discovery type supporting the type of device to be discovered in the device discovery job request.</p>"
+          "documentation":"<p>The discovery type supporting the type of device to be discovered in the device discovery task request.</p>"
+        },
+        "CustomProtocolDetail":{
+          "shape":"CustomProtocolDetail",
+          "documentation":"<p>Additional protocol-specific details required for device discovery, which vary based on the discovery type.</p> <note> <p>For a <code>DiscoveryType</code> of <code>CUSTOM</code>, the string-to-string map must have a key value of <code>Name</code> set to a non-empty-string.</p> </note>"
         },
         "ControllerIdentifier":{
           "shape":"ManagedThingId",
@@ -4558,7 +6795,14 @@
         },
         "ConnectorAssociationIdentifier":{
           "shape":"ConnectorAssociationId",
-          "documentation":"<p>The id of the connector association.</p>"
+          "documentation":"<p>The id of the connector association.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"ConnectorAssociationIdentifier is deprecated",
+          "deprecatedSince":"06-25-2025"
+        },
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The identifier of the cloud-to-cloud account association to use for discovery of third-party devices.</p>"
         },
         "AuthenticationMaterial":{
           "shape":"DiscoveryAuthMaterialString",
@@ -4574,7 +6818,10 @@
         },
         "Tags":{
           "shape":"TagsMap",
-          "documentation":"<p>A set of key/value pairs that are used to manage the device discovery request.</p>"
+          "documentation":"<p>A set of key/value pairs that are used to manage the device discovery request.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Tags have been deprecated from this api",
+          "deprecatedSince":"06-25-2025"
         }
       }
     },
@@ -4656,6 +6903,36 @@
       "max":128,
       "min":1
     },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":200,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Tags"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"IoTManagedIntegrationsResourceARN",
+          "documentation":"<p>The ARN of the resource to which to add tags.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "Tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A set of key/value pairs that are used to manage the resource</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "TagValue":{
       "type":"string",
       "max":256,
@@ -4715,6 +6992,13 @@
       },
       "documentation":"<p>Details about the over-the-air (OTA) task process.</p>"
     },
+    "ThirdPartyUserId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.,@-]+",
+      "sensitive":true
+    },
     "ThresholdPercentage":{
       "type":"double",
       "box":true,
@@ -4731,6 +7015,19 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "TokenEndpointAuthenticationScheme":{
+      "type":"string",
+      "enum":[
+        "HTTP_BASIC",
+        "REQUEST_BODY_CREDENTIALS"
+      ]
+    },
+    "TokenUrl":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}([-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
     },
     "TraceId":{
       "type":"string",
@@ -4756,6 +7053,104 @@
       "min":12,
       "pattern":"[0-9]+",
       "sensitive":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "TagKeys"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"IoTManagedIntegrationsResourceARN",
+          "documentation":"<p>The ARN of the resource to which to add tags.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "TagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>A list of tag keys to remove from the resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateAccountAssociationRequest":{
+      "type":"structure",
+      "required":["AccountAssociationId"],
+      "members":{
+        "AccountAssociationId":{
+          "shape":"AccountAssociationId",
+          "documentation":"<p>The unique identifier of the account association to update.</p>",
+          "location":"uri",
+          "locationName":"AccountAssociationId"
+        },
+        "Name":{
+          "shape":"AccountAssociationName",
+          "documentation":"<p>The new name to assign to the account association.</p>"
+        },
+        "Description":{
+          "shape":"AccountAssociationDescription",
+          "documentation":"<p>The new description to assign to the account association.</p>"
+        }
+      }
+    },
+    "UpdateCloudConnectorRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The unique identifier of the cloud connector to update.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        },
+        "Name":{
+          "shape":"DisplayName",
+          "documentation":"<p>The new display name to assign to the cloud connector.</p>"
+        },
+        "Description":{
+          "shape":"CloudConnectorDescription",
+          "documentation":"<p>The new description to assign to the cloud connector.</p>"
+        }
+      }
+    },
+    "UpdateConnectorDestinationRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"ConnectorDestinationId",
+          "documentation":"<p>The unique identifier of the connector destination to update.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        },
+        "Description":{
+          "shape":"ConnectorDestinationDescription",
+          "documentation":"<p>The new description to assign to the connector destination.</p>"
+        },
+        "Name":{
+          "shape":"ConnectorDestinationName",
+          "documentation":"<p>The new display name to assign to the connector destination.</p>"
+        },
+        "AuthType":{
+          "shape":"AuthType",
+          "documentation":"<p>The new authentication type to use for the connector destination.</p>"
+        },
+        "AuthConfig":{
+          "shape":"AuthConfigUpdate",
+          "documentation":"<p>The updated authentication configuration details for the connector destination.</p>"
+        },
+        "SecretsManager":{
+          "shape":"SecretsManager",
+          "documentation":"<p>The updated AWS Secrets Manager configuration for the connector destination.</p>"
+        }
+      }
     },
     "UpdateDestinationRequest":{
       "type":"structure",
@@ -4841,6 +7236,10 @@
         "CapabilityReport":{
           "shape":"CapabilityReport",
           "documentation":"<p>A report of the capabilities for the managed thing.</p>"
+        },
+        "CapabilitySchemas":{
+          "shape":"CapabilitySchemas",
+          "documentation":"<p>The updated capability schemas that define the functionality and features supported by the managed thing.</p>"
         },
         "Capabilities":{
           "shape":"Capabilities",

@@ -186,6 +186,12 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
         None,
         utils.ensure_boolean,
     ),
+    'auth_scheme_preference': (
+        'auth_scheme_preference',
+        'AWS_AUTH_SCHEME_PREFERENCE',
+        None,
+        None,
+    ),
 }
 # A mapping for the s3 specific configuration vars. These are the configuration
 # vars that typically go in the s3 section of the config file. This mapping

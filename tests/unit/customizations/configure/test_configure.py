@@ -154,6 +154,84 @@ class TestConfigureCommand(unittest.TestCase):
             'myconfigfile',
         )
 
+    def test_temporary_credentials_prompts_for_session_token(self):
+        # When user enters temporary credentials (starting with ASIA),
+        # should prompt for session token after secret key
+        responses = {
+            "AWS Access Key ID": "ASIATEMP123456789",
+            "AWS Secret Access Key": "secret123",
+            "AWS Session Token": "session_token_123",
+            "Default region name": "us-west-2",
+            "Default output format": "json",
+        }
+        prompter = KeyValuePrompter(responses)
+        self.configure = configure.ConfigureCommand(
+            self.session, prompter=prompter, config_writer=self.writer
+        )
+        self.configure(args=[], parsed_globals=self.global_args)
+
+        # Should write all three credential values to credentials file
+        self.assert_credentials_file_updated_with(
+            {
+                'aws_access_key_id': 'ASIATEMP123456789',
+                'aws_secret_access_key': 'secret123',
+                'aws_session_token': 'session_token_123',
+            }
+        )
+
+        # Non-credentials config is written to the config file
+        self.writer.update_config.assert_called_with(
+            {'region': 'us-west-2', 'output': 'json'}, 'myconfigfile'
+        )
+
+    def test_regular_credentials_no_session_token_prompt(self):
+        # When user enters regular credentials (not starting with ASIA),
+        # should NOT prompt for session token
+        responses = {
+            "AWS Access Key ID": "AKIAREGULAR123456",
+            "AWS Secret Access Key": "secret123",
+            "Default region name": "us-west-2",
+            "Default output format": "json",
+        }
+        prompter = KeyValuePrompter(responses)
+        self.configure = configure.ConfigureCommand(
+            self.session, prompter=prompter, config_writer=self.writer
+        )
+        self.configure(args=[], parsed_globals=self.global_args)
+
+        # Should only write access key and secret key (no session token)
+        self.assert_credentials_file_updated_with(
+            {
+                'aws_access_key_id': 'AKIAREGULAR123456',
+                'aws_secret_access_key': 'secret123',
+            }
+        )
+
+    def test_iam_user_credentials_remove_session_token(self):
+        # When configuring IAM user credentials (AKIA), existing session token should be removed
+        session = FakeSession({'config_file': 'myconfigfile'})
+        session.config = {'aws_session_token': 'existing_token'}
+        responses = {
+            "AWS Access Key ID": "AKIAUSER123456789",
+            "AWS Secret Access Key": "secret123",
+            "Default region name": "us-west-2",
+            "Default output format": "json",
+        }
+        prompter = KeyValuePrompter(responses)
+        self.configure = configure.ConfigureCommand(
+            session, prompter=prompter, config_writer=self.writer
+        )
+        self.configure(args=[], parsed_globals=self.global_args)
+
+        # Should write credentials and remove session token (set to None)
+        self.assert_credentials_file_updated_with(
+            {
+                'aws_access_key_id': 'AKIAUSER123456789',
+                'aws_secret_access_key': 'secret123',
+                'aws_session_token': None,
+            }
+        )
+
 
 class TestInteractivePrompter(unittest.TestCase):
     def setUp(self):
@@ -218,6 +296,18 @@ class TestInteractivePrompter(unittest.TestCase):
         prompt_text = self.stdout.getvalue()
         self.assertIn('mycurrentvalue', prompt_text)
         self.assertRegex(prompt_text, r'\[mycurrentvalue\]')
+
+    def test_session_token_is_masked(self):
+        prompter = configure.InteractivePrompter()
+        prompter.get_value(
+            current_value='mysessiontoken123',
+            config_name='aws_session_token',
+            prompt_text='Session Token',
+        )
+        # Session token should be masked like other credentials
+        prompt_text = self.stdout.getvalue()
+        self.assertNotIn('mysessiontoken123', prompt_text)
+        self.assertRegex(prompt_text, r'\[\*\*\*\*.*\]')
 
     def test_user_hits_enter_returns_none(self):
         # If a user hits enter, then raw_input returns the empty string.

@@ -1112,8 +1112,7 @@
     },
     "AuthorizationNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified CIDR IP or Amazon EC2 security group isn't authorized for the specified security group.</p> <p>Amazon DocumentDB also might not be authorized to perform necessary actions on your behalf using IAM.</p>",
       "error":{
         "code":"AuthorizationNotFound",
@@ -1220,8 +1219,7 @@
     },
     "CertificateNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>CertificateIdentifier</code> doesn't refer to an existing certificate. </p>",
       "error":{
         "code":"CertificateNotFound",
@@ -1425,6 +1423,10 @@
         "StorageType":{
           "shape":"String",
           "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p> <note> <p>When you create a DocumentDB DB cluster with the storage type set to <code>iopt1</code>, the storage type is returned in the response. The storage type isn't returned when you set it to <code>standard</code>.</p> </note>"
+        },
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfiguration",
+          "documentation":"<p>Contains the scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
         },
         "ManageMasterUserPassword":{
           "shape":"BooleanOptional",
@@ -1825,7 +1827,11 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Storage type associated with your cluster</p> <p>Storage type associated with your cluster</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
+          "documentation":"<p>Storage type associated with your cluster</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
+        },
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfigurationInfo",
+          "documentation":"<p>The scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
         },
         "MasterUserSecret":{
           "shape":"ClusterMasterUserSecret",
@@ -1837,8 +1843,7 @@
     },
     "DBClusterAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You already have a cluster with the given identifier.</p>",
       "error":{
         "code":"DBClusterAlreadyExistsFault",
@@ -1906,8 +1911,7 @@
     },
     "DBClusterNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBClusterIdentifier</code> doesn't refer to an existing cluster. </p>",
       "error":{
         "code":"DBClusterNotFoundFault",
@@ -1972,8 +1976,7 @@
     },
     "DBClusterParameterGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBClusterParameterGroupName</code> doesn't refer to an existing cluster parameter group. </p>",
       "error":{
         "code":"DBClusterParameterGroupNotFound",
@@ -1998,8 +2001,7 @@
     },
     "DBClusterQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The cluster can't be created because you have reached the maximum allowed quota of clusters.</p>",
       "error":{
         "code":"DBClusterQuotaExceededFault",
@@ -2102,7 +2104,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Storage type associated with your cluster snapshot </p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
+          "documentation":"<p>Storage type associated with your cluster snapshot</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
         }
       },
       "documentation":"<p>Detailed information about a cluster snapshot. </p>",
@@ -2110,8 +2112,7 @@
     },
     "DBClusterSnapshotAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You already have a cluster snapshot with the given identifier.</p>",
       "error":{
         "code":"DBClusterSnapshotAlreadyExistsFault",
@@ -2179,8 +2180,7 @@
     },
     "DBClusterSnapshotNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBClusterSnapshotIdentifier</code> doesn't refer to an existing cluster snapshot. </p>",
       "error":{
         "code":"DBClusterSnapshotNotFoundFault",
@@ -2231,6 +2231,10 @@
         "SupportsCertificateRotationWithoutRestart":{
           "shape":"BooleanOptional",
           "documentation":"<p>Indicates whether the engine version supports rotating the server certificate without rebooting the DB instance.</p>"
+        },
+        "ServerlessV2FeaturesSupport":{
+          "shape":"ServerlessV2FeaturesSupport",
+          "documentation":"<p>Specifies any Amazon DocumentDB Serverless properties or limits that differ between Amazon DocumentDB engine versions. You can test the values of this attribute when deciding which Amazon DocumentDB version to use in a new or upgraded cluster. You can also retrieve the version of an existing cluster and check whether that version supports certain Amazon DocumentDB Serverless features before you attempt to use those features.</p>"
         }
       },
       "documentation":"<p> Detailed information about an engine version. </p>"
@@ -2385,8 +2389,7 @@
     },
     "DBInstanceAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You already have a instance with the given identifier.</p>",
       "error":{
         "code":"DBInstanceAlreadyExists",
@@ -2418,8 +2421,7 @@
     },
     "DBInstanceNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBInstanceIdentifier</code> doesn't refer to an existing instance. </p>",
       "error":{
         "code":"DBInstanceNotFound",
@@ -2459,8 +2461,7 @@
     },
     "DBParameterGroupAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A parameter group with the same name already exists.</p>",
       "error":{
         "code":"DBParameterGroupAlreadyExists",
@@ -2471,8 +2472,7 @@
     },
     "DBParameterGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBParameterGroupName</code> doesn't refer to an existing parameter group. </p>",
       "error":{
         "code":"DBParameterGroupNotFound",
@@ -2483,8 +2483,7 @@
     },
     "DBParameterGroupQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>This request would cause you to exceed the allowed number of parameter groups.</p>",
       "error":{
         "code":"DBParameterGroupQuotaExceeded",
@@ -2495,8 +2494,7 @@
     },
     "DBSecurityGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBSecurityGroupName</code> doesn't refer to an existing security group. </p>",
       "error":{
         "code":"DBSecurityGroupNotFound",
@@ -2507,8 +2505,7 @@
     },
     "DBSnapshotAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBSnapshotIdentifier</code> is already being used by an existing snapshot. </p>",
       "error":{
         "code":"DBSnapshotAlreadyExists",
@@ -2519,8 +2516,7 @@
     },
     "DBSnapshotNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBSnapshotIdentifier</code> doesn't refer to an existing snapshot. </p>",
       "error":{
         "code":"DBSnapshotNotFound",
@@ -2562,8 +2558,7 @@
     },
     "DBSubnetGroupAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBSubnetGroupName</code> is already being used by an existing subnet group. </p>",
       "error":{
         "code":"DBSubnetGroupAlreadyExists",
@@ -2574,8 +2569,7 @@
     },
     "DBSubnetGroupDoesNotCoverEnoughAZs":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Subnets in the subnet group should cover at least two Availability Zones unless there is only one Availability Zone.</p>",
       "error":{
         "code":"DBSubnetGroupDoesNotCoverEnoughAZs",
@@ -2600,8 +2594,7 @@
     },
     "DBSubnetGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> <code>DBSubnetGroupName</code> doesn't refer to an existing subnet group. </p>",
       "error":{
         "code":"DBSubnetGroupNotFoundFault",
@@ -2612,8 +2605,7 @@
     },
     "DBSubnetGroupQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would cause you to exceed the allowed number of subnet groups.</p>",
       "error":{
         "code":"DBSubnetGroupQuotaExceeded",
@@ -2631,8 +2623,7 @@
     },
     "DBSubnetQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would cause you to exceed the allowed number of subnets in a subnet group.</p>",
       "error":{
         "code":"DBSubnetQuotaExceededFault",
@@ -2643,8 +2634,7 @@
     },
     "DBUpgradeDependencyFailureFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The upgrade failed because a resource that the depends on can't be modified.</p>",
       "error":{
         "code":"DBUpgradeDependencyFailure",
@@ -3190,6 +3180,7 @@
       },
       "documentation":"<p>Represents the input to <a>DescribePendingMaintenanceActions</a>.</p>"
     },
+    "DoubleOptional":{"type":"double"},
     "Endpoint":{
       "type":"structure",
       "members":{
@@ -3352,8 +3343,7 @@
     },
     "EventSubscriptionQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You have reached the maximum number of event subscriptions. </p>",
       "error":{
         "code":"EventSubscriptionQuotaExceeded",
@@ -3489,7 +3479,7 @@
         },
         "GlobalClusterResourceId":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Services Region-unique, immutable identifier for the global database cluster. This identifier is found in CloudTrail log entries whenever the KMS customer master key (CMK) for the cluster is accessed. </p>"
+          "documentation":"<p>The Amazon Web Services RegionRegion-unique, immutable identifier for the global database cluster. This identifier is found in CloudTrail log entries whenever the KMS customer master key (CMK) for the cluster is accessed. </p>"
         },
         "GlobalClusterArn":{
           "shape":"String",
@@ -3529,8 +3519,7 @@
     },
     "GlobalClusterAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The <code>GlobalClusterIdentifier</code> already exists. Choose a new global cluster identifier (unique name) to create a new global cluster. </p>",
       "error":{
         "code":"GlobalClusterAlreadyExistsFault",
@@ -3561,7 +3550,7 @@
         },
         "Readers":{
           "shape":"ReadersArnList",
-          "documentation":"<p>The Amazon Resource Name (ARN) for each read-only secondary cluster associated with the Aurora global cluster.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for each read-only secondary cluster associated with the Amazon DocumentDB global cluster.</p>"
         },
         "IsWriter":{
           "shape":"Boolean",
@@ -3580,8 +3569,7 @@
     },
     "GlobalClusterNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The <code>GlobalClusterIdentifier</code> doesn't refer to an existing global cluster.</p>",
       "error":{
         "code":"GlobalClusterNotFoundFault",
@@ -3592,8 +3580,7 @@
     },
     "GlobalClusterQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The number of global clusters for this account is already at the maximum allowed.</p>",
       "error":{
         "code":"GlobalClusterQuotaExceededFault",
@@ -3617,8 +3604,7 @@
     },
     "InstanceQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would cause you to exceed the allowed number of instances.</p>",
       "error":{
         "code":"InstanceQuotaExceeded",
@@ -3629,8 +3615,7 @@
     },
     "InsufficientDBClusterCapacityFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The cluster doesn't have enough capacity for the current operation.</p>",
       "error":{
         "code":"InsufficientDBClusterCapacityFault",
@@ -3641,8 +3626,7 @@
     },
     "InsufficientDBInstanceCapacityFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified instance class isn't available in the specified Availability Zone.</p>",
       "error":{
         "code":"InsufficientDBInstanceCapacity",
@@ -3653,8 +3637,7 @@
     },
     "InsufficientStorageClusterCapacityFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There is not enough storage available for the current action. You might be able to resolve this error by updating your subnet group to use different Availability Zones that have more storage available. </p>",
       "error":{
         "code":"InsufficientStorageClusterCapacity",
@@ -3667,8 +3650,7 @@
     "IntegerOptional":{"type":"integer"},
     "InvalidDBClusterSnapshotStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The provided value isn't a valid cluster snapshot state.</p>",
       "error":{
         "code":"InvalidDBClusterSnapshotStateFault",
@@ -3679,8 +3661,7 @@
     },
     "InvalidDBClusterStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The cluster isn't in a valid state.</p>",
       "error":{
         "code":"InvalidDBClusterStateFault",
@@ -3691,8 +3672,7 @@
     },
     "InvalidDBInstanceStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> The specified instance isn't in the <i>available</i> state. </p>",
       "error":{
         "code":"InvalidDBInstanceState",
@@ -3703,8 +3683,7 @@
     },
     "InvalidDBParameterGroupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The parameter group is in use, or it is in a state that is not valid. If you are trying to delete the parameter group, you can't delete it when the parameter group is in this state.</p>",
       "error":{
         "code":"InvalidDBParameterGroupState",
@@ -3715,8 +3694,7 @@
     },
     "InvalidDBSecurityGroupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The state of the security group doesn't allow deletion.</p>",
       "error":{
         "code":"InvalidDBSecurityGroupState",
@@ -3727,8 +3705,7 @@
     },
     "InvalidDBSnapshotStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The state of the snapshot doesn't allow deletion.</p>",
       "error":{
         "code":"InvalidDBSnapshotState",
@@ -3739,8 +3716,7 @@
     },
     "InvalidDBSubnetGroupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The subnet group can't be deleted because it's in use.</p>",
       "error":{
         "code":"InvalidDBSubnetGroupStateFault",
@@ -3751,8 +3727,7 @@
     },
     "InvalidDBSubnetStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p> The subnet isn't in the <i>available</i> state. </p>",
       "error":{
         "code":"InvalidDBSubnetStateFault",
@@ -3763,8 +3738,7 @@
     },
     "InvalidEventSubscriptionStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Someone else might be modifying a subscription. Wait a few seconds, and try again.</p>",
       "error":{
         "code":"InvalidEventSubscriptionState",
@@ -3775,8 +3749,7 @@
     },
     "InvalidGlobalClusterStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested operation can't be performed while the cluster is in this state.</p>",
       "error":{
         "code":"InvalidGlobalClusterStateFault",
@@ -3787,8 +3760,7 @@
     },
     "InvalidRestoreFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You cannot restore from a virtual private cloud (VPC) backup to a non-VPC DB instance.</p>",
       "error":{
         "code":"InvalidRestoreFault",
@@ -3799,8 +3771,7 @@
     },
     "InvalidSubnet":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested subnet is not valid, or multiple subnets were requested that are not all in a common virtual private cloud (VPC).</p>",
       "error":{
         "code":"InvalidSubnet",
@@ -3811,8 +3782,7 @@
     },
     "InvalidVPCNetworkStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The subnet group doesn't cover all Availability Zones after it is created because of changes that were made.</p>",
       "error":{
         "code":"InvalidVPCNetworkStateFault",
@@ -3823,8 +3793,7 @@
     },
     "KMSKeyNotAccessibleFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An error occurred when accessing an KMS key.</p>",
       "error":{
         "code":"KMSKeyNotAccessibleFault",
@@ -3919,6 +3888,10 @@
         "StorageType":{
           "shape":"String",
           "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
+        },
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfiguration",
+          "documentation":"<p>Contains the scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
         },
         "ManageMasterUserPassword":{
           "shape":"BooleanOptional",
@@ -4500,8 +4473,7 @@
     },
     "ResourceNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified resource ID was not found.</p>",
       "error":{
         "code":"ResourceNotFoundFault",
@@ -4585,6 +4557,10 @@
           "shape":"String",
           "documentation":"<p>The name of the DB cluster parameter group to associate with this DB cluster.</p> <p> <i>Type:</i> String.       <i>Required:</i> No.</p> <p>If this argument is omitted, the default DB cluster parameter group is used. If supplied, must match the name of an existing default DB cluster parameter group. The string must consist of from 1 to 255 letters, numbers or hyphens. Its first character must be a letter, and it cannot end with a hyphen or contain two consecutive hyphens.</p>"
         },
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfiguration",
+          "documentation":"<p>Contains the scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
+        },
         "StorageType":{
           "shape":"String",
           "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
@@ -4653,6 +4629,10 @@
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether this cluster can be deleted. If <code>DeletionProtection</code> is enabled, the cluster cannot be deleted unless it is modified and <code>DeletionProtection</code> is disabled. <code>DeletionProtection</code> protects clusters from being accidentally deleted.</p>"
         },
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfiguration",
+          "documentation":"<p>Contains the scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
+        },
         "StorageType":{
           "shape":"String",
           "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
@@ -4668,8 +4648,7 @@
     },
     "SNSInvalidTopicFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Amazon SNS has responded that there is a problem with the specified topic. </p>",
       "error":{
         "code":"SNSInvalidTopic",
@@ -4680,8 +4659,7 @@
     },
     "SNSNoAuthorizationFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You do not have permission to publish to the SNS topic Amazon Resource Name (ARN). </p>",
       "error":{
         "code":"SNSNoAuthorization",
@@ -4692,8 +4670,7 @@
     },
     "SNSTopicArnNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The SNS topic Amazon Resource Name (ARN) does not exist. </p>",
       "error":{
         "code":"SNSTopicArnNotFound",
@@ -4702,10 +4679,51 @@
       },
       "exception":true
     },
-    "SharedSnapshotQuotaExceededFault":{
+    "ServerlessV2FeaturesSupport":{
       "type":"structure",
       "members":{
+        "MinCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The minimum number of Amazon DocumentDB capacity units (DCUs) for an instance in an Amazon DocumentDB Serverless cluster. You can specify DCU values in half-step increments, such as 8, 8.5, 9, and so on.</p>"
+        },
+        "MaxCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The maximum number of Amazon DocumentDB capacity units (DCUs) for an instance in an Amazon DocumentDB Serverless cluster. You can specify DCU values in half-step increments, such as 32, 32.5, 33, and so on.</p>"
+        }
       },
+      "documentation":"<p>Specifies any Amazon DocumentDB Serverless properties or limits that differ between Amazon DocumentDB engine versions. You can test the values of this attribute when deciding which Amazon DocumentDB version to use in a new or upgraded cluster. You can also retrieve the version of an existing cluster and check whether that version supports certain Amazon DocumentDB Serverless features before you attempt to use those features.</p>"
+    },
+    "ServerlessV2ScalingConfiguration":{
+      "type":"structure",
+      "members":{
+        "MinCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The minimum number of Amazon DocumentDB capacity units (DCUs) for an instance in an Amazon DocumentDB Serverless cluster. You can specify DCU values in half-step increments, such as 8, 8.5, 9, and so on.</p>"
+        },
+        "MaxCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The maximum number of Amazon DocumentDB capacity units (DCUs) for an instance in an Amazon DocumentDB Serverless cluster. You can specify DCU values in half-step increments, such as 32, 32.5, 33, and so on.</p>"
+        }
+      },
+      "documentation":"<p>Sets the scaling configuration of an Amazon DocumentDB Serverless cluster.</p>"
+    },
+    "ServerlessV2ScalingConfigurationInfo":{
+      "type":"structure",
+      "members":{
+        "MinCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The minimum number of Amazon DocumentDB capacity units (DCUs) for an instance in an Amazon DocumentDB Serverless cluster. You can specify DCU values in half-step increments, such as 8, 8.5, 9, and so on.</p>"
+        },
+        "MaxCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The maximum number of Amazon DocumentDB capacity units (DCUs) for an instance in an Amazon DocumentDB Serverless cluster. You can specify DCU values in half-step increments, such as 32, 32.5, 33, and so on. </p>"
+        }
+      },
+      "documentation":"<p>Retrieves the scaling configuration for an Amazon DocumentDB Serverless cluster.</p>"
+    },
+    "SharedSnapshotQuotaExceededFault":{
+      "type":"structure",
+      "members":{},
       "documentation":"<p>You have exceeded the maximum number of accounts that you can share a manual DB snapshot with. </p>",
       "error":{
         "code":"SharedSnapshotQuotaExceeded",
@@ -4716,8 +4734,7 @@
     },
     "SnapshotQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would cause you to exceed the allowed number of snapshots.</p>",
       "error":{
         "code":"SnapshotQuotaExceeded",
@@ -4735,8 +4752,7 @@
     },
     "SourceNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested source could not be found. </p>",
       "error":{
         "code":"SourceNotFound",
@@ -4790,8 +4806,7 @@
     },
     "StorageQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would cause you to exceed the allowed amount of storage available across all instances.</p>",
       "error":{
         "code":"StorageQuotaExceeded",
@@ -4802,8 +4817,7 @@
     },
     "StorageTypeNotSupportedFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Storage of the specified <code>StorageType</code> can't be associated with the DB instance. </p>",
       "error":{
         "code":"StorageTypeNotSupported",
@@ -4833,8 +4847,7 @@
     },
     "SubnetAlreadyInUse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The subnet is already in use in the Availability Zone.</p>",
       "error":{
         "code":"SubnetAlreadyInUse",
@@ -4859,8 +4872,7 @@
     },
     "SubscriptionAlreadyExistFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The provided subscription name already exists. </p>",
       "error":{
         "code":"SubscriptionAlreadyExist",
@@ -4871,8 +4883,7 @@
     },
     "SubscriptionCategoryNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The provided category does not exist. </p>",
       "error":{
         "code":"SubscriptionCategoryNotFound",
@@ -4883,8 +4894,7 @@
     },
     "SubscriptionNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The subscription name does not exist. </p>",
       "error":{
         "code":"SubscriptionNotFound",

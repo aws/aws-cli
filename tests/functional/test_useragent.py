@@ -1,6 +1,7 @@
 from awscli import __version__ as awscli_version
 from tests import CLIRunner
 from tests.functional.botocore.test_useragent import (
+    get_captured_ua_strings,
     parse_registered_feature_ids,
 )
 

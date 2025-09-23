@@ -156,7 +156,7 @@ def generate_conf_for_crosslinks(linker, crosslinks):
     # evalutes to true, the immediately next RewriteRule
     # is triggered.
     lines = [
-        f'RewriteCond %%{{REQUEST_URI}} !^\\/goto\\/{linker.TOOL_NAME}\\/.*$\n',
+        f'RewriteCond %{{REQUEST_URI}} !^\\/goto\\/{linker.TOOL_NAME}\\/.*$\n',
         # The S=12345 means skip the next 12345 lines.  This
         # rule is only triggered if the RewriteCond above
         # evaluates to true.  Think of this as a fancy GOTO.

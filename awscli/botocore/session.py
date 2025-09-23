@@ -477,7 +477,7 @@ class Session:
             ).load_credentials()
         return self._credentials
 
-    def get_auth_token(self):
+    def get_auth_token(self, **kwargs):
         """
         Return the :class:`botocore.tokens.AuthToken` object associated with
         this session. If the authorization token has not yet been loaded, this
@@ -485,8 +485,15 @@ class Session:
         return the cached authorization token.
 
         """
+        provider = self._components.get_component('token_provider')
+
+        signing_name = kwargs.get('signing_name')
+        if signing_name is not None:
+            auth_token = provider.load_token(signing_name=signing_name)
+            if auth_token is not None:
+                return auth_token
+
         if self._auth_token is None:
-            provider = self._components.get_component('token_provider')
             self._auth_token = provider.load_token()
         return self._auth_token
 
@@ -935,6 +942,7 @@ class Session:
             exceptions_factory,
             config_store,
             user_agent_creator=user_agent_creator,
+            auth_token_resolver=self.get_auth_token,
         )
         client = client_creator.create_client(
             service_name=service_name,

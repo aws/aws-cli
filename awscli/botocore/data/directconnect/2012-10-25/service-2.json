@@ -147,7 +147,7 @@
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
-      "documentation":"<p>Associates a MAC Security (MACsec) Connection Key Name (CKN)/ Connectivity Association Key (CAK) pair with an Direct Connect dedicated connection.</p> <p>You must supply either the <code>secretARN,</code> or the CKN/CAK (<code>ckn</code> and <code>cak</code>) pair in the request.</p> <p>For information about MAC Security (MACsec) key considerations, see <a href=\"https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-mac-sec-getting-started.html#mac-sec-key-consideration\">MACsec pre-shared CKN/CAK key considerations </a> in the <i>Direct Connect User Guide</i>.</p>"
+      "documentation":"<p>Associates a MAC Security (MACsec) Connection Key Name (CKN)/ Connectivity Association Key (CAK) pair with a Direct Connect connection.</p> <p>You must supply either the <code>secretARN,</code> or the CKN/CAK (<code>ckn</code> and <code>cak</code>) pair in the request.</p> <p>For information about MAC Security (MACsec) key considerations, see <a href=\"https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-mac-sec-getting-started.html#mac-sec-key-consideration\">MACsec pre-shared CKN/CAK key considerations </a> in the <i>Direct Connect User Guide</i>.</p>"
     },
     "AssociateVirtualInterface":{
       "name":"AssociateVirtualInterface",
@@ -747,7 +747,7 @@
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
-      "documentation":"<p>Displays all virtual interfaces for an Amazon Web Services account. Virtual interfaces deleted fewer than 15 minutes before you make the request are also returned. If you specify a connection ID, only the virtual interfaces associated with the connection are returned. If you specify a virtual interface ID, then only a single virtual interface is returned.</p> <p>A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer network.</p>"
+      "documentation":"<p>Displays all virtual interfaces for an Amazon Web Services account. Virtual interfaces deleted fewer than 15 minutes before you make the request are also returned. If you specify a connection ID, only the virtual interfaces associated with the connection are returned. If you specify a virtual interface ID, then only a single virtual interface is returned.</p> <p>A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer network.</p> <ul> <li> <p>If you're using an <code>asn</code>, the response includes ASN value in both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> <li> <p>If you're using <code>asnLong</code>, the response returns a value of <code>0</code> (zero) for the <code>asn</code> attribute because it exceeds the highest ASN value of 2,147,483,647 that it can support</p> </li> </ul>"
     },
     "DisassociateConnectionFromLag":{
       "name":"DisassociateConnectionFromLag",
@@ -775,7 +775,7 @@
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
-      "documentation":"<p>Removes the association between a MAC Security (MACsec) security key and an Direct Connect dedicated connection.</p>"
+      "documentation":"<p>Removes the association between a MAC Security (MACsec) security key and a Direct Connect connection.</p>"
     },
     "ListVirtualInterfaceTestHistory":{
       "name":"ListVirtualInterfaceTestHistory",
@@ -861,7 +861,7 @@
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
-      "documentation":"<p>Updates the Direct Connect dedicated connection configuration.</p> <p>You can update the following parameters for a connection:</p> <ul> <li> <p>The connection name</p> </li> <li> <p>The connection's MAC Security (MACsec) encryption mode.</p> </li> </ul>"
+      "documentation":"<p>Updates the Direct Connect connection configuration.</p> <p>You can update the following parameters for a connection:</p> <ul> <li> <p>The connection name</p> </li> <li> <p>The connection's MAC Security (MACsec) encryption mode.</p> </li> </ul>"
     },
     "UpdateDirectConnectGateway":{
       "name":"UpdateDirectConnectGateway",
@@ -1156,19 +1156,19 @@
       "members":{
         "connectionId":{
           "shape":"ConnectionId",
-          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).</p> <p>You can use <a>DescribeConnections</a> or <a>DescribeLags</a> to retrieve connection ID.</p>"
+          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), interconnect (dxcon-xxxx), or LAG (dxlag-xxxx).</p> <p>You can use <a>DescribeConnections</a>, <a>DescribeInterconnects</a>, or <a>DescribeLags</a> to retrieve connection ID.</p>"
         },
         "secretARN":{
           "shape":"SecretARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the MAC Security (MACsec) secret key to associate with the dedicated connection.</p> <p>You can use <a>DescribeConnections</a> or <a>DescribeLags</a> to retrieve the MAC Security (MACsec) secret key.</p> <p>If you use this request parameter, you do not use the <code>ckn</code> and <code>cak</code> request parameters.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the MAC Security (MACsec) secret key to associate with the connection.</p> <p>You can use <a>DescribeConnections</a> or <a>DescribeLags</a> to retrieve the MAC Security (MACsec) secret key.</p> <p>If you use this request parameter, you do not use the <code>ckn</code> and <code>cak</code> request parameters.</p>"
         },
         "ckn":{
           "shape":"Ckn",
-          "documentation":"<p>The MAC Security (MACsec) CKN to associate with the dedicated connection.</p> <p>You can create the CKN/CAK pair using an industry standard tool.</p> <p> The valid values are 64 hexadecimal characters (0-9, A-E).</p> <p>If you use this request parameter, you must use the <code>cak</code> request parameter and not use the <code>secretARN</code> request parameter.</p>"
+          "documentation":"<p>The MAC Security (MACsec) CKN to associate with the connection.</p> <p>You can create the CKN/CAK pair using an industry standard tool.</p> <p> The valid values are 64 hexadecimal characters (0-9, A-E).</p> <p>If you use this request parameter, you must use the <code>cak</code> request parameter and not use the <code>secretARN</code> request parameter.</p>"
         },
         "cak":{
           "shape":"Cak",
-          "documentation":"<p>The MAC Security (MACsec) CAK to associate with the dedicated connection.</p> <p>You can create the CKN/CAK pair using an industry standard tool.</p> <p> The valid values are 64 hexadecimal characters (0-9, A-E).</p> <p>If you use this request parameter, you must use the <code>ckn</code> request parameter and not use the <code>secretARN</code> request parameter.</p>"
+          "documentation":"<p>The MAC Security (MACsec) CAK to associate with the connection.</p> <p>You can create the CKN/CAK pair using an industry standard tool.</p> <p> The valid values are 64 hexadecimal characters (0-9, A-E).</p> <p>If you use this request parameter, you must use the <code>ckn</code> request parameter and not use the <code>secretARN</code> request parameter.</p>"
         }
       }
     },
@@ -1177,11 +1177,11 @@
       "members":{
         "connectionId":{
           "shape":"ConnectionId",
-          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).</p>"
+          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), interconnect (dxcon-xxxx), or LAG (dxlag-xxxx).</p>"
         },
         "macSecKeys":{
           "shape":"MacSecKeyList",
-          "documentation":"<p>The MAC Security (MACsec) security keys associated with the dedicated connection.</p>"
+          "documentation":"<p>The MAC Security (MACsec) security keys associated with the connection.</p>"
         }
       }
     },
@@ -1267,7 +1267,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The long ASN for the BGP peer. The valid range is from 1 to 4294967294 for BGP configuration. </p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "authKey":{
           "shape":"BGPAuthKey",
@@ -1535,6 +1539,10 @@
         "macSecKeys":{
           "shape":"MacSecKeyList",
           "documentation":"<p>The MAC Security (MACsec) security keys associated with the connection.</p>"
+        },
+        "partnerInterconnectMacSecCapable":{
+          "shape":"PartnerInterconnectMacSecCapable",
+          "documentation":"<p>Indicates whether the interconnect hosting this connection supports MAC Security (MACsec).</p>"
         }
       },
       "documentation":"<p>Information about an Direct Connect connection.</p>"
@@ -1565,6 +1573,10 @@
         "connections":{
           "shape":"ConnectionList",
           "documentation":"<p>The connections.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
       }
     },
@@ -1637,7 +1649,7 @@
         },
         "requestMACSec":{
           "shape":"RequestMACSec",
-          "documentation":"<p>Indicates whether you want the connection to support MAC Security (MACsec).</p> <p>MAC Security (MACsec) is only available on dedicated connections. For information about MAC Security (MACsec) prerequisties, see <a href=\"https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-mac-sec-getting-started.html#mac-sec-prerequisites\">MACsec prerequisties</a> in the <i>Direct Connect User Guide</i>.</p>"
+          "documentation":"<p>Indicates whether you want the connection to support MAC Security (MACsec).</p> <p>MAC Security (MACsec) is unavailable on hosted connections. For information about MAC Security (MACsec) prerequisites, see <a href=\"https://docs.aws.amazon.com/directconnect/latest/UserGuide/MACSec.html\">MAC Security in Direct Connect</a> in the <i>Direct Connect User Guide</i>.</p>"
         }
       }
     },
@@ -1769,6 +1781,10 @@
         "providerName":{
           "shape":"ProviderName",
           "documentation":"<p>The name of the service provider associated with the interconnect.</p>"
+        },
+        "requestMACSec":{
+          "shape":"RequestMACSec",
+          "documentation":"<p>Indicates whether you want the interconnect to support MAC Security (MACsec).</p>"
         }
       }
     },
@@ -1903,7 +1919,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The long ASN for the BGP peer to be deleted from a Direct Connect virtual interface. The valid range is from 1 to 4294967294 for BGP configuration. </p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "customerAddress":{
           "shape":"CustomerAddress",
@@ -2089,6 +2109,14 @@
         "connectionId":{
           "shape":"ConnectionId",
           "documentation":"<p>The ID of the connection.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
         }
       }
     },
@@ -2256,6 +2284,14 @@
         "connectionId":{
           "shape":"ConnectionId",
           "documentation":"<p>The ID of the interconnect or LAG.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
         }
       }
     },
@@ -2292,6 +2328,14 @@
         "interconnectId":{
           "shape":"InterconnectId",
           "documentation":"<p>The ID of the interconnect.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
         }
       }
     },
@@ -2301,6 +2345,14 @@
         "lagId":{
           "shape":"LagId",
           "documentation":"<p>The ID of the LAG.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
         }
       }
     },
@@ -2387,6 +2439,14 @@
         "virtualInterfaceId":{
           "shape":"VirtualInterfaceId",
           "documentation":"<p>The ID of the virtual interface.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
         }
       }
     },
@@ -2411,7 +2471,7 @@
         },
         "amazonSideAsn":{
           "shape":"LongAsn",
-          "documentation":"<p>The autonomous system number (ASN) for the Amazon side of the connection.</p>"
+          "documentation":"<p>The autonomous system number (AS) for the Amazon side of the connection.</p>"
         },
         "ownerAccount":{
           "shape":"OwnerAccount",
@@ -2647,7 +2707,7 @@
       "members":{
         "connectionId":{
           "shape":"ConnectionId",
-          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).</p> <p>You can use <a>DescribeConnections</a> or <a>DescribeLags</a> to retrieve connection ID.</p>"
+          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), interconnect (dxcon-xxxx), or LAG (dxlag-xxxx).</p> <p>You can use <a>DescribeConnections</a>, <a>DescribeInterconnects</a>, or <a>DescribeLags</a> to retrieve connection ID.</p>"
         },
         "secretARN":{
           "shape":"SecretARN",
@@ -2660,18 +2720,17 @@
       "members":{
         "connectionId":{
           "shape":"ConnectionId",
-          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), or the ID of the LAG (dxlag-xxxx).</p>"
+          "documentation":"<p>The ID of the dedicated connection (dxcon-xxxx), interconnect (dxcon-xxxx), or LAG (dxlag-xxxx).</p>"
         },
         "macSecKeys":{
           "shape":"MacSecKeyList",
-          "documentation":"<p>The MAC Security (MACsec) security keys no longer associated with the dedicated connection.</p>"
+          "documentation":"<p>The MAC Security (MACsec) security keys no longer associated with the connection.</p>"
         }
       }
     },
     "DuplicateTagKeysException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A tag key was specified more than once.</p>",
       "exception":true
     },
@@ -2759,6 +2818,22 @@
         "providerName":{
           "shape":"ProviderName",
           "documentation":"<p>The name of the service provider associated with the interconnect.</p>"
+        },
+        "macSecCapable":{
+          "shape":"MacSecCapable",
+          "documentation":"<p>Indicates whether the interconnect supports MAC Security (MACsec).</p>"
+        },
+        "portEncryptionStatus":{
+          "shape":"PortEncryptionStatus",
+          "documentation":"<p>The MAC Security (MACsec) port link status.</p> <p>The valid values are <code>Encryption Up</code>, which means that there is an active Connection Key Name, or <code>Encryption Down</code>.</p>"
+        },
+        "encryptionMode":{
+          "shape":"EncryptionMode",
+          "documentation":"<p>The MAC Security (MACsec) encryption mode.</p> <p>The valid values are <code>no_encrypt</code>, <code>should_encrypt</code>, and <code>must_encrypt</code>.</p>"
+        },
+        "macSecKeys":{
+          "shape":"MacSecKeyList",
+          "documentation":"<p>The MAC Security (MACsec) security keys.</p>"
         }
       },
       "documentation":"<p>Information about an interconnect.</p>"
@@ -2787,6 +2862,10 @@
         "interconnects":{
           "shape":"InterconnectList",
           "documentation":"<p>The interconnects.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
       }
     },
@@ -2905,6 +2984,10 @@
         "lags":{
           "shape":"LagList",
           "documentation":"<p>The LAGs.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
       }
     },
@@ -3053,7 +3136,11 @@
       "members":{
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The long ASN for a new BGP peer. The valid range is from 1 to 4294967294.</p>"
         },
         "authKey":{
           "shape":"BGPAuthKey",
@@ -3078,8 +3165,7 @@
       "type":"structure",
       "required":[
         "virtualInterfaceName",
-        "vlan",
-        "asn"
+        "vlan"
       ],
       "members":{
         "virtualInterfaceName":{
@@ -3092,7 +3178,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note> <p>The valid values are 1-2147483646.</p>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The long ASN for a new private virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "mtu":{
           "shape":"MTU",
@@ -3137,8 +3227,7 @@
       "type":"structure",
       "required":[
         "virtualInterfaceName",
-        "vlan",
-        "asn"
+        "vlan"
       ],
       "members":{
         "virtualInterfaceName":{
@@ -3151,7 +3240,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note> <p>The valid values are 1-2147483646.</p>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The ASN when allocating a new private virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "mtu":{
           "shape":"MTU",
@@ -3184,8 +3277,7 @@
       "type":"structure",
       "required":[
         "virtualInterfaceName",
-        "vlan",
-        "asn"
+        "vlan"
       ],
       "members":{
         "virtualInterfaceName":{
@@ -3198,7 +3290,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The long ASN for a new public virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "authKey":{
           "shape":"BGPAuthKey",
@@ -3231,8 +3327,7 @@
       "type":"structure",
       "required":[
         "virtualInterfaceName",
-        "vlan",
-        "asn"
+        "vlan"
       ],
       "members":{
         "virtualInterfaceName":{
@@ -3245,7 +3340,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note> <p>The valid values are 1-2147483646.</p>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The ASN when allocating a new public virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "authKey":{
           "shape":"BGPAuthKey",
@@ -3287,7 +3386,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The long ASN for a new transit virtual interface.The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "mtu":{
           "shape":"MTU",
@@ -3337,7 +3440,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note> <p>The valid values are 1-2147483646.</p>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The ASN when allocating a new transit virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "mtu":{
           "shape":"MTU",
@@ -3376,6 +3483,7 @@
     },
     "OwnerAccount":{"type":"string"},
     "PaginationToken":{"type":"string"},
+    "PartnerInterconnectMacSecCapable":{"type":"boolean"},
     "PartnerName":{"type":"string"},
     "Platform":{"type":"string"},
     "PortEncryptionStatus":{"type":"string"},
@@ -3562,8 +3670,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -3578,8 +3685,7 @@
     "TestId":{"type":"string"},
     "TooManyTagsException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You have reached the limit on the number of tags that can be assigned.</p>",
       "exception":true
     },
@@ -3602,8 +3708,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateConnectionRequest":{
       "type":"structure",
@@ -3611,7 +3716,7 @@
       "members":{
         "connectionId":{
           "shape":"ConnectionId",
-          "documentation":"<p>The ID of the dedicated connection.</p> <p>You can use <a>DescribeConnections</a> to retrieve the connection ID.</p>"
+          "documentation":"<p>The ID of the connection.</p> <p>You can use <a>DescribeConnections</a> to retrieve the connection ID.</p>"
         },
         "connectionName":{
           "shape":"ConnectionName",
@@ -3787,11 +3892,15 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration.</p> <p>The valid values are 1-2147483647.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+        },
+        "asnLong":{
+          "shape":"LongAsn",
+          "documentation":"<p>The long ASN for the virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
         },
         "amazonSideAsn":{
           "shape":"LongAsn",
-          "documentation":"<p>The autonomous system number (ASN) for the Amazon side of the connection.</p>"
+          "documentation":"<p>The autonomous system number (AS) for the Amazon side of the connection.</p>"
         },
         "authKey":{
           "shape":"BGPAuthKey",
@@ -3879,6 +3988,7 @@
         "pending",
         "available",
         "down",
+        "testing",
         "deleting",
         "deleted",
         "rejected",
@@ -3934,6 +4044,10 @@
         "virtualInterfaces":{
           "shape":"VirtualInterfaceList",
           "documentation":"<p>The virtual interfaces</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
       }
     },

@@ -1175,6 +1175,7 @@ class TestFeatureIdRegistered:
             client.list_buckets()
             client.list_buckets()
 
-            http_stubber.add_response()
-            client.list_buckets()
-            client.list_buckets()
+        ua_string = get_captured_ua_strings(http_stubber)
+        feature_list_one = parse_registered_feature_ids(ua_string[0])
+        feature_list_two = parse_registered_feature_ids(ua_string[1])
+        assert 'z' in feature_list_one and 'z' in feature_list_two

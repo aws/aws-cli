@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.42.38
+=======
+
+* api-change:``appstream``: G6f instance support for AppStream 2.0
+* api-change:``cloudwatch``: Fix default dualstack FIPS endpoints in AWS GovCloud(US) regions
+* api-change:``dax``: This release adds support for IPv6-only, DUAL_STACK DAX instances
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``kms``: Documentation only updates for KMS.
+* api-change:``neptune``: Doc-only update to address customer use.
+
+
 1.42.37
 =======
 

@@ -80,6 +80,7 @@ def create_clidriver():
     session = botocore.session.Session(EnvironmentVariables)
     _set_user_agent_for_session(session)
     # TODO check if full config plugins is empty or not. if it's not, we signal the warning for plugin support being provisional
+    # similarly, we check for api_versions config value here.
     load_plugins(
         session.full_config.get('plugins', {}),
         event_hooks=session.get_component('event_emitter'),

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.31.2
+======
+
+* api-change:``lightsail``: Attribute HTTP binding update for Get/Delete operations
+* api-change:``glue``: Update GetConnection(s) API to return KmsKeyArn & Add 63 missing connection types
+* api-change:``network-firewall``: Network Firewall now introduces Reject and Alert action support for stateful domain list rule groups, providing customers with more granular control over their network traffic.
+
+
 2.31.1
 ======
 

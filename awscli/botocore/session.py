@@ -58,7 +58,7 @@ from botocore.loaders import create_loader
 from botocore.model import ServiceModel
 from botocore.parsers import ResponseParserFactory
 from botocore.regions import EndpointResolver
-from botocore.useragent import UserAgentString
+from botocore.useragent import UserAgentString, register_feature_id
 
 logger = logging.getLogger(__name__)
 
@@ -913,6 +913,8 @@ class Session:
                     f"an access key id and secret key on the session or client: {ignored_credentials}"
                 )
             credentials = self.get_credentials()
+        if getattr(credentials, 'method', None) == 'explicit':
+            register_feature_id('CREDENTIALS_CODE')
         auth_token = self.get_auth_token()
         endpoint_resolver = self._get_internal_component('endpoint_resolver')
         exceptions_factory = self._get_internal_component('exceptions_factory')

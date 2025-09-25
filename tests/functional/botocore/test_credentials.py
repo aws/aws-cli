@@ -1093,89 +1093,132 @@ class SSOSessionTest(BaseEnvVar):
         stubber.add_response(body=json.dumps(response).encode('utf-8'))
 
 
-class TestFeatureIdRegistered:
-    @patch(
-        "botocore.utils.InstanceMetadataFetcher.retrieve_iam_role_credentials"
-    )
-    @patch("botocore.credentials.ContainerProvider.load", return_value=None)
-    @patch("botocore.credentials.ConfigProvider.load", return_value=None)
-    @patch(
-        "botocore.credentials.SharedCredentialProvider.load", return_value=None
-    )
-    @patch("botocore.credentials.EnvProvider.load", return_value=None)
-    def test_user_agent_has_imds_credentials_feature_id(
-        self,
-        _unused_mock_env_load,
-        _unused_mock_shared_load,
-        _unused_mock_config_load,
-        _unused_mock_container_load,
-        mock_retrieve_iam_role_credentials,
-        patched_session,
-    ):
-        fake_creds = {
-            "role_name": "FAKEROLE",
-            "access_key": "FAKEACCESSKEY",
-            "secret_key": "FAKESECRET",
-            "token": "FAKETOKEN",
-            "expiry_time": "2099-01-01T00:00:00Z",
-        }
-        mock_retrieve_iam_role_credentials.return_value = fake_creds
+@pytest.mark.parametrize(
+    "environ_vars,fake_credentials,patches,expected_feature_id",
+    [
+        # Test case 1: IMDS credentials
+        (
+            {},
+            {},
+            [
+                patch(
+                    "botocore.utils.InstanceMetadataFetcher.retrieve_iam_role_credentials",
+                    return_value={
+                        "role_name": "FAKEROLE",
+                        "access_key": "FAKEACCESSKEY",
+                        "secret_key": "FAKESECRET",
+                        "token": "FAKETOKEN",
+                        "expiry_time": "2099-01-01T00:00:00Z",
+                    },
+                ),
+                patch(
+                    "botocore.credentials.ContainerProvider.load",
+                    return_value=None,
+                ),
+                patch(
+                    "botocore.credentials.ConfigProvider.load",
+                    return_value=None,
+                ),
+                patch(
+                    "botocore.credentials.SharedCredentialProvider.load",
+                    return_value=None,
+                ),
+                patch(
+                    "botocore.credentials.EnvProvider.load", return_value=None
+                ),
+            ],
+            '0',
+        ),
+        # Test case 2: HTTP credentials (container)
+        (
+            {
+                'AWS_CONTAINER_CREDENTIALS_FULL_URI': 'http://localhost/foo',
+                'AWS_CONTAINER_AUTHORIZATION_TOKEN': 'Basic auth-token',
+            },
+            {},
+            [
+                patch(
+                    "botocore.credentials.ContainerMetadataFetcher.retrieve_full_uri",
+                    return_value={
+                        "AccessKeyId": "FAKEACCESSKEY",
+                        "SecretAccessKey": "FAKESECRET",
+                        "Token": "FAKETOKEN",
+                        "Expiration": "2099-01-01T00:00:00Z",
+                        "AccountId": "01234567890",
+                    },
+                ),
+                patch(
+                    "botocore.credentials.ConfigProvider.load",
+                    return_value=None,
+                ),
+                patch(
+                    "botocore.credentials.SharedCredentialProvider.load",
+                    return_value=None,
+                ),
+                patch(
+                    "botocore.credentials.EnvProvider.load", return_value=None
+                ),
+            ],
+            'z',
+        ),
+        # Test case 3: Credentials set via Environment variables
+        (
+            {
+                'AWS_ACCESS_KEY_ID': 'FAKEACCESSKEY',
+                'AWS_SECRET_ACCESS_KEY': 'FAKESECRET',
+                'AWS_SESSION_TOKEN': 'FAKETOKEN',
+            },
+            {},
+            [],
+            'g',
+        ),
+        # Test case 4: Credentials set via code
+        (
+            {},
+            {
+                'aws_access_key_id': 'FAKEACCESSKEY',
+                'aws_secret_access_key': 'FAKESECRET',
+                'aws_session_token': 'FAKETOKEN',
+            },
+            [],
+            'e',
+        ),
+    ],
+)
+def test_user_agent_feature_ids(
+    environ_vars,
+    fake_credentials,
+    patches,
+    expected_feature_id,
+    monkeypatch,
+    patched_session,
+):
+    for var, value in environ_vars.items():
+        monkeypatch.setenv(var, value)
 
-        client = patched_session.create_client("s3", region_name="us-east-1")
-        with ClientHTTPStubber(client, strict=True) as http_stubber:
-            # We want to call this twice to assert that the feature id exists
-            # for multiple calls with the same credentials
-            http_stubber.add_response()
-            http_stubber.add_response()
-            client.list_buckets()
-            client.list_buckets()
+    for patch_obj in patches:
+        patch_obj.start()
 
-        ua_string = get_captured_ua_strings(http_stubber)
-        feature_list_one = parse_registered_feature_ids(ua_string[0])
-        feature_list_two = parse_registered_feature_ids(ua_string[1])
-        assert '0' in feature_list_one and '0' in feature_list_two
+    try:
+        client = patched_session.create_client(
+            "s3", region_name="us-east-1", **fake_credentials
+        )
+        _assert_feature_ids_in_ua(client, expected_feature_id)
+    finally:
+        for patch_obj in patches:
+            patch_obj.stop()
 
-    @patch("botocore.credentials.ContainerMetadataFetcher.retrieve_full_uri")
-    @patch("botocore.credentials.ConfigProvider.load", return_value=None)
-    @patch(
-        "botocore.credentials.SharedCredentialProvider.load", return_value=None
-    )
-    @patch("botocore.credentials.EnvProvider.load", return_value=None)
-    def test_user_agent_has_http_credentials_feature_id(
-        self,
-        _unused_mock_env_load,
-        _unused_mock_shared_load,
-        _unused_mock_config_load,
-        mock_load_http_credentials,
-        monkeypatch,
-        patched_session,
-    ):
-        environ = {
-            'AWS_CONTAINER_CREDENTIALS_FULL_URI': 'http://localhost/foo',
-            'AWS_CONTAINER_AUTHORIZATION_TOKEN': 'Basic auth-token',
-        }
-        for var in environ:
-            monkeypatch.setenv(var, environ[var])
 
-        fake_creds = {
-            "AccessKeyId": "FAKEACCESSKEY",
-            "SecretAccessKey": "FAKESECRET",
-            "Token": "FAKETOKEN",
-            "Expiration": "2099-01-01T00:00:00Z",
-            "AccountId": "01234567890",
-        }
-        mock_load_http_credentials.return_value = fake_creds
+def _assert_feature_ids_in_ua(client, expected_feature_ids):
+    """Helper to test feature IDs appear in user agent for multiple calls."""
+    with ClientHTTPStubber(client, strict=True) as http_stubber:
+        http_stubber.add_response()
+        http_stubber.add_response()
+        client.list_buckets()
+        client.list_buckets()
 
-        client = patched_session.create_client("s3", region_name="us-east-1")
-        with ClientHTTPStubber(client, strict=True) as http_stubber:
-            # We want to call this twice to assert that the feature id exists
-            # for multiple calls with the same credentials
-            http_stubber.add_response()
-            http_stubber.add_response()
-            client.list_buckets()
-            client.list_buckets()
-
-        ua_string = get_captured_ua_strings(http_stubber)
-        feature_list_one = parse_registered_feature_ids(ua_string[0])
-        feature_list_two = parse_registered_feature_ids(ua_string[1])
-        assert 'z' in feature_list_one and 'z' in feature_list_two
+    ua_strings = get_captured_ua_strings(http_stubber)
+    for ua_string in ua_strings:
+        feature_list = parse_registered_feature_ids(ua_string)
+        for expected_id in expected_feature_ids:
+            assert expected_id in feature_list

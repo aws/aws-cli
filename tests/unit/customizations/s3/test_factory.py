@@ -488,7 +488,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt',
             should_stream=True,
-            disk_throughput='5GB/s',
+            disk_throughput=1000**3,
             direct_io=True,
         )
         transfer_manager = self.factory.create_transfer_manager(
@@ -496,7 +496,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         )
         expected_fio_options = S3FileIoOptions(
             should_stream=True,
-            disk_throughput_gbps=40.0,
+            disk_throughput_gbps=8.0,
             direct_io=True,
         )
         self.assert_is_crt_manager(transfer_manager)

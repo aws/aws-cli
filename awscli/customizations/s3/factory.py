@@ -15,7 +15,6 @@ import logging
 import awscrt.s3
 from botocore.client import Config
 from botocore.httpsession import DEFAULT_CA_BUNDLE
-from s3transfer.constants import GB
 from s3transfer.crt import (
     BotocoreCRTCredentialsWrapper,
     BotocoreCRTRequestSerializer,
@@ -144,7 +143,7 @@ class TransferManagerFactory:
             fio_options['should_stream'] = val
         if (val := runtime_config.get('disk_throughput')) is not None:
             # Convert bytes to gigabits.
-            fio_options['disk_throughput_gbps'] = val * 8 / GB
+            fio_options['disk_throughput_gbps'] = val * 8 / 1_000_000_000
         if (val := runtime_config.get('direct_io')) is not None:
             fio_options['direct_io'] = val
         create_crt_client_kwargs['fio_options'] = fio_options

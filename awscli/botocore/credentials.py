@@ -41,6 +41,7 @@ from botocore.exceptions import (
     UnknownCredentialError,
 )
 from botocore.tokens import SSOTokenProvider
+from botocore.useragent import register_feature_id
 from botocore.utils import (
     ArnParser,
     ContainerMetadataFetcher,
@@ -1130,6 +1131,7 @@ class InstanceMetadataProvider(CredentialProvider):
         metadata = fetcher.retrieve_iam_role_credentials()
         if not metadata:
             return None
+        register_feature_id('CREDENTIALS_IMDS')
         logger.debug(
             'Found credentials from IAM Role: %s', metadata['role_name']
         )
@@ -1214,6 +1216,7 @@ class EnvProvider(CredentialProvider):
             logger.info('Found credentials in environment variables.')
             fetcher = self._create_credentials_fetcher()
             credentials = fetcher(require_expiry=False)
+            register_feature_id('CREDENTIALS_ENV_VARS')
 
             expiry_time = credentials['expiry_time']
             if expiry_time is not None:
@@ -2056,6 +2059,7 @@ class ContainerProvider(CredentialProvider):
                 response = self._fetcher.retrieve_full_uri(
                     full_uri, headers=headers
                 )
+                register_feature_id('CREDENTIALS_HTTP')
             except MetadataRetrievalError as e:
                 logger.debug(
                     "Error retrieving container metadata: %s", e, exc_info=True

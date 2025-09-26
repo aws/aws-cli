@@ -2791,6 +2791,17 @@
       "documentation":"<p>The Amazon Web Services Security Token Service temporary credential that S3 Access Grants vends to grantees and client applications. </p>",
       "sensitive":true
     },
+    "DSSEKMSFilter":{
+      "type":"structure",
+      "members":{
+        "KmsKeyArn":{
+          "shape":"NonEmptyKmsKeyArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed KMS key to use for the filter to return objects that are encrypted by the specified key. For best performance, we recommend using the <code>KMSKeyArn</code> filter in conjunction with other object metadata filters, like <code>MatchAnyPrefix</code>, <code>CreatedAfter</code>, or <code>MatchAnyStorageClass</code>.</p> <note> <p>You must provide the full KMS Key ARN. You can't use an alias name or alias ARN. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN\"> KMS keys</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p> </note>",
+          "box":true
+        }
+      },
+      "documentation":"<p>A filter that returns objects that are encrypted by dual-layer server-side encryption with Amazon Web Services Key Management Service (KMS) keys (DSSE-KMS). You can further refine your filtering by optionally providing a KMS Key ARN to create an object list of DSSE-KMS objects with that specific KMS Key ARN.</p>"
+    },
     "DataSourceId":{
       "type":"string",
       "max":191
@@ -4978,6 +4989,10 @@
         "MatchAnyStorageClass":{
           "shape":"StorageClassList",
           "documentation":"<p>If provided, the generated manifest includes only source bucket objects that are stored with the specified storage class.</p>"
+        },
+        "MatchAnyObjectEncryption":{
+          "shape":"ObjectEncryptionFilterList",
+          "documentation":"<p>If provided, the generated object list includes only source bucket objects with the indicated server-side encryption type (SSE-S3, SSE-KMS, DSSE-KMS, SSE-C, or NOT-SSE). If you select SSE-KMS or DSSE-KMS, you can optionally further filter your results by specifying a specific KMS Key ARN. If you select SSE-KMS, you can also optionally further filter your results by Bucket Key enabled status.</p>"
         }
       },
       "documentation":"<p>The filter used to describe a set of objects for the job's manifest.</p>"
@@ -5310,7 +5325,7 @@
         },
         "NoncurrentVersionTransitions":{
           "shape":"NoncurrentVersionTransitionList",
-          "documentation":"<p> Specifies the transition rule for the lifecycle rule that describes when noncurrent objects transition to a specific storage class. If your bucket is versioning-enabled (or versioning is suspended), you can set this action to request that Amazon S3 transition noncurrent object versions to a specific storage class at a set period in the object's lifetime. </p> <note> <p>This is not supported by Amazon S3 on Outposts buckets.</p> </note>"
+          "documentation":"<p> Specifies the transition rule for the lifecycle rule that describes when non-current objects transition to a specific storage class. If your bucket is versioning-enabled (or versioning is suspended), you can set this action to request that Amazon S3 transition noncurrent object versions to a specific storage class at a set period in the object's lifetime. </p> <note> <p>This is not supported by Amazon S3 on Outposts buckets.</p> </note>"
         },
         "NoncurrentVersionExpiration":{
           "shape":"NoncurrentVersionExpiration",
@@ -6379,6 +6394,12 @@
       "exception":true
     },
     "NoSuchPublicAccessBlockConfigurationMessage":{"type":"string"},
+    "NonEmptyKmsKeyArnString":{
+      "type":"string",
+      "max":2000,
+      "min":1,
+      "pattern":"arn:aws[a-zA-Z0-9-]*:kms:[a-z0-9-]+:[0-9]{12}:key/[a-zA-Z0-9-]+"
+    },
     "NonEmptyMaxLength1024String":{
       "type":"string",
       "max":1024,
@@ -6448,8 +6469,54 @@
       "documentation":"<p/>",
       "exception":true
     },
+    "NotSSEFilter":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>A filter that returns objects that aren't server-side encrypted.</p>"
+    },
     "ObjectAgeValue":{"type":"integer"},
     "ObjectCreationTime":{"type":"timestamp"},
+    "ObjectEncryptionFilter":{
+      "type":"structure",
+      "members":{
+        "SSES3":{
+          "shape":"SSES3Filter",
+          "documentation":"<p>Filters for objects that are encrypted by server-side encryption with Amazon S3 managed keys (SSE-S3).</p>",
+          "locationName":"SSE-S3"
+        },
+        "SSEKMS":{
+          "shape":"SSEKMSFilter",
+          "documentation":"<p>Filters for objects that are encrypted by server-side encryption with Amazon Web Services Key Management Service (KMS) keys (SSE-KMS).</p>",
+          "locationName":"SSE-KMS"
+        },
+        "DSSEKMS":{
+          "shape":"DSSEKMSFilter",
+          "documentation":"<p>Filters for objects that are encrypted by dual-layer server-side encryption with Amazon Web Services Key Management Service (KMS) keys (DSSE-KMS).</p>",
+          "locationName":"DSSE-KMS"
+        },
+        "SSEC":{
+          "shape":"SSECFilter",
+          "documentation":"<p>Filters for objects that are encrypted by server-side encryption with customer-provided keys (SSE-C).</p>",
+          "locationName":"SSE-C"
+        },
+        "NOTSSE":{
+          "shape":"NotSSEFilter",
+          "documentation":"<p>Filters for objects that are not encrypted by server-side encryption. </p>",
+          "locationName":"NOT-SSE"
+        }
+      },
+      "documentation":"<p>An optional filter for the <code>S3JobManifestGenerator</code> that identifies the subset of objects by encryption type. This filter is used to create an object list for S3 Batch Operations jobs. If provided, this filter will generate an object list that only includes objects with the specified encryption type.</p>",
+      "union":true
+    },
+    "ObjectEncryptionFilterList":{
+      "type":"list",
+      "member":{
+        "shape":"ObjectEncryptionFilter",
+        "locationName":"ObjectEncryption"
+      },
+      "max":1,
+      "min":1
+    },
     "ObjectLambdaAccessPoint":{
       "type":"structure",
       "required":["Name"],
@@ -8178,6 +8245,11 @@
       "value":{"shape":"MaxLength1024String"},
       "max":8192
     },
+    "SSECFilter":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>A filter that returns objects that are encrypted by server-side encryption with customer-provided keys (SSE-C).</p>"
+    },
     "SSEKMS":{
       "type":"structure",
       "required":["KeyId"],
@@ -8202,6 +8274,22 @@
       "documentation":"<p>Configuration for the use of SSE-KMS to encrypt generated manifest objects.</p>",
       "locationName":"SSE-KMS"
     },
+    "SSEKMSFilter":{
+      "type":"structure",
+      "members":{
+        "KmsKeyArn":{
+          "shape":"NonEmptyKmsKeyArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed KMS key to use for the filter to return objects that are encrypted by the specified key. For best performance, we recommend using the <code>KMSKeyArn</code> filter in conjunction with other object metadata filters, like <code>MatchAnyPrefix</code>, <code>CreatedAfter</code>, or <code>MatchAnyStorageClass</code>.</p> <note> <p>You must provide the full KMS Key ARN. You can't use an alias name or alias ARN. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN\"> KMS keys</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p> </note>",
+          "box":true
+        },
+        "BucketKeyEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether Amazon S3 should use an S3 Bucket Key for object encryption with server-side encryption using Amazon Web Services Key Management Service (Amazon Web Services KMS) keys (SSE-KMS). If specified, will filter SSE-KMS encrypted objects by S3 Bucket Key status. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-key.html\">Reducing the cost of SSE-KMS with Amazon S3 Bucket Keys</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>A filter that returns objects that are encrypted by server-side encryption with Amazon Web Services KMS (SSE-KMS).</p>"
+    },
     "SSEKMSKeyId":{"type":"string"},
     "SSES3":{
       "type":"structure",
@@ -8214,6 +8302,11 @@
       "members":{},
       "documentation":"<p>Configuration for the use of SSE-S3 to encrypt generated manifest objects.</p>",
       "locationName":"SSE-S3"
+    },
+    "SSES3Filter":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>A filter that returns objects that are encrypted by server-side encryption with Amazon S3 managed keys (SSE-S3).</p>"
     },
     "Scope":{
       "type":"structure",

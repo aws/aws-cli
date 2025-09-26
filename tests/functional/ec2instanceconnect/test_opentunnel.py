@@ -352,7 +352,15 @@ def describe_eice_response_empty_fips_dns(dns_name, fips_dns_name):
 def request_params_for_describe_eice():
     return {
         'Filters': [
-            {'Name': 'state', 'Values': ['create-complete']},
+            {
+                'Name': 'state',
+                'Values': [
+                    'create-complete',
+                    'update-in-progress',
+                    'update-failed',
+                    'update-complete',
+                ],
+            },
             {'Name': 'vpc-id', 'Values': ['vpc-123']},
         ]
     }
@@ -434,6 +442,15 @@ def assert_url(dns_name, url):
 
 
 class TestOpenTunnel:
+    @pytest.mark.parametrize(
+        "endpoint_state",
+        [
+            "create-complete",
+            "update-in-progress",
+            "update-failed",
+            "update-complete",
+        ],
+    )
     def test_single_connection_mode(
         self,
         cli_runner,
@@ -442,10 +459,11 @@ class TestOpenTunnel:
         io_patch,
         describe_instance_response,
         dns_name,
-        describe_eice_response,
+        fips_dns_name,
         request_params_for_describe_instance,
         request_params_for_describe_eice,
         datetime_utcnow_patch,
+        endpoint_state,
     ):
         cli_runner.env["AWS_USE_FIPS_ENDPOINT"] = "false"
         cmdline = [
@@ -456,8 +474,27 @@ class TestOpenTunnel:
             "--max-tunnel-duration",
             "1",
         ]
+
+        # Create endpoint response with the specified state
+        describe_eice_response_with_state = f"""
+        <DescribeInstanceConnectEndpointsResponse xmlns="http://ec2.amazonaws.com/doc/2016-11-15/">
+            <instanceConnectEndpointSet>
+                <item>
+                    <dnsName>{dns_name}</dnsName>
+                    <fipsDnsName>{fips_dns_name}</fipsDnsName>
+                    <instanceConnectEndpointId>eice-123</instanceConnectEndpointId>
+                    <state>{endpoint_state}</state>
+                    <subnetId>subnet-123</subnetId>
+                    <vpcId>vpc-123</vpcId>
+                </item>
+            </instanceConnectEndpointSet>
+        </DescribeInstanceConnectEndpointsResponse>
+        """
+
         cli_runner.add_response(HTTPResponse(body=describe_instance_response))
-        cli_runner.add_response(HTTPResponse(body=describe_eice_response))
+        cli_runner.add_response(
+            HTTPResponse(body=describe_eice_response_with_state)
+        )
 
         test_server_input = b"Test Server Output"
         mock_crt_websocket.add_output_from_server(test_server_input)
@@ -469,7 +506,7 @@ class TestOpenTunnel:
         assert 0 == result.rc
         assert pop_stdout_content() == test_server_input
         assert_stdout_empty()
-        # Order of the query params on the url mater because of sigv4
+        # Order of the query params on the url matter because of sigv4
         assert (
             "eice-123.ec2-instance-connect-endpoint.us-west-2.amazonaws.com/openTunnel?"
             "instanceConnectEndpointId=eice-123&remotePort=22&privateIpAddress=10.0.0.0&"

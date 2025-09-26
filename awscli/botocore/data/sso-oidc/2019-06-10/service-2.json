@@ -62,7 +62,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidRequestRegionException"}
       ],
-      "documentation":"<p>Creates and returns access and refresh tokens for clients and applications that are authenticated using IAM entities. The access token can be used to fetch short-lived credentials for the assigned Amazon Web Services accounts or to access application APIs using <code>bearer</code> authentication.</p>"
+      "documentation":"<p>Creates and returns access and refresh tokens for authorized client applications that are authenticated using any IAM entity, such as a service role or user. These tokens might contain defined scopes that specify permissions such as <code>read:profile</code> or <code>write:data</code>. Through downscoping, you can use the scopes parameter to request tokens with reduced permissions compared to the original client application's permissions or, if applicable, the refresh token's scopes. The access token can be used to fetch short-lived credentials for the assigned Amazon Web Services accounts or to access application APIs using <code>bearer</code> authentication.</p> <note> <p>This API is used with Signature Version 4. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\">Amazon Web Services Signature Version 4 for API Requests</a>.</p> </note>"
     },
     "RegisterClient":{
       "name":"RegisterClient",
@@ -78,7 +78,8 @@
         {"shape":"InvalidClientMetadataException"},
         {"shape":"InternalServerException"},
         {"shape":"InvalidRedirectUriException"},
-        {"shape":"UnsupportedGrantTypeException"}
+        {"shape":"UnsupportedGrantTypeException"},
+        {"shape":"SlowDownException"}
       ],
       "documentation":"<p>Registers a public client with IAM Identity Center. This allows clients to perform authorization using the authorization code grant with Proof Key for Code Exchange (PKCE) or the device code grant.</p>",
       "authtype":"none",
@@ -112,6 +113,10 @@
           "shape":"Error",
           "documentation":"<p>Single error code. For this exception the value will be <code>access_denied</code>.</p>"
         },
+        "reason":{
+          "shape":"AccessDeniedExceptionReason",
+          "documentation":"<p>A string that uniquely identifies a reason for the error.</p>"
+        },
         "error_description":{
           "shape":"ErrorDescription",
           "documentation":"<p>Human-readable text providing additional information, used to assist the client developer in understanding the error that occurred.</p>"
@@ -120,6 +125,10 @@
       "documentation":"<p>You do not have sufficient access to perform this action.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "AccessDeniedExceptionReason":{
+      "type":"string",
+      "enum":["KMS_AccessDeniedException"]
     },
     "AccessToken":{
       "type":"string",
@@ -152,10 +161,10 @@
       "members":{
         "identityContext":{
           "shape":"IdentityContext",
-          "documentation":"<p>STS context assertion that carries a user identifier to the Amazon Web Services service that it calls and can be used to obtain an identity-enhanced IAM role session. This value corresponds to the <code>sts:identity_context</code> claim in the ID token.</p>"
+          "documentation":"<p>The trusted context assertion is signed and encrypted by STS. It provides access to <code>sts:identity_context</code> claim in the <code>idToken</code> without JWT parsing</p> <p>Identity context comprises information that Amazon Web Services services use to make authorization decisions when they receive requests.</p>"
         }
       },
-      "documentation":"<p>This structure contains Amazon Web Services-specific parameter extensions for the token endpoint responses and includes the identity context.</p>"
+      "documentation":"<p>This structure contains Amazon Web Services-specific parameter extensions and the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/trustedidentitypropagation-overview.html\">identity context</a>.</p>"
     },
     "ClientId":{"type":"string"},
     "ClientName":{"type":"string"},
@@ -202,7 +211,7 @@
         },
         "scope":{
           "shape":"Scopes",
-          "documentation":"<p>The list of scopes for which authorization is requested. The access token that is issued is limited to the scopes that are granted. If this value is not specified, IAM Identity Center authorizes all scopes that are configured for the client during the call to <a>RegisterClient</a>.</p>"
+          "documentation":"<p>The list of scopes for which authorization is requested. This parameter has no effect; the access token will always include all scopes configured during client registration.</p>"
         },
         "redirectUri":{
           "shape":"URI",
@@ -325,7 +334,7 @@
         },
         "awsAdditionalDetails":{
           "shape":"AwsAdditionalDetails",
-          "documentation":"<p>A structure containing information from the <code>idToken</code>. Only the <code>identityContext</code> is in it, which is a value extracted from the <code>idToken</code>. This provides direct access to identity information without requiring JWT parsing.</p>"
+          "documentation":"<p>A structure containing information from IAM Identity Center managed user and group information.</p>"
         }
       }
     },
@@ -448,6 +457,10 @@
           "shape":"Error",
           "documentation":"<p>Single error code. For this exception the value will be <code>invalid_request</code>.</p>"
         },
+        "reason":{
+          "shape":"InvalidRequestExceptionReason",
+          "documentation":"<p>A string that uniquely identifies a reason for the error.</p>"
+        },
         "error_description":{
           "shape":"ErrorDescription",
           "documentation":"<p>Human-readable text providing additional information, used to assist the client developer in understanding the error that occurred.</p>"
@@ -456,6 +469,15 @@
       "documentation":"<p>Indicates that something is wrong with the input to the request. For example, a required parameter might be missing or out of range.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "InvalidRequestExceptionReason":{
+      "type":"string",
+      "enum":[
+        "KMS_NotFoundException",
+        "KMS_InvalidKeyUsageException",
+        "KMS_InvalidStateException",
+        "KMS_DisabledException"
+      ]
     },
     "InvalidRequestRegionException":{
       "type":"structure",
@@ -687,5 +709,5 @@
     },
     "UserCode":{"type":"string"}
   },
-  "documentation":"<p>IAM Identity Center OpenID Connect (OIDC) is a web service that enables a client (such as CLI or a native application) to register with IAM Identity Center. The service also enables the client to fetch the user’s access token upon successful authentication and authorization with IAM Identity Center.</p> <p> <b>API namespaces</b> </p> <p>IAM Identity Center uses the <code>sso</code> and <code>identitystore</code> API namespaces. IAM Identity Center OpenID Connect uses the <code>sso-oidc</code> namespace.</p> <p> <b>Considerations for using this guide</b> </p> <p>Before you begin using this guide, we recommend that you first review the following important information about how the IAM Identity Center OIDC service works.</p> <ul> <li> <p>The IAM Identity Center OIDC service currently implements only the portions of the OAuth 2.0 Device Authorization Grant standard (<a href=\"https://tools.ietf.org/html/rfc8628\">https://tools.ietf.org/html/rfc8628</a>) that are necessary to enable single sign-on authentication with the CLI. </p> </li> <li> <p>With older versions of the CLI, the service only emits OIDC access tokens, so to obtain a new token, users must explicitly re-authenticate. To access the OIDC flow that supports token refresh and doesn’t require re-authentication, update to the latest CLI version (1.27.10 for CLI V1 and 2.9.0 for CLI V2) with support for OIDC token refresh and configurable IAM Identity Center session durations. For more information, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/configure-user-session.html\">Configure Amazon Web Services access portal session duration </a>. </p> </li> <li> <p>The access tokens provided by this service grant access to all Amazon Web Services account entitlements assigned to an IAM Identity Center user, not just a particular application.</p> </li> <li> <p>The documentation in this guide does not describe the mechanism to convert the access token into Amazon Web Services Auth (“sigv4”) credentials for use with IAM-protected Amazon Web Services service endpoints. For more information, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/PortalAPIReference/API_GetRoleCredentials.html\">GetRoleCredentials</a> in the <i>IAM Identity Center Portal API Reference Guide</i>.</p> </li> </ul> <p>For general information about IAM Identity Center, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html\">What is IAM Identity Center?</a> in the <i>IAM Identity Center User Guide</i>.</p>"
+  "documentation":"<p>IAM Identity Center OpenID Connect (OIDC) is a web service that enables a client (such as CLI or a native application) to register with IAM Identity Center. The service also enables the client to fetch the user’s access token upon successful authentication and authorization with IAM Identity Center.</p> <p> <b>API namespaces</b> </p> <p>IAM Identity Center uses the <code>sso</code> and <code>identitystore</code> API namespaces. IAM Identity Center OpenID Connect uses the <code>sso-oauth</code> namespace.</p> <p> <b>Considerations for using this guide</b> </p> <p>Before you begin using this guide, we recommend that you first review the following important information about how the IAM Identity Center OIDC service works.</p> <ul> <li> <p>The IAM Identity Center OIDC service currently implements only the portions of the OAuth 2.0 Device Authorization Grant standard (<a href=\"https://tools.ietf.org/html/rfc8628\">https://tools.ietf.org/html/rfc8628</a>) that are necessary to enable single sign-on authentication with the CLI. </p> </li> <li> <p>With older versions of the CLI, the service only emits OIDC access tokens, so to obtain a new token, users must explicitly re-authenticate. To access the OIDC flow that supports token refresh and doesn’t require re-authentication, update to the latest CLI version (1.27.10 for CLI V1 and 2.9.0 for CLI V2) with support for OIDC token refresh and configurable IAM Identity Center session durations. For more information, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/configure-user-session.html\">Configure Amazon Web Services access portal session duration </a>. </p> </li> <li> <p>The access tokens provided by this service grant access to all Amazon Web Services account entitlements assigned to an IAM Identity Center user, not just a particular application.</p> </li> <li> <p>The documentation in this guide does not describe the mechanism to convert the access token into Amazon Web Services Auth (“sigv4”) credentials for use with IAM-protected Amazon Web Services service endpoints. For more information, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/PortalAPIReference/API_GetRoleCredentials.html\">GetRoleCredentials</a> in the <i>IAM Identity Center Portal API Reference Guide</i>.</p> </li> </ul> <p>For general information about IAM Identity Center, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html\">What is IAM Identity Center?</a> in the <i>IAM Identity Center User Guide</i>.</p>"
 }

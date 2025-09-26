@@ -641,6 +641,14 @@
         "decimal":{
           "shape":"Decimal",
           "documentation":"<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-decimal\">decimal</a> type.</p> <p>Example: <code>{\"decimal\": \"1.1\"}</code> </p>"
+        },
+        "datetime":{
+          "shape":"DatetimeAttribute",
+          "documentation":"<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-datetime\">datetime</a> type.</p> <p>Example: <code>{\"datetime\": \"2024-10-15T11:35:00Z\"}</code> </p>"
+        },
+        "duration":{
+          "shape":"Duration",
+          "documentation":"<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-duration\">duration</a> type.</p> <p>Example: <code>{\"duration\": \"1h30m\"}</code> </p>"
         }
       },
       "documentation":"<p>The value of an attribute.</p> <p>Contains information about the runtime context for a request for which an authorization decision is made. </p> <p>This data type is used as a member of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ContextDefinition.html\">ContextDefinition</a> structure which is uses as a request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a>, <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html\">BatchIsAuthorized</a>, and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p>",
@@ -1431,6 +1439,13 @@
         }
       }
     },
+    "DatetimeAttribute":{
+      "type":"string",
+      "max":28,
+      "min":10,
+      "pattern":"\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{3})?(Z|[+-]\\d{4}))?",
+      "sensitive":true
+    },
     "Decimal":{
       "type":"string",
       "max":23,
@@ -1464,8 +1479,7 @@
     },
     "DeleteIdentitySourceOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletePolicyInput":{
       "type":"structure",
@@ -1486,8 +1500,7 @@
     },
     "DeletePolicyOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletePolicyStoreInput":{
       "type":"structure",
@@ -1501,8 +1514,7 @@
     },
     "DeletePolicyStoreOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletePolicyTemplateInput":{
       "type":"structure",
@@ -1523,8 +1535,7 @@
     },
     "DeletePolicyTemplateOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletionProtection":{
       "type":"string",
@@ -1553,6 +1564,13 @@
       "max":2048,
       "min":1,
       "pattern":"https://.*"
+    },
+    "Duration":{
+      "type":"string",
+      "max":100,
+      "min":2,
+      "pattern":"-?(\\d+d)?(\\d+h)?(\\d+m)?(\\d+s)?(\\d+ms)?",
+      "sensitive":true
     },
     "EntitiesDefinition":{
       "type":"structure",
@@ -3190,8 +3208,7 @@
     },
     "TagResourceOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -3253,7 +3270,7 @@
           "documentation":"<p>The resource associated with this template-linked policy. Verified Permissions substitutes this resource for the <code>?resource</code> placeholder in the policy template when it evaluates an authorization request.</p>"
         }
       },
-      "documentation":"<p>Contains information about a policy created by instantiating a policy template. </p> <p>This </p>"
+      "documentation":"<p>Contains information about a policy created by instantiating a policy template. </p>"
     },
     "ThrottlingException":{
       "type":"structure",
@@ -3312,8 +3329,7 @@
     },
     "UntagResourceOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateCognitoGroupConfiguration":{
       "type":"structure",

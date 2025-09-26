@@ -20,7 +20,7 @@ import importlib.abc
 import os
 import sys
 
-__version__ = '2.28.23'
+__version__ = '2.31.2'
 
 #
 # Get our data path to be added to botocore's search path
@@ -104,3 +104,5 @@ class TopLevelImportAliasFinder(importlib.abc.MetaPathFinder):
 
 
 TopLevelImportAliasFinder.add_alias_finder(sys.meta_path)
+
+_DEFAULT_BASE_REMOTE_URL = f"https://awscli.amazonaws.com/v2/documentation/api/{__version__}"   # noqa

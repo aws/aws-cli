@@ -174,7 +174,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Creates an access policy that grants the specified identity (IAM Identity Center user, IAM Identity Center group, or IAM user) access to the specified IoT SiteWise Monitor portal or project resource.</p>",
+      "documentation":"<p>Creates an access policy that grants the specified identity (IAM Identity Center user, IAM Identity Center group, or IAM user) access to the specified IoT SiteWise Monitor portal or project resource.</p> <note> <p>Support for access policies that use an SSO Group as the identity is not supported at this time.</p> </note>",
       "endpoint":{"hostPrefix":"monitor."}
     },
     "CreateAsset":{
@@ -4325,6 +4325,10 @@
       "type":"string",
       "enum":["ANOMALY_DETECTION"]
     },
+    "ComputationModelVersionFilter":{
+      "type":"string",
+      "pattern":"^(LATEST|ACTIVE|[1-9]{1}\\d{0,9})$"
+    },
     "ComputeLocation":{
       "type":"string",
       "enum":[
@@ -6414,6 +6418,12 @@
           "documentation":"<p>The ID of the computation model.</p>",
           "location":"uri",
           "locationName":"computationModelId"
+        },
+        "computationModelVersion":{
+          "shape":"ComputationModelVersionFilter",
+          "documentation":"<p>The version of the computation model.</p>",
+          "location":"querystring",
+          "locationName":"computationModelVersion"
         }
       }
     },
@@ -7317,7 +7327,7 @@
         },
         "maxResults":{
           "shape":"ExecuteQueryMaxResults",
-          "documentation":"<p>The maximum number of results to return at one time.</p> <ul> <li> <p>Minimum is 1</p> </li> <li> <p>Maximum is 20000</p> </li> <li> <p>Default is 250</p> </li> </ul>"
+          "documentation":"<p>The maximum number of results to return at one time.</p> <ul> <li> <p>Minimum is 1</p> </li> <li> <p>Maximum is 20000</p> </li> <li> <p>Default is 20000</p> </li> </ul>"
         },
         "clientToken":{
           "shape":"ClientToken",

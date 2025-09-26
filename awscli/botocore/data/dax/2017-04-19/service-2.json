@@ -73,7 +73,8 @@
         {"shape":"SubnetGroupQuotaExceededFault"},
         {"shape":"SubnetQuotaExceededFault"},
         {"shape":"InvalidSubnet"},
-        {"shape":"ServiceLinkedRoleNotFoundFault"}
+        {"shape":"ServiceLinkedRoleNotFoundFault"},
+        {"shape":"SubnetNotAllowedFault"}
       ],
       "documentation":"<p>Creates a new subnet group.</p>"
     },
@@ -291,7 +292,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"InvalidParameterCombinationException"}
       ],
-      "documentation":"<p>Reboots a single node of a DAX cluster. The reboot action takes place as soon as possible. During the reboot, the node status is set to REBOOTING.</p> <note> <p> <code>RebootNode</code> restarts the DAX engine process and does not remove the contents of the cache. </p> </note>"
+      "documentation":"<p>Reboots a single node of a DAX cluster. The reboot action takes place as soon as possible. During the reboot, the node status is set to REBOOTING.</p> <note> <p> <code>RebootNode</code> restarts the DAX engine process and does not remove the contents of the cache.</p> </note>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -380,7 +381,8 @@
         {"shape":"SubnetQuotaExceededFault"},
         {"shape":"SubnetInUse"},
         {"shape":"InvalidSubnet"},
-        {"shape":"ServiceLinkedRoleNotFoundFault"}
+        {"shape":"ServiceLinkedRoleNotFoundFault"},
+        {"shape":"SubnetNotAllowedFault"}
       ],
       "documentation":"<p>Modifies an existing subnet group.</p>"
     }
@@ -472,6 +474,10 @@
         "ClusterEndpointEncryptionType":{
           "shape":"ClusterEndpointEncryptionType",
           "documentation":"<p>The type of encryption supported by the cluster's endpoint. Values are:</p> <ul> <li> <p> <code>NONE</code> for no encryption</p> <p> <code>TLS</code> for Transport Layer Security</p> </li> </ul>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The IP address type of the cluster. Values are:</p> <ul> <li> <p> <code>ipv4</code> - IPv4 addresses only</p> </li> <li> <p> <code>ipv6</code> - IPv6 addresses only</p> </li> <li> <p> <code>dual_stack</code> - Both IPv4 and IPv6 addresses</p> </li> </ul>"
         }
       },
       "documentation":"<p>Contains all of the attributes of a specific DAX cluster.</p>"
@@ -506,7 +512,7 @@
     "ClusterQuotaForCustomerExceededFault":{
       "type":"structure",
       "members":{},
-      "documentation":"<p>You have attempted to exceed the maximum number of DAX clusters for your AWS account.</p>",
+      "documentation":"<p>You have attempted to exceed the maximum number of DAX clusters for your Amazon Web Services account.</p>",
       "exception":true
     },
     "CreateClusterRequest":{
@@ -532,7 +538,7 @@
         },
         "ReplicationFactor":{
           "shape":"Integer",
-          "documentation":"<p>The number of nodes in the DAX cluster. A replication factor of 1 will create a single-node cluster, without any read replicas. For additional fault tolerance, you can create a multiple node cluster with one or more read replicas. To do this, set <code>ReplicationFactor</code> to a number between 3 (one primary and two read replicas) and 10 (one primary and nine read replicas). <code>If the AvailabilityZones</code> parameter is provided, its length must equal the <code>ReplicationFactor</code>.</p> <note> <p>AWS recommends that you have at least two read replicas per cluster.</p> </note>"
+          "documentation":"<p>The number of nodes in the DAX cluster. A replication factor of 1 will create a single-node cluster, without any read replicas. For additional fault tolerance, you can create a multiple node cluster with one or more read replicas. To do this, set <code>ReplicationFactor</code> to a number between 3 (one primary and two read replicas) and 10 (one primary and nine read replicas). <code>If the AvailabilityZones</code> parameter is provided, its length must equal the <code>ReplicationFactor</code>.</p> <note> <p>Amazon Web Services recommends that you have at least two read replicas per cluster.</p> </note>"
         },
         "AvailabilityZones":{
           "shape":"AvailabilityZoneList",
@@ -573,6 +579,10 @@
         "ClusterEndpointEncryptionType":{
           "shape":"ClusterEndpointEncryptionType",
           "documentation":"<p>The type of encryption the cluster's endpoint should support. Values are:</p> <ul> <li> <p> <code>NONE</code> for no encryption</p> </li> <li> <p> <code>TLS</code> for Transport Layer Security</p> </li> </ul>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Specifies the IP protocol(s) the cluster uses for network communications. Values are:</p> <ul> <li> <p> <code>ipv4</code> - The cluster is accessible only through IPv4 addresses</p> </li> <li> <p> <code>ipv6</code> - The cluster is accessible only through IPv6 addresses</p> </li> <li> <p> <code>dual_stack</code> - The cluster is accessible through both IPv4 and IPv6 addresses.</p> </li> </ul> <note> <p>If no explicit <code>NetworkType</code> is provided, the network type is derived based on the subnet group's configuration.</p> </note>"
         }
       }
     },
@@ -996,7 +1006,7 @@
       "members":{
         "Cluster":{
           "shape":"Cluster",
-          "documentation":"<p>A description of the DAX cluster. with its new replication factor.</p>"
+          "documentation":"<p>A description of the DAX cluster, with its new replication factor.</p>"
         }
       }
     },
@@ -1095,6 +1105,18 @@
         }
       }
     },
+    "NetworkType":{
+      "type":"string",
+      "enum":[
+        "ipv4",
+        "ipv6",
+        "dual_stack"
+      ]
+    },
+    "NetworkTypeList":{
+      "type":"list",
+      "member":{"shape":"NetworkType"}
+    },
     "Node":{
       "type":"structure",
       "members":{
@@ -1148,7 +1170,7 @@
     "NodeQuotaForCustomerExceededFault":{
       "type":"structure",
       "members":{},
-      "documentation":"<p>You have attempted to exceed the maximum number of nodes for your AWS account.</p>",
+      "documentation":"<p>You have attempted to exceed the maximum number of nodes for your Amazon Web Services account.</p>",
       "exception":true
     },
     "NodeTypeSpecificValue":{
@@ -1174,7 +1196,7 @@
       "members":{
         "TopicArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the topic. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the topic.</p>"
         },
         "TopicStatus":{
           "shape":"String",
@@ -1404,7 +1426,7 @@
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{},
-      "documentation":"<p>You have reached the maximum number of x509 certificates that can be created for encrypted clusters in a 30 day period. Contact AWS customer support to discuss options for continuing to create encrypted clusters.</p>",
+      "documentation":"<p>You have reached the maximum number of x509 certificates that can be created for encrypted clusters in a 30 day period. Contact Amazon Web Services customer support to discuss options for continuing to create encrypted clusters.</p>",
       "exception":true
     },
     "SourceType":{
@@ -1426,6 +1448,10 @@
         "SubnetAvailabilityZone":{
           "shape":"String",
           "documentation":"<p>The Availability Zone (AZ) for the subnet.</p>"
+        },
+        "SupportedNetworkTypes":{
+          "shape":"NetworkTypeList",
+          "documentation":"<p>The network types supported by this subnet. Returns an array of strings that can include <code>ipv4</code>, <code>ipv6</code>, or both, indicating whether the subnet supports IPv4 only, IPv6 only, or dual-stack deployments.</p>"
         }
       },
       "documentation":"<p>Represents the subnet associated with a DAX cluster. This parameter refers to subnets defined in Amazon Virtual Private Cloud (Amazon VPC) and used with DAX.</p>"
@@ -1448,6 +1474,10 @@
         "Subnets":{
           "shape":"SubnetList",
           "documentation":"<p>A list of subnets associated with the subnet group. </p>"
+        },
+        "SupportedNetworkTypes":{
+          "shape":"NetworkTypeList",
+          "documentation":"<p>The network types supported by this subnet. Returns an array of strings that can include <code>ipv4</code>, <code>ipv6</code>, or both, indicating whether the subnet group supports IPv4 only, IPv6 only, or dual-stack deployments. </p>"
         }
       },
       "documentation":"<p>Represents the output of one of the following actions:</p> <ul> <li> <p> <i>CreateSubnetGroup</i> </p> </li> <li> <p> <i>ModifySubnetGroup</i> </p> </li> </ul>"
@@ -1498,6 +1528,12 @@
       "type":"list",
       "member":{"shape":"Subnet"}
     },
+    "SubnetNotAllowedFault":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The specified subnet can't be used for the requested network type. This error occurs when either there aren't enough subnets of the required network type to create the cluster, or when you try to use a subnet that doesn't support the requested network type (for example, trying to create a dual-stack cluster with a subnet that doesn't have IPv6 CIDR). </p>",
+      "exception":true
+    },
     "SubnetQuotaExceededFault":{
       "type":"structure",
       "members":{},
@@ -1514,10 +1550,10 @@
         },
         "Value":{
           "shape":"String",
-          "documentation":"<p>The value of the tag. Tag values are case-sensitive and can be null. </p>"
+          "documentation":"<p>The value of the tag. Tag values are case-sensitive and can be null.</p>"
         }
       },
-      "documentation":"<p>A description of a tag. Every tag is a key-value pair. You can add up to 50 tags to a single DAX cluster.</p> <p>AWS-assigned tag names and values are automatically assigned the <code>aws:</code> prefix, which the user cannot assign. AWS-assigned tag names do not count towards the tag limit of 50. User-assigned tag names have the prefix <code>user:</code>.</p> <p>You cannot backdate the application of a tag.</p>"
+      "documentation":"<p>A description of a tag. Every tag is a key-value pair. You can add up to 50 tags to a single DAX cluster.</p> <p>Amazon Web Services-assigned tag names and values are automatically assigned the <code>aws:</code> prefix, which the user cannot assign. Amazon Web Services-assigned tag names do not count towards the tag limit of 50. User-assigned tag names have the prefix <code>user:</code>.</p> <p>You cannot backdate the application of a tag.</p>"
     },
     "TagList":{
       "type":"list",
@@ -1684,5 +1720,5 @@
       }
     }
   },
-  "documentation":"<p>DAX is a managed caching service engineered for Amazon DynamoDB. DAX dramatically speeds up database reads by caching frequently-accessed data from DynamoDB, so applications can access that data with sub-millisecond latency. You can create a DAX cluster easily, using the AWS Management Console. With a few simple modifications to your code, your application can begin taking advantage of the DAX cluster and realize significant improvements in read performance.</p>"
+  "documentation":"<p>DAX is a managed caching service engineered for Amazon DynamoDB. DAX dramatically speeds up database reads by caching frequently-accessed data from DynamoDB, so applications can access that data with sub-millisecond latency. You can create a DAX cluster easily, using the Amazon Web Services Management Console. With a few simple modifications to your code, your application can begin taking advantage of the DAX cluster and realize significant improvements in read performance.</p>"
 }

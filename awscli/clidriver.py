@@ -151,7 +151,7 @@ def _get_linux_distribution():
         linux_distribution = distro.id()
         version = distro.major_version()
         if version:
-            linux_distribution += '.%s' % version
+            linux_distribution += f'.{version}'
     except Exception:
         pass
     return linux_distribution
@@ -272,6 +272,9 @@ class CLIDriver:
         config_store.set_config_provider(
             'cli_auto_prompt', self._construct_cli_auto_prompt_chain()
         )
+        config_store.set_config_provider(
+            'cli_help_output', self._construct_cli_help_output_chain()
+        )
 
     def _construct_cli_region_chain(self):
         providers = [
@@ -307,6 +310,16 @@ class CLIDriver:
                 session=self.session,
             ),
             ConstantProvider(value='json'),
+        ]
+        return ChainProvider(providers=providers)
+
+    def _construct_cli_help_output_chain(self):
+        providers = [
+            ScopedConfigProvider(
+                config_var_name='cli_help_output',
+                session=self.session,
+            ),
+            ConstantProvider(value='terminal'),
         ]
         return ChainProvider(providers=providers)
 
@@ -667,7 +680,7 @@ class ServiceCommand(CLICommand):
                 operation_caller=CLIOperationCaller(self.session),
             )
         self.session.emit(
-            'building-command-table.%s' % self._name,
+            f'building-command-table.{self._name}',
             command_table=command_table,
             session=self.session,
             command_object=self,
@@ -775,7 +788,7 @@ class ServiceOperation:
         subcommand_table = OrderedDict()
         full_name = '_'.join([c.name for c in self.lineage])
         self._session.emit(
-            'building-command-table.%s' % full_name,
+            f'building-command-table.{full_name}',
             command_table=subcommand_table,
             session=self._session,
             command_object=self,
@@ -805,10 +818,7 @@ class ServiceOperation:
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a particular operation
         # of a service we can go ahead and load the parameters.
-        event = 'before-building-argument-table-parser.%s.%s' % (
-            self._parent_name,
-            self._name,
-        )
+        event = f'before-building-argument-table-parser.{self._parent_name}.{self._name}'
         self._emit(
             event,
             argument_table=self.arg_table,
@@ -834,16 +844,16 @@ class ServiceOperation:
             remaining.append(parsed_args.help)
         if remaining:
             raise UnknownArgumentError(
-                "Unknown options: %s" % ', '.join(remaining)
+                f"Unknown options: {', '.join(remaining)}"
             )
-        event = 'operation-args-parsed.%s.%s' % (self._parent_name, self._name)
+        event = f'operation-args-parsed.{self._parent_name}.{self._name}'
         self._emit(
             event, parsed_args=parsed_args, parsed_globals=parsed_globals
         )
         call_parameters = self._build_call_parameters(
             parsed_args, self.arg_table
         )
-        event = 'calling-command.%s.%s' % (self._parent_name, self._name)
+        event = f'calling-command.{self._parent_name}.{self._name}'
         override = self._emit_first_non_none_response(
             event,
             call_parameters=call_parameters,
@@ -943,7 +953,7 @@ class ServiceOperation:
             arg_object.add_to_arg_table(argument_table)
         LOG.debug(argument_table)
         self._emit(
-            'building-argument-table.%s.%s' % (self._parent_name, self._name),
+            f'building-argument-table.{self._parent_name}.{self._name}',
             operation_model=self._operation_model,
             session=self._session,
             command=self,

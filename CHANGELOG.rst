@@ -2,6 +2,172 @@
 CHANGELOG
 =========
 
+2.31.2
+======
+
+* api-change:``lightsail``: Attribute HTTP binding update for Get/Delete operations
+* api-change:``glue``: Update GetConnection(s) API to return KmsKeyArn & Add 63 missing connection types
+* api-change:``network-firewall``: Network Firewall now introduces Reject and Alert action support for stateful domain list rule groups, providing customers with more granular control over their network traffic.
+
+
+2.31.1
+======
+
+* api-change:``appstream``: G6f instance support for AppStream 2.0
+* api-change:``neptune``: Doc-only update to address customer use.
+* api-change:``dax``: This release adds support for IPv6-only, DUAL_STACK DAX instances
+* api-change:``cloudwatch``: Fix default dualstack FIPS endpoints in AWS GovCloud(US) regions
+* api-change:``kms``: Documentation only updates for KMS.
+
+
+2.31.0
+======
+
+* enhancement:help: Update message formatting when entering an invalid command to improve identification of an error (aws/aws-cli`#9737 <https://github.com/aws/aws-cli/issues/9737>`__)
+* api-change:``cleanrooms``: Added support for running incremental ID mapping for rule-based workflows.
+* api-change:``ec2``: Add Amazon EC2 R8gn instance types
+* enhancement:documentation: Display required constraints to top level and nested parameters (aws/aws-cli`#9463 <https://github.com/aws/aws-cli/issues/9463>`__, aws/aws-cli`#9491 <https://github.com/aws/aws-cli/issues/9491>`__)
+* enhancement:help: Reduce output from help when entering an invalid command (aws/aws-cli`#9457 <https://github.com/aws/aws-cli/issues/9457>`__)
+* enhancement:documentation: Add documentation for API parameter constraints (aws/aws-cli`#9444 <https://github.com/aws/aws-cli/issues/9444>`__)
+* enhancement:``s3``: Add controls over progress status message frequency and multiline printing (aws/aws-cli`#9545 <https://github.com/aws/aws-cli/issues/9545>`__)
+* enhancement:configuration: Improve accessibility of table output for ``configure list`` command (aws/aws-cli`#9547 <https://github.com/aws/aws-cli/issues/9547>`__)
+* api-change:``sso-oidc``: This release includes exception definition and documentation updates.
+* api-change:``sso-admin``: Add support for encryption at rest with Customer Managed KMS Key in AWS IAM Identity Center
+* api-change:``ssm``: Added Dualstack support to GetDeployablePatchSnapshotForInstance
+* api-change:``entityresolution``: Support incremental id mapping workflow for AWS Entity Resolution
+* feature:help: Add ability to view help in a web browser or print the URL to the remote documentation website (aws/aws-cli`#9496 <https://github.com/aws/aws-cli/issues/9496>`__)
+
+
+2.30.7
+======
+
+* api-change:``imagebuilder``: Version ARNs are no longer required for the EC2 Image Builder list-image-build-version, list-component-build-version, and list-workflow-build-version APIs. Calling these APIs without the ARN returns all build versions for the given resource type in the requesting account.
+* api-change:``pinpoint-sms-voice``: Update pinpoint-sms-voice client and endpoint tests to latest version.
+* api-change:``eks``: Adds support for RepairConfig overrides and configurations in EKS Managed Node Groups.
+* api-change:``batch``: Starting in JAN 2026, AWS Batch will change the default AMI for new Amazon ECS compute environments from Amazon Linux 2 to Amazon Linux 2023. We recommend migrating AWS Batch Amazon ECS compute environments to Amazon Linux 2023 to maintain optimal performance and security.
+
+
+2.30.6
+======
+
+* api-change:``config``: Add UNKNOWN state to RemediationExecutionState and add IN_PROGRESS/EXITED/UNKNOWN states to RemediationExecutionStepState.
+* api-change:``license-manager-user-subscriptions``: Added support for cross-account Active Directories.
+* enhancement:ec2-instance-connect: Allow ec2-instance-connect ssh and open-tunnel commands to connect to update-complete, update-in-progress, and update-failed EC2 Instance Connect Endpoints. Fixes `#9715 <https://github.com/aws/aws-cli/issues/9715>`__
+* api-change:``kendra-ranking``: Model whitespace change - no client difference
+* api-change:``bedrock-agentcore-control``: Add tagging and VPC support to AgentCore Runtime, Code Interpreter, and Browser resources. Add support for configuring request headers in Runtime. Fix AgentCore Runtime shape names.
+* api-change:``medialive``: Add MinBitrate for QVBR mode under H264/H265/AV1 output codec. Add GopBReference, GopNumBFrames, SubGopLength fields under H265 output codec.
+* api-change:``connect``: This release adds a persistent connection field to UserPhoneConfig that maintains agent's softphone media connection for faster call connections.
+* api-change:``sqs``: Update invalid character handling documentation for SQS SendMessage API
+
+
+2.30.5
+======
+
+* api-change:``budgets``: Added BillingViewHealthStatus Exception which is thrown when a Budget is created or updated with a Billing View that is not in the HEALTHY status
+* api-change:``bedrock``: Release includes an increase to the maximum policy build document size, an update to DeleteAutomatedReasoningPolicyBuildWorkflow to add ResourceInUseException, and corrections to UpdateAutomatedReasoningPolicyTestCaseRequest.
+* api-change:``chime-sdk-messaging``: Amazon Chime SDK Messaging GetMessagingSessionEndpoint API now returns dual-stack WebSocket endpoints supporting IPv4/IPv6.
+* api-change:``ec2``: Allowed AMIs adds support for four new parameters - marketplaceProductCodes, deprecationTimeCondition, creationDateCondition and imageNames
+
+
+2.30.4
+======
+
+* api-change:``ec2``: Add mac-m4.metal and mac-m4pro.metal instance types.
+* api-change:``pcs``: Add support for Amazon EC2 Capacity Blocks for ML
+* api-change:``network-firewall``: Network Firewall now prevents TLS handshakes with the target server until after the Server Name Indication (SNI) has been seen and verified. The monitoring dashboard now provides deeper insights into PrivateLink endpoint candidates and offers filters based on IP addresses and protocol.
+
+
+2.30.3
+======
+
+* api-change:``logs``: Cloudwatch Logs added support for 2 new API parameters in metric and subscription filter APIs to filter log events based on system field values and emit system field values as dimensions and send them to customer destination as additional metadata.
+* enhancement:``configure``: Added the new ``aws configure mfa-login`` command, which creates a profile with temporary credentials corresponding to an IAM user with an MFA code.
+* api-change:``ivs-realtime``: IVS now offers customers the ability to control the positioning of participants in both grid and PiP layouts based on custom attribute values in participant tokens.
+* api-change:``osis``: Adds support for cross-account ingestion for push-based sources. This includes resource policies for sharing pipelines across accounts and features for managing pipeline endpoints which enable accessing pipelines across different VPCs, including VPCs in other accounts.
+* enhancement:macOS: Added explicit architecture support in PKG installer for universal builds on Macs to prevent Rosetta requirement prompt.
+* api-change:``budgets``: Add support for custom time periods in budget configuration
+* enhancement:``configure``: Added support for temporary credentials with ``aws configure``. The CLI will prompt for an ``aws_session_token`` if the provided access key ID is temporary.
+
+
+2.30.2
+======
+
+* api-change:``medical-imaging``: Added support for OpenID Connect (OIDC) custom authorizer
+* api-change:``s3control``: Introduce three new encryption filters: EncryptionType (SSE-S3, SSE-KMS, DSSE-KMS, SSE-C, NOT-SSE), KmsKeyArn (for SSE-KMS and DSSE-KMS), and BucketKeyEnabled (for SSE-KMS).
+* api-change:``sms``: The sms client has been removed following the deprecation of the service.
+* api-change:``ce``: Added endpoint support for eusc-de-east-1 region.
+* api-change:``observabilityadmin``: CloudWatch Observability Admin adds the ability to enable telemetry centralization in customers' Organizations. The release introduces new APIs to manage centralization rules, which define settings to replicate telemetry data to a central destination in the customers' Organization.
+
+
+2.30.1
+======
+
+* enhancement:``s3``: Expose S3 transfer config's ``io_chunksize`` in shared config file
+* api-change:``payment-cryptography``: Add support for certificates to be signed by 3rd party certificate authorities.  New API GetCertificateSigningRequest API and support for providing certificates at run-time for tr-34 import/export
+
+
+2.30.0
+======
+
+* feature:installer: Added universal binary support for AWS CLI v2 on macOS
+* api-change:``evs``: CreateEnvironment API now supports parameters (isHcxPublic & hcxNetworkAclId) for HCX migration via public internet, adding flexibility for migration scenarios. New APIs have been added for associating (AssociateEipToVlan) & disassociating (DisassociateEipFromVlan) Elastic IP (EIP) addresses.
+* api-change:``amp``: Add Vended Logs APIs for Amazon Prometheus Managed Collector
+* api-change:``quicksight``: This release adds support for Account level custom permissions, additional Dashboard Options, and Null support for Q&A.
+* api-change:``guardduty``: Updated Java SDK implementation of entity set status in GuardDuty API.
+* api-change:``datazone``: adding IAM principal id to IAM user profile details
+* api-change:``emr-containers``: Added nodeLabel support in container provider to aid hardware isolation support for virtual cluster and security configuration.
+* api-change:``medialive``: AWS Elemental MediaLive adds a new feature in MediaPackage output group that enables MediaPackage V2 users to control HLS-related parameters directly in MediaLive. These parameter settings are then reflected in MediaPackage outputs, providing more streamlined control over HLS configurations.
+* api-change:``ecs``: This release supports hook details for Amazon ECS lifecycle hooks.
+* api-change:``rds``: Adds support for end-to-end IAM authentication in RDS Proxy for MySQL, MariaDB, and PostgreSQL engines.
+
+
+2.29.1
+======
+
+* api-change:``networkflowmonitor``: Added new enum value (AWS::Region) for type field under MonitorLocalResource and MonitorRemoteResource. Workload Insights and Monitor top contributors queries now support a new DestinationCategory (INTER_REGION).
+* api-change:``payment-cryptography``: AWS Payment Cryptography Service now supports Multi-Region key replication. Customers can choose to automatically distribute keys across AWS Regions.
+
+
+2.29.0
+======
+
+* api-change:``autoscaling``: Added WaitForTransitioningInstances parameter to the CancelInstanceRefresh API, allowing the caller to cancel an instance refresh without waiting for on-going launches and terminations.
+* api-change:``mediapackagev2``: Added CUE tag SCTE output to MediaPackageV2 HLS and LL-HLS manifests.
+* api-change:``sagemaker``: Released IPv6 support with dual-stack domain options on SageMaker Studio and introduced support for p6-b200.48xlarge instance type on SageMaker Studio for JupyterLab and CodeEditor applications.
+* api-change:``datazone``: Adds support for custom blueprints
+* api-change:``cloudwatch``: Added a new API - DescribeAlarmContributors API, to retrieve alarm contributors in ALARM state. Added support in DescribeAlarmHistory API to query alarm contributor history
+* feature:s3 download: Validate requested range matches content range in response for multipart downloads
+* api-change:``connect``: SDK release for user defined predefined attributes.
+* api-change:``organizations``: Documentation updates for AWS Organizations APIs.
+
+
+2.28.26
+=======
+
+* api-change:``s3``: This release includes backward compatibility work on the "Expires" parameter.
+* api-change:``iotsitewise``: Add ComputationModelVersion support in IoT SiteWise APIs
+* api-change:``securityhub``: This release adds the RESOURCE_NOT_FOUND error code as a possible value in responses to the following operations: BatchGetStandardsControlAssociations, BatchUpdateStandardsControlAssociations, and BatchGetSecurityControls.
+
+
+2.28.25
+=======
+
+* api-change:``sagemaker``: Release IPv6 support with dualstack in SageMaker Notebooks, Tiered Storage Checkpointing Support in SageMaker HyperPod and P5.4xlarge instance type for SageMaker Hosting.
+* api-change:``ecs``: This is a documentation only release that adds additional information for Amazon ECS Availability Zone rebalancing.
+* api-change:``pcs``: Documentation-only update to add AccountingStorageEnforce to SlurmCustomSetting.
+
+
+2.28.24
+=======
+
+* api-change:``ec2``: Add m8i, m8i-flex and i8ge instance types.
+* api-change:``cloudformation``: ListHookResults API now supports retrieving invocation results for all CloudFormation Hooks (previously limited to create change set and Cloud Control operations) with new optional parameters for filtering by Hook status and ARN.
+* api-change:``cleanrooms``: Add support for configurable compute sizes for PySpark jobs.
+* api-change:``rds``: Added new EndpointNetworkType and TargetConnectionNetworkType fields in Proxy APIs to support IPv6
+* api-change:``verifiedpermissions``: Amazon Verified Permissions / Features : Adds support for datetime and duration attribute values.
+* api-change:``opensearchserverless``: Add support for Federal Information Processing Standards (FIPS) and Federal Risk and Authorization Management Program (FedRAMP) compliance
+
+
 2.28.23
 =======
 

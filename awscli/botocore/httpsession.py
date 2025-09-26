@@ -28,6 +28,8 @@ from urllib3.util.ssl_ import (
 )
 from urllib3.util.url import parse_url
 
+from concurrent.futures import CancelledError
+
 try:
     from urllib3.util.ssl_ import OP_NO_TICKET, PROTOCOL_TLS_CLIENT
 except ImportError:
@@ -497,6 +499,8 @@ class URLLib3Session:
             raise ConnectionClosedError(
                 error=e, request=request, endpoint_url=request.url
             )
+        except CancelledError:
+            raise
         except Exception as e:
             message = 'Exception received when sending urllib3 HTTP request'
             logger.debug(message, exc_info=True)

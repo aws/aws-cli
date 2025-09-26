@@ -200,7 +200,8 @@
         {"shape":"DataUnavailableException"},
         {"shape":"InvalidNextTokenException"},
         {"shape":"RequestChangedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BillingViewHealthStatusException"}
       ],
       "documentation":"<p>Retrieves cost and usage metrics for your account. You can specify which cost and usage-related metric that you want the request to return. For example, you can specify <code>BlendedCosts</code> or <code>UsageQuantity</code>. You can also filter and group your data by various dimensions, such as <code>SERVICE</code> or <code>AZ</code>, in a specific time range. For a complete list of valid dimensions, see the <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_GetDimensionValues.html\">GetDimensionValues</a> operation. Management account in an organization in Organizations have access to all member accounts.</p> <p>For information about filter limitations, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-limits.html\">Quotas and restrictions</a> in the <i>Billing and Cost Management User Guide</i>.</p>"
     },
@@ -216,7 +217,8 @@
         {"shape":"DataUnavailableException"},
         {"shape":"InvalidNextTokenException"},
         {"shape":"LimitExceededException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BillingViewHealthStatusException"}
       ],
       "documentation":"<p>Retrieves cost and usage comparisons for your account between two periods within the last 13 months. If you have enabled multi-year data at monthly granularity, you can go back up to 38 months.</p>"
     },
@@ -234,7 +236,8 @@
         {"shape":"BillExpirationException"},
         {"shape":"InvalidNextTokenException"},
         {"shape":"RequestChangedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BillingViewHealthStatusException"}
       ],
       "documentation":"<p>Retrieves cost and usage metrics with resources for your account. You can specify which cost and usage-related metric, such as <code>BlendedCosts</code> or <code>UsageQuantity</code>, that you want the request to return. You can also filter and group your data by various dimensions, such as <code>SERVICE</code> or <code>AZ</code>, in a specific time range. For a complete list of valid dimensions, see the <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_GetDimensionValues.html\">GetDimensionValues</a> operation. Management account in an organization in Organizations have access to all member accounts.</p> <p>Hourly granularity is only available for EC2-Instances (Elastic Compute Cloud) resource-level data. All other resource-level data is available at daily granularity.</p> <note> <p>This is an opt-in only feature. You can enable this feature from the Cost Explorer Settings page. For information about how to access the Settings page, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/ce-access.html\">Controlling Access for Cost Explorer</a> in the <i>Billing and Cost Management User Guide</i>.</p> </note>"
     },
@@ -252,7 +255,8 @@
         {"shape":"DataUnavailableException"},
         {"shape":"InvalidNextTokenException"},
         {"shape":"RequestChangedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BillingViewHealthStatusException"}
       ],
       "documentation":"<p>Retrieves an array of Cost Category names and values incurred cost.</p> <note> <p>If some Cost Category names and values are not associated with any cost, they will not be returned by this API.</p> </note>"
     },
@@ -268,7 +272,8 @@
         {"shape":"DataUnavailableException"},
         {"shape":"InvalidNextTokenException"},
         {"shape":"LimitExceededException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BillingViewHealthStatusException"}
       ],
       "documentation":"<p>Retrieves key factors driving cost changes between two time periods within the last 13 months, such as usage changes, discount changes, and commitment-based savings. If you have enabled multi-year data at monthly granularity, you can go back up to 38 months.</p>"
     },
@@ -283,7 +288,8 @@
       "errors":[
         {"shape":"LimitExceededException"},
         {"shape":"DataUnavailableException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BillingViewHealthStatusException"}
       ],
       "documentation":"<p>Retrieves a forecast for how much Amazon Web Services predicts that you will spend over the forecast time period that you select, based on your past costs. </p>"
     },
@@ -301,7 +307,8 @@
         {"shape":"DataUnavailableException"},
         {"shape":"InvalidNextTokenException"},
         {"shape":"RequestChangedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BillingViewHealthStatusException"}
       ],
       "documentation":"<p>Retrieves all available filter values for a specified filter over a period of time. You can search the dimension values for an arbitrary string. </p>"
     },
@@ -450,7 +457,8 @@
         {"shape":"DataUnavailableException"},
         {"shape":"InvalidNextTokenException"},
         {"shape":"RequestChangedException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BillingViewHealthStatusException"}
       ],
       "documentation":"<p>Queries for available tag keys and tag values for a specified period. You can search the tag values for an arbitrary string. </p>"
     },
@@ -466,7 +474,8 @@
         {"shape":"LimitExceededException"},
         {"shape":"DataUnavailableException"},
         {"shape":"UnresolvableUsageUnitException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BillingViewHealthStatusException"}
       ],
       "documentation":"<p>Retrieves a forecast for how much Amazon Web Services predicts that you will use over the forecast time period that you select, based on your past usage. </p>"
     },
@@ -1044,6 +1053,14 @@
       "max":2048,
       "min":20,
       "pattern":"^arn:aws[a-z-]*:(billing)::[0-9]{12}:billingview/[-a-zA-Z0-9/:_+=.-@]{1,43}$"
+    },
+    "BillingViewHealthStatusException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p> The billing view status must be <code>HEALTHY</code> to perform this action. Try again when the status is <code>HEALTHY</code>. </p>",
+      "exception":true
     },
     "CommitmentPurchaseAnalysisConfiguration":{
       "type":"structure",
@@ -1909,6 +1926,7 @@
         "AZ",
         "INSTANCE_TYPE",
         "LINKED_ACCOUNT",
+        "PAYER_ACCOUNT",
         "LINKED_ACCOUNT_NAME",
         "OPERATION",
         "PURCHASE_TYPE",

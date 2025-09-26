@@ -15,6 +15,27 @@
     "uid":"billing-2023-09-07"
   },
   "operations":{
+    "AssociateSourceViews":{
+      "name":"AssociateSourceViews",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateSourceViewsRequest"},
+      "output":{"shape":"AssociateSourceViewsResponse"},
+      "errors":[
+        {"shape":"BillingViewHealthStatusException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Associates one or more source billing views with an existing billing view. This allows creating aggregate billing views that combine data from multiple sources. </p>",
+      "idempotent":true
+    },
     "CreateBillingView":{
       "name":"CreateBillingView",
       "http":{
@@ -24,8 +45,10 @@
       "input":{"shape":"CreateBillingViewRequest"},
       "output":{"shape":"CreateBillingViewResponse"},
       "errors":[
+        {"shape":"BillingViewHealthStatusException"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
@@ -52,6 +75,26 @@
       "documentation":"<p>Deletes the specified billing view.</p>",
       "idempotent":true
     },
+    "DisassociateSourceViews":{
+      "name":"DisassociateSourceViews",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateSourceViewsRequest"},
+      "output":{"shape":"DisassociateSourceViewsResponse"},
+      "errors":[
+        {"shape":"BillingViewHealthStatusException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Removes the association between one or more source billing views and an existing billing view. This allows modifying the composition of aggregate billing views. </p>",
+      "idempotent":true
+    },
     "GetBillingView":{
       "name":"GetBillingView",
       "http":{
@@ -67,7 +110,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns the metadata associated to the specified billing view ARN. </p>"
+      "documentation":"<p>Returns the metadata associated to the specified billing view ARN. </p>",
+      "readonly":true
     },
     "GetResourcePolicy":{
       "name":"GetResourcePolicy",
@@ -84,7 +128,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns the resource-based policy document attached to the resource in <code>JSON</code> format. </p>"
+      "documentation":"<p>Returns the resource-based policy document attached to the resource in <code>JSON</code> format. </p>",
+      "readonly":true
     },
     "ListBillingViews":{
       "name":"ListBillingViews",
@@ -100,7 +145,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the billing views available for a given time period. </p> <p>Every Amazon Web Services account has a unique <code>PRIMARY</code> billing view that represents the billing data available by default. Accounts that use Billing Conductor also have <code>BILLING_GROUP</code> billing views representing pro forma costs associated with each created billing group.</p>"
+      "documentation":"<p>Lists the billing views available for a given time period. </p> <p>Every Amazon Web Services account has a unique <code>PRIMARY</code> billing view that represents the billing data available by default. Accounts that use Billing Conductor also have <code>BILLING_GROUP</code> billing views representing pro forma costs associated with each created billing group.</p>",
+      "readonly":true
     },
     "ListSourceViewsForBillingView":{
       "name":"ListSourceViewsForBillingView",
@@ -117,7 +163,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the source views (managed Amazon Web Services billing views) associated with the billing view. </p>"
+      "documentation":"<p>Lists the source views (managed Amazon Web Services billing views) associated with the billing view. </p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -134,7 +181,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists tags associated with the billing view resource. </p>"
+      "documentation":"<p>Lists tags associated with the billing view resource. </p>",
+      "readonly":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -179,6 +227,7 @@
       "input":{"shape":"UpdateBillingViewRequest"},
       "output":{"shape":"UpdateBillingViewResponse"},
       "errors":[
+        {"shape":"BillingViewHealthStatusException"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"},
@@ -223,9 +272,36 @@
       },
       "documentation":"<p>A time range with a start and end time.</p>"
     },
+    "AssociateSourceViewsRequest":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "sourceViews"
+      ],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the billing view to associate source views with. </p>"
+        },
+        "sourceViews":{
+          "shape":"BillingViewSourceViewsList",
+          "documentation":"<p> A list of ARNs of the source billing views to associate. </p>"
+        }
+      }
+    },
+    "AssociateSourceViewsResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The ARN of the billing view that the source views were associated with. </p>"
+        }
+      }
+    },
     "BillingViewArn":{
       "type":"string",
-      "pattern":"arn:aws[a-z-]*:(billing)::[0-9]{12}:billingview/[a-zA-Z0-9/:_\\+=\\.\\-@]{0,59}[a-zA-Z0-9]"
+      "pattern":"arn:aws[a-z-]*:(billing)::[0-9]{12}:billingview/[a-zA-Z0-9/:_\\+=\\.\\-@]{0,75}[a-zA-Z0-9]"
     },
     "BillingViewArnList":{
       "type":"list",
@@ -263,6 +339,10 @@
           "shape":"AccountId",
           "documentation":"<p>The account owner of the billing view. </p>"
         },
+        "sourceAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID that owns the source billing view, if this is a derived billing view. </p>"
+        },
         "dataFilterExpression":{
           "shape":"Expression",
           "documentation":"<p> See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code> and <code>Tags</code>. </p>"
@@ -274,9 +354,48 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the billing view was last updated. </p>"
+        },
+        "derivedViewCount":{
+          "shape":"Integer",
+          "documentation":"<p> The number of billing views that use this billing view as a source. </p>"
+        },
+        "sourceViewCount":{
+          "shape":"Integer",
+          "documentation":"<p> The number of source views associated with this billing view. </p>"
+        },
+        "viewDefinitionLastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp of when the billing view definition was last updated. </p>"
+        },
+        "healthStatus":{
+          "shape":"BillingViewHealthStatus",
+          "documentation":"<p> The current health status of the billing view. </p>"
         }
       },
       "documentation":"<p>The metadata associated to the billing view. </p>"
+    },
+    "BillingViewHealthStatus":{
+      "type":"structure",
+      "members":{
+        "statusCode":{
+          "shape":"BillingViewStatus",
+          "documentation":"<p>The current health status code of the billing view.</p>"
+        },
+        "statusReasons":{
+          "shape":"BillingViewStatusReasons",
+          "documentation":"<p>A list of reasons explaining the current health status, if applicable.</p>"
+        }
+      },
+      "documentation":"<p> Represents the health status of a billing view, including a status code and optional reasons for the status. </p>"
+    },
+    "BillingViewHealthStatusException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p> Exception thrown when a billing view's health status prevents an operation from being performed. This may occur if the billing view is in a state other than <code>HEALTHY</code>.</p>",
+      "exception":true
     },
     "BillingViewList":{
       "type":"list",
@@ -301,9 +420,17 @@
           "shape":"AccountId",
           "documentation":"<p> The list of owners of the Billing view. </p>"
         },
+        "sourceAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID that owns the source billing view, if this is a derived billing view. </p>"
+        },
         "billingViewType":{
           "shape":"BillingViewType",
           "documentation":"<p>The type of billing view.</p>"
+        },
+        "healthStatus":{
+          "shape":"BillingViewHealthStatus",
+          "documentation":"<p> The current health status of the billing view. </p>"
         }
       },
       "documentation":"<p>A representation of a billing view.</p>"
@@ -318,8 +445,34 @@
     "BillingViewSourceViewsList":{
       "type":"list",
       "member":{"shape":"BillingViewArn"},
-      "max":1,
+      "max":10,
       "min":1
+    },
+    "BillingViewStatus":{
+      "type":"string",
+      "enum":[
+        "HEALTHY",
+        "UNHEALTHY",
+        "CREATING",
+        "UPDATING"
+      ]
+    },
+    "BillingViewStatusReason":{
+      "type":"string",
+      "enum":[
+        "SOURCE_VIEW_UNHEALTHY",
+        "SOURCE_VIEW_UPDATING",
+        "SOURCE_VIEW_ACCESS_DENIED",
+        "SOURCE_VIEW_NOT_FOUND",
+        "CYCLIC_DEPENDENCY",
+        "SOURCE_VIEW_DEPTH_EXCEEDED",
+        "AGGREGATE_SOURCE",
+        "VIEW_OWNER_NOT_MANAGEMENT_ACCOUNT"
+      ]
+    },
+    "BillingViewStatusReasons":{
+      "type":"list",
+      "member":{"shape":"BillingViewStatusReason"}
     },
     "BillingViewType":{
       "type":"string",
@@ -338,6 +491,10 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
     },
     "ClientToken":{
       "type":"string",
@@ -419,6 +576,10 @@
         "arn":{
           "shape":"BillingViewArn",
           "documentation":"<p> The Amazon Resource Name (ARN) that can be used to uniquely identify the billing view. </p>"
+        },
+        "force":{
+          "shape":"Boolean",
+          "documentation":"<p> If set to true, forces deletion of the billing view even if it has derived resources (e.g. other billing views or budgets). Use with caution as this may break dependent resources. </p>"
         }
       }
     },
@@ -454,6 +615,33 @@
       },
       "documentation":"<p> The metadata that you can use to filter and group your results. </p>"
     },
+    "DisassociateSourceViewsRequest":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "sourceViews"
+      ],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the billing view to disassociate source views from. </p>"
+        },
+        "sourceViews":{
+          "shape":"BillingViewSourceViewsList",
+          "documentation":"<p> A list of ARNs of the source billing views to disassociate. </p>"
+        }
+      }
+    },
+    "DisassociateSourceViewsResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The ARN of the billing view that the source views were disassociated from. </p>"
+        }
+      }
+    },
     "ErrorMessage":{
       "type":"string",
       "max":1024,
@@ -469,6 +657,10 @@
         "tags":{
           "shape":"TagValues",
           "documentation":"<p> The specific <code>Tag</code> to use for <code>Expression</code>. </p>"
+        },
+        "timeRange":{
+          "shape":"TimeRange",
+          "documentation":"<p> Specifies a time range filter for the billing view data. </p>"
         }
       },
       "documentation":"<p> See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code> and <code>Tags</code>. </p>"
@@ -522,6 +714,10 @@
         }
       }
     },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
     "InternalServerException":{
       "type":"structure",
       "required":["message"],
@@ -550,6 +746,10 @@
         "ownerAccountId":{
           "shape":"AccountId",
           "documentation":"<p> The list of owners of the billing view. </p>"
+        },
+        "sourceAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> Filters the results to include only billing views that use the specified account as a source. </p>"
         },
         "maxResults":{
           "shape":"BillingViewsMaxResults",
@@ -798,6 +998,20 @@
       },
       "documentation":"<p>The request was denied due to request throttling. </p>",
       "exception":true
+    },
+    "TimeRange":{
+      "type":"structure",
+      "members":{
+        "beginDateInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p> The inclusive start date of the time range. </p>"
+        },
+        "endDateInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p> The inclusive end date of the time range. </p>"
+        }
+      },
+      "documentation":"<p> Specifies a time range with inclusive begin and end dates. </p>"
     },
     "Timestamp":{"type":"timestamp"},
     "UntagResourceRequest":{

@@ -282,7 +282,7 @@ class CLIDriver:
         sys.stderr.write('\n')
 
     def _handle_top_level_args(self, args, remaining):
-        emit_top_level_args_parsed_event(self.session, args, remaining, self._get_argument_table())
+        emit_top_level_args_parsed_event(self.session, args, remaining)
         if args.profile:
             self.session.set_config_variable('profile', args.profile)
         if args.region:

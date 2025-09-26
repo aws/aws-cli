@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.42.40
+=======
+
+* api-change:``bedrock-agent-runtime``: This release enhances the information provided through Flow Traces. New information includes source/next node tracking, execution chains for complex nodes, dependency action (operation) details, and dependency traces.
+* api-change:``bedrock-data-automation``: Added support for configurable Speaker Labeling and Channel Labeling features for Audio modality.
+* api-change:``billing``: Add ability to combine custom billing views to create new consolidated views.
+* api-change:``ce``: Support for payer account dimension and billing view health status.
+* api-change:``connect``: Adds supports for manual contact picking (WorkList) operations on Routing Profiles, Agent Management and SearchContacts APIs.
+* api-change:``dynamodbstreams``: Added support for IPv6 compatible endpoints for DynamoDB Streams.
+* api-change:``ec2``: This release includes documentation updates for Amazon EBS General Purpose SSD (gp3) volumes with larger size and higher IOPS and throughput.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``redshift``: Support tagging and tag propagation to IAM Identity Center for Redshift Idc Applications
+
+
 1.42.39
 =======
 
